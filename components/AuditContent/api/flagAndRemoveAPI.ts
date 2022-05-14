@@ -31,7 +31,7 @@ export const buildParamsForFlagAndRemoveAPI = ({ selected, verdict }):APIParams 
 
   const contentItems = selected.map((r):ContentItem => ({
     content_type: r.contentType.id,
-    object_id: r.id
+    object_id: r.item.id
   }));
 
   return {

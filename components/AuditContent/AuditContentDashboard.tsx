@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import { FLAG_REASON } from "../Flag/config/constants";
 import { KeyOf } from "~/config/types/root_types";
 import Loader from "../Loader/Loader";
+import { ApiFilters } from './api/fetchAuditContributionsAPI';
 
 function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"> {
   const router = useRouter();
@@ -26,44 +27,36 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
 
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
-  const [selectedHub, setSelectedHub] = useState<any>(
-    router.query.hub_id ?? {label: "All", value: undefined}
-  );
+  const [appliedFilters, setAppliedFilteres] = useState<ApiFilters>({
+    hubId: (router.query.hub_id as ID)
+  });  
   const [isLoadingMore, setIsLoadingMore] = useState<Boolean>(false);
   const [isLoadingPage, setIsLoadingPage] = useState<Boolean>(false);
-
+  
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [selectedResultIds, setSelectedResultIds] = useState<Array<ID>>([]);
   
 
   useEffect(() => {
-    const selected = suggestedHubs.find(h => h.id === router.query.hub_id)
-    setSelectedHub(selected);
-  }, [suggestedHubs])
-
-  useEffect(() => {
-    loadResults();
-  }, []);
+    const appliedFilters = { hubId: (router.query.hub_id as ID)}    
+    setAppliedFilteres(appliedFilters);
+    loadResults(appliedFilters, null);
+  }, [router.query]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       const isOutsideClick = isClickOutsideCheckbox(event, [multiSelectRef.current]);
-
+      
       if (isOutsideClick) {
         setSelectedResultIds([]);
       }
     }
-
+    
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, [])
-
-  useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
-    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
-  } });
-
-
+  }, []);
+  
   useEffect(() => {
     window.addEventListener("scroll", handleWindowScroll);
 
@@ -72,7 +65,12 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
     }
   }, []);
 
-  
+  useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
+    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
+    const selected = hubs.find(h => String(h.id) === String(router.query.hub_id))
+    setAppliedFilteres({ hubId: selected?.id });
+  } });
+
   const handleWindowScroll = () => {
     const navEl:(HTMLElement|null) = document.querySelector(".navbar");
     const multiSelectEl:HTMLElement|null = multiSelectRef.current;
@@ -90,19 +88,17 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   const handleHubFilterChange = (selectedHub: any) => {
 
     let query = { ...router.query }
-    if (selectedHub.value) {
+    if (selectedHub.id) {
       query.hub_id = selectedHub.id;
     }
     else {
-      delete query.hub_id;    
+      delete query.hub_id;
     }
 
     setIsLoadingPage(true);
-    setNextResultsUrl(null);
     setSelectedResultIds([]);
-    setResults([]);
-    setSelectedHub(selectedHub);
-    loadResults();
+    setAppliedFilteres({ hubId: selectedHub.id });
+    loadResults({ hubId: selectedHub.id }, null);
 
     router.push({
       query,
@@ -120,17 +116,20 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
     }
   }
 
-  const loadResults = () => {
+  const loadResults = (filters:ApiFilters, url = null) => {
     setIsLoadingMore(true);
-
     fetchAuditContributions({
-      pageUrl: nextResultsUrl || null,
-      filters: {
-        hubId: selectedHub?.id,
-      },
-      onSuccess: (response) => {
+      pageUrl: url,
+      filters,
+      onSuccess: (response:any) => {
         const incomingResults = response.results.map(r => parseContribution(r))
-        setResults([...results, ...incomingResults]);
+        if (url) {
+          setResults([...results, ...incomingResults]);
+        }
+        else {
+          setResults(incomingResults);
+        }
+
         setNextResultsUrl(response.next);
         setIsLoadingMore(false);
         setIsLoadingPage(false);
@@ -146,8 +145,6 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
           <FlagButtonV2
             modalHeaderText="Flag and Remove"
             onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
-
-              // results.filter(r => selectedIds.includes(r.id))
               const apiParams = buildParamsForFlagAndRemoveAPI({ selected:r,  verdict });
               flagAndRemove({
                 apiParams,
@@ -170,15 +167,15 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
       }]
 
       return (
-        <div className={css(styles.result)} key={r.id}>
+        <div className={css(styles.result)} key={r.item.id}>
           <div className={`${css(styles.checkbox)} cbx`}>
             <CheckBox
-              key={`${r.contentType}-${r.id}`}
+              key={`${r.contentType}-${r.item.id}`}
               label=""
               isSquare
               // @ts-ignore
               id={r.id}
-              active={selectedResultIds.includes(r.id)}
+              active={selectedResultIds.includes(r.item.id)}
               onChange={(id) => handleResultSelect(id)}
               labelStyle={undefined}
             />          
@@ -191,31 +188,29 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
     })
   }
 
-
+  const selectedHub = suggestedHubs.find(h => String(appliedFilters.hubId) === String(h.id)) || {"label": "All", id: undefined, value: undefined};
   return (
     <div className={css(styles.dashboardContainer)}>
       <div className={css(styles.header)}>
         <div className={css(styles.title)}>
           Audit Content
         </div>
-        {process.browser &&
-          <div className={css(styles.filters)}>
-            <div className={css(styles.filter)}>
-              <FormSelect
-                containerStyle={styles.hubDropdown}
-                inputStyle={styles.inputOverride}
-                id="hubs"
-                label=""
-                onChange={(_id: ID, selectedHub: any): void =>
-                  handleHubFilterChange(selectedHub)
-                }
-                options={suggestedHubs}
-                placeholder=""
-                value={selectedHub ?? null}
-              />       
-            </div>
+        <div className={css(styles.filters)}>
+          <div className={css(styles.filter)}>
+            <FormSelect
+              containerStyle={styles.hubDropdown}
+              inputStyle={styles.inputOverride}
+              id="hubs"
+              label=""
+              onChange={(_id: ID, selectedHub: any): void =>
+                handleHubFilterChange(selectedHub)
+              }
+              options={suggestedHubs}
+              placeholder=""
+              value={selectedHub ?? null}
+            />       
           </div>
-        }
+        </div>
       </div>
       <div className={css(styles.multiSelect, isMultiSelectSticky && styles.multiSelectSticky)} ref={multiSelectRef}>
         {selectedResultIds.length > 0 &&
@@ -232,11 +227,14 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
       ) : (
         <>
           <div className={css(styles.resultsContainer)}>
-            {resultCards()}
+            {results.length > 0
+              ? resultCards()
+              : <div className={css(styles.noResults)}>No results.</div>
+            }
           </div>
           {nextResultsUrl && (
             // @ts-ignore
-            <LoadMoreButton onClick={loadResults} isLoadingMore={isLoadingMore} />
+            <LoadMoreButton onClick={() => loadResults(appliedFilters, nextResultsUrl)} isLoadingMore={isLoadingMore} />
           )}
         </>
       )}
@@ -320,6 +318,12 @@ const styles = StyleSheet.create({
   },
   "bulkAction": {
 
+  },
+  "noResults": {
+    marginTop: 150,
+    fontSize: 32,
+    textAlign: "center",
+    color: colors.BLACK(1)
   },
   "bulkActionRemove": {
     color: colors.RED(),
