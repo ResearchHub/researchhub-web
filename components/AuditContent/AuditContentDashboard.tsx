@@ -27,11 +27,11 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
 
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
-  const [appliedFilters, setAppliedFilteres] = useState<ApiFilters>({
+  const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({
     hubId: (router.query.hub_id as ID)
   });  
   const [isLoadingMore, setIsLoadingMore] = useState<Boolean>(false);
-  const [isLoadingPage, setIsLoadingPage] = useState<Boolean>(false);
+  const [isLoadingPage, setIsLoadingPage] = useState<Boolean>(true);
   
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
@@ -40,7 +40,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
 
   useEffect(() => {
     const appliedFilters = { hubId: (router.query.hub_id as ID)}    
-    setAppliedFilteres(appliedFilters);
+    setAppliedFilters(appliedFilters);
     loadResults(appliedFilters, null);
   }, [router.query]);
 
@@ -68,7 +68,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
     setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
     const selected = hubs.find(h => String(h.id) === String(router.query.hub_id))
-    setAppliedFilteres({ hubId: selected?.id });
+    setAppliedFilters({ hubId: selected?.id });
   } });
 
   const handleWindowScroll = () => {
@@ -97,7 +97,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
 
     setIsLoadingPage(true);
     setSelectedResultIds([]);
-    setAppliedFilteres({ hubId: selectedHub.id });
+    setAppliedFilters({ hubId: selectedHub.id });
     loadResults({ hubId: selectedHub.id }, null);
 
     router.push({
@@ -206,7 +206,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
               }
               options={suggestedHubs}
               placeholder=""
-              value={selectedHub ?? null}
+              value={selectedHub}
             />       
           </div>
         </div>
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     marginTop: 150,
     fontSize: 32,
     textAlign: "center",
-    color: colors.BLACK(1)
+    color: colors.BLACK(0.5)
   },
   "bulkActionRemove": {
     color: colors.RED(),
