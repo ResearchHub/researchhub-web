@@ -16,12 +16,14 @@ type Props = {
   modalHeaderText: string;
   onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
   subHeaderText?: string;
+  flagIconOverride?: any;
 };
 
 function FlagButtonV2({
   modalHeaderText,
   onSubmit,
   subHeaderText,
+  flagIconOverride,
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] = useState<KeyOf<typeof FLAG_REASON>>("SPAM");
@@ -41,7 +43,7 @@ function FlagButtonV2({
     <Fragment>
       <div
         onClick={(): void => setIsModalOpen(!isModalOpen)}
-        className={css(styles.flagIcon)}
+        className={css(styles.flagIcon, flagIconOverride)}
       >
         {icons.flag}
       </div>

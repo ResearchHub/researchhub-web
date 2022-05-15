@@ -144,8 +144,8 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
         html: (
           <FlagButtonV2
             modalHeaderText="Flag and Remove"
-            onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
-              const apiParams = buildParamsForFlagAndRemoveAPI({ selected:r,  verdict });
+            onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
+              const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict });
               flagAndRemove({
                 apiParams,
                 onSuccess: () => {
@@ -154,13 +154,12 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
                 },
                 onError: () => {
                   setMessage("Failed to flag & remove");
-                  showMessage({ show: true, error: true });                  
+                  showMessage({ show: true, error: true });
                 },
               });
-
-            }}
+            } }
             subHeaderText={"hellow there"}
-          />        
+          />
         ),
         label: "Flag & Remove",
         style: styles.flagAndRemove,
@@ -174,7 +173,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
               label=""
               isSquare
               // @ts-ignore
-              id={r.id}
+              id={r.item.id}
               active={selectedResultIds.includes(r.item.id)}
               onChange={(id) => handleResultSelect(id)}
               labelStyle={undefined}
@@ -217,7 +216,16 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
           <div className={css(styles.activeDetailsRow)}>
             <span className={css(styles.numSelected)}>{selectedResultIds.length} selected.</span>
             <div className={css(styles.bulkActions)}>
-              <span className={css(styles.bulkAction, styles.bulkActionRemove)}>{icons.flagOutline}<span className={css(styles.actionText)}>Flag &amp; Remove</span></span>
+              <span className={css(styles.bulkAction, styles.bulkActionRemove)}>
+                <FlagButtonV2
+                  modalHeaderText="Flag and Remove"
+                  flagIconOverride={styles.flagIcon}
+                  onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
+                    console.log('flag and remove')
+                  }}
+                  subHeaderText={"hellow there"}
+                />                
+              </span>
             </div>
           </div>
         }
@@ -256,6 +264,15 @@ const styles = StyleSheet.create({
     userSelect: "none",
     padding: 10,
   },
+  "flagIcon": {
+    width: 14,
+    height: 14,
+    maxHeight: 14,
+    maxWidth: 14,
+    minWidth: 14,
+    minHeight: 14,
+    fontSize: 13,
+  },
   "checkbox": {
     alignSelf: "center",
     marginRight: 5,
@@ -263,6 +280,7 @@ const styles = StyleSheet.create({
   "header": {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   "title": {
     fontSize: 30,
@@ -272,10 +290,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     width: "100%",
     boxSizing: "border-box",
-    marginTop: 15,
-    marginBottom: 15,
+    marginTop: 10,
+    marginBottom: 10,
     fontSize: 14,
-    height: 44,
+    height: 38,
   },
   "multiSelectSticky": {
     position: "fixed",
@@ -285,11 +303,13 @@ const styles = StyleSheet.create({
     // border: `1px solid ${colors.NEW_BLUE()}`,
   },
   "activeDetailsRow": {
-    lineHeight: "22px",
-    padding: "10px 10px 10px 17px",
+    padding: "6px 11px 6px 14px",
+    alignItems: "center",
     display: "flex",
-    background: colors.LIGHTER_BLUE(),
+    borderRadius: 2,
+    background: colors.LIGHTER_GREY(),
     justifyContent: "space-between",
+    fontSize: 14,
   },
   "dashboardContainer": {
     padding: "0 32px",

@@ -5,9 +5,8 @@ import { timeSince } from "~/config/utils/dates";
 import { Contribution } from "~/config/types/contribution";
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
-import icons, { HypothesisIcon }  from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import { ReactNode } from "react";
 import ReactTooltip from "react-tooltip";
 
 
