@@ -9,10 +9,10 @@ import icons from "~/config/themes/icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ReactTooltip from "react-tooltip";
 
-
 export default function renderContributionEntry(entry: Contribution, actions: Array<any>) {
 
     const renderHeader = (entry: Contribution) => {
+
       const {
         item,
         createdDate,
