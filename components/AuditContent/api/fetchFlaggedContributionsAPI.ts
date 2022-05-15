@@ -32,7 +32,6 @@ export default function fetchFlaggedContributions({
   onSuccess,
   filters,
 }: Args) {
-
   const url = pageUrl ||  API.FLAGS({ ...filters })
 
   return fetch(
