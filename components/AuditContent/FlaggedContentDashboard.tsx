@@ -177,6 +177,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
         html: (
           <FlagButtonV2
             modalHeaderText="Flag and Remove"
+            flagIconOverride={styles.flagIcon}
             onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
               const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict });
               flagAndRemove({
@@ -203,7 +204,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
           </span>
         ),
         label: "Dismiss Flag",
-        style: styles.flagAndRemove,
+        // style: styles.flagAndRemove,
       }]
 
       return (
@@ -339,7 +340,6 @@ const styles = StyleSheet.create({
   "header": {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
   },
   "title": {
     fontSize: 30,
@@ -409,24 +409,19 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   "bulkActionApprove": {
+
+  },
+  "checkIcon": {
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    color: colors.GREEN(),
+    backgroundColor: "rgba(36, 31, 58, 0.03)",
+    cursor: "pointer",
     width: 14,
     height: 14,
     maxHeight: 14,
     maxWidth: 14,
     minWidth: 14,
     minHeight: 14,
-    fontSize: 13,
-  },
-  "checkIcon": {
-    color: colors.GREEN(),
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
-    cursor: "pointer",
-    width: 20,
-    height: 20,
-    maxHeight: 20,
-    maxWidth: 20,
-    minWidth: 20,
-    minHeight: 20,
     fontSize: 13,
     padding: 5,
     borderRadius: "50%",

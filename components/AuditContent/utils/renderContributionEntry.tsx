@@ -72,7 +72,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
           </div>
           <div className={`${css(styles.actions)} actions`}>
             {actions.map((action) => (
-              <span className={css(action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
+              <span className={css(styles.action, action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
             ))}
           </div>
         </div>
@@ -173,5 +173,11 @@ const styles = StyleSheet.create({
   "actions": {
     marginLeft: "auto",
     opacity: 0,
+    display: "flex",
+    height: 20,
+    lineHeight: "25px",
   },
+  "action": {
+    marginLeft: 5,
+  }
 })
