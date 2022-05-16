@@ -152,7 +152,14 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
   }
 
   const loadResults = (filters:ApiFilters, url = null) => {
-    setIsLoadingMore(true);
+
+    if (!url) {
+      setIsLoadingPage(true);
+    }
+    else {
+      setIsLoadingMore(true);
+    }
+
     fetchFlaggedContributions({
       pageUrl: url,
       filters,
@@ -176,13 +183,14 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
     
     return results.map((r) => {
       // @ts-ignore
-      const isAuthorFlaggedAndRemoved = (r.flaggedBy.authorProfile.id === r.verdict.createdBy.authorProfile.id);
+      const isOneLineAction = (r.flaggedBy.authorProfile.id === r?.verdict?.createdBy?.authorProfile?.id);
 
       const cardActions = [{
         html: (
           <FlagButtonV2
             modalHeaderText="Flag and Remove"
             flagIconOverride={styles.flagIcon}
+            iconOverride={icons.trashSolid}            
             onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
               const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict });
               flagAndRemove({
@@ -190,6 +198,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
                 onSuccess: () => {
                   setMessage("Content flagged & removed");
                   showMessage({ show: true, error: false });
+                  setResults(results.filter(res => res.item.id !== r.item.id));
                 },
                 onError: () => {
                   setMessage("Failed to flag & remove");
@@ -200,8 +209,9 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
             subHeaderText={"hellow there"}
           />
         ),
-        label: "Flag & Remove",
+        label: "Remove Content",
         style: styles.flagAndRemove,
+        isActive: appliedFilters.verdict === "OPEN",
       }, {
         html: (
           <span className={css(styles.bulkAction, styles.checkIcon, styles.bulkActionApprove)}>
@@ -210,26 +220,33 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
         ),
         label: "Dismiss Flag",
         // style: styles.flagAndRemove,
+        isActive: appliedFilters.verdict === "OPEN",
       }]
 
-      // {r.verdict &&
-      //   <div className={css(styles.actionDetailsRow)}>
-      //     <div className={css(styles.avatarContainer)}>
-      //       {/* @ts-ignore */}
-      //       <AuthorAvatar size={20} author={r.verdict.createdBy.authorProfile} />
-      //     </div>
-      //     <span className={css(styles.actionContainer)}>
-      //       {/* @ts-ignore */}
-      //       <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.verdict.createdBy.authorProfile.firstName} {r.verdict.createdBy.authorProfile.lastName}</ALink>
-      //       <span className={css(styles.flagText)}>&nbsp;marked this content as <span className={css(styles.reason)}>removed</span></span>
-      //     </span>
-      //     <span className={css(styles.dot)}> • </span>
-      //     <span className={css(styles.timestamp)}>2 days ago</span>
-      //   </div>
-      // }
       return (
         <div className={css(styles.result)} key={r.item.id}>
-
+          {r.verdict && !isOneLineAction &&
+            <>
+              <div className={css(styles.actionDetailsRow, styles.verdictActionDetailsRow)}>
+                <div className={css(styles.avatarContainer)}>
+                  {/* @ts-ignore */}
+                  <AuthorAvatar size={20} author={r.verdict.createdBy.authorProfile} />
+                </div>
+                <span className={css(styles.actionContainer)}>
+                  {/* @ts-ignore */}
+                  <ALink href={`/user/${r.verdict.createdBy.authorProfile.id}/overview`}>{r.verdict.createdBy.authorProfile.firstName} {r.verdict.createdBy.authorProfile.lastName}</ALink>
+                  <span className={css(styles.flagText)}>
+                    <span className={css(styles.icon, styles.trashIcon)}>&nbsp;{icons.trash}</span>
+                    {/* @ts-ignore */}
+                    &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>
+                  </span>
+                </span>
+                <span className={css(styles.dot)}> • </span>
+                <span className={css(styles.timestamp)}>2 days ago</span>
+              </div>
+              <div className={css(styles.timelineSeperator)}></div>            
+            </>
+          }
 
           <div className={css(styles.actionDetailsRow)}>
             <div className={css(styles.avatarContainer)}>
@@ -240,13 +257,19 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
               {/* @ts-ignore */}
               <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.flaggedBy.authorProfile.firstName} {r.flaggedBy.authorProfile.lastName}</ALink>
               <span className={css(styles.flagText)}>
-                { isAuthorFlaggedAndRemoved &&
+                { isOneLineAction ? (
                   <>
-                    <span className={css(styles.icon)}>&nbsp;{icons.trash}</span>
+                    <span className={css(styles.icon, styles.trashIcon)}>&nbsp;{icons.trash}</span>
                     {/* @ts-ignore */}
                     &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>
+                  </>                  
+                ) : (
+                  <>
+                    <span className={css(styles.icon)}>&nbsp;{icons.flagOutline}</span>
+                    {/* @ts-ignore */}
+                    &nbsp;flagged this content as <span className={css(styles.reason)}>{FLAG_REASON[r.reasonChoice]}</span>                  
                   </>
-                }
+                )}
               </span>
             </span>
             <span className={css(styles.dot)}> • </span>
@@ -382,6 +405,12 @@ const styles = StyleSheet.create({
     minWidth: 14,
     minHeight: 14,
     fontSize: 13,
+    // background: colors.RED(0.1),
+    color: colors.RED(0.6),
+    ":hover": {
+      // background: colors.RED(0.1),
+      color: colors.RED(0.6),      
+    }    
   },
   "checkbox": {
     alignSelf: "center",
@@ -448,6 +477,7 @@ const styles = StyleSheet.create({
   },
   "bulkAction": {
     marginLeft: 5,
+    display: "flex",
   },
   "noResults": {
     marginTop: 150,
@@ -510,9 +540,12 @@ const styles = StyleSheet.create({
   },
   "actionDetailsRow": {
     display: "flex",
-    marginBottom: 10,
+    marginBottom: 15,
     alignItems: "center",
     fontSize: 14,
+  },
+  "verdictActionDetailsRow": {
+    marginBottom: 6,
   },
   "icon": {
     fontSize: 14,
@@ -534,6 +567,17 @@ const styles = StyleSheet.create({
   "timestamp": {
     color: colors.BLACK(0.5),
   },
+  "trashIcon": {
+    fontSize: 16,
+  },
+  "timelineSeperator": {
+    background: colors.GREY(),
+    height: 8,
+    width: 4,
+    borderRadius: 5,
+    marginLeft: 8,
+    marginBottom: 5,
+  }
 });
 
 const mapDispatchToProps = {
