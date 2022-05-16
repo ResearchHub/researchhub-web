@@ -15,11 +15,13 @@ import LoadMoreButton from "../LoadMoreButton";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
-import { FLAG_REASON } from "../Flag/config/constants";
 import { KeyOf } from "~/config/types/root_types";
 import Loader from "../Loader/Loader";
+import AuthorAvatar from "../AuthorAvatar";
 import { ApiFilters, verdictOpts } from './api/fetchFlaggedContributionsAPI';
 import { Contribution, parseContribution } from "~/config/types/contribution";
+import ALink from "../ALink";
+import { FLAG_REASON } from "~/components/Flag/config/constants";
 
 function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"div"> {
   const router = useRouter();
@@ -173,6 +175,9 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
   const resultCards = () => {
     
     return results.map((r) => {
+      // @ts-ignore
+      const isAuthorFlaggedAndRemoved = (r.flaggedBy.authorProfile.id === r.verdict.createdBy.authorProfile.id);
+
       const cardActions = [{
         html: (
           <FlagButtonV2
@@ -207,22 +212,63 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
         // style: styles.flagAndRemove,
       }]
 
+      // {r.verdict &&
+      //   <div className={css(styles.actionDetailsRow)}>
+      //     <div className={css(styles.avatarContainer)}>
+      //       {/* @ts-ignore */}
+      //       <AuthorAvatar size={20} author={r.verdict.createdBy.authorProfile} />
+      //     </div>
+      //     <span className={css(styles.actionContainer)}>
+      //       {/* @ts-ignore */}
+      //       <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.verdict.createdBy.authorProfile.firstName} {r.verdict.createdBy.authorProfile.lastName}</ALink>
+      //       <span className={css(styles.flagText)}>&nbsp;marked this content as <span className={css(styles.reason)}>removed</span></span>
+      //     </span>
+      //     <span className={css(styles.dot)}> • </span>
+      //     <span className={css(styles.timestamp)}>2 days ago</span>
+      //   </div>
+      // }
       return (
         <div className={css(styles.result)} key={r.item.id}>
-          <div className={`${css(styles.checkbox)} cbx`}>
-            <CheckBox
-              key={`${r.contentType}-${r.item.id}`}
-              label=""
-              isSquare
-              // @ts-ignore
-              id={r.item.id}
-              active={selectedResultIds.includes(r.item.id)}
-              onChange={(id) => handleResultSelect(id)}
-              labelStyle={undefined}
-            />          
+
+
+          <div className={css(styles.actionDetailsRow)}>
+            <div className={css(styles.avatarContainer)}>
+              {/* @ts-ignore */}
+              <AuthorAvatar size={20} author={r.flaggedBy.authorProfile} />
+            </div>
+            <span className={css(styles.actionContainer)}>
+              {/* @ts-ignore */}
+              <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.flaggedBy.authorProfile.firstName} {r.flaggedBy.authorProfile.lastName}</ALink>
+              <span className={css(styles.flagText)}>
+                { isAuthorFlaggedAndRemoved &&
+                  <>
+                    <span className={css(styles.icon)}>&nbsp;{icons.trash}</span>
+                    {/* @ts-ignore */}
+                    &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>
+                  </>
+                }
+              </span>
+            </span>
+            <span className={css(styles.dot)}> • </span>
+            <span className={css(styles.timestamp)}>2 days ago</span>
           </div>
-          <div className={css(styles.entry)}>
-            {renderContributionEntry(r, cardActions)}
+
+          <div className={css(styles.entryContainer)}>
+            <div className={`${css(styles.checkbox)} cbx`}>
+              <CheckBox
+                key={`${r.contentType}-${r.item.id}`}
+                label=""
+                isSquare
+                // @ts-ignore
+                id={r.item.id}
+                active={selectedResultIds.includes(r.item.id)}
+                onChange={(id) => handleResultSelect(id)}
+                labelStyle={undefined}
+              />          
+            </div>
+            <div className={css(styles.entry)}>
+              {renderContributionEntry(r, cardActions)}
+            </div>
           </div>
         </div>
       )
@@ -313,7 +359,8 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
 const styles = StyleSheet.create({
   "result": {
     display: "flex",
-    marginBottom: 10,
+    marginBottom: 30,
+    flexDirection: "column",
   },
   "entry": {
     borderRadius: 2,  
@@ -323,6 +370,9 @@ const styles = StyleSheet.create({
     display: "flex",
     userSelect: "none",
     padding: 10,
+  },
+  "entryContainer": {
+    display: "flex",
   },
   "flagIcon": {
     width: 14,
@@ -394,9 +444,10 @@ const styles = StyleSheet.create({
     transition: "0.2s",
     fontSize: 14,
     fontWeight: 500,
+    display: "flex",
   },
   "bulkAction": {
-
+    marginLeft: 5,
   },
   "noResults": {
     marginTop: 150,
@@ -441,7 +492,7 @@ const styles = StyleSheet.create({
   "resultsContainer": {
   },
   "avatarContainer": {
-    marginRight: 15,
+    marginRight: 8,
   },
   "flagAndRemove": {
     color: colors.RED(),
@@ -456,7 +507,33 @@ const styles = StyleSheet.create({
   },
   "pageLoader": {
     marginTop: 150,
-  }
+  },
+  "actionDetailsRow": {
+    display: "flex",
+    marginBottom: 10,
+    alignItems: "center",
+    fontSize: 14,
+  },
+  "icon": {
+    fontSize: 14,
+    color: colors.BLACK(0.75),
+    marginLeft: 3,
+    marginRight: 3,
+  },
+  "actionContainer": {
+  },
+  "flagText": {
+  },
+  "reason": {
+    fontWeight: 500,
+  },
+  "dot": {
+    color: colors.BLACK(0.5),
+    whiteSpace: "pre",
+  },  
+  "timestamp": {
+    color: colors.BLACK(0.5),
+  },
 });
 
 const mapDispatchToProps = {
@@ -765,29 +842,29 @@ export default connect(mapStateToProps, mapDispatchToProps)(FlaggedContentDashbo
 //     marginLeft: 3,
 //     marginRight: 3,
 //   },
-//   "actionDetailsRow": {
-//     display: "flex",
-//     marginBottom: 10,
-//     alignItems: "center",
-//   },
 //   "actionContainer": {
 //   },
 //   "flagText": {
 //   },
-//   "result": {
-//     marginBottom: 15,
-//     fontSize: 14,
-//   },
 //   "reason": {
 //     fontWeight: 500,
-//   },
-//   "timestamp": {
-//     color: colors.BLACK(0.5),
 //   },
 //   "dot": {
 //     color: colors.BLACK(0.5),
 //     whiteSpace: "pre",
 //   },  
+//   "actionDetailsRow": {
+//     display: "flex",
+//     marginBottom: 10,
+//     alignItems: "center",
+//   },
+//   "result": {
+//     marginBottom: 15,
+//     fontSize: 14,
+//   },
+//   "timestamp": {
+//     color: colors.BLACK(0.5),
+//   },
 //   "entry": {
 //     borderRadius: 2,  
 //     background: "white",
