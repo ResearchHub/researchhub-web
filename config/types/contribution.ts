@@ -54,6 +54,7 @@ export type Contribution = {
   flaggedBy?: FlaggedBy,
   verdict?: Verdict,
   reason?: string,  
+  reasonChoice?: string,
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
@@ -118,56 +119,45 @@ export const parseContentType = (raw: any): ContentType => {
 }
 
 export const parseContribution = (raw: any): Contribution => {
-  let mapped;
+  let mapped = {
+    "createdDate": raw.created_date,
+    "contentType": parseContentType(raw.content_type),
+  }
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
-    mapped = {
-      "createdDate": raw.created_date,
-      "item": parseCommentContribution(raw.item),
-      "contentType": parseContentType(raw.content_type),
-      "flaggedBy": parseFlaggedBy(raw.flagged_by),
-      "verdict": parseVerdict(raw.verdict),
-      "reason": raw.reason,
-    }
+    mapped["item"] = parseCommentContributionItem(raw.item);
   }
   else if (raw.content_type.name === "paper") {
-    mapped = {
-      "createdDate": raw.created_date,
-      "item": parsePaperContribution(raw.item),
-      "contentType": parseContentType(raw.content_type),
-      "flaggedBy": parseFlaggedBy(raw.flagged_by),
-      "verdict": parseVerdict(raw.verdict),
-      "reason": raw.reason,      
-    }
+    mapped["item"] = parsePaperContributionItem(raw.item);
   }
   else if (raw.content_type.name === "researchhubpost") {
-    mapped = {
-      "createdDate": raw.created_date,
-      "item": parsePostContributionItem(raw.item),
-      "contentType": parseContentType(raw.content_type),
-      "flaggedBy": parseFlaggedBy(raw.flagged_by),
-      "verdict": parseVerdict(raw.verdict),
-      "reason": raw.reason,      
-    }
+    mapped["item"] = parsePostContributionItem(raw.item);
   }
   else if (raw.content_type.name === "hypothesis") {
-    mapped = {
-      "createdDate": raw.created_date,
-      "item": parseHypothesisContributionItem(raw.item),
-      "contentType": parseContentType(raw.content_type),
-      "flaggedBy": parseFlaggedBy(raw.flagged_by),
-      "verdict": parseVerdict(raw.verdict),
-      "reason": raw.reason,      
-    }
+    mapped["item"] = parseHypothesisContributionItem(raw.item);
   }
   else {
     throw Error("Could not parse object with content_type=" + raw.content_type.name)
   }
 
+  if (raw.flagged_by) {
+    mapped["flaggedBy"] = parseFlaggedBy(raw.flagged_by);
+  }
+  if (raw.verdict) {
+    mapped["verdict"] = parseVerdict(raw.verdict);
+  }
+  if (raw.reason) {
+    mapped["reason"] = raw.reason;
+  }
+  if (raw.reason_choice) {
+    mapped["reasonChoice"] = raw.reason_choice;
+  }      
+
+  /* @ts-ignore */
   return mapped;
 }
 
-export const parseCommentContribution = (raw: any): CommentContributionItem => {
+export const parseCommentContributionItem = (raw: any): CommentContributionItem => {
   const mapped = {
     "plainText": raw.plain_text,
     "createdBy": parseCreatedBy(raw.created_by),
@@ -178,7 +168,7 @@ export const parseCommentContribution = (raw: any): CommentContributionItem => {
   return mapped;
 }
 
-export const parsePaperContribution = (raw: any): PaperContributionItem => {
+export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
   
   raw.unified_document.documents = {
     "id": raw.id,

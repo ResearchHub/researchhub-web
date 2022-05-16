@@ -97,13 +97,19 @@ export function getUrlToUniDoc(uniDoc) {
 
   const docType = uniDoc.document_type ?? uniDoc.documentType;
   let url = "";
+
   switch (docType) {
+    case "paper":
     case "PAPER":
       url = `/paper/${doc.id}/${doc.slug}`;
       break;
+    case "hypothesis":
     case "HYPOTHESIS":
       url = `/hypothesis/${doc.id}/${doc.slug}`;
       break;
+    case "discussion":
+    case "post":
+    case "researchhubpost":
     case "DISCUSSION":
       url = `/post/${doc.id}/${doc.slug}`;
       break;

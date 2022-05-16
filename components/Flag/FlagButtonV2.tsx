@@ -17,6 +17,7 @@ type Props = {
   onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
   subHeaderText?: string;
   flagIconOverride?: any;
+  iconOverride?: any;
 };
 
 function FlagButtonV2({
@@ -24,6 +25,7 @@ function FlagButtonV2({
   onSubmit,
   subHeaderText,
   flagIconOverride,
+  iconOverride,
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] = useState<KeyOf<typeof FLAG_REASON>>("SPAM");
@@ -45,7 +47,7 @@ function FlagButtonV2({
         onClick={(): void => setIsModalOpen(!isModalOpen)}
         className={css(styles.flagIcon, flagIconOverride)}
       >
-        {icons.flag}
+        {iconOverride || icons.flag}
       </div>
       <BaseModal
         children={
@@ -64,7 +66,10 @@ function FlagButtonV2({
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
-              <Button label="Flag to report" size="small" onClick={() => onSubmit(flagReason)} />
+              <Button label="Flag to report" size="small" onClick={() => {
+                onSubmit(flagReason);
+                setIsModalOpen(false);
+              }} />
               <div className={css(styles.cancelButton)} onClick={() => setIsModalOpen(false)}>Cancel</div>
             </div>
           </div>

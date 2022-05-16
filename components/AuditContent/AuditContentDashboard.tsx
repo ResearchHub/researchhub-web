@@ -66,7 +66,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   }, []);
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
-    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
+    setSuggestedHubs([{label: "All hubs", value: undefined}, ...hubs])
     const selected = hubs.find(h => String(h.id) === String(router.query.hub_id))
     setAppliedFilters({ hubId: selected?.id });
   } });
@@ -117,7 +117,14 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   }
 
   const loadResults = (filters:ApiFilters, url = null) => {
-    setIsLoadingMore(true);
+
+    if (!url) {
+      setIsLoadingPage(true);
+    }
+    else {
+      setIsLoadingMore(true);
+    }
+
     fetchAuditContributions({
       pageUrl: url,
       filters,
@@ -144,6 +151,8 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
         html: (
           <FlagButtonV2
             modalHeaderText="Flag and Remove"
+            flagIconOverride={styles.flagIcon}
+            iconOverride={icons.trashSolid}
             onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
               const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict });
               flagAndRemove({
@@ -151,6 +160,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
                 onSuccess: () => {
                   setMessage("Content flagged & removed");
                   showMessage({ show: true, error: false });
+                  setResults(results.filter(res => res.item.id !== r.item.id));
                 },
                 onError: () => {
                   setMessage("Failed to flag & remove");
@@ -163,6 +173,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
         ),
         label: "Flag & Remove",
         style: styles.flagAndRemove,
+        isActive: true,
       }]
 
       return (
@@ -187,7 +198,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
     })
   }
 
-  const selectedHub = suggestedHubs.find(h => String(appliedFilters.hubId) === String(h.id)) || {"label": "All", id: undefined, value: undefined};
+  const selectedHub = suggestedHubs.find(h => String(appliedFilters.hubId) === String(h.id)) || {"label": "All hubs", id: undefined, value: undefined};
   return (
     <div className={css(styles.dashboardContainer)}>
       <div className={css(styles.header)}>
@@ -220,6 +231,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
                 <FlagButtonV2
                   modalHeaderText="Flag and Remove"
                   flagIconOverride={styles.flagIcon}
+                  iconOverride={icons.trashSolid}
                   onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
                     console.log('flag and remove')
                   }}
@@ -229,6 +241,9 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
             </div>
           </div>
         }
+        {results.length > 0 && selectedResultIds.length === 0 &&
+          <span className={css(styles.redoSmall)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
+        }
       </div>
       {isLoadingPage ? (
         <Loader containerStyle={styles.pageLoader} key={"loader"} loading={true} size={45} color={colors.NEW_BLUE()} />
@@ -237,7 +252,12 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
           <div className={css(styles.resultsContainer)}>
             {results.length > 0
               ? resultCards()
-              : <div className={css(styles.noResults)}>No results.</div>
+              : (
+                <div className={css(styles.noResults)}>
+                  No results.
+                  <span className={css(styles.redoBig)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
+                </div>
+              )
             }
           </div>
           {nextResultsUrl && (
@@ -264,6 +284,22 @@ const styles = StyleSheet.create({
     userSelect: "none",
     padding: 10,
   },
+  "redoSmall": {
+    fontSize: 16,
+    cursor: "pointer",
+    ":hover": {
+      opacity: 0.5,
+    },
+    marginLeft: 7,
+  },
+  "redoBig": {
+    fontSize: 26,
+    cursor: "pointer",
+    marginLeft: 15,
+    ":hover": {
+      opacity: 0.8,
+    }
+  },
   "flagIcon": {
     width: 14,
     height: 14,
@@ -272,6 +308,12 @@ const styles = StyleSheet.create({
     minWidth: 14,
     minHeight: 14,
     fontSize: 13,
+    // background: colors.RED(0.1),
+    color: colors.RED(0.6),
+    ":hover": {
+      // background: colors.RED(0.1),
+      color: colors.RED(0.6),      
+    }
   },
   "checkbox": {
     alignSelf: "center",
@@ -294,6 +336,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 14,
     height: 38,
+    display: "flex",
+    alignItems: "center",
   },
   "multiSelectSticky": {
     position: "fixed",
@@ -310,6 +354,7 @@ const styles = StyleSheet.create({
     background: colors.LIGHTER_GREY(),
     justifyContent: "space-between",
     fontSize: 14,
+    width: "100%",
   },
   "dashboardContainer": {
     padding: "0 32px",
@@ -337,7 +382,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   "bulkAction": {
-
+    display: "flex",
   },
   "noResults": {
     marginTop: 150,

@@ -71,7 +71,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
             <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
           </div>
           <div className={`${css(styles.actions)} actions`}>
-            {actions.map((action) => (
+            {actions.filter(action => action.isActive).map((action) => (
               <span className={css(styles.action, action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
             ))}
           </div>
@@ -136,6 +136,8 @@ const styles = StyleSheet.create({
   "header": {
     display: "flex",
     justifyContent: "flex-start",
+    alignItems: "center",
+
   },
   "details": {
 
@@ -174,10 +176,10 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     opacity: 0,
     display: "flex",
-    height: 20,
-    lineHeight: "25px",
+    // height: 20,
+    // lineHeight: "25px",
   },
   "action": {
-    marginLeft: 5,
+    // marginLeft: 5,
   }
 })

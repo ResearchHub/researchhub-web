@@ -53,7 +53,6 @@ export default function flagAndRemove({
     API.POST_CONFIG(apiParams)
   )
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
     .then((response) => onSuccess(response))
     .catch((error: Error) => {
       captureEvent({
