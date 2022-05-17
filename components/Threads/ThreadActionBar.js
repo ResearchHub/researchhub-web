@@ -173,7 +173,8 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
-          {/* <FlagButtonV2
+          {/* TODO: calvinhlee - pathing needs to be fixed */
+          /* <FlagButtonV2
             buttonText="Flag"
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
