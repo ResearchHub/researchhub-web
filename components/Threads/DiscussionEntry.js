@@ -672,20 +672,21 @@ class DiscussionEntry extends Component {
             {noRespond ? null : (
               <div className={css(styles.row, styles.bottom)}>
                 <ThreadActionBar
-                  contentType="thread"
                   contentID={data?.id}
-                  editing={this.state.editing}
-                  toggleEdit={this.state.canEdit && this.toggleEdit}
-                  title={title}
+                  contentType="thread"
                   count={commentCount}
-                  showChildrenState={this.state.revealComment}
-                  onSubmit={this.submitComment}
+                  documentType={this.props.documentType}
+                  editing={this.state.editing}
+                  hideReply={data.source === "twitter"}
+                  isRemoved={this.state.removed}
+                  mediaOnly={mediaOnly}
                   onClick={this.toggleCommentView}
                   onCountHover={this.toggleHover}
-                  mediaOnly={mediaOnly}
+                  onSubmit={this.submitComment}
+                  showChildrenState={this.state.revealComment}
                   small={noVoteLine}
-                  isRemoved={this.state.removed}
-                  hideReply={data.source === "twitter"}
+                  title={title}
+                  toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
             )}

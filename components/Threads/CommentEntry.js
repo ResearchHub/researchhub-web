@@ -634,18 +634,19 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    contentType="comment"
-                    contentID={comment?.id}
-                    hostname={hostname}
-                    count={commentCount}
                     comment={true}
-                    onClick={this.toggleReplyView}
-                    onSubmit={this.submitReply}
-                    small={true}
-                    mediaOnly={mediaOnly}
-                    showChildrenState={this.state.revealReply}
-                    onCountHover={this.toggleHover}
+                    contentID={comment?.id}
+                    contentType="comment"
+                    count={commentCount}
+                    documentType={this.props.documentType}
+                    hostname={hostname}
                     isRemoved={this.state.removed}
+                    mediaOnly={mediaOnly}
+                    onClick={this.toggleReplyView}
+                    onCountHover={this.toggleHover}
+                    onSubmit={this.submitReply}
+                    showChildrenState={this.state.revealReply}
+                    small={true}
                     // Editing
                     editing={this.state.editing}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
@@ -663,18 +664,19 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    contentType="comment"
-                    contentID={comment?.id}
-                    hostname={hostname}
-                    count={commentCount}
                     comment={true}
-                    onClick={this.toggleReplyView}
-                    onSubmit={this.submitReply}
-                    small={true}
-                    showChildrenState={this.state.revealReply}
-                    onCountHover={this.toggleHover}
-                    isRemoved={this.state.removed}
+                    contentID={comment?.id}
+                    contentType="comment"
+                    count={commentCount}
+                    documentType={this.props.documentType}
                     hideReply={comment.source === "twitter"}
+                    hostname={hostname}
+                    isRemoved={this.state.removed}
+                    onClick={this.toggleReplyView}
+                    onCountHover={this.toggleHover}
+                    onSubmit={this.submitReply}
+                    showChildrenState={this.state.revealReply}
+                    small={true}
                   />
                 </div>
               </Fragment>

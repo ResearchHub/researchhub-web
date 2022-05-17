@@ -494,20 +494,21 @@ class ReplyEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    contentType="reply"
-                    contentID={reply?.id}
-                    hostname={hostname}
-                    count={dataCount}
                     comment={true}
-                    small={true}
-                    isRemoved={this.state.removed}
+                    contentID={reply?.id}
+                    contentType="reply"
+                    count={dataCount}
+                    documentType={this.props.documentType}
                     editing={this.state.editing}
-                    toggleEdit={this.state.canEdit && this.toggleEdit}
-                    onSubmit={this.submitReply}
-                    initialValue={this.formatQuoteBlock()}
                     hasHeader={true}
                     hideCount={true}
+                    hostname={hostname}
+                    initialValue={this.formatQuoteBlock()}
+                    isRemoved={this.state.removed}
                     mediaOnly={mediaOnly}
+                    onSubmit={this.submitReply}
+                    small={true}
+                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
               </Fragment>
