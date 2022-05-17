@@ -91,6 +91,9 @@ const routes = (BASE_URL) => {
         BASE_URL + "audit/contributions/?" + (hubId ? `hubs=${hubId}` : "")
       );
     },
+    DISMISS_FLAG: () => {
+      return BASE_URL + "audit/dismiss_flag/";
+    },
     FLAGS: ({ hubId, verdict = "OPEN" }) => {
       return (
         BASE_URL +
