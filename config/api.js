@@ -110,14 +110,22 @@ const routes = (BASE_URL) => {
       );
     },
     /* GRM = Generic Reaction Model */
-    FLAG_GRM_CONTENT: ({ contentType, commentType = undefined, ID }) => {
+    FLAG_GRM_CONTENT: ({
+      commentID = undefined,
+      commentType = undefined,
+      contentID,
+      contentType,
+    }) => {
       if (isNullOrUndefined(commentType)) {
-        return `${BASE_URL}${contentType}/${ID}/flag/`;
+        return `${BASE_URL}${contentType}/${contentID}/flag/`;
       } else {
         return `${BASE_URL}${nullthrows(
           contentType,
           "ContentType must be present to flag a thread / comment / reply"
-        )}/${ID}/${commentType}/flag`;
+        )}/${contentID}/${commentType}/${nullthrows(
+          commentID,
+          "commentID must be present to flag"
+        )}/flag/`;
       }
     },
     FLAG_AND_REMOVE: () => {

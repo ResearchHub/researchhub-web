@@ -426,6 +426,11 @@ class CommentEntry extends Component {
     };
   };
 
+  getDocumentID = () => {
+    const { data, hypothesis, post } = this.props;
+    return data?.paper ?? hypothesis?.id ?? post?.id;
+  };
+
   handleStateRendering = () => {
     if (this.state.removed) {
       return false;
@@ -540,10 +545,12 @@ class CommentEntry extends Component {
       this.state.replies.length > comment.reply_count
         ? this.state.replies.length
         : comment.reply_count;
+    const documentID = this.getDocumentID();
     let date = comment.created_date;
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
+
     return (
       <div
         className={css(styles.row, styles.commentCard)}
@@ -638,6 +645,7 @@ class CommentEntry extends Component {
                     contentID={comment?.id}
                     contentType="comment"
                     count={commentCount}
+                    documentID={documentID}
                     documentType={this.props.documentType}
                     hostname={hostname}
                     isRemoved={this.state.removed}
@@ -668,6 +676,7 @@ class CommentEntry extends Component {
                     contentID={comment?.id}
                     contentType="comment"
                     count={commentCount}
+                    documentID={documentID}
                     documentType={this.props.documentType}
                     hideReply={comment.source === "twitter"}
                     hostname={hostname}

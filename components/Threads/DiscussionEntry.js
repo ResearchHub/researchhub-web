@@ -453,6 +453,11 @@ class DiscussionEntry extends Component {
     this.updateWidgetUI();
   };
 
+  getDocumentID = () => {
+    const { data, hypothesis, post } = this.props;
+    return data?.paper ?? hypothesis?.id ?? post?.id;
+  };
+
   updateWidgetUI = () => {
     let voteResult = this.props.vote;
     const success = voteResult.success;
@@ -524,12 +529,7 @@ class DiscussionEntry extends Component {
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
     const username = createUsername(data);
-    let documentId;
-    if (documentType === "post") {
-      documentId = post.id;
-    } else if (documentType === "hypothesis") {
-      documentId = hypothesis.id;
-    }
+    const documentId = this.getDocumentID();
     const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
@@ -675,6 +675,7 @@ class DiscussionEntry extends Component {
                   contentID={data?.id}
                   contentType="thread"
                   count={commentCount}
+                  documentID={documentId}
                   documentType={this.props.documentType}
                   editing={this.state.editing}
                   hideReply={data.source === "twitter"}

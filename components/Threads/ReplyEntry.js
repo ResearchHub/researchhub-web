@@ -130,6 +130,11 @@ class ReplyEntry extends Component {
     });
   };
 
+  getDocumentID = () => {
+    const { data, hypothesis, post } = this.props;
+    return data?.paper ?? hypothesis?.id ?? post?.id;
+  };
+
   upvote = async () => {
     const {
       data,
@@ -406,6 +411,7 @@ class ReplyEntry extends Component {
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
+    const documentID = this.getDocumentID();
     return (
       <div
         className={css(styles.row, styles.replyCard)}
@@ -499,6 +505,7 @@ class ReplyEntry extends Component {
                     contentType="reply"
                     count={dataCount}
                     documentType={this.props.documentType}
+                    documentID={documentID}
                     editing={this.state.editing}
                     hasHeader={true}
                     hideCount={true}
