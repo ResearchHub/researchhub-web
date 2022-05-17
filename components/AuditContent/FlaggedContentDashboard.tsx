@@ -22,7 +22,9 @@ import { ApiFilters, verdictOpts } from './api/fetchFlaggedContributionsAPI';
 import { Contribution, parseContribution } from "~/config/types/contribution";
 import ALink from "../ALink";
 import { FLAG_REASON } from "~/components/Flag/config/constants";
-import dismissFlag from "./api/dismissFlagAPI";
+import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
+import removeFlaggedContent from "./api/removeFlaggedContentAPI";
+
 
 function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"div"> {
   const router = useRouter();
@@ -191,22 +193,26 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
           <FlagButtonV2
             modalHeaderText="Flag and Remove"
             flagIconOverride={styles.flagIcon}
-            iconOverride={icons.trashSolid}            
+            iconOverride={icons.trashSolid}
+            defaultReason={r.reasonChoice}
             onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
-              const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict, isRemoved: true });
-              flagAndRemove({
-                apiParams,
+              removeFlaggedContent({
+                apiParams: {
+                  flagId: r.id,
+                  // @ts-ignore
+                  verdictChoice: verdict,
+                },
                 onSuccess: () => {
-                  setMessage("Content flagged & removed");
+                  setMessage("Flagged Content removed");
                   showMessage({ show: true, error: false });
                   setResults(results.filter(res => res.item.id !== r.item.id));
                 },
                 onError: () => {
-                  setMessage("Failed to flag & remove");
+                  setMessage("Failed to remove flagged content");
                   showMessage({ show: true, error: true });
                 },
               });
-            } }
+            }}
             subHeaderText={"hellow there"}
           />
         ),
@@ -219,7 +225,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
             className={css(styles.bulkAction, styles.checkIcon, styles.bulkActionApprove)}
             onClick={() => {
               if (confirm("Dismiss flag?")) {
-                dismissFlag({
+                dismissFlaggedContent({
                   apiParams: {
                     flagId: r.id,
                     // @ts-ignore
@@ -259,9 +265,17 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
                   {/* @ts-ignore */}
                   <ALink href={`/user/${r.verdict.createdBy.authorProfile.id}/overview`}>{r.verdict.createdBy.authorProfile.firstName} {r.verdict.createdBy.authorProfile.lastName}</ALink>
                   <span className={css(styles.flagText)}>
-                    <span className={css(styles.icon, styles.trashIcon)}>&nbsp;{icons.trash}</span>
-                    {/* @ts-ignore */}
-                    &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>
+                    {appliedFilters.verdict === "APPROVED" ?
+                      <>
+                        <span className={css(styles.icon)}>&nbsp;{icons.check}</span>
+                        &nbsp;dismissed flag
+                      </>
+                    : 
+                    <>
+                        <span className={css(styles.icon, styles.trashIcon)}>&nbsp;{icons.trash}</span>
+                        &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>                      
+                      </>
+                    }
                   </span>
                 </span>
                 <span className={css(styles.dot)}> • </span>
@@ -281,17 +295,23 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
               <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.flaggedBy.authorProfile.firstName} {r.flaggedBy.authorProfile.lastName}</ALink>
               <span className={css(styles.flagText)}>
                 { isOneLineAction ? (
-                  <>
-                    <span className={css(styles.icon, styles.trashIcon)}>&nbsp;{icons.trash}</span>
-                    {/* @ts-ignore */}
-                    &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>
-                  </>                  
-                ) : (
-                  <>
-                    <span className={css(styles.icon)}>&nbsp;{icons.flagOutline}</span>
-                    {/* @ts-ignore */}
-                    &nbsp;flagged this content as <span className={css(styles.reason)}>{FLAG_REASON[r.reasonChoice]}</span>                  
-                  </>
+                  appliedFilters.verdict === "APPROVED" ?
+                    <>
+                      <span className={css(styles.icon)}>&nbsp;{icons.check}</span>
+                      &nbsp;dismissed flag
+                    </>
+                  : 
+                    <>
+                      <span className={css(styles.icon, styles.trashIcon)}>&nbsp;{icons.trash}</span>
+                      {/* @ts-ignore */}
+                      &nbsp;removed this content due to <span className={css(styles.reason)}>{FLAG_REASON[r.verdict.verdictChoice]}</span>                      
+                    </>
+                  ) : (
+                    <>
+                      <span className={css(styles.icon)}>&nbsp;{icons.flagOutline}</span>
+                      {/* @ts-ignore */}
+                      &nbsp;flagged this content as <span className={css(styles.reason)}>{FLAG_REASON[r.reasonChoice]}</span>                  
+                    </>
                 )}
               </span>
             </span>
