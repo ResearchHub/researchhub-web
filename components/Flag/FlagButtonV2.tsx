@@ -14,26 +14,25 @@ import icons from "~/config/themes/icons";
 
 type Props = {
   buttonText?: string;
+  buttonTextStyle?: any;
+  defaultReason?: KeyOf<typeof FLAG_REASON>;
+  flagIconOverride?: any;
+  iconOverride?: any;
   modalHeaderText: string;
   noButtonBackground?: boolean;
   onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
-  size?: number;
   subHeaderText?: string;
-  flagIconOverride?: any;
-  iconOverride?: any;
-  defaultReason?: KeyOf<typeof FLAG_REASON>;
 };
 
 function FlagButtonV2({
   buttonText,
-  modalHeaderText,
-  noButtonBackground,
-  onSubmit,
-  size,
-  subHeaderText,
+  buttonTextStyle,
+  defaultReason = "SPAM",
   flagIconOverride,
   iconOverride,
-  defaultReason = "SPAM",
+  modalHeaderText,
+  onSubmit,
+  subHeaderText,
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
@@ -52,7 +51,7 @@ function FlagButtonV2({
 
   const handleSubmit = (flagReason: KeyOf<typeof FLAG_REASON>): void => {
     setIsModalOpen(false);
-    setFlagReason("SPAM");
+    setFlagReason(defaultReason);
     onSubmit(flagReason);
   };
 
@@ -63,6 +62,9 @@ function FlagButtonV2({
         className={css(styles.flagIcon, flagIconOverride)}
       >
         {iconOverride || icons.flag}
+        {buttonText && (
+          <span className={css(buttonTextStyle)}>{buttonText}</span>
+        )}
       </div>
       <BaseModal
         children={
@@ -84,10 +86,7 @@ function FlagButtonV2({
               <Button
                 label="Flag to report"
                 size="small"
-                onClick={() => {
-                  onSubmit(flagReason);
-                  setIsModalOpen(false);
-                }}
+                onClick={handleSubmit}
               />
               <div
                 className={css(styles.cancelButton)}
@@ -183,25 +182,6 @@ const styles = StyleSheet.create({
       height: 15,
       minHeight: 15,
       maxHeight: 15,
-    },
-  },
-  noButtonBackground: {
-    backgroundColor: "none",
-    border: "none",
-    display: "flex",
-    alignItems: "center",
-    color: colors.LIGHT_GREY_TEXT,
-    ":hover": {
-      color: colors.BLUE(1),
-      background: "none",
-      border: "none",
-    },
-  },
-  flagButtonText: {
-    fontSize: 14,
-    marginLeft: 4,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
     },
   },
   inputWrapStyle: {
