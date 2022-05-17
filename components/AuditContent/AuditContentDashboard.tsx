@@ -154,7 +154,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
             flagIconOverride={styles.flagIcon}
             iconOverride={icons.trashSolid}
             onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
-              const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict });
+              const apiParams = buildParamsForFlagAndRemoveAPI({ selected: r, verdict, isRemoved: true });
               flagAndRemove({
                 apiParams,
                 onSuccess: () => {

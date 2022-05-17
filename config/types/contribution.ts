@@ -55,6 +55,7 @@ export type Contribution = {
   verdict?: Verdict,
   reason?: string,  
   reasonChoice?: string,
+  id?: ID,
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
@@ -122,6 +123,7 @@ export const parseContribution = (raw: any): Contribution => {
   let mapped = {
     "createdDate": raw.created_date,
     "contentType": parseContentType(raw.content_type),
+    "id": raw.id,
   }
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {

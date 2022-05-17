@@ -26,7 +26,7 @@ type Args = {
   onError: Function;  
 }
 
-export const buildParamsForFlagAndRemoveAPI = ({ selected, verdict }):APIParams => {
+export const buildParamsForFlagAndRemoveAPI = ({ selected, verdict, isRemoved, }):APIParams => {
   selected = Array.isArray(selected) ? selected : [selected];
 
   const contentItems = selected.map((r):ContentItem => ({
@@ -38,7 +38,7 @@ export const buildParamsForFlagAndRemoveAPI = ({ selected, verdict }):APIParams 
     flag: contentItems,
     verdict: {
       verdict_choice: verdict,
-      is_content_removed: true,
+      is_content_removed: isRemoved,
     },
   }
 }
