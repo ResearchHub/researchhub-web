@@ -1,4 +1,5 @@
-import { AuthorProfile, CreatedBy, ID, parseAuthorProfile, parseUnifiedDocument, UnifiedDocument } from "./root_types"
+import { FLAG_REASON } from "~/components/Flag/config/constants"
+import { AuthorProfile, CreatedBy, ID, KeyOf, parseAuthorProfile, parseUnifiedDocument, UnifiedDocument } from "./root_types"
 
 export type CommentContributionItem = {
   unifiedDocument: UnifiedDocument,
@@ -54,7 +55,7 @@ export type Contribution = {
   flaggedBy?: FlaggedBy,
   verdict?: Verdict,
   reason?: string,  
-  reasonChoice?: string,
+  reasonChoice?: KeyOf<typeof FLAG_REASON>,
   id?: ID,
 }
 

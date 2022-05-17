@@ -18,6 +18,7 @@ type Props = {
   subHeaderText?: string;
   flagIconOverride?: any;
   iconOverride?: any;
+  defaultReason?: KeyOf<typeof FLAG_REASON>;
 };
 
 function FlagButtonV2({
@@ -26,9 +27,10 @@ function FlagButtonV2({
   subHeaderText,
   flagIconOverride,
   iconOverride,
+  defaultReason = "SPAM"
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [flagReason, setFlagReason] = useState<KeyOf<typeof FLAG_REASON>>("SPAM");
+  const [flagReason, setFlagReason] = useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
 
   const formattedInputOptions = Object.keys(FLAG_REASON).map(
     (key: string): RhRadioInputOption => ({
