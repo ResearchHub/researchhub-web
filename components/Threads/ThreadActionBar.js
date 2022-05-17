@@ -174,8 +174,6 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
-
-          {/* TODO: calvinhlee - needs BE endpoint pathing 
           <FlagButtonV2
             buttonText="Flag"
             noButtonBackground
@@ -189,7 +187,7 @@ class ThreadActionBar extends Component {
                 onSuccess: silentEmptyFnc,
               });
             }}
-          /> */}
+          />
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>

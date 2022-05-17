@@ -1,7 +1,11 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  doesNotExist,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -106,8 +110,16 @@ const routes = (BASE_URL) => {
       );
     },
     /* GRM = Generic Reaction Model */
-    FLAG_GRM_CONTENT: ({ contentType, ID }) =>
-      `${BASE_URL}${contentType}/${ID}/flag/`,
+    FLAG_GRM_CONTENT: ({ contentType, commentType = undefined, ID }) => {
+      if (isNullOrUndefined(commentType)) {
+        return `${BASE_URL}${contentType}/${ID}/flag/`;
+      } else {
+        return `${BASE_URL}${nullthrows(
+          contentType,
+          "ContentType must be present to flag a thread / comment / reply"
+        )}/${ID}/${commentType}/flag`;
+      }
+    },
     FLAG_AND_REMOVE: () => {
       return BASE_URL + "audit/flag_and_remove/";
     },

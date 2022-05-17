@@ -6,7 +6,7 @@ import { flagGrmContent } from "~/components/Flag/api/postGrmFlag";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import { isDevEnv } from "~/config/utils/env";
-import { isNullOrUndefined, emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { isNullOrUndefined, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { MessageActions } from "../redux/message";
 import { ModalActions } from "~/redux/modals";
 import { parseMath } from "~/config/utils/latex";
@@ -356,16 +356,16 @@ class PaperPageCard extends Component {
         button: (
           <span data-tip={"Flag Paper"}>
             <FlagButtonV2
+              modalHeaderText="Flagging"
               onSubmit={(flagReason) => {
                 flagGrmContent({
                   contentID: paper.id,
                   contentType: "paper",
                   flagReason,
                   onError: captureEvent,
-                  onSuccess: emptyFncWithMsg,
+                  onSuccess: silentEmptyFnc,
                 });
               }}
-              modalHeaderText="Flagging"
               subHeaderText="Why isn't this suited for ResearchHub?"
             />
           </span>
