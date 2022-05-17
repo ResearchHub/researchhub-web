@@ -49,7 +49,7 @@ function FlagButtonV2({
     })
   );
 
-  const handleSubmit = (flagReason: KeyOf<typeof FLAG_REASON>): void => {
+  const handleSubmit = (): void => {
     setIsModalOpen(false);
     setFlagReason(defaultReason);
     onSubmit(flagReason);

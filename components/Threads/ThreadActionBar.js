@@ -173,26 +173,36 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
-          <FlagButtonV2
+          {/* <FlagButtonV2
             buttonText="Flag"
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"
             onSubmit={(flagReason) => {
               flagGrmContent({
-                contentID: this.props.contentID,
+                contentID: nullthrows(
+                  this.props.documentID,
+                  "documentID must be present to flag "
+                ),
                 contentType: nullthrows(
                   this.props.documentType,
-                  "contentType (document type) must be present to flag "
+                  "DocumentType must be present to flag "
+                ),
+                commentID: nullthrows(
+                  this.props.contentID, // in ThreadActionBar, contentID is the commentID
+                  "commentID must be present to flag "
+                ),
+                commentType: nullthrows(
+                  this.props.contentType, // in ThreadActionBar, contentType is the commentType
+                  "commentType must be present to flag"
                 ),
                 flagReason,
-                commentType: this.props.contentType,
                 onError: captureEvent,
                 onSuccess: silentEmptyFnc,
               });
             }}
             subHeaderText="Why isn't this suited for ResearchHub?"
-          />
+          /> */}
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
