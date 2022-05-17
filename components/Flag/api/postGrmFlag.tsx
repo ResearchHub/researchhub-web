@@ -26,7 +26,6 @@ export function flagGrmContent({
   onError,
   onSuccess,
 }: FlagGrmContentArgs): void {
-  debugger;
   fetch(
     API.FLAG_GRM_CONTENT({
       commentID,

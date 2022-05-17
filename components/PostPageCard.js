@@ -266,24 +266,24 @@ class PostPageCard extends Component {
           </span>
         ),
       },
-      {
-        active: true,
-        button: (
-          <FlagButtonV2
-            modalHeaderText="Flagging"
-            onSubmit={(flagReason) => {
-              flagGrmContent({
-                contentID: post.id,
-                contentType: "post",
-                flagReason,
-                onError: Sentry.captureEvent,
-                onSuccess: silentEmptyFnc,
-              });
-            }}
-            subHeaderText="Why isn't this suited for ResearchHub?"
-          />
-        ),
-      },
+      // { // todo: calvinhlee - need to resolve pathing
+      //   active: true,
+      //   button: (
+      //     <FlagButtonV2
+      //       modalHeaderText="Flagging"
+      //       onSubmit={(flagReason) => {
+      //         flagGrmContent({
+      //           contentID: post.id,
+      //           contentType: "post",
+      //           flagReason,
+      //           onError: Sentry.captureEvent,
+      //           onSuccess: silentEmptyFnc,
+      //         });
+      //       }}
+      //       subHeaderText="Why isn't this suited for ResearchHub?"
+      //     />
+      //   ),
+      // },
       {
         active: isModerator || isSubmitter || isAuthor || isEditorOfHubs,
         button: (
