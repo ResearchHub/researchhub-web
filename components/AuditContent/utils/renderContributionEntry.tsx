@@ -32,7 +32,7 @@ export default function renderContributionEntry(
       } = item;
 
       const key = `${id}-${item.id}`;
-  
+      
       return (
         <div className={css(styles.header)}>
           <ReactTooltip />
@@ -87,7 +87,7 @@ export default function renderContributionEntry(
                 labelStyle={styles.hubLink}
                 isOpen={hubsDropdownOpenForKey === key}
                 setIsOpen={(isOpen) => {
-                  setHubsDropdownOpenForKey(isOpen ? key : null)
+                  setHubsDropdownOpenForKey(isOpen ? key : false)
                 }}
               />
             )}

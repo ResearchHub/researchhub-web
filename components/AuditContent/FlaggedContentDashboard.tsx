@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
 import fetchFlaggedContributions from "./api/fetchFlaggedContributionsAPI";
-import flagAndRemove, { buildParamsForFlagAndRemoveAPI } from "./api/flagAndRemoveAPI";
 import CheckBox from "~/components/Form/CheckBox";
 import renderContributionEntry from "./utils/renderContributionEntry";
 import icons from "~/config/themes/icons";
@@ -42,7 +41,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [selectedResultIds, setSelectedResultIds] = useState<Array<ID>>([]);
-  
+  const [hubsDropdownOpenForKey, setHubsDropdownOpenForKey] = useState<any>(false);
 
   useEffect(() => {
     const appliedFilters = {
@@ -333,7 +332,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
               />          
             </div>
             <div className={css(styles.entry)}>
-              {renderContributionEntry(r, cardActions)}
+            {renderContributionEntry(r, cardActions, setHubsDropdownOpenForKey, hubsDropdownOpenForKey)}
             </div>
           </div>
         </div>
