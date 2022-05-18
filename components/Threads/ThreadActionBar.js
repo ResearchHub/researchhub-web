@@ -178,7 +178,7 @@ class ThreadActionBar extends Component {
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"
-            onSubmit={(flagReason) => {
+            onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 commentPayload: {
                   commentID: this.props.commentID,
@@ -195,8 +195,8 @@ class ThreadActionBar extends Component {
                   "DocumentType must be present to flag "
                 ),
                 flagReason,
-                onError: captureEvent,
-                onSuccess: silentEmptyFnc,
+                onError: renderErrorMsg,
+                onSuccess: renderSuccessMsg,
               });
             }}
             subHeaderText="Why isn't this suited for ResearchHub?"

@@ -9,11 +9,11 @@ type ContentType = "hypothesis" | "paper" | "post";
 type CommentType = "comment" | "reply" | "thread";
 
 type FlagGrmContentArgs = {
-  commentPayload: {
+  commentPayload?: {
     commentID?: ID;
     commentType?: CommentType;
-    replyID: ID;
-    threadID: ID;
+    replyID?: ID;
+    threadID?: ID;
   };
   contentID: ID;
   contentType: ContentType;
