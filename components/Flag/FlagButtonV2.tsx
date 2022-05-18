@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { FLAG_REASON } from "./config/constants";
+import { FLAG_REASON, FLAG_REASON_DESCRIPTION } from "./config/constants";
 import { Fragment, ReactElement, useState } from "react";
 import { KeyOf } from "~/config/types/root_types";
 import ResearchHubRadioChoices, {
@@ -32,7 +32,7 @@ function FlagButtonV2({
   iconOverride,
   modalHeaderText,
   onSubmit,
-  subHeaderText,
+  subHeaderText = "I am flagging this content because of:",
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
@@ -46,6 +46,7 @@ function FlagButtonV2({
           {FLAG_REASON[key]}
         </div>
       ),
+      description: FLAG_REASON_DESCRIPTION[key]
     })
   );
 
@@ -79,12 +80,13 @@ function FlagButtonV2({
               onChange={(optionID: string): void => {
                 setFlagReason(optionID as KeyOf<typeof FLAG_REASON>);
               }}
-              inputWrapStyle={css(styles.inputWrapStyle)}
+              inputWrapStyle={styles.inputWrapStyle}
+              labelDescriptionStyle={styles.labelDescriptionStyle}
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
               <Button
-                label="Flag to report"
+                label="Flag content"
                 size="small"
                 onClick={handleSubmit}
               />
@@ -132,7 +134,7 @@ const customModalStyle = StyleSheet.create({
   subHeaderText: {
     fontSize: 20,
     fontWeight: 400,
-    marginBottom: 12,
+    marginBottom: 25,
   },
   modalHeaderText: {
     alignItems: "flex-start",
@@ -185,22 +187,23 @@ const styles = StyleSheet.create({
     },
   },
   inputWrapStyle: {
-    alignItems: "center",
-    display: "flex",
-    paddingLeft: 16,
-    width: "100%",
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  labelDescriptionStyle: {
+    color: colors.BLACK(0.7),
   },
   optionLabel: {
     display: "flex",
-    paddingLeft: 16,
     fontSize: 16,
     fontWeight: 500,
   },
   buttonWrap: {
     display: "flex",
-    marginTop: 16,
+    marginTop: 10,
     alignItems: "center",
+    paddingTop: 20,
+    borderTop: `1px solid ${colors.LIGHT_GREY()}`,
+    justifyContent: "center",
   },
   cancelButton: {
     alignItems: "center",
