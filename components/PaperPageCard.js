@@ -373,9 +373,7 @@ class PaperPageCard extends Component {
                     showMessage({ show: true, error: true });
                   },
                   onSuccess: () => {
-                    setMessage(
-                      "Item flagged and will be examined by moderator"
-                    );
+                    setMessage("Item flagged");
                     showMessage({ show: true, error: false });
                   },
                 });
