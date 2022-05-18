@@ -398,13 +398,15 @@ class ReplyEntry extends Component {
 
   render() {
     const {
-      hostname,
-      noVote,
-      mobileView,
-      reply,
-      paper,
-      mediaOnly,
+      comment,
+      data,
       documentType,
+      hostname,
+      mediaOnly,
+      mobileView,
+      noVote,
+      paper,
+      reply,
     } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
@@ -500,21 +502,23 @@ class ReplyEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    comment={true}
-                    contentID={reply?.id}
+                    comment
+                    commentID={comment?.id}
                     contentType="reply"
                     count={dataCount}
-                    documentType={this.props.documentType}
                     documentID={documentID}
+                    documentType={this.props.documentType}
                     editing={this.state.editing}
-                    hasHeader={true}
-                    hideCount={true}
+                    hasHeader
+                    hideCount
                     hostname={hostname}
                     initialValue={this.formatQuoteBlock()}
                     isRemoved={this.state.removed}
                     mediaOnly={mediaOnly}
                     onSubmit={this.submitReply}
-                    small={true}
+                    replyID={reply?.id}
+                    small
+                    threadID={data?.id}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
