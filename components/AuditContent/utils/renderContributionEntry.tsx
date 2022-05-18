@@ -8,15 +8,22 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ReactTooltip from "react-tooltip";
+import HubDropDown from "~/components/Hubs/HubDropDown";
 
-export default function renderContributionEntry(entry: Contribution, actions: Array<any>) {
-
+export default function renderContributionEntry(
+  entry: Contribution,
+  actions: Array<any>,
+  setHubsDropdownOpenForKey: Function,
+  hubsDropdownOpenForKey: string,
+) {
     const renderHeader = (entry: Contribution) => {
 
       const {
         item,
         createdDate,
         contentType,
+        hubs,
+        id,
       } = entry;
 
       const {
@@ -24,6 +31,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
         unifiedDocument: uniDoc
       } = item;
 
+      const key = `${id}-${item.id}`;
   
       return (
         <div className={css(styles.header)}>
@@ -37,15 +45,14 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.commentsAlt}</span>
-                {` commented `}
-                {` in `}
+                {`commented in `}
                 <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">{truncateText(uniDoc.document?.title, 200)}</ALink>
               </>
             ) : contentType.name === "paper" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.fileUpload}</span>
-                {` uploaded paper `}
+                {`uploaded paper `}
                 {/*// @ts-ignore*/}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
               </>              
@@ -53,20 +60,37 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.penSquare}</span>
-                {` created post `}
+                {`created post `}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(uniDoc.document?.title, 200)}</ALink>
               </>              
             ) : contentType.name === "hypothesis" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.lightbulb}</span>
-                {` proposed hypothesis `}
+                {`proposed hypothesis `}
                 {/*// @ts-ignore*/}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
               </>
             ) : null }
             <span className={css(styles.dot)}> • </span>
-            <ALink href="link-to-hub" theme="solidPrimary">Sociology</ALink>
+          
+            {hubs?.slice(0, 2).map((h, index) => (
+              <>
+                <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
+                {index < hubs?.slice(0, 2).length-1 ? ", " : ""}
+              </>
+            ))}
+            &nbsp;
+            {hubs?.slice(2).length > 0 && (
+              <HubDropDown
+                hubs={hubs?.slice(1)}
+                labelStyle={styles.hubLink}
+                isOpen={hubsDropdownOpenForKey === key}
+                setIsOpen={(isOpen) => {
+                  setHubsDropdownOpenForKey(isOpen ? key : null)
+                }}
+              />
+            )}
             <span className={css(styles.dot)}> • </span>
             <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
           </div>
@@ -129,6 +153,15 @@ const styles = StyleSheet.create({
       transition: "0.2s",
     }
   },
+  "hubLink": {
+    color: colors.NEW_BLUE(),
+    textTransform: "capitalize",
+    fontSize: 14,
+    ":hover": {
+      color: colors.NEW_BLUE(),
+      textDecoration: "underline",
+    }
+  },
   "avatarContainer": {
     display: "flex",
     marginRight: "8px",
@@ -137,10 +170,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-
   },
   "details": {
-
+    display: "flex",
+    whiteSpace: "pre-wrap",
   },
   "inDocument": {
     lineHeight: "25px",
@@ -151,8 +184,8 @@ const styles = StyleSheet.create({
   "icon": {
     fontSize: 16,
     color: colors.BLACK(0.75),
-    marginLeft: 3,
-    marginRight: 3,
+    marginLeft: 7,
+    marginRight: 7,
   },
   "timestamp": {
     color: colors.BLACK(0.5),
@@ -176,8 +209,6 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     opacity: 0,
     display: "flex",
-    // height: 20,
-    // lineHeight: "25px",
   },
   "action": {
     // marginLeft: 5,

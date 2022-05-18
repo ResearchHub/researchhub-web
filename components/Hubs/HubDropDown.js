@@ -75,7 +75,7 @@ const HubDropDown = (props) => {
       onClick={toggleDropdown}
       ref={(ref) => (dropdown = ref)}
     >
-      <div className={css(styles.icon, isOpen && styles.active)}>
+      <div className={css(styles.icon, isOpen && styles.active, labelStyle)}>
         {`+${hubs.length - 1} more`}
       </div>
       <div className={css(styles.dropdown, isOpen && styles.open)}>

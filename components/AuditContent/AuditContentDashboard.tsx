@@ -20,6 +20,7 @@ import { FLAG_REASON } from "../Flag/config/constants";
 import { KeyOf } from "~/config/types/root_types";
 import Loader from "../Loader/Loader";
 import { ApiFilters } from './api/fetchAuditContributionsAPI';
+import HubDropDown from "~/components/Hubs/HubDropDown";
 
 function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"> {
   const router = useRouter();
@@ -36,7 +37,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [selectedResultIds, setSelectedResultIds] = useState<Array<ID>>([]);
-  
+  const [hubsDropdownOpenForKey, setHubsDropdownOpenForKey] = useState<any>(null);
 
   useEffect(() => {
     const appliedFilters = { hubId: (router.query.hub_id as ID)}    
@@ -51,6 +52,8 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
       if (isOutsideClick) {
         setSelectedResultIds([]);
       }
+
+      setHubsDropdownOpenForKey(null);
     }
     
     document.addEventListener("click", handleClickOutside);
@@ -191,7 +194,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
             />          
           </div>
           <div className={css(styles.entry)}>
-            {renderContributionEntry(r, cardActions)}
+            {renderContributionEntry(r, cardActions, setHubsDropdownOpenForKey, hubsDropdownOpenForKey)}
           </div>
         </div>
       )
