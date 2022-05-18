@@ -359,23 +359,13 @@ class PaperPageCard extends Component {
           <span data-tip={"Flag Paper"}>
             <FlagButtonV2
               modalHeaderText="Flagging"
-              onSubmit={(flagReason) => {
+              onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
                 flagGrmContent({
                   contentID: paper.id,
                   contentType: "paper",
                   flagReason,
-                  onError: (error) => {
-                    if (error?.response?.status === 409) {
-                      setMessage("You already flagged this item");
-                    } else {
-                      setMessage("Could not flag item");
-                    }
-                    showMessage({ show: true, error: true });
-                  },
-                  onSuccess: () => {
-                    setMessage("Item flagged");
-                    showMessage({ show: true, error: false });
-                  },
+                  onError: renderErrorMsg,
+                  onSuccess: renderSuccessMsg,
                 });
               }}
             />

@@ -641,12 +641,14 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    comment={true}
-                    contentID={comment?.id}
+                    comment
+                    commentID={comment?.id}
                     contentType="comment"
                     count={commentCount}
                     documentID={documentID}
                     documentType={this.props.documentType}
+                    editing={this.state.editing}
+                    hideReply={comment.source === "twitter"}
                     hostname={hostname}
                     isRemoved={this.state.removed}
                     mediaOnly={mediaOnly}
@@ -654,11 +656,9 @@ class CommentEntry extends Component {
                     onCountHover={this.toggleHover}
                     onSubmit={this.submitReply}
                     showChildrenState={this.state.revealReply}
-                    small={true}
-                    // Editing
-                    editing={this.state.editing}
+                    small
+                    threadID={data?.id}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
-                    hideReply={comment.source === "twitter"}
                   />
                 </div>
               </Fragment>
@@ -672,8 +672,8 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    comment={true}
-                    contentID={comment?.id}
+                    comment
+                    commentID={comment?.id}
                     contentType="comment"
                     count={commentCount}
                     documentID={documentID}
@@ -685,7 +685,8 @@ class CommentEntry extends Component {
                     onCountHover={this.toggleHover}
                     onSubmit={this.submitReply}
                     showChildrenState={this.state.revealReply}
-                    small={true}
+                    small
+                    threadID={data?.id}
                   />
                 </div>
               </Fragment>
