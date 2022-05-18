@@ -267,7 +267,6 @@ class PostPageCard extends Component {
         ),
       },
       {
-        // todo: calvinhlee - need to resolve pathing
         active: true,
         button: (
           <FlagButtonV2
@@ -275,7 +274,7 @@ class PostPageCard extends Component {
             onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 contentID: post.id,
-                contentType: "post",
+                contentType: "researchhub_posts",
                 flagReason,
                 onError: renderErrorMsg,
                 onSuccess: renderSuccessMsg,
