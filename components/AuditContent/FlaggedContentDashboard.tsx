@@ -348,6 +348,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
       <div className={css(styles.header)}>
         <div className={css(styles.title)}>
           Flagged Content
+          <span className={css(styles.redo)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
         </div>
         <div className={css(styles.filters)}>
           <div className={css(styles.filter)}>
@@ -438,9 +439,6 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
             </div>
           </div>
         }
-        {results.length > 0 && selectedResultIds.length === 0 &&
-          <span className={css(styles.redoSmall)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
-        }
       </div>
       {isLoadingPage ? (
         <Loader containerStyle={styles.pageLoader} key={"loader"} loading={true} size={45} color={colors.NEW_BLUE()} />
@@ -451,8 +449,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
               ? resultCards()
               : 
                 <div className={css(styles.noResults)}>
-                  No results.
-                  <span className={css(styles.redoBig)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
+                  No open flags.
                 </div>
             }
           </div>
@@ -497,28 +494,21 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: "50%",
     justifyContent: "center",
-    // background: colors.RED(0.1),
     color: colors.RED(0.6),
     ":hover": {
       backgroundColor: "#EDEDF0",
       color: "rgba(36, 31, 58, 0.8)",    
     }    
   },
-  "redoSmall": {
-    fontSize: 16,
+  "redo": {
+    fontSize: 17,
     cursor: "pointer",
+    color: colors.BLACK(0.5),
+    alignSelf: "center",
+    marginLeft: 15,
     ":hover": {
       opacity: 0.5,
     },
-    marginLeft: 3,
-  },
-  "redoBig": {
-    fontSize: 26,
-    cursor: "pointer",
-    marginLeft: 15,
-    ":hover": {
-      opacity: 0.8,
-    }
   },
   "checkbox": {
     alignSelf: "center",
@@ -531,6 +521,7 @@ const styles = StyleSheet.create({
   "title": {
     fontSize: 30,
     fontWeight: 500,
+    display: "flex",
   },
   "multiSelect": {
     borderRadius: 2,
@@ -594,7 +585,8 @@ const styles = StyleSheet.create({
     marginTop: 150,
     fontSize: 32,
     textAlign: "center",
-    color: colors.BLACK(0.5)
+    color: colors.BLACK(0.5),
+    lineHeight: "48px",
   },
   "bulkActionRemove": {
     color: colors.RED(),

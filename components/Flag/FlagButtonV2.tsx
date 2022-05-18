@@ -53,7 +53,7 @@ function FlagButtonV2({
   const handleSubmit = (): void => {
     setIsModalOpen(false);
     setFlagReason(defaultReason);
-    onSubmit(flagReason);
+    onSubmit(flagReason)
   };
 
   return (
