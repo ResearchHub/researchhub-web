@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON, FLAG_REASON_DESCRIPTION } from "./config/constants";
 import { Fragment, ReactElement, useState } from "react";
 import { KeyOf } from "~/config/types/root_types";
+import { MessageActions } from "~/redux/message";
 import ResearchHubRadioChoices, {
   RhRadioInputOption,
 } from "../shared/ResearchHubRadioChoices";
@@ -11,7 +12,6 @@ import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { MessageActions } from "~/redux/message";
 
 type Props = {
   buttonText?: string;
@@ -21,7 +21,8 @@ type Props = {
   flagIconOverride?: any;
   iconOverride?: any;
   modalHeaderText: string;
-  msgReduxActions: any;
+  setMsgRedux: any;
+  showMsgRedux: any;
   noButtonBackground?: boolean;
   onSubmit: (
     flagReason: KeyOf<typeof FLAG_REASON>,
@@ -39,7 +40,8 @@ function FlagButtonV2({
   errorMsgText,
   flagIconOverride,
   iconOverride,
-  msgReduxActions,
+  setMsgRedux,
+  showMsgRedux,
   modalHeaderText,
   onSubmit,
   successMsgText,
@@ -48,7 +50,6 @@ function FlagButtonV2({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
     useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
-
   const formattedInputOptions = Object.keys(FLAG_REASON).map(
     (key: string): RhRadioInputOption => ({
       id: key,
@@ -62,18 +63,17 @@ function FlagButtonV2({
   );
 
   const renderErrorMsg = (error: any): void => {
-    debugger;
     const errorStatus = error?.response?.status;
-    msgReduxActions.setMessage(
+    setMsgRedux(
       errorStatus === 409
         ? "You've already flagged this content"
         : errorMsgText ?? "Failed to remove flagged content"
     );
-    msgReduxActions.showMessage({ show: true, error: true });
+    showMsgRedux({ show: true, error: true });
   };
   const renderSuccessMsg = (): void => {
-    msgReduxActions.setMessage(successMsgText ?? "Flagged");
-    msgReduxActions.showMessage({ show: true, error: true });
+    setMsgRedux(successMsgText ?? "Flagged");
+    showMsgRedux({ show: true, error: false });
   };
   const handleSubmit = (): void => {
     setIsModalOpen(false);
@@ -251,7 +251,8 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 const mapDispatchToProps = {
-  msgReduxActions: MessageActions,
+  setMsgRedux: MessageActions.setMessage,
+  showMsgRedux: MessageActions.showMessage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlagButtonV2);
