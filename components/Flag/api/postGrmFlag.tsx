@@ -46,9 +46,9 @@ export function flagGrmContent({
         captureEvent({
           error,
           msg: "Failed to flag content",
-          data: { commentID, commentType, contentID, contentType },
+          data: { commentPayload, contentID, contentType },
         });
       }
-      onError(error)
+      onError(error);
     });
 }
