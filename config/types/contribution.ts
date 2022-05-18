@@ -1,5 +1,7 @@
 import { FLAG_REASON } from "~/components/Flag/config/constants"
+import { parseHub, Hub } from "./hub"
 import { AuthorProfile, CreatedBy, ID, KeyOf, parseAuthorProfile, parseUnifiedDocument, UnifiedDocument } from "./root_types"
+
 
 export type CommentContributionItem = {
   unifiedDocument: UnifiedDocument,
@@ -57,6 +59,7 @@ export type Contribution = {
   reason?: string,  
   reasonChoice?: KeyOf<typeof FLAG_REASON>,
   id?: ID,
+  hubs: Array<Hub>,
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
@@ -125,6 +128,7 @@ export const parseContribution = (raw: any): Contribution => {
     "createdDate": raw.created_date,
     "contentType": parseContentType(raw.content_type),
     "id": raw.id,
+    "hubs": raw.hubs.map(h => parseHub(h)),
   }
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
