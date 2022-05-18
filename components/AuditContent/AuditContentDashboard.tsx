@@ -30,10 +30,7 @@ import { KeyOf } from "~/config/types/root_types";
 import Loader from "../Loader/Loader";
 import { ApiFilters } from "./api/fetchAuditContributionsAPI";
 
-function AuditContentDashboard({
-  showMessage,
-  setMessage,
-}): ReactElement<"div"> {
+export default function AuditContentDashboard({}): ReactElement<"div"> {
   const router = useRouter();
   const multiSelectRef = useRef<HTMLDivElement>(null);
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
@@ -159,7 +156,13 @@ function AuditContentDashboard({
               modalHeaderText="Flag and Remove"
               flagIconOverride={styles.flagIcon}
               iconOverride={icons.trashSolid}
-              onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
+              errorMsgText="Failed to flag & remove"
+              successMsgText="Content flagged & removed"
+              onSubmit={(
+                verdict: KeyOf<typeof FLAG_REASON>,
+                renderErrorMsg,
+                renderSuccessMsg
+              ) => {
                 const apiParams = buildParamsForFlagAndRemoveAPI({
                   selected: r,
                   verdict,
@@ -167,16 +170,15 @@ function AuditContentDashboard({
                 });
                 flagAndRemove({
                   apiParams,
+                  onError: (error: Error) => {
+                    renderErrorMsg(error);
+                    showMessage({ show: true, error: true });
+                  },
                   onSuccess: () => {
-                    setMessage("Content flagged & removed");
-                    showMessage({ show: true, error: false });
+                    renderSuccessMsg();
                     setResults(
                       results.filter((res) => res.item.id !== r.item.id)
                     );
-                  },
-                  onError: () => {
-                    setMessage("Failed to flag & remove");
-                    showMessage({ show: true, error: true });
                   },
                 });
               }}
@@ -474,15 +476,3 @@ const styles = StyleSheet.create({
     marginTop: 150,
   },
 });
-
-const mapDispatchToProps = {
-  showMessage: MessageActions.showMessage,
-  setMessage: MessageActions.setMessage,
-};
-
-const mapStateToProps = () => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuditContentDashboard);

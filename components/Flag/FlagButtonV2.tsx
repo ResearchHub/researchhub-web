@@ -11,20 +11,24 @@ import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { MessageActions } from "~/redux/message";
 
 type Props = {
   buttonText?: string;
   buttonTextStyle?: any;
   defaultReason?: KeyOf<typeof FLAG_REASON>;
+  errorMsgText?: string;
   flagIconOverride?: any;
   iconOverride?: any;
   modalHeaderText: string;
+  msgReduxActions: any;
   noButtonBackground?: boolean;
   onSubmit: (
     flagReason: KeyOf<typeof FLAG_REASON>,
-    renderSuccessMsg: () => void,
-    renderErrorMsg: (error: Error) => void
+    renderErrorMsg: (error: Error) => void,
+    renderSuccessMsg: () => void
   ) => void;
+  successMsgText?: string;
   subHeaderText?: string;
 };
 
@@ -32,10 +36,13 @@ function FlagButtonV2({
   buttonText,
   buttonTextStyle,
   defaultReason = "SPAM",
+  errorMsgText,
   flagIconOverride,
   iconOverride,
+  msgReduxActions,
   modalHeaderText,
   onSubmit,
+  successMsgText,
   subHeaderText = "I am flagging this content because of:",
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -54,9 +61,16 @@ function FlagButtonV2({
     })
   );
 
-  const renderErrorMsg = (): void => {};
-  const renderSuccessMsg = (): void => {};
-
+  const renderErrorMsg = (error: Error): void => {
+    msgReduxActions.setMessage(
+      errorMsgText ?? "Failed to remove flagged content"
+    );
+    msgReduxActions.showMessage({ show: true, error: true });
+  };
+  const renderSuccessMsg = (): void => {
+    msgReduxActions.setMessage(successMsgText ?? "Flagged");
+    msgReduxActions.showMessage({ show: true, error: true });
+  };
   const handleSubmit = (): void => {
     setIsModalOpen(false);
     setFlagReason(defaultReason);
@@ -232,4 +246,8 @@ const mapStateToProps = ({ auth }) => ({
   userRedux: auth.user,
 });
 
-export default connect(mapStateToProps)(FlagButtonV2);
+const mapDispatchToProps = {
+  msgReduxActions: MessageActions,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FlagButtonV2);
