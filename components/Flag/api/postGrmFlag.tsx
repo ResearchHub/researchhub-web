@@ -9,8 +9,12 @@ type ContentType = "hypothesis" | "paper" | "post";
 type CommentType = "comment" | "reply" | "thread";
 
 type FlagGrmContentArgs = {
-  commentID?: ID;
-  commentType?: CommentType;
+  commentPayload?: {
+    commentID?: ID;
+    commentType?: CommentType;
+    replyID?: ID;
+    threadID?: ID;
+  };
   contentID: ID;
   contentType: ContentType;
   flagReason: KeyOf<typeof FLAG_REASON>;
@@ -19,8 +23,7 @@ type FlagGrmContentArgs = {
 };
 
 export function flagGrmContent({
-  commentID,
-  commentType,
+  commentPayload = undefined,
   contentID,
   contentType,
   flagReason,
@@ -29,8 +32,7 @@ export function flagGrmContent({
 }: FlagGrmContentArgs): void {
   fetch(
     API.FLAG_GRM_CONTENT({
-      commentID,
-      commentType,
+      commentPayload,
       contentID,
       contentType,
     }),
@@ -44,9 +46,9 @@ export function flagGrmContent({
         captureEvent({
           error,
           msg: "Failed to flag content",
-          data: { commentID, commentType, contentID, contentType },
+          data: { commentPayload, contentID, contentType },
         });
       }
-      onError(error)
+      onError(error);
     });
 }

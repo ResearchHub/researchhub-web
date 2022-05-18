@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON, FLAG_REASON_DESCRIPTION } from "./config/constants";
 import { Fragment, ReactElement, useState } from "react";
 import { KeyOf } from "~/config/types/root_types";
+import { MessageActions } from "~/redux/message";
 import ResearchHubRadioChoices, {
   RhRadioInputOption,
 } from "../shared/ResearchHubRadioChoices";
@@ -16,11 +17,19 @@ type Props = {
   buttonText?: string;
   buttonTextStyle?: any;
   defaultReason?: KeyOf<typeof FLAG_REASON>;
+  errorMsgText?: string;
   flagIconOverride?: any;
   iconOverride?: any;
   modalHeaderText: string;
+  setMsgRedux: any;
+  showMsgRedux: any;
   noButtonBackground?: boolean;
-  onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
+  onSubmit: (
+    flagReason: KeyOf<typeof FLAG_REASON>,
+    renderErrorMsg: (error: Error) => void,
+    renderSuccessMsg: () => void
+  ) => void;
+  successMsgText?: string;
   subHeaderText?: string;
 };
 
@@ -28,16 +37,19 @@ function FlagButtonV2({
   buttonText,
   buttonTextStyle,
   defaultReason = "SPAM",
+  errorMsgText,
   flagIconOverride,
   iconOverride,
+  setMsgRedux,
+  showMsgRedux,
   modalHeaderText,
   onSubmit,
+  successMsgText,
   subHeaderText = "I am flagging this content because of:",
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
     useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
-
   const formattedInputOptions = Object.keys(FLAG_REASON).map(
     (key: string): RhRadioInputOption => ({
       id: key,
@@ -46,14 +58,27 @@ function FlagButtonV2({
           {FLAG_REASON[key]}
         </div>
       ),
-      description: FLAG_REASON_DESCRIPTION[key]
+      description: FLAG_REASON_DESCRIPTION[key],
     })
   );
 
+  const renderErrorMsg = (error: any): void => {
+    const errorStatus = error?.response?.status;
+    setMsgRedux(
+      errorStatus === 409
+        ? "You've already flagged this content"
+        : errorMsgText ?? "Failed to remove flagged content"
+    );
+    showMsgRedux({ show: true, error: true });
+  };
+  const renderSuccessMsg = (): void => {
+    setMsgRedux(successMsgText ?? "Flagged");
+    showMsgRedux({ show: true, error: false });
+  };
   const handleSubmit = (): void => {
     setIsModalOpen(false);
     setFlagReason(defaultReason);
-    onSubmit(flagReason)
+    onSubmit(flagReason, renderErrorMsg, renderSuccessMsg);
   };
 
   return (
@@ -225,4 +250,9 @@ const mapStateToProps = ({ auth }) => ({
   userRedux: auth.user,
 });
 
-export default connect(mapStateToProps)(FlagButtonV2);
+const mapDispatchToProps = {
+  setMsgRedux: MessageActions.setMessage,
+  showMsgRedux: MessageActions.showMessage,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FlagButtonV2);

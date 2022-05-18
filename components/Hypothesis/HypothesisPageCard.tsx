@@ -113,13 +113,18 @@ const getActionButtons = ({
       active: isLoggedIn,
       button: (
         <FlagButtonV2
-          onSubmit={(flagReason: KeyOf<typeof FLAG_REASON>): void => {
+          onSubmit={(
+            flagReason: KeyOf<typeof FLAG_REASON>,
+            renderErrorMsg,
+            renderSuccessMsg
+          ): void => {
             flagGrmContent({
+              commentPayload: {},
               contentID: hypoID,
               contentType: "hypothesis",
               flagReason,
-              onError: captureEvent,
-              onSuccess: emptyFncWithMsg,
+              onError: renderErrorMsg,
+              onSuccess: renderSuccessMsg,
             });
           }}
           modalHeaderText="Flagging"
