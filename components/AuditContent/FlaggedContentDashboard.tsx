@@ -72,7 +72,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
     return () => {
       window.removeEventListener("scroll", handleWindowScroll);
     }
-  }, []);
+  }, [selectedResultIds]);
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
     setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
@@ -83,8 +83,9 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
   const handleWindowScroll = () => {
     const navEl:(HTMLElement|null) = document.querySelector(".navbar");
     const multiSelectEl:HTMLElement|null = multiSelectRef.current;
+    
     // @ts-ignore
-    if (multiSelectEl && window.scrollY > navEl.clientHeight) {
+    if (multiSelectEl && window.scrollY > navEl.clientHeight && selectedResultIds.length > 0) {
       // @ts-ignore
       multiSelectEl.style.top = (navEl?.clientHeight + 1) + "px";
       setIsMultiSelectSticky(true);
@@ -155,7 +156,6 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
   }
 
   const loadResults = (filters:ApiFilters, url = null) => {
-
     if (!url) {
       setIsLoadingPage(true);
     }
@@ -410,7 +410,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
                 }}
               >
                 {icons.trashSolid}
-              </span>               
+              </span>
               <span 
                 className={css(styles.bulkAction, styles.checkIcon, styles.bulkActionApprove)}
                 onClick={() => {
@@ -438,6 +438,9 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
             </div>
           </div>
         }
+        {results.length > 0 && selectedResultIds.length === 0 &&
+          <span className={css(styles.redoSmall)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
+        }
       </div>
       {isLoadingPage ? (
         <Loader containerStyle={styles.pageLoader} key={"loader"} loading={true} size={45} color={colors.NEW_BLUE()} />
@@ -446,7 +449,11 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
           <div className={css(styles.resultsContainer)}>
             {results.length > 0
               ? resultCards()
-              : <div className={css(styles.noResults)}>No results.</div>
+              : 
+                <div className={css(styles.noResults)}>
+                  No results.
+                  <span className={css(styles.redoBig)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
+                </div>
             }
           </div>
           {nextResultsUrl && (
@@ -497,6 +504,22 @@ const styles = StyleSheet.create({
       color: "rgba(36, 31, 58, 0.8)",    
     }    
   },
+  "redoSmall": {
+    fontSize: 16,
+    cursor: "pointer",
+    ":hover": {
+      opacity: 0.5,
+    },
+    marginLeft: 3,
+  },
+  "redoBig": {
+    fontSize: 26,
+    cursor: "pointer",
+    marginLeft: 15,
+    ":hover": {
+      opacity: 0.8,
+    }
+  },
   "checkbox": {
     alignSelf: "center",
     marginRight: 5,
@@ -517,6 +540,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 14,
     height: 38,
+    display: "flex",
+    alignItems: "center",
   },
   "multiSelectSticky": {
     position: "fixed",
@@ -533,6 +558,7 @@ const styles = StyleSheet.create({
     background: colors.LIGHTER_GREY(),
     justifyContent: "space-between",
     fontSize: 14,
+    width: "100%",
   },
   "dashboardContainer": {
     padding: "0 32px",
