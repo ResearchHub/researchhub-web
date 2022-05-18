@@ -63,7 +63,7 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
     return () => {
       window.removeEventListener("scroll", handleWindowScroll);
     }
-  }, []);
+  }, [selectedResultIds]);
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
     setSuggestedHubs([{label: "All hubs", value: undefined}, ...hubs])
@@ -232,9 +232,27 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
                   modalHeaderText="Flag and Remove"
                   flagIconOverride={styles.flagIcon}
                   iconOverride={icons.trashSolid}
-                  onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
-                    console.log('flag and remove')
-                  }}
+                  onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
+                    const apiParams = buildParamsForFlagAndRemoveAPI({
+                      selected: results.filter((r) => selectedResultIds.includes(r.item.id)) , 
+                      verdict, 
+                      isRemoved: true
+                    });
+
+                    flagAndRemove({
+                      apiParams,
+                      onSuccess: () => {
+                        setMessage("Content flagged & removed");
+                        showMessage({ show: true, error: false });
+                        setResults(results.filter(res => !selectedResultIds.includes(res.item.id)));
+                        setSelectedResultIds([]);
+                      },
+                      onError: () => {
+                        setMessage("Failed to flag & remove");
+                        showMessage({ show: true, error: true });
+                      },
+                    });
+                  } }
                   subHeaderText={"hellow there"}
                 />                
               </span>
@@ -311,8 +329,8 @@ const styles = StyleSheet.create({
     // background: colors.RED(0.1),
     color: colors.RED(0.6),
     ":hover": {
-      // background: colors.RED(0.1),
-      color: colors.RED(0.6),      
+      backgroundColor: "#EDEDF0",
+      color: "rgba(36, 31, 58, 0.8)",    
     }
   },
   "checkbox": {
