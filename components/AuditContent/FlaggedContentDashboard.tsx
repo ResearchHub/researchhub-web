@@ -214,8 +214,8 @@ export default function FlaggedContentDashboard(): ReactElement<"div"> {
                   },
                   onError: renderErrorMsg,
                   onSuccess: () => {
-                    renderSuccessMsg(),
-                      setResults(results.filter((res) => res.id !== r.id));
+                    renderSuccessMsg();
+                    setResults(results.filter((res) => res.id !== r.id));
                   },
                 });
               }}

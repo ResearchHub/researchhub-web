@@ -172,7 +172,6 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
                   apiParams,
                   onError: (error: Error) => {
                     renderErrorMsg(error);
-                    showMessage({ show: true, error: true });
                   },
                   onSuccess: () => {
                     renderSuccessMsg();
@@ -268,7 +267,11 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
                   modalHeaderText="Flag and Remove"
                   flagIconOverride={styles.flagIcon}
                   iconOverride={icons.trashSolid}
-                  onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
+                  onSubmit={(
+                    verdict: KeyOf<typeof FLAG_REASON>,
+                    renderErrorMsg,
+                    renderSuccessMsg
+                  ) => {
                     const apiParams = buildParamsForFlagAndRemoveAPI({
                       selected: results.filter((r) =>
                         selectedResultIds.includes(r.item.id)
@@ -280,8 +283,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
                     flagAndRemove({
                       apiParams,
                       onSuccess: () => {
-                        setMessage("Content flagged & removed");
-                        showMessage({ show: true, error: false });
+                        renderSuccessMsg();
                         setResults(
                           results.filter(
                             (res) => !selectedResultIds.includes(res.item.id)
@@ -289,10 +291,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
                         );
                         setSelectedResultIds([]);
                       },
-                      onError: () => {
-                        setMessage("Failed to flag & remove");
-                        showMessage({ show: true, error: true });
-                      },
+                      onError: renderErrorMsg,
                     });
                   }}
                 />

@@ -398,13 +398,15 @@ class ReplyEntry extends Component {
 
   render() {
     const {
-      hostname,
-      noVote,
-      mobileView,
-      reply,
-      paper,
-      mediaOnly,
+      comment,
+      data,
       documentType,
+      hostname,
+      mediaOnly,
+      mobileView,
+      noVote,
+      paper,
+      reply,
     } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;

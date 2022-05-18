@@ -266,23 +266,24 @@ class PostPageCard extends Component {
           </span>
         ),
       },
-      // { // todo: calvinhlee - need to resolve pathing
-      //   active: true,
-      //   button: (
-      //     <FlagButtonV2
-      //       modalHeaderText="Flagging"
-      //       onSubmit={(flagReason) => {
-      //         flagGrmContent({
-      //           contentID: post.id,
-      //           contentType: "post",
-      //           flagReason,
-      //           onError: Sentry.captureEvent,
-      //           onSuccess: silentEmptyFnc,
-      //         });
-      //       }}
-      //     />
-      //   ),
-      // },
+      {
+        // todo: calvinhlee - need to resolve pathing
+        active: true,
+        button: (
+          <FlagButtonV2
+            modalHeaderText="Flagging"
+            onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+              flagGrmContent({
+                contentID: post.id,
+                contentType: "post",
+                flagReason,
+                onError: renderErrorMsg,
+                onSuccess: renderSuccessMsg,
+              });
+            }}
+          />
+        ),
+      },
       {
         active: isModerator || isSubmitter || isAuthor || isEditorOfHubs,
         button: (
