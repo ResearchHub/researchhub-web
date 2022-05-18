@@ -23,7 +23,7 @@ type FlagGrmContentArgs = {
 };
 
 export function flagGrmContent({
-  commentPayload,
+  commentPayload = undefined,
   contentID,
   contentType,
   flagReason,

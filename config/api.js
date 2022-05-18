@@ -110,16 +110,13 @@ const routes = (BASE_URL) => {
       );
     },
     /* GRM = Generic Reaction Model */
-    FLAG_GRM_CONTENT: ({
-      commentPayload: {
+    FLAG_GRM_CONTENT: ({ commentPayload, contentID, contentType }) => {
+      const {
         commentID = undefined,
         commentType = undefined,
         replyID = undefined,
         threadID = undefined,
-      },
-      contentID,
-      contentType,
-    }) => {
+      } = commentPayload ?? {};
       if (isNullOrUndefined(commentType)) {
         return `${BASE_URL}${contentType}/${contentID}/flag/`;
       } else {
