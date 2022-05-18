@@ -24,7 +24,9 @@ import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { flagGrmContent } from "./Flag/api/postGrmFlag";
+import { isNullOrUndefined, silentEmptyFnc } from "~/config/utils/nullchecks";
+import FlagButtonV2 from "./Flag/FlagButtonV2";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -264,6 +266,24 @@ class PostPageCard extends Component {
           </span>
         ),
       },
+      // { // todo: calvinhlee - need to resolve pathing
+      //   active: true,
+      //   button: (
+      //     <FlagButtonV2
+      //       modalHeaderText="Flagging"
+      //       onSubmit={(flagReason) => {
+      //         flagGrmContent({
+      //           contentID: post.id,
+      //           contentType: "post",
+      //           flagReason,
+      //           onError: Sentry.captureEvent,
+      //           onSuccess: silentEmptyFnc,
+      //         });
+      //       }}
+      //       subHeaderText="Why isn't this suited for ResearchHub?"
+      //     />
+      //   ),
+      // },
       {
         active: isModerator || isSubmitter || isAuthor || isEditorOfHubs,
         button: (

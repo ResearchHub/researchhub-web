@@ -1,11 +1,13 @@
-import { css, StyleSheet } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { captureEvent } from "~/config/utils/events";
 import { Component, Fragment } from "react";
-
-import ThreadTextEditor from "./ThreadTextEditor";
-
-import icons from "~/config/themes/icons";
+import { css, StyleSheet } from "aphrodite";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
-import { doesNotExist } from "~/config/utils/nullchecks";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
+import icons from "~/config/themes/icons";
+import ThreadTextEditor from "./ThreadTextEditor";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -171,6 +173,37 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
+          {/* TODO: calvinhlee - pathing needs to be fixed */
+          /* <FlagButtonV2
+            buttonText="Flag"
+            buttonTextStyle={styles.flagButtonTextStyle}
+            flagIconOverride={styles.flagIconOverride}
+            modalHeaderText="Flagging"
+            onSubmit={(flagReason) => {
+              flagGrmContent({
+                contentID: nullthrows(
+                  this.props.documentID,
+                  "documentID must be present to flag "
+                ),
+                contentType: nullthrows(
+                  this.props.documentType,
+                  "DocumentType must be present to flag "
+                ),
+                commentID: nullthrows(
+                  this.props.contentID, // in ThreadActionBar, contentID is the commentID
+                  "commentID must be present to flag "
+                ),
+                commentType: nullthrows(
+                  this.props.contentType, // in ThreadActionBar, contentType is the commentType
+                  "commentType must be present to flag"
+                ),
+                flagReason,
+                onError: captureEvent,
+                onSuccess: silentEmptyFnc,
+              });
+            }}
+            subHeaderText="Why isn't this suited for ResearchHub?"
+          /> */}
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
@@ -234,6 +267,22 @@ const styles = StyleSheet.create({
     },
     ":hover #editIcon": {
       color: colors.BLUE(),
+    },
+  },
+  flagIconOverride: {
+    background: "none",
+    border: "none",
+    marginLeft: 16,
+    ":hover": {
+      background: "none",
+      color: colors.BLUE(1),
+    },
+  },
+  flagButtonTextStyle: {
+    fontSize: 14,
+    marginLeft: 8,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 12,
     },
   },
   link: {
