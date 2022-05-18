@@ -20,7 +20,11 @@ type Props = {
   iconOverride?: any;
   modalHeaderText: string;
   noButtonBackground?: boolean;
-  onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
+  onSubmit: (
+    flagReason: KeyOf<typeof FLAG_REASON>,
+    renderSuccessMsg: () => void,
+    renderErrorMsg: (error: Error) => void
+  ) => void;
   subHeaderText?: string;
 };
 
@@ -46,14 +50,17 @@ function FlagButtonV2({
           {FLAG_REASON[key]}
         </div>
       ),
-      description: FLAG_REASON_DESCRIPTION[key]
+      description: FLAG_REASON_DESCRIPTION[key],
     })
   );
+
+  const renderErrorMsg = (): void => {};
+  const renderSuccessMsg = (): void => {};
 
   const handleSubmit = (): void => {
     setIsModalOpen(false);
     setFlagReason(defaultReason);
-    onSubmit(flagReason)
+    onSubmit(flagReason, renderErrorMsg, renderSuccessMsg);
   };
 
   return (
