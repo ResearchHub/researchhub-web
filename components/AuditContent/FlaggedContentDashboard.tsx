@@ -24,7 +24,10 @@ import { FLAG_REASON } from "~/components/Flag/config/constants";
 import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
 
-export default function FlaggedContentDashboard(): ReactElement<"div"> {
+function FlaggedContentDashboard({
+  setMessage,
+  showMessage,
+}): ReactElement<"div"> {
   const router = useRouter();
   const multiSelectRef = useRef<HTMLDivElement>(null);
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
@@ -555,6 +558,13 @@ export default function FlaggedContentDashboard(): ReactElement<"div"> {
     </div>
   );
 }
+
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(() => {}, mapDispatchToProps)(FlaggedContentDashboard);
 
 const styles = StyleSheet.create({
   result: {
