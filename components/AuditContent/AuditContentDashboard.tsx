@@ -202,8 +202,9 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
   return (
     <div className={css(styles.dashboardContainer)}>
       <div className={css(styles.header)}>
-        <div className={css(styles.title)}>
+      <div className={css(styles.title)}>
           Audit Content
+          <span className={css(styles.redo)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
         </div>
         <div className={css(styles.filters)}>
           <div className={css(styles.filter)}>
@@ -259,9 +260,6 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
             </div>
           </div>
         }
-        {results.length > 0 && selectedResultIds.length === 0 &&
-          <span className={css(styles.redoSmall)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
-        }
       </div>
       {isLoadingPage ? (
         <Loader containerStyle={styles.pageLoader} key={"loader"} loading={true} size={45} color={colors.NEW_BLUE()} />
@@ -273,7 +271,6 @@ function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"
               : (
                 <div className={css(styles.noResults)}>
                   No results.
-                  <span className={css(styles.redoBig)} onClick={() => loadResults(appliedFilters)}>{icons.redo}</span>
                 </div>
               )
             }
@@ -302,21 +299,15 @@ const styles = StyleSheet.create({
     userSelect: "none",
     padding: 10,
   },
-  "redoSmall": {
-    fontSize: 16,
+  "redo": {
+    fontSize: 17,
     cursor: "pointer",
+    color: colors.BLACK(0.5),
+    alignSelf: "center",
+    marginLeft: 15,
     ":hover": {
       opacity: 0.5,
     },
-    marginLeft: 7,
-  },
-  "redoBig": {
-    fontSize: 26,
-    cursor: "pointer",
-    marginLeft: 15,
-    ":hover": {
-      opacity: 0.8,
-    }
   },
   "flagIcon": {
     width: 14,
@@ -345,6 +336,7 @@ const styles = StyleSheet.create({
   "title": {
     fontSize: 30,
     fontWeight: 500,
+    display: "flex",
   },
   "multiSelect": {
     borderRadius: 2,
