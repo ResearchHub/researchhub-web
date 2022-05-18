@@ -54,7 +54,7 @@ export default function renderContributionEntry(
                 <span className={css(styles.icon)}>{icons.fileUpload}</span>
                 {`uploaded paper `}
                 {/*// @ts-ignore*/}
-                <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
+                <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 100)}</ALink>
               </>              
             ) : contentType.name === "post" ? (
               <>
@@ -85,6 +85,7 @@ export default function renderContributionEntry(
               <HubDropDown
                 hubs={hubs?.slice(1)}
                 labelStyle={styles.hubLink}
+                containerStyle={styles.hubDropdownContainer}
                 isOpen={hubsDropdownOpenForKey === key}
                 setIsOpen={(isOpen) => {
                   setHubsDropdownOpenForKey(isOpen ? key : false)
@@ -172,8 +173,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   "details": {
-    display: "flex",
-    whiteSpace: "pre-wrap",
+  },
+  "hubDropdownContainer": {
+    display: "inline-block",
   },
   "inDocument": {
     lineHeight: "25px",
