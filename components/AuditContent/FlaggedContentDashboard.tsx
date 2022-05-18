@@ -198,14 +198,14 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
             onSubmit={(verdict: KeyOf<typeof FLAG_REASON>) => {
               removeFlaggedContent({
                 apiParams: {
-                  flagId: r.id,
+                  flagIds: [r.id],
                   // @ts-ignore
                   verdictChoice: verdict,
                 },
                 onSuccess: () => {
                   setMessage("Flagged Content removed");
                   showMessage({ show: true, error: false });
-                  setResults(results.filter(res => res.item.id !== r.item.id));
+                  setResults(results.filter(res => res.id !== r.id));
                 },
                 onError: () => {
                   setMessage("Failed to remove flagged content");
@@ -227,14 +227,14 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
               if (confirm("Dismiss flag?")) {
                 dismissFlaggedContent({
                   apiParams: {
-                    flagId: r.id,
+                    flagIds: [r.id],
                     // @ts-ignore
                     verdictChoice: r.reasonChoice,
                   },
                   onSuccess: () => {
                     setMessage("Flag dismissed");
                     showMessage({ show: true, error: false });
-                    setResults(results.filter(res => res.item.id !== r.item.id));
+                    setResults(results.filter(res => res.id !== r.id));
                   },
                   onError: () => {
                     setMessage("Failed to dismiss flag");
@@ -253,7 +253,7 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
       }]
 
       return (
-        <div className={css(styles.result)} key={r.item.id}>
+        <div className={css(styles.result)} key={r.id}>
           {r.verdict && !isOneLineAction &&
             <>
               <div className={css(styles.actionDetailsRow, styles.verdictActionDetailsRow)}>
@@ -322,12 +322,12 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
           <div className={css(styles.entryContainer)}>
             <div className={`${css(styles.checkbox)} cbx`}>
               <CheckBox
-                key={`${r.contentType}-${r.item.id}`}
+                key={`${r.contentType}-${r.id}`}
                 label=""
                 isSquare
                 // @ts-ignore
-                id={r.item.id}
-                active={selectedResultIds.includes(r.item.id)}
+                id={r.id}
+                active={selectedResultIds.includes(r.id)}
                 onChange={(id) => handleResultSelect(id)}
                 labelStyle={undefined}
               />          
@@ -385,17 +385,54 @@ function FlaggedContentDashboard({ showMessage, setMessage }) : ReactElement<"di
           <div className={css(styles.activeDetailsRow)}>
             <span className={css(styles.numSelected)}>{selectedResultIds.length} selected.</span>
             <div className={css(styles.bulkActions)}>
-              <span className={css(styles.bulkAction, styles.bulkActionRemove)}>
-                <FlagButtonV2
-                  modalHeaderText="Flag and Remove"
-                  flagIconOverride={styles.flagIcon}
-                  onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
-                    console.log('flag and remove')
-                  }}
-                  subHeaderText={"hellow there"}
-                />                
-              </span>
-              <span className={css(styles.bulkAction, styles.checkIcon, styles.bulkActionApprove)}>
+              <span
+                className={css(styles.bulkAction, styles.bulkActionRemove, styles.flagIcon)}
+                onClick={() => {
+                  if (window.confirm("Remove all selected content?")) {
+                    removeFlaggedContent({
+                      apiParams: {
+                        flagIds: selectedResultIds,
+                        // @ts-ignore
+                        verdictChoice: verdict,
+                      },
+                      onSuccess: () => {
+                        setMessage("Flagged Content removed");
+                        showMessage({ show: true, error: false });
+                        setResults(results.filter(res => !selectedResultIds.includes(res.id)));
+                        setSelectedResultIds([]);
+                      },
+                      onError: () => {
+                        setMessage("Failed to remove flagged content");
+                        showMessage({ show: true, error: true });
+                      },
+                    });
+                  }
+                }}
+              >
+                {icons.trashSolid}
+              </span>               
+              <span 
+                className={css(styles.bulkAction, styles.checkIcon, styles.bulkActionApprove)}
+                onClick={() => {
+                  if (confirm("Dismiss flags?")) {
+                    dismissFlaggedContent({
+                      apiParams: {
+                        flagIds: selectedResultIds,
+                      },
+                      onSuccess: () => {
+                        setMessage("Flags dismissed");
+                        showMessage({ show: true, error: false });
+                        setResults(results.filter(res => !selectedResultIds.includes(res.id)));
+                        setSelectedResultIds([]);
+                      },
+                      onError: () => {
+                        setMessage("Failed to dismiss flags");
+                        showMessage({ show: true, error: true });
+                      },
+                    });
+                  }                  
+                }}
+              >
                 {icons.check}
               </span>
             </div>
@@ -448,11 +485,16 @@ const styles = StyleSheet.create({
     minWidth: 14,
     minHeight: 14,
     fontSize: 13,
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    backgroundColor: "rgba(36, 31, 58, 0.03)",
+    padding: 5,
+    borderRadius: "50%",
+    justifyContent: "center",
     // background: colors.RED(0.1),
     color: colors.RED(0.6),
     ":hover": {
-      // background: colors.RED(0.1),
-      color: colors.RED(0.6),      
+      backgroundColor: "#EDEDF0",
+      color: "rgba(36, 31, 58, 0.8)",    
     }    
   },
   "checkbox": {
