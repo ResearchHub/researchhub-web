@@ -61,9 +61,13 @@ function FlagButtonV2({
     })
   );
 
-  const renderErrorMsg = (error: Error): void => {
+  const renderErrorMsg = (error: any): void => {
+    debugger;
+    const errorStatus = error?.response?.status;
     msgReduxActions.setMessage(
-      errorMsgText ?? "Failed to remove flagged content"
+      errorStatus === 409
+        ? "You've already flagged this content"
+        : errorMsgText ?? "Failed to remove flagged content"
     );
     msgReduxActions.showMessage({ show: true, error: true });
   };
