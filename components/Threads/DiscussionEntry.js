@@ -672,7 +672,6 @@ class DiscussionEntry extends Component {
             {noRespond ? null : (
               <div className={css(styles.row, styles.bottom)}>
                 <ThreadActionBar
-                  contentID={data?.id}
                   contentType="thread"
                   count={commentCount}
                   documentID={documentId}
@@ -686,6 +685,7 @@ class DiscussionEntry extends Component {
                   onSubmit={this.submitComment}
                   showChildrenState={this.state.revealComment}
                   small={noVoteLine}
+                  threadID={data?.id}
                   title={title}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
