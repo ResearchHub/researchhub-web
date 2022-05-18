@@ -181,14 +181,10 @@ class ThreadActionBar extends Component {
             onSubmit={(flagReason) => {
               flagGrmContent({
                 commentPayload: {
-                  commentID: nullthrows(
-                    this.props.contentID, // in ThreadActionBar, contentID is the commentID
-                    "commentID must be present to flag "
-                  ),
-                  commentType: nullthrows(
-                    this.props.contentType, // in ThreadActionBar, contentType is the commentType
-                    "commentType must be present to flag"
-                  ),
+                  commentID: this.props.commentID,
+                  commentType: this.props.contentType, // in ThreadActionBar, contentType is the commentType
+                  replyID: this.props.replyID,
+                  threadID: this.props.threadID,
                 },
                 contentID: nullthrows(
                   this.props.documentID,
