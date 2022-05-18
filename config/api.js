@@ -90,7 +90,6 @@ const routes = (BASE_URL) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
     CONTRIBUTIONS: ({ hubId }) => {
-      console.log("h", hubId);
       return (
         BASE_URL + "audit/contributions/?" + (hubId ? `hubs=${hubId}` : "")
       );
@@ -105,7 +104,7 @@ const routes = (BASE_URL) => {
       return (
         BASE_URL +
         "audit/flagged/?" +
-        (hubId ? `hub_id=${hubId}&` : "") +
+        (hubId ? `hubs=${hubId}&` : "") +
         (verdict ? `verdict=${verdict}` : "")
       );
     },
