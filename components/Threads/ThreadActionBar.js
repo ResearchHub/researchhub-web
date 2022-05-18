@@ -173,14 +173,23 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
-          {/* TODO: calvinhlee - pathing needs to be fixed */
-          /* <FlagButtonV2
+          <FlagButtonV2
             buttonText="Flag"
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"
             onSubmit={(flagReason) => {
               flagGrmContent({
+                commentPayload: {
+                  commentID: nullthrows(
+                    this.props.contentID, // in ThreadActionBar, contentID is the commentID
+                    "commentID must be present to flag "
+                  ),
+                  commentType: nullthrows(
+                    this.props.contentType, // in ThreadActionBar, contentType is the commentType
+                    "commentType must be present to flag"
+                  ),
+                },
                 contentID: nullthrows(
                   this.props.documentID,
                   "documentID must be present to flag "
@@ -189,20 +198,13 @@ class ThreadActionBar extends Component {
                   this.props.documentType,
                   "DocumentType must be present to flag "
                 ),
-                commentID: nullthrows(
-                  this.props.contentID, // in ThreadActionBar, contentID is the commentID
-                  "commentID must be present to flag "
-                ),
-                commentType: nullthrows(
-                  this.props.contentType, // in ThreadActionBar, contentType is the commentType
-                  "commentType must be present to flag"
-                ),
                 flagReason,
                 onError: captureEvent,
                 onSuccess: silentEmptyFnc,
               });
             }}
-          /> */}
+            subHeaderText="Why isn't this suited for ResearchHub?"
+          />
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
