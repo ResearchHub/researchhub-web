@@ -2,6 +2,7 @@ import { FLAG_REASON } from "../config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID, KeyOf } from "~/config/types/root_types";
 import API from "~/config/api";
+import { captureEvent } from "~/config/utils/events";
 
 type ContentType = "hypothesis" | "paper" | "post";
 
@@ -38,5 +39,14 @@ export function flagGrmContent({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((result) => onSuccess(result))
-    .catch((error: Error) => onError(error));
+    .catch((error: any) => {
+      if (error?.response?.status !== 409) {
+        captureEvent({
+          error,
+          msg: "Failed to flag content",
+          data: { commentID, commentType, contentID, contentType },
+        });
+      }
+      onError(error)
+    });
 }

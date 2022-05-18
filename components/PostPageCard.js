@@ -280,7 +280,6 @@ class PostPageCard extends Component {
       //           onSuccess: silentEmptyFnc,
       //         });
       //       }}
-      //       subHeaderText="Why isn't this suited for ResearchHub?"
       //     />
       //   ),
       // },

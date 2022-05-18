@@ -123,7 +123,6 @@ const getActionButtons = ({
             });
           }}
           modalHeaderText="Flagging"
-          subHeaderText="Why isn't this suited for ResearchHub?"
         />
       ),
     },

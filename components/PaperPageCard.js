@@ -298,6 +298,8 @@ class PaperPageCard extends Component {
       isSubmitter,
       paper,
       setFlag,
+      setMessage,
+      showMessage,
     } = this.props;
 
     const { paper_title, title, uploaded_by } = paper || {};
@@ -362,11 +364,22 @@ class PaperPageCard extends Component {
                   contentID: paper.id,
                   contentType: "paper",
                   flagReason,
-                  onError: captureEvent,
-                  onSuccess: silentEmptyFnc,
+                  onError: (error) => {
+                    if (error?.response?.status === 409) {
+                      setMessage("You already flagged this item");
+                    } else {
+                      setMessage("Could not flag item");
+                    }
+                    showMessage({ show: true, error: true });
+                  },
+                  onSuccess: () => {
+                    setMessage(
+                      "Item flagged and will be examined by moderator"
+                    );
+                    showMessage({ show: true, error: false });
+                  },
                 });
               }}
-              subHeaderText="Why isn't this suited for ResearchHub?"
             />
           </span>
         ),

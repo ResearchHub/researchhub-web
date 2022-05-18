@@ -202,7 +202,6 @@ class ThreadActionBar extends Component {
                 onSuccess: silentEmptyFnc,
               });
             }}
-            subHeaderText="Why isn't this suited for ResearchHub?"
           /> */}
         </div>
         {!this.props.hideReply && (
