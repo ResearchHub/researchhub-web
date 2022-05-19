@@ -20,7 +20,6 @@ export default function renderContributionEntry(
 
       const {
         item,
-        createdDate,
         contentType,
         hubs,
         id,
@@ -28,9 +27,11 @@ export default function renderContributionEntry(
 
       const {
         createdBy,
-        unifiedDocument: uniDoc
+        unifiedDocument: uniDoc,
+        createdDate,
       } = item;
 
+      console.log('item', item)
       const key = `${id}-${item.id}`;
       
       return (
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     minWidth: 4,
     background: colors.GREY(),
+    borderRadius: "2px",
   },
   "actions": {
     marginLeft: "auto",

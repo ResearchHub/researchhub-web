@@ -81,7 +81,7 @@ function FlaggedContentDashboard({
 
   useEffectFetchSuggestedHubs({
     setSuggestedHubs: (hubs) => {
-      setSuggestedHubs([{ label: "All", value: undefined }, ...hubs]);
+      setSuggestedHubs([{ label: "All Hubs", value: undefined }, ...hubs]);
       const selected = hubs.find(
         (h) => String(h.id) === String(router.query.hub_id)
       );
@@ -205,6 +205,8 @@ function FlaggedContentDashboard({
               defaultReason={r.reasonChoice}
               successMsgText="Flagged Content removed"
               errorMsgText="Failed to remove flagged content"
+              subHeaderText = "I am removing this content because of:"
+              primaryButtonLabel="Remove content"
               onSubmit={(
                 verdict: KeyOf<typeof FLAG_REASON>,
                 renderErrorMsg,
@@ -223,7 +225,6 @@ function FlaggedContentDashboard({
                   },
                 });
               }}
-              subHeaderText={"hellow there"}
             />
           ),
           label: "Remove Content",
@@ -400,7 +401,7 @@ function FlaggedContentDashboard({
 
   const selectedHub = suggestedHubs.find(
     (h) => String(appliedFilters.hubId) === String(h.id)
-  ) || { label: "All", id: undefined, value: undefined };
+  ) || { label: "All Hubs", id: undefined, value: undefined };
   const selectedVerdict = verdictOpts.find(
     (v) => String(appliedFilters.verdict) === String(v.value)
   ) || { label: "Open", value: "OPEN" };
