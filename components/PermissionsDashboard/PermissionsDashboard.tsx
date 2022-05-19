@@ -9,10 +9,8 @@ import PermissionsDashboardNavbar, {
 } from "./PermissionsDashboardNavbar";
 
 function PermissionsDashboard(): ReactElement<"div"> | null {
-  const reduxStore = useStore();
   const shouldRenderUI = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
-    auth: reduxStore?.getState()?.auth ?? null,
     shouldRedirect: true,
   });
   const [formType, setFormType] = useState<FormTypes>("add");

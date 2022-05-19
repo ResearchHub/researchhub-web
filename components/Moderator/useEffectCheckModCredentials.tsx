@@ -1,17 +1,18 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useStore } from "react-redux";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-export function useEffectCheckCredentials(reduxStore: any): boolean {
+export function useEffectCheckModCredentials(): boolean {
   const [shouldRenderUI, setShouldRenderUI] = useState<boolean>(false);
-  const auth = reduxStore.getState().auth ?? null;
+  const reduxState = useStore()?.getState();
+  const auth = reduxState?.auth ?? null;
+  const currentUser = auth?.user;
   const router = useRouter();
-
-  const { user } = auth ?? {};
   const isReadyToCheck =
-    !isNullOrUndefined(auth) && !isNullOrUndefined(user?.id);
+    !isNullOrUndefined(auth) && !isNullOrUndefined(currentUser?.id);
   const isLoggedIn = Boolean(auth?.isLoggedIn);
-  const isCurrUserMod = isReadyToCheck ? Boolean(user.moderator) : false;
+  const isCurrUserMod = isReadyToCheck ? Boolean(currentUser.moderator) : false;
 
   useEffect(() => {
     /*  Sending back inappropriate users to home page

@@ -1,12 +1,19 @@
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { ReactElement } from "react";
 import AuditContentDashboard from "~/components/AuditContent/AuditContentDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
-import SideColumn from "~/components/Home/SideColumn";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
+import SideColumn from "~/components/Home/SideColumn";
 
 export default function AuditContentPage(): ReactElement<
   typeof ContentPage
 > | null {
+  const currentUser = getCurrentUser();
+  const isUserHubEditor = currentUser.author_profile?.is_hub_editor;
+
+  if (!isUserHubEditor) {
+    return null;
+  }
 
   return (
     <ContentPage
