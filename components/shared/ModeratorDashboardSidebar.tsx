@@ -1,35 +1,31 @@
+import { css } from "aphrodite";
+import { filterNull } from "~/config/utils/nullchecks";
 import { Fragment, ReactElement } from "react";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { styles } from "~/pages/leaderboard/LeaderboardPage";
+import { useRouter } from "next/router";
 import { useStore } from "react-redux";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import icons from "~/config/themes/icons";
-import Link from "next/link";
-import { filterNull } from "~/config/utils/nullchecks";
-import Ripples from "react-ripples";
-import { styles } from "~/pages/leaderboard/LeaderboardPage";
-import { useRouter } from "next/router";
-import { css } from "aphrodite";
 import killswitch from "~/config/killswitch/killswitch";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import Link from "next/link";
+import Ripples from "react-ripples";
 
 type Props = {};
 
 export default function ModeratorDashboardSidebar({}: Props) {
-  const reduxStore = useStore();
   const router = useRouter();
   const currentPath = router.pathname;
-  const reduxState = reduxStore?.getState();
   const currentUser = getCurrentUser();
 
   const isUserModerator = Boolean(currentUser?.moderator);
   const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const userAllowedOnPermissionsDash = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
-    auth: reduxState?.auth ?? null,
     shouldRedirect: false,
   });
   const userAllowedSendRSC = gateKeepCurrentUser({
     application: "SEND_RSC",
-    auth: reduxState?.auth ?? null,
     shouldRedirect: false,
   });
 
