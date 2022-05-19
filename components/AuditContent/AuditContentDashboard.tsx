@@ -84,8 +84,12 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
   const handleWindowScroll = () => {
     const navEl: HTMLElement | null = document.querySelector(".navbar");
     const multiSelectEl: HTMLElement | null = multiSelectRef.current;
-    // @ts-ignore
-    if (multiSelectEl && window.scrollY > navEl.clientHeight) {
+    if (
+      multiSelectEl &&
+      // @ts-ignore
+      window.scrollY > navEl.clientHeight &&
+      selectedResultIds.length > 0
+    ) {
       // @ts-ignore
       multiSelectEl.style.top = navEl?.clientHeight + 1 + "px";
       setIsMultiSelectSticky(true);
@@ -333,7 +337,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
 const styles = StyleSheet.create({
   result: {
     display: "flex",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   entry: {
     borderRadius: 2,
@@ -342,7 +346,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     userSelect: "none",
-    padding: 10,
+    padding: 15,
   },
   redo: {
     fontSize: 17,

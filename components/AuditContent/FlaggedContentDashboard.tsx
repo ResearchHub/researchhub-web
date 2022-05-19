@@ -37,8 +37,8 @@ function FlaggedContentDashboard({
     hubId: router.query.hub_id as ID,
     verdict: (router.query.verdict as string) || "OPEN",
   });
-  const [isLoadingMore, setIsLoadingMore] = useState<Boolean>(false);
-  const [isLoadingPage, setIsLoadingPage] = useState<Boolean>(true);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [isLoadingPage, setIsLoadingPage] = useState<boolean>(true);
 
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
@@ -92,9 +92,9 @@ function FlaggedContentDashboard({
     const navEl: HTMLElement | null = document.querySelector(".navbar");
     const multiSelectEl: HTMLElement | null = multiSelectRef.current;
 
-    // @ts-ignore
     if (
       multiSelectEl &&
+      // @ts-ignore
       window.scrollY > navEl.clientHeight &&
       selectedResultIds.length > 0
     ) {
@@ -280,7 +280,7 @@ function FlaggedContentDashboard({
                 <div className={css(styles.avatarContainer)}>
                   {/* @ts-ignore */}
                   <AuthorAvatar
-                    size={20}
+                    size={25}
                     author={r.verdict.createdBy.authorProfile}
                   />
                 </div>
@@ -323,7 +323,7 @@ function FlaggedContentDashboard({
           <div className={css(styles.actionDetailsRow)}>
             <div className={css(styles.avatarContainer)}>
               {/* @ts-ignore */}
-              <AuthorAvatar size={20} author={r.flaggedBy.authorProfile} />
+              <AuthorAvatar size={25} author={r.flaggedBy.authorProfile} />
             </div>
             <span className={css(styles.actionContainer)}>
               {/* @ts-ignore */}
@@ -470,8 +470,6 @@ function FlaggedContentDashboard({
                     removeFlaggedContent({
                       apiParams: {
                         flagIds: selectedResultIds,
-                        // @ts-ignore
-                        verdictChoice: verdict,
                       },
                       onSuccess: () => {
                         setMessage("Flagged Content removed");
@@ -547,10 +545,9 @@ function FlaggedContentDashboard({
             )}
           </div>
           {nextResultsUrl && (
-            // @ts-ignore
             <LoadMoreButton
               onClick={() => loadResults(appliedFilters, nextResultsUrl)}
-              isLoadingMore={isLoadingMore}
+              isLoading={isLoadingMore}
             />
           )}
         </>
@@ -564,7 +561,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(() => {}, mapDispatchToProps)(FlaggedContentDashboard);
+export default connect(null, mapDispatchToProps)(FlaggedContentDashboard);
 
 const styles = StyleSheet.create({
   result: {
@@ -579,7 +576,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     userSelect: "none",
-    padding: 10,
+    padding: 15,
   },
   entryContainer: {
     display: "flex",
@@ -745,7 +742,7 @@ const styles = StyleSheet.create({
     display: "flex",
     marginBottom: 15,
     alignItems: "center",
-    fontSize: 14,
+    fontSize: 16,
   },
   verdictActionDetailsRow: {
     marginBottom: 6,
