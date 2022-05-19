@@ -9,6 +9,7 @@ import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
 import { css } from "aphrodite";
 import killswitch from "~/config/killswitch/killswitch";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
 type Props = {};
 
@@ -17,7 +18,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const router = useRouter();
   const currentPath = router.pathname;
   const reduxState = reduxStore?.getState();
-  const currentUser = reduxState?.auth?.user ?? {};
+  const currentUser = getCurrentUser();
 
   const isUserModerator = Boolean(currentUser?.moderator);
   const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);

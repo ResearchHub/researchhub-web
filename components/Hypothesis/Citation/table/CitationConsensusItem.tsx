@@ -15,7 +15,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { getCurrentUser } from "~/config/utils/user";
+import { getCurrentUserLegacy } from "~/config/utils/user";
 import { ID } from "~/config/types/root_types";
 import { postCitationVote } from "../../api/postCitationVote";
 import {
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  currentUser: getCurrentUser(state),
+  currentUser: getCurrentUserLegacy(state),
 });
 
 export default connect(mapStateToProps, null)(CitationConsensusItem);
