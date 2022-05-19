@@ -48,6 +48,7 @@ export type FlaggedBy = {
 export type Verdict = {
   createdBy: CreatedBy,
   verdictChoice: string,
+  createdDate: string,
 }
 
 export type Contribution = {
@@ -81,6 +82,7 @@ export const parseVerdict = (raw: any): Verdict => {
   const mapped = {
     "verdictChoice": raw.verdict_choice,
     "createdBy": parseCreatedBy(raw.created_by),
+    "createdDate": raw.created_date,
   }
 
   return mapped;
