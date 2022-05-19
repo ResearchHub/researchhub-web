@@ -163,7 +163,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
               errorMsgText="Failed to flag & remove"
               successMsgText="Content flagged & removed"
               primaryButtonLabel="Remove content"
-              subHeaderText = "I am removing this content because of:"
+              subHeaderText="I am removing this content because of:"
               onSubmit={(
                 verdict: KeyOf<typeof FLAG_REASON>,
                 renderErrorMsg,

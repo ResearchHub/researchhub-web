@@ -1,4 +1,4 @@
-import { getCurrentUser } from "~/config/utils/user";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { ReactElement } from "react";
 import AuditContentDashboard from "~/components/AuditContent/AuditContentDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
