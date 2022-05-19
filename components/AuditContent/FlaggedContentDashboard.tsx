@@ -23,6 +23,7 @@ import ALink from "../ALink";
 import { FLAG_REASON } from "~/components/Flag/config/constants";
 import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
+import { timeSince } from "~/config/utils/dates";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -314,7 +315,7 @@ function FlaggedContentDashboard({
                   </span>
                 </span>
                 <span className={css(styles.dot)}> • </span>
-                <span className={css(styles.timestamp)}>2 days ago</span>
+                <span className={css(styles.timestamp)}>{timeSince(r.verdict.createdDate)}</span>
               </div>
               <div className={css(styles.timelineSeperator)}></div>
             </>
@@ -367,7 +368,7 @@ function FlaggedContentDashboard({
               </span>
             </span>
             <span className={css(styles.dot)}> • </span>
-            <span className={css(styles.timestamp)}>2 days ago</span>
+            <span className={css(styles.timestamp)}>{timeSince(r.createdDate)}</span>
           </div>
 
           <div className={css(styles.entryContainer)}>
