@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     },
   },
   commentCountContainer: {
-    marginLeft: 20,
+    marginRight: 20,
     padding: 4,
     borderRadius: 3,
     cursor: "pointer",
@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
   editContainer: {
     cursor: "pointer",
     padding: 4,
+    marginRight: 20,
     borderRadius: 3,
     ":hover #text": {
       color: colors.BLUE(),

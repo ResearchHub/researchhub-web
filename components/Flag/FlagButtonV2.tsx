@@ -50,7 +50,7 @@ function FlagButtonV2({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
     useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
-  const formattedInputOptions = Object.keys(FLAG_REASON).map(
+  const formattedInputOptions = Object.keys(FLAG_REASON).filter(k => k !== "NOT_SPECIFIED").map(
     (key: string): RhRadioInputOption => ({
       id: key,
       label: (
