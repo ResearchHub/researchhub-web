@@ -7,6 +7,7 @@ export type CommentContributionItem = {
   unifiedDocument: UnifiedDocument,
   plainText: string,
   createdBy: CreatedBy,
+  createdDate: string,
   id: ID,
 }
 
@@ -15,6 +16,7 @@ export type PaperContributionItem = {
   title: string,
   slug: string,
   createdBy: CreatedBy,
+  createdDate: string,
   id: ID,
 }
 
@@ -28,6 +30,7 @@ export type HypothesisContributionItem = {
   title: string,
   slug: string,
   createdBy: CreatedBy,
+  createdDate: string,
   id: ID,
 }
 
@@ -36,6 +39,7 @@ export type PostContributionItem = {
   title: string,
   slug: string,
   createdBy: CreatedBy,
+  createdDate: string,
   id: ID,
 }
 export type FlaggedBy = {
@@ -172,6 +176,7 @@ export const parseCommentContributionItem = (raw: any): CommentContributionItem 
     "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
     "id": raw.id,
+    "createdDate": raw.created_date,
   }
 
   return mapped;
@@ -191,6 +196,7 @@ export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
     "slug": raw.slug,
     "createdBy": parseCreatedBy(raw.uploaded_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
+    "createdDate": raw.created_date,
   }
 
   return mapped;
@@ -203,6 +209,7 @@ export const parseHypothesisContributionItem = (raw: any): HypothesisContributio
     "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
     "id": raw.id,
+    "createdDate": raw.created_date,
   }
 
   return mapped;
@@ -210,11 +217,12 @@ export const parseHypothesisContributionItem = (raw: any): HypothesisContributio
 
 export const parsePostContributionItem = (raw: any): PostContributionItem => {
   const mapped = {
-    "title": raw.title,
+    "title": raw.title, 
     "slug": raw.slug,
     "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
     "id": raw.id,
+    "createdDate": raw.created_date,
   }
 
   return mapped;

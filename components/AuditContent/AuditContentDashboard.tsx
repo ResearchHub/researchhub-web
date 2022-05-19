@@ -162,6 +162,8 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
               iconOverride={icons.trashSolid}
               errorMsgText="Failed to flag & remove"
               successMsgText="Content flagged & removed"
+              primaryButtonLabel="Remove content"
+              subHeaderText = "I am removing this content because of:"
               onSubmit={(
                 verdict: KeyOf<typeof FLAG_REASON>,
                 renderErrorMsg,
@@ -185,7 +187,6 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
                   },
                 });
               }}
-              subHeaderText={"hellow there"}
             />
           ),
           label: "Flag & Remove",
@@ -271,6 +272,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
                   modalHeaderText="Flag and Remove"
                   flagIconOverride={styles.flagIcon}
                   iconOverride={icons.trashSolid}
+                  primaryButtonLabel="Remove content"
                   onSubmit={(
                     verdict: KeyOf<typeof FLAG_REASON>,
                     renderErrorMsg,

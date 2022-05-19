@@ -31,6 +31,7 @@ type Props = {
   ) => void;
   successMsgText?: string;
   subHeaderText?: string;
+  primaryButtonLabel?: string;
 };
 
 function FlagButtonV2({
@@ -46,6 +47,7 @@ function FlagButtonV2({
   onSubmit,
   successMsgText,
   subHeaderText = "I am flagging this content because of:",
+  primaryButtonLabel = "Flag content",
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
@@ -111,7 +113,7 @@ function FlagButtonV2({
             />
             <div className={css(styles.buttonWrap)}>
               <Button
-                label="Flag content"
+                label={primaryButtonLabel}
                 size="small"
                 onClick={handleSubmit}
               />

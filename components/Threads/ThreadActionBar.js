@@ -199,7 +199,6 @@ class ThreadActionBar extends Component {
                 onSuccess: renderSuccessMsg,
               });
             }}
-            subHeaderText="Why isn't this suited for ResearchHub?"
           />
         </div>
         {!this.props.hideReply && (
