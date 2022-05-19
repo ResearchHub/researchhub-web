@@ -16,30 +16,34 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const reduxStore = useStore();
   const router = useRouter();
   const currentPath = router.pathname;
+  const reduxState = reduxStore?.getState();
+  const currentUser = reduxState?.auth?.user ?? {};
 
+  const isUserModerator = Boolean(currentUser?.moderator);
+  const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const userAllowedOnPermissionsDash = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
-    auth: reduxStore?.getState()?.auth ?? null,
+    auth: reduxState?.auth ?? null,
     shouldRedirect: false,
   });
-
   const userAllowedSendRSC = gateKeepCurrentUser({
     application: "SEND_RSC",
-    auth: reduxStore?.getState()?.auth ?? null,
+    auth: reduxState?.auth ?? null,
     shouldRedirect: false,
   });
 
-  const ksCanUseEditorDash = killswitch("editorDash");
   const userAllowedToManagePeerReviews = killswitch("peerReview");
 
   const SIDE_BAR_ITEMS = filterNull([
-    {
-      icon: icons.bookOpen,
-      id: "author-claim-case-dashboard",
-      name: "Author Claim",
-      pathname: "/moderators/author-claim-case-dashboard",
-    },
-    ksCanUseEditorDash
+    isUserModerator
+      ? {
+          icon: icons.bookOpen,
+          id: "author-claim-case-dashboard",
+          name: "Author Claim",
+          pathname: "/moderators/author-claim-case-dashboard",
+        }
+      : null,
+    isUserModerator
       ? {
           icon: icons.subscribers,
           id: "editors",
@@ -55,7 +59,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/permissions",
         }
       : null,
-      userAllowedToManagePeerReviews
+    userAllowedToManagePeerReviews
       ? {
           icon: icons.commentCheck,
           id: "review",
@@ -63,7 +67,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/reviews",
         }
       : null,
-      true
+    isUserHubEditor
       ? {
           icon: icons.commentCheck,
           id: "audit",
@@ -71,7 +75,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/audit/all",
         }
       : null,
-      true
+    isUserHubEditor
       ? {
           icon: icons.flag,
           id: "flag",

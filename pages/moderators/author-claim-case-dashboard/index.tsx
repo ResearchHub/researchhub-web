@@ -1,18 +1,17 @@
+import { css } from "aphrodite";
+import { mainFeedStyles } from "~/pages/leaderboard/LeaderboardPage";
 import { ReactElement } from "react";
-import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
+import { useEffectCheckModCredentials } from "~/components/Moderator/useEffectCheckModCredentials";
 import { useStore } from "react-redux";
 import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
 import SideColumn from "~/components/Home/SideColumn";
-import { mainFeedStyles } from "~/pages/leaderboard/LeaderboardPage";
-import { css } from "aphrodite";
 
 export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard
 > | null {
-  const reduxStore = useStore();
-  const shouldRenderUI = useEffectCheckCredentials(reduxStore);
+  const shouldRenderUI = useEffectCheckModCredentials();
   if (!shouldRenderUI) {
     return null;
   }

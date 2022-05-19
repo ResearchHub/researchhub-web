@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
+import { useEffectCheckModCredentials } from "~/components/Moderator/useEffectCheckModCredentials";
 import { useStore } from "react-redux";
 import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
@@ -10,11 +10,9 @@ import killswitch from "~/config/killswitch/killswitch";
 export default function EditorsDashboardIndex(): ReactElement<
   typeof EditorsDashboard
 > | null {
-  const reduxStore = useStore();
-  const shouldRenderUI = useEffectCheckCredentials(reduxStore);
-  const ksCanUseEditorDash = killswitch("editorDash");
+  const shouldRenderUI = useEffectCheckModCredentials();
 
-  if (!shouldRenderUI || !ksCanUseEditorDash) {
+  if (!shouldRenderUI) {
     return null;
   }
 
