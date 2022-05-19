@@ -1,6 +1,6 @@
 import { getNestedValue } from "./misc";
 
-export function getCurrentUser(storeState) {
+export function getCurrentUserLegacy(storeState) {
   return getNestedValue(storeState, ["auth", "user"], null);
 }
 

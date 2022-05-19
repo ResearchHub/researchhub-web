@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { DOWNVOTE, UPVOTE } from "~/config/constants";
-import { getCurrentUser } from "~/config/utils/user";
+import { getCurrentUserLegacy } from "~/config/utils/user";
 import { ID } from "~/config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement } from "react";
@@ -35,7 +35,7 @@ function CitationVoteItem({
 }
 
 const mapStateToProps = (state) => ({
-  currentUser: getCurrentUser(state),
+  currentUser: getCurrentUserLegacy(state),
 });
 
 export default connect(mapStateToProps, null)(CitationVoteItem);

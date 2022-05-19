@@ -83,9 +83,8 @@ const Navbar = (props) => {
     auth,
     updateUser,
   } = props;
-  const isUserModerator = !isNullOrUndefined(user)
-    ? Boolean(user.moderator)
-    : false;
+  const isUserModerator = Boolean(user?.moderator);
+  const isUserHubEditor = Boolean(user?.author_profile?.is_hub_editor);
   const dropdownRef = useRef();
   const avatarRef = useRef();
 
@@ -505,9 +504,15 @@ const Navbar = (props) => {
                       wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
                       wsAuth={true}
                     />
-                    {user?.moderator && (
+                    {(isUserModerator || isUserHubEditor) && (
                       <div className={css(styles.modBtnContainer)}>
-                        <Link href="/moderators/author-claim-case-dashboard?case_status=OPEN">
+                        <Link
+                          href={
+                            isUserHubEditor && !isUserModerator
+                              ? "/moderators/audit/all"
+                              : "/moderators/author-claim-case-dashboard?case_status=OPEN"
+                          }
+                        >
                           <a className={css(styles.modBtn)}>
                             {icons.shield}
                             {openCaseCounts > 0 && (

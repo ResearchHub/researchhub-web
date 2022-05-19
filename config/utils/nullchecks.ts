@@ -47,7 +47,7 @@ export function doesNotExist(value) {
 
 export function isEmpty(value) {
   if (isNullOrUndefined(value)) {
-    return true;  
+    return true;
   } else if (Array.isArray(value) && value.length === 0) {
     return true;
   } else if (typeof value === "object") {
