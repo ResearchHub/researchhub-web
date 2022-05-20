@@ -80,7 +80,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",
-          extraHTML: <span className={css(style.count)}>{numNavInteractions}</span>
+          extraHTML: numNavInteractions > 0 ? <span className={css(style.count)}>{numNavInteractions}</span> : null
         }
       : null,
   ]);

@@ -33,11 +33,11 @@ import {
 const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
   const {
-    content_type: notifType,
     created_by: createdBy,
     created_date: createdDate,
     item,
   } = notification;
+  const notifType = notification.content_type.name;
 
   const { unified_document: unifiedDocument } = item;
   const { document_type: documentType } = unifiedDocument;

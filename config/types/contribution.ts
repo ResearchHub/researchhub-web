@@ -1,4 +1,5 @@
 import { FLAG_REASON } from "~/components/Flag/config/constants"
+import { parseContentType, ContentType } from "./contentType"
 import { parseHub, Hub } from "./hub"
 import { AuthorProfile, CreatedBy, ID, KeyOf, parseAuthorProfile, parseUnifiedDocument, UnifiedDocument } from "./root_types"
 
@@ -17,11 +18,6 @@ export type PaperContributionItem = {
   slug: string,
   createdBy: CreatedBy,
   createdDate: string,
-  id: ID,
-}
-
-export type ContentType = {
-  name: "paper" | "post" | "hypothesis" | "comment" ,
   id: ID,
 }
 
@@ -104,29 +100,6 @@ export const parseFlaggedBy = (raw: any): FlaggedBy => {
   }
 
   return mapped;
-}
-export const parseContentType = (raw: any): ContentType => {
-  let contentTypeName;
-  if (["thread", "comment", "reply"].includes(raw.name)) {
-    contentTypeName = "comment";
-  }
-  else if (raw.name === "paper") {
-    contentTypeName = "paper";
-  }
-  else if (raw.name === "researchhubpost") {
-    contentTypeName = "post";
-  }
-  else if (raw.name === "hypothesis") {
-    contentTypeName = "hypothesis";
-  }
-  else {
-    throw Error("Could not parse object with content_type=" + raw.name)
-  }    
-
-  return {
-    id: raw.id,
-    name: contentTypeName,
-  }
 }
 
 export const parseContribution = (raw: any): Contribution => {
