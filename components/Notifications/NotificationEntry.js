@@ -54,6 +54,7 @@ const NotificationEntry = (props) => {
   const handleNavigation = (e) => {
     e && e.stopPropagation();
     const {
+      content_type,
       document_id,
       slug,
       support_type,
@@ -62,7 +63,6 @@ const NotificationEntry = (props) => {
       document_type,
       paper_title,
     } = notification;
-    const content_type = notification.content_type.name;
 
     if (content_type === "withdrawal") {
       return null;
@@ -104,6 +104,7 @@ const NotificationEntry = (props) => {
     const { notification } = props;
     const {
       action_tip,
+      content_type,
       created_by,
       created_date,
       document_id: documentId,
@@ -124,7 +125,6 @@ const NotificationEntry = (props) => {
     const authorId = creatorProfile?.id ?? null;
     const formattedSlug = slug ?? buildSlug(document_title);
     const creatorName = creatorFName ?? "" + creatorLName ?? "";
-    const content_type = notification.content_type.name;
 
     const onClick = (e) => {
       e.stopPropagation();
