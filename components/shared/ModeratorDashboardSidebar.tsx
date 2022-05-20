@@ -66,7 +66,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/reviews",
         }
       : null,
-    isUserHubEditor
+    isUserHubEditor || isUserModerator
       ? {
           icon: icons.commentCheck,
           id: "audit",
@@ -74,7 +74,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/audit/all",
         }
       : null,
-    isUserHubEditor
+    isUserHubEditor || isUserModerator
       ? {
           icon: icons.flag,
           id: "flag",
