@@ -193,8 +193,9 @@ function FlaggedContentDashboard({
 
   const resultCards = () => {
     return results.map((r) => {
-      // @ts-ignore
+      
       const isOneLineAction =
+        // @ts-ignore
         r.flaggedBy.authorProfile.id ===
         r?.verdict?.createdBy?.authorProfile?.id;
 
@@ -335,7 +336,9 @@ function FlaggedContentDashboard({
             <span className={css(styles.actionContainer)}>
               {/* @ts-ignore */}
               <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>
+                {/* @ts-ignore */}
                 {r.flaggedBy.authorProfile.firstName}{" "}
+                {/* @ts-ignore */}
                 {r.flaggedBy.authorProfile.lastName}
               </ALink>
               <span className={css(styles.flagText)}>
@@ -355,6 +358,7 @@ function FlaggedContentDashboard({
                       {/* @ts-ignore */}
                       &nbsp;removed this content due to{" "}
                       <span className={css(styles.reason)}>
+                        {/* @ts-ignore */}
                         {FLAG_REASON[r.verdict.verdictChoice]}
                       </span>
                     </>
@@ -364,9 +368,9 @@ function FlaggedContentDashboard({
                     <span className={css(styles.icon)}>
                       &nbsp;{icons.flagOutline}
                     </span>
-                    {/* @ts-ignore */}
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
+                      {/* @ts-ignore */}
                       {FLAG_REASON[r.reasonChoice] ?? FLAG_REASON["NOT_SPECIFIED"]}
                     </span>
                   </>
@@ -648,7 +652,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     margin: 0,
     width: 1200,
-    // border: `1px solid ${colors.NEW_BLUE()}`,
   },
   activeDetailsRow: {
     padding: "6px 11px 6px 14px",

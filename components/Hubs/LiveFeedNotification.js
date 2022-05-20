@@ -47,6 +47,7 @@ const getNotifMetadata = (notification) => {
   const shouldLeadToComments = ["thread", "comment", "reply"].includes(
     notifType
   );
+
   const targetDoc = ["HYPOTHESIS", "PAPER"].includes(documentType)
     ? unifiedDocument.documents // For papers, documents is an object :
     : (unifiedDocument.documents ?? [])[0]; // For other documents, it's an array of objects
