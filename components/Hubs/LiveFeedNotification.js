@@ -38,7 +38,6 @@ const getNotifMetadata = (notification) => {
     item,
   } = notification;
   const notifType = notification.content_type.name;
-  console.log("notification", notification);
   const { unified_document: unifiedDocument } = item;
   const { document_type: documentType } = unifiedDocument;
   const authorId = getNestedValue(createdBy, ["author_profile", "id"]);
@@ -666,12 +665,17 @@ class LiveFeedNotification extends Component {
 
   render() {
     let { notification } = this.props;
+
     let { isRemoved } = this.state;
     let contentType = notification.content_type;
     let authorProfile = notification.created_by.author_profile;
 
     if (contentType === "purchase") {
       authorProfile = notification.item.user.author_profile;
+    }
+
+    if (!notification?.item?.unified_document) {
+      return null;
     }
 
     return (
