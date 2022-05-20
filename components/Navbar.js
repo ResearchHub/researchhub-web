@@ -40,6 +40,7 @@ import { NavbarContext } from "~/pages/Base";
 import HubSelector from "~/components/HubSelector";
 import api from "~/config/api";
 import MobileOnly from "./MobileOnly";
+import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -73,7 +74,8 @@ const Navbar = (props) => {
   const navbarRef = useRef(null);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const [showReferral, setShowReferral] = useState(false);
-  const { numNavInteractions } = useContext(NavbarContext);
+  const { numNavInteractions, setNumNavInteractions } =
+    useContext(NavbarContext);
   const {
     isLoggedIn,
     user,
@@ -102,11 +104,20 @@ const Navbar = (props) => {
   };
 
   useEffect(async () => {
-    const counts = await getCaseCounts({});
-    if (counts) {
-      setOpenCaseCounts(counts["OPEN"]);
+    const caseCount = await getCaseCounts({});
+    let totalCount = 0;
+
+    if (caseCount) {
+      totalCount = caseCount["OPEN"];
     }
-  }, [numNavInteractions]);
+    if (isUserModerator || isUserHubEditor) {
+      const flagCount = await getFlagCountAPI();
+      totalCount += flagCount;
+    }
+
+    setOpenCaseCounts(totalCount);
+    setNumNavInteractions(totalCount);
+  }, [numNavInteractions, user]);
 
   useEffect(async () => {
     document.addEventListener("mousedown", handleOutsideClick);

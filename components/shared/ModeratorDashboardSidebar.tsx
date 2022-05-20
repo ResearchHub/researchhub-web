@@ -1,6 +1,5 @@
-import { css } from "aphrodite";
 import { filterNull } from "~/config/utils/nullchecks";
-import { Fragment, ReactElement } from "react";
+import { Fragment, ReactElement, useContext, useEffect } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
@@ -10,6 +9,9 @@ import icons from "~/config/themes/icons";
 import killswitch from "~/config/killswitch/killswitch";
 import Link from "next/link";
 import Ripples from "react-ripples";
+import { NavbarContext } from "~/pages/Base";
+import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 type Props = {};
 
@@ -17,7 +19,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const router = useRouter();
   const currentPath = router.pathname;
   const currentUser = getCurrentUser();
-
+  const { numNavInteractions } = useContext(NavbarContext);
   const isUserModerator = Boolean(currentUser?.moderator);
   const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const userAllowedOnPermissionsDash = gateKeepCurrentUser({
@@ -78,12 +80,13 @@ export default function ModeratorDashboardSidebar({}: Props) {
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",
+          extraHTML: <span className={css(style.count)}>{numNavInteractions}</span>
         }
       : null,
   ]);
 
   const listItems = SIDE_BAR_ITEMS.map(
-    ({ name, id, type, icon, pathname }, index) => (
+    ({ name, id, type, icon, pathname, extraHTML }, index) => (
       <Ripples
         className={css(
           styles.sidebarEntry,
@@ -95,7 +98,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
         <Link href={{ pathname }} as={pathname}>
           <a className={css(styles.sidebarLink)}>
             <span className={css(styles.icon)}>{icon}</span>
-            {name}
+            {name} {extraHTML}
           </a>
         </Link>
       </Ripples>
@@ -104,3 +107,18 @@ export default function ModeratorDashboardSidebar({}: Props) {
 
   return <Fragment>{listItems}</Fragment>;
 }
+
+
+const style = StyleSheet.create({
+  "count": {
+    backgroundColor: colors.RED(),
+    color: "white",
+    fontSize: 10,
+    padding: 3,
+    borderRadius: "50%",
+    marginLeft: 5,
+    width: 12,
+    height: 12,
+    textAlign: "center",
+  }
+});
