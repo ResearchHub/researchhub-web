@@ -38,7 +38,7 @@ const getNotifMetadata = (notification) => {
     item,
   } = notification;
   const notifType = notification.content_type.name;
-
+  console.log("notification", notification);
   const { unified_document: unifiedDocument } = item;
   const { document_type: documentType } = unifiedDocument;
   const authorId = getNestedValue(createdBy, ["author_profile", "id"]);

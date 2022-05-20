@@ -362,7 +362,7 @@ function FlaggedContentDashboard({
                     {/* @ts-ignore */}
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
-                      {FLAG_REASON[r.reasonChoice]}
+                      {FLAG_REASON[r.reasonChoice] ?? FLAG_REASON["NOT_SPECIFIED"]}
                     </span>
                   </>
                 )}
