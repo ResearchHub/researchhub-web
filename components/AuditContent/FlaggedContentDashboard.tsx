@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState, useEffect, useRef } from "react";
+import { ReactElement, useState, useEffect, useRef, useContext } from "react";
 import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
@@ -24,6 +24,7 @@ import { FLAG_REASON } from "~/components/Flag/config/constants";
 import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
 import { timeSince } from "~/config/utils/dates";
+import { NavbarContext } from "~/pages/Base";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -46,6 +47,8 @@ function FlaggedContentDashboard({
   const [selectedResultIds, setSelectedResultIds] = useState<Array<ID>>([]);
   const [hubsDropdownOpenForKey, setHubsDropdownOpenForKey] =
     useState<any>(false);
+  const { setNumNavInteractions, numNavInteractions } =
+    useContext(NavbarContext);
 
   useEffect(() => {
     const appliedFilters = {
@@ -222,6 +225,7 @@ function FlaggedContentDashboard({
                   onSuccess: () => {
                     renderSuccessMsg();
                     setResults(results.filter((res) => res.id !== r.id));
+                    setNumNavInteractions(numNavInteractions - 1);
                   },
                 });
               }}
@@ -251,6 +255,7 @@ function FlaggedContentDashboard({
                       setMessage("Flag dismissed");
                       showMessage({ show: true, error: false });
                       setResults(results.filter((res) => res.id !== r.id));
+                      setNumNavInteractions(numNavInteractions - 1);
                     },
                     onError: () => {
                       setMessage("Failed to dismiss flag");
@@ -474,6 +479,7 @@ function FlaggedContentDashboard({
                         flagIds: selectedResultIds,
                       },
                       onSuccess: () => {
+                        setNumNavInteractions(numNavInteractions - selectedResultIds.length);
                         setMessage("Flagged Content removed");
                         showMessage({ show: true, error: false });
                         setResults(
@@ -506,6 +512,7 @@ function FlaggedContentDashboard({
                         flagIds: selectedResultIds,
                       },
                       onSuccess: () => {
+                        setNumNavInteractions(numNavInteractions - selectedResultIds.length);
                         setMessage("Flags dismissed");
                         showMessage({ show: true, error: false });
                         setResults(
