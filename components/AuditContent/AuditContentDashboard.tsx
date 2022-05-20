@@ -3,9 +3,7 @@ import {
   ReactElement,
   useState,
   useEffect,
-  useCallback,
   useRef,
-  createRef,
 } from "react";
 import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
@@ -23,8 +21,6 @@ import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import { Contribution, parseContribution } from "~/config/types/contribution";
 import LoadMoreButton from "../LoadMoreButton";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-import { MessageActions } from "~/redux/message";
-import { connect } from "react-redux";
 import { FLAG_REASON } from "../Flag/config/constants";
 import { KeyOf } from "~/config/types/root_types";
 import Loader from "../Loader/Loader";
@@ -324,11 +320,11 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
             )}
           </div>
           {nextResultsUrl && (
-            // @ts-ignore
             <LoadMoreButton
               onClick={() => loadResults(appliedFilters, nextResultsUrl)}
+              // @ts-ignore
               isLoadingMore={isLoadingMore}
-            />
+            />     
           )}
         </>
       )}

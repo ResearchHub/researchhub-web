@@ -31,7 +31,6 @@ export default function renderContributionEntry(
         createdDate,
       } = item;
 
-      console.log('item', item)
       const key = `${id}-${item.id}`;
       
       return (
