@@ -98,6 +98,10 @@ const ActivityCard = (props) => {
   } = activity;
 
   const { hubs } = unifiedDocument;
+  if (!source || !contributionType || !unifiedDocument) {
+    // This shouldn't happen, but if it does, we don't want the homepage to not load
+    return null;
+  }
 
   useEffect(() => {
     checkIsRemoved();
