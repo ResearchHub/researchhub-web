@@ -131,6 +131,9 @@ const routes = (BASE_URL) => {
     FLAG_AND_REMOVE: () => {
       return BASE_URL + "audit/flag_and_remove/";
     },
+    FLAG_COUNT: () => {
+      return BASE_URL + "audit/flagged_count/";
+    },
     ORGANIZATION: ({ userId, orgId, orgSlug }) => {
       let url = `${BASE_URL}organization/`;
       let restId = null;
