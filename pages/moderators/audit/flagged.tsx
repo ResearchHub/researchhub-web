@@ -9,9 +9,10 @@ export default function FlaggedContentPage(): ReactElement<
   typeof ContentPage
 > | null {
   const currentUser = getCurrentUser();
-  const isUserHubEditor = currentUser.author_profile?.is_hub_editor;
+  const isUserModerator = Boolean(currentUser?.moderator);
+  const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);  
 
-  if (!isUserHubEditor) {
+  if (!isUserHubEditor || !isUserModerator) {
     return null;
   }
 
