@@ -12,7 +12,7 @@ export default function AuditContentPage(): ReactElement<
   const isUserModerator = Boolean(currentUser?.moderator);
   const isUserHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);  
 
-  if (!isUserHubEditor || !isUserModerator) {
+  if (!(isUserHubEditor || isUserModerator)) {
     return null;
   }
 
