@@ -22,7 +22,7 @@ export default function dismissFlaggedContent({
 }: Args): void {
   const config = {
     flag_ids: apiParams.flagIds,
-    ...(apiParams.verdictChoice && {"verdict_choice": `NOT_${apiParams.verdictChoice}`}),
+    ...(apiParams.verdictChoice && {"verdict_choice": apiParams.verdictChoice}),
   }
   fetch(
     API.DISMISS_FLAGGED_CONTENT(),
