@@ -119,8 +119,8 @@ function FlaggedContentDashboard({
     }
 
     const newFilters = {
-      hubId: selectedHub.id,
       ...appliedFilters,
+      hubId: selectedHub.id,
     };
 
     setIsLoadingPage(true);
