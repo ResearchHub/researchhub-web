@@ -18,7 +18,7 @@ import { AuthActions } from "~/redux/auth";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { createUsername, getCurrentUser } from "~/config/utils/user";
+import { createUsername, getCurrentUserLegacy } from "~/config/utils/user";
 import { getNestedValue } from "~/config/utils/misc";
 
 class DiscussionComment extends Component {
@@ -430,7 +430,7 @@ class ReplyClass extends DiscussionComment {
 const mapStateToProps = (state) => {
   return {
     voteResult: state.vote,
-    currentUser: getCurrentUser(state),
+    currentUser: getCurrentUserLegacy(state),
     updatedComment: state.discussion.updatedComment,
     updatedReply: state.discussion.updatedReply,
     firstTime: !state.auth.user.has_seen_first_coin_modal,

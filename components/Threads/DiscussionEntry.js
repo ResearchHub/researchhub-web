@@ -453,6 +453,11 @@ class DiscussionEntry extends Component {
     this.updateWidgetUI();
   };
 
+  getDocumentID = () => {
+    const { data, hypothesis, post } = this.props;
+    return data?.paper ?? hypothesis?.id ?? post?.id;
+  };
+
   updateWidgetUI = () => {
     let voteResult = this.props.vote;
     const success = voteResult.success;
@@ -524,12 +529,7 @@ class DiscussionEntry extends Component {
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
     const username = createUsername(data);
-    let documentId;
-    if (documentType === "post") {
-      documentId = post.id;
-    } else if (documentType === "hypothesis") {
-      documentId = hypothesis.id;
-    }
+    const documentId = this.getDocumentID();
     const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
@@ -672,18 +672,22 @@ class DiscussionEntry extends Component {
             {noRespond ? null : (
               <div className={css(styles.row, styles.bottom)}>
                 <ThreadActionBar
-                  editing={this.state.editing}
-                  toggleEdit={this.state.canEdit && this.toggleEdit}
-                  title={title}
+                  contentType="thread"
                   count={commentCount}
-                  showChildrenState={this.state.revealComment}
-                  onSubmit={this.submitComment}
+                  documentID={documentId}
+                  documentType={this.props.documentType}
+                  editing={this.state.editing}
+                  hideReply={data.source === "twitter"}
+                  isRemoved={this.state.removed}
+                  mediaOnly={mediaOnly}
                   onClick={this.toggleCommentView}
                   onCountHover={this.toggleHover}
-                  mediaOnly={mediaOnly}
+                  onSubmit={this.submitComment}
+                  showChildrenState={this.state.revealComment}
                   small={noVoteLine}
-                  isRemoved={this.state.removed}
-                  hideReply={data.source === "twitter"}
+                  threadID={data?.id}
+                  title={title}
+                  toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
             )}
