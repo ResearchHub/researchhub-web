@@ -10,9 +10,10 @@ import {
 import {
   emptyFncWithMsg,
   filterNull,
+  isEmpty,
   isNullOrUndefined,
 } from "~/config/utils/nullchecks";
-import { ID } from "~/config/types/root_types";
+import { ID, KeyOf } from "~/config/types/root_types";
 import { formatPublishedDate } from "~/config/utils/dates";
 import {
   Fragment,
@@ -40,7 +41,10 @@ import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import VoteWidget from "~/components/VoteWidget";
 import DiscussionCount from "~/components/DiscussionCount";
-import FlagButtonV2 from "../shared/FlagButtonV2";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { FLAG_REASON } from "../Flag/config/constants";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import { captureEvent } from "~/config/utils/events";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -73,6 +77,7 @@ const getActionButtons = ({
     currUserID,
     hubs: hubs ?? [],
   });
+  const isLoggedIn = !isEmpty(currUserID);
   const actionConfigs = [
     {
       active: isCurrUserSubmitter,
@@ -105,12 +110,24 @@ const getActionButtons = ({
       ),
     },
     {
-      active: true,
+      active: isLoggedIn,
       button: (
         <FlagButtonV2
-          onSubmit={emptyFncWithMsg}
+          onSubmit={(
+            flagReason: KeyOf<typeof FLAG_REASON>,
+            renderErrorMsg,
+            renderSuccessMsg
+          ): void => {
+            flagGrmContent({
+              commentPayload: {},
+              contentID: hypoID,
+              contentType: "hypothesis",
+              flagReason,
+              onError: renderErrorMsg,
+              onSuccess: renderSuccessMsg,
+            });
+          }}
           modalHeaderText="Flagging"
-          subHeaderText="Why isn't this suited for ResearchHub?"
         />
       ),
     },

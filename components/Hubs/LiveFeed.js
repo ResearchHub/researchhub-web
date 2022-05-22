@@ -15,7 +15,7 @@ import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-
+import { HubActions } from "../../redux/hub";
 // Redux
 import { NotificationActions } from "~/redux/notification";
 
@@ -36,6 +36,7 @@ class LiveFeed extends Component {
       liveFetching: false,
       liveModeResults: [],
       fetchingPage: false,
+      hubs: [],
     };
   }
 
@@ -48,6 +49,10 @@ class LiveFeed extends Component {
         this.setLivefeedInterval(this, hubId);
       }
     }
+
+    this.props.getHubs().then((hubs) => {
+      this.setState({ hubs: hubs.payload.hubs });
+    });
   }
 
   setLivefeedInterval = (master, hubId) => {
@@ -322,7 +327,7 @@ class LiveFeed extends Component {
                   <div className={css(styles.filterSelect)}>
                     <FormSelect
                       id={"thread-filter"}
-                      options={this.buildHubOptions(this.props.allHubs)}
+                      options={this.buildHubOptions(this.state.hubs)}
                       placeholder={"Sort By Hubs"}
                       onChange={this.handleHubChange}
                       containerStyle={styles.overrideFormSelect}
@@ -610,6 +615,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getLivefeed: NotificationActions.getLivefeed,
+  getHubs: HubActions.getHubs,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LiveFeed);

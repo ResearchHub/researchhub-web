@@ -40,6 +40,7 @@ import { NavbarContext } from "~/pages/Base";
 import HubSelector from "~/components/HubSelector";
 import api from "~/config/api";
 import MobileOnly from "./MobileOnly";
+import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -73,7 +74,8 @@ const Navbar = (props) => {
   const navbarRef = useRef(null);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const [showReferral, setShowReferral] = useState(false);
-  const { numNavInteractions } = useContext(NavbarContext);
+  const { numNavInteractions, setNumNavInteractions } =
+    useContext(NavbarContext);
   const {
     isLoggedIn,
     user,
@@ -83,9 +85,8 @@ const Navbar = (props) => {
     auth,
     updateUser,
   } = props;
-  const isUserModerator = !isNullOrUndefined(user)
-    ? Boolean(user.moderator)
-    : false;
+  const isUserModerator = Boolean(user?.moderator);
+  const isUserHubEditor = Boolean(user?.author_profile?.is_hub_editor);
   const dropdownRef = useRef();
   const avatarRef = useRef();
 
@@ -103,11 +104,20 @@ const Navbar = (props) => {
   };
 
   useEffect(async () => {
-    const counts = await getCaseCounts({});
-    if (counts) {
-      setOpenCaseCounts(counts["OPEN"]);
+    const caseCount = await getCaseCounts({});
+    let totalCount = 0;
+
+    if (caseCount) {
+      totalCount = caseCount["OPEN"];
     }
-  }, [numNavInteractions]);
+    if (isUserModerator || isUserHubEditor) {
+      const flagCount = await getFlagCountAPI();
+      totalCount += flagCount;
+    }
+
+    setOpenCaseCounts(totalCount);
+    setNumNavInteractions(totalCount);
+  }, [numNavInteractions, user]);
 
   useEffect(async () => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -426,12 +436,12 @@ const Navbar = (props) => {
       </MobileOnly>
       <div
         ref={navbarRef}
-        className={css(
+        className={`${css(
           styles.navbarContainer,
           (router.route === "/paper/[paperId]/[paperName]" ||
             router.route === "/hubs") &&
             styles.unstickyNavbar
-        )}
+        )} navbar`}
       >
         <UploadPaperModal />
         <LoginModal />
@@ -505,9 +515,15 @@ const Navbar = (props) => {
                       wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
                       wsAuth={true}
                     />
-                    {user?.moderator && (
+                    {(isUserModerator || isUserHubEditor) && (
                       <div className={css(styles.modBtnContainer)}>
-                        <Link href="/moderators/author-claim-case-dashboard?case_status=OPEN">
+                        <Link
+                          href={
+                            isUserHubEditor && !isUserModerator
+                              ? "/moderators/audit/all"
+                              : "/moderators/author-claim-case-dashboard?case_status=OPEN"
+                          }
+                        >
                           <a className={css(styles.modBtn)}>
                             {icons.shield}
                             {openCaseCounts > 0 && (

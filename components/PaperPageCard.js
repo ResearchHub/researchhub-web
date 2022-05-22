@@ -1,49 +1,46 @@
-import * as Sentry from "@sentry/browser";
+import { breakpoints } from "~/config/themes/screen";
+import { captureEvent } from "~/config/utils/events";
+import { connect } from "react-redux";
+import { createRef, Component } from "react";
+import { flagGrmContent } from "~/components/Flag/api/postGrmFlag";
+import { formatPublishedDate } from "~/config/utils/dates";
+import { Helpers } from "@quantfive/js-web-config";
+import { isDevEnv } from "~/config/utils/env";
+import { isNullOrUndefined, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { MessageActions } from "../redux/message";
+import { ModalActions } from "~/redux/modals";
+import { parseMath } from "~/config/utils/latex";
+import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
+import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
+import * as Sentry from "@sentry/browser";
+import ActionButton from "~/components/ActionButton";
+import API from "~/config/api";
+import AuthorAvatar from "~/components/AuthorAvatar";
+import colors from "~/config/themes/colors";
+import DiscussionCount from "~/components/DiscussionCount";
+import DownloadPDFButton from "~/components/DownloadPDFButton";
+import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
+import HubTag from "~/components/Hubs/HubTag";
+import icons from "~/config/themes/icons";
 import Link from "next/link";
+import PaperMetadata from "./Paper/PaperMetadata";
+import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import PaperPreview from "./Paper/SideColumn/PaperPreview";
+import PaperPromotionButton from "./Paper/PaperPromotionButton";
+import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
+import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
 import Router from "next/router";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import { createRef, Component } from "react";
-import { breakpoints } from "~/config/themes/screen";
-
-// Components
-import ActionButton from "~/components/ActionButton";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import DownloadPDFButton from "~/components/DownloadPDFButton";
-import FlagButton from "~/components/FlagButton";
-import HubTag from "~/components/Hubs/HubTag";
-import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
-import PaperPromotionButton from "./Paper/PaperPromotionButton";
-import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
-import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
-
-// redux
-import { ModalActions } from "~/redux/modals";
-
-// Config
-import API from "~/config/api";
-import PaperPreview from "./Paper/SideColumn/PaperPreview";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { Helpers } from "@quantfive/js-web-config";
-import { MessageActions } from "../redux/message";
-import { formatPublishedDate } from "~/config/utils/dates";
-import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { isDevEnv } from "~/config/utils/env";
-import { parseMath } from "~/config/utils/latex";
-import DiscussionCount from "~/components/DiscussionCount";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
 import { initialize } from "react-ga";
+
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
@@ -301,6 +298,8 @@ class PaperPageCard extends Component {
       isSubmitter,
       paper,
       setFlag,
+      setMessage,
+      showMessage,
     } = this.props;
 
     const { paper_title, title, uploaded_by } = paper || {};
@@ -355,14 +354,20 @@ class PaperPageCard extends Component {
         ),
       },
       {
-        active: !isSubmitter,
+        active: true,
         button: (
           <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
+            <FlagButtonV2
+              modalHeaderText="Flagging"
+              onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+                flagGrmContent({
+                  contentID: paper.id,
+                  contentType: "paper",
+                  flagReason,
+                  onError: renderErrorMsg,
+                  onSuccess: renderSuccessMsg,
+                });
+              }}
             />
           </span>
         ),

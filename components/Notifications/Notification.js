@@ -106,11 +106,12 @@ class Notification extends Component {
   formatNotification = (notification) => {
     const { action_user, action, created_date, unified_document } =
       notification;
-    const { content_type = null, item: actonItem } = action ?? {};
+    const { item: actonItem } = action ?? {};
     const { amount, plain_text } = actonItem ?? {};
     const formattedDocumentType = getUnifiedDocType(
       unified_document?.document_type
     );
+    const content_type = action?.content_type?.name || null;
 
     const documentContent = Array.isArray(unified_document?.documents)
       ? unified_document?.documents[0]

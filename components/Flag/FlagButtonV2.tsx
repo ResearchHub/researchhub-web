@@ -1,57 +1,98 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { FLAG_REASON, FLAG_REASON_DESCRIPTION } from "./config/constants";
 import { Fragment, ReactElement, useState } from "react";
-import { KeyOf, NullableString } from "~/config/types/root_types";
+import { KeyOf } from "~/config/types/root_types";
+import { MessageActions } from "~/redux/message";
 import ResearchHubRadioChoices, {
   RhRadioInputOption,
-} from "./ResearchHubRadioChoices";
+} from "../shared/ResearchHubRadioChoices";
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 type Props = {
+  buttonText?: string;
+  buttonTextStyle?: any;
+  defaultReason?: KeyOf<typeof FLAG_REASON>;
+  errorMsgText?: string;
+  flagIconOverride?: any;
+  iconOverride?: any;
   modalHeaderText: string;
-  onSubmit: (flagReason: KeyOf<typeof FLAG_REASONS>) => void;
+  setMsgRedux: any;
+  showMsgRedux: any;
+  noButtonBackground?: boolean;
+  onSubmit: (
+    flagReason: KeyOf<typeof FLAG_REASON>,
+    renderErrorMsg: (error: Error) => void,
+    renderSuccessMsg: () => void
+  ) => void;
+  successMsgText?: string;
   subHeaderText?: string;
-};
-
-const FLAG_REASONS = {
-  COPYRIGHT: "Copyright Infringement",
-  LOW_QUALITY: "Low Quality",
-  NOT_CONSTRUCTIVE: "Not Constructive",
-  PLAGIARISM: "Plagiarism",
-  RUDE_OR_ABUSIVE: "Rude or Abusive",
-  SPAM: "Spam",
+  primaryButtonLabel?: string;
 };
 
 function FlagButtonV2({
+  buttonText,
+  buttonTextStyle,
+  defaultReason = "SPAM",
+  errorMsgText,
+  flagIconOverride,
+  iconOverride,
+  setMsgRedux,
+  showMsgRedux,
   modalHeaderText,
   onSubmit,
-  subHeaderText,
+  successMsgText,
+  subHeaderText = "I am flagging this content because of:",
+  primaryButtonLabel = "Flag content",
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [flagReason, setFlagReason] = useState<NullableString>("SPAM");
-
-  const formattedInputOptions = Object.keys(FLAG_REASONS).map(
+  const [flagReason, setFlagReason] =
+    useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
+  const formattedInputOptions = Object.keys(FLAG_REASON).filter(k => k !== "NOT_SPECIFIED").map(
     (key: string): RhRadioInputOption => ({
       id: key,
       label: (
         <div className={css(styles.optionLabel)} key={key}>
-          {FLAG_REASONS[key]}
+          {FLAG_REASON[key]}
         </div>
       ),
+      description: FLAG_REASON_DESCRIPTION[key],
     })
   );
+
+  const renderErrorMsg = (error: any): void => {
+    const errorStatus = error?.response?.status;
+    setMsgRedux(
+      errorStatus === 409
+        ? "You've already flagged this content"
+        : errorMsgText ?? "Failed. Flag likely removed alraedy."
+    );
+    showMsgRedux({ show: true, error: true });
+  };
+  const renderSuccessMsg = (): void => {
+    setMsgRedux(successMsgText ?? "Flagged");
+    showMsgRedux({ show: true, error: false });
+  };
+  const handleSubmit = (): void => {
+    setIsModalOpen(false);
+    setFlagReason(defaultReason);
+    onSubmit(flagReason, renderErrorMsg, renderSuccessMsg);
+  };
 
   return (
     <Fragment>
       <div
         onClick={(): void => setIsModalOpen(!isModalOpen)}
-        className={css(styles.flagIcon)}
+        className={css(styles.flagIcon, flagIconOverride)}
       >
-        {icons.flag}
+        {iconOverride || icons.flag}
+        {buttonText && (
+          <span className={css(buttonTextStyle)}>{buttonText}</span>
+        )}
       </div>
       <BaseModal
         children={
@@ -64,14 +105,24 @@ function FlagButtonV2({
             <ResearchHubRadioChoices
               inputOptions={formattedInputOptions}
               onChange={(optionID: string): void => {
-                setFlagReason(optionID);
+                setFlagReason(optionID as KeyOf<typeof FLAG_REASON>);
               }}
-              inputWrapStyle={css(styles.inputWrapStyle)}
+              inputWrapStyle={styles.inputWrapStyle}
+              labelDescriptionStyle={styles.labelDescriptionStyle}
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
-              <Button label="Flag to report" size="small" onClick={onSubmit} />
-              <div className={css(styles.cancelButton)}>Cancel</div>
+              <Button
+                label={primaryButtonLabel}
+                size="small"
+                onClick={handleSubmit}
+              />
+              <div
+                className={css(styles.cancelButton)}
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </div>
             </div>
           </div>
         }
@@ -110,7 +161,7 @@ const customModalStyle = StyleSheet.create({
   subHeaderText: {
     fontSize: 20,
     fontWeight: 400,
-    marginBottom: 12,
+    marginBottom: 25,
   },
   modalHeaderText: {
     alignItems: "flex-start",
@@ -127,6 +178,9 @@ const customModalStyle = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  flagButtonWrap: {
+    cursor: "pointer",
+  },
   flagIcon: {
     padding: 5,
     borderRadius: "50%",
@@ -160,22 +214,23 @@ const styles = StyleSheet.create({
     },
   },
   inputWrapStyle: {
-    alignItems: "center",
-    display: "flex",
-    paddingLeft: 16,
-    width: "100%",
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  labelDescriptionStyle: {
+    color: colors.BLACK(0.7),
   },
   optionLabel: {
     display: "flex",
-    paddingLeft: 16,
     fontSize: 16,
     fontWeight: 500,
   },
   buttonWrap: {
     display: "flex",
-    marginTop: 16,
+    marginTop: 10,
     alignItems: "center",
+    paddingTop: 20,
+    borderTop: `1px solid ${colors.LIGHT_GREY()}`,
+    justifyContent: "center",
   },
   cancelButton: {
     alignItems: "center",
@@ -197,4 +252,9 @@ const mapStateToProps = ({ auth }) => ({
   userRedux: auth.user,
 });
 
-export default connect(mapStateToProps)(FlagButtonV2);
+const mapDispatchToProps = {
+  setMsgRedux: MessageActions.setMessage,
+  showMsgRedux: MessageActions.showMessage,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FlagButtonV2);

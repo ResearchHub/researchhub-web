@@ -1,5 +1,5 @@
 import { doesNotExist } from "./nullchecks";
-import { getCurrentUser } from "./user";
+import { getCurrentUserLegacy } from "./user";
 import { getNestedValue } from "./misc";
 import { userVoteToConstant } from "~/config/constants";
 
@@ -17,7 +17,7 @@ export const checkVoteTypeChanged = (prev, next) => {
 };
 
 export function getCurrentUserReputation(storeState) {
-  const currentUser = getCurrentUser(storeState);
+  const currentUser = getCurrentUserLegacy(storeState);
   if (!doesNotExist(currentUser)) {
     return currentUser.reputation;
   }

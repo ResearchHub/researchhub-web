@@ -1,11 +1,13 @@
-import { css, StyleSheet } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { captureEvent } from "~/config/utils/events";
 import { Component, Fragment } from "react";
-
-import ThreadTextEditor from "./ThreadTextEditor";
-
-import icons from "~/config/themes/icons";
+import { css, StyleSheet } from "aphrodite";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
-import { doesNotExist } from "~/config/utils/nullchecks";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
+import icons from "~/config/themes/icons";
+import ThreadTextEditor from "./ThreadTextEditor";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -171,6 +173,33 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
+          <FlagButtonV2
+            buttonText="Flag"
+            buttonTextStyle={styles.flagButtonTextStyle}
+            flagIconOverride={styles.flagIconOverride}
+            modalHeaderText="Flagging"
+            onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+              flagGrmContent({
+                commentPayload: {
+                  commentID: this.props.commentID,
+                  commentType: this.props.contentType, // in ThreadActionBar, contentType is the commentType
+                  replyID: this.props.replyID,
+                  threadID: this.props.threadID,
+                },
+                contentID: nullthrows(
+                  this.props.documentID,
+                  "documentID must be present to flag "
+                ),
+                contentType: nullthrows(
+                  this.props.documentType,
+                  "DocumentType must be present to flag "
+                ),
+                flagReason,
+                onError: renderErrorMsg,
+                onSuccess: renderSuccessMsg,
+              });
+            }}
+          />
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
@@ -211,7 +240,7 @@ const styles = StyleSheet.create({
     },
   },
   commentCountContainer: {
-    marginLeft: 20,
+    marginRight: 20,
     padding: 4,
     borderRadius: 3,
     cursor: "pointer",
@@ -228,12 +257,29 @@ const styles = StyleSheet.create({
   editContainer: {
     cursor: "pointer",
     padding: 4,
+    marginRight: 20,
     borderRadius: 3,
     ":hover #text": {
       color: colors.BLUE(),
     },
     ":hover #editIcon": {
       color: colors.BLUE(),
+    },
+  },
+  flagIconOverride: {
+    background: "none",
+    border: "none",
+    marginLeft: 16,
+    ":hover": {
+      background: "none",
+      color: colors.BLUE(1),
+    },
+  },
+  flagButtonTextStyle: {
+    fontSize: 14,
+    marginLeft: 8,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 12,
     },
   },
   link: {

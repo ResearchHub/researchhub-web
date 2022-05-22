@@ -130,6 +130,11 @@ class ReplyEntry extends Component {
     });
   };
 
+  getDocumentID = () => {
+    const { data, hypothesis, post } = this.props;
+    return data?.paper ?? hypothesis?.id ?? post?.id;
+  };
+
   upvote = async () => {
     const {
       data,
@@ -393,19 +398,22 @@ class ReplyEntry extends Component {
 
   render() {
     const {
-      hostname,
-      noVote,
-      mobileView,
-      reply,
-      paper,
-      mediaOnly,
+      comment,
+      data,
       documentType,
+      hostname,
+      mediaOnly,
+      mobileView,
+      noVote,
+      paper,
+      reply,
     } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
+    const documentID = this.getDocumentID();
     return (
       <div
         className={css(styles.row, styles.replyCard)}
@@ -494,18 +502,24 @@ class ReplyEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    hostname={hostname}
+                    comment
+                    commentID={comment?.id}
+                    contentType="reply"
                     count={dataCount}
-                    comment={true}
-                    small={true}
-                    isRemoved={this.state.removed}
+                    documentID={documentID}
+                    documentType={this.props.documentType}
                     editing={this.state.editing}
-                    toggleEdit={this.state.canEdit && this.toggleEdit}
-                    onSubmit={this.submitReply}
+                    hasHeader
+                    hideCount
+                    hostname={hostname}
                     initialValue={this.formatQuoteBlock()}
-                    hasHeader={true}
-                    hideCount={true}
+                    isRemoved={this.state.removed}
                     mediaOnly={mediaOnly}
+                    onSubmit={this.submitReply}
+                    replyID={reply?.id}
+                    small
+                    threadID={data?.id}
+                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
               </Fragment>
