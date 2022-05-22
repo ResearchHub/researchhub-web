@@ -259,7 +259,7 @@ function FlaggedContentDashboard({
                       setNumNavInteractions(numNavInteractions - 1);
                     },
                     onError: () => {
-                      setMessage("Failed to dismiss flag");
+                      setMessage("Failed. Flag likely already dismissed.");
                       showMessage({ show: true, error: true });
                     },
                   });
