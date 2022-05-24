@@ -14,150 +14,131 @@ export default function renderContributionEntry(
   entry: Contribution,
   actions: Array<any>,
   setHubsDropdownOpenForKey: Function,
-  hubsDropdownOpenForKey: string,
+  hubsDropdownOpenForKey: string
 ) {
-    const renderHeader = (entry: Contribution) => {
+  const renderHeader = (entry: Contribution) => {
+    const { item, contentType, hubs, id } = entry;
 
-      const {
-        item,
-        contentType,
-        hubs,
-        id,
-      } = entry;
+    const { createdBy, unifiedDocument: uniDoc, createdDate } = item;
 
-      const {
-        createdBy,
-        unifiedDocument: uniDoc,
-        createdDate,
-      } = item;
+    const key = `${id}-${item.id}`;
 
-      const key = `${id}-${item.id}`;
-      
+    return (
+      <div className={css(styles.header)}>
+        <ReactTooltip />
+        <div className={css(styles.avatarContainer)}>
+          <AuthorAvatar author={createdBy.authorProfile} size={25} />
+        </div>
+        <div className={css(styles.details)}>
+          <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
+          {contentType.name === "comment" ? (
+            <>
+              {` `}
+              <span className={css(styles.icon)}>{icons.commentsAlt}</span>
+              {`commented in `}
+              <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">{truncateText(uniDoc.document?.title, 200)}</ALink>
+            </>
+          ) : contentType.name === "paper" ? (
+            <>
+              {` `}
+              <span className={css(styles.icon)}>{icons.fileUpload}</span>
+              {`uploaded paper `}
+              {/*// @ts-ignore*/}
+              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 100)}</ALink>
+            </>
+          ) : contentType.name === "post" ? (
+            <>
+              {` `}
+              <span className={css(styles.icon)}>{icons.penSquare}</span>
+              {`created post `}
+              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(uniDoc.document?.title, 200)}</ALink>
+            </>
+          ) : contentType.name === "hypothesis" ? (
+            <>
+              {` `}
+              <span className={css(styles.icon)}>{icons.lightbulb}</span>
+              {`proposed hypothesis `}
+              {/*// @ts-ignore*/}
+              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
+            </>
+          ) : null}
+
+          {hubs?.length > 0 &&
+            <>
+              <span className={css(styles.dot)}> • </span>
+              {hubs?.slice(0, 2).map((h, index) => (
+                <>
+                  <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
+                  {index < hubs?.slice(0, 2).length - 1 ? ", " : ""}
+                </>
+              ))}
+              &nbsp;
+              {hubs?.slice(2).length > 0 && (
+                <HubDropDown
+                  hubs={hubs?.slice(1)}
+                  labelStyle={styles.hubLink}
+                  containerStyle={styles.hubDropdownContainer}
+                  isOpen={hubsDropdownOpenForKey === key}
+                  setIsOpen={(isOpen) => {
+                    setHubsDropdownOpenForKey(isOpen ? key : false)
+                  }}
+                />
+              )}
+            </>
+          }
+
+          <span className={css(styles.dot)}> • </span>
+          <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
+        </div>
+        <div className={`${css(styles.actions)} actions`}>
+          {actions.filter(action => action.isActive).map((action) => (
+            <span className={css(styles.action, action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const { item, contentType } = entry;
+
+  switch (contentType.name) {
+    case "comment":
       return (
-        <div className={css(styles.header)}>
-          <ReactTooltip />
-          <div className={css(styles.avatarContainer)}>
-            <AuthorAvatar author={createdBy.authorProfile} size={25} />
-          </div>
-          <div className={css(styles.details)}>
-            <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
-            {contentType.name === "comment" ? (
-              <>
-                {` `}
-                <span className={css(styles.icon)}>{icons.commentsAlt}</span>
-                {`commented in `}
-                <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">{truncateText(uniDoc.document?.title, 200)}</ALink>
-              </>
-            ) : contentType.name === "paper" ? (
-              <>
-                {` `}
-                <span className={css(styles.icon)}>{icons.fileUpload}</span>
-                {`uploaded paper `}
-                {/*// @ts-ignore*/}
-                <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 100)}</ALink>
-              </>              
-            ) : contentType.name === "post" ? (
-              <>
-                {` `}
-                <span className={css(styles.icon)}>{icons.penSquare}</span>
-                {`created post `}
-                <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(uniDoc.document?.title, 200)}</ALink>
-              </>              
-            ) : contentType.name === "hypothesis" ? (
-              <>
-                {` `}
-                <span className={css(styles.icon)}>{icons.lightbulb}</span>
-                {`proposed hypothesis `}
-                {/*// @ts-ignore*/}
-                <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
-              </>
-            ) : null }
-
-            {hubs?.length > 0 &&
-              <>
-                <span className={css(styles.dot)}> • </span>
-                {hubs?.slice(0, 2).map((h, index) => (
-                  <>
-                    <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
-                    {index < hubs?.slice(0, 2).length-1 ? ", " : ""}
-                  </>
-                ))}
-                &nbsp;
-                {hubs?.slice(2).length > 0 && (
-                  <HubDropDown
-                    hubs={hubs?.slice(1)}
-                    labelStyle={styles.hubLink}
-                    containerStyle={styles.hubDropdownContainer}
-                    isOpen={hubsDropdownOpenForKey === key}
-                    setIsOpen={(isOpen) => {
-                      setHubsDropdownOpenForKey(isOpen ? key : false)
-                    }}
-                  />
-                )}
-              </>
-            }
-          
-            <span className={css(styles.dot)}> • </span>
-            <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
-          </div>
-          <div className={`${css(styles.actions)} actions`}>
-            {actions.filter(action => action.isActive).map((action) => (
-              <span className={css(styles.action, action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
-            ))}
+        <div className={css(styles.entryContent)}>
+          {renderHeader(entry)}
+          <div className={css(styles.comment)}>
+            <div className={css(styles.quoteBar)} />
+            <div className={css(styles.commentBody)}>
+              {/*// @ts-ignore*/}
+              {truncateText(item.plainText, 500)}
+            </div>
           </div>
         </div>
-      )
-    }
-
-    const {
-      item,
-      contentType,
-    } = entry;
-
-    switch (contentType.name) {
-      case "comment":
-        return (
-          <div className={css(styles.entryContent)}>
-            {renderHeader(entry)}
-            <div className={css(styles.comment)}>
-              <div className={css(styles.quoteBar)} /> 
-              <div className={css(styles.commentBody)}>
-                {/*// @ts-ignore*/}
-                {truncateText(item.plainText, 500)}
-              </div>
-            </div>
-          </div>
-        )
-        case "paper":
-          return (
-            <div className={css(styles.entryContent)}>
-              {renderHeader(entry)}
-            </div>
-          )
-        case "hypothesis":
-          return (
-            <div className={css(styles.entryContent)}>
-              {renderHeader(entry)}
-            </div>
-          )
-          case "post":
-            return (
-              <div className={css(styles.entryContent)}>
-                {renderHeader(entry)}
-              </div>
-            )
-    } 
+      );
+    case "paper":
+      return (
+        <div className={css(styles.entryContent)}>{renderHeader(entry)}</div>
+      );
+    case "hypothesis":
+      return (
+        <div className={css(styles.entryContent)}>{renderHeader(entry)}</div>
+      );
+    case "post":
+      return (
+        <div className={css(styles.entryContent)}>{renderHeader(entry)}</div>
+      );
+  }
 }
 
 const styles = StyleSheet.create({
-  "entryContent": {
+  entryContent: {
     fontSize: 14,
     lineHeight: "20px",
     width: "100%",
     ":hover .actions": {
       opacity: 1,
       transition: "0.2s",
-    }
+    },
   },
   "hubLink": {
     color: colors.DARKER_GREY(),
@@ -166,46 +147,45 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.DARKER_GREY(),
       textDecoration: "underline",
-    }
+    },
   },
-  "avatarContainer": {
+  avatarContainer: {
     display: "flex",
     marginRight: "8px",
   },
-  "header": {
+  header: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  "details": {
-  },
-  "hubDropdownContainer": {
+  details: {},
+  hubDropdownContainer: {
     display: "inline-block",
   },
-  "inDocument": {
+  inDocument: {
     lineHeight: "25px",
   },
-  "content": {
+  content: {
     marginTop: 10,
   },
-  "icon": {
+  icon: {
     fontSize: 16,
     color: colors.BLACK(0.75),
     marginLeft: 7,
     marginRight: 7,
   },
-  "timestamp": {
+  timestamp: {
     color: colors.BLACK(0.5),
   },
-  "dot": {
+  dot: {
     color: colors.BLACK(0.5),
-  },  
-  "comment": {
+  },
+  comment: {
     display: "flex",
     marginTop: 10,
   },
-  "commentBody": {
-    color: colors.BLACK(0.8)
+  commentBody: {
+    color: colors.BLACK(0.8),
   },
   "quoteBar": {
     marginRight: 10,
@@ -213,12 +193,12 @@ const styles = StyleSheet.create({
     background: colors.GREY(),
     borderRadius: "2px",
   },
-  "actions": {
+  actions: {
     marginLeft: "auto",
-    opacity: 0,
+    opacity: 1,
     display: "flex",
   },
-  "action": {
+  action: {
     // marginLeft: 5,
-  }
-})
+  },
+});

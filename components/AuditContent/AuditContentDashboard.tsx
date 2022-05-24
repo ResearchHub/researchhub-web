@@ -1,10 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import {
-  ReactElement,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import { ReactElement, useState, useEffect, useRef } from "react";
 import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
@@ -324,7 +319,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
               onClick={() => loadResults(appliedFilters, nextResultsUrl)}
               // @ts-ignore
               isLoadingMore={isLoadingMore}
-            />     
+            />
           )}
         </>
       )}
@@ -338,9 +333,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   entry: {
-    borderRadius: 2,
+    borderRadius: 4,
     background: "white",
-    border: `1px solid ${colors.GREY()}`,
+    border: `1px solid ${colors.GREY(0.5)}`,
     width: "100%",
     display: "flex",
     userSelect: "none",
