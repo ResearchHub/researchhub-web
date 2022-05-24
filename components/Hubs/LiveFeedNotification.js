@@ -24,11 +24,16 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { getNestedValue } from "~/config/utils/misc";
 import { buildSlug } from "~/config/utils/buildSlug";
-import { doesNotExist } from "~/config/utils/nullchecks";
+import {
+  doesNotExist,
+  nullthrows,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import {
   formatUnifiedDocPageUrl,
   UNIFIED_DOC_PAGE_URL_PATTERN,
 } from "~/config/utils/url_patterns";
+import { getUrlToUniDoc } from "~/config/utils/routing";
 
 const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
@@ -47,18 +52,8 @@ const getNotifMetadata = (notification) => {
     notifType
   );
 
-  const targetDoc = ["HYPOTHESIS", "PAPER"].includes(documentType)
-    ? unifiedDocument.documents // For papers, documents is an object :
-    : (unifiedDocument.documents ?? [])[0]; // For other documents, it's an array of objects
-  const { id: documentID, paper_title, slug, title } = targetDoc ?? {};
-  const hrefAs =
-    notifType === "hypothesis"
-      ? `/hypothesis/${unifiedDocument?.id ?? ""}/${item?.slug ?? ""}`
-      : formatUnifiedDocPageUrl({
-          docType: documentType,
-          documentID,
-          slug,
-        });
+  const { id: documentID, paper_title, slug, title } = item ?? {};
+  let hrefAs = getUrlToUniDoc(unifiedDocument);
 
   return {
     authorId,
@@ -123,7 +118,6 @@ class LiveFeedNotification extends Component {
       // hideCard: false,
       showDropdown: false,
       showPreview: false,
-      userFlag: false,
       isRemoved: false,
     };
     this.dropdownIcon;
@@ -133,7 +127,6 @@ class LiveFeedNotification extends Component {
   componentDidMount() {
     window.addEventListener("mousedown", this.handleOutsideClick);
     this.setState({
-      userFlag: this.props.notification.user_flag ? true : false,
       isRemoved: this.props.notification.is_removed,
     });
   }
@@ -318,7 +311,7 @@ class LiveFeedNotification extends Component {
   renderNotification = () => {
     const { notification } = this.props;
     let { created_date, created_by, content_type, slug } = notification;
-    let notificationType = content_type;
+    let notificationType = notification.content_type.name;
     const timestamp = formatTimestamp(created_date);
 
     switch (notificationType) {
@@ -361,10 +354,10 @@ class LiveFeedNotification extends Component {
           const parentContentType = unifiedDocument.document_type;
           const commentOnPaper = parentContentType === "PAPER";
 
-          if (commentOnPaper) {
-            doc = unifiedDocument.documents;
-          } else {
+          if (Array.isArray(unifiedDocument.documents)) {
             doc = unifiedDocument.documents[0];
+          } else {
+            doc = unifiedDocument.documents;
           }
 
           formattedSupportType = "comment";
@@ -465,61 +458,6 @@ class LiveFeedNotification extends Component {
     });
   };
 
-  promptFlagConfirmation = (e) => {
-    e && e.stopPropagation();
-    let { alert, auth, openLoginModal } = this.props;
-    let { userFlag } = this.state;
-    let isLoggedIn = auth.isLoggedIn;
-
-    if (!isLoggedIn) {
-      openLoginModal(true, "Please Sign in with Google to continue.");
-    } else {
-      return alert.show({
-        text: `Are you sure you want to ${
-          userFlag ? "unflag" : "flag"
-        } this post?`,
-        buttonText: "Yes",
-        onClick: () => {
-          this.flagContent();
-        },
-      });
-    }
-  };
-
-  flagContent = async () => {
-    let { showMessage, setMessage } = this.props;
-    showMessage({ load: true, show: true });
-    let metaData = this.formatMetaData();
-    let { paperId, threadId, commentId, replyId, postId } = metaData;
-    let config = this.state.userFlag
-      ? API.DELETE_CONFIG()
-      : await API.POST_CONFIG({ reason: "censor" });
-    fetch(
-      API.FLAG_POST({ paperId, threadId, commentId, replyId, postId }),
-      config
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let message = this.state.userFlag
-          ? "Flag Removed "
-          : "Post Successfully Flagged";
-        showMessage({ show: false });
-        setMessage(message);
-        showMessage({ show: true });
-        this.setState({ userFlag: !this.state.userFlag });
-      })
-      .catch((err) => {
-        if (err.response.status === 429) {
-          showMessage({ show: false });
-          returnthis.props.openRecaptchaPrompt(true);
-        }
-        showMessage({ show: false });
-        setMessage("Something went wrong");
-        showMessage({ show: true, error: true });
-      });
-  };
-
   formatMetaData = () => {
     let { notification } = this.props;
     let contentType = notification.content_type;
@@ -598,7 +536,7 @@ class LiveFeedNotification extends Component {
   };
 
   renderDropDown = () => {
-    let { showDropdown, userFlag } = this.state;
+    let { showDropdown } = this.state;
     let { moderator } = this.props.auth.user;
     // moderator = false;
     function correctContent(contentType, isModerator) {
@@ -621,13 +559,6 @@ class LiveFeedNotification extends Component {
             )}
             ref={(ref) => (this.dropdownMenu = ref)}
           >
-            <Ripples
-              className={css(styles.dropdownItem)}
-              onClick={this.promptFlagConfirmation}
-            >
-              <span className={css(styles.dropdownItemIcon)}>{icons.flag}</span>
-              {userFlag ? "Unflag" : "Flag"}
-            </Ripples>
             {correctContent(
               this.props.notification.content_type,
               moderator
@@ -674,10 +605,6 @@ class LiveFeedNotification extends Component {
       authorProfile = notification.item.user.author_profile;
     }
 
-    if (!notification?.item?.unified_document) {
-      return null;
-    }
-
     return (
       <div
         className={css(
@@ -698,17 +625,6 @@ class LiveFeedNotification extends Component {
           className={css(styles.tool)}
         />
         <div className={css(styles.type)}>{this.renderIcon()}</div>
-        {this.props.notification.content_type !== "summary" && (
-          <Ripples
-            className={css(styles.dropdownIcon)}
-            onClick={this.toggleDropdown}
-          >
-            <span ref={(ref) => (this.dropdownIcon = ref)}>
-              {icons.ellipsisH}
-            </span>
-          </Ripples>
-        )}
-        {this.renderDropDown()}
         <div className={css(styles.row, styles.container)}>
           <div
             className={css(styles.column, styles.left)}
@@ -833,9 +749,6 @@ const styles = StyleSheet.create({
     color: "#918f9b",
     fontSize: 12,
     fontFamily: "Roboto",
-    // "@media only screen and (max-width: 415px)": {
-    //   fontSize: 12,
-    // },
   },
   timestampDivider: {
     fontSize: 18,

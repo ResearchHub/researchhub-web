@@ -76,6 +76,7 @@ function AuthorPage(props) {
   const store = useStore();
   const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
 
   // User External Links
   const [editFacebook, setEditFacebook] = useState(false);
@@ -566,7 +567,29 @@ function AuthorPage(props) {
           />
         </span>
         <div className={css(styles.reputationTitle)}>{"RSC Balance:"}</div>
-        <div className={css(styles.amount)}>{props.user.balance}</div>
+        <div className={css(styles.amount)}>
+          {isBalanceVisible ? (
+            <span className={css(styles.visibleBalance)}>
+              <span>{props.user.balance}</span>
+              <span
+                className={css(styles.showAmount)}
+                onClick={() => setIsBalanceVisible(false)}
+              >
+                hide
+              </span>
+            </span>
+          ) : (
+            <span className={css(styles.hiddenBalance)}>
+              <span>********</span>
+              <span
+                className={css(styles.showAmount)}
+                onClick={() => setIsBalanceVisible(true)}
+              >
+                show
+              </span>
+            </span>
+          )}
+        </div>
       </div>
     ) : null;
 
@@ -983,6 +1006,15 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     background: "#FFF",
+  },
+  showAmount: {
+    textDecoration: "underline",
+    marginLeft: 5,
+    cursor: "pointer",
+    color: colors.BLACK(0.9),
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
   tabMenuContainer: {
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
@@ -1520,6 +1552,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 14,
     color: colors.BLACK(0.9),
+    display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
