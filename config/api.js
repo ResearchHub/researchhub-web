@@ -108,7 +108,7 @@ const routes = (BASE_URL) => {
         (verdict ? `verdict=${verdict}&` : "") +
         (verdict === "OPEN"
           ? "ordering=-created_date"
-          : "ordering=-verdict__created_date")
+          : "ordering=-verdict_created_date")
       );
     },
     /* GRM = Generic Reaction Model */
