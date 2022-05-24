@@ -105,7 +105,10 @@ const routes = (BASE_URL) => {
         BASE_URL +
         "audit/flagged/?" +
         (hubId ? `hubs=${hubId}&` : "") +
-        (verdict ? `verdict=${verdict}` : "")
+        (verdict ? `verdict=${verdict}&` : "") +
+        (verdict === "OPEN"
+          ? "ordering=-created_date"
+          : "ordering=-verdict__created_date")
       );
     },
     /* GRM = Generic Reaction Model */
