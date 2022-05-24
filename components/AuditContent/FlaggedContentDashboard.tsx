@@ -193,7 +193,6 @@ function FlaggedContentDashboard({
 
   const resultCards = () => {
     return results.map((r) => {
-      
       const isOneLineAction =
         // @ts-ignore
         r.flaggedBy.authorProfile.id ===
@@ -209,7 +208,7 @@ function FlaggedContentDashboard({
               defaultReason={r.reasonChoice}
               successMsgText="Flagged Content removed"
               errorMsgText="Failed to remove flagged content"
-              subHeaderText = "I am removing this content because of:"
+              subHeaderText="I am removing this content because of:"
               primaryButtonLabel="Remove content"
               onSubmit={(
                 verdict: KeyOf<typeof FLAG_REASON>,
@@ -322,7 +321,9 @@ function FlaggedContentDashboard({
                   </span>
                 </span>
                 <span className={css(styles.dot)}> • </span>
-                <span className={css(styles.timestamp)}>{timeSince(r.verdict.createdDate)}</span>
+                <span className={css(styles.timestamp)}>
+                  {timeSince(r.verdict.createdDate)}
+                </span>
               </div>
               <div className={css(styles.timelineSeperator)}></div>
             </>
@@ -337,8 +338,7 @@ function FlaggedContentDashboard({
               {/* @ts-ignore */}
               <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>
                 {/* @ts-ignore */}
-                {r.flaggedBy.authorProfile.firstName}{" "}
-                {/* @ts-ignore */}
+                {r.flaggedBy.authorProfile.firstName} {/* @ts-ignore */}
                 {r.flaggedBy.authorProfile.lastName}
               </ALink>
               <span className={css(styles.flagText)}>
@@ -371,14 +371,17 @@ function FlaggedContentDashboard({
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
                       {/* @ts-ignore */}
-                      {FLAG_REASON[r.reasonChoice] ?? FLAG_REASON["NOT_SPECIFIED"]}
+                      {FLAG_REASON[r.reasonChoice] ??
+                        FLAG_REASON["NOT_SPECIFIED"]}
                     </span>
                   </>
                 )}
               </span>
             </span>
             <span className={css(styles.dot)}> • </span>
-            <span className={css(styles.timestamp)}>{timeSince(r.createdDate)}</span>
+            <span className={css(styles.timestamp)}>
+              {timeSince(r.createdDate)}
+            </span>
           </div>
 
           <div className={css(styles.entryContainer)}>
@@ -483,7 +486,9 @@ function FlaggedContentDashboard({
                         flagIds: selectedResultIds,
                       },
                       onSuccess: () => {
-                        setNumNavInteractions(numNavInteractions - selectedResultIds.length);
+                        setNumNavInteractions(
+                          numNavInteractions - selectedResultIds.length
+                        );
                         setMessage("Flagged Content removed");
                         showMessage({ show: true, error: false });
                         setResults(
@@ -516,7 +521,9 @@ function FlaggedContentDashboard({
                         flagIds: selectedResultIds,
                       },
                       onSuccess: () => {
-                        setNumNavInteractions(numNavInteractions - selectedResultIds.length);
+                        setNumNavInteractions(
+                          numNavInteractions - selectedResultIds.length
+                        );
                         setMessage("Flags dismissed");
                         showMessage({ show: true, error: false });
                         setResults(
@@ -583,9 +590,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   entry: {
-    borderRadius: 2,
+    borderRadius: 4,
     background: "white",
-    border: `1px solid ${colors.GREY()}`,
+    border: `1px solid ${colors.GREY(0.5)}`,
     width: "100%",
     display: "flex",
     userSelect: "none",
