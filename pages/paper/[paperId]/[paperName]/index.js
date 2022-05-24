@@ -584,7 +584,7 @@ const Paper = ({
             )}
           </div>
 
-          <div className={css(styles.sidebar)}>
+          {/* <div className={css(styles.sidebar)}>
             {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
@@ -605,7 +605,7 @@ const Paper = ({
                 />
               </Fragment>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -751,20 +751,9 @@ const styles = StyleSheet.create({
     },
   },
   main: {
-    display: "table-cell",
     boxSizing: "border-box",
-    position: "relative",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-    "@media only screen and (min-width: 768px)": {
-      width: "80%",
-      maxWidth: 600,
-    },
-    "@media only screen and (min-width: 1024px)": {
-      width: "unset",
-      maxWidth: 700,
-    },
+    width: 800,
+    margin: "0 auto",
   },
   contentContainer: {
     padding: "30px 0px",
