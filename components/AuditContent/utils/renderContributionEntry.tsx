@@ -37,7 +37,7 @@ export default function renderContributionEntry(
         <div className={css(styles.header)}>
           <ReactTooltip />
           <div className={css(styles.avatarContainer)}>
-            <AuthorAvatar author={createdBy.authorProfile} size={20} />
+            <AuthorAvatar author={createdBy.authorProfile} size={25} />
           </div>
           <div className={css(styles.details)}>
             <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
@@ -72,26 +72,31 @@ export default function renderContributionEntry(
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
               </>
             ) : null }
-            <span className={css(styles.dot)}> • </span>
-          
-            {hubs?.slice(0, 2).map((h, index) => (
+
+            {hubs?.length > 0 &&
               <>
-                <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
-                {index < hubs?.slice(0, 2).length-1 ? ", " : ""}
+                <span className={css(styles.dot)}> • </span>
+                {hubs?.slice(0, 2).map((h, index) => (
+                  <>
+                    <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
+                    {index < hubs?.slice(0, 2).length-1 ? ", " : ""}
+                  </>
+                ))}
+                &nbsp;
+                {hubs?.slice(2).length > 0 && (
+                  <HubDropDown
+                    hubs={hubs?.slice(1)}
+                    labelStyle={styles.hubLink}
+                    containerStyle={styles.hubDropdownContainer}
+                    isOpen={hubsDropdownOpenForKey === key}
+                    setIsOpen={(isOpen) => {
+                      setHubsDropdownOpenForKey(isOpen ? key : false)
+                    }}
+                  />
+                )}
               </>
-            ))}
-            &nbsp;
-            {hubs?.slice(2).length > 0 && (
-              <HubDropDown
-                hubs={hubs?.slice(1)}
-                labelStyle={styles.hubLink}
-                containerStyle={styles.hubDropdownContainer}
-                isOpen={hubsDropdownOpenForKey === key}
-                setIsOpen={(isOpen) => {
-                  setHubsDropdownOpenForKey(isOpen ? key : false)
-                }}
-              />
-            )}
+            }
+          
             <span className={css(styles.dot)}> • </span>
             <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
           </div>
@@ -155,11 +160,11 @@ const styles = StyleSheet.create({
     }
   },
   "hubLink": {
-    color: colors.NEW_BLUE(),
+    color: colors.DARKER_GREY(),
     textTransform: "capitalize",
     fontSize: 14,
     ":hover": {
-      color: colors.NEW_BLUE(),
+      color: colors.DARKER_GREY(),
       textDecoration: "underline",
     }
   },
@@ -203,7 +208,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.8)
   },
   "quoteBar": {
-    marginRight: 15,
+    marginRight: 10,
     minWidth: 4,
     background: colors.GREY(),
     borderRadius: "2px",

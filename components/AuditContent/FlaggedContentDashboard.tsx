@@ -785,7 +785,7 @@ const styles = StyleSheet.create({
     height: 8,
     width: 4,
     borderRadius: 5,
-    marginLeft: 8,
+    marginLeft: 10,
     marginBottom: 5,
   },
 });
