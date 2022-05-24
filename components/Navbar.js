@@ -235,6 +235,21 @@ const Navbar = (props) => {
             <div className={css(styles.tab)}>Leaderboard</div>
           </a>
         </Link>
+        <Link href={"/live"} key={`navbar_tab_live`}>
+          <a className={css(styles.tabLink)}>
+            <div className={css(styles.tab)}>Live</div>
+          </a>
+        </Link>
+        <Link
+          href={
+            "https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+          }
+          key={`navbar_tab_jobs`}
+        >
+          <a className={css(styles.tabLink)} target="_blank">
+            <div className={css(styles.tab)}>Jobs</div>
+          </a>
+        </Link>
       </Fragment>
     );
   }
@@ -978,7 +993,7 @@ const styles = StyleSheet.create({
   },
   reputation: {
     cursor: "pointer",
-    marginLeft: 11,
+    marginLeft: 18,
   },
   dropdown: {
     position: "absolute",

@@ -9,6 +9,7 @@ const colors = {
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
   GREY_BORDER: "#EBEBEB",
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
+  DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`,
   ICY_BLUE: "#E9EFFF",
   ICY_GREY: "rgb(251, 251, 253)",
   INPUT_BACKGROUND_GREY: "rgba(250, 250, 250, 1)",
