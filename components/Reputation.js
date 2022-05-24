@@ -39,11 +39,6 @@ const Reputation = (props) => {
       data-for="reputationTooltip"
       onClick={openWithdrawalModal}
     >
-      <div className={css(styles.reputationValue)}>
-        {transition
-          ? numeral(prevCount).format("0,0")
-          : numeral(showBalance ? count : reputation).format("0,0")}
-      </div>
       <img
         src={"/static/icons/coin-filled.png"}
         draggable={false}
