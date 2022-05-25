@@ -64,6 +64,12 @@ import {
   isQuillDelta,
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
+import {
+  parsePaperAuthors,
+  parseUnifiedDocument,
+} from "~/config/types/root_types";
+import DocumentHeader from "~/components/Document/DocumentHeader";
+import { parseHub } from "~/config/types/hub";
 
 const steps = [
   {
@@ -406,6 +412,13 @@ const Paper = ({
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+  console.log("paper", paper);
+  console.log("paper.unified_document", paper.unified_document);
+  const unifiedDocument = parseUnifiedDocument(paper.unified_document);
+  const authors = parsePaperAuthors(paper);
+  console.log("authors", authors);
+  const parsedHubs = hubs.map((h) => parseHub(h));
+
   return (
     <div>
       <PaperBanner
@@ -449,7 +462,24 @@ const Paper = ({
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              <PaperPageCard
+              {paper?.id && (
+                <DocumentHeader
+                  title={unifiedDocument.document.title}
+                  createdBy={unifiedDocument.createdBy}
+                  authors={authors}
+                  unifiedDocument={unifiedDocument}
+                  doi={paper.doi}
+                  datePublished={paper.paper_publish_date}
+                  // journal?= string
+                  commentCount={discussionCount || 0}
+                  externalUrl={paper.url}
+                  hubs={parsedHubs}
+                  createdDate={unifiedDocument.createdDate}
+                  type="paper"
+                />
+              )}
+
+              {/* <PaperPageCard
                 discussionCount={discussionCount}
                 doneFetchingPaper={isFetchComplete}
                 downvote={downvote}
@@ -466,7 +496,7 @@ const Paper = ({
                 setFlag={setFlag}
                 shareUrl={process.browser && window.location.href}
                 upvote={upvote}
-              />
+              /> */}
             </div>
             <div className={css(styles.paperMetaContainerMobile)}>
               <AuthorStatsDropdown

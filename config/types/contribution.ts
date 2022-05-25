@@ -64,8 +64,8 @@ export type Contribution = {
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
-  raw.author_profile.first_name = raw.first_name;
-  raw.author_profile.last_name = raw.last_name;
+  raw.author_profile.first_name = raw.author_profile.first_name ?? raw.first_name;
+  raw.author_profile.last_name = raw.author_profile.last_name ?? raw.last_name;
 
   const mapped = {
     "id": raw.id,

@@ -36,10 +36,12 @@ import ReactTooltip from "react-tooltip";
 import Router from "next/router";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
+import DocumentHeader from "~/components/Document/DocumentHeader";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
 import { initialize } from "react-ga";
+import { parseUnifiedDocument } from "~/config/types/root_types";
 
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
@@ -194,413 +196,110 @@ class PaperPageCard extends Component {
     Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/overview`);
   };
 
-  renderMetadata = () => {
-    const { paper } = this.props;
-    const reviews = paper?.unified_document?.reviews;
+  // formatAuthors = () => {
+  //   const { paper } = this.props;
 
-    this.metadata = [
-      {
-        label: "Published",
-        value: (
-          <span
-            className={css(styles.metadata) + " clamp1"}
-            property="datePublished"
-            dateTime={paper.paper_publish_date}
-          >
-            {this.renderPublishDate()}
-          </span>
-        ),
-        active: paper && paper.paper_publish_date,
-      },
+  //   const authors = {};
 
-      {
-        label: "DOI",
-        value: (
-          <a
-            property="sameAs"
-            href={this.formatDoiUrl(paper.doi)}
-            target="_blank"
-            className={css(styles.metadata, styles.link) + " clamp1"}
-            rel="noreferrer noopener"
-            data-test={isDevEnv() ? `doi` : undefined}
-          >
-            {paper.doi}
-          </a>
-        ),
-        active: paper && paper.doi,
-      },
+  //   if (paper.authors && paper.authors.length > 0) {
+  //     paper.authors.map((author) => {
+  //       if (author.first_name && !author.last_name) {
+  //         authors[author.first_name] = author;
+  //       } else if (author.last_name && !author.first_name) {
+  //         authors[author.last_name] = author;
+  //       } else {
+  //         authors[`${author.first_name} ${author.last_name}`] = author;
+  //       }
+  //     });
+  //   } else {
+  //     try {
+  //       if (paper.raw_authors) {
+  //         let rawAuthors = paper.raw_authors;
+  //         if (typeof paper.raw_authors === "string") {
+  //           rawAuthors = JSON.parse(paper.raw_authors);
+  //           if (!Array.isArray(rawAuthors)) {
+  //             rawAuthors = [rawAuthors];
+  //           }
+  //         } else if (
+  //           typeof rawAuthors === "object" &&
+  //           !Array.isArray(rawAuthors)
+  //         ) {
+  //           authors[rawAuthors["main_author"]] = true;
 
-      {
-        label: "Rating",
-        value: <PeerReviewScoreSummary summary={reviews} />,
-        active: paper?.unified_document?.reviews?.count > 0,
-      },
-    ];
+  //           rawAuthors["other_authors"].map((author) => {
+  //             authors[author] = true;
+  //           });
 
-    const metadata = this.metadata.filter((data) => data.active);
+  //           return authors;
+  //         }
+  //         rawAuthors.forEach((author) => {
+  //           if (author.first_name && !author.last_name) {
+  //             authors[author.first_name] = true;
+  //           } else if (author.last_name && !author.first_name) {
+  //             authors[author.last_name] = true;
+  //           } else {
+  //             authors[`${author.first_name} ${author.last_name}`] = true;
+  //           }
+  //         });
+  //       }
+  //     } catch (e) {
+  //       Sentry.captureException(e);
+  //     }
+  //   }
 
-    return (
-      <div>
-        <div className={css(styles.row)}>
-          {metadata.map((props, i) => (
-            <PaperMetadata
-              key={`metadata-${i}`}
-              {...props}
-              containerStyles={i === 0 && styles.marginRight}
-            />
-          ))}
-        </div>
-        <div className={css(styles.row, styles.lastRow)}>
-          <PaperMetadata
-            label={"Paper Title"}
-            active={
-              paper.paper_title &&
-              removeLineBreaksInStr(paper.paper_title) !==
-                removeLineBreaksInStr(paper.title)
-            }
-            value={
-              <h3 className={css(styles.metadata)} property={"name"}>
-                {paper.paper_title}
-              </h3>
-            }
-          />
-        </div>
-      </div>
-    );
-  };
+  //   return authors;
+  // };
 
-  renderUploadedBy = () => {
-    const { uploaded_by } = this.props.paper;
-    if (uploaded_by) {
-      let { author_profile } = uploaded_by;
-      return (
-        <div className={css(styles.labelContainer)}>
-          <div
-            onClick={this.navigateToSubmitter}
-            className={css(styles.authorSection)}
-          >
-            <div className={css(styles.avatar)}>
-              <AuthorAvatar author={author_profile} size={25} />
-            </div>
-            <span className={css(styles.labelText)}>
-              {`${author_profile.first_name} ${author_profile.last_name}`}
-            </span>
-          </div>
-        </div>
-      );
-    }
-  };
-  renderActions = () => {
-    const {
-      flagged,
-      isEditorOfHubs,
-      isModerator,
-      isSubmitter,
-      paper,
-      setFlag,
-      setMessage,
-      showMessage,
-    } = this.props;
+  // renderAuthors = () => {
+  //   const authorsObj = this.formatAuthors();
+  //   const authorKeys = Object.keys(authorsObj);
+  //   const length = authorKeys.length;
+  //   const authors = [];
 
-    const { paper_title, title, uploaded_by } = paper || {};
-    const uploadedById = uploaded_by && paper.uploaded_by.id;
-    const isUploaderSuspended =
-      paper && paper.uploaded_by && paper.uploaded_by.is_suspended;
-    const formattedPaperTitle =
-      !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
-    const actionButtons = [
-      {
-        active: true,
-        button: (
-          <PermissionNotificationWrapper
-            modalMessage="edit papers"
-            onClick={this.navigateToEditPaperInfo}
-            permissionKey="UpdatePaper"
-            loginRequired={true}
-            hideRipples={true}
-            styling={styles.borderRadius}
-          >
-            <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
-              {icons.pencil}
-            </div>
-          </PermissionNotificationWrapper>
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <ShareAction
-            addRipples={true}
-            title={"Share this paper"}
-            subtitle={formattedPaperTitle}
-            url={this.props.shareUrl}
-            customButton={
-              <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
-                {icons.shareAlt}
-              </div>
-            }
-          />
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <span data-tip={"Support Paper"}>
-            <PaperPromotionButton
-              paper={paper}
-              customStyle={styles.actionIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <span data-tip={"Flag Paper"}>
-            <FlagButtonV2
-              modalHeaderText="Flagging"
-              onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-                flagGrmContent({
-                  contentID: paper.id,
-                  contentType: "paper",
-                  flagReason,
-                  onError: renderErrorMsg,
-                  onSuccess: renderSuccessMsg,
-                });
-              }}
-            />
-          </span>
-        ),
-      },
-      {
-        active: isModerator || isSubmitter || isEditorOfHubs,
-        button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
-          >
-            <ActionButton
-              isModerator={true}
-              paperId={paper.id}
-              restore={paper.is_removed}
-              icon={paper.is_removed ? icons.plus : icons.minus}
-              onAction={paper.is_removed ? this.restorePaper : this.removePaper}
-              containerStyle={styles.moderatorContainer}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: isModerator && !isNullOrUndefined(uploadedById),
-        button: (
-          <>
-            <ReactTooltip />
-            <span
-              className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={
-                isUploaderSuspended
-                  ? "Reinstate User"
-                  : "Remove Page & Ban User"
-              }
-            >
-              <ActionButton
-                isModerator={isModerator}
-                paperId={paper.id}
-                uploadedById={uploadedById}
-                isUploaderSuspended={isUploaderSuspended}
-                containerStyle={styles.moderatorContainer}
-                onAfterAction={this.removePaper}
-                iconStyle={styles.moderatorIcon}
-                actionType="user"
-              />
-            </span>
-          </>
-        ),
-      },
-    ].filter((action) => action.active);
+  //   if (length >= 15) {
+  //     let author = authorKeys[0];
 
-    return (
-      <div className={css(styles.actions) + " action-bars"}>
-        {actionButtons.map((action, i) => {
-          if (actionButtons.length - 1 === i) {
-            return action.button;
-          }
+  //     return (
+  //       <>
+  //         <span className={css(styles.rawAuthor)}>{`${author}, et al`}</span>
+  //         <meta property="author" content={author} />
+  //       </>
+  //     );
+  //   }
 
-          return (
-            <span className={css(styles.actionButtonMargin)}>
-              {action.button}
-            </span>
-          );
-        })}
-      </div>
-    );
-  };
+  //   for (let i = 0; i < authorKeys.length; i++) {
+  //     let authorName = authorKeys[i];
+  //     if (typeof authorsObj[authorName] === "object") {
+  //       let author = authorsObj[authorName];
+  //       authors.push(
+  //         <Link
+  //           href={"/user/[authorId]/[tabName]"}
+  //           as={`/user/${author.id}/overview`}
+  //           key={`authorName-${author.id}`}
+  //         >
+  //           <a
+  //             href={`/user/${author.id}/overview`}
+  //             className={css(styles.atag)}
+  //           >
+  //             <span className={css(styles.authorName)} property="name">
+  //               {`${authorName}${i < length - 1 ? "," : ""}`}
+  //             </span>
+  //             <meta property="author" content={author} />
+  //           </a>
+  //         </Link>
+  //       );
+  //     } else {
+  //       authors.push(
+  //         <span className={css(styles.rawAuthor)} key={`rawAuthor-${i}`}>
+  //           {`${authorName}${i < length - 1 ? "," : ""}`}
+  //           <meta property="author" content={authorName} />
+  //         </span>
+  //       );
+  //     }
+  //   }
 
-  formatAuthors = () => {
-    const { paper } = this.props;
-
-    const authors = {};
-
-    if (paper.authors && paper.authors.length > 0) {
-      paper.authors.map((author) => {
-        if (author.first_name && !author.last_name) {
-          authors[author.first_name] = author;
-        } else if (author.last_name && !author.first_name) {
-          authors[author.last_name] = author;
-        } else {
-          authors[`${author.first_name} ${author.last_name}`] = author;
-        }
-      });
-    } else {
-      try {
-        if (paper.raw_authors) {
-          let rawAuthors = paper.raw_authors;
-          if (typeof paper.raw_authors === "string") {
-            rawAuthors = JSON.parse(paper.raw_authors);
-            if (!Array.isArray(rawAuthors)) {
-              rawAuthors = [rawAuthors];
-            }
-          } else if (
-            typeof rawAuthors === "object" &&
-            !Array.isArray(rawAuthors)
-          ) {
-            authors[rawAuthors["main_author"]] = true;
-
-            rawAuthors["other_authors"].map((author) => {
-              authors[author] = true;
-            });
-
-            return authors;
-          }
-          rawAuthors.forEach((author) => {
-            if (author.first_name && !author.last_name) {
-              authors[author.first_name] = true;
-            } else if (author.last_name && !author.first_name) {
-              authors[author.last_name] = true;
-            } else {
-              authors[`${author.first_name} ${author.last_name}`] = true;
-            }
-          });
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-    }
-
-    return authors;
-  };
-
-  renderAuthors = () => {
-    const authorsObj = this.formatAuthors();
-    const authorKeys = Object.keys(authorsObj);
-    const length = authorKeys.length;
-    const authors = [];
-
-    if (length >= 15) {
-      let author = authorKeys[0];
-
-      return (
-        <>
-          <span className={css(styles.rawAuthor)}>{`${author}, et al`}</span>
-          <meta property="author" content={author} />
-        </>
-      );
-    }
-
-    for (let i = 0; i < authorKeys.length; i++) {
-      let authorName = authorKeys[i];
-      if (typeof authorsObj[authorName] === "object") {
-        let author = authorsObj[authorName];
-        authors.push(
-          <Link
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/overview`}
-            key={`authorName-${author.id}`}
-          >
-            <a
-              href={`/user/${author.id}/overview`}
-              className={css(styles.atag)}
-            >
-              <span className={css(styles.authorName)} property="name">
-                {`${authorName}${i < length - 1 ? "," : ""}`}
-              </span>
-              <meta property="author" content={author} />
-            </a>
-          </Link>
-        );
-      } else {
-        authors.push(
-          <span className={css(styles.rawAuthor)} key={`rawAuthor-${i}`}>
-            {`${authorName}${i < length - 1 ? "," : ""}`}
-            <meta property="author" content={authorName} />
-          </span>
-        );
-      }
-    }
-
-    return authors;
-  };
-
-  renderPublishDate = () => {
-    const { paper } = this.props;
-    if (paper.paper_publish_date) {
-      return formatPublishedDate(moment(paper.paper_publish_date), true);
-    }
-  };
-
-  renderHubs = () => {
-    const { paper } = this.props;
-
-    if (paper.hubs && paper.hubs.length > 0) {
-      return (
-        <div className={css(styles.hubTags)}>
-          {paper.hubs.map((hub, index) => {
-            if (this.state.showAllHubs || index < 3) {
-              let last = index === paper.hubs.length - 1;
-              return (
-                <div key={`hub_tag_index_${index}`}>
-                  <HubTag
-                    tag={hub}
-                    gray={false}
-                    overrideStyle={
-                      this.state.showAllHubs ? styles.tagStyle : styles.hubTag
-                    }
-                    last={last}
-                  />
-                  <meta property="about" content={hub.name} />
-                </div>
-              );
-            }
-          })}
-          {paper.hubs.length > 3 && (
-            <div
-              className={css(
-                styles.icon,
-                this.state.showAllHubs && styles.active
-              )}
-              onClick={this.toggleShowHubs}
-            >
-              {this.state.showAllHubs ? icons.chevronUp : icons.ellipsisH}
-            </div>
-          )}
-        </div>
-      );
-    }
-  };
-
-  renderPreregistrationTag = () => {
-    return (
-      <div className={css(styles.preRegContainer)}>
-        <img
-          src="/static/icons/wip.png"
-          className={css(styles.preRegIcon)}
-          alt="Preregistration Icon"
-        />
-        Funding Request
-      </div>
-    );
-  };
+  //   return authors;
+  // };
 
   render() {
     const {
@@ -617,6 +316,9 @@ class PaperPageCard extends Component {
     const formattedPaperTitle =
       !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
 
+    const unifiedDocument = parseUnifiedDocument(paper.unified_document);
+    console.log("unifiedDocument", unifiedDocument);
+
     return (
       <ReactPlaceholder
         ready={doneFetchingPaper}
@@ -627,6 +329,23 @@ class PaperPageCard extends Component {
           className={css(styles.mainContainer)}
           data-test={isDevEnv() ? `paper-${paper.id}` : undefined}
         >
+          {/* {paper?.id &&
+            <DocumentHeader
+              title={unifiedDocument.document.title}
+              createdBy={unifiedDocument.createdBy}
+              authors={[]}
+              unifiedDocument={unifiedDocument}
+              doi={doi}
+              journal={journal}
+
+              // datePublished?= string
+              // journal?= string
+              hubs={[]}
+              createdDate={unifiedDocument.createdDate}
+              type="paper"
+            />
+          } */}
+
           <div className={css(styles.main)}>
             <AuthorSupportModal />
 
@@ -688,9 +407,6 @@ class PaperPageCard extends Component {
                           </h1>
                         </div>
                       </div>
-                      <div className={css(styles.column)}>
-                        {this.renderMetadata()}
-                      </div>
                     </div>
                   </div>
                   <div className={css(styles.rightColumn, styles.mobile)}>
@@ -725,7 +441,6 @@ class PaperPageCard extends Component {
               </div>
             </div>
           </div>
-
           {
             <div className={css(styles.previewBox)}>
               <PaperPreview
@@ -740,7 +455,6 @@ class PaperPageCard extends Component {
           }
         </div>
         <div className={css(styles.bottomContainer)}>
-          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
           <div className={css(styles.downloadPDFContainer)}>
             <div className={css(styles.downloadPDFWrapper)}>
               {(paper.file || paper.pdf_url) && (
