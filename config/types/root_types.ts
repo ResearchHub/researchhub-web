@@ -1,25 +1,34 @@
+import { parseCreatedBy } from "./contribution";
+import { parsePeerReviewScoreSummary, PeerReview, PeerReviewScoreSummary } from "./peerReview";
+
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
 export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null;
 
-export type Post = {
-  id: ID,
+export type RHDocument = {
+  id?: ID,
   title?: string,
   slug?: string,
+  paperTitle?: string,
+  isRemoved?: boolean,
 }
 
 export type UnifiedDocument = {
   id: ID,
   documentType: "post" | "paper" | "hypothesis",
-  document?: Post,
+  document?: RHDocument,
+  createdBy?: CreatedBy,
+  reviewSummary?: PeerReviewScoreSummary,
 }
 
 export type AuthorProfile = {
-  id: ID,
+  id?: ID,
   profileImage?: string,
   firstName?: string, 
   lastName?: string, 
+  isClaimed: boolean,
+  sequence?: "first" | "additional",
 }
 
 export type RHUser = {
@@ -118,38 +127,82 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   }
 
   const parsed = {
-    id: raw.id,
-    documentType:  raw?.document_type?.toLowerCase(),
+    "id": raw.id,
+    "documentType": raw?.document_type?.toLowerCase(),
+    "document": {},
+  }
+
+  if (raw.created_by) {
+    parsed["createdBy"] = parseCreatedBy(raw.created_by);
+  }
+
+  const unparsedInnerDoc = 
+    Array.isArray(raw.documents) 
+      ? raw.documents[0] 
+      : typeof(raw.documents) === "object"
+      ? raw.documents
+      : {};
+
+  parsed.document = {
+    id: unparsedInnerDoc.id,
+    title: unparsedInnerDoc.title,
+    slug: unparsedInnerDoc.slug,      
   }
 
   if (parsed.documentType === "discussion") {
     parsed.documentType = "post";
   }
-
-  if (Array.isArray(raw.documents)) {
-    parsed["document"] = parsePost(raw.documents[0]);
+  else if (parsed.documentType === "paper") {
+    parsed.documentType = "paper";
+    parsed.document["paperTitle"] = unparsedInnerDoc.paper_title;
   }
-  else if (typeof(raw.documents) === "object") {
-    parsed["document"] = {
-      id: raw.documents.id,
-      title: raw.documents.title,
-      slug: raw.documents.slug,      
-    }  
+
+  if (raw.reviews) {
+    parsed["reviewSummary"] = parsePeerReviewScoreSummary(raw.reviews);
   }
 
   return parsed;
 }
 
-export const parsePost = (raw: any): Post => {
-  if (typeof(raw) !== "object") {
-    return raw;
+export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
+  const rawAuthors = rawPaper.raw_authors || [];
+  const claimedAuthors = rawPaper.authors || [];
+  const nameToObjMap = {}
+
+  for (let i=0; i < rawAuthors.length; i++) {
+    try {
+      const current = rawAuthors[i];
+      const key = (current.first_name + " " + current.last_name).toLowerCase();
+      nameToObjMap[key] = parseAuthorProfile(current);
+    }
+    catch(error) {
+      console.log('Error parsing author', rawAuthors[i]);
+    }
   }
 
-  return {
-    id: raw.id,
-    title: raw.title,
-    slug: raw.slug,
+  for (let i=0; i < claimedAuthors.length; i++) {
+    try {
+      const current = claimedAuthors[i];
+      const key = (current.first_name + " " + current.last_name).toLowerCase();
+      // Override raw_author if claimed author exists
+      nameToObjMap[key] = {...nameToObjMap[key], ...parseAuthorProfile(current)}
+    }
+    catch(error) {
+      console.log('Error parsing author', claimedAuthors[i]);
+    }
   }
+
+  const finalAuthors = Object.values(nameToObjMap)
+    .sort((a:any, b:any) => {
+      return (a.sequence === "first" && b.sequence === "first")
+        ? 0
+        : a.sequence === "first"
+        ? -1
+        : 1
+    });
+
+  // @ts-ignore
+  return finalAuthors;
 }
 
 export const parseAuthorProfile = (raw: any): AuthorProfile => {
@@ -162,10 +215,13 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
+    isClaimed: raw.id ? true : false,
+    ...(raw.sequence && {sequence: raw.sequence}),
   }
 
   return parsed;
 }
+
 
 export const parseUser = (raw: any): RHUser => {
   const parsed = {
