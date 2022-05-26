@@ -39,6 +39,8 @@ import VoteWidget from "~/components/VoteWidget";
 import dynamic from "next/dynamic";
 import { initialize } from "react-ga";
 import AdminButton from "./Admin/AdminButton";
+import censorDocument from "./Admin/api/censorDocAPI";
+import restoreDocument from "./Admin/api/restoreDocAPI";
 
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
