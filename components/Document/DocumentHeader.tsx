@@ -1,7 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
-import { CreatedBy, AuthorProfile, UnifiedDocument } from "~/config/types/root_types";
+import { CreatedBy, AuthorProfile, UnifiedDocument, parseAuthorProfile } from "~/config/types/root_types";
 import { Hub } from "~/config/types/hub";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import AuthorAvatar from "../AuthorAvatar";
 import ALink from "../ALink";
 import HubDropDown from "../Hubs/HubDropDown";
@@ -10,6 +10,11 @@ import { timeSince } from "~/config/utils/dates";
 import icons, { HypothesisIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
 import DocumentActions from "./DocumentActions";
+import VoteWidget from "../VoteWidget";
+import { createVoteHandler } from "../Vote/utils/createVoteHandler";
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+
 // import DocumentActions from "./DocumentActions";
 
 type Args = {
@@ -24,6 +29,8 @@ type Args = {
   createdDate: string,
   externalUrl: string,
   commentCount: number,
+  initialVoteScore: number,
+  currentUserVote: string,
   type: "paper" | "hypothesis" | "post",
 }
 
@@ -40,9 +47,73 @@ export default function DocumentHeader({
   commentCount,
   hubs = [],
   type,
+  currentUserVote,
+  initialVoteScore = 0,
 }:Args): ReactElement<"div"> {
-  console.log('unifiedDocument', unifiedDocument)
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
+  const [voteState, setVoteState] = useState({
+    currentUserVote: currentUserVote,
+    voteScore: initialVoteScore,
+    prevVoteScore: initialVoteScore,
+  });
+
+  useEffect(() => {
+    setVoteState({ ...voteState, currentUserVote })
+  }, [currentUserVote]);
+
+  const handleVoteSuccess = ({ voteType, increment }) => {
+    let newVoteScore = voteState.voteScore;
+    const prevUserScore = voteState.voteScore;
+    if (voteType === UPVOTE) {
+      if (voteState.currentUserVote === DOWNVOTE) {
+        newVoteScore = voteState.voteScore + increment + 1;
+      }
+      else if (voteState.currentUserVote === UPVOTE) {
+        // This shouldn't happen but if it does, we do nothing
+        console.log('User already casted upvote')
+        return;
+      }
+      else {
+        newVoteScore = voteState.voteScore + increment;
+      }
+    } else if (voteType === DOWNVOTE) {
+      if (voteState.currentUserVote === DOWNVOTE) {
+        console.log('User already casted downvote')
+        return;
+      }
+      else if (voteState.currentUserVote === UPVOTE) {
+        newVoteScore = voteState.voteScore + increment - 1;
+      }
+      else {
+        newVoteScore = voteState.voteScore + increment;
+      }
+    }
+
+    setVoteState({
+      currentUserVote: voteType,
+      voteScore: newVoteScore,
+      prevVoteScore: initialVoteScore,
+    })
+  }
+  
+  const currentUser = getCurrentUser() ?? {};
+  const currentAuthor = parseAuthorProfile(currentUser.author_profile);
+  const onUpvote = createVoteHandler({
+    voteType: UPVOTE,
+    unifiedDocument,
+    currentAuthor,
+    onSuccess: handleVoteSuccess,
+    onError: () => null,
+  });
+  const onDownvote = createVoteHandler({
+    voteType: DOWNVOTE,
+    unifiedDocument,
+    currentAuthor,
+    onSuccess: handleVoteSuccess,
+    onError: () => null,
+  });
+
+
   const authorElems = (authors || []).map((author) => {
     return (
       <span className={css(styles.author)}>
@@ -63,8 +134,19 @@ export default function DocumentHeader({
   });
 
   return (
-    <div>
+    <div className={css(styles.documentHeader)}>
       <ReactTooltip />
+      <div className={css(styles.voteWidgetContainer)}>
+        <VoteWidget
+          score={voteState.voteScore}
+          onUpvote={onUpvote}
+          onDownvote={onDownvote}
+          // @ts-ignore
+          selected={voteState.currentUserVote}
+          isPaper={unifiedDocument.documentType === "paper"}
+          type={unifiedDocument.documentType}
+        />
+      </div>      
       <div className={css(styles.submittedBy)}>
         <AuthorAvatar author={createdBy} size={25} />
         <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
@@ -166,6 +248,13 @@ export default function DocumentHeader({
 }
 
 const styles = StyleSheet.create({
+  documentHeader: {
+    position: "relative",
+  },
+  voteWidgetContainer: {
+    position: "absolute",
+    left: -50,
+  },
   actionsAndDetailsRow: {
     display: "flex",
     justifyContent: "space-between",
