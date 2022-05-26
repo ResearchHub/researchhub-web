@@ -70,6 +70,9 @@ function PaperUploadWizardDOIBody({
               onExit();
               modalActions.openUploadPaperModal(true, error.message?.data);
               break;
+            case 429 /* Rate limiting error */:
+              modalActions.openRecaptchaPrompt(true);
+              break;
             default:
               messageActions.setMessage("Please provide valid doi source");
               messageActions.showMessage({ show: true, error: true });

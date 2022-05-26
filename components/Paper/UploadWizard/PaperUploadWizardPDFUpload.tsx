@@ -130,6 +130,9 @@ function PaperUploadWizardPDFUpload({
           setTimeout(() => {
             msgReduxActions.showMessage({ show: false });
           }, 2000);
+        } else if (errorStatus === 429) {
+          modalReduxActions.openRecaptchaPrompt(true);
+          console.log("test......")
         } else if (errorStatus === 403 /* duplicate error */) {
           onExit();
           modalReduxActions.openUploadPaperModal(
