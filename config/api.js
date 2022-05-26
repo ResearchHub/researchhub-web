@@ -1,7 +1,11 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  doesNotExist,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -90,6 +94,54 @@ const routes = (BASE_URL) => {
     },
     INCLUDE_IN_FEED: ({ unifiedDocumentId }) => {
       return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/include_in_feed/`;
+    },
+    CONTRIBUTIONS: ({ hubId }) => {
+      return (
+        BASE_URL + "audit/contributions/?" + (hubId ? `hubs=${hubId}` : "")
+      );
+    },
+    DISMISS_FLAGGED_CONTENT: () => {
+      return BASE_URL + "audit/dismiss_flagged_content/";
+    },
+    REMOVE_FLAGGED_CONTENT: () => {
+      return BASE_URL + "audit/remove_flagged_content/";
+    },
+    FLAGS: ({ hubId, verdict = "OPEN" }) => {
+      return (
+        BASE_URL +
+        "audit/flagged/?" +
+        (hubId ? `hubs=${hubId}&` : "") +
+        (verdict ? `verdict=${verdict}&` : "") +
+        (verdict === "OPEN"
+          ? "ordering=-created_date"
+          : "ordering=-verdict_created_date")
+      );
+    },
+    /* GRM = Generic Reaction Model */
+    FLAG_GRM_CONTENT: ({ commentPayload, contentID, contentType }) => {
+      const {
+        commentID = undefined,
+        commentType = undefined,
+        replyID = undefined,
+        threadID = undefined,
+      } = commentPayload ?? {};
+      if (isNullOrUndefined(commentType)) {
+        return `${BASE_URL}${contentType}/${contentID}/flag/`;
+      } else {
+        if (commentType === "thread") {
+          return `${BASE_URL}${contentType}/${contentID}/discussion/${threadID}/flag/`;
+        } else if (commentType === "comment") {
+          return `${BASE_URL}${contentType}/${contentID}/discussion/${threadID}/comment/${commentID}/flag/`;
+        } else {
+          return `${BASE_URL}${contentType}/${contentID}/discussion/${threadID}/comment/${commentID}/reply/${replyID}/flag/`;
+        }
+      }
+    },
+    FLAG_AND_REMOVE: () => {
+      return BASE_URL + "audit/flag_and_remove/";
+    },
+    FLAG_COUNT: () => {
+      return BASE_URL + "audit/flagged_count/";
     },
     ORGANIZATION: ({ userId, orgId, orgSlug }) => {
       let url = `${BASE_URL}organization/`;

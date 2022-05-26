@@ -11,7 +11,7 @@ export type Post = {
 
 export type UnifiedDocument = {
   id: ID,
-  documentType: string,
+  documentType: "post" | "paper" | "hypothesis",
   document?: Post,
 }
 
@@ -105,6 +105,13 @@ export type AuthStore = {
   walletLink: any; // TODO
 };
 
+export type CreatedBy = {
+  firstName: string,
+  lastName: string,
+  id: ID,
+  authorProfile: AuthorProfile,
+}
+
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof(raw) !== "object") {
     return raw;
@@ -112,11 +119,22 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
 
   const parsed = {
     id: raw.id,
-    documentType: raw.document_type,
+    documentType:  raw?.document_type?.toLowerCase(),
+  }
+
+  if (parsed.documentType === "discussion") {
+    parsed.documentType = "post";
   }
 
   if (Array.isArray(raw.documents)) {
     parsed["document"] = parsePost(raw.documents[0]);
+  }
+  else if (typeof(raw.documents) === "object") {
+    parsed["document"] = {
+      id: raw.documents.id,
+      title: raw.documents.title,
+      slug: raw.documents.slug,      
+    }  
   }
 
   return parsed;
