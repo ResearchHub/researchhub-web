@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import {
@@ -9,9 +10,10 @@ import {
 import {
   emptyFncWithMsg,
   filterNull,
+  isEmpty,
   isNullOrUndefined,
 } from "~/config/utils/nullchecks";
-import { ID } from "~/config/types/root_types";
+import { ID, KeyOf } from "~/config/types/root_types";
 import { formatPublishedDate } from "~/config/utils/dates";
 import {
   Fragment,
@@ -21,8 +23,15 @@ import {
   useMemo,
   useState,
 } from "react";
+import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { postHypothesisVote } from "./api/postHypothesisVote";
+import {
+  removeHypothesis,
+  restoreHypothesis,
+} from "./api/postHypothesisStatus";
 import { updateHypothesis } from "./api/updateHypothesis";
+import { useRouter } from "next/router";
+import ActionButton from "../ActionButton";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
@@ -31,6 +40,7 @@ import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import VoteWidget from "~/components/VoteWidget";
+<<<<<<< HEAD
 import ActionButton from "../ActionButton";
 import { breakpoints } from "~/config/themes/screen";
 import censorDocument from "~/components/Admin/api/censorDocAPI";
@@ -39,6 +49,13 @@ import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFrom
 import DiscussionCount from "~/components/DiscussionCount";
 import { useRouter } from "next/router";
 import AdminButton from "../Admin/AdminButton";
+=======
+import DiscussionCount from "~/components/DiscussionCount";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { FLAG_REASON } from "../Flag/config/constants";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import { captureEvent } from "~/config/utils/events";
+>>>>>>> 7a0e669952e0353361d8e5438a0493c9b8ccde9c
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -71,6 +88,7 @@ const getActionButtons = ({
     currUserID,
     hubs: hubs ?? [],
   });
+  const isLoggedIn = !isEmpty(currUserID);
   const actionConfigs = [
     {
       active: isCurrUserSubmitter,
@@ -100,6 +118,28 @@ const getActionButtons = ({
             {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
+      ),
+    },
+    {
+      active: isLoggedIn,
+      button: (
+        <FlagButtonV2
+          onSubmit={(
+            flagReason: KeyOf<typeof FLAG_REASON>,
+            renderErrorMsg,
+            renderSuccessMsg
+          ): void => {
+            flagGrmContent({
+              commentPayload: {},
+              contentID: hypoID,
+              contentType: "hypothesis",
+              flagReason,
+              onError: renderErrorMsg,
+              onSuccess: renderSuccessMsg,
+            });
+          }}
+          modalHeaderText="Flagging"
+        />
       ),
     },
     {

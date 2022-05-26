@@ -29,6 +29,7 @@ import {
   isAddress,
   toCheckSumAddress,
 } from "~/config/utils/crypto";
+import { captureEvent } from "~/config/utils/events";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -310,6 +311,11 @@ class WithdrawalModal extends Component {
           }
         })
         .catch((err) => {
+          captureEvent({
+            err,
+            msg: "Failed to withdraw",
+            data: param,
+          });
           if (err.response.status === 429) {
             showMessage({ show: false });
             this.closeModal();

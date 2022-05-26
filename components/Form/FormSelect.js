@@ -198,7 +198,7 @@ class FormSelect extends Component {
           isMulti={isMulti}
           isSearchable={isSearchable === null ? true : isSearchable}
           maxMenuHeight={maxMenuHeight && maxMenuHeight}
-          menuPortalTarget={document.body}
+          menuPortalTarget={process.browser ? document.body : undefined}
           menuPosition="fixed"
           onChange={(option) => this.handleOnChange(id, option)}
           options={options}

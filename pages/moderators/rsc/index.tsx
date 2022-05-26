@@ -1,30 +1,26 @@
-import { ReactElement, useState } from "react";
-import { useDispatch, useStore } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-import AsyncSelect from "react-select/async";
 import { Helpers } from "@quantfive/js-web-config";
-import get from "lodash/get";
-
-import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
+import { MessageActions } from "~/redux/message";
+import { ReactElement, useState } from "react";
+import { StyleSheet, css } from "aphrodite";
+import { useDispatch, useStore } from "react-redux";
+import { useEffectCheckModCredentials } from "~/components/Moderator/useEffectCheckModCredentials";
+import api from "~/config/api";
+import AsyncSelect from "react-select/async";
+import Button from "~/components/Form/Button";
 import ContentPage from "~/components/ContentPage/ContentPage";
+import FormInput from "~/components/Form/FormInput";
+import get from "lodash/get";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
 import SideColumn from "~/components/Home/SideColumn";
-import { mainFeedStyles } from "~/pages/leaderboard/LeaderboardPage";
-import api from "~/config/api";
-import { pickFiltersForApi } from "~/config/utils/search";
-import FormInput from "~/components/Form/FormInput";
 import UserCard from "~/components/UserCard";
-import Button from "~/components/Form/Button";
-import { MessageActions } from "~/redux/message";
 
 export default function RSCDashboard(): ReactElement<
   typeof RSCDashboard
 > | null {
   const dispatch = useDispatch();
-  const reduxStore = useStore();
   const [chosenOption, setChosenOption] = useState(null);
   const [inputAmount, setInputAmount] = useState(null);
-  const shouldRenderUI = useEffectCheckCredentials(reduxStore);
+  const shouldRenderUI = useEffectCheckModCredentials();
   if (!shouldRenderUI) {
     return null;
   }
@@ -36,43 +32,43 @@ export default function RSCDashboard(): ReactElement<
     }),
   };
 
-  const loadOptions = (
-    inputValue: string,
-    callback: (options) => void
-  ) => {
+  const loadOptions = (inputValue: string, callback: (options) => void) => {
     const filters = {
       search_multi_match: inputValue,
     };
 
     const config = {
-      route: 'person',
+      route: "person",
     };
 
     setChosenOption(null);
 
     return fetch(api.SEARCH({ filters, config }), api.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then(res => {
-      const options = [];
-      const results = res.results.filter((user) => user.user);
-      for (let i = 0; i < results.length; i++) {
-        const user = results[i];
-        options.push({
-          label: (
-            <div className={css(styles.userRow)}>
-              <img src={user.author_profile.profile_image} className={css(styles.img)} />
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        const options = [];
+        const results = res.results.filter((user) => user.user);
+        for (let i = 0; i < results.length; i++) {
+          const user = results[i];
+          options.push({
+            label: (
+              <div className={css(styles.userRow)}>
+                <img
+                  src={user.author_profile.profile_image}
+                  className={css(styles.img)}
+                />
                 {user.first_name} {user.last_name}
                 {user.headline?.title ? `: ${user.headline.title}` : ""}
-            </div>
-          ),
-          value: user.user,
-          userObject: user,
-        });
-      }
+              </div>
+            ),
+            value: user.user,
+            userObject: user,
+          });
+        }
 
-      callback(options)
-    })
+        callback(options);
+      });
   };
 
   const getPersonReputation = (person) => {
@@ -85,26 +81,26 @@ export default function RSCDashboard(): ReactElement<
       amount: inputAmount,
       recipient_id: chosenOption?.userObject?.user?.id,
     };
-    dispatch(MessageActions.showMessage({load: true, show:true}));
+    dispatch(MessageActions.showMessage({ load: true, show: true }));
 
     return fetch(api.SEND_RSC(), api.POST_CONFIG(config))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then(res => {
-      setChosenOption(null);
-      setInputAmount(null);
-      // document.getElementById('input-amount').
-      document.getElementById('rsc-amount').value = null
-      dispatch(MessageActions.showMessage({ show: false }));
-      dispatch(MessageActions.setMessage('RSC Sent!'));
-      dispatch(MessageActions.showMessage({ show: true }));
-    })
-    .catch(err => {
-      dispatch(MessageActions.showMessage({ show: false }));
-      dispatch(MessageActions.setMessage('Something went wrong'));
-      dispatch(MessageActions.showMessage({ show: true, error: true, }));
-    })
-  }
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setChosenOption(null);
+        setInputAmount(null);
+        // document.getElementById('input-amount').
+        document.getElementById("rsc-amount").value = null;
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("RSC Sent!"));
+        dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch((err) => {
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Something went wrong"));
+        dispatch(MessageActions.showMessage({ show: true, error: true }));
+      });
+  };
 
   return (
     <ContentPage
@@ -113,11 +109,11 @@ export default function RSCDashboard(): ReactElement<
           <form className={css(styles.form)} onSubmit={sendRSC}>
             <h2>RSC Amount</h2>
             <div className={css(styles.selector)}>
-              <FormInput 
+              <FormInput
                 value={inputAmount}
                 type="number"
                 required
-                id={'rsc-amount'}
+                id={"rsc-amount"}
                 onChange={(id, value) => {
                   setInputAmount(value);
                 }}
@@ -128,13 +124,13 @@ export default function RSCDashboard(): ReactElement<
               <AsyncSelect
                 styles={inputStyles}
                 loadOptions={loadOptions}
-                placeholder={'Search for a user'}
+                placeholder={"Search for a user"}
                 value={chosenOption}
                 onChange={(option) => setChosenOption(option)}
               />
             </div>
 
-            {chosenOption &&
+            {chosenOption && (
               <div className={css(styles.user)}>
                 <UserCard
                   className={css(styles.person)}
@@ -142,12 +138,12 @@ export default function RSCDashboard(): ReactElement<
                   reputation={getPersonReputation(chosenOption.userObject)}
                 />
               </div>
-            }
+            )}
 
-            <Button 
-              label={'Send RSC'}
+            <Button
+              label={"Send RSC"}
               rippleClass={styles.ripples}
-              type={'submit'}
+              type={"submit"}
               customButtonStyle={[styles.button]}
             />
           </form>
@@ -176,12 +172,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   userRow: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   img: {
     marginRight: 16,
-    borderRadius: '50%',
+    borderRadius: "50%",
     height: 40,
   },
   user: {
@@ -189,9 +185,9 @@ const styles = StyleSheet.create({
   },
   ripples: {
     marginTop: 32,
-    width: '100%',
+    width: "100%",
   },
   button: {
-    width: '100%',
+    width: "100%",
   },
 });

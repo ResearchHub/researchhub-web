@@ -20,8 +20,8 @@ const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
     production: true,
   },
   peerReview: {
-    development: true,
-    staging: true,
+    development: false,
+    staging: false,
     production: false,
   },
 } as const;

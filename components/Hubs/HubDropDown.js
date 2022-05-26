@@ -9,7 +9,8 @@ import icons from "~/config/themes/icons";
 import { nameToUrl } from "~/config/constants";
 
 const HubDropDown = (props) => {
-  const { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
+  const { hubs, hubName, isOpen, setIsOpen, labelStyle, containerStyle } =
+    props;
   let dropdown; // holds ref for dropdown
 
   /**
@@ -71,11 +72,11 @@ const HubDropDown = (props) => {
 
   return (
     <div
-      className={css(styles.container)}
+      className={css(styles.container, containerStyle)}
       onClick={toggleDropdown}
       ref={(ref) => (dropdown = ref)}
     >
-      <div className={css(styles.icon, isOpen && styles.active)}>
+      <div className={css(styles.icon, isOpen && styles.active, labelStyle)}>
         {`+${hubs.length - 1} more`}
       </div>
       <div className={css(styles.dropdown, isOpen && styles.open)}>

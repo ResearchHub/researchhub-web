@@ -426,6 +426,11 @@ class CommentEntry extends Component {
     };
   };
 
+  getDocumentID = () => {
+    const { data, hypothesis, post } = this.props;
+    return data?.paper ?? hypothesis?.id ?? post?.id;
+  };
+
   handleStateRendering = () => {
     if (this.state.removed) {
       return false;
@@ -540,10 +545,12 @@ class CommentEntry extends Component {
       this.state.replies.length > comment.reply_count
         ? this.state.replies.length
         : comment.reply_count;
+    const documentID = this.getDocumentID();
     let date = comment.created_date;
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
+
     return (
       <div
         className={css(styles.row, styles.commentCard)}
@@ -634,20 +641,24 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    hostname={hostname}
+                    comment
+                    commentID={comment?.id}
+                    contentType="comment"
                     count={commentCount}
-                    comment={true}
-                    onClick={this.toggleReplyView}
-                    onSubmit={this.submitReply}
-                    small={true}
-                    mediaOnly={mediaOnly}
-                    showChildrenState={this.state.revealReply}
-                    onCountHover={this.toggleHover}
-                    isRemoved={this.state.removed}
-                    // Editing
+                    documentID={documentID}
+                    documentType={this.props.documentType}
                     editing={this.state.editing}
-                    toggleEdit={this.state.canEdit && this.toggleEdit}
                     hideReply={comment.source === "twitter"}
+                    hostname={hostname}
+                    isRemoved={this.state.removed}
+                    mediaOnly={mediaOnly}
+                    onClick={this.toggleReplyView}
+                    onCountHover={this.toggleHover}
+                    onSubmit={this.submitReply}
+                    showChildrenState={this.state.revealReply}
+                    small
+                    threadID={data?.id}
+                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
               </Fragment>
@@ -661,16 +672,21 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
-                    hostname={hostname}
+                    comment
+                    commentID={comment?.id}
+                    contentType="comment"
                     count={commentCount}
-                    comment={true}
-                    onClick={this.toggleReplyView}
-                    onSubmit={this.submitReply}
-                    small={true}
-                    showChildrenState={this.state.revealReply}
-                    onCountHover={this.toggleHover}
-                    isRemoved={this.state.removed}
+                    documentID={documentID}
+                    documentType={this.props.documentType}
                     hideReply={comment.source === "twitter"}
+                    hostname={hostname}
+                    isRemoved={this.state.removed}
+                    onClick={this.toggleReplyView}
+                    onCountHover={this.toggleHover}
+                    onSubmit={this.submitReply}
+                    showChildrenState={this.state.revealReply}
+                    small
+                    threadID={data?.id}
                   />
                 </div>
               </Fragment>
