@@ -14,6 +14,7 @@ import VoteWidget from "../VoteWidget";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { toTitleCase } from "~/config/utils/string";
 
 // import DocumentActions from "./DocumentActions";
 
@@ -120,9 +121,9 @@ export default function DocumentHeader({
         {author.isClaimed
           ? (
               <span data-tip={"Profile claimed by author"}>
-              <ALink href={`/user/${author.id}/overview`}>
-                {author.firstName} {author.lastName} <span className={css(styles.badgeIcon)}>{icons.checkCircleSolid}</span>
-              </ALink>
+                <ALink href={`/user/${author.id}/overview`}>
+                  {author.firstName} {author.lastName} <span className={css(styles.badgeIcon)}>{icons.checkCircleSolid}</span>
+                </ALink>
               </span>
             )
           : (
@@ -148,15 +149,18 @@ export default function DocumentHeader({
         />
       </div>      
       <div className={css(styles.submittedBy)}>
-        <AuthorAvatar author={createdBy} size={25} />
+        <div className={css(styles.avatarContainer)}>
+          <AuthorAvatar author={createdBy} size={25} />
+        </div>
         <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
-        <div>
+        <div className={css(styles.hubsContainer)}>
           {hubs?.length > 0 &&
             <>
-              <span>{` posted in `}</span>
+              <span className={css(styles.textSecondary, styles.postedText)}>{`posted`}</span>
               {hubs?.slice(0, 2).map((h, index) => (
                 <>
-                  <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
+                  <span className={css(styles.textSecondary)}>{` in`}</span>
+                  <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{toTitleCase(h.name)}</ALink>
                   {index < hubs?.slice(0, 2).length - 1 ? ", " : ""}
                 </>
               ))}
@@ -173,7 +177,7 @@ export default function DocumentHeader({
             </>
             }          
         </div>
-        <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
+        <span className={css(styles.textSecondary, styles.timestamp)}>{timeSince(createdDate)}</span>
       </div>
       <div className={css(styles.title)}>{title}</div>
       <div className={css(styles.metadata)}>
@@ -279,6 +283,18 @@ const styles = StyleSheet.create({
   },
   submittedBy: {
     display: "flex",
+    alignItems: "center",
+    fontSize: 14,
+    lineHeight: "26px",
+  },
+  postedText: {
+    marginLeft: 5,
+    // marginRight: 5,
+  },
+  avatarContainer: {
+    marginRight: 7,
+  },
+  hubsContainer: {
   },
   claimProfile: {
 
@@ -287,7 +303,10 @@ const styles = StyleSheet.create({
 
   },
   timestamp: {
-    color: colors.BLACK(0.5),
+    marginLeft: 2,
+  },
+  textSecondary: {
+    color: colors.BLACK(0.7),
   },
   badgeIcon: {
     color: colors.NEW_BLUE(),
@@ -300,6 +319,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     textTransform: "capitalize",
     fontSize: 14,
+    marginLeft: 5,
     ":hover": {
       color: colors.BLACK(),
       textDecoration: "underline",
