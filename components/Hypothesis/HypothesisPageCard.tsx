@@ -25,10 +25,6 @@ import {
 } from "react";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { postHypothesisVote } from "./api/postHypothesisVote";
-import {
-  removeHypothesis,
-  restoreHypothesis,
-} from "./api/postHypothesisStatus";
 import { updateHypothesis } from "./api/updateHypothesis";
 import { useRouter } from "next/router";
 import ActionButton from "../ActionButton";
@@ -40,22 +36,13 @@ import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import VoteWidget from "~/components/VoteWidget";
-<<<<<<< HEAD
-import ActionButton from "../ActionButton";
-import { breakpoints } from "~/config/themes/screen";
 import censorDocument from "~/components/Admin/api/censorDocAPI";
 import restoreDocument from "~/components/Admin/api/restoreDocAPI";
-import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
-import DiscussionCount from "~/components/DiscussionCount";
-import { useRouter } from "next/router";
 import AdminButton from "../Admin/AdminButton";
-=======
 import DiscussionCount from "~/components/DiscussionCount";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { FLAG_REASON } from "../Flag/config/constants";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import { captureEvent } from "~/config/utils/events";
->>>>>>> 7a0e669952e0353361d8e5438a0493c9b8ccde9c
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
