@@ -217,6 +217,7 @@ const Paper = ({
     setFetchFreshDataStatus("FETCHING");
     fetchPaper(API.PAPER({ paperId: paper.id }), API.GET_CONFIG()).then(
       (freshPaperData) => {
+        console.log("fetch", freshPaperData);
         setFetchFreshDataStatus("COMPLETED");
         setScore(getNestedValue(freshPaperData, ["score"], 0));
         setFlag(freshPaperData.user_flag);
@@ -412,12 +413,15 @@ const Paper = ({
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-  console.log("paper", paper);
-  console.log("paper.unified_document", paper.unified_document);
   const unifiedDocument = parseUnifiedDocument(paper.unified_document);
   const authors = parsePaperAuthors(paper);
-  console.log("authors", authors);
   const parsedHubs = hubs.map((h) => parseHub(h));
+  console.log("++++++++");
+  // console.log("paper", paper);
+  // console.log("paper.unified_document", paper.unified_document);
+  // console.log("authors", authors);
+  console.log("userVoteChecked", userVoteChecked);
+  console.log("++++++++");
 
   return (
     <div>
@@ -470,12 +474,13 @@ const Paper = ({
                   unifiedDocument={unifiedDocument}
                   doi={paper.doi}
                   datePublished={paper.paper_publish_date}
-                  // journal?= string
                   commentCount={discussionCount || 0}
                   externalUrl={paper.url}
                   hubs={parsedHubs}
+                  initialVoteScore={score}
                   createdDate={unifiedDocument.createdDate}
                   type="paper"
+                  currentUserVote={selectedVoteType}
                 />
               )}
 
