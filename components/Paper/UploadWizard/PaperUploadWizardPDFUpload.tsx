@@ -7,6 +7,7 @@ import {
 } from "../Upload/styles/formGenericStyles";
 import { defaultFormState } from "../Upload/types/UploadComponentTypes";
 import { Fragment, SyntheticEvent, useState } from "react";
+import { captureEvent } from "~/config/utils/events";
 import { ID } from "~/config/types/root_types";
 import {
   isEmpty,
@@ -122,6 +123,9 @@ function PaperUploadWizardPDFUpload({
         const { response: errorResponse, message: errorMsg } = respPayload ?? {};
         const { status: errorStatus } = errorResponse ?? {};
         setIsSubmitting(false);
+        captureEvent({
+          error: respPayload,
+        });
         if (errorStatus === 413) {
           msgReduxActions.setMessage(
             "The max file size is 55mb. Please upload a smaller file."
@@ -139,7 +143,7 @@ function PaperUploadWizardPDFUpload({
             errorMsg?.data
           );
         } else {
-          msgReduxActions.setMessage("You are not allowed to upload papers");
+          msgReduxActions.setMessage(`An error has occured. Please report this to our Discord or Slack: ${errorStatus} - ${JSON.stringify(errorMsg)}`);
           msgReduxActions.showMessage({ show: true, error: true });
           setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
         }
