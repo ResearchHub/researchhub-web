@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -122,6 +123,7 @@ function PaperUploadWizardPDFUpload({
         const { response: errorResponse, message: errorMsg } = respPayload ?? {};
         const { status: errorStatus } = errorResponse ?? {};
         setIsSubmitting(false);
+        Sentry.captureEvent(respPayload);
         if (errorStatus === 413) {
           msgReduxActions.setMessage(
             "The max file size is 55mb. Please upload a smaller file."
@@ -130,8 +132,6 @@ function PaperUploadWizardPDFUpload({
           setTimeout(() => {
             msgReduxActions.showMessage({ show: false });
           }, 2000);
-        } else if (errorStatus === 429) {
-          modalReduxActions.openRecaptchaPrompt(true);
         } else if (errorStatus === 403 /* duplicate error */) {
           onExit();
           modalReduxActions.openUploadPaperModal(
@@ -139,7 +139,7 @@ function PaperUploadWizardPDFUpload({
             errorMsg?.data
           );
         } else {
-          msgReduxActions.setMessage("You are not allowed to upload papers");
+          msgReduxActions.setMessage(`An error has occured. Please report this to our Discord or Slack: ${errorStatus} - ${JSON.stringify(errorMsg)}`);
           msgReduxActions.showMessage({ show: true, error: true });
           setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
         }
