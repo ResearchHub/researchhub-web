@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
 import Ripples from "react-ripples";
 import Router from "next/router";
@@ -103,6 +103,7 @@ const NotificationEntry = (props) => {
   const renderMessage = () => {
     const { notification } = props;
     const {
+      action_item,
       action_tip,
       content_type,
       created_by,
@@ -112,10 +113,15 @@ const NotificationEntry = (props) => {
       document_type,
       slug,
       thread_id: threadId,
-      withdrawnAmount,
-      txHash,
       toAddress,
+      txHash,
+      withdrawnAmount,
     } = notification;
+
+    if (content_type === "verdict" && !action_item?.is_content_removed) {
+      return;
+    }
+
     const {
       first_name: creatorFName,
       last_name: creatorLName,
@@ -194,6 +200,36 @@ const NotificationEntry = (props) => {
             >
               <div className={css(styles.metatext)}>{etherscanLink}</div>
             </a>
+          </div>
+        );
+      case "verdict":
+        const flaggedContentName = action_item?.flagged_content_name;
+        const isDiscussionFlagged = ["comment", "thread", "reply"].includes(
+          flaggedContentName
+        );
+        return (
+          <div className={css(styles.message)}>
+            {notifCreator}
+            {` removed your `}
+            <HyperLink
+              link={documentLink}
+              onClick={onClick}
+              style={styles.link}
+              text={flaggedContentName}
+            />
+            {`for ${action_item?.verdict_choice?.toLowerCase()}`}
+            {isDiscussionFlagged && (
+              <Fragment>
+                {" in "}
+                <HyperLink
+                  link={documentLink}
+                  onClick={onClick}
+                  style={styles.link}
+                  text={truncateText(document_title)}
+                />
+              </Fragment>
+            )}
+            {timeStamp}
           </div>
         );
       case "paper":
