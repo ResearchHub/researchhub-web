@@ -41,6 +41,7 @@ const getNotifMetadata = (notification) => {
     created_by: createdBy,
     created_date: createdDate,
     item,
+    action,
   } = notification;
   const notifType = notification.content_type.name;
   const { unified_document: unifiedDocument } = item;
