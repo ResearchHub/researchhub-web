@@ -4,17 +4,18 @@ import { StyleSheet, css } from "aphrodite";
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-const CheckBox = (props) => {
-  const {
-    active,
-    id = 0,
-    isSquare,
-    label,
-    labelStyle,
-    onChange,
-    onClickLabel = false,
-    small,
-  } = props;
+const CheckBox = ({
+  active,
+  id = 0,
+  isSquare,
+  label,
+  labelStyle,
+  onChange,
+  small,
+  onClickLabel = false,
+  checkboxStyleOverride = null,
+  checkStyleOverride = null,
+}) => {
   return (
     <div
       className={css(styles.checkboxContainer, onClickLabel && styles.pointer)}
@@ -31,19 +32,23 @@ const CheckBox = (props) => {
         className={css(
           small ? styles.checkBoxSmall : styles.checkBox,
           active && styles.active,
-          isSquare && styles.square
+          isSquare && styles.square,
+          checkboxStyleOverride
         )}
         onClick={
           !onClickLabel
-            ? () => {
+            ? (event) => {
                 let state = !active;
-                onChange && onChange(id, state);
+                onChange && onChange(id, state, event);
               }
             : null
         }
       >
         {isSquare ? (
-          <span style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}>
+          <span
+            style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
+            className={css(checkStyleOverride)}
+          >
             {icons.check}
           </span>
         ) : (

@@ -168,8 +168,11 @@ function FlaggedContentDashboard({
     if (!url) {
       setIsLoadingPage(true);
     } else {
+      console.log('loading more')
+      console.log('url', url)
       setIsLoadingMore(true);
     }
+
 
     fetchFlaggedContributions({
       pageUrl: url,
