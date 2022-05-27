@@ -19,12 +19,14 @@ const DropdownButton = ({
   overrideOptionsStyle = null,
   overrideTargetStyle = null,
   overrideTitleStyle = null,
+  overrideTargetButton = null,
   overrideDownIconStyle = null,
   htmlBefore = null, // HTML to be injected before the list
   htmlAfter = null, // HTML to be injected after the list
   closeAfterSelect = true,
   positions = ["bottom", "top"],
   isOpen = false,
+  withDownIcon = true,
 }) => {
   return (
     <ResearchHubPopover
@@ -41,7 +43,12 @@ const DropdownButton = ({
                   option.value === selected && styles.selectedOpt
                 )}
                 onClick={() => {
-                  onSelect(option.value);
+                  option.onSelect
+                    ? // Specific onSelect per option
+                      option.onSelect(option.value)
+                    : // Generic, top level onSelect function
+                      onSelect(option.value);
+
                   if (closeAfterSelect) {
                     onClose();
                   }
@@ -83,12 +90,20 @@ const DropdownButton = ({
           className={css(styles.dropdownContainer, overrideTargetStyle)}
           onClick={() => (isOpen ? onClose() : onClick())}
         >
-          <div className={css(styles.targetBtn, customButtonClassName)}>
+          <div
+            className={css(
+              styles.targetBtn,
+              overrideTargetButton,
+              customButtonClassName
+            )}
+          >
             {labelAsHtml || label}
-            <DownIcon
-              withAnimation={false}
-              overrideStyle={[styles.downIcon, overrideDownIconStyle]}
-            />
+            {withDownIcon && (
+              <DownIcon
+                withAnimation={false}
+                overrideStyle={[styles.downIcon, overrideDownIconStyle]}
+              />
+            )}
           </div>
         </div>
       }

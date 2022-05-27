@@ -1,10 +1,8 @@
 import { breakpoints } from "~/config/themes/screen";
-import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { flagGrmContent } from "~/components/Flag/api/postGrmFlag";
 import { formatPublishedDate } from "~/config/utils/dates";
-import { Helpers } from "@quantfive/js-web-config";
 import { isDevEnv } from "~/config/utils/env";
 import { isNullOrUndefined, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { MessageActions } from "../redux/message";
@@ -40,6 +38,9 @@ import VoteWidget from "~/components/VoteWidget";
 // Dynamic modules
 import dynamic from "next/dynamic";
 import { initialize } from "react-ga";
+import AdminButton from "./Admin/AdminButton";
+import censorDocument from "./Admin/api/censorDocAPI";
+import restoreDocument from "./Admin/api/restoreDocAPI";
 
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
@@ -121,43 +122,25 @@ class PaperPageCard extends Component {
   };
 
   restorePaper = () => {
-    const { setMessage, showMessage, paperId, restorePaper } = this.props;
-
-    return fetch(
-      API.PAPER_CENSOR({ paperId, isRemoved: false }),
-      API.PATCH_CONFIG({ id: paperId })
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setMessage("Paper Successfully Restored.");
-        showMessage({ show: true });
-        restorePaper();
-      })
-      .catch((_error) => {
-        setMessage("Unable to Restore Paper.");
-        showMessage({ show: true });
-      });
+    restoreDocument({
+      unifiedDocumentId: this.props.paper.unified_document.id,
+      onSuccess: this.props.restorePaper,
+      onError: () => {
+        this.props.setMessage("Failed to restore page");
+        this.props.showMessage({ show: true, error: true });
+      },
+    });
   };
 
   removePaper = () => {
-    const { paperId, removePaper, setMessage, showMessage } = this.props;
-
-    return fetch(
-      API.PAPER_CENSOR({ paperId, isRemoved: true }),
-      API.PATCH_CONFIG({ id: paperId })
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setMessage("Paper Successfully Removed.");
-        showMessage({ show: true });
-        removePaper();
-      })
-      .catch((_error) => {
-        setMessage("Unable to Remove Paper.");
-        showMessage({ show: true });
-      });
+    censorDocument({
+      unifiedDocumentId: this.props.paper.unified_document.id,
+      onSuccess: this.props.removePaper,
+      onError: () => {
+        this.props.setMessage("Failed to remove page");
+        this.props.showMessage({ show: true, error: true });
+      },
+    });
   };
 
   toggleShowHubs = () => {
@@ -392,30 +375,14 @@ class PaperPageCard extends Component {
         ),
       },
       {
-        active: isModerator && !isNullOrUndefined(uploadedById),
+        active: isModerator,
         button: (
-          <>
-            <ReactTooltip />
-            <span
-              className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={
-                isUploaderSuspended
-                  ? "Reinstate User"
-                  : "Remove Page & Ban User"
-              }
-            >
-              <ActionButton
-                isModerator={isModerator}
-                paperId={paper.id}
-                uploadedById={uploadedById}
-                isUploaderSuspended={isUploaderSuspended}
-                containerStyle={styles.moderatorContainer}
-                onAfterAction={this.removePaper}
-                iconStyle={styles.moderatorIcon}
-                actionType="user"
-              />
-            </span>
-          </>
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip="Admin"
+          >
+            <AdminButton unifiedDocumentId={paper?.unified_document?.id} />
+          </span>
         ),
       },
     ].filter((action) => action.active);
