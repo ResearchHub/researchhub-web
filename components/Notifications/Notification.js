@@ -106,8 +106,8 @@ class Notification extends Component {
   formatNotification = (notification) => {
     const { action_user, action, created_date, unified_document } =
       notification;
-    const { item: actonItem } = action ?? {};
-    const { amount, plain_text } = actonItem ?? {};
+    const { item: actionItem } = action ?? {};
+    const { amount, plain_text } = actionItem ?? {};
     const formattedDocumentType = getUnifiedDocType(
       unified_document?.document_type
     );
@@ -144,6 +144,7 @@ class Notification extends Component {
 
     return {
       action_tip: plain_text ?? "",
+      action_item: action?.item ?? {},
       content_type,
       contribution_amount: amount ?? 0,
       created_by: action_user,
