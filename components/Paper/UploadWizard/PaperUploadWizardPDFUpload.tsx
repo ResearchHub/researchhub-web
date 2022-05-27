@@ -124,8 +124,7 @@ function PaperUploadWizardPDFUpload({
         const { status: errorStatus } = errorResponse ?? {};
         setIsSubmitting(false);
         captureEvent({
-          data = {},
-          respPayload,
+          error: respPayload,
         });
         if (errorStatus === 413) {
           msgReduxActions.setMessage(
