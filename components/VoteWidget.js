@@ -278,12 +278,14 @@ const styles = StyleSheet.create({
     },
   },
   pillContainer: {
-    background: voteWidgetColors.BACKGROUND,
-    color: colors.GREEN(),
+    background: "rgba(240, 240, 240, 0.5)",
+    width: 28,
+    margin: "4px auto",
+    color: colors.NEW_GREEN(),
     boxSizing: "border-box",
     fontWeight: "bold",
-    borderRadius: 24,
-    padding: ".2em .5em",
+    borderRadius: 5,
+    // padding: ".2em .5em",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -314,6 +316,7 @@ const styles = StyleSheet.create({
   icon: {
     cursor: "pointer",
     color: voteWidgetColors.ARROW,
+    fontSize: 14,
     ":hover": {
       color: colors.BLUE(1),
     },

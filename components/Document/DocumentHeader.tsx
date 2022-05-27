@@ -1,5 +1,10 @@
 import { StyleSheet, css } from "aphrodite";
-import { CreatedBy, AuthorProfile, UnifiedDocument, parseAuthorProfile } from "~/config/types/root_types";
+import {
+  CreatedBy,
+  AuthorProfile,
+  UnifiedDocument,
+  parseAuthorProfile,
+} from "~/config/types/root_types";
 import { Hub } from "~/config/types/hub";
 import { ReactElement, useEffect, useState } from "react";
 import AuthorAvatar from "../AuthorAvatar";
@@ -19,21 +24,21 @@ import { toTitleCase } from "~/config/utils/string";
 // import DocumentActions from "./DocumentActions";
 
 type Args = {
-  title: string,
-  createdBy: CreatedBy,
-  authors?: Array<AuthorProfile>,
-  unifiedDocument: UnifiedDocument,
-  doi?: string,
-  datePublished?: string,
-  journal?: string,
-  hubs?: Array<Hub>,
-  createdDate: string,
-  externalUrl: string,
-  commentCount: number,
-  initialVoteScore: number,
-  currentUserVote: string,
-  type: "paper" | "hypothesis" | "post",
-}
+  title: string;
+  createdBy: CreatedBy;
+  authors?: Array<AuthorProfile>;
+  unifiedDocument: UnifiedDocument;
+  doi?: string;
+  datePublished?: string;
+  journal?: string;
+  hubs?: Array<Hub>;
+  createdDate: string;
+  externalUrl: string;
+  commentCount: number;
+  initialVoteScore: number;
+  currentUserVote: string;
+  type: "paper" | "hypothesis" | "post";
+};
 
 export default function DocumentHeader({
   title,
@@ -50,7 +55,7 @@ export default function DocumentHeader({
   type,
   currentUserVote,
   initialVoteScore = 0,
-}:Args): ReactElement<"div"> {
+}: Args): ReactElement<"div"> {
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [voteState, setVoteState] = useState({
     currentUserVote: currentUserVote,
@@ -59,7 +64,7 @@ export default function DocumentHeader({
   });
 
   useEffect(() => {
-    setVoteState({ ...voteState, currentUserVote })
+    setVoteState({ ...voteState, currentUserVote });
   }, [currentUserVote]);
 
   const handleVoteSuccess = ({ voteType, increment }) => {
@@ -68,24 +73,20 @@ export default function DocumentHeader({
     if (voteType === UPVOTE) {
       if (voteState.currentUserVote === DOWNVOTE) {
         newVoteScore = voteState.voteScore + increment + 1;
-      }
-      else if (voteState.currentUserVote === UPVOTE) {
+      } else if (voteState.currentUserVote === UPVOTE) {
         // This shouldn't happen but if it does, we do nothing
-        console.log('User already casted upvote')
+        console.log("User already casted upvote");
         return;
-      }
-      else {
+      } else {
         newVoteScore = voteState.voteScore + increment;
       }
     } else if (voteType === DOWNVOTE) {
       if (voteState.currentUserVote === DOWNVOTE) {
-        console.log('User already casted downvote')
+        console.log("User already casted downvote");
         return;
-      }
-      else if (voteState.currentUserVote === UPVOTE) {
+      } else if (voteState.currentUserVote === UPVOTE) {
         newVoteScore = voteState.voteScore + increment - 1;
-      }
-      else {
+      } else {
         newVoteScore = voteState.voteScore + increment;
       }
     }
@@ -94,9 +95,9 @@ export default function DocumentHeader({
       currentUserVote: voteType,
       voteScore: newVoteScore,
       prevVoteScore: initialVoteScore,
-    })
-  }
-  
+    });
+  };
+
   const currentUser = getCurrentUser() ?? {};
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const onUpvote = createVoteHandler({
@@ -114,24 +115,25 @@ export default function DocumentHeader({
     onError: () => null,
   });
 
-
   const authorElems = (authors || []).map((author) => {
     return (
       <span className={css(styles.author)}>
-        {author.isClaimed
-          ? (
-              <span data-tip={"Profile claimed by author"}>
-                <ALink href={`/user/${author.id}/overview`}>
-                  {author.firstName} {author.lastName} <span className={css(styles.badgeIcon)}>{icons.checkCircleSolid}</span>
-                </ALink>
+        {author.isClaimed ? (
+          <span data-tip={"Profile claimed by author"}>
+            <ALink href={`/user/${author.id}/overview`}>
+              {author.firstName} {author.lastName}{" "}
+              <span className={css(styles.badgeIcon)}>
+                {icons.checkCircleSolid}
               </span>
-            )
-          : (
-              <span>{author.firstName} {author.lastName}</span>
-            )
-        }
+            </ALink>
+          </span>
+        ) : (
+          <span>
+            {author.firstName} {author.lastName}
+          </span>
+        )}
       </span>
-    )
+    );
   });
 
   return (
@@ -147,20 +149,31 @@ export default function DocumentHeader({
           isPaper={unifiedDocument.documentType === "paper"}
           type={unifiedDocument.documentType}
         />
-      </div>      
+      </div>
       <div className={css(styles.submittedBy)}>
         <div className={css(styles.avatarContainer)}>
           <AuthorAvatar author={createdBy} size={25} />
         </div>
-        <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
+        <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`}>
+          {createdBy?.authorProfile?.firstName}{" "}
+          {createdBy?.authorProfile?.lastName}
+        </ALink>
         <div className={css(styles.hubsContainer)}>
-          {hubs?.length > 0 &&
+          {hubs?.length > 0 && (
             <>
-              <span className={css(styles.textSecondary, styles.postedText)}>{`posted`}</span>
+              <span
+                className={css(styles.textSecondary, styles.postedText)}
+              >{`posted`}</span>
               {hubs?.slice(0, 2).map((h, index) => (
                 <>
                   <span className={css(styles.textSecondary)}>{` in`}</span>
-                  <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{toTitleCase(h.name)}</ALink>
+                  <ALink
+                    theme="solidPrimary"
+                    href={`/hubs/${h.slug}`}
+                    overrideStyle={styles.hubLink}
+                  >
+                    {toTitleCase(h.name)}
+                  </ALink>
                   {index < hubs?.slice(0, 2).length - 1 ? ", " : ""}
                 </>
               ))}
@@ -175,19 +188,21 @@ export default function DocumentHeader({
                 />
               )}
             </>
-            }          
+          )}
         </div>
-        <span className={css(styles.textSecondary, styles.timestamp)}>{timeSince(createdDate)}</span>
+        <span className={css(styles.textSecondary, styles.timestamp)}>
+          {timeSince(createdDate)}
+        </span>
       </div>
       <div className={css(styles.title)}>{title}</div>
       <div className={css(styles.metadata)}>
-        {journal &&
+        {journal && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>Journal</div>
             <div className={css(styles.metaVal)}>{journal}</div>
           </div>
-        }
-        {authorElems.length > 0 &&
+        )}
+        {authorElems.length > 0 && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>Authors</div>
             <div className={css(styles.metaVal)}>{authorElems}</div>
@@ -199,22 +214,22 @@ export default function DocumentHeader({
                 className={css(styles.coinIcon)}
                 alt="RSC Coin"
                 height={18}
-              />              
+              />
             </div>
           </div>
-        }
-        {doi &&
+        )}
+        {doi && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>DOI</div>
             <div className={css(styles.metaVal)}>{doi}</div>
           </div>
-        }
-        {datePublished &&
+        )}
+        {datePublished && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>Published</div>
             <div className={css(styles.metaVal)}>{datePublished}</div>
           </div>
-        }
+        )}
       </div>
       <div className={css(styles.actionsAndDetailsRow)}>
         <div className={css(styles.additionalDetails)}>
@@ -222,33 +237,30 @@ export default function DocumentHeader({
             {icons.commentsSolid}
             {commentCount} {`comments`}
           </div>
-          {(unifiedDocument?.reviewSummary?.count || 0) > 0 &&
+          {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
             <div className={css(styles.reviews)}>
               {icons.starAlt}
-              {unifiedDocument?.reviewSummary?.avg} {`based on `} {unifiedDocument?.reviewSummary?.count} {`reviews`}
+              {unifiedDocument?.reviewSummary?.avg} {`based on `}{" "}
+              {unifiedDocument?.reviewSummary?.count} {`reviews`}
             </div>
-          }
+          )}
           <div className={css(styles.type)}>
-            {type === "paper"
-              ? icons.paperAlt
-              : type === "hypothesis"
-              ? <HypothesisIcon onClick={() => null} />
-              : type === "post"
-              ? icons.post
-              : null
-            }
+            {type === "paper" ? (
+              icons.paperAlt
+            ) : type === "hypothesis" ? (
+              <HypothesisIcon onClick={() => null} />
+            ) : type === "post" ? (
+              icons.post
+            ) : null}
             <span className={css(styles.typeText)}>{type}</span>
           </div>
         </div>
         <div className={css(styles.actions)}>
-          <DocumentActions
-            unifiedDocument={unifiedDocument}
-            type={type}
-          />
+          <DocumentActions unifiedDocument={unifiedDocument} type={type} />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -263,24 +275,14 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
   },
-  additionalDetails: {
-
-  },
-  comments: {
-
-  },
-  reviews: {
-
-  },
-  type: {
-
-  },
+  additionalDetails: {},
+  comments: {},
+  reviews: {},
+  type: {},
   typeText: {
     textTransform: "capitalize",
   },
-  actions: {
-
-  },
+  actions: {},
   submittedBy: {
     display: "flex",
     alignItems: "center",
@@ -294,14 +296,9 @@ const styles = StyleSheet.create({
   avatarContainer: {
     marginRight: 7,
   },
-  hubsContainer: {
-  },
-  claimProfile: {
-
-  },
-  coinIcon: {
-
-  },
+  hubsContainer: {},
+  claimProfile: {},
+  coinIcon: {},
   timestamp: {
     marginLeft: 2,
   },
@@ -330,19 +327,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     lineHeight: "40px",
   },
-  metadata: {
-
-  },
-  metadataRow: {
-
-  },
-  metaKey: {
-
-  },
-  metaVal: {
-
-  },
-  author: {
-
-  }
+  metadata: {},
+  metadataRow: {},
+  metaKey: {},
+  metaVal: {},
+  author: {},
 });

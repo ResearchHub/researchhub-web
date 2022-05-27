@@ -7,6 +7,7 @@ const colors = {
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
+  NEW_GREEN: (opacity = 1) => `rgba(72, 192, 85, ${opacity})`,
   GREY_BORDER: "#EBEBEB",
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
   DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`,
@@ -59,7 +60,7 @@ export const paperTabColors = {
 
 export const voteWidgetColors = {
   BACKGROUND: `rgba(233, 250, 234, 1)`,
-  ARROW: `rgba(210, 210, 218, 1)`,
+  ARROW: `#AAA8B4`,
 };
 
 export const discussionPageColors = {

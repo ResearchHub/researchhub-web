@@ -90,6 +90,11 @@ import {
   faShieldAlt,
   faTrash as faTrashSolid,
   faBadgeCheck,
+  faUp,
+  faDown,
+  faComments as faCommentRegular,
+  faFileLines as faPaperRegular,
+  faPenSquare as faPenSquareRegular,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -121,14 +126,11 @@ import {
   faChevronRight,
   faChevronUp,
   faClock,
-  faComment as faCommentRegular,
   faEllipsisH,
   faEllipsisV,
-  faFile as faPaperRegular,
   faFlag as faFlagOutline,
   faFileUpload,
   faLightbulb,
-  faPenSquare as faPenSquareRegular,
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
@@ -282,6 +284,8 @@ library.add(
   faTwitter,
   faUnderline,
   faUpload,
+  faUp,
+  faDown,
   faUser,
   faUserCircle,
   faUserEdit,
@@ -470,8 +474,8 @@ const icons = {
 };
 
 export const voteWidgetIcons = {
-  downvote: <FontAwesomeIcon icon={faCaretDown} />,
-  upvote: <FontAwesomeIcon icon={faCaretUp} />,
+  downvote: <FontAwesomeIcon icon={faDown} />,
+  upvote: <FontAwesomeIcon icon={faUp} />,
 };
 
 export const textEditorIcons = {
