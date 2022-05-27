@@ -126,8 +126,8 @@ class PaperPageCard extends Component {
       unifiedDocumentId: this.props.paper.unified_document.id,
       onSuccess: this.props.restorePaper,
       onError: () => {
-        setMessage("Failed to restore page");
-        showMessage({ show: true, error: true });
+        this.props.setMessage("Failed to restore page");
+        this.props.showMessage({ show: true, error: true });
       },
     });
   };
@@ -137,8 +137,8 @@ class PaperPageCard extends Component {
       unifiedDocumentId: this.props.paper.unified_document.id,
       onSuccess: this.props.removePaper,
       onError: () => {
-        setMessage("Failed to remove page");
-        showMessage({ show: true, error: true });
+        this.props.setMessage("Failed to remove page");
+        this.props.showMessage({ show: true, error: true });
       },
     });
   };
