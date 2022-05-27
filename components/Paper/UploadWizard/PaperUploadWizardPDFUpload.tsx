@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -8,6 +7,7 @@ import {
 } from "../Upload/styles/formGenericStyles";
 import { defaultFormState } from "../Upload/types/UploadComponentTypes";
 import { Fragment, SyntheticEvent, useState } from "react";
+import { captureEvent } from "~/config/utils/events";
 import { ID } from "~/config/types/root_types";
 import {
   isEmpty,
@@ -123,7 +123,10 @@ function PaperUploadWizardPDFUpload({
         const { response: errorResponse, message: errorMsg } = respPayload ?? {};
         const { status: errorStatus } = errorResponse ?? {};
         setIsSubmitting(false);
-        Sentry.captureEvent(respPayload);
+        captureEvent({
+          data = {},
+          respPayload,
+        });
         if (errorStatus === 413) {
           msgReduxActions.setMessage(
             "The max file size is 55mb. Please upload a smaller file."
