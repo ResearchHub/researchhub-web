@@ -1,25 +1,25 @@
+import { ApiFilters } from "./api/fetchAuditContributionsAPI";
+import { Contribution, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState, useEffect, useRef } from "react";
-import FormSelect from "~/components/Form/FormSelect";
-import { useRouter } from "next/router";
+import { FLAG_REASON } from "../Flag/config/flag_constants";
 import { ID } from "~/config/types/root_types";
+import { KeyOf } from "~/config/types/root_types";
+import { ReactElement, useState, useEffect, useRef } from "react";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
+import { useRouter } from "next/router";
+import CheckBox from "~/components/Form/CheckBox";
+import colors from "~/config/themes/colors";
 import fetchAuditContributions from "./api/fetchAuditContributionsAPI";
 import flagAndRemove, {
   buildParamsForFlagAndRemoveAPI,
 } from "./api/flagAndRemoveAPI";
-import CheckBox from "~/components/Form/CheckBox";
-import renderContributionEntry from "./utils/renderContributionEntry";
-import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
-import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
-import { Contribution, parseContribution } from "~/config/types/contribution";
-import LoadMoreButton from "../LoadMoreButton";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-import { FLAG_REASON } from "../Flag/config/constants";
-import { KeyOf } from "~/config/types/root_types";
+import FormSelect from "~/components/Form/FormSelect";
+import icons from "~/config/themes/icons";
+import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import Loader from "../Loader/Loader";
-import { ApiFilters } from "./api/fetchAuditContributionsAPI";
+import LoadMoreButton from "../LoadMoreButton";
+import renderContributionEntry from "./utils/renderContributionEntry";
 
 export default function AuditContentDashboard({}): ReactElement<"div"> {
   const router = useRouter();
@@ -318,7 +318,7 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
             <LoadMoreButton
               onClick={() => {
                 setIsLoadingMore(true);
-                loadResults(appliedFilters, nextResultsUrl)
+                loadResults(appliedFilters, nextResultsUrl);
               }}
               // @ts-ignore
               isLoadingMore={isLoadingMore}

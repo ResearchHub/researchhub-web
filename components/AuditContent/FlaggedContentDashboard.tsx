@@ -1,30 +1,30 @@
-import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState, useEffect, useRef, useContext } from "react";
-import FormSelect from "~/components/Form/FormSelect";
-import { useRouter } from "next/router";
-import { ID } from "~/config/types/root_types";
-import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
-import fetchFlaggedContributions from "./api/fetchFlaggedContributionsAPI";
-import CheckBox from "~/components/Form/CheckBox";
-import renderContributionEntry from "./utils/renderContributionEntry";
-import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
-import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
-import LoadMoreButton from "../LoadMoreButton";
-import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-import { MessageActions } from "~/redux/message";
-import { connect } from "react-redux";
-import { KeyOf } from "~/config/types/root_types";
-import Loader from "../Loader/Loader";
-import AuthorAvatar from "../AuthorAvatar";
 import { ApiFilters, verdictOpts } from "./api/fetchFlaggedContributionsAPI";
+import { connect } from "react-redux";
 import { Contribution, parseContribution } from "~/config/types/contribution";
-import ALink from "../ALink";
-import { FLAG_REASON } from "~/components/Flag/config/constants";
-import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
-import removeFlaggedContent from "./api/removeFlaggedContentAPI";
-import { timeSince } from "~/config/utils/dates";
+import { css, StyleSheet } from "aphrodite";
+import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
+import { ID } from "~/config/types/root_types";
+import { KeyOf } from "~/config/types/root_types";
+import { MessageActions } from "~/redux/message";
 import { NavbarContext } from "~/pages/Base";
+import { ReactElement, useState, useEffect, useRef, useContext } from "react";
+import { timeSince } from "~/config/utils/dates";
+import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
+import { useRouter } from "next/router";
+import ALink from "../ALink";
+import AuthorAvatar from "../AuthorAvatar";
+import CheckBox from "~/components/Form/CheckBox";
+import colors from "~/config/themes/colors";
+import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
+import fetchFlaggedContributions from "./api/fetchFlaggedContributionsAPI";
+import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
+import FormSelect from "~/components/Form/FormSelect";
+import icons from "~/config/themes/icons";
+import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
+import Loader from "../Loader/Loader";
+import LoadMoreButton from "../LoadMoreButton";
+import removeFlaggedContent from "./api/removeFlaggedContentAPI";
+import renderContributionEntry from "./utils/renderContributionEntry";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -168,19 +168,18 @@ function FlaggedContentDashboard({
     if (!url) {
       setIsLoadingPage(true);
     } else {
-      console.log('loading more')
-      console.log('url', url)
+      console.log("loading more");
+      console.log("url", url);
       setIsLoadingMore(true);
     }
-
 
     fetchFlaggedContributions({
       pageUrl: url,
       filters,
       onSuccess: (response: any) => {
-        const incomingResults = response.results.map((r) => (
+        const incomingResults = response.results.map((r) =>
           parseContribution(r)
-        ))
+        );
         if (url) {
           setResults([...results, ...incomingResults]);
         } else {
@@ -199,7 +198,7 @@ function FlaggedContentDashboard({
       const isOneLineAction =
         r?.flaggedBy &&
         r?.flaggedBy?.authorProfile?.id ===
-        r?.verdict?.createdBy?.authorProfile?.id;
+          r?.verdict?.createdBy?.authorProfile?.id;
 
       const cardActions = [
         {
@@ -339,17 +338,17 @@ function FlaggedContentDashboard({
             </div>
             <span className={css(styles.actionContainer)}>
               {/* @ts-ignore */}
-              {r?.flaggedBy?.authorProfile
-                ? (
-                  <ALink href={`/user/${r?.flaggedBy?.authorProfile?.id}/overview`}>
-                    {/* @ts-ignore */}
-                    {r?.flaggedBy?.authorProfile?.firstName} {/* @ts-ignore */}
-                    {r?.flaggedBy?.authorProfile?.lastName}
-                  </ALink>
-                ) : (
-                  <span>User N/A</span>
-                )
-              }
+              {r?.flaggedBy?.authorProfile ? (
+                <ALink
+                  href={`/user/${r?.flaggedBy?.authorProfile?.id}/overview`}
+                >
+                  {/* @ts-ignore */}
+                  {r?.flaggedBy?.authorProfile?.firstName} {/* @ts-ignore */}
+                  {r?.flaggedBy?.authorProfile?.lastName}
+                </ALink>
+              ) : (
+                <span>User N/A</span>
+              )}
               <span className={css(styles.flagText)}>
                 {isOneLineAction ? (
                   appliedFilters.verdict === "APPROVED" ? (
@@ -577,7 +576,7 @@ function FlaggedContentDashboard({
             <LoadMoreButton
               onClick={() => {
                 setIsLoadingMore(true);
-                loadResults(appliedFilters, nextResultsUrl)
+                loadResults(appliedFilters, nextResultsUrl);
               }}
               isLoading={isLoadingMore}
             />
