@@ -25,10 +25,6 @@ import {
 } from "react";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { postHypothesisVote } from "./api/postHypothesisVote";
-import {
-  removeHypothesis,
-  restoreHypothesis,
-} from "./api/postHypothesisStatus";
 import { updateHypothesis } from "./api/updateHypothesis";
 import { useRouter } from "next/router";
 import ActionButton from "../ActionButton";
@@ -44,7 +40,6 @@ import DiscussionCount from "~/components/DiscussionCount";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { FLAG_REASON } from "../Flag/config/constants";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import { captureEvent } from "~/config/utils/events";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -145,14 +140,14 @@ const getActionButtons = ({
             icon={isHypoRemoved ? icons.plus : icons.minus}
             onAction={() => {
               if (isHypoRemoved) {
-                restoreHypothesis({
-                  hypoUniDocID,
+                restoreDocument({
+                  unifiedDocumentId: hypoUniDocID,
                   onError: (error: Error) => emptyFncWithMsg(error),
                   onSuccess: (): void => onUpdates(Date.now()),
                 });
               } else {
-                removeHypothesis({
-                  hypoUniDocID,
+                censorDocument({
+                  unifiedDocumentId: hypoUniDocID,
                   onError: (error: Error) => emptyFncWithMsg(error),
                   onSuccess: (): void => onUpdates(Date.now()),
                 });
@@ -161,6 +156,17 @@ const getActionButtons = ({
             containerStyle={styles.moderatorContainer}
             iconStyle={styles.moderatorIcon}
           />
+        </span>
+      ),
+    },
+    {
+      active: isModerator,
+      button: (
+        <span
+          className={css(styles.actionIcon, styles.moderatorAction)}
+          data-tip="Admin"
+        >
+          <AdminButton unifiedDocumentId={hypoUniDocID} />
         </span>
       ),
     },

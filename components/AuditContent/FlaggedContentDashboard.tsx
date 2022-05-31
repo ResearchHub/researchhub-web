@@ -168,16 +168,19 @@ function FlaggedContentDashboard({
     if (!url) {
       setIsLoadingPage(true);
     } else {
+      console.log('loading more')
+      console.log('url', url)
       setIsLoadingMore(true);
     }
+
 
     fetchFlaggedContributions({
       pageUrl: url,
       filters,
       onSuccess: (response: any) => {
-        const incomingResults = response.results.map((r) =>
+        const incomingResults = response.results.map((r) => (
           parseContribution(r)
-        );
+        ))
         if (url) {
           setResults([...results, ...incomingResults]);
         } else {
@@ -194,8 +197,8 @@ function FlaggedContentDashboard({
   const resultCards = () => {
     return results.map((r) => {
       const isOneLineAction =
-        // @ts-ignore
-        r.flaggedBy.authorProfile.id ===
+        r?.flaggedBy &&
+        r?.flaggedBy?.authorProfile?.id ===
         r?.verdict?.createdBy?.authorProfile?.id;
 
       const cardActions = [
@@ -288,16 +291,16 @@ function FlaggedContentDashboard({
                   {/* @ts-ignore */}
                   <AuthorAvatar
                     size={25}
-                    author={r.verdict.createdBy.authorProfile}
+                    author={r.verdict.createdBy?.authorProfile}
                   />
                 </div>
                 <span className={css(styles.actionContainer)}>
                   {/* @ts-ignore */}
                   <ALink
-                    href={`/user/${r.verdict.createdBy.authorProfile.id}/overview`}
+                    href={`/user/${r.verdict.createdBy?.authorProfile.id}/overview`}
                   >
-                    {r.verdict.createdBy.authorProfile.firstName}{" "}
-                    {r.verdict.createdBy.authorProfile.lastName}
+                    {r.verdict.createdBy?.authorProfile.firstName}{" "}
+                    {r.verdict.createdBy?.authorProfile.lastName}
                   </ALink>
                   <span className={css(styles.flagText)}>
                     {appliedFilters.verdict === "APPROVED" ? (
@@ -332,15 +335,21 @@ function FlaggedContentDashboard({
           <div className={css(styles.actionDetailsRow)}>
             <div className={css(styles.avatarContainer)}>
               {/* @ts-ignore */}
-              <AuthorAvatar size={25} author={r.flaggedBy.authorProfile} />
+              <AuthorAvatar size={25} author={r?.flaggedBy?.authorProfile} />
             </div>
             <span className={css(styles.actionContainer)}>
               {/* @ts-ignore */}
-              <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>
-                {/* @ts-ignore */}
-                {r.flaggedBy.authorProfile.firstName} {/* @ts-ignore */}
-                {r.flaggedBy.authorProfile.lastName}
-              </ALink>
+              {r?.flaggedBy?.authorProfile
+                ? (
+                  <ALink href={`/user/${r?.flaggedBy?.authorProfile?.id}/overview`}>
+                    {/* @ts-ignore */}
+                    {r?.flaggedBy?.authorProfile?.firstName} {/* @ts-ignore */}
+                    {r?.flaggedBy?.authorProfile?.lastName}
+                  </ALink>
+                ) : (
+                  <span>User N/A</span>
+                )
+              }
               <span className={css(styles.flagText)}>
                 {isOneLineAction ? (
                   appliedFilters.verdict === "APPROVED" ? (
@@ -566,7 +575,10 @@ function FlaggedContentDashboard({
           </div>
           {nextResultsUrl && (
             <LoadMoreButton
-              onClick={() => loadResults(appliedFilters, nextResultsUrl)}
+              onClick={() => {
+                setIsLoadingMore(true);
+                loadResults(appliedFilters, nextResultsUrl)
+              }}
               isLoading={isLoadingMore}
             />
           )}

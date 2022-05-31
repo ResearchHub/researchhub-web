@@ -7,7 +7,7 @@ import { AuthorProfile, CreatedBy, ID, KeyOf, parseAuthorProfile, parseUnifiedDo
 export type CommentContributionItem = {
   unifiedDocument: UnifiedDocument,
   plainText: string,
-  createdBy: CreatedBy,
+  createdBy: CreatedBy | null,
   createdDate: string,
   id: ID,
 }
@@ -16,7 +16,7 @@ export type PaperContributionItem = {
   unifiedDocument: UnifiedDocument,
   title: string,
   slug: string,
-  createdBy: CreatedBy,
+  createdBy: CreatedBy | null,
   createdDate: string,
   id: ID,
 }
@@ -25,7 +25,7 @@ export type HypothesisContributionItem = {
   unifiedDocument: UnifiedDocument,
   title: string,
   slug: string,
-  createdBy: CreatedBy,
+  createdBy: CreatedBy | null,
   createdDate: string,
   id: ID,
 }
@@ -34,7 +34,7 @@ export type PostContributionItem = {
   unifiedDocument: UnifiedDocument,
   title: string,
   slug: string,
-  createdBy: CreatedBy,
+  createdBy: CreatedBy | null,
   createdDate: string,
   id: ID,
 }
@@ -46,7 +46,7 @@ export type FlaggedBy = {
 }
 
 export type Verdict = {
-  createdBy: CreatedBy,
+  createdBy: CreatedBy | null,
   verdictChoice: string,
   createdDate: string,
 }
@@ -55,7 +55,7 @@ export type Contribution = {
   item: PaperContributionItem | PostContributionItem | HypothesisContributionItem | CommentContributionItem,
   createdDate: Date,
   contentType: ContentType,
-  flaggedBy?: FlaggedBy,
+  flaggedBy?: FlaggedBy | null,
   verdict?: Verdict,
   reason?: string,  
   reasonChoice?: KeyOf<typeof FLAG_REASON>,
@@ -63,9 +63,14 @@ export type Contribution = {
   hubs: Array<Hub>,
 }
 
-export const parseCreatedBy = (raw: any): CreatedBy => {
-  raw.author_profile.first_name = raw.author_profile.first_name ?? raw.first_name;
-  raw.author_profile.last_name = raw.author_profile.last_name ?? raw.last_name;
+export const parseCreatedBy = (raw: any): CreatedBy | null => {
+
+  if (!raw || !raw?.author_profile) {
+    return null;
+  }
+
+  raw.author_profile.first_name = raw.first_name;
+  raw.author_profile.last_name = raw.last_name;
 
   const mapped = {
     "id": raw.id,
@@ -88,18 +93,8 @@ export const parseVerdict = (raw: any): Verdict => {
   return mapped;
 }
 
-export const parseFlaggedBy = (raw: any): FlaggedBy => {
-  raw.author_profile.first_name = raw.first_name;
-  raw.author_profile.last_name = raw.last_name;
-
-  const mapped = {
-    "id": raw.id,
-    "firstName": raw.first_name,
-    "lastName": raw.last_name,
-    "authorProfile": parseAuthorProfile(raw.author_profile)
-  }
-
-  return mapped;
+export const parseFlaggedBy = (raw: any): FlaggedBy | null => {
+  return parseCreatedBy(raw);
 }
 
 export const parseContribution = (raw: any): Contribution => {

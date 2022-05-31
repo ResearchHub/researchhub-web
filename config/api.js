@@ -89,6 +89,12 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
+    EXCLUDE_FROM_FEED: ({ unifiedDocumentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/exclude_from_feed/`;
+    },
+    INCLUDE_IN_FEED: ({ unifiedDocumentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/include_in_feed/`;
+    },
     CONTRIBUTIONS: ({ hubId }) => {
       return (
         BASE_URL + "audit/contributions/?" + (hubId ? `hubs=${hubId}` : "")
@@ -105,7 +111,10 @@ const routes = (BASE_URL) => {
         BASE_URL +
         "audit/flagged/?" +
         (hubId ? `hubs=${hubId}&` : "") +
-        (verdict ? `verdict=${verdict}` : "")
+        (verdict ? `verdict=${verdict}&` : "") +
+        (verdict === "OPEN"
+          ? "ordering=-created_date"
+          : "ordering=-verdict_created_date")
       );
     },
     /* GRM = Generic Reaction Model */
