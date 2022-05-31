@@ -1,8 +1,8 @@
-import { FLAG_REASON } from "../config/constants";
+import { captureEvent } from "~/config/utils/events";
+import { FLAG_REASON } from "../config/flag_constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID, KeyOf } from "~/config/types/root_types";
 import API from "~/config/api";
-import { captureEvent } from "~/config/utils/events";
 
 type ContentType = "hypothesis" | "paper" | "post";
 
