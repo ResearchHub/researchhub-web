@@ -214,7 +214,7 @@ const NotificationEntry = (props) => {
               style={styles.link}
               text={flaggedContentName}
             />
-            {`for ${action_item?.verdict_choice?.toLowerCase()}`}
+            {`for ${FLAG_REASON[action_item?.verdict_choice ?? ""] ?? "spam"}`}
             {isDiscussionFlagged && (
               <Fragment>
                 {" in "}
