@@ -27,10 +27,14 @@ export default function renderContributionEntry(
       <div className={css(styles.header)}>
         <ReactTooltip />
         <div className={css(styles.avatarContainer)}>
-          <AuthorAvatar author={createdBy.authorProfile} size={25} />
+          <AuthorAvatar author={createdBy?.authorProfile} size={25} />
         </div>
         <div className={css(styles.details)}>
-          <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
+          {createdBy?.authorProfile
+            ? <ALink href={`/user/${createdBy?.authorProfile.id}/overview`}>{createdBy?.authorProfile?.firstName} {createdBy?.authorProfile?.lastName}</ALink>
+            : <span>User N/A</span>
+          }
+          
           {contentType.name === "comment" ? (
             <>
               {` `}

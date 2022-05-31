@@ -10,11 +10,13 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { useRouter } from "next/router";
 import icons from "~/config/themes/icons";
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
-import censorDocument from "./api/CensorDocAPI";
 import restoreDocument from "./api/restoreDocAPI";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import colors from "~/config/themes/colors";
+import censorDocument from "./api/censorDocAPI";
+import AdminButton from "../Admin/AdminButton";
+
 
 type Args = {
   unifiedDocument: UnifiedDocument,
@@ -154,6 +156,17 @@ function DocumentActions({
         </span>
       ),
     },
+    {
+      active: isModerator,
+      button: (
+        <span
+          className={css(styles.actionIcon, styles.moderatorAction)}
+          data-tip="Admin"
+        >
+          <AdminButton unifiedDocumentId={unifiedDocument.id} />
+        </span>
+      ),
+    },    
   ].filter((action) => action.active);
 
   return (

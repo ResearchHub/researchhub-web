@@ -316,7 +316,10 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
           </div>
           {nextResultsUrl && (
             <LoadMoreButton
-              onClick={() => loadResults(appliedFilters, nextResultsUrl)}
+              onClick={() => {
+                setIsLoadingMore(true);
+                loadResults(appliedFilters, nextResultsUrl)
+              }}
               // @ts-ignore
               isLoadingMore={isLoadingMore}
             />
