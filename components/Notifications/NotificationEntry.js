@@ -1,20 +1,18 @@
+import { buildSlug } from "~/config/utils/buildSlug";
+import { connect, useDispatch, useStore } from "react-redux";
+import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { Fragment, useState } from "react";
+import { getEtherscanLink } from "~/config/utils/crypto";
+import { HyperLink, TimeStamp } from "./NotificationHelpers";
+import { NotificationActions } from "~/redux/notification";
+import { StyleSheet, css } from "aphrodite";
+import { timeAgoStamp } from "~/config/utils/dates";
+import AuthorAvatar from "../AuthorAvatar";
+import colors from "../../config/themes/colors";
 import Link from "next/link";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { StyleSheet, css } from "aphrodite";
-
-import { connect, useDispatch, useStore } from "react-redux";
-import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { HyperLink, TimeStamp } from "./NotificationHelpers";
-import { NotificationActions } from "~/redux/notification";
-
-// Config
-import colors from "../../config/themes/colors";
-import { buildSlug } from "~/config/utils/buildSlug";
-import { timeAgoStamp } from "~/config/utils/dates";
-import AuthorAvatar from "../AuthorAvatar";
-import { getEtherscanLink } from "~/config/utils/crypto";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
@@ -217,7 +215,10 @@ const NotificationEntry = (props) => {
               style={styles.link}
               text={flaggedContentName}
             />
-            {`for ${action_item?.verdict_choice?.toLowerCase()}`}
+            {`for ${
+              FLAG_REASON[action_item?.verdict_choice ?? ""]?.toLowerCase() ??
+              "spam"
+            }`}
             {isDiscussionFlagged && (
               <Fragment>
                 {" in "}

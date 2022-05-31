@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { FLAG_REASON, FLAG_REASON_DESCRIPTION } from "./config/constants";
+import { FLAG_REASON, FLAG_REASON_DESCRIPTION } from "./config/flag_constants";
 import { Fragment, ReactElement, useState } from "react";
 import { KeyOf } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
@@ -52,17 +52,19 @@ function FlagButtonV2({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
     useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
-  const formattedInputOptions = Object.keys(FLAG_REASON).filter(k => k !== "NOT_SPECIFIED").map(
-    (key: string): RhRadioInputOption => ({
-      id: key,
-      label: (
-        <div className={css(styles.optionLabel)} key={key}>
-          {FLAG_REASON[key]}
-        </div>
-      ),
-      description: FLAG_REASON_DESCRIPTION[key],
-    })
-  );
+  const formattedInputOptions = Object.keys(FLAG_REASON)
+    .filter((k) => k !== "NOT_SPECIFIED")
+    .map(
+      (key: string): RhRadioInputOption => ({
+        id: key,
+        label: (
+          <div className={css(styles.optionLabel)} key={key}>
+            {FLAG_REASON[key]}
+          </div>
+        ),
+        description: FLAG_REASON_DESCRIPTION[key],
+      })
+    );
 
   const renderErrorMsg = (error: any): void => {
     const errorStatus = error?.response?.status;
