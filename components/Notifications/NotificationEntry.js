@@ -1,6 +1,7 @@
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useDispatch, useStore } from "react-redux";
 import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { Fragment, useState } from "react";
 import { getEtherscanLink } from "~/config/utils/crypto";
 import { HyperLink, TimeStamp } from "./NotificationHelpers";
