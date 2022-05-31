@@ -5,10 +5,11 @@ import { breakpoints } from "~/config/themes/screen";
 import ScoreInput from "~/components/Form/ScoreInput";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 type Props = {
-  summary: PeerReviewScoreSummary,
-  docUrl: string,
+  summary: PeerReviewScoreSummary;
+  docUrl: string;
 };
 
 export default function PeerReviewSummary({
@@ -17,26 +18,13 @@ export default function PeerReviewSummary({
 }: Props): ReactElement {
   return (
     <div className={css(styles.reviewContainer)}>
+      <div className={css(styles.starContainer)}>{icons.starFilled}</div>
+
       <span className={css(styles.reviewScoreContainer)}>
-        <span className={css(styles.reviewScore)}>{summary?.avg}</span>/10
+        <span className={css(styles.reviewScore)}>{summary?.avg}</span>
       </span>
-      <div className={css(styles.scoreContainer)}>
-        <span className={css(styles.dot)}>&bull;</span>
-        <ScoreInput
-          value={summary?.avg}
-          readOnly
-          withText={false}
-          overrideBarStyle={styles.overrideReviewBar}
-        />
-      </div>
-      <div className={css(styles.reviewCountContainer)}>
-        <span className={css(styles.dot)}>&bull;</span>
-        <ALink href={`${docUrl}#comments`} overrideStyle={styles.reviewCount}>
-          {summary?.count} {summary?.count === 1 ? "Review" : "Reviews"}
-        </ALink>
-      </div>
     </div>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -48,6 +36,9 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     fontSize: 14,
     lineHeight: "19px",
+  },
+  starContainer: {
+    color: "#E8B504",
   },
   reviewScore: {
     color: colors.NEW_BLUE(),

@@ -16,7 +16,11 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { formatDateStandard } from "~/config/utils/dates";
+import {
+  formatDateStandard,
+  timeAgo,
+  timeAgoStamp,
+} from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import { transformDate } from "~/redux/utils";
 import ScoreInput from "~/components/Form/ScoreInput";
@@ -28,6 +32,7 @@ const PaperPDFModal = dynamic(
 );
 
 export type FeedCardProps = {
+  abstract: string;
   created_by: any;
   created_date: any;
   discussion_count: number;
@@ -45,7 +50,7 @@ export type FeedCardProps = {
   preview_img: string;
   renderableTextAsHtml: any;
   renderable_text: string;
-  reviews: any,
+  reviews: any;
   score: number;
   singleCard: boolean;
   slug: string;
@@ -63,6 +68,7 @@ export type FeedCardProps = {
 
 function FeedCard(props: FeedCardProps) {
   const {
+    abstract,
     created_by,
     created_date,
     discussion_count,
@@ -93,6 +99,8 @@ function FeedCard(props: FeedCardProps) {
     user_vote: userVote,
     voteCallback,
   } = props;
+
+  console.log(props);
 
   /**
    * Whether or not THIS PaperPDFModal is open.
@@ -253,9 +261,9 @@ function FeedCard(props: FeedCardProps) {
                     />
                   ) : null}
                   {(uploaded_by || created_by) && hubs.length > 0 && (
-                    <div className={css(styles.textLabel)}>in</div>
+                    <div className={css(styles.textLabel)}>posted in</div>
                   )}
-                  {hubs?.slice(0, 1).map((tag, index) => (
+                  {hubs.map((tag, index) => (
                     <Link href={`/hubs/${tag.slug}`}>
                       <a
                         className={css(styles.hubLabel)}
@@ -265,41 +273,26 @@ function FeedCard(props: FeedCardProps) {
                       >{`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}</a>
                     </Link>
                   ))}
-                  {resolvedHubs.length > 1 && (
-                    <HubDropDown
-                      hubs={hubs}
-                      labelStyle={styles.hubLabel}
-                      isOpen={isHubsOpen}
-                      setIsOpen={setIsHubsOpen}
-                    />
-                  )}
+                  <div className={css(styles.separator)}></div>
+                  <div className={css(styles.textLabel)}>
+                    {timeAgoStamp(created_date || uploaded_date)}
+                  </div>
                 </div>
               </div>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
-                  <span className={css(styles.title)}>
+                  <h2 className={css(styles.title)}>
                     {titleAsHtml ? titleAsHtml : title ? title : ""}
-                  </span>
-                  {reviews?.count > 0 &&
-                    <div className={css(styles.reviewSummaryContainer)}>
-                        <PeerReviewScoreSummary
-                          summary={reviews}
-                          docUrl={docUrl}
-                        />
-                    </div>
-                  }
+                  </h2>
+                  <div className={css(styles.abstract) + " clamp2"}>
+                    {abstract || renderableText}
+                  </div>
                   <div
                     className={css(
                       styles.metadataContainer,
                       styles.publishContainer
                     )}
                   >
-                    <div className={css(styles.metadataIcon)}>
-                      {documentIcons[formattedDocType!]}
-                    </div>
-                    <span className={css(styles.metadataText)}>
-                      {formattedDocType}
-                    </span>
                     <div
                       className={css(
                         styles.upvoteMetadata,
@@ -327,26 +320,29 @@ function FeedCard(props: FeedCardProps) {
                         discussion_count === 1 ? "" : "s"
                       }`}</span>
                     </span>
-                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
+
+                    {reviews?.count > 0 && (
+                      <div className={css(styles.reviewSummaryContainer)}>
+                        <PeerReviewScoreSummary
+                          summary={reviews}
+                          docUrl={docUrl}
+                        />
+                      </div>
+                    )}
+
+                    <div className={css(styles.metadataIcon)}>
+                      {documentIcons[formattedDocType!]}
+                    </div>
                     <span className={css(styles.metadataText)}>
-                      {formatDateStandard(
-                        transformDate(created_date || uploaded_date)
-                      )}
+                      {formattedDocType}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            {Boolean(previewImg) && (
-              <div className={css(styles.column)}>
-                <div className={css(styles.preview, styles.imagePreview)}>
-                  <img src={previewImg} className={css(styles.image)} />
-                </div>
-              </div>
-            )}
             {previews.length > 0 && (
               <div
-                className={css(styles.column)}
+                className={css(styles.column, styles.previewSide)}
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -452,6 +448,9 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
   },
+  previewSide: {
+    marginLeft: 16,
+  },
   metaData: {
     height: "100%",
     width: "100%",
@@ -499,10 +498,16 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     width: "100%",
   },
+  abstract: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: colors.BLACK(),
+    marginBottom: 10,
+  },
   title: {
     color: colors.BLACK(),
     fontSize: 20,
-    fontWeight: 700,
+    fontWeight: 500,
     marginBottom: 10,
     marginTop: 8,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
@@ -525,6 +530,14 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
   },
+  separator: {
+    background: "#C7C7C7",
+    height: 5,
+    width: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    borderRadius: "50%",
+  },
   paperPreview: {
     height: 80,
     width: 70,
@@ -532,18 +545,18 @@ const styles = StyleSheet.create({
   textLabel: {
     color: colors.TEXT_GREY(),
     fontSize: 15,
-    fontWeight: 500,
+    fontWeight: 400,
     margin: "0px 5px",
   },
   hubLabel: {
-    color: colors.NEW_BLUE(),
     fontSize: 15,
     fontWeight: 500,
     marginRight: 5,
     textDecoration: "none",
     textTransform: "capitalize",
+    color: colors.BLACK(),
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   leftSection: {
@@ -556,13 +569,13 @@ const styles = StyleSheet.create({
     fontWeight: 700,
   },
   metadataIcon: {
-    color: colors.BLACK(0.5),
-    fontSize: 14,
+    color: "#918F9B",
+    fontSize: 12,
     marginRight: 5,
   },
   reviewSummaryContainer: {
     marginBottom: 10,
-  }
+  },
 });
 
 const mapStateToProps = (state) => ({
