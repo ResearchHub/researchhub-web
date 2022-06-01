@@ -104,8 +104,6 @@ function FeedCard(props: FeedCardProps) {
     voteCallback,
   } = props;
 
-  console.log(props);
-
   /**
    * Whether or not THIS PaperPDFModal is open.
    * There may be many PaperPDFModal components on the page, but
