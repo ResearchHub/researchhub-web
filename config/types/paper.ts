@@ -50,7 +50,7 @@ export class Paper implements TopLevelDocument {
   score: number
   createdDate: string
   discussionCount: number
-  unifiedDocument: UnifiedDocument
+  _unifiedDocument: UnifiedDocument
   userVote?: "downvote" | "upvote" | "neutralvote" | null
   doi?: string
   title: string
@@ -59,13 +59,12 @@ export class Paper implements TopLevelDocument {
   externalUrl?: string | undefined
 
   constructor(raw: any) {
-    console.log('raw', raw)
     this.authors = parsePaperAuthors(raw)
     this.score = raw.score;
     this.discussionCount = raw.discussion_count || 0;
     this.createdDate = raw.created_date;
     this.createdBy = parseCreatedBy(raw.created_by);
-    this.unifiedDocument = parseUnifiedDocument(raw.unified_document);
+    this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
     this.hubs = (raw.hubs || []).map(h => parseHub(h));
     this.title = raw.title;
 
@@ -78,5 +77,9 @@ export class Paper implements TopLevelDocument {
     if (raw.publish_date) {
       this.datePublished = raw.publish_date;
     }
+  }
+
+  get unifiedDocument():UnifiedDocument {
+    return this._unifiedDocument;
   }
 }
