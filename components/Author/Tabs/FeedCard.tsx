@@ -276,8 +276,7 @@ function FeedCard(props: FeedCardProps) {
                           e.stopPropagation();
                         }}
                       >
-                        {`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}
-                        &nbsp;{" "}
+                        {`${tag.name}${resolvedHubs.length > 1 ? ", " : ""}`}
                       </a>
                     </Link>
                   ))}
@@ -587,8 +586,8 @@ const styles = StyleSheet.create({
     background: "#C7C7C7",
     height: 5,
     width: 5,
-    marginLeft: 5,
-    marginRight: 5,
+    marginLeft: 8,
+    marginRight: 8,
     borderRadius: "50%",
   },
   paperPreview: {
