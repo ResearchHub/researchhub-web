@@ -50,9 +50,7 @@ function DocumentActions({
       router.push(href, as);
     }
   };
-  console.log('uuu', unifiedDocument)
-  console.log('uuu', unifiedDocument.isRemoved)
-  console.log('isRemoved', isRemoved)
+
   const actionButtons = [
     {
       active: true,
