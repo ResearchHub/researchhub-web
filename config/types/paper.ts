@@ -47,35 +47,35 @@ export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
 export class Paper implements TopLevelDocument {
   _authors: AuthorProfile[]
   _unifiedDocument: UnifiedDocument
-  hubs: Hub[]
-  score: number
-  createdDate: string
-  discussionCount: number
-  userVote?: "downvote" | "upvote" | "neutralvote" | null
-  doi?: string
-  title: string
-  createdBy: CreatedBy | null
-  datePublished?: string
-  externalUrl?: string | undefined
+  _hubs: Hub[]
+  _score: number
+  _createdDate: string
+  _discussionCount: number
+  _userVote?: "downvote" | "upvote" | "neutralvote" | null
+  _doi?: string
+  _title: string
+  _createdBy: CreatedBy | null
+  _datePublished?: string
+  _externalUrl?: string | undefined
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw)
     this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
-    this.score = raw.score;
-    this.discussionCount = raw.discussion_count || 0;
-    this.createdDate = raw.created_date;
-    this.createdBy = parseCreatedBy(raw.created_by);
-    this.hubs = (raw.hubs || []).map(h => parseHub(h));
-    this.title = raw.title;
+    this._score = raw.score;
+    this._discussionCount = raw.discussion_count || 0;
+    this._createdDate = raw.created_date;
+    this._createdBy = parseCreatedBy(raw.uploaded_by);
+    this._hubs = (raw.hubs || []).map(h => parseHub(h));
+    this._title = raw.title;
 
     if (raw.user_vote) {
-      this.userVote = userVoteToConstant(raw.user_vote)
+      this._userVote = userVoteToConstant(raw.user_vote)
     }
     if (raw.doi) {
-      this.doi = raw.doi;
+      this._doi = raw.doi;
     }
     if (raw.publish_date) {
-      this.datePublished = raw.publish_date;
+      this._datePublished = raw.publish_date;
     }
   }
 
@@ -86,4 +86,36 @@ export class Paper implements TopLevelDocument {
   get authors():Array<AuthorProfile> {
     return this._authors;
   }
+
+  get score():number {
+    return this._score;  
+  }
+
+  get discussionCount():number {
+    return this._discussionCount;
+  }
+
+  get createdDate():string {
+    return this._createdDate;
+  }
+
+  get datePublished():string|undefined {
+    return this._datePublished;
+  }  
+
+  get doi():string|undefined {
+    return this._doi;
+  }
+
+  get title():string|undefined {
+    return this._title;
+  }  
+  
+  get createdBy():CreatedBy|null {
+    return this._createdBy;
+  }
+
+  get hubs():Array<Hub> {
+    return this._hubs;
+  }      
 }
