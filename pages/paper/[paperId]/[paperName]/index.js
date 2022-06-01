@@ -87,9 +87,6 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
   const [loadingSummary, setLoadingSummary] = useState(true);
 
   const [discussionCount, setCount] = useState(null);
-  const [activeSection, setActiveSection] = useState(0); // paper draft sections
-  const [paperDraftExists, setPaperDraftExists] = useState(false);
-  const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const { hubs = [], uploaded_by } = paper;
   const isModerator = store.getState().auth.user.moderator;

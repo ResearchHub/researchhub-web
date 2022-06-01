@@ -45,12 +45,12 @@ export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
 }
 
 export class Paper implements TopLevelDocument {
-  authors: AuthorProfile[]
+  _authors: AuthorProfile[]
+  _unifiedDocument: UnifiedDocument
   hubs: Hub[]
   score: number
   createdDate: string
   discussionCount: number
-  _unifiedDocument: UnifiedDocument
   userVote?: "downvote" | "upvote" | "neutralvote" | null
   doi?: string
   title: string
@@ -59,12 +59,12 @@ export class Paper implements TopLevelDocument {
   externalUrl?: string | undefined
 
   constructor(raw: any) {
-    this.authors = parsePaperAuthors(raw)
+    this._authors = parsePaperAuthors(raw)
+    this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
     this.score = raw.score;
     this.discussionCount = raw.discussion_count || 0;
     this.createdDate = raw.created_date;
     this.createdBy = parseCreatedBy(raw.created_by);
-    this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
     this.hubs = (raw.hubs || []).map(h => parseHub(h));
     this.title = raw.title;
 
@@ -81,5 +81,9 @@ export class Paper implements TopLevelDocument {
 
   get unifiedDocument():UnifiedDocument {
     return this._unifiedDocument;
+  }
+
+  get authors():Array<AuthorProfile> {
+    return this._authors;
   }
 }

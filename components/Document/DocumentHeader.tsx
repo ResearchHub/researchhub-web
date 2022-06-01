@@ -3,7 +3,6 @@ import {
   parseAuthorProfile,
   TopLevelDocument,
 } from "~/config/types/root_types";
-import { Hub } from "~/config/types/hub";
 import { ReactElement, useEffect, useState } from "react";
 import AuthorAvatar from "../AuthorAvatar";
 import ALink from "../ALink";
@@ -18,17 +17,22 @@ import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
+import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
+import { connect } from "react-redux";
+
 
 type Args = {
   document: TopLevelDocument,
   onDocumentRemove: Function,
   onDocumentRestore: Function,
+  auth: any,
 };
 
-export default function DocumentHeader({
+function DocumentHeader({
   document,
   onDocumentRemove,
   onDocumentRestore,
+  auth,
 }: Args): ReactElement<"div"> {
 
   const {
@@ -46,7 +50,9 @@ export default function DocumentHeader({
     score,
     hubs,
   } = document;
+
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
+  const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
     userVote: userVote,
     voteScore: score,
@@ -126,9 +132,20 @@ export default function DocumentHeader({
     );
   });
 
+  const claimableAuthors = document.authors.filter(a => !a.isClaimed);
   return (
     <div className={css(styles.documentHeader)}>
       <ReactTooltip />
+      {claimableAuthors.length > 0 &&
+        <AuthorClaimModal
+          auth={auth}
+          authors={claimableAuthors}
+          isOpen={isAuthorClaimModalOpen}
+          setIsOpen={(isOpen) =>
+            setIsAuthorClaimModalOpen(isOpen)
+          }
+        />
+      }
       <div className={css(styles.voteWidgetContainer)}>
         <VoteWidget
           score={voteState.voteScore}
@@ -196,16 +213,18 @@ export default function DocumentHeader({
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>Authors</div>
             <div className={css(styles.metaVal)}>{authorElems}</div>
-            <div className={css(styles.claimProfile)}>
-              Claim profile to earn Research Coin
-              <img
-                src={"/static/icons/coin-filled.png"}
-                draggable={false}
-                className={css(styles.coinIcon)}
-                alt="RSC Coin"
-                height={18}
-              />
-            </div>
+            {claimableAuthors.length > 0 &&
+              <div className={css(styles.claimProfile)} onClick={() => setIsAuthorClaimModalOpen(true)}>
+                Claim profile to earn Research Coin
+                <img
+                  src={"/static/icons/coin-filled.png"}
+                  draggable={false}
+                  className={css(styles.coinIcon)}
+                  alt="RSC Coin"
+                  height={18}
+                />
+              </div>
+            }
           </div>
         )}
         {doi && (
@@ -292,7 +311,9 @@ const styles = StyleSheet.create({
     marginRight: 7,
   },
   hubsContainer: {},
-  claimProfile: {},
+  claimProfile: {
+    cursor: "pointer",
+  },
   coinIcon: {},
   timestamp: {
     marginLeft: 2,
@@ -328,3 +349,9 @@ const styles = StyleSheet.create({
   metaVal: {},
   author: {},
 });
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(DocumentHeader);
