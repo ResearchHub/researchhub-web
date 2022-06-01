@@ -23,6 +23,7 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
 import killswitch from "~/config/killswitch/killswitch";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { Paper as PaperDoc } from "~/config/types/paper";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -413,15 +414,7 @@ const Paper = ({
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-  const unifiedDocument = parseUnifiedDocument(paper.unified_document);
-  const authors = parsePaperAuthors(paper);
-  const parsedHubs = hubs.map((h) => parseHub(h));
-  console.log("++++++++");
-  // console.log("paper", paper);
-  // console.log("paper.unified_document", paper.unified_document);
-  // console.log("authors", authors);
-  console.log("userVoteChecked", userVoteChecked);
-  console.log("++++++++");
+  const paperObj = new PaperDoc(paper);
 
   return (
     <div>
@@ -466,23 +459,7 @@ const Paper = ({
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              {paper?.id && (
-                <DocumentHeader
-                  title={unifiedDocument.document.title}
-                  createdBy={unifiedDocument.createdBy}
-                  authors={authors}
-                  unifiedDocument={unifiedDocument}
-                  doi={paper.doi}
-                  datePublished={paper.paper_publish_date}
-                  commentCount={discussionCount || 0}
-                  externalUrl={paper.url}
-                  hubs={parsedHubs}
-                  initialVoteScore={score}
-                  createdDate={unifiedDocument.createdDate}
-                  type="paper"
-                  currentUserVote={selectedVoteType}
-                />
-              )}
+              {paper?.id && <DocumentHeader document={paperObj} />}
 
               {/* <PaperPageCard
                 discussionCount={discussionCount}

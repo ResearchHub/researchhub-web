@@ -26,6 +26,8 @@ import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { flagGrmContent } from "./Flag/api/postGrmFlag";
 import FlagButtonV2 from "./Flag/FlagButtonV2";
+import { Post } from "~/config/types/post";
+import DocumentHeader from "./Document/DocumentHeader";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -491,8 +493,8 @@ class PostPageCard extends Component {
 
   render() {
     const { post } = this.props;
+    const postObj = new Post(post);
     const { fetching, postBody, previews, score, voteState } = this.state;
-
     const voteWidget = (horizontalView) => (
       <VoteWidget
         score={score}
@@ -508,6 +510,8 @@ class PostPageCard extends Component {
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
+          {postObj && <DocumentHeader document={postObj} />}
+
           <AuthorSupportModal />
           <div
             className={css(

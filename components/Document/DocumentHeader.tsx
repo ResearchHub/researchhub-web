@@ -1,9 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import {
-  CreatedBy,
-  AuthorProfile,
-  UnifiedDocument,
   parseAuthorProfile,
+  TopLevelDocument,
 } from "~/config/types/root_types";
 import { Hub } from "~/config/types/hub";
 import { ReactElement, useEffect, useState } from "react";
@@ -21,59 +19,48 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
 
-// import DocumentActions from "./DocumentActions";
-
 type Args = {
-  title: string;
-  createdBy: CreatedBy;
-  authors?: Array<AuthorProfile>;
-  unifiedDocument: UnifiedDocument;
-  doi?: string;
-  datePublished?: string;
-  journal?: string;
-  hubs?: Array<Hub>;
-  createdDate: string;
-  externalUrl: string;
-  commentCount: number;
-  initialVoteScore: number;
-  currentUserVote: string;
-  type: "paper" | "hypothesis" | "post";
+  document: TopLevelDocument
 };
 
 export default function DocumentHeader({
-  title,
-  createdBy,
-  createdDate,
-  authors,
-  unifiedDocument,
-  externalUrl,
-  doi,
-  datePublished,
-  journal,
-  commentCount,
-  hubs = [],
-  type,
-  currentUserVote,
-  initialVoteScore = 0,
+  document
 }: Args): ReactElement<"div"> {
+
+  const {
+    title,
+    createdBy,
+    createdDate,
+    authors,
+    unifiedDocument,
+    externalUrl,
+    doi,
+    datePublished,
+    journal,
+    discussionCount,
+    userVote,
+    score,
+    hubs,
+  } = document;
+
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [voteState, setVoteState] = useState({
-    currentUserVote: currentUserVote,
-    voteScore: initialVoteScore,
-    prevVoteScore: initialVoteScore,
+    userVote: userVote,
+    voteScore: score,
+    prevVoteScore: score,
   });
 
   useEffect(() => {
-    setVoteState({ ...voteState, currentUserVote });
-  }, [currentUserVote]);
+    setVoteState({ ...voteState, userVote });
+  }, [userVote]);
 
   const handleVoteSuccess = ({ voteType, increment }) => {
     let newVoteScore = voteState.voteScore;
     const prevUserScore = voteState.voteScore;
     if (voteType === UPVOTE) {
-      if (voteState.currentUserVote === DOWNVOTE) {
+      if (voteState.userVote === DOWNVOTE) {
         newVoteScore = voteState.voteScore + increment + 1;
-      } else if (voteState.currentUserVote === UPVOTE) {
+      } else if (voteState.userVote === UPVOTE) {
         // This shouldn't happen but if it does, we do nothing
         console.log("User already casted upvote");
         return;
@@ -81,10 +68,10 @@ export default function DocumentHeader({
         newVoteScore = voteState.voteScore + increment;
       }
     } else if (voteType === DOWNVOTE) {
-      if (voteState.currentUserVote === DOWNVOTE) {
+      if (voteState.userVote === DOWNVOTE) {
         console.log("User already casted downvote");
         return;
-      } else if (voteState.currentUserVote === UPVOTE) {
+      } else if (voteState.userVote === UPVOTE) {
         newVoteScore = voteState.voteScore + increment - 1;
       } else {
         newVoteScore = voteState.voteScore + increment;
@@ -92,9 +79,9 @@ export default function DocumentHeader({
     }
 
     setVoteState({
-      currentUserVote: voteType,
+      userVote: voteType,
       voteScore: newVoteScore,
-      prevVoteScore: initialVoteScore,
+      prevVoteScore: score,
     });
   };
 
@@ -145,7 +132,7 @@ export default function DocumentHeader({
           onUpvote={onUpvote}
           onDownvote={onDownvote}
           // @ts-ignore
-          selected={voteState.currentUserVote}
+          selected={voteState.userVote}
           isPaper={unifiedDocument.documentType === "paper"}
           type={unifiedDocument.documentType}
         />
@@ -235,7 +222,7 @@ export default function DocumentHeader({
         <div className={css(styles.additionalDetails)}>
           <div className={css(styles.comments)}>
             {icons.commentsSolid}
-            {commentCount} {`comments`}
+            {discussionCount} {`comments`}
           </div>
           {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
             <div className={css(styles.reviews)}>
@@ -245,18 +232,18 @@ export default function DocumentHeader({
             </div>
           )}
           <div className={css(styles.type)}>
-            {type === "paper" ? (
+            {unifiedDocument.documentType === "paper" ? (
               icons.paperAlt
-            ) : type === "hypothesis" ? (
+            ) : unifiedDocument.documentType === "hypothesis" ? (
               <HypothesisIcon onClick={() => null} />
-            ) : type === "post" ? (
+            ) : unifiedDocument.documentType === "post" ? (
               icons.post
             ) : null}
-            <span className={css(styles.typeText)}>{type}</span>
+            <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
           </div>
         </div>
         <div className={css(styles.actions)}>
-          <DocumentActions unifiedDocument={unifiedDocument} type={type} />
+          <DocumentActions unifiedDocument={unifiedDocument} type={unifiedDocument.documentType} />
         </div>
       </div>
     </div>

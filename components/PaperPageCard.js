@@ -34,7 +34,6 @@ import ReactTooltip from "react-tooltip";
 import Router from "next/router";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
-import DocumentHeader from "~/components/Document/DocumentHeader";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
