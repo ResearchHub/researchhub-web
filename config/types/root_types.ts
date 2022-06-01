@@ -1,12 +1,30 @@
 import { parseCreatedBy } from "./contribution";
+import { Hub } from "./hub";
 import { parsePeerReviewScoreSummary, PeerReview, PeerReviewScoreSummary } from "./peerReview";
+import { Vote } from "./vote";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
 export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null;
 
-export type RHDocument = {
+export interface TopLevelDocument {
+  authors: Array<AuthorProfile>,
+  score: number,
+  createdDate: string,
+  discussionCount: number,
+  unifiedDocument: UnifiedDocument,
+  hubs: Array<Hub>,
+  createdBy: CreatedBy | null,
+  userVote?: "downvote" | "upvote" | "neutralvote" | null,
+  title?: string,
+  externalUrl?: string,
+  doi?: string,
+  datePublished?: string,
+  journal?: string,
+}
+
+export type UrlDocument = {
   id?: ID,
   title?: string,
   slug?: string,
@@ -17,7 +35,7 @@ export type RHDocument = {
 export type UnifiedDocument = {
   id: ID,
   documentType: "post" | "paper" | "hypothesis",
-  document?: RHDocument,
+  document?: UrlDocument,
   createdBy?: CreatedBy,
   reviewSummary?: PeerReviewScoreSummary,
 }
@@ -121,6 +139,7 @@ export type CreatedBy = {
   authorProfile: AuthorProfile,
 }
 
+
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof(raw) !== "object") {
     return raw;
@@ -162,47 +181,6 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   }
 
   return parsed;
-}
-
-export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
-  const rawAuthors = rawPaper.raw_authors || [];
-  const claimedAuthors = rawPaper.authors || [];
-  const nameToObjMap = {}
-
-  for (let i=0; i < rawAuthors.length; i++) {
-    try {
-      const current = rawAuthors[i];
-      const key = (current.first_name + " " + current.last_name).toLowerCase();
-      nameToObjMap[key] = parseAuthorProfile(current);
-    }
-    catch(error) {
-      console.log('Error parsing author', rawAuthors[i]);
-    }
-  }
-
-  for (let i=0; i < claimedAuthors.length; i++) {
-    try {
-      const current = claimedAuthors[i];
-      const key = (current.first_name + " " + current.last_name).toLowerCase();
-      // Override raw_author if claimed author exists
-      nameToObjMap[key] = {...nameToObjMap[key], ...parseAuthorProfile(current)}
-    }
-    catch(error) {
-      console.log('Error parsing author', claimedAuthors[i]);
-    }
-  }
-
-  const finalAuthors = Object.values(nameToObjMap)
-    .sort((a:any, b:any) => {
-      return (a.sequence === "first" && b.sequence === "first")
-        ? 0
-        : a.sequence === "first"
-        ? -1
-        : 1
-    });
-
-  // @ts-ignore
-  return finalAuthors;
 }
 
 export const parseAuthorProfile = (raw: any): AuthorProfile => {
