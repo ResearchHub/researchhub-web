@@ -48,6 +48,9 @@ const VoteWidget = (props) => {
     replyId,
     postDownvote,
     postDownvotePending,
+    downvoteStyleClass,
+    upvoteStyleClass,
+    pillClass,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -152,6 +155,7 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            styleClass={upvoteStyleClass}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -166,6 +170,7 @@ const VoteWidget = (props) => {
           paper={paper}
           showPromotion={showPromotion}
           type={type}
+          pillClass={pillClass}
           horizontalView={horizontalView && horizontalView}
         />
         <PermissionNotificationWrapper
@@ -177,6 +182,7 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            styleClass={downvoteStyleClass}
           />
         </PermissionNotificationWrapper>
       </div>
@@ -194,12 +200,12 @@ VoteWidget.propTypes = {
 };
 
 const ScorePill = (props) => {
-  const { score, small } = props;
+  const { score, small, pillClass } = props;
 
   const isScoreNumeric = !isNaN(score);
 
   return (
-    <div className={css(styles.pillContainer)}>
+    <div className={css(styles.pillContainer, pillClass)}>
       <div
         className={css(
           small && styles.small,
@@ -213,7 +219,8 @@ const ScorePill = (props) => {
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled, horizontalView, right } = props;
+  const { onClick, selected, disabled, horizontalView, right, styleClass } =
+    props;
 
   let style = [styles.icon];
 
@@ -230,6 +237,10 @@ const VoteButton = (props) => {
     } else {
       style.push(styles.marginLeft);
     }
+  }
+
+  if (styleClass) {
+    style.push(styleClass);
   }
 
   return (
@@ -318,7 +329,7 @@ const styles = StyleSheet.create({
     color: voteWidgetColors.ARROW,
     fontSize: 14,
     ":hover": {
-      color: colors.BLUE(1),
+      color: colors.GREEN(0.4),
     },
   },
   iconBlue: {
@@ -339,6 +350,9 @@ const styles = StyleSheet.create({
   },
   marginRight: {
     marginRight: 10,
+    "@media only screen and (max-width: 767px)": {
+      marginRight: 7,
+    },
   },
   promotionContainer: {
     display: "flex",
@@ -355,6 +369,10 @@ const styles = StyleSheet.create({
   },
   marginLeft: {
     marginLeft: 10,
+
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 7,
+    },
   },
   divider: {
     margin: "5px 0 15px",
