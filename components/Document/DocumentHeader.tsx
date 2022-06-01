@@ -158,9 +158,11 @@ function DocumentHeader({
         />
       </div>
       <div className={css(styles.submittedBy)}>
-        <div className={css(styles.avatarContainer)}>
-          <AuthorAvatar author={createdBy} size={25} />
-        </div>
+        {createdBy?.authorProfile &&
+          <div className={css(styles.createdByContainer)}>
+            <AuthorAvatar author={createdBy?.authorProfile} size={25} />
+          </div>
+        }
         <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`}>
           {createdBy?.authorProfile?.firstName}{" "}
           {createdBy?.authorProfile?.lastName}
@@ -304,10 +306,8 @@ const styles = StyleSheet.create({
     lineHeight: "26px",
   },
   postedText: {
-    marginLeft: 5,
-    // marginRight: 5,
   },
-  avatarContainer: {
+  createdByContainer: {
     marginRight: 7,
   },
   hubsContainer: {},
