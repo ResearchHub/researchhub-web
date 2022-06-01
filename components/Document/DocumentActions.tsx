@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { UnifiedDocument } from "~/config/types/root_types";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import ShareAction from "../ShareAction";
@@ -21,22 +21,27 @@ import AdminButton from "../Admin/AdminButton";
 type Args = {
   unifiedDocument: UnifiedDocument,
   type: "paper" | "hypothesis" | "post",
+  onDocumentRemove: Function,
+  onDocumentRestore: Function,  
 }
 
 function DocumentActions({
-  unifiedDocument
+  unifiedDocument,
+  onDocumentRemove,
+  onDocumentRestore,
 }: Args): ReactElement<"div">{
   const router = useRouter();
   const currentUser = getCurrentUser();
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const isSubmitter = unifiedDocument?.createdBy?.id === currentUser.id;
+  const [isRemoved, setIsRemoved] = useState(unifiedDocument.isRemoved);
+
 
   let title;
   if (unifiedDocument?.documentType === "paper") {
     title = unifiedDocument?.document?.title ?? unifiedDocument?.document?.paperTitle;
   }
-
   const navigateToEditPaperInfo = (e) => {
     e && e.stopPropagation();
     if (unifiedDocument.documentType === "paper") {
@@ -45,7 +50,9 @@ function DocumentActions({
       router.push(href, as);
     }
   };
-
+  console.log('uuu', unifiedDocument)
+  console.log('uuu', unifiedDocument.isRemoved)
+  console.log('isRemoved', isRemoved)
   const actionButtons = [
     {
       active: true,
@@ -120,22 +127,23 @@ function DocumentActions({
       html: (
         <span
           className={css(styles.actionIcon, styles.moderatorAction)}
-          data-tip={unifiedDocument?.document?.isRemoved ? "Restore Page" : "Remove Page"}
+          data-tip={isRemoved ? "Restore Page" : "Remove Page"}
         >
           <ActionButton
             isModerator={true}
             paperId={unifiedDocument?.document?.id}
-            restore={unifiedDocument?.document?.isRemoved}
-            icon={unifiedDocument?.document?.isRemoved ? icons.plus : icons.minus}
+            restore={isRemoved}
+            icon={isRemoved ? icons.plus : icons.minus}
             onAction={() => {
-              if (unifiedDocument.document?.isRemoved) {
+              if (isRemoved) {
                 restoreDocument({
                   unifiedDocumentId: unifiedDocument.id,
                   onError: (error: Error) => {
                     console.log('error')
                   },
                   onSuccess: () => {
-                    console.log('success')
+                    setIsRemoved(false);
+                    onDocumentRestore();
                   },
                 });
               } else {
@@ -145,7 +153,8 @@ function DocumentActions({
                     console.log('error')
                   },
                   onSuccess: (): void => {
-                    console.log('success')
+                    setIsRemoved(true);
+                    onDocumentRemove();
                   },
                 });
               }
@@ -168,6 +177,8 @@ function DocumentActions({
       ),
     },    
   ].filter((action) => action.active);
+
+  console.log('actionButtons', actionButtons)
 
   return (
     <div className={css(styles.documentActions)}>

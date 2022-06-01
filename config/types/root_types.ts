@@ -38,6 +38,7 @@ export type UnifiedDocument = {
   document?: UrlDocument,
   createdBy?: CreatedBy,
   reviewSummary?: PeerReviewScoreSummary,
+  isRemoved: boolean,
 }
 
 export type AuthorProfile = {
@@ -149,6 +150,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     "id": raw.id,
     "documentType": raw?.document_type?.toLowerCase(),
     "document": {},
+    "isRemoved": raw.is_removed,
   }
 
   if (raw.created_by) {

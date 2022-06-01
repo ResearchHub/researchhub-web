@@ -20,11 +20,15 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
 
 type Args = {
-  document: TopLevelDocument
+  document: TopLevelDocument,
+  onDocumentRemove: Function,
+  onDocumentRestore: Function,
 };
 
 export default function DocumentHeader({
-  document
+  document,
+  onDocumentRemove,
+  onDocumentRestore,
 }: Args): ReactElement<"div"> {
 
   const {
@@ -42,7 +46,6 @@ export default function DocumentHeader({
     score,
     hubs,
   } = document;
-
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [voteState, setVoteState] = useState({
     userVote: userVote,
@@ -243,7 +246,12 @@ export default function DocumentHeader({
           </div>
         </div>
         <div className={css(styles.actions)}>
-          <DocumentActions unifiedDocument={unifiedDocument} type={unifiedDocument.documentType} />
+          <DocumentActions
+            unifiedDocument={unifiedDocument}
+            type={unifiedDocument.documentType}
+            onDocumentRemove={onDocumentRemove}
+            onDocumentRestore={onDocumentRestore}
+          />
         </div>
       </div>
     </div>

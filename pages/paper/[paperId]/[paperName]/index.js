@@ -121,6 +121,10 @@ const Paper = ({
   const [fetchFreshDataStatus, setFetchFreshDataStatus] =
     useState("NOT_FETCHED");
   const [paper, setPaper] = useState({});
+  // TODO: paperV2 is a strongly typed object meant to deprecate
+  // the old JSON respnose from API. We should aim to use only this object
+  // in future tech-deb sprint.
+  const [paperV2, setPaperV2] = useState(null);
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [score, setScore] = useState(undefined);
@@ -174,7 +178,10 @@ const Paper = ({
   // but since useEffect does not work with SSG, we need a standard if statement.
   const noSetPaperData = !isEmpty(initialPaperData) && isEmpty(paper);
   if (noSetPaperData) {
-    setPaper(shims.paper(initialPaperData));
+    const paper = shims.paper(initialPaperData);
+    setPaper(paper);
+    setPaperV2(new PaperDoc(paper));
+
     setScore(getNestedValue(initialPaperData, ["score"], 0));
 
     if (discussionCount === null) {
@@ -231,7 +238,7 @@ const Paper = ({
           setSelectedVoteType(userVoteToConstant(freshPaperData.user_vote));
         }
 
-        setPaper(shims.paper(freshPaperData));
+        setPaperV2(new PaperDoc(updatedPaper));
         setUserVoteChecked(true);
       }
     );
@@ -287,10 +294,14 @@ const Paper = ({
 
   const restorePaper = () => {
     setPaper({ ...paper, is_removed: false });
+    paperV2.unifiedDocument.isRemoved = false;
+    setPaperV2(paperV2);
   };
 
   const removePaper = () => {
     setPaper({ ...paper, is_removed: true });
+    paperV2.unifiedDocument.isRemoved = true;
+    setPaperV2(paperV2);
   };
 
   function calculateCommentCount(paper) {
@@ -414,7 +425,6 @@ const Paper = ({
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-  const paperObj = new PaperDoc(paper);
 
   return (
     <div>
@@ -459,7 +469,13 @@ const Paper = ({
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              {paper?.id && <DocumentHeader document={paperObj} />}
+              {paperV2 && (
+                <DocumentHeader
+                  document={paperV2}
+                  onDocumentRemove={removePaper}
+                  onDocumentRestore={restorePaper}
+                />
+              )}
 
               {/* <PaperPageCard
                 discussionCount={discussionCount}
