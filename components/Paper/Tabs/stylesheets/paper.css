@@ -60,3 +60,35 @@
 
 .ck.ck-user__img.ck-user__avatar {
 }
+
+.ck-read-only {
+  padding: 0;
+}
+
+.post-body .ck-read-only p {
+  font-size: 18px !important;
+  line-height: 30px !important;
+  white-space: pre-line !important;
+  word-break: break-word !important;
+}
+
+.post-body .ck-content {
+  border: none !important;
+  line-height: 24px;
+  word-break: break-word;
+  padding: 0 !important;
+}
+
+.post-body .ck-content h1,
+h2,
+h3 {
+  line-height: normal;
+}
+
+.post-body .ck-content a {
+  text-decoration: none;
+}
+
+.post-body .ck-content a:hover {
+  text-decoration: underline;
+}
