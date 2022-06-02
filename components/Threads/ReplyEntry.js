@@ -66,12 +66,18 @@ class ReplyEntry extends Component {
   }
 
   shouldHighlight = () => {
-    const { newCard, currentAuthor, reply } = this.props;
+    const { newCard, currentAuthor, comment, context } = this.props;
     const isCurrentAuthor =
-      currentAuthor?.id === reply.created_by.author_profile.id;
-    if (newCard || isCurrentAuthor) {
-      return true;
+      currentAuthor?.id === comment.created_by.author_profile.id;
+
+    if (context === "AUTHOR_PROFILE") {
+      if (isCurrentAuthor) {
+        return true;
+      }
+    } else if (context === "DOCUMENT") {
+      return false;
     }
+
     return false;
   };
 
@@ -576,6 +582,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "flex-start",
     marginBottom: 5,
+    marginTop: 15,
     overflow: "visible",
     display: "table",
     tableLayout: "fixed",
@@ -592,8 +599,8 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
     "@media only screen and (max-width: 415px)": {
@@ -643,7 +650,6 @@ const styles = StyleSheet.create({
   },
   voteWidget: {
     margin: 0,
-    backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },

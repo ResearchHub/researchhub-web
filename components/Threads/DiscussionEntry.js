@@ -346,6 +346,7 @@ class DiscussionEntry extends Component {
       documentType,
       currentAuthor,
       noVote,
+      context,
     } = this.props;
     let comments = this.state.comments;
 
@@ -356,6 +357,7 @@ class DiscussionEntry extends Component {
             data={data}
             noVote={noVote}
             hostname={hostname}
+            context={context}
             currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
@@ -792,8 +794,8 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
   },
@@ -861,7 +863,6 @@ const styles = StyleSheet.create({
   },
   voteWidget: {
     margin: 0,
-    backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },

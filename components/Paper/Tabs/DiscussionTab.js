@@ -910,7 +910,7 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "start",
     width: "100%",
-    marginBottom: 15,
+    marginBottom: 5,
   },
   discussionTitle: {
     display: "flex",
@@ -1039,7 +1039,7 @@ var styles = StyleSheet.create({
     },
   },
   discussionTypeHeader: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 500,
     alignSelf: "center",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {

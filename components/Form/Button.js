@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.BLUE(1),
+    backgroundColor: colors.NEW_BLUE(1),
     borderRadius: 5,
     cursor: "pointer",
     highlight: "none",
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     border: "none",
     userSelect: "none",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      opacity: 0.9,
     },
     "@media only screen and (max-width: 415px)": {
       width: "unset",
@@ -134,12 +134,12 @@ const styles = StyleSheet.create({
   ripples: {},
   isWhite: {
     backgroundColor: "#FFF",
-    border: `1px solid ${colors.BLUE(1)}`,
-    color: colors.BLUE(1),
+    border: `1px solid ${colors.NEW_BLUE(1)}`,
+    color: colors.NEW_BLUE(1),
     ":hover": {
       borderColor: "#FFF",
       boxShadow: "2px 2x 2px 2px #EDEDED",
-      backgroundColor: colors.BLUE(1),
+      backgroundColor: colors.NEW_BLUE(1),
       color: "#FFF",
     },
   },

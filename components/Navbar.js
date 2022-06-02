@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: "rgb(193, 193, 206)",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   navbarContainer: {
@@ -920,7 +920,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   login: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     border: "1px solid #E7E7E7",
     background: "#FFF",
     ":hover": {
@@ -940,8 +940,8 @@ const styles = StyleSheet.create({
     },
   },
   newPost: {
-    background: colors.BLUE(),
-    border: `${colors.BLUE()} 1px solid`,
+    background: colors.NEW_BLUE(),
+    border: `${colors.NEW_BLUE()} 1px solid`,
     color: "#fff",
     ":hover": {
       backgroundColor: "#3E43E8",
@@ -1023,10 +1023,10 @@ const styles = StyleSheet.create({
     color: "#FFF",
     textDecoration: "unset",
     ":hover": {
-      color: colors.BLUE(1),
+      color: colors.NEW_BLUE(1),
     },
     ":hover #icon": {
-      color: colors.BLUE(1),
+      color: colors.NEW_BLUE(1),
     },
   },
   icon: {
