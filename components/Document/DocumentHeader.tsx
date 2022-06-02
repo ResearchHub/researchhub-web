@@ -111,7 +111,8 @@ function DocumentHeader({
     onError: () => null,
   });
 
-  const authorElems = (authors || []).map((author) => {
+  const authorElems = (authors || []).map((author, idx) => {
+    const showComma = idx < authors.length - 1; 
     return (
       <span className={css(styles.author)}>
         {author.isClaimed ? (
@@ -128,6 +129,7 @@ function DocumentHeader({
             {author.firstName} {author.lastName}
           </span>
         )}
+        {showComma ? ", " : ""}
       </span>
     );
   });
@@ -177,7 +179,7 @@ function DocumentHeader({
                 <>
                   <span className={css(styles.textSecondary)}>{` in`}</span>
                   <ALink
-                    theme="solidPrimary"
+                    theme="blankAndBlue"
                     href={`/hubs/${h.slug}`}
                     overrideStyle={styles.hubLink}
                   >
@@ -214,19 +216,21 @@ function DocumentHeader({
         {authorElems.length > 0 && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>Authors</div>
-            <div className={css(styles.metaVal)}>{authorElems}</div>
-            {claimableAuthors.length > 0 &&
-              <div className={css(styles.claimProfile)} onClick={() => setIsAuthorClaimModalOpen(true)}>
-                Claim profile to earn Research Coin
-                <img
-                  src={"/static/icons/coin-filled.png"}
-                  draggable={false}
-                  className={css(styles.coinIcon)}
-                  alt="RSC Coin"
-                  height={18}
-                />
-              </div>
-            }
+            <div className={css(styles.metaVal)}>
+              {authorElems}
+              {claimableAuthors.length > 0 &&
+                <span className={css(styles.claimProfile)} onClick={() => setIsAuthorClaimModalOpen(true)}>
+                  Claim profile to earn Research Coin
+                  <img
+                    src={"/static/icons/coin-filled.png"}
+                    draggable={false}
+                    className={css(styles.coinIcon)}
+                    alt="RSC Coin"
+                    height={15}
+                  />
+                </span>
+              }
+            </div>
           </div>
         )}
         {doi && (
@@ -244,25 +248,27 @@ function DocumentHeader({
       </div>
       <div className={css(styles.actionsAndDetailsRow)}>
         <div className={css(styles.additionalDetails)}>
-          <div className={css(styles.comments)}>
-            {icons.commentsSolid}
+          <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
+            <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
             {discussionCount} {`comments`}
-          </div>
+          </ALink>
           {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
-            <div className={css(styles.reviews)}>
-              {icons.starAlt}
+            <div className={css(styles.reviews, styles.additionalDetail)}>
+              <span className={css(styles.detailIcon)}>{icons.starAlt}</span>
               {unifiedDocument?.reviewSummary?.avg} {`based on `}{" "}
               {unifiedDocument?.reviewSummary?.count} {`reviews`}
             </div>
           )}
-          <div className={css(styles.type)}>
-            {unifiedDocument.documentType === "paper" ? (
-              icons.paperAlt
-            ) : unifiedDocument.documentType === "hypothesis" ? (
-              <HypothesisIcon onClick={() => null} />
-            ) : unifiedDocument.documentType === "post" ? (
-              icons.post
-            ) : null}
+          <div className={css(styles.type, styles.additionalDetail)}>
+            <span className={css(styles.detailIcon)}>
+              {unifiedDocument.documentType === "paper" ? (
+                icons.paperAlt
+              ) : unifiedDocument.documentType === "hypothesis" ? (
+                <HypothesisIcon onClick={() => null} />
+              ) : unifiedDocument.documentType === "post" ? (
+                icons.post
+              ) : null}
+            </span>
             <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
           </div>
         </div>
@@ -290,11 +296,29 @@ const styles = StyleSheet.create({
   actionsAndDetailsRow: {
     display: "flex",
     justifyContent: "space-between",
+    marginTop: 25,
   },
-  additionalDetails: {},
-  comments: {},
-  reviews: {},
-  type: {},
+  additionalDetails: {
+    display: "flex",
+    fontSize: 14,
+    alignItems: "center",
+  },
+  additionalDetail: {
+    marginRight: 15,
+    color: colors.MEDIUM_GREY(),
+  },
+  detailIcon: {
+    marginRight: 7,
+  },
+  comments: {
+    display: "flex",
+  },
+  reviews: {
+    display: "flex",
+  },
+  type: {
+    display: "flex",
+  },
   typeText: {
     textTransform: "capitalize",
   },
@@ -304,6 +328,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 14,
     lineHeight: "26px",
+    marginBottom: 5,
   },
   postedText: {
   },
@@ -313,8 +338,18 @@ const styles = StyleSheet.create({
   hubsContainer: {},
   claimProfile: {
     cursor: "pointer",
+    color: colors.MEDIUM_GREY(),
+    fontWeight: 400,
+    marginLeft: 10,
+    display: "inline-flex",
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    }
   },
-  coinIcon: {},
+  coinIcon: {
+    marginLeft: 5,
+    alignSelf: "center",
+  },
   timestamp: {
     marginLeft: 2,
   },
@@ -329,25 +364,37 @@ const styles = StyleSheet.create({
     display: "inline-block",
   },
   hubLink: {
-    color: colors.BLACK(),
     textTransform: "capitalize",
     fontSize: 14,
     marginLeft: 5,
-    ":hover": {
-      color: colors.BLACK(),
-      textDecoration: "underline",
-    },
   },
   title: {
     fontSize: 32,
     fontWeight: 500,
     lineHeight: "40px",
   },
-  metadata: {},
-  metadataRow: {},
-  metaKey: {},
-  metaVal: {},
-  author: {},
+  metadata: {
+    marginTop: 25,
+  },
+  metadataRow: {
+    display: "flex",
+    lineHeight: "22px",
+    marginTop: 3,
+  },
+  metaKey: {
+    color: colors.MEDIUM_GREY(),
+    fontWeight: 500,
+    fontSize: 14,
+    width: 75,
+    minWidth: 75,
+  },
+  metaVal: {
+    fontSize: 14,
+    fontWeight: 500,
+  },
+  author: {
+    marginRight: 2,
+  },
 });
 
 const mapStateToProps = (state) => ({
