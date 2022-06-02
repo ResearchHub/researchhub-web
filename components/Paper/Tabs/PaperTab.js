@@ -302,11 +302,11 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    padding: 25,
-    backgroundColor: "#FFF",
-    marginTop: 30,
-    border: "1.5px solid #F0F0F0",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    // padding: 25,
+    // backgroundColor: "#FFF",
+    // marginTop: 30,
+    // border: "1.5px solid #F0F0F0",
+    // boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
@@ -380,7 +380,7 @@ var styles = StyleSheet.create({
     padding: 0,
   },
   dndContainer: {
-    width: 600,
+    width: "100%",
     marginTop: 30,
     "@media only screen and (max-width: 700px)": {
       width: "100%",
@@ -491,7 +491,8 @@ var styles = StyleSheet.create({
   title: {
     display: "flex",
     alignItems: "center",
-    fontSize: 22,
+    fontSize: 20,
+    margin: 0,
     fontWeight: 500,
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,

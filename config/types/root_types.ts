@@ -22,6 +22,12 @@ export interface TopLevelDocument {
   doi?: string,
   datePublished?: string,
   journal?: string,
+  formats?: Array<PaperFormat>,
+}
+
+export type PaperFormat = {
+  type: "pdf" | "latex",
+  url: string,
 }
 
 export type UrlDocument = {

@@ -13,16 +13,17 @@ import { convertHttpToHttps } from "~/config/utils/routing";
 const PaperPDFModal = (props) => {
   const { paper, modals, openPaperPDFModal, onClose } = props;
   const { file, pdf_url } = paper;
+  const fitToWidthFile =
+    file +
+    function closeModal() {
+      /**
+       * it is helpful to have onClose callback since there
+       * may be many PaperPDFModal's rendered, but modals.openPaperPDFModal is only a single boolean
+       * and cannot specify which one is open */
+      onClose && onClose();
 
-  function closeModal() {
-    /**
-     * it is helpful to have onClose callback since there
-     * may be many PaperPDFModal's rendered, but modals.openPaperPDFModal is only a single boolean
-     * and cannot specify which one is open */
-    onClose && onClose();
-
-    return openPaperPDFModal && openPaperPDFModal(false);
-  }
+      return openPaperPDFModal && openPaperPDFModal(false);
+    };
 
   return (
     <BaseModal
