@@ -88,19 +88,15 @@ class DiscussionEntry extends Component {
       currentAuthor?.id === data.created_by.author_profile.id;
     const comments = data.comments || [];
 
-    if (newCard) {
-      return true;
-    } else if (isCurrentAuthor && context === "DOCUMENT") {
-      return true;
-    } else if (
-      isCurrentAuthor &&
-      context === "AUTHOR_PROFILE" &&
-      comments.length > 0
-    ) {
-      return true;
-    } else {
+    if (context === "AUTHOR_PROFILE") {
+      if (isCurrentAuthor && comments.length > 0) {
+        return true;
+      }
+    } else if (context === "DOCUMENT") {
       return false;
     }
+
+    return false;
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -780,7 +776,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     position: "relative",
     boxSizing: "border-box",
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
     paddingRight: 0,
     cursor: "default",
     justifyContent: "space-between",

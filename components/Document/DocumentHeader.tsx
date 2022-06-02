@@ -226,7 +226,7 @@ function DocumentHeader({
                     draggable={false}
                     className={css(styles.coinIcon)}
                     alt="RSC Coin"
-                    height={15}
+                    height={20}
                   />
                 </span>
               }
@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
   },
   typeText: {
     textTransform: "capitalize",
+    fontWeight: 500,
   },
   actions: {},
   submittedBy: {
