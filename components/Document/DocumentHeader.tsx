@@ -19,7 +19,6 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import { connect } from "react-redux";
-import { formatScore } from "~/config/utils/form";
 
 
 type Args = {
@@ -62,7 +61,7 @@ function DocumentHeader({
     voteScore: score,
     prevVoteScore: score,
   });
-
+  console.log('document1', document)
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
@@ -259,18 +258,18 @@ function DocumentHeader({
             </div>
           </div>
         )}
+        {datePublished && (
+          <div className={css(styles.metadataRow)}>
+            <div className={css(styles.metaKey)}>Published</div>
+            <div className={css(styles.metaVal)}>{datePublished}</div>
+          </div>
+        )}
         {formatElems.length > 0 && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>Formats</div>
             <div className={css(styles.metaVal)}>
               {formatElems}
             </div>
-          </div>
-        )}
-        {datePublished && (
-          <div className={css(styles.metadataRow)}>
-            <div className={css(styles.metaKey)}>Published</div>
-            <div className={css(styles.metaVal)}>{datePublished}</div>
           </div>
         )}
       </div>
@@ -422,8 +421,8 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY(),
     fontWeight: 500,
     fontSize: 16,
-    width: 75,
-    minWidth: 75,
+    width: 85,
+    minWidth: 85,
   },
   metaVal: {
     fontSize: 16,

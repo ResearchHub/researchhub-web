@@ -1,4 +1,5 @@
 import { userVoteToConstant } from "../constants"
+import { formatDateStandard } from "../utils/dates"
 import { parseCreatedBy } from "./contribution"
 import { Hub, parseHub } from "./hub"
 import { AuthorProfile, CreatedBy, PaperFormat, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
@@ -64,7 +65,7 @@ export class Paper implements TopLevelDocument {
     this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
-    this._createdDate = raw.created_date;
+    this._createdDate = formatDateStandard(raw.created_date);
     this._createdBy = parseCreatedBy(raw.uploaded_by);
     this._hubs = (raw.hubs || []).map(h => parseHub(h));
     this._title = raw.title;
@@ -76,8 +77,8 @@ export class Paper implements TopLevelDocument {
     if (raw.doi) {
       this._doi = raw.doi;
     }
-    if (raw.publish_date) {
-      this._datePublished = raw.publish_date;
+    if (raw.paper_publish_date) {
+      this._datePublished = formatDateStandard(raw.paper_publish_date);
     }
     if (raw.url) {
       this._externalUrl = raw.url;
