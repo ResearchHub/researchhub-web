@@ -485,37 +485,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   container: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    boxSizing: "border-box",
-    borderCollapse: "separate",
-    borderSpacing: "30px 40px",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-      borderSpacing: "0",
-      display: "flex",
-      flexDirection: "column",
-    },
-    "@media only screen and (min-width: 768px)": {
-      display: "flex",
-      marginTop: 16,
-      width: "90%",
-    },
-    "@media only screen and (min-width: 1024px)": {
-      width: "100%",
-      display: "table",
-    },
-    "@media only screen and (min-width: 1200px)": {
-      width: "90%",
-    },
+    marginTop: 30,
   },
   main: {
     boxSizing: "border-box",
     width: 800,
     margin: "0 auto",
-  },
-  hide: {
-    display: "none",
   },
   discussionContainer: {},
   section: {

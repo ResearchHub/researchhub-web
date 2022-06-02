@@ -56,9 +56,6 @@ class PostPageCard extends Component {
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
     this.editorRef = createRef();
-
-    this.onUpvote = this.createVoteHandler(UPVOTE);
-    this.onDownvote = this.createVoteHandler(DOWNVOTE);
   }
 
   componentWillUnmount() {
@@ -143,11 +140,6 @@ class PostPageCard extends Component {
         console.log(error);
         Sentry.captureEvent(error);
       });
-  };
-
-  downloadPDF = () => {
-    let file = this.props.paper.file;
-    window.open(file, "_blank");
   };
 
   setHover = () => {
@@ -278,234 +270,10 @@ class PostPageCard extends Component {
     );
   };
 
-  formatAuthors = () => {
-    const { paper } = this.props;
-
-    const authors = {};
-
-    if (paper.authors && paper.authors.length > 0) {
-      paper.authors.map((author) => {
-        if (author.first_name && !author.last_name) {
-          authors[author.first_name] = author;
-        } else if (author.last_name && !author.first_name) {
-          authors[author.last_name] = author;
-        } else {
-          authors[`${author.first_name} ${author.last_name}`] = author;
-        }
-      });
-    } else {
-      try {
-        if (paper.raw_authors) {
-          let rawAuthors = paper.raw_authors;
-          if (typeof paper.raw_authors === "string") {
-            rawAuthors = JSON.parse(paper.raw_authors);
-            if (!Array.isArray(rawAuthors)) {
-              rawAuthors = [rawAuthors];
-            }
-          } else if (
-            typeof rawAuthors === "object" &&
-            !Array.isArray(rawAuthors)
-          ) {
-            authors[rawAuthors["main_author"]] = true;
-
-            rawAuthors["other_authors"].map((author) => {
-              authors[author] = true;
-            });
-
-            return authors;
-          }
-          rawAuthors.forEach((author) => {
-            if (author.first_name && !author.last_name) {
-              authors[author.first_name] = true;
-            } else if (author.last_name && !author.first_name) {
-              authors[author.last_name] = true;
-            } else {
-              authors[`${author.first_name} ${author.last_name}`] = true;
-            }
-          });
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-    }
-
-    return authors;
-  };
-
-  renderAuthors = () => {
-    const authorsObj = this.formatAuthors();
-    const authorKeys = Object.keys(authorsObj);
-    const length = authorKeys.length;
-    const authors = [];
-
-    if (length >= 15) {
-      let author = authorKeys[0];
-
-      return (
-        <>
-          <span className={css(styles.rawAuthor)}>{`${author}, et al`}</span>
-          <meta property="author" content={author} />
-        </>
-      );
-    }
-
-    for (let i = 0; i < authorKeys.length; i++) {
-      let authorName = authorKeys[i];
-      if (typeof authorsObj[authorName] === "object") {
-        let author = authorsObj[authorName];
-        authors.push(
-          <Link
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/overview`}
-            key={`authorName-${author.id}`}
-          >
-            <a
-              href={`/user/${author.id}/overview`}
-              className={css(styles.atag)}
-            >
-              <span className={css(styles.authorName)} property="name">
-                {`${authorName}${i < length - 1 ? "," : ""}`}
-              </span>
-              <meta property="author" content={author} />
-            </a>
-          </Link>
-        );
-      } else {
-        authors.push(
-          <span className={css(styles.rawAuthor)} key={`rawAuthor-${i}`}>
-            {`${authorName}${i < length - 1 ? "," : ""}`}
-            <meta property="author" content={authorName} />
-          </span>
-        );
-      }
-    }
-
-    return authors;
-  };
-
-  renderHubs = () => {
-    const { paper } = this.props;
-
-    if (paper.hubs && paper.hubs.length > 0) {
-      return (
-        <div className={css(styles.hubTags)}>
-          {paper.hubs.map((hub, index) => {
-            if (this.state.showAllHubs || index < 3) {
-              let last = index === paper.hubs.length - 1;
-              return (
-                <div key={`hub_tag_index_${index}`}>
-                  <HubTag
-                    tag={hub}
-                    gray={false}
-                    overrideStyle={
-                      this.state.showAllHubs ? styles.tagStyle : styles.hubTag
-                    }
-                    last={last}
-                  />
-                  <meta property="about" content={hub.name} />
-                </div>
-              );
-            }
-          })}
-          {paper.hubs.length > 3 && (
-            <div
-              className={css(
-                styles.icon,
-                this.state.showAllHubs && styles.active
-              )}
-              onClick={this.toggleShowHubs}
-            >
-              {this.state.showAllHubs ? icons.chevronUp : icons.ellipsisH}
-            </div>
-          )}
-        </div>
-      );
-    }
-  };
-
-  createVoteHandler = (voteType) => {
-    const { post } = this.props;
-    const voteStrategies = {
-      [UPVOTE]: {
-        increment: 1,
-        getUrl: API.RH_POST_UPVOTE,
-      },
-      [DOWNVOTE]: {
-        increment: -1,
-        getUrl: API.RH_POST_DOWNVOTE,
-      },
-    };
-
-    const { increment, getUrl } = voteStrategies[voteType];
-
-    const handleVote = async (postId) => {
-      const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
-        (err) => console.log(err)
-      );
-
-      return response;
-    };
-
-    return async (e) => {
-      e.stopPropagation();
-
-      const {
-        user,
-        post: {
-          created_by: { author_profile: author },
-        },
-      } = this.props;
-
-      if (user && user.author_profile.id === author.id) {
-        console.log("Not logged in or Attempted to vote own post");
-        return;
-      }
-
-      if (this.state.voteState === voteType) {
-        /**
-         * Deselect
-         * NOTE: This will never be called with the current implementation of
-         * VoteWidget, because it disables the onVote/onDownvote callback
-         * if the button is already selected.
-         */
-        this.setState((prev) => ({
-          voteState: null,
-          score: prev.score - increment, // Undo the vote
-        }));
-      } else {
-        this.setState({ voteState: voteType });
-        if (
-          this.state.voteState === UPVOTE ||
-          this.state.voteState === DOWNVOTE
-        ) {
-          // If post was already upvoted / downvoted by user, then voting
-          // oppoistely will reverse the score by twice as much
-          this.setState((prev) => ({ score: prev.score + increment * 2 }));
-        } else {
-          // User has not voted, so regular vote
-          this.setState((prev) => ({ score: prev.score + increment }));
-        }
-      }
-
-      await handleVote(post.id);
-    };
-  };
-
   render() {
     const { post } = this.props;
     const postObj = new Post(post);
-    const { fetching, postBody, previews, score, voteState } = this.state;
-    const voteWidget = (horizontalView) => (
-      <VoteWidget
-        score={score}
-        onUpvote={this.onUpvote}
-        onDownvote={this.onDownvote}
-        selected={voteState}
-        horizontalView={horizontalView}
-        isPaper={false}
-        type={"Discussion"}
-      />
-    );
+    const { postBody } = this.state;
 
     return (
       <div className={css(styles.mainContainer)}>
@@ -524,61 +292,8 @@ class PostPageCard extends Component {
             vocab="https://schema.org/"
             typeof="ScholarlyArticle"
           >
-            <ReactTooltip />
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
-            <div className={css(styles.voting)}>
-              {voteWidget(false)}
-              <div className={css(styles.discussionCountWrapper)}>
-                <DiscussionCount
-                  docType="post"
-                  slug={post.slug}
-                  id={post.id}
-                  count={post.discussion_count}
-                />
-              </div>
-              <PaperPromotionIcon post={post} />
-            </div>
-            <div className={css(styles.column)} ref={this.metaContainerRef}>
-              <div className={css(styles.reverseRow)}>
-                <div className={css(styles.cardContainer)}>
-                  <div className={css(styles.metaContainer)}>
-                    {!post.note && (
-                      <div className={css(styles.titleHeader)}>
-                        <div className={css(styles.row)}>
-                          <h1
-                            className={css(styles.title)}
-                            property={"headline"}
-                          >
-                            {post.title}
-                          </h1>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className={css(styles.rightColumn, styles.mobile)}>
-                  <div className={css(styles.votingMobile)}>
-                    {voteWidget(true)}
-                    <div className={css(styles.discussionCountWrapper)}>
-                      <DiscussionCount
-                        docType="post"
-                        slug={post.slug}
-                        id={post.id}
-                        count={post.discussion_count}
-                      />
-                      <a
-                        href="#comments"
-                        className={css(styles.discussionText)}
-                      >
-                        <span>Join the Discussion</span>
-                      </a>
-                    </div>
-                    <PaperPromotionIcon post={post} />
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div className={"post-body"}>
             {this.state.showPostEditor ? (
@@ -596,19 +311,6 @@ class PostPageCard extends Component {
                   }
                   readOnly={false}
                 />
-                <div className={css(styles.editButtonRow)}>
-                  <Button
-                    isWhite={true}
-                    label={"Cancel"}
-                    onClick={this.toggleShowPostEditor}
-                    size={"small"}
-                  />
-                  <Button
-                    label={"Save"}
-                    onClick={this.sendPost}
-                    size={"small"}
-                  />
-                </div>
               </>
             ) : (
               <>
@@ -622,12 +324,6 @@ class PostPageCard extends Component {
                     noTitle={!post.note}
                     readOnly
                   />
-                </div>
-                <div className={css(styles.bottomContainer)}>
-                  <div className={css(styles.bottomRow)}>
-                    {this.renderActions()}
-                  </div>
-                  <div className={css(styles.downloadPDF)}></div>
                 </div>
               </>
             )}
