@@ -22,12 +22,10 @@ import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-import TabNewFeature from "~/components/NewFeature/TabNewFeature";
 import UserStateBanner from "./Banner/UserStateBanner";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Styles
-import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
 import icons, { RHLogo, voteWidgetIcons } from "~/config/themes/icons";
 
 // Config
@@ -515,9 +513,7 @@ const Navbar = (props) => {
                       disableLink
                       showModeratorBadge={user && user.moderator}
                     />
-                    <span className={css(styles.caret)}>
-                      {voteWidgetIcons.downvote}
-                    </span>
+                    <span className={css(styles.caret)}>{icons.caretDown}</span>
                   </div>
                   <div className={css(styles.reputation)}>
                     <Reputation showBalance={true} />
