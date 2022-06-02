@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   textSecondary: {
-    color: colors.BLACK(0.7),
+    color: colors.MEDIUM_GREY(),
   },
   badgeIcon: {
     color: colors.NEW_BLUE(),
