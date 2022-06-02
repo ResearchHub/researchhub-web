@@ -162,6 +162,17 @@ const Paper = ({
     );
   }
 
+  const navigateToEditPaperInfo = (e) => {
+    const { unifiedDocument } = paperV2;
+
+    e && e.stopPropagation();
+    if (unifiedDocument.documentType === "paper") {
+      let href = "/paper/upload/info/[paperId]";
+      let as = `/paper/upload/info/${unifiedDocument.document?.id}`;
+      router.push(href, as);
+    }
+  };
+
   const restorePaper = () => {
     setPaper({ ...paper, is_removed: false });
     paperV2.unifiedDocument.isRemoved = false;
@@ -321,6 +332,7 @@ const Paper = ({
                     onDocumentRemove={removePaper}
                     onDocumentRestore={restorePaper}
                     openPaperPDFModal={openPaperPDFModal}
+                    handleEdit={navigateToEditPaperInfo}
                   />
                 )}
               </div>

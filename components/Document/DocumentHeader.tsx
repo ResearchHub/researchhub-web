@@ -25,6 +25,7 @@ type Args = {
   document: TopLevelDocument,
   onDocumentRemove: Function,
   onDocumentRestore: Function,
+  handleEdit: Function,
   auth: any,
   openPaperPDFModal?: Function,
 };
@@ -33,6 +34,7 @@ function DocumentHeader({
   document,
   onDocumentRemove,
   onDocumentRestore,
+  handleEdit,
   auth,
   openPaperPDFModal,
 }: Args): ReactElement<"div"> {
@@ -61,7 +63,7 @@ function DocumentHeader({
     voteScore: score,
     prevVoteScore: score,
   });
-  console.log('document1', document)
+
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
@@ -307,6 +309,7 @@ function DocumentHeader({
             type={unifiedDocument.documentType}
             onDocumentRemove={onDocumentRemove}
             onDocumentRestore={onDocumentRestore}
+            handleEdit={handleEdit}
           />
         </div>
       </div>

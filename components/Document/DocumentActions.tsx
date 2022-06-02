@@ -23,12 +23,14 @@ type Args = {
   type: "paper" | "hypothesis" | "post",
   onDocumentRemove: Function,
   onDocumentRestore: Function,  
+  handleEdit: Function,  
 }
 
 function DocumentActions({
   unifiedDocument,
   onDocumentRemove,
   onDocumentRestore,
+  handleEdit,
 }: Args): ReactElement<"div">{
   const router = useRouter();
   const currentUser = getCurrentUser();
@@ -42,14 +44,6 @@ function DocumentActions({
   if (unifiedDocument?.documentType === "paper") {
     title = unifiedDocument?.document?.title ?? unifiedDocument?.document?.paperTitle;
   }
-  const navigateToEditPaperInfo = (e) => {
-    e && e.stopPropagation();
-    if (unifiedDocument.documentType === "paper") {
-      let href = "/paper/upload/info/[paperId]";
-      let as = `/paper/upload/info/${unifiedDocument.document?.id}`;
-      router.push(href, as);
-    }
-  };
 
   const actionButtons = [
     {
@@ -57,13 +51,13 @@ function DocumentActions({
       key: "edit",
       html: (
         <PermissionNotificationWrapper
-          modalMessage="edit papers"
-          onClick={navigateToEditPaperInfo}
+          modalMessage="edit document"
+          onClick={handleEdit}
           permissionKey="UpdatePaper"
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
+          <div className={css(styles.actionIcon)} data-tip={"Edit"}>
             {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
