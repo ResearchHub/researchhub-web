@@ -259,6 +259,7 @@ function DocumentHeader({
               {unifiedDocument?.reviewSummary?.count} {`reviews`}
             </div>
           )}
+          {unifiedDocument.documentType && (
           <div className={css(styles.type, styles.additionalDetail)}>
             <span className={css(styles.detailIcon)}>
               {unifiedDocument.documentType === "paper" ? (
@@ -271,6 +272,7 @@ function DocumentHeader({
             </span>
             <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
           </div>
+          )}
         </div>
         <div className={css(styles.actions)}>
           <DocumentActions

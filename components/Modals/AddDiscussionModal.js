@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   discussionInputWrapper: {
     display: "flex",
     flexDirection: "column",
-    marginTop: 20,
+    marginTop: 35,
   },
   discussionTextEditor: {
     width: 600,
