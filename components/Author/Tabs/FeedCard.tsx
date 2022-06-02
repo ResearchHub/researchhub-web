@@ -199,8 +199,6 @@ function FeedCard(props: FeedCardProps) {
   };
   const resolvedHubs = hubs ?? [];
 
-  console.log(reviews);
-
   return (
     <Ripples
       className={css(
@@ -372,7 +370,7 @@ function FeedCard(props: FeedCardProps) {
                       </span>
                     </div>
 
-                    {reviews?.count === 0 && (
+                    {reviews?.count > 0 && (
                       <div
                         className={css(
                           styles.reviewSummaryContainer,
@@ -380,7 +378,7 @@ function FeedCard(props: FeedCardProps) {
                         )}
                       >
                         <PeerReviewScoreSummary
-                          summary={{ avg: 5, count: 5 }}
+                          summary={reviews}
                           docUrl={docUrl}
                         />
                       </div>
