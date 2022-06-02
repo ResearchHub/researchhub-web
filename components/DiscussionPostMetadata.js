@@ -55,7 +55,6 @@ const DiscussionPostMetadata = (props) => {
     onHideClick,
     onRemove,
     postId,
-    smaller,
     threadPath,
     toggleEdit,
     twitter,
@@ -63,6 +62,7 @@ const DiscussionPostMetadata = (props) => {
     username,
   } = props;
 
+  const smaller = false;
   const alert = useAlert();
   // const store = useStore();
   const dispatch = useDispatch();
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     padding: "2px 10px",
   },
   headline: {
-    marginTop: 3,
+    marginTop: 5,
     marginLeft: 8,
     color: colors.MEDIUM_GREY(),
     fontWeight: 400,

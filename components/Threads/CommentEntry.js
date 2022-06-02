@@ -581,8 +581,8 @@ class CommentEntry extends Component {
                 onUpvote={this.upvote}
                 onDownvote={this.downvote}
                 selected={this.state.selectedVoteType}
-                fontSize={"12px"}
-                width={"40px"}
+                // fontSize={"12px"}
+                // width={"40px"}
                 type={"Comment"}
                 promoted={false}
               />
@@ -590,11 +590,13 @@ class CommentEntry extends Component {
             {!this.state.collapsed && (
               <div
                 className={css(
-                  styles.threadline,
+                  styles.threadLineContainer,
                   noVote && styles.threadlineNoVote
                 )}
                 onClick={this.toggleReplyView}
-              />
+              >
+                <div className={css(styles.threadline) + " threadline"} />
+              </div>
             )}
           </div>
         </div>
@@ -784,7 +786,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "2px 10px 8px 8px",
+    padding: "16px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },
@@ -837,11 +839,11 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     cursor: "pointer",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   loadingText: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
   },
   removedText: {
     fontStyle: "italic",
@@ -856,23 +858,30 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  threadLineContainer: {
+    padding: 8,
+    paddingBottom: 0,
+    // height: "calc(100% - 80px)",
+    height: "calc(100% - 58px)",
+    cursor: "pointer",
+    ":hover .threadline": {
+      backgroundColor: colors.NEW_BLUE(1),
+    },
+  },
+  threadline: {
+    height: "100%",
+    width: 2,
+    backgroundColor: colors.GREY_LINE(),
+    cursor: "pointer",
+  },
   threadlineNoVote: {
     height: "100%",
   },
-  threadline: {
-    height: "calc(100% - 58px)",
-    width: 2,
-    backgroundColor: "#EEEFF1",
-    cursor: "pointer",
-    ":hover": {
-      backgroundColor: colors.BLUE(1),
-    },
-  },
   hoverThreadline: {
-    backgroundColor: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(),
   },
   activeThreadline: {
-    backgroundColor: colors.BLUE(0.3),
+    backgroundColor: colors.NEW_BLUE(0.3),
   },
 });
 
