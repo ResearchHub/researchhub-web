@@ -145,7 +145,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof(raw) !== "object") {
     return raw;
   }
-
+  
   const parsed = {
     "id": raw.id,
     "documentType": raw?.document_type?.toLowerCase(),

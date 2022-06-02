@@ -1109,7 +1109,7 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     marginBottom: 5,
     // paddingLeft: 20,
-    marginTop: 15,
+    marginTop: 35,
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingLeft: 0,
