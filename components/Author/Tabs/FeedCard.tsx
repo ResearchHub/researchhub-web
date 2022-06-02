@@ -19,15 +19,8 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
-import {
-  formatDateStandard,
-  timeAgo,
-  timeAgoStamp,
-} from "~/config/utils/dates";
+import { timeAgoStamp } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import { transformDate } from "~/redux/utils";
-import ScoreInput from "~/components/Form/ScoreInput";
-import ALink from "~/components/ALink";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import VoteWidget from "~/components/VoteWidget";
 
@@ -363,7 +356,7 @@ function FeedCard(props: FeedCardProps) {
                         selected={voteState}
                       />
                     </div>
-                    <div>
+                    <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
                         {icons.commentRegular}
                       </span>
@@ -378,14 +371,19 @@ function FeedCard(props: FeedCardProps) {
                     </div>
 
                     {reviews?.count > 0 && (
-                      <div className={css(styles.reviewSummaryContainer)}>
+                      <div
+                        className={css(
+                          styles.reviewSummaryContainer,
+                          styles.metaItem
+                        )}
+                      >
                         <PeerReviewScoreSummary
                           summary={reviews}
                           docUrl={docUrl}
                         />
                       </div>
                     )}
-                    <div>
+                    <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
                         {documentIcons[formattedDocType!]}
                       </span>
@@ -512,7 +510,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   metadataText: {
-    color: colors.BLACK(0.5),
+    color: colors.BLACK(0.6),
     fontSize: 14,
     marginRight: 15,
     textTransform: "capitalize",
@@ -520,6 +518,10 @@ const styles = StyleSheet.create({
       fontSize: 13,
       marginRight: 24,
     },
+  },
+  metaItem: {
+    display: "flex",
+    alignItems: "center",
   },
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
@@ -631,7 +633,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   reviewSummaryContainer: {
-    marginBottom: 10,
+    marginRight: 16,
   },
 });
 

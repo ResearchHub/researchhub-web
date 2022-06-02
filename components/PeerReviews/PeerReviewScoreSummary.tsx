@@ -35,18 +35,18 @@ const styles = StyleSheet.create({
   reviewScoreContainer: {
     color: colors.BLACK(),
     fontSize: 14,
-    lineHeight: "19px",
   },
   starContainer: {
     color: "#E8B504",
+    fontSize: 11,
+    marginRight: 3,
   },
   reviewScore: {
-    color: colors.NEW_BLUE(),
-    fontSize: 18,
+    color: colors.BLACK(0.6),
+    fontSize: 14,
     fontWeight: 500,
-    marginRight: 3,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      fontSize: 16,
+      fontSize: 14,
     },
   },
   reviewCountContainer: {
@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   },
   overrideReviewBar: {
     width: 16,
-    height: 10,
   },
   scoreContainer: {
     display: "flex",
