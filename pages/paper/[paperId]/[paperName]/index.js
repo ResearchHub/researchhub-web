@@ -66,7 +66,6 @@ const fetchPaper = (url, config) => {
 
 const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const store = useStore();
 
   if (error) {
@@ -343,7 +342,7 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
                 topOffset={40}
                 bottomOffset={"95%"}
               >
-                <div className={css(styles.space)}>
+                <div className={css(styles.discussionContainer)}>
                   <a name="comments" id="comments" ref={commentsRef} />
                   {
                     <DiscussionTab
@@ -489,7 +488,7 @@ const styles = StyleSheet.create({
     },
   },
   headerContainer: {
-    borderBottom: `1.5px solid ${colors.LIGHTER_GREY()}`,
+    borderBottom: `1px solid ${colors.GREY_LINE()}`,
     paddingBottom: 20,
   },
   bodyContainer: {
@@ -503,14 +502,10 @@ const styles = StyleSheet.create({
   hide: {
     display: "none",
   },
-  space: {
-    marginTop: 30,
-  },
-  icon: {
-    fontSize: 50,
-    color: "rgb(78, 83, 255)",
-    height: 50,
-    marginBottom: 25,
+  discussionContainer: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTop: `1px solid ${colors.GREY_LINE()}`,
   },
 });
 
