@@ -308,13 +308,15 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              {paperV2 && (
-                <DocumentHeader
-                  document={paperV2}
-                  onDocumentRemove={removePaper}
-                  onDocumentRestore={restorePaper}
-                />
-              )}
+              <div className={css(styles.headerContainer)}>
+                {paperV2 && (
+                  <DocumentHeader
+                    document={paperV2}
+                    onDocumentRemove={removePaper}
+                    onDocumentRestore={restorePaper}
+                  />
+                )}
+              </div>
             </div>
             <div
               className={css(styles.paperPageContainer, styles.noMarginLeft)}
@@ -487,6 +489,10 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 1200px)": {
       width: "90%",
     },
+  },
+  headerContainer: {
+    borderBottom: `1.5px solid ${colors.LIGHTER_GREY()}`,
+    paddingBottom: 20,
   },
   main: {
     boxSizing: "border-box",

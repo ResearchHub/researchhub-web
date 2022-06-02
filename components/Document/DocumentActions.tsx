@@ -106,6 +106,7 @@ function DocumentActions({
         <span data-tip={"Flag Paper"}>
           <FlagButtonV2
             modalHeaderText="Flagging"
+            flagIconOverride={styles.flagButton}
             onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 contentID: unifiedDocument?.document?.id,
@@ -165,7 +166,8 @@ function DocumentActions({
     },
     {
       active: isModerator,
-      button: (
+      key: 'admin',
+      html: (
         <span
           className={css(styles.actionIcon, styles.moderatorAction)}
           data-tip="Admin"
@@ -176,12 +178,10 @@ function DocumentActions({
     },    
   ].filter((action) => action.active);
 
-  console.log('actionButtons', actionButtons)
-
   return (
     <div className={css(styles.documentActions)}>
       {actionButtons.map(actionButton => (
-        <span key={actionButton.key}>{actionButton.html}</span>
+        <span key={actionButton.key} className={css(styles.button)}>{actionButton.html}</span>
       ))}
     </div>
   );
@@ -189,7 +189,17 @@ function DocumentActions({
 
 const styles = StyleSheet.create({
   documentActions: {
-
+    display: "flex",
+  },
+  button: {
+    marginRight: 8,
+    ":last-child": {
+      marginRight: 0,
+    }
+  },
+  flagButton: {
+    border: 0,
+    padding: 8,
   },
   moderatorAction: {
     ":hover": {
@@ -235,7 +245,7 @@ const styles = StyleSheet.create({
     },
   },
   actionIcon: {
-    padding: 5,
+    padding: 8,
     borderRadius: "50%",
     backgroundColor: "rgba(36, 31, 58, 0.03)",
     color: "rgba(36, 31, 58, 0.35)",
@@ -250,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 15,
     cursor: "pointer",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    // border: "1px solid rgba(36, 31, 58, 0.1)",
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",

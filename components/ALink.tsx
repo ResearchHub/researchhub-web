@@ -6,6 +6,7 @@ import colors from "~/config/themes/colors";
 const themes = {
   default: "linkThemeDefault",
   solidPrimary: "linkThemeSolidPrimary",
+  blackAndBlue: "blankAndBlue",
 }
 
 interface Props {
@@ -50,7 +51,13 @@ const styles = StyleSheet.create({
       color: colors.NEW_BLUE(),
       textDecoration: "underline",
     }
-  }
+  },
+  "blankAndBlue": {
+    color: colors.BLACK(),
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    }
+  }  
 })
 
 export default ALink;
