@@ -19,6 +19,7 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import { connect } from "react-redux";
+import { formatScore } from "~/config/utils/form";
 
 
 type Args = {
@@ -26,6 +27,7 @@ type Args = {
   onDocumentRemove: Function,
   onDocumentRestore: Function,
   auth: any,
+  openPaperPDFModal?: Function,
 };
 
 function DocumentHeader({
@@ -33,6 +35,7 @@ function DocumentHeader({
   onDocumentRemove,
   onDocumentRestore,
   auth,
+  openPaperPDFModal,
 }: Args): ReactElement<"div"> {
 
   const {
@@ -41,6 +44,7 @@ function DocumentHeader({
     createdDate,
     authors,
     unifiedDocument,
+    formats,
     externalUrl,
     doi,
     datePublished,
@@ -50,7 +54,7 @@ function DocumentHeader({
     score,
     hubs,
   } = document;
-
+  
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
@@ -133,8 +137,18 @@ function DocumentHeader({
       </span>
     );
   });
-
+  const formatElems = (formats || []).map((f) => {
+    console.log('f', f)
+    return (
+      f.type === "pdf" ? (
+        <span className={css(styles.link)} onClick={() => openPaperPDFModal && openPaperPDFModal(true)}>PDF</span>
+      ) : (
+        <ALink href={f.url}>{f.type}</ALink>
+      )
+    )
+  });
   const claimableAuthors = document.authors.filter(a => !a.isClaimed);
+
   return (
     <div className={css(styles.documentHeader)}>
       <ReactTooltip />
@@ -162,7 +176,7 @@ function DocumentHeader({
       <div className={css(styles.submittedBy)}>
         {createdBy?.authorProfile &&
           <div className={css(styles.createdByContainer)}>
-            <AuthorAvatar author={createdBy?.authorProfile} size={25} />
+            <AuthorAvatar author={createdBy?.authorProfile} size={30} />
           </div>
         }
         <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`}>
@@ -236,7 +250,21 @@ function DocumentHeader({
         {doi && (
           <div className={css(styles.metadataRow)}>
             <div className={css(styles.metaKey)}>DOI</div>
-            <div className={css(styles.metaVal)}>{doi}</div>
+            <div className={css(styles.metaVal)}>
+              {externalUrl ? (
+                <ALink href={externalUrl} target="blank">{doi}</ALink>
+              ) : (
+                {doi}
+              )}
+            </div>
+          </div>
+        )}
+        {formatElems.length > 0 && (
+          <div className={css(styles.metadataRow)}>
+            <div className={css(styles.metaKey)}>Formats</div>
+            <div className={css(styles.metaVal)}>
+              {formatElems}
+            </div>
           </div>
         )}
         {datePublished && (
@@ -331,7 +359,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 16,
     lineHeight: "26px",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   postedText: {
   },
@@ -371,6 +399,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
   },
+  link: {
+    cursor: "pointer",
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    }    
+  },  
   title: {
     fontSize: 32,
     fontWeight: 600,

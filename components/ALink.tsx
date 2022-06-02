@@ -15,6 +15,7 @@ interface Props {
   as?: any,
   children?: ReactNode,
   overrideStyle?: any,
+  target?: string,
 }
 
 const ALink: FunctionComponent<Props> = ({
@@ -23,11 +24,12 @@ const ALink: FunctionComponent<Props> = ({
   children,
   theme = themes.default,
   overrideStyle = null,
+  target = null,
 }): ReactElement => {
 
   return (
     <Link href={href} as={as}>
-      <a className={css(styles.ALink, styles[themes[theme]], overrideStyle)}>
+      <a className={css(styles.ALink, styles[themes[theme]], overrideStyle)} target={target || undefined}>
         {children}
       </a>
     </Link>

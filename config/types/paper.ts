@@ -1,7 +1,7 @@
 import { userVoteToConstant } from "../constants"
 import { parseCreatedBy } from "./contribution"
 import { Hub, parseHub } from "./hub"
-import { AuthorProfile, CreatedBy, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
+import { AuthorProfile, CreatedBy, PaperFormat, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
 
 export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
   const rawAuthors = rawPaper.raw_authors || [];
@@ -57,6 +57,7 @@ export class Paper implements TopLevelDocument {
   _createdBy: CreatedBy | null
   _datePublished?: string
   _externalUrl?: string | undefined
+  _formats: PaperFormat[] 
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw)
@@ -67,6 +68,7 @@ export class Paper implements TopLevelDocument {
     this._createdBy = parseCreatedBy(raw.uploaded_by);
     this._hubs = (raw.hubs || []).map(h => parseHub(h));
     this._title = raw.title;
+    this._formats = [];
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -76,6 +78,15 @@ export class Paper implements TopLevelDocument {
     }
     if (raw.publish_date) {
       this._datePublished = raw.publish_date;
+    }
+    if (raw.url) {
+      this._externalUrl = raw.url;
+    }
+    if (raw.file) {
+      this._formats.push({
+        "type": "pdf",
+        "url": raw.file,
+      })
     }
   }
 
@@ -110,6 +121,10 @@ export class Paper implements TopLevelDocument {
   get title():string|undefined {
     return this._title;
   }  
+
+  get externalUrl():string|undefined {
+    return this._externalUrl;
+  }  
   
   get createdBy():CreatedBy|null {
     return this._createdBy;
@@ -117,5 +132,9 @@ export class Paper implements TopLevelDocument {
 
   get hubs():Array<Hub> {
     return this._hubs;
-  }      
+  }
+
+  get formats():Array<PaperFormat> {
+    return this._formats;
+  }        
 }

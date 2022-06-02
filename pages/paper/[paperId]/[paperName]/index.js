@@ -34,6 +34,7 @@ import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
+import { ModalActions } from "~/redux/modals";
 
 // Undux
 import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore";
@@ -64,7 +65,13 @@ const fetchPaper = (url, config) => {
     });
 };
 
-const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
+const Paper = ({
+  openPaperPDFModal,
+  initialPaperData,
+  auth,
+  error,
+  isFetchComplete = false,
+}) => {
   const router = useRouter();
   const store = useStore();
 
@@ -313,11 +320,12 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
                     document={paperV2}
                     onDocumentRemove={removePaper}
                     onDocumentRestore={restorePaper}
+                    openPaperPDFModal={openPaperPDFModal}
                   />
                 )}
               </div>
             </div>
-            <div className={css(styles.bodyContainer)}>
+            <div className={css(styles.bodyContainer, styles.section)}>
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
                 topOffset={40}
@@ -342,7 +350,9 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
                 topOffset={40}
                 bottomOffset={"95%"}
               >
-                <div className={css(styles.discussionContainer)}>
+                <div
+                  className={css(styles.discussionContainer, styles.section)}
+                >
                   <a name="comments" id="comments" ref={commentsRef} />
                   {
                     <DiscussionTab
@@ -364,7 +374,7 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
                 topOffset={40}
                 bottomOffset={"95%"}
               >
-                <div>
+                <div className={css(styles.section)}>
                   <a name="paper pdf" />
                   <div className={css(styles.paperTabContainer)}>
                     <PaperTab
@@ -487,13 +497,6 @@ const styles = StyleSheet.create({
       width: "90%",
     },
   },
-  headerContainer: {
-    borderBottom: `1px solid ${colors.GREY_LINE()}`,
-    paddingBottom: 20,
-  },
-  bodyContainer: {
-    paddingTop: 20,
-  },
   main: {
     boxSizing: "border-box",
     width: 800,
@@ -502,9 +505,10 @@ const styles = StyleSheet.create({
   hide: {
     display: "none",
   },
-  discussionContainer: {
-    marginTop: 20,
-    paddingTop: 20,
+  discussionContainer: {},
+  section: {
+    marginTop: 25,
+    paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
   },
 });
@@ -522,6 +526,7 @@ const mapDispatchToProps = {
   updatePaperState: PaperActions.updatePaperState,
   getThreads: PaperActions.getThreads,
   getBullets: BulletActions.getBullets,
+  openPaperPDFModal: ModalActions.openPaperPDFModal,
 };
 
 export default connect(
