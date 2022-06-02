@@ -567,7 +567,7 @@ class DiscussionEntry extends Component {
                 )}
                 onClick={this.toggleCommentView}
               >
-                <div className={css(styles.threadline)} />
+                <div className={css(styles.threadline) + " threadline"} />
               </div>
             </div>
           </div>
@@ -729,23 +729,25 @@ const styles = StyleSheet.create({
     width: 2,
     paddingTop: 0,
     paddingBottom: 0,
-    backgroundColor: "#EEEFF1",
-    ":hover": {
-      backgroundColor: colors.BLUE(1),
-    },
+    backgroundColor: colors.GREY_LINE(),
+    // ":hover": {
+    //   backgroundColor: colors.NEW_BLUE(1),
+    // },
   },
   threadLineContainer: {
     padding: 8,
-    paddingTop: 0,
     paddingBottom: 0,
-    height: "calc(100% - 80px)",
+    height: "calc(100% - 84px)",
     cursor: "pointer",
+    ":hover .threadline": {
+      backgroundColor: colors.NEW_BLUE(1),
+    },
   },
   hoverThreadline: {
-    backgroundColor: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(),
   },
   activeThreadline: {
-    backgroundColor: colors.BLUE(0.3),
+    backgroundColor: colors.NEW_BLUE(0.3),
   },
   left: {
     alignItems: "center",
@@ -821,7 +823,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "10px 10px 8px 8px",
+    padding: "14px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },
@@ -879,11 +881,11 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     cursor: "pointer",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   loadingText: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
   },
   removedText: {
     fontSize: 16,

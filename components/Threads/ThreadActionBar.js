@@ -233,6 +233,8 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 3,
     cursor: "pointer",
+    color: colors.BLACK(),
+    fontWeight: 500,
     ":hover": {
       color: colors.NEW_BLUE(),
     },
@@ -301,7 +303,7 @@ const styles = StyleSheet.create({
     },
   },
   smallReply: {
-    fontSize: 12,
+    // fontSize: 12,
   },
   text: {
     fontFamily: "Roboto",
@@ -355,7 +357,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   replyIcon: {
-    color: "#918f9b",
+    color: colors.BLACK(),
     marginRight: 8,
   },
 });
