@@ -300,11 +300,11 @@ const styles = StyleSheet.create({
   },
   additionalDetails: {
     display: "flex",
-    fontSize: 14,
+    fontSize: 16,
     alignItems: "center",
   },
   additionalDetail: {
-    marginRight: 15,
+    marginRight: 25,
     color: colors.MEDIUM_GREY(),
   },
   detailIcon: {
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   submittedBy: {
     display: "flex",
     alignItems: "center",
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: "26px",
     marginBottom: 5,
   },
@@ -358,19 +358,19 @@ const styles = StyleSheet.create({
   },
   badgeIcon: {
     color: colors.NEW_BLUE(),
-    fontSize: 14,
+    fontSize: 16,
   },
   hubDropdownContainer: {
     display: "inline-block",
   },
   hubLink: {
     textTransform: "capitalize",
-    fontSize: 14,
+    fontSize: 16,
     marginLeft: 5,
   },
   title: {
     fontSize: 32,
-    fontWeight: 500,
+    fontWeight: 600,
     lineHeight: "40px",
   },
   metadata: {
@@ -378,18 +378,18 @@ const styles = StyleSheet.create({
   },
   metadataRow: {
     display: "flex",
-    lineHeight: "22px",
+    lineHeight: "26px",
     marginTop: 3,
   },
   metaKey: {
     color: colors.MEDIUM_GREY(),
     fontWeight: 500,
-    fontSize: 14,
+    fontSize: 16,
     width: 75,
     minWidth: 75,
   },
   metaVal: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
   },
   author: {

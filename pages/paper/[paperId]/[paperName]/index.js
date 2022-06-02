@@ -307,7 +307,7 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
         </Waypoint>
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
-            <div className={css(styles.paperPageContainer, styles.top)}>
+            <div className={css(styles.top)}>
               <div className={css(styles.headerContainer)}>
                 {paperV2 && (
                   <DocumentHeader
@@ -318,9 +318,7 @@ const Paper = ({ initialPaperData, auth, error, isFetchComplete = false }) => {
                 )}
               </div>
             </div>
-            <div
-              className={css(styles.paperPageContainer, styles.noMarginLeft)}
-            >
+            <div className={css(styles.bodyContainer)}>
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
                 topOffset={40}
@@ -494,6 +492,9 @@ const styles = StyleSheet.create({
     borderBottom: `1.5px solid ${colors.LIGHTER_GREY()}`,
     paddingBottom: 20,
   },
+  bodyContainer: {
+    paddingTop: 20,
+  },
   main: {
     boxSizing: "border-box",
     width: 800,
@@ -510,10 +511,6 @@ const styles = StyleSheet.create({
     color: "rgb(78, 83, 255)",
     height: 50,
     marginBottom: 25,
-  },
-  noMarginLeft: {
-    padding: 30,
-    marginTop: 30,
   },
 });
 

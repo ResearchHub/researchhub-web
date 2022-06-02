@@ -746,8 +746,8 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   abstractContainer: {
-    fontSize: 15,
-    lineHeight: 2,
+    fontSize: 18,
+    lineHeight: "30px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
     "@media only screen and (max-width: 967px)": {
@@ -801,7 +801,7 @@ var styles = StyleSheet.create({
     },
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
@@ -975,6 +975,7 @@ var styles = StyleSheet.create({
   },
   pencilIcon: {
     marginLeft: 8,
+    alignSelf: "center",
   },
   draftContainer: {
     width: "100%",
