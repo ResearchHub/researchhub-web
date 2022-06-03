@@ -63,7 +63,7 @@ function DocumentHeader({
     voteScore: score,
     prevVoteScore: score,
   });
-
+  console.log('document', document)
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
@@ -139,7 +139,6 @@ function DocumentHeader({
     );
   });
   const formatElems = (formats || []).map((f) => {
-    console.log('f', f)
     return (
       f.type === "pdf" ? (
         <span className={css(styles.link)} onClick={() => openPaperPDFModal && openPaperPDFModal(true)}>PDF</span>
@@ -296,7 +295,7 @@ function DocumentHeader({
               ) : unifiedDocument.documentType === "hypothesis" ? (
                 <HypothesisIcon onClick={() => null} />
               ) : unifiedDocument.documentType === "post" ? (
-                icons.post
+                icons.penSquare
               ) : null}
             </span>
             <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>

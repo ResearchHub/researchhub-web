@@ -1,35 +1,72 @@
 import { userVoteToConstant } from "../constants"
+import { formatDateStandard } from "../utils/dates"
 import { parseCreatedBy } from "./contribution"
 import { Hub, parseHub } from "./hub"
 import { AuthorProfile, CreatedBy, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
 
 export class Post implements TopLevelDocument {
-  authors: AuthorProfile[]
-  hubs: Hub[]
-  score: number
-  createdDate: string
-  discussionCount: number
-  unifiedDocument: UnifiedDocument
-  userVote?: "downvote" | "upvote" | "neutralvote" | null
-  doi?: string
-  title: string
-  createdBy: CreatedBy | null
+  _authors: AuthorProfile[]
+  _unifiedDocument: UnifiedDocument
+  _hubs: Hub[]
+  _score: number
+  _createdDate: string
+  _discussionCount: number
+  _userVote?: "downvote" | "upvote" | "neutralvote" | null
+  _doi?: string
+  _title: string
+  _createdBy: CreatedBy | null
 
   constructor(raw:any) {
-    this.authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
-    this.score = raw.score;
-    this.discussionCount = raw.discussion_count || 0;
-    this.createdDate = raw.created_date;
-    this.createdBy = parseCreatedBy(raw.created_by);
-    this.unifiedDocument = parseUnifiedDocument(raw.unified_document);
-    this.hubs = (raw.hubs || []).map(h => parseHub(h));
-    this.title = raw.title;
+    this._authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
+    this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
+    this._score = raw.score;
+    this._discussionCount = raw.discussion_count || 0;
+    this._createdDate = formatDateStandard(raw.created_date);
+    this._createdBy = parseCreatedBy(raw.created_by);
+    this._hubs = (raw.hubs || []).map(h => parseHub(h));
+    this._title = raw.title;
     
     if (raw.user_vote) {
-      this.userVote = userVoteToConstant(raw.user_vote)
+      this._userVote = userVoteToConstant(raw.user_vote)
     }
     if (raw.doi) {
-      this.doi = raw.doi;
+      this._doi = raw.doi;
     }
+  }
+
+  get unifiedDocument():UnifiedDocument {
+    return this._unifiedDocument;
+  }
+
+  get authors():Array<AuthorProfile> {
+    return this._authors;
+  }
+
+  get score():number {
+    return this._score;  
+  }
+
+  get discussionCount():number {
+    return this._discussionCount;
+  }
+
+  get createdDate():string {
+    return this._createdDate;
+  }
+
+  get doi():string|undefined {
+    return this._doi;
+  }
+
+  get title():string|undefined {
+    return this._title;
+  }
+  
+  get createdBy():CreatedBy|null {
+    return this._createdBy;
+  }
+
+  get hubs():Array<Hub> {
+    return this._hubs;
   }
 }
