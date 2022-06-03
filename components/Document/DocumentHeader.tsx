@@ -115,7 +115,7 @@ function DocumentHeader({
     onSuccess: handleVoteSuccess,
     onError: () => null,
   });
-
+console.log('unifiedDocument', unifiedDocument)
   const authorElems = (authors || []).map((author, idx) => {
     const lastElem = idx < authors.length - 1; 
     return (
@@ -282,9 +282,11 @@ function DocumentHeader({
           </ALink>
           {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
             <div className={css(styles.reviews, styles.additionalDetail)}>
-              <span className={css(styles.detailIcon)}>{icons.starAlt}</span>
-              {unifiedDocument?.reviewSummary?.avg} {`based on `}{" "}
-              {unifiedDocument?.reviewSummary?.count} {`reviews`}
+              <span className={css(styles.detailIcon, styles.starIcon)}>{icons.starFilled}</span>
+              {unifiedDocument?.reviewSummary?.avg} {`based on`}&nbsp;
+              <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
+                {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
+              </ALink>
             </div>
           )}
           {unifiedDocument.documentType && (
@@ -335,11 +337,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   additionalDetail: {
-    marginRight: 25,
+    marginRight: 20,
+    fontWeight: 400,
     color: colors.MEDIUM_GREY(),
   },
   detailIcon: {
     marginRight: 7,
+  },
+  starIcon: {
+    color: colors.YELLOW(),
   },
   comments: {
     display: "flex",
@@ -352,7 +358,6 @@ const styles = StyleSheet.create({
   },
   typeText: {
     textTransform: "capitalize",
-    fontWeight: 500,
   },
   actions: {},
   submittedBy: {
