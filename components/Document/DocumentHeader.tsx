@@ -284,7 +284,7 @@ console.log('unifiedDocument', unifiedDocument)
             <div className={css(styles.reviews, styles.additionalDetail)}>
               <span className={css(styles.detailIcon, styles.starIcon)}>{icons.starFilled}</span>
               {unifiedDocument?.reviewSummary?.avg} {`based on`}&nbsp;
-              <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
+              <ALink overrideStyle={[styles.comments]} href={"#comments"}>
                 {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
               </ALink>
             </div>
@@ -349,6 +349,8 @@ const styles = StyleSheet.create({
   },
   comments: {
     display: "flex",
+    fontWeight: 400,
+    color: colors.MEDIUM_GREY(),    
   },
   reviews: {
     display: "flex",
