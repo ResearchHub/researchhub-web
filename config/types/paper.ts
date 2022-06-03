@@ -52,7 +52,7 @@ export class Paper implements TopLevelDocument {
   _score: number
   _createdDate: string
   _discussionCount: number
-  _userVote?: "downvote" | "upvote" | "neutralvote" | null
+  _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null
   _doi?: string
   _title: string
   _createdBy: CreatedBy | null
@@ -101,6 +101,10 @@ export class Paper implements TopLevelDocument {
 
   get score():number {
     return this._score;  
+  }
+
+  get userVote():"downvote" | "upvote" | "neutralvote" | undefined | null {
+    return this._userVote;  
   }
 
   get discussionCount():number {
