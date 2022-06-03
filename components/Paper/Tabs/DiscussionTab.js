@@ -9,7 +9,7 @@ import ReactPlaceholder from "react-placeholder";
 // Components
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
-import ScoreInput from "~/components/Form/ScoreInput";
+import StarInput from "~/components/Form/StarInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
@@ -440,7 +440,13 @@ const DiscussionTab = (props) => {
     <div className={css(stylesEditor.box)}>
       <Message />
       <div className={css(stylesEditor.discussionInputWrapper)}>
-        <div className={css(styles.discussionTypeHeaderContainer)}>
+        <div
+          className={css(
+            styles.discussionTypeHeaderContainer,
+            discussionType === TYPES.REVIEW &&
+              styles.discussionTypeHeaderContainerReview
+          )}
+        >
           <div className={css(styles.discussionTypeHeader)}>
             {discussionType === TYPES.COMMENT
               ? "Write a comment"
@@ -463,7 +469,7 @@ const DiscussionTab = (props) => {
               Overall Rating
               <span className={css(stylesEditor.asterick)}>*</span>
             </div>
-            <ScoreInput
+            <StarInput
               onSelect={(value) => {
                 setReviewScore(value);
               }}
@@ -1037,6 +1043,9 @@ var styles = StyleSheet.create({
     [`@media only screen and (max-width: 400px)`]: {
       justifyContent: "center",
     },
+  },
+  discussionTypeHeaderContainerReview: {
+    marginBottom: 7,
   },
   discussionTypeHeader: {
     fontSize: 16,

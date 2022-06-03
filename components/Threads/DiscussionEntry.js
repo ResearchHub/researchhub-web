@@ -23,7 +23,7 @@ import { saveReview } from "~/config/fetch";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import ScoreInput from "~/components/Form/ScoreInput";
+import StarInput from "~/components/Form/StarInput";
 import { breakpoints } from "~/config/themes/screen";
 
 class DiscussionEntry extends Component {
@@ -638,13 +638,13 @@ class DiscussionEntry extends Component {
                 >
                   {isReview ? (
                     <div className={css(styles.reviewContainer)}>
-                      <div className={css(styles.reviewBadge)}>Peer Review</div>
-                      <ScoreInput
+                      <div className={css(styles.reviewBadge)}>Review</div>
+                      <StarInput
                         value={review?.score}
                         readOnly={this.state.editing ? false : true}
                         onSelect={this.onScoreSelect}
-                        scoreInputStyleOverride={styles.scoreInputStyleOverride}
-                        overrideBarStyle={styles.overrideBar}
+                        scoreInputStyleOverride={styles.starInputStyleOverride}
+                        overrideStarStyle={styles.overrideStar}
                       />
                     </div>
                   ) : null}
@@ -898,7 +898,7 @@ const styles = StyleSheet.create({
   },
   reviewContainer: {
     display: "flex",
-    alignItems: "end",
+    alignItems: "flex-start",
     lineHeight: 1.4,
     marginBottom: 15,
 
@@ -908,7 +908,7 @@ const styles = StyleSheet.create({
     },
   },
   reviewBadge: {
-    background: colors.NEW_BLUE(),
+    background: colors.DARK_YELLOW(),
     color: "white",
     padding: "2px 6px",
     fontWeight: 500,
@@ -917,11 +917,11 @@ const styles = StyleSheet.create({
     borderRadius: "2px",
     lineHeight: "15px",
   },
-  overrideBar: {
-    width: 16,
-    height: 10,
+  overrideStar: {
+    fontSize: 14,
+    width: 18,
   },
-  scoreInputStyleOverride: {
+  starInputStyleOverride: {
     alignItems: "center",
   },
 });
