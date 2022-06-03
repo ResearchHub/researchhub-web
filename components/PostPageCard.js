@@ -113,7 +113,8 @@ class PostPageCard extends Component {
 
   toggleShowPostEditor = () => {
     ReactTooltip.hide();
-    this.setState({ showPostEditor: !this.state.showPostEditor });
+    // this.setState({ showPostEditor: !this.state.showPostEditor });
+    this.setState({ showPostEditor: true });
   };
 
   sendPost = () => {
@@ -278,7 +279,12 @@ class PostPageCard extends Component {
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
-          {postObj && <DocumentHeader document={postObj} />}
+          {postObj && (
+            <DocumentHeader
+              handleEdit={this.toggleShowPostEditor}
+              document={postObj}
+            />
+          )}
 
           <AuthorSupportModal />
           <div
