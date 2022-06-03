@@ -51,7 +51,7 @@ export const parseInvite = (raw: any): PeerReviewInvite => {
 
 export const parsePeerReviewScoreSummary = (raw: any): PeerReviewScoreSummary => {
   return {
-    avg: raw.avg,
-    count: raw.count,
+    avg: (raw.avg || 0).toFixed(1),
+    count: (raw.count || 0),
   }
 }
