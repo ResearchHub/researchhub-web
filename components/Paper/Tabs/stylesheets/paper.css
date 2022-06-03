@@ -92,3 +92,8 @@ h3 {
 .post-body .ck-content a:hover {
   text-decoration: underline;
 }
+
+.post-body .ck-editor__editable {
+  border: 1px solid rgb(232, 232, 239) !important;
+  padding: 20px !important;
+}

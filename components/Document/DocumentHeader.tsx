@@ -63,8 +63,7 @@ function DocumentHeader({
     voteScore: score,
     prevVoteScore: score,
   });
-  console.log('document', document)
-  console.log('userVote', userVote)
+
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
@@ -118,11 +117,11 @@ function DocumentHeader({
   });
 
   const authorElems = (authors || []).map((author, idx) => {
-    const showComma = idx < authors.length - 1; 
+    const lastElem = idx < authors.length - 1; 
     return (
       <span className={css(styles.author)}>
         {author.isClaimed ? (
-          <span data-tip={"Profile claimed by author"}>
+          <span data-tip={"Verified profile"}>
             <ALink href={`/user/${author.id}/overview`}>
               {author.firstName} {author.lastName}{" "}
               <span className={css(styles.badgeIcon)}>
@@ -135,7 +134,7 @@ function DocumentHeader({
             {author.firstName} {author.lastName}
           </span>
         )}
-        {showComma ? ", " : ""}
+        {lastElem ? ", " : <span>&nbsp;&nbsp;</span>}
       </span>
     );
   });
@@ -373,7 +372,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),
     fontWeight: 400,
-    marginLeft: 10,
+    marginLeft: 0,
     display: "inline-flex",
     ":hover": {
       color: colors.NEW_BLUE(),
@@ -433,6 +432,9 @@ const styles = StyleSheet.create({
   },
   author: {
     marginRight: 2,
+    ":last-child": {
+      marginRight: 20,
+    }
   },
 });
 
