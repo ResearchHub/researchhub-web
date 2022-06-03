@@ -58,7 +58,7 @@ export class Paper implements TopLevelDocument {
   _createdBy: CreatedBy | null
   _datePublished?: string
   _externalUrl?: string | undefined
-  _formats: PaperFormat[] 
+  _formats: PaperFormat[]
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw)
