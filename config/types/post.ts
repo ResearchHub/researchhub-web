@@ -11,10 +11,11 @@ export class Post implements TopLevelDocument {
   _score: number
   _createdDate: string
   _discussionCount: number
-  _userVote?: "downvote" | "upvote" | "neutralvote" | null
+  _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null
   _doi?: string
   _title: string
   _createdBy: CreatedBy | null
+  _datePublished?: string
 
   constructor(raw:any) {
     this._authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
@@ -22,6 +23,7 @@ export class Post implements TopLevelDocument {
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
     this._createdDate = formatDateStandard(raw.created_date);
+    this._datePublished = formatDateStandard(raw.created_date);
     this._createdBy = parseCreatedBy(raw.created_by);
     this._hubs = (raw.hubs || []).map(h => parseHub(h));
     this._title = raw.title;
@@ -46,6 +48,10 @@ export class Post implements TopLevelDocument {
     return this._score;  
   }
 
+  get userVote():"downvote" | "upvote" | "neutralvote" | undefined | null {
+    return this._userVote;  
+  }
+
   get discussionCount():number {
     return this._discussionCount;
   }
@@ -53,6 +59,10 @@ export class Post implements TopLevelDocument {
   get createdDate():string {
     return this._createdDate;
   }
+
+  get datePublished():string|undefined {
+    return this._datePublished;
+  }  
 
   get doi():string|undefined {
     return this._doi;

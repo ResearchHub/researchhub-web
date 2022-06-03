@@ -64,6 +64,7 @@ function DocumentHeader({
     prevVoteScore: score,
   });
   console.log('document', document)
+  console.log('userVote', userVote)
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
