@@ -139,7 +139,7 @@ const Post = (props) => {
                 shareUrl={process.browser && window.location.href}
               />
             </div>
-            <div className={css(styles.space)}>
+            <div className={css(styles.section)}>
               <a name="comments" id="comments" />
               <DiscussionTab
                 hostname={props.hostname}
@@ -180,6 +180,7 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 30,
+    marginBottom: 30,
   },
   main: {
     boxSizing: "border-box",
@@ -190,6 +191,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     fontSize: 14,
     marginRight: 20,
+  },
+  section: {
+    marginTop: 25,
+    paddingTop: 25,
+    borderTop: `1px solid ${colors.GREY_LINE()}`,
   },
 });
 

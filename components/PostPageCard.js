@@ -295,7 +295,7 @@ class PostPageCard extends Component {
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
           </div>
-          <div className={"post-body"}>
+          <div className={css(styles.section) + " post-body"}>
             {this.state.showPostEditor ? (
               <>
                 <DynamicCKEditor
@@ -335,6 +335,11 @@ class PostPageCard extends Component {
 }
 
 const styles = StyleSheet.create({
+  section: {
+    marginTop: 25,
+    paddingTop: 25,
+    borderTop: `1px solid ${colors.GREY_LINE()}`,
+  },
   discussionCountWrapper: {
     marginTop: 10,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
