@@ -40,6 +40,7 @@ import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
+import { breakpoints } from "~/config/themes/screen";
 
 class SummaryTab extends Component {
   constructor(props) {
@@ -732,9 +733,6 @@ var styles = StyleSheet.create({
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 20,
-    },
   },
   hidden: {
     display: "none",
@@ -750,8 +748,9 @@ var styles = StyleSheet.create({
     lineHeight: "30px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
-    "@media only screen and (max-width: 967px)": {
-      fontSize: 14,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 16,
+      lineHeight: "28px",
     },
   },
   abstractText: {
@@ -761,13 +760,6 @@ var styles = StyleSheet.create({
     fontSize: 15,
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (max-width: 967px)": {
-      fontSize: 14,
-      width: "100%",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
   },
   abstractTextEditor: {
     display: "flex",
@@ -794,11 +786,6 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 15,
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-      alignItems: "flex-start",
-      paddingBottom: 0,
-    },
   },
   sectionTitle: {
     fontSize: 20,
@@ -807,17 +794,6 @@ var styles = StyleSheet.create({
     display: "flex",
     margin: 0,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 967px)": {
-      justifyContent: "space-between",
-      width: "100%",
-      marginBottom: 20,
-    },
-    "@media only screen and (max-width: 500px)": {
-      flexDirection: "column",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 20,
-    },
   },
   titleRow: {
     display: "flex",
