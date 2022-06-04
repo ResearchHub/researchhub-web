@@ -901,11 +901,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     lineHeight: 1.4,
     marginBottom: 15,
-
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      flexDirection: "column",
-      alignItems: "start",
-    },
   },
   reviewBadge: {
     background: colors.DARK_YELLOW(),

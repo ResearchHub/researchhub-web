@@ -71,6 +71,12 @@
   white-space: pre-line !important;
   word-break: break-word !important;
 }
+@media only screen and (max-width: 768px) {
+  .post-body .ck-read-only p {
+    font-size: 16px !important;
+    line-height: 26px !important;
+  }
+}
 
 .post-body .ck-content {
   border: none !important;
@@ -93,7 +99,8 @@ h3 {
   text-decoration: underline;
 }
 
-.post-body .ck-editor__editable {
+.post-body .ck-read-only p:first-child {
+  margin-top: 0;
   /* border: 1px solid rgb(232, 232, 239) !important;
   padding: 20px !important; */
 }

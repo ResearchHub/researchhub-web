@@ -22,6 +22,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { breakpoints } from "~/config/themes/screen";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -186,11 +187,16 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: 800,
     margin: "0 auto",
-  },
-  info: {
-    opacity: 0.5,
-    fontSize: 14,
-    marginRight: 20,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: "100%",
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
   },
   section: {
     marginTop: 25,
