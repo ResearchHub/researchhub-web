@@ -745,12 +745,12 @@ var styles = StyleSheet.create({
   },
   abstractContainer: {
     fontSize: 18,
-    lineHeight: "30px",
+    lineHeight: "28px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
-      lineHeight: "28px",
+      lineHeight: "26px",
     },
   },
   abstractText: {

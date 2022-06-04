@@ -69,8 +69,12 @@ export const parseCreatedBy = (raw: any): CreatedBy | null => {
     return null;
   }
 
-  raw.author_profile.first_name = raw.first_name;
-  raw.author_profile.last_name = raw.last_name;
+  if (raw.first_name && !raw.author_profile.first_name) {
+    raw.author_profile.first_name = raw.first_name;
+  }
+  if (raw.last_name && !raw.author_profile.last_name) {
+    raw.author_profile.last_name = raw.last_name;
+  } 
 
   const mapped = {
     "id": raw.id,

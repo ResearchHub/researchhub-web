@@ -65,6 +65,10 @@ function DocumentHeader({
     prevVoteScore: score,
   });
 
+  // const showHubsDropdown = process.browser && (window.innerWidth <= breakpoints.small.int && hubs.length > 1);
+  const visibleHubs = hubs.slice(0,3);
+  const hiddenHubs = hubs.slice(3);
+
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
@@ -116,7 +120,7 @@ function DocumentHeader({
     onSuccess: handleVoteSuccess,
     onError: () => null,
   });
-
+console.log(createdBy)
   const authorElems = (authors || []).map((author, idx) => {
     const lastElem = idx < authors.length - 1; 
     return (
@@ -180,45 +184,47 @@ function DocumentHeader({
             <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
           </div>
         }
-        <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`}>
-          {createdBy?.authorProfile?.firstName}{" "}
-          {createdBy?.authorProfile?.lastName}
-        </ALink>
-        <div className={css(styles.hubsContainer)}>
-          {hubs?.length > 0 && (
-            <>
-              <span
-                className={css(styles.textSecondary, styles.postedText)}
-              >{`posted`}</span>
-              {hubs?.slice(0, 2).map((h, index) => (
-                <>
-                  <span className={css(styles.textSecondary)}>{` in`}</span>
-                  <ALink
-                    theme="blankAndBlue"
-                    href={`/hubs/${h.slug}`}
-                    overrideStyle={styles.hubLink}
-                  >
-                    {toTitleCase(h.name)}
-                  </ALink>
-                  {index < hubs?.slice(0, 2).length - 1 ? ", " : ""}
-                </>
-              ))}
-              &nbsp;
-              {hubs?.slice(2).length > 0 && (
-                <HubDropDown
-                  hubs={hubs?.slice(1)}
-                  labelStyle={styles.hubLink}
-                  containerStyle={styles.hubDropdownContainer}
-                  isOpen={isHubsDropdownOpen}
-                  setIsOpen={() => setIsHubsDropdownOpen(!isHubsDropdownOpen)}
-                />
-              )}
-            </>
-          )}
+        <div className={css(styles.submittedByDetails)}>
+          <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`} overrideStyle={styles.link}>
+            {createdBy?.authorProfile?.firstName}{" "}
+            {createdBy?.authorProfile?.lastName}
+          </ALink>
+          <div className={css(styles.hubsContainer)}>
+            {visibleHubs?.length > 0 && (
+              <>
+                <span
+                  className={css(styles.textSecondary, styles.postedText)}
+                >{` posted in`}</span>
+                {visibleHubs.map((h, index) => (
+                  <>
+                    <ALink
+                      theme="blankAndBlue"
+                      href={`/hubs/${h.slug}`}
+                      overrideStyle={styles.hubLink}
+                    >
+                      {toTitleCase(h.name)}
+                    </ALink>
+                    {index < visibleHubs?.length - 1 ? ", " : ""}
+                  </>
+                ))}
+                &nbsp;
+                {hiddenHubs.length > 0 && (
+                  <HubDropDown
+                    hubs={hiddenHubs}
+                    labelStyle={styles.hubLink}
+                    containerStyle={styles.hubDropdownContainer}
+                    isOpen={isHubsDropdownOpen}
+                    setIsOpen={() => setIsHubsDropdownOpen(!isHubsDropdownOpen)}
+                  />
+                )}
+              </>
+            )}
+          </div>
+          <span className={css(styles.dot)}> • </span>
+          <span className={css(styles.textSecondary, styles.timestamp)}>
+            {timeSince(createdDate)}
+          </span>
         </div>
-        <span className={css(styles.textSecondary, styles.timestamp)}>
-          {timeSince(createdDate)}
-        </span>
       </div>
       <div className={css(styles.title)}>{title}</div>
       <div className={css(styles.metadata)}>
@@ -360,6 +366,9 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: colors.MEDIUM_GREY(),    
   },
+  dot: {
+    color: colors.MEDIUM_GREY(),
+  },
   reviews: {
     display: "flex",
   },
@@ -383,16 +392,21 @@ const styles = StyleSheet.create({
   submittedBy: {
     display: "flex",
     alignItems: "center",
-    fontSize: 16,
-    lineHeight: "26px",
+    fontSize: 14,
+    lineHeight: "21px",
     marginBottom: 10,
+  },
+  submittedByDetails: {
+    display: "block",
   },
   postedText: {
   },
   createdByContainer: {
     marginRight: 7,
   },
-  hubsContainer: {},
+  hubsContainer: {
+    display: "inline",
+  },
   claimProfile: {
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),
@@ -425,7 +439,6 @@ const styles = StyleSheet.create({
   },
   hubLink: {
     textTransform: "capitalize",
-    fontSize: 16,
     marginLeft: 5,
     fontWeight: 400,
   },
@@ -441,8 +454,8 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     lineHeight: "40px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 28,
-      lineHeight: "38px",
+      fontSize: 24,
+      lineHeight: "30px",
     }
   },
   metadata: {
