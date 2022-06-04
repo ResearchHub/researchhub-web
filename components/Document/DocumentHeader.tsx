@@ -19,6 +19,7 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import { connect } from "react-redux";
+import { breakpoints } from "~/config/themes/screen";
 
 
 type Args = {
@@ -115,14 +116,14 @@ function DocumentHeader({
     onSuccess: handleVoteSuccess,
     onError: () => null,
   });
-console.log('unifiedDocument', unifiedDocument)
+
   const authorElems = (authors || []).map((author, idx) => {
     const lastElem = idx < authors.length - 1; 
     return (
       <span className={css(styles.author)}>
         {author.isClaimed ? (
           <span data-tip={"Verified profile"}>
-            <ALink href={`/user/${author.id}/overview`}>
+            <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
               {author.firstName} {author.lastName}{" "}
               <span className={css(styles.badgeIcon)}>
                 {icons.checkCircleSolid}
@@ -176,7 +177,7 @@ console.log('unifiedDocument', unifiedDocument)
       <div className={css(styles.submittedBy)}>
         {createdBy?.authorProfile &&
           <div className={css(styles.createdByContainer)}>
-            <AuthorAvatar author={createdBy?.authorProfile} size={30} />
+            <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
           </div>
         }
         <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`}>
@@ -252,7 +253,7 @@ console.log('unifiedDocument', unifiedDocument)
             <div className={css(styles.metaKey)}>DOI</div>
             <div className={css(styles.metaVal)}>
               {externalUrl ? (
-                <ALink href={externalUrl} target="blank">{doi}</ALink>
+                <ALink href={externalUrl} overrideStyle={styles.link} target="blank">{doi}</ALink>
               ) : (
                 {doi}
               )}
@@ -283,10 +284,13 @@ console.log('unifiedDocument', unifiedDocument)
           {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
             <div className={css(styles.reviews, styles.additionalDetail)}>
               <span className={css(styles.detailIcon, styles.starIcon)}>{icons.starFilled}</span>
-              {unifiedDocument?.reviewSummary?.avg} {`based on`}&nbsp;
-              <ALink overrideStyle={[styles.comments]} href={"#comments"}>
-                {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
-              </ALink>
+              {unifiedDocument?.reviewSummary?.avg}
+              <span className={css(styles.reviewDetails)}>
+                &nbsp;{`based on`}&nbsp;
+                <ALink overrideStyle={[styles.comments]} href={"#comments"}>
+                  {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
+                </ALink>
+              </span>
             </div>
           )}
           {unifiedDocument.documentType && (
@@ -330,6 +334,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     marginTop: 25,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+      marginTop: 35,
+    }    
   },
   additionalDetails: {
     display: "flex",
@@ -355,13 +363,23 @@ const styles = StyleSheet.create({
   reviews: {
     display: "flex",
   },
+  reviewDetails: {
+    display: "inline-flex",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    }
+  },
   type: {
     display: "flex",
   },
   typeText: {
     textTransform: "capitalize",
   },
-  actions: {},
+  actions: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 20,
+    }
+  },
   submittedBy: {
     display: "flex",
     alignItems: "center",
@@ -383,11 +401,14 @@ const styles = StyleSheet.create({
     display: "inline-flex",
     ":hover": {
       color: colors.NEW_BLUE(),
-    }
+    },
   },
   coinIcon: {
     marginLeft: 5,
     alignSelf: "center",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    }    
   },
   timestamp: {
     marginLeft: 2,
@@ -406,9 +427,11 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     marginLeft: 5,
+    fontWeight: 400,
   },
   link: {
     cursor: "pointer",
+    fontWeight: 400,
     ":hover": {
       color: colors.NEW_BLUE(),
     }    
@@ -417,6 +440,10 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 600,
     lineHeight: "40px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 28,
+      lineHeight: "38px",
+    }
   },
   metadata: {
     marginTop: 25,
@@ -425,6 +452,9 @@ const styles = StyleSheet.create({
     display: "flex",
     lineHeight: "26px",
     marginTop: 3,
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   lineHeight: "22px",
+    // }
   },
   metaKey: {
     color: colors.MEDIUM_GREY(),
@@ -432,10 +462,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: 85,
     minWidth: 85,
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   fontSize: 14,
+    // }
   },
   metaVal: {
     fontSize: 16,
-    fontWeight: 500,
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   fontSize: 14,
+    // }
   },
   author: {
     marginRight: 2,

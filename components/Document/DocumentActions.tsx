@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import colors from "~/config/themes/colors";
 import censorDocument from "./api/censorDocAPI";
 import AdminButton from "../Admin/AdminButton";
+import { breakpoints } from "~/config/themes/screen";
 
 
 type Args = {
@@ -192,7 +193,6 @@ const styles = StyleSheet.create({
     }
   },
   flagButton: {
-    border: 0,
     padding: 8,
   },
   moderatorAction: {
@@ -254,13 +254,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 15,
     cursor: "pointer",
-    // border: "1px solid rgba(36, 31, 58, 0.1)",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 13,
       width: 15,
       minWidth: 15,

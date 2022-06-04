@@ -44,6 +44,7 @@ import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxS
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { breakpoints } from "~/config/themes/screen";
 import {
   convertToEditorValue,
   convertDeltaToText,
@@ -491,6 +492,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: 800,
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
   },
   discussionContainer: {},
   section: {
