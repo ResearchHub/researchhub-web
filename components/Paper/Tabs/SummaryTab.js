@@ -918,7 +918,7 @@ var styles = StyleSheet.create({
       padding: 0,
     },
     ":hover": {
-      color: colors.BLUE(1),
+      color: colors.NEW_BLUE(1),
       opacity: 1,
       textDecoration: "underline",
     },
@@ -985,7 +985,7 @@ var styles = StyleSheet.create({
   },
   icon: {
     fontSize: 50,
-    color: colors.BLUE(1),
+    color: colors.NEW_BLUE(1),
     height: 50,
   },
   transition: {
@@ -996,11 +996,13 @@ var styles = StyleSheet.create({
     position: "sticky",
     paddingTop: 20,
     paddingBottom: 10,
+    paddingRight: 10,
+    boxSizing: "border-box",
+    background: "#FCFCFC",
     bottom: 0,
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "#fff",
     borderTop: "1px solid rgb(235, 235, 235)",
     zIndex: 3,
   },
@@ -1034,7 +1036,7 @@ var styles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
-    backgroundColor: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(),
     ":hover": {
       backgroundColor: "#3971FF",
     },
@@ -1071,7 +1073,7 @@ var styles = StyleSheet.create({
     fontSize: 12,
   },
   tabLabel: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     fontSize: 14,
     padding: "5px 8px",
     cursor: "pointer",
@@ -1096,7 +1098,7 @@ var styles = StyleSheet.create({
     color: "rgba(36, 31, 58, 0.6)",
     borderRadius: 4,
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     "@media only screen and (max-width: 967px)": {
       marginRight: 0,
@@ -1106,8 +1108,8 @@ var styles = StyleSheet.create({
     },
   },
   activeTab: {
-    backgroundColor: colors.BLUE(0.11),
-    color: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(0.11),
+    color: colors.NEW_BLUE(),
   },
   earnRSCButton: {
     fontSize: 14,
@@ -1147,7 +1149,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FBFBFD",
     cursor: "pointer",
     ":hover": {
-      borderColor: colors.BLUE(),
+      borderColor: colors.NEW_BLUE(),
     },
   },
 });

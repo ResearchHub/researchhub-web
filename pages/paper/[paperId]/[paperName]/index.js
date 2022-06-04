@@ -487,6 +487,7 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 30,
+    marginBottom: 30,
   },
   main: {
     boxSizing: "border-box",
@@ -496,6 +497,11 @@ const styles = StyleSheet.create({
       width: "100%",
       paddingLeft: 25,
       paddingRight: 25,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: "100%",
+      paddingLeft: 15,
+      paddingRight: 15,
     },
   },
   discussionContainer: {},
