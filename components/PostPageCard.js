@@ -150,126 +150,6 @@ class PostPageCard extends Component {
     this.state.hovered && this.setState({ hovered: false });
   };
 
-  renderActions = () => {
-    const { post, isEditorOfHubs, isModerator, isSubmitter, user } = this.props;
-
-    const uploadedById =
-      post && post.created_by && post.created_by.author_profile.id;
-    const isUploaderSuspended =
-      post && post.created_by && post.created_by.is_suspended;
-
-    const isAuthor = post.authors
-      .map((author) => author.user)
-      .includes(user.id);
-    const actionButtons = [
-      {
-        active:
-          (isSubmitter || isAuthor) && !post.note?.unified_document.is_removed,
-        button: post.note ? (
-          <Link
-            href={`/${post.note.organization.slug}/notebook/${post.note.id}`}
-          >
-            <a className={css(styles.actionIcon)} data-tip={"Edit Post"}>
-              {icons.pencil}
-            </a>
-          </Link>
-        ) : (
-          <PermissionNotificationWrapper
-            modalMessage="edit post"
-            onClick={this.toggleShowPostEditor}
-            permissionKey="UpdatePaper"
-            loginRequired={true}
-            hideRipples={true}
-            styling={styles.borderRadius}
-          >
-            <ReactTooltip />
-            <div className={css(styles.actionIcon)} data-tip={"Edit Post"}>
-              {icons.pencil}
-            </div>
-          </PermissionNotificationWrapper>
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <ShareAction
-            addRipples={true}
-            title={"Share this post"}
-            subtitle={post && post.title}
-            url={this.props.shareUrl}
-            customButton={
-              <div className={css(styles.actionIcon)} data-tip={"Share Post"}>
-                {icons.shareAlt}
-              </div>
-            }
-          />
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <span data-tip={"Support Post"}>
-            <PaperPromotionButton post={post} customStyle={styles.actionIcon} />
-          </span>
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <FlagButtonV2
-            modalHeaderText="Flagging"
-            onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-              flagGrmContent({
-                contentID: post.id,
-                contentType: "researchhub_posts",
-                flagReason,
-                onError: renderErrorMsg,
-                onSuccess: renderSuccessMsg,
-              });
-            }}
-          />
-        ),
-      },
-      {
-        active: isModerator || isSubmitter || isAuthor || isEditorOfHubs,
-        button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
-          >
-            <ActionButton
-              isModerator={true}
-              paperId={post.id}
-              restore={post.is_removed}
-              icon={post.is_removed ? icons.plus : icons.minus}
-              onAction={
-                post.is_removed ? this.restoreThisPost : this.removeThisPost
-              }
-              containerStyle={styles.moderatorContainer}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-    ].filter((action) => action.active);
-
-    return (
-      <div className={css(styles.actions) + " action-bars"}>
-        {actionButtons.map((action, i) => {
-          if (actionButtons.length - 1 === i) {
-            return <span key={i}>{action.button}</span>;
-          }
-
-          return (
-            <span key={i} className={css(styles.actionButtonMargin)}>
-              {action.button}
-            </span>
-          );
-        })}
-      </div>
-    );
-  };
-
   render() {
     const { post } = this.props;
     const postObj = new Post(post);
@@ -285,7 +165,6 @@ class PostPageCard extends Component {
             />
           )}
 
-          <AuthorSupportModal />
           <div
             className={css(
               styles.container,

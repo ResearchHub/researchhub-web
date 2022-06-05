@@ -113,11 +113,11 @@ h3 {
   border: 1px solid #cccccc;
 } */
 
-.ck-content.ck-editor__editable:not(.ck-read-only) {
+.post-body .ck-content.ck-editor__editable:not(.ck-read-only) {
   border: 1px solid #cccccc !important;
   padding: 20px !important;
 }
 
-.ck-content.ck-editor__editable:not(.ck-read-only) p:first-child {
+.post-body .ck-content.ck-editor__editable:not(.ck-read-only) p:first-child {
   margin-top: 0 !important;
 }
