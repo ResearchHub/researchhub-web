@@ -113,8 +113,7 @@ class PostPageCard extends Component {
 
   toggleShowPostEditor = () => {
     ReactTooltip.hide();
-    // this.setState({ showPostEditor: !this.state.showPostEditor });
-    this.setState({ showPostEditor: true });
+    this.setState({ showPostEditor: !this.state.showPostEditor });
   };
 
   sendPost = () => {
@@ -317,6 +316,19 @@ class PostPageCard extends Component {
                   }
                   readOnly={false}
                 />
+                <div className={css(styles.editButtonRow)}>
+                  <Button
+                    isWhite={true}
+                    label={"Cancel"}
+                    onClick={this.toggleShowPostEditor}
+                    size={"small"}
+                  />
+                  <Button
+                    label={"Save"}
+                    onClick={this.sendPost}
+                    size={"small"}
+                  />
+                </div>
               </>
             ) : (
               <>
