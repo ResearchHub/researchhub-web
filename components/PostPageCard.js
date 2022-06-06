@@ -48,28 +48,6 @@ class PostPageCard extends Component {
     };
   }
 
-  restoreThisPost = () => {
-    restoreDocument({
-      unifiedDocumentId: this.props.post.unifiedDocument.id,
-      onSuccess: this.props.restorePost,
-      onError: () => {
-        this.props.setMessage("Failed to restore page");
-        this.props.showMessage({ show: true, error: true });
-      },
-    });
-  };
-
-  removeThisPost = () => {
-    censorDocument({
-      unifiedDocumentId: this.props.post.unifiedDocument.id,
-      onSuccess: this.props.removePost,
-      onError: () => {
-        this.props.setMessage("Failed to remove page");
-        this.props.showMessage({ show: true, error: true });
-      },
-    });
-  };
-
   toPlaintext = (text) => {
     return removeMd(text).replace(/&nbsp;/g, " ");
   };
@@ -122,7 +100,7 @@ class PostPageCard extends Component {
   };
 
   render() {
-    const { post } = this.props;
+    const { post, removePost, restorePost } = this.props;
     const { postBody } = this.state;
 
     return (
@@ -131,6 +109,8 @@ class PostPageCard extends Component {
           <DocumentHeader
             handleEdit={this.toggleShowPostEditor}
             document={post}
+            onDocumentRemove={removePost}
+            onDocumentRestore={restorePost}
           />
           <div className={css(styles.section) + " post-body"}>
             <ReactPlaceholder

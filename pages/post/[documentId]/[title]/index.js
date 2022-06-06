@@ -76,10 +76,14 @@ const Post = (props) => {
 
   const restorePost = () => {
     setPost({ ...post, is_removed: false });
+    postV2.unifiedDocument.isRemoved = false;
+    setPostV2(postV2);
   };
 
   const removePost = () => {
     setPost({ ...post, is_removed: true });
+    postV2.unifiedDocument.isRemoved = true;
+    setPostV2(postV2);
   };
 
   function formatDescription() {
@@ -117,8 +121,8 @@ const Post = (props) => {
         noindex={post.is_removed || post.is_removed_by_user}
         canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
       />
+      <PaperBanner document={post} documentType="post" />
       <div className={css(styles.root)}>
-        <PaperBanner document={post} documentType="post" />
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
