@@ -191,6 +191,7 @@ function DocumentHeader({
               type={unifiedDocument.documentType}
             />
           </div>
+
           <div className={css(styles.submittedBy)}>
             {createdBy?.authorProfile &&
               <div className={css(styles.createdByContainer)}>
@@ -296,9 +297,25 @@ function DocumentHeader({
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
+              <div className={css(styles.additionalDetail, styles.smallScreenVoteContainer)}>
+                <VoteWidget
+                  score={voteState.voteScore}
+                  onUpvote={onUpvote}
+                  onDownvote={onDownvote}
+                  horizontalView={true}
+                  // @ts-ignore
+                  small={true}
+                  // @ts-ignore
+                  selected={voteState.userVote}
+                  isPaper={unifiedDocument.documentType === "paper"}
+                  type={unifiedDocument.documentType}
+                  styles={[styles.smallScreenVoteWidget]}
+                />
+              </div>
+
               <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
                 <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
-                {discussionCount} {`comments`}
+                {discussionCount} <span className={css(styles.commentsText)}>{`comments`}</span>
               </ALink>
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
@@ -351,6 +368,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: -50,
   },
+  smallScreenVoteWidget: {
+    marginRight: 0,
+  },
+  smallScreenVoteContainer: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block"
+    }
+  },
   actionsAndDetailsRow: {
     display: "flex",
     justifyContent: "space-between",
@@ -390,6 +416,11 @@ const styles = StyleSheet.create({
   reviewDetails: {
     display: "inline-flex",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    }
+  },
+  commentsText: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     }
   },

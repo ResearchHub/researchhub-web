@@ -1061,9 +1061,6 @@ var styles = StyleSheet.create({
   reviewDetails: {
     marginBottom: 20,
     display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexDirection: "column",
-    },
   },
   reviewHeader: {
     fontSize: 15,
