@@ -1,5 +1,6 @@
 import { parseCreatedBy } from "./contribution";
 import { Hub } from "./hub";
+import { CitationConsensus } from "./hypothesis";
 import { parsePeerReviewScoreSummary, PeerReview, PeerReviewScoreSummary } from "./peerReview";
 import { Vote } from "./vote";
 
@@ -26,6 +27,7 @@ export interface TopLevelDocument {
   note?: any,
   markdown?: string,
   isReady: boolean,
+  consensus?: CitationConsensus,
 }
 
 export type PaperFormat = {
