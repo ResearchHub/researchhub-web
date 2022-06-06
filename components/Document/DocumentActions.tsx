@@ -5,7 +5,6 @@ import { StyleSheet, css } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import ActionButton from "../ActionButton";
-import { useRouter } from "next/router";
 import icons from "~/config/themes/icons";
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import restoreDocument from "./api/restoreDocAPI";
@@ -83,7 +82,7 @@ function DocumentActions({
             onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 contentID: unifiedDocument?.document?.id,
-                contentType: unifiedDocument.documentType,
+                contentType: (unifiedDocument.documentType === "post" ? "researchhub_posts" : unifiedDocument.documentType),
                 flagReason,
                 onError: renderErrorMsg,
                 onSuccess: renderSuccessMsg,
