@@ -185,8 +185,6 @@ function PaperTab(props) {
                 This academic paper hasn't been uploaded yet
               </div>
               <div className={css(styles.emptyPlaceholderSubtitle)}>
-                {paperUrl &&
-                  "View the paper now by clicking the link below or upload the PDF"}
                 {!paperUrl && "Click the button below to add the paper"}
               </div>
               <div className={css(styles.emptyStateButtonContainer)}>
@@ -402,15 +400,19 @@ var styles = StyleSheet.create({
     //Todo: check for responsiveness
   },
   emptyPlaceholderText: {
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: 500,
     color: colors.BLACK(),
     textAlign: "center",
     marginTop: 20,
     marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      fontSize: 16,
-      width: 280,
+      fontSize: 26,
+      width: 380,
+    },
+    "@media only screen and (max-width: 500px)": {
+      width: "80%",
+      fontSize: 22,
     },
   },
   emptyPlaceholderSubtitle: {
@@ -427,6 +429,9 @@ var styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK(0.8),
     textAlign: "center",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   emptyStateButtonContainer: {
     display: "flex",
@@ -456,7 +461,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
   },
   cancelButton: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

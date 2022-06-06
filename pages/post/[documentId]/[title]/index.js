@@ -23,12 +23,13 @@ import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorU
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
+import { Post as PostDoc } from "~/config/types/post";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
 );
 
-function useEffectFetchPost({ setPost, query }) {
+function useEffectFetchPost({ setPost, setPostV2, query }) {
   useEffect(() => {
     fetch(
       API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
@@ -37,7 +38,9 @@ function useEffectFetchPost({ setPost, query }) {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {
-        setPost(data.results[0]);
+        const rawPost = data.results[0];
+        setPost(rawPost);
+        setPostV2(new PostDoc(rawPost));
       });
   }, [query]);
 }
@@ -58,9 +61,10 @@ const Post = (props) => {
   const store = useStore();
 
   const [post, setPost] = useState({});
+  const [postV2, setPostV2] = useState(null);
   const [discussionCount, setCount] = useState(0);
 
-  useEffectFetchPost({ setPost, query: props.query });
+  useEffectFetchPost({ setPost, setPostV2, query: props.query });
 
   useEffect(() => {
     if (post?.id) {
@@ -129,17 +133,17 @@ const Post = (props) => {
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
-            <div>
+            {/* {postV2 &&
               <PostPageCard
                 isEditorOfHubs={isEditorOfHubs}
                 isModerator={isModerator}
                 isSubmitter={isSubmitter}
-                post={post}
+                post={postV2}
                 removePost={removePost}
                 restorePost={restorePost}
                 shareUrl={process.browser && window.location.href}
               />
-            </div>
+            } */}
             <div className={css(styles.section)}>
               <a name="comments" id="comments" />
               <DiscussionTab

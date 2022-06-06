@@ -59,6 +59,7 @@ export class Paper implements TopLevelDocument {
   _datePublished?: string
   _externalUrl?: string | undefined
   _formats: PaperFormat[]
+  _isReady: boolean
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw)
@@ -70,6 +71,7 @@ export class Paper implements TopLevelDocument {
     this._hubs = (raw.hubs || []).map(h => parseHub(h));
     this._title = raw.title;
     this._formats = [];
+    this._isReady = raw.id ? true : false;
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -94,6 +96,10 @@ export class Paper implements TopLevelDocument {
   get unifiedDocument():UnifiedDocument {
     return this._unifiedDocument;
   }
+
+  get isReady():boolean {
+    return this._isReady;
+  }  
 
   get authors():Array<AuthorProfile> {
     return this._authors;

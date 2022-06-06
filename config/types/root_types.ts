@@ -23,6 +23,9 @@ export interface TopLevelDocument {
   datePublished?: string,
   journal?: string,
   formats?: Array<PaperFormat>,
+  note?: any,
+  markdown?: string,
+  isReady: boolean,
 }
 
 export type PaperFormat = {

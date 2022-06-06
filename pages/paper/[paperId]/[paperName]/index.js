@@ -88,7 +88,7 @@ const Paper = ({
   // TODO: paperV2 is a strongly typed object meant to deprecate
   // the old JSON respnose from API. We should aim to use only this object
   // in future tech-deb sprint.
-  const [paperV2, setPaperV2] = useState(null);
+  const [paperV2, setPaperV2] = useState(new PaperDoc({}));
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [loadingSummary, setLoadingSummary] = useState(true);
@@ -327,15 +327,13 @@ const Paper = ({
           <div className={css(styles.main)}>
             <div className={css(styles.top)}>
               <div className={css(styles.headerContainer)}>
-                {paperV2 && (
-                  <DocumentHeader
-                    document={paperV2}
-                    onDocumentRemove={removePaper}
-                    onDocumentRestore={restorePaper}
-                    openPaperPDFModal={openPaperPDFModal}
-                    handleEdit={navigateToEditPaperInfo}
-                  />
-                )}
+                <DocumentHeader
+                  document={paperV2}
+                  onDocumentRemove={removePaper}
+                  onDocumentRestore={restorePaper}
+                  openPaperPDFModal={openPaperPDFModal}
+                  handleEdit={navigateToEditPaperInfo}
+                />
               </div>
             </div>
             <div className={css(styles.bodyContainer, styles.section)}>

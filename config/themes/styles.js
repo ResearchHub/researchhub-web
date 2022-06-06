@@ -222,7 +222,7 @@ export const defaultStyles = StyleSheet.create({
     },
   },
   button: {
-    backgroundColor: colors.BLUE(1),
+    backgroundColor: colors.NEW_BLUE(1),
     border: "none",
     borderRadius: 4,
     color: "white",
@@ -270,19 +270,19 @@ export const column = (params = {}) => {
   const { justifyContent, alignItems } = params;
 
   return {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent : justifyContent ? justifyContent : 'center',
-    alignItems: alignItems ? alignItems : 'center'
-  }
-}
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: justifyContent ? justifyContent : "center",
+    alignItems: alignItems ? alignItems : "center",
+  };
+};
 
 export const row = (params = {}) => {
-  const { justifyContent, alignItems } = params
+  const { justifyContent, alignItems } = params;
 
   return {
-    display: 'flex',
-    justifyContent : justifyContent ? justifyContent : 'center',
-    alignItems: alignItems ? alignItems : 'center'
-  }
-}
+    display: "flex",
+    justifyContent: justifyContent ? justifyContent : "center",
+    alignItems: alignItems ? alignItems : "center",
+  };
+};
