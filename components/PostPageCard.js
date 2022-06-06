@@ -47,10 +47,22 @@ class PostPageCard extends Component {
       score: props.post.score,
       showPostEditor: false,
       postBody: this.props.post.markdown,
+      post: this.props.post,
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
     this.editorRef = createRef();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.post.isReady !== this.props.post.isReady) {
+      console.log("post", this.props);
+      this.setState({
+        post: this.props.post,
+        postBody: this.props.post.markdown,
+        voteState: userVoteToConstant(this.props.post.userVote),
+      });
+    }
   }
 
   componentWillUnmount() {

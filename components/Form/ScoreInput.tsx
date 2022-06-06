@@ -54,7 +54,7 @@ export default function ScoreInput({
           remainderWasCalculated = true;
         }
         return (
-          <div className={css(styles.bar, styles.readOnly, overrideBarStyle)}>
+          <div className={css(styles.bar, styles.readOnly, overrideBarStyle)} key={`star-${index}`}>
             <div className={css(styles.cover)} style={{ "width": `${coverPercentage}%` }}></div>
             <div className={css(styles.barFill)}></div>
           </div>
@@ -69,6 +69,7 @@ export default function ScoreInput({
             onClick={() => handleSelect(barNumber)}
             onMouseEnter={() => setHoveredValue(barNumber)}
             onMouseLeave={() => setHoveredValue(0)}
+            key={`star-${index}`}
           >
             <div className={css(styles.cover)} style={{ "width": `${isBarSelected ? 100 : 0}%` }}></div>
             <div className={css(styles.barFill, isBarSelected && styles.selectedBar)}></div>
