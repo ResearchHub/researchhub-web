@@ -2,7 +2,7 @@ import { userVoteToConstant } from "../constants"
 import { formatDateStandard } from "../utils/dates"
 import { parseCreatedBy } from "./contribution"
 import { Hub, parseHub } from "./hub"
-import { AuthorProfile, CreatedBy, PaperFormat, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
+import { AuthorProfile, CreatedBy, ID, PaperFormat, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
 
 export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
   const rawAuthors = rawPaper.raw_authors || [];
@@ -46,6 +46,7 @@ export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
 }
 
 export class Paper implements TopLevelDocument {
+  _id: ID
   _authors: AuthorProfile[]
   _unifiedDocument: UnifiedDocument
   _hubs: Hub[]
@@ -74,6 +75,7 @@ export class Paper implements TopLevelDocument {
     this._formats = [];
     this._isReady = raw.id ? true : false;
     this._boostAmount = raw.boost_amount || 0;
+    this._id = raw.id;
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -93,6 +95,10 @@ export class Paper implements TopLevelDocument {
         "url": raw.file,
       })
     }
+  }
+
+  get id():ID {
+    return this._id;
   }
 
   get unifiedDocument():UnifiedDocument {
