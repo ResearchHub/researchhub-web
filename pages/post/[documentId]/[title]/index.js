@@ -1,10 +1,8 @@
 import API from "~/config/api";
-import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Error from "next/error";
 import Head from "~/components/Head";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PostPageCard from "~/components/PostPageCard";
 import Script from "next/script";
 import colors from "~/config/themes/colors";
@@ -61,7 +59,7 @@ const Post = (props) => {
   const store = useStore();
 
   const [post, setPost] = useState({});
-  const [postV2, setPostV2] = useState(null);
+  const [postV2, setPostV2] = useState(new PostDoc({}));
   const [discussionCount, setCount] = useState(0);
 
   useEffectFetchPost({ setPost, setPostV2, query: props.query });
@@ -102,15 +100,6 @@ const Post = (props) => {
     setPost(newState);
   }
 
-  function getCreatedByAuthor() {
-    const { created_by } = post;
-    let authors = [];
-    if (post.created_by) {
-      authors = [created_by.author_profile];
-    }
-    return authors;
-  }
-
   const slug =
     post && post.title && post.title.toLowerCase().replace(/\s/g, "-");
   const currUserID = props.user?.id ?? null;
@@ -133,7 +122,7 @@ const Post = (props) => {
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
-            {/* {postV2 &&
+            {postV2 && (
               <PostPageCard
                 isEditorOfHubs={isEditorOfHubs}
                 isModerator={isModerator}
@@ -143,7 +132,7 @@ const Post = (props) => {
                 restorePost={restorePost}
                 shareUrl={process.browser && window.location.href}
               />
-            } */}
+            )}
             <div className={css(styles.section)}>
               <a name="comments" id="comments" />
               <DiscussionTab

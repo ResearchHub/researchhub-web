@@ -18,6 +18,7 @@ export class Post implements TopLevelDocument {
   _datePublished?: string
   _note?: any
   _markdown?: string
+  _isReady: boolean
 
   constructor(raw:any) {
     this._authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
@@ -31,6 +32,7 @@ export class Post implements TopLevelDocument {
     this._title = raw.title;
     this._note = raw.note;
     this._markdown = raw.full_markdown;
+    this._isReady = raw.id ? true : false;
     
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -87,6 +89,10 @@ export class Post implements TopLevelDocument {
   get createdBy():CreatedBy|null {
     return this._createdBy;
   }
+
+  get isReady():boolean {
+    return this._isReady;
+  }  
 
   get hubs():Array<Hub> {
     return this._hubs;
