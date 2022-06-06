@@ -28,6 +28,7 @@ export interface TopLevelDocument {
   markdown?: string,
   isReady: boolean,
   consensus?: CitationConsensus,
+  boostAmount: number,
 }
 
 export type PaperFormat = {
