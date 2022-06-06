@@ -557,6 +557,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: colors.BLACK(),
     marginBottom: 10,
+    lineHeight: "18px",
   },
   title: {
     color: colors.BLACK(),
