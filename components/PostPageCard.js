@@ -14,6 +14,7 @@ import { createRef, Component } from "react";
 import DocumentHeader from "./Document/DocumentHeader";
 import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
+import ReactHtmlParser from "react-html-parser";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -77,10 +78,20 @@ class PostPageCard extends Component {
     this.setState({ showPostEditor: !this.state.showPostEditor });
   };
 
-  sendPost = () => {
-    const { post, setMessage, showMessage } = this.props;
-    const { postBody } = this.state;
+  firstImageFromHtml = (text) => {
+    const elements = ReactHtmlParser(text);
+    for (const element of elements) {
+      if (element?.type === "figure") {
+        return element.props.children[0].props.src;
+      }
+    }
+    return null;
+  };
 
+  sendPost = () => {
+    const { setMessage, showMessage } = this.props;
+    const { postBody, post } = this.state;
+    console.log("post", post);
     const params = {
       created_by: this.props.user.id,
       document_type: "DISCUSSION",
@@ -90,7 +101,7 @@ class PostPageCard extends Component {
       renderable_text: this.toPlaintext(postBody),
       title: post.title,
     };
-
+    console.log("post", params);
     this.toggleShowPostEditor();
     return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
