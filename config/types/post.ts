@@ -16,6 +16,8 @@ export class Post implements TopLevelDocument {
   _title: string
   _createdBy: CreatedBy | null
   _datePublished?: string
+  _note?: any
+  _markdown?: string
 
   constructor(raw:any) {
     this._authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
@@ -27,6 +29,8 @@ export class Post implements TopLevelDocument {
     this._createdBy = parseCreatedBy(raw.created_by);
     this._hubs = (raw.hubs || []).map(h => parseHub(h));
     this._title = raw.title;
+    this._note = raw.note;
+    this._markdown = raw.full_markdown;
     
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -71,6 +75,14 @@ export class Post implements TopLevelDocument {
   get title():string|undefined {
     return this._title;
   }
+
+  get markdown():string|undefined {
+    return this._markdown;
+  }
+
+  get note():any|undefined {
+    return this._note;
+  }    
   
   get createdBy():CreatedBy|null {
     return this._createdBy;

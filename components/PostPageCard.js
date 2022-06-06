@@ -26,15 +26,10 @@ import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { flagGrmContent } from "./Flag/api/postGrmFlag";
 import FlagButtonV2 from "./Flag/FlagButtonV2";
-import { Post } from "~/config/types/post";
 import DocumentHeader from "./Document/DocumentHeader";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
-);
-
-const AuthorSupportModal = dynamic(() =>
-  import("~/components/Modals/AuthorSupportModal")
 );
 
 class PostPageCard extends Component {
@@ -48,10 +43,10 @@ class PostPageCard extends Component {
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
-      voteState: userVoteToConstant(props.post.user_vote),
+      voteState: userVoteToConstant(this.props.post.userVote),
       score: props.post.score,
       showPostEditor: false,
-      postBody: this.props.post.full_markdown,
+      postBody: this.props.post.markdown,
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
@@ -59,9 +54,9 @@ class PostPageCard extends Component {
   }
 
   componentWillUnmount() {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
+    // if (document.body.style) {
+    //   document.body.style.overflow = "scroll";
+    // }
   }
 
   componentDidMount() {
@@ -73,7 +68,7 @@ class PostPageCard extends Component {
 
   restoreThisPost = () => {
     restoreDocument({
-      unifiedDocumentId: this.props.post.unified_document_id,
+      unifiedDocumentId: this.props.post.unifiedDocument.id,
       onSuccess: this.props.restorePost,
       onError: () => {
         this.props.setMessage("Failed to restore page");
@@ -84,27 +79,13 @@ class PostPageCard extends Component {
 
   removeThisPost = () => {
     censorDocument({
-      unifiedDocumentId: this.props.post.unified_document_id,
+      unifiedDocumentId: this.props.post.unifiedDocument.id,
       onSuccess: this.props.removePost,
       onError: () => {
         this.props.setMessage("Failed to remove page");
         this.props.showMessage({ show: true, error: true });
       },
     });
-  };
-
-  toggleShowHubs = () => {
-    this.setState({ showAllHubs: !this.state.showAllHubs });
-  };
-
-  firstImageFromHtml = (text) => {
-    const elements = ReactHtmlParser(text);
-    for (const element of elements) {
-      if (element?.type === "figure") {
-        return element.props.children[0].props.src;
-      }
-    }
-    return null;
   };
 
   toPlaintext = (text) => {
@@ -152,18 +133,15 @@ class PostPageCard extends Component {
 
   render() {
     const { post } = this.props;
-    const postObj = new Post(post);
     const { postBody } = this.state;
 
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
-          {postObj && (
-            <DocumentHeader
-              handleEdit={this.toggleShowPostEditor}
-              document={postObj}
-            />
-          )}
+          <DocumentHeader
+            handleEdit={this.toggleShowPostEditor}
+            document={post}
+          />
 
           <div
             className={css(
@@ -177,7 +155,7 @@ class PostPageCard extends Component {
             typeof="ScholarlyArticle"
           >
             <meta property="description" content={post.title} />
-            <meta property="commentCount" content={post.discussion_count} />
+            <meta property="commentCount" content={post.discussionCount} />
           </div>
           <div className={css(styles.section) + " post-body"}>
             {this.state.showPostEditor ? (

@@ -20,7 +20,8 @@ import { toTitleCase } from "~/config/utils/string";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import { connect } from "react-redux";
 import { breakpoints } from "~/config/themes/screen";
-
+import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
 
 type Args = {
   document: TopLevelDocument,
@@ -106,21 +107,26 @@ function DocumentHeader({
 
   const currentUser = getCurrentUser() ?? {};
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
-  const onUpvote = createVoteHandler({
-    voteType: UPVOTE,
-    unifiedDocument,
-    currentAuthor,
-    onSuccess: handleVoteSuccess,
-    onError: () => null,
-  });
-  const onDownvote = createVoteHandler({
-    voteType: DOWNVOTE,
-    unifiedDocument,
-    currentAuthor,
-    onSuccess: handleVoteSuccess,
-    onError: () => null,
-  });
-console.log(createdBy)
+
+  let onUpvote, onDownvote;
+  if (document.isReady) {
+    onUpvote = createVoteHandler({
+      voteType: UPVOTE,
+      unifiedDocument,
+      currentAuthor,
+      onSuccess: handleVoteSuccess,
+      onError: () => null,
+    });
+    onDownvote = createVoteHandler({
+      voteType: DOWNVOTE,
+      unifiedDocument,
+      currentAuthor,
+      onSuccess: handleVoteSuccess,
+      onError: () => null,
+    });
+
+  }
+
   const authorElems = (authors || []).map((author, idx) => {
     const lastElem = idx < authors.length - 1; 
     return (
@@ -155,176 +161,185 @@ console.log(createdBy)
   const claimableAuthors = document.authors.filter(a => !a.isClaimed);
 
   return (
-    <div className={css(styles.documentHeader)}>
-      <ReactTooltip />
-      {claimableAuthors.length > 0 &&
-        <AuthorClaimModal
-          auth={auth}
-          authors={claimableAuthors}
-          isOpen={isAuthorClaimModalOpen}
-          setIsOpen={(isOpen) =>
-            setIsAuthorClaimModalOpen(isOpen)
-          }
-        />
-      }
-      <div className={css(styles.voteWidgetContainer)}>
-        <VoteWidget
-          score={voteState.voteScore}
-          onUpvote={onUpvote}
-          onDownvote={onDownvote}
-          // @ts-ignore
-          selected={voteState.userVote}
-          isPaper={unifiedDocument.documentType === "paper"}
-          type={unifiedDocument.documentType}
-        />
-      </div>
-      <div className={css(styles.submittedBy)}>
-        {createdBy?.authorProfile &&
-          <div className={css(styles.createdByContainer)}>
-            <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
-          </div>
-        }
-        <div className={css(styles.submittedByDetails)}>
-          <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`} overrideStyle={styles.link}>
-            {createdBy?.authorProfile?.firstName}{" "}
-            {createdBy?.authorProfile?.lastName}
-          </ALink>
-          <div className={css(styles.hubsContainer)}>
-            {visibleHubs?.length > 0 && (
-              <>
-                <span
-                  className={css(styles.textSecondary, styles.postedText)}
-                >{` posted in`}</span>
-                {visibleHubs.map((h, index) => (
-                  <>
-                    <ALink
-                      theme="blankAndBlue"
-                      href={`/hubs/${h.slug}`}
-                      overrideStyle={styles.hubLink}
-                    >
-                      {toTitleCase(h.name)}
-                    </ALink>
-                    {index < visibleHubs?.length - 1 ? ", " : ""}
-                  </>
-                ))}
-                &nbsp;
-                {hiddenHubs.length > 0 && (
-                  <HubDropDown
-                    hubs={hiddenHubs}
-                    labelStyle={styles.hubLink}
-                    containerStyle={styles.hubDropdownContainer}
-                    isOpen={isHubsDropdownOpen}
-                    setIsOpen={() => setIsHubsDropdownOpen(!isHubsDropdownOpen)}
-                  />
-                )}
-              </>
-            )}
-          </div>
-          <span className={css(styles.dot)}> • </span>
-          <span className={css(styles.textSecondary, styles.timestamp)}>
-            {timeSince(createdDate)}
-          </span>
-        </div>
-      </div>
-      <div className={css(styles.title)}>{title}</div>
-      <div className={css(styles.metadata)}>
-        {journal && (
-          <div className={css(styles.metadataRow)}>
-            <div className={css(styles.metaKey)}>Journal</div>
-            <div className={css(styles.metaVal)}>{journal}</div>
-          </div>
-        )}
-        {authorElems.length > 0 && (
-          <div className={css(styles.metadataRow)}>
-            <div className={css(styles.metaKey)}>Authors</div>
-            <div className={css(styles.metaVal)}>
-              {authorElems}
-              {claimableAuthors.length > 0 &&
-                <span className={css(styles.claimProfile)} onClick={() => setIsAuthorClaimModalOpen(true)}>
-                  Claim profile to earn Research Coin
-                  <img
-                    src={"/static/icons/coin-filled.png"}
-                    draggable={false}
-                    className={css(styles.coinIcon)}
-                    alt="RSC Coin"
-                    height={20}
-                  />
-                </span>
+    // @ts-ignore
+    <ReactPlaceholder
+      ready={document.isReady}
+      showLoadingAnimation
+      customPlaceholder={<DocumentHeaderPlaceholder />}
+    >
+      {document.isReady &&
+        <div className={css(styles.documentHeader)}>
+          <ReactTooltip />
+          {claimableAuthors.length > 0 &&
+            <AuthorClaimModal
+              auth={auth}
+              authors={claimableAuthors}
+              isOpen={isAuthorClaimModalOpen}
+              setIsOpen={(isOpen) =>
+                setIsAuthorClaimModalOpen(isOpen)
               }
-            </div>
+            />
+          }
+          <div className={css(styles.voteWidgetContainer)}>
+            <VoteWidget
+              score={voteState.voteScore}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              // @ts-ignore
+              selected={voteState.userVote}
+              isPaper={unifiedDocument.documentType === "paper"}
+              type={unifiedDocument.documentType}
+            />
           </div>
-        )}
-        {doi && (
-          <div className={css(styles.metadataRow)}>
-            <div className={css(styles.metaKey)}>DOI</div>
-            <div className={css(styles.metaVal)}>
-              {externalUrl ? (
-                <ALink href={externalUrl} overrideStyle={styles.link} target="blank">{doi}</ALink>
-              ) : (
-                {doi}
-              )}
-            </div>
-          </div>
-        )}
-        {datePublished && (
-          <div className={css(styles.metadataRow)}>
-            <div className={css(styles.metaKey)}>Published</div>
-            <div className={css(styles.metaVal)}>{datePublished}</div>
-          </div>
-        )}
-        {formatElems.length > 0 && (
-          <div className={css(styles.metadataRow)}>
-            <div className={css(styles.metaKey)}>Formats</div>
-            <div className={css(styles.metaVal)}>
-              {formatElems}
-            </div>
-          </div>
-        )}
-      </div>
-      <div className={css(styles.actionsAndDetailsRow)}>
-        <div className={css(styles.additionalDetails)}>
-          <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
-            <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
-            {discussionCount} {`comments`}
-          </ALink>
-          {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
-            <div className={css(styles.reviews, styles.additionalDetail)}>
-              <span className={css(styles.detailIcon, styles.starIcon)}>{icons.starFilled}</span>
-              {unifiedDocument?.reviewSummary?.avg}
-              <span className={css(styles.reviewDetails)}>
-                &nbsp;{`based on`}&nbsp;
-                <ALink overrideStyle={[styles.comments]} href={"#comments"}>
-                  {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
-                </ALink>
+          <div className={css(styles.submittedBy)}>
+            {createdBy?.authorProfile &&
+              <div className={css(styles.createdByContainer)}>
+                <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
+              </div>
+            }
+            <div className={css(styles.submittedByDetails)}>
+              <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`} overrideStyle={styles.link}>
+                {createdBy?.authorProfile?.firstName}{" "}
+                {createdBy?.authorProfile?.lastName}
+              </ALink>
+              <div className={css(styles.hubsContainer)}>
+                {visibleHubs?.length > 0 && (
+                  <>
+                    <span
+                      className={css(styles.textSecondary, styles.postedText)}
+                    >{` posted in`}</span>
+                    {visibleHubs.map((h, index) => (
+                      <>
+                        <ALink
+                          theme="blankAndBlue"
+                          href={`/hubs/${h.slug}`}
+                          overrideStyle={styles.hubLink}
+                        >
+                          {toTitleCase(h.name)}
+                        </ALink>
+                        {index < visibleHubs?.length - 1 ? ", " : ""}
+                      </>
+                    ))}
+                    &nbsp;
+                    {hiddenHubs.length > 0 && (
+                      <HubDropDown
+                        hubs={hiddenHubs}
+                        labelStyle={styles.hubLink}
+                        containerStyle={styles.hubDropdownContainer}
+                        isOpen={isHubsDropdownOpen}
+                        setIsOpen={() => setIsHubsDropdownOpen(!isHubsDropdownOpen)}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+              <span className={css(styles.dot)}> • </span>
+              <span className={css(styles.textSecondary, styles.timestamp)}>
+                {timeSince(createdDate)}
               </span>
             </div>
-          )}
-          {unifiedDocument.documentType && (
-          <div className={css(styles.type, styles.additionalDetail)}>
-            <span className={css(styles.detailIcon)}>
-              {unifiedDocument.documentType === "paper" ? (
-                icons.paperAlt
-              ) : unifiedDocument.documentType === "hypothesis" ? (
-                <HypothesisIcon onClick={() => null} />
-              ) : unifiedDocument.documentType === "post" ? (
-                icons.penSquare
-              ) : null}
-            </span>
-            <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
           </div>
-          )}
+          <div className={css(styles.title)}>{title}</div>
+          <div className={css(styles.metadata)}>
+            {journal && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Journal</div>
+                <div className={css(styles.metaVal)}>{journal}</div>
+              </div>
+            )}
+            {authorElems.length > 0 && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Authors</div>
+                <div className={css(styles.metaVal)}>
+                  {authorElems}
+                  {claimableAuthors.length > 0 &&
+                    <span className={css(styles.claimProfile)} onClick={() => setIsAuthorClaimModalOpen(true)}>
+                      Claim profile to earn Research Coin
+                      <img
+                        src={"/static/icons/coin-filled.png"}
+                        draggable={false}
+                        className={css(styles.coinIcon)}
+                        alt="RSC Coin"
+                        height={20}
+                      />
+                    </span>
+                  }
+                </div>
+              </div>
+            )}
+            {doi && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>DOI</div>
+                <div className={css(styles.metaVal)}>
+                  {externalUrl ? (
+                    <ALink href={externalUrl} overrideStyle={styles.link} target="blank">{doi}</ALink>
+                  ) : (
+                    {doi}
+                  )}
+                </div>
+              </div>
+            )}
+            {datePublished && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Published</div>
+                <div className={css(styles.metaVal)}>{datePublished}</div>
+              </div>
+            )}
+            {formatElems.length > 0 && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Formats</div>
+                <div className={css(styles.metaVal)}>
+                  {formatElems}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className={css(styles.actionsAndDetailsRow)}>
+            <div className={css(styles.additionalDetails)}>
+              <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
+                <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
+                {discussionCount} {`comments`}
+              </ALink>
+              {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
+                <div className={css(styles.reviews, styles.additionalDetail)}>
+                  <span className={css(styles.detailIcon, styles.starIcon)}>{icons.starFilled}</span>
+                  {unifiedDocument?.reviewSummary?.avg}
+                  <span className={css(styles.reviewDetails)}>
+                    &nbsp;{`based on`}&nbsp;
+                    <ALink overrideStyle={[styles.comments]} href={"#comments"}>
+                      {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
+                    </ALink>
+                  </span>
+                </div>
+              )}
+              {unifiedDocument.documentType && (
+              <div className={css(styles.type, styles.additionalDetail)}>
+                <span className={css(styles.detailIcon)}>
+                  {unifiedDocument.documentType === "paper" ? (
+                    icons.paperAlt
+                  ) : unifiedDocument.documentType === "hypothesis" ? (
+                    <HypothesisIcon onClick={() => null} />
+                  ) : unifiedDocument.documentType === "post" ? (
+                    icons.penSquare
+                  ) : null}
+                </span>
+                <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
+              </div>
+              )}
+            </div>
+            <div className={css(styles.actions)}>
+              <DocumentActions
+                unifiedDocument={unifiedDocument}
+                type={unifiedDocument.documentType}
+                onDocumentRemove={onDocumentRemove}
+                onDocumentRestore={onDocumentRestore}
+                handleEdit={handleEdit}
+              />
+            </div>
+          </div>
         </div>
-        <div className={css(styles.actions)}>
-          <DocumentActions
-            unifiedDocument={unifiedDocument}
-            type={unifiedDocument.documentType}
-            onDocumentRemove={onDocumentRemove}
-            onDocumentRestore={onDocumentRestore}
-            handleEdit={handleEdit}
-          />
-        </div>
-      </div>
-    </div>
+      }
+    </ReactPlaceholder>
   );
 }
 
