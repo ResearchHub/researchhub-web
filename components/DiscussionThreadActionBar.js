@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
-import ShareAction from "~/components/ShareAction";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
@@ -17,12 +16,6 @@ const DiscussionThreadActionBar = (props) => {
   return (
     <Fragment>
       <CommentCount {...props} />
-      <ShareAction
-        customButton={<Share />}
-        title={"Share this discussion"}
-        subtitle={title}
-        url={shareUrl}
-      />
     </Fragment>
   );
 };

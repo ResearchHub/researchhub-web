@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 import { UnifiedDocument } from "~/config/types/root_types";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import ShareAction from "../ShareAction";
 import { StyleSheet, css } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
@@ -62,24 +61,6 @@ function DocumentActions({
             {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
-      ),
-    },
-    {
-      active: true,
-      key: "share",
-      html: (
-        <ShareAction
-          /* @ts-ignore */
-          addRipples={true}
-          title={"Share this paper"}
-          subtitle={title}
-          url={(process.browser && window.location.href) || null}
-          customButton={
-            <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
-              {icons.shareAlt}
-            </div>
-          }
-        />
       ),
     },
     {

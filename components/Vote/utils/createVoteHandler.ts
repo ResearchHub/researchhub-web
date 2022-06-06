@@ -12,7 +12,7 @@ type Args = {
 }
 
 const getVoteUrl = ({ voteType, unifiedDocument }) => {
-  if (unifiedDocument.documentType === "post") {
+  if (unifiedDocument?.documentType === "post") {
     if (voteType === UPVOTE) {
       return API.RH_POST_UPVOTE(unifiedDocument.document.id); 
     }
@@ -20,7 +20,7 @@ const getVoteUrl = ({ voteType, unifiedDocument }) => {
       return API.RH_POST_DOWNVOTE(unifiedDocument.document.id); 
     }
   }
-  else if (unifiedDocument.documentType === "paper") {
+  else if (unifiedDocument?.documentType === "paper") {
     if (voteType === UPVOTE) {
       return API.UPVOTE(unifiedDocument.documentType, unifiedDocument.document.id); 
     }

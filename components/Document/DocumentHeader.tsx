@@ -40,7 +40,6 @@ function DocumentHeader({
   auth,
   openPaperPDFModal,
 }: Args): ReactElement<"div"> {
-
   const {
     title,
     createdBy,
@@ -57,7 +56,7 @@ function DocumentHeader({
     score,
     hubs,
   } = document;
-  
+
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
@@ -66,7 +65,6 @@ function DocumentHeader({
     prevVoteScore: score,
   });
 
-  // const showHubsDropdown = process.browser && (window.innerWidth <= breakpoints.small.int && hubs.length > 1);
   const visibleHubs = hubs.slice(0,3);
   const hiddenHubs = hubs.slice(3);
 
@@ -240,7 +238,7 @@ function DocumentHeader({
               </span>
             </div>
           </div>
-          <div className={css(styles.title)}>{title}</div>
+          <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
             {journal && (
               <div className={css(styles.metadataRow)}>
@@ -275,7 +273,7 @@ function DocumentHeader({
                   {externalUrl ? (
                     <ALink href={externalUrl} overrideStyle={styles.link} target="blank">{doi}</ALink>
                   ) : (
-                    {doi}
+                    <ALink href={doi} overrideStyle={styles.link} target="blank">{doi}</ALink>
                   )}
                 </div>
               </div>
@@ -523,12 +521,11 @@ const styles = StyleSheet.create({
     }    
   },  
   title: {
-    fontSize: 32,
     fontWeight: 600,
     lineHeight: "40px",
+    marginTop: 10,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 24,
-      lineHeight: "30px",
+      lineHeight: "32px",
     }
   },
   metadata: {

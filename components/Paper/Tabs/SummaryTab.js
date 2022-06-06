@@ -682,7 +682,7 @@ class SummaryTab extends Component {
       >
         {!isEmpty(paper) && (
           <div className={css(this.sectionHeaderStyle())}>
-            <h3 className={css(styles.sectionTitle)}>
+            <h2 className={css(styles.sectionTitle)}>
               <span className={css(styles.titleRow)}>
                 Abstract
                 {paper.abstract && (
@@ -708,7 +708,7 @@ class SummaryTab extends Component {
                   />
                 )}
               </span>
-            </h3>
+            </h2>
           </div>
         )}
         {this.renderContent()}
@@ -788,7 +788,7 @@ var styles = StyleSheet.create({
     paddingBottom: 15,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",

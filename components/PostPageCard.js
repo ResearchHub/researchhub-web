@@ -91,7 +91,7 @@ class PostPageCard extends Component {
   sendPost = () => {
     const { setMessage, showMessage } = this.props;
     const { postBody, post } = this.state;
-    console.log("post", post);
+
     const params = {
       created_by: this.props.user.id,
       document_type: "DISCUSSION",
@@ -101,7 +101,7 @@ class PostPageCard extends Component {
       renderable_text: this.toPlaintext(postBody),
       title: post.title,
     };
-    console.log("post", params);
+
     this.toggleShowPostEditor();
     return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)

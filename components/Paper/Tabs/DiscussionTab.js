@@ -513,7 +513,7 @@ const DiscussionTab = (props) => {
         )}
       >
         <div className={css(styles.header)}>
-          <h3 className={css(styles.discussionTitle)}>
+          <h2 className={css(styles.discussionTitle)}>
             Discussion
             <span className={css(styles.discussionCount)}>
               {fetching ? (
@@ -524,7 +524,7 @@ const DiscussionTab = (props) => {
                 props.calculatedCount
               )}
             </span>
-          </h3>
+          </h2>
           <div className={css(styles.filterContainer)}>
             <div>
               <DropdownButton
@@ -920,7 +920,7 @@ var styles = StyleSheet.create({
   },
   discussionTitle: {
     display: "flex",
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 500,
     margin: 0,
     "@media only screen and (max-width: 415px)": {
@@ -936,6 +936,7 @@ var styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     marginLeft: 10,
+    alignSelf: "center",
   },
   rowContainer: {
     width: "100%",
@@ -954,7 +955,7 @@ var styles = StyleSheet.create({
   filterContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: -4,
+    marginTop: 0,
     fontWeight: 500,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 15,
