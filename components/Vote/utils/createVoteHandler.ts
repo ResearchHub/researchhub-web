@@ -12,7 +12,6 @@ type Args = {
 }
 
 const getVoteUrl = ({ voteType, unifiedDocument }) => {
-  console.log(unifiedDocument)
   if (unifiedDocument.documentType === "post") {
     if (voteType === UPVOTE) {
       return API.RH_POST_UPVOTE(unifiedDocument.document.id); 
@@ -50,8 +49,6 @@ export const createVoteHandler = ({
     },
   };
 
-  console.log(voteStrategies)
-
   const { increment, url } = voteStrategies[voteType];
 
   const handleVote = async () => {
@@ -75,32 +72,6 @@ export const createVoteHandler = ({
       console.log("Trying to vote on own's document");
       return;
     }
-
-    // if (selectedUserVote === voteType) {
-    //   /**
-    //    * Deselect
-    //    * NOTE: This will never be called with the current implementation of
-    //    * VoteWidget, because it disables the onVote/onDownvote callback
-    //    * if the button is already selected.
-    //    */
-    //   this.setState((prev) => ({
-    //     voteState: null,
-    //     score: prev.score - increment, // Undo the vote
-    //   }));
-    // } else {
-    //   this.setState({ voteState: voteType });
-    //   if (
-    //     this.state.voteState === UPVOTE ||
-    //     this.state.voteState === DOWNVOTE
-    //   ) {
-    //     // If post was already upvoted / downvoted by user, then voting
-    //     // oppoistely will reverse the score by twice as much
-    //     this.setState((prev) => ({ score: prev.score + increment * 2 }));
-    //   } else {
-    //     // User has not voted, so regular vote
-    //     this.setState((prev) => ({ score: prev.score + increment }));
-    //   }
-    // }
 
     await handleVote();
   };

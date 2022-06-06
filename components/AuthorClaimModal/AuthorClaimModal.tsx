@@ -25,7 +25,6 @@ const getPrompt = ({
   promptName,
   setOpenModalType,
 }) => {
-  console.log('author', authors)
   switch (promptName) {
     case "enterEmail":
       return (
