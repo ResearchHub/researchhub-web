@@ -122,17 +122,15 @@ const Post = (props) => {
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
-            {postV2 && (
-              <PostPageCard
-                isEditorOfHubs={isEditorOfHubs}
-                isModerator={isModerator}
-                isSubmitter={isSubmitter}
-                post={postV2}
-                removePost={removePost}
-                restorePost={restorePost}
-                shareUrl={process.browser && window.location.href}
-              />
-            )}
+            <PostPageCard
+              isEditorOfHubs={isEditorOfHubs}
+              isModerator={isModerator}
+              isSubmitter={isSubmitter}
+              post={postV2}
+              removePost={removePost}
+              restorePost={restorePost}
+              shareUrl={process.browser && window.location.href}
+            />
             <div className={css(styles.section)}>
               <a name="comments" id="comments" />
               <DiscussionTab

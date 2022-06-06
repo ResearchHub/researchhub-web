@@ -1,32 +1,19 @@
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
-import ActionButton from "~/components/ActionButton";
 import Button from "~/components/Form/Button";
-import DiscussionCount from "~/components/DiscussionCount";
-import HubTag from "~/components/Hubs/HubTag";
-import Link from "next/link";
-import PaperPromotionButton from "./Paper/PaperPromotionButton";
-import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import ReactHtmlParser from "react-html-parser";
 import ReactTooltip from "react-tooltip";
-import ShareAction from "~/components/ShareAction";
-import VoteWidget from "~/components/VoteWidget";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
 import removeMd from "remove-markdown";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { ModalActions } from "~/redux/modals";
 import { StyleSheet, css } from "aphrodite";
-import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
-import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
-import { flagGrmContent } from "./Flag/api/postGrmFlag";
-import FlagButtonV2 from "./Flag/FlagButtonV2";
 import DocumentHeader from "./Document/DocumentHeader";
+import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -36,39 +23,20 @@ class PostPageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      previews: [],
-      figureUrls: [],
-      hovered: false,
-      fetching: false,
-      slideIndex: 1,
-      showAllHubs: false, // only needed when > 3 hubs,
-      boostHover: false,
-      voteState: userVoteToConstant(this.props.post.userVote),
-      score: props.post.score,
       showPostEditor: false,
       postBody: this.props.post.markdown,
       post: this.props.post,
     };
-    this.containerRef = createRef();
-    this.metaContainerRef = createRef();
     this.editorRef = createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.post.isReady !== this.props.post.isReady) {
-      console.log("post", this.props);
       this.setState({
         post: this.props.post,
         postBody: this.props.post.markdown,
-        voteState: userVoteToConstant(this.props.post.userVote),
       });
     }
-  }
-
-  componentWillUnmount() {
-    // if (document.body.style) {
-    //   document.body.style.overflow = "scroll";
-    // }
   }
 
   componentDidMount() {
@@ -135,14 +103,6 @@ class PostPageCard extends Component {
       });
   };
 
-  setHover = () => {
-    !this.state.hovered && this.setState({ hovered: true });
-  };
-
-  unsetHover = () => {
-    this.state.hovered && this.setState({ hovered: false });
-  };
-
   render() {
     const { post } = this.props;
     const { postBody } = this.state;
@@ -154,66 +114,61 @@ class PostPageCard extends Component {
             handleEdit={this.toggleShowPostEditor}
             document={post}
           />
-
-          <div
-            className={css(
-              styles.container,
-              this.state.dropdown && styles.overflow
-            )}
-            ref={this.containerRef}
-            onMouseEnter={this.setHover}
-            onMouseLeave={this.unsetHover}
-            vocab="https://schema.org/"
-            typeof="ScholarlyArticle"
-          >
-            <meta property="description" content={post.title} />
-            <meta property="commentCount" content={post.discussionCount} />
-          </div>
           <div className={css(styles.section) + " post-body"}>
-            {this.state.showPostEditor ? (
-              <>
-                <DynamicCKEditor
-                  containerStyle={post.note && styles.editor}
-                  editing
-                  id="editPostBody"
-                  initialData={postBody}
-                  isBalloonEditor
-                  labelStyle={styles.label}
-                  noTitle={!post.note}
-                  onChange={(id, editorData) =>
-                    this.setState({ postBody: editorData })
-                  }
-                  readOnly={false}
-                />
-                <div className={css(styles.editButtonRow)}>
-                  <Button
-                    isWhite={true}
-                    label={"Cancel"}
-                    onClick={this.toggleShowPostEditor}
-                    size={"small"}
-                  />
-                  <Button
-                    label={"Save"}
-                    onClick={this.sendPost}
-                    size={"small"}
-                  />
-                </div>
-              </>
-            ) : (
-              <>
+            <ReactPlaceholder
+              ready={post.isReady}
+              showLoadingAnimation
+              customPlaceholder={<AbstractPlaceholder color="#efefef" />}
+            >
+              {post.isReady && (
                 <div>
-                  <DynamicCKEditor
-                    containerStyle={post.note && styles.editor}
-                    id={"postBody"}
-                    initialData={postBody}
-                    isBalloonEditor
-                    labelStyle={styles.label}
-                    noTitle={!post.note}
-                    readOnly
-                  />
+                  {this.state.showPostEditor ? (
+                    <>
+                      <DynamicCKEditor
+                        containerStyle={post.note && styles.editor}
+                        editing
+                        id="editPostBody"
+                        initialData={postBody}
+                        isBalloonEditor
+                        labelStyle={styles.label}
+                        noTitle={!post.note}
+                        onChange={(id, editorData) =>
+                          this.setState({ postBody: editorData })
+                        }
+                        readOnly={false}
+                      />
+                      <div className={css(styles.editButtonRow)}>
+                        <Button
+                          isWhite={true}
+                          label={"Cancel"}
+                          onClick={this.toggleShowPostEditor}
+                          size={"small"}
+                        />
+                        <Button
+                          label={"Save"}
+                          onClick={this.sendPost}
+                          size={"small"}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <DynamicCKEditor
+                          containerStyle={post.note && styles.editor}
+                          id={"postBody"}
+                          initialData={postBody}
+                          isBalloonEditor
+                          labelStyle={styles.label}
+                          noTitle={!post.note}
+                          readOnly
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
-              </>
-            )}
+              )}
+            </ReactPlaceholder>
           </div>
         </div>
       </div>
@@ -226,13 +181,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
-  },
-  discussionCountWrapper: {
-    marginTop: 10,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginTop: 1,
-      display: "flex",
-    },
   },
   discussionText: {
     whiteSpace: "nowrap",
@@ -261,281 +209,6 @@ const styles = StyleSheet.create({
   },
   overflow: {
     overflow: "visible",
-  },
-  column: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    width: "100%",
-    ":hover .action-bars": {
-      opacity: 1,
-    },
-  },
-  cardContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    position: "relative",
-    width: "100%",
-    height: "100%",
-    boxSizing: "border-box",
-  },
-  metaContainer: {
-    display: "flex",
-    flexDirection: "column",
-    position: "relative",
-    height: "100%",
-    width: "100%",
-    boxSizing: "border-box",
-  },
-  hubTags: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    width: "100%",
-    flexWrap: "wrap",
-  },
-  hubTag: {
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-    position: "relative",
-    wordBreak: "break-word",
-    fontWeight: "unset",
-    padding: 0,
-    margin: 0,
-    display: "flex",
-
-    "@media only screen and (max-width: 760px)": {
-      fontSize: 24,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 22,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
-    },
-  },
-  titleHeader: {
-    marginTop: 5,
-    marginBottom: 23,
-  },
-  authorName: {
-    marginRight: 8,
-    cursor: "pointer",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-    ":hover": {
-      color: colors.BLUE(),
-      opacity: 1,
-    },
-  },
-  rawAuthor: {
-    marginRight: 8,
-    cursor: "default",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  voting: {
-    display: "block",
-    width: 65,
-    fontSize: 16,
-    position: "absolute",
-    top: 0,
-    left: -70,
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  votingMobile: {
-    "@media only screen and (min-width: 768px)": {
-      display: "none",
-    },
-    display: "flex",
-    alignItems: "center",
-  },
-  actions: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    opacity: 1,
-    transition: "all ease-in-out 0.2s",
-  },
-  actionIcon: {
-    padding: 5,
-    borderRadius: "50%",
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
-    color: "rgba(36, 31, 58, 0.35)",
-    width: 20,
-    minWidth: 20,
-    maxWidth: 20,
-    height: 20,
-    minHeight: 20,
-    maxHeight: 20,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 15,
-    cursor: "pointer",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
-    ":hover": {
-      color: "rgba(36, 31, 58, 0.8)",
-      backgroundColor: "#EDEDF0",
-      borderColor: "#d8d8de",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
-      width: 15,
-      minWidth: 15,
-      maxWidth: 15,
-      height: 15,
-      minHeight: 15,
-      maxHeight: 15,
-    },
-  },
-  moderatorAction: {
-    ":hover": {
-      backgroundColor: colors.RED(0.3),
-      borderColor: colors.RED(),
-    },
-    ":hover .modIcon": {
-      color: colors.RED(),
-    },
-  },
-  actionButtonMargin: {
-    marginRight: 10,
-  },
-  moderatorContainer: {
-    padding: 5,
-    borderRadius: "50%",
-    width: 22,
-    minWidth: 22,
-    maxWidth: 22,
-    height: 22,
-    minHeight: 22,
-    maxHeight: 22,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 15,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
-      width: 15,
-      minWidth: 15,
-      maxWidth: 15,
-      height: 15,
-      minHeight: 15,
-      maxHeight: 15,
-    },
-  },
-  moderatorIcon: {
-    color: colors.RED(0.6),
-    fontSize: 18,
-    cursor: "pointer",
-    ":hover": {
-      color: colors.RED(1),
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  borderRadius: {
-    borderRadius: "50%",
-  },
-  row: {
-    display: "flex",
-    alignItems: "flex-start",
-    width: "100%",
-    // minHeight: 25,
-    flexWrap: "wrap",
-
-    /**
-     * Set the width of the Label ("Paper Title:", "Published:") to align text, but only do so
-     * to the first element on each row. This selector is equivalent to row > "first child". */
-    ":nth-child(1n) > *:nth-child(1) > div": {
-      minWidth: 80,
-    },
-
-    "@media only screen and (max-width: 1023px)": {
-      flexDirection: "column",
-    },
-  },
-  reverseRow: {
-    display: "flex",
-    alignItems: "flex-start",
-    width: "100%",
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column-reverse",
-    },
-  },
-  rightColumn: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-end",
-    marginLeft: 20,
-    "@media only screen and (max-width: 768px)": {
-      width: "100%",
-    },
-  },
-  bottomContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginTop: "auto",
-    marginTop: 20,
-    "@media only screen and (max-width: 767px)": {
-      margin: 0,
-    },
-  },
-  bottomRow: {
-    maxWidth: "100%",
-    display: "flex",
-    alignItems: "center",
-  },
-  mobile: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
-      marginLeft: 0,
-      justifyContent: "space-between",
-      alignItems: "flex-start",
-      flexDirection: "row",
-      paddingBottom: 10,
-    },
-  },
-  atag: {
-    color: "unset",
-    textDecoration: "unset",
-  },
-  tagStyle: {
-    marginBottom: 5,
-  },
-  icon: {
-    padding: "0px 4px",
-    cursor: "pointer",
-    border: "1px solid #FFF",
-    height: 21,
-    ":hover": {
-      color: colors.BLUE(),
-      backgroundColor: "#edeefe",
-      borderRadius: 3,
-    },
-  },
-  active: {
-    fontSize: 14,
-    padding: "0px 4px",
-    marginBottom: 5,
-    ":hover": {
-      fontSize: 14,
-      color: colors.BLUE(),
-      backgroundColor: "#edeefe",
-      borderRadius: 3,
-    },
   },
   editButtonRow: {
     display: "flex",

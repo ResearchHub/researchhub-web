@@ -51,6 +51,7 @@ const VoteWidget = (props) => {
     downvoteStyleClass,
     upvoteStyleClass,
     pillClass,
+    small,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -156,6 +157,7 @@ const VoteWidget = (props) => {
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
             styleClass={upvoteStyleClass}
+            small={small}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -170,6 +172,7 @@ const VoteWidget = (props) => {
           paper={paper}
           showPromotion={showPromotion}
           type={type}
+          small={small}
           pillClass={pillClass}
           horizontalView={horizontalView && horizontalView}
         />
@@ -183,6 +186,7 @@ const VoteWidget = (props) => {
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
             styleClass={downvoteStyleClass}
+            small={small}
           />
         </PermissionNotificationWrapper>
       </div>
@@ -219,8 +223,15 @@ const ScorePill = (props) => {
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled, horizontalView, right, styleClass } =
-    props;
+  const {
+    onClick,
+    selected,
+    disabled,
+    horizontalView,
+    right,
+    styleClass,
+    small,
+  } = props;
 
   let style = [styles.icon];
 
@@ -237,6 +248,10 @@ const VoteButton = (props) => {
     } else {
       style.push(styles.marginLeft);
     }
+  }
+
+  if (small) {
+    style.push(styles.smallBtn);
   }
 
   if (styleClass) {
@@ -269,6 +284,19 @@ function getScore(props) {
   }
   return score;
 }
+
+// const mobileStyles = StyleSheet.create({
+//   mobileVote: {
+//     fontSize: 14,
+//   },
+//   mobilePill: {
+//     width: 28,
+//     fontSize: 14,
+//     color: voteWidgetColors.ARROW,
+//     background: "unset",
+//     width: "unset",
+//   },
+// });
 
 const styles = StyleSheet.create({
   container: {
@@ -316,9 +344,9 @@ const styles = StyleSheet.create({
   },
   small: {
     fontSize: 14,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+  },
+  smallBtn: {
+    fontSize: 14,
   },
   promotionIcon: {
     fontSize: 11,
@@ -350,9 +378,6 @@ const styles = StyleSheet.create({
   },
   marginRight: {
     marginRight: 10,
-    "@media only screen and (max-width: 767px)": {
-      marginRight: 7,
-    },
   },
   promotionContainer: {
     display: "flex",
@@ -369,10 +394,6 @@ const styles = StyleSheet.create({
   },
   marginLeft: {
     marginLeft: 10,
-
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: 7,
-    },
   },
   divider: {
     margin: "5px 0 15px",
