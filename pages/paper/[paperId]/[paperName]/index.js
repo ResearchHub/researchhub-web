@@ -1,4 +1,4 @@
-import { connect, useDispatch, useStore } from "react-redux";
+import { connect, useStore } from "react-redux";
 import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, useMemo, useRef } from "react";
