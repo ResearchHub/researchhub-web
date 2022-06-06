@@ -19,7 +19,8 @@ export class Post implements TopLevelDocument {
   _note?: any
   _markdown?: string
   _isReady: boolean
-
+  _boostAmount: number
+  
   constructor(raw:any) {
     this._authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
     this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
@@ -33,7 +34,8 @@ export class Post implements TopLevelDocument {
     this._note = raw.note;
     this._markdown = raw.full_markdown;
     this._isReady = raw.id ? true : false;
-    
+    this._boostAmount = raw.boost_amount || 0;
+
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
     }
@@ -48,6 +50,10 @@ export class Post implements TopLevelDocument {
 
   get authors():Array<AuthorProfile> {
     return this._authors;
+  }
+
+  get boostAmount():number {
+    return this._boostAmount;
   }
 
   get score():number {

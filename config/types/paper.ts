@@ -60,6 +60,7 @@ export class Paper implements TopLevelDocument {
   _externalUrl?: string | undefined
   _formats: PaperFormat[]
   _isReady: boolean
+  _boostAmount: number
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw)
@@ -72,6 +73,7 @@ export class Paper implements TopLevelDocument {
     this._title = raw.title;
     this._formats = [];
     this._isReady = raw.id ? true : false;
+    this._boostAmount = raw.boost_amount || 0;
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -100,6 +102,10 @@ export class Paper implements TopLevelDocument {
   get isReady():boolean {
     return this._isReady;
   }  
+
+  get boostAmount():number {
+    return this._boostAmount;
+  }
 
   get authors():Array<AuthorProfile> {
     return this._authors;

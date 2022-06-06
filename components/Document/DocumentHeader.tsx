@@ -315,7 +315,7 @@ function DocumentHeader({
 
               <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
                 <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
-                {discussionCount} <span className={css(styles.commentsText)}>{`comments`}</span>
+                {discussionCount} <span className={css(styles.commentsText)}>&nbsp;{`comments`}</span>
               </ALink>
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
@@ -329,19 +329,33 @@ function DocumentHeader({
                   </span>
                 </div>
               )}
+              {document.boostAmount > 0 && (
+                <div className={css(styles.boostAmount, styles.additionalDetail)} data-tip={"Research Coin tipped"}>
+                  <span className={css(styles.coinDetailIcon)}>
+                    <img
+                      src={"/static/icons/coin-filled.png"}
+                      draggable={false}
+                      // className={css(styles.coinIcon)}
+                      alt="RSC Coin"
+                      height={20}
+                    />
+                  </span>
+                  <span className={css(styles.boostAmountText)}>+{document.boostAmount}</span>
+                </div>
+              )}              
               {unifiedDocument.documentType && (
-              <div className={css(styles.type, styles.additionalDetail)}>
-                <span className={css(styles.detailIcon)}>
-                  {unifiedDocument.documentType === "paper" ? (
-                    icons.paperAlt
-                  ) : unifiedDocument.documentType === "hypothesis" ? (
-                    <HypothesisIcon onClick={() => null} />
-                  ) : unifiedDocument.documentType === "post" ? (
-                    icons.penSquare
-                  ) : null}
-                </span>
-                <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
-              </div>
+                <div className={css(styles.type, styles.additionalDetail)}>
+                  <span className={css(styles.detailIcon)}>
+                    {unifiedDocument.documentType === "paper" ? (
+                      icons.paperAlt
+                    ) : unifiedDocument.documentType === "hypothesis" ? (
+                      <HypothesisIcon onClick={() => null} />
+                    ) : unifiedDocument.documentType === "post" ? (
+                      icons.penSquare
+                    ) : null}
+                  </span>
+                  <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
+                </div>
               )}
             </div>
             <div className={css(styles.actions)}>
@@ -361,6 +375,14 @@ function DocumentHeader({
 }
 
 const styles = StyleSheet.create({
+  boostAmount: {
+    display: "flex",
+    alignItems: "center",
+  },
+  boostAmountText: {
+    color: colors.GREEN(),
+    marginLeft: 7,
+  },  
   documentHeader: {
     position: "relative",
   },
@@ -395,6 +417,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
     fontWeight: 400,
     color: colors.MEDIUM_GREY(),
+  },
+  coinDetailIcon: {
+    marginTop: 3,
   },
   detailIcon: {
     marginRight: 7,
