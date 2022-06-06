@@ -273,7 +273,7 @@ function DocumentHeader({
                   {externalUrl ? (
                     <ALink href={externalUrl} overrideStyle={styles.link} target="blank">{doi}</ALink>
                   ) : (
-                    <ALink href={doi} overrideStyle={styles.link} target="blank">{doi}</ALink>
+                    <ALink href={`https://` + doi} overrideStyle={styles.link} target="blank">{doi}</ALink>
                   )}
                 </div>
               </div>
