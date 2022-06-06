@@ -280,3 +280,28 @@ input[type="number"]::-webkit-outer-spin-button {
 .DraftEditor-root {
   margin: 0px 10px 0px 0px;
 }
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+@media only screen and (max-width: 768px) {
+  h1 {
+    font-size: 26px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+}

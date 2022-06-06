@@ -121,3 +121,7 @@ h3 {
 .post-body .ck-content.ck-editor__editable:not(.ck-read-only) p:first-child {
   margin-top: 0 !important;
 }
+
+.post-body h1 {
+  display: none !important;
+}
