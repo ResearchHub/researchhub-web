@@ -4,7 +4,7 @@ import { ID, KeyOf } from "~/config/types/root_types";
 import API from "~/config/api";
 import { captureEvent } from "~/config/utils/events";
 
-type ContentType = "hypothesis" | "paper" | "post";
+type ContentType = "hypothesis" | "paper" | "post" | "researchhub_posts";
 
 type CommentType = "comment" | "reply" | "thread";
 
