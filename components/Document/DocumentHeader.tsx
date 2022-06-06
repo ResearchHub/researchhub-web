@@ -312,20 +312,6 @@ function DocumentHeader({
                   styles={[styles.smallScreenVoteWidget]}
                 />
               </div>
-              {document.boostAmount > 0 && (
-                <div className={css(styles.boostAmount, styles.additionalDetail)} data-tip={"Research Coin tipped"}>
-                  <span className={css(styles.coinDetailIcon)}>
-                    <img
-                      src={"/static/icons/coin-filled.png"}
-                      draggable={false}
-                      // className={css(styles.coinIcon)}
-                      alt="RSC Coin"
-                      height={20}
-                    />
-                  </span>
-                  <span className={css(styles.boostAmountText)}>+{document.boostAmount}</span>
-                </div>
-              )}                 
               <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
                 <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
                 {discussionCount} <span className={css(styles.commentsText)}>&nbsp;{`comments`}</span>
@@ -341,7 +327,21 @@ function DocumentHeader({
                     </ALink>
                   </span>
                 </div>
-              )}           
+              )}
+              {document.boostAmount > 0 && (
+                <div className={css(styles.boostAmount, styles.additionalDetail)} data-tip={"Research Coin tipped"}>
+                  <span className={css(styles.coinDetailIcon)}>
+                    <img
+                      src={"/static/icons/coin-filled.png"}
+                      draggable={false}
+                      // className={css(styles.coinIcon)}
+                      alt="RSC Coin"
+                      height={20}
+                    />
+                  </span>
+                  <span className={css(styles.boostAmountText)}>+{document.boostAmount}</span>
+                </div>
+              )}                 
               {unifiedDocument.documentType && (
                 <div className={css(styles.type, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon)}>
@@ -388,13 +388,16 @@ const styles = StyleSheet.create({
   voteWidgetContainer: {
     position: "absolute",
     left: -50,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none"
+    }    
   },
   smallScreenVoteWidget: {
     marginRight: 0,
   },
   smallScreenVoteContainer: {
     display: "none",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "block"
     }
   },
@@ -402,7 +405,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     marginTop: 25,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "block",
       marginTop: 35,
     }    
@@ -455,7 +458,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   actions: {
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginTop: 20,
     }
   },

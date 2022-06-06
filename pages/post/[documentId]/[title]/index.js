@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: 800,
     margin: "0 auto",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
       paddingLeft: 25,
       paddingRight: 25,
