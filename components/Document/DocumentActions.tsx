@@ -5,7 +5,6 @@ import { StyleSheet, css } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import ActionButton from "../ActionButton";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { useRouter } from "next/router";
 import icons from "~/config/themes/icons";
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
@@ -17,13 +16,13 @@ import censorDocument from "./api/censorDocAPI";
 import AdminButton from "../Admin/AdminButton";
 import { breakpoints } from "~/config/themes/screen";
 
-
 type Args = {
   unifiedDocument: UnifiedDocument,
   type: "paper" | "hypothesis" | "post",
   onDocumentRemove: Function,
   onDocumentRestore: Function,  
   handleEdit: Function,  
+  currentUser: any,
 }
 
 function DocumentActions({
@@ -31,14 +30,12 @@ function DocumentActions({
   onDocumentRemove,
   onDocumentRestore,
   handleEdit,
+  currentUser,
 }: Args): ReactElement<"div">{
-  const router = useRouter();
-  const currentUser = getCurrentUser();
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const isSubmitter = unifiedDocument?.createdBy?.id === currentUser.id;
   const [isRemoved, setIsRemoved] = useState(unifiedDocument.isRemoved);
-
 
   let title;
   if (unifiedDocument?.documentType === "paper") {
@@ -253,9 +250,13 @@ const styles = StyleSheet.create({
   },  
 })
 
+const mapStateToProps = (state) => ({
+  currentUser: state.auth?.user,
+});
+
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(null, mapDispatchToProps)(DocumentActions);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentActions);
