@@ -15,6 +15,7 @@ import DocumentHeader from "./Document/DocumentHeader";
 import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactHtmlParser from "react-html-parser";
+import router from "next/router";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -74,8 +75,14 @@ class PostPageCard extends Component {
   };
 
   toggleShowPostEditor = () => {
-    ReactTooltip.hide();
-    this.setState({ showPostEditor: !this.state.showPostEditor });
+    const { note } = this.state.post;
+
+    if (note) {
+      router.push(`/${note.organization.slug}/notebook/${note.id}`);
+    } else {
+      ReactTooltip.hide();
+      this.setState({ showPostEditor: !this.state.showPostEditor });
+    }
   };
 
   firstImageFromHtml = (text) => {
