@@ -40,6 +40,8 @@ import DiscussionCount from "~/components/DiscussionCount";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { FLAG_REASON } from "../Flag/config/constants";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import AdminButton from "../Admin/AdminButton";
+
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
