@@ -15,7 +15,6 @@ import DocumentActions from "./DocumentActions";
 import VoteWidget from "../VoteWidget";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { toTitleCase } from "~/config/utils/string";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import { connect } from "react-redux";
@@ -30,6 +29,7 @@ type Args = {
   handleEdit: Function,
   auth: any,
   openPaperPDFModal?: Function,
+  currentUser?: any,
 };
 
 function DocumentHeader({
@@ -39,6 +39,7 @@ function DocumentHeader({
   handleEdit,
   auth,
   openPaperPDFModal,
+  currentUser,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -57,6 +58,7 @@ function DocumentHeader({
     hubs,
   } = document;
 
+  const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
@@ -71,6 +73,13 @@ function DocumentHeader({
   useEffect(() => {
     setVoteState({ ...voteState, userVote });
   }, [userVote]);
+
+  useEffect(() => {
+    const isSubmittedByCurrentUser = String(currentUser?.id) === String(createdBy?.id) 
+    if (isSubmittedByCurrentUser) {
+      setVoteState({ ...voteState, userVote: UPVOTE });
+    }
+  }, [currentUser]);
 
   const handleVoteSuccess = ({ voteType, increment }) => {
     let newVoteScore = voteState.voteScore;
@@ -102,9 +111,6 @@ function DocumentHeader({
       prevVoteScore: score,
     });
   };
-
-  const currentUser = getCurrentUser() ?? {};
-  const currentAuthor = parseAuthorProfile(currentUser.author_profile);
 
   let onUpvote, onDownvote;
   if (document.isReady) {
@@ -332,7 +338,6 @@ function DocumentHeader({
                     <img
                       src={"/static/icons/coin-filled.png"}
                       draggable={false}
-                      // className={css(styles.coinIcon)}
                       alt="RSC Coin"
                       height={20}
                     />
@@ -535,9 +540,6 @@ const styles = StyleSheet.create({
     display: "flex",
     lineHeight: "26px",
     marginTop: 3,
-    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-    //   lineHeight: "22px",
-    // }
   },
   metaKey: {
     color: colors.MEDIUM_GREY(),
@@ -545,15 +547,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: 85,
     minWidth: 85,
-    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-    //   fontSize: 14,
-    // }
   },
   metaVal: {
     fontSize: 16,
-    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-    //   fontSize: 14,
-    // }
   },
   author: {
     marginRight: 2,
@@ -565,6 +561,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  currentUser: state.auth?.user,
 });
 
 export default connect(mapStateToProps)(DocumentHeader);
