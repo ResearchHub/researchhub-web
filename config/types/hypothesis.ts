@@ -95,7 +95,7 @@ export class Hypothesis implements TopLevelDocument {
   }
 
   get consensus():CitationConsensus|undefined {
-    return this.consensus;
+    return this._consensus;
   }
 
   get title():string|undefined {
