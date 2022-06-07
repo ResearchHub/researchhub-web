@@ -41,9 +41,17 @@ function DocumentActions({
     title = unifiedDocument?.document?.title ?? unifiedDocument?.document?.paperTitle;
   }
 
+  let canEdit = false
+  if (unifiedDocument?.documentType === "paper") {
+    canEdit = true;
+  }
+  else if ((unifiedDocument?.documentType === "post" || unifiedDocument?.documentType === "hypothesis") && isSubmitter) {
+    canEdit = true;
+  }
+
   const actionButtons = [
     {
-      active: true,
+      active: canEdit,
       key: "edit",
       html: (
         <PermissionNotificationWrapper
