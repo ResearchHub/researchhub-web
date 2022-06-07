@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 14,
     lineHeight: "21px",
-    marginBottom: 10,
   },
   submittedByDetails: {
     display: "block",

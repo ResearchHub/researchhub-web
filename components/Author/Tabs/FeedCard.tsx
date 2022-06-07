@@ -19,10 +19,12 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { timeAgoStamp } from "~/config/utils/dates";
+import { formatDateStandard, timeAgoStamp } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import VoteWidget from "~/components/VoteWidget";
+import { parseCreatedBy } from "~/config/types/contribution";
+import SubmissionDetails from "~/components/Document/SubmissionDetails";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -198,7 +200,8 @@ function FeedCard(props: FeedCardProps) {
     hypothesis: icons.lightbulb,
   };
   const resolvedHubs = hubs ?? [];
-
+  const createdDate = formatDateStandard(created_date || uploaded_date);
+  const createdBy = parseCreatedBy(uploaded_by || created_by)
   return (
     <Ripples
       className={css(
@@ -240,7 +243,13 @@ function FeedCard(props: FeedCardProps) {
           <div className={css(styles.container)}>
             <div>
               <div className={css(styles.rowContainer)}>
-                <div className={css(styles.postCreatedBy)}>
+              <SubmissionDetails
+                createdDate={createdDate}
+                hubs={hubs}
+                createdBy={createdBy}
+                avatarSize={20}
+              />                
+                {/* <div className={css(styles.postCreatedBy)}>
                   {uploaded_by || created_by ? (
                     <AuthorAvatar
                       author={
@@ -277,7 +286,7 @@ function FeedCard(props: FeedCardProps) {
                   <div className={css(styles.textLabel)}>
                     {timeAgoStamp(created_date || uploaded_date)}
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
@@ -361,7 +370,7 @@ function FeedCard(props: FeedCardProps) {
                         {icons.commentRegular}
                       </span>
                       <span className={css(styles.metadataText)}>
-                        <span className={css(styles.boldText)}>
+                        <span>
                           {discussion_count}
                         </span>
                         <span
@@ -624,9 +633,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-  },
-  boldText: {
-    fontWeight: 700,
   },
   metadataIcon: {
     color: "#918F9B",

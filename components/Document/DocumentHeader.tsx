@@ -193,12 +193,14 @@ function DocumentHeader({
             />
           </div>
 
-          <SubmissionDetails
-            createdDate={createdDate}
-            hubs={hubs}
-            createdBy={createdBy}
-            avatarSize={30}
-          />
+          <div className={css(styles.submissionDetailsContainer)}>
+            <SubmissionDetails
+              createdDate={createdDate}
+              hubs={hubs}
+              createdBy={createdBy}
+              avatarSize={30}
+            />
+          </div>
           <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
             {journal && (
@@ -335,6 +337,9 @@ const styles = StyleSheet.create({
   boostAmount: {
     display: "flex",
     alignItems: "center",
+  },
+  submissionDetailsContainer: {
+    marginBottom: 10
   },
   boostAmountText: {
     color: colors.GREEN(),
