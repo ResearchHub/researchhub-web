@@ -4,23 +4,20 @@ import {
   TopLevelDocument,
 } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import AuthorAvatar from "../AuthorAvatar";
 import ALink from "../ALink";
-import HubDropDown from "../Hubs/HubDropDown";
 import colors from "~/config/themes/colors";
-import { timeSince } from "~/config/utils/dates";
 import icons, { HypothesisIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
 import DocumentActions from "./DocumentActions";
 import VoteWidget from "../VoteWidget";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { toTitleCase } from "~/config/utils/string";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import { connect } from "react-redux";
 import { breakpoints } from "~/config/themes/screen";
 import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
+import SubmissionDetails from "./SubmissionDetails";
 
 type Args = {
   document: TopLevelDocument,
@@ -59,15 +56,11 @@ function DocumentHeader({
   } = document;
   
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
-  const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
     userVote: userVote,
     voteScore: score,
   });
-
-  const visibleHubs = hubs.slice(0,3);
-  const hiddenHubs = hubs.slice(3);
 
   useEffect(() => {
     const isSubmittedByCurrentUser = currentUser && (currentUser?.id === createdBy?.id) 
@@ -200,50 +193,12 @@ function DocumentHeader({
             />
           </div>
 
-          <div className={css(styles.submittedBy)}>
-            <div className={css(styles.createdByContainer)}>
-              <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
-            </div>
-            <div className={css(styles.submittedByDetails)}>
-              <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`} overrideStyle={styles.link}>
-                {createdBy?.authorProfile?.firstName || "Deleted"}{" "}
-                {createdBy?.authorProfile?.lastName || "User"}
-              </ALink>
-              <div className={css(styles.hubsContainer)}>
-                  <>
-                    <span
-                      className={css(styles.textSecondary, styles.postedText)}
-                    >{` posted`}{visibleHubs.length > 0 ? ` in` : ""}</span>
-                    {visibleHubs.map((h, index) => (
-                      <>
-                        <ALink
-                          theme="blankAndBlue"
-                          href={`/hubs/${h.slug}`}
-                          overrideStyle={styles.hubLink}
-                        >
-                          {toTitleCase(h.name)}
-                        </ALink>
-                        {index < visibleHubs?.length - 1 ? ", " : ""}
-                      </>
-                    ))}
-                    &nbsp;
-                    {hiddenHubs.length > 0 && (
-                      <HubDropDown
-                        hubs={hiddenHubs}
-                        labelStyle={styles.hubLink}
-                        containerStyle={styles.hubDropdownContainer}
-                        isOpen={isHubsDropdownOpen}
-                        setIsOpen={() => setIsHubsDropdownOpen(!isHubsDropdownOpen)}
-                      />
-                    )}
-                  </>
-              </div>
-              <span className={css(styles.dot)}> • </span>
-              <span className={css(styles.textSecondary, styles.timestamp)}>
-                {timeSince(createdDate)}
-              </span>
-            </div>
-          </div>
+          <SubmissionDetails
+            createdDate={createdDate}
+            hubs={hubs}
+            createdBy={createdBy}
+            avatarSize={30}
+          />
           <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
             {journal && (
@@ -437,9 +392,6 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: colors.MEDIUM_GREY(),    
   },
-  dot: {
-    color: colors.MEDIUM_GREY(),
-  },
   reviews: {
     display: "flex",
   },
@@ -465,24 +417,6 @@ const styles = StyleSheet.create({
       marginTop: 20,
     }
   },
-  submittedBy: {
-    display: "flex",
-    alignItems: "center",
-    fontSize: 14,
-    lineHeight: "21px",
-    marginBottom: 10,
-  },
-  submittedByDetails: {
-    display: "block",
-  },
-  postedText: {
-  },
-  createdByContainer: {
-    marginRight: 7,
-  },
-  hubsContainer: {
-    display: "inline",
-  },
   claimProfile: {
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),
@@ -500,23 +434,9 @@ const styles = StyleSheet.create({
       display: "none",
     }    
   },
-  timestamp: {
-    marginLeft: 2,
-  },
-  textSecondary: {
-    color: colors.MEDIUM_GREY(),
-  },
   badgeIcon: {
     color: colors.NEW_BLUE(),
     fontSize: 16,
-  },
-  hubDropdownContainer: {
-    display: "inline-block",
-  },
-  hubLink: {
-    textTransform: "capitalize",
-    marginLeft: 5,
-    fontWeight: 400,
   },
   link: {
     cursor: "pointer",
