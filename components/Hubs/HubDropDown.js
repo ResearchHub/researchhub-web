@@ -77,7 +77,7 @@ const HubDropDown = (props) => {
       ref={(ref) => (dropdown = ref)}
     >
       <div className={css(styles.icon, isOpen && styles.active, labelStyle)}>
-        {`+${hubs.length - 1} more`}
+        {`+${hubs.length} more`}
       </div>
       <div className={css(styles.dropdown, isOpen && styles.open)}>
         {dropdownComponent}
@@ -125,10 +125,8 @@ const styles = StyleSheet.create({
     pointerEvents: "unset",
   },
   icon: {
-    color: colors.NEW_BLUE(),
     cursor: "pointer",
-    fontSize: 15,
-    fontWeight: 500,
+    color: colors.BLACK(),
     ":hover": {
       color: colors.BLUE(),
     },

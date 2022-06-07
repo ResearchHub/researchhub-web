@@ -8,6 +8,7 @@ import { toTitleCase } from "~/config/utils/string";
 import { StyleSheet, css } from "aphrodite";
 import ALink from "../ALink";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   createdBy: CreatedBy|null,
@@ -22,9 +23,17 @@ function SubmissionDetails({
   createdDate,
   avatarSize = 30,
 }: Args): ReactElement<"div"> {
+  let showAllHubs = process.browser && (window.innerWidth > breakpoints.medium.int);
+
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
-  const visibleHubs = hubs.slice(0,3);
-  const hiddenHubs = hubs.slice(3);
+
+  let sliceIndex = 1;
+  if (showAllHubs) {
+    sliceIndex = 3;
+  }
+  const visibleHubs = hubs.slice(0,sliceIndex);
+  const hiddenHubs = hubs.slice(sliceIndex);
+
 
   return (
     <div className={css(styles.submittedBy)}>
@@ -50,17 +59,16 @@ function SubmissionDetails({
                   >
                     {toTitleCase(h.name)}
                   </ALink>
-                  {index < visibleHubs?.length - 1 ? ", " : ""}
+                  {index < visibleHubs?.length - 1 ? "," : ""}
                 </>
               ))}
-              &nbsp;
               {hiddenHubs.length > 0 && (
                 <HubDropDown
                   hubs={hiddenHubs}
                   labelStyle={styles.hubLink}
                   containerStyle={styles.hubDropdownContainer}
                   isOpen={isHubsDropdownOpen}
-                  setIsOpen={() => setIsHubsDropdownOpen(!isHubsDropdownOpen)}
+                  setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
                 />
               )}
             </>
