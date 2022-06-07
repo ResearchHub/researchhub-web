@@ -23,26 +23,27 @@ import {
   useMemo,
   useState,
 } from "react";
+
+import { FLAG_REASON } from "../Flag/config/flag_constants";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { postHypothesisVote } from "./api/postHypothesisVote";
 import { updateHypothesis } from "./api/updateHypothesis";
 import { useRouter } from "next/router";
 import ActionButton from "../ActionButton";
+import AdminButton from "../Admin/AdminButton";
 import Button from "../Form/Button";
+import censorDocument from "~/components/Document/api/censorDocAPI";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
+import DiscussionCount from "~/components/DiscussionCount";
 import dynamic from "next/dynamic";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
 import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
+import restoreDocument from "~/components/Document/api/restoreDocAPI";
 import VoteWidget from "~/components/VoteWidget";
-import DiscussionCount from "~/components/DiscussionCount";
-import FlagButtonV2 from "../Flag/FlagButtonV2";
-import { FLAG_REASON } from "../Flag/config/constants";
-import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import AdminButton from "../Admin/AdminButton";
-
-
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
 );
