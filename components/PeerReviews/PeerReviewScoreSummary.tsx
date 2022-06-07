@@ -21,7 +21,7 @@ export default function PeerReviewSummary({
       <div className={css(styles.starContainer)}>{icons.starFilled}</div>
 
       <span className={css(styles.reviewScoreContainer)}>
-        <span className={css(styles.reviewScore)}>{summary?.avg}</span>
+        <span className={css(styles.reviewScore)}>{(summary?.avg || 0).toFixed(1)}</span>
       </span>
     </div>
   );
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
   reviewScore: {
     color: colors.BLACK(0.6),
     fontSize: 14,
-    fontWeight: 500,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 14,
     },
