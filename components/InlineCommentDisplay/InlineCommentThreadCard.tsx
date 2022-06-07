@@ -277,7 +277,6 @@ const styles = StyleSheet.create({
   },
   voteWidget: {
     margin: 0,
-    backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },

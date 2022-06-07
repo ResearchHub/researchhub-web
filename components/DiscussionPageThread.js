@@ -10,7 +10,6 @@ import { useDispatch, useStore } from "react-redux";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import DiscussionThreadEditor from "~/components/DiscussionThreadEditor";
 import EditAction from "~/components/EditAction";
-import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 
 // Redux
@@ -84,14 +83,6 @@ const Thread = (props) => {
             onClick={setReadOnly}
             readOnly={readOnly}
             iconView={true}
-          />
-        )}
-        {readOnly && (
-          <ShareAction
-            title={"Share this thread"}
-            subtitle={title}
-            url={currentUrl}
-            addRipples={true}
           />
         )}
       </div>

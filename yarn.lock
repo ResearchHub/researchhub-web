@@ -569,6 +569,11 @@
     "@ethersproject/properties" "^5.4.0"
     "@ethersproject/strings" "^5.4.0"
 
+"@fortawesome/fontawesome-common-types@6.1.1":
+  version "6.1.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/6.1.1/fontawesome-common-types-6.1.1.tgz#7dc996042d21fc1ae850e3173b5c67b0549f9105"
+  integrity sha512-wVn5WJPirFTnzN6tR95abCx+ocH+3IFLXAgyavnf9hUmN0CfWoDjPT/BAWsUVwSlYYVBeCLJxaqi7ZGe4uSjBA==
+
 "@fortawesome/fontawesome-common-types@^0.1.2-1":
   version "0.1.7"
   resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/0.1.7/fontawesome-common-types-0.1.7.tgz#4336c4b06d0b5608ff1215464b66fcf9f4795284"
@@ -614,19 +619,19 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.36"
 
-"@fortawesome/pro-regular-svg-icons@^5.15.1":
-  version "5.15.4"
-  resolved "https://npm.fontawesome.com/@fortawesome/pro-regular-svg-icons/-/5.15.4/pro-regular-svg-icons-5.15.4.tgz#38c17d05ddebff70cfd86c2f178a4272f57fb13b"
-  integrity sha512-LN9wOPIISKg3jZBbAuMm6YcsCiMRzTcpVkotLonRuzDmw0OLszUPCHZ6vB5hEnOC7g6IIOwOOnV12fW0V8IS9Q==
+"@fortawesome/pro-regular-svg-icons@^6.1.1":
+  version "6.1.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/pro-regular-svg-icons/-/6.1.1/pro-regular-svg-icons-6.1.1.tgz#a154a9dac149befa3658592ec143d4dfcc0e39a6"
+  integrity sha512-8kKFn8eA1sLtc5zu6Z/LvWZPNpS8CRL8c8JuXAG3HwIwZB7L27b8l6BJC5jC3zRwJw7TXk1wi1CKTsLxmtHcgw==
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.36"
+    "@fortawesome/fontawesome-common-types" "6.1.1"
 
-"@fortawesome/pro-solid-svg-icons@^5.15.1":
-  version "5.15.4"
-  resolved "https://npm.fontawesome.com/@fortawesome/pro-solid-svg-icons/-/5.15.4/pro-solid-svg-icons-5.15.4.tgz#bf0f54b5920e8a779684bc9e69617ef5259c00c9"
-  integrity sha512-ZlSg/RyAlwYJcsJlw2WfZSeOJ8GMKwIQ3ZY+GNFRZ+7pF+RRXxyZp2WIgUKhPK/M43SfSou6R6XdKZyz2xVVEQ==
+"@fortawesome/pro-solid-svg-icons@^6.1.1":
+  version "6.1.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/pro-solid-svg-icons/-/6.1.1/pro-solid-svg-icons-6.1.1.tgz#ca48846777ac9ec9700d9b83dc09d6635883fff1"
+  integrity sha512-BF1vuvQlFNRy38EZAxaXuReQ73z9VrXaRmVy+MFnLFpHZa5yH3M68iZHl04/5uThUPbrXG7VsIRoICc5HjD0Iw==
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.36"
+    "@fortawesome/fontawesome-common-types" "6.1.1"
 
 "@fortawesome/react-fontawesome@^0.1.14", "@fortawesome/react-fontawesome@^0.1.4":
   version "0.1.15"

@@ -6,8 +6,16 @@ TimeAgo.addLocale(en);
 
 export const timeAgo = new TimeAgo("en-US");
 
-export function formatDateStandard(momentDate) {
-  return momentDate.format("MMM D, YYYY");
+export function formatDateStandard(inputDate) {
+  if (!inputDate) {
+    return null;
+  }
+
+  let date = inputDate;
+  if (typeof inputDate === "string") {
+    date = moment(inputDate);
+  }
+  return date.format("MMM D, YYYY");
 }
 
 export function formatTransactionDate(momentDate) {

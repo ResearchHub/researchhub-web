@@ -40,6 +40,7 @@ import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
+import { breakpoints } from "~/config/themes/screen";
 
 class SummaryTab extends Component {
   constructor(props) {
@@ -681,7 +682,7 @@ class SummaryTab extends Component {
       >
         {!isEmpty(paper) && (
           <div className={css(this.sectionHeaderStyle())}>
-            <h3 className={css(styles.sectionTitle)}>
+            <h2 className={css(styles.sectionTitle)}>
               <span className={css(styles.titleRow)}>
                 Abstract
                 {paper.abstract && (
@@ -707,7 +708,7 @@ class SummaryTab extends Component {
                   />
                 )}
               </span>
-            </h3>
+            </h2>
           </div>
         )}
         {this.renderContent()}
@@ -732,9 +733,6 @@ var styles = StyleSheet.create({
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 20,
-    },
   },
   hidden: {
     display: "none",
@@ -746,12 +744,13 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   abstractContainer: {
-    fontSize: 15,
-    lineHeight: 2,
+    fontSize: 18,
+    lineHeight: "28px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
-    "@media only screen and (max-width: 967px)": {
-      fontSize: 14,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 16,
+      lineHeight: "26px",
     },
   },
   abstractText: {
@@ -761,13 +760,6 @@ var styles = StyleSheet.create({
     fontSize: 15,
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (max-width: 967px)": {
-      fontSize: 14,
-      width: "100%",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
   },
   abstractTextEditor: {
     display: "flex",
@@ -787,6 +779,7 @@ var styles = StyleSheet.create({
     minHeight: "unset",
     padding: 20,
     width: "100%",
+    minHeight: 200,
   },
   sectionHeader: {
     display: "flex",
@@ -794,30 +787,14 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 15,
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-      alignItems: "flex-start",
-      paddingBottom: 0,
-    },
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
     margin: 0,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 967px)": {
-      justifyContent: "space-between",
-      width: "100%",
-      marginBottom: 20,
-    },
-    "@media only screen and (max-width: 500px)": {
-      flexDirection: "column",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 20,
-    },
   },
   titleRow: {
     display: "flex",
@@ -942,7 +919,7 @@ var styles = StyleSheet.create({
       padding: 0,
     },
     ":hover": {
-      color: colors.BLUE(1),
+      color: colors.NEW_BLUE(1),
       opacity: 1,
       textDecoration: "underline",
     },
@@ -958,7 +935,7 @@ var styles = StyleSheet.create({
     border: "1px solid",
     padding: "8px 32px",
     color: "#fff",
-    background: colors.PURPLE(1),
+    background: colors.NEW_BLUE(1),
     fontSize: 16,
     borderRadius: 4,
     height: 45,
@@ -975,6 +952,7 @@ var styles = StyleSheet.create({
   },
   pencilIcon: {
     marginLeft: 8,
+    alignSelf: "center",
   },
   draftContainer: {
     width: "100%",
@@ -1008,7 +986,7 @@ var styles = StyleSheet.create({
   },
   icon: {
     fontSize: 50,
-    color: colors.BLUE(1),
+    color: colors.NEW_BLUE(1),
     height: 50,
   },
   transition: {
@@ -1019,11 +997,13 @@ var styles = StyleSheet.create({
     position: "sticky",
     paddingTop: 20,
     paddingBottom: 10,
+    paddingRight: 10,
+    boxSizing: "border-box",
+    background: "#FCFCFC",
     bottom: 0,
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "#fff",
     borderTop: "1px solid rgb(235, 235, 235)",
     zIndex: 3,
   },
@@ -1057,7 +1037,7 @@ var styles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
-    backgroundColor: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(),
     ":hover": {
       backgroundColor: "#3971FF",
     },
@@ -1094,7 +1074,7 @@ var styles = StyleSheet.create({
     fontSize: 12,
   },
   tabLabel: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     fontSize: 14,
     padding: "5px 8px",
     cursor: "pointer",
@@ -1119,7 +1099,7 @@ var styles = StyleSheet.create({
     color: "rgba(36, 31, 58, 0.6)",
     borderRadius: 4,
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     "@media only screen and (max-width: 967px)": {
       marginRight: 0,
@@ -1129,8 +1109,8 @@ var styles = StyleSheet.create({
     },
   },
   activeTab: {
-    backgroundColor: colors.BLUE(0.11),
-    color: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(0.11),
+    color: colors.NEW_BLUE(),
   },
   earnRSCButton: {
     fontSize: 14,
@@ -1170,7 +1150,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FBFBFD",
     cursor: "pointer",
     ":hover": {
-      borderColor: colors.BLUE(),
+      borderColor: colors.NEW_BLUE(),
     },
   },
 });

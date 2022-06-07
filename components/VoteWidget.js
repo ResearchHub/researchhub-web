@@ -48,6 +48,10 @@ const VoteWidget = (props) => {
     replyId,
     postDownvote,
     postDownvotePending,
+    downvoteStyleClass,
+    upvoteStyleClass,
+    pillClass,
+    small,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -152,6 +156,8 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            styleClass={upvoteStyleClass}
+            small={small}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -166,6 +172,8 @@ const VoteWidget = (props) => {
           paper={paper}
           showPromotion={showPromotion}
           type={type}
+          small={small}
+          pillClass={pillClass}
           horizontalView={horizontalView && horizontalView}
         />
         <PermissionNotificationWrapper
@@ -177,6 +185,8 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            styleClass={downvoteStyleClass}
+            small={small}
           />
         </PermissionNotificationWrapper>
       </div>
@@ -194,12 +204,12 @@ VoteWidget.propTypes = {
 };
 
 const ScorePill = (props) => {
-  const { score, small } = props;
+  const { score, small, pillClass } = props;
 
   const isScoreNumeric = !isNaN(score);
 
   return (
-    <div className={css(styles.pillContainer)}>
+    <div className={css(styles.pillContainer, pillClass)}>
       <div
         className={css(
           small && styles.small,
@@ -213,7 +223,15 @@ const ScorePill = (props) => {
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled, horizontalView, right } = props;
+  const {
+    onClick,
+    selected,
+    disabled,
+    horizontalView,
+    right,
+    styleClass,
+    small,
+  } = props;
 
   let style = [styles.icon];
 
@@ -230,6 +248,14 @@ const VoteButton = (props) => {
     } else {
       style.push(styles.marginLeft);
     }
+  }
+
+  if (small) {
+    style.push(styles.smallBtn);
+  }
+
+  if (styleClass) {
+    style.push(styleClass);
   }
 
   return (
@@ -259,6 +285,19 @@ function getScore(props) {
   return score;
 }
 
+// const mobileStyles = StyleSheet.create({
+//   mobileVote: {
+//     fontSize: 14,
+//   },
+//   mobilePill: {
+//     width: 28,
+//     fontSize: 14,
+//     color: voteWidgetColors.ARROW,
+//     background: "unset",
+//     width: "unset",
+//   },
+// });
+
 const styles = StyleSheet.create({
   container: {
     display: "flex",
@@ -278,12 +317,14 @@ const styles = StyleSheet.create({
     },
   },
   pillContainer: {
-    background: voteWidgetColors.BACKGROUND,
-    color: colors.GREEN(),
+    background: "rgba(240, 240, 240, 0.5)",
+    width: 28,
+    margin: "4px auto",
+    color: colors.NEW_GREEN(),
     boxSizing: "border-box",
     fontWeight: "bold",
-    borderRadius: 24,
-    padding: ".2em .5em",
+    borderRadius: 5,
+    // padding: ".2em .5em",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -303,9 +344,9 @@ const styles = StyleSheet.create({
   },
   small: {
     fontSize: 14,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+  },
+  smallBtn: {
+    fontSize: 14,
   },
   promotionIcon: {
     fontSize: 11,
@@ -314,8 +355,9 @@ const styles = StyleSheet.create({
   icon: {
     cursor: "pointer",
     color: voteWidgetColors.ARROW,
+    fontSize: 14,
     ":hover": {
-      color: colors.BLUE(1),
+      color: colors.GREEN(0.4),
     },
   },
   iconBlue: {

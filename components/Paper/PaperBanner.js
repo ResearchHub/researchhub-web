@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   bannerInner: {
     display: "flex",
     "@media only screen and (min-width: 768px)": {
-      width: "80%",
+      width: 900,
       margin: "0 auto",
     },
   },

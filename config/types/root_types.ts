@@ -1,25 +1,66 @@
+import { parseCreatedBy } from "./contribution";
+import { Hub } from "./hub";
+import { CitationConsensus } from "./hypothesis";
+import { parsePeerReviewScoreSummary, PeerReview, PeerReviewScoreSummary } from "./peerReview";
+import { Vote } from "./vote";
+
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
 export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null;
 
-export type Post = {
+export interface TopLevelDocument {
+  authors: Array<AuthorProfile>,
+  score: number,
+  createdDate: string,
+  discussionCount: number,
+  unifiedDocument: UnifiedDocument,
+  hubs: Array<Hub>,
+  createdBy: CreatedBy | null,
+  userVote?: "downvote" | "upvote" | "neutralvote" | null,
+  title?: string,
+  externalUrl?: string,
+  doi?: string,
+  datePublished?: string,
+  journal?: string,
+  formats?: Array<PaperFormat>,
+  note?: any,
+  markdown?: string,
+  isReady: boolean,
+  consensus?: CitationConsensus,
+  boostAmount: number,
   id: ID,
+}
+
+export type PaperFormat = {
+  type: "pdf" | "latex",
+  url: string,
+}
+
+export type UrlDocument = {
+  id?: ID,
   title?: string,
   slug?: string,
+  paperTitle?: string,
+  isRemoved?: boolean,
 }
 
 export type UnifiedDocument = {
   id: ID,
   documentType: "post" | "paper" | "hypothesis",
-  document?: Post,
+  document?: UrlDocument,
+  createdBy?: CreatedBy,
+  reviewSummary?: PeerReviewScoreSummary,
+  isRemoved: boolean,
 }
 
 export type AuthorProfile = {
-  id: ID,
+  id?: ID,
   profileImage?: string,
   firstName?: string, 
   lastName?: string, 
+  isClaimed: boolean,
+  sequence?: "first" | "additional",
 }
 
 export type RHUser = {
@@ -112,44 +153,49 @@ export type CreatedBy = {
   authorProfile: AuthorProfile,
 }
 
+
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof(raw) !== "object") {
     return raw;
   }
-
+  
   const parsed = {
-    id: raw.id,
-    documentType:  raw?.document_type?.toLowerCase(),
+    "id": raw.id,
+    "documentType": raw?.document_type?.toLowerCase(),
+    "document": {},
+    "isRemoved": raw.is_removed,
+  }
+
+  if (raw.created_by) {
+    parsed["createdBy"] = parseCreatedBy(raw.created_by);
+  }
+
+  const unparsedInnerDoc = 
+    Array.isArray(raw.documents) 
+      ? raw.documents[0] 
+      : typeof(raw.documents) === "object"
+      ? raw.documents
+      : {};
+
+  parsed.document = {
+    id: unparsedInnerDoc.id,
+    title: unparsedInnerDoc.title,
+    slug: unparsedInnerDoc.slug,      
   }
 
   if (parsed.documentType === "discussion") {
     parsed.documentType = "post";
   }
-
-  if (Array.isArray(raw.documents)) {
-    parsed["document"] = parsePost(raw.documents[0]);
+  else if (parsed.documentType === "paper") {
+    parsed.documentType = "paper";
+    parsed.document["paperTitle"] = unparsedInnerDoc.paper_title;
   }
-  else if (typeof(raw.documents) === "object") {
-    parsed["document"] = {
-      id: raw.documents.id,
-      title: raw.documents.title,
-      slug: raw.documents.slug,      
-    }  
+
+  if (raw.reviews) {
+    parsed["reviewSummary"] = parsePeerReviewScoreSummary(raw.reviews);
   }
 
   return parsed;
-}
-
-export const parsePost = (raw: any): Post => {
-  if (typeof(raw) !== "object") {
-    return raw;
-  }
-
-  return {
-    id: raw.id,
-    title: raw.title,
-    slug: raw.slug,
-  }
 }
 
 export const parseAuthorProfile = (raw: any): AuthorProfile => {
@@ -162,10 +208,13 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
+    isClaimed: raw.id ? true : false,
+    ...(raw.sequence && {sequence: raw.sequence}),
   }
 
   return parsed;
 }
+
 
 export const parseUser = (raw: any): RHUser => {
   const parsed = {

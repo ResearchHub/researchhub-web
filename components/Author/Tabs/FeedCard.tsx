@@ -5,7 +5,10 @@ import HubDropDown from "~/components/Hubs/HubDropDown";
 import Link from "next/link";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
-import colors, { genericCardColors } from "~/config/themes/colors";
+import colors, {
+  genericCardColors,
+  voteWidgetColors,
+} from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
@@ -16,18 +19,19 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { formatDateStandard } from "~/config/utils/dates";
+import { formatDateStandard, timeAgoStamp } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import { transformDate } from "~/redux/utils";
-import ScoreInput from "~/components/Form/ScoreInput";
-import ALink from "~/components/ALink";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
+import VoteWidget from "~/components/VoteWidget";
+import { parseCreatedBy } from "~/config/types/contribution";
+import SubmissionDetails from "~/components/Document/SubmissionDetails";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
 );
 
 export type FeedCardProps = {
+  abstract: string;
   created_by: any;
   created_date: any;
   discussion_count: number;
@@ -45,7 +49,7 @@ export type FeedCardProps = {
   preview_img: string;
   renderableTextAsHtml: any;
   renderable_text: string;
-  reviews: any,
+  reviews: any;
   score: number;
   singleCard: boolean;
   slug: string;
@@ -63,6 +67,7 @@ export type FeedCardProps = {
 
 function FeedCard(props: FeedCardProps) {
   const {
+    abstract,
     created_by,
     created_date,
     discussion_count,
@@ -195,7 +200,8 @@ function FeedCard(props: FeedCardProps) {
     hypothesis: icons.lightbulb,
   };
   const resolvedHubs = hubs ?? [];
-
+  const createdDate = formatDateStandard(created_date || uploaded_date);
+  const createdBy = parseCreatedBy(uploaded_by || created_by)
   return (
     <Ripples
       className={css(
@@ -237,7 +243,13 @@ function FeedCard(props: FeedCardProps) {
           <div className={css(styles.container)}>
             <div>
               <div className={css(styles.rowContainer)}>
-                <div className={css(styles.postCreatedBy)}>
+              <SubmissionDetails
+                createdDate={createdDate}
+                hubs={hubs}
+                createdBy={createdBy}
+                avatarSize={20}
+              />                
+                {/* <div className={css(styles.postCreatedBy)}>
                   {uploaded_by || created_by ? (
                     <AuthorAvatar
                       author={
@@ -252,127 +264,146 @@ function FeedCard(props: FeedCardProps) {
                       withAuthorName
                     />
                   ) : null}
+                  &nbsp;
                   {(uploaded_by || created_by) && hubs.length > 0 && (
-                    <div className={css(styles.textLabel)}>in</div>
+                    <div className={css(styles.textLabel)}>
+                      posted in&nbsp;{" "}
+                    </div>
                   )}
-                  {hubs?.slice(0, 1).map((tag, index) => (
+                  {hubs.map((tag, index) => (
                     <Link href={`/hubs/${tag.slug}`}>
                       <a
                         className={css(styles.hubLabel)}
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
-                      >{`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}</a>
+                      >
+                        {`${tag.name}${resolvedHubs.length > 1 ? ", " : ""}`}
+                      </a>
                     </Link>
                   ))}
-                  {resolvedHubs.length > 1 && (
-                    <HubDropDown
-                      hubs={hubs}
-                      labelStyle={styles.hubLabel}
-                      isOpen={isHubsOpen}
-                      setIsOpen={setIsHubsOpen}
-                    />
-                  )}
-                </div>
+                  <div className={css(styles.separator)}></div>
+                  <div className={css(styles.textLabel)}>
+                    {timeAgoStamp(created_date || uploaded_date)}
+                  </div>
+                </div> */}
               </div>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
-                  <span className={css(styles.title)}>
-                    {titleAsHtml ? titleAsHtml : title ? title : ""}
-                  </span>
-                  {reviews?.count > 0 &&
-                    <div className={css(styles.reviewSummaryContainer)}>
-                        <PeerReviewScoreSummary
-                          summary={reviews}
-                          docUrl={docUrl}
-                        />
+                  <div className={css(styles.rowContainer)}>
+                    <div>
+                      <h2 className={css(styles.title)}>
+                        {titleAsHtml ? titleAsHtml : title ? title : ""}
+                      </h2>
+                      <div className={css(styles.abstract) + " clamp2"}>
+                        {abstract || renderableText}
+                      </div>
                     </div>
-                  }
+                    {previews.length > 0 && (
+                      <div
+                        className={css(styles.column, styles.previewSide)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        {isPreviewing && (
+                          <PaperPDFModal
+                            paper={paper}
+                            onClose={() => setIsPreviewing(false)}
+                          />
+                        )}
+                        <div
+                          className={css(styles.preview, styles.paperPreview)}
+                        >
+                          <img
+                            src={previews[0].file}
+                            className={css(styles.image)}
+                            key={`preview_${previews[0].file}`}
+                            alt={`Paper Preview Page 1`}
+                            onClick={(e) => {
+                              e && e.preventDefault();
+                              e && e.stopPropagation();
+                              setIsPreviewing(true);
+                              props.openPaperPDFModal(true);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <div
                     className={css(
                       styles.metadataContainer,
                       styles.publishContainer
                     )}
                   >
-                    <div className={css(styles.metadataIcon)}>
-                      {documentIcons[formattedDocType!]}
+                    <div className={css(styles.mobileVoteWidget)}>
+                      <VoteWidget
+                        horizontalView={true}
+                        onDownvote={
+                          formattedDocType === "paper"
+                            ? (e) => {
+                                e.preventDefault();
+                                onPaperVote(DOWNVOTE);
+                              }
+                            : createVoteHandler(DOWNVOTE)
+                        }
+                        onUpvote={
+                          formattedDocType === "paper"
+                            ? (e) => {
+                                e.preventDefault();
+                                onPaperVote(UPVOTE);
+                              }
+                            : createVoteHandler(UPVOTE)
+                        }
+                        score={score}
+                        styles={styles.voteWidget}
+                        upvoteStyleClass={styles.mobileVote}
+                        downvoteStyleClass={styles.mobileVote}
+                        pillClass={styles.mobilePill}
+                        type="Discussion"
+                        selected={voteState}
+                      />
                     </div>
-                    <span className={css(styles.metadataText)}>
-                      {formattedDocType}
-                    </span>
-                    <div
-                      className={css(
-                        styles.upvoteMetadata,
-                        styles.metadataIcon
-                      )}
-                    >
-                      {icons.upRegular}
-                    </div>
-                    <span
-                      className={css(
-                        styles.upvoteMetadata,
-                        styles.metadataText
-                      )}
-                    >
-                      <span className={css(styles.boldText)}>{score}</span>
-                    </span>
-                    <div className={css(styles.metadataIcon)}>
-                      {icons.commentRegular}
-                    </div>
-                    <span className={css(styles.metadataText)}>
-                      <span className={css(styles.boldText)}>
-                        {discussion_count}
+                    <div className={css(styles.metaItem)}>
+                      <span className={css(styles.metadataIcon)}>
+                        {icons.commentRegular}
                       </span>
-                      <span className={css(styles.hideTextMobile)}>{` Comment${
-                        discussion_count === 1 ? "" : "s"
-                      }`}</span>
-                    </span>
-                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
-                    <span className={css(styles.metadataText)}>
-                      {formatDateStandard(
-                        transformDate(created_date || uploaded_date)
-                      )}
-                    </span>
+                      <span className={css(styles.metadataText)}>
+                        <span>
+                          {discussion_count}
+                        </span>
+                        <span
+                          className={css(styles.hideTextMobile)}
+                        >{` Comment${discussion_count === 1 ? "" : "s"}`}</span>
+                      </span>
+                    </div>
+
+                    {reviews?.count > 0 && (
+                      <div
+                        className={css(
+                          styles.reviewSummaryContainer,
+                          styles.metaItem
+                        )}
+                      >
+                        <PeerReviewScoreSummary
+                          summary={reviews}
+                          docUrl={docUrl}
+                        />
+                      </div>
+                    )}
+                    <div className={css(styles.metaItem)}>
+                      <span className={css(styles.metadataIcon)}>
+                        {documentIcons[formattedDocType!]}
+                      </span>
+                      <span className={css(styles.metadataText)}>
+                        {formattedDocType}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            {Boolean(previewImg) && (
-              <div className={css(styles.column)}>
-                <div className={css(styles.preview, styles.imagePreview)}>
-                  <img src={previewImg} className={css(styles.image)} />
-                </div>
-              </div>
-            )}
-            {previews.length > 0 && (
-              <div
-                className={css(styles.column)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                {isPreviewing && (
-                  <PaperPDFModal
-                    paper={paper}
-                    onClose={() => setIsPreviewing(false)}
-                  />
-                )}
-                <div className={css(styles.preview, styles.paperPreview)}>
-                  <img
-                    src={previews[0].file}
-                    className={css(styles.image)}
-                    key={`preview_${previews[0].file}`}
-                    alt={`Paper Preview Page 1`}
-                    onClick={(e) => {
-                      e && e.preventDefault();
-                      e && e.stopPropagation();
-                      setIsPreviewing(true);
-                      props.openPaperPDFModal(true);
-                    }}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </a>
       </Link>
@@ -415,6 +446,9 @@ const styles = StyleSheet.create({
       borderRadius: 4,
     },
   },
+  mobileVote: {
+    fontSize: 14,
+  },
   fullBorder: {
     border: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
@@ -425,17 +459,30 @@ const styles = StyleSheet.create({
   postCreatedBy: {
     alignItems: "center",
     display: "flex",
-    justifyContent: "space-between",
+    gap: "4px 0px",
+    marginBottom: 8,
+    flexWrap: "wrap",
+
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
   },
   image: {
     objectFit: "contain",
     maxHeight: 90,
     height: 90,
   },
+  mobilePill: {
+    width: 28,
+    fontSize: 14,
+    color: voteWidgetColors.ARROW,
+    background: "unset",
+    width: "unset",
+  },
   container: {
     alignItems: "center",
-    display: "flex",
-    justifyContent: "space-between",
+    // display: "flex",
+    // justifyContent: "space-between",
     width: "100%",
   },
   rowContainer: {
@@ -452,6 +499,9 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
   },
+  previewSide: {
+    marginLeft: 16,
+  },
   metaData: {
     height: "100%",
     width: "100%",
@@ -466,15 +516,21 @@ const styles = StyleSheet.create({
   },
   publishContainer: {
     marginRight: 10,
+    width: "100%",
   },
   metadataText: {
-    color: colors.BLACK(0.5),
+    color: colors.BLACK(0.6),
     fontSize: 14,
     marginRight: 15,
     textTransform: "capitalize",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 13,
+      marginRight: 24,
     },
+  },
+  metaItem: {
+    display: "flex",
+    alignItems: "center",
   },
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
@@ -488,7 +544,13 @@ const styles = StyleSheet.create({
     },
   },
   mobileVoteWidget: {
-    marginBottom: 10,
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "unset",
+    },
+  },
+  voteWidget: {
+    marginRight: 24,
   },
   link: {
     textDecoration: "none",
@@ -499,10 +561,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     width: "100%",
   },
+  abstract: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: colors.BLACK(),
+    marginBottom: 10,
+    lineHeight: "18px",
+  },
   title: {
     color: colors.BLACK(),
     fontSize: 20,
-    fontWeight: 700,
+    fontWeight: 500,
     marginBottom: 10,
     marginTop: 8,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
@@ -525,6 +594,14 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
   },
+  separator: {
+    background: "#C7C7C7",
+    height: 5,
+    width: 5,
+    marginLeft: 8,
+    marginRight: 8,
+    borderRadius: "50%",
+  },
   paperPreview: {
     height: 80,
     width: 70,
@@ -532,18 +609,23 @@ const styles = StyleSheet.create({
   textLabel: {
     color: colors.TEXT_GREY(),
     fontSize: 15,
-    fontWeight: 500,
-    margin: "0px 5px",
+    fontWeight: 400,
+
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
   },
   hubLabel: {
-    color: colors.NEW_BLUE(),
     fontSize: 15,
     fontWeight: 500,
-    marginRight: 5,
     textDecoration: "none",
     textTransform: "capitalize",
+    color: colors.BLACK(),
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
     },
   },
   leftSection: {
@@ -552,17 +634,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
   },
-  boldText: {
-    fontWeight: 700,
-  },
   metadataIcon: {
-    color: colors.BLACK(0.5),
-    fontSize: 14,
+    color: "#918F9B",
+    fontSize: 12,
     marginRight: 5,
   },
   reviewSummaryContainer: {
-    marginBottom: 10,
-  }
+    marginRight: 16,
+  },
 });
 
 const mapStateToProps = (state) => ({
