@@ -9,7 +9,7 @@ import ReactPlaceholder from "react-placeholder";
 // Components
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
-import ScoreInput from "~/components/Form/ScoreInput";
+import StarInput from "~/components/Form/StarInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
@@ -440,17 +440,23 @@ const DiscussionTab = (props) => {
     <div className={css(stylesEditor.box)}>
       <Message />
       <div className={css(stylesEditor.discussionInputWrapper)}>
-        <div className={css(styles.discussionTypeHeaderContainer)}>
+        <div
+          className={css(
+            styles.discussionTypeHeaderContainer,
+            discussionType === TYPES.REVIEW &&
+              styles.discussionTypeHeaderContainerReview
+          )}
+        >
           <div className={css(styles.discussionTypeHeader)}>
             {discussionType === TYPES.COMMENT
               ? "Write a comment"
-              : "Write a peer review"}
+              : "Write a review"}
           </div>
           <div className={css(styles.discussionToggleContainer)}>
             <Toggle
               options={[
                 { label: "Comment", value: TYPES.COMMENT },
-                { label: "Peer Review", value: TYPES.REVIEW },
+                { label: "Review", value: TYPES.REVIEW },
               ]}
               selected={discussionType}
               onSelect={(selected) => setDiscussionType(selected.value)}
@@ -463,7 +469,7 @@ const DiscussionTab = (props) => {
               Overall Rating
               <span className={css(stylesEditor.asterick)}>*</span>
             </div>
-            <ScoreInput
+            <StarInput
               onSelect={(value) => {
                 setReviewScore(value);
               }}
@@ -507,7 +513,7 @@ const DiscussionTab = (props) => {
         )}
       >
         <div className={css(styles.header)}>
-          <h3 className={css(styles.discussionTitle)}>
+          <h2 className={css(styles.discussionTitle)}>
             Discussion
             <span className={css(styles.discussionCount)}>
               {fetching ? (
@@ -518,7 +524,7 @@ const DiscussionTab = (props) => {
                 props.calculatedCount
               )}
             </span>
-          </h3>
+          </h2>
           <div className={css(styles.filterContainer)}>
             <div>
               <DropdownButton
@@ -548,6 +554,9 @@ const DiscussionTab = (props) => {
             </div>
           </div>
         </div>
+        <span className={css(styles.subtitle)}>
+          Leave a comment or write a review
+        </span>
         <div className={css(styles.box, !addView && styles.right)}>
           <div className={css(styles.addDiscussionContainer)}>
             {!showTwitterComments && discussionTextEditor}
@@ -660,7 +669,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     flexDirection: "column",
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
 
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
@@ -697,6 +706,9 @@ var styles = StyleSheet.create({
     color: colors.BLACK(),
     width: "100%",
     textAlign: "left",
+  },
+  subtitle: {
+    color: colors.MEDIUM_GREY(),
   },
   noSummaryTitle: {
     color: colors.BLACK(1),
@@ -855,20 +867,7 @@ var styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
-  discussionThreadContainer: {
-    backgroundColor: "#fff",
-    padding: 30,
-    border: "1.5px solid #F0F0F0",
-    boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
-      padding: 25,
-    },
-    "@media only screen and (max-width: 415px)": {
-      padding: "25px 15px",
-    },
-  },
+  discussionThreadContainer: {},
   addDiscussionContainer: {
     // transition: "all ease-in-out 0.3s",
     opacity: 1,
@@ -917,11 +916,11 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "start",
     width: "100%",
-    marginBottom: 15,
+    marginBottom: 5,
   },
   discussionTitle: {
     display: "flex",
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 500,
     margin: 0,
     "@media only screen and (max-width: 415px)": {
@@ -933,10 +932,11 @@ var styles = StyleSheet.create({
     background: colors.LIGHTER_GREY(),
     borderRadius: "3px",
     padding: "3px 10px",
-    border: `1px solid ${colors.GREY()}`,
+    // border: `1px solid ${colors.GREY()}`,
     fontSize: 14,
     fontWeight: 500,
-    marginLeft: 15,
+    marginLeft: 10,
+    alignSelf: "center",
   },
   rowContainer: {
     width: "100%",
@@ -955,7 +955,8 @@ var styles = StyleSheet.create({
   filterContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: -4,
+    marginTop: 0,
+    fontWeight: 500,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 15,
     },
@@ -1044,8 +1045,11 @@ var styles = StyleSheet.create({
       justifyContent: "center",
     },
   },
+  discussionTypeHeaderContainerReview: {
+    marginBottom: 7,
+  },
   discussionTypeHeader: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 500,
     alignSelf: "center",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
@@ -1058,9 +1062,6 @@ var styles = StyleSheet.create({
   reviewDetails: {
     marginBottom: 20,
     display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexDirection: "column",
-    },
   },
   reviewHeader: {
     fontSize: 15,
@@ -1104,7 +1105,7 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     marginBottom: 8,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
   },
   container: {
     width: "100%",
@@ -1114,8 +1115,8 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     marginBottom: 5,
-    paddingLeft: 20,
-    marginTop: 15,
+    // paddingLeft: 20,
+    marginTop: 35,
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingLeft: 0,

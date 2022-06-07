@@ -55,7 +55,6 @@ const DiscussionPostMetadata = (props) => {
     onHideClick,
     onRemove,
     postId,
-    smaller,
     threadPath,
     toggleEdit,
     twitter,
@@ -63,6 +62,7 @@ const DiscussionPostMetadata = (props) => {
     username,
   } = props;
 
+  const smaller = false;
   const alert = useAlert();
   // const store = useStore();
   const dispatch = useDispatch();
@@ -249,11 +249,7 @@ const DiscussionPostMetadata = (props) => {
 
     if (showHeadline) {
       return (
-        <div
-          className={
-            css(styles.headline, smaller && styles.smallerHeadline) + " clamp1"
-          }
-        >
+        <div className={css(styles.headline) + " clamp1"}>
           {createUserSummary(authorProfile)}
         </div>
       );
@@ -293,7 +289,6 @@ const DiscussionPostMetadata = (props) => {
             fetching={fetching}
           />
           {noTimeStamp ? null : <Timestamp {...props} />}
-          {renderDropdown()}
         </div>
         {renderHeadline()}
       </div>
@@ -383,12 +378,7 @@ const Timestamp = (props) => {
   }
 
   return (
-    <div
-      className={css(
-        styles.timestampContainer,
-        props.smaller && styles.smallerTimestamp
-      )}
-    >
+    <div className={css(styles.timestampContainer)}>
       <span
         className={css(
           styles.timestampDivider,
@@ -494,6 +484,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     whiteSpace: "nowrap",
     alignItems: "center",
+    fontWeight: 500,
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
     },
@@ -510,9 +501,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: "normal",
-    color: "#918f9b",
-    fontSize: 13,
-    fontWeight: 300,
+    color: colors.MEDIUM_GREY(),
+    fontSize: 14,
+    fontWeight: 400,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
@@ -555,19 +546,15 @@ const styles = StyleSheet.create({
     padding: "2px 10px",
   },
   headline: {
-    marginTop: 3,
+    marginTop: 5,
     marginLeft: 8,
-    color: colors.BLACK(0.5),
-    fontWeight: 300,
-    fontSize: 13,
+    color: colors.MEDIUM_GREY(),
+    fontWeight: 400,
+    fontSize: 14,
 
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
-  },
-  smallerHeadline: {
-    marginTop: 2,
-    fontSize: 12,
   },
   timestampDivider: {
     fontSize: 18,

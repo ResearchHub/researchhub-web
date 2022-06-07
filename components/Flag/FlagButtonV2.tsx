@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 13,
       width: 15,
       minWidth: 15,

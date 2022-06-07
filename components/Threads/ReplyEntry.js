@@ -66,12 +66,18 @@ class ReplyEntry extends Component {
   }
 
   shouldHighlight = () => {
-    const { newCard, currentAuthor, reply } = this.props;
+    const { newCard, currentAuthor, comment, context } = this.props;
     const isCurrentAuthor =
-      currentAuthor?.id === reply.created_by.author_profile.id;
-    if (newCard || isCurrentAuthor) {
-      return true;
+      currentAuthor?.id === comment.created_by.author_profile.id;
+
+    if (context === "AUTHOR_PROFILE") {
+      if (isCurrentAuthor) {
+        return true;
+      }
+    } else if (context === "DOCUMENT") {
+      return false;
     }
+
     return false;
   };
 
@@ -439,8 +445,8 @@ class ReplyEntry extends Component {
                 onUpvote={this.upvote}
                 onDownvote={this.downvote}
                 selected={this.state.selectedVoteType}
-                fontSize={"12px"}
-                width={"40px"}
+                // fontSize={"12px"}
+                // width={"40px"}
                 type={"Reply"}
                 promoted={false}
               />
@@ -448,10 +454,12 @@ class ReplyEntry extends Component {
             {this.handleStateRendering() && (
               <div
                 className={css(
-                  styles.threadline,
+                  styles.threadLineContainer,
                   noVote && styles.threadlineNoVote
                 )}
-              ></div>
+              >
+                <div className={css(styles.threadline) + " threadline"} />
+              </div>
             )}
           </div>
         </div>
@@ -575,7 +583,8 @@ const styles = StyleSheet.create({
   replyCard: {
     width: "100%",
     alignItems: "flex-start",
-    marginBottom: 5,
+    marginBottom: 0,
+    marginTop: 15,
     overflow: "visible",
     display: "table",
     tableLayout: "fixed",
@@ -592,8 +601,8 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
     "@media only screen and (max-width: 415px)": {
@@ -613,7 +622,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "2px 10px 8px 8px",
+    padding: "16px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },
@@ -643,7 +652,6 @@ const styles = StyleSheet.create({
   },
   voteWidget: {
     margin: 0,
-    backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },
@@ -664,14 +672,21 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  threadline: {
-    height: "calc(100% - 53px)",
-    width: 2,
-    backgroundColor: "#EEEFF1",
+  threadLineContainer: {
+    padding: 8,
+    paddingBottom: 0,
+    // height: "calc(100% - 80px)",
+    height: "calc(100% - 62px)",
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: colors.BLUE(1),
+    ":hover .threadline": {
+      backgroundColor: colors.NEW_BLUE(1),
     },
+  },
+  threadline: {
+    height: "100%",
+    width: 2,
+    backgroundColor: colors.GREY_LINE(),
+    cursor: "pointer",
   },
 });
 

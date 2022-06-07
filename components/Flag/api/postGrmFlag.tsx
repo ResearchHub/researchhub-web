@@ -4,7 +4,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { ID, KeyOf } from "~/config/types/root_types";
 import API from "~/config/api";
 
-type ContentType = "hypothesis" | "paper" | "post";
+type ContentType = "hypothesis" | "paper" | "post" | "researchhub_posts";
 
 type CommentType = "comment" | "reply" | "thread";
 

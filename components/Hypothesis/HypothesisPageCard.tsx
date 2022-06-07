@@ -33,7 +33,7 @@ import { useRouter } from "next/router";
 import ActionButton from "../ActionButton";
 import AdminButton from "../Admin/AdminButton";
 import Button from "../Form/Button";
-import censorDocument from "~/components/Admin/api/censorDocAPI";
+import censorDocument from "~/components/Document/api/censorDocAPI";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
 import DiscussionCount from "~/components/DiscussionCount";
@@ -42,7 +42,7 @@ import FlagButtonV2 from "../Flag/FlagButtonV2";
 import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import restoreDocument from "~/components/Admin/api/restoreDocAPI";
+import restoreDocument from "~/components/Document/api/restoreDocAPI";
 import VoteWidget from "~/components/VoteWidget";
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")

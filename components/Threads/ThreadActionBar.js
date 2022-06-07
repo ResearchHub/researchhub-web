@@ -8,7 +8,7 @@ import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import icons from "~/config/themes/icons";
 import ThreadTextEditor from "./ThreadTextEditor";
-
+import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 class ThreadActionBar extends Component {
@@ -171,6 +171,10 @@ class ThreadActionBar extends Component {
               Respond
             </div>
           )}
+
+          {/* <span className={css(styles.replyIcon,true && styles.active)} id={"supportIcon"}>
+          </span>           */}
+
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
           <FlagButtonV2
@@ -229,11 +233,13 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 3,
     cursor: "pointer",
+    color: colors.BLACK(),
+    fontWeight: 500,
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover #replyIcon": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       marginRight: 10,
@@ -245,10 +251,10 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     cursor: "pointer",
     ":hover #text": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover #chatIcon": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       marginRight: 10,
@@ -260,10 +266,10 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderRadius: 3,
     ":hover #text": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover #editIcon": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   flagIconOverride: {
@@ -272,7 +278,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     ":hover": {
       background: "none",
-      color: colors.BLUE(1),
+      color: colors.NEW_BLUE(1),
     },
   },
   flagButtonTextStyle: {
@@ -290,14 +296,14 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 3,
     ":hover #text": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover #shareIcon": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   smallReply: {
-    fontSize: 12,
+    // fontSize: 12,
   },
   text: {
     fontFamily: "Roboto",
@@ -324,7 +330,7 @@ const styles = StyleSheet.create({
     },
   },
   active: {
-    color: colors.BLUE(0.8),
+    color: colors.NEW_BLUE(0.8),
   },
   inactive: {
     pointerEvents: "none",
@@ -351,7 +357,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   replyIcon: {
-    color: "#918f9b",
+    color: colors.BLACK(),
     marginRight: 8,
   },
 });

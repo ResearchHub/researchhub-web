@@ -9,10 +9,11 @@ import { ReactElement, SyntheticEvent, useState } from "react";
 import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
 import { breakpoints } from "../../config/themes/screen";
+import { AuthorProfile } from "~/config/types/root_types";
 
 export type AuthorClaimDataProps = {
   auth: any;
-  authors: Array<any>;
+  authors: Array<AuthorProfile>;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
 };
@@ -31,7 +32,7 @@ const getPrompt = ({
           authorData={authors.map(
             (author: any): AuthorDatum => {
               return {
-                name: `${author.first_name} ${author.last_name}`,
+                name: `${author.firstName} ${author.lastName}`,
                 id: author.id,
               };
             }

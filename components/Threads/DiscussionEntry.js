@@ -23,7 +23,7 @@ import { saveReview } from "~/config/fetch";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import ScoreInput from "~/components/Form/ScoreInput";
+import StarInput from "~/components/Form/StarInput";
 import { breakpoints } from "~/config/themes/screen";
 
 class DiscussionEntry extends Component {
@@ -88,19 +88,15 @@ class DiscussionEntry extends Component {
       currentAuthor?.id === data.created_by.author_profile.id;
     const comments = data.comments || [];
 
-    if (newCard) {
-      return true;
-    } else if (isCurrentAuthor && context === "DOCUMENT") {
-      return true;
-    } else if (
-      isCurrentAuthor &&
-      context === "AUTHOR_PROFILE" &&
-      comments.length > 0
-    ) {
-      return true;
-    } else {
+    if (context === "AUTHOR_PROFILE") {
+      if (isCurrentAuthor && comments.length > 0) {
+        return true;
+      }
+    } else if (context === "DOCUMENT") {
       return false;
     }
+
+    return false;
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -350,6 +346,7 @@ class DiscussionEntry extends Component {
       documentType,
       currentAuthor,
       noVote,
+      context,
     } = this.props;
     let comments = this.state.comments;
 
@@ -360,6 +357,7 @@ class DiscussionEntry extends Component {
             data={data}
             noVote={noVote}
             hostname={hostname}
+            context={context}
             currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
@@ -569,7 +567,7 @@ class DiscussionEntry extends Component {
                 )}
                 onClick={this.toggleCommentView}
               >
-                <div className={css(styles.threadline)} />
+                <div className={css(styles.threadline) + " threadline"} />
               </div>
             </div>
           </div>
@@ -640,13 +638,13 @@ class DiscussionEntry extends Component {
                 >
                   {isReview ? (
                     <div className={css(styles.reviewContainer)}>
-                      <div className={css(styles.reviewBadge)}>Peer Review</div>
-                      <ScoreInput
+                      <div className={css(styles.reviewBadge)}>Review</div>
+                      <StarInput
                         value={review?.score}
                         readOnly={this.state.editing ? false : true}
                         onSelect={this.onScoreSelect}
-                        scoreInputStyleOverride={styles.scoreInputStyleOverride}
-                        overrideBarStyle={styles.overrideBar}
+                        scoreInputStyleOverride={styles.starInputStyleOverride}
+                        overrideStarStyle={styles.overrideStar}
                       />
                     </div>
                   ) : null}
@@ -731,23 +729,25 @@ const styles = StyleSheet.create({
     width: 2,
     paddingTop: 0,
     paddingBottom: 0,
-    backgroundColor: "#EEEFF1",
-    ":hover": {
-      backgroundColor: colors.BLUE(1),
-    },
+    backgroundColor: colors.GREY_LINE(),
+    // ":hover": {
+    //   backgroundColor: colors.NEW_BLUE(1),
+    // },
   },
   threadLineContainer: {
     padding: 8,
-    paddingTop: 0,
     paddingBottom: 0,
-    height: "calc(100% - 80px)",
+    height: "calc(100% - 84px)",
     cursor: "pointer",
+    ":hover .threadline": {
+      backgroundColor: colors.NEW_BLUE(1),
+    },
   },
   hoverThreadline: {
-    backgroundColor: colors.BLUE(),
+    backgroundColor: colors.NEW_BLUE(),
   },
   activeThreadline: {
-    backgroundColor: colors.BLUE(0.3),
+    backgroundColor: colors.NEW_BLUE(0.3),
   },
   left: {
     alignItems: "center",
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     position: "relative",
     boxSizing: "border-box",
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
     paddingRight: 0,
     cursor: "default",
     justifyContent: "space-between",
@@ -796,8 +796,8 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
   },
@@ -823,7 +823,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "10px 10px 8px 8px",
+    padding: "14px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },
@@ -865,7 +865,6 @@ const styles = StyleSheet.create({
   },
   voteWidget: {
     margin: 0,
-    backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },
@@ -882,11 +881,11 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     cursor: "pointer",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
     },
   },
   loadingText: {
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
   },
   removedText: {
     fontSize: 16,
@@ -899,17 +898,12 @@ const styles = StyleSheet.create({
   },
   reviewContainer: {
     display: "flex",
-    alignItems: "end",
+    alignItems: "flex-start",
     lineHeight: 1.4,
     marginBottom: 15,
-
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      flexDirection: "column",
-      alignItems: "start",
-    },
   },
   reviewBadge: {
-    background: colors.NEW_BLUE(),
+    background: colors.DARK_YELLOW(),
     color: "white",
     padding: "2px 6px",
     fontWeight: 500,
@@ -918,11 +912,11 @@ const styles = StyleSheet.create({
     borderRadius: "2px",
     lineHeight: "15px",
   },
-  overrideBar: {
-    width: 16,
-    height: 10,
+  overrideStar: {
+    fontSize: 14,
+    width: 18,
   },
-  scoreInputStyleOverride: {
+  starInputStyleOverride: {
     alignItems: "center",
   },
 });

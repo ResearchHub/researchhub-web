@@ -18,11 +18,13 @@ import {
   faClone,
   faCog,
   faComment,
+  faComments as faCommentsSolid,
   faEdit,
   faExclamationCircle,
   faExclamationTriangle,
   faExternalLinkAlt,
   faFile,
+  faFileAlt as faFileAltSolid,
   faFileImport,
   faFlag,
   faGraduationCap,
@@ -87,6 +89,12 @@ import {
   faVideoPlus,
   faShieldAlt,
   faTrash as faTrashSolid,
+  faBadgeCheck,
+  faUp,
+  faDown,
+  faComments as faCommentRegular,
+  faFileLines as faPaperRegular,
+  faPenSquare as faPenSquareRegular,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -118,14 +126,11 @@ import {
   faChevronRight,
   faChevronUp,
   faClock,
-  faComment as faCommentRegular,
   faEllipsisH,
   faEllipsisV,
-  faFile as faPaperRegular,
   faFlag as faFlagOutline,
   faFileUpload,
   faLightbulb,
-  faPenSquare as faPenSquareRegular,
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
@@ -279,6 +284,8 @@ library.add(
   faTwitter,
   faUnderline,
   faUpload,
+  faUp,
+  faDown,
   faUser,
   faUserCircle,
   faUserEdit,
@@ -333,6 +340,7 @@ const icons = {
   commentCheck: <FontAwesomeIcon icon={faCommentCheck} />,
   commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
   comments: <FontAwesomeIcon icon={faComments} />,
+  commentsSolid: <FontAwesomeIcon icon={faCommentsSolid} />,
   commentsAlt: <FontAwesomeIcon icon={faCommentsNoBackground} />,
   checkDouble: <FontAwesomeIcon icon={faCheckDouble} />,
   date: <FontAwesomeIcon icon={faCalendarDay} />,
@@ -379,6 +387,7 @@ const icons = {
   paper: <FontAwesomeIcon icon={faFile} />,
   paperPlane: <FontAwesomeIcon icon={faPaperPlane} />,
   paperRegular: <FontAwesomeIcon icon={faPaperRegular} />,
+  paperAlt: <FontAwesomeIcon icon={faFileAltSolid} />,
   penSquare: <FontAwesomeIcon icon={faPenSquareRegular} />,
   pencil: <FontAwesomeIcon icon={faPencil} />,
   pin: <FontAwesomeIcon icon={faThumbtack} />,
@@ -427,6 +436,7 @@ const icons = {
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
+  verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
@@ -464,8 +474,8 @@ const icons = {
 };
 
 export const voteWidgetIcons = {
-  downvote: <FontAwesomeIcon icon={faCaretDown} />,
-  upvote: <FontAwesomeIcon icon={faCaretUp} />,
+  downvote: <FontAwesomeIcon icon={faDown} />,
+  upvote: <FontAwesomeIcon icon={faUp} />,
 };
 
 export const textEditorIcons = {
