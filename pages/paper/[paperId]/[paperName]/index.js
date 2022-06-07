@@ -154,11 +154,13 @@ const Paper = ({
       (freshPaperData) => {
         setFetchFreshDataStatus("COMPLETED");
 
-        const updatedPaper = shims.paper({
-          ...freshPaperData,
-        });
+        const updatedPaper = new PaperDoc(
+          shims.paper({
+            ...freshPaperData,
+          })
+        );
 
-        setPaperV2(new PaperDoc(updatedPaper));
+        setPaperV2(updatedPaper);
       }
     );
   }
