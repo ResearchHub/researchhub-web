@@ -57,33 +57,38 @@ function DocumentHeader({
     score,
     hubs,
   } = document;
-
+  
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
     userVote: userVote,
     voteScore: score,
-    prevVoteScore: score,
   });
 
   const visibleHubs = hubs.slice(0,3);
   const hiddenHubs = hubs.slice(3);
 
   useEffect(() => {
-    setVoteState({ ...voteState, userVote });
-  }, [userVote]);
-
-  useEffect(() => {
-    const isSubmittedByCurrentUser = String(currentUser?.id) === String(createdBy?.id) 
+    const isSubmittedByCurrentUser = currentUser && (currentUser?.id === createdBy?.id) 
     if (isSubmittedByCurrentUser) {
-      setVoteState({ ...voteState, userVote: UPVOTE });
+      setVoteState({
+        ...voteState,
+        userVote: UPVOTE,
+        voteScore: document.score,
+      });
     }
-  }, [currentUser]);
+    else {
+      setVoteState({
+        ...voteState,
+        userVote: document.userVote,
+        voteScore: document.score,
+      });
+    }
+  }, [currentUser, document]);
 
   const handleVoteSuccess = ({ voteType, increment }) => {
     let newVoteScore = voteState.voteScore;
-    const prevUserScore = voteState.voteScore;
     if (voteType === UPVOTE) {
       if (voteState.userVote === DOWNVOTE) {
         newVoteScore = voteState.voteScore + increment + 1;
@@ -108,7 +113,6 @@ function DocumentHeader({
     setVoteState({
       userVote: voteType,
       voteScore: newVoteScore,
-      prevVoteScore: score,
     });
   };
 
@@ -197,22 +201,19 @@ function DocumentHeader({
           </div>
 
           <div className={css(styles.submittedBy)}>
-            {createdBy?.authorProfile &&
-              <div className={css(styles.createdByContainer)}>
-                <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
-              </div>
-            }
+            <div className={css(styles.createdByContainer)}>
+              <AuthorAvatar author={createdBy?.authorProfile} size={30} trueSize />
+            </div>
             <div className={css(styles.submittedByDetails)}>
               <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`} overrideStyle={styles.link}>
-                {createdBy?.authorProfile?.firstName}{" "}
-                {createdBy?.authorProfile?.lastName}
+                {createdBy?.authorProfile?.firstName || "Deleted"}{" "}
+                {createdBy?.authorProfile?.lastName || "User"}
               </ALink>
               <div className={css(styles.hubsContainer)}>
-                {visibleHubs?.length > 0 && (
                   <>
                     <span
                       className={css(styles.textSecondary, styles.postedText)}
-                    >{` posted in`}</span>
+                    >{` posted`}{visibleHubs.length > 0 ? ` in` : ""}</span>
                     {visibleHubs.map((h, index) => (
                       <>
                         <ALink
@@ -236,7 +237,6 @@ function DocumentHeader({
                       />
                     )}
                   </>
-                )}
               </div>
               <span className={css(styles.dot)}> • </span>
               <span className={css(styles.textSecondary, styles.timestamp)}>

@@ -121,9 +121,17 @@ export class Paper implements TopLevelDocument {
     return this._score;  
   }
 
+  set score(score) {
+    this._score = score;
+  }
+
   get userVote():"downvote" | "upvote" | "neutralvote" | undefined | null {
     return this._userVote;  
   }
+
+  set userVote(userVote) {
+    this._userVote = userVote;
+  }  
 
   get discussionCount():number {
     return this._discussionCount;

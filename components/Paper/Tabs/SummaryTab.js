@@ -779,6 +779,7 @@ var styles = StyleSheet.create({
     minHeight: "unset",
     padding: 20,
     width: "100%",
+    minHeight: 200,
   },
   sectionHeader: {
     display: "flex",
@@ -934,7 +935,7 @@ var styles = StyleSheet.create({
     border: "1px solid",
     padding: "8px 32px",
     color: "#fff",
-    background: colors.PURPLE(1),
+    background: colors.NEW_BLUE(1),
     fontSize: 16,
     borderRadius: 4,
     height: 45,
