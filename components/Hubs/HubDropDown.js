@@ -125,10 +125,8 @@ const styles = StyleSheet.create({
     pointerEvents: "unset",
   },
   icon: {
-    color: colors.NEW_BLUE(),
     cursor: "pointer",
-    fontSize: 15,
-    fontWeight: 500,
+    color: colors.BLACK(),
     ":hover": {
       color: colors.BLUE(),
     },
