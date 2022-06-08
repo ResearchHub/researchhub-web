@@ -1,7 +1,6 @@
 import API from "~/config/api";
-import AuthorAvatar from "~/components/AuthorAvatar";
+import { Helpers } from "@quantfive/js-web-config";
 import DesktopOnly from "~/components/DesktopOnly";
-import HubDropDown from "~/components/Hubs/HubDropDown";
 import Link from "next/link";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
@@ -20,17 +19,19 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
+  isEmpty,
   isNullOrUndefined,
   nullthrows,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { formatDateStandard, timeAgoStamp } from "~/config/utils/dates";
-import { isDevEnv } from "~/config/utils/env";
-import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
-import VoteWidget from "~/components/VoteWidget";
-import { parseCreatedBy } from "~/config/types/contribution";
-import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
+import { formatDateStandard } from "~/config/utils/dates";
+import { isDevEnv } from "~/config/utils/env";
+import { parseCreatedBy } from "~/config/types/contribution";
 import { RhDocumentType } from "~/config/types/root_types";
+import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
+import SubmissionDetails from "~/components/Document/SubmissionDetails";
+import VoteWidget from "~/components/VoteWidget";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -141,10 +142,12 @@ function FeedCard(props: FeedCardProps) {
     return async (event: SyntheticEvent) => {
       event.preventDefault();
       event.stopPropagation();
+      const currUserAuthorProfileID = currentUser?.author_profile?.id;
 
       if (
         !isNullOrUndefined(currentUser) &&
-        currentUser.id === created_by?.author_profile.id
+        (currUserAuthorProfileID === created_by?.author_profile?.id ||
+          currUserAuthorProfileID === uploaded_by?.author_profile?.id)
       ) {
         emptyFncWithMsg(
           `Not logged in or attempted to vote on own ${formattedDocType}.`
@@ -161,38 +164,22 @@ function FeedCard(props: FeedCardProps) {
         setVoteState(voteType);
         setScore(score + (Boolean(voteState) ? increment * 2 : increment));
       }
-      const yo = buildGrmVoteApiUri({
-        documentType: nullthrows(
-          formattedDocType,
-          "docType must be present to vote"
-        ),
-        documentID: id,
-        voteType,
-      });
-      console.warn("yo: ", yo);
-      await (async () => {
-        const response = await fetch(yo, API.POST_CONFIG()).catch((err) => {
-          debugger;
-          emptyFncWithMsg(err);
-        });
 
-        return response;
-      })();
+      fetch(
+        buildGrmVoteApiUri({
+          documentType: nullthrows(
+            formattedDocType,
+            "docType must be present to vote"
+          ),
+          documentID: id,
+          voteType,
+        }),
+        API.POST_CONFIG()
+      ).catch((error: Error): void => {
+        emptyFncWithMsg(error);
+      });
     };
   };
-
-  async function onPaperVote(voteType) {
-    const curPaper = { ...paper };
-    const increment = voteType === UPVOTE ? 1 : -1;
-    setVoteState(voteType);
-    setScore(score + (Boolean(voteState) ? increment * 2 : increment));
-    voteCallback && voteCallback(index, curPaper);
-    if (voteType === UPVOTE) {
-      postUpvote(curPaper.id);
-    } else {
-      postDownvote(curPaper.id);
-    }
-  }
 
   const documentIcons = {
     paper: icons.paperRegular,
