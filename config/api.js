@@ -7,7 +7,7 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 
-const apiRoot = {
+export const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
   dev: "localhost:8000",

@@ -18,13 +18,19 @@ import { SyntheticEvent, useState, useEffect } from "react";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { formatDateStandard, timeAgoStamp } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import VoteWidget from "~/components/VoteWidget";
 import { parseCreatedBy } from "~/config/types/contribution";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
+import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
+import { RhDocumentType } from "~/config/types/root_types";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -38,7 +44,7 @@ export type FeedCardProps = {
   discussion_count: number;
   first_figure: any;
   first_preview: any;
-  formattedDocType: string | null;
+  formattedDocType: RhDocumentType | null;
   hubs: any[];
   id: number;
   index: number;
@@ -130,41 +136,15 @@ function FeedCard(props: FeedCardProps) {
     });
   }
 
+  // TODO: remove vote related code once migrated to VoteWidgeV2
   const createVoteHandler = (voteType) => {
-    const voteStrategies = {
-      [UPVOTE]: {
-        increment: 1,
-        getUrl:
-          formattedDocType === "post"
-            ? API.RH_POST_UPVOTE(id)
-            : API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
-      },
-      [DOWNVOTE]: {
-        increment: -1,
-        getUrl:
-          formattedDocType === "post"
-            ? API.RH_POST_DOWNVOTE(id)
-            : API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
-      },
-    };
-
-    const { increment, getUrl } = voteStrategies[voteType];
-
-    const handleVote = async () => {
-      const response = await fetch(getUrl, API.POST_CONFIG()).catch((err) =>
-        emptyFncWithMsg(err)
-      );
-
-      return response;
-    };
-
-    return async (e: SyntheticEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+    return async (event: SyntheticEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
 
       if (
         !isNullOrUndefined(currentUser) &&
-        currentUser.id === created_by.author_profile.id
+        currentUser.id === created_by?.author_profile.id
       ) {
         emptyFncWithMsg(
           `Not logged in or attempted to vote on own ${formattedDocType}.`
@@ -172,14 +152,32 @@ function FeedCard(props: FeedCardProps) {
         return;
       }
 
+      const increment =
+        voteType === "upvote" ? 1 : voteType === "neutral" ? 0 : -1;
+
       if (voteState === voteType) {
         return;
       } else {
         setVoteState(voteType);
         setScore(score + (Boolean(voteState) ? increment * 2 : increment));
       }
+      const yo = buildGrmVoteApiUri({
+        documentType: nullthrows(
+          formattedDocType,
+          "docType must be present to vote"
+        ),
+        documentID: id,
+        voteType,
+      });
+      console.warn("yo: ", yo);
+      await (async () => {
+        const response = await fetch(yo, API.POST_CONFIG()).catch((err) => {
+          debugger;
+          emptyFncWithMsg(err);
+        });
 
-      await handleVote();
+        return response;
+      })();
     };
   };
 
@@ -222,24 +220,11 @@ function FeedCard(props: FeedCardProps) {
         >
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
+              {/* TODO: migrate to VoteWidgetV2 */}
               <ResponsivePostVoteWidget
                 onDesktop
-                onDownvote={
-                  formattedDocType === "paper"
-                    ? (e) => {
-                        e.preventDefault();
-                        onPaperVote(DOWNVOTE);
-                      }
-                    : createVoteHandler(DOWNVOTE)
-                }
-                onUpvote={
-                  formattedDocType === "paper"
-                    ? (e) => {
-                        e.preventDefault();
-                        onPaperVote(UPVOTE);
-                      }
-                    : createVoteHandler(UPVOTE)
-                }
+                onDownvote={createVoteHandler(DOWNVOTE)}
+                onUpvote={createVoteHandler(UPVOTE)}
                 score={score}
                 voteState={voteState}
               />
@@ -310,24 +295,11 @@ function FeedCard(props: FeedCardProps) {
                     )}
                   >
                     <div className={css(styles.mobileVoteWidget)}>
+                      {/* TODO: migrate to VoteWidgetV2 */}
                       <VoteWidget
                         horizontalView={true}
-                        onDownvote={
-                          formattedDocType === "paper"
-                            ? (e) => {
-                                e.preventDefault();
-                                onPaperVote(DOWNVOTE);
-                              }
-                            : createVoteHandler(DOWNVOTE)
-                        }
-                        onUpvote={
-                          formattedDocType === "paper"
-                            ? (e) => {
-                                e.preventDefault();
-                                onPaperVote(UPVOTE);
-                              }
-                            : createVoteHandler(UPVOTE)
-                        }
+                        onDownvote={createVoteHandler(DOWNVOTE)}
+                        onUpvote={createVoteHandler(UPVOTE)}
                         score={score}
                         styles={styles.voteWidget}
                         upvoteStyleClass={styles.mobileVote}
@@ -442,7 +414,6 @@ const styles = StyleSheet.create({
     height: 90,
   },
   mobilePill: {
-    width: 28,
     fontSize: 14,
     color: voteWidgetColors.ARROW,
     background: "unset",
