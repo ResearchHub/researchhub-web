@@ -1,12 +1,8 @@
 import { captureEvent } from "~/config/utils/events";
 import { FLAG_REASON } from "../config/flag_constants";
 import { Helpers } from "@quantfive/js-web-config";
-import { ID, KeyOf } from "~/config/types/root_types";
+import { CommentType, ID, KeyOf, RhDocumentType } from "~/config/types/root_types";
 import API from "~/config/api";
-
-type ContentType = "hypothesis" | "paper" | "post" | "researchhub_posts";
-
-type CommentType = "comment" | "reply" | "thread";
 
 type FlagGrmContentArgs = {
   commentPayload?: {
@@ -16,7 +12,7 @@ type FlagGrmContentArgs = {
     threadID?: ID;
   };
   contentID: ID;
-  contentType: ContentType;
+  contentType: RhDocumentType;
   flagReason: KeyOf<typeof FLAG_REASON>;
   onError: Function;
   onSuccess: Function;
