@@ -24,7 +24,7 @@ type Args = {
     replyID?: string;
     threadID?: string;
   };
-  documentCreatedBy: CreatedBy;
+  documentCreatedBy: any;
   documentID: ID;
   documentType: RhDocumentType;
   onError: Function;
@@ -51,12 +51,16 @@ export const createVoteHandler = ({
 }: Args) => {
   const formattedDocumentType =
     documentType === "post" ? "researchhub_posts" : documentType;
+  const resolvedDocumentAuthorID =
+    documentCreatedBy?.authorProfile?.id ||
+    documentCreatedBy?.author_profile?.id;
+
   return async (event: SyntheticEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (
       !isNullOrUndefined(currentAuthor) &&
-      currentAuthor?.id === documentCreatedBy?.authorProfile?.id
+      currentAuthor?.id === resolvedDocumentAuthorID
     ) {
       emptyFncWithMsg(
         `Not logged in or attempted to vote on own ${documentType}.`

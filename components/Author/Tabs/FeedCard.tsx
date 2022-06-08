@@ -5,6 +5,7 @@ import { css, StyleSheet } from "aphrodite";
 import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
 import {
   emptyFncWithMsg,
+  isEmpty,
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
@@ -126,7 +127,9 @@ function FeedCard(props: FeedCardProps) {
   const docUrl = `/${formattedDocType}/${id}/${slug ?? "new-paper"}`;
 
   useEffect((): void => {
-    setVoteState(userVoteToConstant(userVote));
+    if (!isEmpty(userVote)) {
+      setVoteState(userVoteToConstant(userVote));
+    }
   }, [userVote]);
 
   function configurePreview(arr) {
@@ -136,30 +139,28 @@ function FeedCard(props: FeedCardProps) {
   }
 
   const onDownvote = createVoteHandler({
-    currentAuthor: currentUser?.author_profile?.id,
+    currentAuthor: currentUser?.author_profile,
     currentVote: voteState,
-    documentCreatedBy:
-      created_by?.author_profile?.id ?? uploaded_by?.author_profile?.id,
+    documentCreatedBy: created_by ?? uploaded_by,
     documentID: id,
     documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
     onError: emptyFncWithMsg,
     onSuccess: ({ increment, voteType }): void => {
       setVoteState(voteType);
-      setScore(score + (Boolean(voteState) ? increment * 2 : increment));
+      setScore(score + increment);
     },
     voteType: DOWNVOTE,
   });
   const onUpvote = createVoteHandler({
-    currentAuthor: currentUser?.author_profile?.id,
+    currentAuthor: currentUser?.author_profile,
     currentVote: voteState,
-    documentCreatedBy:
-      created_by?.author_profile?.id ?? uploaded_by?.author_profile?.id,
+    documentCreatedBy: created_by ?? uploaded_by,
     documentID: id,
     documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
     onError: emptyFncWithMsg,
     onSuccess: ({ increment, voteType }): void => {
       setVoteState(voteType);
-      setScore(score + (Boolean(voteState) ? increment * 2 : increment));
+      setScore(score + increment);
     },
     voteType: UPVOTE,
   });
