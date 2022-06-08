@@ -213,9 +213,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 10,
   },
-  editor: {
-    marginTop: -20,
-  },
 });
 
 const mapStateToProps = (state) => ({
