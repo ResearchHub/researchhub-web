@@ -136,32 +136,32 @@ function FeedCard(props: FeedCardProps) {
   }
 
   const onDownvote = createVoteHandler({
-    voteType: DOWNVOTE,
-    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
     currentAuthor: currentUser?.author_profile?.id,
-    selectedUserVote: voteState,
+    currentVote: voteState,
     documentCreatedBy:
       created_by?.author_profile?.id ?? uploaded_by?.author_profile?.id,
     documentID: id,
-    onSuccess: (increment): void => {
-      setVoteState(DOWNVOTE);
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    onError: emptyFncWithMsg,
+    onSuccess: ({ increment, voteType }): void => {
+      setVoteState(voteType);
       setScore(score + (Boolean(voteState) ? increment * 2 : increment));
     },
-    onError: emptyFncWithMsg,
+    voteType: DOWNVOTE,
   });
   const onUpvote = createVoteHandler({
-    voteType: UPVOTE,
-    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
     currentAuthor: currentUser?.author_profile?.id,
-    selectedUserVote: voteState,
+    currentVote: voteState,
     documentCreatedBy:
       created_by?.author_profile?.id ?? uploaded_by?.author_profile?.id,
     documentID: id,
-    onSuccess: (increment): void => {
-      setVoteState(UPVOTE);
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    onError: emptyFncWithMsg,
+    onSuccess: ({ increment, voteType }): void => {
+      setVoteState(voteType);
       setScore(score + (Boolean(voteState) ? increment * 2 : increment));
     },
-    onError: emptyFncWithMsg,
+    voteType: UPVOTE,
   });
 
   const documentIcons = {
