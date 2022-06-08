@@ -1,35 +1,32 @@
+import { breakpoints } from "~/config/themes/screen";
+import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
+import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
+import { formatDateStandard } from "~/config/utils/dates";
+import { isDevEnv } from "~/config/utils/env";
+import { ModalActions } from "~/redux/modals";
+import { PaperActions } from "~/redux/paper";
+import { parseCreatedBy } from "~/config/types/contribution";
+import { RhDocumentType } from "~/config/types/root_types";
+import { SyntheticEvent, useState, useEffect } from "react";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import DesktopOnly from "~/components/DesktopOnly";
-import Link from "next/link";
-import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
-import Ripples from "react-ripples";
 import colors, {
   genericCardColors,
   voteWidgetColors,
 } from "~/config/themes/colors";
+import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
-import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
-import { ModalActions } from "~/redux/modals";
-import { PaperActions } from "~/redux/paper";
-import { SyntheticEvent, useState, useEffect } from "react";
-import { breakpoints } from "~/config/themes/screen";
-import { connect } from "react-redux";
-import { css, StyleSheet } from "aphrodite";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  isNullOrUndefined,
-  nullthrows,
-  silentEmptyFnc,
-} from "~/config/utils/nullchecks";
-import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
-import { formatDateStandard } from "~/config/utils/dates";
-import { isDevEnv } from "~/config/utils/env";
-import { parseCreatedBy } from "~/config/types/contribution";
-import { RhDocumentType } from "~/config/types/root_types";
+import Link from "next/link";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
+import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
+import Ripples from "react-ripples";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
 
