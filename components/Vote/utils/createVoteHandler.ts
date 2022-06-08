@@ -2,10 +2,10 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import API from "~/config/api";
 import {
   AuthorProfile,
+  CreatedBy,
   GrmVoteType,
   ID,
   RhDocumentType,
-  User,
 } from "~/config/types/root_types";
 import { SyntheticEvent } from "react";
 import {
@@ -17,54 +17,44 @@ import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
 
 type Args = {
   currentAuthor: AuthorProfile;
-  documentCreatedBy: User;
+  currentVote: GrmVoteType | null | undefined;
+  commentPayload?: {
+    commentID?: string;
+    commentType?: string;
+    replyID?: string;
+    threadID?: string;
+  };
+  documentCreatedBy: CreatedBy;
   documentID: ID;
   documentType: RhDocumentType;
   onError: Function;
-  onSuccess: Function;
-  selectedUserVote?: GrmVoteType | null;
+  onSuccess: ({
+    increment,
+    voteType,
+  }: {
+    increment: number;
+    voteType: GrmVoteType;
+  }) => void;
   voteType: GrmVoteType;
 };
 
-const getVoteUrl = ({ voteType, unifiedDocument }) => {
-  if (unifiedDocument?.documentType === "post") {
-    if (voteType === UPVOTE) {
-      return API.RH_POST_UPVOTE(unifiedDocument.document.id);
-    } else if (voteType === DOWNVOTE) {
-      return API.RH_POST_DOWNVOTE(unifiedDocument.document.id);
-    }
-  } else if (unifiedDocument?.documentType === "paper") {
-    if (voteType === UPVOTE) {
-      return API.UPVOTE(
-        unifiedDocument.documentType,
-        unifiedDocument.document.id
-      );
-    } else if (voteType === DOWNVOTE) {
-      return API.DOWNVOTE(
-        unifiedDocument.documentType,
-        unifiedDocument.document.id
-      );
-    }
-  }
-};
-
 export const createVoteHandler = ({
-  voteType,
-  documentType,
+  commentPayload,
   currentAuthor,
-  selectedUserVote,
+  currentVote,
   documentCreatedBy,
   documentID,
-  onSuccess,
+  documentType,
   onError,
+  onSuccess,
+  voteType,
 }: Args) => {
   return async (event: SyntheticEvent) => {
     event.preventDefault();
     event.stopPropagation();
-
     if (
       !isNullOrUndefined(currentAuthor) &&
-      currentAuthor?.id === documentCreatedBy?.author_profile?.id
+      currentAuthor?.id === documentCreatedBy?.authorProfile?.id
     ) {
       emptyFncWithMsg(
         `Not logged in or attempted to vote on own ${documentType}.`
@@ -75,15 +65,19 @@ export const createVoteHandler = ({
     const increment =
       voteType === "upvote" ? 1 : voteType === "neutralvote" ? 0 : -1;
 
-    if (selectedUserVote === voteType) {
+    if (currentVote === voteType) {
       return;
     } else {
       // optimistic update
-      onSuccess(Boolean(selectedUserVote) ? increment * 2 : increment);
+      onSuccess({
+        increment: Boolean(currentVote) ? increment * 2 : increment,
+        voteType,
+      });
     }
 
     fetch(
       buildGrmVoteApiUri({
+        commentPayload,
         documentType: nullthrows(
           documentType,
           "docType must be present to vote"
@@ -93,7 +87,7 @@ export const createVoteHandler = ({
       }),
       API.POST_CONFIG()
     ).catch((error: Error): void => {
-      emptyFncWithMsg(error);
+      onError(error);
     });
   };
 };
