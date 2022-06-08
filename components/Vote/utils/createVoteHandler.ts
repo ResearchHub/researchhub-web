@@ -49,6 +49,8 @@ export const createVoteHandler = ({
   onSuccess,
   voteType,
 }: Args) => {
+  const formattedDocumentType =
+    documentType === "post" ? "researchhub_posts" : documentType;
   return async (event: SyntheticEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -79,7 +81,7 @@ export const createVoteHandler = ({
       buildGrmVoteApiUri({
         commentPayload,
         documentType: nullthrows(
-          documentType,
+          formattedDocumentType,
           "docType must be present to vote"
         ),
         documentID,
