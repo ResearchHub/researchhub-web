@@ -83,7 +83,6 @@ function DocumentHeader({
   }, [document]);
 
   const handleVoteSuccess = ({ increment, voteType }) => {
-    debugger;
     setVoteState({
       userVote: voteType,
       voteScore: voteState.voteScore + increment,
