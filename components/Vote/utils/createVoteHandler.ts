@@ -1,78 +1,99 @@
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import API from "~/config/api";
-import { AuthorProfile, UnifiedDocument } from "~/config/types/root_types";
+import {
+  AuthorProfile,
+  GrmVoteType,
+  ID,
+  RhDocumentType,
+  User,
+} from "~/config/types/root_types";
+import { SyntheticEvent } from "react";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
+import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
 
 type Args = {
-  voteType: string,
-  unifiedDocument: UnifiedDocument,
-  currentAuthor: AuthorProfile,
-  selectedUserVote?: string,
-  onSuccess: Function,
-  onError: Function,
-}
+  currentAuthor: AuthorProfile;
+  documentCreatedBy: User;
+  documentID: ID;
+  documentType: RhDocumentType;
+  onError: Function;
+  onSuccess: Function;
+  selectedUserVote?: GrmVoteType | null;
+  voteType: GrmVoteType;
+};
 
 const getVoteUrl = ({ voteType, unifiedDocument }) => {
   if (unifiedDocument?.documentType === "post") {
     if (voteType === UPVOTE) {
-      return API.RH_POST_UPVOTE(unifiedDocument.document.id); 
+      return API.RH_POST_UPVOTE(unifiedDocument.document.id);
+    } else if (voteType === DOWNVOTE) {
+      return API.RH_POST_DOWNVOTE(unifiedDocument.document.id);
     }
-    else if (voteType === DOWNVOTE) {
-      return API.RH_POST_DOWNVOTE(unifiedDocument.document.id); 
-    }
-  }
-  else if (unifiedDocument?.documentType === "paper") {
+  } else if (unifiedDocument?.documentType === "paper") {
     if (voteType === UPVOTE) {
-      return API.UPVOTE(unifiedDocument.documentType, unifiedDocument.document.id); 
-    }
-    else if (voteType === DOWNVOTE) {
-      return API.DOWNVOTE(unifiedDocument.documentType, unifiedDocument.document.id); 
+      return API.UPVOTE(
+        unifiedDocument.documentType,
+        unifiedDocument.document.id
+      );
+    } else if (voteType === DOWNVOTE) {
+      return API.DOWNVOTE(
+        unifiedDocument.documentType,
+        unifiedDocument.document.id
+      );
     }
   }
-}
+};
 
 export const createVoteHandler = ({
   voteType,
-  unifiedDocument,
+  documentType,
   currentAuthor,
   selectedUserVote,
-  onError,
+  documentCreatedBy,
+  documentID,
   onSuccess,
+  onError,
 }: Args) => {
-  const voteStrategies = {
-    [UPVOTE]: {
-      increment: 1,
-      url: getVoteUrl({ voteType, unifiedDocument }),
-    },
-    [DOWNVOTE]: {
-      increment: -1,
-      url: getVoteUrl({ voteType, unifiedDocument }),
-    },
-  };
+  return async (event: SyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-  const { increment, url } = voteStrategies[voteType];
-
-  const handleVote = async () => {
-    const response = await fetch(url, API.POST_CONFIG()).catch(
-      (error) => {
-        console.log("Failed to cast vote", error);
-      }
-    );
-
-    return onSuccess({ voteType, increment });
-  };
-
-  return async (e) => {
-    e.stopPropagation();
-
-    if (!currentAuthor?.id) {
-      console.log("Not logged in");
-      return;
-    }
-    else if (currentAuthor.id === unifiedDocument.createdBy?.authorProfile.id) {
-      console.log("Trying to vote on own's document");
+    if (
+      !isNullOrUndefined(currentAuthor) &&
+      currentAuthor?.id === documentCreatedBy?.author_profile?.id
+    ) {
+      emptyFncWithMsg(
+        `Not logged in or attempted to vote on own ${documentType}.`
+      );
       return;
     }
 
-    await handleVote();
+    const increment =
+      voteType === "upvote" ? 1 : voteType === "neutralvote" ? 0 : -1;
+
+    if (selectedUserVote === voteType) {
+      return;
+    } else {
+      // optimistic update
+      onSuccess(Boolean(selectedUserVote) ? increment * 2 : increment);
+    }
+
+    fetch(
+      buildGrmVoteApiUri({
+        documentType: nullthrows(
+          documentType,
+          "docType must be present to vote"
+        ),
+        documentID,
+        voteType,
+      }),
+      API.POST_CONFIG()
+    ).catch((error: Error): void => {
+      emptyFncWithMsg(error);
+    });
   };
 };

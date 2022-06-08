@@ -1,4 +1,8 @@
-import { GrmVoteEnumType, ID, RhDocumentType } from "../types/root_types";
+import {
+  GrmVoteType,
+  ID,
+  RhDocumentType,
+} from "../types/root_types";
 import { buildApiUri } from "./buildApiUri";
 import { isNullOrUndefined } from "./nullchecks";
 
@@ -11,7 +15,7 @@ type Args = {
   };
   documentType: RhDocumentType;
   documentID: ID;
-  voteType: GrmVoteEnumType;
+  voteType: GrmVoteType;
 };
 
 export function buildGrmVoteApiUri({
