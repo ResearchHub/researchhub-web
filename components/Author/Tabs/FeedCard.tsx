@@ -13,7 +13,7 @@ import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { parseCreatedBy } from "~/config/types/contribution";
-import { RhDocumentType } from "~/config/types/root_types";
+import { GrmVoteType, RhDocumentType } from "~/config/types/root_types";
 import { SyntheticEvent, useState, useEffect } from "react";
 import API from "~/config/api";
 import colors, {
@@ -29,6 +29,7 @@ import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVot
 import Ripples from "react-ripples";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
+import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -111,7 +112,7 @@ function FeedCard(props: FeedCardProps) {
    * modals.openPaperPDFModal is only a single boolean. So all cards
    * must only render their PaperPDFModal component if requested */
   const [isPreviewing, setIsPreviewing] = useState(false);
-  const [voteState, setVoteState] = useState<string | null>(
+  const [voteState, setVoteState] = useState<GrmVoteType | null>(
     userVoteToConstant(userVote)
   );
   const [score, setScore] = useState<number>(initialScore);
@@ -134,49 +135,34 @@ function FeedCard(props: FeedCardProps) {
     });
   }
 
-  // TODO: remove vote related code once migrated to VoteWidgeV2
-  const createVoteHandler = (voteType) => {
-    return async (event: SyntheticEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const currUserAuthorProfileID = currentUser?.author_profile?.id;
-
-      if (
-        !isNullOrUndefined(currentUser) &&
-        (currUserAuthorProfileID === created_by?.author_profile?.id ||
-          currUserAuthorProfileID === uploaded_by?.author_profile?.id)
-      ) {
-        emptyFncWithMsg(
-          `Not logged in or attempted to vote on own ${formattedDocType}.`
-        );
-        return;
-      }
-
-      const increment =
-        voteType === "upvote" ? 1 : voteType === "neutral" ? 0 : -1;
-
-      if (voteState === voteType) {
-        return;
-      } else {
-        setVoteState(voteType);
-        setScore(score + (Boolean(voteState) ? increment * 2 : increment));
-      }
-
-      fetch(
-        buildGrmVoteApiUri({
-          documentType: nullthrows(
-            formattedDocType,
-            "docType must be present to vote"
-          ),
-          documentID: id,
-          voteType,
-        }),
-        API.POST_CONFIG()
-      ).catch((error: Error): void => {
-        emptyFncWithMsg(error);
-      });
-    };
-  };
+  const onDownvote = createVoteHandler({
+    voteType: DOWNVOTE,
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    currentAuthor: currentUser?.author_profile?.id,
+    selectedUserVote: voteState,
+    documentCreatedBy:
+      created_by?.author_profile?.id ?? uploaded_by?.author_profile?.id,
+    documentID: id,
+    onSuccess: (increment): void => {
+      setVoteState(DOWNVOTE);
+      setScore(score + (Boolean(voteState) ? increment * 2 : increment));
+    },
+    onError: emptyFncWithMsg,
+  });
+  const onUpvote = createVoteHandler({
+    voteType: UPVOTE,
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    currentAuthor: currentUser?.author_profile?.id,
+    selectedUserVote: voteState,
+    documentCreatedBy:
+      created_by?.author_profile?.id ?? uploaded_by?.author_profile?.id,
+    documentID: id,
+    onSuccess: (increment): void => {
+      setVoteState(UPVOTE);
+      setScore(score + (Boolean(voteState) ? increment * 2 : increment));
+    },
+    onError: emptyFncWithMsg,
+  });
 
   const documentIcons = {
     paper: icons.paperRegular,
@@ -207,8 +193,8 @@ function FeedCard(props: FeedCardProps) {
               {/* TODO: migrate to VoteWidgetV2 */}
               <ResponsivePostVoteWidget
                 onDesktop
-                onDownvote={createVoteHandler(DOWNVOTE)}
-                onUpvote={createVoteHandler(UPVOTE)}
+                onDownvote={onDownvote}
+                onUpvote={onUpvote}
                 score={score}
                 voteState={voteState}
               />
@@ -282,8 +268,8 @@ function FeedCard(props: FeedCardProps) {
                       {/* TODO: migrate to VoteWidgetV2 */}
                       <VoteWidget
                         horizontalView={true}
-                        onDownvote={createVoteHandler(DOWNVOTE)}
-                        onUpvote={createVoteHandler(UPVOTE)}
+                        onDownvote={onDownvote}
+                        onUpvote={onUpvote}
                         score={score}
                         styles={styles.voteWidget}
                         upvoteStyleClass={styles.mobileVote}
