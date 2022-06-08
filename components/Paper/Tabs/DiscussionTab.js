@@ -168,10 +168,10 @@ const DiscussionTab = (props) => {
                     <span className={css(styles.icon, styles.twitterIcon)}>
                       {icons.twitter}
                     </span>
-                    <h2 className={css(styles.noSummaryTitle)}>
+                    <h3 className={css(styles.noSummaryTitle)}>
                       There are no tweets {mobileView && "\n"}for this paper
                       yet.
-                    </h2>
+                    </h3>
                   </span>
                 )}
           </ReactPlaceholder>
@@ -513,7 +513,7 @@ const DiscussionTab = (props) => {
         )}
       >
         <div className={css(styles.header)}>
-          <h2 className={css(styles.discussionTitle)}>
+          <h3 className={css(styles.discussionTitle)}>
             Discussion
             <span className={css(styles.discussionCount)}>
               {fetching ? (
@@ -524,7 +524,7 @@ const DiscussionTab = (props) => {
                 props.calculatedCount
               )}
             </span>
-          </h2>
+          </h3>
           <div className={css(styles.filterContainer)}>
             <div>
               <DropdownButton
@@ -920,12 +920,7 @@ var styles = StyleSheet.create({
   },
   discussionTitle: {
     display: "flex",
-    fontSize: 24,
-    fontWeight: 500,
     margin: 0,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 20,
-    },
   },
   discussionCount: {
     color: colors.BLACK(),
@@ -957,9 +952,6 @@ var styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 0,
     fontWeight: 500,
-    "@media only screen and (max-width: 767px)": {
-      marginBottom: 15,
-    },
   },
   filterText: {
     textTransform: "uppercase",
@@ -1085,7 +1077,7 @@ var styles = StyleSheet.create({
       opacity: 0.8,
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      fontSize: 12,
+      fontSize: 14,
     },
     [`@media only screen and (max-width: 400px)`]: {
       display: "none",
@@ -1105,7 +1097,6 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     marginBottom: 8,
-    // backgroundColor: "#fff",
   },
   container: {
     width: "100%",
@@ -1115,7 +1106,6 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     marginBottom: 5,
-    // paddingLeft: 20,
     marginTop: 35,
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

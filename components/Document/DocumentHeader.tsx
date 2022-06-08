@@ -451,12 +451,7 @@ const styles = StyleSheet.create({
     }    
   },  
   title: {
-    fontWeight: 600,
-    lineHeight: "40px",
     marginTop: 10,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      lineHeight: "32px",
-    }
   },
   metadata: {
     marginTop: 25,
