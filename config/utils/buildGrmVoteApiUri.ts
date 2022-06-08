@@ -1,5 +1,5 @@
 import { GrmVoteEnumType, ID, RhDocumentType } from "../types/root_types";
-import { buildApiURI } from "./buildApiURI";
+import { buildApiUri } from "./buildApiUri";
 import { isNullOrUndefined } from "./nullchecks";
 
 type Args = {
@@ -38,5 +38,5 @@ export function buildGrmVoteApiUri({
       apiPath = `${documentType}/${documentID}/discussion/${threadID}/comment/${commentID}/reply/${replyID}/${voteType}`;
     }
   }
-  return buildApiURI({ apiPath });
+  return buildApiUri({ apiPath });
 }
