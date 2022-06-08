@@ -11,10 +11,10 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
-  createdBy: CreatedBy|null,
-  hubs: Array<Hub>,
-  createdDate: string,
-  avatarSize: number,
+  createdBy: CreatedBy | null;
+  hubs: Array<Hub>;
+  createdDate: string;
+  avatarSize: number;
 };
 
 function SubmissionDetails({
@@ -23,7 +23,8 @@ function SubmissionDetails({
   createdDate,
   avatarSize = 30,
 }: Args): ReactElement<"div"> {
-  let showAllHubs = process.browser && (window.innerWidth > breakpoints.medium.int);
+  let showAllHubs =
+    process.browser && window.innerWidth > breakpoints.medium.int;
 
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
 
@@ -31,55 +32,62 @@ function SubmissionDetails({
   if (showAllHubs) {
     sliceIndex = 3;
   }
-  const visibleHubs = hubs.slice(0,sliceIndex);
+  const visibleHubs = hubs.slice(0, sliceIndex);
   const hiddenHubs = hubs.slice(sliceIndex);
-
 
   return (
     <div className={css(styles.submittedBy)}>
       <div className={css(styles.createdByContainer)}>
-        <AuthorAvatar author={createdBy?.authorProfile} size={avatarSize} trueSize />
+        <AuthorAvatar
+          author={createdBy?.authorProfile}
+          size={avatarSize}
+          trueSize
+        />
       </div>
       <div className={css(styles.submittedByDetails)}>
-        <ALink href={`/user/${createdBy?.authorProfile?.id}/overview`} overrideStyle={styles.link}>
+        <ALink
+          href={`/user/${createdBy?.authorProfile?.id}/overview`}
+          overrideStyle={styles.link}
+        >
           {createdBy?.authorProfile?.firstName || "Deleted"}{" "}
           {createdBy?.authorProfile?.lastName || "User"}
         </ALink>
         <div className={css(styles.hubsContainer)}>
-            <>
-              <span
-                className={css(styles.textSecondary, styles.postedText)}
-              >{` posted`}{visibleHubs.length > 0 ? ` in` : ""}</span>
-              {visibleHubs.map((h, index) => (
-                <>
-                  <ALink
-                    theme="blankAndBlue"
-                    href={`/hubs/${h.slug}`}
-                    overrideStyle={styles.hubLink}
-                  >
-                    {toTitleCase(h.name)}
-                  </ALink>
-                  {index < visibleHubs?.length - 1 ? "," : ""}
-                </>
-              ))}
-              {hiddenHubs.length > 0 && (
-                <HubDropDown
-                  hubs={hiddenHubs}
-                  labelStyle={styles.hubLink}
-                  containerStyle={styles.hubDropdownContainer}
-                  isOpen={isHubsDropdownOpen}
-                  setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
-                />
-              )}
-            </>
+          <>
+            <span className={css(styles.textSecondary, styles.postedText)}>
+              {` posted`}
+              {visibleHubs.length > 0 ? ` in` : ""}
+            </span>
+            {visibleHubs.map((h, index) => (
+              <>
+                <ALink
+                  theme="blankAndBlue"
+                  href={`/hubs/${h.slug}`}
+                  overrideStyle={styles.hubLink}
+                >
+                  {toTitleCase(h.name)}
+                </ALink>
+                {index < visibleHubs?.length - 1 ? "," : ""}
+              </>
+            ))}
+            {hiddenHubs.length > 0 && (
+              <HubDropDown
+                hubs={hiddenHubs}
+                labelStyle={styles.hubLink}
+                containerStyle={styles.hubDropdownContainer}
+                isOpen={isHubsDropdownOpen}
+                setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
+              />
+            )}
+          </>
         </div>
         <span className={css(styles.dot)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
           {timeSince(createdDate)}
         </span>
       </div>
-    </div>      
-  )
+    </div>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -92,8 +100,7 @@ const styles = StyleSheet.create({
   submittedByDetails: {
     display: "block",
   },
-  postedText: {
-  },
+  postedText: {},
   createdByContainer: {
     marginRight: 7,
   },
@@ -102,28 +109,28 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     ":hover": {
       color: colors.NEW_BLUE(),
-    }    
-  },    
+    },
+  },
   hubLink: {
     textTransform: "capitalize",
     marginLeft: 5,
     fontWeight: 400,
-  },  
+  },
   timestamp: {
     marginLeft: 2,
   },
   textSecondary: {
     color: colors.MEDIUM_GREY(),
-  },  
+  },
   hubsContainer: {
     display: "inline",
-  },  
+  },
   hubDropdownContainer: {
     display: "inline-block",
-  },  
+  },
   dot: {
     color: colors.MEDIUM_GREY(),
-  },  
+  },
 });
 
 export default SubmissionDetails;
