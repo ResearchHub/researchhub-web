@@ -200,8 +200,9 @@ function FeedCard(props: FeedCardProps) {
     hypothesis: icons.lightbulb,
   };
   const resolvedHubs = hubs ?? [];
+
   const createdDate = formatDateStandard(created_date || uploaded_date);
-  const createdBy = parseCreatedBy(uploaded_by || created_by)
+  const createdBy = parseCreatedBy(uploaded_by || created_by);
   return (
     <Ripples
       className={css(
@@ -243,12 +244,12 @@ function FeedCard(props: FeedCardProps) {
           <div className={css(styles.container)}>
             <div>
               <div className={css(styles.rowContainer)}>
-              <SubmissionDetails
-                createdDate={createdDate}
-                hubs={hubs}
-                createdBy={createdBy}
-                avatarSize={20}
-              />                
+                <SubmissionDetails
+                  createdDate={createdDate}
+                  hubs={hubs}
+                  createdBy={createdBy}
+                  avatarSize={20}
+                />
                 {/* <div className={css(styles.postCreatedBy)}>
                   {uploaded_by || created_by ? (
                     <AuthorAvatar
@@ -370,9 +371,7 @@ function FeedCard(props: FeedCardProps) {
                         {icons.commentRegular}
                       </span>
                       <span className={css(styles.metadataText)}>
-                        <span>
-                          {discussion_count}
-                        </span>
+                        <span>{discussion_count}</span>
                         <span
                           className={css(styles.hideTextMobile)}
                         >{` Comment${discussion_count === 1 ? "" : "s"}`}</span>

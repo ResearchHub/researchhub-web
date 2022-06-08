@@ -20,13 +20,13 @@ import ReactPlaceholder from "react-placeholder/lib";
 import SubmissionDetails from "./SubmissionDetails";
 
 type Args = {
-  document: TopLevelDocument,
-  onDocumentRemove: Function,
-  onDocumentRestore: Function,
-  handleEdit: Function,
-  auth: any,
-  openPaperPDFModal?: Function,
-  currentUser?: any,
+  document: TopLevelDocument;
+  onDocumentRemove: Function;
+  onDocumentRestore: Function;
+  handleEdit: Function;
+  auth: any;
+  openPaperPDFModal?: Function;
+  currentUser?: any;
 };
 
 function DocumentHeader({
@@ -54,7 +54,7 @@ function DocumentHeader({
     score,
     hubs,
   } = document;
-  
+
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
@@ -63,15 +63,15 @@ function DocumentHeader({
   });
 
   useEffect(() => {
-    const isSubmittedByCurrentUser = currentUser && (currentUser?.id === createdBy?.id) 
+    const isSubmittedByCurrentUser =
+      currentUser && currentUser?.id === createdBy?.id;
     if (isSubmittedByCurrentUser) {
       setVoteState({
         ...voteState,
         userVote: UPVOTE,
         voteScore: document.score,
       });
-    }
-    else {
+    } else {
       setVoteState({
         ...voteState,
         userVote: document.userVote,
@@ -125,16 +125,18 @@ function DocumentHeader({
       onSuccess: handleVoteSuccess,
       onError: () => null,
     });
-
   }
 
   const authorElems = (authors || []).map((author, idx) => {
-    const lastElem = idx < authors.length - 1; 
+    const lastElem = idx < authors.length - 1;
     return (
       <span className={css(styles.author)}>
         {author.isClaimed ? (
           <span data-tip={"Verified profile"}>
-            <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
+            <ALink
+              overrideStyle={styles.link}
+              href={`/user/${author.id}/overview`}
+            >
               {author.firstName} {author.lastName}{" "}
               <span className={css(styles.badgeIcon)}>
                 {icons.checkCircleSolid}
@@ -151,15 +153,18 @@ function DocumentHeader({
     );
   });
   const formatElems = (formats || []).map((f) => {
-    return (
-      f.type === "pdf" ? (
-        <span className={css(styles.link)} onClick={() => openPaperPDFModal && openPaperPDFModal(true)}>PDF</span>
-      ) : (
-        <ALink href={f.url}>{f.type}</ALink>
-      )
-    )
+    return f.type === "pdf" ? (
+      <span
+        className={css(styles.link)}
+        onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
+      >
+        PDF
+      </span>
+    ) : (
+      <ALink href={f.url}>{f.type}</ALink>
+    );
   });
-  const claimableAuthors = document.authors.filter(a => !a.isClaimed);
+  const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
 
   return (
     // @ts-ignore
@@ -168,19 +173,17 @@ function DocumentHeader({
       showLoadingAnimation
       customPlaceholder={<DocumentHeaderPlaceholder />}
     >
-      {document.isReady &&
+      {document.isReady && (
         <div className={css(styles.documentHeader)}>
           <ReactTooltip />
-          {claimableAuthors.length > 0 &&
+          {claimableAuthors.length > 0 && (
             <AuthorClaimModal
               auth={auth}
               authors={claimableAuthors}
               isOpen={isAuthorClaimModalOpen}
-              setIsOpen={(isOpen) =>
-                setIsAuthorClaimModalOpen(isOpen)
-              }
+              setIsOpen={(isOpen) => setIsAuthorClaimModalOpen(isOpen)}
             />
-          }
+          )}
           <div className={css(styles.voteWidgetContainer)}>
             <VoteWidget
               score={voteState.voteScore}
@@ -214,8 +217,11 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>Authors</div>
                 <div className={css(styles.metaVal)}>
                   {authorElems}
-                  {claimableAuthors.length > 0 &&
-                    <span className={css(styles.claimProfile)} onClick={() => setIsAuthorClaimModalOpen(true)}>
+                  {claimableAuthors.length > 0 && (
+                    <span
+                      className={css(styles.claimProfile)}
+                      onClick={() => setIsAuthorClaimModalOpen(true)}
+                    >
                       Claim profile to earn Research Coin
                       <img
                         src={"/static/icons/coin-filled.png"}
@@ -225,7 +231,7 @@ function DocumentHeader({
                         height={20}
                       />
                     </span>
-                  }
+                  )}
                 </div>
               </div>
             )}
@@ -234,9 +240,21 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>DOI</div>
                 <div className={css(styles.metaVal)}>
                   {externalUrl ? (
-                    <ALink href={externalUrl} overrideStyle={styles.link} target="blank">{doi}</ALink>
+                    <ALink
+                      href={externalUrl}
+                      overrideStyle={styles.link}
+                      target="blank"
+                    >
+                      {doi}
+                    </ALink>
                   ) : (
-                    <ALink href={`https://` + doi} overrideStyle={styles.link} target="blank">{doi}</ALink>
+                    <ALink
+                      href={`https://` + doi}
+                      overrideStyle={styles.link}
+                      target="blank"
+                    >
+                      {doi}
+                    </ALink>
                   )}
                 </div>
               </div>
@@ -250,15 +268,18 @@ function DocumentHeader({
             {formatElems.length > 0 && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Formats</div>
-                <div className={css(styles.metaVal)}>
-                  {formatElems}
-                </div>
+                <div className={css(styles.metaVal)}>{formatElems}</div>
               </div>
             )}
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
-              <div className={css(styles.additionalDetail, styles.smallScreenVoteContainer)}>
+              <div
+                className={css(
+                  styles.additionalDetail,
+                  styles.smallScreenVoteContainer
+                )}
+              >
                 <VoteWidget
                   score={voteState.voteScore}
                   onUpvote={onUpvote}
@@ -273,24 +294,39 @@ function DocumentHeader({
                   styles={[styles.smallScreenVoteWidget]}
                 />
               </div>
-              <ALink overrideStyle={[styles.comments, styles.additionalDetail]} href={"#comments"}>
-                <span className={css(styles.detailIcon)}>{icons.commentsSolid}</span>
-                {discussionCount} <span className={css(styles.commentsText)}>&nbsp;{`comments`}</span>
+              <ALink
+                overrideStyle={[styles.comments, styles.additionalDetail]}
+                href={"#comments"}
+              >
+                <span className={css(styles.detailIcon)}>
+                  {icons.commentsSolid}
+                </span>
+                {discussionCount}{" "}
+                <span className={css(styles.commentsText)}>
+                  &nbsp;{`comments`}
+                </span>
               </ALink>
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
-                  <span className={css(styles.detailIcon, styles.starIcon)}>{icons.starFilled}</span>
+                  <span className={css(styles.detailIcon, styles.starIcon)}>
+                    {icons.starFilled}
+                  </span>
                   {unifiedDocument?.reviewSummary?.avg}
                   <span className={css(styles.reviewDetails)}>
                     &nbsp;{`based on`}&nbsp;
                     <ALink overrideStyle={[styles.comments]} href={"#comments"}>
-                      {(unifiedDocument?.reviewSummary?.count || 0) > 1 ? `${unifiedDocument?.reviewSummary?.count} reviews` : `${unifiedDocument?.reviewSummary?.count} review`}
+                      {(unifiedDocument?.reviewSummary?.count || 0) > 1
+                        ? `${unifiedDocument?.reviewSummary?.count} reviews`
+                        : `${unifiedDocument?.reviewSummary?.count} review`}
                     </ALink>
                   </span>
                 </div>
               )}
               {document.boostAmount > 0 && (
-                <div className={css(styles.boostAmount, styles.additionalDetail)} data-tip={"Research Coin tipped"}>
+                <div
+                  className={css(styles.boostAmount, styles.additionalDetail)}
+                  data-tip={"Research Coin tipped"}
+                >
                   <span className={css(styles.coinDetailIcon)}>
                     <img
                       src={"/static/icons/coin-filled.png"}
@@ -299,9 +335,11 @@ function DocumentHeader({
                       height={20}
                     />
                   </span>
-                  <span className={css(styles.boostAmountText)}>+{document.boostAmount}</span>
+                  <span className={css(styles.boostAmountText)}>
+                    +{document.boostAmount}
+                  </span>
                 </div>
-              )}                 
+              )}
               {unifiedDocument.documentType && (
                 <div className={css(styles.type, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon)}>
@@ -313,7 +351,9 @@ function DocumentHeader({
                       icons.penSquare
                     ) : null}
                   </span>
-                  <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
+                  <span className={css(styles.typeText)}>
+                    {unifiedDocument.documentType}
+                  </span>
                 </div>
               )}
             </div>
@@ -328,7 +368,7 @@ function DocumentHeader({
             </div>
           </div>
         </div>
-      }
+      )}
     </ReactPlaceholder>
   );
 }
@@ -339,12 +379,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submissionDetailsContainer: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   boostAmountText: {
     color: colors.GREEN(),
     marginLeft: 7,
-  },  
+  },
   documentHeader: {
     position: "relative",
   },
@@ -352,8 +392,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: -50,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      display: "none"
-    }    
+      display: "none",
+    },
   },
   smallScreenVoteWidget: {
     marginRight: 0,
@@ -361,8 +401,8 @@ const styles = StyleSheet.create({
   smallScreenVoteContainer: {
     display: "none",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      display: "block"
-    }
+      display: "block",
+    },
   },
   actionsAndDetailsRow: {
     display: "flex",
@@ -371,7 +411,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "block",
       marginTop: 35,
-    }    
+    },
   },
   additionalDetails: {
     display: "flex",
@@ -395,7 +435,7 @@ const styles = StyleSheet.create({
   comments: {
     display: "flex",
     fontWeight: 400,
-    color: colors.MEDIUM_GREY(),    
+    color: colors.MEDIUM_GREY(),
   },
   reviews: {
     display: "flex",
@@ -404,12 +444,12 @@ const styles = StyleSheet.create({
     display: "inline-flex",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }
+    },
   },
   commentsText: {
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
-    }
+    },
   },
   type: {
     display: "flex",
@@ -420,7 +460,7 @@ const styles = StyleSheet.create({
   actions: {
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginTop: 20,
-    }
+    },
   },
   claimProfile: {
     cursor: "pointer",
@@ -437,7 +477,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }    
+    },
   },
   badgeIcon: {
     color: colors.NEW_BLUE(),
@@ -448,15 +488,15 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     ":hover": {
       color: colors.NEW_BLUE(),
-    }    
-  },  
+    },
+  },
   title: {
     fontWeight: 600,
     lineHeight: "40px",
     marginTop: 10,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       lineHeight: "32px",
-    }
+    },
   },
   metadata: {
     marginTop: 25,
@@ -480,7 +520,7 @@ const styles = StyleSheet.create({
     marginRight: 2,
     ":last-child": {
       marginRight: 20,
-    }
+    },
   },
 });
 
