@@ -53,6 +53,7 @@ function DocumentHeader({
     userVote,
     score,
     hubs,
+    isOpenAccess
   } = document;
   
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
@@ -132,13 +133,10 @@ function DocumentHeader({
     const lastElem = idx < authors.length - 1; 
     return (
       <span className={css(styles.author)}>
-        {author.isClaimed ? (
+        {author.id ? (
           <span data-tip={"Verified profile"}>
             <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
-              {author.firstName} {author.lastName}{" "}
-              <span className={css(styles.badgeIcon)}>
-                {icons.checkCircleSolid}
-              </span>
+              {author.firstName} {author.lastName}
             </ALink>
           </span>
         ) : (
@@ -255,6 +253,14 @@ function DocumentHeader({
                 </div>
               </div>
             )}
+            {isOpenAccess && (
+              <div className={css(styles.metadataRow)} >
+                <div className={css(styles.metaKey)}>License</div>
+                <div className={css(styles.metaVal)}>
+                  Open Access
+                </div>
+              </div>
+            )}              
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
@@ -315,7 +321,7 @@ function DocumentHeader({
                   </span>
                   <span className={css(styles.typeText)}>{unifiedDocument.documentType}</span>
                 </div>
-              )}
+              )}                
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions

@@ -853,6 +853,7 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     textAlign: "center",
+    marginTop: 20,
     "@media only screen and (max-width: 415px)": {
       width: 280,
       fontSize: 16,

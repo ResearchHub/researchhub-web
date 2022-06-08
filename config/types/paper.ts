@@ -62,6 +62,7 @@ export class Paper implements TopLevelDocument {
   _formats: PaperFormat[]
   _isReady: boolean
   _boostAmount: number
+  _isOpenAccess: boolean
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw)
@@ -76,7 +77,8 @@ export class Paper implements TopLevelDocument {
     this._isReady = raw.id ? true : false;
     this._boostAmount = raw.boost_amount || 0;
     this._id = raw.id;
-
+    this._isOpenAccess = raw.is_open_access || null;
+    
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
     }
@@ -107,6 +109,10 @@ export class Paper implements TopLevelDocument {
 
   get isReady():boolean {
     return this._isReady;
+  }
+
+  get isOpenAccess():boolean|undefined {
+    return this._isOpenAccess;
   }  
 
   get boostAmount():number {

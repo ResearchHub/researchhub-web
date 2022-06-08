@@ -30,6 +30,7 @@ export interface TopLevelDocument {
   consensus?: CitationConsensus,
   boostAmount: number,
   id: ID,
+  isOpenAccess?: boolean,
 }
 
 export type PaperFormat = {
@@ -208,7 +209,6 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
-    isClaimed: raw.id ? true : false,
     ...(raw.sequence && {sequence: raw.sequence}),
   }
 
