@@ -53,6 +53,7 @@ function DocumentHeader({
     userVote,
     score,
     hubs,
+    isOpenAccess
   } = document;
 
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
@@ -131,16 +132,10 @@ function DocumentHeader({
     const lastElem = idx < authors.length - 1;
     return (
       <span className={css(styles.author)}>
-        {author.isClaimed ? (
-          <span data-tip={"Verified profile"}>
-            <ALink
-              overrideStyle={styles.link}
-              href={`/user/${author.id}/overview`}
-            >
-              {author.firstName} {author.lastName}{" "}
-              <span className={css(styles.badgeIcon)}>
-                {icons.checkCircleSolid}
-              </span>
+        {author.id ? (
+          <span>
+            <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
+              {author.firstName} {author.lastName}
             </ALink>
           </span>
         ) : (
@@ -206,12 +201,6 @@ function DocumentHeader({
           </div>
           <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
-            {journal && (
-              <div className={css(styles.metadataRow)}>
-                <div className={css(styles.metaKey)}>Journal</div>
-                <div className={css(styles.metaVal)}>{journal}</div>
-              </div>
-            )}
             {authorElems.length > 0 && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Authors</div>
@@ -235,6 +224,12 @@ function DocumentHeader({
                 </div>
               </div>
             )}
+            {journal && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Journal</div>
+                <div className={css(styles.metaVal)}>{journal}</div>
+              </div>
+            )}            
             {doi && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>DOI</div>
@@ -271,6 +266,14 @@ function DocumentHeader({
                 <div className={css(styles.metaVal)}>{formatElems}</div>
               </div>
             )}
+            {isOpenAccess && (
+              <div className={css(styles.metadataRow)} >
+                <div className={css(styles.metaKey)}>License</div>
+                <div className={css(styles.metaVal)}>
+                  Open Access
+                </div>
+              </div>
+            )}              
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
@@ -355,7 +358,7 @@ function DocumentHeader({
                     {unifiedDocument.documentType}
                   </span>
                 </div>
-              )}
+              )}                
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions
@@ -364,6 +367,7 @@ function DocumentHeader({
                 onDocumentRemove={onDocumentRemove}
                 onDocumentRestore={onDocumentRestore}
                 handleEdit={handleEdit}
+                openPaperPDFModal={(formats || []).length > 0 ? openPaperPDFModal: undefined}
               />
             </div>
           </div>
@@ -491,12 +495,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    fontWeight: 600,
-    lineHeight: "40px",
     marginTop: 10,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      lineHeight: "32px",
-    },
   },
   metadata: {
     marginTop: 25,

@@ -22,6 +22,7 @@ import { formatScore } from "~/config/utils/form";
 // components
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import DiscussionActions from "../redux/discussion";
+import { breakpoints } from "~/config/themes/screen";
 
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 25,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 14,
     },
   },
@@ -356,6 +357,10 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: voteWidgetColors.ARROW,
     fontSize: 14,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
     ":hover": {
       color: colors.GREEN(0.4),
     },
@@ -377,7 +382,7 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
   },
   marginRight: {
-    marginRight: 10,
+    marginRight: 5,
   },
   promotionContainer: {
     display: "flex",
@@ -393,7 +398,7 @@ const styles = StyleSheet.create({
     },
   },
   marginLeft: {
-    marginLeft: 10,
+    marginLeft: 5,
   },
   divider: {
     margin: "5px 0 15px",

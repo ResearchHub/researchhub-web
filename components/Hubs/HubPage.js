@@ -550,14 +550,14 @@ class HubPage extends Component {
                   onFeedSelect={this.onFeedSelect}
                   current={home ? null : hub}
                 />
+                <LeaderboardContainer
+                  hubId={0}
+                  initialUsers={leaderboardFeed}
+                />
                 <HubsList
                   current={home ? null : hub}
                   initialHubList={initialHubList}
                   onHubSelect={this.onHubSelect}
-                />
-                <LeaderboardContainer
-                  hubId={0}
-                  initialUsers={leaderboardFeed}
                 />
               </div>
             </div>
