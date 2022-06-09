@@ -137,6 +137,12 @@ const routes = (BASE_URL) => {
         }
       }
     },
+    FEATURE_DOCUMENT: () => {
+      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/feature_document/`;
+    },
+    REMOVE_FROM_FEATURED: () => {
+      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/remove_from_featured/`;
+    },
     FLAG_AND_REMOVE: () => {
       return BASE_URL + "audit/flag_and_remove/";
     },
