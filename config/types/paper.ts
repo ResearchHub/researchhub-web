@@ -59,6 +59,7 @@ export class Paper implements TopLevelDocument {
   _createdBy: CreatedBy | null
   _datePublished?: string
   _externalUrl?: string | undefined
+  _journal?: string
   _formats: PaperFormat[]
   _isReady: boolean
   _boostAmount: number
@@ -78,7 +79,8 @@ export class Paper implements TopLevelDocument {
     this._boostAmount = raw.boost_amount || 0;
     this._id = raw.id;
     this._isOpenAccess = raw.is_open_access || null;
-    
+    this._journal = raw.external_source;
+
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
     }
@@ -105,6 +107,10 @@ export class Paper implements TopLevelDocument {
 
   get unifiedDocument():UnifiedDocument {
     return this._unifiedDocument;
+  }
+
+  get journal():string|undefined {
+    return this._journal;
   }
 
   get isReady():boolean {

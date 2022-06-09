@@ -55,7 +55,7 @@ function DocumentHeader({
     hubs,
     isOpenAccess
   } = document;
-  
+
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState({
@@ -201,12 +201,6 @@ function DocumentHeader({
           </div>
           <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
-            {journal && (
-              <div className={css(styles.metadataRow)}>
-                <div className={css(styles.metaKey)}>Journal</div>
-                <div className={css(styles.metaVal)}>{journal}</div>
-              </div>
-            )}
             {authorElems.length > 0 && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Authors</div>
@@ -227,6 +221,12 @@ function DocumentHeader({
                 </div>
               </div>
             )}
+            {journal && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Journal</div>
+                <div className={css(styles.metaVal)}>{journal}</div>
+              </div>
+            )}            
             {doi && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>DOI</div>
@@ -330,6 +330,7 @@ function DocumentHeader({
                 onDocumentRemove={onDocumentRemove}
                 onDocumentRestore={onDocumentRestore}
                 handleEdit={handleEdit}
+                openPaperPDFModal={(formats || []).length > 0 ? openPaperPDFModal: undefined}
               />
             </div>
           </div>
