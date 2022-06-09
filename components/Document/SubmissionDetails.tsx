@@ -32,8 +32,8 @@ function SubmissionDetails({
   if (showAllHubs) {
     sliceIndex = 3;
   }
-  const visibleHubs = (hubs ?? []).slice(0, sliceIndex);
-  const hiddenHubs = (hubs ?? []).slice(sliceIndex);
+  const visibleHubs = hubs?.slice(0, sliceIndex) ?? [];
+  const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
   return (
     <div className={css(styles.submittedBy)}>
