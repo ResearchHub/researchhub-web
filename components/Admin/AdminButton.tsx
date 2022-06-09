@@ -9,6 +9,7 @@ import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import { ID } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
+import Button from "../Form/Button";
 
 type Args = {
   unifiedDocumentId: ID,
@@ -22,9 +23,70 @@ function AdminButton({
   showMessage,
 }: Args) {
 
-  const [excludeFromFeedSelectedChoices, setExcludeFromFeedSelectedChoices] = useState(["homepage", "hubs"]);
+  const [excludeFromFeedSelectedChoices, setExcludeFromFeedSelectedChoices] = useState(["homepage"]);
+  const [makeFeaturedChoices, setMakeFeaturedChoices] = useState(["homepage"]);
   const [isOpen, setIsOpen] = useState(false);
   const [isExcludeSubmenuOpen, setIsExcludeSubmenuOpen] = useState(false);
+  const [isFeaturedSubmenuOpen, setIsFeaturedSubmenuOpen] = useState(false);
+
+  const _includeInFeed = () => {
+    includeInFeed({
+      unifiedDocumentId,
+      onSuccess: () => {
+        setMessage("Included in Feed");
+        showMessage({ show: true, error: false });
+      },
+      onError: () => {
+        setMessage("Failed to include in feed");
+        showMessage({ show: true, error: true });
+      }
+    })
+  }
+
+  const _excludeFromFeed = () => {
+    const params = {
+      excludeFromHomepage: excludeFromFeedSelectedChoices.includes("homepage"),
+      excludeFromHubs: excludeFromFeedSelectedChoices.includes("hubs"),
+    }
+    
+    excludeFromFeed({
+      unifiedDocumentId,
+      params,
+      onSuccess: () => {
+        setIsOpen(false);
+        setMessage("Excluded from Feed");
+        showMessage({ show: true, error: false });
+      },
+      onError: () => {
+        setIsOpen(false);
+        setMessage("Failed to exclude from feed");
+        showMessage({ show: true, error: true });
+      }
+    })
+  }
+
+  const _makeFeatured = () => {
+    alert('feature')
+    // const params = {
+    //   excludeFromHomepage: excludeFromFeedSelectedChoices.includes("homepage"),
+    //   excludeFromHubs: excludeFromFeedSelectedChoices.includes("hubs"),
+    // }
+    
+    // excludeFromFeed({
+    //   unifiedDocumentId,
+    //   params,
+    //   onSuccess: () => {
+    //     setIsOpen(false);
+    //     setMessage("Excluded from Feed");
+    //     showMessage({ show: true, error: false });
+    //   },
+    //   onError: () => {
+    //     setIsOpen(false);
+    //     setMessage("Failed to exclude from feed");
+    //     showMessage({ show: true, error: true });
+    //   }
+    // })
+  }    
 
   const dropdownOpts = [{
     icon: icons.eyeSlash,
@@ -32,23 +94,9 @@ function AdminButton({
     value: "exclude",
     isVisible: true,
     onSelect: () => {
-      const params = {
-        excludeFromHomepage: excludeFromFeedSelectedChoices.includes("homepage"),
-        excludeFromHubs: excludeFromFeedSelectedChoices.includes("hubs"),
+      if (!isExcludeSubmenuOpen) {
+        _excludeFromFeed();
       }
-      
-      excludeFromFeed({
-        unifiedDocumentId,
-        params,
-        onSuccess: () => {
-          setMessage("Excluded from Feed");
-          showMessage({ show: true, error: false });
-        },
-        onError: () => {
-          setMessage("Failed to exclude from feed");
-          showMessage({ show: true, error: true });
-        }
-      })
     }
   },{
     icon: icons.eye,
@@ -56,17 +104,17 @@ function AdminButton({
     value: "include",
     isVisible: true,
     onSelect: () => {
-      includeInFeed({
-        unifiedDocumentId,
-        onSuccess: () => {
-          setMessage("Included in Feed");
-          showMessage({ show: true, error: false });
-        },
-        onError: () => {
-          setMessage("Failed to include in feed");
-          showMessage({ show: true, error: true });
-        }
-      })
+      _includeInFeed();
+    }
+  },{
+    icon: icons.upSolid,
+    label: "Make Featured",
+    value: "feature",
+    isVisible: true,
+    onSelect: () => {
+      if (!isFeaturedSubmenuOpen) {
+        _makeFeatured();
+      }
     }
   }].filter((opt) => opt.isVisible)
 
@@ -82,6 +130,18 @@ function AdminButton({
     }    
   }
 
+  const handleFeatureCheckbox = (id, state, event) => {
+    event.stopPropagation();
+    const isSelected = makeFeaturedChoices.includes(id);
+    if (isSelected) {
+      const newChoices = makeFeaturedChoices.filter(c => c !== id)
+      setMakeFeaturedChoices(newChoices);
+    }
+    else {
+      setMakeFeaturedChoices([id, ...makeFeaturedChoices]);  
+    }    
+  }
+
   const renderDropdownOpt = (opt: any) => {
     if (opt.value === "exclude") {
       return (
@@ -89,12 +149,12 @@ function AdminButton({
           <div className={css(styles.opt)}>
             <span className={css(styles.iconWrapper)}>{opt.icon}</span>
             <span className={css(styles.optLabel)}>{opt.label}</span>
-            <span className={css(styles.excludeSettingsBtn)} onClick={(event) => {
+            <span className={css(styles.settingsBtn)} onClick={(event) => {
               event.stopPropagation();
               setIsExcludeSubmenuOpen(!isExcludeSubmenuOpen)
             }}>{icons.cog}</span>
           </div>
-          <div className={css(styles.excludeMenuSettings, isExcludeSubmenuOpen && styles.excludeMenuSettingsVisible)}>
+          <div className={css(styles.menuSettings, isExcludeSubmenuOpen && styles.excludeMenuSettingsVisible)}>
             <div className={css(styles.checkboxContainer)}>
               <CheckBox
                 key={`${opt.value}-homepage`}
@@ -126,6 +186,60 @@ function AdminButton({
                 // @ts-ignore
                 checkStyleOverride={styles.checkIcon}
               />  
+            </div>
+            <div className={css(styles.buttonContainer)}>
+              <Button label="Submit" size="xsmall" customButtonStyle={styles.submitButton} onClick={_excludeFromFeed} />
+            </div>
+          </div>
+        </div>
+      );      
+    }
+    if (opt.value === "feature") {
+      return (
+        <div>
+          <div className={css(styles.opt)}>
+            <span className={css(styles.iconWrapper, styles.iconMakeFeature)}>{opt.icon}</span>
+            <span className={css(styles.optLabel)}>{opt.label}</span>
+            <span className={css(styles.settingsBtn)} onClick={(event) => {
+              event.stopPropagation();
+              setIsFeaturedSubmenuOpen(!isFeaturedSubmenuOpen)
+            }}>{icons.cog}</span>
+          </div>
+          <div className={css(styles.menuSettings, isFeaturedSubmenuOpen && styles.featuredMenuSettingsVisible)}>
+            <div className={css(styles.checkboxContainer)}>
+              <CheckBox
+                key={`${opt.value}-homepage`}
+                label="Feature in homepage"
+                isSquare
+                // @ts-ignore
+                id={"homepage"}
+                active={makeFeaturedChoices.includes("homepage")}
+                onChange={handleFeatureCheckbox}
+                labelStyle={styles.checkboxLabel}
+                // @ts-ignore
+                checkboxStyleOverride={styles.checkbox}
+                // @ts-ignore
+                checkStyleOverride={styles.checkIcon}
+              />
+            </div>
+            <div className={css(styles.checkboxContainer)}>
+              <CheckBox
+                key={`${opt.value}-hubs`}
+                label="Feature in hubs"
+                isSquare
+                // @ts-ignore
+                id={"hubs"}
+                active={makeFeaturedChoices.includes("hubs")}
+                onChange={handleFeatureCheckbox}
+                labelStyle={styles.checkboxLabel}
+                // @ts-ignore
+                checkboxStyleOverride={styles.checkbox}
+                // @ts-ignore
+                checkStyleOverride={styles.checkIcon}
+              />  
+            </div>
+            <div className={css(styles.buttonContainer)}>
+              <Button label="Submit" size="xsmall" customButtonStyle={styles.submitButton} onClick={_makeFeatured} />
             </div>
           </div>
         </div>
@@ -160,13 +274,25 @@ function AdminButton({
       // @ts-ignore
       overrideTargetButton={styles.overrideTargetButton}
       withDownIcon={false}
-      onClose={() => setIsOpen(false)}
+      onClose={
+        () => {
+          if (isExcludeSubmenuOpen || isFeaturedSubmenuOpen) {
+            return setIsOpen(true)
+          }          
+          return setIsOpen(false)
+      }}
     />
   )
 }
 
 const styles = StyleSheet.create({
-  "excludeSettingsBtn": {
+  "buttonContainer": {
+    marginTop: 10,
+  },
+  "submitButton": {
+
+  },
+  "settingsBtn": {
     alignSelf: "flex-end",
     marginLeft: "auto",
     cursor: "pointer",
@@ -174,7 +300,7 @@ const styles = StyleSheet.create({
       opacity: 0.5,
     }
   },
-  "excludeMenuSettings": {
+  "menuSettings": {
     display: "none",    
     marginLeft: 15,
     marginTop: 15,
@@ -182,8 +308,14 @@ const styles = StyleSheet.create({
   "excludeMenuSettingsVisible": {
     display: "block",    
   },  
+  "featuredMenuSettingsVisible": {
+    display: "block",    
+  },    
   "iconWrapper": {
 
+  },
+  "iconMakeFeature": {
+    color: colors.GREEN(),
   },
   "checkIcon": {
     fontSize: 12,
