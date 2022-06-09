@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    height: 15,
+    height: 18,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
@@ -152,9 +152,9 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     position: "absolute",
-    top: -3,
-    right: -5,
-    fontSize: 10,
+    top: -4,
+    right: -7,
+    fontSize: 12,
     marginLeft: 3,
     color: colors.BLUE(),
     background: "#FFF",

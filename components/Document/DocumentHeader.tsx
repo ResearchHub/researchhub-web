@@ -134,7 +134,7 @@ function DocumentHeader({
     return (
       <span className={css(styles.author)}>
         {author.id ? (
-          <span data-tip={"Verified profile"}>
+          <span>
             <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
               {author.firstName} {author.lastName}
             </ALink>
