@@ -203,6 +203,8 @@ function FeedCard(props: FeedCardProps) {
 
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
+
+  console.log(props);
   return (
     <Ripples
       className={css(
@@ -296,9 +298,11 @@ function FeedCard(props: FeedCardProps) {
                       <h2 className={css(styles.title)}>
                         {titleAsHtml ? titleAsHtml : title ? title : ""}
                       </h2>
-                      <div className={css(styles.abstract) + " clamp2"}>
-                        {abstract || renderableText}
-                      </div>
+                      {(abstract || renderableText) && (
+                        <div className={css(styles.abstract) + " clamp2"}>
+                          {abstract || renderableText}
+                        </div>
+                      )}
                     </div>
                     {previews.length > 0 && (
                       <div
