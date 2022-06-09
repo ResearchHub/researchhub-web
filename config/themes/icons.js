@@ -95,6 +95,7 @@ import {
   faComments as faCommentRegular,
   faFileLines as faPaperRegular,
   faPenSquare as faPenSquareRegular,
+  faArrowAltToBottom as download,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -360,6 +361,7 @@ const icons = {
   fileUpload: <FontAwesomeIcon icon={faFileUpload} />,
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
+  download: <FontAwesomeIcon icon={download} />,
   shield: <FontAwesomeIcon icon={faShieldAlt} />,
   flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
   friends: <FontAwesomeIcon icon={faUsers} />,

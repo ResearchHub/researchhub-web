@@ -22,6 +22,7 @@ type Args = {
   onDocumentRestore: Function,  
   handleEdit: Function,  
   currentUser: any,
+  openPaperPDFModal?: Function,
 }
 
 function DocumentActions({
@@ -30,6 +31,7 @@ function DocumentActions({
   onDocumentRestore,
   handleEdit,
   currentUser,
+  openPaperPDFModal,
 }: Args): ReactElement<"div">{
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
@@ -50,6 +52,15 @@ function DocumentActions({
   }
 
   const actionButtons = [
+    {
+      active: openPaperPDFModal,
+      key: "pdf",
+      html: (
+        <div className={css(styles.actionIcon)} data-tip={"Download PDF"} onClick={() => openPaperPDFModal && openPaperPDFModal(true)}>
+          {icons.download}
+        </div>
+      ),
+    },    
     {
       active: canEdit,
       key: "edit",
