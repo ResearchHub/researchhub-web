@@ -10,6 +10,9 @@ import { connect } from "react-redux";
 import { ID } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
 import Button from "../Form/Button";
+import removeDocFromFeatured from "./api/removeDocFromFeaturedAPI";
+import featureDoc from "./api/featureDocAPI";
+
 
 type Args = {
   unifiedDocumentId: ID,
@@ -66,27 +69,42 @@ function AdminButton({
   }
 
   const _makeFeatured = () => {
-    alert('feature')
-    // const params = {
-    //   excludeFromHomepage: excludeFromFeedSelectedChoices.includes("homepage"),
-    //   excludeFromHubs: excludeFromFeedSelectedChoices.includes("hubs"),
-    // }
-    
-    // excludeFromFeed({
-    //   unifiedDocumentId,
-    //   params,
-    //   onSuccess: () => {
-    //     setIsOpen(false);
-    //     setMessage("Excluded from Feed");
-    //     showMessage({ show: true, error: false });
-    //   },
-    //   onError: () => {
-    //     setIsOpen(false);
-    //     setMessage("Failed to exclude from feed");
-    //     showMessage({ show: true, error: true });
-    //   }
-    // })
-  }    
+    const params = {
+      featureInHomepage: makeFeaturedChoices.includes("homepage"),
+      featureInHubs: makeFeaturedChoices.includes("hubs"),
+    }
+
+    featureDoc({
+      unifiedDocumentId,
+      params,
+      onSuccess: () => {
+        setIsOpen(false);
+        setMessage("Document is featured");
+        showMessage({ show: true, error: false });
+      },
+      onError: () => {
+        setIsOpen(false);
+        setMessage("Failed to feature document");
+        showMessage({ show: true, error: true });
+      }
+    })
+  }
+
+  const _removeFromFeatured = () => {
+    removeDocFromFeatured({
+      unifiedDocumentId,
+      onSuccess: () => {
+        setIsOpen(false);
+        setMessage("Document removed from featured");
+        showMessage({ show: true, error: false });
+      },
+      onError: () => {
+        setIsOpen(false);
+        setMessage("Failed to remove featured document");
+        showMessage({ show: true, error: true });
+      }
+    })
+  }      
 
   const dropdownOpts = [{
     icon: icons.eyeSlash,
@@ -116,6 +134,15 @@ function AdminButton({
         _makeFeatured();
       }
     }
+  },{
+    icon: icons.downSolid,
+    iconStyle: styles.removeFromFeatureIcon,
+    label: "Remove from Featured",
+    value: "remove-feature",
+    isVisible: true,
+    onSelect: () => {
+      _removeFromFeatured();
+    }    
   }].filter((opt) => opt.isVisible)
 
   const handleExcludeFromFeedCheckbox = (id, state, event) => {
@@ -247,7 +274,7 @@ function AdminButton({
     }
     return (
       <div>
-        <span className={css(styles.iconWrapper)}>{opt.icon}</span>
+        <span className={css(styles.iconWrapper, opt.iconStyle)}>{opt.icon}</span>
         <span className={css(styles.optLabel)}>{opt.label}</span>
       </div>
     );
@@ -312,7 +339,9 @@ const styles = StyleSheet.create({
     display: "block",    
   },    
   "iconWrapper": {
-
+  },
+  "removeFromFeatureIcon": {
+    color: colors.RED(),
   },
   "iconMakeFeature": {
     color: colors.GREEN(),
