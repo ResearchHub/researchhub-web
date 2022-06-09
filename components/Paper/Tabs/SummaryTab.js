@@ -448,12 +448,12 @@ class SummaryTab extends Component {
         return (
           <Fragment>
             {readOnly && !editAbstract && (
-              <div
+              <p
                 className={css(styles.abstractContainer)}
                 data-test={isDevEnv() ? `abstract` : undefined}
               >
                 {parsedAbstract}
-              </div>
+              </p>
             )}
           </Fragment>
         );
@@ -744,13 +744,13 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   abstractContainer: {
-    fontSize: 18,
-    lineHeight: "28px",
+    // fontSize: 18,
+    // lineHeight: "28px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 16,
-      lineHeight: "26px",
+      // fontSize: 16,
+      // lineHeight: "26px",
     },
   },
   abstractText: {
@@ -786,15 +786,6 @@ var styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 15,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 500,
-    color: colors.BLACK(),
-    display: "flex",
-    margin: 0,
-    fontFamily: "Roboto",
   },
   titleRow: {
     display: "flex",
@@ -862,6 +853,7 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     textAlign: "center",
+    marginTop: 20,
     "@media only screen and (max-width: 415px)": {
       width: 280,
       fontSize: 16,

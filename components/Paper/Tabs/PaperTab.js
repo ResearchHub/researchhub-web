@@ -400,19 +400,19 @@ var styles = StyleSheet.create({
     //Todo: check for responsiveness
   },
   emptyPlaceholderText: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
     textAlign: "center",
     marginTop: 20,
     marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      fontSize: 26,
+      fontSize: 20,
       width: 380,
     },
     "@media only screen and (max-width: 500px)": {
       width: "80%",
-      fontSize: 22,
+      fontSize: 20,
     },
   },
   emptyPlaceholderSubtitle: {
@@ -496,12 +496,6 @@ var styles = StyleSheet.create({
   title: {
     display: "flex",
     alignItems: "center",
-    fontSize: 20,
-    margin: 0,
-    fontWeight: 500,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 20,
-    },
   },
   showPaperButton: {
     marginTop: 15,

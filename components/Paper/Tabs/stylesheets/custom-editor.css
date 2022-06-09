@@ -65,19 +65,6 @@
   padding: 0;
 }
 
-.post-body .ck-read-only p {
-  font-size: 18px !important;
-  line-height: 30px !important;
-  white-space: pre-line !important;
-  word-break: break-word !important;
-}
-@media only screen and (max-width: 768px) {
-  .post-body .ck-read-only p {
-    font-size: 16px !important;
-    line-height: 26px !important;
-  }
-}
-
 .post-body .ck-content {
   border: none !important;
   line-height: 24px;
@@ -99,12 +86,6 @@ h3 {
   text-decoration: underline;
 }
 
-.post-body .ck-read-only p:first-child {
-  margin-top: 0;
-  /* border: 1px solid rgb(232, 232, 239) !important;
-  padding: 20px !important; */
-}
-
 .post-body .ck-read-only p:last-child {
   margin-bottom: 0;
 }
@@ -124,4 +105,15 @@ h3 {
 
 .post-body h1 {
   display: none !important;
+}
+
+.post-body h1 br,
+.post-body h2 br,
+.post-body h3 br,
+.post-body h4 br {
+  display: none;
+}
+
+.post-body *[data-placeholder] {
+  display: none;
 }

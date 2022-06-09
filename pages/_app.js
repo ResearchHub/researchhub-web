@@ -27,7 +27,7 @@ import "../components/EditorsDashboard/stylesheets/date.css";
 import "../components/Modals/Stylesheets/Dnd.css";
 import "../components/TextEditor/stylesheets/QuillTextEditor.css";
 import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
-import "~/components/Paper/Tabs/stylesheets/paper.css";
+import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
 

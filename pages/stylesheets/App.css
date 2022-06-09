@@ -283,25 +283,59 @@ input[type="number"]::-webkit-outer-spin-button {
 
 h1 {
   font-size: 32px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  line-height: 1.2em;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 26px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 600;
 }
 
 h3 {
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+h4 {
   font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+}
+
+strong {
+  font-weight: 500;
+}
+
+p,
+ol,
+ul {
+  font-size: 16px;
+  line-height: 1.6em;
+  margin-top: 0;
+  margin-bottom: 1em;
 }
 
 @media only screen and (max-width: 768px) {
   h1 {
-    font-size: 26px;
+    font-size: 28px;
   }
   h2 {
-    font-size: 24px;
+    font-size: 22px;
   }
-
   h3 {
+    font-size: 20px;
+  }
+  h4 {
     font-size: 18px;
   }
 }
