@@ -360,7 +360,6 @@ function FeedCard(props: FeedCardProps) {
                         styles={styles.voteWidget}
                         upvoteStyleClass={styles.mobileVote}
                         downvoteStyleClass={styles.mobileVote}
-                        // pillClass={styles.mobilePill}
                         type="Discussion"
                         selected={voteState}
                       />
