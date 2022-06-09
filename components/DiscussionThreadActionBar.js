@@ -73,6 +73,7 @@ const Share = () => {
 
 const styles = StyleSheet.create({
   commentCountContainer: {
+    display: "none",
     marginRight: "20px",
     marginLeft: -1,
     padding: 4,

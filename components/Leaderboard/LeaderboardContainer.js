@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
   container: {
     background: "#fff",
     display: "block",
-    position: "sticky",
     top: 100,
     borderRadius: 4,
     width: "100%",

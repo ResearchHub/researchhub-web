@@ -172,9 +172,6 @@ class ThreadActionBar extends Component {
             </div>
           )}
 
-          {/* <span className={css(styles.replyIcon,true && styles.active)} id={"supportIcon"}>
-          </span>           */}
-
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
           <FlagButtonV2
@@ -246,6 +243,7 @@ const styles = StyleSheet.create({
     },
   },
   commentCountContainer: {
+    display: "none",
     marginRight: 20,
     padding: 4,
     borderRadius: 3,
@@ -284,9 +282,6 @@ const styles = StyleSheet.create({
   flagButtonTextStyle: {
     fontSize: 14,
     marginLeft: 8,
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      fontSize: 12,
-    },
   },
   link: {
     color: colors.GREY(),
