@@ -101,7 +101,6 @@ class BaseModal extends Component {
         bottom: 0,
         backgroundColor: "rgba(0,0,0,0.2)",
         zIndex: this.props.zIndex ? this.props.zIndex : "11",
-        borderRadius: 5,
       },
     };
   };

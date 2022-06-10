@@ -24,6 +24,7 @@ import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import withWebSocket from "~/components/withWebSocket";
+import { StyleSheet } from "aphrodite";
 
 export type FormErrors = {
   paperID: boolean;
@@ -208,14 +209,17 @@ function PaperUploadWizardUpdatePaper({
         <FormInput
           disabled={isSubmitting || isEmpty(asyncDOI)}
           id="doi"
-          label={["DOI ", isEmpty(asyncDOI) && <Loader size={12} />]}
+          noDisabledStyles={true}
+          label={["DOI"]}
           required
           labelStyle={formGenericStyles.labelStyle}
           onChange={(_id: ID, doi: string): void =>
             setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
           }
-          placeholder="DOI"
+          placeholder={isEmpty(asyncDOI) ? "" : "DOI"}
+          icon={isEmpty(asyncDOI) && <Loader size={14} />}
           value={doi}
+          iconStyles={styles.loaderStyle}
         />
       ) : null}
       {isAsyncComplete && (
@@ -269,3 +273,9 @@ export default withWebSocket(
   // @ts-ignore legacy hook
   connect(mapStateToProps, mapDispatchToProps)(PaperUploadWizardUpdatePaper)
 );
+
+const styles = StyleSheet.create({
+  loaderStyle: {
+    height: 23,
+  },
+});
