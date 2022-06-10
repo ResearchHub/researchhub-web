@@ -34,6 +34,7 @@ export type FeedCardProps = {
   abstract: string;
   created_by: any;
   created_date: any;
+  featured: boolean;
   discussion_count: number;
   first_figure: any;
   first_preview: any;
@@ -77,6 +78,7 @@ function FeedCard(props: FeedCardProps) {
     hubs,
     id,
     index,
+    featured,
     onBadgeClick,
     paper,
     postDownvote,
@@ -199,7 +201,6 @@ function FeedCard(props: FeedCardProps) {
     post: icons.penSquare,
     hypothesis: icons.lightbulb,
   };
-  const resolvedHubs = hubs ?? [];
 
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
@@ -216,7 +217,9 @@ function FeedCard(props: FeedCardProps) {
       onClick={props?.handleClick}
     >
       <Link href={`/${formattedDocType}/${id}/${slug ?? "new-paper"}`}>
-        <a className={css(styles.feedCard)}>
+        <a
+          className={css(styles.feedCard, featured && styles.featuredContainer)}
+        >
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
               <ResponsivePostVoteWidget
@@ -244,6 +247,9 @@ function FeedCard(props: FeedCardProps) {
           </DesktopOnly>
           <div className={css(styles.container)}>
             <div>
+              {featured && (
+                <div className={css(styles.featuredBadge)}>Featured</div>
+              )}
               <div className={css(styles.rowContainer)}>
                 <SubmissionDetails
                   createdDate={createdDate}
@@ -251,44 +257,6 @@ function FeedCard(props: FeedCardProps) {
                   createdBy={createdBy}
                   avatarSize={20}
                 />
-                {/* <div className={css(styles.postCreatedBy)}>
-                  {uploaded_by || created_by ? (
-                    <AuthorAvatar
-                      author={
-                        created_by?.author_profile ||
-                        uploaded_by?.author_profile
-                      }
-                      boldName
-                      border="2px solid #F1F1F1"
-                      fontSize={15}
-                      size={20}
-                      spacing={5}
-                      withAuthorName
-                    />
-                  ) : null}
-                  &nbsp;
-                  {(uploaded_by || created_by) && hubs.length > 0 && (
-                    <div className={css(styles.textLabel)}>
-                      posted in&nbsp;{" "}
-                    </div>
-                  )}
-                  {hubs.map((tag, index) => (
-                    <Link href={`/hubs/${tag.slug}`}>
-                      <a
-                        className={css(styles.hubLabel)}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {`${tag.name}${resolvedHubs.length > 1 ? ", " : ""}`}
-                      </a>
-                    </Link>
-                  ))}
-                  <div className={css(styles.separator)}></div>
-                  <div className={css(styles.textLabel)}>
-                    {timeAgoStamp(created_date || uploaded_date)}
-                  </div>
-                </div> */}
               </div>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
@@ -561,6 +529,26 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-end",
     width: "100%",
+  },
+  featuredBadge: {
+    background: colors.BLUE(1),
+    color: "#fff",
+    padding: "4px 12px",
+    marginTop: -15,
+    marginBottom: 10,
+    borderRadius: "0px 0px 4px 4px",
+    width: "fit-content",
+    fontSize: 14,
+    fontWeight: 500,
+  },
+  featuredContainer: {
+    background: colors.BLUE(0.03),
+    border: `1px solid ${colors.BLUE(1)}`,
+    borderRadius: 4,
+
+    ":hover": {
+      background: colors.BLUE(0.06),
+    },
   },
   abstract: {
     fontSize: 14,
