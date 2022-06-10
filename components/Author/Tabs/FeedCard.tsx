@@ -204,7 +204,6 @@ function FeedCard(props: FeedCardProps) {
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
 
-  console.log(props);
   return (
     <Ripples
       className={css(
