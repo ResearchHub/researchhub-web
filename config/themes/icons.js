@@ -96,6 +96,7 @@ import {
   faFileLines as faPaperRegular,
   faPenSquare as faPenSquareRegular,
   faArrowAltToBottom as download,
+  faArrowDownToLine,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -298,7 +299,8 @@ library.add(
   opaqueThumbsDown,
   opaqueThumbsUp,
   solidThumbsDown,
-  solidThumbsUp
+  solidThumbsUp,
+  faArrowDownToLine
 );
 
 const icons = {
