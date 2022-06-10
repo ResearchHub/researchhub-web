@@ -7,14 +7,13 @@ type Args = {
   unifiedDocumentId: ID;
   onError?: Function;
   onSuccess: Function;
-}
+};
 
 export default function removeDocFromFeatured({
   unifiedDocumentId,
   onError,
   onSuccess,
 }: Args) {
-
   return fetch(
     API.REMOVE_FROM_FEATURED({ unifiedDocumentId }),
     API.POST_CONFIG()
@@ -27,6 +26,6 @@ export default function removeDocFromFeatured({
         msg: "Failed to remove from featured",
         data: { unifiedDocumentId },
       });
-      onError && onError(error)
-    })
+      onError && onError(error);
+    });
 }
