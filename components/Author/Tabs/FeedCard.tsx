@@ -535,10 +535,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     padding: "4px 12px",
     marginTop: -15,
-    marginBottom: 16,
+    marginBottom: 10,
     borderRadius: "0px 0px 4px 4px",
     width: "fit-content",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 500,
   },
   featuredContainer: {
