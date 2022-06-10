@@ -4,16 +4,16 @@ import { captureEvent } from "~/config/utils/events";
 import { ID } from "~/config/types/root_types";
 
 type Params = {
-  featureInHomepage: Boolean;
-  featureInHubs: Boolean;
-}
+  featureInHomepage: boolean;
+  featureInHubs: boolean;
+};
 
 type Args = {
   unifiedDocumentId: ID;
   params: Params;
   onError?: Function;
   onSuccess: Function;
-}
+};
 
 export default function featureDoc({
   unifiedDocumentId,
@@ -21,11 +21,7 @@ export default function featureDoc({
   onError,
   onSuccess,
 }: Args) {
-
-  const {
-    featureInHomepage,
-    featureInHubs,
-  } = params
+  const { featureInHomepage, featureInHubs } = params;
 
   return fetch(
     API.FEATURE_DOCUMENT({ unifiedDocumentId }),
@@ -42,6 +38,6 @@ export default function featureDoc({
         msg: "Failed to feature document",
         data: { unifiedDocumentId, params },
       });
-      onError && onError(error)
-    })
+      onError && onError(error);
+    });
 }
