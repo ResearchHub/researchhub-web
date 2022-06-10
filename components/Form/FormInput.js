@@ -55,6 +55,7 @@ class FormInput extends Component {
       size,
       subtitle,
       onSearch,
+      noDisabledStyles,
       onKeyDown,
     } = this.props;
 
@@ -63,7 +64,7 @@ class FormInput extends Component {
         className={css(
           styles.inputContainer,
           containerStyle && containerStyle,
-          disabled && styles.disabled
+          disabled && !noDisabledStyles && styles.disabled
         )}
       >
         {label && (
