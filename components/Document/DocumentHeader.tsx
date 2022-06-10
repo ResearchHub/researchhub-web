@@ -18,6 +18,8 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import SubmissionDetails from "./SubmissionDetails";
+import Button from "../Form/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Args = {
   document: TopLevelDocument;
@@ -53,7 +55,7 @@ function DocumentHeader({
     userVote,
     score,
     hubs,
-    isOpenAccess
+    isOpenAccess,
   } = document;
 
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
@@ -134,7 +136,10 @@ function DocumentHeader({
       <span className={css(styles.author)}>
         {author.id ? (
           <span>
-            <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
+            <ALink
+              overrideStyle={styles.link}
+              href={`/user/${author.id}/overview`}
+            >
               {author.firstName} {author.lastName}
             </ALink>
           </span>
@@ -149,12 +154,18 @@ function DocumentHeader({
   });
   const formatElems = (formats || []).map((f) => {
     return f.type === "pdf" ? (
-      <span
+      <Button
         className={css(styles.link)}
+        customButtonStyle={styles.openPDFButton}
         onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
+        customLabelStyle={styles.customLabelStyle}
       >
-        PDF
-      </span>
+        <FontAwesomeIcon
+          icon={["fas", "arrow-down-to-line"]}
+          style={{ marginRight: 4 }}
+        />{" "}
+        View PDF
+      </Button>
     ) : (
       <ALink href={f.url}>{f.type}</ALink>
     );
@@ -229,7 +240,7 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>Journal</div>
                 <div className={css(styles.metaVal)}>{journal}</div>
               </div>
-            )}            
+            )}
             {doi && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>DOI</div>
@@ -260,20 +271,18 @@ function DocumentHeader({
                 <div className={css(styles.metaVal)}>{datePublished}</div>
               </div>
             )}
-            {formatElems.length > 0 && (
+            {isOpenAccess && (
               <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>License</div>
+                <div className={css(styles.metaVal)}>Open Access</div>
+              </div>
+            )}
+            {formatElems.length > 0 && (
+              <div className={css(styles.metadataRow, styles.formatsRow)}>
                 <div className={css(styles.metaKey)}>Formats</div>
                 <div className={css(styles.metaVal)}>{formatElems}</div>
               </div>
             )}
-            {isOpenAccess && (
-              <div className={css(styles.metadataRow)} >
-                <div className={css(styles.metaKey)}>License</div>
-                <div className={css(styles.metaVal)}>
-                  Open Access
-                </div>
-              </div>
-            )}              
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
@@ -358,7 +367,7 @@ function DocumentHeader({
                     {unifiedDocument.documentType}
                   </span>
                 </div>
-              )}                
+              )}
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions
@@ -367,7 +376,9 @@ function DocumentHeader({
                 onDocumentRemove={onDocumentRemove}
                 onDocumentRestore={onDocumentRestore}
                 handleEdit={handleEdit}
-                openPaperPDFModal={(formats || []).length > 0 ? openPaperPDFModal: undefined}
+                openPaperPDFModal={
+                  (formats || []).length > 0 ? openPaperPDFModal : undefined
+                }
               />
             </div>
           </div>
@@ -398,6 +409,10 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "none",
     },
+  },
+  openPDFButton: {
+    height: "unset",
+    padding: "5px 16px",
   },
   smallScreenVoteWidget: {
     marginRight: 0,
@@ -432,6 +447,10 @@ const styles = StyleSheet.create({
   },
   detailIcon: {
     marginRight: 7,
+  },
+  customLabelStyle: {
+    fontSize: 12,
+    fontWeight: 500,
   },
   starIcon: {
     color: colors.YELLOW(),
@@ -504,6 +523,9 @@ const styles = StyleSheet.create({
     display: "flex",
     lineHeight: "26px",
     marginTop: 3,
+  },
+  formatsRow: {
+    alignItems: "center",
   },
   metaKey: {
     color: colors.MEDIUM_GREY(),
