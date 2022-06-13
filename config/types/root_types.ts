@@ -164,10 +164,11 @@ export type AuthStore = {
 };
 
 export type CreatedBy = {
-  firstName: string;
-  lastName: string;
-  id: ID;
+  author_profile?: AuthorProfile; // occasional insertion slip-ins from legacy code.
   authorProfile: AuthorProfile;
+  firstName: string;
+  id: ID;
+  lastName: string;
 };
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {

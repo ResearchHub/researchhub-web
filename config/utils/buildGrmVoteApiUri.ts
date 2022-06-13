@@ -1,5 +1,5 @@
 import {
-  GrmVoteType,
+  VoteType,
   ID,
   RhDocumentType,
 } from "../types/root_types";
@@ -15,7 +15,7 @@ type Args = {
   };
   documentType: RhDocumentType;
   documentID: ID;
-  voteType: GrmVoteType;
+  voteType: VoteType;
 };
 
 export function buildGrmVoteApiUri({
