@@ -14,27 +14,27 @@ export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null;
 
 export interface TopLevelDocument {
-  authors: Array<AuthorProfile>,
-  score: number,
-  createdDate: string,
-  discussionCount: number,
-  unifiedDocument: UnifiedDocument,
-  hubs: Array<Hub>,
-  createdBy: CreatedBy | null,
-  userVote?: "downvote" | "upvote" | "neutralvote" | null,
-  title?: string,
-  externalUrl?: string,
-  doi?: string,
-  datePublished?: string,
-  journal?: string,
-  formats?: Array<PaperFormat>,
-  note?: any,
-  markdown?: string,
-  isReady: boolean,
-  consensus?: CitationConsensus,
-  boostAmount: number,
-  id: ID,
-  isOpenAccess?: boolean,
+  authors: Array<AuthorProfile>;
+  score: number;
+  createdDate: string;
+  discussionCount: number;
+  unifiedDocument: UnifiedDocument;
+  hubs: Array<Hub>;
+  createdBy: CreatedBy | null;
+  userVote?: "downvote" | "upvote" | "neutralvote" | null;
+  title?: string;
+  externalUrl?: string;
+  doi?: string;
+  datePublished?: string;
+  journal?: string;
+  formats?: Array<PaperFormat>;
+  note?: any;
+  markdown?: string;
+  isReady: boolean;
+  consensus?: CitationConsensus;
+  boostAmount: number;
+  id: ID;
+  isOpenAccess?: boolean;
 }
 
 export type PaperFormat = {
@@ -56,11 +56,8 @@ export type RhDocumentType =
   | "paper"
   | "post"
   | "researchhub_posts";
-export type GrmVoteType = "downvote" | "neutralvote" | "upvote";
-export type GrmVoteEnumType =
-  | 0 /* nuetral */
-  | 1 /* upvote */
-  | 2; /* downvote */
+export type VoteType = "downvote" | "neutralvote" | "upvote";
+export type VoteEnumType = 0 /* nuetral */ | 1 /* upvote */ | 2; /* downvote */
 
 // TODO: remove this type once comment modules are migrated.
 export type CommentType = "comment" | "reply" | "thread";
@@ -225,8 +222,8 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
-    ...(raw.sequence && {sequence: raw.sequence}),
-  }
+    ...(raw.sequence && { sequence: raw.sequence }),
+  };
 
   return parsed;
 };
