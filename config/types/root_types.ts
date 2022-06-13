@@ -1,12 +1,10 @@
-import { parseCreatedBy } from "./contribution";
-import { Hub } from "./hub";
 import { CitationConsensus } from "./hypothesis";
+import { Hub } from "./hub";
+import { parseCreatedBy } from "./contribution";
 import {
   parsePeerReviewScoreSummary,
-  PeerReview,
   PeerReviewScoreSummary,
 } from "./peerReview";
-import { Vote } from "./vote";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -21,7 +19,7 @@ export interface TopLevelDocument {
   unifiedDocument: UnifiedDocument;
   hubs: Array<Hub>;
   createdBy: CreatedBy | null;
-  userVote?: "downvote" | "upvote" | "neutralvote" | null;
+  userVote?: VoteType | null;
   title?: string;
   externalUrl?: string;
   doi?: string;
