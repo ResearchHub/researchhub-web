@@ -1,27 +1,27 @@
 import { StyleSheet, css } from "aphrodite";
-import {
-  GrmVoteType,
-  parseAuthorProfile,
-  TopLevelDocument,
-} from "~/config/types/root_types";
-import { ReactElement, useEffect, useState } from "react";
-import ALink from "../ALink";
-import colors from "~/config/themes/colors";
-import icons, { HypothesisIcon } from "~/config/themes/icons";
-import ReactTooltip from "react-tooltip";
-import DocumentActions from "./DocumentActions";
-import VoteWidget from "../VoteWidget";
-import { createVoteHandler } from "../Vote/utils/createVoteHandler";
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
-import { connect } from "react-redux";
 import { breakpoints } from "~/config/themes/screen";
-import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
-import ReactPlaceholder from "react-placeholder/lib";
-import SubmissionDetails from "./SubmissionDetails";
-import Button from "../Form/Button";
+import { connect } from "react-redux";
+import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nullthrows } from "~/config/utils/nullchecks";
+import {
+  parseAuthorProfile,
+  TopLevelDocument,
+  VoteType,
+} from "~/config/types/root_types";
+import { ReactElement, useEffect, useState } from "react";
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import ALink from "../ALink";
+import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
+import DocumentActions from "./DocumentActions";
+import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
+import icons, { HypothesisIcon } from "~/config/themes/icons";
+import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
+import SubmissionDetails from "./SubmissionDetails";
+import VoteWidget from "../VoteWidget";
 
 type Args = {
   document: TopLevelDocument;
@@ -57,17 +57,14 @@ function DocumentHeader({
     userVote,
     score,
     hubs,
-<<<<<<< HEAD
     isOpenAccess,
-=======
     id: documentID,
->>>>>>> 4baf11f7 (documentHeader Vote Widget done)
   } = document;
 
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [voteState, setVoteState] = useState<{
-    userVote: GrmVoteType | null | undefined;
+    userVote: VoteType | null | undefined;
     voteScore: number;
   }>({
     userVote: userVote,
