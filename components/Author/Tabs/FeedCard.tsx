@@ -1,5 +1,4 @@
 import { breakpoints } from "~/config/themes/screen";
-import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
@@ -14,9 +13,8 @@ import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { parseCreatedBy } from "~/config/types/contribution";
-import { GrmVoteType, RhDocumentType } from "~/config/types/root_types";
+import { VoteType, RhDocumentType } from "~/config/types/root_types";
 import { SyntheticEvent, useState, useEffect } from "react";
-import API from "~/config/api";
 import colors, {
   genericCardColors,
   voteWidgetColors,
@@ -113,7 +111,7 @@ function FeedCard(props: FeedCardProps) {
    * modals.openPaperPDFModal is only a single boolean. So all cards
    * must only render their PaperPDFModal component if requested */
   const [isPreviewing, setIsPreviewing] = useState(false);
-  const [voteState, setVoteState] = useState<GrmVoteType | null>(
+  const [voteState, setVoteState] = useState<VoteType | null>(
     userVoteToConstant(userVote)
   );
   const [score, setScore] = useState<number>(initialScore);

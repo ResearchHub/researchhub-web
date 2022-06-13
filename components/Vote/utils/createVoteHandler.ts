@@ -3,7 +3,7 @@ import API from "~/config/api";
 import {
   AuthorProfile,
   CreatedBy,
-  GrmVoteType,
+  VoteType,
   ID,
   RhDocumentType,
 } from "~/config/types/root_types";
@@ -17,14 +17,14 @@ import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
 
 type Args = {
   currentAuthor: AuthorProfile;
-  currentVote: GrmVoteType | null | undefined;
+  currentVote: VoteType | null | undefined;
   commentPayload?: {
     commentID?: string;
     commentType?: string;
     replyID?: string;
     threadID?: string;
   };
-  documentCreatedBy: any;
+  documentCreatedBy: CreatedBy;
   documentID: ID;
   documentType: RhDocumentType;
   onError: Function;
@@ -33,9 +33,9 @@ type Args = {
     voteType,
   }: {
     increment: number;
-    voteType: GrmVoteType;
+    voteType: VoteType;
   }) => void;
-  voteType: GrmVoteType;
+  voteType: VoteType;
 };
 
 export const createVoteHandler = ({
