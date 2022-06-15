@@ -17,8 +17,22 @@ const UnifiedDocFeedMenu = ({
   const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
   const [isFilterSelectOpen, setIsFilterSelectOpen] = useState(false);
   const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
+  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
 
   const getTabs = () => {
+    const _renderNestedOption = (opt) => {
+      return (
+        <div>
+          <span
+            className={css(styles.iconWrapper, styles.overrideDownIconStyle)}
+          >
+            {opt.icon}
+          </span>
+          <span className={css(styles.optLabel)}>{opt.label}</span>
+        </div>
+      );
+    };
+
     const tabs = [
       {
         value: "hot",
@@ -27,27 +41,60 @@ const UnifiedDocFeedMenu = ({
         disableScope: true,
       },
       {
-        value: "most_discussed",
-        label: "Discussed",
-        labelLarge: "Most Discussed",
-        icon: icons.commentsAlt,
-      },
-      {
         value: "newest",
-        label: "New",
-        icon: icons.date,
+        label: "Newest",
+        icon: icons.calendar,
         disableScope: true,
       },
       {
-        value: "top_rated",
-        label: "Top",
-        icon: icons.up,
+        value: "is_open_access",
+        label: "Open Access",
+        icon: icons.lockOpen,
+        disableScope: false,
+      },
+      {
+        value: "more",
+        type: "dropdown",
+        label: "More",
+        icon: icons.chevronDown,
+        iconPos: "right",
+        options: [
+          {
+            value: "most_discussed",
+            label: "Discussed",
+            labelLarge: "Most Discussed",
+            icon: icons.commentsAlt,
+          },
+          {
+            value: "top_rated",
+            label: "Top",
+            icon: icons.up,
+          },
+          {
+            value: "claimed",
+            label: "Author Claimed",
+            icon: icons.starFilled,
+          },
+        ].map((opt) => ({ html: _renderNestedOption(opt), ...opt })),
       },
     ];
 
-    return tabs.map((t) => {
-      t.isSelected = t.value === filterBy.value;
-      return t;
+    return tabs.map((tabObj) => {
+      const hasNestedOptions = tabObj.options;
+      if (hasNestedOptions) {
+        let isNestedSelected = false;
+        tabObj.options.map((nestedOpt) => {
+          nestedOpt.isSelected = nestedOpt.value === filterBy.value;
+          if (nestedOpt.isSelected) {
+            isNestedSelected = nestedOpt.isSelected;
+          }
+        });
+        tabObj.isSelected = isNestedSelected;
+      } else {
+        tabObj.isSelected = tabObj.value === filterBy.value;
+      }
+
+      return tabObj;
     });
   };
 
@@ -77,14 +124,57 @@ const UnifiedDocFeedMenu = ({
     });
   };
 
-  const renderFilterTab = (tabObj) => {
+  const renderTab = (tabObj) => {
+    const hasNestedOptions = tabObj.options;
+    const selectedNestedObj = hasNestedOptions
+      ? tabObj.options.find((opt) => opt.isSelected)
+      : null;
+
     return (
-      <div
-        className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}
-        onClick={() => onSubFilterSelect(tabObj)}
-      >
-        <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
-        <span className={css(styles.tabText)}>{tabObj.label}</span>
+      <div className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}>
+        {hasNestedOptions ? (
+          <DropdownButton
+            opts={tabObj.options}
+            labelAsHtml={
+              <div>
+                <span className={css(styles.typeFilterText)}>
+                  {selectedNestedObj?.label || tabObj.label}
+                </span>
+                <span className={css(styles.sortIcon)}>{icons.sort}</span>
+              </div>
+            }
+            selected={tabObj.value}
+            isOpen={isMoreDropdownOpen}
+            onClick={() => setIsMoreDropdownOpen(true)}
+            dropdownClassName="moreOptions"
+            onClickOutside={() => {
+              setIsMoreDropdownOpen(false);
+            }}
+            // overrideTitleStyle={styles.customTitleStyle}
+            positions={["bottom", "right"]}
+            customButtonClassName={[
+              styles.dropdownButtonOverride,
+              styles.moreFiltersBtnContainer,
+            ]}
+            overrideDownIconStyle={styles.overrideDownIconForTypeFilter}
+            onSelect={(selectedFilter) => {
+              const selectedFilterObj = tabObj.options.find(
+                (t) => t.value === selectedFilter
+              );
+
+              console.log("selectedFilter", selectedFilter);
+              onSubFilterSelect(selectedFilterObj);
+            }}
+            onClose={() => setIsMoreDropdownOpen(false)}
+          />
+        ) : (
+          <>
+            <div onClick={() => onSubFilterSelect(tabObj)}>
+              <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
+              <span className={css(styles.tabText)}>{tabObj.label}</span>
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -98,20 +188,50 @@ const UnifiedDocFeedMenu = ({
     );
   };
 
+  const getSelectedTab = (tabs) => {
+    let selectedTab = null;
+    let parentTab = null;
+    for (let i = 0; i < tabs.length; i++) {
+      const current = tabs[i];
+      if (current.isSelected) {
+        selectedTab = current;
+      }
+      if (current.options) {
+        for (let j = 0; j < current.options.length; j++) {
+          const nested = current.options[j];
+          if (nested.isSelected) {
+            selectedTab = nested;
+            parentTab = current;
+          }
+        }
+      }
+    }
+
+    console.log("tabs", tabs);
+    console.log("selectedTab", selectedTab);
+    console.log("parentTab", parentTab);
+    if (selectedTab) {
+      return { selectedTab, parentTab };
+    }
+
+    throw new Error("Selected tab not found. This should not happen.");
+  };
+
   const tabs = getTabs();
   const types = getTypeFilters();
   const selectedType = types.find((t) => t.isSelected);
-  const selectedTab = tabs.find((t) => t.isSelected);
-  const filterOptsAsHtml = tabs
-    .map((t) => renderFilterDropdownOpt(t))
-    .map((t, i) => ({ html: t, ...tabs[i] }));
-  const selectedFilterOpt = renderFilterDropdownOpt(selectedTab);
+  const { selectedTab, parentTab } = getSelectedTab(tabs);
+
+  // const filterOptsAsHtml = tabs
+  //   .map((t) => renderFilterDropdownOpt(t))
+  //   .map((t, i) => ({ html: t, ...tabs[i] }));
+  // const selectedFilterOpt = renderFilterDropdownOpt({  });
   return (
     <div className={css(styles.feedMenu)}>
       <div className={css(styles.filtersAsTabs)}>
-        {tabs.map((t) => renderFilterTab(t))}
+        {tabs.map((t) => renderTab(t))}
       </div>
-      <div className={css(styles.filtersAsDropdown)}>
+      {/* <div className={css(styles.filtersAsDropdown)}>
         <DropdownButton
           opts={filterOptsAsHtml}
           labelAsHtml={selectedFilterOpt}
@@ -126,7 +246,7 @@ const UnifiedDocFeedMenu = ({
           positions={["bottom", "right"]}
           customButtonClassName={[
             styles.dropdownButtonOverride,
-            styles.dropdownButtonOverrideForFilter,
+            styles.dropdownBtnContainer,
           ]}
           overrideDownIconStyle={styles.overrideDownIconStyle}
           onSelect={(selectedFilter) => {
@@ -137,7 +257,7 @@ const UnifiedDocFeedMenu = ({
           }}
           onClose={() => setIsFilterSelectOpen(false)}
         />
-      </div>
+      </div> */}
       <div className={css(styles.timeScope)}>
         {!selectedTab.disableScope && (
           <DropdownButton
@@ -161,7 +281,7 @@ const UnifiedDocFeedMenu = ({
           />
         )}
       </div>
-      <div className={css(styles.typeFilter)}>
+      {/* <div className={css(styles.typeFilter)}>
         <DropdownButton
           opts={types}
           labelAsHtml={
@@ -183,7 +303,7 @@ const UnifiedDocFeedMenu = ({
           positions={["bottom", "right"]}
           customButtonClassName={[
             styles.dropdownButtonOverride,
-            styles.dropdownButtonOverrideForTypeFilter,
+            styles.dropdownBtnContainer,
           ]}
           overrideDownIconStyle={styles.overrideDownIconForTypeFilter}
           onSelect={(selectedType) => {
@@ -191,7 +311,7 @@ const UnifiedDocFeedMenu = ({
           }}
           onClose={() => setIsTypeFilterOpen(false)}
         />
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -299,7 +419,7 @@ const styles = StyleSheet.create({
       lineHeight: "22px",
     },
   },
-  dropdownButtonOverrideForFilter: {
+  dropdownBtnContainer: {
     padding: "7px 16px",
     color: pillNavColors.primary.filledTextColor,
     backgroundColor: pillNavColors.primary.filledBackgroundColor,
@@ -313,7 +433,9 @@ const styles = StyleSheet.create({
       backgroundColor: pillNavColors.primary.filledBackgroundColor,
     },
   },
-  dropdownButtonOverrideForTypeFilter: {
+  moreFiltersBtnContainer: {
+    paddingBottom: 0,
+    lineHeight: "28px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
