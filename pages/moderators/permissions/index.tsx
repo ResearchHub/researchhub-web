@@ -9,7 +9,9 @@ import SideColumn from "~/components/Home/SideColumn";
 export default function PermissionsDashboardIndex(): ReactElement<
   typeof PermissionsDashboard
 > | null {
-  const isAllowedAsMod = useEffectCheckModCredentials();
+  const isAllowedAsMod = useEffectCheckModCredentials({
+    shouldRedirect: false,
+  });
   const isAllowedAsPermissionEditor = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
     shouldRedirect: true,

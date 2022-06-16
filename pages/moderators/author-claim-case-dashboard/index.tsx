@@ -11,7 +11,7 @@ import SideColumn from "~/components/Home/SideColumn";
 export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard
 > | null {
-  const shouldRenderUI = useEffectCheckModCredentials();
+  const shouldRenderUI = useEffectCheckModCredentials({ shouldRedirect: true });
   if (!shouldRenderUI) {
     return null;
   }

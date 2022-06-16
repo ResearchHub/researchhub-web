@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { useStore } from "react-redux";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-export function useEffectCheckModCredentials(): boolean {
+export function useEffectCheckModCredentials({
+  shouldRedirect = false,
+}: {
+  shouldRedirect: boolean;
+}): boolean {
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
   const reduxState = useStore()?.getState();
   const auth = reduxState?.auth ?? null;
@@ -17,7 +21,7 @@ export function useEffectCheckModCredentials(): boolean {
   useEffect(() => {
     /*  Sending back inappropriate users to home page
         intentional boolean checks as below since redux propagates in the clientside */
-    if (isReadyToCheck && (!isCurrUserMod || !isLoggedIn)) {
+    if (isReadyToCheck && (!isCurrUserMod || !isLoggedIn) && shouldRedirect) {
       router.push("/");
     } else if (isCurrUserMod) {
       setIsAllowed(true);
