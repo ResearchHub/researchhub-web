@@ -98,7 +98,7 @@ const UnifiedDocFeedMenu = ({
     const types = [
       {
         value: undefined,
-        label: "All Content",
+        label: "All",
       },
       {
         value: "paper",
@@ -106,11 +106,11 @@ const UnifiedDocFeedMenu = ({
       },
       {
         value: "posts",
-        label: "Posts",
+        label: "Publications",
       },
       {
         value: "hypothesis",
-        label: "Hypotheses",
+        label: "Meta-Studies",
       },
     ];
 
@@ -166,7 +166,7 @@ const UnifiedDocFeedMenu = ({
         ) : (
           <>
             <div onClick={() => onSubFilterSelect(tabObj)}>
-              <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
+              {/* <span className={css(styles.iconWrapper)}>{tabObj.icon}</span> */}
               <span className={css(styles.tabText)}>{tabObj.label}</span>
             </div>
           </>
@@ -210,8 +210,21 @@ const UnifiedDocFeedMenu = ({
     throw new Error("Selected tab not found. This should not happen.");
   };
 
+  const renderTypeOpt = (type) => {
+    return (
+      <div
+        className={css(
+          styles.typeOpt,
+          type.isSelected && styles.typeOptSelected
+        )}
+      >
+        {type.label}
+      </div>
+    );
+  };
+
   const tabs = getTabs();
-  const types = getTypeFilters();
+  const types = getTypeFilters().map((t) => renderTypeOpt(t));
   const selectedType = types.find((t) => t.isSelected);
   const { selectedTab, parentTab } = getSelectedTab(tabs);
 
@@ -220,91 +233,101 @@ const UnifiedDocFeedMenu = ({
   //   .map((t, i) => ({ html: t, ...tabs[i] }));
   // const selectedFilterOpt = renderFilterDropdownOpt({  });
   return (
-    <div className={css(styles.feedMenu)}>
-      <div className={css(styles.filtersAsTabs)}>
-        {tabs.map((t) => renderTab(t))}
-      </div>
-      {/* <div className={css(styles.filtersAsDropdown)}>
-        <DropdownButton
-          opts={filterOptsAsHtml}
-          labelAsHtml={selectedFilterOpt}
-          selected={filterBy.value}
-          isOpen={isFilterSelectOpen}
-          onClick={() => setIsFilterSelectOpen(true)}
-          dropdownClassName="filterSelect"
-          onClickOutside={() => {
-            setIsFilterSelectOpen(false);
-          }}
-          overrideTitleStyle={styles.customTitleStyle}
-          positions={["bottom", "right"]}
-          customButtonClassName={[
-            styles.dropdownButtonOverride,
-            styles.dropdownBtnContainer,
-          ]}
-          overrideDownIconStyle={styles.overrideDownIconStyle}
-          onSelect={(selectedFilter) => {
-            const selectedFilterObj = tabs.find(
-              (t) => t.value === selectedFilter
-            );
-            onSubFilterSelect(selectedFilterObj);
-          }}
-          onClose={() => setIsFilterSelectOpen(false)}
-        />
-      </div> */}
-      <div className={css(styles.timeScope)}>
-        {!selectedTab.disableScope && (
-          <DropdownButton
-            opts={scopeOptions}
-            label={scope.label}
-            selected={scope.value}
-            isOpen={isScopeSelectOpen}
-            onClick={() => setIsScopeSelectOpen(true)}
-            dropdownClassName="scopeSelect"
-            onClickOutside={() => {
-              setIsScopeSelectOpen(false);
-            }}
-            overrideTitleStyle={styles.customTitleStyle}
-            positions={["bottom", "right"]}
-            customButtonClassName={styles.dropdownButtonOverride}
-            onSelect={(selectedScope) => {
-              const obj = scopeOptions.find((s) => selectedScope === s.value);
-              onScopeSelect(obj);
-            }}
-            onClose={() => setIsScopeSelectOpen(false)}
-          />
-        )}
-      </div>
-      {/* <div className={css(styles.typeFilter)}>
-        <DropdownButton
-          opts={types}
-          labelAsHtml={
-            <div>
-              <span className={css(styles.typeFilterText)}>
-                {selectedType.label}
-              </span>
-              <span className={css(styles.sortIcon)}>{icons.sort}</span>
+    <div className={css(styles.filtersContainer)}>
+      <div className={css(styles.buttonGroup)}>
+        <div className={css(styles.mainFilters)}>
+          <div className={css(styles.feedMenu)}>
+            <div className={css(styles.filtersAsTabs)}>
+              {tabs.map((t) => renderTab(t))}
+              {!selectedTab.disableScope && (
+                <div className={css(styles.tab)}>
+                  <DropdownButton
+                    opts={scopeOptions}
+                    label={scope.label}
+                    selected={scope.value}
+                    isOpen={isScopeSelectOpen}
+                    overrideDownIconStyle={styles.downIcon}
+                    onClick={() => setIsScopeSelectOpen(true)}
+                    dropdownClassName="scopeSelect"
+                    onClickOutside={() => {
+                      setIsScopeSelectOpen(false);
+                    }}
+                    overrideTitleStyle={styles.customTitleStyle}
+                    positions={["bottom", "right"]}
+                    customButtonClassName={styles.timeScopeBtnContainer}
+                    onSelect={(selectedScope) => {
+                      const obj = scopeOptions.find(
+                        (s) => selectedScope === s.value
+                      );
+                      onScopeSelect(obj);
+                    }}
+                    onClose={() => setIsScopeSelectOpen(false)}
+                  />
+                </div>
+              )}
             </div>
-          }
-          selected={selectedType.value}
-          isOpen={isTypeFilterOpen}
-          onClick={() => setIsTypeFilterOpen(true)}
-          dropdownClassName="scopeSelect"
-          onClickOutside={() => {
-            setIsTypeFilterOpen(false);
-          }}
-          overrideTitleStyle={styles.customTitleStyle}
-          positions={["bottom", "right"]}
-          customButtonClassName={[
-            styles.dropdownButtonOverride,
-            styles.dropdownBtnContainer,
-          ]}
-          overrideDownIconStyle={styles.downIcon}
-          onSelect={(selectedType) => {
-            onDocTypeFilterSelect(selectedType);
-          }}
-          onClose={() => setIsTypeFilterOpen(false)}
-        />
-      </div> */}
+            {/* <div className={css(styles.filtersAsDropdown)}>
+              <DropdownButton
+                opts={filterOptsAsHtml}
+                labelAsHtml={selectedFilterOpt}
+                selected={filterBy.value}
+                isOpen={isFilterSelectOpen}
+                onClick={() => setIsFilterSelectOpen(true)}
+                dropdownClassName="filterSelect"
+                onClickOutside={() => {
+                  setIsFilterSelectOpen(false);
+                }}
+                overrideTitleStyle={styles.customTitleStyle}
+                positions={["bottom", "right"]}
+                customButtonClassName={[
+                  styles.dropdownButtonOverride,
+                  styles.dropdownBtnContainer,
+                ]}
+                overrideDownIconStyle={styles.overrideDownIconStyle}
+                onSelect={(selectedFilter) => {
+                  const selectedFilterObj = tabs.find(
+                    (t) => t.value === selectedFilter
+                  );
+                  onSubFilterSelect(selectedFilterObj);
+                }}
+                onClose={() => setIsFilterSelectOpen(false)}
+              />
+            </div> */}
+            {/* <div className={css(styles.typeFilter)}>
+              <DropdownButton
+                opts={types}
+                labelAsHtml={
+                  <div>
+                    <span className={css(styles.typeFilterText)}>
+                      {selectedType.label}
+                    </span>
+                    <span className={css(styles.sortIcon)}>{icons.sort}</span>
+                  </div>
+                }
+                selected={selectedType.value}
+                isOpen={isTypeFilterOpen}
+                onClick={() => setIsTypeFilterOpen(true)}
+                dropdownClassName="scopeSelect"
+                onClickOutside={() => {
+                  setIsTypeFilterOpen(false);
+                }}
+                overrideTitleStyle={styles.customTitleStyle}
+                positions={["bottom", "right"]}
+                customButtonClassName={[
+                  styles.dropdownButtonOverride,
+                  styles.dropdownBtnContainer,
+                ]}
+                overrideDownIconStyle={styles.downIcon}
+                onSelect={(selectedType) => {
+                  onDocTypeFilterSelect(selectedType);
+                }}
+                onClose={() => setIsTypeFilterOpen(false)}
+              />
+            </div> */}
+          </div>
+        </div>
+      </div>
+      <div className={css(styles.typesContainer)}>{types}</div>
     </div>
   );
 };
@@ -319,8 +342,8 @@ const styles = StyleSheet.create({
     },
   },
   downIcon: {
-    marginTop: 0,
-    padding: "0 3px",
+    marginTop: -4,
+    padding: "0px 3px",
     fontSize: 14,
   },
   sortIcon: {
@@ -363,18 +386,19 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
+    color: colors.BLACK(),
     color: colors.BLACK(0.5),
-    padding: "0 1rem 1rem 1rem",
-    marginRight: 8,
+    padding: "0 5px 10px 5px",
+    marginRight: 25,
     textTransform: "unset",
     fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",
     ":active": {
-      color: colors.PURPLE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover": {
-      color: colors.PURPLE(),
+      color: colors.NEW_BLUE(),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
@@ -384,34 +408,34 @@ const styles = StyleSheet.create({
     },
   },
   tabSelected: {
-    color: colors.PURPLE(),
+    color: colors.NEW_BLUE(),
     borderBottom: "solid 3px",
-    borderColor: colors.PURPLE(),
+    borderColor: colors.NEW_BLUE(),
   },
-  dropdownButtonOverride: {
-    whiteSpace: "nowrap",
-    display: "flex",
-    backgroundColor: "unset",
-    color: pillNavColors.secondary.filledTextColor,
-    borderRadius: 40,
-    fontWeight: 500,
-    marginRight: 8,
-    lineHeight: "22px",
-    padding: "0px 0rem 1rem 1rem",
-    ":hover": {
-      backgroundColor: "unset",
-    },
-    [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
-      fontSize: 14,
-      lineHeight: "16px",
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 14,
-      padding: "7px 16px",
-      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
-      lineHeight: "22px",
-    },
-  },
+  // dropdownButtonOverride: {
+  //   whiteSpace: "nowrap",
+  //   display: "flex",
+  //   backgroundColor: "unset",
+  //   color: pillNavColors.secondary.filledTextColor,
+  //   borderRadius: 40,
+  //   fontWeight: 500,
+  //   marginRight: 8,
+  //   lineHeight: "10px",
+  //   padding: "0px 0rem 10px 10px",
+  //   ":hover": {
+  //     backgroundColor: "unset",
+  //   },
+  //   [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
+  //     fontSize: 14,
+  //     lineHeight: "16px",
+  //   },
+  //   [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+  //     fontSize: 14,
+  //     padding: "7px 16px",
+  //     backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+  //     lineHeight: "22px",
+  //   },
+  // },
   dropdownBtnContainer: {
     padding: "7px 16px",
     color: pillNavColors.primary.filledTextColor,
@@ -431,17 +455,85 @@ const styles = StyleSheet.create({
     // paddingLeft: 0,
     whiteSpace: "nowrap",
     display: "flex",
-    padding: "7px 16px",
-    paddingLeft: 0,
+    padding: "7px 0px 0px 0px",
+    marginRight: 0,
     // backgroundColor: "unset",
     // color: pillNavColors.secondary.filledTextColor,
     // borderRadius: 40,
     // fontWeight: 500,
     // marginRight: 8,
-    lineHeight: "14px",
+    lineHeight: "8px",
     ":hover": {
       background: "unset",
     },
+  },
+  timeScopeBtnContainer: {
+    // paddingBottom: 0,
+    // paddingLeft: 0,
+    whiteSpace: "nowrap",
+    display: "flex",
+    padding: "7px 0px 0px 0px",
+    marginRight: 0,
+    // backgroundColor: "unset",
+    // color: pillNavColors.secondary.filledTextColor,
+    // borderRadius: 40,
+    // fontWeight: 500,
+    // marginRight: 8,
+    lineHeight: "8px",
+    fontWeight: 400,
+    ":hover": {
+      background: "unset",
+    },
+  },
+  buttonGroup: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 16,
+    marginBottom: 10,
+    overflow: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column-reverse",
+    },
+  },
+  mainFilters: {
+    alignItems: "center",
+    display: "flex",
+    height: "inherit",
+    width: "100%",
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      borderBottom: `unset`,
+    },
+  },
+  typeOpt: {
+    padding: "2px 8px",
+    marginRight: 8,
+    fontSize: 14,
+    color: colors.BLACK(0.5),
+    ":hover": {
+      background: colors.LIGHT_GREY(),
+      borderRadius: 50,
+      cursor: "pointer",
+    },
+  },
+  typeOptSelected: {
+    borderRadius: 50,
+    color: colors.NEW_BLUE(),
+    background: colors.LIGHTER_BLUE(),
+    // background: colors.LIGHT_GREY(),
+    // color: colors.BLACK(),
+    ":hover": {
+      color: colors.NEW_BLUE(),
+      background: colors.LIGHTER_BLUE(),
+    },
+  },
+  typesContainer: {
+    display: "flex",
+  },
+  filtersContainer: {
+    marginBottom: 35,
   },
   // overrideDownIconStyle: {
   //   padding: "6px 4px",
