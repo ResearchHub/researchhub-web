@@ -23,11 +23,7 @@ const UnifiedDocFeedMenu = ({
     const _renderNestedOption = (opt) => {
       return (
         <div>
-          <span
-            className={css(styles.iconWrapper, styles.overrideDownIconStyle)}
-          >
-            {opt.icon}
-          </span>
+          <span className={css(styles.iconWrapper)}>{opt.icon}</span>
           <span className={css(styles.optLabel)}>{opt.label}</span>
         </div>
       );
@@ -140,7 +136,6 @@ const UnifiedDocFeedMenu = ({
                 <span className={css(styles.typeFilterText)}>
                   {selectedNestedObj?.label || tabObj.label}
                 </span>
-                <span className={css(styles.sortIcon)}>{icons.sort}</span>
               </div>
             }
             selected={tabObj.value}
@@ -153,10 +148,11 @@ const UnifiedDocFeedMenu = ({
             // overrideTitleStyle={styles.customTitleStyle}
             positions={["bottom", "right"]}
             customButtonClassName={[
-              styles.dropdownButtonOverride,
+              styles.tab,
+              // styles.dropdownButtonOverride,
               styles.moreFiltersBtnContainer,
             ]}
-            overrideDownIconStyle={styles.overrideDownIconForTypeFilter}
+            overrideDownIconStyle={styles.downIcon}
             onSelect={(selectedFilter) => {
               const selectedFilterObj = tabObj.options.find(
                 (t) => t.value === selectedFilter
@@ -207,9 +203,6 @@ const UnifiedDocFeedMenu = ({
       }
     }
 
-    console.log("tabs", tabs);
-    console.log("selectedTab", selectedTab);
-    console.log("parentTab", parentTab);
     if (selectedTab) {
       return { selectedTab, parentTab };
     }
@@ -305,7 +298,7 @@ const UnifiedDocFeedMenu = ({
             styles.dropdownButtonOverride,
             styles.dropdownBtnContainer,
           ]}
-          overrideDownIconStyle={styles.overrideDownIconForTypeFilter}
+          overrideDownIconStyle={styles.downIcon}
           onSelect={(selectedType) => {
             onDocTypeFilterSelect(selectedType);
           }}
@@ -325,10 +318,10 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  overrideDownIconForTypeFilter: {
-    [`@media only screen and (max-width: 1400px)`]: {
-      display: "none",
-    },
+  downIcon: {
+    marginTop: 0,
+    padding: "0 3px",
+    fontSize: 14,
   },
   sortIcon: {
     marginLeft: 5,
@@ -434,15 +427,25 @@ const styles = StyleSheet.create({
     },
   },
   moreFiltersBtnContainer: {
-    paddingBottom: 0,
-    lineHeight: "28px",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    // paddingBottom: 0,
+    // paddingLeft: 0,
+    whiteSpace: "nowrap",
+    display: "flex",
+    padding: "7px 16px",
+    paddingLeft: 0,
+    // backgroundColor: "unset",
+    // color: pillNavColors.secondary.filledTextColor,
+    // borderRadius: 40,
+    // fontWeight: 500,
+    // marginRight: 8,
+    lineHeight: "14px",
+    ":hover": {
+      background: "unset",
     },
   },
-  overrideDownIconStyle: {
-    padding: "6px 4px",
-  },
+  // overrideDownIconStyle: {
+  //   padding: "6px 4px",
+  // },
 });
 
 export default UnifiedDocFeedMenu;
