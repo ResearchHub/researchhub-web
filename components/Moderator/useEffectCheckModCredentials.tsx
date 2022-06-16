@@ -4,7 +4,7 @@ import { useStore } from "react-redux";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 export function useEffectCheckModCredentials(): boolean {
-  const [shouldRenderUI, setShouldRenderUI] = useState<boolean>(false);
+  const [isAllowed, setIsAllowed] = useState<boolean>(false);
   const reduxState = useStore()?.getState();
   const auth = reduxState?.auth ?? null;
   const currentUser = auth?.user;
@@ -20,9 +20,9 @@ export function useEffectCheckModCredentials(): boolean {
     if (isReadyToCheck && (!isCurrUserMod || !isLoggedIn)) {
       router.push("/");
     } else if (isCurrUserMod) {
-      setShouldRenderUI(true);
+      setIsAllowed(true);
     }
-  }, [isCurrUserMod, isLoggedIn, isReadyToCheck, setShouldRenderUI]);
+  }, [isCurrUserMod, isLoggedIn, isReadyToCheck, setIsAllowed]);
 
-  return shouldRenderUI;
+  return isAllowed;
 }
