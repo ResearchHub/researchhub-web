@@ -10,7 +10,9 @@ import killswitch from "~/config/killswitch/killswitch";
 export default function EditorsDashboardIndex(): ReactElement<
   typeof EditorsDashboard
 > | null {
-  const shouldRenderUI = useEffectCheckModCredentials();
+  const shouldRenderUI = useEffectCheckModCredentials({
+    shouldRedirect: true,
+  });
 
   if (!shouldRenderUI) {
     return null;

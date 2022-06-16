@@ -20,7 +20,7 @@ export default function RSCDashboard(): ReactElement<
   const dispatch = useDispatch();
   const [chosenOption, setChosenOption] = useState(null);
   const [inputAmount, setInputAmount] = useState(null);
-  const shouldRenderUI = useEffectCheckModCredentials();
+  const shouldRenderUI = useEffectCheckModCredentials({ shouldRedirect: true });
   if (!shouldRenderUI) {
     return null;
   }
