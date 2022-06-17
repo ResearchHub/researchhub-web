@@ -57,19 +57,19 @@ const UnifiedDocFeedMenu = ({
         options: [
           {
             value: "most_discussed",
-            label: "Discussed",
-            labelLarge: "Most Discussed",
+            label: "Most Discussed",
             icon: icons.commentsAlt,
           },
           {
             value: "top_rated",
-            label: "Top",
+            label: "Most Upvoted",
             icon: icons.up,
           },
           {
-            value: "claimed",
+            value: "author_claimed",
             label: "Author Claimed",
             icon: icons.starFilled,
+            disableScope: true,
           },
         ].map((opt) => ({ html: _renderNestedOption(opt), ...opt })),
       },
@@ -149,7 +149,7 @@ const UnifiedDocFeedMenu = ({
             positions={["bottom", "right"]}
             customButtonClassName={[
               styles.tab,
-              // styles.dropdownButtonOverride,
+              tabObj.isSelected && styles.moreOptsSelected,
               styles.moreFiltersBtnContainer,
             ]}
             overrideDownIconStyle={styles.downIcon}
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     },
   },
   downIcon: {
-    marginTop: -4,
+    marginTop: -5,
     padding: "0px 3px",
     fontSize: 14,
   },
@@ -388,11 +388,12 @@ const styles = StyleSheet.create({
   tab: {
     color: colors.BLACK(),
     color: colors.BLACK(0.5),
-    padding: "0 5px 10px 5px",
+    padding: "0 5px 0px 5px",
     marginRight: 25,
     textTransform: "unset",
     fontSize: 16,
     fontWeight: 500,
+    height: 32,
     cursor: "pointer",
     ":active": {
       color: colors.NEW_BLUE(),
@@ -407,10 +408,14 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+
   tabSelected: {
     color: colors.NEW_BLUE(),
     borderBottom: "solid 3px",
     borderColor: colors.NEW_BLUE(),
+  },
+  moreOptsSelected: {
+    color: colors.NEW_BLUE(),
   },
   // dropdownButtonOverride: {
   //   whiteSpace: "nowrap",
@@ -455,7 +460,7 @@ const styles = StyleSheet.create({
     // paddingLeft: 0,
     whiteSpace: "nowrap",
     display: "flex",
-    padding: "7px 0px 0px 0px",
+    padding: "6px 0px 0px 0px",
     marginRight: 0,
     // backgroundColor: "unset",
     // color: pillNavColors.secondary.filledTextColor,
@@ -472,7 +477,7 @@ const styles = StyleSheet.create({
     // paddingLeft: 0,
     whiteSpace: "nowrap",
     display: "flex",
-    padding: "7px 0px 0px 0px",
+    padding: "6px 0px 0px 0px",
     marginRight: 0,
     // backgroundColor: "unset",
     // color: pillNavColors.secondary.filledTextColor,
@@ -522,8 +527,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     color: colors.NEW_BLUE(),
     background: colors.LIGHTER_BLUE(),
-    // background: colors.LIGHT_GREY(),
-    // color: colors.BLACK(),
     ":hover": {
       color: colors.NEW_BLUE(),
       background: colors.LIGHTER_BLUE(),
