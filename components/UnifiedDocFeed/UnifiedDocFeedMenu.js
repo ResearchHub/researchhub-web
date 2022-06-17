@@ -133,9 +133,7 @@ const UnifiedDocFeedMenu = ({
             opts={tabObj.options}
             labelAsHtml={
               <div>
-                <span className={css(styles.typeFilterText)}>
-                  {selectedNestedObj?.label || tabObj.label}
-                </span>
+                <span>{selectedNestedObj?.label || tabObj.label}</span>
               </div>
             }
             selected={tabObj.value}
@@ -213,6 +211,7 @@ const UnifiedDocFeedMenu = ({
   const renderTypeOpt = (type) => {
     return (
       <div
+        onClick={() => onDocTypeFilterSelect(type.value)}
         className={css(
           styles.typeOpt,
           type.isSelected && styles.typeOptSelected
@@ -336,13 +335,13 @@ const styles = StyleSheet.create({
   typeFilter: {
     marginLeft: "auto",
   },
-  typeFilterText: {
-    [`@media only screen and (max-width: 1400px)`]: {
-      display: "none",
-    },
-  },
+  // typeFilterText: {
+  //   [`@media only screen and (max-width: 1400px)`]: {
+  //     display: "none",
+  //   },
+  // },
   downIcon: {
-    marginTop: -5,
+    marginTop: 2,
     padding: "0px 3px",
     fontSize: 14,
   },
@@ -351,9 +350,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 4,
     marginLeft: 4,
-    [`@media only screen and (min-width: 1400px)`]: {
-      display: "none",
-    },
+    // [`@media only screen and (min-width: 1400px)`]: {
+    //   display: "none",
+    // },
   },
   feedMenu: {
     display: "flex",
@@ -375,9 +374,9 @@ const styles = StyleSheet.create({
   },
   filtersAsTabs: {
     display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   display: "none",
+    // },
   },
   filtersAsDropdown: {
     display: "none",
@@ -402,10 +401,9 @@ const styles = StyleSheet.create({
       color: colors.NEW_BLUE(),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 16,
-    },
-    [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
-      fontSize: 14,
+      fontSize: 15,
+      height: 28,
+      marginRight: 18,
     },
   },
 
@@ -449,25 +447,25 @@ const styles = StyleSheet.create({
       borderRadius: 40,
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 14,
-      lineHeight: "22px",
-      backgroundColor: pillNavColors.primary.filledBackgroundColor,
-    },
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   fontSize: 14,
+    //   lineHeight: "22px",
+    //   backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    // },
   },
   moreFiltersBtnContainer: {
     // paddingBottom: 0,
     // paddingLeft: 0,
     whiteSpace: "nowrap",
     display: "flex",
-    padding: "6px 0px 0px 0px",
+    padding: "0px 0px 0px 0px",
     marginRight: 0,
     // backgroundColor: "unset",
     // color: pillNavColors.secondary.filledTextColor,
     // borderRadius: 40,
     // fontWeight: 500,
     // marginRight: 8,
-    lineHeight: "8px",
+    // lineHeight: "8px",
     ":hover": {
       background: "unset",
     },
@@ -508,9 +506,9 @@ const styles = StyleSheet.create({
     height: "inherit",
     width: "100%",
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      borderBottom: `unset`,
-    },
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   borderBottom: `unset`,
+    // },
   },
   typeOpt: {
     padding: "2px 8px",
