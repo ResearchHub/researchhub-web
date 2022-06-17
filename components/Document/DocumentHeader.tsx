@@ -1,25 +1,27 @@
 import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
+import { createVoteHandler } from "../Vote/utils/createVoteHandler";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { nullthrows } from "~/config/utils/nullchecks";
 import {
   parseAuthorProfile,
   TopLevelDocument,
+  VoteType,
 } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import ALink from "../ALink";
-import colors from "~/config/themes/colors";
-import icons, { HypothesisIcon } from "~/config/themes/icons";
-import ReactTooltip from "react-tooltip";
-import DocumentActions from "./DocumentActions";
-import VoteWidget from "../VoteWidget";
-import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import ALink from "../ALink";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
-import { connect } from "react-redux";
-import { breakpoints } from "~/config/themes/screen";
-import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
-import ReactPlaceholder from "react-placeholder/lib";
-import SubmissionDetails from "./SubmissionDetails";
 import Button from "../Form/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import colors from "~/config/themes/colors";
+import DocumentActions from "./DocumentActions";
+import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
+import icons, { HypothesisIcon } from "~/config/themes/icons";
+import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
+import SubmissionDetails from "./SubmissionDetails";
+import VoteWidget from "../VoteWidget";
 
 type Args = {
   document: TopLevelDocument;
@@ -56,77 +58,55 @@ function DocumentHeader({
     score,
     hubs,
     isOpenAccess,
+    id: documentID,
   } = document;
 
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
-  const [voteState, setVoteState] = useState({
+  const [voteState, setVoteState] = useState<{
+    userVote: VoteType | null | undefined;
+    voteScore: number;
+  }>({
     userVote: userVote,
     voteScore: score,
   });
 
   useEffect(() => {
-    const isSubmittedByCurrentUser =
-      currentUser && currentUser?.id === createdBy?.id;
-    if (isSubmittedByCurrentUser) {
-      setVoteState({
-        ...voteState,
-        userVote: UPVOTE,
-        voteScore: document.score,
-      });
-    } else {
-      setVoteState({
-        ...voteState,
-        userVote: document.userVote,
-        voteScore: document.score,
-      });
-    }
-  }, [currentUser, document]);
+    setVoteState({
+      ...voteState,
+      userVote: document?.userVote,
+      voteScore: document.score,
+    });
+  }, [document]);
 
-  const handleVoteSuccess = ({ voteType, increment }) => {
-    let newVoteScore = voteState.voteScore;
-    if (voteType === UPVOTE) {
-      if (voteState.userVote === DOWNVOTE) {
-        newVoteScore = voteState.voteScore + increment + 1;
-      } else if (voteState.userVote === UPVOTE) {
-        // This shouldn't happen but if it does, we do nothing
-        console.log("User already casted upvote");
-        return;
-      } else {
-        newVoteScore = voteState.voteScore + increment;
-      }
-    } else if (voteType === DOWNVOTE) {
-      if (voteState.userVote === DOWNVOTE) {
-        console.log("User already casted downvote");
-        return;
-      } else if (voteState.userVote === UPVOTE) {
-        newVoteScore = voteState.voteScore + increment - 1;
-      } else {
-        newVoteScore = voteState.voteScore + increment;
-      }
-    }
-
+  const handleVoteSuccess = ({ increment, voteType }) => {
     setVoteState({
       userVote: voteType,
-      voteScore: newVoteScore,
+      voteScore: voteState.voteScore + increment,
     });
   };
 
   let onUpvote, onDownvote;
   if (document.isReady) {
     onUpvote = createVoteHandler({
-      voteType: UPVOTE,
-      unifiedDocument,
       currentAuthor,
-      onSuccess: handleVoteSuccess,
+      currentVote: voteState?.userVote,
+      documentCreatedBy: nullthrows(createdBy),
+      documentID,
+      documentType: unifiedDocument.documentType,
       onError: () => null,
+      onSuccess: handleVoteSuccess,
+      voteType: UPVOTE,
     });
     onDownvote = createVoteHandler({
-      voteType: DOWNVOTE,
-      unifiedDocument,
       currentAuthor,
-      onSuccess: handleVoteSuccess,
+      currentVote: voteState?.userVote,
+      documentCreatedBy: nullthrows(createdBy),
+      documentID,
+      documentType: unifiedDocument.documentType,
       onError: () => null,
+      onSuccess: handleVoteSuccess,
+      voteType: DOWNVOTE,
     });
   }
 

@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { UnifiedDocument } from "~/config/types/root_types";
+import { RhDocumentType, UnifiedDocument } from "~/config/types/root_types";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import { StyleSheet, css } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
@@ -16,23 +16,23 @@ import AdminButton from "../Admin/AdminButton";
 import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
-  unifiedDocument: UnifiedDocument,
-  type: "paper" | "hypothesis" | "post",
-  onDocumentRemove: Function,
-  onDocumentRestore: Function,  
-  handleEdit: Function,  
-  currentUser: any,
-  openPaperPDFModal?: Function,
-}
+  currentUser: any;
+  handleEdit: Function;
+  onDocumentRemove: Function;
+  onDocumentRestore: Function;
+  openPaperPDFModal?: Function;
+  type: RhDocumentType;
+  unifiedDocument: UnifiedDocument;
+};
 
 function DocumentActions({
-  unifiedDocument,
+  currentUser,
+  handleEdit,
   onDocumentRemove,
   onDocumentRestore,
-  handleEdit,
-  currentUser,
   openPaperPDFModal,
-}: Args): ReactElement<"div">{
+  unifiedDocument,
+}: Args): ReactElement<"div"> {
   const isModerator = Boolean(currentUser?.moderator);
   const isHubEditor = Boolean(currentUser?.author_profile?.is_hub_editor);
   const isSubmitter = unifiedDocument?.createdBy?.id === currentUser.id;
@@ -40,14 +40,18 @@ function DocumentActions({
 
   let title;
   if (unifiedDocument?.documentType === "paper") {
-    title = unifiedDocument?.document?.title ?? unifiedDocument?.document?.paperTitle;
+    title =
+      unifiedDocument?.document?.title ?? unifiedDocument?.document?.paperTitle;
   }
 
-  let canEdit = false
+  let canEdit = false;
   if (unifiedDocument?.documentType === "paper") {
     canEdit = true;
-  }
-  else if ((unifiedDocument?.documentType === "post" || unifiedDocument?.documentType === "hypothesis") && isSubmitter) {
+  } else if (
+    (unifiedDocument?.documentType === "post" ||
+      unifiedDocument?.documentType === "hypothesis") &&
+    isSubmitter
+  ) {
     canEdit = true;
   }
 
@@ -56,11 +60,15 @@ function DocumentActions({
       active: openPaperPDFModal,
       key: "pdf",
       html: (
-        <div className={css(styles.actionIcon)} data-tip={"Download PDF"} onClick={() => openPaperPDFModal && openPaperPDFModal(true)}>
+        <div
+          className={css(styles.actionIcon)}
+          data-tip={"Download PDF"}
+          onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
+        >
           {icons.download}
         </div>
       ),
-    },    
+    },
     {
       active: canEdit,
       key: "edit",
@@ -101,7 +109,10 @@ function DocumentActions({
             onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 contentID: unifiedDocument?.document?.id,
-                contentType: (unifiedDocument.documentType === "post" ? "researchhub_posts" : unifiedDocument.documentType),
+                contentType:
+                  unifiedDocument.documentType === "post"
+                    ? "researchhub_posts"
+                    : unifiedDocument.documentType,
                 flagReason,
                 onError: renderErrorMsg,
                 onSuccess: renderSuccessMsg,
@@ -129,7 +140,7 @@ function DocumentActions({
                 restoreDocument({
                   unifiedDocumentId: unifiedDocument.id,
                   onError: (error: Error) => {
-                    console.log('error')
+                    console.log("error");
                   },
                   onSuccess: () => {
                     setIsRemoved(false);
@@ -140,7 +151,7 @@ function DocumentActions({
                 censorDocument({
                   unifiedDocumentId: unifiedDocument.id,
                   onError: (error: Error) => {
-                    console.log('error')
+                    console.log("error");
                   },
                   onSuccess: (): void => {
                     setIsRemoved(true);
@@ -157,7 +168,7 @@ function DocumentActions({
     },
     {
       active: isModerator,
-      key: 'admin',
+      key: "admin",
       html: (
         <span
           className={css(styles.actionIcon, styles.moderatorAction)}
@@ -166,13 +177,15 @@ function DocumentActions({
           <AdminButton unifiedDocumentId={unifiedDocument.id} />
         </span>
       ),
-    },    
+    },
   ].filter((action) => action.active);
 
   return (
     <div className={css(styles.documentActions)}>
-      {actionButtons.map(actionButton => (
-        <span key={actionButton.key} className={css(styles.button)}>{actionButton.html}</span>
+      {actionButtons.map((actionButton) => (
+        <span key={actionButton.key} className={css(styles.button)}>
+          {actionButton.html}
+        </span>
       ))}
     </div>
   );
@@ -186,7 +199,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     ":last-child": {
       marginRight: 0,
-    }
+    },
   },
   flagButton: {
     padding: 8,
@@ -265,8 +278,8 @@ const styles = StyleSheet.create({
       minHeight: 15,
       maxHeight: 15,
     },
-  },  
-})
+  },
+});
 
 const mapStateToProps = (state) => ({
   currentUser: state.auth?.user,
