@@ -1,30 +1,34 @@
-import API from "~/config/api";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import DesktopOnly from "~/components/DesktopOnly";
-import HubDropDown from "~/components/Hubs/HubDropDown";
-import Link from "next/link";
-import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
-import Ripples from "react-ripples";
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
+import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
+import { formatDateStandard } from "~/config/utils/dates";
+import { isDevEnv } from "~/config/utils/env";
+import { ModalActions } from "~/redux/modals";
+import { PaperActions } from "~/redux/paper";
+import { parseCreatedBy } from "~/config/types/contribution";
+import { VoteType, RhDocumentType } from "~/config/types/root_types";
+import { SyntheticEvent, useState, useEffect } from "react";
 import colors, {
   genericCardColors,
   voteWidgetColors,
 } from "~/config/themes/colors";
+import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
-import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
-import { ModalActions } from "~/redux/modals";
-import { PaperActions } from "~/redux/paper";
-import { SyntheticEvent, useState, useEffect } from "react";
-import { breakpoints } from "~/config/themes/screen";
-import { connect } from "react-redux";
-import { css, StyleSheet } from "aphrodite";
-import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { formatDateStandard, timeAgoStamp } from "~/config/utils/dates";
-import { isDevEnv } from "~/config/utils/env";
+import Link from "next/link";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
-import VoteWidget from "~/components/VoteWidget";
-import { parseCreatedBy } from "~/config/types/contribution";
+import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
+import Ripples from "react-ripples";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
+import VoteWidget from "~/components/VoteWidget";
+import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -38,7 +42,7 @@ export type FeedCardProps = {
   discussion_count: number;
   first_figure: any;
   first_preview: any;
-  formattedDocType: string | null;
+  formattedDocType: RhDocumentType | null;
   hubs: any[];
   id: number;
   index: number;
@@ -107,7 +111,7 @@ function FeedCard(props: FeedCardProps) {
    * modals.openPaperPDFModal is only a single boolean. So all cards
    * must only render their PaperPDFModal component if requested */
   const [isPreviewing, setIsPreviewing] = useState(false);
-  const [voteState, setVoteState] = useState<string | null>(
+  const [voteState, setVoteState] = useState<VoteType | null>(
     userVoteToConstant(userVote)
   );
   const [score, setScore] = useState<number>(initialScore);
@@ -121,7 +125,9 @@ function FeedCard(props: FeedCardProps) {
   const docUrl = `/${formattedDocType}/${id}/${slug ?? "new-paper"}`;
 
   useEffect((): void => {
-    setVoteState(userVoteToConstant(userVote));
+    if (!isEmpty(userVote)) {
+      setVoteState(userVoteToConstant(userVote));
+    }
   }, [userVote]);
 
   function configurePreview(arr) {
@@ -130,71 +136,32 @@ function FeedCard(props: FeedCardProps) {
     });
   }
 
-  const createVoteHandler = (voteType) => {
-    const voteStrategies = {
-      [UPVOTE]: {
-        increment: 1,
-        getUrl:
-          formattedDocType === "post"
-            ? API.RH_POST_UPVOTE(id)
-            : API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
-      },
-      [DOWNVOTE]: {
-        increment: -1,
-        getUrl:
-          formattedDocType === "post"
-            ? API.RH_POST_DOWNVOTE(id)
-            : API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
-      },
-    };
-
-    const { increment, getUrl } = voteStrategies[voteType];
-
-    const handleVote = async () => {
-      const response = await fetch(getUrl, API.POST_CONFIG()).catch((err) =>
-        emptyFncWithMsg(err)
-      );
-
-      return response;
-    };
-
-    return async (e: SyntheticEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (
-        !isNullOrUndefined(currentUser) &&
-        currentUser.id === created_by.author_profile.id
-      ) {
-        emptyFncWithMsg(
-          `Not logged in or attempted to vote on own ${formattedDocType}.`
-        );
-        return;
-      }
-
-      if (voteState === voteType) {
-        return;
-      } else {
-        setVoteState(voteType);
-        setScore(score + (Boolean(voteState) ? increment * 2 : increment));
-      }
-
-      await handleVote();
-    };
-  };
-
-  async function onPaperVote(voteType) {
-    const curPaper = { ...paper };
-    const increment = voteType === UPVOTE ? 1 : -1;
-    setVoteState(voteType);
-    setScore(score + (Boolean(voteState) ? increment * 2 : increment));
-    voteCallback && voteCallback(index, curPaper);
-    if (voteType === UPVOTE) {
-      postUpvote(curPaper.id);
-    } else {
-      postDownvote(curPaper.id);
-    }
-  }
+  const onDownvote = createVoteHandler({
+    currentAuthor: currentUser?.author_profile,
+    currentVote: voteState,
+    documentCreatedBy: created_by ?? uploaded_by,
+    documentID: id,
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    onError: emptyFncWithMsg,
+    onSuccess: ({ increment, voteType }): void => {
+      setVoteState(voteType);
+      setScore(score + increment);
+    },
+    voteType: DOWNVOTE,
+  });
+  const onUpvote = createVoteHandler({
+    currentAuthor: currentUser?.author_profile,
+    currentVote: voteState,
+    documentCreatedBy: created_by ?? uploaded_by,
+    documentID: id,
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    onError: emptyFncWithMsg,
+    onSuccess: ({ increment, voteType }): void => {
+      setVoteState(voteType);
+      setScore(score + increment);
+    },
+    voteType: UPVOTE,
+  });
 
   const documentIcons = {
     paper: icons.paperRegular,
@@ -222,24 +189,11 @@ function FeedCard(props: FeedCardProps) {
         >
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
+              {/* TODO: migrate to VoteWidgetV2 */}
               <ResponsivePostVoteWidget
                 onDesktop
-                onDownvote={
-                  formattedDocType === "paper"
-                    ? (e) => {
-                        e.preventDefault();
-                        onPaperVote(DOWNVOTE);
-                      }
-                    : createVoteHandler(DOWNVOTE)
-                }
-                onUpvote={
-                  formattedDocType === "paper"
-                    ? (e) => {
-                        e.preventDefault();
-                        onPaperVote(UPVOTE);
-                      }
-                    : createVoteHandler(UPVOTE)
-                }
+                onDownvote={onDownvote}
+                onUpvote={onUpvote}
                 score={score}
                 voteState={voteState}
               />
@@ -310,24 +264,11 @@ function FeedCard(props: FeedCardProps) {
                     )}
                   >
                     <div className={css(styles.mobileVoteWidget)}>
+                      {/* TODO: migrate to VoteWidgetV2 */}
                       <VoteWidget
                         horizontalView={true}
-                        onDownvote={
-                          formattedDocType === "paper"
-                            ? (e) => {
-                                e.preventDefault();
-                                onPaperVote(DOWNVOTE);
-                              }
-                            : createVoteHandler(DOWNVOTE)
-                        }
-                        onUpvote={
-                          formattedDocType === "paper"
-                            ? (e) => {
-                                e.preventDefault();
-                                onPaperVote(UPVOTE);
-                              }
-                            : createVoteHandler(UPVOTE)
-                        }
+                        onDownvote={onDownvote}
+                        onUpvote={onUpvote}
                         score={score}
                         styles={styles.voteWidget}
                         upvoteStyleClass={styles.mobileVote}
@@ -442,7 +383,6 @@ const styles = StyleSheet.create({
     height: 90,
   },
   mobilePill: {
-    width: 28,
     fontSize: 14,
     color: voteWidgetColors.ARROW,
     background: "unset",
