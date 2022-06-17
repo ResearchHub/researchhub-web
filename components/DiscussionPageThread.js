@@ -19,7 +19,7 @@ import DiscussionActions from "~/redux/discussion";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { createUsername, getCurrentUser } from "~/config/utils/user";
+import { createUsername, getCurrentUserLegacy } from "~/config/utils/user";
 import { getNestedValue } from "~/config/utils/misc";
 
 const Thread = (props) => {
@@ -29,7 +29,7 @@ const Thread = (props) => {
   const store = useStore();
   const router = useRouter();
 
-  const currentUser = getCurrentUser(store.getState());
+  const currentUser = getCurrentUserLegacy(store.getState());
   const canEdit = createdBy.id === currentUser.id;
   const username = createUsername({ created_by });
 
