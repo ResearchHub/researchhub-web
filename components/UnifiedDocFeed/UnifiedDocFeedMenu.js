@@ -45,7 +45,7 @@ const UnifiedDocFeedMenu = ({
       {
         value: "is_open_access",
         label: "Open Access",
-        icon: icons.lockOpen,
+        icon: icons.bookOpenAlt,
         disableScope: false,
       },
       {
@@ -144,12 +144,14 @@ const UnifiedDocFeedMenu = ({
               setIsMoreDropdownOpen(false);
             }}
             // overrideTitleStyle={styles.customTitleStyle}
+            overridePopoverStyle={styles.overridePopoverStyle}
             positions={["bottom", "right"]}
             customButtonClassName={[
               styles.tab,
               tabObj.isSelected && styles.moreOptsSelected,
               styles.moreFiltersBtnContainer,
             ]}
+            overrideOptionsStyle={styles.moreDropdownOptions}
             overrideDownIconStyle={styles.downIcon}
             onSelect={(selectedFilter) => {
               const selectedFilterObj = tabObj.options.find(
@@ -164,7 +166,7 @@ const UnifiedDocFeedMenu = ({
         ) : (
           <>
             <div onClick={() => onSubFilterSelect(tabObj)}>
-              {/* <span className={css(styles.iconWrapper)}>{tabObj.icon}</span> */}
+              <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
               <span className={css(styles.tabText)}>{tabObj.label}</span>
             </div>
           </>
@@ -367,7 +369,7 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     marginRight: 7,
-    fontSize: 20,
+    fontSize: 16,
     [`@media only screen and (max-width: 1400px)`]: {
       fontSize: 14,
     },
@@ -386,8 +388,8 @@ const styles = StyleSheet.create({
   },
   tab: {
     color: colors.BLACK(),
-    color: colors.BLACK(0.5),
-    padding: "0 5px 0px 5px",
+    color: colors.BLACK(0.6),
+    padding: "0 8px 0px 8px",
     marginRight: 25,
     textTransform: "unset",
     fontSize: 16,
@@ -470,19 +472,25 @@ const styles = StyleSheet.create({
       background: "unset",
     },
   },
+  moreDropdownOptions: {
+    color: colors.BLACK(0.6),
+  },
+  overridePopoverStyle: {
+    width: "220px",
+  },
   timeScopeBtnContainer: {
     // paddingBottom: 0,
     // paddingLeft: 0,
     whiteSpace: "nowrap",
     display: "flex",
-    padding: "6px 0px 0px 0px",
+    padding: "0px 0px 0px 0px",
     marginRight: 0,
     // backgroundColor: "unset",
     // color: pillNavColors.secondary.filledTextColor,
     // borderRadius: 40,
     // fontWeight: 500,
     // marginRight: 8,
-    lineHeight: "8px",
+    // lineHeight: "8px",
     fontWeight: 400,
     ":hover": {
       background: "unset",
@@ -514,7 +522,7 @@ const styles = StyleSheet.create({
     padding: "2px 8px",
     marginRight: 8,
     fontSize: 14,
-    color: colors.BLACK(0.5),
+    color: colors.BLACK(0.6),
     ":hover": {
       background: colors.LIGHT_GREY(),
       borderRadius: 50,
