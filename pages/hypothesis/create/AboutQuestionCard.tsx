@@ -19,7 +19,7 @@ export default function AboutQuestionCard({
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
         />
-        <div className={css(styles.aboutTitleText)}>Creating a Hypothesis</div>
+        <div className={css(styles.aboutTitleText)}>Creating a Meta-Sudy</div>
       </div>
       <Collapsible
         className={css(styles.collapsibleSection)}
@@ -35,7 +35,7 @@ export default function AboutQuestionCard({
           </div>
         }
       >
-        <ul>
+        <ul className={css(styles.details)}>
           <li>
             Make a hypothesis -- a proposed explanation for an observation.
           </li>
@@ -58,7 +58,7 @@ export default function AboutQuestionCard({
           </div>
         }
       >
-        <ul>
+        <ul className={css(styles.details)}>
           <li>Be civil</li>
           <li>Offer suggestions and corrections</li>
         </ul>
@@ -78,6 +78,10 @@ const styles = StyleSheet.create({
   },
   aboutTitle: {
     display: "flex",
+  },
+  details: {
+    fontSize: 16,
+    marginTop: 10,
   },
   aboutTitleText: {
     fontWeight: "bold",

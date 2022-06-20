@@ -81,7 +81,7 @@ export default function AddNewSourceBodySearch({
       <FormSelect
         id="citation-type"
         inputStyle={formGenericStyles.inputMax}
-        label="Supports or Rejects hypothesis"
+        label="Supports or rejects meta-study"
         labelStyle={formGenericStyles.labelStyle}
         onChange={(_inputID, inputVal): void =>
           setSelectedCitationType(inputVal.value)
