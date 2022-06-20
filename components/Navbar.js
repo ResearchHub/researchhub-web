@@ -233,7 +233,7 @@ const Navbar = (props) => {
             <div className={css(styles.tab)}>Leaderboard</div>
           </a>
         </Link>
-        {/* <Link href={"/live"} key={`navbar_tab_live`}>
+        <Link href={"/live"} key={`navbar_tab_live`}>
           <a className={css(styles.tabLink)}>
             <div className={css(styles.tab)}>Live</div>
           </a>
@@ -247,7 +247,7 @@ const Navbar = (props) => {
           <a className={css(styles.tabLink)} target="_blank">
             <div className={css(styles.tab)}>Jobs</div>
           </a>
-        </Link> */}
+        </Link>
       </Fragment>
     );
   }
