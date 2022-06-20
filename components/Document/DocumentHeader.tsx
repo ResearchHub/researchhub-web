@@ -1,23 +1,27 @@
 import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
+import { createVoteHandler } from "../Vote/utils/createVoteHandler";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { nullthrows } from "~/config/utils/nullchecks";
 import {
   parseAuthorProfile,
   TopLevelDocument,
+  VoteType,
 } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import ALink from "../ALink";
-import colors from "~/config/themes/colors";
-import icons, { HypothesisIcon } from "~/config/themes/icons";
-import ReactTooltip from "react-tooltip";
-import DocumentActions from "./DocumentActions";
-import VoteWidget from "../VoteWidget";
-import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import ALink from "../ALink";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
-import { connect } from "react-redux";
-import { breakpoints } from "~/config/themes/screen";
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
+import DocumentActions from "./DocumentActions";
 import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
+import icons, { HypothesisIcon } from "~/config/themes/icons";
 import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
 import SubmissionDetails from "./SubmissionDetails";
+import VoteWidget from "../VoteWidget";
 
 type Args = {
   document: TopLevelDocument;
@@ -53,78 +57,56 @@ function DocumentHeader({
     userVote,
     score,
     hubs,
-    isOpenAccess
+    isOpenAccess,
+    id: documentID,
   } = document;
 
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
-  const [voteState, setVoteState] = useState({
+  const [voteState, setVoteState] = useState<{
+    userVote: VoteType | null | undefined;
+    voteScore: number;
+  }>({
     userVote: userVote,
     voteScore: score,
   });
 
   useEffect(() => {
-    const isSubmittedByCurrentUser =
-      currentUser && currentUser?.id === createdBy?.id;
-    if (isSubmittedByCurrentUser) {
-      setVoteState({
-        ...voteState,
-        userVote: UPVOTE,
-        voteScore: document.score,
-      });
-    } else {
-      setVoteState({
-        ...voteState,
-        userVote: document.userVote,
-        voteScore: document.score,
-      });
-    }
-  }, [currentUser, document]);
+    setVoteState({
+      ...voteState,
+      userVote: document?.userVote,
+      voteScore: document.score,
+    });
+  }, [document]);
 
-  const handleVoteSuccess = ({ voteType, increment }) => {
-    let newVoteScore = voteState.voteScore;
-    if (voteType === UPVOTE) {
-      if (voteState.userVote === DOWNVOTE) {
-        newVoteScore = voteState.voteScore + increment + 1;
-      } else if (voteState.userVote === UPVOTE) {
-        // This shouldn't happen but if it does, we do nothing
-        console.log("User already casted upvote");
-        return;
-      } else {
-        newVoteScore = voteState.voteScore + increment;
-      }
-    } else if (voteType === DOWNVOTE) {
-      if (voteState.userVote === DOWNVOTE) {
-        console.log("User already casted downvote");
-        return;
-      } else if (voteState.userVote === UPVOTE) {
-        newVoteScore = voteState.voteScore + increment - 1;
-      } else {
-        newVoteScore = voteState.voteScore + increment;
-      }
-    }
-
+  const handleVoteSuccess = ({ increment, voteType }) => {
     setVoteState({
       userVote: voteType,
-      voteScore: newVoteScore,
+      voteScore: voteState.voteScore + increment,
     });
   };
 
   let onUpvote, onDownvote;
   if (document.isReady) {
     onUpvote = createVoteHandler({
-      voteType: UPVOTE,
-      unifiedDocument,
       currentAuthor,
-      onSuccess: handleVoteSuccess,
+      currentVote: voteState?.userVote,
+      documentCreatedBy: nullthrows(createdBy),
+      documentID,
+      documentType: unifiedDocument.documentType,
       onError: () => null,
+      onSuccess: handleVoteSuccess,
+      voteType: UPVOTE,
     });
     onDownvote = createVoteHandler({
-      voteType: DOWNVOTE,
-      unifiedDocument,
       currentAuthor,
-      onSuccess: handleVoteSuccess,
+      currentVote: voteState?.userVote,
+      documentCreatedBy: nullthrows(createdBy),
+      documentID,
+      documentType: unifiedDocument.documentType,
       onError: () => null,
+      onSuccess: handleVoteSuccess,
+      voteType: DOWNVOTE,
     });
   }
 
@@ -134,7 +116,10 @@ function DocumentHeader({
       <span className={css(styles.author)}>
         {author.id ? (
           <span>
-            <ALink overrideStyle={styles.link} href={`/user/${author.id}/overview`}>
+            <ALink
+              overrideStyle={styles.link}
+              href={`/user/${author.id}/overview`}
+            >
               {author.firstName} {author.lastName}
             </ALink>
           </span>
@@ -149,12 +134,18 @@ function DocumentHeader({
   });
   const formatElems = (formats || []).map((f) => {
     return f.type === "pdf" ? (
-      <span
+      <Button
         className={css(styles.link)}
+        customButtonStyle={styles.openPDFButton}
         onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
+        customLabelStyle={styles.customLabelStyle}
       >
-        PDF
-      </span>
+        <FontAwesomeIcon
+          icon={["fas", "arrow-down-to-line"]}
+          style={{ marginRight: 4 }}
+        />{" "}
+        View PDF
+      </Button>
     ) : (
       <ALink href={f.url}>{f.type}</ALink>
     );
@@ -229,7 +220,7 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>Journal</div>
                 <div className={css(styles.metaVal)}>{journal}</div>
               </div>
-            )}            
+            )}
             {doi && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>DOI</div>
@@ -260,20 +251,18 @@ function DocumentHeader({
                 <div className={css(styles.metaVal)}>{datePublished}</div>
               </div>
             )}
-            {formatElems.length > 0 && (
+            {isOpenAccess && (
               <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>License</div>
+                <div className={css(styles.metaVal)}>Open Access</div>
+              </div>
+            )}
+            {formatElems.length > 0 && (
+              <div className={css(styles.metadataRow, styles.formatsRow)}>
                 <div className={css(styles.metaKey)}>Formats</div>
                 <div className={css(styles.metaVal)}>{formatElems}</div>
               </div>
             )}
-            {isOpenAccess && (
-              <div className={css(styles.metadataRow)} >
-                <div className={css(styles.metaKey)}>License</div>
-                <div className={css(styles.metaVal)}>
-                  Open Access
-                </div>
-              </div>
-            )}              
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
@@ -358,7 +347,7 @@ function DocumentHeader({
                     {unifiedDocument.documentType}
                   </span>
                 </div>
-              )}                
+              )}
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions
@@ -367,7 +356,9 @@ function DocumentHeader({
                 onDocumentRemove={onDocumentRemove}
                 onDocumentRestore={onDocumentRestore}
                 handleEdit={handleEdit}
-                openPaperPDFModal={(formats || []).length > 0 ? openPaperPDFModal: undefined}
+                openPaperPDFModal={
+                  (formats || []).length > 0 ? openPaperPDFModal : undefined
+                }
               />
             </div>
           </div>
@@ -398,6 +389,10 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "none",
     },
+  },
+  openPDFButton: {
+    height: "unset",
+    padding: "5px 16px",
   },
   smallScreenVoteWidget: {
     marginRight: 0,
@@ -432,6 +427,10 @@ const styles = StyleSheet.create({
   },
   detailIcon: {
     marginRight: 7,
+  },
+  customLabelStyle: {
+    fontSize: 12,
+    fontWeight: 500,
   },
   starIcon: {
     color: colors.YELLOW(),
@@ -504,6 +503,9 @@ const styles = StyleSheet.create({
     display: "flex",
     lineHeight: "26px",
     marginTop: 3,
+  },
+  formatsRow: {
+    alignItems: "center",
   },
   metaKey: {
     color: colors.MEDIUM_GREY(),

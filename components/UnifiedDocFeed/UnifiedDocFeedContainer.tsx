@@ -239,20 +239,17 @@ function UnifiedDocFeedContainer({
           mainHeaderText={formattedMainHeader}
         />
       )}
-      <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>
-          <UnifiedDocFeedMenu
-            subFilters={subFilters}
-            onDocTypeFilterSelect={onDocTypeFilterSelect}
-            onSubFilterSelect={(filterBy) =>
-              setSubFilters({ filterBy, scope: subFilters.scope })
-            }
-            onScopeSelect={(scope) =>
-              setSubFilters({ filterBy: subFilters.filterBy, scope })
-            }
-          />
-        </div>
-      </div>
+
+      <UnifiedDocFeedMenu
+        subFilters={subFilters}
+        onDocTypeFilterSelect={onDocTypeFilterSelect}
+        onSubFilterSelect={(filterBy) =>
+          setSubFilters({ filterBy, scope: subFilters.scope })
+        }
+        onScopeSelect={(scope) =>
+          setSubFilters({ filterBy: subFilters.filterBy, scope })
+        }
+      />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -310,28 +307,6 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
-    },
-  },
-  buttonGroup: {
-    alignItems: "center",
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    marginTop: 16,
-    marginBottom: 16,
-    overflow: "auto",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexDirection: "column-reverse",
-    },
-  },
-  mainFilters: {
-    alignItems: "center",
-    display: "flex",
-    height: "inherit",
-    width: "100%",
-    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      borderBottom: `unset`,
     },
   },
   feedButtonContainer: {

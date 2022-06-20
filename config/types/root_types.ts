@@ -1,8 +1,10 @@
-import { parseCreatedBy } from "./contribution";
-import { Hub } from "./hub";
 import { CitationConsensus } from "./hypothesis";
-import { parsePeerReviewScoreSummary, PeerReview, PeerReviewScoreSummary } from "./peerReview";
-import { Vote } from "./vote";
+import { Hub } from "./hub";
+import { parseCreatedBy } from "./contribution";
+import {
+  parsePeerReviewScoreSummary,
+  PeerReviewScoreSummary,
+} from "./peerReview";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -10,64 +12,76 @@ export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null;
 
 export interface TopLevelDocument {
-  authors: Array<AuthorProfile>,
-  score: number,
-  createdDate: string,
-  discussionCount: number,
-  unifiedDocument: UnifiedDocument,
-  hubs: Array<Hub>,
-  createdBy: CreatedBy | null,
-  userVote?: "downvote" | "upvote" | "neutralvote" | null,
-  title?: string,
-  externalUrl?: string,
-  doi?: string,
-  datePublished?: string,
-  journal?: string,
-  formats?: Array<PaperFormat>,
-  note?: any,
-  markdown?: string,
-  isReady: boolean,
-  consensus?: CitationConsensus,
-  boostAmount: number,
-  id: ID,
-  isOpenAccess?: boolean,
+  authors: Array<AuthorProfile>;
+  score: number;
+  createdDate: string;
+  discussionCount: number;
+  unifiedDocument: UnifiedDocument;
+  hubs: Array<Hub>;
+  createdBy: CreatedBy | null;
+  userVote?: VoteType | null;
+  title?: string;
+  externalUrl?: string;
+  doi?: string;
+  datePublished?: string;
+  journal?: string;
+  formats?: Array<PaperFormat>;
+  note?: any;
+  markdown?: string;
+  isReady: boolean;
+  consensus?: CitationConsensus;
+  boostAmount: number;
+  id: ID;
+  isOpenAccess?: boolean;
 }
 
 export type PaperFormat = {
-  type: "pdf" | "latex",
-  url: string,
-}
+  type: "pdf" | "latex";
+  url: string;
+};
 
 export type UrlDocument = {
-  id?: ID,
-  title?: string,
-  slug?: string,
-  paperTitle?: string,
-  isRemoved?: boolean,
-}
+  id?: ID;
+  title?: string;
+  slug?: string;
+  paperTitle?: string;
+  isRemoved?: boolean;
+};
+
+export type RhDocumentType =
+  | "eln"
+  | "hypothesis"
+  | "paper"
+  | "post"
+  | "researchhub_posts";
+export type VoteType = "downvote" | "neutralvote" | "upvote";
+export type VoteEnumType = 0 /* nuetral */ | 1 /* upvote */ | 2; /* downvote */
+
+// TODO: remove this type once comment modules are migrated.
+export type CommentType = "comment" | "reply" | "thread";
 
 export type UnifiedDocument = {
-  id: ID,
-  documentType: "post" | "paper" | "hypothesis",
-  document?: UrlDocument,
-  createdBy?: CreatedBy,
-  reviewSummary?: PeerReviewScoreSummary,
-  isRemoved: boolean,
-}
+  id: ID;
+  documentType: RhDocumentType;
+  document?: UrlDocument;
+  createdBy?: CreatedBy;
+  reviewSummary?: PeerReviewScoreSummary;
+  isRemoved: boolean;
+};
 
 export type AuthorProfile = {
-  id?: ID,
-  profileImage?: string,
-  firstName?: string, 
-  lastName?: string, 
-  isClaimed: boolean,
-  sequence?: "first" | "additional",
-}
+  id?: ID;
+  profileImage?: string;
+  firstName?: string;
+  lastName?: string;
+  isClaimed: boolean;
+  sequence?: "first" | "additional";
+};
 
 export type RHUser = {
-  authorProfile?: AuthorProfile,
-  id: ID,
-}
+  authorProfile?: AuthorProfile;
+  id: ID;
+};
 
 // TODO: Deprecate this in favor of RHUser
 // NOTE: Avoid using this type
@@ -148,46 +162,44 @@ export type AuthStore = {
 };
 
 export type CreatedBy = {
-  firstName: string,
-  lastName: string,
-  id: ID,
-  authorProfile: AuthorProfile,
-}
-
+  author_profile?: AuthorProfile; // occasional insertion slip-ins from legacy code.
+  authorProfile: AuthorProfile;
+  firstName: string;
+  id: ID;
+  lastName: string;
+};
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
-  if (typeof(raw) !== "object") {
+  if (typeof raw !== "object") {
     return raw;
   }
-  
+
   const parsed = {
-    "id": raw.id,
-    "documentType": raw?.document_type?.toLowerCase(),
-    "document": {},
-    "isRemoved": raw.is_removed,
-  }
+    id: raw.id,
+    documentType: raw?.document_type?.toLowerCase(),
+    document: {},
+    isRemoved: raw.is_removed,
+  };
 
   if (raw.created_by) {
     parsed["createdBy"] = parseCreatedBy(raw.created_by);
   }
 
-  const unparsedInnerDoc = 
-    Array.isArray(raw.documents) 
-      ? raw.documents[0] 
-      : typeof(raw.documents) === "object"
-      ? raw.documents
-      : {};
+  const unparsedInnerDoc = Array.isArray(raw.documents)
+    ? raw.documents[0]
+    : typeof raw.documents === "object"
+    ? raw.documents
+    : {};
 
   parsed.document = {
     id: unparsedInnerDoc.id,
     title: unparsedInnerDoc.title,
-    slug: unparsedInnerDoc.slug,      
-  }
+    slug: unparsedInnerDoc.slug,
+  };
 
   if (parsed.documentType === "discussion") {
     parsed.documentType = "post";
-  }
-  else if (parsed.documentType === "paper") {
+  } else if (parsed.documentType === "paper") {
     parsed.documentType = "paper";
     parsed.document["paperTitle"] = unparsedInnerDoc.paper_title;
   }
@@ -197,10 +209,10 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   }
 
   return parsed;
-}
+};
 
 export const parseAuthorProfile = (raw: any): AuthorProfile => {
-  if (typeof(raw) !== "object") {
+  if (typeof raw !== "object") {
     return raw;
   }
 
@@ -209,18 +221,17 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
-    ...(raw.sequence && {sequence: raw.sequence}),
-  }
+    ...(raw.sequence && { sequence: raw.sequence }),
+  };
 
   return parsed;
-}
-
+};
 
 export const parseUser = (raw: any): RHUser => {
   const parsed = {
     id: raw.id,
-    authorProfile: parseAuthorProfile(raw.author_profile)
-  }
+    authorProfile: parseAuthorProfile(raw.author_profile),
+  };
 
   return parsed;
-}
+};
