@@ -108,6 +108,7 @@ import {
   faCheckCircle,
   faChevronDown as falChevronDown,
   faComments as faCommentsNoBackground,
+  faUnlock,
   faExpandArrows,
   faLongArrowLeft,
   faPlus,
@@ -119,6 +120,8 @@ import {
   faTimes,
   faTimesCircle,
   faTrashAlt,
+  faBadgeCheck as faBadgeCheckAlt,
+  faBookOpen as faBookOpenAlt,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -189,6 +192,7 @@ library.add(
   faBolt,
   faBook,
   faBookOpen,
+  faBookOpenAlt,
   faBracketsCurly,
   faCalendar,
   faCalendarDay,
@@ -319,6 +323,7 @@ const icons = {
   bolt: <FontAwesomeIcon icon={faBolt} />,
   book: <FontAwesomeIcon icon={faBook} />,
   bookOpen: <FontAwesomeIcon icon={faBookOpen} />,
+  bookOpenAlt: <FontAwesomeIcon icon={faBookOpenAlt} />,
   burgerMenu: <FontAwesomeIcon icon={faBars} />,
   calendar: <FontAwesomeIcon icon={faCalendar} />,
   caretDown: <FontAwesomeIcon icon={faCaretDown} />,
@@ -379,6 +384,7 @@ const icons = {
   linkedIn: <FontAwesomeIcon icon={faLinkedinIn} />,
   live: <FontAwesomeIcon icon={faDotCircle} />,
   lock: <FontAwesomeIcon icon={faLock} />,
+  lockOpen: <FontAwesomeIcon icon={faUnlock} />,
   longArrowDown: <FontAwesomeIcon icon={faLongArrowAltDown} />,
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
   longArrowUp: <FontAwesomeIcon icon={faLongArrowAltUp} />,
@@ -443,6 +449,7 @@ const icons = {
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
   verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
+  verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
