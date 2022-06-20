@@ -70,6 +70,12 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   async redirects() {
     return [
       {
+        source: "/scicon2022",
+        destination: "https://researchhubevents.wixsite.com/scicon2022",
+        permanent: true,
+        basePath: false,
+      },
+      {
         source: "/all",
         destination: "/",
         permanent: true,
