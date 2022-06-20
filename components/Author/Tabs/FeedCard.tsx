@@ -398,7 +398,7 @@ function FeedCard(props: FeedCardProps) {
                         {documentIcons[formattedDocType!]}
                       </span>
                       <span className={css(styles.metadataText)}>
-                        {formattedDocType}
+                        {formattedDocType === "hypothesis" ? "Meta-Study" : formattedDocType}
                       </span>
                     </div>
                   </div>

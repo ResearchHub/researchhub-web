@@ -226,7 +226,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
             isWhite={false}
-            label={isPost ? "Post" : "Create Hypothesis"}
+            label={isPost ? "Post" : "Create Meta-Study"}
             onClick={handlePost}
           />
         </div>

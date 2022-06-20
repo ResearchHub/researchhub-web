@@ -26,9 +26,7 @@ const UnifiedDocFeedMenu = ({
       return (
         <div className={css(styles.labelContainer)}>
           <span className={css(styles.iconWrapper)}>{opt.icon}</span>
-          <span className={css(styles.optLabel)}>
-            {opt?.selectedLabel || opt.label}
-          </span>
+          <span className={css(styles.optLabel)}>{opt.label}</span>
         </div>
       );
     };
@@ -182,7 +180,6 @@ const UnifiedDocFeedMenu = ({
                 (t) => t.value === selectedFilter
               );
 
-              console.log("selectedFilter", selectedFilter);
               onSubFilterSelect(selectedFilterObj);
             }}
             onClose={() => setIsMoreDropdownOpen(false)}
@@ -300,11 +297,12 @@ const UnifiedDocFeedMenu = ({
                   overrideOptionsStyle={styles.moreDropdownOptions}
                   overrideDownIconStyle={styles.downIcon}
                   onSelect={(selectedFilter) => {
-                    const selectedFilterObj = selectedTab.options.find(
+                    console.log("selectedFilter", selectedFilter);
+                    console.log("tabs", tabs);
+                    const selectedFilterObj = optsForSmallScreen.find(
                       (t) => t.value === selectedFilter
                     );
 
-                    console.log("selectedFilter", selectedFilter);
                     onSubFilterSelect(selectedFilterObj);
                   }}
                   onClose={() => setIsSmallScreenDropdownOpen(false)}
@@ -315,7 +313,7 @@ const UnifiedDocFeedMenu = ({
                 {tabs.map((t) => renderTab(t))}
               </div>
               {!selectedTab.disableScope && (
-                <div className={css(styles.tab)}>
+                <div className={css(styles.tab, styles.timeScope)}>
                   <DropdownButton
                     opts={scopeOptions}
                     label={scope.label}
@@ -447,12 +445,17 @@ const styles = StyleSheet.create({
   },
   timeScope: {
     display: "flex",
+    height: 35,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      alignItems: "center",
+    },
   },
   customTitleStyle: {
     fontWeight: 400,
   },
   labelContainer: {
     display: "flex",
+    height: "100%",
   },
   iconWrapper: {
     marginRight: 7,

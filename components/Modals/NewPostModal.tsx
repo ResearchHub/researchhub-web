@@ -109,7 +109,7 @@ function NewPostModal({
       ),
     },
     {
-      header: "Create a Meta-Analysis",
+      header: "Create a Meta-Study",
       description:
         "Aggregate a collection of papers that support a particular scientific theory",
       route: "/hypothesis/create",
