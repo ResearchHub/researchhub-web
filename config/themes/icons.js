@@ -119,6 +119,7 @@ import {
   faTimes,
   faTimesCircle,
   faTrashAlt,
+  faBadgeCheck as faBadgeCheckAlt,
   faBookOpen as faBookOpenAlt,
 } from "@fortawesome/pro-light-svg-icons";
 import {
@@ -446,6 +447,7 @@ const icons = {
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
   verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
+  verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
