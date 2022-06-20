@@ -109,9 +109,9 @@ function NewPostModal({
       ),
     },
     {
-      header: "Propose a Hypothesis",
+      header: "Create a Meta-Study",
       description:
-        "Propose an explanation to an observation and back it up by citing relevant academic papers.",
+        "Aggregate a collection of papers that support a particular scientific theory",
       route: "/hypothesis/create",
       icon: (
         <HypothesisIcon

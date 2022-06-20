@@ -8,12 +8,12 @@ export default function Index() {
   return (
     <Fragment>
       <Head
-        title={`Create a Hypothesis on ResearchHub`}
-        description="Create a Hypothesis on ResearchHub"
+        title={`Create a Meta-Study on ResearchHub`}
+        description="Create a Meta-Study on ResearchHub"
       />
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
-          <div className={css(styles.title)}>Create a Hypothesis</div>
+          <div className={css(styles.title)}>Create a Meta-Study</div>
           <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
           <div className={css(styles.row)}>
             <AskQuestionForm documentType={"hypothesis"} />
