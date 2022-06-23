@@ -149,6 +149,8 @@ function PaperTab(props) {
           <iframe src={httpsUrl} height={800} width={"100%"} loading="lazy" />
         </div>
       );
+    } else if (!paper.is_open_access) {
+      return null;
     } else {
       if (showDnd) {
         return (
@@ -254,29 +256,33 @@ function PaperTab(props) {
     );
   }
 
+  const renderState = handleRenderState();
+
   return (
     <div className={css(styles.container)} ref={containerRef}>
-      <div className={css(styles.headerContainer)} ref={paperPdfRef}>
-        <div className={css(styles.titleContainer)}>
-          <h3 className={css(styles.title)}>Paper PDF</h3>
-          {file && renderDownloadPdf()}
-        </div>
-        {file && (isModerator || isEditorOfHubs) && (
-          <div className={css(styles.moderatorContainer)}>
-            <ModeratorDeleteButton
-              actionType="pdf"
-              containerStyle={styles.moderatorButton}
-              icon=" "
-              iconStyle={styles.iconStyle}
-              isEditorOfHubs={isEditorOfHubs}
-              label="Remove PDF"
-              labelStyle={styles.moderatorLabel}
-              metaData={{ paperId: props.paperId }}
-              onRemove={onPdfRemove}
-            />
+      {renderState && (
+        <div className={css(styles.headerContainer)} ref={paperPdfRef}>
+          <div className={css(styles.titleContainer)}>
+            <h3 className={css(styles.title)}>Paper PDF</h3>
+            {file && renderDownloadPdf()}
           </div>
-        )}
-      </div>
+          {file && (isModerator || isEditorOfHubs) && (
+            <div className={css(styles.moderatorContainer)}>
+              <ModeratorDeleteButton
+                actionType="pdf"
+                containerStyle={styles.moderatorButton}
+                icon=" "
+                iconStyle={styles.iconStyle}
+                isEditorOfHubs={isEditorOfHubs}
+                label="Remove PDF"
+                labelStyle={styles.moderatorLabel}
+                metaData={{ paperId: props.paperId }}
+                onRemove={onPdfRemove}
+              />
+            </div>
+          )}
+        </div>
+      )}
       {handleRenderState()}
     </div>
   );
