@@ -88,6 +88,7 @@ class FormSelect extends Component {
       maxMenuHeight,
       showCountInsteadOfLabels,
       showLabelAlongSelection,
+      isOptionDisabled,
     } = this.props;
 
     const configuredComponents = {
@@ -206,6 +207,7 @@ class FormSelect extends Component {
           required={required ? required : "false"}
           styles={colorStyles}
           value={value}
+          isOptionDisabled={isOptionDisabled}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>

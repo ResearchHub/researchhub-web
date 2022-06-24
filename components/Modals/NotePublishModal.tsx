@@ -323,6 +323,7 @@ function NotePublishModal({
             errorStyle={styles.errorText}
             id="hubs"
             inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
+            isOptionDisabled={() => mutableFormFields.hubs.length >= 3}
             isMulti={true}
             label="Hubs"
             labelStyle={styles.label}

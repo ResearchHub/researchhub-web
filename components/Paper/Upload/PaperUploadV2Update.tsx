@@ -123,10 +123,8 @@ function PaperUploadV2Update({
   paperActions,
 }: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
-  const [
-    authorSearchDebncRef,
-    setAuthorSearchDebncRef,
-  ] = useState<NodeJS.Timeout | null>(null);
+  const [authorSearchDebncRef, setAuthorSearchDebncRef] =
+    useState<NodeJS.Timeout | null>(null);
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
@@ -417,6 +415,7 @@ function PaperUploadV2Update({
             }
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleHubSelection}
+            isOptionDisabled={() => selectedHubs.length >= 3}
             options={suggestedHubs}
             placeholder="Search Hubs"
             required
@@ -435,12 +434,15 @@ function PaperUploadV2Update({
           </span>
           <span className={css(formGenericStyles.tagline)}>
             <FormTextArea
-              containerStyle={formGenericStyles.taglineContainer}
+              containerStyle={[
+                formGenericStyles.taglineContainer,
+                formGenericStyles.textArea,
+              ]}
               id="abstract"
               label="Abstract"
               labelStyle={formGenericStyles.labelStyle}
               onChange={handleInputChange}
-              placeholder="Enter the paper"
+              placeholder="Enter the abstract of the paper"
               value={abstract}
             />
           </span>

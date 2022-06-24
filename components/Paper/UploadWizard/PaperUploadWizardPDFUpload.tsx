@@ -120,7 +120,8 @@ function PaperUploadWizardPDFUpload({
 
     await uploadNewPaper({
       onError: (respPayload: any): void => {
-        const { response: errorResponse, message: errorMsg } = respPayload ?? {};
+        const { response: errorResponse, message: errorMsg } =
+          respPayload ?? {};
         const { status: errorStatus } = errorResponse ?? {};
         setIsSubmitting(false);
         captureEvent({
@@ -138,12 +139,13 @@ function PaperUploadWizardPDFUpload({
           modalReduxActions.openRecaptchaPrompt(true);
         } else if (errorStatus === 403 /* duplicate error */) {
           onExit();
-          modalReduxActions.openUploadPaperModal(
-            true,
-            errorMsg?.data
-          );
+          modalReduxActions.openUploadPaperModal(true, errorMsg?.data);
         } else {
-          msgReduxActions.setMessage(`An error has occured. Please report this to our Discord or Slack: ${errorStatus} - ${JSON.stringify(errorMsg)}`);
+          msgReduxActions.setMessage(
+            `An error has occured. Please report this to our Discord or Slack: ${errorStatus} - ${JSON.stringify(
+              errorMsg
+            )}`
+          );
           msgReduxActions.showMessage({ show: true, error: true });
           setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
         }
@@ -224,6 +226,7 @@ function PaperUploadWizardPDFUpload({
         disabled={isSubmitting}
         id="hubs"
         isMulti
+        isOptionDisabled={() => selectedHubs.length >= 3}
         label={
           <div>
             {"Hubs"}

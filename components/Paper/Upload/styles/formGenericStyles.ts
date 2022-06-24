@@ -83,7 +83,8 @@ export const formGenericStyles = StyleSheet.create({
   pageContent: {
     position: "relative",
     backgroundColor: "#FFF",
-    border: "1px solid #ddd",
+    boxShadow: "2px 2x 2px 2px #EDEDED",
+    // border: "1px solid #ddd",
     borderRadius: 4,
     padding: "30px 60px",
     marginTop: 40,
@@ -93,13 +94,17 @@ export const formGenericStyles = StyleSheet.create({
       padding: 32,
       marginTop: 16,
     },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: 767px)`]: {
       width: "calc(100% - 16px)",
       padding: 16,
+      boxSizing: 'border-box',
+      border: 0,
     },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      borderTop: "unset",
-    },
+  },
+  textArea: {
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 16,
+    }
   },
   header: {
     fontSize: 22,
@@ -189,8 +194,8 @@ export const formGenericStyles = StyleSheet.create({
   container: {
     marginBottom: 10,
     width: 600,
-    "@media only screen and (max-width: 665px)": {
-      width: 380,
+    "@media only screen and (max-width: 767px)": {
+      width: '100%',
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
@@ -204,8 +209,8 @@ export const formGenericStyles = StyleSheet.create({
     margin: 0,
     marginBottom: 20,
     width: 600,
-    "@media only screen and (max-width: 665px)": {
-      width: 380,
+    "@media only screen and (max-width: 767px)": {
+      width: '100%',
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
