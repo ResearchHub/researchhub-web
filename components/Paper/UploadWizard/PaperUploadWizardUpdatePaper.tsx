@@ -187,6 +187,7 @@ function PaperUploadWizardUpdatePaper({
         disabled={isSubmitting}
         error={formErrors.selectedHubs}
         id="hubs"
+        isOptionDisabled={() => selectedHubs.length >= 3}
         isMulti
         label={
           <div>
