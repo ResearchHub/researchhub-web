@@ -129,50 +129,79 @@ function DocumentHeader({
           </span>
         )}
       </span>
-    )
-  }
+    );
+  };
 
   const buildAuthors = (authors) => {
-    
     if (!Array.isArray(authors)) {
       return [];
     }
 
     const minLengthReqToHide = 4;
-    
-    let primaryAuthors:Array<ReactElement<"div">> = [];
-    primaryAuthors = authors.slice(0,2).map(author => buildAuthorElem(author));
 
-    let secondaryAuthors:Array<ReactElement<"div">> = [];
+    let primaryAuthors: Array<ReactElement<"div">> = [];
+    primaryAuthors = authors
+      .slice(0, 2)
+      .map((author) => buildAuthorElem(author));
+
+    let secondaryAuthors: Array<ReactElement<"div">> = [];
     if (authors.length >= minLengthReqToHide) {
-      secondaryAuthors = authors.slice(2, authors.length-1).map((author) => buildAuthorElem(author));
+      secondaryAuthors = authors
+        .slice(2, authors.length - 1)
+        .map((author) => buildAuthorElem(author));
     }
 
     const primaryAuthorElems = primaryAuthors.map((author, idx) => {
-      const renderComma = (showSecondaryAuthors && authors.length > 2) || (authors.length > 1 && idx < primaryAuthors.length -1);
+      const renderComma =
+        (showSecondaryAuthors && authors.length > 2) ||
+        (authors.length > 1 && idx < primaryAuthors.length - 1);
       return (
-        <>{author}{renderComma ? "," : ""}</>
-      )
+        <>
+          {author}
+          {renderComma ? "," : ""}
+        </>
+      );
     });
-    const secondaryAuthorElems = secondaryAuthors.map((author, idx) => <>{author}{idx < secondaryAuthors.length-1 ? "," : ""}</>)
-    const lastAuthor = authors.length > 2 ? buildAuthorElem(authors[authors.length-1]) : null;
+    const secondaryAuthorElems = secondaryAuthors.map((author, idx) => (
+      <>
+        {author}
+        {idx < secondaryAuthors.length - 1 ? "," : ""}
+      </>
+    ));
+    const lastAuthor =
+      authors.length > 2 ? buildAuthorElem(authors[authors.length - 1]) : null;
 
     return (
       <div className={css(styles.authorsContainer)}>
         {primaryAuthorElems}
-        <div className={css(styles.secondaryAuthors, showSecondaryAuthors && styles.showSecondaryAuthors)}>
+        <div
+          className={css(
+            styles.secondaryAuthors,
+            showSecondaryAuthors && styles.showSecondaryAuthors
+          )}
+        >
           {secondaryAuthorElems}
         </div>
-        {!showSecondaryAuthors && secondaryAuthors.length > 0 &&
-          <div className={css(styles.toggleHiddenAuthorsBtn)} onClick={() => setShowSecondaryAuthors(true)}>+{secondaryAuthors.length} authors</div>
-        }
+        {!showSecondaryAuthors && secondaryAuthors.length > 0 && (
+          <div
+            className={css(styles.toggleHiddenAuthorsBtn)}
+            onClick={() => setShowSecondaryAuthors(true)}
+          >
+            +{secondaryAuthors.length} authors
+          </div>
+        )}
         {lastAuthor && <>,{lastAuthor}</>}
-        {showSecondaryAuthors &&
-          <div className={css(styles.toggleHiddenAuthorsBtn)} onClick={() => setShowSecondaryAuthors(false)}>Show less</div>
-        }
+        {showSecondaryAuthors && (
+          <div
+            className={css(styles.toggleHiddenAuthorsBtn)}
+            onClick={() => setShowSecondaryAuthors(false)}
+          >
+            Show less
+          </div>
+        )}
       </div>
-    )
-  }
+    );
+  };
 
   const authorElems = buildAuthors(authors);
 
@@ -241,7 +270,8 @@ function DocumentHeader({
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Authors</div>
                 <div className={css(styles.metaVal)}>
-                  {authorElems}{` `}
+                  {authorElems}
+                  {` `}
                   {claimableAuthors.length > 0 && (
                     <span
                       className={css(styles.claimProfile)}
@@ -431,8 +461,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       textDecoration: "underline",
-    }
-  },  
+    },
+  },
   boostAmount: {
     display: "flex",
     alignItems: "center",
