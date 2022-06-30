@@ -135,8 +135,15 @@
 .ql-editor h3,
 .ql-editor h4,
 .ql-editor h5,
-.ql-editor h6 {
+.ql-editor h6,
+.ql-editor strong {
   font-size: 16px !important;
+  font-weight: 600;
+}
+
+.ql-editor ul,
+.ql-editor ol {
+  font-size: 16px;
 }
 
 /* .video-stream {
