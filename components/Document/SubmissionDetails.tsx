@@ -23,7 +23,7 @@ function SubmissionDetails({
   createdDate,
   avatarSize = 30,
 }: Args): ReactElement<"div"> {
-  let showAllHubs =
+  const showAllHubs =
     process.browser && window.innerWidth > breakpoints.medium.int;
 
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);

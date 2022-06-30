@@ -130,6 +130,23 @@
   }
 }
 
+.ql-editor h1,
+.ql-editor h2,
+.ql-editor h3,
+.ql-editor h4,
+.ql-editor h5,
+.ql-editor h6,
+.ql-editor strong {
+  font-size: 16px !important;
+  font-weight: 600;
+  line-height: unset;
+}
+
+.ql-editor ul,
+.ql-editor ol {
+  font-size: 16px;
+}
+
 /* .video-stream {
   height: 250px;
   width: 400px;
