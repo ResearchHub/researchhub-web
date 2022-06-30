@@ -320,11 +320,6 @@ class Editor extends Component {
         ) : (
           <Fragment>
             <span className="ql-formats">
-              <select className="ql-header">
-                <option value="2">Heading 1</option>
-                <option value="3">Heading 2</option>
-                <option defaultValue />
-              </select>
               <button className="ql-bold" />
               <button className="ql-italic" />
               <button className="ql-underline" />
@@ -333,7 +328,6 @@ class Editor extends Component {
               <button className="ql-blockquote"></button>
               <button className="ql-code-block"></button>
               <button className="ql-strike"></button>
-              <select className="ql-background"></select>
             </span>
             <span className="ql-formats">
               <button className="ql-list" value="ordered" />

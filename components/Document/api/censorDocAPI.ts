@@ -27,6 +27,6 @@ export default function censorDocument({
         msg: "Failed to censor document",
         data: { unifiedDocumentId },
       });
-      onError(error)
+      onError(error);
     });
 }
