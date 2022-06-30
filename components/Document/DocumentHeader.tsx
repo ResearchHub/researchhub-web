@@ -63,6 +63,7 @@ function DocumentHeader({
 
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
+  const [showSecondaryAuthors, setShowSecondaryAuthors] = useState(false);
   const [voteState, setVoteState] = useState<{
     userVote: VoteType | null | undefined;
     voteScore: number;
@@ -110,8 +111,7 @@ function DocumentHeader({
     });
   }
 
-  const authorElems = (authors || []).map((author, idx) => {
-    const lastElem = idx < authors.length - 1;
+  const buildAuthorElem = (author) => {
     return (
       <span className={css(styles.author)}>
         {author.id ? (
@@ -128,10 +128,54 @@ function DocumentHeader({
             {author.firstName} {author.lastName}
           </span>
         )}
-        {lastElem ? ", " : <span>&nbsp;&nbsp;</span>}
       </span>
-    );
-  });
+    )
+  }
+
+  const buildAuthors = (authors) => {
+    
+    if (!Array.isArray(authors)) {
+      return [];
+    }
+
+    const minLengthReqToHide = 4;
+    
+    let primaryAuthors:Array<ReactElement<"div">> = [];
+    primaryAuthors = authors.slice(0,2).map(author => buildAuthorElem(author));
+
+    let secondaryAuthors:Array<ReactElement<"div">> = [];
+    if (authors.length >= minLengthReqToHide) {
+      secondaryAuthors = authors.slice(2, authors.length-1).map((author) => buildAuthorElem(author));
+    }
+
+    const primaryAuthorElems = primaryAuthors.map((author, idx) => {
+      const renderComma = (showSecondaryAuthors && authors.length > 2) || (authors.length > 1 && idx < primaryAuthors.length -1);
+      return (
+        <>{author}{renderComma ? "," : ""}</>
+      )
+    });
+    const secondaryAuthorElems = secondaryAuthors.map((author, idx) => <>{author}{idx < secondaryAuthors.length-1 ? "," : ""}</>)
+    const lastAuthor = authors.length > 2 ? buildAuthorElem(authors[authors.length-1]) : null;
+
+    return (
+      <div className={css(styles.authorsContainer)}>
+        {primaryAuthorElems}
+        <div className={css(styles.secondaryAuthors, showSecondaryAuthors && styles.showSecondaryAuthors)}>
+          {secondaryAuthorElems}
+        </div>
+        {!showSecondaryAuthors && secondaryAuthors.length > 0 &&
+          <div className={css(styles.toggleHiddenAuthorsBtn)} onClick={() => setShowSecondaryAuthors(true)}>+{secondaryAuthors.length} authors</div>
+        }
+        {lastAuthor && <>,{lastAuthor}</>}
+        {showSecondaryAuthors &&
+          <div className={css(styles.toggleHiddenAuthorsBtn)} onClick={() => setShowSecondaryAuthors(false)}>Show less</div>
+        }
+      </div>
+    )
+  }
+
+  const authorElems = buildAuthors(authors);
+
   const formatElems = (formats || []).map((f) => {
     return f.type === "pdf" ? (
       <Button
@@ -141,6 +185,7 @@ function DocumentHeader({
         customLabelStyle={styles.customLabelStyle}
       >
         <FontAwesomeIcon
+          //@ts-ignore
           icon={["fas", "arrow-down-to-line"]}
           style={{ marginRight: 4 }}
         />{" "}
@@ -192,11 +237,11 @@ function DocumentHeader({
           </div>
           <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
-            {authorElems.length > 0 && (
+            {authors.length > 0 && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Authors</div>
                 <div className={css(styles.metaVal)}>
-                  {authorElems}
+                  {authorElems}{` `}
                   {claimableAuthors.length > 0 && (
                     <span
                       className={css(styles.claimProfile)}
@@ -369,6 +414,25 @@ function DocumentHeader({
 }
 
 const styles = StyleSheet.create({
+  authorsContainer: {
+    display: "inline",
+  },
+  secondaryAuthors: {
+    display: "none",
+    marginLeft: 5,
+  },
+  showSecondaryAuthors: {
+    display: "inline",
+  },
+  toggleHiddenAuthorsBtn: {
+    marginLeft: 5,
+    display: "inline",
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    }
+  },  
   boostAmount: {
     display: "flex",
     alignItems: "center",
@@ -518,9 +582,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   author: {
-    marginRight: 2,
-    ":last-child": {
-      marginRight: 20,
+    marginLeft: 5,
+    ":first-child": {
+      marginLeft: 0,
     },
   },
 });
