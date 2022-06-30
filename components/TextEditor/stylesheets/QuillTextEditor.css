@@ -139,6 +139,7 @@
 .ql-editor strong {
   font-size: 16px !important;
   font-weight: 600;
+  line-height: unset;
 }
 
 .ql-editor ul,

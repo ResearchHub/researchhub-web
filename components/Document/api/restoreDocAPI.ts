@@ -27,6 +27,6 @@ export default function restoreDocument({
         msg: "Failed to restore document",
         data: { unifiedDocumentId },
       });
-      onError(error)
+      onError(error);
     });
 }
