@@ -42,6 +42,7 @@ import { sendAmpEvent, saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
+import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const TYPES = {
@@ -96,6 +97,7 @@ const DiscussionTab = (props) => {
   const [focus, setFocus] = useState(false);
   const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
   const [reviewScore, setReviewScore] = useState(0);
+  const [bountyAmountDetails, setBountyAmountDetails] = useState(null);
   const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
     useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
@@ -424,13 +426,13 @@ const DiscussionTab = (props) => {
       loading={submitInProgress}
       smallToolBar
       uid={textEditorKey}
+      label={bountyAmountDetails ? "Post with Bounty" : "Post"}
     >
-      <span
-        className={css(styles.postingGuidelinesLink)}
-        onClick={() => setShowPostingGuidelinesModal(true)}
-      >
-        Posting Guidelines
-      </span>
+      <CreateBountyBtn
+        onBountyChange={(amountDetails) =>
+          setBountyAmountDetails(amountDetails)
+        }
+      />
     </TextEditor>
   );
 

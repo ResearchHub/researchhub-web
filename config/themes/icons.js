@@ -89,6 +89,7 @@ import {
   faVideoPlus,
   faShieldAlt,
   faTrash as faTrashSolid,
+  faMedal as faMedalSolid,
   faBadgeCheck,
   faUp,
   faDown,
@@ -97,6 +98,7 @@ import {
   faPenSquare as faPenSquareRegular,
   faArrowAltToBottom as download,
   faArrowDownToLine,
+  faUndo,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -139,6 +141,7 @@ import {
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
+  faMedal,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -304,7 +307,8 @@ library.add(
   opaqueThumbsUp,
   solidThumbsDown,
   solidThumbsUp,
-  faArrowDownToLine
+  faArrowDownToLine,
+  faUndo
 );
 
 const icons = {
@@ -322,6 +326,8 @@ const icons = {
   bell: <FontAwesomeIcon icon={faBell} />,
   bolt: <FontAwesomeIcon icon={faBolt} />,
   book: <FontAwesomeIcon icon={faBook} />,
+  bounty: <FontAwesomeIcon icon={faMedal} />,
+  bountySolid: <FontAwesomeIcon icon={faMedalSolid} />,
   bookOpen: <FontAwesomeIcon icon={faBookOpen} />,
   bookOpenAlt: <FontAwesomeIcon icon={faBookOpenAlt} />,
   burgerMenu: <FontAwesomeIcon icon={faBars} />,
@@ -448,6 +454,7 @@ const icons = {
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
+  undo: <FontAwesomeIcon icon={faUndo} />,
   verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
   verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
