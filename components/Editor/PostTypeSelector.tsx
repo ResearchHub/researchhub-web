@@ -41,7 +41,7 @@ function PostTypeSelector(): ReactElement {
       <div className={css(dropdownStyles.dropdown, isOpen && dropdownStyles.dropdownOpen)}>
         <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupContribute)}>
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribute</div>
-          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>Knowledge to community</div>
+          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>To the community</div>
           {types.filter(t => t.group === "contribute").map(t => (
             <div className={css(dropdownStyles.dropdownOpt)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
@@ -52,7 +52,7 @@ function PostTypeSelector(): ReactElement {
 
         <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupRequest)}>
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
-          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>Knowledge from community</div>
+          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>From the community</div>
           {types.filter(t => t.group === "request").map(t => (
             <div className={css(dropdownStyles.dropdownOpt)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
@@ -96,7 +96,7 @@ const dropdownStyles = StyleSheet.create({
   },
   dropdownGroupContribute: {
     color: colors.NEW_BLUE(),
-    borderRight: "1px solid",
+    borderRight: `1px solid ${colors.GREY()}`,
   },
   dropdownGroupRequest: {
     color: colors.PURPLE_LIGHT(),
@@ -111,13 +111,14 @@ const dropdownStyles = StyleSheet.create({
     fontWeight: 600,
     marginBottom: 4,
     marginLeft: 25,
+    marginRight: 35,
     fontSize: 18,
   },
   dropdownGroupSubtitle: {
     color: colors.BLACK(0.6),
     fontSize: 14,
     marginLeft: 25,
-    marginRight: 15,
+    marginRight: 35,
     marginBottom: 15,
   },
   dropdownOpt: {
