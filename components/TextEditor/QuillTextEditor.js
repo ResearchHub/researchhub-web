@@ -387,7 +387,7 @@ class Editor extends Component {
             ) : (
               <FormButton
                 onClick={this.onSubmit}
-                label="Submit"
+                label={props.label || "Post"}
                 size={props.smallToolBar && "med"}
                 customButtonStyle={
                   props.smallToolBar
@@ -764,7 +764,7 @@ const toolbarStyles = StyleSheet.create({
     },
   },
   smallButton: {
-    width: 100,
+    minWidth: 100,
     height: 37,
     fontSize: 15,
     display: "flex",

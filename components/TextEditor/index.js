@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 
 // Components
 import QuillTextEditor from "./QuillTextEditor";
+import PostTypeSelector from "~/components/Editor/PostTypeSelector";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -48,6 +49,7 @@ function TextEditor(props) {
     setMessage,
     showMessage,
     children,
+    label = "Post",
     uid = genClientId(),
   } = props;
 
@@ -97,39 +99,43 @@ function TextEditor(props) {
   }
 
   return (
-    <QuillTextEditor
-      value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
-      uid={uid}
-      key={`textEditor-${uid}`}
-      setRef={setInternalRef}
-      ref={setEditorRef}
-      readOnly={readOnly || false}
-      mediaOnly={mediaOnly}
-      onChange={handleChange}
-      canCancel={canCancel}
-      canSubmit={canSubmit}
-      clearOnSubmit={clearOnSubmit}
-      containerStyles={containerStyles}
-      cancel={cancel}
-      submit={submit}
-      commentEditor={commentEditor}
-      hideButton={hideButton}
-      showDiff={showDiff}
-      previousVersion={previousVersion}
-      classNames={classNames}
-      placeholder={placeholder && placeholder}
-      hideCancelButton={hideCancelButton && hideCancelButton}
-      commentStyles={commentStyles && commentStyles}
-      smallToolBar={smallToolBar && smallToolBar}
-      loading={loading && loading}
-      commentEditorStyles={commentEditorStyles && commentEditorStyles}
-      editing={editing}
-      focusEditor={focusEditor && focusEditor}
-      hasHeader={hasHeader && hasHeader}
-      summary={summary && summary}
-    >
-      {children}
-    </QuillTextEditor>
+    <div>
+      <PostTypeSelector />
+      <QuillTextEditor
+        value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
+        uid={uid}
+        key={`textEditor-${uid}`}
+        setRef={setInternalRef}
+        ref={setEditorRef}
+        readOnly={readOnly || false}
+        mediaOnly={mediaOnly}
+        onChange={handleChange}
+        canCancel={canCancel}
+        canSubmit={canSubmit}
+        clearOnSubmit={clearOnSubmit}
+        containerStyles={containerStyles}
+        cancel={cancel}
+        submit={submit}
+        commentEditor={commentEditor}
+        hideButton={hideButton}
+        showDiff={showDiff}
+        previousVersion={previousVersion}
+        classNames={classNames}
+        placeholder={placeholder && placeholder}
+        hideCancelButton={hideCancelButton && hideCancelButton}
+        commentStyles={commentStyles && commentStyles}
+        smallToolBar={smallToolBar && smallToolBar}
+        loading={loading && loading}
+        commentEditorStyles={commentEditorStyles && commentEditorStyles}
+        editing={editing}
+        focusEditor={focusEditor && focusEditor}
+        hasHeader={hasHeader && hasHeader}
+        summary={summary && summary}
+        label={label}
+      >
+        {children}
+      </QuillTextEditor>
+    </div>
   );
 }
 
