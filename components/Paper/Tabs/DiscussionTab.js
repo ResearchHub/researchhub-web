@@ -1032,7 +1032,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   discussionTypeHeaderContainer: {
-    display: "flex",
+    display: "none",
     justifyContent: "space-between",
     marginBottom: 20,
     [`@media only screen and (max-width: 400px)`]: {

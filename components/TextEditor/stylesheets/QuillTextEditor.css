@@ -147,6 +147,30 @@
   font-size: 16px;
 }
 
+.full-editor {
+  display: none;
+}
+.full-editor-visible {
+  display: block;
+}
+
+.ql-formats > button {
+  /* color: rgb(57, 113, 255); */
+  font-size: 18px !important;
+  height: 30px !important;
+  width: 30px !important;
+  margin-right: 5px;
+}
+
+.ql-video {
+  margin-left: 4px;
+}
+.show-full-editor {
+  margin-left: 0px;
+  display: inline-flex !important;
+  align-items: center;
+}
+
 /* .video-stream {
   height: 250px;
   width: 400px;
