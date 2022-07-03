@@ -727,9 +727,11 @@ const toolbarStyles = StyleSheet.create({
     paddingLeft: 0,
   },
   toolbar: {
-    borderTop: "1px solid",
+    // borderTop: "1px solid",
     borderColor: "rgb(235, 235, 235)",
     padding: 16,
+    paddingRight: 0,
+    paddingLeft: 8,
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-start",

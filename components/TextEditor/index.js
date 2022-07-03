@@ -149,9 +149,10 @@ function TextEditor(props) {
 
 const styles = StyleSheet.create({
   textEditor: {
-    border: `1px solid ${colors.GREY()}`,
+    border: `1px solid ${colors.GREY_LINE()}`,
     padding: "20px 20px",
     borderRadius: "4px",
+    background: "white",
   },
 });
 
