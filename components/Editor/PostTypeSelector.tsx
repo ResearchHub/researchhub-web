@@ -2,39 +2,12 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons, { textEditorIcons } from "~/config/themes/icons";
-
-const types = [{
-  label: "Discuss",
-  value: "discuss_paper",
-  isDefault: true,
-  group: "contribute",
-  icon: icons.commentRegular,
-},{
-  label: "Peer review",
-  value: "submit_review",  
-  group: "contribute",
-  icon: icons.starFilled,
-},{
-  label: "Summarize",
-  value: "submit_summary",
-  group: "contribute",
-  icon: textEditorIcons.bulletedList,
-},{
-  label: "Peer review",
-  value: "request_review",
-  group: "request",
-  icon: icons.starFilled,
-}, {
-  label: "Summarize",
-  value: "request_summary",  
-  group: "request",
-  icon: textEditorIcons.bulletedList,
-}];
+import postTypes from "./config/postTypes";
 
 function PostTypeSelector(): ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState(types.find(opt => opt.isDefault));
+  const [selectedType, setSelectedType] = useState(postTypes.find(opt => opt.isDefault));
 
   const renderDropdown = () => {
     return (
@@ -42,7 +15,7 @@ function PostTypeSelector(): ReactElement {
         <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupContribute)}>
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribute</div>
           <div className={css(dropdownStyles.dropdownGroupSubtitle)}>To the community</div>
-          {types.filter(t => t.group === "contribute").map(t => (
+          {postTypes.filter(t => t.group === "contribute").map(t => (
             <div className={css(dropdownStyles.dropdownOpt)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
@@ -53,7 +26,7 @@ function PostTypeSelector(): ReactElement {
         <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupRequest)}>
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
           <div className={css(dropdownStyles.dropdownGroupSubtitle)}>From the community</div>
-          {types.filter(t => t.group === "request").map(t => (
+          {postTypes.filter(t => t.group === "request").map(t => (
             <div className={css(dropdownStyles.dropdownOpt)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
@@ -67,6 +40,7 @@ function PostTypeSelector(): ReactElement {
   const renderTrigger = () => {
     return (
       <div className={css(styles.trigger, selectedType?.group === "contribute" ? styles.contribute : styles.request )} onClick={() => setIsOpen(!isOpen)}>
+        <span className={css(styles.selectedTypeIcon)}>{selectedType?.icon}</span>
         {selectedType?.label} <span className={css(styles.downIcon)}>{icons.angleDown}</span>
       </div>
     )
@@ -174,6 +148,10 @@ const styles = StyleSheet.create({
       background: colors.NEW_BLUE(0.02),
       transition: "0.2s"
     }
+  },
+  selectedTypeIcon: {
+    marginRight: 5,
+    fontSize: 12,
   },
   downIcon: {
     fontSize: 20,
