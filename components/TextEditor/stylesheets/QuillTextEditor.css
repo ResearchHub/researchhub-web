@@ -174,3 +174,16 @@
   height: 250px;
   width: 400px;
 } */
+
+.quill {
+  background: white;
+}
+
+.ql-toolbar {
+  background: white;
+}
+.ql-toolbar.ql-snow {
+  border-bottom: 1px solid rgb(232, 232, 239) !important;
+  border-top: 1px solid rgb(232, 232, 239) !important;
+  padding-left: 0;
+}
