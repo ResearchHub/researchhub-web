@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   summaryEditorBox: {},
   commentEditor: {
     background: "#FBFBFD",
-    border: "1px solid rgb(232, 232, 242)",
+    // border: "1px solid rgb(232, 232, 242)",
     color: "#000",
     borderRadius: 4,
   },
@@ -586,10 +586,7 @@ const styles = StyleSheet.create({
   focus: {},
   editSection: {
     minHeight: 75,
-    padding: 16,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
+    paddingTop: 25,
   },
   comment: {
     whiteSpace: "pre-wrap",
