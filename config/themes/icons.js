@@ -54,6 +54,7 @@ import {
   faUserPlus,
   faUsers,
   faCheckDouble,
+  faVideo,
   faQuestionCircle as solidQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -98,7 +99,9 @@ import {
   faPenSquare as faPenSquareRegular,
   faArrowAltToBottom as download,
   faArrowDownToLine,
+  faArrowRightToLine,
   faUndo,
+  faFontCase,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -187,6 +190,7 @@ library.add(
   faArrowRight,
   faArrowToBottom,
   faAsterisk,
+  faFontCase,
   faBan,
   faBars,
   faInbox,
@@ -250,6 +254,7 @@ library.add(
   faLongArrowAltDown,
   faLongArrowAltUp,
   faLongArrowLeft,
+  faArrowRightToLine,
   faMedium,
   faMinus,
   faMinusCircle,
@@ -301,6 +306,7 @@ library.add(
   faUserPlus,
   faUserSlash,
   faVideoPlus,
+  faVideo,
   faWallet,
   falChevronDown,
   opaqueThumbsDown,
@@ -319,6 +325,7 @@ const icons = {
   angleRight: <FontAwesomeIcon icon={faAngleRight} />,
   angleUp: <FontAwesomeIcon icon={faAngleUp} />,
   arrowRight: <FontAwesomeIcon icon={faArrowRight} />,
+  arrowRightToLine: <FontAwesomeIcon icon={faArrowRightToLine} />,
   arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
   asterisk: <FontAwesomeIcon icon={faAsterisk} />,
   ban: <FontAwesomeIcon icon={faBan} />,
@@ -378,6 +385,7 @@ const icons = {
   download: <FontAwesomeIcon icon={download} />,
   shield: <FontAwesomeIcon icon={faShieldAlt} />,
   flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
+  fontCase: <FontAwesomeIcon icon={faFontCase} />,
   friends: <FontAwesomeIcon icon={faUsers} />,
   github: <FontAwesomeIcon icon={faGithub} />,
   globe: <FontAwesomeIcon icon={faGlobeAmericas} />,
@@ -457,6 +465,7 @@ const icons = {
   undo: <FontAwesomeIcon icon={faUndo} />,
   verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
   verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
+  video: <FontAwesomeIcon icon={faVideo} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons

@@ -1,4 +1,5 @@
 // NPM
+import ReactDOMServer from "react-dom/server";
 import { createRef, Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
@@ -14,6 +15,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import faIcons, { textEditorIcons } from "~/config/themes/icons";
 
 class Editor extends Component {
   constructor(props) {
@@ -38,6 +40,10 @@ class Editor extends Component {
   componentDidMount = async () => {
     // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
     import("react-quill").then((val) => {
+      var icons = val.default.Quill.import("ui/icons");
+      console.log(icons);
+      icons.video = ReactDOMServer.renderToString(faIcons.video);
+
       this.setState(
         {
           ReactQuill: val.default,
@@ -299,56 +305,98 @@ class Editor extends Component {
   };
 
   renderToolbar = () => {
-    var state = this.state;
-    var enabled = state.enabled;
-    var readOnly = state.readOnly;
-    var selection = this.formatRange(state.selection);
-    let id = this.props.uid;
+    const { showFullEditor } = this.state;
 
     return (
-      <div
-        id={id}
-        className="toolbar ql-toolbar ql-snow"
-        style={{ display: this.props.readOnly ? "none" : "" }}
-      >
-        {this.props.mediaOnly ? (
-          <span className="ql-formats">
-            <button className="ql-link"></button>
-            <button className="ql-image" />
-            <button className="ql-video"></button>
-          </span>
-        ) : (
-          <Fragment>
-            <span className="ql-formats">
-              <button className="ql-bold" />
-              <button className="ql-italic" />
-              <button className="ql-underline" />
-            </span>
-            <span className="ql-formats">
-              <button className="ql-blockquote"></button>
-              <button className="ql-code-block"></button>
-              <button className="ql-strike"></button>
-            </span>
-            <span className="ql-formats">
-              <button className="ql-list" value="ordered" />
-              <button className="ql-list" value="bullet" />
-              <button className="ql-indent" value="-1" />
-              <button className="ql-indent" value="+1" />
-            </span>
+      <div id={this.props.uid} className="ql-toolbar">
+        <span className="ql-formats">
+          <button className="ql-blockquote"></button>
+          <button className="ql-image" />
+          <button className="ql-video"></button>
+          <button
+            id="custom-button"
+            className="show-full-editor"
+            onClick={() => this.setState({ showFullEditor: !showFullEditor })}
+          >
+            {faIcons.fontCase}&nbsp;{faIcons.angleRight}
+          </button>
+        </span>
 
-            <span className="ql-formats">
-              <button className="ql-link"></button>
-              <button className="ql-image" />
-              <button className="ql-video"></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-clean"></button>
-            </span>
-          </Fragment>
-        )}
+        <div
+          className={`full-editor ${showFullEditor && "full-editor-visible"}`}
+        >
+          <span className="ql-formats">
+            <button className="ql-bold" />
+            <button className="ql-italic" />
+            <button className="ql-underline" />
+            <button className="ql-strike"></button>
+          </span>
+          <span className="ql-formats">
+            <button className="ql-list" value="ordered" />
+            <button className="ql-list" value="bullet" />
+            <button className="ql-indent" value="-1" />
+            <button className="ql-indent" value="+1" />
+          </span>
+          <span className="ql-formats">
+            <button className="ql-code-block"></button>
+            <button className="ql-clean"></button>
+          </span>
+        </div>
       </div>
     );
   };
+
+  // renderToolbar = () => {
+  //   var state = this.state;
+  //   var enabled = state.enabled;
+  //   var readOnly = state.readOnly;
+  //   var selection = this.formatRange(state.selection);
+  //   let id = this.props.uid;
+
+  //   return (
+  //     <div
+  //       id={id}
+  //       className="toolbar ql-toolbar ql-snow"
+  //       style={{ display: this.props.readOnly ? "none" : "" }}
+  //     >
+  //       {this.props.mediaOnly ? (
+  //         <span className="ql-formats">
+  //           <button className="ql-link"></button>
+  //           <button className="ql-image" />
+  //           <button className="ql-video"></button>
+  //         </span>
+  //       ) : (
+  // <Fragment>
+  //   <span className="ql-formats">
+  //     <button className="ql-bold" />
+  //     <button className="ql-italic" />
+  //     <button className="ql-underline" />
+  //   </span>
+  //   <span className="ql-formats">
+  //     <button className="ql-blockquote"></button>
+  //     <button className="ql-code-block"></button>
+  //     <button className="ql-strike"></button>
+  //   </span>
+  //   <span className="ql-formats">
+  //     <button className="ql-list" value="ordered" />
+  //     <button className="ql-list" value="bullet" />
+  //     <button className="ql-indent" value="-1" />
+  //     <button className="ql-indent" value="+1" />
+  //   </span>
+
+  //   <span className="ql-formats">
+  //     <button className="ql-link"></button>
+  //     <button className="ql-image" />
+  //     <button className="ql-video"></button>
+  //   </span>
+  //   <span class="ql-formats">
+  //     <button class="ql-clean"></button>
+  //   </span>
+  // </Fragment>
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   renderButtons = (props) => {
     return (
@@ -422,7 +470,6 @@ class Editor extends Component {
               this.state.focus && styles.focus
             )}
           >
-            {ReactQuill && this.renderToolbar(this.props.uid)}
             {ReactQuill && (
               <ReactQuill
                 ref={this.reactQuillRef}
@@ -444,6 +491,7 @@ class Editor extends Component {
                 placeholder={this.props.placeholder && this.props.placeholder}
               />
             )}
+            {ReactQuill && this.renderToolbar(this.props.uid)}
             {!this.props.readOnly && this.renderButtons(this.props)}
           </div>
         ) : (
@@ -511,6 +559,12 @@ Editor.formats = [
 ];
 
 const styles = StyleSheet.create({
+  fullEditor: {
+    display: "none",
+  },
+  showFullEditor: {
+    display: "block",
+  },
   editor: {
     width: "100%",
     position: "relative",
