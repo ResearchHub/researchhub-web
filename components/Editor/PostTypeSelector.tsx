@@ -4,10 +4,16 @@ import colors from "~/config/themes/colors";
 import icons, { textEditorIcons } from "~/config/themes/icons";
 import postTypes from "./config/postTypes";
 
-function PostTypeSelector(): ReactElement {
+function PostTypeSelector({ handleSelect }): ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState(postTypes.find(opt => opt.isDefault));
+  const [selectedType, setSelectedType] = useState<null|any>(postTypes.find(opt => opt.isDefault));
+
+  const _handleSelect = (type) => {
+    setSelectedType(type);
+    handleSelect(type);
+    setIsOpen(false);
+  }
 
   const renderDropdown = () => {
     return (
@@ -16,7 +22,7 @@ function PostTypeSelector(): ReactElement {
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribute</div>
           <div className={css(dropdownStyles.dropdownGroupSubtitle)}>To the community</div>
           {postTypes.filter(t => t.group === "contribute").map(t => (
-            <div className={css(dropdownStyles.dropdownOpt)}>
+            <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
             </div>
@@ -27,7 +33,7 @@ function PostTypeSelector(): ReactElement {
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
           <div className={css(dropdownStyles.dropdownGroupSubtitle)}>From the community</div>
           {postTypes.filter(t => t.group === "request").map(t => (
-            <div className={css(dropdownStyles.dropdownOpt)}>
+            <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
             </div>

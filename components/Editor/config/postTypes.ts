@@ -12,6 +12,7 @@ const postTypes = [{
   label: "Peer review",
   value: "submit_review",  
   group: "contribute",
+  
   icon: icons.starFilled,
 },{
   label: "Summarize",
@@ -21,6 +22,7 @@ const postTypes = [{
 },{
   label: "Peer review",
   value: "request_review",
+  placeholder: "Add details about your peer review request. What are you looking for?",
   group: "request",
   icon: icons.starFilled,
 }, {
