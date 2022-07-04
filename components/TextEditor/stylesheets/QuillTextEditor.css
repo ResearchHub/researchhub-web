@@ -186,4 +186,5 @@
   border: 0;
   padding-left: 0;
   padding-top: 13px;
+  display: flex;
 }
