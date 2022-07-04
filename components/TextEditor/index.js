@@ -58,6 +58,7 @@ function TextEditor(props) {
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
+  const [isFocused, setIsFocused] = useState(false);
   const [selectedPostType, setSelectedPostType] = useState(
     postTypes.find((opt) => opt.isDefault)
   );
@@ -105,7 +106,7 @@ function TextEditor(props) {
   }
 
   return (
-    <div className={css(styles.textEditor)}>
+    <div className={css(styles.textEditor, isFocused && styles.focused)}>
       <PostTypeSelector
         handleSelect={(selectedType) => setSelectedPostType(selectedType)}
       />
@@ -140,6 +141,9 @@ function TextEditor(props) {
         hasHeader={hasHeader && hasHeader}
         summary={summary && summary}
         label={label}
+        handleFocus={(isFocused) => {
+          setIsFocused(isFocused);
+        }}
       >
         {children}
       </QuillTextEditor>
@@ -150,9 +154,12 @@ function TextEditor(props) {
 const styles = StyleSheet.create({
   textEditor: {
     border: `1px solid ${colors.GREY_LINE()}`,
-    padding: "20px 20px",
+    padding: "20px 20px 10px 20px",
     borderRadius: "4px",
     background: "white",
+  },
+  focused: {
+    border: `1px solid ${colors.NEW_BLUE()}`,
   },
 });
 

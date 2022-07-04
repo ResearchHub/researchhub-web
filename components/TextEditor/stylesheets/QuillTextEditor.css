@@ -183,7 +183,7 @@
   background: white;
 }
 .ql-toolbar.ql-snow {
-  border-bottom: 1px solid rgb(232, 232, 239) !important;
-  border-top: 1px solid rgb(232, 232, 239) !important;
+  border: 0;
   padding-left: 0;
+  padding-top: 13px;
 }

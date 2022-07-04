@@ -235,6 +235,7 @@ class Editor extends Component {
       ),
       focus: !this.props.readOnly && true,
     });
+    this.props.handleFocus && this.props.handleFocus(true);
   };
 
   onEditorBlur = (previousRange, source) => {
@@ -244,6 +245,7 @@ class Editor extends Component {
       ),
       focus: false,
     });
+    this.props.handleFocus && this.props.handleFocus(false);
   };
 
   focusEditor = () => {
@@ -400,14 +402,8 @@ class Editor extends Component {
 
   renderButtons = (props) => {
     return (
-      <div
-        className={css(
-          toolbarStyles.toolbar,
-          props.summaryEditor && toolbarStyles.toolbarSummary,
-          props.smallToolBar && toolbarStyles.smallToolBar
-        )}
-      >
-        {props.children && (
+      <div className={css(styles.postButtonContainer)}>
+        {/* {props.children && (
           <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
         )}
         <div className={css(toolbarStyles.buttonRow)}>
@@ -419,33 +415,27 @@ class Editor extends Component {
               Cancel
             </div>
           )}
-          <span className={css(toolbarStyles.divider)} />
-          {!props.hideButton &&
-            (props.loading ? (
-              <FormButton
-                onClick={null}
-                label={<Loader loading={true} color={"#FFF"} size={20} />}
-                size={props.smallToolBar && "med"}
-                customButtonStyle={
-                  props.smallToolBar
-                    ? toolbarStyles.smallButton
-                    : toolbarStyles.buttonStyle
-                }
-              />
-            ) : (
-              <FormButton
-                onClick={this.onSubmit}
-                label={props.label || "Post"}
-                size={props.smallToolBar && "med"}
-                customButtonStyle={
-                  props.smallToolBar
-                    ? toolbarStyles.smallButton
-                    : toolbarStyles.buttonStyle
-                }
-              />
-            ))}
-        </div>
+          <span className={css(toolbarStyles.divider)} /> */}
+        {!props.hideButton &&
+          (props.loading ? (
+            <FormButton
+              onClick={null}
+              label={<Loader loading={true} color={"#FFF"} size={20} />}
+              size={props.smallToolBar && "med"}
+              customButtonStyle={toolbarStyles.postButtonStyle}
+              customLabelStyle={toolbarStyles.postButtonLabel}
+            />
+          ) : (
+            <FormButton
+              onClick={this.onSubmit}
+              label={props.label || "Post"}
+              size={props.smallToolBar && "med"}
+              customButtonStyle={toolbarStyles.postButtonStyle}
+              customLabelStyle={toolbarStyles.postButtonLabel}
+            />
+          ))}
       </div>
+      // </div>
     );
   };
 
@@ -491,8 +481,12 @@ class Editor extends Component {
                 placeholder={this.props.placeholder && this.props.placeholder}
               />
             )}
-            {ReactQuill && this.renderToolbar(this.props.uid)}
-            {!this.props.readOnly && this.renderButtons(this.props)}
+            <div className={css(styles.footerContainer)}>
+              <div className={css(styles.toolbarContainer)}>
+                {ReactQuill && this.renderToolbar(this.props.uid)}
+              </div>
+              {!this.props.readOnly && this.renderButtons(this.props)}
+            </div>
           </div>
         ) : (
           <div className={css(styles.summaryEditor)}>
@@ -559,6 +553,16 @@ Editor.formats = [
 ];
 
 const styles = StyleSheet.create({
+  footerContainer: {
+    display: "flex",
+    borderTop: `1px solid ${colors.GREY_BORDER}`,
+  },
+  postButtonContainer: {
+    padding: 12,
+    paddingRight: 0,
+    paddingBottom: 0,
+    marginLeft: "auto",
+  },
   fullEditor: {
     display: "none",
   },
@@ -577,7 +581,7 @@ const styles = StyleSheet.create({
   },
   summaryEditorBox: {},
   commentEditor: {
-    background: "#FBFBFD",
+    // background: "#FBFBFD",
     // border: "1px solid rgb(232, 232, 242)",
     color: "#000",
     borderRadius: 4,
@@ -729,8 +733,9 @@ const toolbarStyles = StyleSheet.create({
   toolbar: {
     // borderTop: "1px solid",
     borderColor: "rgb(235, 235, 235)",
-    padding: 16,
+    paddingTop: 15,
     paddingRight: 0,
+    paddingBottom: 0,
     paddingLeft: 8,
     display: "flex",
     flexDirection: "row",
@@ -796,16 +801,19 @@ const toolbarStyles = StyleSheet.create({
     marginRight: 15,
     cursor: "pointer",
   },
-  buttonStyle: {
-    height: 37,
-    width: 126,
-    minWidth: 126,
-    fontSize: 15,
+  postButtonLabel: {
+    fontWeight: 500,
+  },
+  postButtonStyle: {
+    height: 30,
+    width: "auto",
+    fontSize: 16,
+    padding: "17px 30px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    borderRadius: 4,
+    borderRadius: 50,
     userSelect: "none",
     background: colors.NEW_BLUE(),
     ":hover": {
@@ -814,22 +822,6 @@ const toolbarStyles = StyleSheet.create({
     },
     "@media only screen and (max-width: 577px)": {
       width: 100,
-    },
-  },
-  smallButton: {
-    minWidth: 100,
-    height: 37,
-    fontSize: 15,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    borderRadius: 4,
-    userSelect: "none",
-    background: colors.NEW_BLUE(),
-    ":hover": {
-      opacity: 0.9,
-      background: colors.NEW_BLUE(),
     },
   },
   ripples: {
