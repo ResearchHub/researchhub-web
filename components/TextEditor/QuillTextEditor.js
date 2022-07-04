@@ -315,13 +315,15 @@ class Editor extends Component {
           <button className="ql-blockquote"></button>
           <button className="ql-image" />
           <button className="ql-video"></button>
-          <button
-            id="custom-button"
-            className="show-full-editor"
-            onClick={() => this.setState({ showFullEditor: !showFullEditor })}
-          >
-            {faIcons.fontCase}&nbsp;{faIcons.angleRight}
-          </button>
+          {!showFullEditor && (
+            <button
+              id="show-editor"
+              className="show-full-editor"
+              onClick={() => this.setState({ showFullEditor: !showFullEditor })}
+            >
+              {faIcons.fontCase}&nbsp;{faIcons.angleRight}
+            </button>
+          )}
         </span>
 
         <div
@@ -342,6 +344,20 @@ class Editor extends Component {
           <span className="ql-formats">
             <button className="ql-code-block"></button>
             <button className="ql-clean"></button>
+          </span>
+
+          <span className="ql-formats">
+            {showFullEditor && (
+              <button
+                id="show-editor"
+                className="show-full-editor"
+                onClick={() =>
+                  this.setState({ showFullEditor: !showFullEditor })
+                }
+              >
+                {faIcons.fontCase}&nbsp;{faIcons.angleLeft}
+              </button>
+            )}
           </span>
         </div>
       </div>

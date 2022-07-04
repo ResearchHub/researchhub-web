@@ -12,32 +12,27 @@ function PostTypeSelector(): ReactElement {
   const renderDropdown = () => {
     return (
       <div className={css(dropdownStyles.dropdown, isOpen && dropdownStyles.dropdownOpen)}>
-        <div>
-          <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupContribute)}>
-            <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribute</div>
-            <div className={css(dropdownStyles.dropdownGroupSubtitle)}>To the community</div>
-            {postTypes.filter(t => t.group === "contribute").map(t => (
-              <div className={css(dropdownStyles.dropdownOpt)}>
-                <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
-                <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
-              </div>
-            ))}
-          </div>
+        <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupContribute)}>
+          <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribute</div>
+          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>To the community</div>
+          {postTypes.filter(t => t.group === "contribute").map(t => (
+            <div className={css(dropdownStyles.dropdownOpt)}>
+              <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
+              <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
+            </div>
+          ))}
+        </div>
 
-          <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupRequest)}>
-            <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
-            <div className={css(dropdownStyles.dropdownGroupSubtitle)}>From the community</div>
-            {postTypes.filter(t => t.group === "request").map(t => (
-              <div className={css(dropdownStyles.dropdownOpt)}>
-                <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
-                <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>  
-        <div>
-          Discuss this paper with the community
-        </div>      
+        <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupRequest)}>
+          <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
+          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>From the community</div>
+          {postTypes.filter(t => t.group === "request").map(t => (
+            <div className={css(dropdownStyles.dropdownOpt)}>
+              <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
+              <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
+            </div>
+          ))}
+        </div>        
       </div>
     )
   }
