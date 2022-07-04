@@ -6,7 +6,8 @@ const postTypes = [{
   isDefault: true,
   group: "contribute",
   icon: icons.commentRegular,
-  placeholder: "What are your thoughts about this paper?"
+  placeholder: "What are your thoughts about this paper?",
+  hoverLabel: "Discuss paper with community",
 },{
   label: "Peer review",
   value: "submit_review",  
