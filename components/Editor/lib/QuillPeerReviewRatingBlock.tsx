@@ -1,12 +1,12 @@
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 
-let QuillRatingBlock = {};
+let QuillPeerReviewRatingBlock = {};
 if (process.browser) {
   const Quill = require('react-quill').default.Quill;
   const BlockEmbed = Quill.import('blots/block/embed');
 
-  QuillRatingBlock = class QuillRatingBlock extends BlockEmbed {
+  QuillPeerReviewRatingBlock = class QuillPeerReviewRatingBlock extends BlockEmbed {
     
     static create(value) {
       const node = super.create();
@@ -46,11 +46,11 @@ if (process.browser) {
     }
   }
   
-  QuillRatingBlock["blotName"] = 'image';
-  QuillRatingBlock["tagName"] = 'div';
+  QuillPeerReviewRatingBlock["blotName"] = 'peer-review-rating';
+  QuillPeerReviewRatingBlock["tagName"] = 'div';
 }
 
-export default QuillRatingBlock;
+export default QuillPeerReviewRatingBlock;
   
 
 

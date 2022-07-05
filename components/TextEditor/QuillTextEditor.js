@@ -17,8 +17,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import faIcons, { textEditorIcons } from "~/config/themes/icons";
-import QuillRatingBlock from "../Editor/lib/QuillRatingBlock";
-console.log(QuillRatingBlock);
+import QuillPeerReviewRatingBlock from "../Editor/lib/QuillPeerReviewRatingBlock";
 
 class Editor extends Component {
   constructor(props) {
@@ -52,7 +51,7 @@ class Editor extends Component {
            //do something
        }*/
 
-      Quill.register(QuillRatingBlock);
+      Quill.register(QuillPeerReviewRatingBlock);
 
       this.setState(
         {
@@ -74,7 +73,7 @@ class Editor extends Component {
           this.quillRef.insertText(0, "\n3232", Quill.sources.USER);
           this.quillRef.editor.insertEmbed(
             0,
-            "image",
+            "peer-review-rating",
             {
               rating: 2,
               category: "Methods and Materials",
@@ -623,6 +622,7 @@ Editor.formats = [
   "background",
   "code-block",
   "direction",
+  "peer-review-rating",
 ];
 
 const styles = StyleSheet.create({
