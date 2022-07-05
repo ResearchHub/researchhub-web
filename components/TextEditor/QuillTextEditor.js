@@ -109,16 +109,17 @@ class Editor extends Component {
       prevProps.postType?.value !== this.props.postType?.value &&
       this.props.postType.value === "submit_review"
     ) {
-      this.quillRef.insertText(0, "\n3232", this.state.Quill.sources.USER);
+      // this.quillRef.insertText(0, "\n3232", this.state.Quill.sources.USER);
       this.quillRef.editor.insertEmbed(
         0,
         "peer-review-rating",
         {
           rating: 1,
-          category: "Overall Rating",
+          category: "overall",
         },
         this.state.Quill.sources.USER
       );
+      // this.quillRef.editor.insertText(1, ' ', this.state.Quill.sources.SILENT)
     }
   }
 

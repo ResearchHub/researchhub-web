@@ -1,5 +1,6 @@
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
+import reviewCategories from "../config/reviewCategories";
 
 let QuillPeerReviewRatingBlock = {};
 if (process.browser) {
@@ -13,15 +14,22 @@ if (process.browser) {
       this._rating = value.rating;
       this._category = value.category;
 
-      const _buildHTML = () => {
+      const _buildHTML = ({ withPlaceholder = true }) => {
         const starInput = <StarInput value={this._rating} readOnly={false} />
         const starInputAsHtml = ReactDOMServer.renderToString(starInput)      
+        const categoryObj = reviewCategories[this._category];
+
         return `
           <div class="ql-review-category">
-            <div class="ql-review-category-label">${this._category}</div>
+            <div class="ql-review-category-label">${categoryObj.label}</div>
             <div class="ql-review-category-rating">${starInputAsHtml}</div>
           </div>
-        `
+          ${withPlaceholder
+          ? `<div class="ql-review-category-placeholder">
+              ${categoryObj.placeholder}
+            </div>`
+          : ``}
+        `;
       }
 
       node.addEventListener('click', (e) => {
@@ -29,12 +37,22 @@ if (process.browser) {
         if (starEl) {
           const newRating = starEl.getAttribute('data-rating');
           this._rating = newRating;
-          const html = _buildHTML();
+          const html = _buildHTML({});
           node.innerHTML = html;
         }
-      })
+      });
 
-      const html = _buildHTML();
+      node.addEventListener('click', (e) => {
+        const placeholderEl = e.target.closest(".ql-review-category-placeholder");
+        if (placeholderEl) {
+          const newRating = placeholderEl.getAttribute('data-rating');
+          this._rating = newRating;
+          const html = _buildHTML({ withPlaceholder: false });
+          node.innerHTML = html;
+        }
+      })      
+
+      const html = _buildHTML({});
       node.innerHTML = html;
       return node;      
     }

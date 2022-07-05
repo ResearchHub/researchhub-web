@@ -205,3 +205,7 @@
 .ql-peer-review-rating-block {
   white-space: normal;
 }
+
+.ql-review-category-placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
