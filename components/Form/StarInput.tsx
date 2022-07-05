@@ -14,7 +14,7 @@ type Props = {
 const MAX_SCORE = 5;
 const MIN_SCORE = 1;
 
-export default function ScoreInput({
+export default function StarInput({
   value = MIN_SCORE,
   onSelect,
   readOnly,
@@ -58,7 +58,8 @@ export default function ScoreInput({
 
         return (
           <div
-            className={css(styles.star, overrideStarStyle)}
+            className={`starRating ${css(styles.star, overrideStarStyle)}`}
+            data-rating={index+1}
             onClick={() => handleSelect(starNumber)}
             onMouseEnter={() => setHoveredValue(starNumber)}
             onMouseLeave={() => setHoveredValue(0)}

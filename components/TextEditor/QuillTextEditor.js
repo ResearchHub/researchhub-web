@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 // Component
 import FormButton from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
+import StarInput from "../Form/StarInput";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -16,6 +17,8 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import faIcons, { textEditorIcons } from "~/config/themes/icons";
+import QuillRatingBlock from "../Editor/lib/QuillRatingBlock";
+console.log(QuillRatingBlock);
 
 class Editor extends Component {
   constructor(props) {
@@ -40,9 +43,16 @@ class Editor extends Component {
   componentDidMount = async () => {
     // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
     import("react-quill").then((val) => {
+      const Quill = val.default.Quill;
       var icons = val.default.Quill.import("ui/icons");
-      console.log(icons);
       icons.video = ReactDOMServer.renderToString(faIcons.video);
+
+      //in case you need to inject an event from outside
+      /* MyCustomTag.onClick = function(){
+           //do something
+       }*/
+
+      Quill.register(QuillRatingBlock);
 
       this.setState(
         {
@@ -59,6 +69,28 @@ class Editor extends Component {
           // This line leads to an infinite loop
           // leaving here temporarily for debugging purposes
           // this.props.onChange && this.props.onChange(); // calculates the thread height
+
+          // let range = this.quillRef.getSelection(true);
+          this.quillRef.insertText(0, "\n3232", Quill.sources.USER);
+          this.quillRef.editor.insertEmbed(
+            0,
+            "image",
+            {
+              rating: 2,
+              category: "Methods and Materials",
+            },
+            Quill.sources.USER
+          );
+          // this.quillRef.setSelection(range.index + 2, Quill.sources.SILENT);
+
+          // console.log('this.state', this.state)
+          // console.log('this.quillRef', this.quillRef)
+          // console.log(this.quillRef.editor)
+          // this.quillRef.editor.insertEmbed(
+          //   0, //INDEX_WHERE_YOU_TO_INSERT_THE_CONTENT,
+          //   'my-custom-tag',//THE NAME OF YOUR CUSTOM TAG
+          //   '<span>MY CONTENT</SPAN>'// THE CONTENT YOUR TO INSERT
+          // );
         }
       );
     });
@@ -312,6 +344,31 @@ class Editor extends Component {
     return (
       <div id={this.props.uid} className="ql-toolbar">
         <span className="ql-formats">
+          <button
+            id="show-editor"
+            className="show-full-editor"
+            onClick={() => {
+              const selection = this.quillRef.getSelection(true);
+              const value = `<h1>New content here</h1>`;
+              const starInput = (
+                <StarInput readOnly={false} onSelect={() => alert("oopo")} />
+              );
+              const starInputAsHtml = ReactDOMServer.renderToString(starInput);
+              this.quillRef.clipboard.dangerouslyPasteHTML(
+                selection.index,
+                starInputAsHtml
+              );
+
+              // const div = document.createElement('div');
+              // div.innerHTML = html;
+
+              // this.quillRef.container.querySelector('.ql-editor').replace("{{test}}", div.inner);
+              // console.log(this.quillRef.container.replaceWith("{{test}}", div))
+            }}
+          >
+            YY
+          </button>
+
           <button className="ql-blockquote"></button>
           <button className="ql-image" />
           <button className="ql-video"></button>

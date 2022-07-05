@@ -87,6 +87,9 @@ function TextEditor(props) {
   }
 
   function submit(content, plain_text, callback) {
+    console.log("content", content);
+    console.log("plain_text", plain_text);
+    return;
     if (!isLoggedIn) {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
