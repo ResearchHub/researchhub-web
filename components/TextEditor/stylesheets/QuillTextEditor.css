@@ -201,3 +201,7 @@
 .ql-review-category-rating {
   margin-left: auto;
 }
+
+.ql-peer-review-rating-block {
+  white-space: normal;
+}

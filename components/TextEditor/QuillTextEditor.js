@@ -70,16 +70,6 @@ class Editor extends Component {
           // this.props.onChange && this.props.onChange(); // calculates the thread height
 
           // let range = this.quillRef.getSelection(true);
-          this.quillRef.insertText(0, "\n3232", Quill.sources.USER);
-          this.quillRef.editor.insertEmbed(
-            0,
-            "peer-review-rating",
-            {
-              rating: 2,
-              category: "Methods and Materials",
-            },
-            Quill.sources.USER
-          );
           // this.quillRef.setSelection(range.index + 2, Quill.sources.SILENT);
 
           // console.log('this.state', this.state)
@@ -112,6 +102,22 @@ class Editor extends Component {
       this.quillRef.root.setAttribute(
         "data-placeholder",
         this.props.placeholder
+      );
+    }
+
+    if (
+      prevProps.postType?.value !== this.props.postType?.value &&
+      this.props.postType.value === "submit_review"
+    ) {
+      this.quillRef.insertText(0, "\n3232", this.state.Quill.sources.USER);
+      this.quillRef.editor.insertEmbed(
+        0,
+        "peer-review-rating",
+        {
+          rating: 1,
+          category: "Overall Rating",
+        },
+        this.state.Quill.sources.USER
       );
     }
   }

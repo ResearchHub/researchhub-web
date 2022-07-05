@@ -42,12 +42,14 @@ if (process.browser) {
     static value(node) {
       return {
         rating: parseInt(this._rating),
+        category: this._category,
       };
     }
   }
   
   QuillPeerReviewRatingBlock["blotName"] = 'peer-review-rating';
   QuillPeerReviewRatingBlock["tagName"] = 'div';
+  QuillPeerReviewRatingBlock["className"] = 'ql-peer-review-rating-block';
 }
 
 export default QuillPeerReviewRatingBlock;

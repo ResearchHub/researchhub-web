@@ -12,7 +12,6 @@ const postTypes = [{
   label: "Peer review",
   value: "submit_review",  
   group: "contribute",
-  
   icon: icons.starFilled,
 },{
   label: "Summarize",
