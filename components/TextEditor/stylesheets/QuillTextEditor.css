@@ -188,3 +188,16 @@
   padding-top: 13px;
   display: flex;
 }
+
+.ql-review-category {
+  display: flex;
+}
+
+.ql-review-category-label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.ql-review-category-rating {
+  margin-left: auto;
+}
