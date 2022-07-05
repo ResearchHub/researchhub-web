@@ -147,6 +147,7 @@ function TextEditor(props) {
         handleFocus={(isFocused) => {
           setIsFocused(isFocused);
         }}
+        postType={selectedPostType}
       >
         {children}
       </QuillTextEditor>
