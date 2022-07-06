@@ -70,9 +70,9 @@ const dropdownStyles = StyleSheet.create({
     background: "white",
     padding: "15px 0 10px 0",
     border: `1px solid ${colors.GREY()}`,
-    borderRadius: 10,
+    borderRadius: 4,
     marginTop: 5,
-    dropShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   dropdownGroupContribute: {
     color: colors.NEW_BLUE(),

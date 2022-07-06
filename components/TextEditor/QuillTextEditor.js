@@ -11,6 +11,7 @@ import StarInput from "../Form/StarInput";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import ReviewCategorySelector from "../Editor/ReviewCategorySelector";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -109,17 +110,15 @@ class Editor extends Component {
       prevProps.postType?.value !== this.props.postType?.value &&
       this.props.postType.value === "submit_review"
     ) {
-      // this.quillRef.insertText(0, "\n3232", this.state.Quill.sources.USER);
       this.quillRef.editor.insertEmbed(
         0,
         "peer-review-rating",
         {
-          rating: 1,
+          rating: 3,
           category: "overall",
         },
         this.state.Quill.sources.USER
       );
-      // this.quillRef.editor.insertText(1, ' ', this.state.Quill.sources.SILENT)
     }
   }
 
@@ -335,6 +334,7 @@ class Editor extends Component {
     event?.preventDefault();
     event?.stopPropagation();
     let content = this.quillRef.getContents();
+    console.log("content", content);
     let plainText = this.quillRef.getText();
     this.setState({
       value: content,
@@ -427,57 +427,18 @@ class Editor extends Component {
     );
   };
 
-  // renderToolbar = () => {
-  //   var state = this.state;
-  //   var enabled = state.enabled;
-  //   var readOnly = state.readOnly;
-  //   var selection = this.formatRange(state.selection);
-  //   let id = this.props.uid;
-
-  //   return (
-  //     <div
-  //       id={id}
-  //       className="toolbar ql-toolbar ql-snow"
-  //       style={{ display: this.props.readOnly ? "none" : "" }}
-  //     >
-  //       {this.props.mediaOnly ? (
-  //         <span className="ql-formats">
-  //           <button className="ql-link"></button>
-  //           <button className="ql-image" />
-  //           <button className="ql-video"></button>
-  //         </span>
-  //       ) : (
-  // <Fragment>
-  //   <span className="ql-formats">
-  //     <button className="ql-bold" />
-  //     <button className="ql-italic" />
-  //     <button className="ql-underline" />
-  //   </span>
-  //   <span className="ql-formats">
-  //     <button className="ql-blockquote"></button>
-  //     <button className="ql-code-block"></button>
-  //     <button className="ql-strike"></button>
-  //   </span>
-  //   <span className="ql-formats">
-  //     <button className="ql-list" value="ordered" />
-  //     <button className="ql-list" value="bullet" />
-  //     <button className="ql-indent" value="-1" />
-  //     <button className="ql-indent" value="+1" />
-  //   </span>
-
-  //   <span className="ql-formats">
-  //     <button className="ql-link"></button>
-  //     <button className="ql-image" />
-  //     <button className="ql-video"></button>
-  //   </span>
-  //   <span class="ql-formats">
-  //     <button class="ql-clean"></button>
-  //   </span>
-  // </Fragment>
-  //       )}
-  //     </div>
-  //   );
-  // };
+  handleInsertReviewCategory = (reviewCategory) => {
+    let range = this.quillRef.getSelection(true);
+    this.quillRef.editor.insertEmbed(
+      range.index,
+      "peer-review-rating",
+      {
+        rating: 3,
+        category: reviewCategory.value,
+      },
+      this.state.Quill.sources.USER
+    );
+  };
 
   renderButtons = (props) => {
     return (
@@ -560,6 +521,11 @@ class Editor extends Component {
                 placeholder={this.props.placeholder && this.props.placeholder}
               />
             )}
+            <div className={css(styles.reviewCategoryContainer)}>
+              <ReviewCategorySelector
+                handleSelect={this.handleInsertReviewCategory}
+              />
+            </div>
             <div className={css(styles.footerContainer)}>
               <div className={css(styles.toolbarContainer)}>
                 {ReactQuill && this.renderToolbar(this.props.uid)}
@@ -633,6 +599,10 @@ Editor.formats = [
 ];
 
 const styles = StyleSheet.create({
+  reviewCategoryContainer: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
   footerContainer: {
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
