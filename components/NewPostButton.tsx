@@ -45,7 +45,6 @@ export default function NewPostButton({
     buttonValues?.isOpen &&
     isEmpty(buttonValues.wizardBodyType);
 
-  console.warn("shouldOpenPopover: ", shouldOpenPopover);
   const popoverOptionCards = filterNull(getModalOptionItems(currentUser)).map(
     (option, index) => (
       <ResearchhubOptionCard
