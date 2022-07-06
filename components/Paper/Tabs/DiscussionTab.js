@@ -427,13 +427,7 @@ const DiscussionTab = (props) => {
       smallToolBar
       uid={textEditorKey}
       label={bountyAmountDetails ? "Post with Bounty" : "Post"}
-    >
-      <CreateBountyBtn
-        onBountyChange={(amountDetails) =>
-          setBountyAmountDetails(amountDetails)
-        }
-      />
-    </TextEditor>
+    ></TextEditor>
   );
 
   const discussionTextEditor = !showEditor ? (

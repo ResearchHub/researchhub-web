@@ -19,6 +19,10 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import faIcons, { textEditorIcons } from "~/config/themes/icons";
 import QuillPeerReviewRatingBlock from "../Editor/lib/QuillPeerReviewRatingBlock";
+import PostTypeSelector from "~/components/Editor/PostTypeSelector";
+import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
+import postTypes from "../Editor/config/postTypes";
+import ReactTooltip from "react-tooltip";
 
 class Editor extends Component {
   constructor(props) {
@@ -35,6 +39,7 @@ class Editor extends Component {
       focus: false,
       ReactQuill: null,
       Quill: null,
+      postType: postTypes.find((p) => p.isDefault),
     };
     this.reactQuillRef = createRef();
     this.quillRef = null;
@@ -106,20 +111,20 @@ class Editor extends Component {
       );
     }
 
-    if (
-      prevProps.postType?.value !== this.props.postType?.value &&
-      this.props.postType.value === "submit_review"
-    ) {
-      this.quillRef.editor.insertEmbed(
-        0,
-        "peer-review-rating",
-        {
-          rating: 3,
-          category: "overall",
-        },
-        this.state.Quill.sources.USER
-      );
-    }
+    // if (
+    //   prevProps.postType?.value !== this.props.postType?.value &&
+    //   this.props.postType.value === "submit_review"
+    // ) {
+    //   this.quillRef.editor.insertEmbed(
+    //     0,
+    //     "peer-review-rating",
+    //     {
+    //       rating: 3,
+    //       category: "overall",
+    //     },
+    //     this.state.Quill.sources.USER
+    //   );
+    // }
   }
 
   addLinkSantizer = () => {
@@ -334,7 +339,6 @@ class Editor extends Component {
     event?.preventDefault();
     event?.stopPropagation();
     let content = this.quillRef.getContents();
-    console.log("content", content);
     let plainText = this.quillRef.getText();
     this.setState({
       value: content,
@@ -350,31 +354,6 @@ class Editor extends Component {
     return (
       <div id={this.props.uid} className="ql-toolbar">
         <span className="ql-formats">
-          <button
-            id="show-editor"
-            className="show-full-editor"
-            onClick={() => {
-              const selection = this.quillRef.getSelection(true);
-              const value = `<h1>New content here</h1>`;
-              const starInput = (
-                <StarInput readOnly={false} onSelect={() => alert("oopo")} />
-              );
-              const starInputAsHtml = ReactDOMServer.renderToString(starInput);
-              this.quillRef.clipboard.dangerouslyPasteHTML(
-                selection.index,
-                starInputAsHtml
-              );
-
-              // const div = document.createElement('div');
-              // div.innerHTML = html;
-
-              // this.quillRef.container.querySelector('.ql-editor').replace("{{test}}", div.inner);
-              // console.log(this.quillRef.container.replaceWith("{{test}}", div))
-            }}
-          >
-            YY
-          </button>
-
           <button className="ql-blockquote"></button>
           <button className="ql-image" />
           <button className="ql-video"></button>
@@ -438,6 +417,8 @@ class Editor extends Component {
       },
       this.state.Quill.sources.USER
     );
+
+    this.props.placeholder = "meow";
   };
 
   renderButtons = (props) => {
@@ -466,13 +447,43 @@ class Editor extends Component {
               customLabelStyle={toolbarStyles.postButtonLabel}
             />
           ) : (
-            <FormButton
-              onClick={this.onSubmit}
-              label={props.label || "Post"}
-              size={props.smallToolBar && "med"}
-              customButtonStyle={toolbarStyles.postButtonStyle}
-              customLabelStyle={toolbarStyles.postButtonLabel}
-            />
+            <>
+              <ReactTooltip
+                id="bountyTooltip"
+                effect="solid"
+                place="top"
+                className={css(bountyTooltip.tooltipContainer)}
+                delayShow={250}
+              >
+                <div className={css(bountyTooltip.bodyContainer)}>
+                  <div className={css(bountyTooltip.title)}>
+                    Add ResearchCoin Bounty
+                  </div>
+                  <div className={css(bountyTooltip.desc)}>
+                    <div>• Offer ResearchCoin to the best solution</div>
+                    <div>• Improves chances of quality submissions</div>
+                  </div>
+                </div>
+              </ReactTooltip>
+              <div
+                className={css(styles.bountyBtnContainer)}
+                data-tip={""}
+                data-for="bountyTooltip"
+              >
+                <CreateBountyBtn
+                  onBountyChange={(amountDetails) =>
+                    setBountyAmountDetails(amountDetails)
+                  }
+                />
+              </div>
+              <FormButton
+                onClick={this.onSubmit}
+                label={props.label || "Post"}
+                size={props.smallToolBar && "med"}
+                customButtonStyle={toolbarStyles.postButtonStyle}
+                customLabelStyle={toolbarStyles.postButtonLabel}
+              />
+            </>
           ))}
       </div>
       // </div>
@@ -480,7 +491,7 @@ class Editor extends Component {
   };
 
   render() {
-    const { ReactQuill } = this.state;
+    const { ReactQuill, postType } = this.state;
     const modules = Editor.modules(
       this.props.uid,
       this.imageHandler,
@@ -500,6 +511,10 @@ class Editor extends Component {
               this.state.focus && styles.focus
             )}
           >
+            <PostTypeSelector
+              handleSelect={(selectedType) => setSelectedPostType(selectedType)}
+            />
+
             {ReactQuill && (
               <ReactQuill
                 ref={this.reactQuillRef}
@@ -521,11 +536,13 @@ class Editor extends Component {
                 placeholder={this.props.placeholder && this.props.placeholder}
               />
             )}
-            <div className={css(styles.reviewCategoryContainer)}>
-              <ReviewCategorySelector
-                handleSelect={this.handleInsertReviewCategory}
-              />
-            </div>
+            {postType.value === "submit_review" && (
+              <div className={css(styles.reviewCategoryContainer)}>
+                <ReviewCategorySelector
+                  handleSelect={this.handleInsertReviewCategory}
+                />
+              </div>
+            )}
             <div className={css(styles.footerContainer)}>
               <div className={css(styles.toolbarContainer)}>
                 {ReactQuill && this.renderToolbar(this.props.uid)}
@@ -598,6 +615,26 @@ Editor.formats = [
   "peer-review-rating",
 ];
 
+const bountyTooltip = StyleSheet.create({
+  tooltipContainer: {
+    textAlign: "left",
+    maxWidth: 300,
+    padding: 15,
+  },
+  bodyContainer: {},
+  title: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  desc: {
+    fontSize: 14,
+    lineHeight: "20px",
+  },
+});
+
 const styles = StyleSheet.create({
   reviewCategoryContainer: {
     paddingTop: 15,
@@ -607,11 +644,16 @@ const styles = StyleSheet.create({
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
   },
+  bountyBtnContainer: {
+    marginRight: 15,
+  },
   postButtonContainer: {
     padding: 12,
     paddingRight: 0,
     paddingBottom: 0,
     marginLeft: "auto",
+    display: "flex",
+    alignItems: "center",
   },
   fullEditor: {
     display: "none",

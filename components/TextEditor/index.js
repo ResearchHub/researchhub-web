@@ -110,9 +110,9 @@ function TextEditor(props) {
 
   return (
     <div className={css(styles.textEditor, isFocused && styles.focused)}>
-      <PostTypeSelector
+      {/* <PostTypeSelector
         handleSelect={(selectedType) => setSelectedPostType(selectedType)}
-      />
+      /> */}
       <QuillTextEditor
         value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
         uid={uid}
@@ -133,7 +133,7 @@ function TextEditor(props) {
         showDiff={showDiff}
         previousVersion={previousVersion}
         classNames={classNames}
-        placeholder={selectedPostType.placeholder}
+        // placeholder={selectedPostType.placeholder}
         hideCancelButton={hideCancelButton && hideCancelButton}
         commentStyles={commentStyles && commentStyles}
         smallToolBar={smallToolBar && smallToolBar}
@@ -147,7 +147,7 @@ function TextEditor(props) {
         handleFocus={(isFocused) => {
           setIsFocused(isFocused);
         }}
-        postType={selectedPostType}
+        // postType={selectedPostType}
       >
         {children}
       </QuillTextEditor>
