@@ -143,21 +143,20 @@ const styles = StyleSheet.create({
     border: "1px solid",
     background: "white",
     width: "auto",
-    height: 12,
-    padding: "5px 12px",
+    padding: "4px 20px",
     fontWeight: 500,
-    fontSize: 14,
+    fontSize: 15,
     cursor: "pointer",
     alignItems: "center",
     display: "inline-flex",
     ":hover": {
-      background: colors.NEW_BLUE(0.02),
+      background: colors.NEW_BLUE(0.05),
       transition: "0.2s"
     }
   },
   selectedTypeIcon: {
-    marginRight: 5,
-    fontSize: 12,
+    marginRight: 8,
+    fontSize: 14,
   },
   downIcon: {
     fontSize: 20,

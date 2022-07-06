@@ -27,12 +27,6 @@ if (process.browser) {
         `;
       }
 
-      // ${withPlaceholder
-      //   ? `<div class="ql-review-category-placeholder">
-      //       ${categoryObj.placeholder}
-      //     </div>`
-      //   : ``}
-
       node.addEventListener('click', (e) => {
         const starEl = e.target.closest(".starRating");
         if (starEl) {
@@ -42,16 +36,6 @@ if (process.browser) {
           node.innerHTML = html;
         }
       });
-
-      node.addEventListener('click', (e) => {
-        const placeholderEl = e.target.closest(".ql-review-category-placeholder");
-        if (placeholderEl) {
-          const newRating = placeholderEl.getAttribute('data-rating');
-          this._rating = newRating;
-          const html = _buildHTML({ withPlaceholder: false });
-          node.innerHTML = html;
-        }
-      })      
 
       const html = _buildHTML({});
       node.innerHTML = html;
