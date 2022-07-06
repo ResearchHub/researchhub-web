@@ -38,6 +38,7 @@ export type NewPostModalProps = {
 
 export const getModalOptionItems = (currentUser) => [
   {
+    key: "paper_upload",
     header: "Upload a Paper",
     description:
       "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
@@ -51,6 +52,7 @@ export const getModalOptionItems = (currentUser) => [
     ),
   },
   {
+    key: "eln",
     header: "Publish a Post",
     description:
       "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
@@ -73,6 +75,7 @@ export const getModalOptionItems = (currentUser) => [
     ),
   },
   {
+    key: "hypothesis",
     header: "Create a Meta-Study",
     description:
       "Aggregate a collection of papers that support a particular scientific theory",
@@ -88,6 +91,7 @@ export const getModalOptionItems = (currentUser) => [
   },
   killswitch("bountyQuestion")
     ? {
+        key: "question",
         header: "Ask a Question",
         description:
           "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",

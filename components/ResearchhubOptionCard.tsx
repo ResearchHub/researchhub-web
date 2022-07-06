@@ -1,8 +1,9 @@
 // @ts-nocheck
-import CheckBox from "./Form/CheckBox";
-import TabNewFeature from "~/components/NewFeature/TabNewFeature";
+import { genericCardColors } from "~/config/themes/colors";
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
+import CheckBox from "./Form/CheckBox";
+import TabNewFeature from "~/components/NewFeature/TabNewFeature";
 
 export type ResearchhubOptionCardProps = {
   description: string;
@@ -33,9 +34,11 @@ export default function ResearchhubOptionCard({
       )}
       onClick={onSelect}
     >
-      <div className={css(styles.checkboxAligner)}>
-        <CheckBox isSquare={isCheckboxSquare} active={isActive} />
-      </div>
+      {!whiteStyle && (
+        <div className={css(styles.checkboxAligner)}>
+          <CheckBox isSquare={isCheckboxSquare} active={isActive} />
+        </div>
+      )}
       <div className={css(styles.mediaContainer)}>
         <div className={css(styles.mediaContent)}>
           <div className={css(styles.mediaHeader)}>
@@ -103,7 +106,7 @@ const styles = StyleSheet.create({
     // height: '100%',
     // height: 500,
     borderRadius: "4px",
-    backgroundColor: "#FAFAFA",
+    background: genericCardColors.BACKGROUND,
     border: "1.5px solid #F0F0F0",
     margin: "5px 0px",
     padding: "20px",
@@ -117,7 +120,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     border: "none",
     margin: "5px 0px",
-    padding: "20px",
+    padding: "20px 20px 20px 36px",
+    ":hover": {
+      background: genericCardColors.BACKGROUND,
+    },
   },
   clickable: {
     cursor: "pointer",

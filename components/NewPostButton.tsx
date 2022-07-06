@@ -3,6 +3,7 @@ import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, SyntheticEvent, useState } from "react";
 import {
+  DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
@@ -13,9 +14,16 @@ import ResearchHubPopover from "./ResearchHubPopover";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 import { getModalOptionItems } from "./Modals/NewPostModal";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { filterNull } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  filterNull,
+  isEmpty,
+} from "~/config/utils/nullchecks";
 import ResearchhubOptionCard from "./ResearchhubOptionCard";
 import colors from "~/config/themes/colors";
+import { useRouter } from "next/router";
+import { createNewNote } from "~/config/fetch";
+import { NOTE_GROUPS } from "./Notebook/config/notebookConstants";
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
@@ -28,26 +36,59 @@ export default function NewPostButton({
 }: NewPostButtonProps) {
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const [popoverSelectedItemIndex, setPopoverSelectedItemIndex] =
-    useState<number>(0);
+
+  const router = useRouter();
   const isOnMobileScreen = getIsOnMobileScreenSize();
   const currentUser = getCurrentUser();
+  const shouldOpenPopover =
+    !isOnMobileScreen &&
+    buttonValues?.isOpen &&
+    isEmpty(buttonValues.wizardBodyType);
 
-  const shouldOpenPopover = !isOnMobileScreen && buttonValues?.isOpen;
-  const popoverOptionItems = getModalOptionItems(currentUser);
-  const modalOptionCards = filterNull(popoverOptionItems).map(
+  console.warn("shouldOpenPopover: ", shouldOpenPopover);
+  const popoverOptionCards = filterNull(getModalOptionItems(currentUser)).map(
     (option, index) => (
       <ResearchhubOptionCard
         description={option.description}
         header={option.header}
         icon={option.icon}
-        isActive={index === popoverSelectedItemIndex}
+        isActive={false}
         isCheckboxSquare={false}
         key={index}
         newFeature={option.newFeature}
-        onSelect={(e: SyntheticEvent) => {
+        onSelect={async (e: SyntheticEvent) => {
           e.stopPropagation();
-          setPopoverSelectedItemIndex(index);
+          switch (option.key) {
+            case "paper_upload":
+              setButtonValues({
+                ...DEFAULT_POST_BUTTON_VALUES,
+                isOpen: true,
+                wizardBodyType: "url_or_doi_upload",
+              });
+              break;
+            case "eln":
+              /* @ts-ignore - legacy code */
+              const note = await createNewNote({
+                orgSlug: currentUser.organization_slug,
+                grouping: NOTE_GROUPS.WORKSPACE,
+              });
+              router.push(
+                /* @ts-ignore - faulty */
+                `/${currentUser.organization_slug}/notebook/${note.id}`
+              );
+              setButtonValues({
+                ...DEFAULT_POST_BUTTON_VALUES,
+              });
+              break;
+            case "hypothesis":
+              router.push("/hypothesis/create");
+              setButtonValues({
+                ...DEFAULT_POST_BUTTON_VALUES,
+              });
+              break;
+            default:
+              emptyFncWithMsg("No optionKey found");
+          }
         }}
         whiteStyle
       />
@@ -66,7 +107,7 @@ export default function NewPostButton({
       styling={styles.rippleClass}
     >
       <ResearchHubPopover
-        containerStyle={{ zIndex: 1000 }}
+        containerStyle={{ zIndex: 100 }}
         positions={["bottom", "right"]}
         onClickOutside={(): void =>
           setButtonValues({ ...buttonValues, isOpen: false })
@@ -82,7 +123,7 @@ export default function NewPostButton({
               top: 64,
             }}
           >
-            {modalOptionCards}
+            {popoverOptionCards}
           </div>
         }
         isOpen={shouldOpenPopover}
