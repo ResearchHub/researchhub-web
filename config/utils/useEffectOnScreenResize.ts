@@ -1,14 +1,17 @@
 import { useEffect } from "react";
+import { isEmpty } from "./nullchecks";
 
 type Args = {
   onResize: (newMediaWidth: number) => void;
 };
 
 export const getCurrMediaWidth = (): number =>
-  window?.innerWidth ??
-  document?.documentElement?.clientWidth ??
-  document?.body?.clientWidth ??
-  0;
+  typeof window !== "undefined"
+    ? window?.innerWidth ??
+      document?.documentElement?.clientWidth ??
+      document?.body?.clientWidth ??
+      0
+    : 0;
 
 export function useEffectOnScreenResize({ onResize }: Args): void {
   const handleResize = (): void => {

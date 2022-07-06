@@ -12,6 +12,7 @@ export type ResearchhubOptionCardProps = {
   isCheckboxSquare: boolean;
   newFeature: boolean;
   onSelect: Function;
+  whiteStyle?: boolean;
 };
 
 export default function ResearchhubOptionCard({
@@ -22,10 +23,14 @@ export default function ResearchhubOptionCard({
   isCheckboxSquare,
   newFeature,
   onSelect,
+  whiteStyle,
 }: ResearchhubOptionCardProps): ReactElement<"div"> {
   return (
     <div
-      className={css(styles.largeListItem, styles.clickable)}
+      className={css(
+        Boolean(whiteStyle) ? styles.largeListItemWhite : styles.largeListItem,
+        styles.clickable
+      )}
       onClick={onSelect}
     >
       <div className={css(styles.checkboxAligner)}>
@@ -100,6 +105,17 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     backgroundColor: "#FAFAFA",
     border: "1.5px solid #F0F0F0",
+    margin: "5px 0px",
+    padding: "20px",
+  },
+  largeListItemWhite: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignSelf: "stretch",
+    borderRadius: "4px",
+    backgroundColor: "#FFF",
+    border: "none",
     margin: "5px 0px",
     padding: "20px",
   },
