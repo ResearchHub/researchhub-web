@@ -20,17 +20,18 @@ if (process.browser) {
         const categoryObj = reviewCategories[this._category];
 
         return `
-          <div class="ql-review-category">
+          <div class="ql-review-category" contenteditable="false">
             <div class="ql-review-category-label">${categoryObj.label}</div>
             <div class="ql-review-category-rating">${starInputAsHtml}</div>
           </div>
-          ${withPlaceholder
-          ? `<div class="ql-review-category-placeholder">
-              ${categoryObj.placeholder}
-            </div>`
-          : ``}
         `;
       }
+
+      // ${withPlaceholder
+      //   ? `<div class="ql-review-category-placeholder">
+      //       ${categoryObj.placeholder}
+      //     </div>`
+      //   : ``}
 
       node.addEventListener('click', (e) => {
         const starEl = e.target.closest(".starRating");
