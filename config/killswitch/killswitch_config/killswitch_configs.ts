@@ -10,12 +10,12 @@ export type KillswitchApp = typeof KillSwitchApps[number];
 
 const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   bountyQuestion: {
-    development: false,
+    development: true,
     staging: false,
     production: false,
   },
   peerReview: {
-    development: true,
+    development: false,
     staging: false,
     production: false,
   },
