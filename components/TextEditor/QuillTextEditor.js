@@ -363,7 +363,7 @@ class Editor extends Component {
               className="show-full-editor"
               onClick={() => this.setState({ showFullEditor: !showFullEditor })}
             >
-              {faIcons.fontCase}&nbsp;{faIcons.angleRight}
+              {faIcons.chevronCircleRight}
             </button>
           )}
         </span>
@@ -397,7 +397,7 @@ class Editor extends Component {
                   this.setState({ showFullEditor: !showFullEditor })
                 }
               >
-                {faIcons.fontCase}&nbsp;{faIcons.angleLeft}
+                {faIcons.chevronCircleLeft}
               </button>
             )}
           </span>
@@ -453,7 +453,7 @@ class Editor extends Component {
                 effect="solid"
                 place="top"
                 className={css(bountyTooltip.tooltipContainer)}
-                delayShow={250}
+                delayShow={500}
               >
                 <div className={css(bountyTooltip.bodyContainer)}>
                   <div className={css(bountyTooltip.title)}>

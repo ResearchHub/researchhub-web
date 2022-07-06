@@ -155,19 +155,21 @@
 
 .ql-formats > button {
   /* color: rgb(57, 113, 255); */
-  font-size: 18px !important;
-  height: 30px !important;
-  width: 30px !important;
-  margin-right: 5px;
+  font-size: 16px !important;
+  height: 27px !important;
+  width: 27px !important;
+  margin-right: 0px;
+  padding: 3px 1px;
 }
 
 .ql-video {
   margin-left: 4px;
 }
 .show-full-editor {
-  margin-left: 0px;
+  margin-left: 3px;
   display: inline-flex !important;
   align-items: center;
+  color: rgb(57, 113, 255);
 }
 
 /* .video-stream {
