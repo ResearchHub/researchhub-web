@@ -128,6 +128,9 @@ class Editor extends Component {
         this.state.Quill.sources.USER
       );
       this.focusEditor();
+
+      // Force placeholder to show
+      this.quillRef.root.classList.add("ql-blank");
     }
   }
 
@@ -422,6 +425,12 @@ class Editor extends Component {
       },
       this.state.Quill.sources.USER
     );
+
+    this.quillRef.root.setAttribute(
+      "data-placeholder",
+      reviewCategory.description
+    );
+    this.quillRef.root.classList.add("ql-blank");
   };
 
   renderButtons = (props) => {
