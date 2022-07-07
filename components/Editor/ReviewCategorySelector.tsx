@@ -16,7 +16,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
   const renderDropdown = () => {
     return (
       <div className={css(styles.dropdown, isOpen && styles.dropdownOpen)}>
-        {Object.values(reviewCategories).map(cat => (
+        {Object.values(reviewCategories).filter(cat => !cat.isDefault).map(cat => (
           <div className={css(styles.dropdownOpt)} onClick={() => _handleSelect(cat)}>
             <div className={css(styles.dropdownOptLabel)}>
               <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}{` `}</span>

@@ -13,14 +13,21 @@ if (process.browser) {
       const node = super.create();
       this._rating = value.rating;
       this._category = value.category;
+      // node.setAttribute('contenteditable', false);
+      
+      const categoryObj = reviewCategories[this._category];
+      if (categoryObj.isDefault) {
+        // For the default category "overall rating", we want
+        // to prevent the block being deleted.
+        node.setAttribute('data-immutable', true);  
+      }
 
       const _buildHTML = ({ withPlaceholder = true }) => {
         const starInput = <StarInput value={this._rating} readOnly={false} />
         const starInputAsHtml = ReactDOMServer.renderToString(starInput)      
-        const categoryObj = reviewCategories[this._category];
 
         return `
-          <div class="ql-review-category" contenteditable="false">
+          <div class="ql-review-category">
             <div class="ql-review-category-label">${categoryObj.label}</div>
             <div class="ql-review-category-rating">${starInputAsHtml}</div>
           </div>
@@ -37,10 +44,20 @@ if (process.browser) {
         }
       });
 
+
       const html = _buildHTML({});
       node.innerHTML = html;
       return node;      
     }
+
+    deleteAt(index: number, length: number) {
+      const isImmutable = String(this.domNode.getAttribute("data-immutable")) === "true";
+      if (isImmutable) {
+        return false;
+      }
+
+      super.deleteAt(index, length);
+    }    
   
     static value(node) {
       return {
