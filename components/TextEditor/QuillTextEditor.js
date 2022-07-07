@@ -115,7 +115,7 @@ class Editor extends Component {
       this.state.postType.value === "submit_review"
     ) {
       this.quillRef.setContents([]);
-      this.quillRef.editor.insertEmbed(
+      this.quillRef.insertEmbed(
         0,
         "peer-review-rating",
         {
@@ -124,6 +124,7 @@ class Editor extends Component {
         },
         this.state.Quill.sources.USER
       );
+      this.focusEditor();
     }
   }
 
@@ -408,7 +409,7 @@ class Editor extends Component {
 
   handleInsertReviewCategory = (reviewCategory) => {
     let range = this.quillRef.getSelection(true);
-    this.quillRef.editor.insertEmbed(
+    this.quillRef.insertEmbed(
       range.index,
       "peer-review-rating",
       {
@@ -573,6 +574,17 @@ Editor.modules = (toolbarId, imageHandler, linkHandler) => ({
       // link: linkHandler
     },
   },
+  // keyboard: {
+  //   bindings: {
+  //     'peer-review-rating': {
+  //       key: "backspace",
+  //       handler: function(range, keycontext) {
+  //         console.log('here')
+  //         return true;
+  //       }
+  //     }
+  //   }
+  // }
 });
 
 Editor.formats = [
