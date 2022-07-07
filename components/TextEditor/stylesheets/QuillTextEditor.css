@@ -65,11 +65,15 @@
 }
 
 .ql-tooltip {
-  top: -15px !important;
+  /* top: -15px !important;
   left: unset !important;
   right: -15px !important;
-  transform: unset !important;
+  transform: unset !important; */
 }
+.ql-tooltip[data-mode="video"] {
+  left: 0 !important;
+}
+
 .ql-editor > p {
   font-size: inherit;
   color: inherit;
@@ -210,4 +214,8 @@
 
 .ql-review-category-placeholder {
   color: rgba(0, 0, 0, 0.6);
+}
+
+.ql-snow .ql-editor a {
+  color: rgb(57, 113, 255) !important;
 }

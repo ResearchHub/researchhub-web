@@ -46,7 +46,9 @@ class Editor extends Component {
 
   componentDidMount = async () => {
     // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
-    import("react-quill").then((val) => {
+    import("react-quill").then(async (val) => {
+      const MagicUrl = (await import("quill-magic-url")).default;
+
       const Quill = val.default.Quill;
       var icons = val.default.Quill.import("ui/icons");
       icons.video = ReactDOMServer.renderToString(faIcons.video);
@@ -57,6 +59,7 @@ class Editor extends Component {
        }*/
 
       Quill.register(QuillPeerReviewRatingBlock);
+      Quill.register("modules/magicUrl", MagicUrl);
 
       this.setState(
         {
@@ -356,6 +359,7 @@ class Editor extends Component {
       <div id={this.props.uid} className="ql-toolbar">
         <span className="ql-formats">
           <button className="ql-blockquote"></button>
+          <button className="ql-link" />
           <button className="ql-image" />
           <button className="ql-video"></button>
           {!showFullEditor && (
@@ -473,8 +477,8 @@ class Editor extends Component {
     const { ReactQuill, postType } = this.state;
     const modules = Editor.modules(
       this.props.uid,
-      this.imageHandler,
-      this.linkHandler
+      this.imageHandler
+      // this.linkHandler
     );
 
     return (
@@ -567,24 +571,14 @@ class Editor extends Component {
 }
 
 Editor.modules = (toolbarId, imageHandler, linkHandler) => ({
+  magicUrl: true,
   toolbar: {
+    magicUrl: true,
     container: "#" + toolbarId,
     handlers: {
       image: imageHandler,
-      // link: linkHandler
     },
   },
-  // keyboard: {
-  //   bindings: {
-  //     'peer-review-rating': {
-  //       key: "backspace",
-  //       handler: function(range, keycontext) {
-  //         console.log('here')
-  //         return true;
-  //       }
-  //     }
-  //   }
-  // }
 });
 
 Editor.formats = [
