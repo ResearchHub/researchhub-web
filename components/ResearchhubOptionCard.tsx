@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     backgroundColor: "#FFF",
     border: "none",
-    margin: "5px 0px",
     padding: "20px 20px 20px 36px",
     ":hover": {
       background: genericCardColors.BACKGROUND,
