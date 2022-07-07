@@ -18,12 +18,7 @@ const reviewCategories = {
     label: "Conclusions",
     value: "conclusions",
     description: "Are conclusions based on results and backed by data?",
-  },
-  "additional": {
-    label: "Additional Thoughts",
-    value: "additional",
-    description: "Various additional uncategorized thoughts, criticism or feedback",
-  },      
+  },    
 }
 
 export default reviewCategories;
