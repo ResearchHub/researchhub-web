@@ -78,7 +78,7 @@ export const getModalOptionItems = (currentUser) => [
     key: "hypothesis",
     header: "Create a Meta-Study",
     description:
-      "Aggregate a collection of papers that support a particular scientific theory",
+      "Aggregate a collection of papers that support a particular scientific theory.",
     route: "/hypothesis/create",
     icon: (
       <HypothesisIcon
