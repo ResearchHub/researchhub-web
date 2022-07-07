@@ -39,6 +39,7 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
         }}
         appliedBounty={bountyAmountDetails}
         withPreview={withPreview}
+        removeBounty={() => setBountyAmountDetails(null)}
       />
       {bountyAmountDetails && withPreview
         ? (
