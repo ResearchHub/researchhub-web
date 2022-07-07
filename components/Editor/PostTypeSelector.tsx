@@ -138,14 +138,16 @@ const styles = StyleSheet.create({
     color: colors.PURPLE_LIGHT(),
   },
   trigger: {
-    borderRadius: "50px",
+    borderRadius: "4px",
     userSelect: "none",
     border: "1px solid",
     background: "white",
     width: "auto",
-    padding: "4px 20px",
+    padding: "4px 12px",
+    boxSizing: "border-box",
     fontWeight: 500,
     fontSize: 15,
+    height: 26,
     cursor: "pointer",
     alignItems: "center",
     display: "inline-flex",
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
   },
   selectedTypeIcon: {
     marginRight: 8,
-    fontSize: 14,
+    fontSize: 13,
   },
   downIcon: {
     fontSize: 20,

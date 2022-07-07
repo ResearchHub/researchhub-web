@@ -882,7 +882,7 @@ const toolbarStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    borderRadius: 50,
+    borderRadius: 4,
     userSelect: "none",
     background: colors.NEW_BLUE(),
     ":hover": {

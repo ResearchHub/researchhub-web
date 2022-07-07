@@ -1,7 +1,7 @@
 import { ReactElement, useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import BountyModal from "./BountyModal";
-import icons from "~/config/themes/icons";
+import icons, { MedalIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
 
@@ -12,7 +12,7 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
 
 
   return (
-    <div className={css(styles.createBountyBtn)} onClick={() => setIsModalOpen(true)}>
+    <div className={css(styles.createBountyBtn)}>
       <ReactTooltip
         id="bountyTooltip"
         effect="solid"
@@ -47,18 +47,29 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
             className={css(styles.bountyPreview)}
           >
             <div className={css(styles.bountyAmount)}>
-              <img
+              {/* <img
                 className={css(styles.coinIcon)}
                 src={"/static/icons/coin-filled.png"}
                 alt="RSC Coin"
-              />              
-              {bountyAmountDetails?.netBountyAmount} RSC bounty
+              />               */}
+              <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
+              <MedalIcon />
+              <span className={css(styles.bountyAmountText)}>
+                {bountyAmountDetails?.netBountyAmount} ResearchCoin bounty
+              </span>
+              <span
+                className={css(styles.removeBounty)}
+                onClick={() => setBountyAmountDetails(null)}>
+                  {icons.times}
+              </span>
             </div>
           </span>
         ) : (
           <div
             data-tip={""}
             data-for="bountyTooltip"
+            className={css(styles.addBounty)}
+            onClick={() => setIsModalOpen(true)}
           >
             <span className={css(styles.bountyIcon)}>
               {icons.plus}
@@ -109,20 +120,36 @@ const bountyTooltip = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  removeBounty: {
+    color: colors.DARKER_GREY(),
+    fontSize: 18,
+    marginLeft: 10,
+    ":hover": {
+      color: colors.RED(),
+      cursor: "pointer",
+    }
+  },
   createBountyBtn: {
+  },
+  check: {
+    color: colors.NEW_GREEN(),
+    marginRight: 5,
+    fontSize: 18,
+  },
+  addBounty: {
     color: colors.ORANGE_DARK(),
     fontSize: 15,
     fontWeight: 400,
     cursor: "pointer",
     border: "1px solid",
-    borderRadius: 50,
+    borderRadius: 4,
     padding: "7px 16px",
     ":hover": {
       color: colors.ORANGE()
     },
     boxSizing: "border-box",
     height: 34,
-  },
+  },  
   coinIcon: {
     height: 18,
     marginRight: 8,
@@ -131,11 +158,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   bountyPreview: {
-
+    fontSize: 16,
   },
   bountyAmount: {
+    background: colors.LIGHTER_GREY(),
     display: "flex",
     alignItems: "center",
+    borderRadius: 4,
+    padding: "3px 12px",
+    boxSizing: "border-box",
+    height: 34,
+  },
+  bountyAmountText: {
+    marginLeft: 5,
+    fontSize: 14,
+    fontWeight: 500,
   }
 });
 
