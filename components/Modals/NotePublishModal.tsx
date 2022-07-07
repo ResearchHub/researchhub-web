@@ -13,7 +13,7 @@ import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
-import { fetchOrgUsers } from "~/config/fetch";
+import { fetchOrgUsers, sendAmpEvent } from "~/config/fetch";
 import { useRouter } from "next/router";
 
 type FormFields = {
@@ -222,7 +222,7 @@ function NotePublishModal({
           router.push(`/post/${id}/${slug}`);
         })
         .catch((err) => {
-          if (err.response.status === 402) {
+          if (err.response?.status === 402) {
             setMessage("Not enough coins in balance");
             showMessage({ show: true, error: true });
           } else {
@@ -267,7 +267,23 @@ function NotePublishModal({
 
     return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        if (publishedType === "UNPUBLISHED") {
+          const payload = {
+            event_type: "create_post",
+            time: +new Date(),
+            user_id: currentUser.id,
+            insert_id: `post_${res.id}`,
+            event_properties: {
+              interaction: "Post created",
+            },
+          };
+          sendAmpEvent(payload);
+        }
+
+        return res;
+      });
   };
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {
