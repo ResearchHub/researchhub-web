@@ -1,4 +1,4 @@
-import { iconColors } from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -335,8 +335,6 @@ const icons = {
   bell: <FontAwesomeIcon icon={faBell} />,
   bolt: <FontAwesomeIcon icon={faBolt} />,
   book: <FontAwesomeIcon icon={faBook} />,
-  bounty: <FontAwesomeIcon icon={faMedal} />,
-  bountySolid: <FontAwesomeIcon icon={faMedalSolid} />,
   bookOpen: <FontAwesomeIcon icon={faBookOpen} />,
   bookOpenAlt: <FontAwesomeIcon icon={faBookOpenAlt} />,
   burgerMenu: <FontAwesomeIcon icon={faBars} />,
@@ -900,6 +898,31 @@ export const UpIcon = ({
       )}
     >
       {icons.chevronUp}
+    </span>
+  );
+};
+
+export const MedalIcon = ({
+  onClick = undefined,
+  overrideStyle = null,
+  width = 19,
+  height = 24,
+  color = colors.BLACK(),
+}) => {
+  return (
+    <span onClick={onClick} className={css(overrideStyle && overrideStyle)}>
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 14 19"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6.99967 4.83547C8.76778 4.83547 10.4635 5.53785 11.7137 6.78809C12.964 8.03833 13.6663 9.73403 13.6663 11.5021C13.6663 13.2702 12.964 14.9659 11.7137 16.2162C10.4635 17.4664 8.76778 18.1688 6.99967 18.1688C5.23156 18.1688 3.53587 17.4664 2.28563 16.2162C1.03539 14.9659 0.333008 13.2702 0.333008 11.5021C0.333008 9.73403 1.03539 8.03833 2.28563 6.78809C3.53587 5.53785 5.23156 4.83547 6.99967 4.83547ZM6.99967 6.50213C5.67359 6.50213 4.40182 7.02892 3.46414 7.9666C2.52646 8.90428 1.99967 10.1761 1.99967 11.5021C1.99967 12.8282 2.52646 14.1 3.46414 15.0377C4.40182 15.9753 5.67359 16.5021 6.99967 16.5021C8.32576 16.5021 9.59753 15.9753 10.5352 15.0377C11.4729 14.1 11.9997 12.8282 11.9997 11.5021C11.9997 10.1761 11.4729 8.90428 10.5352 7.9666C9.59753 7.02892 8.32576 6.50213 6.99967 6.50213ZM6.99967 7.75214L8.10217 9.98547L10.5663 10.3438L8.78301 12.0813L9.20384 14.5363L6.99967 13.3771L4.79551 14.5355L5.21634 12.0813L3.43301 10.343L5.89717 9.98463L6.99967 7.75214ZM11.9997 0.668802V3.1688L10.8638 4.11714C9.92129 3.62262 8.89223 3.3145 7.83301 3.20964V0.668802H11.9997ZM6.16634 0.667969V3.20964C5.10746 3.31434 4.07869 3.62218 3.13634 4.1163L1.99967 3.1688V0.668802L6.16634 0.667969Z"
+          fill={color}
+        />
+      </svg>
     </span>
   );
 };

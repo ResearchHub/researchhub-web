@@ -2,7 +2,7 @@ import { ReactElement, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import BaseModal from "../Modals/BaseModal";
 import ReactTooltip from "react-tooltip";
-import icons from "~/config/themes/icons";
+import icons, { MedalIcon } from "~/config/themes/icons";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 
@@ -46,13 +46,9 @@ function BountyModal({
         closeModal={handleClose}
         isOpen={isOpen}
         modalStyle={styles.modalStyle}
+        modalContentStyle={styles.modalContentStyle}
         titleStyle={styles.title}
-        title={
-          <>
-            <span className={css(styles.bountyIcon)}>{icons.bountySolid}</span>
-            <span>Add ResearchCoin Bounty</span>
-          </>
-        }
+        title={`Add ResearchCoin Bounty`}
       >
 
         <div className={css(styles.rootContainer)}>
@@ -63,8 +59,10 @@ function BountyModal({
                   I am offering
                 </div>
                 <div className={css(styles.lineItemValue, styles.offeringValue)}>
-                  <input onChange={handleBountyInputChange} value={bountyAmount} />
-                  <span>RSC</span>
+                  <span className={css(styles.valueNumber, styles.valueInInput)}>
+                    <input className={css(styles.input)} type="number" onChange={handleBountyInputChange} value={bountyAmount} />
+                  </span>
+                  <span className={css(styles.rscText)}>RSC</span>
                 </div>
               </div>
 
@@ -82,8 +80,10 @@ function BountyModal({
                   Research Hub Platform Fee ({BOUNTY_RH_PERCENTAGE}%)
                 </div>
                 <div className={css(styles.lineItemValue)}>
-                  <span>- {researchHubAmount}</span>
-                  <span>RSC</span>
+                  <span className={css(styles.valueNumber)}>
+                    <span>- {researchHubAmount}</span>
+                  </span>
+                  <span className={css(styles.rscText)}>RSC</span>
                 </div>
               </div>              
 
@@ -95,8 +95,10 @@ function BountyModal({
                   Net Bounty Award
                 </div>
                 <div className={css(styles.lineItemValue, styles.netAmountValue)}>
-                  <span>{bountyAmount - researchHubAmount}</span>
-                  <span>RSC</span>
+                  <span className={css(styles.valueNumber)}>
+                    <span>{bountyAmount - researchHubAmount}</span>
+                  </span>
+                  <span className={css(styles.rscText)}>RSC</span>
                 </div>
               </div>              
             </div>
@@ -106,7 +108,7 @@ function BountyModal({
               <span className={css(infoSectionStyles.infoIcon)}>{icons.clock}</span> <span className={css(infoSectionStyles.infoText)}>Bounty will end in 30 days or as soon as you award a solution</span>
             </div>
             <div className={css(infoSectionStyles.infoRow)}>
-              <span className={css(infoSectionStyles.infoIcon)}>{icons.bounty}</span> Award either partial or full bounty depending on whether solution satisfies your request
+              <span className={css(infoSectionStyles.infoIcon)}>{<MedalIcon color={colors.DARKER_GREY()} />}</span> Award either partial or full bounty depending on whether solution satisfies your request
             </div>
             <div className={css(infoSectionStyles.infoRow)}>
               <span className={css(infoSectionStyles.infoIcon)}>{icons.undo}</span> If no solution satisfies your request, full bounty amount will be refunded to you
@@ -125,6 +127,7 @@ function BountyModal({
                 label={addBtnLabel}
                 customButtonStyle={styles.addButton}
                 customLabelStyle={styles.addButtonLabel}
+                size={`small`}
                 onClick={() => {
                   handleBountyAdded({
                     grossBountyAmount: bountyAmount,
@@ -143,10 +146,23 @@ function BountyModal({
 const infoSectionStyles = StyleSheet.create({
   bountyInfo: {
     textAlign: "left",
+    fontSize: 16,
+    background: colors.LIGHTER_GREY_BACKGROUND,
+    color: colors.DARKER_GREY(),
+    paddingTop: 15,
+    paddingBottom: 15,
+    marginBottom: 25,
   },
   infoRow: {
     marginBottom: 10,
     display: "flex",
+    paddingRight: 30,
+    paddingLeft: 30,
+    fontSize: 14,
+    alignItems: "center",
+    ":last-child": {
+      marginBottom: 0,
+    }
   },
   infoIcon: {
     fontSize: 20,
@@ -164,15 +180,39 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   title: {
-    color: colors.ORANGE_DARK(),
+    // color: colors.ORANGE_DARK(),
     marginBottom: 25,
+    fontSize: 22,
+    // paddingTop: 25,
+  },
+  input: {
+    width: 60,
+    marginRight: 5,
+    textAlign: "right",
+    padding: "5px 7px",
+    border: `2px solid rgb(229 229 230)`,
+    fontSize: 16,
+    [`[type="number"]`]: {
+      "-webkit-appearance": "none",
+      "margin": 0,
+    }
+  },
+  rscText: {
+    fontWeight: 500,
+    // alignSelf: "flex-end",
+    marginLeft: "auto",
   },
   bountyIcon: {
     marginRight: 10,
 
   },
   modalStyle: {
-    maxWidth: 700,
+    maxWidth: 500,
+  },
+  modalContentStyle: {
+    padding: 0,
+    paddingTop: 25,
+    paddingBottom: 25,
   },
   removeBountyBtn: {
     color: colors.RED(),
@@ -183,6 +223,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
+    paddingLeft: 30,
+    paddingRight: 30,
 
   },
   addBtnContainer: {
@@ -190,42 +232,56 @@ const styles = StyleSheet.create({
   },
   addButton: {
     background: colors.ORANGE(),
-    borderRadius: "50px",
+    borderRadius: "4px",
   },
   addButtonLabel: {
     color: colors.BLACK(),
   },
   values: {
     marginBottom: 25,
+    padding: 30,
+    paddingBottom: 0,
   },
   lineItem: {
     display: "flex",
-    fontSize: 18,
-    lineHeight: "26px",
+    fontSize: 16,
+    alignItems: "center",
   },
   lineItemValue: {
     display: "flex",
     marginLeft: "auto",
+    width: 120,
+    alignItems: "center",
   },
   lineItemText: {
 
   },
   offeringLine: {
-
+    marginBottom: 15,
   },
   offeringText: {
-    
+    fontWeight: 500,
   },
   offeringValue: {
-
+    alignItems: "center",
+  },
+  valueNumber: {
+    width: 100,
+    textAlign: "right",
+    paddingRight: 15,
+  },
+  valueInInput: {
+    paddingRight: 0,
   },
   platformFeeLine: {
-
+    color: colors.DARKER_GREY(),
+    marginBottom: 5,
   },
   netAmountLine: {
+    paddingTop: 5,
+    borderTop: `2px solid rgb(229 229 230)`,
   },
   netAmountValue: {
-    borderTop: "2px solid gray",
     color: colors.ORANGE_DARK(),
     fontWeight: 500,
 
