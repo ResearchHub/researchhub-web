@@ -15,6 +15,7 @@ type Props = {
   withPreview: Boolean;
   closeModal: Function;
   handleBountyAdded: Function;
+  removeBounty: Function;
   addBtnLabel?: string;
   appliedBounty?: any;
 };
@@ -25,6 +26,7 @@ function BountyModal({
     closeModal,
     handleBountyAdded,
     appliedBounty,
+    removeBounty,
     addBtnLabel = "Add Bounty",
   }: Props): ReactElement {
 
@@ -113,7 +115,10 @@ function BountyModal({
 
           <div className={css(styles.addBountyContainer)}>
             {appliedBounty &&
-              <div className={css(styles.removeBountyBtn)}>Remove Bounty</div>
+              <div className={css(styles.removeBountyBtn)} onClick={() => {
+                removeBounty();
+                closeModal();
+              }}>Remove Bounty</div>
             }
             <div className={css(styles.addBtnContainer)}>
               <Button
