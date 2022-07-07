@@ -40,6 +40,7 @@ const colors = {
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
   DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`,
   PLACEHOLDER_CARD_BACKGROUND: "#efefef",
+  STANDARD_BOX_SHADOW: "rgba(185, 185, 185, 0.25)",
 };
 
 export const genericCardColors = {

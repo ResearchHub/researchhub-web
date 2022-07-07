@@ -13,7 +13,7 @@ type Props = {
   positions: Array<"left" | "right" | "top" | "bottom">;
   setIsPopoverOpen?: (flag: boolean) => void;
   targetContent: ReactElement;
-  withArrow: boolean;
+  withArrow?: boolean;
 };
 
 export default function ResearchHubPopover({
@@ -36,7 +36,7 @@ export default function ResearchHubPopover({
       align={align}
       containerStyle={containerStyle}
       content={({ position, childRect, popoverRect }) =>
-        withArrow ? (
+        Boolean(withArrow) ? (
           <ArrowContainer
             arrowClassName="popover-arrow"
             arrowColor={"#fff"}

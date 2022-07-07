@@ -18,21 +18,94 @@ import {
 } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
+import {
+  DEFAULT_POST_BUTTON_VALUES,
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import Link from "next/link";
 import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
-import {
-  DEFAULT_POST_BUTTON_VALUES,
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
+import killswitch from "~/config/killswitch/killswitch";
 
 export type NewPostModalProps = {
   currentUser: any;
 };
+
+export const getModalOptionItems = (currentUser) => [
+  {
+    key: "paper_upload",
+    header: "Upload a Paper",
+    description:
+      "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
+    icon: (
+      <PaperIcon
+        height={40}
+        onClick={silentEmptyFnc}
+        width={40}
+        withAnimation={false}
+      />
+    ),
+  },
+  {
+    key: "eln",
+    header: "Publish a Post",
+    description:
+      "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
+    onClick: async () => {
+      /* @ts-ignore */
+      const note = await createNewNote({
+        orgSlug: currentUser.organization_slug,
+        grouping: NOTE_GROUPS.WORKSPACE,
+      });
+      /* @ts-ignore */
+      router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
+    },
+    icon: (
+      <PostIcon
+        height={40}
+        onClick={silentEmptyFnc}
+        width={40}
+        withAnimation={false}
+      />
+    ),
+  },
+  {
+    key: "hypothesis",
+    header: "Create a Meta-Study",
+    description:
+      "Aggregate a collection of papers that support a particular scientific theory.",
+    route: "/hypothesis/create",
+    icon: (
+      <HypothesisIcon
+        height={40}
+        onClick={silentEmptyFnc}
+        width={40}
+        withAnimation={false}
+      />
+    ),
+  },
+  killswitch("bountyQuestion")
+    ? {
+        key: "question",
+        header: "Ask a Question",
+        description:
+          "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
+        icon: (
+          <HypothesisIcon
+            height={40}
+            onClick={silentEmptyFnc}
+            width={40}
+            withAnimation={false}
+          />
+        ),
+      }
+    : null,
+];
 
 function NewPostModal({
   currentUser,
@@ -41,10 +114,15 @@ function NewPostModal({
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
   const { isOpen, wizardBodyType } = buttonValues;
-  const [selected, setSelected] = useState(0);
+
+  const [modalSelectedItemIndex, setModalSelectedItemIndex] = useState(0);
   const [bodyType, setBodyType] = useState<NullableString>(
     Boolean(wizardBodyType) ? "paperWizard" : null
   );
+  const isMobileScreen = getIsOnMobileScreenSize();
+  const shouldModalStayOpen =
+    isOpen && (bodyType === "paperWizard" || isMobileScreen);
+  const modalOptionItems = getModalOptionItems(currentUser);
 
   useEffect(
     (): void => setBodyType(Boolean(wizardBodyType) ? "paperWizard" : null),
@@ -53,14 +131,14 @@ function NewPostModal({
 
   const closeModal = (event?: SyntheticEvent): void => {
     event && event.preventDefault();
-    setSelected(0);
+    setModalSelectedItemIndex(0);
     setBodyType(null);
     setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
   };
 
   const handleContinue = (event?: SyntheticEvent): void => {
     event && event.preventDefault();
-    if (selected === 0) {
+    if (modalSelectedItemIndex === 0) {
       setButtonValues({
         ...DEFAULT_POST_BUTTON_VALUES,
         isOpen: true,
@@ -72,57 +150,22 @@ function NewPostModal({
     }
   };
 
-  const items = [
-    {
-      header: "Upload a Paper",
-      description:
-        "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
-      icon: (
-        <PaperIcon
-          height={40}
-          onClick={silentEmptyFnc}
-          width={40}
-          withAnimation={false}
-        />
-      ),
-    },
-    {
-      header: "Publish a Post",
-      description:
-        "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
-      onClick: async () => {
-        /* @ts-ignore */
-        const note = await createNewNote({
-          orgSlug: currentUser.organization_slug,
-          grouping: NOTE_GROUPS.WORKSPACE,
-        });
-        /* @ts-ignore */
-        router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
-      },
-      icon: (
-        <PostIcon
-          height={40}
-          onClick={silentEmptyFnc}
-          width={40}
-          withAnimation={false}
-        />
-      ),
-    },
-    {
-      header: "Create a Meta-Study",
-      description:
-        "Aggregate a collection of papers that support a particular scientific theory",
-      route: "/hypothesis/create",
-      icon: (
-        <HypothesisIcon
-          height={40}
-          onClick={silentEmptyFnc}
-          width={40}
-          withAnimation={false}
-        />
-      ),
-    },
-  ];
+  const modalOptionCards = filterNull(modalOptionItems).map((option, index) => (
+    <ResearchhubOptionCard
+      description={option.description}
+      header={option.header}
+      icon={option.icon}
+      isActive={index === modalSelectedItemIndex}
+      isCheckboxSquare={false}
+      key={index}
+      newFeature={option.newFeature}
+      onSelect={(e: SyntheticEvent) => {
+        e.preventDefault();
+        setModalSelectedItemIndex(index);
+      }}
+    />
+  ));
+
   return (
     <BaseModal
       children={
@@ -142,39 +185,29 @@ function NewPostModal({
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>{"Select your post type"}</div>
             </div>
-            <div className={css(styles.list)}>
-              {filterNull(items).map((option, index) => (
-                <ResearchhubOptionCard
-                  description={option.description}
-                  header={option.header}
-                  icon={option.icon}
-                  isActive={index === selected}
-                  isCheckboxSquare={false}
-                  key={index}
-                  newFeature={option.newFeature}
-                  onSelect={(e: SyntheticEvent) => {
-                    e.preventDefault();
-                    setSelected(index);
-                  }}
-                />
-              ))}
-            </div>
+            <div className={css(styles.list)}>{modalOptionCards}</div>
             <div>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  items[selected].onClick ? (
+                  modalOptionItems[modalSelectedItemIndex].onClick ? (
                     <div
-                      onClick={items[selected].onClick}
+                      onClick={modalOptionItems[modalSelectedItemIndex].onClick}
                       className={css(styles.buttonLabel)}
                     >
                       Continue
                     </div>
-                  ) : isNullOrUndefined(items[selected]?.route) ? (
+                  ) : isNullOrUndefined(
+                      modalOptionItems[modalSelectedItemIndex]?.route
+                    ) ? (
                     <div className={css(styles.buttonLabel)}>Continue</div>
                   ) : (
-                    <Link href={items[selected]?.route ?? ""}>
+                    <Link
+                      href={
+                        modalOptionItems[modalSelectedItemIndex]?.route ?? ""
+                      }
+                    >
                       <div className={css(styles.buttonLabel)}>Continue</div>
                     </Link>
                   )
@@ -187,7 +220,7 @@ function NewPostModal({
         )
       }
       closeModal={closeModal}
-      isOpen={isOpen}
+      isOpen={shouldModalStayOpen}
       modalStyle={styles.modalStyle}
       removeDefault={true}
     />
