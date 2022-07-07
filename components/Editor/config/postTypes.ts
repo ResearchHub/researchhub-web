@@ -14,7 +14,7 @@ const postTypes = [{
   group: "contribute",
   icon: icons.starFilled,
 },{
-  label: "Summarize",
+  label: "Summary",
   value: "submit_summary",
   group: "contribute",
   icon: textEditorIcons.bulletedList,
@@ -25,7 +25,7 @@ const postTypes = [{
   group: "request",
   icon: icons.starFilled,
 }, {
-  label: "Summarize",
+  label: "Summary",
   value: "request_summary",  
   group: "request",
   icon: textEditorIcons.bulletedList,

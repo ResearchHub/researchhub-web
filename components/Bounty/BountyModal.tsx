@@ -16,6 +16,7 @@ type Props = {
   closeModal: Function;
   handleBountyAdded: Function;
   addBtnLabel?: string;
+  appliedBounty?: any;
 };
 
 function BountyModal({
@@ -23,10 +24,11 @@ function BountyModal({
     withPreview,
     closeModal,
     handleBountyAdded,
+    appliedBounty,
     addBtnLabel = "Add Bounty",
   }: Props): ReactElement {
 
-    const [bountyAmount, setBountyAmount] = useState(BOUNTY_DEFAULT_AMOUNT);
+    const [bountyAmount, setBountyAmount] = useState(appliedBounty?.grossBountyAmount || BOUNTY_DEFAULT_AMOUNT);
 
     const handleClose = () => {
       closeModal();
@@ -42,7 +44,13 @@ function BountyModal({
         closeModal={handleClose}
         isOpen={isOpen}
         modalStyle={styles.modalStyle}
-        title="Add Bounty"
+        titleStyle={styles.title}
+        title={
+          <>
+            <span className={css(styles.bountyIcon)}>{icons.bountySolid}</span>
+            <span>Add ResearchCoin Bounty</span>
+          </>
+        }
       >
 
         <div className={css(styles.rootContainer)}>
@@ -104,7 +112,9 @@ function BountyModal({
           </div>
 
           <div className={css(styles.addBountyContainer)}>
-
+            {appliedBounty &&
+              <div className={css(styles.removeBountyBtn)}>Remove Bounty</div>
+            }
             <div className={css(styles.addBtnContainer)}>
               <Button
                 label={addBtnLabel}
@@ -148,18 +158,34 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
   },
+  title: {
+    color: colors.ORANGE_DARK(),
+    marginBottom: 25,
+  },
+  bountyIcon: {
+    marginRight: 10,
+
+  },
   modalStyle: {
     maxWidth: 700,
   },
+  removeBountyBtn: {
+    color: colors.RED(),
+    fontSize: 14,
+    fontWeight: 400,
+  },
   addBountyContainer: {
     display: "flex",
-    alignItems: "flex-end",
+    alignItems: "center",
+    justifyContent: "flex-end",
+
   },
   addBtnContainer: {
-    marginLeft: "auto",
+    marginLeft: "15px",
   },
   addButton: {
-    background: colors.ORANGE_DARK(),
+    background: colors.ORANGE(),
+    borderRadius: "50px",
   },
   addButtonLabel: {
     color: colors.BLACK(),
@@ -169,6 +195,8 @@ const styles = StyleSheet.create({
   },
   lineItem: {
     display: "flex",
+    fontSize: 18,
+    lineHeight: "26px",
   },
   lineItemValue: {
     display: "flex",
@@ -193,6 +221,8 @@ const styles = StyleSheet.create({
   },
   netAmountValue: {
     borderTop: "2px solid gray",
+    color: colors.ORANGE_DARK(),
+    fontWeight: 500,
 
   }
 });

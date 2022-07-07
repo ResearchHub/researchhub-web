@@ -22,7 +22,6 @@ import QuillPeerReviewRatingBlock from "../Editor/lib/QuillPeerReviewRatingBlock
 import PostTypeSelector from "~/components/Editor/PostTypeSelector";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import postTypes from "../Editor/config/postTypes";
-import ReactTooltip from "react-tooltip";
 
 class Editor extends Component {
   constructor(props) {
@@ -448,31 +447,11 @@ class Editor extends Component {
             />
           ) : (
             <>
-              <ReactTooltip
-                id="bountyTooltip"
-                effect="solid"
-                place="top"
-                className={css(bountyTooltip.tooltipContainer)}
-                delayShow={500}
-              >
-                <div className={css(bountyTooltip.bodyContainer)}>
-                  <div className={css(bountyTooltip.title)}>
-                    Add ResearchCoin Bounty
-                  </div>
-                  <div className={css(bountyTooltip.desc)}>
-                    <div>• Offer ResearchCoin to the best solution</div>
-                    <div>• Improves chances of quality submissions</div>
-                  </div>
-                </div>
-              </ReactTooltip>
-              <div
-                className={css(styles.bountyBtnContainer)}
-                data-tip={""}
-                data-for="bountyTooltip"
-              >
+              <div className={css(styles.bountyBtnContainer)}>
                 <CreateBountyBtn
-                  onBountyChange={(amountDetails) =>
-                    setBountyAmountDetails(amountDetails)
+                  onBountyChange={
+                    (amountDetails) => null
+                    // setBountyAmountDetails(amountDetails)
                   }
                 />
               </div>
@@ -614,26 +593,6 @@ Editor.formats = [
   "direction",
   "peer-review-rating",
 ];
-
-const bountyTooltip = StyleSheet.create({
-  tooltipContainer: {
-    textAlign: "left",
-    maxWidth: 300,
-    padding: 15,
-  },
-  bodyContainer: {},
-  title: {
-    textAlign: "center",
-    color: "white",
-    fontSize: 16,
-    fontWeight: 500,
-    marginBottom: 8,
-  },
-  desc: {
-    fontSize: 14,
-    lineHeight: "20px",
-  },
-});
 
 const styles = StyleSheet.create({
   reviewCategoryContainer: {

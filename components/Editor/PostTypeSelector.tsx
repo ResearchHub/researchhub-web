@@ -88,11 +88,11 @@ const dropdownStyles = StyleSheet.create({
 
   },
   dropdownGroupTitle: {
-    fontWeight: 600,
+    fontWeight: 500,
     marginBottom: 4,
     marginLeft: 25,
     marginRight: 35,
-    fontSize: 18,
+    fontSize: 16,
   },
   dropdownGroupSubtitle: {
     color: colors.BLACK(0.6),
@@ -113,10 +113,10 @@ const dropdownStyles = StyleSheet.create({
   },
   dropdownOptIcon: {
     marginRight: 10,
-    fontSize: 14,
+    fontSize: 12,
     color: "white",
     borderRadius: "50px",
-    padding: 8,
+    padding: 6,
   },
   dropdownOptIconContribute: {
     background: colors.NEW_BLUE(),
