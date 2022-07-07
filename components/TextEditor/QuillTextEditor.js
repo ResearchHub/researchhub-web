@@ -90,7 +90,7 @@ class Editor extends Component {
     });
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     this.attachQuillRefs();
     if (!prevProps.editing && this.props.editing) {
       !this.state.focus && this.quillRef && this.focusEditor();
@@ -103,27 +103,28 @@ class Editor extends Component {
       });
     }
 
-    if (prevProps.placeholder !== this.props.placeholder) {
+    if (prevState.postType?.value !== this.state.postType?.value) {
       this.quillRef.root.setAttribute(
         "data-placeholder",
-        this.props.placeholder
+        this.state.postType.placeholder
       );
     }
 
-    // if (
-    //   prevProps.postType?.value !== this.props.postType?.value &&
-    //   this.props.postType.value === "submit_review"
-    // ) {
-    //   this.quillRef.editor.insertEmbed(
-    //     0,
-    //     "peer-review-rating",
-    //     {
-    //       rating: 3,
-    //       category: "overall",
-    //     },
-    //     this.state.Quill.sources.USER
-    //   );
-    // }
+    if (
+      prevState.postType?.value !== this.state.postType?.value &&
+      this.state.postType.value === "submit_review"
+    ) {
+      this.quillRef.setContents([]);
+      this.quillRef.editor.insertEmbed(
+        0,
+        "peer-review-rating",
+        {
+          rating: 3,
+          category: "overall",
+        },
+        this.state.Quill.sources.USER
+      );
+    }
   }
 
   addLinkSantizer = () => {
@@ -416,8 +417,6 @@ class Editor extends Component {
       },
       this.state.Quill.sources.USER
     );
-
-    this.props.placeholder = "meow";
   };
 
   renderButtons = (props) => {
@@ -491,7 +490,11 @@ class Editor extends Component {
             )}
           >
             <PostTypeSelector
-              handleSelect={(selectedType) => setSelectedPostType(selectedType)}
+              handleSelect={(selectedType) =>
+                this.setState({
+                  postType: selectedType,
+                })
+              }
             />
 
             {ReactQuill && (
@@ -512,7 +515,7 @@ class Editor extends Component {
                   styles.editSection,
                   this.props.commentStyles && this.props.commentStyles
                 )}
-                placeholder={this.props.placeholder && this.props.placeholder}
+                placeholder={postType.placeholder}
               />
             )}
             {postType.value === "submit_review" && (
@@ -551,7 +554,7 @@ class Editor extends Component {
                   styles.summaryEditorBox,
                   this.props.commentStyles && this.props.commentStyles
                 )}
-                placeholder={this.props.placeholder && this.props.placeholder}
+                placeholder={postType.placeholder}
               />
             )}
             {!this.props.readOnly && this.renderButtons(this.props)}

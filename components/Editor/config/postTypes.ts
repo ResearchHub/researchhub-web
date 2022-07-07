@@ -12,6 +12,7 @@ const postTypes = [{
   label: "Peer review",
   value: "submit_review",  
   group: "contribute",
+  placeholder: "What are your overall impressions of this paper?",
   icon: icons.starFilled,
 },{
   label: "Summary",
