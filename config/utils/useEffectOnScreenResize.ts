@@ -1,8 +1,7 @@
 import { useEffect } from "react";
-import { isEmpty } from "./nullchecks";
 
 type Args = {
-  onResize: (newMediaWidth: number) => void;
+  onResize: (getDisplayWidth: number) => void;
 };
 
 export const getCurrMediaWidth = (): number =>
