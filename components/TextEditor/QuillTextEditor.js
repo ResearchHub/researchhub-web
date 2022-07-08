@@ -423,7 +423,7 @@ class Editor extends Component {
         rating: 3,
         category: reviewCategory.value,
       },
-      this.state.Quill.sources.USER
+      this.state.Quill.sources.SILENT
     );
 
     this.quillRef.root.setAttribute(

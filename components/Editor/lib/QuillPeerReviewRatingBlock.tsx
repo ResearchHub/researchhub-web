@@ -1,6 +1,7 @@
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 import reviewCategories from "../config/reviewCategories";
+import { genClientId } from "~/config/utils/id";
 
 let QuillPeerReviewRatingBlock = {};
 if (process.browser) {
@@ -11,11 +12,9 @@ if (process.browser) {
     
     static create(value) {
       const node = super.create();
-      this._rating = value.rating;
-      this._category = value.category;
-      // node.setAttribute('contenteditable', false);
+      node.setAttribute('data-rating', value.rating);
+      const categoryObj = reviewCategories[value.category];
       
-      const categoryObj = reviewCategories[this._category];
       if (categoryObj.isDefault) {
         // For the default category "overall rating", we want
         // to prevent the block being deleted.
@@ -23,7 +22,8 @@ if (process.browser) {
       }
 
       const _buildHTML = ({ withPlaceholder = true }) => {
-        const starInput = <StarInput value={this._rating} readOnly={false} />
+        const rating = node.getAttribute('data-rating');
+        const starInput = <StarInput value={rating} readOnly={false} />
         const starInputAsHtml = ReactDOMServer.renderToString(starInput)      
 
         return `
@@ -38,15 +38,19 @@ if (process.browser) {
         const starEl = e.target.closest(".starRating");
         if (starEl) {
           const newRating = starEl.getAttribute('data-rating');
-          this._rating = newRating;
+          node.setAttribute("data-rating", newRating);
           const html = _buildHTML({});
           node.innerHTML = html;
         }
       });
 
-
       const html = _buildHTML({});
       node.innerHTML = html;
+
+      node.setAttribute("id", `id-${genClientId()}`)
+      node.setAttribute("data-category", value.category);
+      node.setAttribute("data-rating", value.rating);
+
       return node;      
     }
 
@@ -60,9 +64,12 @@ if (process.browser) {
     }    
   
     static value(node) {
+      const category = node.getAttribute("data-category");
+      const rating = node.getAttribute("data-rating");
+
       return {
-        rating: parseInt(this._rating),
-        category: this._category,
+        rating: parseInt(rating),
+        category: category,
       };
     }
   }
