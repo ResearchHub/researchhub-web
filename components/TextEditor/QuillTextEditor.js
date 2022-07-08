@@ -22,6 +22,7 @@ import QuillPeerReviewRatingBlock from "../Editor/lib/QuillPeerReviewRatingBlock
 import PostTypeSelector from "~/components/Editor/PostTypeSelector";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import postTypes from "../Editor/config/postTypes";
+import reviewCategories from "../Editor/config/reviewCategories";
 
 class Editor extends Component {
   constructor(props) {
@@ -106,32 +107,32 @@ class Editor extends Component {
       });
     }
 
-    if (prevState.postType?.value !== this.state.postType?.value) {
-      this.quillRef.root.setAttribute(
-        "data-placeholder",
-        this.state.postType.placeholder
-      );
-    }
+    // if (prevState.postType?.value !== this.state.postType?.value) {
+    //   this.quillRef.root.setAttribute(
+    //     "data-placeholder",
+    //     this.state.postType.placeholder
+    //   );
+    // }
 
-    if (
-      prevState.postType?.value !== this.state.postType?.value &&
-      this.state.postType.value === "submit_review"
-    ) {
-      this.quillRef.setContents([]);
-      this.quillRef.insertEmbed(
-        0,
-        "peer-review-rating",
-        {
-          rating: 3,
-          category: "overall",
-        },
-        this.state.Quill.sources.USER
-      );
-      this.focusEditor();
+    // if (
+    //   prevState.postType?.value !== this.state.postType?.value &&
+    //   this.state.postType.value === "submit_review"
+    // ) {
+    //   this.quillRef.setContents([]);
+    //   this.quillRef.insertEmbed(
+    //     0,
+    //     "peer-review-rating",
+    //     {
+    //       rating: 3,
+    //       category: "overall",
+    //     },
+    //     this.state.Quill.sources.USER
+    //   );
+    //   this.focusEditor();
 
-      // Force placeholder to show
-      this.quillRef.root.classList.add("ql-blank");
-    }
+    //   // Force placeholder to show
+    //   this.quillRef.root.classList.add("ql-blank");
+    // }
   }
 
   addLinkSantizer = () => {
@@ -414,23 +415,95 @@ class Editor extends Component {
     );
   };
 
-  handleInsertReviewCategory = (reviewCategory) => {
+  insertReviewCategory = ({ category, index }) => {
     let range = this.quillRef.getSelection(true);
+    const insertAtIndex = index ?? range.index;
+
     this.quillRef.insertEmbed(
-      range.index,
+      insertAtIndex,
       "peer-review-rating",
       {
         rating: 3,
-        category: reviewCategory.value,
+        category: category.value,
       },
       this.state.Quill.sources.SILENT
     );
+  };
 
-    this.quillRef.root.setAttribute(
-      "data-placeholder",
-      reviewCategory.description
-    );
+  forcePlaceholderToShow = ({ placeholderText }) => {
+    if (placeholderText) {
+      this.quillRef.root.setAttribute("data-placeholder", placeholderText);
+    }
     this.quillRef.root.classList.add("ql-blank");
+  };
+
+  trimEditorContents = () => {
+    const deltas = this.quillRef.getContents()?.ops || [];
+
+    if (deltas.length > 0) {
+      const firstDelta = deltas[0];
+      const isFirstDeltaString = typeof firstDelta[0]?.insert;
+
+      if (isFirstDeltaString) {
+        let trimmedStr = firstDelta.insert.trimStart();
+
+        if (deltas.length === 1) {
+          trimmedStr = trimmedStr.trimEnd();
+        }
+
+        deltas[0].insert = trimmedStr;
+        this.quillRef.setContents(deltas);
+      }
+    }
+
+    let hasContent = false;
+    for (let i = 0; i < deltas.length; i++) {
+      console.log(deltas[i]);
+      if (
+        typeof deltas[i].insert === "object" ||
+        (typeof deltas[i].insert === "string" && deltas[i].insert.length > 0)
+      ) {
+        hasContent = true;
+        break;
+      }
+    }
+
+    return {
+      hasContent,
+    };
+  };
+
+  handlePostTypeSelect = (selectedType) => {
+    const currentType = this.state.postType;
+
+    if (selectedType.group === "contribute") {
+      const isPeerReview =
+        selectedType.value === "submit_review" &&
+        currentType.value !== selectedType.value;
+
+      if (isPeerReview) {
+        const trimDetails = this.trimEditorContents();
+        this.insertReviewCategory({
+          category: reviewCategories.overall,
+          index: 0,
+        });
+
+        if (!trimDetails.hasContent) {
+          this.forcePlaceholderToShow({
+            placeholderText: selectedType.placeholder,
+          });
+        }
+      } else {
+        const editorWithoutPeerReviewBlocks = this.quillRef
+          .getContents([])
+          .ops.filter((op) => !op.insert["peer-review-rating"]);
+        this.quillRef.setContents(editorWithoutPeerReviewBlocks);
+      }
+    }
+
+    this.setState({
+      postType: selectedType,
+    });
   };
 
   renderButtons = (props) => {
@@ -505,9 +578,7 @@ class Editor extends Component {
           >
             <PostTypeSelector
               handleSelect={(selectedType) =>
-                this.setState({
-                  postType: selectedType,
-                })
+                this.handlePostTypeSelect(selectedType)
               }
             />
 
@@ -535,7 +606,12 @@ class Editor extends Component {
             {postType.value === "submit_review" && (
               <div className={css(styles.reviewCategoryContainer)}>
                 <ReviewCategorySelector
-                  handleSelect={this.handleInsertReviewCategory}
+                  handleSelect={(category) => {
+                    this.insertReviewCategory({ category });
+                    this.forcePlaceholderToShow({
+                      placeholderText: category.description,
+                    });
+                  }}
                 />
               </div>
             )}
