@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import BaseModal from "../Modals/BaseModal";
 import ReactTooltip from "react-tooltip";
@@ -9,6 +9,8 @@ import colors from "~/config/themes/colors";
 
 const BOUNTY_DEFAULT_AMOUNT = 1000;
 const BOUNTY_RH_PERCENTAGE = 7;
+const MIN_RSC_REQUIRED = 50;
+const MAX_RSC_REQUIRED = 1000000;
 
 type Props = {
   isOpen: Boolean;
@@ -17,7 +19,6 @@ type Props = {
   handleBountyAdded: Function;
   removeBounty: Function;
   addBtnLabel?: string;
-  appliedBounty?: any;
 };
 
 function BountyModal({
@@ -25,12 +26,17 @@ function BountyModal({
     withPreview,
     closeModal,
     handleBountyAdded,
-    appliedBounty,
     removeBounty,
     addBtnLabel = "Add Bounty",
   }: Props): ReactElement {
 
-    const [bountyAmount, setBountyAmount] = useState(appliedBounty?.grossBountyAmount || BOUNTY_DEFAULT_AMOUNT);
+    useEffect(() => {
+      ReactTooltip.rebuild();
+    });
+
+    const [bountyAmount, setBountyAmount] = useState(BOUNTY_DEFAULT_AMOUNT);
+    const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
+    const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
 
     const handleClose = () => {
       closeModal();
@@ -38,6 +44,28 @@ function BountyModal({
 
     const handleBountyInputChange = (event) => {
       setBountyAmount(event.target.value);
+      if (event.target.value < MIN_RSC_REQUIRED) {
+        setHasMinRscAlert(true);
+        setHasMaxRscAlert(false);
+      }
+      else if (event.target.value > MAX_RSC_REQUIRED) {
+        setHasMaxRscAlert(true);
+        setHasMinRscAlert(false);
+      }
+      else {
+        setHasMinRscAlert(false);
+        setHasMaxRscAlert(false);
+      }
+    }
+
+    const handleAddBounty = () => {
+      if (!hasMinRscAlert) {
+        handleBountyAdded({
+          grossBountyAmount: bountyAmount,
+          netBountyAmount: bountyAmount - researchHubAmount,
+        })
+        closeModal();
+      } 
     }
 
     const researchHubAmount = parseInt((BOUNTY_RH_PERCENTAGE/100 * bountyAmount).toFixed(0));
@@ -50,6 +78,31 @@ function BountyModal({
         titleStyle={styles.title}
         title={`Add ResearchCoin Bounty`}
       >
+        <ReactTooltip
+          id="commission"
+          effect="solid"
+          className={css(bountyTooltip.tooltipContainer)}
+          delayShow={150}
+        >
+          <div className={css(bountyTooltip.bodyContainer)}>
+            <div className={css(bountyTooltip.desc)}>
+              <div>• 2% of bounty amount will be used to support the ResearchHub DAO</div>
+              <div>• 5% of bounty amount will be paid to ResearchHub</div>
+            </div>
+          </div>
+        </ReactTooltip>
+        <ReactTooltip
+          id="net"
+          effect="solid"
+          className={css(bountyTooltip.tooltipContainer)}
+          delayShow={150}
+        >
+          <div className={css(bountyTooltip.bodyContainer)}>
+            <div className={css(bountyTooltip.desc)}>
+              Actual amount bounty winner will receive
+            </div>
+          </div>
+        </ReactTooltip>
 
         <div className={css(styles.rootContainer)}>
           <div className={css(styles.values)}>
@@ -60,24 +113,27 @@ function BountyModal({
                 </div>
                 <div className={css(styles.lineItemValue, styles.offeringValue)}>
                   <span className={css(styles.valueNumber, styles.valueInInput)}>
-                    <input className={css(styles.input)} type="number" onChange={handleBountyInputChange} value={bountyAmount} />
+                    <input 
+                      className={css(styles.input)}
+                      type="number"
+                      onChange={handleBountyInputChange}
+                      value={bountyAmount}
+                    />
                   </span>
                   <span className={css(styles.rscText)}>RSC</span>
                 </div>
               </div>
 
               <div className={css(styles.lineItem, styles.platformFeeLine)}>
-                <ReactTooltip
-                  effect="solid"
-                  html={true}
-                />                
-                <div className={css(styles.lineItemText)} data-tip={`
-                  <div style="text-align: left;">
-                    • 5% of awarded amount will be paid to Research Hub. <br/>
-                    • 2% of awarded amount will be paid to the Research Hub community.
-                  </div>
-                `}>
-                  Research Hub Platform Fee ({BOUNTY_RH_PERCENTAGE}%)
+                <div
+                  className={css(styles.lineItemText)}
+                >
+                  Research Hub Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
+                  <span
+                    className={css(styles.tooltipIcon)}
+                    data-tip={""}
+                    data-for="commission">{icons["info-circle-light"]}
+                  </span>
                 </div>
                 <div className={css(styles.lineItemValue)}>
                   <span className={css(styles.valueNumber)}>
@@ -91,8 +147,14 @@ function BountyModal({
                 <ReactTooltip
                   effect="solid"
                 />
-                <div className={css(styles.lineItemText)} data-tip={"Actual amount bounty winner will receive"}>
+                <div className={css(styles.lineItemText)}>
                   Net Bounty Award
+                  <span
+                    className={css(styles.tooltipIcon)}
+                    data-tip={""}
+                    data-for="net"
+                  >{icons["info-circle-light"]}
+                  </span>                  
                 </div>
                 <div className={css(styles.lineItemValue, styles.netAmountValue)}>
                   <span className={css(styles.valueNumber)}>
@@ -116,32 +178,71 @@ function BountyModal({
           </div>
 
           <div className={css(styles.addBountyContainer)}>
-            {appliedBounty &&
-              <div className={css(styles.removeBountyBtn)} onClick={() => {
-                removeBounty();
-                closeModal();
-              }}>Remove Bounty</div>
-            }
-            <div className={css(styles.addBtnContainer)}>
-              <Button
-                label={addBtnLabel}
-                customButtonStyle={styles.addButton}
-                customLabelStyle={styles.addButtonLabel}
-                size={`small`}
-                onClick={() => {
-                  handleBountyAdded({
-                    grossBountyAmount: bountyAmount,
-                    netBountyAmount: bountyAmount - researchHubAmount,
-                  })
-                  closeModal();
-                }}
-              />
+            <div className={css(styles.buttonRow)}>
+              {hasMinRscAlert
+                ? (
+                  <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                    Minimum bounty must be greater than 50 RSC
+                  </div>
+                ) : hasMaxRscAlert ? (
+                  <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                    Bounty amount cannot exceed 1,000,000 RSC
+                  </div>
+                ) : withPreview ? (
+                  <div className={css(alertStyles.alert, alertStyles.previewAlert)}>
+                    You will have a chance to review and cancel before bounty is created
+                  </div>
+                ) : null
+              }
+              <div className={css(styles.addBtnContainer)}>
+                <Button
+                  label={addBtnLabel}
+                  customButtonStyle={styles.addButton}
+                  customLabelStyle={styles.addButtonLabel}
+                  size={`small`}
+                  disabled={hasMaxRscAlert || hasMinRscAlert}
+                  onClick={handleAddBounty}
+                />
+              </div>
             </div>
           </div>
         </div>
       </BaseModal>
     )
 }
+
+const bountyTooltip = StyleSheet.create({
+  tooltipContainer: {
+    textAlign: "left",
+    maxWidth: 400,
+    padding: 12,
+  },
+  bodyContainer: {},
+  title: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  desc: {
+    fontSize: 13,
+    lineHeight: "20px",
+  },
+});
+
+const alertStyles = StyleSheet.create({
+  alert: {
+    fontSize: 14,
+    textAlign: "left",
+    color: colors.DARKER_GREY()
+  }, 
+  rscAlert: {
+    color: colors.RED()
+  },
+  previewAlert: {
+    
+  }
+})
 
 const infoSectionStyles = StyleSheet.create({
   bountyInfo: {
@@ -169,7 +270,7 @@ const infoSectionStyles = StyleSheet.create({
     marginRight: 10,
   },
   infoText: {
-
+    
   },
 });
 
@@ -197,10 +298,17 @@ const styles = StyleSheet.create({
       "margin": 0,
     }
   },
+  tooltipIcon: {
+    fontSize: 16,
+    color: colors.DARKER_GREY(),
+    marginLeft: 5,
+    cursor: "pointer",
+  },  
   rscText: {
     fontWeight: 500,
     // alignSelf: "flex-end",
     marginLeft: "auto",
+    color: colors.BLACK(),
   },
   bountyIcon: {
     marginRight: 10,
@@ -227,15 +335,25 @@ const styles = StyleSheet.create({
     paddingRight: 30,
 
   },
-  addBtnContainer: {
-    marginLeft: "15px",
+  buttonRow: {
+    // marginLeft: "15px",
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   addButton: {
-    background: colors.ORANGE(),
+    background: colors.ORANGE_LIGHT(),
     borderRadius: "4px",
+    width: 126,
+    boxSizing: "border-box",
+  },
+  addBtnContainer: {
+    
   },
   addButtonLabel: {
     color: colors.BLACK(),
+    fontWeight: 500,
   },
   values: {
     marginBottom: 25,
@@ -254,10 +372,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   lineItemText: {
-
+    display: "flex",
+    alignItems: "center",
   },
   offeringLine: {
-    marginBottom: 15,
+    marginBottom: 7,
   },
   offeringText: {
     fontWeight: 500,
@@ -275,14 +394,16 @@ const styles = StyleSheet.create({
   },
   platformFeeLine: {
     color: colors.DARKER_GREY(),
-    marginBottom: 5,
+    marginBottom: 7,
   },
   netAmountLine: {
-    paddingTop: 5,
+    paddingTop: 7,
     borderTop: `2px solid rgb(229 229 230)`,
+    // color: colors.ORANGE_DARK(),
+    fontWeight: 500,
   },
   netAmountValue: {
-    color: colors.ORANGE_DARK(),
+    // color: colors.ORANGE_DARK(),
     fontWeight: 500,
 
   }
