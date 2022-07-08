@@ -72,6 +72,7 @@ const dropdownStyles = StyleSheet.create({
     border: `1px solid ${colors.GREY()}`,
     borderRadius: 4,
     marginTop: 5,
+    width: 400,
     boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   dropdownGroupContribute: {
@@ -85,7 +86,7 @@ const dropdownStyles = StyleSheet.create({
     display: "flex",
   },
   dropdownGroup: {
-
+    width: "50%"
   },
   dropdownGroupTitle: {
     fontWeight: 500,
@@ -95,7 +96,7 @@ const dropdownStyles = StyleSheet.create({
     fontSize: 16,
   },
   dropdownGroupSubtitle: {
-    color: colors.BLACK(0.6),
+    color: colors.BLACK(0.8),
     fontSize: 14,
     marginLeft: 25,
     marginRight: 35,
@@ -115,7 +116,7 @@ const dropdownStyles = StyleSheet.create({
     marginRight: 10,
     fontSize: 12,
     color: "white",
-    borderRadius: "50px",
+    borderRadius: "4px",
     padding: 6,
   },
   dropdownOptIconContribute: {
