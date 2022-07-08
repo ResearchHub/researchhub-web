@@ -9,6 +9,7 @@ import icons from "~/config/themes/icons";
 type Props = {
   bannerKey: string;
   content: ReactNode;
+  contentStyleOverride?: Object;
   exitButton?: ReactNode;
   exitButtonPositionOverride?: Object;
 };
@@ -16,6 +17,7 @@ type Props = {
 export default function ExitableBanner({
   content,
   bannerKey,
+  contentStyleOverride,
   exitButton,
   exitButtonPositionOverride,
 }: Props): ReactElement | null {
@@ -30,28 +32,36 @@ export default function ExitableBanner({
   }
 
   return (
-    <div className={css(styles.exitableBanner)}>
-      <div className={css(styles.contentWrap)}>{content}</div>
-      <div
-        className={css(styles.exitButtonWrap)}
-        onClick={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          event.stopPropagation();
-          storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
-          setIsExited(true);
-        }}
-        role="button"
-        style={exitButtonPositionOverride}
-      >
-        {exitButton ?? (
-          <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
-        )}
+    <div className={css(styles.exitableBannerContainer)}>
+      <div className={css(styles.exitableBanner)} style={contentStyleOverride}>
+        <div className={css(styles.contentWrap)}>{content}</div>
+        <div
+          className={css(styles.exitButtonWrap)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            event.stopPropagation();
+            storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
+            setIsExited(true);
+          }}
+          role="button"
+          style={exitButtonPositionOverride}
+        >
+          {exitButton ?? (
+            <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
+  exitableBannerContainer: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  },
   exitableBanner: {
     boxSizing: "border-box",
     display: "flex",
