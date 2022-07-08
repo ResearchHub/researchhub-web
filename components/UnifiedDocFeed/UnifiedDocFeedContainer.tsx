@@ -222,6 +222,7 @@ function UnifiedDocFeedContainer({
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       <ExitableBanner
+        bannerKey="SciCon2022"
         content={
           <a
             className={css(styles.bannerContainer)}
@@ -242,7 +243,7 @@ function UnifiedDocFeedContainer({
             />
           </a>
         }
-        bannerKey="SciCon"
+        contentStyleOverride={{ maxWidth: 1500 }}
       />
 
       {isHomePage || isEmpty(hub) ? (
