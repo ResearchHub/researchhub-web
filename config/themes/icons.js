@@ -129,6 +129,7 @@ import {
   faTrashAlt,
   faBadgeCheck as faBadgeCheckAlt,
   faBookOpen as faBookOpenAlt,
+  faInfoCircle as faInfoCircleLight,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -247,6 +248,7 @@ library.add(
   faImage,
   faImagePolaroid,
   faInfoCircle,
+  faInfoCircleLight,
   faItalic,
   faLink,
   faLinkedinIn,
@@ -321,6 +323,7 @@ library.add(
 
 const icons = {
   "info-circle": <FontAwesomeIcon icon={faInfoCircle} />,
+  "info-circle-light": <FontAwesomeIcon icon={faInfoCircleLight} />,
   activtyFeed: <FontAwesomeIcon icon={faRss} />,
   angleDown: <FontAwesomeIcon icon={faAngleDown} />,
   angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,

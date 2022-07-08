@@ -29,7 +29,7 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
             <div>• Improves chances of quality submissions</div>
           </div>
         </div>
-      </ReactTooltip>      
+      </ReactTooltip>
       <BountyModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -37,7 +37,6 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
           setBountyAmountDetails(amountDetails);
           onBountyChange(amountDetails);
         }}
-        appliedBounty={bountyAmountDetails}
         withPreview={withPreview}
         removeBounty={() => setBountyAmountDetails(null)}
       />
@@ -47,11 +46,6 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
             className={css(styles.bountyPreview)}
           >
             <div className={css(styles.bountyAmount)}>
-              {/* <img
-                className={css(styles.coinIcon)}
-                src={"/static/icons/coin-filled.png"}
-                alt="RSC Coin"
-              />               */}
               <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
               <MedalIcon />
               <span className={css(styles.bountyAmountText)}>
