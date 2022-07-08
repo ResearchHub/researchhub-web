@@ -26,6 +26,7 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
+import ExitableBanner from "../Banner/ExitableBanner";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -220,12 +221,30 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      {!hasSubscribed ? (
-        <div>
-          {/* @ts-ignore */}
-          <CreateFeedBanner loggedIn={loggedIn} />
-        </div>
-      ) : null}
+      <ExitableBanner
+        bannerKey="SciCon2022"
+        content={
+          <a
+            className={css(styles.bannerContainer)}
+            href="https://researchhub.com/scicon2022"
+            target="__blank"
+          >
+            <img
+              style={{
+                maxHeight: "100%",
+                maxWidth: "1500px",
+                objectFit: "contain",
+                width: "100%",
+              }}
+              src="/static/banner/sci-con-banner-small-screen.png"
+              srcSet={`
+                /static/banner/sci-con-banner-large-screen.jpg ${breakpoints.mobile.int}w, /static/banner/sci-con-banner-small-screen.png ${breakpoints.small.int}w
+               `}
+            />
+          </a>
+        }
+        contentStyleOverride={{ maxWidth: 1500 }}
+      />
 
       {isHomePage || isEmpty(hub) ? (
         <div className={css(styles.title) + " clamp2"}>
@@ -293,6 +312,15 @@ const mapStateToProps = (state: any) => ({
 export default connect(mapStateToProps)(UnifiedDocFeedContainer);
 
 const styles = StyleSheet.create({
+  bannerContainer: {
+    minWidth: "100%",
+    overflow: "hidden",
+    [`@media only screen and (min-width: ${breakpoints.mobile.str})`]: {
+      minWidth: "100%",
+      maxHeight: "300px",
+      marginBottom: 16,
+    },
+  },
   unifiedDocFeedContainer: {
     display: "flex",
     flexDirection: "column",
@@ -353,14 +381,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-  },
-  bannerContainer: {
-    marginBottom: 16,
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
-      padding: 0,
-      width: "100%",
-    },
   },
   feedPosts: {
     position: "relative",
