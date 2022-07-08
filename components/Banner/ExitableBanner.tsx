@@ -80,17 +80,19 @@ const styles = StyleSheet.create({
   exitButtonDefault: {
     color: "#fff",
     fontWeight: 500,
-    height: 16,
-    width: 16,
+    fontSize: 16,
+    [`@media only screen and (min-width: ${breakpoints.mobile.str})`]: {
+      fontSize: 24,
+    },
   },
   exitButtonWrap: {
     cursor: "pointer",
     position: "absolute",
     right: 8,
-    top: 8,
+    top: 4,
     [`@media only screen and (min-width: ${breakpoints.mobile.str})`]: {
       right: 16,
-      top: 16,
+      top: 12,
     },
   },
 });
