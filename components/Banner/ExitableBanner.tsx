@@ -67,13 +67,15 @@ const styles = StyleSheet.create({
     margin: "auto",
   },
   exitButtonDefault: {
-    color: 0,
+    color: "#fff",
+    fontWeight: 500,
     height: 16,
     width: 16,
   },
   exitButtonWrap: {
-    left: 16,
-    position: "relative",
+    cursor: "pointer",
+    position: "absolute",
+    right: 16,
     top: 16,
   },
 });
