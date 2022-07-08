@@ -5,6 +5,7 @@ import {
 } from "~/config/utils/storeToCookieOrLocalStorage";
 import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   bannerKey: string;
@@ -85,7 +86,11 @@ const styles = StyleSheet.create({
   exitButtonWrap: {
     cursor: "pointer",
     position: "absolute",
-    right: 16,
-    top: 16,
+    right: 8,
+    top: 8,
+    [`@media only screen and (min-width: ${breakpoints.mobile.str})`]: {
+      right: 16,
+      top: 16,
+    },
   },
 });
