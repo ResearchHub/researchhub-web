@@ -68,7 +68,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   const [suggestedHubs, setSuggestedHubs] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const isPost = documentType === "post";
+  const isBeDocTypePost = ["post", "question"].includes(documentType);
 
   // From ./PaperUploadInfo.js
   const getHubs = () => {
@@ -133,7 +133,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
       const { id, slug } = response;
-      router.push(`/${isPost ? "post" : "hypothesis"}/${id}/${slug}`);
+      router.push(`/${isBeDocTypePost ? "post" : "hypothesis"}/${id}/${slug}`);
     };
   };
 
@@ -141,7 +141,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
     const params = {
       admins: null,
       created_by: user.id,
-      document_type: isPost ? "DISCUSSION" : "HYPOTHESIS",
+      document_type: isBeDocTypePost ? "DISCUSSION" : "HYPOTHESIS",
       editors: null,
       full_src: mutableFormFields.text,
       /* @ts-ignore */
@@ -154,7 +154,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
     };
 
     return fetch(
-      isPost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({}),
+      isBeDocTypePost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({}),
       API.POST_CONFIG(params)
     )
       .then(Helpers.checkStatus)
@@ -241,7 +241,13 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
             isWhite={false}
-            label={isPost ? "Post" : "Create Meta-Study"}
+            label={
+              documentType === "question"
+                ? "Ask Question"
+                : documentType === "post"
+                ? "Post"
+                : "Create Meta-Study"
+            }
             onClick={handlePost}
           />
         </div>

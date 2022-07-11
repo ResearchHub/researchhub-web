@@ -40,9 +40,11 @@ export default function NewPostButton({
   const router = useRouter();
   const isOnMobileScreen = getIsOnMobileScreenSize();
   const currentUser = getCurrentUser();
+  // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
   const shouldOpenPopover =
     !isOnMobileScreen &&
     buttonValues?.isOpen &&
+    !buttonValues?.isQuestionType &&
     isEmpty(buttonValues.wizardBodyType);
 
   const popoverOptionCards = filterNull(getModalOptionItems(currentUser)).map(
@@ -83,6 +85,13 @@ export default function NewPostButton({
               router.push("/hypothesis/create");
               setButtonValues({
                 ...DEFAULT_POST_BUTTON_VALUES,
+              });
+              break;
+            case "question":
+              setButtonValues({
+                ...DEFAULT_POST_BUTTON_VALUES,
+                isOpen: true,
+                isQuestionType: true,
               });
               break;
             default:
