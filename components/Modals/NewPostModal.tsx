@@ -150,7 +150,7 @@ function NewPostModal({
           ? "paperWizard"
           : null
       ),
-    [wizardBodyType]
+    [isQuestionType, wizardBodyType]
   );
 
   const closeModal = (event?: SyntheticEvent): void => {
