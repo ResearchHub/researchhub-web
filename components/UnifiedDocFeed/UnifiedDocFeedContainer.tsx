@@ -27,6 +27,7 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import ExitableBanner from "../Banner/ExitableBanner";
+import DesktopOnly from "../DesktopOnly";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -221,30 +222,32 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <ExitableBanner
-        bannerKey="SciCon2022"
-        content={
-          <a
-            className={css(styles.bannerContainer)}
-            href="https://researchhub.com/scicon2022"
-            target="__blank"
-          >
-            <img
-              style={{
-                maxHeight: "100%",
-                maxWidth: "1500px",
-                objectFit: "contain",
-                width: "100%",
-              }}
-              src="/static/banner/sci-con-banner-small-screen.png"
-              srcSet={`
+      <DesktopOnly>
+        <ExitableBanner
+          bannerKey="SciCon2022"
+          content={
+            <a
+              className={css(styles.bannerContainer)}
+              href="https://researchhub.com/scicon2022?utm_campaign=scicon2022&utm_medium=banner"
+              target="__blank"
+            >
+              <img
+                style={{
+                  maxHeight: "100%",
+                  maxWidth: "1500px",
+                  objectFit: "contain",
+                  width: "100%",
+                }}
+                src="/static/banner/sci-con-banner-small-screen.png"
+                srcSet={`
                 /static/banner/sci-con-banner-large-screen.jpg ${breakpoints.mobile.int}w, /static/banner/sci-con-banner-small-screen.png ${breakpoints.small.int}w
-               `}
-            />
-          </a>
-        }
-        contentStyleOverride={{ maxWidth: 1500 }}
-      />
+                `}
+              />
+            </a>
+          }
+          contentStyleOverride={{ maxWidth: 1500 }}
+        />
+      </DesktopOnly>
 
       {isHomePage || isEmpty(hub) ? (
         <div className={css(styles.title) + " clamp2"}>
