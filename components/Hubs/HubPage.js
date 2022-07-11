@@ -548,7 +548,7 @@ class HubPage extends Component {
               content={
                 <a
                   className={css(styles.bannerContainer)}
-                  href="https://researchhub.com/scicon2022"
+                  href="https://researchhub.com/scicon2022?utm_campaign=scicon2022&utm_medium=banner"
                   target="__blank"
                 >
                   <img
