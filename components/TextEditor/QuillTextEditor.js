@@ -501,6 +501,8 @@ class Editor extends Component {
   };
 
   renderButtons = (props) => {
+    const isRequestMode = this.state.postType?.group === "request";
+
     return (
       <div className={css(styles.postButtonContainer)}>
         {/* {props.children && (
@@ -522,7 +524,10 @@ class Editor extends Component {
               onClick={null}
               label={<Loader loading={true} color={"#FFF"} size={20} />}
               size={props.smallToolBar && "med"}
-              customButtonStyle={toolbarStyles.postButtonStyle}
+              customButtonStyle={[
+                toolbarStyles.postButtonStyle,
+                isRequestMode && toolbarStyles.requestButton,
+              ]}
               customLabelStyle={toolbarStyles.postButtonLabel}
             />
           ) : (
@@ -537,9 +542,12 @@ class Editor extends Component {
               </div>
               <FormButton
                 onClick={this.onSubmit}
-                label={props.label || "Post"}
+                label={isRequestMode ? "Request" : "Post"}
                 size={props.smallToolBar && "med"}
-                customButtonStyle={toolbarStyles.postButtonStyle}
+                customButtonStyle={[
+                  toolbarStyles.postButtonStyle,
+                  isRequestMode && toolbarStyles.requestButton,
+                ]}
                 customLabelStyle={toolbarStyles.postButtonLabel}
               />
             </>
@@ -556,18 +564,23 @@ class Editor extends Component {
       this.imageHandler
       // this.linkHandler
     );
+    console.log("postType.group", postType.group === "request");
 
     return (
       <div
-        className={css(styles.editor, this.props.containerStyles)}
+        className={css(
+          styles.editor,
+          this.props.containerStyles,
+          this.state.focus && styles.focus,
+          postType.group === "request" && styles.focusRequestType
+        )}
         key={this.props.uid}
       >
         {this.props.commentEditor ? (
           <div
             className={css(
               styles.commentEditor,
-              this.props.commentEditorStyles && this.props.commentEditorStyles,
-              this.state.focus && styles.focus
+              this.props.commentEditorStyles && this.props.commentEditorStyles
             )}
           >
             <PostTypeSelector
@@ -711,6 +724,10 @@ const styles = StyleSheet.create({
   editor: {
     width: "100%",
     position: "relative",
+    border: `1px solid ${colors.GREY_LINE()}`,
+    padding: "20px 20px 10px 20px",
+    borderRadius: "4px",
+    background: "white",
   },
   summaryEditor: {
     width: "100%",
@@ -726,7 +743,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   editable: {},
-  focus: {},
+  focus: {
+    border: `1px solid ${colors.NEW_BLUE()}`,
+  },
+  focusRequestType: {
+    border: `1px solid ${colors.PURPLE_LIGHT()}`,
+  },
   editSection: {
     minHeight: 75,
     paddingTop: 25,
@@ -861,6 +883,9 @@ const toolbarStyles = StyleSheet.create({
     ":hover": {
       color: colors.BLACK(1),
     },
+  },
+  requestButton: {
+    background: colors.PURPLE_LIGHT(),
   },
   toolbarSummary: {
     borderBottom: "1px solid",

@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 // Components
 import QuillTextEditor from "./QuillTextEditor";
 import PostTypeSelector from "~/components/Editor/PostTypeSelector";
-import { css, StyleSheet } from "aphrodite";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -52,7 +51,6 @@ function TextEditor(props) {
     setMessage,
     showMessage,
     children,
-    label = "Post",
     uid = genClientId(),
   } = props;
 
@@ -106,7 +104,7 @@ function TextEditor(props) {
   }
 
   return (
-    <div className={css(styles.textEditor, isFocused && styles.focused)}>
+    <div>
       {/* <PostTypeSelector
         handleSelect={(selectedType) => setSelectedPostType(selectedType)}
       /> */}
@@ -130,39 +128,20 @@ function TextEditor(props) {
         showDiff={showDiff}
         previousVersion={previousVersion}
         classNames={classNames}
-        // placeholder={selectedPostType.placeholder}
         hideCancelButton={hideCancelButton && hideCancelButton}
         commentStyles={commentStyles && commentStyles}
         smallToolBar={smallToolBar && smallToolBar}
         loading={loading && loading}
         commentEditorStyles={commentEditorStyles && commentEditorStyles}
         editing={editing}
-        focusEditor={focusEditor && focusEditor}
         hasHeader={hasHeader && hasHeader}
         summary={summary && summary}
-        label={label}
-        handleFocus={(isFocused) => {
-          setIsFocused(isFocused);
-        }}
-        // postType={selectedPostType}
       >
         {children}
       </QuillTextEditor>
     </div>
   );
 }
-
-const styles = StyleSheet.create({
-  textEditor: {
-    border: `1px solid ${colors.GREY_LINE()}`,
-    padding: "20px 20px 10px 20px",
-    borderRadius: "4px",
-    background: "white",
-  },
-  focused: {
-    border: `1px solid ${colors.NEW_BLUE()}`,
-  },
-});
 
 TextEditor.propTypes = {
   canEdit: PropTypes.bool,
