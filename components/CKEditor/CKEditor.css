@@ -429,6 +429,10 @@
   box-shadow: none !important;
 }
 
+.ck-focused {
+  box-shadow: none !important;
+}
+
 .eln .ck-content {
   border: none !important;
   line-height: 24px;

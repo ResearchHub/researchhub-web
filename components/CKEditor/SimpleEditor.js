@@ -76,11 +76,7 @@ export default function SimpleEditor({
               data={initialData}
               editor={isBalloonEditor ? SimpleBalloonEditor : SimpleEditor}
               id={id}
-              onFocus={(event, editor) => {
-                debugger;
-              }}
               onChange={(event, editor) => {
-                debugger;
                 onChange(id, editor.getData());
               }}
               onReady={(editor) => {
