@@ -18,6 +18,7 @@ const postTypes = [{
   label: "Summary",
   value: "submit_summary",
   group: "contribute",
+  placeholder: "Contribute a summary of this paper to the community",
   icon: icons.layerGroup,
 },{
   label: "Peer review",

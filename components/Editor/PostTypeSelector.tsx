@@ -4,7 +4,6 @@ import colors from "~/config/themes/colors";
 import icons, { textEditorIcons } from "~/config/themes/icons";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes from "./config/postTypes";
-import ReactTooltip from "react-tooltip";
 
 function PostTypeSelector({ handleSelect }): ReactElement {
 

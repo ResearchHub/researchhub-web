@@ -46,18 +46,12 @@ class Editor extends Component {
   }
 
   componentDidMount = async () => {
-    // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
     import("react-quill").then(async (val) => {
       const MagicUrl = (await import("quill-magic-url")).default;
 
       const Quill = val.default.Quill;
       var icons = val.default.Quill.import("ui/icons");
       icons.video = ReactDOMServer.renderToString(faIcons.video);
-
-      //in case you need to inject an event from outside
-      /* MyCustomTag.onClick = function(){
-           //do something
-       }*/
 
       Quill.register(QuillPeerReviewRatingBlock);
       Quill.register("modules/magicUrl", MagicUrl);
@@ -74,21 +68,6 @@ class Editor extends Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
-          // This line leads to an infinite loop
-          // leaving here temporarily for debugging purposes
-          // this.props.onChange && this.props.onChange(); // calculates the thread height
-
-          // let range = this.quillRef.getSelection(true);
-          // this.quillRef.setSelection(range.index + 2, Quill.sources.SILENT);
-
-          // console.log('this.state', this.state)
-          // console.log('this.quillRef', this.quillRef)
-          // console.log(this.quillRef.editor)
-          // this.quillRef.editor.insertEmbed(
-          //   0, //INDEX_WHERE_YOU_TO_INSERT_THE_CONTENT,
-          //   'my-custom-tag',//THE NAME OF YOUR CUSTOM TAG
-          //   '<span>MY CONTENT</SPAN>'// THE CONTENT YOUR TO INSERT
-          // );
         }
       );
     });
@@ -106,33 +85,6 @@ class Editor extends Component {
         editValue: this.props.value,
       });
     }
-
-    // if (prevState.postType?.value !== this.state.postType?.value) {
-    //   this.quillRef.root.setAttribute(
-    //     "data-placeholder",
-    //     this.state.postType.placeholder
-    //   );
-    // }
-
-    // if (
-    //   prevState.postType?.value !== this.state.postType?.value &&
-    //   this.state.postType.value === "submit_review"
-    // ) {
-    //   this.quillRef.setContents([]);
-    //   this.quillRef.insertEmbed(
-    //     0,
-    //     "peer-review-rating",
-    //     {
-    //       rating: 3,
-    //       category: "overall",
-    //     },
-    //     this.state.Quill.sources.USER
-    //   );
-    //   this.focusEditor();
-
-    //   // Force placeholder to show
-    //   this.quillRef.root.classList.add("ql-blank");
-    // }
   }
 
   addLinkSantizer = () => {
@@ -241,6 +193,14 @@ class Editor extends Component {
 
   onEditorChange = (value, delta, source, editor) => {
     const editorContents = editor.getContents();
+    const lastDelta = editorContents.ops[editorContents.ops.length - 1];
+
+    if (lastDelta.insert === "\n" || editor.getText().length === 0) {
+      this.forcePlaceholderToShow({
+        placeholderText: this.state.postType.placeholder,
+      });
+    }
+
     if (this.props.editing) {
       return this.setState(
         {
@@ -450,7 +410,6 @@ class Editor extends Component {
 
     let hasContent = false;
     for (let i = 0; i < deltas.length; i++) {
-      console.log(deltas[i]);
       if (
         typeof deltas[i].insert === "object" ||
         (typeof deltas[i].insert === "string" && deltas[i].insert.length > 0)
@@ -510,19 +469,6 @@ class Editor extends Component {
 
     return (
       <div className={css(styles.postButtonContainer)}>
-        {/* {props.children && (
-          <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
-        )}
-        <div className={css(toolbarStyles.buttonRow)}>
-          {!props.hideButton && !props.hideCancelButton && (
-            <div
-              onClick={this.onCancel}
-              className={css(toolbarStyles.cancelButton)}
-            >
-              Cancel
-            </div>
-          )}
-          <span className={css(toolbarStyles.divider)} /> */}
         {!props.hideButton &&
           (props.loading ? (
             <FormButton
@@ -569,7 +515,6 @@ class Editor extends Component {
       this.imageHandler
       // this.linkHandler
     );
-    console.log("postType.group", postType.group === "request");
 
     return (
       <div
@@ -891,6 +836,10 @@ const toolbarStyles = StyleSheet.create({
   },
   requestButton: {
     background: colors.PURPLE_LIGHT(),
+    ":hover": {
+      opacity: 0.9,
+      background: colors.PURPLE_LIGHT(),
+    },
   },
   toolbarSummary: {
     borderBottom: "1px solid",
