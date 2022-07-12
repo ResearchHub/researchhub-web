@@ -19,8 +19,8 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
         {Object.values(reviewCategories).filter(cat => !cat.isDefault).map(cat => (
           <div className={css(styles.dropdownOpt)} onClick={() => _handleSelect(cat)}>
             <div className={css(styles.dropdownOptLabel)}>
-              <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}{` `}</span>
-              {cat.label}
+              <span className={css(styles.plusIcon)}>{icons.plus}{` `}</span>
+              <span className={css(styles.catText)}>{cat.label}</span>
             </div>
             <div className={css(styles.dropdownOptDesc)}>{cat.description}</div>
           </div>
@@ -32,7 +32,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
   const renderTrigger = () => {
     return (
       <div className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)}>
-        <span className={css(styles.plusIcon)}>{icons.plusSquare}</span>
+        <span className={css(styles.plusIcon)}>{icons.plus}</span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
       </div>
     )
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
     position: "relative"
   },
   plusIcon: {
-    fontSize: 20,
+    fontSize: 15,
   },
   trigger: {
     userSelect: "none",
     width: "auto",
     fontWeight: 500,
-    fontSize: 16,
+    fontSize: 14,
     cursor: "pointer",
     alignItems: "center",
     display: "inline-flex",
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     
   },
   triggerLabel: {
-    marginLeft: 10,
+    marginLeft: 6,
   },
   dropdown: {
     position: "absolute",
@@ -79,13 +79,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
     background: "white",
     padding: "15px 0 10px 0",
-    border: `1px solid ${colors.GREY()}`,
     borderRadius: 4,
     marginTop: 5,
     boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   dropdownOpen: {
     display: "block",
+  },
+  catText: {
+    marginLeft: 3,
   },
   dropdownOpt: {
     display: "block",
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     marginTop: 2,
-    paddingLeft: 20,
+    paddingLeft: 18,
     color: colors.BLACK(0.7),
   },  
 })

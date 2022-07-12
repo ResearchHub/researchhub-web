@@ -81,7 +81,6 @@ const dropdownStyles = StyleSheet.create({
     zIndex: 1,
     background: "white",
     padding: "15px 0 10px 0",
-    // border: `1px solid ${colors.GREY()}`,
     borderRadius: 4,
     marginTop: 5,
     width: 400,
@@ -89,7 +88,7 @@ const dropdownStyles = StyleSheet.create({
   },
   dropdownGroupContribute: {
     color: colors.NEW_BLUE(),
-    borderRight: `1px solid ${colors.GREY()}`,
+    borderRight: `1px solid ${colors.LIGHTER_GREY()}`,
   },
   dropdownGroupRequest: {
     color: colors.PURPLE_LIGHT(),
