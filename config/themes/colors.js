@@ -12,6 +12,7 @@ const colors = {
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
   DARKER_GREY: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`,
   MEDIUM_GREY: (opacity = 1) => `rgba(144, 144, 144, ${opacity})`,
+  MEDIUM_GREY2: (opacity = 1) => `rgb(124,121,137, ${opacity})`,
   GREY_LINE: (opacity = 1) => `rgba(232, 232, 239, ${opacity})`,
   ICY_BLUE: "#E9EFFF",
   ICY_GREY: "rgb(251, 251, 253)",
