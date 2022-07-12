@@ -366,19 +366,20 @@ class Editor extends Component {
           <button className="ql-link" />
           <button className="ql-image" />
           <button className="ql-video"></button>
-          {!showFullEditor && (
-            <button
-              id="show-editor"
-              className="show-full-editor"
-              onClick={() => this.setState({ showFullEditor: !showFullEditor })}
-            >
-              {faIcons.chevronCircleRight}
-            </button>
-          )}
+          <button
+            id="show-editor"
+            className="show-full-editor"
+            onClick={() => this.setState({ showFullEditor: !showFullEditor })}
+          >
+            {faIcons.fontCase}
+            <span className="ql-up">{faIcons.chevronUp}</span>
+          </button>
         </span>
 
         <div
-          className={`full-editor ${showFullEditor && "full-editor-visible"}`}
+          className={`ql-full-editor ${
+            showFullEditor && "ql-full-editor-visible"
+          }`}
         >
           <span className="ql-formats">
             <button className="ql-bold" />
