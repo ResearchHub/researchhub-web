@@ -52,16 +52,6 @@ export default function SimpleEditor({
     setEditorLoaded(true);
   }, []);
 
-  useEffect(() => {
-    if (editorInstance && !observerRef.current) {
-      debugger;
-    }
-
-    // return function cleanup() {
-    //   observerRef.current && observerRef.current.disconnect();
-    // };
-  }, [editorInstance]);
-
   return (
     <Fragment>
       <div className={css(containerStyle)}>
