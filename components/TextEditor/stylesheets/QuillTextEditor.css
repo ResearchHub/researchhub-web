@@ -6,7 +6,7 @@
 }
 
 .ql-editor.ql-blank::after {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgb(124, 121, 137);
   content: attr(data-placeholder);
   pointer-events: none;
   display: block;
@@ -164,7 +164,7 @@
 }
 
 .ql-formats > button {
-  /* color: rgb(57, 113, 255); */
+  color: rgb(124, 121, 137);
   font-size: 16px !important;
   height: 27px !important;
   width: 27px !important;
@@ -219,7 +219,15 @@
 }
 
 .ql-review-category-placeholder {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgb(124, 121, 137);
+}
+
+.ql-snow .ql-stroke {
+  stroke: rgb(124, 121, 137);
+}
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+  fill: rgb(124, 121, 137);
 }
 
 .ql-snow .ql-editor a {

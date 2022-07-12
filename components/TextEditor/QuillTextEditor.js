@@ -353,7 +353,6 @@ class Editor extends Component {
       plainText,
       editValue: content,
     });
-    console.log("content");
     this.props.submit({
       content,
       plainText,
@@ -402,20 +401,6 @@ class Editor extends Component {
           <span className="ql-formats">
             <button className="ql-code-block"></button>
             <button className="ql-clean"></button>
-          </span>
-
-          <span className="ql-formats">
-            {showFullEditor && (
-              <button
-                id="show-editor"
-                className="show-full-editor"
-                onClick={() =>
-                  this.setState({ showFullEditor: !showFullEditor })
-                }
-              >
-                {faIcons.chevronCircleLeft}
-              </button>
-            )}
           </span>
         </div>
       </div>
