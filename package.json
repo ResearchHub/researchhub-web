@@ -33,6 +33,7 @@
     "@quantfive/react-burger-menu": "^2.6.19",
     "@quantfive/react-image-upload-grid": "^1.1.4",
     "@ramonak/react-progress-bar": "^4.4.0",
+    "@researchhub/ckeditor5-custom-build": "^0.0.28",
     "@sentry/browser": "^5.9.1",
     "@sentry/cli": "^1.58.0",
     "@sentry/nextjs": "^6.13.3",

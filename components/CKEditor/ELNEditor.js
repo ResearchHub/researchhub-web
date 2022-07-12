@@ -6,7 +6,7 @@ import {
   BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
   Context,
-} from "@thomasvu/ckeditor5-custom-build";
+} from "@researchhub/ckeditor5-custom-build";
 import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import { MessageActions } from "~/redux/message";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";

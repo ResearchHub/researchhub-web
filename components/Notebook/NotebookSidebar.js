@@ -90,7 +90,7 @@ const NotebookSidebar = ({
         closeModal={() => setShowNewOrgModal(false)}
         onOrgChange={onOrgChange}
       />
-      <NoteTemplateModal
+      {/* <NoteTemplateModal
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
         redirectToNote={redirectToNote}
@@ -98,7 +98,7 @@ const NotebookSidebar = ({
         setIsOpen={setIsNoteTemplateModalOpen}
         setTemplates={setTemplates}
         templates={templates}
-      />
+      /> */}
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
           <ResearchHubPopover
