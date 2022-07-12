@@ -353,7 +353,13 @@ class Editor extends Component {
       plainText,
       editValue: content,
     });
-    this.props.submit(content, plainText, this.clearEditorContent);
+    console.log("content");
+    this.props.submit({
+      content,
+      plainText,
+      callback: this.clearEditorContent,
+      discussionType: this.state.postType.value,
+    });
   };
 
   renderToolbar = () => {

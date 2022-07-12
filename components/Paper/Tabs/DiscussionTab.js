@@ -9,11 +9,9 @@ import ReactPlaceholder from "react-placeholder";
 // Components
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
-import StarInput from "~/components/Form/StarInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
-import Toggle from "~/components/Form/Toggle";
 import DropdownButton from "~/components/Form/DropdownButton";
 
 // Dynamic modules
@@ -42,13 +40,8 @@ import { sendAmpEvent, saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
-import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
-const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
-const TYPES = {
-  COMMENT: "COMMENT",
-  REVIEW: "REVIEW",
-};
+const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
   const initialDiscussionState = {
@@ -95,7 +88,6 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
-  const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
   const [reviewScore, setReviewScore] = useState(0);
   const [bountyAmountDetails, setBountyAmountDetails] = useState(null);
   const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
@@ -220,7 +212,12 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
-  const save = async (text, plain_text) => {
+  const save = async ({ content, plainText, callback, discussionType }) => {
+    console.log("content", content);
+    console.log("plainText", plainText);
+    console.log("callback", callback);
+    console.log("discussion_type", discussionType);
+    return;
     setSubmitInProgress(true);
     let param;
     let documentId;
@@ -230,29 +227,29 @@ const DiscussionTab = (props) => {
       documentId = router.query.paperId;
       unifiedDocumentId = props.paperState.unified_document.id;
       param = {
-        text: text,
+        text: content,
         paper: paperId,
-        plain_text: plain_text,
+        plain_text: plainText,
       };
     } else if (documentType === "post") {
       documentId = router.query.documentId;
       unifiedDocumentId = props.post.unified_document.id;
       param = {
-        text: text,
+        text: content,
         post: documentId,
-        plain_text: plain_text,
+        plain_text: plainText,
       };
     } else if (documentType === "hypothesis") {
       documentId = router.query.documentId;
       unifiedDocumentId = props.hypothesis.unified_document;
       param = {
-        text: text,
+        text: content,
         hypothesis: documentId,
-        plain_text: plain_text,
+        plain_text: plainText,
       };
     }
 
-    if (discussionType === TYPES.REVIEW) {
+    if (discussionType === "submit_review") {
       if (reviewScore === 0) {
         props.showMessage({ show: true, error: true });
         props.setMessage("Rating cannot be empty");
@@ -407,11 +404,6 @@ const DiscussionTab = (props) => {
     setFormattedThreads(formatThreads(threads, basePath));
   };
 
-  // const editorPlaceholder =
-  //   discussionType === TYPES.REVIEW
-  //     ? `Review one or more aspects of this paper such as readability, methodologies, data, ... \nBe objective and constructive.`
-  //     : `Engage the community and author by leaving a comment.\n- Avoid comments like "Thanks", "+1" or "I agree".\n- Be constructive and inquisitive.`;
-
   const editor = (
     <TextEditor
       canEdit
@@ -421,7 +413,6 @@ const DiscussionTab = (props) => {
       initialValue={discussion.question}
       onCancel={cancel}
       onSubmit={save}
-      // placeholder={editorPlaceholder}
       readOnly={false}
       loading={submitInProgress}
       smallToolBar
@@ -436,44 +427,6 @@ const DiscussionTab = (props) => {
     <div className={css(stylesEditor.box)}>
       <Message />
       <div className={css(stylesEditor.discussionInputWrapper)}>
-        <div
-          className={css(
-            styles.discussionTypeHeaderContainer,
-            discussionType === TYPES.REVIEW &&
-              styles.discussionTypeHeaderContainerReview
-          )}
-        >
-          <div className={css(styles.discussionTypeHeader)}>
-            {discussionType === TYPES.COMMENT
-              ? "Write a comment"
-              : "Write a review"}
-          </div>
-          <div className={css(styles.discussionToggleContainer)}>
-            <Toggle
-              options={[
-                { label: "Comment", value: TYPES.COMMENT },
-                { label: "Review", value: TYPES.REVIEW },
-              ]}
-              selected={discussionType}
-              onSelect={(selected) => setDiscussionType(selected.value)}
-            />
-          </div>
-        </div>
-        {discussionType == TYPES.REVIEW && (
-          <div className={css(styles.reviewDetails)}>
-            <div className={css(styles.reviewHeader)}>
-              Overall Rating
-              <span className={css(stylesEditor.asterick)}>*</span>
-            </div>
-            <StarInput
-              onSelect={(value) => {
-                setReviewScore(value);
-              }}
-              value={reviewScore}
-            />
-          </div>
-        )}
-
         <div
           className={css(stylesEditor.discussionTextEditor)}
           onClick={() => editorDormant && setEditorDormant(false)}
@@ -1033,9 +986,6 @@ var styles = StyleSheet.create({
       justifyContent: "center",
     },
   },
-  discussionTypeHeaderContainerReview: {
-    marginBottom: 7,
-  },
   discussionTypeHeader: {
     fontSize: 16,
     fontWeight: 500,
@@ -1045,17 +995,6 @@ var styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: 400px)`]: {
       display: "none",
-    },
-  },
-  reviewDetails: {
-    marginBottom: 20,
-    display: "flex",
-  },
-  reviewHeader: {
-    fontSize: 15,
-    marginRight: 20,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginBottom: 10,
     },
   },
   dropdownButtonOverride: {
