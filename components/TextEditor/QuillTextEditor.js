@@ -496,6 +496,8 @@ class Editor extends Component {
     this.setState({
       postType: selectedType,
     });
+
+    this.focusEditor();
   };
 
   renderButtons = (props) => {
