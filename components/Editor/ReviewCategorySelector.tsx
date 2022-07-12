@@ -32,7 +32,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
   const renderTrigger = () => {
     return (
       <div className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)}>
-        <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>
+        <span className={css(styles.plusIcon)}>{icons.plusSquare}</span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
       </div>
     )
@@ -53,17 +53,17 @@ const styles = StyleSheet.create({
     position: "relative"
   },
   plusIcon: {
-    fontSize: 16,
+    fontSize: 20,
   },
   trigger: {
     userSelect: "none",
     width: "auto",
     fontWeight: 500,
-    fontSize: 14,
+    fontSize: 16,
     cursor: "pointer",
     alignItems: "center",
     display: "inline-flex",
-    color: colors.NEW_BLUE(),
+    color: colors.MEDIUM_GREY2(),
     ":hover": {
       transition: "0.2s",
       opacity: 0.8,
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     
   },
   triggerLabel: {
-    marginLeft: 5,
+    marginLeft: 10,
   },
   dropdown: {
     position: "absolute",
