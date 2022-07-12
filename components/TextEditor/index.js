@@ -86,10 +86,7 @@ function TextEditor(props) {
     }
   }
 
-  function submit(content, plain_text, callback) {
-    console.log("content", content);
-    console.log("plain_text", plain_text);
-    return;
+  function submit({ content, plainText, callback, discussionType }) {
     if (!isLoggedIn) {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
@@ -97,7 +94,7 @@ function TextEditor(props) {
         setMessage("Content cannot be empty.");
         return showMessage({ error: true, show: true, clickoff: true });
       }
-      onSubmit && onSubmit(content, plain_text, callback);
+      onSubmit && onSubmit({ content, plainText, callback, discussionType });
       if (clearOnSubmit) {
         callback();
       }
