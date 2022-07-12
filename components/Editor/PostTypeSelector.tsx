@@ -119,7 +119,7 @@ const dropdownStyles = StyleSheet.create({
   check: {
     position: "absolute",
     right: 15,
-    top: 14,
+    top: 8,
     fontSize: 12,
   },
   dropdownOpt: {
@@ -135,16 +135,16 @@ const dropdownStyles = StyleSheet.create({
   },
   dropdownOptIcon: {
     marginRight: 10,
-    fontSize: 12,
-    color: "white",
-    borderRadius: "4px",
-    padding: 6,
+    fontSize: 14,
+    // color: "white",
+    // borderRadius: "4px",
+    // padding: 6,
   },
   dropdownOptIconContribute: {
-    background: colors.NEW_BLUE(),
+    color: colors.NEW_BLUE(),
   },
   dropdownOptIconRequest: {
-    background: colors.PURPLE_LIGHT(),
+    color: colors.PURPLE_LIGHT(),
   },  
   dropdownOptLabel: {
     fontSize: 14,

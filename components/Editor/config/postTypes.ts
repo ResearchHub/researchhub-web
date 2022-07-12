@@ -18,18 +18,19 @@ const postTypes = [{
   label: "Summary",
   value: "submit_summary",
   group: "contribute",
-  icon: textEditorIcons.bulletedList,
+  icon: icons.layerGroup,
 },{
   label: "Peer review",
   value: "request_review",
-  placeholder: "Add details about your peer review request. What are you looking for?",
+  placeholder: "Add details about your peer review request. What are you looking for exactly?",
   group: "request",
   icon: icons.starFilled,
 }, {
   label: "Summary",
   value: "request_summary",  
+  placeholder: "Add details about your summary request. What are you looking for exactly?",
   group: "request",
-  icon: textEditorIcons.bulletedList,
+  icon: icons.layerGroup,
 }];
 
 export default postTypes;
