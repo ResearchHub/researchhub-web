@@ -44,7 +44,8 @@ class PostPageCard extends Component {
   componentDidMount() {
     this.editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
+      Editor: require("@researchhub/ckeditor5-custom-build")
+        .SimpleBalloonEditor,
     };
   }
 

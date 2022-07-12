@@ -44,8 +44,8 @@ export default function SimpleEditor({
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      SimpleEditor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
-      SimpleBalloonEditor: require("@thomasvu/ckeditor5-custom-build")
+      SimpleEditor: require("@researchhub/ckeditor5-custom-build").SimpleEditor,
+      SimpleBalloonEditor: require("@researchhub/ckeditor5-custom-build")
         .SimpleBalloonEditor,
     };
     setEditorLoaded(true);
