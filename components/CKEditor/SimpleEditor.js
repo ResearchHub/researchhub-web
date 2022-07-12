@@ -19,6 +19,7 @@ export default function SimpleEditor({
   required,
 }) {
   const editorRef = useRef();
+  const observerRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, SimpleEditor, SimpleBalloonEditor } =
@@ -51,6 +52,16 @@ export default function SimpleEditor({
     setEditorLoaded(true);
   }, []);
 
+  useEffect(() => {
+    if (editorInstance && !observerRef.current) {
+      debugger;
+    }
+
+    // return function cleanup() {
+    //   observerRef.current && observerRef.current.disconnect();
+    // };
+  }, [editorInstance]);
+
   return (
     <Fragment>
       <div className={css(containerStyle)}>
@@ -67,7 +78,7 @@ export default function SimpleEditor({
             {required && <div className={css(styles.asterick)}>*</div>}
           </div>
         )}
-        {editorLoaded && (
+        {editorLoaded ? (
           <div className={editing && "editing"}>
             <CKEditor
               className={css(styles.editor)}
@@ -90,12 +101,13 @@ export default function SimpleEditor({
                     );
                   });
                 }
+
                 setEditorInstance(editor);
               }}
               placeholder={placeholder}
             />
           </div>
-        )}
+        ) : null}
       </div>
     </Fragment>
   );

@@ -113,7 +113,7 @@ class PostPageCard extends Component {
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
           />
-          <div className={css(styles.section) + " post-body"}>
+          <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
               ready={post.isReady}
               showLoadingAnimation
@@ -151,19 +151,17 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   ) : (
-                    <>
-                      <div>
-                        <DynamicCKEditor
-                          containerStyle={post.note && styles.editor}
-                          id={"postBody"}
-                          initialData={postBody}
-                          isBalloonEditor
-                          labelStyle={styles.label}
-                          noTitle={!post.note}
-                          readOnly
-                        />
-                      </div>
-                    </>
+                    <div>
+                      <DynamicCKEditor
+                        containerStyle={post.note && styles.editor}
+                        id={"postBody"}
+                        initialData={postBody}
+                        isBalloonEditor
+                        labelStyle={styles.label}
+                        noTitle={!post.note}
+                        readOnly
+                      />
+                    </div>
                   )}
                 </div>
               )}
@@ -180,6 +178,9 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
+  },
+  postBody: {
+    paddingTop: 0,
   },
   discussionText: {
     whiteSpace: "nowrap",
