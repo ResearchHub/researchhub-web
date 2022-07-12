@@ -468,28 +468,33 @@ class Editor extends Component {
   handlePostTypeSelect = (selectedType) => {
     const currentType = this.state.postType;
 
-    if (selectedType.group === "contribute") {
-      const isPeerReview =
-        selectedType.value === "submit_review" &&
-        currentType.value !== selectedType.value;
+    const isPeerReview =
+      selectedType.value === "submit_review" &&
+      currentType.value !== selectedType.value;
 
-      if (isPeerReview) {
-        const trimDetails = this.trimEditorContents();
-        this.insertReviewCategory({
-          category: reviewCategories.overall,
-          index: 0,
+    if (isPeerReview) {
+      const trimDetails = this.trimEditorContents();
+      this.insertReviewCategory({
+        category: reviewCategories.overall,
+        index: 0,
+      });
+
+      if (!trimDetails.hasContent) {
+        this.forcePlaceholderToShow({
+          placeholderText: selectedType.placeholder,
         });
+      }
+    } else {
+      const editorWithoutPeerReviewBlocks = this.quillRef
+        .getContents([])
+        .ops.filter((op) => !op.insert["peer-review-rating"]);
+      this.quillRef.setContents(editorWithoutPeerReviewBlocks);
 
-        if (!trimDetails.hasContent) {
-          this.forcePlaceholderToShow({
-            placeholderText: selectedType.placeholder,
-          });
-        }
-      } else {
-        const editorWithoutPeerReviewBlocks = this.quillRef
-          .getContents([])
-          .ops.filter((op) => !op.insert["peer-review-rating"]);
-        this.quillRef.setContents(editorWithoutPeerReviewBlocks);
+      const trimDetails = this.trimEditorContents();
+      if (!trimDetails.hasContent) {
+        this.forcePlaceholderToShow({
+          placeholderText: selectedType.placeholder,
+        });
       }
     }
 
