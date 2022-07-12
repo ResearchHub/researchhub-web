@@ -28,17 +28,23 @@ function PostTypeSelector({ handleSelect }): ReactElement {
             <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
+              {selectedType?.value === t.value &&
+                <div className={css(dropdownStyles.check)}>{icons.check}</div>
+              }
             </div>
           ))}
         </div>
 
         <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupRequest)}>
           <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
-          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>From the community</div>
+          <div className={css(dropdownStyles.dropdownGroupSubtitle, dropdownStyles.dropdownGroupSubtitleRequest)}>From the community</div>
           {postTypes.filter(t => t.group === "request").map(t => (
             <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
+              {selectedType?.value === t.value &&
+                <div className={css(dropdownStyles.check)}>{icons.check}</div>
+              }              
             </div>
           ))}
         </div>        
@@ -75,7 +81,7 @@ const dropdownStyles = StyleSheet.create({
     zIndex: 1,
     background: "white",
     padding: "15px 0 10px 0",
-    border: `1px solid ${colors.GREY()}`,
+    // border: `1px solid ${colors.GREY()}`,
     borderRadius: 4,
     marginTop: 5,
     width: 400,
@@ -95,23 +101,33 @@ const dropdownStyles = StyleSheet.create({
     width: "50%"
   },
   dropdownGroupTitle: {
-    fontWeight: 500,
+    fontWeight: 600,
     marginBottom: 4,
     marginLeft: 25,
     marginRight: 35,
     fontSize: 16,
   },
   dropdownGroupSubtitle: {
-    color: colors.BLACK(0.8),
+    color: colors.NEW_BLUE(),
     fontSize: 14,
     marginLeft: 25,
     marginRight: 35,
     marginBottom: 15,
   },
+  dropdownGroupSubtitleRequest: {
+    color: colors.PURPLE_LIGHT(),
+  },
+  check: {
+    position: "absolute",
+    right: 15,
+    top: 14,
+    fontSize: 12,
+  },
   dropdownOpt: {
     display: "flex",
     padding: "7px 25px",
     cursor: "pointer",
+    position: "relative",
     ":hover": {
       background: colors.LIGHTER_GREY(),
       transition: "0.2s"
