@@ -15,6 +15,11 @@ const KillswtichConfigs: SwitchConfigs = {
     production: true,
     startDate: '9/15/2021',
   },
+  discussiontypes: {
+    development: true,
+    staging: true,
+    production: true,
+  },  
 };
 
 export default KillswtichConfigs;

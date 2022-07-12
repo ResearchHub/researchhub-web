@@ -10,7 +10,6 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [bountyAmountDetails, setBountyAmountDetails] = useState<null | any>(null)
 
-
   return (
     <div className={css(styles.createBountyBtn)}>
       <ReactTooltip

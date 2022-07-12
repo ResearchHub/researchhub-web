@@ -1,13 +1,16 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
 import icons, { textEditorIcons } from "~/config/themes/icons";
+import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes from "./config/postTypes";
+import ReactTooltip from "react-tooltip";
 
 function PostTypeSelector({ handleSelect }): ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<null|any>(postTypes.find(opt => opt.isDefault));
+  const triggerRef = useRef(null);
 
   const _handleSelect = (type) => {
     setSelectedType(type);
@@ -45,7 +48,10 @@ function PostTypeSelector({ handleSelect }): ReactElement {
 
   const renderTrigger = () => {
     return (
-      <div className={css(styles.trigger, selectedType?.group === "contribute" ? styles.contribute : styles.request )} onClick={() => setIsOpen(!isOpen)}>
+      <div
+        className={css(styles.trigger, selectedType?.group === "contribute" ? styles.contribute : styles.request )} onClick={() => setIsOpen(!isOpen)}
+      >
+        <NewFeatureTooltip featureName={`discussiontypes`} position={`right`} />
         <span className={css(styles.selectedTypeIcon)}>{selectedType?.icon}</span>
         {selectedType?.label} <span className={css(styles.downIcon)}>{icons.angleDown}</span>
       </div>
@@ -139,6 +145,7 @@ const styles = StyleSheet.create({
     color: colors.PURPLE_LIGHT(),
   },
   trigger: {
+    position: "relative",
     borderRadius: "4px",
     userSelect: "none",
     border: "1px solid",
