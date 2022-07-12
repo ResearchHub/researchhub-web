@@ -5,16 +5,22 @@ const reviewCategories = {
     description: "What are your overall impressions of this paper?",
     isDefault: true,
   },
+  "innovation": {
+    label: "Impact and Innovation",
+    value: "innovation",
+    description: "Do the methods, design or conclusions of this paper have any societal, technological or scientific impact?",
+    isDefault: false,
+  },  
+  "methods": {
+    label: "Methods and Materials",
+    value: "methods",
+    description: "Experiment design clearly described; materials if any are enumerated.",
+    isDefault: false,
+  },
   "data": {
     label: "Data and Figures",
     value: "data",
     description: "Consistency of data; Quality of statistical analysis; Quality and clarity of figures and labels",
-    isDefault: false,
-  },
-  "methods": {
-    label: "Methods and Materials",
-    value: "methods",
-    description: "Experiment design clearly described; materials if any are enumerated ..",
     isDefault: false,
   },
   "conclusions": {

@@ -11,7 +11,7 @@
   pointer-events: none;
   display: block;
   margin-top: -1.42rem;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .ql-blank {
@@ -170,6 +170,9 @@
   width: 27px !important;
   margin-right: 0px;
   padding: 3px 1px;
+}
+.ql-formats > button.ql-blockquote {
+  margin-left: -5px;
 }
 
 .ql-video {
