@@ -28,8 +28,6 @@ class Editor extends Component {
 
     this.state = {
       theme: "snow",
-      enabled: true,
-      readOnly: false,
       value: this.props.value ? this.props.value : { ops: [] },
       plainText: "",
       events: [],
@@ -526,42 +524,49 @@ class Editor extends Component {
 
   render() {
     const { ReactQuill, selectedPostType } = this.state;
-    const modules = Editor.modules(
-      this.props.uid,
-      this.imageHandler
-      // this.linkHandler
-    );
+    const canEdit = !this.props.readOnly;
 
-    return (
-      <div
-        className={css(
-          styles.editor,
-          this.props.containerStyles,
-          this.state.focus && styles.focus,
-          this.state.focus &&
-            selectedPostType.group === "request" &&
-            styles.focusRequestType,
-          this.state.focus &&
-            selectedPostType.value === "answer" &&
-            styles.focusAnswerType
-        )}
-        key={this.props.uid}
-      >
+    console.log("canEdit", canEdit);
+
+    if (!ReactQuill) {
+      return null;
+    }
+
+    if (canEdit) {
+      const modules = Editor.modules(
+        this.props.uid,
+        this.imageHandler
+        // this.linkHandler
+      );
+      return (
         <div
           className={css(
-            styles.commentEditor,
-            this.props.commentEditorStyles && this.props.commentEditorStyles
+            styles.editor,
+            this.props.containerStyles,
+            this.state.focus && styles.focus,
+            this.state.focus &&
+              selectedPostType.group === "request" &&
+              styles.focusRequestType,
+            this.state.focus &&
+              selectedPostType.value === "answer" &&
+              styles.focusAnswerType
           )}
+          key={this.props.uid}
         >
-          <PostTypeSelector
-            selectedType={selectedPostType}
-            documentType={this.props.documentType}
-            handleSelect={(selectedType) =>
-              this.handlePostTypeSelect(selectedType)
-            }
-          />
+          <div
+            className={css(
+              styles.commentEditor,
+              this.props.commentEditorStyles && this.props.commentEditorStyles
+            )}
+          >
+            <PostTypeSelector
+              selectedType={selectedPostType}
+              documentType={this.props.documentType}
+              handleSelect={(selectedType) =>
+                this.handlePostTypeSelect(selectedType)
+              }
+            />
 
-          {ReactQuill && (
             <ReactQuill
               ref={this.reactQuillRef}
               theme={this.state.theme}
@@ -581,28 +586,51 @@ class Editor extends Component {
               )}
               placeholder={selectedPostType.placeholder}
             />
-          )}
-          {selectedPostType.value === "review" && (
-            <div className={css(styles.reviewCategoryContainer)}>
-              <ReviewCategorySelector
-                handleSelect={(category) => {
-                  this.insertReviewCategory({ category });
-                  this.forcePlaceholderToShow({
-                    placeholderText: category.description,
-                  });
-                }}
-              />
+            {selectedPostType.value === "review" && (
+              <div className={css(styles.reviewCategoryContainer)}>
+                <ReviewCategorySelector
+                  handleSelect={(category) => {
+                    this.insertReviewCategory({ category });
+                    this.forcePlaceholderToShow({
+                      placeholderText: category.description,
+                    });
+                  }}
+                />
+              </div>
+            )}
+            <div className={css(styles.footerContainer)}>
+              <div className={css(styles.toolbarContainer)}>
+                {ReactQuill && this.renderToolbar(this.props.uid)}
+              </div>
+              {!this.props.readOnly && this.renderButtons(this.props)}
             </div>
-          )}
-          <div className={css(styles.footerContainer)}>
-            <div className={css(styles.toolbarContainer)}>
-              {ReactQuill && this.renderToolbar(this.props.uid)}
-            </div>
-            {!this.props.readOnly && this.renderButtons(this.props)}
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      const modules = {
+        toolbar: false,
+      };
+      return (
+        <div
+          className={
+            css()
+            // this.props.containerStyles,
+          }
+          key={this.props.uid}
+        >
+          <div>
+            <ReactQuill
+              ref={this.reactQuillRef}
+              readOnly={true}
+              defaultValue={this.state.value}
+              modules={modules}
+              placeholder={selectedPostType.placeholder}
+            />
+          </div>
+        </div>
+      );
+    }
   }
 }
 
