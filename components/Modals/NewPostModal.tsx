@@ -32,7 +32,7 @@ import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import killswitch from "~/config/killswitch/killswitch";
-import AskQuestionForm from "../Paper/AskQuestionForm";
+import AskQuestionForm from "~/components/Question/AskQuestionForm";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -154,7 +154,7 @@ function NewPostModal({
   );
 
   const closeModal = (event?: SyntheticEvent): void => {
-    event && event.preventDefault();
+    event?.preventDefault();
     setModalSelectedItemIndex(0);
     setBodyType(null);
     setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
@@ -202,11 +202,11 @@ function NewPostModal({
       children={
         bodyType === "question" ? (
           <div className={css(styles.rootContainer)} key="question-wizard">
-            <AskQuestionForm documentType="question" />
+            <AskQuestionForm documentType="question" onExit={closeModal} />
           </div>
         ) : bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)} key="paper-wizard">
-            <PaperUploadWizardContainer onExit={(): void => closeModal()} />
+            <PaperUploadWizardContainer onExit={closeModal} />
           </div>
         ) : (
           <div className={css(styles.rootContainer)} key="upload-type-selector">
