@@ -10,17 +10,17 @@ import Loader from "~/components/Loader/Loader";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import ReviewCategorySelector from "../Editor/ReviewCategorySelector";
+import ReviewCategorySelector from "~/components/TextEditor/ReviewCategorySelector";
 
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import faIcons from "~/config/themes/icons";
-import QuillPeerReviewRatingBlock from "../Editor/lib/QuillPeerReviewRatingBlock";
-import PostTypeSelector from "~/components/Editor/PostTypeSelector";
+import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
+import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
-import reviewCategories from "../Editor/config/reviewCategories";
+import reviewCategories from "~/components/TextEditor/config/reviewCategories";
 
 class Editor extends Component {
   constructor(props) {
