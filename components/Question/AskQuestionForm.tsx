@@ -29,7 +29,7 @@ type FormError = {
   title: boolean;
 };
 
-const MIN_TITLE_LENGTH = 1;
+const MIN_TITLE_LENGTH = 10;
 const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
