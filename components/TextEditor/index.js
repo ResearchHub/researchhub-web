@@ -99,7 +99,7 @@ function TextEditor(props) {
         key={`textEditor-${uid}`}
         setRef={setInternalRef}
         ref={setEditorRef}
-        readOnly={readOnly || false}
+        readOnly={readOnly}
         mediaOnly={mediaOnly}
         onChange={handleChange}
         clearOnSubmit={clearOnSubmit}
@@ -117,6 +117,7 @@ function TextEditor(props) {
         summary={summary && summary}
         setSelectedPostType={setSelectedPostType}
         selectedPostType={selectedPostType}
+        documentType={documentType}
       />
     </div>
   );

@@ -28,9 +28,6 @@ const DropdownButton = ({
   isOpen = false,
   withDownIcon = true,
 }) => {
-  console.log("selected", selected);
-  console.log("opts", opts);
-
   return (
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}
