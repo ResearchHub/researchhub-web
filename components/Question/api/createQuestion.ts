@@ -4,12 +4,12 @@ import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
 
 type Args = {
+  onError: (error: Error) => void;
   onSuccess: (response: any) => void;
   payload: any;
-  onError: (error: Error) => void;
 };
 
-export const createQuestion = ({ onSuccess, payload, onError }: Args): void => {
+export const createQuestion = ({ onError, onSuccess, payload }: Args): void => {
   fetch(buildApiUri({ apiPath: "researchhub_posts" }), API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
@@ -23,7 +23,7 @@ export const createQuestion = ({ onSuccess, payload, onError }: Args): void => {
           interaction: "Question Created",
         },
       });
-      return res;
+      onSuccess(res);
     })
     .catch(onError);
 };

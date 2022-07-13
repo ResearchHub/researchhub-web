@@ -96,9 +96,13 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         title: mutableFormFields.title,
         viewers: null,
       },
-      onError: (_err: Error): void => setIsSubmitting(false),
+      onError: (_err: Error): void => {
+        debugger;
+        setIsSubmitting(false);
+      },
       onSuccess: (response: any): void => {
         const { id, slug } = response ?? {};
+        debugger;
         router.push(`/post/${id}/${slug}`);
       },
     });
