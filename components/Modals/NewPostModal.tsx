@@ -226,9 +226,9 @@ function NewPostModal({
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  modalOptionItems[modalSelectedItemIndex].onClick ? (
+                  modalOptionItems[modalSelectedItemIndex]?.onClick ? (
                     <div
-                      onClick={modalOptionItems[modalSelectedItemIndex].onClick}
+                      onClick={modalOptionItems[modalSelectedItemIndex]?.onClick}
                       className={css(styles.buttonLabel)}
                     >
                       Continue
