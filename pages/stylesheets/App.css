@@ -9,6 +9,10 @@ img {
   /* image-rendering: pixelated; */
 }
 
+.ck_focused {
+  box-shadow: none !important;
+}
+
 .fslightbox-container {
   z-index: 21474800000 !important;
 }
