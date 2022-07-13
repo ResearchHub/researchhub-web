@@ -1,18 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
-import icons, { textEditorIcons } from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
-import postTypes from "./config/postTypes";
+import postTypes, { questionPostTypes } from "./config/postTypes";
 
-function PostTypeSelector({ handleSelect }): ReactElement {
+function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<null|any>(postTypes.find(opt => opt.isDefault));
-  const triggerRef = useRef(null);
 
   const _handleSelect = (type) => {
-    setSelectedType(type);
     handleSelect(type);
     setIsOpen(false);
   }
@@ -50,7 +47,7 @@ function PostTypeSelector({ handleSelect }): ReactElement {
       </div>
     )
   }
-
+  
   const renderTrigger = () => {
     return (
       <div
@@ -62,16 +59,93 @@ function PostTypeSelector({ handleSelect }): ReactElement {
       </div>
     )
   }
+  
+  const renderQuestionToggle = () => {
+    return (
+      <div className={css(toggle.container, selectedType.value === "answer" ? toggle.containerForAnswer : toggle.containerForDiscuss)}>
+        {questionPostTypes.map((t) => (
+          <div className={css(
+            toggle.opt,
+            (selectedType.value === t.value) && toggle[`${t.value}Opt`]
+          )} onClick={() => _handleSelect(t)}>
+            <span className={css(toggle.optIcon)}>{t.icon}</span>
+            <span className={css(toggle.text)}>{t.label}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
-  const dropdown = renderDropdown();
-  const trigger = renderTrigger();
-  return (
-    <div className={css(styles.postTypeSelector)}>
-      {trigger}
-      {dropdown}
-    </div>
-  )
+  if (documentType === "question") {
+    const toggle = renderQuestionToggle();
+
+    return (
+      <div className={css(styles.postTypeSelector)}>
+        {toggle}
+      </div>
+    )
+  }
+  else {
+    const dropdown = renderDropdown();
+    const trigger = renderTrigger();
+    return (
+      <div className={css(styles.postTypeSelector)}>
+        {trigger}
+        {dropdown}
+      </div>
+    )
+  }
 }
+
+const toggle = StyleSheet.create({
+  container: {
+    display: "inline-flex",
+    padding: 4,
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    background: "white",
+    borderRadius: "4px",
+    width: "auto",
+    alignItems: "center",
+    boxSizing: "border-box",
+    // height: 26,
+  },
+  containerForDiscuss: {
+
+  },
+  containerForAnswer: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
+  },
+  text: {
+    marginLeft: 7,
+    fontSize: 14,
+    fontWeight: 500,
+  },
+  optIcon: {
+    fontSize: 13,
+  },
+  opt: {
+    padding: "4px 16px",
+    display: "flex",
+    width: "auto",
+    textAlign: "center",
+    alignItems: "center",
+    color: colors.MEDIUM_GREY2(),
+    borderRadius: 4,
+    cursor: "pointer",
+  },
+  discussOpt: {
+    color: colors.NEW_BLUE(),
+    background: colors.LIGHTER_BLUE(),
+  },
+  answerOpt: {
+    background: colors.NEW_GREEN(0.1),
+    color: colors.NEW_GREEN(),
+  },
+  selected: {
+    background: colors.LIGHTER_BLUE(),
+    color: colors.NEW_BLUE(),
+  },
+});
 
 const dropdownStyles = StyleSheet.create({
   dropdown: {

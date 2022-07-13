@@ -55,10 +55,7 @@ const DiscussionTab = (props) => {
     paperState,
     calculatedCount,
     setCount,
-    discussionRef,
     getThreads,
-    getPostThreads,
-    getHypothesisThreads,
     paperId,
     isCollapsible,
     post,
@@ -415,9 +412,8 @@ const DiscussionTab = (props) => {
       onSubmit={save}
       readOnly={false}
       loading={submitInProgress}
-      smallToolBar
       uid={textEditorKey}
-      label={bountyAmountDetails ? "Post with Bounty" : "Post"}
+      documentType={documentType}
     ></TextEditor>
   );
 
@@ -1081,8 +1077,6 @@ const mapDispatchToProps = {
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
   getThreads: PaperActions.getThreads,
-  getPostThreads: PaperActions.getPostThreads,
-  getHypothesisThreads: PaperActions.getHypothesisThreads,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscussionTab);
