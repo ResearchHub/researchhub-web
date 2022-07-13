@@ -14,7 +14,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorToHTML } from "~/config/utils/editor";
 import { genClientId } from "~/config/utils/id";
-import getDefaultPostType from "~/components/Editor/util/getDefaultPostType";
+import getDefaultPostType from "~/components/TextEditor/util/getDefaultPostType";
 
 function TextEditor(props) {
   const {

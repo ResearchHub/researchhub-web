@@ -1,4 +1,4 @@
-import postTypes, { questionPostTypes } from "~/components/Editor/config/postTypes";
+import postTypes, { questionPostTypes } from "~/components/TextEditor/config/postTypes";
 
 export default function getDefaultPostType({ documentType }) {
   if (documentType === "question") {
