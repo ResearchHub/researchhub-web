@@ -19,6 +19,7 @@ export default function SimpleEditor({
   required,
 }) {
   const editorRef = useRef();
+  const observerRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, SimpleEditor, SimpleBalloonEditor } =
@@ -44,8 +45,8 @@ export default function SimpleEditor({
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      SimpleEditor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
-      SimpleBalloonEditor: require("@thomasvu/ckeditor5-custom-build")
+      SimpleEditor: require("@researchhub/ckeditor5-custom-build").SimpleEditor,
+      SimpleBalloonEditor: require("@researchhub/ckeditor5-custom-build")
         .SimpleBalloonEditor,
     };
     setEditorLoaded(true);
@@ -67,7 +68,7 @@ export default function SimpleEditor({
             {required && <div className={css(styles.asterick)}>*</div>}
           </div>
         )}
-        {editorLoaded && (
+        {editorLoaded ? (
           <div className={editing && "editing"}>
             <CKEditor
               className={css(styles.editor)}
@@ -90,12 +91,13 @@ export default function SimpleEditor({
                     );
                   });
                 }
+
                 setEditorInstance(editor);
               }}
               placeholder={placeholder}
             />
           </div>
-        )}
+        ) : null}
       </div>
     </Fragment>
   );

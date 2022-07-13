@@ -429,6 +429,10 @@
   box-shadow: none !important;
 }
 
+.ck-focused {
+  box-shadow: none !important;
+}
+
 .eln .ck-content {
   border: none !important;
   line-height: 24px;
@@ -452,8 +456,8 @@ h3 {
 .eln .ck-editor__editable_inline {
   padding-top: 25px !important;
   padding-bottom: 200px !important;
-  padding-left: calc(max((100% - 900px) / 2, 60px)) !important;
-  padding-right: calc(max((100% - 900px) / 2, 60px)) !important;
+  margin-left: calc(max((100% - 900px) / 2, 60px)) !important;
+  margin-right: calc(max((100% - 900px) / 2, 60px)) !important;
 }
 
 @media only screen and (max-width: 900px) {
