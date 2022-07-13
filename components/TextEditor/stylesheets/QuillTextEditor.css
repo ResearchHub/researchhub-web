@@ -79,6 +79,10 @@
   color: inherit;
 }
 
+.ql-editor * {
+  background-color: unset !important;
+}
+
 .ql-editor > p > img {
   margin-left: auto;
   margin-right: auto;

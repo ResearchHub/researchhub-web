@@ -555,7 +555,7 @@ class Editor extends Component {
         >
           <PostTypeSelector
             selectedType={selectedPostType}
-            documentType={`question`}
+            documentType={this.props.documentType}
             handleSelect={(selectedType) =>
               this.handlePostTypeSelect(selectedType)
             }
