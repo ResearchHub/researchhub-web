@@ -104,6 +104,7 @@ import {
   faArrowAltToBottom as download,
   faArrowDownToLine,
   faArrowRightToLine,
+  faCommentAltLines as faCommentAltLinesSolid,
   faUndo,
   faFontCase,
 } from "@fortawesome/pro-solid-svg-icons";
@@ -222,6 +223,7 @@ library.add(
   faCoins,
   faComment,
   faCommentAltDots,
+  faCommentAltLinesSolid,
   faCommentAltEdit,
   faCommentAltLines,
   faComments,
@@ -365,6 +367,7 @@ const icons = {
   commentAltDots: <FontAwesomeIcon icon={faCommentAltDots} />,
   commentAltEdit: <FontAwesomeIcon icon={faCommentAltEdit} />,
   commentAltLine: <FontAwesomeIcon icon={faCommentAltLines} />,
+  commentAltLineSolid: <FontAwesomeIcon icon={faCommentAltLinesSolid} />,
   commentCheck: <FontAwesomeIcon icon={faCommentCheck} />,
   commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
   comments: <FontAwesomeIcon icon={faComments} />,

@@ -148,6 +148,7 @@
 .ql-editor ul,
 .ql-editor ol {
   font-size: 16px;
+  padding-left: 0;
 }
 
 .ql-full-editor {
@@ -209,7 +210,7 @@
 }
 
 .ql-review-category-label {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 

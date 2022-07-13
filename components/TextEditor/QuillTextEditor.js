@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 // Component
 import FormButton from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
-import StarInput from "../Form/StarInput";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -17,11 +16,10 @@ import ReviewCategorySelector from "../Editor/ReviewCategorySelector";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import faIcons, { textEditorIcons } from "~/config/themes/icons";
+import faIcons from "~/config/themes/icons";
 import QuillPeerReviewRatingBlock from "../Editor/lib/QuillPeerReviewRatingBlock";
 import PostTypeSelector from "~/components/Editor/PostTypeSelector";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
-import postTypes from "../Editor/config/postTypes";
 import reviewCategories from "../Editor/config/reviewCategories";
 
 class Editor extends Component {
@@ -39,7 +37,7 @@ class Editor extends Component {
       focus: false,
       ReactQuill: null,
       Quill: null,
-      postType: postTypes.find((p) => p.isDefault),
+      selectedPostType: this.props.selectedPostType,
     };
     this.reactQuillRef = createRef();
     this.quillRef = null;
@@ -193,11 +191,19 @@ class Editor extends Component {
 
   onEditorChange = (value, delta, source, editor) => {
     const editorContents = editor.getContents();
-    const lastDelta = editorContents.ops[editorContents.ops.length - 1];
+    const editorWithoutPeerReviewBlocks = editorContents.ops.filter(
+      (op) => !op.insert["peer-review-rating"]
+    );
+    const lastDelta =
+      editorWithoutPeerReviewBlocks[editorWithoutPeerReviewBlocks.length - 1];
 
-    if (lastDelta.insert === "\n" || editor.getText().length === 0) {
+    const editorHasTrivialText =
+      editorWithoutPeerReviewBlocks.length === 1 &&
+      lastDelta.insert === "\n" &&
+      !lastDelta.attributes;
+    if (editorHasTrivialText) {
       this.forcePlaceholderToShow({
-        placeholderText: this.state.postType.placeholder,
+        placeholderText: this.state.selectedPostType.placeholder,
       });
     }
 
@@ -317,7 +323,7 @@ class Editor extends Component {
       content,
       plainText,
       callback: this.clearEditorContent,
-      discussionType: this.state.postType.value,
+      discussionType: this.state.selectedPostType.value,
     });
   };
 
@@ -369,7 +375,10 @@ class Editor extends Component {
 
   insertReviewCategory = ({ category, index }) => {
     let range = this.quillRef.getSelection(true);
-    const insertAtIndex = index ?? range.index;
+    let insertAtIndex = index ?? range.index;
+    if (insertAtIndex === 0 && category.value !== "overall") {
+      insertAtIndex++;
+    }
 
     this.quillRef.insertEmbed(
       insertAtIndex,
@@ -425,10 +434,10 @@ class Editor extends Component {
   };
 
   handlePostTypeSelect = (selectedType) => {
-    const currentType = this.state.postType;
+    const currentType = this.state.selectedPostType;
 
     const isPeerReview =
-      selectedType.value === "submit_review" &&
+      selectedType.value === "review" &&
       currentType.value !== selectedType.value;
 
     if (isPeerReview) {
@@ -458,14 +467,21 @@ class Editor extends Component {
     }
 
     this.setState({
-      postType: selectedType,
+      selectedPostType: selectedType,
     });
 
     this.focusEditor();
   };
 
   renderButtons = (props) => {
-    const isRequestMode = this.state.postType?.group === "request";
+    const isRequestMode = this.state.selectedPostType?.group === "request";
+    const isAnswerType = this.state.selectedPostType?.value === "answer";
+
+    const label = isRequestMode
+      ? "Request"
+      : isAnswerType
+      ? "Post Answer"
+      : "Post";
 
     return (
       <div className={css(styles.postButtonContainer)}>
@@ -474,10 +490,10 @@ class Editor extends Component {
             <FormButton
               onClick={null}
               label={<Loader loading={true} color={"#FFF"} size={20} />}
-              size={props.smallToolBar && "med"}
               customButtonStyle={[
                 toolbarStyles.postButtonStyle,
                 isRequestMode && toolbarStyles.requestButton,
+                isAnswerType && toolbarStyles.answerButton,
               ]}
               customLabelStyle={toolbarStyles.postButtonLabel}
             />
@@ -493,11 +509,11 @@ class Editor extends Component {
               </div>
               <FormButton
                 onClick={this.onSubmit}
-                label={isRequestMode ? "Request" : "Post"}
-                size={props.smallToolBar && "med"}
+                label={label}
                 customButtonStyle={[
                   toolbarStyles.postButtonStyle,
                   isRequestMode && toolbarStyles.requestButton,
+                  isAnswerType && toolbarStyles.answerButton,
                 ]}
                 customLabelStyle={toolbarStyles.postButtonLabel}
               />
@@ -509,7 +525,7 @@ class Editor extends Component {
   };
 
   render() {
-    const { ReactQuill, postType } = this.state;
+    const { ReactQuill, selectedPostType } = this.state;
     const modules = Editor.modules(
       this.props.uid,
       this.imageHandler
@@ -522,91 +538,69 @@ class Editor extends Component {
           styles.editor,
           this.props.containerStyles,
           this.state.focus && styles.focus,
-          postType.group === "request" && styles.focusRequestType
+          this.state.focus &&
+            selectedPostType.group === "request" &&
+            styles.focusRequestType,
+          this.state.focus &&
+            selectedPostType.value === "answer" &&
+            styles.focusAnswerType
         )}
         key={this.props.uid}
       >
-        {this.props.commentEditor ? (
-          <div
-            className={css(
-              styles.commentEditor,
-              this.props.commentEditorStyles && this.props.commentEditorStyles
-            )}
-          >
-            <PostTypeSelector
-              handleSelect={(selectedType) =>
-                this.handlePostTypeSelect(selectedType)
-              }
-            />
+        <div
+          className={css(
+            styles.commentEditor,
+            this.props.commentEditorStyles && this.props.commentEditorStyles
+          )}
+        >
+          <PostTypeSelector
+            selectedType={selectedPostType}
+            documentType={`question`}
+            handleSelect={(selectedType) =>
+              this.handlePostTypeSelect(selectedType)
+            }
+          />
 
-            {ReactQuill && (
-              <ReactQuill
-                ref={this.reactQuillRef}
-                theme={this.state.theme}
-                readOnly={this.props.readOnly}
-                onChange={this.onEditorChange}
-                onChangeSelection={this.onEditorChangeSelection}
-                onFocus={this.onEditorFocus}
-                onBlur={this.onEditorBlur}
-                defaultValue={
-                  this.props.editing ? this.state.editValue : this.state.value
-                }
-                modules={modules}
-                formats={Editor.formats}
-                className={css(
-                  styles.editSection,
-                  this.props.commentStyles && this.props.commentStyles
-                )}
-                placeholder={postType.placeholder}
+          {ReactQuill && (
+            <ReactQuill
+              ref={this.reactQuillRef}
+              theme={this.state.theme}
+              readOnly={this.props.readOnly}
+              onChange={this.onEditorChange}
+              onChangeSelection={this.onEditorChangeSelection}
+              onFocus={this.onEditorFocus}
+              onBlur={this.onEditorBlur}
+              defaultValue={
+                this.props.editing ? this.state.editValue : this.state.value
+              }
+              modules={modules}
+              formats={Editor.formats}
+              className={css(
+                styles.editSection,
+                this.props.commentStyles && this.props.commentStyles
+              )}
+              placeholder={selectedPostType.placeholder}
+            />
+          )}
+          {selectedPostType.value === "review" && (
+            <div className={css(styles.reviewCategoryContainer)}>
+              <ReviewCategorySelector
+                handleSelect={(category) => {
+                  this.insertReviewCategory({ category });
+                  this.forcePlaceholderToShow({
+                    placeholderText: category.description,
+                  });
+                }}
               />
-            )}
-            {postType.value === "submit_review" && (
-              <div className={css(styles.reviewCategoryContainer)}>
-                <ReviewCategorySelector
-                  handleSelect={(category) => {
-                    this.insertReviewCategory({ category });
-                    this.forcePlaceholderToShow({
-                      placeholderText: category.description,
-                    });
-                  }}
-                />
-              </div>
-            )}
-            <div className={css(styles.footerContainer)}>
-              <div className={css(styles.toolbarContainer)}>
-                {ReactQuill && this.renderToolbar(this.props.uid)}
-              </div>
-              {!this.props.readOnly && this.renderButtons(this.props)}
             </div>
-          </div>
-        ) : (
-          <div className={css(styles.summaryEditor)}>
-            {ReactQuill && this.renderToolbar(this.props.uid)}
-            {ReactQuill && (
-              <ReactQuill
-                ref={this.reactQuillRef}
-                theme={this.state.theme}
-                readOnly={this.props.readOnly}
-                onChange={this.onEditorChange}
-                onChangeSelection={this.onEditorChangeSelection}
-                onFocus={this.onEditorFocus}
-                onBlur={this.onEditorBlur}
-                defaultValue={
-                  this.props.editing ? this.state.editValue : this.state.value
-                }
-                modules={modules}
-                formats={Editor.formats}
-                className={css(
-                  styles.comment,
-                  styles.summaryEditorBox,
-                  this.props.commentStyles && this.props.commentStyles
-                )}
-                placeholder={postType.placeholder}
-              />
-            )}
+          )}
+          <div className={css(styles.footerContainer)}>
+            <div className={css(styles.toolbarContainer)}>
+              {ReactQuill && this.renderToolbar(this.props.uid)}
+            </div>
             {!this.props.readOnly && this.renderButtons(this.props)}
           </div>
-        )}
+        </div>
       </div>
     );
   }
@@ -678,17 +672,9 @@ const styles = StyleSheet.create({
     padding: "20px 20px 10px 20px",
     borderRadius: "4px",
     background: "white",
+    boxSizing: "border-box",
   },
-  summaryEditor: {
-    width: "100%",
-    fontFamily: "Roboto",
-    color: "#241F3A",
-    lineHeight: 1.2,
-  },
-  summaryEditorBox: {},
   commentEditor: {
-    // background: "#FBFBFD",
-    // border: "1px solid rgb(232, 232, 242)",
     color: "#000",
     borderRadius: 4,
   },
@@ -698,6 +684,9 @@ const styles = StyleSheet.create({
   },
   focusRequestType: {
     border: `1px solid ${colors.PURPLE_LIGHT()}`,
+  },
+  focusAnswerType: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
   },
   editSection: {
     minHeight: 75,
@@ -841,6 +830,13 @@ const toolbarStyles = StyleSheet.create({
       background: colors.PURPLE_LIGHT(),
     },
   },
+  answerButton: {
+    background: colors.NEW_GREEN(),
+    ":hover": {
+      opacity: 0.9,
+      background: colors.NEW_GREEN(),
+    },
+  },
   toolbarSummary: {
     borderBottom: "1px solid",
     borderTop: 0,
@@ -870,26 +866,6 @@ const toolbarStyles = StyleSheet.create({
     marginBottom: 0,
     whiteSpace: "nowrap",
     alignSelf: "center",
-  },
-  smallToolBar: {
-    fontSize: 11,
-    display: "flex",
-    flexWrap: "flex-wrap",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 9,
-    },
-  },
-  smallToolBarButton: {
-    marginLeft: 10,
-    padding: 5,
-    ":hover": {
-      color: colors.BLACK(1),
-      backgroundColor: "#FAFAFA",
-    },
-    "@media only screen and (max-width: 415px)": {
-      margin: 5,
-      marginLeft: 0,
-    },
   },
   submit: {
     background: colors.PURPLE(1),

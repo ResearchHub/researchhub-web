@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 
 // Components
 import QuillTextEditor from "./QuillTextEditor";
-import PostTypeSelector from "~/components/Editor/PostTypeSelector";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -15,14 +14,10 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorToHTML } from "~/config/utils/editor";
 import { genClientId } from "~/config/utils/id";
-import colors from "~/config/themes/colors";
-import postTypes from "../Editor/config/postTypes";
+import getDefaultPostType from "~/components/Editor/util/getDefaultPostType";
 
 function TextEditor(props) {
   const {
-    canCancel,
-    canSubmit,
-    classNames,
     clearOnSubmit,
     onCancel,
     onSubmit,
@@ -34,31 +29,25 @@ function TextEditor(props) {
     passedValue,
     onChange,
     hideButton,
-    showDiff,
-    previousVersion,
-    placeholder,
     hideCancelButton,
     containerStyles,
     commentStyles,
-    smallToolBar,
     loading,
     commentEditorStyles,
     editing,
-    focusEditor,
     hasHeader,
     summary,
     mediaOnly,
     setMessage,
     showMessage,
-    children,
     uid = genClientId(),
+    documentType,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
   const [selectedPostType, setSelectedPostType] = useState(
-    postTypes.find((opt) => opt.isDefault)
+    getDefaultPostType({ documentType })
   );
 
   useEffect(() => {
@@ -102,12 +91,8 @@ function TextEditor(props) {
   function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
   }
-
   return (
     <div>
-      {/* <PostTypeSelector
-        handleSelect={(selectedType) => setSelectedPostType(selectedType)}
-      /> */}
       <QuillTextEditor
         value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
         uid={uid}
@@ -117,28 +102,22 @@ function TextEditor(props) {
         readOnly={readOnly || false}
         mediaOnly={mediaOnly}
         onChange={handleChange}
-        canCancel={canCancel}
-        canSubmit={canSubmit}
         clearOnSubmit={clearOnSubmit}
         containerStyles={containerStyles}
         cancel={cancel}
         submit={submit}
         commentEditor={commentEditor}
         hideButton={hideButton}
-        showDiff={showDiff}
-        previousVersion={previousVersion}
-        classNames={classNames}
         hideCancelButton={hideCancelButton && hideCancelButton}
         commentStyles={commentStyles && commentStyles}
-        smallToolBar={smallToolBar && smallToolBar}
         loading={loading && loading}
         commentEditorStyles={commentEditorStyles && commentEditorStyles}
         editing={editing}
         hasHeader={hasHeader && hasHeader}
         summary={summary && summary}
-      >
-        {children}
-      </QuillTextEditor>
+        setSelectedPostType={setSelectedPostType}
+        selectedPostType={selectedPostType}
+      />
     </div>
   );
 }
@@ -146,7 +125,6 @@ function TextEditor(props) {
 TextEditor.propTypes = {
   canEdit: PropTypes.bool,
   canCancel: PropTypes.bool,
-  canSubmit: PropTypes.bool,
   cancelButtonStyles: PropTypes.object,
   submitButtonStyles: PropTypes.object,
   cancelButtonText: PropTypes.string,
