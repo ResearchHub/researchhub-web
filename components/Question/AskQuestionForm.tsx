@@ -1,5 +1,6 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
+import { createQuestion } from "./api/createQuestion";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
@@ -13,7 +14,6 @@ import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import icons from "~/config/themes/icons";
-import { createQuestion } from "./api/createQuestion";
 
 const DynamicComponent = dynamic(() => import("../CKEditor/SimpleEditor"));
 
