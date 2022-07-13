@@ -195,9 +195,9 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     : {};
 
   parsed.document = {
-    id: unparsedInnerDoc.id,
-    title: unparsedInnerDoc.title,
-    slug: unparsedInnerDoc.slug,
+    id: unparsedInnerDoc?.id,
+    title: unparsedInnerDoc?.title,
+    slug: unparsedInnerDoc?.slug,
   };
 
   if (parsed.documentType === "discussion") {
