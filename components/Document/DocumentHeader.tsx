@@ -62,7 +62,7 @@ function DocumentHeader({
     isOpenAccess,
     id: documentID,
   } = document;
-
+  const { documentType } = unifiedDocument ?? {};
   const currentAuthor = parseAuthorProfile(currentUser.author_profile);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState(false);
   const [showSecondaryAuthors, setShowSecondaryAuthors] = useState(false);
@@ -96,7 +96,7 @@ function DocumentHeader({
       currentVote: voteState?.userVote,
       documentCreatedBy: nullthrows(createdBy),
       documentID,
-      documentType: unifiedDocument.documentType,
+      documentType: documentType,
       onError: () => null,
       onSuccess: handleVoteSuccess,
       voteType: UPVOTE,
@@ -106,7 +106,7 @@ function DocumentHeader({
       currentVote: voteState?.userVote,
       documentCreatedBy: nullthrows(createdBy),
       documentID,
-      documentType: unifiedDocument.documentType,
+      documentType: documentType,
       onError: () => null,
       onSuccess: handleVoteSuccess,
       voteType: DOWNVOTE,
@@ -205,7 +205,7 @@ function DocumentHeader({
     );
   };
 
-  const authorElems = buildAuthors(authors);
+  const authorElems = documentType !== "question" && buildAuthors(authors);
 
   const formatElems = (formats || []).map((f) => {
     return f.type === "pdf" ? (
@@ -261,8 +261,8 @@ function DocumentHeader({
               onDownvote={onDownvote}
               // @ts-ignore
               selected={voteState.userVote}
-              isPaper={unifiedDocument.documentType === "paper"}
-              type={unifiedDocument.documentType}
+              isPaper={documentType === "paper"}
+              type={documentType}
             />
           </div>
 
@@ -276,7 +276,7 @@ function DocumentHeader({
           </div>
           <h1 className={css(styles.title)}>{title}</h1>
           <div className={css(styles.metadata)}>
-            {authors.length > 0 && (
+            {documentType !== "question" && authors.length > 0 && (
               <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Authors</div>
                 <div className={css(styles.metaVal)}>
@@ -366,8 +366,8 @@ function DocumentHeader({
                   small={true}
                   // @ts-ignore
                   selected={voteState.userVote}
-                  isPaper={unifiedDocument.documentType === "paper"}
-                  type={unifiedDocument.documentType}
+                  isPaper={documentType === "paper"}
+                  type={documentType}
                   styles={[styles.smallScreenVoteWidget]}
                 />
               </div>
@@ -417,27 +417,25 @@ function DocumentHeader({
                   </span>
                 </div>
               )}
-              {unifiedDocument.documentType && (
+              {documentType && (
                 <div className={css(styles.type, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon)}>
-                    {unifiedDocument.documentType === "paper" ? (
+                    {documentType === "paper" ? (
                       icons.paperAlt
-                    ) : unifiedDocument.documentType === "hypothesis" ? (
+                    ) : documentType === "hypothesis" ? (
                       <HypothesisIcon onClick={() => null} />
-                    ) : unifiedDocument.documentType === "post" ? (
+                    ) : documentType === "post" ? (
                       icons.penSquare
                     ) : null}
                   </span>
-                  <span className={css(styles.typeText)}>
-                    {unifiedDocument.documentType}
-                  </span>
+                  <span className={css(styles.typeText)}>{documentType}</span>
                 </div>
               )}
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions
                 unifiedDocument={unifiedDocument}
-                type={unifiedDocument.documentType}
+                type={documentType}
                 onDocumentRemove={onDocumentRemove}
                 onDocumentRestore={onDocumentRestore}
                 handleEdit={handleEdit}

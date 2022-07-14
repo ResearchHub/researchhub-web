@@ -1,7 +1,7 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
@@ -40,7 +40,7 @@ class Index extends Component {
     }
 
     try {
-      const urlDocType = getBEUnifiedDocType(type);
+      const beDocType = getUnifiedDocType(type);
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
@@ -49,7 +49,7 @@ class Index extends Component {
             hubId: currentHub?.id,
             ordering: "hot",
             timePeriod: "today",
-            type: urlDocType,
+            type: beDocType,
           },
           authToken,
           fetchFeedWithVotes /* withVotes */

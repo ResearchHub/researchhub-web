@@ -16,12 +16,12 @@ export function formatUnifiedDocPageUrl({
   documentID,
   slug,
 }: FormatUnifiedDocPageUrlArgs): string {
-  const uriResolvedDocType = getUnifiedDocType(docType);
-  if (isNullOrUndefined(uriResolvedDocType) || isNullOrUndefined(documentID)) {
+  const beDocType = getUnifiedDocType(docType);
+  if (isNullOrUndefined(beDocType) || isNullOrUndefined(documentID)) {
     nullthrows(
-      uriResolvedDocType,
+      beDocType,
       `Unable to resolve document type ${docType} with ID ${documentID}`
     );
   }
-  return `/${uriResolvedDocType}/${documentID}/${slug ?? ""}/`;
+  return `/${beDocType}/${documentID}/${slug ?? ""}/`;
 }
