@@ -15,9 +15,10 @@ export function getDocumentCard({
 }): UnifiedCard[] {
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
-      const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
+      const beDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
+      const docTypeLabel = (uniDoc?.document_type ?? "").toLowerCase() ?? null;
       const targetDoc =
-        formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
+        beDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
       const docID = targetDoc.id;
       const shouldBlurMobile =
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
@@ -27,9 +28,9 @@ export function getDocumentCard({
       return (
         <FeedCard
           {...targetDoc}
-          formattedDocType={formattedDocType}
+          formattedDocType={docTypeLabel}
           index={arrIndex}
-          key={`${formattedDocType}-${docID}-${arrIndex}`}
+          key={`${beDocType}-${docID}-${arrIndex}`}
           onBadgeClick={onBadgeClick}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}
