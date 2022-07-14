@@ -1,23 +1,24 @@
-import * as Sentry from "@sentry/browser";
-import API from "~/config/api";
-import Button from "~/components/Form/Button";
-import ReactTooltip from "react-tooltip";
-import colors from "~/config/themes/colors";
-import dynamic from "next/dynamic";
-import removeMd from "remove-markdown";
+import { connect } from "react-redux";
+import { createRef, Component } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { ModalActions } from "~/redux/modals";
 import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import { createRef, Component } from "react";
-import DocumentHeader from "./Document/DocumentHeader";
+import * as Sentry from "@sentry/browser";
 import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
-import ReactPlaceholder from "react-placeholder/lib";
+import API from "~/config/api";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
+import DocumentHeader from "./Document/DocumentHeader";
+import dynamic from "next/dynamic";
 import ReactHtmlParser from "react-html-parser";
+import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
+import removeMd from "remove-markdown";
 import router from "next/router";
 import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -97,7 +98,7 @@ class PostPageCard extends Component {
       .catch((error) => {
         setMessage("Could not save changes");
         showMessage({ show: true, error: true });
-        console.log(error);
+        emptyFncWithMsg(error);
         Sentry.captureEvent(error);
       });
   };
