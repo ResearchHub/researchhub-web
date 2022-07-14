@@ -636,18 +636,6 @@ class DiscussionEntry extends Component {
                     this.state.editing && styles.contentEdit
                   )}
                 >
-                  {isReview ? (
-                    <div className={css(styles.reviewContainer)}>
-                      <div className={css(styles.reviewBadge)}>Review</div>
-                      <StarInput
-                        value={review?.score}
-                        readOnly={this.state.editing ? false : true}
-                        onSelect={this.onScoreSelect}
-                        scoreInputStyleOverride={styles.starInputStyleOverride}
-                        overrideStarStyle={styles.overrideStar}
-                      />
-                    </div>
-                  ) : null}
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}

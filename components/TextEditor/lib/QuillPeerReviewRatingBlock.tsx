@@ -54,6 +54,20 @@ if (process.browser) {
       return node;      
     }
 
+    attach() {
+      super.attach();
+      const isReadOnly = (this.parent.domNode.getAttribute("contenteditable") === "false");
+
+      const _removeNodeEvents = () => {
+        const copy = this.domNode.cloneNode(true);
+        this.domNode.parentNode.replaceChild(copy, this.domNode);
+      }
+
+      if (isReadOnly) {
+        _removeNodeEvents();
+      }
+    }
+    
     deleteAt(index: number, length: number) {
       const isImmutable = String(this.domNode.getAttribute("data-immutable")) === "true";
       if (isImmutable) {
