@@ -226,6 +226,10 @@
   white-space: normal;
 }
 
+.quill .ql-editor[contenteditable="false"] .ql-peer-review-rating-block {
+  margin-bottom: 7px;
+}
+
 .ql-review-category-placeholder {
   color: rgb(124, 121, 137);
 }
