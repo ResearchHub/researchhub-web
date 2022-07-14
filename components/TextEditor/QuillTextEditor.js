@@ -21,6 +21,7 @@ import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerRev
 import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import reviewCategories from "~/components/TextEditor/config/reviewCategories";
+import { POST_TYPES } from "./config/postTypes";
 
 class Editor extends Component {
   constructor(props) {
@@ -435,7 +436,7 @@ class Editor extends Component {
     const currentType = this.state.selectedPostType;
 
     const isPeerReview =
-      selectedType.value === "review" &&
+      selectedType.value === POST_TYPES.REVIEW &&
       currentType.value !== selectedType.value;
 
     if (isPeerReview) {
@@ -473,7 +474,8 @@ class Editor extends Component {
 
   renderButtons = (props) => {
     const isRequestMode = this.state.selectedPostType?.group === "request";
-    const isAnswerType = this.state.selectedPostType?.value === "answer";
+    const isAnswerType =
+      this.state.selectedPostType?.value === POST_TYPES.ANSWER;
 
     const label = isRequestMode
       ? "Request"
@@ -526,8 +528,6 @@ class Editor extends Component {
     const { ReactQuill, selectedPostType } = this.state;
     const canEdit = !this.props.readOnly;
 
-    console.log("canEdit", canEdit);
-
     if (!ReactQuill) {
       return null;
     }
@@ -548,7 +548,7 @@ class Editor extends Component {
               selectedPostType.group === "request" &&
               styles.focusRequestType,
             this.state.focus &&
-              selectedPostType.value === "answer" &&
+              selectedPostType.value === POST_TYPES.ANSWER &&
               styles.focusAnswerType
           )}
           key={this.props.uid}
@@ -586,7 +586,7 @@ class Editor extends Component {
               )}
               placeholder={selectedPostType.placeholder}
             />
-            {selectedPostType.value === "review" && (
+            {selectedPostType.value === POST_TYPES.REVIEW && (
               <div className={css(styles.reviewCategoryContainer)}>
                 <ReviewCategorySelector
                   handleSelect={(category) => {

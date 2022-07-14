@@ -40,6 +40,8 @@ import { sendAmpEvent, saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
+import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
+import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -85,8 +87,6 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
-  const [reviewScore, setReviewScore] = useState(0);
-  const [bountyAmountDetails, setBountyAmountDetails] = useState(null);
   const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
     useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
@@ -204,7 +204,6 @@ const DiscussionTab = (props) => {
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
     setFocus(false);
-    setReviewScore(0);
     setTextEditorKey(genClientId());
     props.openAddDiscussionModal(false);
   };
@@ -214,7 +213,7 @@ const DiscussionTab = (props) => {
     console.log("plainText", plainText);
     console.log("callback", callback);
     console.log("discussion_type", discussionType);
-    return;
+
     setSubmitInProgress(true);
     let param;
     let documentId;
@@ -246,7 +245,11 @@ const DiscussionTab = (props) => {
       };
     }
 
-    if (discussionType === "submit_review") {
+    if (discussionType === POST_TYPES.REVIEW) {
+      const reviewScore = getReviewCategoryScore({
+        quillContents: content,
+        category: "overall",
+      });
       if (reviewScore === 0) {
         props.showMessage({ show: true, error: true });
         props.setMessage("Rating cannot be empty");
@@ -265,7 +268,7 @@ const DiscussionTab = (props) => {
         captureEvent({
           error,
           msg: "Failed to save review",
-          data: { reviewScore },
+          data: { reviewScore, quillContents: content },
         });
         props.setMessage("Something went wrong");
         props.showMessage({ show: true, error: true });
@@ -314,7 +317,6 @@ const DiscussionTab = (props) => {
         props.setCount(props.calculatedCount + 1);
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
-        setReviewScore(0);
         setTextEditorKey(genClientId());
         sendAmpEvent(payload);
       })

@@ -246,3 +246,7 @@
   font-size: 10px;
   margin-left: 5px;
 }
+
+.quill .ql-editor[contenteditable="false"] .starRating {
+  cursor: initial !important;
+}
