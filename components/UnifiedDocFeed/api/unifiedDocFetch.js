@@ -15,9 +15,6 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   unifiedDocs.forEach(({ documents, document_type }) => {
     const beDocType = getUnifiedDocType(document_type);
     if (beDocType === "post") {
-      if (document_type === "QUESTION") {
-        console.warn("question documents: ", documents);
-      }
       // below assumes we are only getting the first version of post
       (documents ?? []).length > 0 && documentIds.post.push(documents[0].id);
     } else {
