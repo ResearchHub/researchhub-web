@@ -23,8 +23,6 @@ import { saveReview } from "~/config/fetch";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import StarInput from "~/components/Form/StarInput";
-import { breakpoints } from "~/config/themes/screen";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -888,22 +886,6 @@ const styles = StyleSheet.create({
   withPadding: {
     padding: 16,
     height: "unset",
-  },
-  reviewContainer: {
-    display: "flex",
-    alignItems: "flex-start",
-    lineHeight: 1.4,
-    marginBottom: 15,
-  },
-  reviewBadge: {
-    background: colors.DARK_YELLOW(),
-    color: "white",
-    padding: "2px 6px",
-    fontWeight: 500,
-    fontSize: 12,
-    marginRight: 10,
-    borderRadius: "2px",
-    lineHeight: "15px",
   },
   overrideStar: {
     fontSize: 14,

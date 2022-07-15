@@ -306,11 +306,10 @@ const FlagButton = (props) => {
 };
 
 const badge = StyleSheet.create({
-  review: {
-    background: colors.ORANGE(),
-    color: "white",
-  },
+  review: {},
   container: {
+    background: colors.LIGHT_GREY(),
+    color: colors.BLACK(),
     display: "flex",
     alignItems: "center",
     padding: "5px 10px",
