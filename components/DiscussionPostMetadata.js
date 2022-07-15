@@ -1,6 +1,6 @@
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Fragment, useState, useEffect, useRef } from "react";
+import { Fragment, useState, useRef } from "react";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import * as moment from "dayjs";
@@ -11,25 +11,19 @@ import Ripples from "react-ripples";
 // Components
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 import UserRoleTag from "~/components/shared/UserRoleTag";
 import ShareModal from "~/components/ShareModal";
 
-//Redux
-import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
-
 // Config
 import { createUserSummary } from "~/config/utils/user";
-import { Helpers } from "@quantfive/js-web-config";
-import { timeSince, timeAgo } from "~/config/utils/dates";
-import API from "~/config/api";
-import colors, { voteWidgetColors } from "~/config/themes/colors";
+import { timeSince } from "~/config/utils/dates";
+import colors, { badgeColors, voteWidgetColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
+import postTypes, { POST_TYPES } from "./TextEditor/config/postTypes";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -42,22 +36,13 @@ const DiscussionPostMetadata = (props) => {
     authorProfile,
     containerStyle,
     currentAuthorId,
-    currentUser,
     data,
-    dropDownEnabled,
     fetching,
     hideHeadline,
     isCreatedByEditor,
     isLoggedIn,
-    isModerator,
     metaData,
     noTimeStamp,
-    onHideClick,
-    onRemove,
-    postId,
-    threadPath,
-    toggleEdit,
-    twitter,
     twitterUrl,
     username,
   } = props;
@@ -65,13 +50,8 @@ const DiscussionPostMetadata = (props) => {
   const smaller = false;
   const alert = useAlert();
   // const store = useStore();
-  const dispatch = useDispatch();
   const router = useRouter();
 
-  const [showDropDown, setDropDown] = useState(false);
-  const [isFlagged, setFlagged] = useState(
-    metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
-  );
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
   const dropdown = useRef();
   const ellipsis = useRef();
@@ -82,164 +62,6 @@ const DiscussionPostMetadata = (props) => {
       ? currentAuthorId === metaData.authorId
       : true;
   }
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  });
-
-  const handleOutsideClick = (e) => {
-    if (ellipsis.current && ellipsis.current.contains(e.target)) {
-      return;
-    }
-    if (dropdown.current && !dropdown.current.contains(e.target)) {
-      e.stopPropagation();
-      setDropDown(false);
-    }
-  };
-
-  const toggleDropDown = (e) => {
-    e && e.stopPropagation();
-    setDropDown(!showDropDown);
-  };
-
-  const promptFlagConfirmation = () => {
-    if (!isLoggedIn) {
-      dispatch(
-        ModalActions.openLoginModal(
-          true,
-          "Please sign in with Google to continue."
-        )
-      );
-    } else {
-      return alert.show({
-        text:
-          "Are you sure you want to " +
-          (isFlagged ? "unflag" : "flag") +
-          " this post?",
-        buttonText: "Yes",
-        onClick: () => {
-          flagPost();
-        },
-      });
-    }
-  };
-
-  const flagPost = async () => {
-    dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId, documentId } = metaData;
-    let { documentType } = props;
-    let config = isFlagged
-      ? API.DELETE_CONFIG()
-      : await API.POST_CONFIG({ reason: "censor" });
-    return fetch(
-      API.FLAG_POST({
-        documentType,
-        paperId,
-        threadId,
-        commentId,
-        replyId,
-        documentId,
-      }),
-      config
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let message = isFlagged ? "Flag Removed " : "Post Successfully Flagged";
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage(message));
-        dispatch(MessageActions.showMessage({ show: true }));
-        setFlagged(!isFlagged);
-      })
-      .catch((err) => {
-        if (err.response && err.response.status === 429) {
-          dispatch(MessageActions.showMessage({ show: false }));
-          return dispatch(ModalActions.openRecaptchaPrompt(true));
-        }
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage("Something went wrong"));
-        dispatch(MessageActions.showMessage({ show: true, error: true }));
-      });
-  };
-
-  const renderShareButton = () => {
-    function openShareModal() {
-      setShareModalIsOpen(true);
-    }
-
-    return (
-      <a onClick={openShareModal}>
-        <div className={css(styles.dropdownItem)} onClick={(e) => e.persist()}>
-          <span
-            className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
-          >
-            {icons.shareSquare}
-          </span>
-          <span className={css(styles.text, styles.expandText)}>Share</span>
-        </div>
-      </a>
-    );
-  };
-
-  const renderDropdown = () => {
-    /* NOTE: this is a temp measure for deal with spammers. Eventually we want to check for specific comments */
-    const isCurrentUserEditor = Boolean(
-      currentUser?.author_profile?.is_hub_editor
-    );
-    return (
-      <Fragment>
-        {dropDownEnabled && (
-          <div className={css(styles.dropdownContainer)}>
-            <div
-              className={css(styles.dropdownIcon)}
-              ref={ellipsis}
-              onClick={toggleDropDown}
-            >
-              {icons.ellipsisH}
-            </div>
-            {showDropDown && (
-              <div className={css(styles.dropdown)} ref={dropdown}>
-                {threadPath && renderShareButton()}
-                <FlagButton
-                  {...props}
-                  onClick={promptFlagConfirmation}
-                  isFlagged={isFlagged}
-                />
-                <ModeratorDeleteButton
-                  actionType={"post"}
-                  containerStyle={styles.dropdownItem}
-                  documentType={props.documentType}
-                  forceRender={isUserOwnInlineComment}
-                  iconStyle={styles.expandIcon}
-                  isEditorOfHubs={isCurrentUserEditor}
-                  isModerator={isModerator}
-                  label={"Remove"}
-                  labelStyle={[styles.text, styles.removeText]}
-                  metaData={metaData}
-                  onRemove={onRemove}
-                />
-                <ModeratorDeleteButton
-                  actionType={"user"}
-                  containerStyle={styles.dropdownItem}
-                  icon={icons.ban}
-                  iconStyle={styles.expandIcon}
-                  isEditorOfHubs={isCurrentUserEditor}
-                  isModerator={isModerator}
-                  label={"Ban User"}
-                  labelStyle={[styles.text, styles.removeText]}
-                  metaData={metaData}
-                  onRemove={onRemove}
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </Fragment>
-    );
-  };
 
   const renderHeadline = () => {
     const showHeadline =
@@ -255,6 +77,28 @@ const DiscussionPostMetadata = (props) => {
       );
     }
   };
+
+  const renderBadge = ({ type }) => {
+    const postType = postTypes.find((t) => t.value === type);
+
+    if (type === POST_TYPES.REVIEW) {
+      return (
+        <span className={css(badge.container, badge.review)}>
+          <span className={css(badge.icon)}>{icons.starFilled}</span>
+          <span className={css(badge.label)}>{postType.label}</span>
+        </span>
+      );
+    }
+  };
+
+  const discussionType = data.thread_type;
+
+  let text = "commented";
+
+  if (discussionType === POST_TYPES.REVIEW) {
+    text = "peer reviewed";
+  }
+
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
@@ -283,15 +127,18 @@ const DiscussionPostMetadata = (props) => {
               margin="0 0 0 8px"
             />
           )}
-          <WidgetContentSupport
+          {<span className={css(styles.topLineText)}>{text}</span>}
+
+          {/* <WidgetContentSupport
             data={data}
             metaData={metaData}
             fetching={fetching}
-          />
+          /> */}
           {noTimeStamp ? null : <Timestamp {...props} />}
         </div>
-        {renderHeadline()}
+        {/* {renderHeadline()} */}
       </div>
+      {renderBadge({ type: discussionType })}
     </div>
   );
 };
@@ -458,25 +305,56 @@ const FlagButton = (props) => {
   );
 };
 
+const badge = StyleSheet.create({
+  review: {
+    background: colors.ORANGE(),
+    color: "white",
+  },
+  container: {
+    display: "flex",
+    alignItems: "center",
+    padding: "5px 10px",
+    fontSize: 12,
+    fontWeight: 500,
+    borderRadius: 2,
+    textTransform: "uppercase",
+    marginLeft: "auto",
+  },
+  icon: {
+    marginRight: 5,
+  },
+  text: {
+    fontWeight: 500,
+    fontSize: 14,
+  },
+});
+
 const styles = StyleSheet.create({
+  topLineText: {
+    color: colors.MEDIUM_GREY2(),
+    fontWeight: 400,
+    fontSize: 15,
+    marginLeft: 8,
+  },
   container: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     position: "relative",
+    whiteSpace: "",
   },
   column: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    width: "100%",
+    // width: "100%",
   },
+
   firstRow: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
   },
 
   userContainer: {
@@ -501,8 +379,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: "normal",
-    color: colors.MEDIUM_GREY(),
-    fontSize: 14,
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 15,
     fontWeight: 400,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
@@ -557,8 +435,8 @@ const styles = StyleSheet.create({
     },
   },
   timestampDivider: {
-    fontSize: 18,
-    padding: "0px 10px",
+    fontSize: 16,
+    padding: "0px 8px",
     color: colors.GREY(1),
     "@media only screen and (max-width: 767px)": {
       padding: "0px 8px",

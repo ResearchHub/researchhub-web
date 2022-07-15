@@ -9,6 +9,8 @@ type Props = {
   readOnly?: Boolean;
   overrideStarStyle?: any;
   scoreInputStyleOverride?: any;
+  size?: String;
+  withLabel?: Boolean;
 };
 
 const MAX_SCORE = 5;
@@ -20,6 +22,8 @@ export default function StarInput({
   readOnly,
   overrideStarStyle = null,
   scoreInputStyleOverride = null,
+  size = "med",
+  withLabel = false,
 }: Props): ReactElement {
 
   const [selectedValue, setSelectedValue] = useState<number>(value);
@@ -45,20 +49,19 @@ export default function StarInput({
         const isStarSelected = starNumber <= selectedValue;
 
         return (
-          <div className={css(styles.star, styles.readOnly, overrideStarStyle)}>
+          <div className={css(styles.star, styles.readOnly, overrideStarStyle, styles[`${size}SizeOfStar`] )}>
             {isStarSelected 
               ? <span className={css(styles.starIconFilled)}>{icons.starFilled}</span>
-              : <span className={css(styles.starIconUnfilled)}>{icons.starAlt}</span>
+              : <span className={css(styles.starIconDisabled)}>{icons.starFilled}</span>
             }
           </div>
         )
       }
       else {
         const isStarSelected = starNumber <= selectedValue || starNumber <= hoveredValue;
-
         return (
           <div
-            className={`starRating ${css(styles.star, overrideStarStyle)}`}
+            className={`starRating ${css(styles.star, styles[`${size}SizeOfStar`], overrideStarStyle)}`}
             data-rating={index+1}
             onClick={() => handleSelect(starNumber)}
             onMouseEnter={() => setHoveredValue(starNumber)}
@@ -74,7 +77,12 @@ export default function StarInput({
     });
 
     return (
-      <div className={css(styles.starInput)}>{bars}</div>
+      <div className={css(styles.starInput)}>
+        {withLabel &&
+          <span className={css(styles.starLabel)}>{parseFloat(value + '').toFixed(1)}</span>
+        }
+        {bars}
+      </div>
     )    
   }, [selectedValue, hoveredValue, readOnly]);
 
@@ -105,11 +113,29 @@ const styles = StyleSheet.create({
     position: "relative",
     color: "#e77600" //colors.DARKER_GREY(),
   },
+  "starLabel": {
+    fontWeight: 500,
+    fontSize: 16,  
+    color: colors.MEDIUM_GREY2(),
+    marginRight: 10,
+  },
+  "medSizeOfStar": {
+    // width: 30,
+    // height: 30,
+  },
+  "smallSizeOfStar": {
+    fontSize: 12,
+    width: 18,
+    height: 18,    
+  },
   "starIconFilled": {
     color: colors.YELLOW(),
   },
   "starIconUnfilled": {
   },  
+  "starIconDisabled": {
+    color: colors.LIGHT_GREY(),
+  },
   "cover": {
     background: colors.NEW_BLUE(),
     position: "absolute",
