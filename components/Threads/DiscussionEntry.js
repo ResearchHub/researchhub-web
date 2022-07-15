@@ -781,6 +781,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginBottom: 15,
   },
   content: {
     width: "100%",
@@ -788,6 +789,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
+    // background: "white",
+    // padding: 20,
+    // borderRadius: "4px",
+    // border: `1px solid ${colors.LIGHT_GREY()}`,
   },
   contentEdit: {
     border: `1px soild`,

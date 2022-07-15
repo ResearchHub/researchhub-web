@@ -3,7 +3,7 @@ import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
-import postTypes, { questionPostTypes } from "./config/postTypes";
+import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
 
 function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactElement {
 
@@ -62,11 +62,11 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
   
   const renderQuestionToggle = () => {
     return (
-      <div className={css(toggle.container, selectedType.value === "answer" ? toggle.containerForAnswer : toggle.containerForDiscuss)}>
+      <div className={css(toggle.container, selectedType.value === POST_TYPES.ANSWER ? toggle.containerForAnswer : toggle.containerForDiscuss)}>
         {questionPostTypes.map((t) => (
           <div className={css(
             toggle.opt,
-            (selectedType.value === t.value) && toggle[`${t.value}Opt`]
+            (selectedType.value === t.value) && toggle[`${t.value}_OPT`]
           )} onClick={() => _handleSelect(t)}>
             <span className={css(toggle.optIcon)}>{t.icon}</span>
             <span className={css(toggle.text)}>{t.label}</span>
@@ -133,11 +133,11 @@ const toggle = StyleSheet.create({
     borderRadius: 4,
     cursor: "pointer",
   },
-  discussOpt: {
+  DISCUSSION_OPT: {
     color: colors.NEW_BLUE(),
     background: colors.LIGHTER_BLUE(),
   },
-  answerOpt: {
+  ANSWER_OPT: {
     background: colors.NEW_GREEN(0.1),
     color: colors.NEW_GREEN(),
   },

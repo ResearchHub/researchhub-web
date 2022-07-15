@@ -3,6 +3,20 @@ import ReactDOMServer from "react-dom/server";
 import reviewCategories from "../config/reviewCategories";
 import { genClientId } from "~/config/utils/id";
 
+const _buildHTML = ({ node, category, starSize = "med", withLabel = false, readOnly = false }) => {
+  const rating = node.getAttribute('data-rating');
+  const starInput = <StarInput value={rating} readOnly={readOnly} size={starSize} withLabel={withLabel} />
+  const starInputAsHtml = ReactDOMServer.renderToString(starInput);
+
+  return `
+    <div class="ql-review-category">
+      <div class="ql-review-category-label">${category}</div>
+      <div class="ql-review-category-rating">${starInputAsHtml}</div>
+    </div>
+  `;
+}
+
+
 let QuillPeerReviewRatingBlock = {};
 if (process.browser) {
   const Quill = require('react-quill').default.Quill;
@@ -21,30 +35,17 @@ if (process.browser) {
         node.setAttribute('data-immutable', true);  
       }
 
-      const _buildHTML = ({ withPlaceholder = true }) => {
-        const rating = node.getAttribute('data-rating');
-        const starInput = <StarInput value={rating} readOnly={false} />
-        const starInputAsHtml = ReactDOMServer.renderToString(starInput)      
-
-        return `
-          <div class="ql-review-category">
-            <div class="ql-review-category-label">${categoryObj.label}</div>
-            <div class="ql-review-category-rating">${starInputAsHtml}</div>
-          </div>
-        `;
-      }
-
       node.addEventListener('click', (e) => {
         const starEl = e.target.closest(".starRating");
         if (starEl) {
           const newRating = starEl.getAttribute('data-rating');
           node.setAttribute("data-rating", newRating);
-          const html = _buildHTML({});
+          const html = _buildHTML({ node, category: categoryObj.label });
           node.innerHTML = html;
         }
       });
 
-      const html = _buildHTML({});
+      const html = _buildHTML({ node, category: categoryObj.label });
       node.innerHTML = html;
 
       node.setAttribute("id", `id-${genClientId()}`)
@@ -64,6 +65,24 @@ if (process.browser) {
       }
 
       if (isReadOnly) {
+        const category = this.domNode.getAttribute('data-category');
+        const categoryObj = reviewCategories[category];
+
+        let starSize = "small";
+        let withLabel = false;
+        if (categoryObj.value === "overall") {
+          starSize = "med";
+          withLabel = true;
+        }
+
+        this.domNode.innerHTML = _buildHTML({
+          node: this.domNode,
+          starSize,
+          category: categoryObj.label,
+          withLabel,
+          readOnly: true,
+        });
+
         _removeNodeEvents();
       }
     }

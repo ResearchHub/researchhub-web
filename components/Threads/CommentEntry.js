@@ -786,7 +786,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "16px 10px 8px 8px",
+    padding: "28px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },
