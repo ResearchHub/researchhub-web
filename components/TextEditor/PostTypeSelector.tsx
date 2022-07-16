@@ -17,10 +17,9 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
   const renderDropdown = () => {
     return (
       <div className={css(dropdownStyles.dropdown, isOpen && dropdownStyles.dropdownOpen)}>
-        <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupContribute)}>
-          <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribute</div>
-          <div className={css(dropdownStyles.dropdownGroupSubtitle)}>To the community</div>
-          {postTypes.filter(t => t.group === "contribute").map(t => (
+        <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroup)}>
+        <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribution Type</div>
+          {postTypes.map(t => (
             <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
               <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
               <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
@@ -29,29 +28,15 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
               }
             </div>
           ))}
-        </div>
-
-        <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroupRequest)}>
-          <div className={css(dropdownStyles.dropdownGroupTitle)}>Request</div>
-          <div className={css(dropdownStyles.dropdownGroupSubtitle, dropdownStyles.dropdownGroupSubtitleRequest)}>From the community</div>
-          {postTypes.filter(t => t.group === "request").map(t => (
-            <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
-              <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconRequest)}>{t.icon}</div>
-              <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
-              {selectedType?.value === t.value &&
-                <div className={css(dropdownStyles.check)}>{icons.check}</div>
-              }              
-            </div>
-          ))}
-        </div>        
+        </div>      
       </div>
     )
   }
   
-  const renderTrigger = () => {
+  const renderDropdownTrigger = () => {
     return (
       <div
-        className={css(styles.trigger, selectedType?.group === "contribute" ? styles.contribute : styles.request )} onClick={() => setIsOpen(!isOpen)}
+        className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)}
       >
         <NewFeatureTooltip featureName={`discussiontypes`} position={`right`} />
         <span className={css(styles.selectedTypeIcon)}>{selectedType?.icon}</span>
@@ -87,7 +72,7 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
   }
   else {
     const dropdown = renderDropdown();
-    const trigger = renderTrigger();
+    const trigger = renderDropdownTrigger();
     return (
       <div className={css(styles.postTypeSelector)}>
         {trigger}
@@ -156,38 +141,22 @@ const dropdownStyles = StyleSheet.create({
     padding: "15px 0 10px 0",
     borderRadius: 4,
     marginTop: 5,
-    width: 400,
+    width: 220,
     boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
-  dropdownGroupContribute: {
+  dropdownGroup: {
     color: colors.NEW_BLUE(),
-    borderRight: `1px solid ${colors.LIGHTER_GREY()}`,
-  },
-  dropdownGroupRequest: {
-    color: colors.PURPLE_LIGHT(),
+    width: "100%",
   },
   dropdownOpen: {
     display: "flex",
   },
-  dropdownGroup: {
-    width: "50%"
-  },
   dropdownGroupTitle: {
     fontWeight: 600,
-    marginBottom: 4,
+    marginBottom: 10,
     marginLeft: 25,
     marginRight: 35,
     fontSize: 16,
-  },
-  dropdownGroupSubtitle: {
-    color: colors.NEW_BLUE(),
-    fontSize: 14,
-    marginLeft: 25,
-    marginRight: 35,
-    marginBottom: 15,
-  },
-  dropdownGroupSubtitleRequest: {
-    color: colors.PURPLE_LIGHT(),
   },
   check: {
     position: "absolute",
@@ -200,6 +169,8 @@ const dropdownStyles = StyleSheet.create({
     padding: "7px 25px",
     cursor: "pointer",
     position: "relative",
+    boxSizing: "border-box",
+    width: "100%",
     ":hover": {
       background: colors.LIGHTER_GREY(),
       transition: "0.2s"
@@ -209,16 +180,10 @@ const dropdownStyles = StyleSheet.create({
   dropdownOptIcon: {
     marginRight: 10,
     fontSize: 14,
-    // color: "white",
-    // borderRadius: "4px",
-    // padding: 6,
   },
   dropdownOptIconContribute: {
     color: colors.NEW_BLUE(),
   },
-  dropdownOptIconRequest: {
-    color: colors.PURPLE_LIGHT(),
-  },  
   dropdownOptLabel: {
     fontSize: 14,
     fontWeight: 500,
@@ -226,13 +191,8 @@ const dropdownStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  contribute: {
-    color: colors.NEW_BLUE(),
-  },
-  request: {
-    color: colors.PURPLE_LIGHT(),
-  },
   trigger: {
+    color: colors.NEW_BLUE(),
     position: "relative",
     borderRadius: "4px",
     userSelect: "none",
