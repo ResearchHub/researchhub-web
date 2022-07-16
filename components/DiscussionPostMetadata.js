@@ -23,7 +23,10 @@ import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
-import postTypes, { POST_TYPES } from "./TextEditor/config/postTypes";
+import postTypes, {
+  POST_TYPES,
+  questionPostTypes,
+} from "./TextEditor/config/postTypes";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -78,13 +81,28 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  const renderBadge = ({ type }) => {
-    const postType = postTypes.find((t) => t.value === type);
-
+  const renderBadge = ({ type, isSelectedAnswer = true }) => {
     if (type === POST_TYPES.REVIEW) {
+      const postType = postTypes.find((t) => t.value === type);
       return (
         <span className={css(badge.container, badge.review)}>
-          <span className={css(badge.icon)}>{icons.starFilled}</span>
+          <span className={css(badge.icon)}>{postType.icon}</span>
+          <span className={css(badge.label)}>{postType.label}</span>
+        </span>
+      );
+    } else if (type === POST_TYPES.ANSWER) {
+      const postType = questionPostTypes.find((t) => t.value === type);
+      return (
+        <span
+          className={css(
+            badge.container,
+            badge.answer,
+            isSelectedAnswer && badge.selectedAnswer
+          )}
+        >
+          <span className={css(badge.icon)}>
+            {isSelectedAnswer ? icons.check : postType.icon}
+          </span>
           <span className={css(badge.label)}>{postType.label}</span>
         </span>
       );
@@ -97,6 +115,8 @@ const DiscussionPostMetadata = (props) => {
 
   if (discussionType === POST_TYPES.REVIEW) {
     text = "peer reviewed";
+  } else if (discussionType === POST_TYPES.ANSWER) {
+    text = "answered";
   }
 
   return (
@@ -307,6 +327,14 @@ const FlagButton = (props) => {
 
 const badge = StyleSheet.create({
   review: {},
+  answer: {
+    background: colors.NEW_GREEN(0.1),
+    color: colors.NEW_GREEN(),
+  },
+  selectedAnswer: {
+    background: colors.NEW_GREEN(),
+    color: "white",
+  },
   container: {
     background: colors.LIGHT_GREY(),
     color: colors.BLACK(),
@@ -314,7 +342,7 @@ const badge = StyleSheet.create({
     alignItems: "center",
     padding: "5px 10px",
     fontSize: 12,
-    fontWeight: 500,
+    fontWeight: 600,
     borderRadius: 2,
     textTransform: "uppercase",
     marginLeft: "auto",

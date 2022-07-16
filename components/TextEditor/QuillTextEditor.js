@@ -22,6 +22,8 @@ import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import reviewCategories from "~/components/TextEditor/config/reviewCategories";
 import { POST_TYPES } from "./config/postTypes";
+import trimQuillEditorContents from "./util/trimQuillEditorContents";
+import hasQuillContent from "./util/hasQuillContent";
 
 class Editor extends Component {
   constructor(props) {
@@ -65,6 +67,8 @@ class Editor extends Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
+
+          // const newContents = trimQuillEditorContents({ contents: this.state.value })
         }
       );
     });
@@ -397,41 +401,6 @@ class Editor extends Component {
     this.quillRef.root.classList.add("ql-blank");
   };
 
-  trimEditorContents = () => {
-    const deltas = this.quillRef.getContents()?.ops || [];
-
-    if (deltas.length > 0) {
-      const firstDelta = deltas[0];
-      const isFirstDeltaString = typeof firstDelta[0]?.insert;
-
-      if (isFirstDeltaString) {
-        let trimmedStr = firstDelta.insert.trimStart();
-
-        if (deltas.length === 1) {
-          trimmedStr = trimmedStr.trimEnd();
-        }
-
-        deltas[0].insert = trimmedStr;
-        this.quillRef.setContents(deltas);
-      }
-    }
-
-    let hasContent = false;
-    for (let i = 0; i < deltas.length; i++) {
-      if (
-        typeof deltas[i].insert === "object" ||
-        (typeof deltas[i].insert === "string" && deltas[i].insert.length > 0)
-      ) {
-        hasContent = true;
-        break;
-      }
-    }
-
-    return {
-      hasContent,
-    };
-  };
-
   handlePostTypeSelect = (selectedType) => {
     const currentType = this.state.selectedPostType;
 
@@ -440,13 +409,17 @@ class Editor extends Component {
       currentType.value !== selectedType.value;
 
     if (isPeerReview) {
-      const trimDetails = this.trimEditorContents();
+      const trimmedContents = trimQuillEditorContents({
+        contents: this.quillRef.getContents(),
+      });
+      this.quillRef.setContents(trimmedContents);
       this.insertReviewCategory({
         category: reviewCategories.overall,
         index: 0,
       });
 
-      if (!trimDetails.hasContent) {
+      const hasContent = hasQuillContent({ quillRef: this.quillRef });
+      if (!hasContent) {
         this.forcePlaceholderToShow({
           placeholderText: selectedType.placeholder,
         });
@@ -457,8 +430,13 @@ class Editor extends Component {
         .ops.filter((op) => !op.insert["peer-review-rating"]);
       this.quillRef.setContents(editorWithoutPeerReviewBlocks);
 
-      const trimDetails = this.trimEditorContents();
-      if (!trimDetails.hasContent) {
+      const trimmedContents = trimQuillEditorContents({
+        contents: this.quillRef.getContents(),
+      });
+      this.quillRef.setContents(trimmedContents);
+
+      const hasContent = hasQuillContent({ quillRef: this.quillRef });
+      if (!hasContent) {
         this.forcePlaceholderToShow({
           placeholderText: selectedType.placeholder,
         });
@@ -611,19 +589,17 @@ class Editor extends Component {
       const modules = {
         toolbar: false,
       };
+      const editorValue = trimQuillEditorContents({
+        contents: this.state.value,
+      });
+
       return (
-        <div
-          className={
-            css()
-            // this.props.containerStyles,
-          }
-          key={this.props.uid}
-        >
+        <div key={this.props.uid}>
           <div>
             <ReactQuill
               ref={this.reactQuillRef}
               readOnly={true}
-              defaultValue={this.state.value}
+              defaultValue={editorValue}
               modules={modules}
               placeholder={selectedPostType.placeholder}
             />
