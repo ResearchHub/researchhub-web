@@ -19,7 +19,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import faIcons from "~/config/themes/icons";
 import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
 import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
-import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import reviewCategories from "~/components/TextEditor/config/reviewCategories";
 import { POST_TYPES } from "./config/postTypes";
 import trimQuillEditorContents from "./util/trimQuillEditorContents";
@@ -477,14 +476,6 @@ class Editor extends Component {
             />
           ) : (
             <>
-              <div className={css(styles.bountyBtnContainer)}>
-                <CreateBountyBtn
-                  onBountyChange={
-                    (amountDetails) => null
-                    // setBountyAmountDetails(amountDetails)
-                  }
-                />
-              </div>
               <FormButton
                 onClick={this.onSubmit}
                 label={label}
@@ -651,9 +642,6 @@ const styles = StyleSheet.create({
   footerContainer: {
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
-  },
-  bountyBtnContainer: {
-    marginRight: 15,
   },
   postButtonContainer: {
     padding: 12,

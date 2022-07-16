@@ -5,9 +5,6 @@ export enum POST_TYPES {
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
   ANSWER = "ANSWER",
-  SUMMARY_REQUEST = "SUMMARY_REQUEST",
-  REVIEW_REQUEST = "REVIEW_REQUEST",
-  OTHER_REQUEST = "OTHER_REQUEST",
 } 
 
 const postTypes = [{
@@ -28,18 +25,6 @@ const postTypes = [{
   value: POST_TYPES.SUMMARY,
   group: "contribute",
   placeholder: "Contribute a summary of this paper to the community",
-  icon: icons.layerGroup,
-},{
-  label: "Peer review",
-  value: POST_TYPES.REVIEW_REQUEST,
-  placeholder: "Add details about your peer review request. What are you looking for exactly?",
-  group: "request",
-  icon: icons.starFilled,
-}, {
-  label: "Summary",
-  value: POST_TYPES.SUMMARY_REQUEST,  
-  placeholder: "Add details about your summary request. What are you looking for exactly?",
-  group: "request",
   icon: icons.layerGroup,
 }];
 
