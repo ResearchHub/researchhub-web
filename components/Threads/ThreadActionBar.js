@@ -1,32 +1,22 @@
 import { breakpoints } from "~/config/themes/screen";
-import { captureEvent } from "~/config/utils/events";
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { nullthrows } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+import icons, { MedalIcon } from "~/config/themes/icons";
 import ThreadTextEditor from "./ThreadTextEditor";
-import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
-const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 class ThreadActionBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showReplyBox: false,
-      prevParentHeight: 0,
     };
   }
 
   renderReplyBox = () => {
-    /**
-     * TODO: create a button that when toggled, reveals a editor box
-     * Allow the user to be able to upload comment or a reply
-     * Will need to look at the IDs of paper, thread, comments (universal comment reply)
-     * */
-
     if (!this.state.showReplyBox) {
       return null;
     }
@@ -44,52 +34,10 @@ class ThreadActionBar extends Component {
     );
   };
 
-  renderCommentCount = () => {
-    const { count, comment, onClick, small, showChildrenState, onCountHover } =
-      this.props;
-
-    if (count === 0) {
-      return null;
-    }
-
-    let classNames = [styles.commentCountContainer];
-
-    if (small) {
-      classNames.push(styles.smallReply);
-    }
-
-    if (showChildrenState) {
-      classNames.push(styles.active);
-    }
-
-    return (
-      <div
-        className={css(classNames)}
-        onClick={onClick && onClick}
-        onMouseEnter={onCountHover}
-        onMouseLeave={onCountHover}
-      >
-        <span className={css(styles.iconChat)} id={"chatIcon"}>
-          {icons.comments}
-        </span>
-        <span
-          className={css(styles.text, small && styles.smallReply)}
-          id={"text"}
-        >
-          {`Replies (${count}${showChildrenState ? "" : " hidden"})`}
-        </span>
-      </div>
-    );
-  };
-
   renderEditButton = () => {
-    const { toggleEdit, editing, small } = this.props;
+    const { toggleEdit, editing } = this.props;
 
-    let classNames = [styles.editContainer];
-
-    if (small) {
-      classNames.push(styles.smallReply);
-    }
+    let classNames = [styles.editContainer, styles.action, styles.text];
 
     if (editing) {
       classNames.push(styles.active);
@@ -99,22 +47,15 @@ class ThreadActionBar extends Component {
       <div className={css(classNames)} onClick={toggleEdit}>
         <span
           className={css(
-            styles.iconChat,
+            styles.icon,
             styles.iconEdit,
             editing && styles.active
           )}
           id={"editIcon"}
         >
-          {icons.pencil}
+          {icons.pen}
         </span>
-        <span
-          className={css(
-            styles.text,
-            small && styles.smallReply,
-            editing && styles.active
-          )}
-          id={"text"}
-        >
+        <span className={css(editing && styles.active)} id={"text"}>
           Edit
         </span>
       </div>
@@ -128,18 +69,10 @@ class ThreadActionBar extends Component {
   };
 
   render() {
-    const { small, isRemoved } = this.props;
-
-    if (isRemoved) {
-      return (
-        <Fragment>
-          <div className={css(styles.column)}>
-            <div className={css(styles.row)}>{this.renderCommentCount()}</div>
-          </div>
-        </Fragment>
-      );
+    if (this.props.isRemoved) {
+      return null;
     }
-    const commentCount = this.renderCommentCount();
+
     const editButton = this.renderEditButton();
     return (
       <div
@@ -153,29 +86,64 @@ class ThreadActionBar extends Component {
             <div
               className={css(
                 styles.text,
+                styles.action,
                 styles.replyContainer,
-                small && styles.smallReply,
                 this.state.showReplyBox && styles.active
               )}
               onClick={this.toggleReplyBox}
             >
               <span
                 className={css(
+                  styles.icon,
                   styles.replyIcon,
                   this.state.showReplyBox && styles.active
                 )}
                 id={"replyIcon"}
               >
-                {icons.commentAltEdit}
+                {icons.reply}
               </span>
-              Respond
+              Reply
+            </div>
+          )}
+
+          {true && (
+            <div
+              className={css(styles.text, styles.action)}
+              onClick={() => null}
+            >
+              <span
+                className={css(styles.icon, styles.acceptAnswerIcon)}
+                id={"acceptAnswerIcon"}
+              >
+                {icons.commentLightAltCheck}
+              </span>
+              Accept Answer
+            </div>
+          )}
+
+          {false && (
+            <div
+              className={css(styles.text, styles.action)}
+              onClick={() => null}
+            >
+              <span
+                className={css(styles.icon, styles.acceptAnswerIcon)}
+                id={"acceptAnswerIcon"}
+              >
+                <MedalIcon
+                  color={colors.MEDIUM_GREY2()}
+                  width={18}
+                  height={18}
+                />
+              </span>
+              Award Bounty
             </div>
           )}
 
           {this.props.toggleEdit && editButton}
-          {!this.props.hideCount && commentCount}
           <FlagButtonV2
-            buttonText="Flag"
+            buttonText=""
+            iconOverride={icons.flagOutline}
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"
@@ -223,107 +191,62 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
-  },
-  replyContainer: {
-    marginRight: 20,
-    marginLeft: 0,
-    padding: 4,
-    borderRadius: 3,
-    cursor: "pointer",
-    color: colors.BLACK(),
     fontWeight: 500,
+  },
+  action: {
+    marginRight: 15,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
     ":hover": {
       color: colors.NEW_BLUE(),
     },
     ":hover #replyIcon": {
       color: colors.NEW_BLUE(),
     },
-    "@media only screen and (max-width: 415px)": {
-      marginRight: 10,
-    },
-  },
-  commentCountContainer: {
-    display: "none",
-    marginRight: 20,
-    padding: 4,
-    borderRadius: 3,
-    cursor: "pointer",
-    ":hover #text": {
-      color: colors.NEW_BLUE(),
-    },
-    ":hover #chatIcon": {
-      color: colors.NEW_BLUE(),
-    },
-    "@media only screen and (max-width: 415px)": {
-      marginRight: 10,
-    },
-  },
-  editContainer: {
-    cursor: "pointer",
-    padding: 4,
-    marginRight: 20,
-    borderRadius: 3,
     ":hover #text": {
       color: colors.NEW_BLUE(),
     },
     ":hover #editIcon": {
       color: colors.NEW_BLUE(),
     },
+    ":hover #acceptAnswerIcon": {
+      color: colors.NEW_BLUE(),
+    },
   },
+  replyContainer: {
+    marginLeft: 0,
+  },
+  editContainer: {},
   flagIconOverride: {
     background: "none",
     border: "none",
-    marginLeft: 16,
+    marginLeft: "auto",
+    color: colors.MEDIUM_GREY2(),
     ":hover": {
       background: "none",
       color: colors.NEW_BLUE(1),
     },
   },
   flagButtonTextStyle: {
+    color: colors.MEDIUM_GREY2(),
     fontSize: 14,
     marginLeft: 8,
   },
   link: {
     color: colors.GREY(),
   },
-  shareContainer: {
-    cursor: "pointer",
-    padding: 4,
-    borderRadius: 3,
-    ":hover #text": {
-      color: colors.NEW_BLUE(),
-    },
-    ":hover #shareIcon": {
-      color: colors.NEW_BLUE(),
-    },
-  },
-  smallReply: {
-    // fontSize: 12,
-  },
   text: {
-    fontFamily: "Roboto",
     fontSize: 14,
     marginLeft: 8,
-    color: "#AAAAAA",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+    color: colors.MEDIUM_GREY2(),
   },
-  iconChat: {
-    color: "#918f9b",
+  icon: {
+    color: colors.MEDIUM_GREY2(),
+    marginRight: 8,
+    fontSize: 16,
   },
-  iconEdit: {
-    fontSize: 13,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-  },
-  shareIcon: {
-    fontSize: 13,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-  },
+  iconEdit: {},
   active: {
     color: colors.NEW_BLUE(0.8),
   },
@@ -343,7 +266,6 @@ const styles = StyleSheet.create({
     height: "unset",
     opacity: 1,
     borderRadius: 3,
-    backgroundColor: "#FAFAFA",
     cursor: "default",
   },
   container: {
@@ -351,10 +273,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: "100%",
   },
-  replyIcon: {
-    color: colors.BLACK(),
-    marginRight: 8,
-  },
+  replyIcon: {},
 });
 
 export default ThreadActionBar;

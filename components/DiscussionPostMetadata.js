@@ -148,13 +148,13 @@ const DiscussionPostMetadata = (props) => {
             />
           )}
           {<span className={css(styles.topLineText)}>{text}</span>}
-
-          {/* <WidgetContentSupport
+          {noTimeStamp ? null : <Timestamp {...props} />}
+          <span className={css(styles.divider)}>•</span>
+          <WidgetContentSupport
             data={data}
             metaData={metaData}
             fetching={fetching}
-          /> */}
-          {noTimeStamp ? null : <Timestamp {...props} />}
+          />
         </div>
         {/* {renderHeadline()} */}
       </div>
@@ -231,7 +231,7 @@ const Timestamp = (props) => {
         >
           <span
             className={css(
-              styles.timestampDivider,
+              styles.divider,
               props.smaller && styles.smallerTimestamp
             )}
           >
@@ -247,10 +247,7 @@ const Timestamp = (props) => {
   return (
     <div className={css(styles.timestampContainer)}>
       <span
-        className={css(
-          styles.timestampDivider,
-          props.smaller && styles.smallerTimestampDivider
-        )}
+        className={css(styles.divider, props.smaller && styles.smallerdivider)}
       >
         •
       </span>
@@ -271,59 +268,6 @@ function formatTimestamp(props) {
 
   return timeSince(date);
 }
-
-const HideButton = (props) => {
-  let { onHideClick, hideState } = props;
-  let classNames = [styles.hideContainer];
-
-  return (
-    <Fragment>
-      <span className={css(styles.timestampDivider)}>•</span>
-      <div className={css(classNames)} onClick={onHideClick}>
-        <span
-          className={css(styles.icon, hideState && styles.active)}
-          id={"hideIcon"}
-        >
-          {hideState ? icons.eyeSlash : icons.eye}
-        </span>
-        <span className={css(styles.text)} id={"hideText"}>
-          {hideState ? "Show" : "Hide"}
-        </span>
-      </div>
-    </Fragment>
-  );
-};
-
-const ExpandButton = (props) => {
-  let { threadPath, metaData } = props;
-
-  return (
-    <Ripples className={css(styles.dropdownItem)}>
-      <ClientLinkWrapper
-        dynamicHref={metaData.postId ? POST_HREF : DYNAMIC_HREF}
-        path={threadPath}
-      >
-        <span className={css(styles.icon, styles.expandIcon)} id={"expandIcon"}>
-          {icons.expandArrows}
-        </span>
-        <span className={css(styles.text, styles.expandText)} id={"expandText"}>
-          Expand
-        </span>
-      </ClientLinkWrapper>
-    </Ripples>
-  );
-};
-
-const FlagButton = (props) => {
-  return (
-    <Ripples className={css(styles.dropdownItem)} onClick={props.onClick}>
-      <span className={css(styles.icon, styles.expandIcon)}>{icons.flag}</span>
-      <span className={css(styles.text, styles.expandText)}>
-        {props.isFlagged ? "Unflag" : "Flag"}
-      </span>
-    </Ripples>
-  );
-};
 
 const badge = StyleSheet.create({
   review: {},
@@ -362,6 +306,9 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 15,
     marginLeft: 8,
+  },
+  tipAuthorText: {
+    marginLeft: 0,
   },
   container: {
     width: "100%",
@@ -461,17 +408,13 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  timestampDivider: {
+  divider: {
     fontSize: 16,
     padding: "0px 8px",
     color: colors.GREY(1),
     "@media only screen and (max-width: 767px)": {
       padding: "0px 8px",
     },
-  },
-  smallerTimestampDivider: {
-    fontSize: 12,
-    padding: "0 8px",
   },
   hideContainer: {
     display: "flex",

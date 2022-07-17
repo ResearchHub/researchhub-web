@@ -22,7 +22,7 @@ const ContentSupport = (props) => {
     openLoginModal,
     openContentSupportModal,
   } = props;
-  const [count, setCount] = useState((data && data.promoted) || 0);
+  const [count, setCount] = useState((data && data.promoted) || 1000);
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const ContentSupport = (props) => {
     }
 
     if (count > 0) {
-      return <span className={css(styles.count)}>{formatScore(count)}</span>;
+      return <span className={css(styles.count)}>+{formatScore(count)}</span>;
     }
 
     if (!isUserContent()) {
@@ -114,12 +114,12 @@ const ContentSupport = (props) => {
       onClick={handleClick}
     >
       {renderAnimation()}
+      {renderCount()}
       <img
         className={css(styles.icon)}
         src={"/static/icons/coin-filled.png"}
         alt="RSC Coin"
       />
-      {renderCount()}
     </div>
   );
 };
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     alignItems: "center",
-    marginLeft: 10,
     cursor: "pointer",
     position: "relative",
     ":hover #plusIcon": {
@@ -141,14 +140,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    height: 18,
+    height: 20,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
   count: {
-    fontWeight: 500,
-    fontSize: 12,
-    marginLeft: 5,
+    fontSize: 15,
+    marginRight: 5,
+    color: colors.NEW_GREEN(),
   },
   plusButton: {
     position: "absolute",
