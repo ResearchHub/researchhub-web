@@ -128,11 +128,14 @@ import {
   faTasksAlt,
   faThumbtack as faThumbtackOutline,
   faTimes,
+  faReply,
+  faPen,
   faTimesCircle,
   faTrashAlt,
   faBadgeCheck as faBadgeCheckAlt,
   faBookOpen as faBookOpenAlt,
   faInfoCircle as faInfoCircleLight,
+  faCommentAltCheck as faCommentLightAltCheck,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -369,6 +372,7 @@ const icons = {
   commentAltLine: <FontAwesomeIcon icon={faCommentAltLines} />,
   commentAltLineSolid: <FontAwesomeIcon icon={faCommentAltLinesSolid} />,
   commentCheck: <FontAwesomeIcon icon={faCommentCheck} />,
+  commentLightAltCheck: <FontAwesomeIcon icon={faCommentLightAltCheck} />,
   commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
   comments: <FontAwesomeIcon icon={faComments} />,
   commentsSolid: <FontAwesomeIcon icon={faCommentsSolid} />,
@@ -426,6 +430,7 @@ const icons = {
   paperPlane: <FontAwesomeIcon icon={faPaperPlane} />,
   paperRegular: <FontAwesomeIcon icon={faPaperRegular} />,
   paperAlt: <FontAwesomeIcon icon={faFileAltSolid} />,
+  pen: <FontAwesomeIcon icon={faPen} />,
   penSquare: <FontAwesomeIcon icon={faPenSquareRegular} />,
   pencil: <FontAwesomeIcon icon={faPencil} />,
   pin: <FontAwesomeIcon icon={faThumbtack} />,
@@ -440,6 +445,7 @@ const icons = {
   receipt: <FontAwesomeIcon icon={faReceipt} />,
   reddit: <FontAwesomeIcon icon={faReddit} />,
   redo: <FontAwesomeIcon icon={faRedo} />,
+  reply: <FontAwesomeIcon icon={faReply} />,
   search: <FontAwesomeIcon icon={faSearch} />,
   shapes: <FontAwesomeIcon icon={faShapes} />,
   share: <FontAwesomeIcon icon={faShare} />,
@@ -925,8 +931,9 @@ export const MedalIcon = ({
       <svg
         width={width}
         height={height}
-        viewBox="0 0 14 19"
+        viewBox={`0 0 ${width} ${height}`}
         fill="none"
+        id={"medalIcon"}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
