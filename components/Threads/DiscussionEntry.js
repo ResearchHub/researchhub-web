@@ -507,6 +507,7 @@ class DiscussionEntry extends Component {
       noRespond,
       noVote,
       noVoteLine,
+      is_solution: isSolution,
       paper,
       path,
       post,
@@ -631,6 +632,7 @@ class DiscussionEntry extends Component {
                 <div
                   className={css(
                     styles.content,
+                    isSolution && styles.acceptedAnswer,
                     this.state.editing && styles.contentEdit
                   )}
                 >
@@ -792,6 +794,9 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     border: `1px solid ${colors.LIGHT_GREY()}`,
     boxSizing: "border-box",
+  },
+  acceptedAnswer: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
   },
   contentEdit: {
     border: `1px soild`,
