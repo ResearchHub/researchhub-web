@@ -4,8 +4,9 @@ import BountyModal from "./BountyModal";
 import icons, { MedalIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
+import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 
-function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
+function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [bountyAmountDetails, setBountyAmountDetails] = useState<null | any>(null)
@@ -34,7 +35,7 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
         closeModal={() => setIsModalOpen(false)}
         handleBountyAdded={(amountDetails) => {
           setBountyAmountDetails(amountDetails);
-          onBountyChange(amountDetails);
+          onBountyAdd(amountDetails);
         }}
         withPreview={withPreview}
         removeBounty={() => setBountyAmountDetails(null)}
@@ -64,9 +65,17 @@ function CreateBountyBtn({ withPreview = true, onBountyChange }): ReactElement {
             className={css(styles.addBounty)}
             onClick={() => setIsModalOpen(true)}
           >
+            <NewFeatureTooltip featureName={`bounty`} position={`right`} />
             <span className={css(styles.bountyIcon)}>
+              {/* <img
+                className={css(styles.icon)}
+                src={"/static/icons/coin-filled.png"}
+                alt="RSC Coin"
+                width={22}
+              /> */}
               {icons.plus}
-            </span>Add Bounty
+            </span>
+            <span className={css(styles.addBountyLabel)}>Add Bounty</span>
           </div>          
         ) 
       }
@@ -123,6 +132,7 @@ const styles = StyleSheet.create({
     }
   },
   createBountyBtn: {
+    position: "relative"
   },
   check: {
     color: colors.NEW_GREEN(),
@@ -130,19 +140,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   addBounty: {
-    color: colors.ORANGE_DARK(),
+    // color: colors.ORANGE_DARK(),
+    color: colors.NEW_BLUE(),
     fontSize: 15,
     fontWeight: 400,
     cursor: "pointer",
     border: "1px solid",
     borderRadius: 4,
     padding: "7px 16px",
+    display: "flex",
+    alignItems: "center",
     ":hover": {
-      color: colors.ORANGE()
+      // color: colors.ORANGE()
     },
     boxSizing: "border-box",
     height: 34,
   },  
+  addBountyLabel: {
+    // fontWeight: 500,
+    marginLeft: 5,
+  },
   coinIcon: {
     height: 18,
     marginRight: 8,

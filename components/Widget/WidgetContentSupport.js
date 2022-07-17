@@ -22,7 +22,7 @@ const ContentSupport = (props) => {
     openLoginModal,
     openContentSupportModal,
   } = props;
-  const [count, setCount] = useState((data && data.promoted) || 1000);
+  const [count, setCount] = useState((data && data.promoted) || 0);
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {

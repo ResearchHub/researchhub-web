@@ -16,6 +16,7 @@ import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactHtmlParser from "react-html-parser";
 import router from "next/router";
+import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -164,6 +165,9 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
+                  <div className={css(styles.createBountyContainer)}>
+                    <CreateBountyBtn onBountyAdd={() => null} />
+                  </div>
                 </div>
               )}
             </ReactPlaceholder>
@@ -175,6 +179,9 @@ class PostPageCard extends Component {
 }
 
 const styles = StyleSheet.create({
+  createBountyContainer: {
+    display: "inline-block",
+  },
   section: {
     marginTop: 25,
     paddingTop: 25,
