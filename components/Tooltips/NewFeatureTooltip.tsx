@@ -42,6 +42,27 @@ function NewFeatureTooltip({ featureName, auth = null, delay = 500, position = "
       </div>
     )
   }
+  if (normalizedFeatureName === "bounty" ) {
+    html = (
+      <div className={css(styles.body)}>
+        <span className={css(styles.caret)}>{icons.caretLeft}</span>
+        <div className={css(styles.title)}>
+          Bounties
+          <span className={css(styles.new)}>
+          <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.newText)}>New</span>
+          </span>
+        </div>
+        <div className={css(styles.desc)}>
+          Bounties are now available. Incentivize others by offering up ResearchCoin to the best solution.
+        </div>
+        <div className={css(styles.btnContainer)}>
+          <Button onClick={handleDismiss} label={`Okay`} size="small" customButtonStyle={styles.btn} customLabelStyle={styles.btnLabel} />
+        </div>
+      </div>
+    )
+  }
+
 
   if (shouldAlert) {
     return (
@@ -55,6 +76,13 @@ function NewFeatureTooltip({ featureName, auth = null, delay = 500, position = "
   }
 
 }
+
+// const bounty = StyleSheet.create({
+//   body: {
+//     background: colors.ORANGE(),
+//     color: "white",
+//   }
+// })
 
 const styles = StyleSheet.create({
   tooltipContainer: {

@@ -20,6 +20,11 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: true,
     production: true,
   },  
+  bounty: {
+    development: true,
+    staging: true,
+    production: false,
+  },    
 };
 
 export default KillswtichConfigs;
