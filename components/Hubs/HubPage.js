@@ -560,7 +560,7 @@ class HubPage extends Component {
                     }}
                     src="/static/banner/sci-con-banner-small-screen.png"
                     srcSet={`
-                /static/banner/sci-con-banner-large-screen.jpg ${breakpoints.mobile.int}w, /static/banner/sci-con-banner-small-screen.png ${breakpoints.small.int}w
+                /static/banner/scicon-banner.webp ${breakpoints.mobile.int}w, /static/banner/sci-con-banner-small-screen.png ${breakpoints.small.int}w
                 `}
                   />
                 </a>
