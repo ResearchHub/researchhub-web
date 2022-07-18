@@ -72,10 +72,11 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
                 alt="RSC Coin"
                 width={22}
               /> */}
-              <ResearchCoinIcon width={35} height={35} />
+              {/* @ts-ignore */}
+              <ResearchCoinIcon width={22} height={22} version={3} />
               {/* {icons.plus} */}
             </span>
-            <span className={css(styles.addBountyLabel)}>Add Bounty</span>
+            <span className={css(styles.addBountyLabel)}>Add ResearchCoin Bounty</span>
           </div>          
         ) 
       }
@@ -141,13 +142,13 @@ const styles = StyleSheet.create({
   },
   addBounty: {
     // color: colors.ORANGE_DARK(),
-    color: colors.ORANGE_DARK(),
+    color: colors.ORANGE_DARK2(),
     fontSize: 15,
     fontWeight: 500,
     cursor: "pointer",
-    border: "1px solid",
-    borderRadius: 4,
-    padding: "7px 16px",
+    // borderBottom: `1px solid ${colors.ORANGE_DARK2()}`,
+    // borderRadius: 4,
+    // padding: "7px 16px",
     // paddingLeft: 0,
     display: "flex",
     alignItems: "center",
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
       // color: colors.ORANGE()
     },
     boxSizing: "border-box",
-    height: 42,
+    // height: 42,
   },  
   addBountyLabel: {
     // fontWeight: 500,

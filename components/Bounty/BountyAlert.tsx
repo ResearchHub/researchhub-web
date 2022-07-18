@@ -40,10 +40,10 @@ const BountyAlert = ({ bounty }: BountyAlertParams) => {
               <span>Deleted User</span>
             ) 
           }
-          {` `}is offering <span className={css(styles.strong)}>{amount.toLocaleString()} RSC<ResearchCoinIcon width={16} overrideStyle={styles.rscIcon} /></span> for answers to this question
+          {` `}is offering <span className={css(styles.strong)}>{(amount).toLocaleString()} RSC<ResearchCoinIcon width={16} height={16} overrideStyle={styles.rscIcon} /></span> for answers to this question
           <span className={css(styles.divider)}>•</span>
           <span className={css(styles.expireTime)}>Bounty expires in {timeRemaining}</span>
-          <div><ALink href="#comments" theme="solidPrimary">Submit your answer.</ALink></div>
+          <div><ALink href="#comments" theme="green">Submit your answer.</ALink></div>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     padding: "15px 25px",
     color: colors.MEDIUM_GREY2(),
     fontSize: 16,
-    border: `1px solid ${colors.NEW_BLUE()}`,
+    border: `1px solid ${colors.NEW_GREEN()}`,
     lineHeight: "22px",
   },
   alertDetails: {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 
   },
   rscIcon: {
-    verticalAlign: "middle",
+    verticalAlign: "text-top",
     marginLeft: 5,
   },
   divider: {
