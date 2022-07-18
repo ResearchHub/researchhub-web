@@ -1,8 +1,10 @@
 import { userVoteToConstant } from "../constants"
 import { formatDateStandard } from "../utils/dates"
+import Bounty, { BOUNTY_STATUS } from "./bounty"
 import { parseCreatedBy } from "./contribution"
 import { Hub, parseHub } from "./hub"
 import { AuthorProfile, CreatedBy, ID, parseAuthorProfile, parseUnifiedDocument, TopLevelDocument, UnifiedDocument } from "./root_types"
+
 
 export class Post implements TopLevelDocument {
   _id: ID
@@ -21,6 +23,7 @@ export class Post implements TopLevelDocument {
   _markdown?: string
   _isReady: boolean
   _boostAmount: number
+  _bounties: Bounty[]
   
   constructor(raw:any) {
     this._authors = (raw.authors || []).map(a => parseAuthorProfile(a))  
@@ -37,6 +40,14 @@ export class Post implements TopLevelDocument {
     this._isReady = raw.id ? true : false;
     this._boostAmount = raw.boost_amount || 0;
     this._id = raw.id;
+    this._bounties = (raw.bounties ?? []).map(b => new Bounty(b));
+    this._bounties = [new Bounty({
+      created_date: "2022-07-11T19:58:16.564810Z",
+      expiration_date: "2022-12-07T17:06:00Z",
+      created_by: raw.created_by,
+      status: "OPEN",
+      amount: 15000.000,
+    })]
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote)
@@ -109,4 +120,8 @@ export class Post implements TopLevelDocument {
   get hubs():Array<Hub> {
     return this._hubs;
   }
+
+  get bounties():Array<Bounty> {
+    return (this._bounties || []).filter(b => b.status == BOUNTY_STATUS.OPEN);
+  }  
 }
