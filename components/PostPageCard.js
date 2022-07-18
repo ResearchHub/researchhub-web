@@ -165,9 +165,11 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  <div className={css(styles.createBountyContainer)}>
-                    <CreateBountyBtn onBountyAdd={() => null} />
-                  </div>
+                  {true && (
+                    <div className={css(styles.createBountyContainer)}>
+                      <CreateBountyBtn onBountyAdd={() => null} />
+                    </div>
+                  )}
                 </div>
               )}
             </ReactPlaceholder>

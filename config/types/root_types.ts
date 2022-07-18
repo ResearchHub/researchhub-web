@@ -5,6 +5,7 @@ import {
   parsePeerReviewScoreSummary,
   PeerReviewScoreSummary,
 } from "./peerReview";
+import Bounty from "./bounty";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -33,6 +34,7 @@ export interface TopLevelDocument {
   boostAmount: number;
   id: ID;
   isOpenAccess?: boolean;
+  bounties?: Bounty[]
 }
 
 export type PaperFormat = {
@@ -75,6 +77,7 @@ export type AuthorProfile = {
   firstName?: string;
   lastName?: string;
   isClaimed: boolean;
+  url: string;
   sequence?: "first" | "additional";
 };
 
@@ -221,8 +224,13 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     profileImage: raw.profile_image,
     firstName: raw.first_name,
     lastName: raw.last_name,
+    url: `/user/${raw.id}/overview`,
     ...(raw.sequence && { sequence: raw.sequence }),
   };
+
+  if (!parsed.firstName) {
+    parsed.firstName = "N/A";
+  }
 
   return parsed;
 };

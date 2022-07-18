@@ -1,7 +1,7 @@
 import { ReactElement, useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import BountyModal from "./BountyModal";
-import icons, { MedalIcon } from "~/config/themes/icons";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
@@ -47,7 +47,6 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
           >
             <div className={css(styles.bountyAmount)}>
               <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
-              <MedalIcon />
               <span className={css(styles.bountyAmountText)}>
                 {bountyAmountDetails?.netBountyAmount} ResearchCoin bounty
               </span>
@@ -73,7 +72,8 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
                 alt="RSC Coin"
                 width={22}
               /> */}
-              {icons.plus}
+              <ResearchCoinIcon width={35} height={35} />
+              {/* {icons.plus} */}
             </span>
             <span className={css(styles.addBountyLabel)}>Add Bounty</span>
           </div>          
@@ -141,20 +141,21 @@ const styles = StyleSheet.create({
   },
   addBounty: {
     // color: colors.ORANGE_DARK(),
-    color: colors.NEW_BLUE(),
+    color: colors.ORANGE_DARK(),
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: 500,
     cursor: "pointer",
     border: "1px solid",
     borderRadius: 4,
     padding: "7px 16px",
+    // paddingLeft: 0,
     display: "flex",
     alignItems: "center",
     ":hover": {
       // color: colors.ORANGE()
     },
     boxSizing: "border-box",
-    height: 34,
+    height: 42,
   },  
   addBountyLabel: {
     // fontWeight: 500,

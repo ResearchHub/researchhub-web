@@ -945,6 +945,37 @@ export const MedalIcon = ({
   );
 };
 
+export const ResearchCoinIcon = ({
+  onClick = undefined,
+  overrideStyle,
+  width = 15,
+  height = undefined,
+  version = 1,
+}) => {
+  return (
+    <span onClick={onClick} className={css(overrideStyle && overrideStyle)}>
+      {version === 1 ? (
+        <img
+          className={css(styles.icon)}
+          src={"/static/icons/coin-filled.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      ) : (
+        <img
+          onClick={onClick}
+          className={css(overrideStyle && overrideStyle)}
+          src={"/static/icons/rsc_v2.png"}
+          alt="RSC Coin2"
+          width={width}
+          height={height}
+        />
+      )}
+    </span>
+  );
+};
+
 const styles = StyleSheet.create({
   iconWrapper: {
     padding: 8,

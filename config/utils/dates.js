@@ -86,6 +86,31 @@ export function timeSince(date) {
   return timeSince;
 }
 
+export function timeTo(date) {
+  const inputDate = moment(date);
+  const now = moment();
+  const minsInOneDay = 1440;
+
+  const deltaInMins = inputDate.diff(now, "minutes");
+  let timeSince = "";
+
+  if (deltaInMins <= 1) {
+    timeSince = "one minute";
+  } else if (deltaInMins < 60) {
+    timeSince = Math.floor(deltaInMins);
+    timeSince += timeSince == 1 ? " minute" : " minutes";
+  } else if (deltaInMins < minsInOneDay) {
+    timeSince = Math.floor(deltaInMins / 60);
+    timeSince += timeSince === 1 ? " hour" : " hours";
+  } else {
+    const days = Math.floor(deltaInMins / 60 / 24);
+    const minutes = Math.ceil(deltaInMins % (60 / 24));
+    timeSince = days + (days === 1 ? " day" : " days");
+  }
+
+  return timeSince;
+}
+
 export function calculateScopeFromSlug(scopeId) {
   let scope = {
     start: 0,
