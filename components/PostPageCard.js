@@ -17,6 +17,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import ReactHtmlParser from "react-html-parser";
 import router from "next/router";
 import CreateBountyBtn from "./Bounty/CreateBountyBtn";
+import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -103,6 +104,12 @@ class PostPageCard extends Component {
   render() {
     const { post, removePost, restorePost } = this.props;
     const { postBody } = this.state;
+    const isEditMode = this.state.showPostEditor;
+
+    let initialData = postBody;
+    if (!isEditMode && typeof initialData === "string") {
+      initialData = trimEmptyParagraphs({ htmlStr: postBody });
+    }
 
     return (
       <div className={css(styles.mainContainer)}>
@@ -121,13 +128,13 @@ class PostPageCard extends Component {
             >
               {post.isReady && (
                 <div>
-                  {this.state.showPostEditor ? (
+                  {isEditMode ? (
                     <>
                       <DynamicCKEditor
                         containerStyle={post.note && styles.editor}
                         editing
                         id="editPostBody"
-                        initialData={postBody}
+                        initialData={initialData}
                         isBalloonEditor
                         labelStyle={styles.label}
                         noTitle={!post.note}
@@ -156,7 +163,7 @@ class PostPageCard extends Component {
                         <DynamicCKEditor
                           containerStyle={post.note && styles.editor}
                           id={"postBody"}
-                          initialData={postBody}
+                          initialData={initialData}
                           isBalloonEditor
                           labelStyle={styles.label}
                           noTitle={!post.note}
@@ -183,6 +190,7 @@ class PostPageCard extends Component {
 const styles = StyleSheet.create({
   createBountyContainer: {
     display: "inline-block",
+    marginTop: 15,
   },
   section: {
     marginTop: 25,

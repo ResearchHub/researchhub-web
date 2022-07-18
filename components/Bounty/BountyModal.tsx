@@ -2,7 +2,7 @@ import { ReactElement, useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import BaseModal from "../Modals/BaseModal";
 import ReactTooltip from "react-tooltip";
-import icons, { MedalIcon } from "~/config/themes/icons";
+import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 
@@ -68,6 +68,7 @@ function BountyModal({
       } 
     }
 
+    const showAlertText = hasMinRscAlert || hasMaxRscAlert || withPreview;
     const researchHubAmount = parseInt((BOUNTY_RH_PERCENTAGE/100 * bountyAmount).toFixed(0));
     return (
       <BaseModal
@@ -75,8 +76,8 @@ function BountyModal({
         isOpen={isOpen}
         modalStyle={styles.modalStyle}
         modalContentStyle={styles.modalContentStyle}
-        titleStyle={styles.title}
-        title={`Add ResearchCoin Bounty`}
+        // titleStyle={styles.title}
+        title={<span className={css(styles.modalTitle)}> Add RSC Bounty <ResearchCoinIcon overrideStyle={styles.rscIcon} width={20} /></span>}
       >
         <ReactTooltip
           id="commission"
@@ -86,20 +87,20 @@ function BountyModal({
         >
           <div className={css(bountyTooltip.bodyContainer)}>
             <div className={css(bountyTooltip.desc)}>
-              <div>• 2% of bounty amount will be used to support the ResearchHub DAO</div>
-              <div>• 5% of bounty amount will be paid to ResearchHub</div>
+              <div>• 2% of bounty amount will be used to support the ResearchHub Community</div>
+              <div>• 5% of bounty amount will be paid to ResearchHub Inc</div>
             </div>
           </div>
         </ReactTooltip>
         <ReactTooltip
           id="net"
           effect="solid"
-          className={css(bountyTooltip.tooltipContainer)}
+          className={css(bountyTooltip.tooltipContainer, bountyTooltip.tooltipContainerSmall)}
           delayShow={150}
         >
           <div className={css(bountyTooltip.bodyContainer)}>
             <div className={css(bountyTooltip.desc)}>
-              Actual amount bounty winner will receive
+              Actual amount bounty awardee(s) will receive
             </div>
           </div>
         </ReactTooltip>
@@ -137,7 +138,7 @@ function BountyModal({
                 </div>
                 <div className={css(styles.lineItemValue)}>
                   <span className={css(styles.valueNumber)}>
-                    <span>- {researchHubAmount}</span>
+                    <span>- {(researchHubAmount).toLocaleString()}</span>
                   </span>
                   <span className={css(styles.rscText)}>RSC</span>
                 </div>
@@ -158,7 +159,7 @@ function BountyModal({
                 </div>
                 <div className={css(styles.lineItemValue, styles.netAmountValue)}>
                   <span className={css(styles.valueNumber)}>
-                    <span>{bountyAmount - researchHubAmount}</span>
+                    <span>{(bountyAmount - researchHubAmount).toLocaleString()}</span>
                   </span>
                   <span className={css(styles.rscText)}>RSC</span>
                 </div>
@@ -170,7 +171,7 @@ function BountyModal({
               <span className={css(infoSectionStyles.infoIcon)}>{icons.clock}</span> <span className={css(infoSectionStyles.infoText)}>Bounty will end in 30 days or as soon as you award a solution</span>
             </div>
             <div className={css(infoSectionStyles.infoRow)}>
-              <span className={css(infoSectionStyles.infoIcon)}>{<MedalIcon color={colors.DARKER_GREY()} />}</span> Award either partial or full bounty depending on whether solution satisfies your request
+              <span className={css(infoSectionStyles.infoIcon)}>{<MedalIcon color={colors.DARKER_GREY()} width={25} height={25} />}</span> Award either partial or full bounty depending on whether solution satisfies your request
             </div>
             <div className={css(infoSectionStyles.infoRow)}>
               <span className={css(infoSectionStyles.infoIcon)}>{icons.undo}</span> If no solution satisfies your request, full bounty amount will be refunded to you
@@ -178,7 +179,7 @@ function BountyModal({
           </div>
 
           <div className={css(styles.addBountyContainer)}>
-            <div className={css(styles.buttonRow)}>
+            <div className={css(styles.buttonRow, hasMinRscAlert && styles.buttonRowWithText )}>
               {hasMinRscAlert
                 ? (
                   <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
@@ -214,8 +215,11 @@ function BountyModal({
 const bountyTooltip = StyleSheet.create({
   tooltipContainer: {
     textAlign: "left",
-    maxWidth: 400,
+    width: 450,
     padding: 12,
+  },
+  tooltipContainerSmall: {
+    width: "auto",
   },
   bodyContainer: {},
   title: {
@@ -268,6 +272,8 @@ const infoSectionStyles = StyleSheet.create({
   infoIcon: {
     fontSize: 20,
     marginRight: 10,
+    width: 20,
+    boxSizing: "border-box",
   },
   infoText: {
     
@@ -280,11 +286,18 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
   },
-  title: {
+  modalTitle: {
     // color: colors.ORANGE_DARK(),
     marginBottom: 25,
     fontSize: 22,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     // paddingTop: 25,
+  },
+  rscIcon: {
+    marginLeft: 8,
+    marginTop: 5,
   },
   input: {
     width: 60,
@@ -339,8 +352,12 @@ const styles = StyleSheet.create({
     // marginLeft: "15px",
     display: "flex",
     width: "100%",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  buttonRowWithText: {
+    justifyContent: "space-between",
+    
   },
   addButton: {
     background: colors.ORANGE_LIGHT(),
@@ -399,11 +416,9 @@ const styles = StyleSheet.create({
   netAmountLine: {
     paddingTop: 7,
     borderTop: `2px solid rgb(229 229 230)`,
-    // color: colors.ORANGE_DARK(),
     fontWeight: 500,
   },
   netAmountValue: {
-    // color: colors.ORANGE_DARK(),
     fontWeight: 500,
 
   }

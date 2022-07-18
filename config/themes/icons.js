@@ -922,8 +922,8 @@ export const UpIcon = ({
 export const MedalIcon = ({
   onClick = undefined,
   overrideStyle = null,
-  width = 19,
-  height = 24,
+  width = 25,
+  height = 25,
   color = colors.BLACK(),
 }) => {
   return (
@@ -931,7 +931,7 @@ export const MedalIcon = ({
       <svg
         width={width}
         height={height}
-        viewBox={`0 0 ${width} ${height}`}
+        viewBox={`0 0 20 16`}
         fill="none"
         id={"medalIcon"}
         xmlns="http://www.w3.org/2000/svg"
@@ -948,8 +948,8 @@ export const MedalIcon = ({
 export const ResearchCoinIcon = ({
   onClick = undefined,
   overrideStyle,
-  width = 15,
-  height = undefined,
+  height = 25,
+  width = 25,
   version = 1,
 }) => {
   return (
@@ -962,16 +962,25 @@ export const ResearchCoinIcon = ({
           width={width}
           height={height}
         />
-      ) : (
+      ) : version === 2 ? (
         <img
           onClick={onClick}
           className={css(overrideStyle && overrideStyle)}
           src={"/static/icons/rsc_v2.png"}
-          alt="RSC Coin2"
+          alt="RSC Coin"
           width={width}
           height={height}
         />
-      )}
+      ) : version === 3 ? (
+        <img
+          onClick={onClick}
+          className={css(overrideStyle && overrideStyle)}
+          src={"/static/icons/rsc_v3.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      ) : null}
     </span>
   );
 };
