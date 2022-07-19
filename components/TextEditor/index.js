@@ -16,6 +16,7 @@ import { convertToEditorToHTML } from "~/config/utils/editor";
 import { genClientId } from "~/config/utils/id";
 import getDefaultPostType from "~/components/TextEditor/util/getDefaultPostType";
 import { getPostTypeStruct } from "./config/postTypes";
+import isQuillEmpty from "./util/isQuillEmpty";
 
 function TextEditor(props) {
   const {
@@ -56,8 +57,6 @@ function TextEditor(props) {
       : getDefaultPostType({ documentType })
   );
 
-  console.log("postType", postType);
-
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
@@ -68,17 +67,6 @@ function TextEditor(props) {
 
   function cancel() {
     onCancel && onCancel();
-  }
-  /**
-   * Used to check if editor is empty upon submission
-   * @param { Object } content -- quill's node blocks
-   */
-  function isQuillEmpty(content) {
-    if (JSON.stringify(content) == '{"ops":[{"insert":"\\n"}]}') {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   function submit({ content, plainText, callback, discussionType }) {

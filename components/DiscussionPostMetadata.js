@@ -329,9 +329,9 @@ const styles = StyleSheet.create({
   },
   badgeContainer: {
     marginLeft: "auto",
-    marginTop: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "inline-block",
+      marginTop: 15,
     },
   },
   column: {

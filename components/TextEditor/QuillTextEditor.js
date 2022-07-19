@@ -23,6 +23,7 @@ import reviewCategories from "~/components/TextEditor/config/reviewCategories";
 import { POST_TYPES } from "./config/postTypes";
 import trimQuillEditorContents from "./util/trimQuillEditorContents";
 import hasQuillContent from "./util/hasQuillContent";
+import isQuillEmpty from "./util/isQuillEmpty";
 
 class Editor extends Component {
   constructor(props) {
@@ -38,6 +39,7 @@ class Editor extends Component {
       ReactQuill: null,
       Quill: null,
       showFullEditor: false,
+      submitDisabled: true,
       selectedPostTypeStruct: this.props.selectedPostTypeStruct,
     };
     this.reactQuillRef = createRef();
@@ -205,6 +207,12 @@ class Editor extends Component {
       this.forcePlaceholderToShow({
         placeholderText: this.state.selectedPostTypeStruct.placeholder,
       });
+    }
+
+    if (isQuillEmpty(editorContents)) {
+      this.setState({ submitDisabled: true });
+    } else {
+      this.setState({ submitDisabled: false });
     }
 
     if (this.props.editing) {
@@ -468,6 +476,7 @@ class Editor extends Component {
           (props.loading ? (
             <FormButton
               onClick={null}
+              disabled={this.state.submitDisabled}
               label={<Loader loading={true} color={"#FFF"} size={20} />}
               customButtonStyle={[
                 toolbarStyles.postButtonStyle,
@@ -481,6 +490,7 @@ class Editor extends Component {
               <FormButton
                 onClick={this.onSubmit}
                 label={label}
+                disabled={this.state.submitDisabled}
                 customButtonStyle={[
                   toolbarStyles.postButtonStyle,
                   isRequestMode && toolbarStyles.requestButton,
