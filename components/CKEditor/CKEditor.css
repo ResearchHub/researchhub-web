@@ -479,7 +479,7 @@ h3 {
   border-bottom-style: solid;
 }
 
-.askQuestionForm .ck-editor__editable {
-  max-height: 500px;
-  overflow: scroll;
+#askQuestionForm .ck-content {
+  max-height: 200px !important;
+  overflow: scroll !important;
 }
