@@ -106,7 +106,7 @@ class ThreadActionBar extends Component {
             </div>
           )}
 
-          {true && (
+          {this.props.showAcceptedAnswerBtn && (
             <div
               className={css(styles.text, styles.action)}
               onClick={() => null}
@@ -121,6 +121,7 @@ class ThreadActionBar extends Component {
             </div>
           )}
 
+          {/* TODO: This will be turned on with the onset of bounty feature */}
           {false && (
             <div
               className={css(styles.text, styles.action)}

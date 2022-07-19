@@ -537,6 +537,10 @@ class DiscussionEntry extends Component {
       objectId: data.id,
     };
 
+    const showAcceptAnswerBtn =
+      documentType === "question" &&
+      post?.created_by?.id === data.created_by.id;
+
     return (
       <div
         className={css(
@@ -674,6 +678,7 @@ class DiscussionEntry extends Component {
                   small={noVoteLine}
                   threadID={data?.id}
                   title={title}
+                  showAcceptedAnswerBtn={showAcceptAnswerBtn}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
