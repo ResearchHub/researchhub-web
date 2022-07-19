@@ -39,13 +39,17 @@ class ThreadTextEditor extends Component {
     }
   }
 
-  onSubmit = (content, plain_text, clearContent) => {
+  onSubmit = ({ content, plainText, callback }) => {
     this.setState({ loading: true }, () => {
       this.props.onSubmit &&
-        this.props.onSubmit(content, plain_text, () => {
-          this.setState({ loading: false });
-          this.onCancel();
-          clearContent && clearContent();
+        this.props.onSubmit({
+          content,
+          plainText,
+          callback: () => {
+            this.setState({ loading: false });
+            this.onCancel();
+            callback && callback();
+          },
         });
     });
   };
@@ -58,15 +62,18 @@ class ThreadTextEditor extends Component {
     this.props.onChange && this.props.onChange();
   };
 
-  onEditSubmit = (content, plain_text) => {
-    this.setState({ loading: true }, () => {
+  onEditSubmit = ({ content, plainText }) => {
+    this.setState({ loading: true, editorState: content }, () => {
       this.props.onEditSubmit &&
         this.props
-          .onEditSubmit(content, plain_text, () => {
-            this.setState({
-              loading: false,
-              editorState: content,
-            });
+          .onEditSubmit({
+            content,
+            plainText,
+            callback: () => {
+              this.setState({
+                loading: false,
+              });
+            },
           })
           .catch((error) => {
             this.props.onError && this.props.onError(error);
@@ -83,6 +90,7 @@ class ThreadTextEditor extends Component {
 
   render() {
     let { mediaOnly, placeholder } = this.props;
+
     if (!this.props.body) {
       return (
         <PermissionNotificationWrapper
@@ -162,12 +170,7 @@ const styles = StyleSheet.create({
       border: "unset",
     },
   },
-  editTextContainer: {
-    border: "1px solid #E8E8F2",
-    ":hover": {
-      border: "1px solid #E7E7E7",
-    },
-  },
+  editTextContainer: {},
   edit: {
     padding: 16,
     backgroundColor: colors.LIGHT_YELLOW(),

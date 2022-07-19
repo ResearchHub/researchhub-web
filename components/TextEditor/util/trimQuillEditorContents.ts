@@ -1,4 +1,4 @@
-export default function ({ contents }) {
+export default function trimQuillEditorContents ({ contents }) {
   const deltas = Array.isArray(contents) ? contents : contents?.ops ? contents.ops : [];
 
   if (deltas.length > 0) {
