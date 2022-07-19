@@ -790,11 +790,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
-    background: "white",
-    padding: "12px 15px",
-    borderRadius: "4px",
-    border: `1px solid ${colors.LIGHT_GREY()}`,
-    boxSizing: "border-box",
   },
   acceptedAnswer: {
     border: `1px solid ${colors.NEW_GREEN()}`,
