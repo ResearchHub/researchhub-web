@@ -23,7 +23,6 @@ export const getActivityMetadata = (activity) => {
     source,
     unified_document: { document_type: sourceType, documents: documents },
   } = activity;
-
   let href, hrefAs;
   let postId, postTitle, postSlug;
   let docs = documents;
@@ -58,6 +57,7 @@ export const getActivityMetadata = (activity) => {
       postTitle = postTitle ? postTitle : source.paper_title;
       hrefAs = `/paper/${postId}/${postSlug}`;
       break;
+    case "QUESTION":
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       postTitle = postTitle ? postTitle : source.title;
