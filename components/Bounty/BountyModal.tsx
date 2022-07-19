@@ -5,6 +5,7 @@ import ReactTooltip from "react-tooltip";
 import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
+import Bounty from "~/config/types/bounty";
 
 
 const BOUNTY_DEFAULT_AMOUNT = 1000;
@@ -59,12 +60,20 @@ function BountyModal({
     }
 
     const handleAddBounty = () => {
-      if (!hasMinRscAlert) {
-        handleBountyAdded({
-          grossBountyAmount: bountyAmount,
-          netBountyAmount: bountyAmount - researchHubAmount,
-        })
-        closeModal();
+      if (!(hasMinRscAlert || hasMaxRscAlert)) {
+        if (withPreview) {
+          handleBountyAdded({
+            grossBountyAmount: bountyAmount,
+            netBountyAmount: bountyAmount - researchHubAmount,
+          })
+          closeModal();
+        }
+        else {
+          Bounty.createAPI({ bountyAmount })
+            .then((createdBounty) => {
+              console.log(createdBounty)
+            })
+        }
       } 
     }
 
@@ -77,7 +86,7 @@ function BountyModal({
         modalStyle={styles.modalStyle}
         modalContentStyle={styles.modalContentStyle}
         // titleStyle={styles.title}
-        title={<span className={css(styles.modalTitle)}> Add RSC Bounty <ResearchCoinIcon overrideStyle={styles.rscIcon} width={20} /></span>}
+        title={<span className={css(styles.modalTitle)}> Add RSC Bounty <ResearchCoinIcon overrideStyle={styles.rscIcon} width={20} height={20} /></span>}
       >
         <ReactTooltip
           id="commission"
@@ -163,7 +172,7 @@ function BountyModal({
                   </span>
                   <span className={css(styles.rscText)}>RSC</span>
                 </div>
-              </div>              
+              </div>
             </div>
           </div>
           <div className={css(infoSectionStyles.bountyInfo)}>

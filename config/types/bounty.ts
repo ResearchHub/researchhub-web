@@ -26,6 +26,31 @@ export default class Bounty {
     this._status = raw.status;
   }
 
+  static createAPI({ bountyAmount }) {
+    
+    // TODO: Change hard coded value
+    return new Promise((resolve, reject) => {
+      const bounty = new Bounty({
+        created_date: "2022-07-11T19:58:16.564810Z",
+        expiration_date: "2022-12-07T17:06:00Z",
+        created_by: {
+          first_name: "Kobe",
+          last_name: "Attias",
+          id: 8,
+          author_profile: {
+            first_name: "Kobe",
+            last_name: "Attias",
+            id: 8,
+          }
+        },
+        status: "OPEN",
+        amount: 15000.000,
+      });
+
+      return resolve(bounty);
+    })
+  }
+
   get id():ID {
     return this.id;
   }
