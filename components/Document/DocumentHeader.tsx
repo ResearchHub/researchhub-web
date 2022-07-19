@@ -281,7 +281,6 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>Authors</div>
                 <div className={css(styles.metaVal)}>
                   {authorElems}
-                  {` `}
                   {claimableAuthors.length > 0 && (
                     <span
                       className={css(styles.claimProfile)}

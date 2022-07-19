@@ -212,9 +212,6 @@ function UnifiedDocFeedContainer({
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
-    hasSubscribed,
-    isLoggedIn,
-    isOnMyHubsTab,
     setUnifiedDocuments,
     onBadgeClick: onDocTypeFilterSelect,
     unifiedDocumentData: renderableUniDoc,
