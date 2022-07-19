@@ -118,6 +118,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
     <form
       autoComplete={"off"}
       className={css(styles.askQuestionForm)}
+      id="askQuestionForm"
       onSubmit={onFormSubmit}
     >
       <div className={css(formGenericStyles.text, styles.header)}>
@@ -198,6 +199,7 @@ const styles = StyleSheet.create({
   askQuestionForm: {
     display: "flex",
     flexDirection: "column",
+    boxSizing: "border-box",
     background: "#FFFFFF",
     "@media only screen and (min-width: 1024px)": {
       minWidth: 720,
