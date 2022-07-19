@@ -1,5 +1,5 @@
 import colors from "~/config/themes/colors";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import reviewCategories from "./config/reviewCategories";
 import icons from "~/config/themes/icons";
@@ -7,15 +7,31 @@ import icons from "~/config/themes/icons";
 function ReviewCategorySelector({ handleSelect }): ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   const _handleSelect = (reviewCategory) => {
     handleSelect(reviewCategory);
     setIsOpen(false);
   }
 
+  const _handleOutsideClick = (e) => {
+    if (!dropdownRef.current?.contains(e.target) && !triggerRef.current?.contains(e.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", _handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", _handleOutsideClick);
+    };
+  }, []);
+
   const renderDropdown = () => {
     return (
-      <div className={css(styles.dropdown, isOpen && styles.dropdownOpen)}>
+      <div className={css(styles.dropdown, isOpen && styles.dropdownOpen)} ref={dropdownRef}>
         {Object.values(reviewCategories).filter(cat => !cat.isDefault).map(cat => (
           <div className={css(styles.dropdownOpt)} onClick={() => _handleSelect(cat)}>
             <div className={css(styles.dropdownOptLabel)}>
@@ -31,7 +47,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
 
   const renderTrigger = () => {
     return (
-      <div className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)}>
+      <div className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)} ref={triggerRef}>
         <span className={css(styles.plusIcon)}>{icons.plus}</span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
       </div>
