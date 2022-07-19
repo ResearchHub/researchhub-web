@@ -228,7 +228,7 @@ function DocumentHeader({
   });
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
   const hasBounties = document.bounties && document?.bounties?.length > 0;
-  console.log('document.bounties', document.bounties)
+
   return (
     // @ts-ignore
     <ReactPlaceholder
