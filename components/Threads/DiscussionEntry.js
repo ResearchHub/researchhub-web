@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
     display: "table-cell",
     height: "100%",
     verticalAlign: "top",
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 600px)": {
       width: 35,
     },
   },
