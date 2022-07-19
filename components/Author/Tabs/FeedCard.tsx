@@ -13,7 +13,11 @@ import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { parseCreatedBy } from "~/config/types/contribution";
-import { VoteType, RhDocumentType } from "~/config/types/root_types";
+import {
+  VoteType,
+  RhDocumentType,
+  NullableString,
+} from "~/config/types/root_types";
 import { SyntheticEvent, useState, useEffect } from "react";
 import colors, {
   genericCardColors,
@@ -42,6 +46,7 @@ export type FeedCardProps = {
   discussion_count: number;
   first_figure: any;
   first_preview: any;
+  formattedDocLabel?: string;
   formattedDocType: RhDocumentType | null;
   hubs: any[];
   id: number;
@@ -84,6 +89,7 @@ function FeedCard({
   featured,
   first_figure,
   first_preview,
+  formattedDocLabel,
   formattedDocType,
   handleClick,
   hubs,
@@ -299,9 +305,7 @@ function FeedCard({
                         {documentIcons[formattedDocType!]}
                       </span>
                       <span className={css(styles.metadataText)}>
-                        {formattedDocType === "hypothesis"
-                          ? "Meta-Study"
-                          : formattedDocType}
+                        {formattedDocLabel ?? formattedDocType}
                       </span>
                     </div>
                   </div>
