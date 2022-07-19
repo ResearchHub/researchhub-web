@@ -136,7 +136,7 @@ const dropdownStyles = StyleSheet.create({
   dropdown: {
     position: "absolute",
     display: "none",
-    zIndex: 1,
+    zIndex: 3,
     background: "white",
     padding: "15px 0 10px 0",
     borderRadius: 4,

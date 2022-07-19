@@ -209,11 +209,6 @@ const DiscussionTab = (props) => {
   };
 
   const save = async ({ content, plainText, callback, discussionType }) => {
-    console.log("content", content);
-    console.log("plainText", plainText);
-    console.log("callback", callback);
-    console.log("discussion_type", discussionType);
-
     setSubmitInProgress(true);
     let param;
     let documentId;
@@ -417,7 +412,7 @@ const DiscussionTab = (props) => {
       loading={submitInProgress}
       uid={textEditorKey}
       isTopLevelComment={true}
-      documentType={`question`}
+      documentType={documentType}
     ></TextEditor>
   );
 

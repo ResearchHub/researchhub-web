@@ -37,6 +37,7 @@ class Editor extends Component {
       focus: false,
       ReactQuill: null,
       Quill: null,
+      showFullEditor: false,
       selectedPostType: this.props.selectedPostType,
     };
     this.reactQuillRef = createRef();
@@ -339,7 +340,7 @@ class Editor extends Component {
           <button className="ql-video"></button>
           <button
             id="show-editor"
-            className="show-full-editor"
+            className={`show-full-editor ${showFullEditor ? "ql-active" : ""}`}
             onClick={() => this.setState({ showFullEditor: !showFullEditor })}
           >
             {faIcons.fontCase}
