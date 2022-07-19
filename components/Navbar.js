@@ -102,16 +102,15 @@ const Navbar = (props) => {
   };
 
   useEffect(async () => {
-    const caseCount = await getCaseCounts({});
-    let totalCount = 0;
-
-    if (caseCount) {
-      totalCount = caseCount["OPEN"];
+    let [caseCount, flagCount] = [{}, 0];
+    if (isUserModerator) {
+      caseCount = (await getCaseCounts({})) ?? {};
     }
     if (isUserModerator || isUserHubEditor) {
-      const flagCount = await getFlagCountAPI();
-      totalCount += flagCount;
+      flagCount = (await getFlagCountAPI()) ?? 0;
     }
+
+    const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
 
     setOpenCaseCounts(totalCount);
     setNumNavInteractions(totalCount);
@@ -427,236 +426,214 @@ const Navbar = (props) => {
   }
 
   return (
-    <div
-      style={{
-        borderBottom: `1px solid ${colors.GREY_BORDER}`,
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 2000 /* maxWidth of rhHomeContentContainer */,
-          width: "inherit",
-        }}
-      >
-        <NewPostModal />
-        <MobileOnly>
-          <Menu
-            top
-            isOpen={sideMenu}
-            styles={burgerMenuStyle}
-            customBurgerIcon={false}
-            onStateChange={menuChange}
-          >
-            <Link href={"/"} as={`/`}>
-              <a
-                className={css(
-                  styles.logoContainer,
-                  styles.logoContainerForMenu
-                )}
-              >
-                <RHLogo iconStyle={styles.logo} white={true} />
-              </a>
-            </Link>
-            {renderMenuItems()}
-          </Menu>
-        </MobileOnly>
-        <div
-          ref={navbarRef}
-          className={`${css(
-            styles.navbarContainer,
-            (router.route === "/paper/[paperId]/[paperName]" ||
-              router.route === "/hubs") &&
-              styles.unstickyNavbar
-          )} navbar`}
+    <Fragment>
+      <NewPostModal />
+      <MobileOnly>
+        <Menu
+          top
+          isOpen={sideMenu}
+          styles={burgerMenuStyle}
+          customBurgerIcon={false}
+          onStateChange={menuChange}
         >
-          <UploadPaperModal />
-          <LoginModal />
-          <WithdrawalModal />
-          <FirstVoteModal auth={auth} updateUser={updateUser} />
-          <OrcidConnectModal />
-          <DndModal />
-          <PromotionInfoModal />
-          <ReCaptchaPrompt />
           <Link href={"/"} as={`/`}>
-            <a className={css(styles.logoContainer)}>
-              <RHLogo iconStyle={styles.logo} withText={true} />
+            <a
+              className={css(styles.logoContainer, styles.logoContainerForMenu)}
+            >
+              <RHLogo iconStyle={styles.logo} white={true} />
             </a>
           </Link>
+          {renderMenuItems()}
+        </Menu>
+      </MobileOnly>
+      <div
+        ref={navbarRef}
+        className={`${css(
+          styles.navbarContainer,
+          (router.route === "/paper/[paperId]/[paperName]" ||
+            router.route === "/hubs") &&
+            styles.unstickyNavbar
+        )} navbar`}
+      >
+        <UploadPaperModal />
+        <LoginModal />
+        <WithdrawalModal />
+        <FirstVoteModal auth={auth} updateUser={updateUser} />
+        <OrcidConnectModal />
+        <DndModal />
+        <PromotionInfoModal />
+        <ReCaptchaPrompt />
+        <Link href={"/"} as={`/`}>
+          <a className={css(styles.logoContainer)}>
+            <RHLogo iconStyle={styles.logo} withText={true} />
+          </a>
+        </Link>
 
-          <div className={css(styles.tabsWrapper)}>
-            <div className={css(styles.tabs)}>{renderTabs()}</div>
-            <div className={css(styles.searchWrapper)}>
-              <Search
-                overrideStyle={styles.navbarSearchOverride}
-                navbarRef={navbarRef}
-                id="navbarSearch"
-              />
-            </div>
-          </div>
-
-          <div className={css(styles.hubPopoverWrapper)}>
-            <HubSelector />
-          </div>
-
-          <div className={css(styles.searchSmallScreen)}>
+        <div className={css(styles.tabsWrapper)}>
+          <div className={css(styles.tabs)}>{renderTabs()}</div>
+          <div className={css(styles.searchWrapper)}>
             <Search
               overrideStyle={styles.navbarSearchOverride}
               navbarRef={navbarRef}
               id="navbarSearch"
             />
           </div>
-          <div
-            className={css(
-              styles.actions,
-              isLoggedIn && styles.actionsLoggedIn
-            )}
-          >
-            <div className={css(styles.buttonLeft)}>
-              {!isLoggedIn ? (
-                renderLoginButtons(isLoggedIn)
-              ) : (
-                <div className={css(styles.userDropdown)}>
-                  <div className={css(styles.navbarButtonContainer)}>
-                    <div
-                      className={css(styles.avatarContainer)}
-                      ref={avatarRef}
-                      onClick={toggleMenu}
-                    >
-                      <AuthorAvatar
-                        author={user.author_profile}
-                        size={35}
-                        textSizeRatio={2.5}
-                        disableLink
-                        showModeratorBadge={user && user.moderator}
-                      />
-                      <span className={css(styles.caret)}>
-                        {icons.caretDown}
-                      </span>
-                    </div>
-                    <div className={css(styles.reputation)}>
-                      <Reputation showBalance={true} />
-                    </div>
-                    <div
-                      className={css(styles.notification)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Notification
-                        wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
-                        wsAuth={true}
-                      />
-                      {(isUserModerator || isUserHubEditor) && (
-                        <div className={css(styles.modBtnContainer)}>
-                          <Link
-                            href={
-                              isUserHubEditor && !isUserModerator
-                                ? "/moderators/audit/all"
-                                : "/moderators/author-claim-case-dashboard?case_status=OPEN"
-                            }
-                          >
-                            <a className={css(styles.modBtn)}>
-                              {icons.shield}
-                              {openCaseCounts > 0 && (
-                                <div className={css(styles.notifCount)}>
-                                  {openCaseCounts}
-                                </div>
-                              )}
-                            </a>
-                          </Link>
-                        </div>
-                      )}
-                    </div>
+        </div>
+
+        <div className={css(styles.hubPopoverWrapper)}>
+          <HubSelector />
+        </div>
+
+        <div className={css(styles.searchSmallScreen)}>
+          <Search
+            overrideStyle={styles.navbarSearchOverride}
+            navbarRef={navbarRef}
+            id="navbarSearch"
+          />
+        </div>
+        <div
+          className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
+        >
+          <div className={css(styles.buttonLeft)}>
+            {!isLoggedIn ? (
+              renderLoginButtons(isLoggedIn)
+            ) : (
+              <div className={css(styles.userDropdown)}>
+                <div className={css(styles.navbarButtonContainer)}>
+                  <div
+                    className={css(styles.avatarContainer)}
+                    ref={avatarRef}
+                    onClick={toggleMenu}
+                  >
+                    <AuthorAvatar
+                      author={user.author_profile}
+                      size={35}
+                      textSizeRatio={2.5}
+                      disableLink
+                      showModeratorBadge={user && user.moderator}
+                    />
+                    <span className={css(styles.caret)}>{icons.caretDown}</span>
                   </div>
-                  {openMenu && (
-                    <div
-                      className={css(styles.dropdown)}
-                      ref={dropdownRef}
-                      onClick={toggleMenu}
-                    >
-                      <Link
-                        href={"/user/[authorId]/[tabName]"}
-                        as={`/user/${user.author_profile.id}/overview`}
-                      >
-                        <div className={css(styles.option)}>
-                          <span
-                            className={css(
-                              styles.profileIcon,
-                              styles.portraitIcon
-                            )}
-                          >
-                            {icons.portrait}
-                          </span>
-                          Profile
-                        </div>
-                      </Link>
-                      <Link href={`/${user.organization_slug}/notebook`}>
-                        <div className={css(styles.option)}>
-                          <span className={css(styles.profileIcon)}>
-                            {icons.bookOpen}
-                          </span>
-                          Notebook
-                        </div>
-                      </Link>
-                      <Link href={"/settings"} as={`/settings`}>
-                        <div className={css(styles.option)}>
-                          <span className={css(styles.profileIcon)}>
-                            {icons.cog}
-                          </span>
-                          Settings
-                        </div>
-                      </Link>
-                      {showReferral && (
+                  <div className={css(styles.reputation)}>
+                    <Reputation showBalance={true} />
+                  </div>
+                  <div
+                    className={css(styles.notification)}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Notification
+                      wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
+                      wsAuth={true}
+                    />
+                    {(isUserModerator || isUserHubEditor) && (
+                      <div className={css(styles.modBtnContainer)}>
                         <Link
-                          href={{
-                            pathname: "/referral",
-                          }}
+                          href={
+                            isUserHubEditor && !isUserModerator
+                              ? "/moderators/audit/all"
+                              : "/moderators/author-claim-case-dashboard?case_status=OPEN"
+                          }
                         >
-                          <div className={css(styles.option)}>
-                            <span className={css(styles.profileIcon)}>
-                              {icons.asterisk}
-                            </span>
-                            Referral Program
-                          </div>
+                          <a className={css(styles.modBtn)}>
+                            {icons.shield}
+                            {openCaseCounts > 0 && (
+                              <div className={css(styles.notifCount)}>
+                                {openCaseCounts}
+                              </div>
+                            )}
+                          </a>
                         </Link>
-                      )}
-                      <div
-                        className={css(styles.option, styles.lastOption)}
-                        onClick={() => {
-                          signout({ walletLink });
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {openMenu && (
+                  <div
+                    className={css(styles.dropdown)}
+                    ref={dropdownRef}
+                    onClick={toggleMenu}
+                  >
+                    <Link
+                      href={"/user/[authorId]/[tabName]"}
+                      as={`/user/${user.author_profile.id}/overview`}
+                    >
+                      <div className={css(styles.option)}>
+                        <span
+                          className={css(
+                            styles.profileIcon,
+                            styles.portraitIcon
+                          )}
+                        >
+                          {icons.portrait}
+                        </span>
+                        Profile
+                      </div>
+                    </Link>
+                    <Link href={`/${user.organization_slug}/notebook`}>
+                      <div className={css(styles.option)}>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.bookOpen}
+                        </span>
+                        Notebook
+                      </div>
+                    </Link>
+                    <Link href={"/settings"} as={`/settings`}>
+                      <div className={css(styles.option)}>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.cog}
+                        </span>
+                        Settings
+                      </div>
+                    </Link>
+                    {showReferral && (
+                      <Link
+                        href={{
+                          pathname: "/referral",
                         }}
                       >
-                        <span className={css(styles.profileIcon)}>
-                          {icons.signOut}
-                        </span>
-                        <span>Logout</span>
-                      </div>
+                        <div className={css(styles.option)}>
+                          <span className={css(styles.profileIcon)}>
+                            {icons.asterisk}
+                          </span>
+                          Referral Program
+                        </div>
+                      </Link>
+                    )}
+                    <div
+                      className={css(styles.option, styles.lastOption)}
+                      onClick={() => {
+                        signout({ walletLink });
+                      }}
+                    >
+                      <span className={css(styles.profileIcon)}>
+                        {icons.signOut}
+                      </span>
+                      <span>Logout</span>
                     </div>
-                  )}
-                </div>
-              )}
-            </div>
-            <NewPostButton />
-            {Boolean(user.id) && (
-              <PaperUploadStateNotifier
-                wsAuth
-                wsUrl={WS_ROUTES.PAPER_SUBMISSION(user.id)}
-              />
+                  </div>
+                )}
+              </div>
             )}
           </div>
-
-          <div
-            className={css(styles.menuIcon)}
-            onClick={toggleSideMenu}
-            data-test={isDevEnv() ? `navbar-mobile-trigger` : undefined}
-          >
-            {icons.burgerMenu}
-          </div>
+          <NewPostButton />
+          {Boolean(user.id) && (
+            <PaperUploadStateNotifier
+              wsAuth
+              wsUrl={WS_ROUTES.PAPER_SUBMISSION(user.id)}
+            />
+          )}
         </div>
-        <UserStateBanner />
+
+        <div
+          className={css(styles.menuIcon)}
+          onClick={toggleSideMenu}
+          data-test={isDevEnv() ? `navbar-mobile-trigger` : undefined}
+        >
+          {icons.burgerMenu}
+        </div>
       </div>
-    </div>
+      <UserStateBanner />
+    </Fragment>
   );
 };
 
@@ -739,6 +716,7 @@ const styles = StyleSheet.create({
     height: 68,
     background: "#fff",
     alignItems: "center",
+    borderBottom: "1px solid #e8e8ef",
     justifyContent: "space-around",
     position: "sticky",
     zIndex: 4,
