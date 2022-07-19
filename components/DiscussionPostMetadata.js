@@ -27,6 +27,7 @@ import postTypes, {
   POST_TYPES,
   questionPostTypes,
 } from "./TextEditor/config/postTypes";
+import { breakpoints } from "~/config/themes/screen";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -50,7 +51,6 @@ const DiscussionPostMetadata = (props) => {
     username,
   } = props;
 
-  const smaller = false;
   const alert = useAlert();
   // const store = useStore();
   const router = useRouter();
@@ -85,26 +85,30 @@ const DiscussionPostMetadata = (props) => {
     if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
       const postType = postTypes.find((t) => t.value === type);
       return (
-        <span className={css(badge.container, badge.review)}>
-          <span className={css(badge.icon)}>{postType.icon}</span>
-          <span className={css(badge.label)}>{postType.label}</span>
-        </span>
+        <div className={css(styles.badgeContainer)}>
+          <span className={css(badge.container, badge.review)}>
+            <span className={css(badge.icon)}>{postType.icon}</span>
+            <span className={css(badge.label)}>{postType.label}</span>
+          </span>
+        </div>
       );
     } else if (type === POST_TYPES.ANSWER) {
       const postType = questionPostTypes.find((t) => t.value === type);
       return (
-        <span
-          className={css(
-            badge.container,
-            badge.answer,
-            isSelectedAnswer && badge.selectedAnswer
-          )}
-        >
-          <span className={css(badge.icon)}>
-            {isSelectedAnswer ? icons.check : postType.icon}
+        <div className={css(styles.badgeContainer)}>
+          <span
+            className={css(
+              badge.container,
+              badge.answer,
+              isSelectedAnswer && badge.selectedAnswer
+            )}
+          >
+            <span className={css(badge.icon)}>
+              {isSelectedAnswer ? icons.check : postType.icon}
+            </span>
+            <span className={css(badge.label)}>{postType.label}</span>
           </span>
-          <span className={css(badge.label)}>{postType.label}</span>
-        </span>
+        </div>
       );
     }
   };
@@ -123,42 +127,48 @@ const DiscussionPostMetadata = (props) => {
 
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
-      <ContentSupportModal />
-      <ShareModal
-        isOpen={shareModalIsOpen}
-        setIsOpen={setShareModalIsOpen}
-        title={"Share this discussion"}
-        url={`${process.env.HOST}${router.asPath}#comments`}
-      />
-      <AuthorAvatar
-        author={authorProfile}
-        name={username}
-        size={smaller ? 25 : 30}
-        twitterUrl={twitterUrl}
-      />
-      <div className={css(styles.column)}>
-        <div className={css(styles.firstRow)}>
-          <User {...props} />
-          {isCreatedByEditor && (
-            <UserRoleTag
-              backgroundColor={colors.EDITOR_TAG_BACKGROUND}
-              color={colors.EDITOR_TAG_TEXT}
-              fontSize="12px"
-              label="Editor"
-              padding="2px 10px"
-              margin="0 0 0 8px"
+      <div className={css(styles.authorDetails)}>
+        <ContentSupportModal />
+        <ShareModal
+          isOpen={shareModalIsOpen}
+          setIsOpen={setShareModalIsOpen}
+          title={"Share this discussion"}
+          url={`${process.env.HOST}${router.asPath}#comments`}
+        />
+        <AuthorAvatar
+          author={authorProfile}
+          name={username}
+          size={30}
+          twitterUrl={twitterUrl}
+        />
+        <div className={css(styles.column)}>
+          <div className={css(styles.firstRow)}>
+            <User {...props} />
+            {isCreatedByEditor && (
+              <UserRoleTag
+                backgroundColor={colors.EDITOR_TAG_BACKGROUND}
+                color={colors.EDITOR_TAG_TEXT}
+                fontSize="12px"
+                label="Editor"
+                padding="2px 10px"
+                margin="0 0 0 8px"
+              />
+            )}
+            {
+              <span className={css(styles.topLineText, styles.action)}>
+                {text}
+              </span>
+            }
+            {noTimeStamp ? null : <Timestamp {...props} />}
+            <span className={css(styles.divider)}>•</span>
+            <WidgetContentSupport
+              data={data}
+              metaData={metaData}
+              fetching={fetching}
             />
-          )}
-          {<span className={css(styles.topLineText)}>{text}</span>}
-          {noTimeStamp ? null : <Timestamp {...props} />}
-          <span className={css(styles.divider)}>•</span>
-          <WidgetContentSupport
-            data={data}
-            metaData={metaData}
-            fetching={fetching}
-          />
+          </div>
+          {/* {renderHeadline()} */}
         </div>
-        {/* {renderHeadline()} */}
       </div>
       {renderBadge({ type: discussionType })}
     </div>
@@ -176,7 +186,7 @@ function openTwitter(url) {
 }
 
 const User = (props) => {
-  const { username, paper, authorProfile, smaller, twitterUrl } = props;
+  const { username, paper, authorProfile } = props;
   let isAuthor;
   let authorId = authorProfile.id; // for the user
 
@@ -191,16 +201,11 @@ const User = (props) => {
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/overview`}>
       <a href={`/user/${authorId}/overview`} className={css(styles.atag)}>
-        <div
-          className={css(
-            styles.userContainer,
-            smaller && styles.smallerUserContainer
-          )}
-        >
+        <div className={css(styles.userContainer)}>
           <div
             className={css(
+              styles.topLineText,
               styles.name,
-              smaller && styles.smallerName,
               isAuthor && styles.authorName
             )}
           >
@@ -218,27 +223,14 @@ const Timestamp = (props) => {
 
   if (props.twitter && props.twitterUrl) {
     return (
-      <div
-        className={css(
-          styles.timestampContainer,
-          props.smaller && styles.smallerTimestamp,
-          props.twitter && styles.twitterUrl
-        )}
-      >
+      <div className={css(styles.topLineText, styles.timestampContainer)}>
         <a
           target="_blank"
           href={props.twitterUrl}
           className={css(styles.twitterTag)}
           rel="noreferrer noopener"
         >
-          <span
-            className={css(
-              styles.divider,
-              props.smaller && styles.smallerTimestamp
-            )}
-          >
-            •
-          </span>
+          <span className={css(styles.divider)}>•</span>
           {timestamp} from Twitter
           <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
         </a>
@@ -247,12 +239,8 @@ const Timestamp = (props) => {
   }
 
   return (
-    <div className={css(styles.timestampContainer)}>
-      <span
-        className={css(styles.divider, props.smaller && styles.smallerdivider)}
-      >
-        •
-      </span>
+    <div className={css(styles.topLineText, styles.timestampContainer)}>
+      <span className={css(styles.divider)}>•</span>
       {timestamp}
     </div>
   );
@@ -292,6 +280,10 @@ const badge = StyleSheet.create({
     borderRadius: 3,
     textTransform: "uppercase",
     marginLeft: "auto",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "6px 15px",
+    },
   },
   icon: {
     marginRight: 5,
@@ -308,6 +300,14 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 15,
     marginLeft: 8,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+    },
+  },
+  action: {
+    [`@media only screen and (max-width: 615px)`]: {
+      display: "none",
+    },
   },
   tipAuthorText: {
     marginLeft: 0,
@@ -319,6 +319,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     whiteSpace: "",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  authorDetails: {
+    display: "flex",
+    alignItems: "center",
+  },
+  badgeContainer: {
+    marginLeft: "auto",
+    marginTop: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "inline-block",
+    },
   },
   column: {
     display: "flex",
@@ -348,26 +362,13 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     color: "unset",
   },
-  smallerUserContainer: {
-    // fontSize: 13,
-  },
   timestampContainer: {
     display: "flex",
     alignItems: "center",
     fontWeight: "normal",
     color: colors.MEDIUM_GREY2(),
-    fontSize: 15,
     fontWeight: 400,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 10,
-    },
-  },
-  smallerTimestamp: {
-    fontSize: 12,
-    marginRight: 8,
+    margin: 0,
   },
   twitterTag: {
     color: "unset",
@@ -378,15 +379,8 @@ const styles = StyleSheet.create({
   name: {
     marginLeft: 8,
     color: colors.BLACK(1),
-    fontSize: 15,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 14,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+    fontWeight: 500,
   },
-  smallerName: {},
   authorName: {
     fontWeight: 500,
   },
