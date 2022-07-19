@@ -155,10 +155,11 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       <DynamicComponent
         id="text"
         initialData={mutableFormFields.text}
-        label="Text"
+        label="Body"
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
         containerStyle={styles.editor}
+        required
       />
       <FormSelect
         containerStyle={[styles.chooseHub]}
