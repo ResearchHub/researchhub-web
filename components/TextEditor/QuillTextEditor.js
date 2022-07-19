@@ -66,8 +66,6 @@ class Editor extends Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
-
-          // const newContents = trimQuillEditorContents({ contents: this.state.value })
         }
       );
     });
@@ -489,7 +487,6 @@ class Editor extends Component {
             </>
           ))}
       </div>
-      // </div>
     );
   };
 
@@ -528,13 +525,17 @@ class Editor extends Component {
               this.props.commentEditorStyles && this.props.commentEditorStyles
             )}
           >
-            <PostTypeSelector
-              selectedType={selectedPostType}
-              documentType={this.props.documentType}
-              handleSelect={(selectedType) =>
-                this.handlePostTypeSelect(selectedType)
-              }
-            />
+            {this.props.isTopLevelComment && (
+              <div className={css(styles.postTypeContainer)}>
+                <PostTypeSelector
+                  selectedType={selectedPostType}
+                  documentType={this.props.documentType}
+                  handleSelect={(selectedType) =>
+                    this.handlePostTypeSelect(selectedType)
+                  }
+                />
+              </div>
+            )}
 
             <ReactQuill
               ref={this.reactQuillRef}
@@ -651,6 +652,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
+  postTypeContainer: {
+    marginBottom: 25,
+  },
   fullEditor: {
     display: "none",
   },
@@ -682,7 +686,6 @@ const styles = StyleSheet.create({
   },
   editSection: {
     minHeight: 75,
-    paddingTop: 25,
   },
   comment: {
     whiteSpace: "pre-wrap",
@@ -901,6 +904,7 @@ const toolbarStyles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+    minWidth: 95,
     background: colors.NEW_BLUE(),
     ":hover": {
       opacity: 0.9,

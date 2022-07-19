@@ -14,10 +14,6 @@
   font-size: 16px;
 }
 
-.ql-blank {
-  min-height: 5em;
-}
-
 .ql-editor {
   /* cursor: text; */
   padding: 0;
@@ -172,7 +168,7 @@
   color: rgb(124, 121, 137);
   font-size: 16px !important;
   height: 27px !important;
-  width: 27px !important;
+  width: 28px !important;
   margin-right: 0px;
   padding: 3px 1px;
 }
@@ -253,4 +249,8 @@
 
 .quill .ql-editor[contenteditable="false"] .starRating {
   cursor: initial !important;
+}
+
+.quill .ql-editor[contenteditable="true"] {
+  min-height: 5em;
 }

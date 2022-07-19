@@ -28,6 +28,7 @@ function TextEditor(props) {
     openLoginModal,
     passedValue,
     onChange,
+    focusEditor,
     hideButton,
     hideCancelButton,
     containerStyles,
@@ -42,6 +43,7 @@ function TextEditor(props) {
     showMessage,
     uid = genClientId(),
     documentType,
+    isTopLevelComment = false,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -81,6 +83,7 @@ function TextEditor(props) {
         setMessage("Content cannot be empty.");
         return showMessage({ error: true, show: true, clickoff: true });
       }
+
       onSubmit && onSubmit({ content, plainText, callback, discussionType });
       if (clearOnSubmit) {
         callback();
@@ -106,11 +109,13 @@ function TextEditor(props) {
         containerStyles={containerStyles}
         cancel={cancel}
         submit={submit}
+        focusEditor={focusEditor}
         commentEditor={commentEditor}
         hideButton={hideButton}
         hideCancelButton={hideCancelButton && hideCancelButton}
         commentStyles={commentStyles && commentStyles}
         loading={loading && loading}
+        isTopLevelComment={isTopLevelComment}
         commentEditorStyles={commentEditorStyles && commentEditorStyles}
         editing={editing}
         hasHeader={hasHeader && hasHeader}

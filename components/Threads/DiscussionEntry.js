@@ -185,7 +185,7 @@ class DiscussionEntry extends Component {
     );
   };
 
-  submitComment = async (text, plain_text, callback) => {
+  submitComment = async ({ content, plainText, callback }) => {
     let {
       data,
       postComment,
@@ -211,8 +211,8 @@ class DiscussionEntry extends Component {
       paperId,
       documentId,
       discussionThreadId,
-      text,
-      plain_text
+      content,
+      plainText
     );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       let newComment = { ...this.props.discussion.postedComment };
@@ -241,7 +241,7 @@ class DiscussionEntry extends Component {
     showMessage({ show: true, error: true });
   };
 
-  saveEditsThread = async (text, plain_text, callback) => {
+  saveEditsThread = async ({ content, plainText, callback }) => {
     let {
       data,
       updateThread,
@@ -264,8 +264,8 @@ class DiscussionEntry extends Component {
     }
 
     let body = {
-      text,
-      plain_text,
+      text: content,
+      plain_text: plainText,
       paper: paperId,
     };
 
@@ -632,13 +632,14 @@ class DiscussionEntry extends Component {
                 <div
                   className={css(
                     styles.content,
-                    isSolution && styles.acceptedAnswer,
+                    isSolution && !this.state.editing && styles.acceptedAnswer,
                     this.state.editing && styles.contentEdit
                   )}
                 >
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
+                    focusEditor={true}
                     body={true}
                     textStyles={styles.contentText}
                     editing={this.state.editing}
@@ -801,6 +802,8 @@ const styles = StyleSheet.create({
   contentEdit: {
     border: `1px soild`,
     borderColor: "rgb(170, 170, 170)",
+    background: "unset",
+    padding: "0",
   },
   contentText: {
     fontSize: 16,
