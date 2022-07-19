@@ -159,6 +159,7 @@
     0px 1px 10px 0px rgb(0 0 0 / 12%), 0px 2px 4px -1px rgb(0 0 0 / 20%);
   padding: 4px;
   z-index: 2;
+  background: white;
 }
 .ql-full-editor-visible {
   display: block;
@@ -167,10 +168,10 @@
 .ql-formats > button {
   color: rgb(124, 121, 137);
   font-size: 16px !important;
-  height: 27px !important;
-  width: 28px !important;
-  margin-right: 0px;
-  padding: 3px 1px;
+  height: 25px !important;
+  width: 25px !important;
+  margin-right: 3px !important;
+  padding: 2px 2px !important;
 }
 .ql-formats > button.ql-blockquote {
   margin-left: -5px;
@@ -183,17 +184,13 @@
   margin-left: 3px;
   display: inline-flex !important;
   align-items: center;
-  color: rgb(57, 113, 255);
+  color: black;
 }
 
 /* .video-stream {
   height: 250px;
   width: 400px;
 } */
-
-.quill {
-  /* background: white; */
-}
 
 .ql-toolbar {
   background: white;
@@ -254,3 +251,35 @@
 .quill .ql-editor[contenteditable="true"] {
   min-height: 5em;
 }
+button.ql-active {
+  background-color: rgba(32, 33, 36, 0.122) !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  border-radius: 3px !important;
+  color: black !important;
+}
+
+.ql-active .ql-stroke {
+  stroke: black !important;
+}
+
+.ql-active .ql-fill {
+  fill: black !important;
+}
+
+.ql-toolbar button:hover {
+  color: black !important;
+}
+.ql-toolbar button:hover .ql-stroke {
+  stroke: black !important;
+}
+
+.ql-toolbar button:hover .ql-fill {
+  fill: black !important;
+}
+
+/* .ql-toolbar button:hover .ql-fill {
+  stroke: black !important;
+} */

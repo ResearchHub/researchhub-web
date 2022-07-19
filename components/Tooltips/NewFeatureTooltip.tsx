@@ -27,14 +27,14 @@ function NewFeatureTooltip({ featureName, auth = null, delay = 500, position = "
       <div className={css(styles.body)}>
         <span className={css(styles.caret)}>{icons.caretLeft}</span>
         <div className={css(styles.title)}>
-          Discussion Types
+          Contribution Types
           <span className={css(styles.new)}>
           <span className={css(styles.fireIcon)}>{icons.fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
         <div className={css(styles.desc)}>
-          You can now choose different discussion types such as <span className={css(styles.bolded)}>Peer Review</span> and <span className={css(styles.bolded)}>Summary</span>. Give it a shot!
+          You can now choose different contribution types such as <span className={css(styles.bolded)}>Peer Review</span> and <span className={css(styles.bolded)}>Summary</span>. Give it a shot!
         </div>
         <div className={css(styles.btnContainer)}>
           <Button onClick={handleDismiss} label={`Okay`} size="small" customButtonStyle={styles.btn} customLabelStyle={styles.btnLabel} />
