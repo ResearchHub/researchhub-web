@@ -8,15 +8,31 @@ import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
 function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+ 
   const _handleSelect = (type) => {
     handleSelect(type);
     setIsOpen(false);
   }
 
+  const _handleOutsideClick = (e) => {
+    if (!dropdownRef.current?.contains(e.target) && !triggerRef.current?.contains(e.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", _handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", _handleOutsideClick);
+    };
+  }, []);
+
   const renderDropdown = () => {
     return (
-      <div className={css(dropdownStyles.dropdown, isOpen && dropdownStyles.dropdownOpen)}>
+      <div className={css(dropdownStyles.dropdown, isOpen && dropdownStyles.dropdownOpen)} ref={dropdownRef}>
         <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroup)}>
         <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribution Type</div>
           {postTypes.map(t => (
@@ -36,7 +52,7 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
   const renderDropdownTrigger = () => {
     return (
       <div
-        className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)}
+        className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)} ref={triggerRef}
       >
         <NewFeatureTooltip featureName={`discussiontypes`} position={`right`} />
         <span className={css(styles.selectedTypeIcon)}>{selectedType?.icon}</span>
