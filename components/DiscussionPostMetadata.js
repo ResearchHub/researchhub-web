@@ -82,7 +82,7 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const renderBadge = ({ type, isSelectedAnswer = true }) => {
-    if (type === POST_TYPES.REVIEW) {
+    if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
       const postType = postTypes.find((t) => t.value === type);
       return (
         <span className={css(badge.container, badge.review)}>
@@ -117,6 +117,8 @@ const DiscussionPostMetadata = (props) => {
     text = "peer reviewed";
   } else if (discussionType === POST_TYPES.ANSWER) {
     text = "answered";
+  } else if (discussionType === POST_TYPES.SUMMARY) {
+    text = "posted summary";
   }
 
   return (
@@ -287,7 +289,7 @@ const badge = StyleSheet.create({
     padding: "5px 10px",
     fontSize: 12,
     fontWeight: 600,
-    borderRadius: 2,
+    borderRadius: 3,
     textTransform: "uppercase",
     marginLeft: "auto",
   },
