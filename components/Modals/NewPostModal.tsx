@@ -8,7 +8,12 @@ import {
 import { NullableString, User } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
+import {
+  PostIcon,
+  PaperIcon,
+  HypothesisIcon,
+  QuestionIcon,
+} from "~/config/themes/icons";
 import {
   ReactElement,
   useState,
@@ -111,11 +116,10 @@ export const getModalOptionItems = ({
           });
         },
         icon: (
-          <HypothesisIcon
-            height={40}
+          <QuestionIcon
             onClick={silentEmptyFnc}
-            width={40}
             withAnimation={false}
+            size={40}
           />
         ),
       }
@@ -228,7 +232,9 @@ function NewPostModal({
                 label={
                   modalOptionItems[modalSelectedItemIndex]?.onClick ? (
                     <div
-                      onClick={modalOptionItems[modalSelectedItemIndex]?.onClick}
+                      onClick={
+                        modalOptionItems[modalSelectedItemIndex]?.onClick
+                      }
                       className={css(styles.buttonLabel)}
                     >
                       Continue
