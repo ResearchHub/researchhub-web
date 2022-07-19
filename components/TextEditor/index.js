@@ -15,6 +15,7 @@ import { MessageActions } from "~/redux/message";
 import { convertToEditorToHTML } from "~/config/utils/editor";
 import { genClientId } from "~/config/utils/id";
 import getDefaultPostType from "~/components/TextEditor/util/getDefaultPostType";
+import { getPostTypeStruct } from "./config/postTypes";
 
 function TextEditor(props) {
   const {
@@ -41,6 +42,7 @@ function TextEditor(props) {
     mediaOnly,
     setMessage,
     showMessage,
+    postType,
     uid = genClientId(),
     documentType,
     isTopLevelComment = false,
@@ -48,9 +50,13 @@ function TextEditor(props) {
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
-  const [selectedPostType, setSelectedPostType] = useState(
-    getDefaultPostType({ documentType })
+  const [selectedPostTypeStruct, setSelectedPostTypeStruct] = useState(
+    postType
+      ? getPostTypeStruct({ postType, documentType })
+      : getDefaultPostType({ documentType })
   );
+
+  console.log("postType", postType);
 
   useEffect(() => {
     setValue(initialValue);
@@ -120,8 +126,8 @@ function TextEditor(props) {
         editing={editing}
         hasHeader={hasHeader && hasHeader}
         summary={summary && summary}
-        setSelectedPostType={setSelectedPostType}
-        selectedPostType={selectedPostType}
+        setSelectedPostTypeStruct={setSelectedPostTypeStruct}
+        selectedPostTypeStruct={selectedPostTypeStruct}
         documentType={documentType}
       />
     </div>

@@ -62,13 +62,14 @@ class ThreadTextEditor extends Component {
     this.props.onChange && this.props.onChange();
   };
 
-  onEditSubmit = ({ content, plainText }) => {
+  onEditSubmit = ({ content, plainText, discussionType }) => {
     this.setState({ loading: true, editorState: content }, () => {
       this.props.onEditSubmit &&
         this.props
           .onEditSubmit({
             content,
             plainText,
+            discussionType,
             callback: () => {
               this.setState({
                 loading: false,
@@ -116,6 +117,7 @@ class ThreadTextEditor extends Component {
             focusEditor={this.props.focusEditor}
             initialValue={this.state.editorState}
             hasHeader={this.props.hasHeader}
+            postType={this.props.postType}
           />
         </PermissionNotificationWrapper>
       );
@@ -144,6 +146,7 @@ class ThreadTextEditor extends Component {
           passedValue={this.state.editorState}
           editing={this.props.editing}
           focusEditor={this.props.focusEditor}
+          postType={this.props.postType}
         />
       );
     }

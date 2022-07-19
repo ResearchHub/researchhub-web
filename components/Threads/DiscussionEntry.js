@@ -18,6 +18,8 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
 import { saveReview } from "~/config/fetch";
+import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
+import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
@@ -62,8 +64,8 @@ class DiscussionEntry extends Component {
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
-        isReview: data?.review?.id ? true : false,
-        review: data?.review,
+        // isReview: data?.review?.id ? true : false,
+        // review: data?.review,
         canEdit:
           data.source !== "twitter"
             ? this.props.auth.user.id === data.created_by.id
@@ -241,7 +243,12 @@ class DiscussionEntry extends Component {
     showMessage({ show: true, error: true });
   };
 
-  saveEditsThread = async ({ content, plainText, callback }) => {
+  saveEditsThread = async ({
+    content,
+    plainText,
+    discussionType,
+    callback,
+  }) => {
     let {
       data,
       updateThread,
@@ -251,7 +258,9 @@ class DiscussionEntry extends Component {
       documentType,
     } = this.props;
 
-    const { review, isReview } = this.state;
+    console.log("discussionType", discussionType);
+
+    // const { review, isReview } = this.state;
 
     let discussionThreadId = data.id;
     let paperId = data.paper;
@@ -269,13 +278,47 @@ class DiscussionEntry extends Component {
       paper: paperId,
     };
 
-    if (isReview) {
-      const response = await saveReview({
-        unifiedDocumentId,
-        review: this.state.review,
+    if (discussionType === POST_TYPES.REVIEW) {
+      const reviewScore = getReviewCategoryScore({
+        quillContents: content,
+        category: "overall",
       });
-      this.setState({ review: response });
+      if (reviewScore === 0) {
+        props.showMessage({ show: true, error: true });
+        props.setMessage("Rating cannot be empty");
+        setSubmitInProgress(false);
+        return;
+      }
+
+      let reviewResponse;
+      try {
+        reviewResponse = await saveReview({
+          unifiedDocumentId,
+          review: { score: reviewScore, id: data.review.id },
+        });
+      } catch (error) {
+        setSubmitInProgress(false);
+        captureEvent({
+          error,
+          msg: "Failed to save review",
+          data: { reviewScore, quillContents: content },
+        });
+        props.setMessage("Something went wrong");
+        props.showMessage({ show: true, error: true });
+        return false;
+      }
+
+      // param["review"] = reviewResponse.id;
     }
+
+    // if (isReview) {
+    //   const response = await saveReview({
+    //     unifiedDocumentId,
+    //     review: this.state.review,
+    //   });
+    //   this.setState({ review: response });
+
+    // }
 
     updateThreadPending();
     try {
@@ -498,7 +541,11 @@ class DiscussionEntry extends Component {
   render() {
     const {
       data,
-      data: { context_title: contextTitle, id: commentThreadID },
+      data: {
+        context_title: contextTitle,
+        id: commentThreadID,
+        thread_type: postType,
+      },
       documentType,
       hostname,
       hypothesis,
@@ -514,8 +561,6 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
-
-    const { review, isReview } = this.state;
 
     const commentCount =
       data.comment_count +
@@ -650,6 +695,7 @@ class DiscussionEntry extends Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
+                    postType={postType}
                   />
                 </div>
               </Fragment>
