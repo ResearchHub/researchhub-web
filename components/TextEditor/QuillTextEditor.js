@@ -586,16 +586,14 @@ class Editor extends Component {
       });
 
       return (
-        <div key={this.props.uid}>
-          <div>
-            <ReactQuill
-              ref={this.reactQuillRef}
-              readOnly={true}
-              defaultValue={editorValue}
-              modules={modules}
-              placeholder={selectedPostType.placeholder}
-            />
-          </div>
+        <div key={this.props.uid} className={css(styles.readOnly)}>
+          <ReactQuill
+            ref={this.reactQuillRef}
+            readOnly={true}
+            defaultValue={editorValue}
+            modules={modules}
+            placeholder={selectedPostType.placeholder}
+          />
         </div>
       );
     }
@@ -640,6 +638,13 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
   },
+  readOnly: {
+    background: "white",
+    padding: "12px 15px",
+    borderRadius: "4px",
+    border: `1px solid ${colors.LIGHT_GREY()}`,
+    boxSizing: "border-box",
+  },
   footerContainer: {
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
@@ -669,10 +674,6 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     background: "white",
     boxSizing: "border-box",
-  },
-  commentEditor: {
-    color: "#000",
-    borderRadius: 4,
   },
   editable: {},
   focus: {
