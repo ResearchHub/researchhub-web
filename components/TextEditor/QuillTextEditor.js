@@ -63,10 +63,7 @@ class Editor extends Component {
         () => {
           this.attachQuillRefs();
           !this.state.handlerAdded && this.addLinkSantizer();
-          !this.state.focus &&
-            this.props.focusEditor &&
-            this.quillRef &&
-            this.focusEditor();
+          !this.state.focus && this.props.focusEditor && this.focusEditor();
         }
       );
     });
@@ -75,7 +72,7 @@ class Editor extends Component {
   componentDidUpdate(prevProps, prevState) {
     this.attachQuillRefs();
     if (!prevProps.editing && this.props.editing) {
-      !this.state.focus && this.quillRef && this.focusEditor();
+      !this.state.focus && this.focusEditor();
     }
 
     if (prevProps.value !== this.props.value) {
@@ -266,10 +263,13 @@ class Editor extends Component {
   };
 
   focusEditor = () => {
-    this.quillRef.focus();
-    const range = this.quillRef.getLength(); // place cursor at the end of the text
-    this.quillRef.setSelection(range + 1);
-    this.setState({ focus: true });
+    if (this.quillRef && !this.props.readOnly) {
+      console.log("value", this.props.value);
+      this.quillRef.focus();
+      const range = this.quillRef.getLength(); // place cursor at the end of the text
+      this.quillRef.setSelection(range + 1);
+      this.setState({ focus: true });
+    }
   };
 
   convertHtmlToDelta = (value) => {
