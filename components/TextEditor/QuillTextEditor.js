@@ -38,10 +38,12 @@ class Editor extends Component {
       ReactQuill: null,
       Quill: null,
       showFullEditor: false,
-      selectedPostType: this.props.selectedPostType,
+      selectedPostTypeStruct: this.props.selectedPostTypeStruct,
     };
     this.reactQuillRef = createRef();
     this.quillRef = null;
+
+    console.log("selectedPostTypeStruct", this.state.selectedPostTypeStruct);
   }
 
   componentDidMount = async () => {
@@ -201,7 +203,7 @@ class Editor extends Component {
       !lastDelta.attributes;
     if (editorHasTrivialText) {
       this.forcePlaceholderToShow({
-        placeholderText: this.state.selectedPostType.placeholder,
+        placeholderText: this.state.selectedPostTypeStruct.placeholder,
       });
     }
 
@@ -324,7 +326,7 @@ class Editor extends Component {
       content,
       plainText,
       callback: this.clearEditorContent,
-      discussionType: this.state.selectedPostType.value,
+      discussionType: this.state.selectedPostTypeStruct.value,
     });
   };
 
@@ -400,7 +402,7 @@ class Editor extends Component {
   };
 
   handlePostTypeSelect = (selectedType) => {
-    const currentType = this.state.selectedPostType;
+    const currentType = this.state.selectedPostTypeStruct;
 
     const isPeerReview =
       selectedType.value === POST_TYPES.REVIEW &&
@@ -442,16 +444,17 @@ class Editor extends Component {
     }
 
     this.setState({
-      selectedPostType: selectedType,
+      selectedPostTypeStruct: selectedType,
     });
 
     this.focusEditor();
   };
 
   renderButtons = (props) => {
-    const isRequestMode = this.state.selectedPostType?.group === "request";
+    const isRequestMode =
+      this.state.selectedPostTypeStruct?.group === "request";
     const isAnswerType =
-      this.state.selectedPostType?.value === POST_TYPES.ANSWER;
+      this.state.selectedPostTypeStruct?.value === POST_TYPES.ANSWER;
 
     const label = isRequestMode
       ? "Request"
@@ -492,7 +495,7 @@ class Editor extends Component {
   };
 
   render() {
-    const { ReactQuill, selectedPostType } = this.state;
+    const { ReactQuill, selectedPostTypeStruct } = this.state;
     const canEdit = !this.props.readOnly;
 
     if (!ReactQuill) {
@@ -512,10 +515,10 @@ class Editor extends Component {
             this.props.containerStyles,
             this.state.focus && styles.focus,
             this.state.focus &&
-              selectedPostType.group === "request" &&
+              selectedPostTypeStruct.group === "request" &&
               styles.focusRequestType,
             this.state.focus &&
-              selectedPostType.value === POST_TYPES.ANSWER &&
+              selectedPostTypeStruct.value === POST_TYPES.ANSWER &&
               styles.focusAnswerType
           )}
           key={this.props.uid}
@@ -529,7 +532,7 @@ class Editor extends Component {
             {this.props.isTopLevelComment && (
               <div className={css(styles.postTypeContainer)}>
                 <PostTypeSelector
-                  selectedType={selectedPostType}
+                  selectedType={selectedPostTypeStruct}
                   documentType={this.props.documentType}
                   handleSelect={(selectedType) =>
                     this.handlePostTypeSelect(selectedType)
@@ -555,9 +558,9 @@ class Editor extends Component {
                 styles.editSection,
                 this.props.commentStyles && this.props.commentStyles
               )}
-              placeholder={selectedPostType.placeholder}
+              placeholder={selectedPostTypeStruct.placeholder}
             />
-            {selectedPostType.value === POST_TYPES.REVIEW && (
+            {selectedPostTypeStruct.value === POST_TYPES.REVIEW && (
               <div className={css(styles.reviewCategoryContainer)}>
                 <ReviewCategorySelector
                   handleSelect={(category) => {
@@ -593,7 +596,7 @@ class Editor extends Component {
             readOnly={true}
             defaultValue={editorValue}
             modules={modules}
-            placeholder={selectedPostType.placeholder}
+            placeholder={selectedPostTypeStruct.placeholder}
           />
         </div>
       );

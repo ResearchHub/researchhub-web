@@ -1,5 +1,14 @@
 import icons from "~/config/themes/icons";
 
+export const getPostTypeStruct = ({ postType, documentType }) => {
+  if (documentType === "question" || postType === POST_TYPES.ANSWER) {
+    return questionPostTypes.find(t => t.value === postType);
+  }
+  else {
+    return postTypes.find(t => t.value === postType);
+  }  
+}
+
 export enum POST_TYPES {
   DISCUSSION = "DISCUSSION",
   SUMMARY = "SUMMARY",
@@ -42,3 +51,4 @@ export const questionPostTypes = [{
 }]
 
 export default postTypes;
+
