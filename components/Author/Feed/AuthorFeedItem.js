@@ -9,11 +9,11 @@ import { truncateText } from "~/config/utils/string";
 import {
   getNewestCommentTimestamp,
   formatTimestamp,
-  getDocType,
   getDocFromItem,
   getUrlFromItem,
   getCardType,
 } from "./utils/AuthorFeedUtils";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 const AuthorFeedItem = ({
   author,
@@ -30,9 +30,10 @@ const AuthorFeedItem = ({
 
     let html;
     switch (cardType) {
+      case "hypothesis":
       case "paper":
       case "post":
-      case "hypothesis":
+      case "question":
         html = (
           <FeedCard
             formattedDocType={cardType}
@@ -52,7 +53,7 @@ const AuthorFeedItem = ({
             ? item.source.source
             : item.source;
         const uniDoc = item.unified_document;
-        const docType = getDocType({ uniDoc });
+        const docType = getUnifiedDocType(uniDoc?.document_type);
 
         // If paper we need to shim things around
         // so that component works properly
