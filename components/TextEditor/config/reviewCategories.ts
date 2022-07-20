@@ -5,28 +5,28 @@ const reviewCategories = {
     description: "What are your overall impressions of this paper?",
     isDefault: true,
   },
-  "innovation": {
-    label: "Impact and Innovation",
-    value: "innovation",
-    description: "Do the methods, design or conclusions of this paper have any societal, technological or scientific impact?",
+  "impact": {
+    label: "Impact",
+    value: "impact",
+    description: "What research question do the authors address? Does the study advance the author's field in a meaningful way?",
     isDefault: false,
   },  
   "methods": {
-    label: "Methods and Materials",
+    label: "Methods",
     value: "methods",
-    description: "Experiment design clearly described; materials if any are enumerated.",
+    description: "Does the experiment design adequately test the study's hypothesis? Are the methods described in enough detail for independent replication?",
     isDefault: false,
   },
-  "data": {
-    label: "Data and Figures",
-    value: "data",
-    description: "Consistency of data; Quality of statistical analysis; Quality and clarity of figures and labels",
+  "results": {
+    label: "Results",
+    value: "results",
+    description: "Was the collected data analyzed and presented reasonably? Do the figures clearly represent this data?",
     isDefault: false,
   },
-  "conclusions": {
-    label: "Conclusions",
-    value: "conclusions",
-    description: "Are conclusions based on results and backed by data?",
+  "discussion": {
+    label: "Discussion",
+    value: "discussion",
+    description: "Do the results support the authors' conclusions? Are there any alternative interpretations of the data that the authors should have considered?",
     isDefault: false,
   },    
 }

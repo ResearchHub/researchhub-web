@@ -114,10 +114,10 @@ h3 {
   display: none;
 }
 
-.post-body *[data-placeholder] {
+/* .post-body *[data-placeholder] {
   display: none;
-}
+} */
 
 .post-body .ck.ck-editor__editable_inline > :first-child {
-  margin-top: 0;
+  /* margin-top: 0; */
 }
