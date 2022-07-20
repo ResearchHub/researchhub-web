@@ -17,6 +17,7 @@ import { genClientId } from "~/config/utils/id";
 import getDefaultPostType from "~/components/TextEditor/util/getDefaultPostType";
 import { getPostTypeStruct } from "./config/postTypes";
 import isQuillEmpty from "./util/isQuillEmpty";
+import { captureEvent } from "~/config/utils/events";
 
 function TextEditor(props) {
   const {
@@ -57,6 +58,20 @@ function TextEditor(props) {
       : getDefaultPostType({ documentType })
   );
 
+  if (!selectedPostTypeStruct) {
+    captureEvent({
+      msg: "Could not find a matching post type struct in TextEditor. Did not render comment.",
+      data: { postType, value, selectedPostTypeStruct },
+    });
+    return null;
+  }
+
+  console.log("-------------");
+  console.log(postType, documentType);
+  console.log(getDefaultPostType({ documentType }));
+  console.log("selectedPostTypeStruct", selectedPostTypeStruct);
+  console.log("-------------");
+
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
@@ -88,6 +103,7 @@ function TextEditor(props) {
   function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
   }
+
   return (
     <div>
       <QuillTextEditor

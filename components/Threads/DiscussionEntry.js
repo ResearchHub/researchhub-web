@@ -544,7 +544,7 @@ class DiscussionEntry extends Component {
       data: {
         context_title: contextTitle,
         id: commentThreadID,
-        discussion_type: postType,
+        discussion_post_type: postType,
       },
       documentType,
       hostname,
@@ -869,7 +869,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "28px 10px 8px 8px",
+    padding: "9px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },

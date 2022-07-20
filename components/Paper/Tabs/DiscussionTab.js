@@ -273,7 +273,7 @@ const DiscussionTab = (props) => {
       param["review"] = reviewResponse.id;
     }
 
-    param["discussion_type"] = discussionType || POST_TYPES.DISCUSSION;
+    param["discussion_post_type"] = discussionType || POST_TYPES.DISCUSSION;
     let config = API.POST_CONFIG(param);
 
     return fetch(
