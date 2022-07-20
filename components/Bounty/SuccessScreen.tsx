@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import Image from "next/image";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import icons from "~/config/themes/icons";
 
 type Props = {
@@ -17,6 +17,7 @@ function SuccessScreen({
   postSlug,
 }: Props): ReactElement {
   const twitterPreText = `Help me with my bounty on ResearchHub worth ${bountyAmount} RSC!`;
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const link = process.browser
     ? window.location.protocol +
@@ -29,6 +30,16 @@ function SuccessScreen({
     0,
     249 - twitterPreText.length - link.length
   )}"\n\n${link}`;
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(link);
+    document.execCommand("copy");
+    // e.target.focus(); // TODO: Uncomment if we don't want highlighting
+    setCopySuccess(true);
+    setTimeout(() => {
+      setCopySuccess(false);
+    }, 2000);
+  }
 
   return (
     <div className={css(styles.container)}>
@@ -51,6 +62,9 @@ function SuccessScreen({
             <span className={css(styles.twitterText)}>Share on Twitter</span>
           </div>
         </a>
+      </div>
+      <div className={css(styles.copyURLButton)} onClick={copyToClipboard}>
+        {copySuccess ? "URL Successfully Copied!" : "Copy URL"}
       </div>
     </div>
   );
@@ -98,6 +112,11 @@ const styles = StyleSheet.create({
   shareRow: {
     display: "flex",
     marginTop: 16,
+  },
+  copyURLButton: {
+    marginTop: 16,
+    color: "#3971FF",
+    cursor: "pointer",
   },
 });
 
