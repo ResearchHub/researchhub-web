@@ -126,7 +126,7 @@ const UnifiedDocFeedMenu = ({
         value: "posts",
         label: "Posts",
       },
-      killswitch("") && {
+      killswitch("bountyQuestion") && {
         value: "questions",
         label: "Questions",
       },
