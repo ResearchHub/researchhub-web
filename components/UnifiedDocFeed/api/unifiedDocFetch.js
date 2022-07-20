@@ -8,15 +8,19 @@ import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import {
+  getUnifiedDocType,
+  getBEUnifiedDocType,
+} from "~/config/utils/getUnifiedDocType";
 
 export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
-  const documentIds = { hypothesis: [], paper: [], post: [] };
+  const documentIds = { hypothesis: [], paper: [], posts: [] };
+
   unifiedDocs.forEach(({ documents, document_type }) => {
-    const beDocType = getUnifiedDocType(document_type);
-    if (beDocType === "post") {
+    const beDocType = getBEUnifiedDocType(document_type);
+    if (beDocType === "posts") {
       // below assumes we are only getting the first version of post
-      (documents ?? []).length > 0 && documentIds.post.push(documents[0].id);
+      (documents ?? []).length > 0 && documentIds.posts.push(documents[0].id);
     } else {
       documentIds[beDocType]?.push(documents.id);
     }
@@ -24,8 +28,9 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   const {
     hypothesis: hypothesisIds,
     paper: paperIds,
-    post: postIds,
+    posts: postIds,
   } = documentIds;
+
   if (hypothesisIds.length < 1 && paperIds.length < 1 && postIds.length < 1) {
     emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
     return unifiedDocs;
@@ -39,8 +44,8 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
     .then((res) => {
       return filterNull(
         unifiedDocs.map((currUniDoc) => {
-          const beDocType = getUnifiedDocType(currUniDoc.document_type);
-          const isPost = beDocType === "post";
+          const currBeDocType = getBEUnifiedDocType(currUniDoc.document_type);
+          const isPost = currBeDocType === "posts";
           const targetDoc = isPost
             ? (currUniDoc.documents ?? [])[0] ?? null
             : currUniDoc.documents;
@@ -49,16 +54,13 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
             return null;
           }
 
-          const userVoteKey =
-            beDocType + (beDocType !== "hypothesis" ? "s" : "");
-
           return isPost
             ? {
                 ...currUniDoc,
                 documents: [
                   {
                     ...targetDoc,
-                    user_vote: res[userVoteKey][targetDoc.id],
+                    user_vote: res[currBeDocType][targetDoc.id],
                   },
                 ],
               }
@@ -66,7 +68,7 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
                 ...currUniDoc,
                 documents: {
                   ...targetDoc,
-                  user_vote: res[userVoteKey][targetDoc.id],
+                  user_vote: res[currBeDocType][targetDoc.id],
                 },
               };
         })
