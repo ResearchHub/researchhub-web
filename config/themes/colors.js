@@ -31,7 +31,7 @@ const colors = {
   NEW_BLUE: (opacity = 1) => `rgba(57, 113, 255, ${opacity})`,
   ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`,
   ORANGE_DARK: (opacity = 1) => `rgba(237, 157, 20, ${opacity})`,
-  ORANGE_DARK2: (opacity = 1) => `rgba(255, 148, 22, ${opacity})`,
+  ORANGE_DARK2: (opacity = 1) => `rgba(255, 122, 0, ${opacity})`,
   ORANGE_LIGHT: (opacity = 1) => `rgb(255, 195, 61, ${opacity})`,
   PASTEL_GREEN_TEXT: "#88cb88",
   PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
