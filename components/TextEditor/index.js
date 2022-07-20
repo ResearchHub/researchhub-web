@@ -59,18 +59,15 @@ function TextEditor(props) {
   );
 
   if (!selectedPostTypeStruct) {
+    const msg =
+      "Could not find a matching post type struct in TextEditor. Did not render comment.";
     captureEvent({
-      msg: "Could not find a matching post type struct in TextEditor. Did not render comment.",
+      msg,
       data: { postType, value, selectedPostTypeStruct },
     });
+    console.warn(msg, postType, selectedPostTypeStruct);
     return null;
   }
-
-  console.log("-------------");
-  console.log(postType, documentType);
-  console.log(getDefaultPostType({ documentType }));
-  console.log("selectedPostTypeStruct", selectedPostTypeStruct);
-  console.log("-------------");
 
   useEffect(() => {
     setValue(initialValue);
