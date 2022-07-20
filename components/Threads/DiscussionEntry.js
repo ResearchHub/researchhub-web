@@ -544,7 +544,7 @@ class DiscussionEntry extends Component {
       data: {
         context_title: contextTitle,
         id: commentThreadID,
-        thread_type: postType,
+        discussion_type: postType,
       },
       documentType,
       hostname,

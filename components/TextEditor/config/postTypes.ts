@@ -35,7 +35,7 @@ const postTypes = [
     label: "Summary",
     value: POST_TYPES.SUMMARY,
     group: "contribute",
-    placeholder: "Contribute a summary of this paper to the community",
+    placeholder: "Share a summary of this paper with the community",
     icon: icons.layerGroup,
   },
 ];
