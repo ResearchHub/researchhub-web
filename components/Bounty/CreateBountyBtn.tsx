@@ -6,7 +6,12 @@ import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 
-function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
+function CreateBountyBtn({
+  withPreview = false,
+  onBountyAdd,
+  bountyText,
+  post,
+}): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bountyAmountDetails, setBountyAmountDetails] = useState<null | any>(
     null
@@ -39,6 +44,9 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
           onBountyAdd(amountDetails);
         }}
         withPreview={withPreview}
+        bountyText={bountyText}
+        postId={post.id}
+        postSlug={post.unifiedDocument.document.slug}
         removeBounty={() => setBountyAmountDetails(null)}
       />
       {bountyAmountDetails && withPreview ? (
@@ -57,20 +65,26 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
           </div>
         </span>
       ) : (
-        <div className={css(styles.addBounty)}>
-          <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-          <span onClick={() => setIsModalOpen(true)} className={css(styles.bountyTextContainer)}>
-            <span className={css(styles.bountyIcon)}>
-              {/* @ts-ignore */}
-              <ResearchCoinIcon width={22} height={22} version={3} />
-            </span>
-            <span
-              data-tip={""}
-              data-for="bountyTooltip"
-              className={css(styles.addBountyLabel)}
-            >
-              Add ResearchCoin Bounty
-            </span>
+        <div
+          data-tip={""}
+          data-for="bountyTooltip"
+          className={css(styles.addBounty)}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <NewFeatureTooltip featureName={`bounty`} position={`right`} />
+          <span className={css(styles.bountyIcon)}>
+            {/* <img
+                className={css(styles.icon)}
+                src={"/static/icons/coin-filled.png"}
+                alt="RSC Coin"
+                width={22}
+              /> */}
+            {/* @ts-ignore */}
+            <ResearchCoinIcon width={22} height={22} version={3} />
+            {/* {icons.plus} */}
+          </span>
+          <span className={css(styles.addBountyLabel)}>
+            Add ResearchCoin Bounty
           </span>
         </div>
       )}
