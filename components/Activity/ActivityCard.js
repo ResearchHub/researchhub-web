@@ -29,7 +29,7 @@ export const getActivityMetadata = (activity) => {
   let docs = documents;
 
   if (Array.isArray(documents)) {
-    docs = documents[0];
+    docs = documents?.[0];
   }
 
   switch (contributionType) {
@@ -40,15 +40,15 @@ export const getActivityMetadata = (activity) => {
       // so handle in next switch.
       break;
     case "COMMENTER":
-      postId = docs.id;
-      postTitle = docs.title;
-      postSlug = docs.slug;
+      postId = docs?.id;
+      postTitle = docs?.title;
+      postSlug = docs?.slug;
       break;
     case "SUPPORTER":
       if (docs) {
-        postId = docs.id;
-        postTitle = docs.title;
-        postSlug = docs.slug;
+        postId = docs?.id;
+        postTitle = docs?.title;
+        postSlug = docs?.slug;
       }
   }
 
