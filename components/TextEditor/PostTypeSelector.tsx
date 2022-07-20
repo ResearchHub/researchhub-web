@@ -87,7 +87,7 @@ function PostTypeSelector({
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
       >
-        <NewFeatureTooltip featureName={`discussiontypes`} position={`right`} />
+        <NewFeatureTooltip featureName={`discussiontypes`} position={["bottom"]} />
         <span className={css(styles.selectedTypeIcon)}>
           {selectedType?.icon}
         </span>

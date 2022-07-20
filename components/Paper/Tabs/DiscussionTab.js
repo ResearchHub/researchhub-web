@@ -412,7 +412,7 @@ const DiscussionTab = (props) => {
       loading={submitInProgress}
       uid={textEditorKey}
       isTopLevelComment={true}
-      documentType={`question`}
+      documentType={documentType}
     ></TextEditor>
   );
 

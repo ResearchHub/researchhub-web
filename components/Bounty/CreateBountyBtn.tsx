@@ -63,7 +63,7 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
           className={css(styles.addBounty)}
           onClick={() => setIsModalOpen(true)}
         >
-          <NewFeatureTooltip featureName={`bounty`} position={`right`} />
+          <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
           <span className={css(styles.bountyIcon)}>
             {/* <img
                 className={css(styles.icon)}
