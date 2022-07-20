@@ -7,74 +7,90 @@ import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffec
 import { connect } from "react-redux";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
 
-function NewFeatureTooltip({ featureName, auth = null, delay = 500, position = "right" }): ReactElement|null {
-
-  const [shouldAlert, setShouldAlert] = useEffectNewFeatureShouldAlertUser({ auth, featureName })
+function NewFeatureTooltip({
+  featureName,
+  auth = null,
+  delay = 500,
+  position = "right",
+}): ReactElement | null {
+  const [shouldAlert, setShouldAlert] = useEffectNewFeatureShouldAlertUser({
+    auth,
+    featureName,
+  });
   const normalizedFeatureName = featureName.toLocaleLowerCase();
 
   const handleDismiss = () => {
     window.localStorage.setItem(
-      `feature_${normalizedFeatureName}_clicked`, "true"
+      `feature_${normalizedFeatureName}_clicked`,
+      "true"
     );
 
-    setShouldAlert(false);    
-    postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName })    
-  }
+    setShouldAlert(false);
+    postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName });
+  };
 
   let html;
-  if (normalizedFeatureName === "discussiontypes" ) {
+  if (normalizedFeatureName === "discussiontypes") {
     html = (
       <div className={css(styles.body)}>
         <span className={css(styles.caret)}>{icons.caretLeft}</span>
         <div className={css(styles.title)}>
           Contribution Types
           <span className={css(styles.new)}>
-          <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>{icons.fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
         <div className={css(styles.desc)}>
-          You can now choose different contribution types such as <span className={css(styles.bolded)}>Peer Review</span> and <span className={css(styles.bolded)}>Summary</span>. Give it a shot!
+          You can now choose different contribution types such as{" "}
+          <span className={css(styles.bolded)}>Peer Review</span> and{" "}
+          <span className={css(styles.bolded)}>Summary</span>. Give it a shot!
         </div>
         <div className={css(styles.btnContainer)}>
-          <Button onClick={handleDismiss} label={`Okay`} size="small" customButtonStyle={styles.btn} customLabelStyle={styles.btnLabel} />
+          <Button
+            onClick={handleDismiss}
+            label={`Okay`}
+            size="small"
+            customButtonStyle={styles.btn}
+            customLabelStyle={styles.btnLabel}
+          />
         </div>
       </div>
-    )
+    );
   }
-  if (normalizedFeatureName === "bounty" ) {
+  if (normalizedFeatureName === "bounty") {
     html = (
       <div className={css(styles.body)}>
         <span className={css(styles.caret)}>{icons.caretLeft}</span>
         <div className={css(styles.title)}>
           Bounties
           <span className={css(styles.new)}>
-          <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>{icons.fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
         <div className={css(styles.desc)}>
-          Bounties are now available. Incentivize others by offering up ResearchCoin to the best solution.
+          Bounties are now available. Incentivize others by offering up
+          ResearchCoin to the best solution.
         </div>
         <div className={css(styles.btnContainer)}>
-          <Button onClick={handleDismiss} label={`Okay`} size="small" customButtonStyle={styles.btn} customLabelStyle={styles.btnLabel} />
+          <Button
+            onClick={handleDismiss}
+            label={`Okay`}
+            size="small"
+            customButtonStyle={styles.btn}
+            customLabelStyle={styles.btnLabel}
+          />
         </div>
       </div>
-    )
+    );
   }
-
 
   if (shouldAlert) {
-    return (
-      <div className={css(styles.tooltipContainer)}>
-        {html}
-      </div> 
-    )
-  }
-  else {
+    return <div className={css(styles.tooltipContainer)}>{html}</div>;
+  } else {
     return null;
   }
-
 }
 
 // const bounty = StyleSheet.create({
@@ -123,7 +139,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: "white",
     padding: "10px 15px",
-    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   bolded: {
     fontWeight: 600,
@@ -140,14 +157,14 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     width: "auto",
     height: "auto",
-    padding: "7px 15px"
+    padding: "7px 15px",
   },
   btnLabel: {
     color: colors.NEW_BLUE(),
     fontWeight: 500,
     fontSize: 16,
-  }
-})
+  },
+});
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
