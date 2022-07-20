@@ -174,7 +174,11 @@ class PostPageCard extends Component {
                   )}
                   {true && (
                     <div className={css(styles.createBountyContainer)}>
-                      <CreateBountyBtn onBountyAdd={() => null} />
+                      <CreateBountyBtn
+                        onBountyAdd={() => null}
+                        bountyText={this.toPlaintext(postBody)}
+                        post={post}
+                      />
                     </div>
                   )}
                 </div>
