@@ -1,6 +1,13 @@
-export default function ({ quillRef }) {
-  const deltas = quillRef.getContents()?.ops || [];
+import isQuillEmpty from "./isQuillEmpty";
+
+export default function hasQuillContent({ quillRef }) {
+  const contents = quillRef.getContents();
+  const deltas = contents?.ops || [];
   let hasContent = false;
+
+  if (isQuillEmpty(contents)) {
+    return false;
+  }
 
   for (let i = 0; i < deltas.length; i++) {
     if (

@@ -1,6 +1,5 @@
-import { formatDateStandard } from "../utils/dates";
+import { formatDateStandard, timeTo } from "../utils/dates";
 import { CreatedBy, ID } from "./root_types";
-import { timeTo } from "~/config/utils/dates";
 import { parseCreatedBy } from "./contribution";
 
 export enum BOUNTY_STATUS {
@@ -10,12 +9,12 @@ export enum BOUNTY_STATUS {
 }
 
 export default class Bounty {
-  _id: ID
-  _createdDate: string
-  _timeRemaining: string
-  _createdBy: CreatedBy|null
-  _amount: number
-  _status: BOUNTY_STATUS
+  _id: ID;
+  _createdDate: string;
+  _timeRemaining: string;
+  _createdBy: CreatedBy | null;
+  _amount: number;
+  _status: BOUNTY_STATUS;
 
   constructor(raw: any) {
     this._id = raw.id;
@@ -40,37 +39,37 @@ export default class Bounty {
             first_name: "Kobe",
             last_name: "Attias",
             id: 8,
-          }
+          },
         },
         status: "OPEN",
-        amount: 15000.000,
+        amount: 15000.0,
       });
 
       return resolve(bounty);
     });
   }
 
-  get id():ID {
+  get id(): ID {
     return this.id;
   }
 
-  get createdDate():string {
+  get createdDate(): string {
     return this._createdDate;
   }
 
-  get timeRemaining():string {
+  get timeRemaining(): string {
     return this._timeRemaining;
   }
 
-  get createdBy():CreatedBy|null {
+  get createdBy(): CreatedBy | null {
     return this._createdBy;
   }
-  
-  get amount():number {
+
+  get amount(): number {
     return this._amount;
   }
 
-  get status():BOUNTY_STATUS {
+  get status(): BOUNTY_STATUS {
     return this._status;
   }
 }

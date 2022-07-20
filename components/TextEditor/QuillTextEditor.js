@@ -24,6 +24,7 @@ import { POST_TYPES } from "./config/postTypes";
 import trimQuillEditorContents from "./util/trimQuillEditorContents";
 import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
+import { breakpoints } from "~/config/themes/screen";
 
 class Editor extends Component {
   constructor(props) {
@@ -44,8 +45,6 @@ class Editor extends Component {
     };
     this.reactQuillRef = createRef();
     this.quillRef = null;
-
-    console.log("selectedPostTypeStruct", this.state.selectedPostTypeStruct);
   }
 
   componentDidMount = async () => {
@@ -410,7 +409,12 @@ class Editor extends Component {
   };
 
   handlePostTypeSelect = (selectedType) => {
+    console.log("selectedType", selectedType);
     const currentType = this.state.selectedPostTypeStruct;
+
+    if (currentType.value === selectedType.value) {
+      return;
+    }
 
     const isPeerReview =
       selectedType.value === POST_TYPES.REVIEW &&
@@ -444,6 +448,8 @@ class Editor extends Component {
       this.quillRef.setContents(trimmedContents);
 
       const hasContent = hasQuillContent({ quillRef: this.quillRef });
+      console.log(hasContent);
+      console.log(this.quillRef.editor.getContents());
       if (!hasContent) {
         this.forcePlaceholderToShow({
           placeholderText: selectedType.placeholder,
@@ -470,6 +476,8 @@ class Editor extends Component {
       ? "Post Answer"
       : "Post";
 
+    console.log("this.props.editing", this.props.editing);
+
     return (
       <div className={css(styles.postButtonContainer)}>
         {!props.hideButton &&
@@ -487,9 +495,17 @@ class Editor extends Component {
             />
           ) : (
             <>
+              {this.props.editing && (
+                <div
+                  onClick={this.onCancel}
+                  className={css(toolbarStyles.cancelButton)}
+                >
+                  Cancel
+                </div>
+              )}
               <FormButton
                 onClick={this.onSubmit}
-                label={label}
+                label={this.props.editing ? "Save changes" : label}
                 disabled={this.state.submitDisabled}
                 customButtonStyle={[
                   toolbarStyles.postButtonStyle,
@@ -866,9 +882,6 @@ const toolbarStyles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
     background: "#fff",
-    "@media only screen and (max-width: 577px)": {
-      flexDirection: "row",
-    },
   },
   iconRow: {
     display: "flex",
@@ -890,19 +903,10 @@ const toolbarStyles = StyleSheet.create({
   first: {
     marginLeft: 0,
   },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    width: "100%",
-  },
-  smallButtonRow: {
-    justifyContent: "space-between",
-  },
   cancelButton: {
-    color: colors.BLACK(),
+    color: colors.MEDIUM_GREY2(),
     fontSize: 15,
-    marginRight: 15,
+    marginRight: 25,
     cursor: "pointer",
   },
   postButtonLabel: {
@@ -925,8 +929,10 @@ const toolbarStyles = StyleSheet.create({
       opacity: 0.9,
       background: colors.NEW_BLUE(),
     },
-    "@media only screen and (max-width: 577px)": {
-      width: 100,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minHeight: "unset",
+      minWidth: 95,
+      height: 30,
     },
   },
   ripples: {

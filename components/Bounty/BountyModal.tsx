@@ -14,8 +14,8 @@ const MIN_RSC_REQUIRED = 50;
 const MAX_RSC_REQUIRED = 1000000;
 
 type Props = {
-  isOpen: Boolean;
-  withPreview: Boolean;
+  isOpen: boolean;
+  withPreview: boolean;
   closeModal: Function;
   handleBountyAdded: Function;
   removeBounty: Function;
@@ -296,6 +296,21 @@ function BountyModal({
                   </div>
                 </div>
               </div>
+            ) : withPreview ? (
+              <div className={css(alertStyles.alert, alertStyles.previewAlert)}>
+                You will have a chance to review and cancel before bounty is
+                created
+              </div>
+            ) : null}
+            <div className={css(styles.addBtnContainer)}>
+              <Button
+                label={addBtnLabel}
+                customButtonStyle={styles.addButton}
+                customLabelStyle={styles.addButtonLabel}
+                size={`small`}
+                disabled={hasMaxRscAlert || hasMinRscAlert}
+                onClick={handleAddBounty}
+              />
             </div>
           </>
         )}
