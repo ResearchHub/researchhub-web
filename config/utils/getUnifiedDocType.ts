@@ -2,7 +2,7 @@ import { ID } from "../types/root_types";
 import { getInitialScope } from "./dates";
 import { isNullOrUndefined } from "./nullchecks";
 
-type FEReturnType = "hypothesis" | "post" | "paper" | "all";
+type FEReturnType = "hypothesis" | "post" | "paper" | "question" | "all";
 type BEReturnType = "hypothesis" | "paper" | "posts" | "all";
 
 // this function is used to resolve BE model name discrepencies with FE naming conventions
@@ -13,6 +13,7 @@ export function getUnifiedDocType(
   const lowerCasedInput = input?.toLowerCase() ?? null;
   switch (lowerCasedInput) {
     case "question":
+      return "question";
     case "discussion":
     case "post":
     case "posts":
@@ -32,8 +33,10 @@ export function getBEUnifiedDocType(
 ): BEReturnType {
   const lowerCasedInput = input?.toLowerCase() ?? null;
   switch (lowerCasedInput) {
+    case "discussion":
     case "post":
     case "posts":
+    case "question":
       return "posts";
     case "hypothesis":
       return "hypothesis";
