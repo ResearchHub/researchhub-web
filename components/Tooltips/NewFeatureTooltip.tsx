@@ -6,97 +6,154 @@ import icons from "~/config/themes/icons";
 import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import { connect } from "react-redux";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
+import { breakpoints } from "~/config/themes/screen";
 
-function NewFeatureTooltip({ featureName, auth = null, delay = 500, position = "right" }): ReactElement|null {
-
-  const [shouldAlert, setShouldAlert] = useEffectNewFeatureShouldAlertUser({ auth, featureName })
+function NewFeatureTooltip({
+  featureName,
+  auth = null,
+  position = ["right", "bottom"],
+  color = "blue",
+}): ReactElement | null {
+  const [shouldAlert, setShouldAlert] = useEffectNewFeatureShouldAlertUser({
+    auth,
+    featureName,
+  });
   const normalizedFeatureName = featureName.toLocaleLowerCase();
 
   const handleDismiss = () => {
     window.localStorage.setItem(
-      `feature_${normalizedFeatureName}_clicked`, "true"
+      `feature_${normalizedFeatureName}_clicked`,
+      "true"
     );
 
-    setShouldAlert(false);    
-    postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName })    
-  }
+    setShouldAlert(false);
+    postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName });
+  };
 
-  let html;
-  if (normalizedFeatureName === "discussiontypes" ) {
+  const tooltipPos = (process.browser && window.innerWidth > breakpoints.small.int || position.length === 1) ? position[0] : position[1];
+
+  let html:ReactElement = <></>;
+  if (normalizedFeatureName === "discussiontypes") {
     html = (
-      <div className={css(styles.body)}>
-        <span className={css(styles.caret)}>{icons.caretLeft}</span>
+      <>
         <div className={css(styles.title)}>
           Contribution Types
           <span className={css(styles.new)}>
-          <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>{icons.fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
         <div className={css(styles.desc)}>
-          You can now choose different contribution types such as <span className={css(styles.bolded)}>Peer Review</span> and <span className={css(styles.bolded)}>Summary</span>. Give it a shot!
+          You can now choose different contribution types such as{" "}
+          <span className={css(styles.bolded)}>Peer Review</span> and{" "}
+          <span className={css(styles.bolded)}>Summary</span>. Give it a shot!
         </div>
         <div className={css(styles.btnContainer)}>
-          <Button onClick={handleDismiss} label={`Okay`} size="small" customButtonStyle={styles.btn} customLabelStyle={styles.btnLabel} />
+          <Button
+            onClick={handleDismiss}
+            label={`Okay`}
+            size="small"
+            customButtonStyle={styles.btn}
+            customLabelStyle={[styles.btnLabel, colorStyles["btn_" + color]]}
+          />
         </div>
-      </div>
-    )
+      </>
+    );
   }
-  if (normalizedFeatureName === "bounty" ) {
+  if (normalizedFeatureName === "bounty") {
     html = (
-      <div className={css(styles.body)}>
-        <span className={css(styles.caret)}>{icons.caretLeft}</span>
+      <>
         <div className={css(styles.title)}>
           Bounties
           <span className={css(styles.new)}>
-          <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>{icons.fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
         <div className={css(styles.desc)}>
-          Bounties are now available. Incentivize others by offering up ResearchCoin to the best solution.
+          Bounties are now available. Incentivize others by offering up
+          ResearchCoin to the best solution.
         </div>
         <div className={css(styles.btnContainer)}>
-          <Button onClick={handleDismiss} label={`Okay`} size="small" customButtonStyle={styles.btn} customLabelStyle={styles.btnLabel} />
+          <Button
+            onClick={handleDismiss}
+            label={`Okay`}
+            size="small"
+            customButtonStyle={styles.btn}
+            customLabelStyle={[styles.btnLabel, colorStyles["btn_" + color]]}
+          />
         </div>
-      </div>
-    )
+      </>
+    );
   }
-
 
   if (shouldAlert) {
     return (
-      <div className={css(styles.tooltipContainer)}>
-        {html}
-      </div> 
+      <div className={css(styles.tooltipContainer, styles["tooltipContainer_" + tooltipPos])}>
+        <span className={css(styles.caret, styles["caret_" + tooltipPos], colorStyles["caret_" + color])}>{icons.caretLeft}</span>
+        <div className={css(styles.body, colorStyles["body_" + color])}>
+          {html}
+        </div>
+      </div>
     )
-  }
-  else {
+  } else {
     return null;
   }
-
 }
 
-// const bounty = StyleSheet.create({
-//   body: {
-//     background: colors.ORANGE(),
-//     color: "white",
-//   }
-// })
+const colorStyles = StyleSheet.create({
+  body_orange: {
+    background: colors.ORANGE_DARK2(),
+  },
+  body_blue: {
+    background: colors.NEW_BLUE(),
+  },  
+  btn_orange: {
+    color: colors.ORANGE_DARK2(),
+  },
+  btn_blue: {
+    color: colors.NEW_BLUE(),
+  },
+  caret_blue: {
+    color: colors.NEW_BLUE(),
+  },
+  caret_orange: {
+    color: colors.ORANGE_DARK2(),
+  },  
+})
 
 const styles = StyleSheet.create({
   tooltipContainer: {
     position: "absolute",
     zIndex: 10,
-    right: -395,
+  },
+  tooltipContainer_right: {
+    position: "absolute",
+    right: -18,
     top: -11,
+    transform: "translateX(100%)",
+  },
+  tooltipContainer_bottom: {
+    position: "absolute",
+    left: 0,
+    bottom: -18,
+    transform: "translateY(100%)",
   },
   caret: {
-    color: colors.NEW_BLUE(),
+    // color: colors.NEW_BLUE(),
     position: "absolute",
+  },
+  caret_right: {
     fontSize: 25,
     left: -9,
+    top: 10,
   },
+  caret_bottom: {
+    fontSize: 25,
+    left: 15,
+    top: -18,
+    transform: "rotate(90deg)",
+  },  
   new: {
     display: "flex",
     alignItems: "center",
@@ -119,11 +176,15 @@ const styles = StyleSheet.create({
     width: 350,
     fontWeight: 400,
     fontSize: 14,
-    background: colors.NEW_BLUE(),
+    // background: colors.NEW_BLUE(),
     borderRadius: 4,
     color: "white",
     padding: "10px 15px",
+    boxSizing: "border-box",
     boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: 320,
+    }
   },
   bolded: {
     fontWeight: 600,
@@ -140,14 +201,21 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     width: "auto",
     height: "auto",
-    padding: "7px 15px"
+    padding: "7px 15px",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minHeight: "unset",
+      minWidth: "unset",
+      height: "auto",
+      width: "auto",
+      padding: "9px 19px",
+    },    
   },
   btnLabel: {
-    color: colors.NEW_BLUE(),
+    // color: colors.NEW_BLUE(),
     fontWeight: 500,
     fontSize: 16,
-  }
-})
+  },
+});
 
 const mapStateToProps = (state) => ({
   auth: state.auth,

@@ -149,6 +149,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontSize: 18,
   },
+  bountyTextContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
   addBounty: {
     // color: colors.ORANGE_DARK(),
     color: colors.ORANGE_DARK2(),
@@ -159,8 +163,6 @@ const styles = StyleSheet.create({
     // borderRadius: 4,
     // padding: "7px 16px",
     // paddingLeft: 0,
-    display: "flex",
-    alignItems: "center",
     ":hover": {
       // color: colors.ORANGE()
     },

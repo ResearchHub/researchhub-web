@@ -172,7 +172,7 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {true && (
+                  {false && (
                     <div className={css(styles.createBountyContainer)}>
                       <CreateBountyBtn
                         onBountyAdd={() => null}

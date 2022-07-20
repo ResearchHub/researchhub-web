@@ -6,11 +6,11 @@ import icons from "~/config/themes/icons";
 type Props = {
   value?: number;
   onSelect?: Function;
-  readOnly?: Boolean;
+  readOnly?: boolean;
   overrideStarStyle?: any;
   scoreInputStyleOverride?: any;
-  size?: String;
-  withLabel?: Boolean;
+  size?: string;
+  withLabel?: boolean;
 };
 
 const MAX_SCORE = 5;
@@ -25,7 +25,6 @@ export default function StarInput({
   size = "med",
   withLabel = false,
 }: Props): ReactElement {
-
   const [selectedValue, setSelectedValue] = useState<number>(value);
   const [hoveredValue, setHoveredValue] = useState<number>(0);
 
@@ -33,114 +32,138 @@ export default function StarInput({
     if (value !== selectedValue) {
       setSelectedValue(value);
     }
-  }, [value])
+  }, [value]);
 
   const handleSelect = (value) => {
     setSelectedValue(value);
     onSelect && onSelect(value);
-  }
+  };
 
   const starInput = useMemo(() => {
-    let remainderWasCalculated = false;
-    const bars = Array(MAX_SCORE).fill(null).map((v, index) => {
-      const starNumber = index + 1;
+    const remainderWasCalculated = false;
+    const bars = Array(MAX_SCORE)
+      .fill(null)
+      .map((v, index) => {
+        const starNumber = index + 1;
 
-      if (readOnly) {
-        const isStarSelected = starNumber <= selectedValue;
+        if (readOnly) {
+          const isStarSelected = starNumber <= selectedValue;
 
-        return (
-          <div className={css(styles.star, styles.readOnly, overrideStarStyle, styles[`${size}SizeOfStar`] )}>
-            {isStarSelected 
-              ? <span className={css(styles.starIconFilled)}>{icons.starFilled}</span>
-              : <span className={css(styles.starIconDisabled)}>{icons.starFilled}</span>
-            }
-          </div>
-        )
-      }
-      else {
-        const isStarSelected = starNumber <= selectedValue || starNumber <= hoveredValue;
-        return (
-          <div
-            className={`starRating ${css(styles.star, styles[`${size}SizeOfStar`], overrideStarStyle)}`}
-            data-rating={index+1}
-            onClick={() => handleSelect(starNumber)}
-            onMouseEnter={() => setHoveredValue(starNumber)}
-            onMouseLeave={() => setHoveredValue(0)}
-          >
-            {isStarSelected 
-              ? <span className={css(styles.starIconFilled)}>{icons.starFilled}</span>
-              : <span className={css(styles.starIconUnfilled)}>{icons.starAlt}</span>
-            }
-          </div>
-        )
-      }
-    });
+          return (
+            <div
+              className={css(
+                styles.star,
+                styles.readOnly,
+                overrideStarStyle,
+                styles[`${size}SizeOfStar`]
+              )}
+            >
+              {isStarSelected ? (
+                <span className={css(styles.starIconFilled)}>
+                  {icons.starFilled}
+                </span>
+              ) : (
+                <span className={css(styles.starIconDisabled)}>
+                  {icons.starFilled}
+                </span>
+              )}
+            </div>
+          );
+        } else {
+          const isStarSelected =
+            starNumber <= selectedValue || starNumber <= hoveredValue;
+          return (
+            <div
+              className={`starRating ${css(
+                styles.star,
+                styles[`${size}SizeOfStar`],
+                overrideStarStyle
+              )}`}
+              data-rating={index + 1}
+              onClick={() => handleSelect(starNumber)}
+              onMouseEnter={() => setHoveredValue(starNumber)}
+              onMouseLeave={() => setHoveredValue(0)}
+            >
+              {isStarSelected ? (
+                <span className={css(styles.starIconFilled)}>
+                  {icons.starFilled}
+                </span>
+              ) : (
+                <span className={css(styles.starIconUnfilled)}>
+                  {icons.starAlt}
+                </span>
+              )}
+            </div>
+          );
+        }
+      });
 
     return (
       <div className={css(styles.starInput)}>
-        {withLabel &&
-          <span className={css(styles.starLabel)}>{parseFloat(value + '').toFixed(1)}</span>
-        }
+        {withLabel && (
+          <span className={css(styles.starLabel)}>
+            {parseFloat(value + "").toFixed(1)}
+          </span>
+        )}
         {bars}
       </div>
-    )    
+    );
   }, [selectedValue, hoveredValue, readOnly]);
 
   return (
     <div className={css(styles.scoreInput, scoreInputStyleOverride)}>
       {starInput}
     </div>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "scoreInput": {
+  scoreInput: {
     display: "flex",
     alignItems: "flex-start",
   },
-  "starInput": {
+  starInput: {
     display: "flex",
   },
-  "readOnly": {
+  readOnly: {
     cursor: "initial",
   },
-  "star": {
+  star: {
     width: 24,
     height: 16,
     marginRight: 0,
     borderRadius: "1px",
     cursor: "pointer",
     position: "relative",
-    color: "#e77600" //colors.DARKER_GREY(),
+    color: "#e77600", //colors.DARKER_GREY(),
   },
-  "starLabel": {
+  starLabel: {
     fontWeight: 500,
-    fontSize: 16,  
+    fontSize: 16,
     color: colors.MEDIUM_GREY2(),
     marginRight: 10,
   },
-  "medSizeOfStar": {
+  medSizeOfStar: {
     // width: 30,
     // height: 30,
   },
-  "smallSizeOfStar": {
+  smallSizeOfStar: {
     fontSize: 12,
     width: 18,
-    height: 18,    
+    height: 18,
   },
-  "starIconFilled": {
+  starIconFilled: {
     color: colors.YELLOW(),
   },
-  "starIconUnfilled": {
-  },  
-  "starIconDisabled": {
+  starIconUnfilled: {},
+  starIconDisabled: {
     color: colors.LIGHT_GREY(),
   },
-  "cover": {
+  cover: {
     background: colors.NEW_BLUE(),
     position: "absolute",
     left: 0,
     top: 0,
     height: "100%",
   },
-})
+});

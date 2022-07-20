@@ -5,19 +5,25 @@ import icons from "~/config/themes/icons";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
 
-function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactElement {
-
+function PostTypeSelector({
+  selectedType,
+  handleSelect,
+  documentType,
+}): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
- 
+
   const _handleSelect = (type) => {
     handleSelect(type);
     setIsOpen(false);
-  }
+  };
 
   const _handleOutsideClick = (e) => {
-    if (!dropdownRef.current?.contains(e.target) && !triggerRef.current?.contains(e.target)) {
+    if (
+      !dropdownRef.current?.contains(e.target) &&
+      !triggerRef.current?.contains(e.target)
+    ) {
       setIsOpen(false);
     }
   };
@@ -32,61 +38,96 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
 
   const renderDropdown = () => {
     return (
-      <div className={css(dropdownStyles.dropdown, isOpen && dropdownStyles.dropdownOpen)} ref={dropdownRef}>
-        <div className={css(dropdownStyles.dropdownGroup, dropdownStyles.dropdownGroup)}>
-        <div className={css(dropdownStyles.dropdownGroupTitle)}>Contribution Type</div>
-          {postTypes.map(t => (
-            <div className={css(dropdownStyles.dropdownOpt)} onClick={() => _handleSelect(t)}>
-              <div className={css(dropdownStyles.dropdownOptIcon, dropdownStyles.dropdownOptIconContribute)}>{t.icon}</div>
-              <div className={css(dropdownStyles.dropdownOptLabel)}>{t.label}</div>
-              {selectedType?.value === t.value &&
+      <div
+        className={css(
+          dropdownStyles.dropdown,
+          isOpen && dropdownStyles.dropdownOpen
+        )}
+        ref={dropdownRef}
+      >
+        <div
+          className={css(
+            dropdownStyles.dropdownGroup,
+            dropdownStyles.dropdownGroup
+          )}
+        >
+          <div className={css(dropdownStyles.dropdownGroupTitle)}>
+            Contribution Type
+          </div>
+          {postTypes.map((t) => (
+            <div
+              className={css(dropdownStyles.dropdownOpt)}
+              onClick={() => _handleSelect(t)}
+            >
+              <div
+                className={css(
+                  dropdownStyles.dropdownOptIcon,
+                  dropdownStyles.dropdownOptIconContribute
+                )}
+              >
+                {t.icon}
+              </div>
+              <div className={css(dropdownStyles.dropdownOptLabel)}>
+                {t.label}
+              </div>
+              {selectedType?.value === t.value && (
                 <div className={css(dropdownStyles.check)}>{icons.check}</div>
-              }
+              )}
             </div>
           ))}
-        </div>      
+        </div>
       </div>
-    )
-  }
-  
+    );
+  };
+
   const renderDropdownTrigger = () => {
     return (
       <div
-        className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)} ref={triggerRef}
+        className={css(styles.trigger)}
+        onClick={() => setIsOpen(!isOpen)}
+        ref={triggerRef}
       >
-        <NewFeatureTooltip featureName={`discussiontypes`} position={`right`} />
-        <span className={css(styles.selectedTypeIcon)}>{selectedType?.icon}</span>
-        {selectedType?.label} <span className={css(styles.downIcon)}>{icons.angleDown}</span>
+        <NewFeatureTooltip featureName={`discussiontypes`} position={["bottom"]} />
+        <span className={css(styles.selectedTypeIcon)}>
+          {selectedType?.icon}
+        </span>
+        {selectedType?.label}{" "}
+        <span className={css(styles.downIcon)}>{icons.angleDown}</span>
       </div>
-    )
-  }
-  
+    );
+  };
+
   const renderQuestionToggle = () => {
     return (
-      <div className={css(toggle.container, selectedType.value === POST_TYPES.ANSWER ? toggle.containerForAnswer : toggle.containerForDiscuss)}>
+      <div
+        className={css(
+          toggle.container,
+          selectedType.value === POST_TYPES.ANSWER
+            ? toggle.containerForAnswer
+            : toggle.containerForDiscuss
+        )}
+      >
         {questionPostTypes.map((t) => (
-          <div className={css(
-            toggle.opt,
-            (selectedType.value === t.value) && toggle[`${t.value}_OPT`]
-          )} onClick={() => _handleSelect(t)}>
+          <div
+            className={css(
+              toggle.opt,
+              selectedType.value === t.value && toggle[`${t.value}_OPT`]
+            )}
+            onClick={() => _handleSelect(t)}
+          >
             <span className={css(toggle.optIcon)}>{t.icon}</span>
             <span className={css(toggle.text)}>{t.label}</span>
           </div>
         ))}
       </div>
-    )
-  }
+    );
+  };
 
   if (documentType === "question") {
     const toggle = renderQuestionToggle();
 
-    return (
-      <div className={css(styles.postTypeSelector)}>
-        {toggle}
-      </div>
-    )
-  }
-  else {
+    return <div className={css(styles.postTypeSelector)}>{toggle}</div>;
+  } else {
     const dropdown = renderDropdown();
     const trigger = renderDropdownTrigger();
     return (
@@ -94,7 +135,7 @@ function PostTypeSelector({ selectedType, handleSelect, documentType }): ReactEl
         {trigger}
         {dropdown}
       </div>
-    )
+    );
   }
 }
 
@@ -110,9 +151,7 @@ const toggle = StyleSheet.create({
     boxSizing: "border-box",
     // height: 26,
   },
-  containerForDiscuss: {
-
-  },
+  containerForDiscuss: {},
   containerForAnswer: {
     border: `1px solid ${colors.NEW_GREEN()}`,
   },
@@ -158,7 +197,8 @@ const dropdownStyles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 5,
     width: 220,
-    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   dropdownGroup: {
     color: colors.NEW_BLUE(),
@@ -189,7 +229,7 @@ const dropdownStyles = StyleSheet.create({
     width: "100%",
     ":hover": {
       background: colors.LIGHTER_GREY(),
-      transition: "0.2s"
+      transition: "0.2s",
     },
     alignItems: "center",
   },
@@ -203,7 +243,7 @@ const dropdownStyles = StyleSheet.create({
   dropdownOptLabel: {
     fontSize: 14,
     fontWeight: 500,
-  }
+  },
 });
 
 const styles = StyleSheet.create({
@@ -225,8 +265,8 @@ const styles = StyleSheet.create({
     display: "inline-flex",
     ":hover": {
       background: colors.NEW_BLUE(0.05),
-      transition: "0.2s"
-    }
+      transition: "0.2s",
+    },
   },
   selectedTypeIcon: {
     marginRight: 8,
