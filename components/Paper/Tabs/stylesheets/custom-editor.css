@@ -72,6 +72,10 @@
   padding: 0 !important;
 }
 
+.post-body {
+  padding-top: 25px;
+}
+
 .post-body .ck-content h1,
 h2,
 h3 {
