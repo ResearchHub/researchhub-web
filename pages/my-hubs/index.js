@@ -8,7 +8,6 @@ import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 
 const Index = (props) => {
-  // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
 
