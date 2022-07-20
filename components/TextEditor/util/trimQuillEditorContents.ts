@@ -1,7 +1,6 @@
 export default function trimQuillEditorContents ({ contents }) {
   const deltas = Array.isArray(contents) ? contents : contents?.ops ? contents.ops : [];
 
-  console.log('deltas', deltas)
   if (deltas.length > 0) {
     const firstDelta = deltas[0];
     const isFirstDeltaString = (typeof firstDelta?.insert === "string" && !firstDelta.attributes);
