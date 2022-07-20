@@ -6,6 +6,7 @@ import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import killswitch from "~/config/killswitch/killswitch";
 
 const UnifiedDocFeedMenu = ({
   subFilters: { filterBy, scope },
@@ -124,6 +125,10 @@ const UnifiedDocFeedMenu = ({
       {
         value: "posts",
         label: "Posts",
+      },
+      killswitch("") && {
+        value: "questions",
+        label: "Questions",
       },
       {
         value: "hypothesis",
