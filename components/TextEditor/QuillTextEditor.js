@@ -476,6 +476,8 @@ class Editor extends Component {
       ? "Post Answer"
       : "Post";
 
+    console.log("this.props.editing", this.props.editing);
+
     return (
       <div className={css(styles.postButtonContainer)}>
         {!props.hideButton &&
@@ -493,9 +495,17 @@ class Editor extends Component {
             />
           ) : (
             <>
+              {this.props.editing && (
+                <div
+                  onClick={this.onCancel}
+                  className={css(toolbarStyles.cancelButton)}
+                >
+                  Cancel
+                </div>
+              )}
               <FormButton
                 onClick={this.onSubmit}
-                label={label}
+                label={this.props.editing ? "Save changes" : label}
                 disabled={this.state.submitDisabled}
                 customButtonStyle={[
                   toolbarStyles.postButtonStyle,
@@ -893,19 +903,10 @@ const toolbarStyles = StyleSheet.create({
   first: {
     marginLeft: 0,
   },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    width: "100%",
-  },
-  smallButtonRow: {
-    justifyContent: "space-between",
-  },
   cancelButton: {
-    color: colors.BLACK(),
+    color: colors.MEDIUM_GREY2(),
     fontSize: 15,
-    marginRight: 15,
+    marginRight: 25,
     cursor: "pointer",
   },
   postButtonLabel: {
