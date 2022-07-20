@@ -12,20 +12,25 @@ export function getDocumentCard({
 }): UnifiedCard[] {
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
-      const beDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
+      const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
       const docTypeLabel = (uniDoc?.document_type ?? "").toLowerCase() ?? null;
-      const targetDoc =
-        beDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
-      const docID = targetDoc.id;
       const formattedDocLabel =
-        docTypeLabel === "hypothesis" ? "Meta-Study" : docTypeLabel;
+        docTypeLabel === "hypothesis"
+          ? "Meta-Study"
+          : docTypeLabel === "discussion"
+          ? "post"
+          : docTypeLabel;
+      const targetDoc = !["post", "question"].includes(formattedDocType)
+        ? uniDoc.documents
+        : uniDoc.documents[0];
+      const docID = targetDoc.id;
       return (
         <FeedCard
           {...targetDoc}
-          formattedDocType={beDocType}
+          formattedDocType={formattedDocType}
           formattedDocLabel={formattedDocLabel}
           index={arrIndex}
-          key={`${beDocType}-${docID}-${arrIndex}`}
+          key={`${formattedDocType}-${docID}-${arrIndex}`}
           onBadgeClick={onBadgeClick}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}
