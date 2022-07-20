@@ -5,7 +5,6 @@ import reviewCategories from "./config/reviewCategories";
 import icons from "~/config/themes/icons";
 
 function ReviewCategorySelector({ handleSelect }): ReactElement {
-
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -13,10 +12,13 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
   const _handleSelect = (reviewCategory) => {
     handleSelect(reviewCategory);
     setIsOpen(false);
-  }
+  };
 
   const _handleOutsideClick = (e) => {
-    if (!dropdownRef.current?.contains(e.target) && !triggerRef.current?.contains(e.target)) {
+    if (
+      !dropdownRef.current?.contains(e.target) &&
+      !triggerRef.current?.contains(e.target)
+    ) {
       setIsOpen(false);
     }
   };
@@ -31,28 +33,45 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
 
   const renderDropdown = () => {
     return (
-      <div className={css(styles.dropdown, isOpen && styles.dropdownOpen)} ref={dropdownRef}>
-        {Object.values(reviewCategories).filter(cat => !cat.isDefault).map(cat => (
-          <div className={css(styles.dropdownOpt)} onClick={() => _handleSelect(cat)}>
-            <div className={css(styles.dropdownOptLabel)}>
-              <span className={css(styles.plusIcon)}>{icons.plus}{` `}</span>
-              <span className={css(styles.catText)}>{cat.label}</span>
+      <div
+        className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
+        ref={dropdownRef}
+      >
+        {Object.values(reviewCategories)
+          .filter((cat) => !cat.isDefault)
+          .map((cat) => (
+            <div
+              className={css(styles.dropdownOpt)}
+              onClick={() => _handleSelect(cat)}
+            >
+              <div className={css(styles.dropdownOptLabel)}>
+                <span className={css(styles.plusIcon)}>
+                  {icons.plus}
+                  {` `}
+                </span>
+                <span className={css(styles.catText)}>{cat.label}</span>
+              </div>
+              <div className={css(styles.dropdownOptDesc)}>
+                {cat.description}
+              </div>
             </div>
-            <div className={css(styles.dropdownOptDesc)}>{cat.description}</div>
-          </div>
-        ))}
+          ))}
       </div>
-    )
-  }
+    );
+  };
 
   const renderTrigger = () => {
     return (
-      <div className={css(styles.trigger)} onClick={() => setIsOpen(!isOpen)} ref={triggerRef}>
+      <div
+        className={css(styles.trigger)}
+        onClick={() => setIsOpen(!isOpen)}
+        ref={triggerRef}
+      >
         <span className={css(styles.plusIcon)}>{icons.plus}</span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
       </div>
-    )
-  }
+    );
+  };
 
   const dropdown = renderDropdown();
   const trigger = renderTrigger();
@@ -61,12 +80,12 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
       {trigger}
       {dropdown}
     </div>
-  )  
+  );
 }
 
 const styles = StyleSheet.create({
   reviewCategorySelector: {
-    position: "relative"
+    position: "relative",
   },
   plusIcon: {
     fontSize: 15,
@@ -84,7 +103,6 @@ const styles = StyleSheet.create({
       transition: "0.2s",
       opacity: 0.8,
     },
-    
   },
   triggerLabel: {
     marginLeft: 6,
@@ -97,7 +115,8 @@ const styles = StyleSheet.create({
     padding: "15px 0 10px 0",
     borderRadius: 4,
     marginTop: 5,
-    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   dropdownOpen: {
     display: "block",
@@ -111,13 +130,13 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       background: colors.LIGHTER_GREY(),
-      transition: "0.2s"
+      transition: "0.2s",
     },
-    alignItems: "center"
+    alignItems: "center",
   },
   dropdownOptLabel: {
     fontSize: 16,
-    fontWeight: 500,    
+    fontWeight: 500,
   },
   dropdownOptDesc: {
     fontSize: 14,
@@ -125,7 +144,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     paddingLeft: 18,
     color: colors.BLACK(0.7),
-  },  
-})
+  },
+});
 
 export default ReviewCategorySelector;
