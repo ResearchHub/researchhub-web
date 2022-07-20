@@ -46,6 +46,7 @@ function CreateBountyBtn({
         withPreview={withPreview}
         bountyText={bountyText}
         postId={post.id}
+        unifiedDocId={post.unifiedDocument.document.id}
         postSlug={post.unifiedDocument.document.slug}
         removeBounty={() => setBountyAmountDetails(null)}
       />
@@ -72,7 +73,10 @@ function CreateBountyBtn({
           onClick={() => setIsModalOpen(true)}
         >
           <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-          <span onClick={() => setIsModalOpen(true)} className={css(styles.bountyTextContainer)}>
+          <span
+            onClick={() => setIsModalOpen(true)}
+            className={css(styles.bountyTextContainer)}
+          >
             <span className={css(styles.bountyIcon)}>
               {/* @ts-ignore */}
               <ResearchCoinIcon width={22} height={22} version={3} />
