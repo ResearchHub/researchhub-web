@@ -24,6 +24,7 @@ import { POST_TYPES } from "./config/postTypes";
 import trimQuillEditorContents from "./util/trimQuillEditorContents";
 import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
+import { breakpoints } from "~/config/themes/screen";
 
 class Editor extends Component {
   constructor(props) {
@@ -866,9 +867,6 @@ const toolbarStyles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
     background: "#fff",
-    "@media only screen and (max-width: 577px)": {
-      flexDirection: "row",
-    },
   },
   iconRow: {
     display: "flex",
@@ -925,8 +923,10 @@ const toolbarStyles = StyleSheet.create({
       opacity: 0.9,
       background: colors.NEW_BLUE(),
     },
-    "@media only screen and (max-width: 577px)": {
-      width: 100,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minHeight: "unset",
+      minWidth: 95,
+      height: 30,
     },
   },
   ripples: {
