@@ -409,6 +409,7 @@ class Editor extends Component {
   };
 
   handlePostTypeSelect = (selectedType) => {
+    console.log("selectedType", selectedType);
     const currentType = this.state.selectedPostTypeStruct;
 
     if (currentType.value === selectedType.value) {
@@ -447,6 +448,8 @@ class Editor extends Component {
       this.quillRef.setContents(trimmedContents);
 
       const hasContent = hasQuillContent({ quillRef: this.quillRef });
+      console.log(hasContent);
+      console.log(this.quillRef.editor.getContents());
       if (!hasContent) {
         this.forcePlaceholderToShow({
           placeholderText: selectedType.placeholder,
