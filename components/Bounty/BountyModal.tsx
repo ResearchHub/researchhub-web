@@ -6,6 +6,7 @@ import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import Bounty from "~/config/types/bounty";
+import SuccessScreen from "./SuccessScreen";
 
 const BOUNTY_DEFAULT_AMOUNT = 1000;
 const BOUNTY_RH_PERCENTAGE = 7;
@@ -19,6 +20,9 @@ type Props = {
   handleBountyAdded: Function;
   removeBounty: Function;
   addBtnLabel?: string;
+  bountyText: string;
+  postId: number;
+  postSlug: string;
 };
 
 function BountyModal({
@@ -27,6 +31,9 @@ function BountyModal({
   closeModal,
   handleBountyAdded,
   removeBounty,
+  postId,
+  postSlug,
+  bountyText,
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
@@ -36,9 +43,11 @@ function BountyModal({
   const [bountyAmount, setBountyAmount] = useState(BOUNTY_DEFAULT_AMOUNT);
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleClose = () => {
     closeModal();
+    setSuccess(false);
   };
 
   const handleBountyInputChange = (event) => {
@@ -66,6 +75,7 @@ function BountyModal({
       } else {
         Bounty.createAPI({ bountyAmount }).then((createdBounty) => {
           console.log(createdBounty);
+          setSuccess(true);
         });
       }
     }
@@ -81,158 +91,210 @@ function BountyModal({
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
-      // titleStyle={styles.title}
       title={
-        <span className={css(styles.modalTitle)}>
-          {" "}
-          Add RSC Bounty{" "}
-          <ResearchCoinIcon
-            overrideStyle={styles.rscIcon}
-            width={20}
-            height={20}
-          />
-        </span>
+        success ? null : (
+          <span className={css(styles.modalTitle)}> Add Bounty </span>
+        )
       }
     >
-      <ReactTooltip
-        id="commission"
-        effect="solid"
-        className={css(bountyTooltip.tooltipContainer)}
-        delayShow={150}
-      >
-        <div className={css(bountyTooltip.bodyContainer)}>
-          <div className={css(bountyTooltip.desc)}>
-            <div>
-              • 2% of bounty amount will be used to support the ResearchHub
-              Community
-            </div>
-            <div>• 5% of bounty amount will be paid to ResearchHub Inc</div>
-          </div>
-        </div>
-      </ReactTooltip>
-      <ReactTooltip
-        id="net"
-        effect="solid"
-        className={css(
-          bountyTooltip.tooltipContainer,
-          bountyTooltip.tooltipContainerSmall
-        )}
-        delayShow={150}
-      >
-        <div className={css(bountyTooltip.bodyContainer)}>
-          <div className={css(bountyTooltip.desc)}>
-            Actual amount bounty awardee(s) will receive
-          </div>
-        </div>
-      </ReactTooltip>
+      <>
+        {success ? (
+          <SuccessScreen
+            bountyText={bountyText}
+            postSlug={postSlug}
+            postId={postId}
+            bountyAmount={bountyAmount}
+          />
+        ) : (
+          <>
+            <ReactTooltip
+              id="commission"
+              effect="solid"
+              className={css(bountyTooltip.tooltipContainer)}
+              delayShow={150}
+            >
+              <div className={css(bountyTooltip.bodyContainer)}>
+                <div className={css(bountyTooltip.desc)}>
+                  <div>
+                    • 2% of bounty amount will be used to support the
+                    ResearchHub Community
+                  </div>
+                  <div>
+                    • 5% of bounty amount will be paid to ResearchHub Inc
+                  </div>
+                </div>
+              </div>
+            </ReactTooltip>
+            <ReactTooltip
+              id="net"
+              effect="solid"
+              className={css(
+                bountyTooltip.tooltipContainer,
+                bountyTooltip.tooltipContainerSmall
+              )}
+              delayShow={150}
+            >
+              <div className={css(bountyTooltip.bodyContainer)}>
+                <div className={css(bountyTooltip.desc)}>
+                  Actual amount bounty awardee(s) will receive
+                </div>
+              </div>
+            </ReactTooltip>
 
-      <div className={css(styles.rootContainer)}>
-        <div className={css(styles.values)}>
-          <div className={css(styles.offeringLine)}>
-            <div className={css(styles.lineItem, styles.offeringLine)}>
-              <div className={css(styles.lineItemText, styles.offeringText)}>
-                I am offering
-              </div>
-              <div className={css(styles.lineItemValue, styles.offeringValue)}>
-                <span className={css(styles.valueNumber, styles.valueInInput)}>
-                  <input
-                    className={css(styles.input)}
-                    type="number"
-                    onChange={handleBountyInputChange}
-                    value={bountyAmount}
-                  />
-                </span>
-                <span className={css(styles.rscText)}>RSC</span>
-              </div>
-            </div>
+            <div className={css(styles.rootContainer)}>
+              <div className={css(styles.values)}>
+                <div className={css(styles.offeringLine)}>
+                  <div className={css(styles.lineItem, styles.offeringLine)}>
+                    <div
+                      className={css(styles.lineItemText, styles.offeringText)}
+                    >
+                      I am offering
+                    </div>
+                    <div
+                      className={css(
+                        styles.lineItemValue,
+                        styles.offeringValue
+                      )}
+                    >
+                      <span
+                        className={css(styles.valueNumber, styles.valueInInput)}
+                      >
+                        <input
+                          className={css(styles.input)}
+                          type="number"
+                          onChange={handleBountyInputChange}
+                          value={bountyAmount}
+                        />
+                      </span>
+                      <span className={css(styles.rscText)}>RSC</span>
+                    </div>
+                  </div>
 
-            <div className={css(styles.lineItem, styles.platformFeeLine)}>
-              <div className={css(styles.lineItemText)}>
-                Research Hub Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
-                <span
-                  className={css(styles.tooltipIcon)}
-                  data-tip={""}
-                  data-for="commission"
-                >
-                  {icons["info-circle-light"]}
-                </span>
-              </div>
-              <div className={css(styles.lineItemValue)}>
-                <span className={css(styles.valueNumber)}>
-                  <span>- {researchHubAmount.toLocaleString()}</span>
-                </span>
-                <span className={css(styles.rscText)}>RSC</span>
-              </div>
-            </div>
+                  <div className={css(styles.lineItem, styles.platformFeeLine)}>
+                    <div className={css(styles.lineItemText)}>
+                      Research Hub Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
+                      <span
+                        className={css(styles.tooltipIcon)}
+                        data-tip={""}
+                        data-for="commission"
+                      >
+                        {icons["info-circle-light"]}
+                      </span>
+                    </div>
+                    <div className={css(styles.lineItemValue)}>
+                      <span className={css(styles.valueNumber)}>
+                        <span>- {researchHubAmount.toLocaleString()}</span>
+                      </span>
+                      <span className={css(styles.rscText)}>RSC</span>
+                    </div>
+                  </div>
 
-            <div className={css(styles.lineItem, styles.netAmountLine)}>
-              <ReactTooltip effect="solid" />
-              <div className={css(styles.lineItemText)}>
-                Net Bounty Award
-                <span
-                  className={css(styles.tooltipIcon)}
-                  data-tip={""}
-                  data-for="net"
-                >
-                  {icons["info-circle-light"]}
-                </span>
+                  <div className={css(styles.lineItem, styles.netAmountLine)}>
+                    <ReactTooltip effect="solid" />
+                    <div className={css(styles.lineItemText)}>
+                      Net Bounty Award
+                      <span
+                        className={css(styles.tooltipIcon)}
+                        data-tip={""}
+                        data-for="net"
+                      >
+                        {icons["info-circle-light"]}
+                      </span>
+                    </div>
+                    <div
+                      className={css(
+                        styles.lineItemValue,
+                        styles.netAmountValue
+                      )}
+                    >
+                      <span className={css(styles.valueNumber)}>
+                        <span>
+                          {(bountyAmount - researchHubAmount).toLocaleString()}
+                        </span>
+                        <ResearchCoinIcon
+                          overrideStyle={styles.rscIcon}
+                          width={20}
+                          height={20}
+                        />
+                      </span>
+                      <span className={css(styles.rscText)}>RSC</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className={css(styles.lineItemValue, styles.netAmountValue)}>
-                <span className={css(styles.valueNumber)}>
-                  <span>
-                    {(bountyAmount - researchHubAmount).toLocaleString()}
+              <div className={css(infoSectionStyles.bountyInfo)}>
+                <div className={css(infoSectionStyles.infoRow)}>
+                  <span className={css(infoSectionStyles.infoIcon)}>
+                    {icons.clock}
+                  </span>{" "}
+                  <span className={css(infoSectionStyles.infoText)}>
+                    The Bounty will end in 30 days or as soon as you award a
+                    solution
                   </span>
-                </span>
-                <span className={css(styles.rscText)}>RSC</span>
+                </div>
+                <div className={css(infoSectionStyles.infoRow)}>
+                  <span className={css(infoSectionStyles.infoIcon)}>
+                    {
+                      <MedalIcon
+                        color={colors.DARKER_GREY()}
+                        width={20}
+                        height={20}
+                      />
+                    }
+                  </span>{" "}
+                  Award either a partial or full bounty depending on whether the
+                  solution satisfies your request
+                </div>
+                <div className={css(infoSectionStyles.infoRow)}>
+                  <span className={css(infoSectionStyles.infoIcon)}>
+                    {icons.undo}
+                  </span>{" "}
+                  If no solution satisfies your request, the full bounty amount
+                  (except the platform fee) will be refunded to you
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className={css(infoSectionStyles.bountyInfo)}>
-          <div className={css(infoSectionStyles.infoRow)}>
-            <span className={css(infoSectionStyles.infoIcon)}>
-              {icons.clock}
-            </span>{" "}
-            <span className={css(infoSectionStyles.infoText)}>
-              Bounty will end in 30 days or as soon as you award a solution
-            </span>
-          </div>
-          <div className={css(infoSectionStyles.infoRow)}>
-            <span className={css(infoSectionStyles.infoIcon)}>
-              {
-                <MedalIcon
-                  color={colors.DARKER_GREY()}
-                  width={25}
-                  height={25}
-                />
-              }
-            </span>{" "}
-            Award either partial or full bounty depending on whether solution
-            satisfies your request
-          </div>
-          <div className={css(infoSectionStyles.infoRow)}>
-            <span className={css(infoSectionStyles.infoIcon)}>
-              {icons.undo}
-            </span>{" "}
-            If no solution satisfies your request, full bounty amount will be
-            refunded to you
-          </div>
-        </div>
 
-        <div className={css(styles.addBountyContainer)}>
-          <div
-            className={css(
-              styles.buttonRow,
-              hasMinRscAlert && styles.buttonRowWithText
-            )}
-          >
-            {hasMinRscAlert ? (
-              <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
-                Minimum bounty must be greater than 50 RSC
-              </div>
-            ) : hasMaxRscAlert ? (
-              <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
-                Bounty amount cannot exceed 1,000,000 RSC
+              <div className={css(styles.addBountyContainer)}>
+                <div
+                  className={css(
+                    styles.buttonRow,
+                    hasMinRscAlert && styles.buttonRowWithText
+                  )}
+                >
+                  {hasMinRscAlert ? (
+                    <div
+                      className={css(alertStyles.alert, alertStyles.rscAlert)}
+                    >
+                      Minimum bounty must be greater than 50 RSC
+                    </div>
+                  ) : hasMaxRscAlert ? (
+                    <div
+                      className={css(alertStyles.alert, alertStyles.rscAlert)}
+                    >
+                      Bounty amount cannot exceed 1,000,000 RSC
+                    </div>
+                  ) : withPreview ? (
+                    <div
+                      className={css(
+                        alertStyles.alert,
+                        alertStyles.previewAlert
+                      )}
+                    >
+                      You will have a chance to review and cancel before bounty
+                      is created
+                    </div>
+                  ) : null}
+                  <div className={css(styles.addBtnContainer)}>
+                    <Button
+                      label={addBtnLabel}
+                      customButtonStyle={styles.addButton}
+                      customLabelStyle={styles.addButtonLabel}
+                      size={`small`}
+                      disabled={hasMaxRscAlert || hasMinRscAlert}
+                      onClick={handleAddBounty}
+                    />
+                  </div>
+                </div>
               </div>
             ) : withPreview ? (
               <div className={css(alertStyles.alert, alertStyles.previewAlert)}>
@@ -250,9 +312,9 @@ function BountyModal({
                 onClick={handleAddBounty}
               />
             </div>
-          </div>
-        </div>
-      </div>
+          </>
+        )}
+      </>
     </BaseModal>
   );
 }
@@ -295,7 +357,7 @@ const infoSectionStyles = StyleSheet.create({
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,
-    background: colors.LIGHTER_GREY_BACKGROUND,
+    background: "rgba(240, 240, 240, 0.3)",
     color: colors.DARKER_GREY(),
     paddingTop: 15,
     paddingBottom: 15,
@@ -307,15 +369,16 @@ const infoSectionStyles = StyleSheet.create({
     paddingRight: 30,
     paddingLeft: 30,
     fontSize: 14,
+    lineHeight: "20px",
     alignItems: "center",
     ":last-child": {
       marginBottom: 0,
     },
   },
   infoIcon: {
-    fontSize: 20,
+    fontSize: 14,
     marginRight: 10,
-    width: 20,
+    width: 14,
     boxSizing: "border-box",
   },
   infoText: {},
@@ -337,8 +400,8 @@ const styles = StyleSheet.create({
     // paddingTop: 25,
   },
   rscIcon: {
-    marginLeft: 8,
-    marginTop: 5,
+    marginLeft: 5,
+    marginTop: 2,
   },
   input: {
     width: 60,
@@ -346,6 +409,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     padding: "5px 7px",
     border: `2px solid rgb(229 229 230)`,
+    background: "#FBFBFD",
     fontSize: 16,
     [`[type="number"]`]: {
       "-webkit-appearance": "none",
@@ -398,14 +462,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   addButton: {
-    background: colors.ORANGE_LIGHT(),
+    // background: colors.ORANGE_LIGHT(),
+    color: "#fff",
     borderRadius: "4px",
     width: 126,
     boxSizing: "border-box",
   },
   addBtnContainer: {},
   addButtonLabel: {
-    color: colors.BLACK(),
+    // color: colors.BLACK(),
     fontWeight: 500,
   },
   values: {
@@ -417,6 +482,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     alignItems: "center",
+    marginBottom: 16,
   },
   lineItemValue: {
     display: "flex",
@@ -427,9 +493,10 @@ const styles = StyleSheet.create({
   lineItemText: {
     display: "flex",
     alignItems: "center",
+    fontSize: 18,
   },
   offeringLine: {
-    marginBottom: 7,
+    // marginBottom: 7,
   },
   offeringText: {
     fontWeight: 500,
@@ -441,16 +508,18 @@ const styles = StyleSheet.create({
     width: 100,
     textAlign: "right",
     paddingRight: 15,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   valueInInput: {
     paddingRight: 0,
   },
   platformFeeLine: {
     color: colors.DARKER_GREY(),
-    marginBottom: 7,
   },
   netAmountLine: {
-    paddingTop: 7,
+    paddingTop: 16,
     borderTop: `2px solid rgb(229 229 230)`,
     fontWeight: 500,
   },
