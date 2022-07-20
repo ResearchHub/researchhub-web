@@ -113,7 +113,7 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  const discussionType = data.discussion_type;
+  const discussionType = data.discussion_post_type;
 
   let text = "commented";
 
