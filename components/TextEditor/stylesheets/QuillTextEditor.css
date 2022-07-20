@@ -289,3 +289,7 @@ button.ql-active {
 /* .ql-toolbar button:hover .ql-fill {
   stroke: black !important;
 } */
+
+.ql-editor pre {
+  background: #f0f0f0 !important;
+}
