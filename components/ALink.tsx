@@ -7,6 +7,7 @@ const themes = {
   default: "linkThemeDefault",
   solidPrimary: "linkThemeSolidPrimary",
   blackAndBlue: "blankAndBlue",
+  green: "green",
 }
 
 interface Props {
@@ -59,7 +60,14 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     }
-  }  
+  },
+  "green": {
+    color: colors.NEW_GREEN(),
+    ":hover": {
+      color: colors.NEW_GREEN(),
+      textDecoration: "underline",
+    }
+  }    
 })
 
 export default ALink;

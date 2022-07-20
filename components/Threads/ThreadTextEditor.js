@@ -39,13 +39,17 @@ class ThreadTextEditor extends Component {
     }
   }
 
-  onSubmit = (content, plain_text, clearContent) => {
-    this.setState({ loading: true }, () => {
+  onSubmit = ({ content, plainText, callback }) => {
+    this.setState({ loading: true, editorState: content }, () => {
       this.props.onSubmit &&
-        this.props.onSubmit(content, plain_text, () => {
-          this.setState({ loading: false });
-          this.onCancel();
-          clearContent && clearContent();
+        this.props.onSubmit({
+          content,
+          plainText,
+          callback: () => {
+            this.setState({ loading: false });
+            this.onCancel();
+            callback && callback();
+          },
         });
     });
   };
@@ -58,15 +62,19 @@ class ThreadTextEditor extends Component {
     this.props.onChange && this.props.onChange();
   };
 
-  onEditSubmit = (content, plain_text) => {
-    this.setState({ loading: true }, () => {
+  onEditSubmit = ({ content, plainText, discussionType }) => {
+    this.setState({ loading: true, editorState: content }, () => {
       this.props.onEditSubmit &&
         this.props
-          .onEditSubmit(content, plain_text, () => {
-            this.setState({
-              loading: false,
-              editorState: content,
-            });
+          .onEditSubmit({
+            content,
+            plainText,
+            discussionType,
+            callback: () => {
+              this.setState({
+                loading: false,
+              });
+            },
           })
           .catch((error) => {
             this.props.onError && this.props.onError(error);
@@ -83,6 +91,7 @@ class ThreadTextEditor extends Component {
 
   render() {
     let { mediaOnly, placeholder } = this.props;
+
     if (!this.props.body) {
       return (
         <PermissionNotificationWrapper
@@ -108,6 +117,7 @@ class ThreadTextEditor extends Component {
             focusEditor={this.props.focusEditor}
             initialValue={this.state.editorState}
             hasHeader={this.props.hasHeader}
+            postType={this.props.postType}
           />
         </PermissionNotificationWrapper>
       );
@@ -136,6 +146,7 @@ class ThreadTextEditor extends Component {
           passedValue={this.state.editorState}
           editing={this.props.editing}
           focusEditor={this.props.focusEditor}
+          postType={this.props.postType}
         />
       );
     }
@@ -162,12 +173,7 @@ const styles = StyleSheet.create({
       border: "unset",
     },
   },
-  editTextContainer: {
-    border: "1px solid #E8E8F2",
-    ":hover": {
-      border: "1px solid #E7E7E7",
-    },
-  },
+  editTextContainer: {},
   edit: {
     padding: 16,
     backgroundColor: colors.LIGHT_YELLOW(),

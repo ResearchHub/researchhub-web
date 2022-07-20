@@ -6,24 +6,19 @@
 }
 
 .ql-editor.ql-blank::after {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgb(124, 121, 137);
   content: attr(data-placeholder);
-  font-style: italic;
   pointer-events: none;
   display: block;
   margin-top: -1.42rem;
-}
-
-.ql-blank {
-  min-height: 5em;
+  font-size: 16px;
 }
 
 .ql-editor {
   /* cursor: text; */
   padding: 0;
   font-family: "Roboto";
-  line-height: 1.8;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .toolbar {
@@ -37,6 +32,12 @@
 .ql-disabled .ql-editor {
   font-size: 16px;
   line-height: 26px;
+}
+@media only screen and (max-width: 767px) {
+  .ql-disabled .ql-editor {
+    font-size: 15px;
+    line-height: 23px;
+  }
 }
 
 .ql-toolbar {
@@ -66,14 +67,22 @@
 }
 
 .ql-tooltip {
-  top: -15px !important;
+  /* top: -15px !important;
   left: unset !important;
   right: -15px !important;
-  transform: unset !important;
+  transform: unset !important; */
 }
+.ql-tooltip[data-mode="video"] {
+  left: 0 !important;
+}
+
 .ql-editor > p {
   font-size: inherit;
   color: inherit;
+}
+
+.ql-editor * {
+  background-color: unset !important;
 }
 
 .ql-editor > p > img {
@@ -145,9 +154,142 @@
 .ql-editor ul,
 .ql-editor ol {
   font-size: 16px;
+  padding-left: 0;
+}
+
+.ql-full-editor {
+  display: none;
+  bottom: 60px;
+  position: absolute;
+  box-shadow: 0px 4px 5px 0px rgb(0 0 0 / 14%),
+    0px 1px 10px 0px rgb(0 0 0 / 12%), 0px 2px 4px -1px rgb(0 0 0 / 20%);
+  padding: 4px;
+  z-index: 2;
+  background: white;
+}
+.ql-full-editor-visible {
+  display: block;
+}
+
+.ql-formats > button {
+  color: rgb(124, 121, 137);
+  font-size: 16px !important;
+  height: 25px !important;
+  width: 25px !important;
+  margin-right: 3px !important;
+  padding: 2px 2px !important;
+}
+.ql-formats > button.ql-blockquote {
+  margin-left: -5px;
+}
+
+.ql-video {
+  margin-left: 4px;
+}
+.show-full-editor {
+  margin-left: 3px;
+  display: inline-flex !important;
+  align-items: center;
+  color: black;
 }
 
 /* .video-stream {
   height: 250px;
   width: 400px;
 } */
+
+.ql-toolbar {
+  background: white;
+}
+.ql-toolbar.ql-snow {
+  border: 0;
+  padding-left: 0;
+  padding-top: 13px;
+  display: flex;
+}
+
+.ql-review-category {
+  display: flex;
+}
+
+.ql-review-category-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ql-review-category-rating {
+  margin-left: auto;
+}
+
+.ql-peer-review-rating-block {
+  white-space: normal;
+}
+
+.quill .ql-editor[contenteditable="false"] .ql-peer-review-rating-block {
+  margin-bottom: 7px;
+}
+
+.ql-review-category-placeholder {
+  color: rgb(124, 121, 137);
+}
+
+.ql-snow .ql-stroke {
+  stroke: rgb(124, 121, 137);
+}
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+  fill: rgb(124, 121, 137);
+}
+
+.ql-snow .ql-editor a {
+  color: rgb(57, 113, 255) !important;
+}
+
+.ql-up {
+  font-size: 10px;
+  margin-left: 5px;
+}
+
+.quill .ql-editor[contenteditable="false"] .starRating {
+  cursor: initial !important;
+}
+
+.quill .ql-editor[contenteditable="true"] {
+  min-height: 5em;
+}
+button.ql-active {
+  background-color: rgba(32, 33, 36, 0.122) !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  border-radius: 3px !important;
+  color: black !important;
+}
+
+.ql-active .ql-stroke {
+  stroke: black !important;
+}
+
+.ql-active .ql-fill {
+  fill: black !important;
+}
+
+.ql-toolbar button:hover {
+  color: black !important;
+}
+.ql-toolbar button:hover .ql-stroke {
+  stroke: black !important;
+}
+
+.ql-toolbar button:hover .ql-fill {
+  fill: black !important;
+}
+
+/* .ql-toolbar button:hover .ql-fill {
+  stroke: black !important;
+} */
+
+.ql-editor pre {
+  background: #f0f0f0 !important;
+}

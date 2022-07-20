@@ -320,7 +320,7 @@ class CommentEntry extends Component {
     }
   };
 
-  submitReply = async (text, plain_text, callback) => {
+  submitReply = async ({ content, plainText, callback }) => {
     let {
       data,
       comment,
@@ -349,8 +349,8 @@ class CommentEntry extends Component {
       documentId,
       discussionThreadId,
       commentId,
-      text,
-      plain_text
+      content,
+      plainText
     );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       callback && callback();
@@ -368,7 +368,7 @@ class CommentEntry extends Component {
     }
   };
 
-  saveEditsComments = async (text, plain_text, callback) => {
+  saveEditsComments = async ({ content, plainText, callback }) => {
     let {
       data,
       comment,
@@ -397,12 +397,10 @@ class CommentEntry extends Component {
       documentId,
       discussionThreadId,
       commentId,
-      text,
-      plain_text
+      content,
+      plainText
     );
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
-      setMessage("Comment successfully updated!");
-      showMessage({ show: true });
       callback();
       this.setState({ editing: false });
     } else {
@@ -734,7 +732,7 @@ const styles = StyleSheet.create({
     display: "table-cell",
     height: "100%",
     verticalAlign: "top",
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 600px)": {
       width: 35,
     },
   },
@@ -770,10 +768,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 10,
-      marginBottom: 10,
-    },
   },
   metaData: {
     display: "table-cell",
@@ -786,7 +780,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "16px 10px 8px 8px",
+    padding: "9px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },

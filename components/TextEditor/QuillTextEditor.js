@@ -1,4 +1,5 @@
 // NPM
+import ReactDOMServer from "react-dom/server";
 import { createRef, Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
@@ -9,11 +10,21 @@ import Loader from "~/components/Loader/Loader";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import ReviewCategorySelector from "~/components/TextEditor/ReviewCategorySelector";
 
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import faIcons from "~/config/themes/icons";
+import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
+import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
+import reviewCategories from "~/components/TextEditor/config/reviewCategories";
+import { POST_TYPES } from "./config/postTypes";
+import trimQuillEditorContents from "./util/trimQuillEditorContents";
+import hasQuillContent from "./util/hasQuillContent";
+import isQuillEmpty from "./util/isQuillEmpty";
+import { breakpoints } from "~/config/themes/screen";
 
 class Editor extends Component {
   constructor(props) {
@@ -21,8 +32,6 @@ class Editor extends Component {
 
     this.state = {
       theme: "snow",
-      enabled: true,
-      readOnly: false,
       value: this.props.value ? this.props.value : { ops: [] },
       plainText: "",
       events: [],
@@ -30,14 +39,25 @@ class Editor extends Component {
       focus: false,
       ReactQuill: null,
       Quill: null,
+      showFullEditor: false,
+      submitDisabled: true,
+      selectedPostTypeStruct: this.props.selectedPostTypeStruct,
     };
     this.reactQuillRef = createRef();
     this.quillRef = null;
   }
 
   componentDidMount = async () => {
-    // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
-    import("react-quill").then((val) => {
+    import("react-quill").then(async (val) => {
+      const MagicUrl = (await import("quill-magic-url")).default;
+
+      const Quill = val.default.Quill;
+      var icons = val.default.Quill.import("ui/icons");
+      icons.video = ReactDOMServer.renderToString(faIcons.video);
+
+      Quill.register(QuillPeerReviewRatingBlock);
+      Quill.register("modules/magicUrl", MagicUrl);
+
       this.setState(
         {
           ReactQuill: val.default,
@@ -46,22 +66,16 @@ class Editor extends Component {
         () => {
           this.attachQuillRefs();
           !this.state.handlerAdded && this.addLinkSantizer();
-          !this.state.focus &&
-            this.props.focusEditor &&
-            this.quillRef &&
-            this.focusEditor();
-          // This line leads to an infinite loop
-          // leaving here temporarily for debugging purposes
-          // this.props.onChange && this.props.onChange(); // calculates the thread height
+          !this.state.focus && this.props.focusEditor && this.focusEditor();
         }
       );
     });
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     this.attachQuillRefs();
     if (!prevProps.editing && this.props.editing) {
-      !this.state.focus && this.quillRef && this.focusEditor();
+      !this.state.focus && this.focusEditor();
     }
 
     if (prevProps.value !== this.props.value) {
@@ -69,13 +83,6 @@ class Editor extends Component {
         value: this.props.value,
         editValue: this.props.value,
       });
-    }
-
-    if (prevProps.placeholder !== this.props.placeholder) {
-      this.quillRef.root.setAttribute(
-        "data-placeholder",
-        this.props.placeholder
-      );
     }
   }
 
@@ -185,6 +192,28 @@ class Editor extends Component {
 
   onEditorChange = (value, delta, source, editor) => {
     const editorContents = editor.getContents();
+    const editorWithoutPeerReviewBlocks = editorContents.ops.filter(
+      (op) => !op.insert["peer-review-rating"]
+    );
+    const lastDelta =
+      editorWithoutPeerReviewBlocks[editorWithoutPeerReviewBlocks.length - 1];
+
+    const editorHasTrivialText =
+      editorWithoutPeerReviewBlocks.length === 1 &&
+      lastDelta.insert === "\n" &&
+      !lastDelta.attributes;
+    if (editorHasTrivialText) {
+      this.forcePlaceholderToShow({
+        placeholderText: this.state.selectedPostTypeStruct.placeholder,
+      });
+    }
+
+    if (isQuillEmpty(editorContents)) {
+      this.setState({ submitDisabled: true });
+    } else {
+      this.setState({ submitDisabled: false });
+    }
+
     if (this.props.editing) {
       return this.setState(
         {
@@ -229,6 +258,7 @@ class Editor extends Component {
       ),
       focus: !this.props.readOnly && true,
     });
+    this.props.handleFocus && this.props.handleFocus(true);
   };
 
   onEditorBlur = (previousRange, source) => {
@@ -238,13 +268,16 @@ class Editor extends Component {
       ),
       focus: false,
     });
+    this.props.handleFocus && this.props.handleFocus(false);
   };
 
   focusEditor = () => {
-    this.quillRef.focus();
-    const range = this.quillRef.getLength(); // place cursor at the end of the text
-    this.quillRef.setSelection(range + 1);
-    this.setState({ focus: true });
+    if (this.quillRef && !this.props.readOnly) {
+      this.quillRef.focus();
+      const range = this.quillRef.getLength(); // place cursor at the end of the text
+      this.quillRef.setSelection(range + 1);
+      this.setState({ focus: true });
+    }
   };
 
   convertHtmlToDelta = (value) => {
@@ -295,196 +328,309 @@ class Editor extends Component {
       plainText,
       editValue: content,
     });
-    this.props.submit(content, plainText, this.clearEditorContent);
+    this.props.submit({
+      content,
+      plainText,
+      callback: this.clearEditorContent,
+      discussionType: this.state.selectedPostTypeStruct.value,
+    });
   };
 
   renderToolbar = () => {
-    var state = this.state;
-    var enabled = state.enabled;
-    var readOnly = state.readOnly;
-    var selection = this.formatRange(state.selection);
-    let id = this.props.uid;
+    const { showFullEditor } = this.state;
 
     return (
-      <div
-        id={id}
-        className="toolbar ql-toolbar ql-snow"
-        style={{ display: this.props.readOnly ? "none" : "" }}
-      >
-        {this.props.mediaOnly ? (
+      <div id={this.props.uid} className="ql-toolbar">
+        <span className="ql-formats">
+          <button className="ql-blockquote"></button>
+          <button className="ql-link" />
+          <button className="ql-image" />
+          <button className="ql-video"></button>
+          <button
+            id="show-editor"
+            className={`show-full-editor ${showFullEditor ? "ql-active" : ""}`}
+            onClick={() => this.setState({ showFullEditor: !showFullEditor })}
+          >
+            {faIcons.fontCase}
+            <span className="ql-up">{faIcons.chevronUp}</span>
+          </button>
+        </span>
+
+        <div
+          className={`ql-full-editor ${
+            showFullEditor && "ql-full-editor-visible"
+          }`}
+        >
           <span className="ql-formats">
-            <button className="ql-link"></button>
-            <button className="ql-image" />
-            <button className="ql-video"></button>
+            <button className="ql-bold" />
+            <button className="ql-italic" />
+            <button className="ql-underline" />
+            <button className="ql-strike"></button>
           </span>
-        ) : (
-          <Fragment>
-            <span className="ql-formats">
-              <button className="ql-bold" />
-              <button className="ql-italic" />
-              <button className="ql-underline" />
-            </span>
-            <span className="ql-formats">
-              <button className="ql-blockquote"></button>
-              <button className="ql-code-block"></button>
-              <button className="ql-strike"></button>
-            </span>
-            <span className="ql-formats">
-              <button className="ql-list" value="ordered" />
-              <button className="ql-list" value="bullet" />
-              <button className="ql-indent" value="-1" />
-              <button className="ql-indent" value="+1" />
-            </span>
-
-            <span className="ql-formats">
-              <button className="ql-link"></button>
-              <button className="ql-image" />
-              <button className="ql-video"></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-clean"></button>
-            </span>
-          </Fragment>
-        )}
-      </div>
-    );
-  };
-
-  renderButtons = (props) => {
-    return (
-      <div
-        className={css(
-          toolbarStyles.toolbar,
-          props.summaryEditor && toolbarStyles.toolbarSummary,
-          props.smallToolBar && toolbarStyles.smallToolBar
-        )}
-      >
-        {props.children && (
-          <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
-        )}
-        <div className={css(toolbarStyles.buttonRow)}>
-          {!props.hideButton && !props.hideCancelButton && (
-            <div
-              onClick={this.onCancel}
-              className={css(toolbarStyles.cancelButton)}
-            >
-              Cancel
-            </div>
-          )}
-          <span className={css(toolbarStyles.divider)} />
-          {!props.hideButton &&
-            (props.loading ? (
-              <FormButton
-                onClick={null}
-                label={<Loader loading={true} color={"#FFF"} size={20} />}
-                size={props.smallToolBar && "med"}
-                customButtonStyle={
-                  props.smallToolBar
-                    ? toolbarStyles.smallButton
-                    : toolbarStyles.buttonStyle
-                }
-              />
-            ) : (
-              <FormButton
-                onClick={this.onSubmit}
-                label="Submit"
-                size={props.smallToolBar && "med"}
-                customButtonStyle={
-                  props.smallToolBar
-                    ? toolbarStyles.smallButton
-                    : toolbarStyles.buttonStyle
-                }
-              />
-            ))}
+          <span className="ql-formats">
+            <button className="ql-list" value="ordered" />
+            <button className="ql-list" value="bullet" />
+            <button className="ql-indent" value="-1" />
+            <button className="ql-indent" value="+1" />
+          </span>
+          <span className="ql-formats">
+            <button className="ql-code-block"></button>
+            <button className="ql-clean"></button>
+          </span>
         </div>
       </div>
     );
   };
 
-  render() {
-    const { ReactQuill } = this.state;
-    const modules = Editor.modules(
-      this.props.uid,
-      this.imageHandler,
-      this.linkHandler
+  insertReviewCategory = ({ category, index }) => {
+    let range = this.quillRef.getSelection(true);
+    let insertAtIndex = index ?? range.index;
+    if (insertAtIndex === 0 && category.value !== "overall") {
+      insertAtIndex++;
+    }
+
+    this.quillRef.insertEmbed(
+      insertAtIndex,
+      "peer-review-rating",
+      {
+        rating: 3,
+        category: category.value,
+      },
+      this.state.Quill.sources.SILENT
     );
+  };
+
+  forcePlaceholderToShow = ({ placeholderText }) => {
+    if (placeholderText) {
+      this.quillRef.root.setAttribute("data-placeholder", placeholderText);
+    }
+    this.quillRef.root.classList.add("ql-blank");
+  };
+
+  handlePostTypeSelect = (selectedType) => {
+    const currentType = this.state.selectedPostTypeStruct;
+
+    if (currentType.value === selectedType.value) {
+      return;
+    }
+
+    const isPeerReview =
+      selectedType.value === POST_TYPES.REVIEW &&
+      currentType.value !== selectedType.value;
+
+    if (isPeerReview) {
+      const trimmedContents = trimQuillEditorContents({
+        contents: this.quillRef.getContents(),
+      });
+      this.quillRef.setContents(trimmedContents);
+      this.insertReviewCategory({
+        category: reviewCategories.overall,
+        index: 0,
+      });
+
+      const hasContent = hasQuillContent({ quillRef: this.quillRef });
+      if (!hasContent) {
+        this.forcePlaceholderToShow({
+          placeholderText: selectedType.placeholder,
+        });
+      }
+    } else {
+      const editorWithoutPeerReviewBlocks = this.quillRef
+        .getContents([])
+        .ops.filter((op) => !op.insert["peer-review-rating"]);
+      this.quillRef.setContents(editorWithoutPeerReviewBlocks);
+
+      const trimmedContents = trimQuillEditorContents({
+        contents: this.quillRef.getContents(),
+      });
+      this.quillRef.setContents(trimmedContents);
+
+      const hasContent = hasQuillContent({ quillRef: this.quillRef });
+      if (!hasContent) {
+        this.forcePlaceholderToShow({
+          placeholderText: selectedType.placeholder,
+        });
+      }
+    }
+
+    this.setState({
+      selectedPostTypeStruct: selectedType,
+    });
+
+    this.focusEditor();
+  };
+
+  renderButtons = (props) => {
+    const isRequestMode =
+      this.state.selectedPostTypeStruct?.group === "request";
+    const isAnswerType =
+      this.state.selectedPostTypeStruct?.value === POST_TYPES.ANSWER;
+
+    const label = isRequestMode
+      ? "Request"
+      : isAnswerType
+      ? "Post Answer"
+      : "Post";
 
     return (
-      <div
-        className={css(styles.editor, this.props.containerStyles)}
-        key={this.props.uid}
-      >
-        {this.props.commentEditor ? (
+      <div className={css(styles.postButtonContainer)}>
+        {!props.hideButton &&
+          (props.loading ? (
+            <FormButton
+              onClick={null}
+              disabled={this.state.submitDisabled}
+              label={<Loader loading={true} color={"#FFF"} size={20} />}
+              customButtonStyle={[
+                toolbarStyles.postButtonStyle,
+                isRequestMode && toolbarStyles.requestButton,
+                isAnswerType && toolbarStyles.answerButton,
+              ]}
+              customLabelStyle={toolbarStyles.postButtonLabel}
+            />
+          ) : (
+            <>
+              {this.props.editing && (
+                <div
+                  onClick={this.onCancel}
+                  className={css(toolbarStyles.cancelButton)}
+                >
+                  Cancel
+                </div>
+              )}
+              <FormButton
+                onClick={this.onSubmit}
+                label={this.props.editing ? "Save changes" : label}
+                disabled={this.state.submitDisabled}
+                customButtonStyle={[
+                  toolbarStyles.postButtonStyle,
+                  isRequestMode && toolbarStyles.requestButton,
+                  isAnswerType && toolbarStyles.answerButton,
+                ]}
+                customLabelStyle={toolbarStyles.postButtonLabel}
+              />
+            </>
+          ))}
+      </div>
+    );
+  };
+
+  render() {
+    const { ReactQuill, selectedPostTypeStruct } = this.state;
+    const canEdit = !this.props.readOnly;
+
+    if (!ReactQuill) {
+      return null;
+    }
+
+    if (canEdit) {
+      const modules = Editor.modules(
+        this.props.uid,
+        this.imageHandler
+        // this.linkHandler
+      );
+      return (
+        <div
+          className={css(
+            styles.editor,
+            this.props.containerStyles,
+            this.state.focus && styles.focus,
+            this.state.focus &&
+              selectedPostTypeStruct.group === "request" &&
+              styles.focusRequestType,
+            this.state.focus &&
+              selectedPostTypeStruct.value === POST_TYPES.ANSWER &&
+              styles.focusAnswerType
+          )}
+          key={this.props.uid}
+        >
           <div
             className={css(
               styles.commentEditor,
-              this.props.commentEditorStyles && this.props.commentEditorStyles,
-              this.state.focus && styles.focus
+              this.props.commentEditorStyles && this.props.commentEditorStyles
             )}
           >
-            {ReactQuill && this.renderToolbar(this.props.uid)}
-            {ReactQuill && (
-              <ReactQuill
-                ref={this.reactQuillRef}
-                theme={this.state.theme}
-                readOnly={this.props.readOnly}
-                onChange={this.onEditorChange}
-                onChangeSelection={this.onEditorChangeSelection}
-                onFocus={this.onEditorFocus}
-                onBlur={this.onEditorBlur}
-                defaultValue={
-                  this.props.editing ? this.state.editValue : this.state.value
-                }
-                modules={modules}
-                formats={Editor.formats}
-                className={css(
-                  styles.editSection,
-                  this.props.commentStyles && this.props.commentStyles
-                )}
-                placeholder={this.props.placeholder && this.props.placeholder}
-              />
+            {this.props.isTopLevelComment && (
+              <div className={css(styles.postTypeContainer)}>
+                <PostTypeSelector
+                  selectedType={selectedPostTypeStruct}
+                  documentType={this.props.documentType}
+                  handleSelect={(selectedType) =>
+                    this.handlePostTypeSelect(selectedType)
+                  }
+                />
+              </div>
             )}
-            {!this.props.readOnly && this.renderButtons(this.props)}
-          </div>
-        ) : (
-          <div className={css(styles.summaryEditor)}>
-            {ReactQuill && this.renderToolbar(this.props.uid)}
-            {ReactQuill && (
-              <ReactQuill
-                ref={this.reactQuillRef}
-                theme={this.state.theme}
-                readOnly={this.props.readOnly}
-                onChange={this.onEditorChange}
-                onChangeSelection={this.onEditorChangeSelection}
-                onFocus={this.onEditorFocus}
-                onBlur={this.onEditorBlur}
-                defaultValue={
-                  this.props.editing ? this.state.editValue : this.state.value
-                }
-                modules={modules}
-                formats={Editor.formats}
-                className={css(
-                  styles.comment,
-                  styles.summaryEditorBox,
-                  this.props.commentStyles && this.props.commentStyles
-                )}
-                placeholder={this.props.placeholder && this.props.placeholder}
-              />
+
+            <ReactQuill
+              ref={this.reactQuillRef}
+              theme={this.state.theme}
+              readOnly={this.props.readOnly}
+              onChange={this.onEditorChange}
+              onChangeSelection={this.onEditorChangeSelection}
+              onFocus={this.onEditorFocus}
+              onBlur={this.onEditorBlur}
+              defaultValue={
+                this.props.editing ? this.state.editValue : this.state.value
+              }
+              modules={modules}
+              formats={Editor.formats}
+              className={css(
+                styles.editSection,
+                this.props.commentStyles && this.props.commentStyles
+              )}
+              placeholder={selectedPostTypeStruct.placeholder}
+            />
+            {selectedPostTypeStruct.value === POST_TYPES.REVIEW && (
+              <div className={css(styles.reviewCategoryContainer)}>
+                <ReviewCategorySelector
+                  handleSelect={(category) => {
+                    this.insertReviewCategory({ category });
+                    this.forcePlaceholderToShow({
+                      placeholderText: category.description,
+                    });
+                  }}
+                />
+              </div>
             )}
-            {!this.props.readOnly && this.renderButtons(this.props)}
+            <div className={css(styles.footerContainer)}>
+              <div className={css(styles.toolbarContainer)}>
+                {ReactQuill && this.renderToolbar(this.props.uid)}
+              </div>
+              {!this.props.readOnly && this.renderButtons(this.props)}
+            </div>
           </div>
-        )}
-      </div>
-    );
+        </div>
+      );
+    } else {
+      const modules = {
+        toolbar: false,
+      };
+      const editorValue = trimQuillEditorContents({
+        contents: this.state.value,
+      });
+
+      return (
+        <div key={this.props.uid} className={css(styles.readOnly)}>
+          <ReactQuill
+            ref={this.reactQuillRef}
+            readOnly={true}
+            defaultValue={editorValue}
+            modules={modules}
+            placeholder={selectedPostTypeStruct.placeholder}
+          />
+        </div>
+      );
+    }
   }
 }
 
 Editor.modules = (toolbarId, imageHandler, linkHandler) => ({
+  magicUrl: true,
   toolbar: {
+    magicUrl: true,
     container: "#" + toolbarId,
     handlers: {
       image: imageHandler,
-      // link: linkHandler
     },
   },
 });
@@ -508,34 +654,63 @@ Editor.formats = [
   "background",
   "code-block",
   "direction",
+  "peer-review-rating",
 ];
 
 const styles = StyleSheet.create({
+  reviewCategoryContainer: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  readOnly: {
+    background: "white",
+    padding: "12px 15px",
+    borderRadius: "4px",
+    border: `1px solid ${colors.LIGHT_GREY()}`,
+    boxSizing: "border-box",
+  },
+  footerContainer: {
+    display: "flex",
+    borderTop: `1px solid ${colors.GREY_BORDER}`,
+  },
+  postButtonContainer: {
+    padding: 12,
+    paddingRight: 0,
+    paddingBottom: 0,
+    marginLeft: "auto",
+    display: "flex",
+    alignItems: "center",
+  },
+  postTypeContainer: {
+    marginBottom: 25,
+  },
+  fullEditor: {
+    display: "none",
+  },
+  showFullEditor: {
+    display: "block",
+  },
   editor: {
     width: "100%",
     position: "relative",
-  },
-  summaryEditor: {
-    width: "100%",
-    fontFamily: "Roboto",
-    color: "#241F3A",
-    lineHeight: 1.2,
-  },
-  summaryEditorBox: {},
-  commentEditor: {
-    background: "#FBFBFD",
-    border: "1px solid rgb(232, 232, 242)",
-    color: "#000",
-    borderRadius: 4,
+    border: `1px solid ${colors.GREY_LINE()}`,
+    padding: "20px 20px 10px 20px",
+    borderRadius: "4px",
+    background: "white",
+    boxSizing: "border-box",
   },
   editable: {},
-  focus: {},
+  focus: {
+    border: `1px solid ${colors.NEW_BLUE()}`,
+  },
+  focusRequestType: {
+    border: `1px solid ${colors.PURPLE_LIGHT()}`,
+  },
+  focusAnswerType: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
+  },
   editSection: {
     minHeight: 75,
-    padding: 16,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
   },
   comment: {
     whiteSpace: "pre-wrap",
@@ -668,6 +843,20 @@ const toolbarStyles = StyleSheet.create({
       color: colors.BLACK(1),
     },
   },
+  requestButton: {
+    background: colors.PURPLE_LIGHT(),
+    ":hover": {
+      opacity: 0.9,
+      background: colors.PURPLE_LIGHT(),
+    },
+  },
+  answerButton: {
+    background: colors.NEW_GREEN(),
+    ":hover": {
+      opacity: 0.9,
+      background: colors.NEW_GREEN(),
+    },
+  },
   toolbarSummary: {
     borderBottom: "1px solid",
     borderTop: 0,
@@ -676,17 +865,17 @@ const toolbarStyles = StyleSheet.create({
     paddingLeft: 0,
   },
   toolbar: {
-    borderTop: "1px solid",
+    // borderTop: "1px solid",
     borderColor: "rgb(235, 235, 235)",
-    padding: 16,
+    paddingTop: 15,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 8,
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
     background: "#fff",
-    "@media only screen and (max-width: 577px)": {
-      flexDirection: "row",
-    },
   },
   iconRow: {
     display: "flex",
@@ -694,26 +883,6 @@ const toolbarStyles = StyleSheet.create({
     marginBottom: 0,
     whiteSpace: "nowrap",
     alignSelf: "center",
-  },
-  smallToolBar: {
-    fontSize: 11,
-    display: "flex",
-    flexWrap: "flex-wrap",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 9,
-    },
-  },
-  smallToolBarButton: {
-    marginLeft: 10,
-    padding: 5,
-    ":hover": {
-      color: colors.BLACK(1),
-      backgroundColor: "#FAFAFA",
-    },
-    "@media only screen and (max-width: 415px)": {
-      margin: 5,
-      marginLeft: 0,
-    },
   },
   submit: {
     background: colors.PURPLE(1),
@@ -728,55 +897,36 @@ const toolbarStyles = StyleSheet.create({
   first: {
     marginLeft: 0,
   },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    width: "100%",
-  },
-  smallButtonRow: {
-    justifyContent: "space-between",
-  },
   cancelButton: {
-    color: colors.BLACK(),
+    color: colors.MEDIUM_GREY2(),
     fontSize: 15,
-    marginRight: 15,
+    marginRight: 25,
     cursor: "pointer",
   },
-  buttonStyle: {
-    height: 37,
-    width: 126,
-    minWidth: 126,
-    fontSize: 15,
+  postButtonLabel: {
+    fontWeight: 500,
+  },
+  postButtonStyle: {
+    height: 30,
+    width: "auto",
+    fontSize: 16,
+    padding: "17px 30px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+    minWidth: 95,
     background: colors.NEW_BLUE(),
     ":hover": {
       opacity: 0.9,
       background: colors.NEW_BLUE(),
     },
-    "@media only screen and (max-width: 577px)": {
-      width: 100,
-    },
-  },
-  smallButton: {
-    width: 100,
-    height: 37,
-    fontSize: 15,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    borderRadius: 4,
-    userSelect: "none",
-    background: colors.NEW_BLUE(),
-    ":hover": {
-      opacity: 0.9,
-      background: colors.NEW_BLUE(),
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minHeight: "unset",
+      minWidth: 95,
+      height: 30,
     },
   },
   ripples: {
