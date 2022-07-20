@@ -14,7 +14,7 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
 
   unifiedDocs.forEach(({ documents, document_type }) => {
     const beDocType = getBEUnifiedDocType(document_type);
-    if (beDocType === "posts") {
+    if (["posts", "questions"].includes(beDocType)) {
       // below assumes we are only getting the first version of post
       (documents ?? []).length > 0 && documentIds.posts.push(documents[0].id);
     } else {
@@ -41,7 +41,10 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
       return filterNull(
         unifiedDocs.map((currUniDoc) => {
           const currBeDocType = getBEUnifiedDocType(currUniDoc.document_type);
-          const isPost = currBeDocType === "posts";
+          // TODO: calvihlee - resolve this
+          const docTypeOverride =
+            currBeDocType === "questions" ? "posts" : currBeDocType;
+          const isPost = ["posts", "questions"].includes(currBeDocType);
           const targetDoc = isPost
             ? (currUniDoc.documents ?? [])[0] ?? null
             : currUniDoc.documents;
@@ -56,7 +59,7 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
                 documents: [
                   {
                     ...targetDoc,
-                    user_vote: res[currBeDocType][targetDoc.id],
+                    user_vote: res[docTypeOverride][targetDoc.id],
                   },
                 ],
               }
@@ -64,7 +67,7 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
                 ...currUniDoc,
                 documents: {
                   ...targetDoc,
-                  user_vote: res[currBeDocType][targetDoc.id],
+                  user_vote: res[docTypeOverride][targetDoc.id],
                 },
               };
         })
