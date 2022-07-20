@@ -46,7 +46,8 @@ class PostPageCard extends Component {
   componentDidMount() {
     this.editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
+      Editor: require("@researchhub/ckeditor5-custom-build")
+        .SimpleBalloonEditor,
     };
   }
 
@@ -120,7 +121,7 @@ class PostPageCard extends Component {
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
           />
-          <div className={css(styles.section) + " post-body"}>
+          <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
               ready={post.isReady}
               showLoadingAnimation
@@ -200,6 +201,9 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
+  },
+  postBody: {
+    paddingTop: 0,
   },
   discussionText: {
     whiteSpace: "nowrap",

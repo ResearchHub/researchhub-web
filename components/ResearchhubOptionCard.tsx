@@ -1,8 +1,9 @@
 // @ts-nocheck
-import CheckBox from "./Form/CheckBox";
-import TabNewFeature from "~/components/NewFeature/TabNewFeature";
+import { genericCardColors } from "~/config/themes/colors";
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
+import CheckBox from "./Form/CheckBox";
+import TabNewFeature from "~/components/NewFeature/TabNewFeature";
 
 export type ResearchhubOptionCardProps = {
   description: string;
@@ -12,6 +13,7 @@ export type ResearchhubOptionCardProps = {
   isCheckboxSquare: boolean;
   newFeature: boolean;
   onSelect: Function;
+  whiteStyle?: boolean;
 };
 
 export default function ResearchhubOptionCard({
@@ -22,15 +24,21 @@ export default function ResearchhubOptionCard({
   isCheckboxSquare,
   newFeature,
   onSelect,
+  whiteStyle,
 }: ResearchhubOptionCardProps): ReactElement<"div"> {
   return (
     <div
-      className={css(styles.largeListItem, styles.clickable)}
+      className={css(
+        Boolean(whiteStyle) ? styles.largeListItemWhite : styles.largeListItem,
+        styles.clickable
+      )}
       onClick={onSelect}
     >
-      <div className={css(styles.checkboxAligner)}>
-        <CheckBox isSquare={isCheckboxSquare} active={isActive} />
-      </div>
+      {!whiteStyle && (
+        <div className={css(styles.checkboxAligner)}>
+          <CheckBox isSquare={isCheckboxSquare} active={isActive} />
+        </div>
+      )}
       <div className={css(styles.mediaContainer)}>
         <div className={css(styles.mediaContent)}>
           <div className={css(styles.mediaHeader)}>
@@ -98,10 +106,23 @@ const styles = StyleSheet.create({
     // height: '100%',
     // height: 500,
     borderRadius: "4px",
-    backgroundColor: "#FAFAFA",
+    background: genericCardColors.BACKGROUND,
     border: "1.5px solid #F0F0F0",
     margin: "5px 0px",
     padding: "20px",
+  },
+  largeListItemWhite: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignSelf: "stretch",
+    borderRadius: "4px",
+    backgroundColor: "#FFF",
+    border: "none",
+    padding: "20px 20px 20px 36px",
+    ":hover": {
+      background: genericCardColors.BACKGROUND,
+    },
   },
   clickable: {
     cursor: "pointer",

@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
+import { sendAmpEvent } from "~/config/fetch";
 
 const DynamicComponent = dynamic(
   () => import("../../components/CKEditor/SimpleEditor")
@@ -110,6 +111,20 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       setIsSubmitting(true);
 
       sendPost(false)
+        .then((res) => {
+          const payload = {
+            event_type: "create_metastudy",
+            time: +new Date(),
+            user_id: user.id,
+            insert_id: `metastudy_${res.id}`,
+            event_properties: {
+              interaction: "Meta-Study created",
+            },
+          };
+          sendAmpEvent(payload);
+
+          return res;
+        })
         .then(onSuccess(false))
         .catch((err) => setIsSubmitting(false));
     }
