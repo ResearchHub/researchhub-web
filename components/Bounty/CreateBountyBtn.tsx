@@ -71,20 +71,19 @@ function CreateBountyBtn({
           className={css(styles.addBounty)}
           onClick={() => setIsModalOpen(true)}
         >
-          <NewFeatureTooltip featureName={`bounty`} position={`right`} />
-          <span className={css(styles.bountyIcon)}>
-            {/* <img
-                className={css(styles.icon)}
-                src={"/static/icons/coin-filled.png"}
-                alt="RSC Coin"
-                width={22}
-              /> */}
-            {/* @ts-ignore */}
-            <ResearchCoinIcon width={22} height={22} version={3} />
-            {/* {icons.plus} */}
-          </span>
-          <span className={css(styles.addBountyLabel)}>
-            Add ResearchCoin Bounty
+          <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
+          <span onClick={() => setIsModalOpen(true)} className={css(styles.bountyTextContainer)}>
+            <span className={css(styles.bountyIcon)}>
+              {/* @ts-ignore */}
+              <ResearchCoinIcon width={22} height={22} version={3} />
+            </span>
+            <span
+              data-tip={""}
+              data-for="bountyTooltip"
+              className={css(styles.addBountyLabel)}
+            >
+              Add ResearchCoin Bounty
+            </span>
           </span>
         </div>
       )}
