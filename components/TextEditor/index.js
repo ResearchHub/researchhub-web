@@ -51,7 +51,6 @@ function TextEditor(props) {
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
-  const [editorRef, setEditorRef] = useState(null);
   const [selectedPostTypeStruct, setSelectedPostTypeStruct] = useState(
     postType
       ? getPostTypeStruct({ postType, documentType })
@@ -108,7 +107,6 @@ function TextEditor(props) {
         uid={uid}
         key={`textEditor-${uid}`}
         setRef={setInternalRef}
-        ref={setEditorRef}
         readOnly={readOnly}
         mediaOnly={mediaOnly}
         onChange={handleChange}

@@ -29,6 +29,10 @@ if (process.browser) {
       node.setAttribute('data-rating', value.rating);
       const categoryObj = reviewCategories[value.category];
       
+      if (!categoryObj) {
+        return node;
+      }
+
       if (categoryObj.isDefault) {
         // For the default category "overall rating", we want
         // to prevent the block being deleted.
@@ -58,6 +62,12 @@ if (process.browser) {
     attach() {
       super.attach();
       const isReadOnly = (this.parent.domNode.getAttribute("contenteditable") === "false");
+      const category = this.domNode.getAttribute('data-category');
+      const categoryObj = reviewCategories[category];
+
+      if (!categoryObj) {
+        return false;
+      }
 
       const _removeNodeEvents = () => {
         const copy = this.domNode.cloneNode(true);
@@ -65,8 +75,6 @@ if (process.browser) {
       }
 
       if (isReadOnly) {
-        const category = this.domNode.getAttribute('data-category');
-        const categoryObj = reviewCategories[category];
 
         let starSize = "small";
         let withLabel = false;
