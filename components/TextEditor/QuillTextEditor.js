@@ -45,8 +45,6 @@ class Editor extends Component {
     };
     this.reactQuillRef = createRef();
     this.quillRef = null;
-
-    console.log("selectedPostTypeStruct", this.state.selectedPostTypeStruct);
   }
 
   componentDidMount = async () => {
@@ -412,6 +410,10 @@ class Editor extends Component {
 
   handlePostTypeSelect = (selectedType) => {
     const currentType = this.state.selectedPostTypeStruct;
+
+    if (currentType.value === selectedType.value) {
+      return;
+    }
 
     const isPeerReview =
       selectedType.value === POST_TYPES.REVIEW &&
