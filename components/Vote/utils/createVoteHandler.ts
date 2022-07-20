@@ -49,8 +49,9 @@ export const createVoteHandler = ({
   onSuccess,
   voteType,
 }: Args) => {
-  const formattedDocumentType =
-    documentType === "post" ? "researchhub_posts" : documentType;
+  const formattedDocumentType = ["post", "question"].includes(documentType)
+    ? "researchhub_posts"
+    : documentType;
   const resolvedDocumentAuthorID =
     documentCreatedBy?.authorProfile?.id ||
     documentCreatedBy?.author_profile?.id;
