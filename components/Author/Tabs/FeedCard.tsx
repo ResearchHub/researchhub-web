@@ -79,6 +79,7 @@ const documentIcons = {
   paper: icons.paperRegular,
   post: icons.penSquare,
   hypothesis: icons.lightbulb,
+  question: icons.question,
 };
 
 function FeedCard({
@@ -126,7 +127,9 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
-  const docUrl = `/${formattedDocType}/${id}/${slug ?? "new-paper"}`;
+  const docUrl = `/${
+    formattedDocType === "question" ? "post" : formattedDocType
+  }/${id}/${slug ?? "new-paper"}`;
 
   useEffect((): void => {
     if (!isEmpty(userVote)) {
@@ -181,7 +184,7 @@ function FeedCard({
       key={`${formattedDocType}-${id}`}
       onClick={handleClick}
     >
-      <Link href={`/${formattedDocType}/${id}/${slug ?? "new-paper"}`}>
+      <Link href={docUrl}>
         <a
           className={css(styles.feedCard, featured && styles.featuredContainer)}
         >
