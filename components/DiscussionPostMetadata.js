@@ -1,6 +1,6 @@
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Fragment, useState, useEffect, useRef } from "react";
+import { Fragment, useState, useRef } from "react";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import * as moment from "dayjs";
@@ -11,25 +11,23 @@ import Ripples from "react-ripples";
 // Components
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 import UserRoleTag from "~/components/shared/UserRoleTag";
 import ShareModal from "~/components/ShareModal";
 
-//Redux
-import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
-
 // Config
 import { createUserSummary } from "~/config/utils/user";
-import { Helpers } from "@quantfive/js-web-config";
-import { timeSince, timeAgo } from "~/config/utils/dates";
-import API from "~/config/api";
-import colors, { voteWidgetColors } from "~/config/themes/colors";
+import { timeSince } from "~/config/utils/dates";
+import colors, { badgeColors, voteWidgetColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
+import postTypes, {
+  POST_TYPES,
+  questionPostTypes,
+} from "./TextEditor/config/postTypes";
+import { breakpoints } from "~/config/themes/screen";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -42,36 +40,21 @@ const DiscussionPostMetadata = (props) => {
     authorProfile,
     containerStyle,
     currentAuthorId,
-    currentUser,
     data,
-    dropDownEnabled,
     fetching,
     hideHeadline,
     isCreatedByEditor,
     isLoggedIn,
-    isModerator,
     metaData,
     noTimeStamp,
-    onHideClick,
-    onRemove,
-    postId,
-    threadPath,
-    toggleEdit,
-    twitter,
     twitterUrl,
     username,
   } = props;
 
-  const smaller = false;
   const alert = useAlert();
   // const store = useStore();
-  const dispatch = useDispatch();
   const router = useRouter();
 
-  const [showDropDown, setDropDown] = useState(false);
-  const [isFlagged, setFlagged] = useState(
-    metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
-  );
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
   const dropdown = useRef();
   const ellipsis = useRef();
@@ -82,164 +65,6 @@ const DiscussionPostMetadata = (props) => {
       ? currentAuthorId === metaData.authorId
       : true;
   }
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  });
-
-  const handleOutsideClick = (e) => {
-    if (ellipsis.current && ellipsis.current.contains(e.target)) {
-      return;
-    }
-    if (dropdown.current && !dropdown.current.contains(e.target)) {
-      e.stopPropagation();
-      setDropDown(false);
-    }
-  };
-
-  const toggleDropDown = (e) => {
-    e && e.stopPropagation();
-    setDropDown(!showDropDown);
-  };
-
-  const promptFlagConfirmation = () => {
-    if (!isLoggedIn) {
-      dispatch(
-        ModalActions.openLoginModal(
-          true,
-          "Please sign in with Google to continue."
-        )
-      );
-    } else {
-      return alert.show({
-        text:
-          "Are you sure you want to " +
-          (isFlagged ? "unflag" : "flag") +
-          " this post?",
-        buttonText: "Yes",
-        onClick: () => {
-          flagPost();
-        },
-      });
-    }
-  };
-
-  const flagPost = async () => {
-    dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId, documentId } = metaData;
-    let { documentType } = props;
-    let config = isFlagged
-      ? API.DELETE_CONFIG()
-      : await API.POST_CONFIG({ reason: "censor" });
-    return fetch(
-      API.FLAG_POST({
-        documentType,
-        paperId,
-        threadId,
-        commentId,
-        replyId,
-        documentId,
-      }),
-      config
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let message = isFlagged ? "Flag Removed " : "Post Successfully Flagged";
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage(message));
-        dispatch(MessageActions.showMessage({ show: true }));
-        setFlagged(!isFlagged);
-      })
-      .catch((err) => {
-        if (err.response && err.response.status === 429) {
-          dispatch(MessageActions.showMessage({ show: false }));
-          return dispatch(ModalActions.openRecaptchaPrompt(true));
-        }
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage("Something went wrong"));
-        dispatch(MessageActions.showMessage({ show: true, error: true }));
-      });
-  };
-
-  const renderShareButton = () => {
-    function openShareModal() {
-      setShareModalIsOpen(true);
-    }
-
-    return (
-      <a onClick={openShareModal}>
-        <div className={css(styles.dropdownItem)} onClick={(e) => e.persist()}>
-          <span
-            className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
-          >
-            {icons.shareSquare}
-          </span>
-          <span className={css(styles.text, styles.expandText)}>Share</span>
-        </div>
-      </a>
-    );
-  };
-
-  const renderDropdown = () => {
-    /* NOTE: this is a temp measure for deal with spammers. Eventually we want to check for specific comments */
-    const isCurrentUserEditor = Boolean(
-      currentUser?.author_profile?.is_hub_editor
-    );
-    return (
-      <Fragment>
-        {dropDownEnabled && (
-          <div className={css(styles.dropdownContainer)}>
-            <div
-              className={css(styles.dropdownIcon)}
-              ref={ellipsis}
-              onClick={toggleDropDown}
-            >
-              {icons.ellipsisH}
-            </div>
-            {showDropDown && (
-              <div className={css(styles.dropdown)} ref={dropdown}>
-                {threadPath && renderShareButton()}
-                <FlagButton
-                  {...props}
-                  onClick={promptFlagConfirmation}
-                  isFlagged={isFlagged}
-                />
-                <ModeratorDeleteButton
-                  actionType={"post"}
-                  containerStyle={styles.dropdownItem}
-                  documentType={props.documentType}
-                  forceRender={isUserOwnInlineComment}
-                  iconStyle={styles.expandIcon}
-                  isEditorOfHubs={isCurrentUserEditor}
-                  isModerator={isModerator}
-                  label={"Remove"}
-                  labelStyle={[styles.text, styles.removeText]}
-                  metaData={metaData}
-                  onRemove={onRemove}
-                />
-                <ModeratorDeleteButton
-                  actionType={"user"}
-                  containerStyle={styles.dropdownItem}
-                  icon={icons.ban}
-                  iconStyle={styles.expandIcon}
-                  isEditorOfHubs={isCurrentUserEditor}
-                  isModerator={isModerator}
-                  label={"Ban User"}
-                  labelStyle={[styles.text, styles.removeText]}
-                  metaData={metaData}
-                  onRemove={onRemove}
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </Fragment>
-    );
-  };
 
   const renderHeadline = () => {
     const showHeadline =
@@ -255,43 +80,97 @@ const DiscussionPostMetadata = (props) => {
       );
     }
   };
+
+  const renderBadge = ({ type, isSelectedAnswer = true }) => {
+    if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
+      const postType = postTypes.find((t) => t.value === type);
+      return (
+        <div className={css(styles.badgeContainer)}>
+          <span className={css(badge.container, badge.review)}>
+            <span className={css(badge.icon)}>{postType.icon}</span>
+            <span className={css(badge.label)}>{postType.label}</span>
+          </span>
+        </div>
+      );
+    } else if (type === POST_TYPES.ANSWER) {
+      const postType = questionPostTypes.find((t) => t.value === type);
+      return (
+        <div className={css(styles.badgeContainer)}>
+          <span
+            className={css(
+              badge.container,
+              badge.answer,
+              isSelectedAnswer && badge.selectedAnswer
+            )}
+          >
+            <span className={css(badge.icon)}>
+              {isSelectedAnswer ? icons.check : postType.icon}
+            </span>
+            <span className={css(badge.label)}>{postType.label}</span>
+          </span>
+        </div>
+      );
+    }
+  };
+
+  const discussionType = data.discussion_post_type;
+
+  let text = "commented";
+
+  if (discussionType === POST_TYPES.REVIEW) {
+    text = "peer reviewed";
+  } else if (discussionType === POST_TYPES.ANSWER) {
+    text = "answered";
+  } else if (discussionType === POST_TYPES.SUMMARY) {
+    text = "posted summary";
+  }
+
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
-      <ContentSupportModal />
-      <ShareModal
-        isOpen={shareModalIsOpen}
-        setIsOpen={setShareModalIsOpen}
-        title={"Share this discussion"}
-        url={`${process.env.HOST}${router.asPath}#comments`}
-      />
-      <AuthorAvatar
-        author={authorProfile}
-        name={username}
-        size={smaller ? 25 : 30}
-        twitterUrl={twitterUrl}
-      />
-      <div className={css(styles.column)}>
-        <div className={css(styles.firstRow)}>
-          <User {...props} />
-          {isCreatedByEditor && (
-            <UserRoleTag
-              backgroundColor={colors.EDITOR_TAG_BACKGROUND}
-              color={colors.EDITOR_TAG_TEXT}
-              fontSize="12px"
-              label="Editor"
-              padding="2px 10px"
-              margin="0 0 0 8px"
+      <div className={css(styles.authorDetails)}>
+        <ContentSupportModal />
+        <ShareModal
+          isOpen={shareModalIsOpen}
+          setIsOpen={setShareModalIsOpen}
+          title={"Share this discussion"}
+          url={`${process.env.HOST}${router.asPath}#comments`}
+        />
+        <AuthorAvatar
+          author={authorProfile}
+          name={username}
+          size={30}
+          twitterUrl={twitterUrl}
+        />
+        <div className={css(styles.column)}>
+          <div className={css(styles.firstRow)}>
+            <User {...props} />
+            {isCreatedByEditor && (
+              <UserRoleTag
+                backgroundColor={colors.EDITOR_TAG_BACKGROUND}
+                color={colors.EDITOR_TAG_TEXT}
+                fontSize="12px"
+                label="Editor"
+                padding="2px 10px"
+                margin="0 0 0 8px"
+              />
+            )}
+            {
+              <span className={css(styles.topLineText, styles.action)}>
+                {text}
+              </span>
+            }
+            {noTimeStamp ? null : <Timestamp {...props} />}
+            <span className={css(styles.divider)}>•</span>
+            <WidgetContentSupport
+              data={data}
+              metaData={metaData}
+              fetching={fetching}
             />
-          )}
-          <WidgetContentSupport
-            data={data}
-            metaData={metaData}
-            fetching={fetching}
-          />
-          {noTimeStamp ? null : <Timestamp {...props} />}
+          </div>
+          {/* {renderHeadline()} */}
         </div>
-        {renderHeadline()}
       </div>
+      {renderBadge({ type: discussionType })}
     </div>
   );
 };
@@ -307,7 +186,7 @@ function openTwitter(url) {
 }
 
 const User = (props) => {
-  const { username, paper, authorProfile, smaller, twitterUrl } = props;
+  const { username, paper, authorProfile } = props;
   let isAuthor;
   let authorId = authorProfile.id; // for the user
 
@@ -322,16 +201,11 @@ const User = (props) => {
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/overview`}>
       <a href={`/user/${authorId}/overview`} className={css(styles.atag)}>
-        <div
-          className={css(
-            styles.userContainer,
-            smaller && styles.smallerUserContainer
-          )}
-        >
+        <div className={css(styles.userContainer)}>
           <div
             className={css(
+              styles.topLineText,
               styles.name,
-              smaller && styles.smallerName,
               isAuthor && styles.authorName
             )}
           >
@@ -349,27 +223,14 @@ const Timestamp = (props) => {
 
   if (props.twitter && props.twitterUrl) {
     return (
-      <div
-        className={css(
-          styles.timestampContainer,
-          props.smaller && styles.smallerTimestamp,
-          props.twitter && styles.twitterUrl
-        )}
-      >
+      <div className={css(styles.topLineText, styles.timestampContainer)}>
         <a
           target="_blank"
           href={props.twitterUrl}
           className={css(styles.twitterTag)}
           rel="noreferrer noopener"
         >
-          <span
-            className={css(
-              styles.timestampDivider,
-              props.smaller && styles.smallerTimestamp
-            )}
-          >
-            •
-          </span>
+          <span className={css(styles.divider)}>•</span>
           {timestamp} from Twitter
           <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
         </a>
@@ -378,15 +239,8 @@ const Timestamp = (props) => {
   }
 
   return (
-    <div className={css(styles.timestampContainer)}>
-      <span
-        className={css(
-          styles.timestampDivider,
-          props.smaller && styles.smallerTimestampDivider
-        )}
-      >
-        •
-      </span>
+    <div className={css(styles.topLineText, styles.timestampContainer)}>
+      <span className={css(styles.divider)}>•</span>
       {timestamp}
     </div>
   );
@@ -405,78 +259,92 @@ function formatTimestamp(props) {
   return timeSince(date);
 }
 
-const HideButton = (props) => {
-  let { onHideClick, hideState } = props;
-  let classNames = [styles.hideContainer];
+const badge = StyleSheet.create({
+  review: {},
+  answer: {
+    background: colors.NEW_GREEN(0.1),
+    color: colors.NEW_GREEN(),
+  },
+  selectedAnswer: {
+    background: colors.NEW_GREEN(),
+    color: "white",
+  },
+  container: {
+    background: colors.LIGHT_GREY(),
+    color: colors.BLACK(),
+    display: "flex",
+    alignItems: "center",
+    padding: "5px 10px",
+    fontSize: 12,
+    fontWeight: 600,
+    borderRadius: 3,
+    textTransform: "uppercase",
+    marginLeft: "auto",
 
-  return (
-    <Fragment>
-      <span className={css(styles.timestampDivider)}>•</span>
-      <div className={css(classNames)} onClick={onHideClick}>
-        <span
-          className={css(styles.icon, hideState && styles.active)}
-          id={"hideIcon"}
-        >
-          {hideState ? icons.eyeSlash : icons.eye}
-        </span>
-        <span className={css(styles.text)} id={"hideText"}>
-          {hideState ? "Show" : "Hide"}
-        </span>
-      </div>
-    </Fragment>
-  );
-};
-
-const ExpandButton = (props) => {
-  let { threadPath, metaData } = props;
-
-  return (
-    <Ripples className={css(styles.dropdownItem)}>
-      <ClientLinkWrapper
-        dynamicHref={metaData.postId ? POST_HREF : DYNAMIC_HREF}
-        path={threadPath}
-      >
-        <span className={css(styles.icon, styles.expandIcon)} id={"expandIcon"}>
-          {icons.expandArrows}
-        </span>
-        <span className={css(styles.text, styles.expandText)} id={"expandText"}>
-          Expand
-        </span>
-      </ClientLinkWrapper>
-    </Ripples>
-  );
-};
-
-const FlagButton = (props) => {
-  return (
-    <Ripples className={css(styles.dropdownItem)} onClick={props.onClick}>
-      <span className={css(styles.icon, styles.expandIcon)}>{icons.flag}</span>
-      <span className={css(styles.text, styles.expandText)}>
-        {props.isFlagged ? "Unflag" : "Flag"}
-      </span>
-    </Ripples>
-  );
-};
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "6px 15px",
+    },
+  },
+  icon: {
+    marginRight: 5,
+  },
+  text: {
+    fontWeight: 500,
+    fontSize: 14,
+  },
+});
 
 const styles = StyleSheet.create({
+  topLineText: {
+    color: colors.MEDIUM_GREY2(),
+    fontWeight: 400,
+    fontSize: 15,
+    marginLeft: 8,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+    },
+  },
+  action: {
+    [`@media only screen and (max-width: 615px)`]: {
+      display: "none",
+    },
+  },
+  tipAuthorText: {
+    marginLeft: 0,
+  },
   container: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     position: "relative",
+    whiteSpace: "",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  authorDetails: {
+    display: "flex",
+    alignItems: "center",
+  },
+  badgeContainer: {
+    marginLeft: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "inline-block",
+      marginTop: 15,
+    },
   },
   column: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    width: "100%",
+    // width: "100%",
   },
+
   firstRow: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
   },
 
   userContainer: {
@@ -494,26 +362,13 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     color: "unset",
   },
-  smallerUserContainer: {
-    // fontSize: 13,
-  },
   timestampContainer: {
     display: "flex",
     alignItems: "center",
     fontWeight: "normal",
-    color: colors.MEDIUM_GREY(),
-    fontSize: 14,
+    color: colors.MEDIUM_GREY2(),
     fontWeight: 400,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 10,
-    },
-  },
-  smallerTimestamp: {
-    fontSize: 12,
-    marginRight: 8,
+    margin: 0,
   },
   twitterTag: {
     color: "unset",
@@ -524,15 +379,8 @@ const styles = StyleSheet.create({
   name: {
     marginLeft: 8,
     color: colors.BLACK(1),
-    fontSize: 15,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 14,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+    fontWeight: 500,
   },
-  smallerName: {},
   authorName: {
     fontWeight: 500,
   },
@@ -556,17 +404,13 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  timestampDivider: {
-    fontSize: 18,
-    padding: "0px 10px",
+  divider: {
+    fontSize: 16,
+    padding: "0px 8px",
     color: colors.GREY(1),
     "@media only screen and (max-width: 767px)": {
       padding: "0px 8px",
     },
-  },
-  smallerTimestampDivider: {
-    fontSize: 12,
-    padding: "0 8px",
   },
   hideContainer: {
     display: "flex",

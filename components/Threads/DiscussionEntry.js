@@ -18,13 +18,13 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
 import { saveReview } from "~/config/fetch";
+import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
+import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import StarInput from "~/components/Form/StarInput";
-import { breakpoints } from "~/config/themes/screen";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -64,8 +64,8 @@ class DiscussionEntry extends Component {
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
-        isReview: data?.review?.id ? true : false,
-        review: data?.review,
+        // isReview: data?.review?.id ? true : false,
+        // review: data?.review,
         canEdit:
           data.source !== "twitter"
             ? this.props.auth.user.id === data.created_by.id
@@ -187,7 +187,7 @@ class DiscussionEntry extends Component {
     );
   };
 
-  submitComment = async (text, plain_text, callback) => {
+  submitComment = async ({ content, plainText, callback }) => {
     let {
       data,
       postComment,
@@ -213,8 +213,8 @@ class DiscussionEntry extends Component {
       paperId,
       documentId,
       discussionThreadId,
-      text,
-      plain_text
+      content,
+      plainText
     );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       let newComment = { ...this.props.discussion.postedComment };
@@ -243,7 +243,12 @@ class DiscussionEntry extends Component {
     showMessage({ show: true, error: true });
   };
 
-  saveEditsThread = async (text, plain_text, callback) => {
+  saveEditsThread = async ({
+    content,
+    plainText,
+    discussionType,
+    callback,
+  }) => {
     let {
       data,
       updateThread,
@@ -253,7 +258,9 @@ class DiscussionEntry extends Component {
       documentType,
     } = this.props;
 
-    const { review, isReview } = this.state;
+    console.log("discussionType", discussionType);
+
+    // const { review, isReview } = this.state;
 
     let discussionThreadId = data.id;
     let paperId = data.paper;
@@ -266,18 +273,52 @@ class DiscussionEntry extends Component {
     }
 
     let body = {
-      text,
-      plain_text,
+      text: content,
+      plain_text: plainText,
       paper: paperId,
     };
 
-    if (isReview) {
-      const response = await saveReview({
-        unifiedDocumentId,
-        review: this.state.review,
+    if (discussionType === POST_TYPES.REVIEW) {
+      const reviewScore = getReviewCategoryScore({
+        quillContents: content,
+        category: "overall",
       });
-      this.setState({ review: response });
+      if (reviewScore === 0) {
+        props.showMessage({ show: true, error: true });
+        props.setMessage("Rating cannot be empty");
+        setSubmitInProgress(false);
+        return;
+      }
+
+      let reviewResponse;
+      try {
+        reviewResponse = await saveReview({
+          unifiedDocumentId,
+          review: { score: reviewScore, id: data.review.id },
+        });
+      } catch (error) {
+        setSubmitInProgress(false);
+        captureEvent({
+          error,
+          msg: "Failed to save review",
+          data: { reviewScore, quillContents: content },
+        });
+        props.setMessage("Something went wrong");
+        props.showMessage({ show: true, error: true });
+        return false;
+      }
+
+      // param["review"] = reviewResponse.id;
     }
+
+    // if (isReview) {
+    //   const response = await saveReview({
+    //     unifiedDocumentId,
+    //     review: this.state.review,
+    //   });
+    //   this.setState({ review: response });
+
+    // }
 
     updateThreadPending();
     try {
@@ -500,7 +541,11 @@ class DiscussionEntry extends Component {
   render() {
     const {
       data,
-      data: { context_title: contextTitle, id: commentThreadID },
+      data: {
+        context_title: contextTitle,
+        id: commentThreadID,
+        discussion_post_type: postType,
+      },
       documentType,
       hostname,
       hypothesis,
@@ -509,14 +554,13 @@ class DiscussionEntry extends Component {
       noRespond,
       noVote,
       noVoteLine,
+      is_solution: isSolution,
       paper,
       path,
       post,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
-
-    const { review, isReview } = this.state;
 
     const commentCount =
       data.comment_count +
@@ -537,6 +581,10 @@ class DiscussionEntry extends Component {
       contentType: "thread",
       objectId: data.id,
     };
+
+    const showAcceptAnswerBtn =
+      documentType === "question" &&
+      post?.created_by?.id === data.created_by.id;
 
     return (
       <div
@@ -633,30 +681,21 @@ class DiscussionEntry extends Component {
                 <div
                   className={css(
                     styles.content,
+                    isSolution && !this.state.editing && styles.acceptedAnswer,
                     this.state.editing && styles.contentEdit
                   )}
                 >
-                  {isReview ? (
-                    <div className={css(styles.reviewContainer)}>
-                      <div className={css(styles.reviewBadge)}>Review</div>
-                      <StarInput
-                        value={review?.score}
-                        readOnly={this.state.editing ? false : true}
-                        onSelect={this.onScoreSelect}
-                        scoreInputStyleOverride={styles.starInputStyleOverride}
-                        overrideStarStyle={styles.overrideStar}
-                      />
-                    </div>
-                  ) : null}
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
+                    focusEditor={true}
                     body={true}
                     textStyles={styles.contentText}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
+                    postType={postType}
                   />
                 </div>
               </Fragment>
@@ -685,6 +724,7 @@ class DiscussionEntry extends Component {
                   small={noVoteLine}
                   threadID={data?.id}
                   title={title}
+                  showAcceptedAnswerBtn={showAcceptAnswerBtn}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
@@ -755,7 +795,7 @@ const styles = StyleSheet.create({
     display: "table-cell",
     height: "100%",
     verticalAlign: "top",
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 600px)": {
       width: 35,
     },
   },
@@ -793,6 +833,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginBottom: 15,
   },
   content: {
     width: "100%",
@@ -801,9 +842,14 @@ const styles = StyleSheet.create({
     overflowWrap: "break-word",
     lineHeight: 1.6,
   },
+  acceptedAnswer: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
+  },
   contentEdit: {
     border: `1px soild`,
     borderColor: "rgb(170, 170, 170)",
+    background: "unset",
+    padding: "0",
   },
   contentText: {
     fontSize: 16,
@@ -823,7 +869,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     width: "100%",
-    padding: "14px 10px 8px 8px",
+    padding: "9px 10px 8px 8px",
     boxSizing: "border-box",
     marginLeft: 2,
   },
@@ -895,22 +941,6 @@ const styles = StyleSheet.create({
   withPadding: {
     padding: 16,
     height: "unset",
-  },
-  reviewContainer: {
-    display: "flex",
-    alignItems: "flex-start",
-    lineHeight: 1.4,
-    marginBottom: 15,
-  },
-  reviewBadge: {
-    background: colors.DARK_YELLOW(),
-    color: "white",
-    padding: "2px 6px",
-    fontWeight: 500,
-    fontSize: 12,
-    marginRight: 10,
-    borderRadius: "2px",
-    lineHeight: "15px",
   },
   overrideStar: {
     fontSize: 14,

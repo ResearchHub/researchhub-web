@@ -1,4 +1,4 @@
-import { iconColors } from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -14,9 +14,12 @@ import {
   faBookOpen,
   faCaretDown,
   faCaretUp,
+  faCaretLeft,
   faCheck,
   faClone,
   faCog,
+  faChevronCircleRight,
+  faChevronCircleLeft,
   faComment,
   faComments as faCommentsSolid,
   faEdit,
@@ -29,6 +32,7 @@ import {
   faFlag,
   faGraduationCap,
   faItalic,
+  faLayerGroup,
   faLink,
   faLock,
   faMinus,
@@ -54,6 +58,7 @@ import {
   faUserPlus,
   faUsers,
   faCheckDouble,
+  faVideo,
   faQuestionCircle as solidQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -89,6 +94,7 @@ import {
   faVideoPlus,
   faShieldAlt,
   faTrash as faTrashSolid,
+  faMedal as faMedalSolid,
   faBadgeCheck,
   faUp,
   faDown,
@@ -97,6 +103,10 @@ import {
   faPenSquare as faPenSquareRegular,
   faArrowAltToBottom as download,
   faArrowDownToLine,
+  faArrowRightToLine,
+  faCommentAltLines as faCommentAltLinesSolid,
+  faUndo,
+  faFontCase,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -118,10 +128,14 @@ import {
   faTasksAlt,
   faThumbtack as faThumbtackOutline,
   faTimes,
+  faReply,
+  faPen,
   faTimesCircle,
   faTrashAlt,
   faBadgeCheck as faBadgeCheckAlt,
   faBookOpen as faBookOpenAlt,
+  faInfoCircle as faInfoCircleLight,
+  faCommentAltCheck as faCommentLightAltCheck,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -139,6 +153,7 @@ import {
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
+  faMedal,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -184,6 +199,7 @@ library.add(
   faArrowRight,
   faArrowToBottom,
   faAsterisk,
+  faFontCase,
   faBan,
   faBars,
   faInbox,
@@ -210,6 +226,7 @@ library.add(
   faCoins,
   faComment,
   faCommentAltDots,
+  faCommentAltLinesSolid,
   faCommentAltEdit,
   faCommentAltLines,
   faComments,
@@ -238,7 +255,9 @@ library.add(
   faImage,
   faImagePolaroid,
   faInfoCircle,
+  faInfoCircleLight,
   faItalic,
+  faLayerGroup,
   faLink,
   faLinkedinIn,
   faList,
@@ -247,6 +266,7 @@ library.add(
   faLongArrowAltDown,
   faLongArrowAltUp,
   faLongArrowLeft,
+  faArrowRightToLine,
   faMedium,
   faMinus,
   faMinusCircle,
@@ -298,23 +318,27 @@ library.add(
   faUserPlus,
   faUserSlash,
   faVideoPlus,
+  faVideo,
   faWallet,
   falChevronDown,
   opaqueThumbsDown,
   opaqueThumbsUp,
   solidThumbsDown,
   solidThumbsUp,
-  faArrowDownToLine
+  faArrowDownToLine,
+  faUndo
 );
 
 const icons = {
   "info-circle": <FontAwesomeIcon icon={faInfoCircle} />,
+  "info-circle-light": <FontAwesomeIcon icon={faInfoCircleLight} />,
   activtyFeed: <FontAwesomeIcon icon={faRss} />,
   angleDown: <FontAwesomeIcon icon={faAngleDown} />,
   angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,
   angleRight: <FontAwesomeIcon icon={faAngleRight} />,
   angleUp: <FontAwesomeIcon icon={faAngleUp} />,
   arrowRight: <FontAwesomeIcon icon={faArrowRight} />,
+  arrowRightToLine: <FontAwesomeIcon icon={faArrowRightToLine} />,
   arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
   asterisk: <FontAwesomeIcon icon={faAsterisk} />,
   ban: <FontAwesomeIcon icon={faBan} />,
@@ -328,6 +352,7 @@ const icons = {
   calendar: <FontAwesomeIcon icon={faCalendar} />,
   caretDown: <FontAwesomeIcon icon={faCaretDown} />,
   caretUp: <FontAwesomeIcon icon={faCaretUp} />,
+  caretLeft: <FontAwesomeIcon icon={faCaretLeft} />,
   chat: <FontAwesomeIcon icon={faComment} />,
   check: <FontAwesomeIcon icon={faCheck} />,
   checkCircle: <FontAwesomeIcon icon={faCheckCircle} />,
@@ -345,11 +370,15 @@ const icons = {
   commentAltDots: <FontAwesomeIcon icon={faCommentAltDots} />,
   commentAltEdit: <FontAwesomeIcon icon={faCommentAltEdit} />,
   commentAltLine: <FontAwesomeIcon icon={faCommentAltLines} />,
+  commentAltLineSolid: <FontAwesomeIcon icon={faCommentAltLinesSolid} />,
   commentCheck: <FontAwesomeIcon icon={faCommentCheck} />,
+  commentLightAltCheck: <FontAwesomeIcon icon={faCommentLightAltCheck} />,
   commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
   comments: <FontAwesomeIcon icon={faComments} />,
   commentsSolid: <FontAwesomeIcon icon={faCommentsSolid} />,
   commentsAlt: <FontAwesomeIcon icon={faCommentsNoBackground} />,
+  chevronCircleRight: <FontAwesomeIcon icon={faChevronCircleRight} />,
+  chevronCircleLeft: <FontAwesomeIcon icon={faChevronCircleLeft} />,
   checkDouble: <FontAwesomeIcon icon={faCheckDouble} />,
   date: <FontAwesomeIcon icon={faCalendarDay} />,
   downSolid: <FontAwesomeIcon icon={faDown} />,
@@ -372,6 +401,7 @@ const icons = {
   download: <FontAwesomeIcon icon={download} />,
   shield: <FontAwesomeIcon icon={faShieldAlt} />,
   flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
+  fontCase: <FontAwesomeIcon icon={faFontCase} />,
   friends: <FontAwesomeIcon icon={faUsers} />,
   github: <FontAwesomeIcon icon={faGithub} />,
   globe: <FontAwesomeIcon icon={faGlobeAmericas} />,
@@ -379,6 +409,7 @@ const icons = {
   help: <FontAwesomeIcon icon={faQuestionCircle} />,
   hub: <FontAwesomeIcon icon={faChartNetwork} />,
   image: <FontAwesomeIcon icon={faImage} />,
+  layerGroup: <FontAwesomeIcon icon={faLayerGroup} />,
   lightbulb: <FontAwesomeIcon icon={faLightbulb} />,
   link: <FontAwesomeIcon icon={faLink} />,
   linkedIn: <FontAwesomeIcon icon={faLinkedinIn} />,
@@ -399,6 +430,7 @@ const icons = {
   paperPlane: <FontAwesomeIcon icon={faPaperPlane} />,
   paperRegular: <FontAwesomeIcon icon={faPaperRegular} />,
   paperAlt: <FontAwesomeIcon icon={faFileAltSolid} />,
+  pen: <FontAwesomeIcon icon={faPen} />,
   penSquare: <FontAwesomeIcon icon={faPenSquareRegular} />,
   pencil: <FontAwesomeIcon icon={faPencil} />,
   pin: <FontAwesomeIcon icon={faThumbtack} />,
@@ -413,6 +445,7 @@ const icons = {
   receipt: <FontAwesomeIcon icon={faReceipt} />,
   reddit: <FontAwesomeIcon icon={faReddit} />,
   redo: <FontAwesomeIcon icon={faRedo} />,
+  reply: <FontAwesomeIcon icon={faReply} />,
   search: <FontAwesomeIcon icon={faSearch} />,
   shapes: <FontAwesomeIcon icon={faShapes} />,
   share: <FontAwesomeIcon icon={faShare} />,
@@ -448,8 +481,10 @@ const icons = {
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
+  undo: <FontAwesomeIcon icon={faUndo} />,
   verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
   verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
+  video: <FontAwesomeIcon icon={faVideo} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
@@ -880,6 +915,72 @@ export const UpIcon = ({
       )}
     >
       {icons.chevronUp}
+    </span>
+  );
+};
+
+export const MedalIcon = ({
+  onClick = undefined,
+  overrideStyle = null,
+  width = 25,
+  height = 25,
+  color = colors.BLACK(),
+}) => {
+  return (
+    <span onClick={onClick} className={css(overrideStyle && overrideStyle)}>
+      <svg
+        width={width}
+        height={height}
+        viewBox={`0 0 20 16`}
+        fill="none"
+        id={"medalIcon"}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6.99967 4.83547C8.76778 4.83547 10.4635 5.53785 11.7137 6.78809C12.964 8.03833 13.6663 9.73403 13.6663 11.5021C13.6663 13.2702 12.964 14.9659 11.7137 16.2162C10.4635 17.4664 8.76778 18.1688 6.99967 18.1688C5.23156 18.1688 3.53587 17.4664 2.28563 16.2162C1.03539 14.9659 0.333008 13.2702 0.333008 11.5021C0.333008 9.73403 1.03539 8.03833 2.28563 6.78809C3.53587 5.53785 5.23156 4.83547 6.99967 4.83547ZM6.99967 6.50213C5.67359 6.50213 4.40182 7.02892 3.46414 7.9666C2.52646 8.90428 1.99967 10.1761 1.99967 11.5021C1.99967 12.8282 2.52646 14.1 3.46414 15.0377C4.40182 15.9753 5.67359 16.5021 6.99967 16.5021C8.32576 16.5021 9.59753 15.9753 10.5352 15.0377C11.4729 14.1 11.9997 12.8282 11.9997 11.5021C11.9997 10.1761 11.4729 8.90428 10.5352 7.9666C9.59753 7.02892 8.32576 6.50213 6.99967 6.50213ZM6.99967 7.75214L8.10217 9.98547L10.5663 10.3438L8.78301 12.0813L9.20384 14.5363L6.99967 13.3771L4.79551 14.5355L5.21634 12.0813L3.43301 10.343L5.89717 9.98463L6.99967 7.75214ZM11.9997 0.668802V3.1688L10.8638 4.11714C9.92129 3.62262 8.89223 3.3145 7.83301 3.20964V0.668802H11.9997ZM6.16634 0.667969V3.20964C5.10746 3.31434 4.07869 3.62218 3.13634 4.1163L1.99967 3.1688V0.668802L6.16634 0.667969Z"
+          fill={color}
+        />
+      </svg>
+    </span>
+  );
+};
+
+export const ResearchCoinIcon = ({
+  onClick = undefined,
+  overrideStyle,
+  height = 25,
+  width = 25,
+  version = 1,
+}) => {
+  return (
+    <span onClick={onClick} className={css(overrideStyle && overrideStyle)}>
+      {version === 1 ? (
+        <img
+          className={css(styles.icon)}
+          src={"/static/icons/coin-filled.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      ) : version === 2 ? (
+        <img
+          onClick={onClick}
+          className={css(overrideStyle && overrideStyle)}
+          src={"/static/icons/rsc_v2.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      ) : version === 3 ? (
+        <img
+          onClick={onClick}
+          className={css(overrideStyle && overrideStyle)}
+          src={"/static/icons/rsc_v3.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      ) : null}
     </span>
   );
 };

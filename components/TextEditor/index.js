@@ -14,12 +14,13 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorToHTML } from "~/config/utils/editor";
 import { genClientId } from "~/config/utils/id";
+import getDefaultPostType from "~/components/TextEditor/util/getDefaultPostType";
+import { getPostTypeStruct } from "./config/postTypes";
+import isQuillEmpty from "./util/isQuillEmpty";
+import { captureEvent } from "~/config/utils/events";
 
 function TextEditor(props) {
   const {
-    canCancel,
-    canSubmit,
-    classNames,
     clearOnSubmit,
     onCancel,
     onSubmit,
@@ -30,29 +31,43 @@ function TextEditor(props) {
     openLoginModal,
     passedValue,
     onChange,
+    focusEditor,
     hideButton,
-    showDiff,
-    previousVersion,
-    placeholder,
     hideCancelButton,
     containerStyles,
     commentStyles,
-    smallToolBar,
     loading,
     commentEditorStyles,
     editing,
-    focusEditor,
     hasHeader,
     summary,
     mediaOnly,
     setMessage,
     showMessage,
-    children,
+    postType,
     uid = genClientId(),
+    documentType,
+    isTopLevelComment = false,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
+  const [selectedPostTypeStruct, setSelectedPostTypeStruct] = useState(
+    postType
+      ? getPostTypeStruct({ postType, documentType })
+      : getDefaultPostType({ documentType })
+  );
+
+  if (!selectedPostTypeStruct) {
+    const msg =
+      "Could not find a matching post type struct in TextEditor. Did not render comment.";
+    captureEvent({
+      msg,
+      data: { postType, value, selectedPostTypeStruct },
+    });
+    console.warn(msg, postType, selectedPostTypeStruct);
+    return null;
+  }
 
   useEffect(() => {
     setValue(initialValue);
@@ -65,19 +80,8 @@ function TextEditor(props) {
   function cancel() {
     onCancel && onCancel();
   }
-  /**
-   * Used to check if editor is empty upon submission
-   * @param { Object } content -- quill's node blocks
-   */
-  function isQuillEmpty(content) {
-    if (JSON.stringify(content) == '{"ops":[{"insert":"\\n"}]}') {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
-  function submit(content, plain_text, callback) {
+  function submit({ content, plainText, callback, discussionType }) {
     if (!isLoggedIn) {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
@@ -85,7 +89,8 @@ function TextEditor(props) {
         setMessage("Content cannot be empty.");
         return showMessage({ error: true, show: true, clickoff: true });
       }
-      onSubmit && onSubmit(content, plain_text, callback);
+
+      onSubmit && onSubmit({ content, plainText, callback, discussionType });
       if (clearOnSubmit) {
         callback();
       }
@@ -97,46 +102,42 @@ function TextEditor(props) {
   }
 
   return (
-    <QuillTextEditor
-      value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
-      uid={uid}
-      key={`textEditor-${uid}`}
-      setRef={setInternalRef}
-      ref={setEditorRef}
-      readOnly={readOnly || false}
-      mediaOnly={mediaOnly}
-      onChange={handleChange}
-      canCancel={canCancel}
-      canSubmit={canSubmit}
-      clearOnSubmit={clearOnSubmit}
-      containerStyles={containerStyles}
-      cancel={cancel}
-      submit={submit}
-      commentEditor={commentEditor}
-      hideButton={hideButton}
-      showDiff={showDiff}
-      previousVersion={previousVersion}
-      classNames={classNames}
-      placeholder={placeholder && placeholder}
-      hideCancelButton={hideCancelButton && hideCancelButton}
-      commentStyles={commentStyles && commentStyles}
-      smallToolBar={smallToolBar && smallToolBar}
-      loading={loading && loading}
-      commentEditorStyles={commentEditorStyles && commentEditorStyles}
-      editing={editing}
-      focusEditor={focusEditor && focusEditor}
-      hasHeader={hasHeader && hasHeader}
-      summary={summary && summary}
-    >
-      {children}
-    </QuillTextEditor>
+    <div>
+      <QuillTextEditor
+        value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
+        uid={uid}
+        key={`textEditor-${uid}`}
+        setRef={setInternalRef}
+        ref={setEditorRef}
+        readOnly={readOnly}
+        mediaOnly={mediaOnly}
+        onChange={handleChange}
+        clearOnSubmit={clearOnSubmit}
+        containerStyles={containerStyles}
+        cancel={cancel}
+        submit={submit}
+        focusEditor={focusEditor}
+        commentEditor={commentEditor}
+        hideButton={hideButton}
+        hideCancelButton={hideCancelButton && hideCancelButton}
+        commentStyles={commentStyles && commentStyles}
+        loading={loading && loading}
+        isTopLevelComment={isTopLevelComment}
+        commentEditorStyles={commentEditorStyles && commentEditorStyles}
+        editing={editing}
+        hasHeader={hasHeader && hasHeader}
+        summary={summary && summary}
+        setSelectedPostTypeStruct={setSelectedPostTypeStruct}
+        selectedPostTypeStruct={selectedPostTypeStruct}
+        documentType={documentType}
+      />
+    </div>
   );
 }
 
 TextEditor.propTypes = {
   canEdit: PropTypes.bool,
   canCancel: PropTypes.bool,
-  canSubmit: PropTypes.bool,
   cancelButtonStyles: PropTypes.object,
   submitButtonStyles: PropTypes.object,
   cancelButtonText: PropTypes.string,
