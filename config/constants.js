@@ -29,6 +29,7 @@ export const DIGEST_FREQUENCY = {
   Daily: 1440,
   "Every 3 Hours": 180,
   Weekly: 10080,
+  Never: 0,
 };
 
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;

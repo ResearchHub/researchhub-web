@@ -8,8 +8,8 @@ import { voteWidgetIcons } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 
 const DocumentHeaderPlaceholder = ({ color = "#EFEFEF" }) => {
-  const metaRow = () => (
-    <div className={css(styles.row, styles.metaRow)}>
+  const metaRow = (index) => (
+    <div key={index} className={css(styles.row, styles.metaRow)}>
       <div className={css(styles.metaKey)}>
         <TextBlock rows={1} color={color} style={{ width: "100%" }} />
       </div>
@@ -24,7 +24,7 @@ const DocumentHeaderPlaceholder = ({ color = "#EFEFEF" }) => {
       <RectShape color={color} className={css(styles.title)} />
       <RectShape color={color} className={css(styles.title)} />
       <div className={css(styles.metadata)}>
-        {[1, 2, 3].map((i) => metaRow())}
+        {[1, 2, 3].map((i) => metaRow(i))}
       </div>
     </div>
   );

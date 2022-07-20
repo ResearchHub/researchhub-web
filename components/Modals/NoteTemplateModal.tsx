@@ -123,9 +123,11 @@ export default function NoteTemplateModal({
   }
 
   useEffect(() => {
+    const importedEditor = require("@ckeditor/ckeditor5-react");
+    const importedBalloonEditor = require("@researchhub/ckeditor5-custom-build");
     editorRef.current = {
-      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
+      CKEditor: importedEditor.CKEditor,
+      Editor: importedBalloonEditor.SimpleBalloonEditor,
     };
   }, []);
 

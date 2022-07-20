@@ -273,7 +273,6 @@ class Editor extends Component {
 
   focusEditor = () => {
     if (this.quillRef && !this.props.readOnly) {
-      console.log("value", this.props.value);
       this.quillRef.focus();
       const range = this.quillRef.getLength(); // place cursor at the end of the text
       this.quillRef.setSelection(range + 1);
@@ -409,7 +408,6 @@ class Editor extends Component {
   };
 
   handlePostTypeSelect = (selectedType) => {
-    console.log("selectedType", selectedType);
     const currentType = this.state.selectedPostTypeStruct;
 
     if (currentType.value === selectedType.value) {
@@ -448,8 +446,6 @@ class Editor extends Component {
       this.quillRef.setContents(trimmedContents);
 
       const hasContent = hasQuillContent({ quillRef: this.quillRef });
-      console.log(hasContent);
-      console.log(this.quillRef.editor.getContents());
       if (!hasContent) {
         this.forcePlaceholderToShow({
           placeholderText: selectedType.placeholder,
@@ -475,8 +471,6 @@ class Editor extends Component {
       : isAnswerType
       ? "Post Answer"
       : "Post";
-
-    console.log("this.props.editing", this.props.editing);
 
     return (
       <div className={css(styles.postButtonContainer)}>
