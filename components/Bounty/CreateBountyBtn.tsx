@@ -6,10 +6,16 @@ import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 
-function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [bountyAmountDetails, setBountyAmountDetails] = useState<null | any>(null)
+function CreateBountyBtn({
+  withPreview = false,
+  onBountyAdd,
+  bountyText,
+  post,
+}): ReactElement {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bountyAmountDetails, setBountyAmountDetails] = useState<null | any>(
+    null
+  );
 
   return (
     <div className={css(styles.createBountyBtn)}>
@@ -38,50 +44,52 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
           onBountyAdd(amountDetails);
         }}
         withPreview={withPreview}
+        bountyText={bountyText}
+        postId={post.id}
+        postSlug={post.unifiedDocument.document.slug}
         removeBounty={() => setBountyAmountDetails(null)}
       />
-      {bountyAmountDetails && withPreview
-        ? (
-          <span 
-            className={css(styles.bountyPreview)}
-          >
-            <div className={css(styles.bountyAmount)}>
-              <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
-              <span className={css(styles.bountyAmountText)}>
-                {bountyAmountDetails?.netBountyAmount} ResearchCoin bounty
-              </span>
-              <span
-                className={css(styles.removeBounty)}
-                onClick={() => setBountyAmountDetails(null)}>
-                  {icons.times}
-              </span>
-            </div>
-          </span>
-        ) : (
-          <div
-            data-tip={""}
-            data-for="bountyTooltip"
-            className={css(styles.addBounty)}
-            onClick={() => setIsModalOpen(true)}
-          >
-            <NewFeatureTooltip featureName={`bounty`} position={`right`} />
-            <span className={css(styles.bountyIcon)}>
-              {/* <img
+      {bountyAmountDetails && withPreview ? (
+        <span className={css(styles.bountyPreview)}>
+          <div className={css(styles.bountyAmount)}>
+            <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
+            <span className={css(styles.bountyAmountText)}>
+              {bountyAmountDetails?.netBountyAmount} ResearchCoin bounty
+            </span>
+            <span
+              className={css(styles.removeBounty)}
+              onClick={() => setBountyAmountDetails(null)}
+            >
+              {icons.times}
+            </span>
+          </div>
+        </span>
+      ) : (
+        <div
+          data-tip={""}
+          data-for="bountyTooltip"
+          className={css(styles.addBounty)}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <NewFeatureTooltip featureName={`bounty`} position={`right`} />
+          <span className={css(styles.bountyIcon)}>
+            {/* <img
                 className={css(styles.icon)}
                 src={"/static/icons/coin-filled.png"}
                 alt="RSC Coin"
                 width={22}
               /> */}
-              {/* @ts-ignore */}
-              <ResearchCoinIcon width={22} height={22} version={3} />
-              {/* {icons.plus} */}
-            </span>
-            <span className={css(styles.addBountyLabel)}>Add ResearchCoin Bounty</span>
-          </div>          
-        ) 
-      }
+            {/* @ts-ignore */}
+            <ResearchCoinIcon width={22} height={22} version={3} />
+            {/* {icons.plus} */}
+          </span>
+          <span className={css(styles.addBountyLabel)}>
+            Add ResearchCoin Bounty
+          </span>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
 const popover = StyleSheet.create({
@@ -95,12 +103,13 @@ const popover = StyleSheet.create({
     borderRadius: 4,
     marginTop: 5,
     width: 100,
-    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",    
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   open: {
-    display: "block"
-  }
-})
+    display: "block",
+  },
+});
 
 const bountyTooltip = StyleSheet.create({
   tooltipContainer: {
@@ -130,10 +139,10 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.RED(),
       cursor: "pointer",
-    }
+    },
   },
   createBountyBtn: {
-    position: "relative"
+    position: "relative",
   },
   check: {
     color: colors.NEW_GREEN(),
@@ -157,7 +166,7 @@ const styles = StyleSheet.create({
     },
     boxSizing: "border-box",
     // height: 42,
-  },  
+  },
   addBountyLabel: {
     // fontWeight: 500,
     marginLeft: 5,
@@ -165,7 +174,7 @@ const styles = StyleSheet.create({
   coinIcon: {
     height: 18,
     marginRight: 8,
-  },  
+  },
   bountyIcon: {
     fontSize: 14,
   },
@@ -185,8 +194,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 14,
     fontWeight: 500,
-  }
+  },
 });
-
 
 export default CreateBountyBtn;
