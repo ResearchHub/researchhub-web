@@ -33,8 +33,8 @@ export const getActivityMetadata = (activity) => {
 
   switch (contributionType) {
     case "SUBMITTER":
-      postId = source.id;
-      postSlug = source.slug;
+      postId = source?.id;
+      postSlug = source?.slug;
       // If it's a submission, then the post title depends on whether it is a paper of discusison,
       // so handle in next switch.
       break;
