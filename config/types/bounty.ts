@@ -27,7 +27,6 @@ export default class Bounty {
   }
 
   static createAPI({ bountyAmount }) {
-    
     // TODO: Change hard coded value
     return new Promise((resolve, reject) => {
       const bounty = new Bounty({
@@ -48,7 +47,7 @@ export default class Bounty {
       });
 
       return resolve(bounty);
-    })
+    });
   }
 
   get id():ID {
