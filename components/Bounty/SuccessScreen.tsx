@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import Image from "next/image";
 import { ReactElement, useState } from "react";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   bountyAmount: number;
@@ -76,10 +77,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    // padding: 40,
-    // width: "100%",
     width: 500,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "unset",
     },
   },
