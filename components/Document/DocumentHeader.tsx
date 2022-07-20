@@ -425,6 +425,8 @@ function DocumentHeader({
                       <HypothesisIcon onClick={() => null} />
                     ) : documentType === "post" ? (
                       icons.penSquare
+                    ) : documentType === "question" ? (
+                      icons.question
                     ) : null}
                   </span>
                   <span className={css(styles.typeText)}>{documentType}</span>
