@@ -47,6 +47,7 @@ function BountyModal({
 
   const handleClose = () => {
     closeModal();
+    setSuccess(false);
   };
 
   const handleBountyInputChange = (event) => {
