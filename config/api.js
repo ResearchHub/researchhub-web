@@ -1237,3 +1237,7 @@ const api = API({
 });
 
 export default api;
+
+export const generateApiUrl = (url) => {
+  return api.BASE_URL + url + "/";
+};

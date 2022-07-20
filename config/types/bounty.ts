@@ -1,6 +1,8 @@
 import { formatDateStandard, timeTo } from "../utils/dates";
 import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
+import api, { generateApiUrl } from "../api";
+import { Helpers } from "@quantfive/js-web-config";
 
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
@@ -25,27 +27,24 @@ export default class Bounty {
     this._status = raw.status;
   }
 
-  static createAPI({ bountyAmount }) {
+  static createAPI({ bountyAmount, unifiedDocId }) {
     // TODO: Change hard coded value
-    return new Promise((resolve, reject) => {
-      const bounty = new Bounty({
-        created_date: "2022-07-11T19:58:16.564810Z",
-        expiration_date: "2022-12-07T17:06:00Z",
-        created_by: {
-          first_name: "Kobe",
-          last_name: "Attias",
-          id: 8,
-          author_profile: {
-            first_name: "Kobe",
-            last_name: "Attias",
-            id: 8,
-          },
-        },
-        status: "OPEN",
-        amount: 15000.0,
-      });
 
-      return resolve(bounty);
+    const today = new Date();
+    const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    const data = {
+      amount: bountyAmount,
+      item_content_type: "researchhubunifieddocument",
+      item_object_id: unifiedDocId,
+      expiration_date: thirtyDaysFromNow,
+    };
+
+    return fetch(generateApiUrl("bounty"), api.POST_CONFIG(data))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then(res => {
+      return res;
     });
   }
 
