@@ -57,26 +57,20 @@ function CreateBountyBtn({ withPreview = false, onBountyAdd }): ReactElement {
           </div>
         </span>
       ) : (
-        <div
-          data-tip={""}
-          data-for="bountyTooltip"
-          className={css(styles.addBounty)}
-          onClick={() => setIsModalOpen(true)}
-        >
+        <div className={css(styles.addBounty)}>
           <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-          <span className={css(styles.bountyIcon)}>
-            {/* <img
-                className={css(styles.icon)}
-                src={"/static/icons/coin-filled.png"}
-                alt="RSC Coin"
-                width={22}
-              /> */}
-            {/* @ts-ignore */}
-            <ResearchCoinIcon width={22} height={22} version={3} />
-            {/* {icons.plus} */}
-          </span>
-          <span className={css(styles.addBountyLabel)}>
-            Add ResearchCoin Bounty
+          <span onClick={() => setIsModalOpen(true)} className={css(styles.bountyTextContainer)}>
+            <span className={css(styles.bountyIcon)}>
+              {/* @ts-ignore */}
+              <ResearchCoinIcon width={22} height={22} version={3} />
+            </span>
+            <span
+              data-tip={""}
+              data-for="bountyTooltip"
+              className={css(styles.addBountyLabel)}
+            >
+              Add ResearchCoin Bounty
+            </span>
           </span>
         </div>
       )}
@@ -141,6 +135,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontSize: 18,
   },
+  bountyTextContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
   addBounty: {
     // color: colors.ORANGE_DARK(),
     color: colors.ORANGE_DARK2(),
@@ -151,8 +149,6 @@ const styles = StyleSheet.create({
     // borderRadius: 4,
     // padding: "7px 16px",
     // paddingLeft: 0,
-    display: "flex",
-    alignItems: "center",
     ":hover": {
       // color: colors.ORANGE()
     },
