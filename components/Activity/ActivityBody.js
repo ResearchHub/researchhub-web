@@ -9,7 +9,6 @@ import colors from "~/config/themes/colors";
 
 const ActivityBody = (props) => {
   const { activity } = props;
-  console.warn("activity: ", activity);
   const [isHidden, setIsHidden] = useState(false);
 
   /**
