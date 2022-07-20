@@ -17,7 +17,6 @@ import {
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import colors from "~/config/themes/colors";
-import CreateFeedBanner from "../Home/CreateFeedBanner";
 import dynamic from "next/dynamic";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
@@ -68,13 +67,12 @@ function UnifiedDocFeedContainer({
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
     docTypeFilter: getBEUnifiedDocType(docTypeFilter),
+    hotV2: router.query?.hot_v2 == "true",
     hubID,
     isLoggedIn,
     page,
     subFilters,
     subscribedHubs: isOnMyHubsTab,
-    // V2 of hot score
-    hotV2: router.query?.hot_v2 == "true",
   };
 
   useEffect(() => {

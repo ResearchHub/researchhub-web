@@ -1,4 +1,4 @@
-import { ID } from "~/config/types/root_types";
+import { ID, NullableString } from "~/config/types/root_types";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
 
 export type UniDocFetchParams = {
-  docTypeFilter: null | string | undefined;
+  docTypeFilter?: NullableString;
+  hotV2: Boolean;
   hubID: ID;
   isLoggedIn: Boolean;
   onError: Function;
@@ -14,7 +15,6 @@ export type UniDocFetchParams = {
   page: number;
   subFilters: any;
   subscribedHubs: Boolean;
-  hotV2: Boolean;
 };
 
 export type PaginationInfo = {

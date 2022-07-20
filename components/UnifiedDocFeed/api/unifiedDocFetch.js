@@ -4,14 +4,10 @@ import {
   filterNull,
   isNullOrUndefined,
 } from "../../../config/utils/nullchecks";
-import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
-import {
-  getUnifiedDocType,
-  getBEUnifiedDocType,
-} from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   const documentIds = { hypothesis: [], paper: [], posts: [] };
@@ -80,42 +76,43 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
     });
 };
 
-export default function fetchUnifiedDocs({
-  docTypeFilter,
-  hubID,
-  isLoggedIn,
-  onError,
-  onSuccess,
-  page,
-  subscribedHubs,
-  subFilters,
-  prevDocuments = [],
-  hotV2,
-}) {
-  const { filterBy, scope } = subFilters;
-  /* PARAMS is: 
-    { 
-      externalSource,
-      hubId,
-      ordering,
-      page,
-      slug,
-      subscribedHubs,
-      timePeriod,
-      type, // docType
-    }
-  */
-
-  const PARAMS = {
-    hubId: hubID,
-    ordering: filterBy.value,
+export default function fetchUnifiedDocs(args) {
+  const {
+    docTypeFilter,
+    hubID,
+    isLoggedIn,
+    onError,
+    onSuccess,
     page,
     subscribedHubs,
-    timePeriod: scope.valueForApi,
-    type: docTypeFilter,
+    subFilters,
+    prevDocuments = [],
     hotV2,
-  };
-  fetchUnifiedDocFeed(PARAMS)
+  } = args;
+  const { filterBy, scope } = subFilters;
+
+  fetchUnifiedDocFeed(
+    /* PARAMS is: 
+      { 
+        externalSource,
+        hubId,
+        ordering,
+        page,
+        slug,
+        subscribedHubs,
+        timePeriod,
+        type, // docType
+      } */
+    {
+      hubId: hubID,
+      ordering: filterBy.value,
+      page,
+      subscribedHubs,
+      timePeriod: scope.valueForApi,
+      type: docTypeFilter,
+      hotV2,
+    }
+  )
     .then(async (res) => {
       const { count, next, results: fetchedUnifiedDocs = [] } = res ?? {};
       const voteFormattedDocs = await fetchUserVote(
