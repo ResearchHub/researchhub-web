@@ -68,15 +68,17 @@ function BountyModal({
 
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
+      const netBountyAmount =
+        parseInt(bountyAmount || 0, 10) + parseInt(researchHubAmount || 0, 10);
       if (withPreview) {
         handleBountyAdded({
           grossBountyAmount: bountyAmount,
-          netBountyAmount: bountyAmount + researchHubAmount,
+          netBountyAmount: netBountyAmount,
         });
         closeModal();
       } else {
         Bounty.createAPI({
-          bountyAmount: bountyAmount + researchHubAmount,
+          bountyAmount: netBountyAmount,
           unifiedDocId: unifiedDocId,
         }).then((createdBounty) => {
           console.log(createdBounty);

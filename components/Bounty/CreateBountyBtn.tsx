@@ -17,6 +17,8 @@ function CreateBountyBtn({
     null
   );
 
+  console.log(post);
+
   return (
     <div className={css(styles.createBountyBtn)}>
       <ReactTooltip
@@ -46,7 +48,7 @@ function CreateBountyBtn({
         withPreview={withPreview}
         bountyText={bountyText}
         postId={post.id}
-        unifiedDocId={post.unifiedDocument.document.id}
+        unifiedDocId={post.unifiedDocument.id}
         postSlug={post.unifiedDocument.document.slug}
         removeBounty={() => setBountyAmountDetails(null)}
       />
