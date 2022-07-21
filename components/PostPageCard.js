@@ -174,7 +174,7 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {false && (
+                  {post.unifiedDocument.documentType === "question" && (
                     <div className={css(styles.createBountyContainer)}>
                       <CreateBountyBtn
                         onBountyAdd={() => null}
