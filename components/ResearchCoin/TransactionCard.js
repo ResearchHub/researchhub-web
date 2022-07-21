@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
 import Link from "next/link";
+import numeral from "numeral";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -214,7 +215,7 @@ const TransactionCard = (props) => {
           )}
         </div>
         <div className={css(styles.amountContainer)}>
-          {transaction.amount}
+          {numeral(transaction.amount).format("0.[0000000000]")}
           <img
             className={css(styles.coin)}
             src={"/static/icons/coin-filled.png"}
