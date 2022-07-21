@@ -82,6 +82,7 @@ function BountyModal({
           bountyAmount: netBountyAmount,
           unifiedDocId: unifiedDocId,
         }).then((createdBounty) => {
+          console.log('createdBounty', createdBounty)
           handleBountyAdded({
             bountyAmt: bountyAmount,
             bountyId: createdBounty.id,
