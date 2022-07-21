@@ -81,7 +81,7 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  const renderBadge = ({ type, isSelectedAnswer = true }) => {
+  const renderBadge = ({ type, isSelectedAnswer = false }) => {
     if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
       const postType = postTypes.find((t) => t.value === type);
       return (
