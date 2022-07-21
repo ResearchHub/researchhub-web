@@ -190,6 +190,7 @@ class FormSelect extends Component {
           )}
         >
           {label && label}
+          {required && <span style={{ color: colors.BLUE(1) }}>*</span>}
         </div>
         <Select
           components={{ ...configuredComponents }}

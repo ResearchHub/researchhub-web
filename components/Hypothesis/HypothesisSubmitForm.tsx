@@ -1,17 +1,18 @@
 import { connect } from "react-redux";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
+import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 import { Helpers } from "@quantfive/js-web-config";
-import { useRouter } from "next/router";
+import { sendAmpEvent } from "~/config/fetch";
 import { StyleSheet, css } from "aphrodite";
 import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
+import { useRouter } from "next/router";
 import API from "../../config/api";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
-import { sendAmpEvent } from "~/config/fetch";
 
 const DynamicComponent = dynamic(
   () => import("../../components/CKEditor/SimpleEditor")
@@ -48,12 +49,12 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export type AskQuestionFormProps = {
+export type Props = {
   documentType: string;
   user: any;
 };
 
-function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
+function HypothesisSubmitForm({ documentType, user }: Props) {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
     hubs: true,
@@ -70,37 +71,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const isPost = documentType === "post";
 
-  // From ./PaperUploadInfo.js
-  const getHubs = () => {
-    fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        /* @ts-ignore */
-        let hubs = resp.results
-          .map((hub, index) => {
-            return {
-              ...hub,
-              value: hub.id,
-              label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
-            };
-          })
-          .sort((a, b) => {
-            return a.label.localeCompare(b.label);
-          });
-        setSuggestedHubs(hubs);
-      });
-  };
-
-  useEffect(getHubs, []);
-
-  const handleSaveDraft = (e: SyntheticEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    sendPost(true)
-      .then(onSuccess(true))
-      .catch((err) => setIsSubmitting(false));
-  };
+  useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const handlePost = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -111,12 +82,12 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       setIsSubmitting(true);
 
       sendPost(false)
-        .then((res) => {
+        .then((res: any) => {
           const payload = {
             event_type: "create_metastudy",
             time: +new Date(),
             user_id: user.id,
-            insert_id: `metastudy_${res.id}`,
+            insert_id: `metastudy_${res?.id}`,
             event_properties: {
               interaction: "Meta-Study created",
             },
@@ -133,7 +104,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
       const { id, slug } = response;
-      router.push(`/${isPost ? "post" : "hypothesis"}/${id}/${slug}`);
+      router.push(`/hypothesis/${id}/${slug}`);
     };
   };
 
@@ -141,7 +112,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
     const params = {
       admins: null,
       created_by: user.id,
-      document_type: isPost ? "DISCUSSION" : "HYPOTHESIS",
+      document_type: "HYPOTHESIS",
       editors: null,
       full_src: mutableFormFields.text,
       /* @ts-ignore */
@@ -153,10 +124,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       viewers: null,
     };
 
-    return fetch(
-      isPost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({}),
-      API.POST_CONFIG(params)
-    )
+    return fetch(API.HYPOTHESIS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
   };
@@ -226,17 +194,6 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           containerStyle={styles.editor}
         />
         <div className={css(styles.buttonsContainer)}>
-          {/* @ts-ignore */}
-          {/* TODO: briansantoso - add back Save Draft button when needed */}
-          {/* <Button
-            customButtonStyle={styles.buttonStyle}
-            disabled={isSubmitting}
-            isWhite={true}
-            label="Save Draft"
-            onClick={handleSaveDraft}
-          />
-          <span className={css(styles.buttonSpacer)} /> */}
-          {/* @ts-ignore */}
           <Button
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
@@ -254,7 +211,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps)(AskQuestionForm);
+export default connect(mapStateToProps)(HypothesisSubmitForm);
 
 const styles = StyleSheet.create({
   rootContainer: {

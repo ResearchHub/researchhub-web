@@ -122,10 +122,10 @@ const Post = (props) => {
         canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
       />
       <PaperBanner document={post} documentType="post" />
-      <div className={css(styles.root)}>
+      <div className={css(styles.postPageRoot)}>
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
-        <div className={css(styles.container)}>
-          <div className={css(styles.main)}>
+        <div className={css(styles.postPageContainer)}>
+          <div className={css(styles.postPageMain)}>
             <PostPageCard
               isEditorOfHubs={isEditorOfHubs}
               isModerator={isModerator}
@@ -135,7 +135,7 @@ const Post = (props) => {
               restorePost={restorePost}
               shareUrl={process.browser && window.location.href}
             />
-            <div className={css(styles.section)}>
+            <div className={css(styles.postPageSection)}>
               <a name="comments" id="comments" />
               <DiscussionTab
                 hostname={props.hostname}
@@ -153,7 +153,7 @@ const Post = (props) => {
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script
         src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/mhchem.min.js"
-        strategy="lazyOnload" // this script needs to load after the main katex script
+        strategy="lazyOnload" // this script needs to load after the postPageMain katex script
       />
     </div>
   ) : null;
@@ -168,17 +168,17 @@ Post.getInitialProps = async (ctx) => {
 };
 
 const styles = StyleSheet.create({
-  root: {
+  postPageRoot: {
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
     width: "100%",
   },
-  container: {
+  postPageContainer: {
     marginTop: 30,
     marginBottom: 30,
   },
-  main: {
+  postPageMain: {
     boxSizing: "border-box",
     width: 800,
     margin: "0 auto",
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
       paddingRight: 15,
     },
   },
-  section: {
+  postPageSection: {
     marginTop: 25,
     paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,

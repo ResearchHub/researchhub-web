@@ -23,7 +23,6 @@ export const getActivityMetadata = (activity) => {
     source,
     unified_document: { document_type: sourceType, documents: documents },
   } = activity;
-
   let href, hrefAs;
   let postId, postTitle, postSlug;
   let docs = documents;
@@ -34,8 +33,8 @@ export const getActivityMetadata = (activity) => {
 
   switch (contributionType) {
     case "SUBMITTER":
-      postId = source.id;
-      postSlug = source.slug;
+      postId = source?.id;
+      postSlug = source?.slug;
       // If it's a submission, then the post title depends on whether it is a paper of discusison,
       // so handle in next switch.
       break;
@@ -58,6 +57,7 @@ export const getActivityMetadata = (activity) => {
       postTitle = postTitle ? postTitle : source.paper_title;
       hrefAs = `/paper/${postId}/${postSlug}`;
       break;
+    case "QUESTION":
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       postTitle = postTitle ? postTitle : source.title;

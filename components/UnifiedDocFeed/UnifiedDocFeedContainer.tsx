@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import { isServer } from "~/config/server/isServer";
 import {
@@ -67,7 +67,7 @@ function UnifiedDocFeedContainer({
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
-    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
+    docTypeFilter: getUnifiedDocType(docTypeFilter),
     hubID,
     isLoggedIn,
     page,
@@ -212,9 +212,6 @@ function UnifiedDocFeedContainer({
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
-    hasSubscribed,
-    isLoggedIn,
-    isOnMyHubsTab,
     setUnifiedDocuments,
     onBadgeClick: onDocTypeFilterSelect,
     unifiedDocumentData: renderableUniDoc,

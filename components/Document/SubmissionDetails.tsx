@@ -47,6 +47,7 @@ function SubmissionDetails({
       <div className={css(styles.submittedByDetails)}>
         <ALink
           href={`/user/${createdBy?.authorProfile?.id}/overview`}
+          key={`/user/${createdBy?.authorProfile?.id}/overview-key`}
           overrideStyle={styles.link}
         >
           {createdBy?.authorProfile?.firstName || "Deleted"}{" "}
@@ -61,6 +62,7 @@ function SubmissionDetails({
             {visibleHubs.map((h, index) => (
               <>
                 <ALink
+                  key={`/hubs/${h.slug ?? ""}-index`}
                   theme="blankAndBlue"
                   href={`/hubs/${h.slug}`}
                   overrideStyle={styles.hubLink}

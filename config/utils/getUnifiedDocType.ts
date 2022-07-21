@@ -12,6 +12,7 @@ export function getUnifiedDocType(
 ): FEReturnType {
   const lowerCasedInput = input?.toLowerCase() ?? null;
   switch (lowerCasedInput) {
+    case "question":
     case "discussion":
     case "post":
     case "posts":

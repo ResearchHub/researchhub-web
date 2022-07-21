@@ -478,3 +478,8 @@ h3 {
 .katex .mfrac .frac-line {
   border-bottom-style: solid;
 }
+
+#askQuestionForm .ck-content {
+  max-height: 200px !important;
+  overflow: scroll !important;
+}

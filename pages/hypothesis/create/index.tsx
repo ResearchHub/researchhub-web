@@ -1,8 +1,8 @@
-import AboutQuestionCard from "./AboutQuestionCard";
-import AskQuestionForm from "../../../components/Paper/AskQuestionForm";
-import Head from "../../../components/Head";
-import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
+import { Fragment } from "react";
+import AboutQuestionCard from "./AboutQuestionCard";
+import Head from "~/components/Head";
+import HypothesisSubmitForm from "~/components/Hypothesis/HypothesisSubmitForm";
 
 export default function Index() {
   return (
@@ -16,7 +16,7 @@ export default function Index() {
           <div className={css(styles.title)}>Create a Meta-Study</div>
           <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
           <div className={css(styles.row)}>
-            <AskQuestionForm documentType={"hypothesis"} />
+            <HypothesisSubmitForm documentType={"hypothesis"} />
             <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
           </div>
         </div>

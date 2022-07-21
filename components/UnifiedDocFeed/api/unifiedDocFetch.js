@@ -11,21 +11,21 @@ import helpers from "@quantfive/js-web-config/helpers";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
-  const userVoteIds = { hypothesis: [], paper: [], post: [] };
+  const documentIds = { hypothesis: [], paper: [], post: [] };
   unifiedDocs.forEach(({ documents, document_type }) => {
-    const formattedDocType = getUnifiedDocType(document_type);
-    if (formattedDocType === "post") {
+    const beDocType = getUnifiedDocType(document_type);
+    if (beDocType === "post") {
       // below assumes we are only getting the first version of post
-      documents.length > 0 && userVoteIds.post.push(documents[0].id);
+      (documents ?? []).length > 0 && documentIds.post.push(documents[0].id);
     } else {
-      userVoteIds[formattedDocType]?.push(documents.id);
+      documentIds[beDocType]?.push(documents.id);
     }
   });
   const {
     hypothesis: hypothesisIds,
     paper: paperIds,
     post: postIds,
-  } = userVoteIds;
+  } = documentIds;
   if (hypothesisIds.length < 1 && paperIds.length < 1 && postIds.length < 1) {
     emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
     return unifiedDocs;
@@ -39,8 +39,8 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
     .then((res) => {
       return filterNull(
         unifiedDocs.map((currUniDoc) => {
-          const formattedDocType = getUnifiedDocType(currUniDoc.document_type);
-          const isPost = formattedDocType === "post";
+          const beDocType = getUnifiedDocType(currUniDoc.document_type);
+          const isPost = beDocType === "post";
           const targetDoc = isPost
             ? (currUniDoc.documents ?? [])[0] ?? null
             : currUniDoc.documents;
@@ -50,7 +50,7 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
           }
 
           const userVoteKey =
-            formattedDocType + (formattedDocType !== "hypothesis" ? "s" : "");
+            beDocType + (beDocType !== "hypothesis" ? "s" : "");
 
           return isPost
             ? {

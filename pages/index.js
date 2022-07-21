@@ -1,7 +1,7 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isServer } from "~/config/server/isServer";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
@@ -37,7 +37,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const urlDocType = getBEUnifiedDocType(type);
+    const beDocType = getUnifiedDocType(type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
         hubId: null,
@@ -46,7 +46,7 @@ Index.getInitialProps = async (ctx) => {
         subfilters: filterObj,
         subscribedHubs: false,
         timePeriod: "today",
-        type: urlDocType,
+        type: beDocType,
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
