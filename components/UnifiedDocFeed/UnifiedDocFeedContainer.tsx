@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import { isServer } from "~/config/server/isServer";
 import {
@@ -17,7 +17,6 @@ import {
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import colors from "~/config/themes/colors";
-import CreateFeedBanner from "../Home/CreateFeedBanner";
 import dynamic from "next/dynamic";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
@@ -67,14 +66,13 @@ function UnifiedDocFeedContainer({
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
-    docTypeFilter: getUnifiedDocType(docTypeFilter),
+    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
+    hotV2: router.query?.hot_v2 == "true",
     hubID,
     isLoggedIn,
     page,
     subFilters,
     subscribedHubs: isOnMyHubsTab,
-    // V2 of hot score
-    hotV2: router.query?.hot_v2 == "true",
   };
 
   useEffect(() => {

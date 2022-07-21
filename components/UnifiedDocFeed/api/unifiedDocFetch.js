@@ -4,19 +4,19 @@ import {
   filterNull,
   isNullOrUndefined,
 } from "../../../config/utils/nullchecks";
-import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
-  const documentIds = { hypothesis: [], paper: [], post: [] };
+  const documentIds = { hypothesis: [], paper: [], posts: [] };
+
   unifiedDocs.forEach(({ documents, document_type }) => {
-    const beDocType = getUnifiedDocType(document_type);
-    if (beDocType === "post") {
+    const beDocType = getBEUnifiedDocType(document_type);
+    if (["posts", "questions"].includes(beDocType)) {
       // below assumes we are only getting the first version of post
-      (documents ?? []).length > 0 && documentIds.post.push(documents[0].id);
+      (documents ?? []).length > 0 && documentIds.posts.push(documents[0].id);
     } else {
       documentIds[beDocType]?.push(documents.id);
     }
@@ -24,8 +24,9 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   const {
     hypothesis: hypothesisIds,
     paper: paperIds,
-    post: postIds,
+    posts: postIds,
   } = documentIds;
+
   if (hypothesisIds.length < 1 && paperIds.length < 1 && postIds.length < 1) {
     emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
     return unifiedDocs;
@@ -39,8 +40,11 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
     .then((res) => {
       return filterNull(
         unifiedDocs.map((currUniDoc) => {
-          const beDocType = getUnifiedDocType(currUniDoc.document_type);
-          const isPost = beDocType === "post";
+          const currBeDocType = getBEUnifiedDocType(currUniDoc.document_type);
+          // TODO: calvihlee - resolve this
+          const docTypeOverride =
+            currBeDocType === "questions" ? "posts" : currBeDocType;
+          const isPost = ["posts", "questions"].includes(currBeDocType);
           const targetDoc = isPost
             ? (currUniDoc.documents ?? [])[0] ?? null
             : currUniDoc.documents;
@@ -49,16 +53,13 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
             return null;
           }
 
-          const userVoteKey =
-            beDocType + (beDocType !== "hypothesis" ? "s" : "");
-
           return isPost
             ? {
                 ...currUniDoc,
                 documents: [
                   {
                     ...targetDoc,
-                    user_vote: res[userVoteKey][targetDoc.id],
+                    user_vote: res[docTypeOverride][targetDoc.id],
                   },
                 ],
               }
@@ -66,7 +67,7 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
                 ...currUniDoc,
                 documents: {
                   ...targetDoc,
-                  user_vote: res[userVoteKey][targetDoc.id],
+                  user_vote: res[docTypeOverride][targetDoc.id],
                 },
               };
         })
@@ -78,42 +79,43 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
     });
 };
 
-export default function fetchUnifiedDocs({
-  docTypeFilter,
-  hubID,
-  isLoggedIn,
-  onError,
-  onSuccess,
-  page,
-  subscribedHubs,
-  subFilters,
-  prevDocuments = [],
-  hotV2,
-}) {
-  const { filterBy, scope } = subFilters;
-  /* PARAMS is: 
-    { 
-      externalSource,
-      hubId,
-      ordering,
-      page,
-      slug,
-      subscribedHubs,
-      timePeriod,
-      type, // docType
-    }
-  */
-
-  const PARAMS = {
-    hubId: hubID,
-    ordering: filterBy.value,
+export default function fetchUnifiedDocs(args) {
+  const {
+    docTypeFilter,
+    hubID,
+    isLoggedIn,
+    onError,
+    onSuccess,
     page,
     subscribedHubs,
-    timePeriod: scope.valueForApi,
-    type: docTypeFilter,
+    subFilters,
+    prevDocuments = [],
     hotV2,
-  };
-  fetchUnifiedDocFeed(PARAMS)
+  } = args;
+  const { filterBy, scope } = subFilters;
+
+  fetchUnifiedDocFeed(
+    /* PARAMS is: 
+      { 
+        externalSource,
+        hubId,
+        ordering,
+        page,
+        slug,
+        subscribedHubs,
+        timePeriod,
+        type, // docType
+      } */
+    {
+      hubId: hubID,
+      ordering: filterBy.value,
+      page,
+      subscribedHubs,
+      timePeriod: scope.valueForApi,
+      type: docTypeFilter,
+      hotV2,
+    }
+  )
     .then(async (res) => {
       const { count, next, results: fetchedUnifiedDocs = [] } = res ?? {};
       const voteFormattedDocs = await fetchUserVote(

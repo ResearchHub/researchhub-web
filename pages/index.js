@@ -1,14 +1,13 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBeUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isServer } from "~/config/server/isServer";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 
 const Index = (props) => {
-  // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
 
@@ -37,7 +36,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const beDocType = getUnifiedDocType(type);
+    const beDocType = getBeUnifiedDocType(type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
         hubId: null,
