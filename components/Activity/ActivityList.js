@@ -35,7 +35,7 @@ const RenderActiviyList = ({ data }) => {
           return (
             <ActivityCard
               activity={activity}
-              key={`activityCard-${activity.id}`}
+              key={`activityCard-${activity.id}-${index}`}
               last={results.length === index + 1}
             />
           );

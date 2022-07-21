@@ -5,10 +5,15 @@ import {
   isNullOrUndefined,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { NullableString } from "~/config/types/root_types";
+import { NullableString, User } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
+import {
+  PostIcon,
+  PaperIcon,
+  HypothesisIcon,
+  QuestionIcon,
+} from "~/config/themes/icons";
 import {
   ReactElement,
   useState,
@@ -22,6 +27,7 @@ import {
   DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
   NewPostButtonContextType,
+  NewPostButtonContextValues,
 } from "~/components/contexts/NewPostButtonContext";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 import BaseModal from "./BaseModal";
@@ -31,12 +37,19 @@ import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import killswitch from "~/config/killswitch/killswitch";
+import AskQuestionForm from "~/components/Question/AskQuestionForm";
 
 export type NewPostModalProps = {
   currentUser: any;
 };
 
-export const getModalOptionItems = (currentUser) => [
+export const getModalOptionItems = ({
+  currentUser,
+  setButtonValues,
+}: {
+  currentUser: any;
+  setButtonValues: (values: NewPostButtonContextValues) => void;
+}) => [
   {
     key: "paper_upload",
     header: "Upload a Paper",
@@ -95,12 +108,18 @@ export const getModalOptionItems = (currentUser) => [
         header: "Ask a Question",
         description:
           "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
+        onClick: (): void => {
+          setButtonValues({
+            ...DEFAULT_POST_BUTTON_VALUES,
+            isOpen: true,
+            isQuestionType: true,
+          });
+        },
         icon: (
-          <HypothesisIcon
-            height={40}
+          <QuestionIcon
             onClick={silentEmptyFnc}
-            width={40}
             withAnimation={false}
+            size={40}
           />
         ),
       }
@@ -113,24 +132,33 @@ function NewPostModal({
   const router = useRouter();
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const { isOpen, wizardBodyType } = buttonValues;
+  const { isOpen, isQuestionType, wizardBodyType } = buttonValues;
 
+  // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
   const [modalSelectedItemIndex, setModalSelectedItemIndex] = useState(0);
   const [bodyType, setBodyType] = useState<NullableString>(
-    Boolean(wizardBodyType) ? "paperWizard" : null
+    isQuestionType ? "question" : Boolean(wizardBodyType) ? "paperWizard" : null
   );
   const isMobileScreen = getIsOnMobileScreenSize();
   const shouldModalStayOpen =
-    isOpen && (bodyType === "paperWizard" || isMobileScreen);
+    isOpen &&
+    (["paperWizard", "question"].includes(bodyType ?? "") || isMobileScreen);
   const modalOptionItems = getModalOptionItems(currentUser);
 
   useEffect(
-    (): void => setBodyType(Boolean(wizardBodyType) ? "paperWizard" : null),
-    [wizardBodyType]
+    (): void =>
+      setBodyType(
+        isQuestionType
+          ? "question"
+          : Boolean(wizardBodyType)
+          ? "paperWizard"
+          : null
+      ),
+    [isQuestionType, wizardBodyType]
   );
 
   const closeModal = (event?: SyntheticEvent): void => {
-    event && event.preventDefault();
+    event?.preventDefault();
     setModalSelectedItemIndex(0);
     setBodyType(null);
     setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
@@ -145,6 +173,13 @@ function NewPostModal({
         wizardBodyType: "url_or_doi_upload",
       });
       setBodyType("paperWizard");
+    } else if (modalSelectedItemIndex === 3) {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        isQuestionType: true,
+      });
+      setBodyType("question");
     } else {
       closeModal(event);
     }
@@ -169,9 +204,13 @@ function NewPostModal({
   return (
     <BaseModal
       children={
-        bodyType === "paperWizard" ? (
+        bodyType === "question" ? (
+          <div className={css(styles.rootContainer)} key="question-wizard">
+            <AskQuestionForm documentType="question" onExit={closeModal} />
+          </div>
+        ) : bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)} key="paper-wizard">
-            <PaperUploadWizardContainer onExit={(): void => closeModal()} />
+            <PaperUploadWizardContainer onExit={closeModal} />
           </div>
         ) : (
           <div className={css(styles.rootContainer)} key="upload-type-selector">
@@ -191,9 +230,11 @@ function NewPostModal({
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  modalOptionItems[modalSelectedItemIndex].onClick ? (
+                  modalOptionItems[modalSelectedItemIndex]?.onClick ? (
                     <div
-                      onClick={modalOptionItems[modalSelectedItemIndex].onClick}
+                      onClick={
+                        modalOptionItems[modalSelectedItemIndex]?.onClick
+                      }
                       className={css(styles.buttonLabel)}
                     >
                       Continue

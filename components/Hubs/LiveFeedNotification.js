@@ -197,7 +197,6 @@ class LiveFeedNotification extends Component {
       timestamp,
       username,
     } = getNotifMetadata(notification);
-
     const threadTip = notification.thread_title
       ? notification.thread_title
       : notification.thread_plain_text;
@@ -216,7 +215,11 @@ class LiveFeedNotification extends Component {
         };
         break;
       case "researchhubpost":
-        verb = "created a new post";
+        const rhPostType =
+          notification.item?.unified_document?.document_type === "QUESTION"
+            ? "question"
+            : "post";
+        verb = `created a new ${rhPostType}`;
         subject = {
           linkText: this.truncatePaperTitle(postTitle),
           plainText: "",

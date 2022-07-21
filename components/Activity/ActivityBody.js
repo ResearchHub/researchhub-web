@@ -9,7 +9,6 @@ import colors from "~/config/themes/colors";
 
 const ActivityBody = (props) => {
   const { activity } = props;
-
   const [isHidden, setIsHidden] = useState(false);
 
   /**
@@ -30,14 +29,18 @@ const ActivityBody = (props) => {
       !isHidden && setIsHidden(true);
     }
   };
-
-  return (
-    <div className={css(styles.textContainer, isHidden && styles.hidden)}>
-      <ClampedText lines={3} textStyles={styles.text}>
-        {renderBodyText()}
-      </ClampedText>
-    </div>
-  );
+  const body = renderBodyText();
+  if (body) {
+    return (
+      <div className={css(styles.textContainer, isHidden && styles.hidden)}>
+        <ClampedText lines={3} textStyles={styles.text}>
+          {body}
+        </ClampedText>
+      </div>
+    );
+  } else {
+    return null;
+  }
 };
 
 const styles = StyleSheet.create({

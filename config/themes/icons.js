@@ -849,6 +849,30 @@ export const PostIcon = ({
   );
 };
 
+export const QuestionIcon = ({
+  color = "#B0AFB8",
+  onClick,
+  overrideStyle = null,
+  size = 18,
+  withAnimation = true,
+}) => {
+  return (
+    <span
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+      onClick={onClick}
+      style={{
+        fontSize: size,
+        color: color,
+      }}
+    >
+      <FontAwesomeIcon icon={faQuestionCircle} />
+    </span>
+  );
+};
+
 export const HypothesisIcon = ({
   onClick,
   width = 18,

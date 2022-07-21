@@ -108,9 +108,7 @@ class Notification extends Component {
       notification;
     const { item: actionItem } = action ?? {};
     const { amount, plain_text } = actionItem ?? {};
-    const formattedDocumentType = getUnifiedDocType(
-      unified_document?.document_type
-    );
+    const beDocType = getUnifiedDocType(unified_document?.document_type);
     const content_type = action?.content_type?.name || null;
 
     const documentContent = Array.isArray(unified_document?.documents)
@@ -151,7 +149,7 @@ class Notification extends Component {
       created_date,
       document_id: documentID,
       document_title: paper_title ?? title ?? "Title: N/A",
-      document_type: formattedDocumentType,
+      document_type: beDocType,
       slug,
     };
   };

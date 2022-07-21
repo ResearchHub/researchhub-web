@@ -13,7 +13,11 @@ import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { parseCreatedBy } from "~/config/types/contribution";
-import { VoteType, RhDocumentType } from "~/config/types/root_types";
+import {
+  VoteType,
+  RhDocumentType,
+  NullableString,
+} from "~/config/types/root_types";
 import { SyntheticEvent, useState, useEffect } from "react";
 import colors, {
   genericCardColors,
@@ -42,6 +46,7 @@ export type FeedCardProps = {
   discussion_count: number;
   first_figure: any;
   first_preview: any;
+  formattedDocLabel?: string;
   formattedDocType: RhDocumentType | null;
   hubs: any[];
   id: number;
@@ -70,41 +75,40 @@ export type FeedCardProps = {
   handleClick?: (SyntheticEvent) => void;
 };
 
-function FeedCard(props: FeedCardProps) {
-  const {
-    abstract,
-    created_by,
-    created_date,
-    discussion_count,
-    first_figure,
-    first_preview,
-    formattedDocType,
-    hubs,
-    id,
-    index,
-    featured,
-    onBadgeClick,
-    paper,
-    postDownvote,
-    postUpvote,
-    preview_img: previewImg,
-    renderableTextAsHtml,
-    renderable_text: renderableText,
-    reviews,
-    score: initialScore,
-    singleCard,
-    slug,
-    title,
-    titleAsHtml, // In some contexts we want to wrap the title/renderable_text with html. e.g. rendering search highlights.
-    unified_document: unifiedDocument,
-    unified_document_id: unifiedDocumentId,
-    uploaded_by,
-    uploaded_date,
-    user: currentUser,
-    user_vote: userVote,
-    voteCallback,
-  } = props;
+const documentIcons = {
+  paper: icons.paperRegular,
+  post: icons.penSquare,
+  hypothesis: icons.lightbulb,
+};
 
+function FeedCard({
+  abstract,
+  created_by,
+  created_date,
+  discussion_count,
+  featured,
+  first_figure,
+  first_preview,
+  formattedDocLabel,
+  formattedDocType,
+  handleClick,
+  hubs,
+  id,
+  openPaperPDFModal,
+  paper,
+  preview_img: previewImg,
+  renderable_text: renderableText,
+  reviews,
+  score: initialScore,
+  singleCard,
+  slug,
+  title,
+  titleAsHtml, // In some contexts we want to wrap the title/renderable_text with html. e.g. rendering search highlights.
+  uploaded_by,
+  uploaded_date,
+  user_vote: userVote,
+  user: currentUser,
+}: FeedCardProps) {
   /**
    * Whether or not THIS PaperPDFModal is open.
    * There may be many PaperPDFModal components on the page, but
@@ -163,12 +167,6 @@ function FeedCard(props: FeedCardProps) {
     voteType: UPVOTE,
   });
 
-  const documentIcons = {
-    paper: icons.paperRegular,
-    post: icons.penSquare,
-    hypothesis: icons.lightbulb,
-  };
-
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
 
@@ -181,7 +179,7 @@ function FeedCard(props: FeedCardProps) {
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
-      onClick={props?.handleClick}
+      onClick={handleClick}
     >
       <Link href={`/${formattedDocType}/${id}/${slug ?? "new-paper"}`}>
         <a
@@ -250,7 +248,7 @@ function FeedCard(props: FeedCardProps) {
                               e && e.preventDefault();
                               e && e.stopPropagation();
                               setIsPreviewing(true);
-                              props.openPaperPDFModal(true);
+                              openPaperPDFModal(true);
                             }}
                           />
                         </div>
@@ -307,7 +305,7 @@ function FeedCard(props: FeedCardProps) {
                         {documentIcons[formattedDocType!]}
                       </span>
                       <span className={css(styles.metadataText)}>
-                        {formattedDocType === "hypothesis" ? "Meta-Study" : formattedDocType}
+                        {formattedDocLabel ?? formattedDocType}
                       </span>
                     </div>
                   </div>

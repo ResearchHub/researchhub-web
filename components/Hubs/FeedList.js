@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
@@ -97,7 +97,7 @@ class FeedList extends Component {
       const { label, icon, href, as } = feed;
 
       return (
-        <>
+        <Fragment key={`${label}-${i}-container`}>
           <div
             className={css(
               styles.listItemContainer,
@@ -119,7 +119,7 @@ class FeedList extends Component {
             </Ripples>
           </div>
           {this.renderDropdown(i)}
-        </>
+        </Fragment>
       );
     });
   };
