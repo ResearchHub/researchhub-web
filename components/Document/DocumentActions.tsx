@@ -48,7 +48,7 @@ function DocumentActions({
   if (unifiedDocument?.documentType === "paper") {
     canEdit = true;
   } else if (
-    (unifiedDocument?.documentType === "post" ||
+    (unifiedDocument?.documentType === "post" || unifiedDocument?.documentType === "question" ||
       unifiedDocument?.documentType === "hypothesis") &&
     isSubmitter
   ) {
