@@ -6,7 +6,7 @@ import { ModalActions } from "~/redux/modals";
 import { StyleSheet, css } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
-import API, { generateApiUrl } from "~/config/api";
+import API from "~/config/api";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import DocumentHeader from "./Document/DocumentHeader";
@@ -27,23 +27,25 @@ const DynamicCKEditor = dynamic(() =>
 class PostPageCard extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showPostEditor: false,
       postBody: this.props.post.markdown,
       post: this.props.post,
-      bountyExists: false,
-      bountyFetched: false,
-      bountyAmt: 0,
+      bountyExists: this.props.post.bounties.length > 0,
+      bountyAmt: this.props.post.bounties[0]?.amount,
     };
     this.editorRef = createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.post.isReady !== this.props.post.isReady) {
-      this.fetchBounty();
       this.setState({
         post: this.props.post,
         postBody: this.props.post.markdown,
+        bountyExists: this.props.post.bounties.length > 0,
+        bountyAmt: this.props.post.bounties[0]?.amount,
+        bountyId: this.props.post.bounties[0]?.id,
       });
     }
   }
@@ -79,25 +81,6 @@ class PostPageCard extends Component {
       }
     }
     return null;
-  };
-
-  fetchBounty = () => {
-    const { post } = this.props;
-    const url = generateApiUrl(
-      `bounty`,
-      `?item_object_id=${post.unifiedDocument.id}&status=OPEN`
-    );
-    return fetch(url, API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({
-          bountyExists: res.count > 0,
-          bountyFetched: true,
-          bountyAmt: res.results[0]?.amount,
-          bountyId: res.results[0]?.id,
-        });
-      });
   };
 
   sendPost = () => {
@@ -144,6 +127,7 @@ class PostPageCard extends Component {
             document={post}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
+            hasBounties={this.state.bountyExists}
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
@@ -198,8 +182,7 @@ class PostPageCard extends Component {
                     </>
                   )}
                   {post.unifiedDocument.documentType === "question" &&
-                    post.unifiedDocument.createdBy.id === user.id &&
-                    this.state.bountyFetched && (
+                    post.unifiedDocument.createdBy.id === user.id && (
                       <div className={css(styles.createBountyContainer)}>
                         <CreateBountyBtn
                           onBountyAdd={({ bountyAmt, bountyId }) => {

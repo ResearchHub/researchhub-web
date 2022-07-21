@@ -24,7 +24,6 @@ import SubmissionDetails from "./SubmissionDetails";
 import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
 
-
 type Args = {
   document: TopLevelDocument;
   onDocumentRemove: Function;
@@ -33,6 +32,7 @@ type Args = {
   auth: any;
   openPaperPDFModal?: Function;
   currentUser?: any;
+  hasBounties?: boolean;
 };
 
 function DocumentHeader({
@@ -43,6 +43,7 @@ function DocumentHeader({
   auth,
   openPaperPDFModal,
   currentUser,
+  hasBounties,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -227,7 +228,6 @@ function DocumentHeader({
     );
   });
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
-  const hasBounties = document.bounties && document?.bounties?.length > 0;
 
   return (
     // @ts-ignore
@@ -238,13 +238,12 @@ function DocumentHeader({
     >
       {document.isReady && (
         <div className={css(styles.documentHeader)}>
-
-          {hasBounties &&
+          {hasBounties && (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}
               <BountyAlert bounty={document.bounties[0]} />
             </div>
-          }
+          )}
           <ReactTooltip />
           {claimableAuthors.length > 0 && (
             <AuthorClaimModal
@@ -454,7 +453,7 @@ function DocumentHeader({
 
 const styles = StyleSheet.create({
   bountyAlertContainer: {
-    marginBottom: 15,
+    marginBottom: 30,
   },
   authorsContainer: {
     display: "inline",
