@@ -113,11 +113,7 @@ function CreateBountyBtn({
                 <ResearchCoinIcon width={22} height={22} version={3} />
               </span>
             )}
-            <span
-              data-tip={""}
-              data-for="bountyTooltip"
-              className={css(styles.addBountyLabel)}
-            >
+            <span className={css(styles.addBountyLabel)}>
               {bountyExists
                 ? `Close your ${numeral(bountyAmt).format(
                     "0.[0000]"
