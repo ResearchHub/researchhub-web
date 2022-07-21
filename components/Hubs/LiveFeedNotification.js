@@ -6,7 +6,6 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Router from "next/router";
 import ReactTooltip from "react-tooltip";
-import Ripples from "react-ripples";
 import { withAlert } from "react-alert";
 
 // Component
@@ -20,19 +19,10 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import { getNestedValue } from "~/config/utils/misc";
 import { buildSlug } from "~/config/utils/buildSlug";
-import {
-  doesNotExist,
-  nullthrows,
-  silentEmptyFnc,
-} from "~/config/utils/nullchecks";
-import {
-  formatUnifiedDocPageUrl,
-  UNIFIED_DOC_PAGE_URL_PATTERN,
-} from "~/config/utils/url_patterns";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { UNIFIED_DOC_PAGE_URL_PATTERN } from "~/config/utils/url_patterns";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 
 const getNotifMetadata = (notification) => {

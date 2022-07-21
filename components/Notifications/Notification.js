@@ -12,7 +12,7 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 import { NotificationActions } from "~/redux/notification";
 
 // Config
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -108,7 +108,7 @@ class Notification extends Component {
       notification;
     const { item: actionItem } = action ?? {};
     const { amount, plain_text } = actionItem ?? {};
-    const beDocType = getUnifiedDocType(unified_document?.document_type);
+    const beDocType = getBEUnifiedDocType(unified_document?.document_type);
     const content_type = action?.content_type?.name || null;
 
     const documentContent = Array.isArray(unified_document?.documents)
