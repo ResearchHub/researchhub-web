@@ -84,6 +84,7 @@ class UserTransaction extends Component {
       >
         {transactions && transactions.withdrawals.length ? (
           transactions.withdrawals.map((transaction, i) => {
+            console.log(transaction);
             return (
               <TransactionCard
                 key={`transactionCard-${i}`}
