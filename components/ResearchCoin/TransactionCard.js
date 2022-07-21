@@ -113,6 +113,23 @@ const TransactionCard = (props) => {
               </a>
             </Link>
           )}
+          {transaction.source?.bounty_slug === "post" ||
+            (transaction.source?.bounty_slug === "question" && (
+              <Link
+                href={`/post/${transaction.content_id}/${transaction.content_slug}`}
+              >
+                <a
+                  className={css(styles.metatext)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <div className={css(styles.metatext)}>
+                    {transaction.content_title}
+                  </div>
+                </a>
+              </Link>
+            ))}
           {transaction.source?.purchase_type === "DOI" && (
             <Link
               href={`/post/${transaction.source.source.id}/${transaction.source.source.slug}`}
