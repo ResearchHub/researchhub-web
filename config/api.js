@@ -588,8 +588,10 @@ const routes = (BASE_URL) => {
     },
 
     THREAD: (documentType, paperId, documentId, threadId) => {
+      let docType = documentType === "question" ? "post" : documentType;
+
       let url =
-        `${BASE_URL}${documentType}/` +
+        `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/`;
 
@@ -615,8 +617,11 @@ const routes = (BASE_URL) => {
     },
 
     THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
+      // question is a post behind the scenes and hence needs to be handled as such.
+      let docType = documentType === "question" ? "post" : documentType;
+
       let url =
-        `${BASE_URL}${documentType}/` +
+        `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/comment/`;
 
@@ -635,8 +640,11 @@ const routes = (BASE_URL) => {
       commentId,
       page
     ) => {
+      // question is a post behind the scenes and hence needs to be handled as such.
+      let docType = documentType === "question" ? "post" : documentType;
+
       let url =
-        `${BASE_URL}${documentType}/` +
+        `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/comment/${commentId}/reply/`;
 
@@ -1214,8 +1222,10 @@ const routes = (BASE_URL) => {
     commentId,
     replyId
   ) {
+    let docType = documentType === "question" ? "post" : documentType;
+
     let url =
-      `${BASE_URL}${documentType}/` +
+      `${BASE_URL}${docType}/` +
       (paperId != null ? `${paperId}` : `${documentId}`) +
       `/`;
 

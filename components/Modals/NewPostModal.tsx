@@ -8,7 +8,7 @@ import {
 import { NullableString, User } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import {
+import icons, {
   PostIcon,
   PaperIcon,
   HypothesisIcon,
@@ -38,6 +38,7 @@ import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardC
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import killswitch from "~/config/killswitch/killswitch";
 import AskQuestionForm from "~/components/Question/AskQuestionForm";
+import colors from "~/config/themes/colors";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -64,6 +65,35 @@ export const getModalOptionItems = ({
       />
     ),
   },
+  
+  {
+    key: "question",
+    header: (
+      <div className={css(styles.header)}>
+        <span>Ask a Question</span>
+        <span className={css(styles.new)}>
+          <span className={css(styles.fireIcon)}>{icons.fire}</span>
+          <span className={css(styles.newText)}>New</span>
+        </span>
+      </div>      
+    ),
+    description:
+      "Ask a science related question. Add a bounty to incentivize quality submissions.",
+    onClick: (): void => {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        isQuestionType: true,
+      });
+    },
+    icon: (
+      <QuestionIcon
+        onClick={silentEmptyFnc}
+        withAnimation={false}
+        size={40}
+      />
+    ),
+  },  
   {
     key: "eln",
     header: "Publish a Post",
@@ -102,28 +132,6 @@ export const getModalOptionItems = ({
       />
     ),
   },
-  killswitch("bountyQuestion")
-    ? {
-        key: "question",
-        header: "Ask a Question",
-        description:
-          "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
-        onClick: (): void => {
-          setButtonValues({
-            ...DEFAULT_POST_BUTTON_VALUES,
-            isOpen: true,
-            isQuestionType: true,
-          });
-        },
-        icon: (
-          <QuestionIcon
-            onClick={silentEmptyFnc}
-            withAnimation={false}
-            size={40}
-          />
-        ),
-      }
-    : null,
 ];
 
 function NewPostModal({
@@ -269,6 +277,21 @@ function NewPostModal({
 }
 
 const styles = StyleSheet.create({
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  new: {
+    fontSize: 15,
+    color: colors.ORANGE_DARK2(),
+  },
+  newText: {
+
+  },
+  fireIcon: {
+    marginRight: 4,
+  },
   list: {
     margin: "31px",
     display: "flex",
