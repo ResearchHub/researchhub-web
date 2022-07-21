@@ -56,6 +56,31 @@ const TransactionCard = (props) => {
 
   const etherscanLink = getEtherscanLink(transaction.source?.transaction_hash);
 
+  const getTitle = () => {
+    let title =
+      transaction.source?.purchase_type === "DOI"
+        ? `DOI`
+        : transaction.source?.purchase_type === "BOOST"
+        ? "Supported Content"
+        : transaction.source?.distribution_type === "PURCHASE"
+        ? "Received Support"
+        : transaction.source?.distribution_type
+        ? transaction.source?.distribution_type
+            .replaceAll("_", " ")
+            .toLocaleLowerCase()
+        : transaction.source?.to_address
+        ? "Withdrawal"
+        : "";
+
+    if (transaction.readable_content_type === "bounty") {
+      title = `Bounty #${transaction.source.id}: ${transaction.source.status}`;
+    } else if (transaction.readable_content_type === "bountyfee") {
+      title = "ResearchHub Platform Fee";
+    }
+
+    return title;
+  };
+
   return (
     <div
       className={css(styles.transactionCard, style && style)}
@@ -63,21 +88,7 @@ const TransactionCard = (props) => {
     >
       <div className={css(styles.row)}>
         <div className={css(styles.column)}>
-          <div className={css(styles.maintext)}>
-            {transaction.source?.purchase_type === "DOI"
-              ? `DOI`
-              : transaction.source?.purchase_type === "BOOST"
-              ? "Supported Content"
-              : transaction.source?.distribution_type === "PURCHASE"
-              ? "Received Support"
-              : transaction.source?.distribution_type
-              ? transaction.source?.distribution_type
-                  .replaceAll("_", " ")
-                  .toLocaleLowerCase()
-              : transaction.source?.to_address
-              ? "Withdrawal"
-              : ""}
-          </div>
+          <div className={css(styles.maintext)}>{getTitle()}</div>
           {transaction.source?.transaction_hash ? (
             <a
               href={etherscanLink}
