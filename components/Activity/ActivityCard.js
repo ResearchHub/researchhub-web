@@ -132,12 +132,13 @@ const ActivityCard = (props) => {
   };
 
   const shouldRenderTimeStamp = () => {
-    let yesterday = new Date().getTime() - 1 * 24 * 60 * 60 * 1000;
-    let date = new Date(createdDate);
+    // NOTE: calvinhlee - why below requirements anyway?
+    // let yesterday = new Date().getTime() - 1 * 24 * 60 * 60 * 1000;
+    // let date = new Date(createdDate);
 
-    if (date < yesterday) {
-      return false;
-    }
+    // if (date < yesterday) {
+    //   return false;
+    // }
 
     return true;
   };
