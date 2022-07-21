@@ -222,7 +222,7 @@ const DiscussionTab = (props) => {
         paper: paperId,
         plain_text: plainText,
       };
-    } else if (documentType === "post") {
+    } else if (documentType === "post" || documentType === "question") {
       documentId = router.query.documentId;
       unifiedDocumentId = props.post.unified_document.id;
       param = {
@@ -318,11 +318,11 @@ const DiscussionTab = (props) => {
       })
       .catch((err) => {
         setSubmitInProgress(false);
-        if (err.response.status === 429) {
+        if (err?.response?.status === 429) {
           props.showMessage({ show: false });
           return props.openRecaptchaPrompt(true);
         }
-        props.showMessage({ show: false });
+        props.showMessage({ show: true });
         props.setMessage("Something went wrong");
         props.showMessage({ show: true, error: true });
       });

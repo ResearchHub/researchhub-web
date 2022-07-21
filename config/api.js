@@ -532,7 +532,10 @@ const routes = (BASE_URL) => {
       targetId,
       twitter,
     }) => {
-      let url = `${BASE_URL}${documentType}/${documentId}/discussion/${
+      // question is a post behind the scenes and hence needs to be handled as such.
+      let docType = documentType === "question" ? "post" : documentType;
+
+      let url = `${BASE_URL}${docType}/${documentId}/discussion/${
         targetId != null ? targetId + "/" : ""
       }`;
       let params = {

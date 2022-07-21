@@ -137,15 +137,17 @@ const Post = (props) => {
             />
             <div className={css(styles.postPageSection)}>
               <a name="comments" id="comments" />
-              <DiscussionTab
-                hostname={props.hostname}
-                documentType={"post"}
-                post={post}
-                postId={post.id}
-                calculatedCount={discussionCount}
-                setCount={setCount}
-                isCollapsible={false}
-              />
+              {postV2.isReady && (
+                <DiscussionTab
+                  hostname={props.hostname}
+                  documentType={postV2.unifiedDocument.documentType}
+                  post={post}
+                  postId={post.id}
+                  calculatedCount={discussionCount}
+                  setCount={setCount}
+                  isCollapsible={false}
+                />
+              )}
             </div>
           </div>
         </div>
