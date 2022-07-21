@@ -10,6 +10,20 @@ export enum BOUNTY_STATUS {
   CLOSED = "CLOSED",
 }
 
+export const fetchBounty = ({unifiedDocId}) => {
+  const url = generateApiUrl(
+    `bounty`,
+    `?item_object_id=${unifiedDocId}&status=OPEN`
+  );
+  return fetch(url, api.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => {
+      return res;
+    });
+};
+
+
 export default class Bounty {
   _id: ID;
   _createdDate: string;
@@ -23,7 +37,7 @@ export default class Bounty {
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeTo(raw.expiration_date);
     this._createdBy = parseCreatedBy(raw.created_by);
-    this._amount = parseInt(raw.amount.toFixed(0));
+    this._amount = parseInt(raw.amount);
     this._status = raw.status;
   }
 
@@ -49,7 +63,7 @@ export default class Bounty {
   }
 
   get id(): ID {
-    return this.id;
+    return this._id;
   }
 
   get createdDate(): string {

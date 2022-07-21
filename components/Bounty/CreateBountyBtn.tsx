@@ -30,7 +30,7 @@ function CreateBountyBtn({
     null
   );
 
-  const removeBounty = () => {
+  const cancelBounty = () => {
     return fetch(
       generateApiUrl(`bounty/${bountyId}/cancel_bounty`),
       api.POST_CONFIG()
@@ -46,7 +46,7 @@ function CreateBountyBtn({
     alert.show({
       text: <div>Are you sure you want to close your bounty?</div>,
       buttonText: "Yes",
-      onClick: removeBounty,
+      onClick: cancelBounty,
     });
   };
 
@@ -100,27 +100,31 @@ function CreateBountyBtn({
         </span>
       ) : (
         <div
-          data-tip={""}
-          data-for="bountyTooltip"
           className={css(styles.addBounty)}
           onClick={() => (bountyExists ? closeBounty() : setIsModalOpen(true))}
         >
           <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-          <span className={css(styles.bountyTextContainer)}>
-            {!bountyExists && (
-              <span className={css(styles.bountyIcon)}>
-                {/* @ts-ignore */}
-                <ResearchCoinIcon width={22} height={22} version={3} />
+          <div data-tip={""} data-for="bountyTooltip">
+            <span className={css(styles.bountyTextContainer)}>
+              {!bountyExists && (
+                <span className={css(styles.bountyIcon)}>
+                  {/* @ts-ignore */}
+                  <ResearchCoinIcon width={22} height={22} version={3} />
+                </span>
+              )}
+              <span
+                data-tip={""}
+                data-for="bountyTooltip"
+                className={css(styles.addBountyLabel)}
+              >
+                {bountyExists
+                  ? `Close your ${numeral(bountyAmt).format(
+                      "0.[0000]"
+                    )} RSC Bounty`
+                  : "Add ResearchCoin Bounty"}
               </span>
-            )}
-            <span className={css(styles.addBountyLabel)}>
-              {bountyExists
-                ? `Close your ${numeral(bountyAmt).format(
-                    "0.[0000]"
-                  )} RSC Bounty`
-                : "Add ResearchCoin Bounty"}
             </span>
-          </span>
+          </div>
         </div>
       )}
     </div>
