@@ -1241,6 +1241,6 @@ const api = API({
 
 export default api;
 
-export const generateApiUrl = (url) => {
-  return api.BASE_URL + url + "/";
+export const generateApiUrl = (url, queryparams) => {
+  return `${api.BASE_URL}${url}/${queryparams ? queryparams : ""}`;
 };

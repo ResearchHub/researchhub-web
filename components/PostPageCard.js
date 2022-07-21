@@ -6,7 +6,7 @@ import { ModalActions } from "~/redux/modals";
 import { StyleSheet, css } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
-import API from "~/config/api";
+import API, { generateApiUrl } from "~/config/api";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import DocumentHeader from "./Document/DocumentHeader";
@@ -31,12 +31,16 @@ class PostPageCard extends Component {
       showPostEditor: false,
       postBody: this.props.post.markdown,
       post: this.props.post,
+      bountyExists: false,
+      bountyFetched: false,
+      bountyAmt: 0,
     };
     this.editorRef = createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.post.isReady !== this.props.post.isReady) {
+      this.fetchBounty();
       this.setState({
         post: this.props.post,
         postBody: this.props.post.markdown,
@@ -77,6 +81,25 @@ class PostPageCard extends Component {
     return null;
   };
 
+  fetchBounty = () => {
+    const { post } = this.props;
+    const url = generateApiUrl(
+      `bounty`,
+      `?item_object_id=${post.unifiedDocument.id}&status=OPEN`
+    );
+    return fetch(url, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        this.setState({
+          bountyExists: res.count > 0,
+          bountyFetched: true,
+          bountyAmt: res.results[0]?.amount,
+          bountyId: res.results[0]?.id,
+        });
+      });
+  };
+
   sendPost = () => {
     const { setMessage, showMessage } = this.props;
     const { postBody, post } = this.state;
@@ -104,7 +127,7 @@ class PostPageCard extends Component {
   };
 
   render() {
-    const { post, removePost, restorePost } = this.props;
+    const { post, removePost, restorePost, user } = this.props;
     const { postBody } = this.state;
     const isEditMode = this.state.showPostEditor;
 
@@ -174,15 +197,31 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post.unifiedDocument.documentType === "question" && (
-                    <div className={css(styles.createBountyContainer)}>
-                      <CreateBountyBtn
-                        onBountyAdd={() => null}
-                        bountyText={this.toPlaintext(postBody)}
-                        post={post}
-                      />
-                    </div>
-                  )}
+                  {post.unifiedDocument.documentType === "question" &&
+                    post.unifiedDocument.createdBy.id === user.id &&
+                    this.state.bountyFetched && (
+                      <div className={css(styles.createBountyContainer)}>
+                        <CreateBountyBtn
+                          onBountyAdd={({ bountyAmt, bountyId }) => {
+                            this.setState({
+                              bountyExists: true,
+                              bountyAmt,
+                              bountyId,
+                            });
+                          }}
+                          bountyText={this.toPlaintext(postBody)}
+                          post={post}
+                          bountyAmt={this.state.bountyAmt}
+                          bountyExists={this.state.bountyExists}
+                          bountyId={this.state.bountyId}
+                          onBountyCancelled={() => {
+                            this.setState({
+                              bountyExists: false,
+                            });
+                          }}
+                        />
+                      </div>
+                    )}
                 </div>
               )}
             </ReactPlaceholder>

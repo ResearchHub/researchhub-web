@@ -50,6 +50,7 @@ function BountyModal({
   const handleClose = () => {
     closeModal();
     setSuccess(false);
+    setBountyAmount(BOUNTY_DEFAULT_AMOUNT);
   };
 
   const handleBountyInputChange = (event) => {
@@ -81,6 +82,10 @@ function BountyModal({
           bountyAmount: netBountyAmount,
           unifiedDocId: unifiedDocId,
         }).then((createdBounty) => {
+          handleBountyAdded({
+            bountyAmt: bountyAmount,
+            bountyId: createdBounty.id,
+          });
           console.log(createdBounty);
           setSuccess(true);
         });
