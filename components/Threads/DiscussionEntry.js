@@ -558,6 +558,7 @@ class DiscussionEntry extends Component {
       isAcceptedAnswer,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
+      currentAuthor,
     } = this.props;
 
     const commentCount =
@@ -582,7 +583,8 @@ class DiscussionEntry extends Component {
 
     const showAcceptAnswerBtn =
       documentType === "question" &&
-      post?.created_by?.id === data.created_by.id;
+      post?.created_by?.id === this.props?.auth?.user?.id &&
+      postType === POST_TYPES.ANSWER;
 
     return (
       <div
