@@ -53,7 +53,7 @@ export const createVoteHandler = ({
     ? "researchhub_posts"
     : documentType;
   const resolvedDocumentAuthorID =
-    documentCreatedBy?.authorProfile?.id ||
+    documentCreatedBy?.authorProfile  ?.id ||
     documentCreatedBy?.author_profile?.id;
 
   return async (event: SyntheticEvent) => {

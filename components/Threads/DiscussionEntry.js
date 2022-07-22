@@ -198,10 +198,11 @@ class DiscussionEntry extends Component {
       post,
       hypothesis,
     } = this.props;
+
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -258,15 +259,11 @@ class DiscussionEntry extends Component {
       documentType,
     } = this.props;
 
-    console.log("discussionType", discussionType);
-
-    // const { review, isReview } = this.state;
-
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let unifiedDocumentId = data.unified_document.id;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -454,7 +451,7 @@ class DiscussionEntry extends Component {
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -479,7 +476,7 @@ class DiscussionEntry extends Component {
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -558,8 +555,10 @@ class DiscussionEntry extends Component {
       paper,
       path,
       post,
+      isAcceptedAnswer,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
+      currentAuthor,
     } = this.props;
 
     const commentCount =
@@ -584,7 +583,8 @@ class DiscussionEntry extends Component {
 
     const showAcceptAnswerBtn =
       documentType === "question" &&
-      post?.created_by?.id === data.created_by.id;
+      post?.created_by?.id === this.props?.auth?.user?.id &&
+      postType === POST_TYPES.ANSWER;
 
     return (
       <div
@@ -696,6 +696,7 @@ class DiscussionEntry extends Component {
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
                     postType={postType}
+                    isAcceptedAnswer={isAcceptedAnswer}
                   />
                 </div>
               </Fragment>

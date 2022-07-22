@@ -93,7 +93,7 @@ class ReplyEntry extends Component {
   formatMetaData = () => {
     let { data, comment, reply, post, hypothesis, documentType } = this.props;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -155,7 +155,7 @@ class ReplyEntry extends Component {
     const discussionThreadId = data.id;
     const paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -191,7 +191,7 @@ class ReplyEntry extends Component {
     const discussionThreadId = data.id;
     const paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -265,7 +265,7 @@ class ReplyEntry extends Component {
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -306,7 +306,7 @@ class ReplyEntry extends Component {
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post") {
+    if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;

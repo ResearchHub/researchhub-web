@@ -47,6 +47,7 @@ function TextEditor(props) {
     postType,
     uid = genClientId(),
     documentType,
+    isAcceptedAnswer,
     isTopLevelComment = false,
   } = props;
 
@@ -128,6 +129,7 @@ function TextEditor(props) {
         setSelectedPostTypeStruct={setSelectedPostTypeStruct}
         selectedPostTypeStruct={selectedPostTypeStruct}
         documentType={documentType}
+        isAcceptedAnswer={isAcceptedAnswer}
       />
     </div>
   );

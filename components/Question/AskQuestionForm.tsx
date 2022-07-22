@@ -15,7 +15,7 @@ import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import icons from "~/config/themes/icons";
 
-const DynamicComponent = dynamic(() => import("../CKEditor/SimpleEditor"));
+const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
 type FormFields = {
   hubs: any[];
@@ -138,7 +138,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       </div>
       <FormInput
         containerStyle={[styles.titleInputContainer]}
-        placeholder={"Title"}
+        placeholder={"e.g. What is the relationship between telomeres and aging?"}
         error={
           shouldDisplayError && formErrors.title
             ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
@@ -153,10 +153,11 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         required
       />
       {/* @ts-ignore */}
-      <DynamicComponent
+      <SimpleEditor
         id="text"
         initialData={mutableFormFields.text}
         label="Body"
+        placeholder={"Include all the information someone would need to answer your question. Be specific about what you need."}
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
         containerStyle={styles.editor}
