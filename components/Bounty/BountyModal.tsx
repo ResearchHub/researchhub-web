@@ -70,7 +70,7 @@ function BountyModal({
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
       const netBountyAmount =
-        parseInt(bountyAmount || 0, 10) + parseInt(researchHubAmount || 0, 10);
+        parseFloat(bountyAmount) + parseFloat(researchHubAmount);
       if (withPreview) {
         handleBountyAdded({
           grossBountyAmount: bountyAmount,
@@ -82,12 +82,12 @@ function BountyModal({
           bountyAmount: netBountyAmount,
           unifiedDocId: unifiedDocId,
         }).then((createdBounty) => {
-          console.log('createdBounty', createdBounty)
+          console.log("createdBounty", createdBounty);
           handleBountyAdded({
             bountyAmt: bountyAmount,
             bountyId: createdBounty.id,
+            bounty: createdBounty,
           });
-          console.log(createdBounty);
           setSuccess(true);
         });
       }
@@ -95,8 +95,8 @@ function BountyModal({
   };
 
   const showAlertText = hasMinRscAlert || hasMaxRscAlert || withPreview;
-  const researchHubAmount = parseInt(
-    ((BOUNTY_RH_PERCENTAGE / 100) * bountyAmount).toFixed(0)
+  const researchHubAmount = parseFloat(
+    ((BOUNTY_RH_PERCENTAGE / 100) * bountyAmount).toFixed(2)
   );
   return (
     <BaseModal
@@ -223,8 +223,8 @@ function BountyModal({
                       <span className={css(styles.valueNumber)}>
                         <span>
                           {(
-                            parseInt(bountyAmount || 0, 10) +
-                            parseInt(researchHubAmount || 0, 10)
+                            parseFloat(bountyAmount) +
+                            parseFloat(researchHubAmount)
                           ).toLocaleString()}
                         </span>
                         <ResearchCoinIcon

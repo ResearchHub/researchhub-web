@@ -35,6 +35,8 @@ class PostPageCard extends Component {
       post: this.props.post,
       bountyExists: this.props.post.bounties.length > 0,
       bountyAmt: this.props.post.bounties[0]?.amount,
+      bounty: null,
+      bountyId: null,
     };
     this.editorRef = createRef();
   }
@@ -47,6 +49,7 @@ class PostPageCard extends Component {
         bountyExists: this.props.post.bounties.length > 0,
         bountyAmt: this.props.post.bounties[0]?.amount,
         bountyId: this.props.post.bounties[0]?.id,
+        bounty: this.props.post.bounties[0],
       });
     }
   }
@@ -129,6 +132,8 @@ class PostPageCard extends Component {
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
             hasBounties={this.state.bountyExists}
+            bountyAmt={this.state.bountyAmt}
+            bounty={this.state.bounty}
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
@@ -187,11 +192,12 @@ class PostPageCard extends Component {
                     post.unifiedDocument.createdBy.id === user.id && (
                       <div className={css(styles.createBountyContainer)}>
                         <CreateBountyBtn
-                          onBountyAdd={({ bountyAmt, bountyId }) => {
+                          onBountyAdd={({ bountyAmt, bountyId, bounty }) => {
                             this.setState({
                               bountyExists: true,
                               bountyAmt,
                               bountyId,
+                              bounty,
                             });
                           }}
                           bountyText={this.toPlaintext(postBody)}
