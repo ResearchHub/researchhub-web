@@ -15,6 +15,7 @@ import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { fetchOrgUsers, sendAmpEvent } from "~/config/fetch";
 import { useRouter } from "next/router";
+import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 
 type FormFields = {
   authors: any[];
@@ -116,34 +117,9 @@ function NotePublishModal({
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const isPublished = Boolean(currentNote.post);
 
-  useEffect(() => {
-    try {
-      fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((resp) => {
-          /* @ts-ignore */
-          const hubs = resp.results
-            .map((hub, index) => {
-              return {
-                value: hub.id,
-                label: hub.name,
-              };
-            })
-            .sort((a, b) => {
-              return a.label.localeCompare(b.label);
-            });
-          setHubOptions(hubs);
-        });
-    } catch (error) {
-      setMessage("Failed to fetch data");
-      showMessage({ show: true, error: true });
-      captureEvent({
-        error,
-        msg: "Failed to fetch hubs in publish modal",
-      });
-    }
-  }, []);
+  useEffectFetchSuggestedHubs({
+    setSuggestedHubs: setHubOptions,
+  });
 
   useEffect(() => {
     const fetchAndSetAuthors = async () => {
