@@ -103,7 +103,7 @@ const DiscussionTab = (props) => {
 
       return t;
     });
-    console.log("updatedTheread", updatedThreads);
+
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));
   }

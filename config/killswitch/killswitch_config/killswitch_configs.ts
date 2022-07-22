@@ -5,11 +5,11 @@ export type AppSwitchConfig = {
   staging?: boolean;
 };
 
-const KillSwitchApps = ["bountyQuestion", "peerReview"] as const;
+const KillSwitchApps = ["bounty", "peerReview"] as const;
 export type KillswitchApp = typeof KillSwitchApps[number];
 
 const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
-  bountyQuestion: {
+  bounty: {
     development: true,
     staging: true,
     production: false,

@@ -19,6 +19,7 @@ import router from "next/router";
 import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import killswitch from "~/config/killswitch/killswitch";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -181,7 +182,8 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post.unifiedDocument.documentType === "question" &&
+                  {killswitch("bounty") &&
+                    post.unifiedDocument.documentType === "question" &&
                     post.unifiedDocument.createdBy.id === user.id && (
                       <div className={css(styles.createBountyContainer)}>
                         <CreateBountyBtn
