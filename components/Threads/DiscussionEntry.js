@@ -555,6 +555,7 @@ class DiscussionEntry extends Component {
       paper,
       path,
       post,
+      bounty,
       isAcceptedAnswer,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
@@ -586,6 +587,10 @@ class DiscussionEntry extends Component {
       post?.created_by?.id === this.props?.auth?.user?.id &&
       postType === POST_TYPES.ANSWER;
 
+    const showAwardBountyBtn =
+      documentType === "question" &&
+      bounty?.createdBy?.id === this.props?.auth?.user?.id &&
+      post?.created_by?.id === this.props?.auth?.user?.id;
     return (
       <div
         className={css(
@@ -725,7 +730,11 @@ class DiscussionEntry extends Component {
                   small={noVoteLine}
                   threadID={data?.id}
                   title={title}
+                  bounty={bounty}
+                  createdBy={data.created_by}
                   showAcceptedAnswerBtn={showAcceptAnswerBtn}
+                  showAwardBountyBtn={showAwardBountyBtn}
+                  handleAwardBounty={this.props.handleAwardBounty}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>

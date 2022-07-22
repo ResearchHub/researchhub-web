@@ -64,6 +64,7 @@ const DiscussionTab = (props) => {
     postId,
     hypothesis,
     hypothesisId,
+    handleAwardBounty,
   } = props;
 
   const router = useRouter();
@@ -108,10 +109,36 @@ const DiscussionTab = (props) => {
     setFormattedThreads(formatThreads(threads, basePath));
   }
 
+  function handleAwardedBounty(e) {
+    const awardedThreadId = e.detail.objectId;
+    const awardedAmount = e.detail.amount;
+
+    const updatedThreads = threads.map((t) => {
+      if (t.id === awardedThreadId) {
+        if (t.awarded_bounty_amount) {
+          t.awarded_bounty_amount =
+            parseFloat(t.awarded_bounty_amount) +
+            parseFloat(awardedAmount + "" || "0");
+        } else {
+          t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+        }
+
+        return t;
+      }
+
+      return t;
+    });
+
+    setThreads(updatedThreads);
+    setFormattedThreads(formatThreads(threads, basePath));
+  }
+
   useEffect(() => {
     document.addEventListener("answer-accepted", handleAcceptedAnswer);
+    document.addEventListener("bounty-awarded", handleAwardedBounty);
 
     return () => {
+      document.removeEventListener("bounty-awarded", handleAwardedBounty);
       document.removeEventListener("answer-accepted", handleAcceptedAnswer);
     };
   }, [threads]);
@@ -176,7 +203,9 @@ const DiscussionTab = (props) => {
                       currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
                       context="DOCUMENT"
+                      bounty={props.bounty}
                       isAcceptedAnswer={t.data.is_accepted_answer}
+                      handleAwardBounty={handleAwardBounty}
                     />
                   );
                 })
