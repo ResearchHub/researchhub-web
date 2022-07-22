@@ -12,7 +12,7 @@ const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   bounty: {
     development: true,
     staging: true,
-    production: false,
+    production: true,
   },
   peerReview: {
     development: false,
