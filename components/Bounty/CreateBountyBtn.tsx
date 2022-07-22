@@ -78,9 +78,9 @@ function CreateBountyBtn({
         }}
         withPreview={withPreview}
         bountyText={bountyText}
-        postId={post.id}
-        unifiedDocId={post.unifiedDocument.id}
-        postSlug={post.unifiedDocument.document.slug}
+        postId={post?.id}
+        unifiedDocId={post?.unifiedDocument?.id}
+        postSlug={post?.unifiedDocument?.document?.slug}
         removeBounty={() => setBountyAmountDetails(null)}
       />
       {bountyAmountDetails && withPreview ? (
@@ -104,7 +104,7 @@ function CreateBountyBtn({
           onClick={() => (bountyExists ? closeBounty() : setIsModalOpen(true))}
         >
           <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-          <div data-tip={""} data-for="bountyTooltip">
+          <div>
             <span className={css(styles.bountyTextContainer)}>
               {!bountyExists && (
                 <span className={css(styles.bountyIcon)}>
