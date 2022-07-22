@@ -24,7 +24,6 @@ import SubmissionDetails from "./SubmissionDetails";
 import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
 
-
 type Args = {
   document: TopLevelDocument;
   onDocumentRemove: Function;
@@ -238,13 +237,12 @@ function DocumentHeader({
     >
       {document.isReady && (
         <div className={css(styles.documentHeader)}>
-
-          {hasBounties &&
+          {hasBounties && (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}
               <BountyAlert bounty={document.bounties[0]} />
             </div>
-          }
+          )}
           <ReactTooltip />
           {claimableAuthors.length > 0 && (
             <AuthorClaimModal
@@ -286,7 +284,7 @@ function DocumentHeader({
                       className={css(styles.claimProfile)}
                       onClick={() => setIsAuthorClaimModalOpen(true)}
                     >
-                      Claim profile to earn Research Coin
+                      Claim your profile to earn Research Coin
                       <img
                         src={"/static/icons/coin-filled.png"}
                         draggable={false}
@@ -575,7 +573,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),
     fontWeight: 400,
-    marginLeft: 0,
+    marginLeft: 8,
+    // fontSize: 14,
     display: "inline-flex",
     ":hover": {
       color: colors.NEW_BLUE(),
