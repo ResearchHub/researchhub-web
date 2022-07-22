@@ -90,14 +90,6 @@ const ContentSupport = (props) => {
     if (count > 0) {
       return <span className={css(styles.count)}>+{formatScore(count)}</span>;
     }
-
-    if (!isUserContent()) {
-      return (
-        <span className={css(styles.plusButton)} id={"plusIcon"}>
-          {icons.plusCircleSolid}
-        </span>
-      );
-    }
   };
 
   const dataTip = () => {
@@ -115,6 +107,11 @@ const ContentSupport = (props) => {
     >
       {renderAnimation()}
       {renderCount()}
+      {!isUserContent() && (
+        <span className={css(styles.plusButton)} id={"plusIcon"}>
+          {icons.plusCircleSolid}
+        </span>
+      )}
       <img
         className={css(styles.icon)}
         src={"/static/icons/coin-filled.png"}
