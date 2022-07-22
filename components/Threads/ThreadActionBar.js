@@ -9,6 +9,7 @@ import ThreadTextEditor from "./ThreadTextEditor";
 import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
+import Bounty from "~/config/types/bounty";
 
 class ThreadActionBar extends Component {
   constructor(props) {
@@ -108,6 +109,28 @@ class ThreadActionBar extends Component {
             </div>
           )}
 
+          {this.props.showAwardBountyBtn && (
+            <div
+              className={css(styles.text, styles.action)}
+              onClick={() => {
+                this.props.handleAwardBounty({
+                  bountyId: this.props.bounty.id,
+                  recipientUserId: this.props.createdBy.id,
+                  recipientUserName: `${this.props.createdBy.author_profile.first_name} ${this.props.createdBy.author_profile.last_name}`,
+                  objectId: this.props.threadID,
+                  contentType: "thread",
+                });
+              }}
+            >
+              <span
+                className={css(styles.icon, styles.awardBountyIcon)}
+                id={"awardBountyIcon"}
+              >
+                {icons.medal}
+              </span>
+              Award Bounty
+            </div>
+          )}
           {this.props.showAcceptedAnswerBtn && (
             <div
               className={css(styles.text, styles.action)}
@@ -146,14 +169,10 @@ class ThreadActionBar extends Component {
               onClick={() => null}
             >
               <span
-                className={css(styles.icon, styles.acceptAnswerIcon)}
-                id={"acceptAnswerIcon"}
+                className={css(styles.icon, styles.awardBountyIcon)}
+                id={"awardBountyIcon"}
               >
-                <MedalIcon
-                  color={colors.MEDIUM_GREY2()}
-                  width={18}
-                  height={18}
-                />
+                {icons.medal}
               </span>
               Award Bounty
             </div>
@@ -230,6 +249,9 @@ const styles = StyleSheet.create({
       color: colors.NEW_BLUE(),
     },
     ":hover #acceptAnswerIcon": {
+      color: colors.NEW_BLUE(),
+    },
+    ":hover #awardBountyIcon": {
       color: colors.NEW_BLUE(),
     },
   },

@@ -420,6 +420,7 @@ const icons = {
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
   longArrowUp: <FontAwesomeIcon icon={faLongArrowAltUp} />,
   manage: <FontAwesomeIcon icon={faTasksAlt} />,
+  medal: <FontAwesomeIcon icon={faMedal} />,
   medium: <FontAwesomeIcon icon={faMedium} />,
   minus: <FontAwesomeIcon icon={faMinus} />,
   minusCircle: <FontAwesomeIcon icon={faMinusCircle} />,

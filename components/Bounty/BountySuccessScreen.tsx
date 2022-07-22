@@ -3,11 +3,12 @@ import Image from "next/image";
 import { ReactElement, useState } from "react";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import { ID } from "~/config/types/root_types";
 
 type Props = {
-  bountyAmount: number;
+  bountyAmount: Number;
   bountyText: string;
-  postId: number;
+  postId: ID;
   postSlug: string;
 };
 
@@ -17,7 +18,7 @@ function SuccessScreen({
   postId,
   postSlug,
 }: Props): ReactElement {
-  const twitterPreText = `Help me with my bounty on ResearchHub worth ${bountyAmount} RSC!`;
+  const twitterPreText = `I created a ${bountyAmount} RSC bounty on ResearchHub for solutions to:`;
   const [copySuccess, setCopySuccess] = useState(false);
 
   const link = process.browser
