@@ -33,10 +33,6 @@ class PostPageCard extends Component {
       showPostEditor: false,
       postBody: this.props.post.markdown,
       post: this.props.post,
-      bountyExists: this.props.post.bounties.length > 0,
-      bountyAmt: this.props.post.bounties[0]?.amount,
-      bounty: null,
-      bountyId: null,
     };
     this.editorRef = createRef();
   }
@@ -46,10 +42,6 @@ class PostPageCard extends Component {
       this.setState({
         post: this.props.post,
         postBody: this.props.post.markdown,
-        bountyExists: this.props.post.bounties.length > 0,
-        bountyAmt: this.props.post.bounties[0]?.amount,
-        bountyId: this.props.post.bounties[0]?.id,
-        bounty: this.props.post.bounties[0],
       });
     }
   }
@@ -131,9 +123,8 @@ class PostPageCard extends Component {
             document={post}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
-            hasBounties={this.state.bountyExists}
-            bountyAmt={this.state.bountyAmt}
-            bounty={this.state.bounty}
+            hasBounties={this.props.bounty}
+            bounty={this.props.bounty}
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
@@ -192,23 +183,14 @@ class PostPageCard extends Component {
                     post.unifiedDocument.createdBy.id === user.id && (
                       <div className={css(styles.createBountyContainer)}>
                         <CreateBountyBtn
-                          onBountyAdd={({ bountyAmt, bountyId, bounty }) => {
-                            this.setState({
-                              bountyExists: true,
-                              bountyAmt,
-                              bountyId,
-                              bounty,
-                            });
+                          onBountyAdd={(bounty) => {
+                            this.props.setBounty(bounty);
                           }}
                           bountyText={this.toPlaintext(postBody)}
                           post={post}
-                          bountyAmt={this.state.bountyAmt}
-                          bountyExists={this.state.bountyExists}
-                          bountyId={this.state.bountyId}
+                          bounty={this.props.bounty}
                           onBountyCancelled={() => {
-                            this.setState({
-                              bountyExists: false,
-                            });
+                            this.props.setBounty(null);
                           }}
                         />
                       </div>

@@ -13,40 +13,28 @@ import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import api, { generateApiUrl } from "~/config/api";
+import Bounty from "~/config/types/bounty";
 
 function CreateBountyBtn({
   withPreview = false,
   onBountyAdd,
   bountyText,
   post,
-  bountyExists,
-  bountyAmt,
+  bounty,
   onBountyCancelled,
-  bountyId,
 }): ReactElement {
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [bountyAmountDetails, setBountyAmountDetails] = useState<null | any>(
-    null
-  );
-
-  const cancelBounty = () => {
-    return fetch(
-      generateApiUrl(`bounty/${bountyId}/cancel_bounty`),
-      api.POST_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((_) => {
-        onBountyCancelled && onBountyCancelled();
-      });
-  };
-
+console.log('bounty', bounty)
   const closeBounty = () => {
     alert.show({
       text: <div>Are you sure you want to close your bounty?</div>,
       buttonText: "Yes",
-      onClick: cancelBounty,
+      onClick: () => {
+        Bounty.closeBountyAPI({ bounty }).then(() => {
+          onBountyCancelled && onBountyCancelled();
+        })
+      },
     });
   };
 
@@ -72,18 +60,16 @@ function CreateBountyBtn({
       <BountyModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
-        handleBountyAdded={(amountDetails) => {
-          setBountyAmountDetails(amountDetails);
-          onBountyAdd(amountDetails);
+        handleBountyAdded={(bounty) => {
+          onBountyAdd(bounty);
         }}
         withPreview={withPreview}
         bountyText={bountyText}
         postId={post?.id}
         unifiedDocId={post?.unifiedDocument?.id}
         postSlug={post?.unifiedDocument?.document?.slug}
-        removeBounty={() => setBountyAmountDetails(null)}
       />
-      {bountyAmountDetails && withPreview ? (
+      {/* {bountyAmountDetails && withPreview ? (
         <span className={css(styles.bountyPreview)}>
           <div className={css(styles.bountyAmount)}>
             <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
@@ -92,21 +78,21 @@ function CreateBountyBtn({
             </span>
             <span
               className={css(styles.removeBounty)}
-              onClick={() => setBountyAmountDetails(null)}
+              onClick={() => null}
             >
               {icons.times}
             </span>
           </div>
         </span>
-      ) : (
+      ) : ( */}
         <div
           className={css(styles.addBounty)}
-          onClick={() => (bountyExists ? closeBounty() : setIsModalOpen(true))}
+          onClick={() => (bounty ? closeBounty() : setIsModalOpen(true))}
         >
           <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
           <div>
             <span className={css(styles.bountyTextContainer)}>
-              {!bountyExists && (
+              {!bounty && (
                 <span className={css(styles.bountyIcon)}>
                   {/* @ts-ignore */}
                   <ResearchCoinIcon width={22} height={22} version={3} />
@@ -117,8 +103,8 @@ function CreateBountyBtn({
                 data-for="bountyTooltip"
                 className={css(styles.addBountyLabel)}
               >
-                {bountyExists
-                  ? `Close your ${numeral(bountyAmt).format(
+                {bounty
+                  ? `Close your ${numeral(bounty.amount).format(
                       "0.[0000000000]"
                     )} RSC Bounty`
                   : "Add ResearchCoin Bounty"}
@@ -126,7 +112,7 @@ function CreateBountyBtn({
             </span>
           </div>
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 }
