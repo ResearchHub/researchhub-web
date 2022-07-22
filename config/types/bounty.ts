@@ -3,6 +3,8 @@ import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
 import api, { generateApiUrl } from "../api";
 import { Helpers } from "@quantfive/js-web-config";
+import { captureEvent } from "../utils/events";
+
 
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
@@ -36,9 +38,38 @@ export default class Bounty {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeTo(raw.expiration_date);
+    console.log('raw.created_eby', raw.created_by)
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseInt(raw.amount);
     this._status = raw.status;
+  }
+
+  static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
+    const data = {
+      recipient: recipientUserId,
+      content_type: contentType,
+      object_id: objectId,
+    };
+
+    const url = generateApiUrl("bounty") + bountyId + "/approve_bounty/";
+
+    return new Promise((resolve, reject) => {
+      fetch(url, api.POST_CONFIG(data))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then(res => {
+          console.log('res', res);
+          return resolve(new Bounty(res));
+        })
+        .catch((error) => {
+          captureEvent({
+            error,
+            msg: "Failed to award bounty",
+            data: { bountyId, recipientUserId, contentType },
+          });
+          return reject(error);
+        })
+    })
   }
 
   static createAPI({ bountyAmount, unifiedDocId }) {
@@ -48,19 +79,48 @@ export default class Bounty {
     const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
 
     const data = {
-      amount: bountyAmount,
+      amount: parseFloat(bountyAmount),
       item_content_type: "researchhubunifieddocument",
       item_object_id: unifiedDocId,
       expiration_date: thirtyDaysFromNow,
     };
 
-    return fetch(generateApiUrl("bounty"), api.POST_CONFIG(data))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then(res => {
-      return new Bounty(res);
-    });
+    return new Promise((resolve, reject) => {
+      return fetch(generateApiUrl("bounty"), api.POST_CONFIG(data))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(res => {
+        return resolve(new Bounty(res));
+      })
+      .catch((error) => {
+        return reject(error);
+      })      
+    })
   }
+
+  static closeBountyAPI({ bounty }) {
+
+    return new Promise((resolve, reject) => {
+      return fetch(
+        generateApiUrl(`bounty/${bounty.id}/cancel_bounty`),
+        api.POST_CONFIG()
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          return resolve(res);
+        })
+        .catch((error) => {
+          captureEvent({
+            error,
+            msg: "Failed to close bounty",
+            data: { bountyId: bounty.id },
+          });
+          return reject(error);
+        })        
+    });
+
+  }  
 
   get id(): ID {
     return this._id;

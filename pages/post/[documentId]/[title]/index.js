@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import { Post as PostDoc } from "~/config/types/post";
+import Bounty from "~/config/types/bounty";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -61,14 +62,52 @@ const Post = (props) => {
   const [post, setPost] = useState({});
   const [postV2, setPostV2] = useState(new PostDoc({}));
   const [discussionCount, setCount] = useState(0);
+  const [bounty, setBounty] = useState(null);
 
   useEffectFetchPost({ setPost, setPostV2, query: props.query });
+
+  useEffect(() => {
+    if (postV2.isReady) {
+      setBounty(postV2.bounties[0]);
+    }
+  }, [postV2]);
 
   useEffect(() => {
     if (post?.id) {
       setCount(post.discussion_count);
     }
   }, [post]);
+
+  const handleAwardBounty = ({
+    objectId,
+    recipientUserName,
+    recipientUserId,
+    contentType,
+  }) => {
+    if (bounty && confirm(`Award ${bounty.amount} to ${recipientUserName}?`)) {
+      Bounty.awardAPI({
+        bountyId: bounty.id,
+        recipientUserId,
+        objectId,
+        contentType,
+      })
+        .then((bounty) => {
+          props.setMessage("Bounty awarded successfully");
+          props.showMessage({ show: true, error: false });
+
+          setBounty(null);
+
+          var event = new CustomEvent("bounty-awarded", {
+            detail: { objectId, contentType, amount: bounty.amount },
+          });
+          document.dispatchEvent(event);
+        })
+        .catch((err) => {
+          props.setMessage("Failed to award bounty");
+          props.showMessage({ show: true, error: true });
+        });
+    }
+  };
 
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
@@ -133,6 +172,8 @@ const Post = (props) => {
               post={postV2}
               removePost={removePost}
               restorePost={restorePost}
+              setBounty={setBounty}
+              bounty={bounty}
               shareUrl={process.browser && window.location.href}
             />
             <div className={css(styles.postPageSection)}>
@@ -146,6 +187,8 @@ const Post = (props) => {
                   calculatedCount={discussionCount}
                   setCount={setCount}
                   isCollapsible={false}
+                  bounty={bounty}
+                  handleAwardBounty={handleAwardBounty}
                 />
               )}
             </div>
@@ -210,6 +253,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
   updateUser: AuthActions.updateUser,
   setUploadingPaper: AuthActions.setUploadingPaper,
   getLimitations: LimitationsActions.getLimitations,

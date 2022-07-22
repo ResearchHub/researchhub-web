@@ -22,15 +22,14 @@ const ContentSupport = (props) => {
     openLoginModal,
     openContentSupportModal,
   } = props;
-  const [count, setCount] = useState((data && data.promoted) || 0);
+
+  const [count, setCount] = useState(
+    parseFloat(data?.promoted + data?.awarded_bounty_amount) || 0
+  );
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
-    if (data && data.promoted) {
-      if (data.promoted >= count) {
-        setCount(data.promoted);
-      }
-    }
+    setCount(parseFloat(data?.promoted + data?.awarded_bounty_amount) || 0);
   }, [data]);
 
   const handleClick = () => {

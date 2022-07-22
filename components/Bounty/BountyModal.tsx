@@ -6,7 +6,9 @@ import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import Bounty from "~/config/types/bounty";
-import SuccessScreen from "./SuccessScreen";
+import BountySuccessScreen from "./BountySuccessScreen";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
 
 const BOUNTY_DEFAULT_AMOUNT = 1000;
 const BOUNTY_RH_PERCENTAGE = 9;
@@ -18,12 +20,13 @@ type Props = {
   withPreview: Boolean;
   closeModal: Function;
   handleBountyAdded: Function;
-  removeBounty: Function;
   addBtnLabel?: string;
   bountyText: string;
   postId: number;
   postSlug: string;
   unifiedDocId: number;
+  showMessage: Function;
+  setMessage: Function;
 };
 
 function BountyModal({
@@ -31,18 +34,19 @@ function BountyModal({
   withPreview,
   closeModal,
   handleBountyAdded,
-  removeBounty,
   unifiedDocId,
   postId,
   postSlug,
   bountyText,
+  showMessage,
+  setMessage,
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
     ReactTooltip.rebuild();
   });
 
-  const [bountyAmount, setBountyAmount] = useState(BOUNTY_DEFAULT_AMOUNT);
+  const [offeredAmount, setOfferedAmount] = useState<Number>(parseFloat(BOUNTY_DEFAULT_AMOUNT + ""));
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -50,11 +54,11 @@ function BountyModal({
   const handleClose = () => {
     closeModal();
     setSuccess(false);
-    setBountyAmount(BOUNTY_DEFAULT_AMOUNT);
+    setOfferedAmount(BOUNTY_DEFAULT_AMOUNT);
   };
 
   const handleBountyInputChange = (event) => {
-    setBountyAmount(event.target.value);
+    setOfferedAmount(parseFloat(event.target.value || "0"));
     if (event.target.value < MIN_RSC_REQUIRED) {
       setHasMinRscAlert(true);
       setHasMaxRscAlert(false);
@@ -67,37 +71,42 @@ function BountyModal({
     }
   };
 
+  const calcResearchHubAmount = ({ offeredAmount }) => {
+    return parseFloat(((BOUNTY_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10))
+  }
+
+  const calcTotalAmount = ({ offeredAmount }) => {
+    return parseFloat(offeredAmount + "") + calcResearchHubAmount({ offeredAmount });
+  }  
+
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
-      const netBountyAmount =
-        parseFloat(bountyAmount) + parseFloat(researchHubAmount);
+      const totalBountyAmount = calcTotalAmount({ offeredAmount });
       if (withPreview) {
-        handleBountyAdded({
-          grossBountyAmount: bountyAmount,
-          netBountyAmount: netBountyAmount,
-        });
+        // handleBountyAdded({
+        //   grossBountyAmount: bountyAmount,
+        //   totalBountyAmount: totalBountyAmount,
+        // });
         closeModal();
       } else {
         Bounty.createAPI({
-          bountyAmount: netBountyAmount,
+          bountyAmount: offeredAmount,
           unifiedDocId: unifiedDocId,
         }).then((createdBounty) => {
-          console.log("createdBounty", createdBounty);
-          handleBountyAdded({
-            bountyAmt: bountyAmount,
-            bountyId: createdBounty.id,
-            bounty: createdBounty,
-          });
+          handleBountyAdded(createdBounty);
           setSuccess(true);
-        });
+        }).catch((error) => {
+          console.log('error', error);
+          setMessage("Failed to create bounty");
+          showMessage({ show: true, error: true });
+        })
       }
     }
   };
 
-  const showAlertText = hasMinRscAlert || hasMaxRscAlert || withPreview;
-  const researchHubAmount = parseFloat(
-    ((BOUNTY_RH_PERCENTAGE / 100) * bountyAmount).toFixed(2)
-  );
+  const showAlertNextToBtn = hasMinRscAlert || hasMaxRscAlert || withPreview;
+  const researchHubAmount = calcResearchHubAmount({ offeredAmount });
+  const totalAmount = calcTotalAmount({ offeredAmount });
   return (
     <BaseModal
       closeModal={handleClose}
@@ -112,11 +121,11 @@ function BountyModal({
     >
       <>
         {success ? (
-          <SuccessScreen
+          <BountySuccessScreen
             bountyText={bountyText}
             postSlug={postSlug}
             postId={postId}
-            bountyAmount={bountyAmount}
+            bountyAmount={offeredAmount}
           />
         ) : (
           <>
@@ -133,7 +142,7 @@ function BountyModal({
                     ResearchHub Community
                   </div>
                   <div>
-                    • 5% of bounty amount will be paid to ResearchHub Inc
+                    • 7% of bounty amount will be paid to ResearchHub Inc
                   </div>
                 </div>
               </div>
@@ -149,7 +158,7 @@ function BountyModal({
             >
               <div className={css(bountyTooltip.bodyContainer)}>
                 <div className={css(bountyTooltip.desc)}>
-                  The bounty award will be for {bountyAmount} RSC
+                  Amount including fees
                 </div>
               </div>
             </ReactTooltip>
@@ -176,7 +185,7 @@ function BountyModal({
                           className={css(styles.input)}
                           type="number"
                           onChange={handleBountyInputChange}
-                          value={bountyAmount}
+                          value={offeredAmount + ""}
                         />
                       </span>
                       <span className={css(styles.rscText)}>RSC</span>
@@ -185,7 +194,7 @@ function BountyModal({
 
                   <div className={css(styles.lineItem, styles.platformFeeLine)}>
                     <div className={css(styles.lineItemText)}>
-                      Research Hub Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
+                      Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
                       <span
                         className={css(styles.tooltipIcon)}
                         data-tip={""}
@@ -205,7 +214,7 @@ function BountyModal({
                   <div className={css(styles.lineItem, styles.netAmountLine)}>
                     <ReactTooltip effect="solid" />
                     <div className={css(styles.lineItemText)}>
-                      Total RSC Spent
+                      Total
                       <span
                         className={css(styles.tooltipIcon)}
                         data-tip={""}
@@ -222,10 +231,7 @@ function BountyModal({
                     >
                       <span className={css(styles.valueNumber)}>
                         <span>
-                          {(
-                            parseFloat(bountyAmount) +
-                            parseFloat(researchHubAmount)
-                          ).toLocaleString()}
+                          {totalAmount.toLocaleString()}
                         </span>
                         <ResearchCoinIcon
                           overrideStyle={styles.rscIcon}
@@ -248,7 +254,7 @@ function BountyModal({
                     solution
                   </span>
                 </div>
-                <div className={css(infoSectionStyles.infoRow)}>
+                {/* <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
                     {
                       <MedalIcon
@@ -260,13 +266,13 @@ function BountyModal({
                   </span>{" "}
                   Award either a partial or full bounty depending on whether the
                   solution satisfies your request
-                </div>
+                </div> */}
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
                     {icons.undo}
                   </span>{" "}
                   If no solution satisfies your request, the full bounty amount
-                  (except the platform fee) will be refunded to you
+                  (excluding platform fee) will be refunded to you
                 </div>
               </div>
 
@@ -274,7 +280,7 @@ function BountyModal({
                 <div
                   className={css(
                     styles.buttonRow,
-                    hasMinRscAlert && styles.buttonRowWithText
+                    showAlertNextToBtn && styles.buttonRowWithText
                   )}
                 >
                   {hasMinRscAlert ? (
@@ -405,8 +411,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   input: {
-    width: 60,
-    marginRight: 5,
+    width: 80,
+    marginRight: -10,
     textAlign: "right",
     padding: "5px 7px",
     border: `2px solid rgb(229 229 230)`,
@@ -439,11 +445,6 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingTop: 25,
     paddingBottom: 25,
-  },
-  removeBountyBtn: {
-    color: colors.RED(),
-    fontSize: 14,
-    fontWeight: 400,
   },
   addBountyContainer: {
     display: "flex",
@@ -488,7 +489,7 @@ const styles = StyleSheet.create({
   lineItemValue: {
     display: "flex",
     marginLeft: "auto",
-    width: 120,
+    width: 150,
     alignItems: "center",
   },
   lineItemText: {
@@ -529,4 +530,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BountyModal;
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(null, mapDispatchToProps)(BountyModal);
