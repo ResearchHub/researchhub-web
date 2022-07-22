@@ -118,6 +118,7 @@ class ThreadTextEditor extends Component {
             initialValue={this.state.editorState}
             hasHeader={this.props.hasHeader}
             postType={this.props.postType}
+            isAcceptedAnswer={this.props.isAcceptedAnswer}
           />
         </PermissionNotificationWrapper>
       );
@@ -147,6 +148,7 @@ class ThreadTextEditor extends Component {
           editing={this.props.editing}
           focusEditor={this.props.focusEditor}
           postType={this.props.postType}
+          isAcceptedAnswer={this.props.isAcceptedAnswer}
         />
       );
     }

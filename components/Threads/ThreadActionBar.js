@@ -1,4 +1,3 @@
-import { breakpoints } from "~/config/themes/screen";
 import { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
@@ -7,6 +6,9 @@ import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import icons, { MedalIcon } from "~/config/themes/icons";
 import ThreadTextEditor from "./ThreadTextEditor";
+import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
+import { connect } from "react-redux";
+import { MessageActions } from "~/redux/message";
 
 class ThreadActionBar extends Component {
   constructor(props) {
@@ -109,7 +111,23 @@ class ThreadActionBar extends Component {
           {this.props.showAcceptedAnswerBtn && (
             <div
               className={css(styles.text, styles.action)}
-              onClick={() => null}
+              onClick={() =>
+                acceptAnswerAPI({
+                  documentType: this.props.documentType,
+                  threadId: this.props.threadID,
+                  documentId: this.props.documentID,
+                  onSuccess: (response) => {
+                    var event = new CustomEvent("answer-accepted", {
+                      detail: { threadId: this.props.threadID },
+                    });
+                    document.dispatchEvent(event);
+                  },
+                  onError: (error) => {
+                    this.props.setMessage("Failed to set accepted answer");
+                    this.props.showMessage({ show: true, error: true });
+                  },
+                })
+              }
             >
               <span
                 className={css(styles.icon, styles.acceptAnswerIcon)}
@@ -277,4 +295,9 @@ const styles = StyleSheet.create({
   replyIcon: {},
 });
 
-export default ThreadActionBar;
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(null, mapDispatchToProps)(ThreadActionBar);

@@ -610,7 +610,13 @@ class Editor extends Component {
       });
 
       return (
-        <div key={this.props.uid} className={css(styles.readOnly)}>
+        <div
+          key={this.props.uid}
+          className={css(
+            styles.readOnly,
+            this.props.isAcceptedAnswer && styles.isAcceptedAnswer
+          )}
+        >
           <ReactQuill
             ref={this.reactQuillRef}
             readOnly={true}
@@ -668,6 +674,9 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     border: `1px solid ${colors.LIGHT_GREY()}`,
     boxSizing: "border-box",
+  },
+  isAcceptedAnswer: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
   },
   footerContainer: {
     display: "flex",
