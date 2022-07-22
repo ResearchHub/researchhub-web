@@ -81,7 +81,7 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  const renderBadge = ({ type, isSelectedAnswer = false }) => {
+  const renderBadge = ({ type, isAcceptedAnswer = false }) => {
     if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
       const postType = postTypes.find((t) => t.value === type);
       return (
@@ -100,11 +100,11 @@ const DiscussionPostMetadata = (props) => {
             className={css(
               badge.container,
               badge.answer,
-              isSelectedAnswer && badge.selectedAnswer
+              isAcceptedAnswer && badge.acceptedAnswer
             )}
           >
             <span className={css(badge.icon)}>
-              {isSelectedAnswer ? icons.check : postType.icon}
+              {isAcceptedAnswer ? icons.check : postType.icon}
             </span>
             <span className={css(badge.label)}>{postType.label}</span>
           </span>
@@ -170,7 +170,10 @@ const DiscussionPostMetadata = (props) => {
           {/* {renderHeadline()} */}
         </div>
       </div>
-      {renderBadge({ type: discussionType })}
+      {renderBadge({
+        type: discussionType,
+        isAcceptedAnswer: data.is_accepted_answer,
+      })}
     </div>
   );
 };
@@ -265,7 +268,7 @@ const badge = StyleSheet.create({
     background: colors.NEW_GREEN(0.1),
     color: colors.NEW_GREEN(),
   },
-  selectedAnswer: {
+  acceptedAnswer: {
     background: colors.NEW_GREEN(),
     color: "white",
   },

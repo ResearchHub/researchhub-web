@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState, useMemo } from "react";
+import { Fragment, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -91,6 +91,31 @@ const DiscussionTab = (props) => {
     useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
+  function handleAcceptedAnswer(e) {
+    const newAnswerId = e.detail.threadId;
+
+    const updatedThreads = threads.map((t) => {
+      if (t.id === newAnswerId) {
+        t.is_accepted_answer = true;
+      } else if (t.id !== newAnswerId && t.is_accepted_answer === true) {
+        t.is_accepted_answer = false;
+      }
+
+      return t;
+    });
+    console.log("updatedTheread", updatedThreads);
+    setThreads(updatedThreads);
+    setFormattedThreads(formatThreads(threads, basePath));
+  }
+
+  useEffect(() => {
+    document.addEventListener("answer-accepted", handleAcceptedAnswer);
+
+    return () => {
+      document.removeEventListener("answer-accepted", handleAcceptedAnswer);
+    };
+  }, [threads]);
+
   useEffect(() => {
     handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
@@ -151,6 +176,7 @@ const DiscussionTab = (props) => {
                       currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
                       context="DOCUMENT"
+                      isAcceptedAnswer={t.data.is_accepted_answer}
                     />
                   );
                 })
@@ -436,7 +462,6 @@ const DiscussionTab = (props) => {
   const selectedFilter =
     filterOptions.find((f) => f.isSelected) ||
     filterOptions.find((f) => f.default);
-
   return (
     <Fragment>
       <PostingGuidelinesModal

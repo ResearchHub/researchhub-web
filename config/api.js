@@ -1212,6 +1212,7 @@ const routes = (BASE_URL) => {
         );
       }
     },
+    buildPaperChainUrl: buildPaperChainUrl,
   };
 
   function buildPaperChainUrl(

@@ -555,6 +555,7 @@ class DiscussionEntry extends Component {
       paper,
       path,
       post,
+      isAcceptedAnswer,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
@@ -693,6 +694,7 @@ class DiscussionEntry extends Component {
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
                     postType={postType}
+                    isAcceptedAnswer={isAcceptedAnswer}
                   />
                 </div>
               </Fragment>
