@@ -7,6 +7,7 @@ import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import killswitch from "~/config/killswitch/killswitch";
+import { filterNull } from "~/config/utils/nullchecks";
 
 const UnifiedDocFeedMenu = ({
   subFilters: { filterBy, scope },
@@ -113,7 +114,7 @@ const UnifiedDocFeedMenu = ({
   };
 
   const getTypeFilters = () => {
-    const types = [
+    const types = filterNull([
       {
         value: undefined,
         label: "All Content",
@@ -126,15 +127,17 @@ const UnifiedDocFeedMenu = ({
         value: "posts",
         label: "Posts",
       },
-      killswitch("bountyQuestion") && {
-        value: "questions",
-        label: "Questions",
-      },
+      killswitch("bountyQuestion")
+        ? {
+            value: "questions",
+            label: "Questions",
+          }
+        : null,
       {
         value: "hypothesis",
         label: "Meta-Studies",
       },
-    ];
+    ]);
 
     return types.map((t) => {
       t.isSelected = t.value === router.query.type ? true : false;
