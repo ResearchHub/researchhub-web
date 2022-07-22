@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
 import Link from "next/link";
+import numeral from "numeral";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -56,6 +57,31 @@ const TransactionCard = (props) => {
 
   const etherscanLink = getEtherscanLink(transaction.source?.transaction_hash);
 
+  const getTitle = () => {
+    let title =
+      transaction.source?.purchase_type === "DOI"
+        ? `DOI`
+        : transaction.source?.purchase_type === "BOOST"
+        ? "Supported Content"
+        : transaction.source?.distribution_type === "PURCHASE"
+        ? "Received Support"
+        : transaction.source?.distribution_type
+        ? transaction.source?.distribution_type
+            .replaceAll("_", " ")
+            .toLocaleLowerCase()
+        : transaction.source?.to_address
+        ? "Withdrawal"
+        : "";
+
+    if (transaction.readable_content_type === "bounty") {
+      title = `Bounty #${transaction.source.id}: ${transaction.source.status}`;
+    } else if (transaction.readable_content_type === "bountyfee") {
+      title = "ResearchHub Platform Fee";
+    }
+
+    return title;
+  };
+
   return (
     <div
       className={css(styles.transactionCard, style && style)}
@@ -63,21 +89,7 @@ const TransactionCard = (props) => {
     >
       <div className={css(styles.row)}>
         <div className={css(styles.column)}>
-          <div className={css(styles.maintext)}>
-            {transaction.source?.purchase_type === "DOI"
-              ? `DOI`
-              : transaction.source?.purchase_type === "BOOST"
-              ? "Supported Content"
-              : transaction.source?.distribution_type === "PURCHASE"
-              ? "Received Support"
-              : transaction.source?.distribution_type
-              ? transaction.source?.distribution_type
-                  .replaceAll("_", " ")
-                  .toLocaleLowerCase()
-              : transaction.source?.to_address
-              ? "Withdrawal"
-              : ""}
-          </div>
+          <div className={css(styles.maintext)}>{getTitle()}</div>
           {transaction.source?.transaction_hash ? (
             <a
               href={etherscanLink}
@@ -102,6 +114,23 @@ const TransactionCard = (props) => {
               </a>
             </Link>
           )}
+          {transaction.source?.bounty_slug === "post" ||
+            (transaction.source?.bounty_slug === "question" && (
+              <Link
+                href={`/post/${transaction.content_id}/${transaction.content_slug}`}
+              >
+                <a
+                  className={css(styles.metatext)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <div className={css(styles.metatext)}>
+                    {transaction.content_title}
+                  </div>
+                </a>
+              </Link>
+            ))}
           {transaction.source?.purchase_type === "DOI" && (
             <Link
               href={`/post/${transaction.source.source.id}/${transaction.source.source.slug}`}
@@ -186,7 +215,7 @@ const TransactionCard = (props) => {
           )}
         </div>
         <div className={css(styles.amountContainer)}>
-          {transaction.amount}
+          {numeral(transaction.amount).format("0.[0000000000]")}
           <img
             className={css(styles.coin)}
             src={"/static/icons/coin-filled.png"}

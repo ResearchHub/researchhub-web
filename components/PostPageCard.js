@@ -19,6 +19,7 @@ import router from "next/router";
 import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import killswitch from "~/config/killswitch/killswitch";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -27,10 +28,15 @@ const DynamicCKEditor = dynamic(() =>
 class PostPageCard extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showPostEditor: false,
       postBody: this.props.post.markdown,
       post: this.props.post,
+      bountyExists: this.props.post.bounties.length > 0,
+      bountyAmt: this.props.post.bounties[0]?.amount,
+      bounty: null,
+      bountyId: null,
     };
     this.editorRef = createRef();
   }
@@ -40,6 +46,10 @@ class PostPageCard extends Component {
       this.setState({
         post: this.props.post,
         postBody: this.props.post.markdown,
+        bountyExists: this.props.post.bounties.length > 0,
+        bountyAmt: this.props.post.bounties[0]?.amount,
+        bountyId: this.props.post.bounties[0]?.id,
+        bounty: this.props.post.bounties[0],
       });
     }
   }
@@ -104,7 +114,7 @@ class PostPageCard extends Component {
   };
 
   render() {
-    const { post, removePost, restorePost } = this.props;
+    const { post, removePost, restorePost, user } = this.props;
     const { postBody } = this.state;
     const isEditMode = this.state.showPostEditor;
 
@@ -121,6 +131,9 @@ class PostPageCard extends Component {
             document={post}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
+            hasBounties={this.state.bountyExists}
+            bountyAmt={this.state.bountyAmt}
+            bounty={this.state.bounty}
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
@@ -174,15 +187,32 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {false && (
-                    <div className={css(styles.createBountyContainer)}>
-                      <CreateBountyBtn
-                        onBountyAdd={() => null}
-                        bountyText={this.toPlaintext(postBody)}
-                        post={post}
-                      />
-                    </div>
-                  )}
+                  {killswitch("bounty") &&
+                    post.unifiedDocument.documentType === "question" &&
+                    post.unifiedDocument.createdBy.id === user.id && (
+                      <div className={css(styles.createBountyContainer)}>
+                        <CreateBountyBtn
+                          onBountyAdd={({ bountyAmt, bountyId, bounty }) => {
+                            this.setState({
+                              bountyExists: true,
+                              bountyAmt,
+                              bountyId,
+                              bounty,
+                            });
+                          }}
+                          bountyText={this.toPlaintext(postBody)}
+                          post={post}
+                          bountyAmt={this.state.bountyAmt}
+                          bountyExists={this.state.bountyExists}
+                          bountyId={this.state.bountyId}
+                          onBountyCancelled={() => {
+                            this.setState({
+                              bountyExists: false,
+                            });
+                          }}
+                        />
+                      </div>
+                    )}
                 </div>
               )}
             </ReactPlaceholder>

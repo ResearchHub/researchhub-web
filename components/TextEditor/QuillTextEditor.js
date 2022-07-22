@@ -25,6 +25,7 @@ import trimQuillEditorContents from "./util/trimQuillEditorContents";
 import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
+import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 
 class Editor extends Component {
   constructor(props) {
@@ -497,6 +498,14 @@ class Editor extends Component {
                   Cancel
                 </div>
               )}
+              {/* <div className={css(styles.bountyBtnContainer)}>
+                <CreateBountyBtn
+                  onBountyChange={
+                    (amountDetails) => null
+                    // setBountyAmountDetails(amountDetails)
+                  }
+                />
+              </div>               */}
               <FormButton
                 onClick={this.onSubmit}
                 label={this.props.editing ? "Save changes" : label}
@@ -610,7 +619,13 @@ class Editor extends Component {
       });
 
       return (
-        <div key={this.props.uid} className={css(styles.readOnly)}>
+        <div
+          key={this.props.uid}
+          className={css(
+            styles.readOnly,
+            this.props.isAcceptedAnswer && styles.isAcceptedAnswer
+          )}
+        >
           <ReactQuill
             ref={this.reactQuillRef}
             readOnly={true}
@@ -669,6 +684,9 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREY()}`,
     boxSizing: "border-box",
   },
+  isAcceptedAnswer: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
+  },
   footerContainer: {
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
@@ -686,6 +704,9 @@ const styles = StyleSheet.create({
   },
   fullEditor: {
     display: "none",
+  },
+  bountyBtnContainer: {
+    marginRight: 15,
   },
   showFullEditor: {
     display: "block",

@@ -9,7 +9,7 @@ import Bounty from "~/config/types/bounty";
 import SuccessScreen from "./SuccessScreen";
 
 const BOUNTY_DEFAULT_AMOUNT = 1000;
-const BOUNTY_RH_PERCENTAGE = 7;
+const BOUNTY_RH_PERCENTAGE = 9;
 const MIN_RSC_REQUIRED = 50;
 const MAX_RSC_REQUIRED = 1000000;
 
@@ -23,6 +23,7 @@ type Props = {
   bountyText: string;
   postId: number;
   postSlug: string;
+  unifiedDocId: number;
 };
 
 function BountyModal({
@@ -31,6 +32,7 @@ function BountyModal({
   closeModal,
   handleBountyAdded,
   removeBounty,
+  unifiedDocId,
   postId,
   postSlug,
   bountyText,
@@ -48,6 +50,7 @@ function BountyModal({
   const handleClose = () => {
     closeModal();
     setSuccess(false);
+    setBountyAmount(BOUNTY_DEFAULT_AMOUNT);
   };
 
   const handleBountyInputChange = (event) => {
@@ -66,15 +69,25 @@ function BountyModal({
 
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
+      const netBountyAmount =
+        parseFloat(bountyAmount) + parseFloat(researchHubAmount);
       if (withPreview) {
         handleBountyAdded({
           grossBountyAmount: bountyAmount,
-          netBountyAmount: bountyAmount - researchHubAmount,
+          netBountyAmount: netBountyAmount,
         });
         closeModal();
       } else {
-        Bounty.createAPI({ bountyAmount }).then((createdBounty) => {
-          console.log(createdBounty);
+        Bounty.createAPI({
+          bountyAmount: netBountyAmount,
+          unifiedDocId: unifiedDocId,
+        }).then((createdBounty) => {
+          console.log("createdBounty", createdBounty);
+          handleBountyAdded({
+            bountyAmt: bountyAmount,
+            bountyId: createdBounty.id,
+            bounty: createdBounty,
+          });
           setSuccess(true);
         });
       }
@@ -82,8 +95,8 @@ function BountyModal({
   };
 
   const showAlertText = hasMinRscAlert || hasMaxRscAlert || withPreview;
-  const researchHubAmount = parseInt(
-    ((BOUNTY_RH_PERCENTAGE / 100) * bountyAmount).toFixed(0)
+  const researchHubAmount = parseFloat(
+    ((BOUNTY_RH_PERCENTAGE / 100) * bountyAmount).toFixed(2)
   );
   return (
     <BaseModal
@@ -136,7 +149,7 @@ function BountyModal({
             >
               <div className={css(bountyTooltip.bodyContainer)}>
                 <div className={css(bountyTooltip.desc)}>
-                  Actual amount bounty awardee(s) will receive
+                  The bounty award will be for {bountyAmount} RSC
                 </div>
               </div>
             </ReactTooltip>
@@ -183,7 +196,7 @@ function BountyModal({
                     </div>
                     <div className={css(styles.lineItemValue)}>
                       <span className={css(styles.valueNumber)}>
-                        <span>- {researchHubAmount.toLocaleString()}</span>
+                        <span>+ {researchHubAmount.toLocaleString()}</span>
                       </span>
                       <span className={css(styles.rscText)}>RSC</span>
                     </div>
@@ -192,7 +205,7 @@ function BountyModal({
                   <div className={css(styles.lineItem, styles.netAmountLine)}>
                     <ReactTooltip effect="solid" />
                     <div className={css(styles.lineItemText)}>
-                      Net Bounty Award
+                      Total RSC Spent
                       <span
                         className={css(styles.tooltipIcon)}
                         data-tip={""}
@@ -209,7 +222,10 @@ function BountyModal({
                     >
                       <span className={css(styles.valueNumber)}>
                         <span>
-                          {(bountyAmount - researchHubAmount).toLocaleString()}
+                          {(
+                            parseFloat(bountyAmount) +
+                            parseFloat(researchHubAmount)
+                          ).toLocaleString()}
                         </span>
                         <ResearchCoinIcon
                           overrideStyle={styles.rscIcon}
@@ -355,7 +371,7 @@ const infoSectionStyles = StyleSheet.create({
     paddingLeft: 30,
     fontSize: 14,
     lineHeight: "20px",
-    alignItems: "center",
+    alignItems: "flex-start",
     ":last-child": {
       marginBottom: 0,
     },

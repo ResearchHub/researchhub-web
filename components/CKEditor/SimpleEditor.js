@@ -27,6 +27,7 @@ export default function SimpleEditor({
 
   const editorConfiguration = {
     ...(noTitle && { removePlugins: ["Title"] }),
+    placeholder,
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
@@ -94,7 +95,6 @@ export default function SimpleEditor({
 
                 setEditorInstance(editor);
               }}
-              placeholder={placeholder}
             />
           </div>
         ) : null}
