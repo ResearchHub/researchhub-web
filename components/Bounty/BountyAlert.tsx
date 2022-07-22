@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { ResearchCoinIcon } from "~/config/themes/icons";
+import numeral from "numeral";
 import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
 import ALink from "../ALink";
 
@@ -9,6 +10,9 @@ type BountyAlertParams = {
 };
 
 const BountyAlert = ({ bounty }: BountyAlertParams) => {
+  if (!bounty) {
+    return null;
+  }
   const { timeRemaining, createdBy, amount, status } = bounty;
 
   if (status !== BOUNTY_STATUS.OPEN) {
@@ -30,7 +34,7 @@ const BountyAlert = ({ bounty }: BountyAlertParams) => {
           )}
           {` `}is offering{" "}
           <span className={css(styles.strong)}>
-            {amount.toLocaleString()} RSC
+            {numeral(amount).format("0.[0000000000]")} RSC
             <ResearchCoinIcon
               width={16}
               height={16}

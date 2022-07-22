@@ -119,7 +119,7 @@ function CreateBountyBtn({
               >
                 {bountyExists
                   ? `Close your ${numeral(bountyAmt).format(
-                      "0.[0000]"
+                      "0.[0000000000]"
                     )} RSC Bounty`
                   : "Add ResearchCoin Bounty"}
               </span>

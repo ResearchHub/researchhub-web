@@ -33,6 +33,7 @@ type Args = {
   openPaperPDFModal?: Function;
   currentUser?: any;
   hasBounties?: boolean;
+  bounty: any;
 };
 
 function DocumentHeader({
@@ -44,6 +45,7 @@ function DocumentHeader({
   openPaperPDFModal,
   currentUser,
   hasBounties,
+  bounty,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -241,7 +243,7 @@ function DocumentHeader({
           {hasBounties && (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}
-              <BountyAlert bounty={document.bounties[0]} />
+              <BountyAlert bounty={bounty} />
             </div>
           )}
           <ReactTooltip />
