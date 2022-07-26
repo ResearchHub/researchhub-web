@@ -1,5 +1,6 @@
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -9,17 +10,16 @@ import AbstractPlaceholder from "./Placeholders/AbstractPlaceholder";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
+import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 import DocumentHeader from "./Document/DocumentHeader";
 import dynamic from "next/dynamic";
+import killswitch from "~/config/killswitch/killswitch";
 import ReactHtmlParser from "react-html-parser";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
 import removeMd from "remove-markdown";
 import router from "next/router";
-import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import killswitch from "~/config/killswitch/killswitch";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
