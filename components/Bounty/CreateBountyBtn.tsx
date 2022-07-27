@@ -25,7 +25,7 @@ function CreateBountyBtn({
 }): ReactElement {
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
-console.log('bounty', bounty)
+
   const closeBounty = () => {
     alert.show({
       text: <div>Are you sure you want to close your bounty?</div>,

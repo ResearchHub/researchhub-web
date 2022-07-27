@@ -127,12 +127,10 @@ const UnifiedDocFeedMenu = ({
         value: "posts",
         label: "Posts",
       },
-      killswitch("bountyQuestion")
-        ? {
-            value: "questions",
-            label: "Questions",
-          }
-        : null,
+      {
+        value: "questions",
+        label: "Questions",
+      },
       {
         value: "hypothesis",
         label: "Meta-Studies",
