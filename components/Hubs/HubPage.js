@@ -542,32 +542,6 @@ class HubPage extends Component {
     return (
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.rhHomeContentContainer, styles.column)}>
-          <MobileOnly>
-            <ExitableBanner
-              bannerKey="SciCon2022"
-              content={
-                <a
-                  className={css(styles.bannerContainer)}
-                  href="https://researchhub.com/scicon2022?utm_campaign=scicon2022&utm_medium=banner"
-                  target="__blank"
-                >
-                  <img
-                    style={{
-                      maxHeight: "100%",
-                      maxWidth: "1500px",
-                      objectFit: "contain",
-                      width: "100%",
-                    }}
-                    src="/static/banner/sci-con-banner-small-screen.png"
-                    srcSet={`
-                /static/banner/scicon-banner.webp ${breakpoints.mobile.int}w, /static/banner/sci-con-banner-small-screen.png ${breakpoints.small.int}w
-                `}
-                  />
-                </a>
-              }
-              contentStyleOverride={{ maxWidth: 1500 }}
-            />
-          </MobileOnly>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
