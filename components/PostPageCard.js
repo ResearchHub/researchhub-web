@@ -178,8 +178,7 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {killswitch("bounty") &&
-                    post.unifiedDocument.documentType === "question" &&
+                  {post.unifiedDocument.documentType === "question" &&
                     post.unifiedDocument.createdBy.id === user.id && (
                       <div className={css(styles.createBountyContainer)}>
                         <CreateBountyBtn
