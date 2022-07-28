@@ -7,7 +7,7 @@ import { ClampedText } from "~/components/Typography";
 // Config
 import colors from "~/config/themes/colors";
 import { truncateText } from "~/config/utils/string";
-import { timeAgoStamp } from "~/config/utils/dates";
+import { timeAgoStamp, timeTo } from "~/config/utils/dates";
 
 const HyperLink = (props) => {
   const { text, link, dataTip, onClick, style } = props;
@@ -26,12 +26,12 @@ const HyperLink = (props) => {
 };
 
 const TimeStamp = (props) => {
-  const { date, removeIcon } = props;
+  const { date, removeIcon, timeSince } = props;
 
   return (
     <ClampedText lines={1} textStyles={styles.timestamp}>
       {!removeIcon && <span className={css(styles.timestampDivider)}>•</span>}
-      {timeAgoStamp(date)}
+      {timeSince ? timeTo(date) : timeAgoStamp(date)}
     </ClampedText>
   );
 };

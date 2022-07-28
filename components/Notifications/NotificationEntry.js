@@ -1,3 +1,4 @@
+import { timeTo, timeAgoStamp } from "~/config/utils/dates";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useDispatch, useStore } from "react-redux";
 import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -7,7 +8,6 @@ import { getEtherscanLink } from "~/config/utils/crypto";
 import { HyperLink, TimeStamp } from "./NotificationHelpers";
 import { NotificationActions } from "~/redux/notification";
 import { StyleSheet, css } from "aphrodite";
-import { timeAgoStamp } from "~/config/utils/dates";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
 import Link from "next/link";
@@ -320,6 +320,25 @@ const NotificationEntry = (props) => {
         );
       case "purchase": // synanomous to "support"
         return renderContentSupportNotification();
+      case "bounty":
+        const expirationTimeStamp = (
+          <TimeStamp date={action_item.expiration_date} timeSince={true} />
+        );
+        return (
+          <div className={css(styles.message)}>
+            {" Your bounty is expiring in "}
+            <b>{" 24 hours."}</b>
+            {" Please award it to the best answer. "}
+            <HyperLink
+              link={documentLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={document_title}
+              text={truncateText(document_title)}
+            />
+            {expirationTimeStamp}
+          </div>
+        );
       default:
         return;
     }
