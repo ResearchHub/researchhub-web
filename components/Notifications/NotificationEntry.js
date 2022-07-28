@@ -326,7 +326,9 @@ const NotificationEntry = (props) => {
         );
         return (
           <div className={css(styles.message)}>
-            {" Your bounty is expiring soon: "}
+            {" Your bounty is expiring in "}
+            <b>{" 24 hours."}</b>
+            {" Please award it to the best answer. "}
             <HyperLink
               link={documentLink}
               onClick={onClick}
