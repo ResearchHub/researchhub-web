@@ -22,7 +22,7 @@ import {
   useContext,
 } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import {
   DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
@@ -46,9 +46,11 @@ export type NewPostModalProps = {
 
 export const getModalOptionItems = ({
   currentUser,
+  router,
   setButtonValues,
 }: {
   currentUser: any;
+  router: NextRouter;
   setButtonValues: (values: NewPostButtonContextValues) => void;
 }) => [
   {
@@ -65,7 +67,7 @@ export const getModalOptionItems = ({
       />
     ),
   },
-  
+
   {
     key: "question",
     header: (
@@ -75,7 +77,7 @@ export const getModalOptionItems = ({
           <span className={css(styles.fireIcon)}>{icons.fire}</span>
           <span className={css(styles.newText)}>New</span>
         </span>
-      </div>      
+      </div>
     ),
     description:
       "Ask a science related question. Add a bounty to incentivize quality submissions.",
@@ -87,13 +89,9 @@ export const getModalOptionItems = ({
       });
     },
     icon: (
-      <QuestionIcon
-        onClick={silentEmptyFnc}
-        withAnimation={false}
-        size={40}
-      />
+      <QuestionIcon onClick={silentEmptyFnc} withAnimation={false} size={40} />
     ),
-  },  
+  },
   {
     key: "eln",
     header: "Publish a Post",
@@ -101,12 +99,13 @@ export const getModalOptionItems = ({
       "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
     onClick: async () => {
       /* @ts-ignore */
-      const note = await createNewNote({
+      const note: any = await createNewNote({
         orgSlug: currentUser.organization_slug,
         grouping: NOTE_GROUPS.WORKSPACE,
       });
-      /* @ts-ignore */
-      router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
+      router.push(
+        `/${currentUser.organization_slug}/notebook/${note?.id ?? ""}`
+      );
     },
     icon: (
       <PostIcon
@@ -151,7 +150,11 @@ function NewPostModal({
   const shouldModalStayOpen =
     isOpen &&
     (["paperWizard", "question"].includes(bodyType ?? "") || isMobileScreen);
-  const modalOptionItems = getModalOptionItems(currentUser);
+  const modalOptionItems = getModalOptionItems({
+    currentUser,
+    router,
+    setButtonValues,
+  });
 
   useEffect(
     (): void =>
@@ -286,9 +289,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.ORANGE_DARK2(),
   },
-  newText: {
-
-  },
+  newText: {},
   fireIcon: {
     marginRight: 4,
   },
