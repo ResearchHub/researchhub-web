@@ -14,7 +14,6 @@ const BountyAlert = ({ bounty }: BountyAlertParams) => {
     return null;
   }
   const { timeRemaining, createdBy, amount, status } = bounty;
-
   if (status !== BOUNTY_STATUS.OPEN) {
     return null;
   }
