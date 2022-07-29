@@ -55,7 +55,6 @@ export default class Bounty {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log("res", res);
           return resolve(new Bounty(res));
         })
         .catch((error) => {
