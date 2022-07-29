@@ -30,17 +30,23 @@ export default function renderContributionEntry(
           <AuthorAvatar author={createdBy?.authorProfile} size={25} />
         </div>
         <div className={css(styles.details)}>
-          {createdBy?.authorProfile
-            ? <ALink href={`/user/${createdBy?.authorProfile.id}/overview`}>{createdBy?.authorProfile?.firstName} {createdBy?.authorProfile?.lastName}</ALink>
-            : <span>User N/A</span>
-          }
-          
+          {createdBy?.authorProfile ? (
+            <ALink href={`/user/${createdBy?.authorProfile.id}/overview`}>
+              {createdBy?.authorProfile?.firstName}{" "}
+              {createdBy?.authorProfile?.lastName}
+            </ALink>
+          ) : (
+            <span>User N/A</span>
+          )}
+
           {contentType.name === "comment" ? (
             <>
               {` `}
               <span className={css(styles.icon)}>{icons.commentsAlt}</span>
               {`commented in `}
-              <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">{truncateText(uniDoc.document?.title, 200)}</ALink>
+              <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">
+                {truncateText(uniDoc.document?.title, 200)}
+              </ALink>
             </>
           ) : contentType.name === "paper" ? (
             <>
@@ -48,14 +54,18 @@ export default function renderContributionEntry(
               <span className={css(styles.icon)}>{icons.fileUpload}</span>
               {`uploaded paper `}
               {/*// @ts-ignore*/}
-              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 100)}</ALink>
+              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
+                {truncateText(item?.title, 100)}
+              </ALink>
             </>
           ) : contentType.name === "post" ? (
             <>
               {` `}
               <span className={css(styles.icon)}>{icons.penSquare}</span>
-              {`created post `}
-              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(uniDoc.document?.title, 200)}</ALink>
+              {`created ${uniDoc?.documentType} `}
+              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
+                {truncateText(uniDoc.document?.title, 200)}
+              </ALink>
             </>
           ) : contentType.name === "hypothesis" ? (
             <>
@@ -63,16 +73,24 @@ export default function renderContributionEntry(
               <span className={css(styles.icon)}>{icons.lightbulb}</span>
               {`proposed hypothesis `}
               {/*// @ts-ignore*/}
-              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
+              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
+                {truncateText(item?.title, 200)}
+              </ALink>
             </>
           ) : null}
 
-          {hubs?.length > 0 &&
+          {hubs?.length > 0 && (
             <>
               <span className={css(styles.dot)}> • </span>
               {hubs?.slice(0, 2).map((h, index) => (
                 <>
-                  <ALink theme="solidPrimary" href={`/hubs/${h.slug}`} overrideStyle={styles.hubLink}>{h.name}</ALink>
+                  <ALink
+                    theme="solidPrimary"
+                    href={`/hubs/${h.slug}`}
+                    overrideStyle={styles.hubLink}
+                  >
+                    {h.name}
+                  </ALink>
                   {index < hubs?.slice(0, 2).length - 1 ? ", " : ""}
                 </>
               ))}
@@ -84,20 +102,30 @@ export default function renderContributionEntry(
                   containerStyle={styles.hubDropdownContainer}
                   isOpen={hubsDropdownOpenForKey === key}
                   setIsOpen={(isOpen) => {
-                    setHubsDropdownOpenForKey(isOpen ? key : false)
+                    setHubsDropdownOpenForKey(isOpen ? key : false);
                   }}
                 />
               )}
             </>
-          }
+          )}
 
           <span className={css(styles.dot)}> • </span>
-          <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
+          <span className={css(styles.timestamp)}>
+            {timeSince(createdDate)}
+          </span>
         </div>
         <div className={`${css(styles.actions)} actions`}>
-          {actions.filter(action => action.isActive).map((action) => (
-            <span className={css(styles.action, action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
-          ))}
+          {actions
+            .filter((action) => action.isActive)
+            .map((action) => (
+              <span
+                className={css(styles.action, action.style)}
+                data-tip={action.label}
+                onClick={action.onClick}
+              >
+                {action.html}
+              </span>
+            ))}
         </div>
       </div>
     );
@@ -144,7 +172,7 @@ const styles = StyleSheet.create({
       transition: "0.2s",
     },
   },
-  "hubLink": {
+  hubLink: {
     color: colors.DARKER_GREY(),
     textTransform: "capitalize",
     fontSize: 14,
@@ -191,7 +219,7 @@ const styles = StyleSheet.create({
   commentBody: {
     color: colors.BLACK(0.8),
   },
-  "quoteBar": {
+  quoteBar: {
     marginRight: 10,
     minWidth: 4,
     background: colors.GREY(),
