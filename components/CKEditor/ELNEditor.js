@@ -96,7 +96,7 @@ const ELNEditor = ({
   const parsedNoteTitle = unescapeHtmlString(
     editorInstance.plugins.get("Title").getTitle() ?? "Untitled"
   );
-  console.warn("parsedNoteTitle: ", parsedNoteTitle);
+
   useEffect(() => {
     if (
       !(isNullOrUndefined(typeof window) && isNullOrUndefined(typeof document))
