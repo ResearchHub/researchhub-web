@@ -65,7 +65,6 @@ function TextEditor(props) {
       msg,
       data: { postType, value, selectedPostTypeStruct },
     });
-    console.warn(msg, postType, selectedPostTypeStruct);
     return null;
   }
 

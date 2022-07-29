@@ -48,7 +48,8 @@ function DocumentActions({
   if (unifiedDocument?.documentType === "paper") {
     canEdit = true;
   } else if (
-    (unifiedDocument?.documentType === "post" || unifiedDocument?.documentType === "question" ||
+    (unifiedDocument?.documentType === "post" ||
+      unifiedDocument?.documentType === "question" ||
       unifiedDocument?.documentType === "hypothesis") &&
     isSubmitter
   ) {
@@ -109,10 +110,11 @@ function DocumentActions({
             onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 contentID: unifiedDocument?.document?.id,
-                contentType:
-                  unifiedDocument.documentType === "post"
-                    ? "researchhub_posts"
-                    : unifiedDocument.documentType,
+                contentType: ["post", "question"].includes(
+                  unifiedDocument.documentType
+                )
+                  ? "researchhub_posts"
+                  : unifiedDocument.documentType,
                 flagReason,
                 onError: renderErrorMsg,
                 onSuccess: renderSuccessMsg,
