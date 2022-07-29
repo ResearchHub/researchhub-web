@@ -31,7 +31,7 @@ function SuccessScreen({
   const twitterBountyPreview = `\n\n"${bountyText.slice(
     0,
     249 - twitterPreText.length - link.length
-  )}"\n\n${link}`;
+  )}"\n\n${link}?utm_campaign=twitter_bounty`;
 
   function copyToClipboard() {
     navigator.clipboard.writeText(link);
