@@ -5,6 +5,7 @@ import icons from "~/config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import { useState } from "react";
+import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 
 const NotebookSidebarEntry = ({
   currentNoteId,
@@ -25,7 +26,7 @@ const NotebookSidebarEntry = ({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className={css(styles.noteIcon)}>{icons.paper}</div>
-        {title}
+        {unescapeHtmlString(title)}
         {isOrgMember && (
           <NoteOptionsMenuButton
             currentOrg={currentOrg}

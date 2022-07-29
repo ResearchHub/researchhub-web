@@ -1,5 +1,6 @@
 import { parseCookies, setCookie } from "nookies";
 import { NullableString } from "../types/root_types";
+import { isNullOrUndefined } from "./nullchecks";
 
 type Args = {
   key: string;
@@ -11,7 +12,7 @@ type StorageType = "cookie" | "localStorage";
 const storageKeyPrefix = "researchhub";
 
 export function storeToCookieOrLocalStorage({ key, value }: Args): StorageType {
-  if (typeof window === "undefined") {
+  if (isNullOrUndefined(typeof window)) {
     setCookie(null, key, value ?? "");
     return "cookie";
   } else {
@@ -24,7 +25,7 @@ export function getCookieOrLocalStorageValue({ key }: { key: string }): {
   storageType: StorageType;
   value: NullableString;
 } {
-  if (typeof window === "undefined") {
+  if (isNullOrUndefined(typeof window)) {
     const cookies = parseCookies();
     return { value: cookies[key], storageType: "cookie" };
   } else {

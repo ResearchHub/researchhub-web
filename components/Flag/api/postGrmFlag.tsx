@@ -1,7 +1,12 @@
 import { captureEvent } from "~/config/utils/events";
 import { FLAG_REASON } from "../config/flag_constants";
 import { Helpers } from "@quantfive/js-web-config";
-import { CommentType, ID, KeyOf, RhDocumentType } from "~/config/types/root_types";
+import {
+  CommentType,
+  ID,
+  KeyOf,
+  RhDocumentType,
+} from "~/config/types/root_types";
 import API from "~/config/api";
 
 type FlagGrmContentArgs = {
@@ -26,11 +31,14 @@ export function flagGrmContent({
   onError,
   onSuccess,
 }: FlagGrmContentArgs): void {
+  const parsedContentType = ["post", "question"].includes(contentType)
+    ? "researchhub_posts"
+    : contentType;
   fetch(
     API.FLAG_GRM_CONTENT({
       commentPayload,
       contentID,
-      contentType,
+      contentType: parsedContentType,
     }),
     API.POST_CONFIG({ reason_choice: flagReason })
   )

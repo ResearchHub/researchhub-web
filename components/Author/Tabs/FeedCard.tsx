@@ -33,6 +33,7 @@ import Ripples from "react-ripples";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
+import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -218,7 +219,9 @@ function FeedCard({
                   <div className={css(styles.rowContainer)}>
                     <div>
                       <h2 className={css(styles.title)}>
-                        {titleAsHtml ? titleAsHtml : title ? title : ""}
+                        {titleAsHtml
+                          ? titleAsHtml
+                          : unescapeHtmlString(title ?? "")}
                       </h2>
                       {(abstract || renderableText) && (
                         <div className={css(styles.abstract) + " clamp2"}>

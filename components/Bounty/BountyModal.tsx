@@ -1,19 +1,21 @@
-import { ReactElement, useState, useEffect } from "react";
+import {
+  BOUNTY_DEFAULT_AMOUNT,
+  BOUNTY_RH_PERCENTAGE,
+  MAX_RSC_REQUIRED,
+  MIN_RSC_REQUIRED,
+} from "./config/constants";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { MessageActions } from "~/redux/message";
+import { ReactElement, useState, useEffect } from "react";
 import BaseModal from "../Modals/BaseModal";
-import ReactTooltip from "react-tooltip";
-import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
-import Button from "../Form/Button";
-import colors from "~/config/themes/colors";
 import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
-import { MessageActions } from "~/redux/message";
-import { connect } from "react-redux";
-
-const BOUNTY_DEFAULT_AMOUNT = 1000;
-const BOUNTY_RH_PERCENTAGE = 9;
-const MIN_RSC_REQUIRED = 50;
-const MAX_RSC_REQUIRED = 1000000;
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
+import ReactTooltip from "react-tooltip";
 
 type Props = {
   isOpen: Boolean;
@@ -45,11 +47,21 @@ function BountyModal({
   useEffect(() => {
     ReactTooltip.rebuild();
   });
-
-  const [offeredAmount, setOfferedAmount] = useState<Number>(parseFloat(BOUNTY_DEFAULT_AMOUNT + ""));
+  const currentUserBalance = getCurrentUser()?.balance ?? 0;
+  const [offeredAmount, setOfferedAmount] = useState<Number>(
+    parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
+  );
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect((): void => {
+    setHasMinRscAlert(
+      currentUserBalance <= MIN_RSC_REQUIRED ||
+        offeredAmount <= MIN_RSC_REQUIRED ||
+        currentUserBalance < offeredAmount
+    );
+  }, [currentUserBalance, offeredAmount]);
 
   const handleClose = () => {
     closeModal();
@@ -72,12 +84,16 @@ function BountyModal({
   };
 
   const calcResearchHubAmount = ({ offeredAmount }) => {
-    return parseFloat(((BOUNTY_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10))
-  }
+    return parseFloat(
+      ((BOUNTY_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10)
+    );
+  };
 
   const calcTotalAmount = ({ offeredAmount }) => {
-    return parseFloat(offeredAmount + "") + calcResearchHubAmount({ offeredAmount });
-  }  
+    return (
+      parseFloat(offeredAmount + "") + calcResearchHubAmount({ offeredAmount })
+    );
+  };
 
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
@@ -92,14 +108,16 @@ function BountyModal({
         Bounty.createAPI({
           bountyAmount: offeredAmount,
           unifiedDocId: unifiedDocId,
-        }).then((createdBounty) => {
-          handleBountyAdded(createdBounty);
-          setSuccess(true);
-        }).catch((error) => {
-          console.log('error', error);
-          setMessage("Failed to create bounty");
-          showMessage({ show: true, error: true });
         })
+          .then((createdBounty) => {
+            handleBountyAdded(createdBounty);
+            setSuccess(true);
+          })
+          .catch((error) => {
+            console.log("error", error);
+            setMessage("Failed to create bounty");
+            showMessage({ show: true, error: true });
+          });
       }
     }
   };
@@ -230,9 +248,7 @@ function BountyModal({
                       )}
                     >
                       <span className={css(styles.valueNumber)}>
-                        <span>
-                          {totalAmount.toLocaleString()}
-                        </span>
+                        <span>{totalAmount.toLocaleString()}</span>
                         <ResearchCoinIcon
                           overrideStyle={styles.rscIcon}
                           width={20}
@@ -287,7 +303,9 @@ function BountyModal({
                     <div
                       className={css(alertStyles.alert, alertStyles.rscAlert)}
                     >
-                      Minimum bounty must be greater than 50 RSC
+                      {currentUserBalance < offeredAmount
+                        ? `Your RSC balance is below offered amount ${offeredAmount}`
+                        : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
                     </div>
                   ) : hasMaxRscAlert ? (
                     <div
