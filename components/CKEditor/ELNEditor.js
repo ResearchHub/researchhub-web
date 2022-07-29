@@ -98,9 +98,7 @@ const ELNEditor = ({
   );
 
   useEffect(() => {
-    if (
-      !(isNullOrUndefined(typeof window) && isNullOrUndefined(typeof document))
-    ) {
+    if (process.browser) {
       document.title =
         isEmpty(parsedNoteTitle) || parsedNoteTitle === "Untitled"
           ? "Researchhub | Notebook"

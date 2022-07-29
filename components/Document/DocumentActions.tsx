@@ -110,11 +110,7 @@ function DocumentActions({
             onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
               flagGrmContent({
                 contentID: unifiedDocument?.document?.id,
-                contentType: ["post", "question"].includes(
-                  unifiedDocument.documentType
-                )
-                  ? "researchhub_posts"
-                  : unifiedDocument.documentType,
+                contentType: unifiedDocument?.documentType,
                 flagReason,
                 onError: renderErrorMsg,
                 onSuccess: renderSuccessMsg,

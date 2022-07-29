@@ -23,7 +23,7 @@ const reviewCategories = {
     label: "Results",
     value: "results",
     description:
-      "Were the study's findings analyzed and interpreted reasonably ? Is the resulting data open and auditable?",
+      "Were the study's findings analyzed and interpreted reasonably? Is the resulting data open and auditable?",
     isDefault: false,
   },
   discussion: {

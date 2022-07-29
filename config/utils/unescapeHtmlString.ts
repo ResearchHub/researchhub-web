@@ -7,5 +7,10 @@ export function unescapeHtmlString(htmlStr: NullableString): string {
     .replace(/&gt;/g, ">")
     .replace(/&lt;/g, "<")
     .replace(/&nbsp;/g, " ")
-    .replace(/&quot;/g, '"');
+    .replace(/&quot;/g, '"')
+    .replace(/&#([0-9]{1,3});/gi, function (_match, numStr) {
+      // parsing numerics
+      var num = parseInt(numStr, 10); 
+      return String.fromCharCode(num);
+    });
 }
