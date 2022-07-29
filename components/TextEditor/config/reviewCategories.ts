@@ -1,34 +1,38 @@
 const reviewCategories = {
-  "overall": {
+  overall: {
     label: "Overall Rating",
     value: "overall",
     description: "What are your overall impressions of this paper?",
     isDefault: true,
   },
-  "impact": {
+  impact: {
     label: "Impact",
     value: "impact",
-    description: "What research question do the authors address? Does the study advance the author's field in a meaningful way?",
+    description:
+      "Is the research question innovative? Do the study's findings advance the authors' field in a meaningful way?",
     isDefault: false,
-  },  
-  "methods": {
+  },
+  methods: {
     label: "Methods",
     value: "methods",
-    description: "Does the experiment design adequately test the study's hypothesis? Are the methods described in enough detail for independent replication?",
+    description:
+      "Does the study design test the authors' hypothesis? Are the methods described in enough detail for independent replication?",
     isDefault: false,
   },
-  "results": {
+  results: {
     label: "Results",
     value: "results",
-    description: "Was the collected data analyzed and presented reasonably? Do the figures clearly represent this data?",
+    description:
+      "Were the study's findings analyzed and interpreted reasonably ? Is the resulting data open and auditable?",
     isDefault: false,
   },
-  "discussion": {
+  discussion: {
     label: "Discussion",
     value: "discussion",
-    description: "Do the results support the authors' conclusions? Are there any alternative interpretations of the data that the authors should have considered?",
+    description:
+      "Do the results support the authors’ conclusions? Are there any alternative interpretations of the study's findings that the authors should have considered?",
     isDefault: false,
-  },    
-}
+  },
+};
 
 export default reviewCategories;
