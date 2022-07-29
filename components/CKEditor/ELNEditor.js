@@ -15,8 +15,10 @@ import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
+import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -25,11 +27,7 @@ const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
 
   try {
     const noteParams = {
-      title:
-        editor.plugins
-          .get("Title")
-          .getTitle()
-          .replace(/&nbsp;/g, " ") || "Untitled",
+      title: parsedNoteTitle,
     };
 
     let noteResponse;
@@ -92,10 +90,27 @@ const ELNEditor = ({
       setPresenceListElement(node);
     }
   }, []);
-
   const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
   const noteIdLength = `${currentNote.id}`.length;
   const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
+  const parsedNoteTitle = unescapeHtmlString(
+    editorInstance.plugins.get("Title").getTitle() ?? "Untitled"
+  );
+  console.warn("parsedNoteTitle: ", parsedNoteTitle);
+  useEffect(() => {
+    if (
+      !(isNullOrUndefined(typeof window) && isNullOrUndefined(typeof document))
+    ) {
+      document.title =
+        isEmpty(parsedNoteTitle) || parsedNoteTitle === "Untitled"
+          ? "Researchhub | Notebook"
+          : parsedNoteTitle;
+    }
+
+    return () => {
+      document.title = "Researchhub";
+    };
+  }, [parsedNoteTitle]);
 
   const onSaveFail = (response) => {
     if (response.status === 403) {
@@ -112,11 +127,7 @@ const ELNEditor = ({
   const getEditorContent = () => {
     return {
       full_src: editorInstance.getData(),
-      title:
-        editorInstance.plugins
-          .get("Title")
-          .getTitle()
-          .replace(/&nbsp;/g, " ") || "Untitled",
+      title: parsedNoteTitle,
     };
   };
 
