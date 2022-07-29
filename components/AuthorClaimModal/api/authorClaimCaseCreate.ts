@@ -29,7 +29,6 @@ export function createAuthorClaimCase({
   onError = emptyFncWithMsg,
   onSuccess = emptyFncWithMsg,
   userID,
-  author,
   targetPaperId,
   targetAuthorName,
 }: Args) {

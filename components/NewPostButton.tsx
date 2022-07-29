@@ -47,61 +47,61 @@ export default function NewPostButton({
     !buttonValues?.isQuestionType &&
     isEmpty(buttonValues.wizardBodyType);
 
-  const popoverOptionCards = filterNull(getModalOptionItems(currentUser)).map(
-    (option, index) => (
-      <ResearchhubOptionCard
-        description={option.description}
-        header={option.header}
-        icon={option.icon}
-        isActive={false}
-        isCheckboxSquare={false}
-        key={index}
-        newFeature={option.newFeature}
-        onSelect={async (e: SyntheticEvent) => {
-          e.stopPropagation();
-          switch (option.key) {
-            case "paper_upload":
-              setButtonValues({
-                ...DEFAULT_POST_BUTTON_VALUES,
-                isOpen: true,
-                wizardBodyType: "url_or_doi_upload",
-              });
-              break;
-            case "eln":
-              /* @ts-ignore - legacy code */
-              const note = await createNewNote({
-                orgSlug: currentUser.organization_slug,
-                grouping: NOTE_GROUPS.WORKSPACE,
-              });
-              router.push(
-                /* @ts-ignore - faulty */
-                `/${currentUser.organization_slug}/notebook/${note.id}`
-              );
-              setButtonValues({
-                ...DEFAULT_POST_BUTTON_VALUES,
-              });
-              break;
-            case "hypothesis":
-              router.push("/hypothesis/create");
-              setButtonValues({
-                ...DEFAULT_POST_BUTTON_VALUES,
-              });
-              break;
-            case "question":
-              setButtonValues({
-                ...DEFAULT_POST_BUTTON_VALUES,
-                isOpen: true,
-                isQuestionType: true,
-              });
-              break;
-            default:
-              emptyFncWithMsg("No optionKey found");
-          }
-        }}
-        whiteStyle
-      />
-    )
-  );
+  const popoverOptionCards = filterNull(
+    getModalOptionItems({ currentUser, router, setButtonValues })
+  ).map((option, index) => (
+    <ResearchhubOptionCard
+      description={option.description}
+      header={option.header}
+      icon={option.icon}
+      isActive={false}
+      isCheckboxSquare={false}
+      key={index}
+      newFeature={option.newFeature}
+      onSelect={async (e: SyntheticEvent) => {
+        e.stopPropagation();
+        switch (option.key) {
+          case "paper_upload":
+            setButtonValues({
+              ...DEFAULT_POST_BUTTON_VALUES,
+              isOpen: true,
+              wizardBodyType: "url_or_doi_upload",
+            });
+            break;
+          case "eln":
+            /* @ts-ignore - legacy code */
+            const note = await createNewNote({
+              orgSlug: currentUser.organization_slug,
+              grouping: NOTE_GROUPS.WORKSPACE,
+            });
+            router.push(
+              /* @ts-ignore - faulty */
+              `/${currentUser.organization_slug}/notebook/${note.id}`
+            );
+            setButtonValues({
+              ...DEFAULT_POST_BUTTON_VALUES,
+            });
+            break;
+          case "hypothesis":
+            router.push("/hypothesis/create");
+            setButtonValues({
+              ...DEFAULT_POST_BUTTON_VALUES,
+            });
+            break;
+          case "question":
+            setButtonValues({
+              ...DEFAULT_POST_BUTTON_VALUES,
+              isOpen: true,
+              isQuestionType: true,
+            });
+            break;
+          default:
+            emptyFncWithMsg("No optionKey found");
+        }
+      }}
+      whiteStyle
+    />
+  ));
   return (
     <PermissionNotificationWrapper
       loginRequired
