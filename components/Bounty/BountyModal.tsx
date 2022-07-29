@@ -1,20 +1,21 @@
-import { ReactElement, useState, useEffect } from "react";
+import {
+  BOUNTY_DEFAULT_AMOUNT,
+  BOUNTY_RH_PERCENTAGE,
+  MAX_RSC_REQUIRED,
+  MIN_RSC_REQUIRED,
+} from "./config/constants";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { MessageActions } from "~/redux/message";
+import { ReactElement, useState, useEffect } from "react";
 import BaseModal from "../Modals/BaseModal";
-import ReactTooltip from "react-tooltip";
-import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
-import Button from "../Form/Button";
-import colors from "~/config/themes/colors";
 import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
-import { MessageActions } from "~/redux/message";
-import { connect } from "react-redux";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-
-const BOUNTY_DEFAULT_AMOUNT = 1000;
-const BOUNTY_RH_PERCENTAGE = 9;
-const MIN_RSC_REQUIRED = 50;
-const MAX_RSC_REQUIRED = 1000000;
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
+import ReactTooltip from "react-tooltip";
 
 type Props = {
   isOpen: Boolean;

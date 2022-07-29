@@ -1,9 +1,9 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import Image from "next/image";
+import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
 import icons from "~/config/themes/icons";
-import { breakpoints } from "~/config/themes/screen";
-import { ID } from "~/config/types/root_types";
+import Image from "next/image";
 
 type Props = {
   bountyAmount: Number;
