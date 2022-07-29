@@ -1,9 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
-import colors from "~/config/themes/colors";
 import { ResearchCoinIcon } from "~/config/themes/icons";
-import numeral from "numeral";
-import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
 import ALink from "../ALink";
+import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
+import colors from "~/config/themes/colors";
+import numeral from "numeral";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -14,7 +14,6 @@ const BountyAlert = ({ bounty }: BountyAlertParams) => {
     return null;
   }
   const { timeRemaining, createdBy, amount, status } = bounty;
-
   if (status !== BOUNTY_STATUS.OPEN) {
     return null;
   }

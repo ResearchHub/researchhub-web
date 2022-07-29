@@ -142,7 +142,7 @@ function PaperUploadWizardPDFUpload({
           modalReduxActions.openUploadPaperModal(true, errorMsg?.data);
         } else {
           msgReduxActions.setMessage(
-            `An error has occured. Please report this to our Discord or Slack: ${errorStatus} - ${JSON.stringify(
+            `An error has occured. Please report this to our Discord: ${errorStatus} - ${JSON.stringify(
               errorMsg
             )}`
           );

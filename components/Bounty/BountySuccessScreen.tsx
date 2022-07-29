@@ -1,9 +1,9 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import Image from "next/image";
+import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
 import icons from "~/config/themes/icons";
-import { breakpoints } from "~/config/themes/screen";
-import { ID } from "~/config/types/root_types";
+import Image from "next/image";
 
 type Props = {
   bountyAmount: Number;
@@ -31,7 +31,7 @@ function SuccessScreen({
   const twitterBountyPreview = `\n\n"${bountyText.slice(
     0,
     249 - twitterPreText.length - link.length
-  )}"\n\n${link}`;
+  )}"\n\n${link}?utm_campaign=twitter_bounty`;
 
   function copyToClipboard() {
     navigator.clipboard.writeText(link);
@@ -52,7 +52,7 @@ function SuccessScreen({
       </p>
       <div className={css(styles.shareRow)}>
         <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURI(
+          href={`https://twitter.com/intent/tweet?utm_campaign=twitter_bounty&text=${encodeURI(
             twitterPreText + twitterBountyPreview
           )}`}
           data-size="large"

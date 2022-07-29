@@ -5,14 +5,13 @@ import api, { generateApiUrl } from "../api";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureEvent } from "../utils/events";
 
-
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
   EXPIRED = "EXPIRED",
   CLOSED = "CLOSED",
 }
 
-export const fetchBounty = ({unifiedDocId}) => {
+export const fetchBounty = ({ unifiedDocId }) => {
   const url = generateApiUrl(
     `bounty`,
     `?item_object_id=${unifiedDocId}&status=OPEN`
@@ -24,7 +23,6 @@ export const fetchBounty = ({unifiedDocId}) => {
       return res;
     });
 };
-
 
 export default class Bounty {
   _id: ID;
@@ -38,7 +36,6 @@ export default class Bounty {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeTo(raw.expiration_date);
-    console.log('raw.created_eby', raw.created_by)
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseInt(raw.amount);
     this._status = raw.status;
@@ -57,8 +54,7 @@ export default class Bounty {
       fetch(url, api.POST_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
-        .then(res => {
-          console.log('res', res);
+        .then((res) => {
           return resolve(new Bounty(res));
         })
         .catch((error) => {
@@ -68,15 +64,17 @@ export default class Bounty {
             data: { bountyId, recipientUserId, contentType },
           });
           return reject(error);
-        })
-    })
+        });
+    });
   }
 
   static createAPI({ bountyAmount, unifiedDocId }) {
     // TODO: Change hard coded value
 
     const today = new Date();
-    const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const thirtyDaysFromNow = new Date(
+      today.getTime() + 30 * 24 * 60 * 60 * 1000
+    );
 
     const data = {
       amount: parseFloat(bountyAmount),
@@ -87,19 +85,18 @@ export default class Bounty {
 
     return new Promise((resolve, reject) => {
       return fetch(generateApiUrl("bounty"), api.POST_CONFIG(data))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(res => {
-        return resolve(new Bounty(res));
-      })
-      .catch((error) => {
-        return reject(error);
-      })      
-    })
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          return resolve(new Bounty(res));
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
   }
 
   static closeBountyAPI({ bounty }) {
-
     return new Promise((resolve, reject) => {
       return fetch(
         generateApiUrl(`bounty/${bounty.id}/cancel_bounty`),
@@ -117,10 +114,9 @@ export default class Bounty {
             data: { bountyId: bounty.id },
           });
           return reject(error);
-        })        
+        });
     });
-
-  }  
+  }
 
   get id(): ID {
     return this._id;

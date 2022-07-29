@@ -23,6 +23,7 @@ import ReactTooltip from "react-tooltip";
 import SubmissionDetails from "./SubmissionDetails";
 import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
+import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 
 type Args = {
   document: TopLevelDocument;
@@ -275,7 +276,9 @@ function DocumentHeader({
               avatarSize={30}
             />
           </div>
-          <h1 className={css(styles.title)}>{title}</h1>
+          <h1 className={css(styles.title)}>
+            {unescapeHtmlString(title ?? "")}
+          </h1>
           <div className={css(styles.metadata)}>
             {documentType !== "question" && authors.length > 0 && (
               <div className={css(styles.metadataRow)}>

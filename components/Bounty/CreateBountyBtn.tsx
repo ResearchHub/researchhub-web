@@ -1,19 +1,13 @@
-import { ReactElement, useState, useEffect } from "react";
-import ReactTooltip from "react-tooltip";
 import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
+import { ReactElement, useState, useEffect } from "react";
+import { ResearchCoinIcon } from "~/config/themes/icons";
 import { useAlert } from "react-alert";
-import numeral from "numeral";
-
-// Components
-import BountyModal from "./BountyModal";
-import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
-
-// Config
-import icons, { ResearchCoinIcon } from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
-import api, { generateApiUrl } from "~/config/api";
 import Bounty from "~/config/types/bounty";
+import BountyModal from "./BountyModal";
+import colors from "~/config/themes/colors";
+import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
+import numeral from "numeral";
+import ReactTooltip from "react-tooltip";
 
 function CreateBountyBtn({
   withPreview = false,
@@ -33,7 +27,7 @@ function CreateBountyBtn({
       onClick: () => {
         Bounty.closeBountyAPI({ bounty }).then(() => {
           onBountyCancelled && onBountyCancelled();
-        })
+        });
       },
     });
   };
@@ -85,33 +79,33 @@ function CreateBountyBtn({
           </div>
         </span>
       ) : ( */}
-        <div
-          className={css(styles.addBounty)}
-          onClick={() => (bounty ? closeBounty() : setIsModalOpen(true))}
-        >
-          <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-          <div>
-            <span className={css(styles.bountyTextContainer)}>
-              {!bounty && (
-                <span className={css(styles.bountyIcon)}>
-                  {/* @ts-ignore */}
-                  <ResearchCoinIcon width={22} height={22} version={3} />
-                </span>
-              )}
-              <span
-                data-tip={""}
-                data-for="bountyTooltip"
-                className={css(styles.addBountyLabel)}
-              >
-                {bounty
-                  ? `Close your ${numeral(bounty.amount).format(
-                      "0.[0000000000]"
-                    )} RSC Bounty`
-                  : "Add ResearchCoin Bounty"}
+      <div
+        className={css(styles.addBounty)}
+        onClick={() => (bounty ? closeBounty() : setIsModalOpen(true))}
+      >
+        <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
+        <div>
+          <span className={css(styles.bountyTextContainer)}>
+            {!bounty && (
+              <span className={css(styles.bountyIcon)}>
+                {/* @ts-ignore */}
+                <ResearchCoinIcon width={22} height={22} version={3} />
               </span>
+            )}
+            <span
+              data-tip={""}
+              data-for="bountyTooltip"
+              className={css(styles.addBountyLabel)}
+            >
+              {bounty
+                ? `Close your ${numeral(bounty.amount).format(
+                    "0.[0000000000]"
+                  )} RSC Bounty`
+                : "Add ResearchCoin Bounty"}
             </span>
-          </div>
+          </span>
         </div>
+      </div>
       {/* )} */}
     </div>
   );
