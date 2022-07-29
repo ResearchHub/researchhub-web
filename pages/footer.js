@@ -86,11 +86,11 @@ class Footer extends Component {
             <a
               target="_blank"
               className={css(styles.link)}
-              href="https://join.slack.com/t/researchhub-community/shared_invite/zt-oytw02om-w1cQc2Kcjs7vg3tZHqt9Ww"
+              href="https://discord.gg/ZcCYgcnUp5"
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.slack}</span>
+                <span className={css(styles.logo)}>{icons.discord}</span>
               </div>
             </a>
             <a
