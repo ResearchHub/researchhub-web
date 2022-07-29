@@ -735,14 +735,14 @@ class WithdrawalModal extends Component {
         >
           Withdraw
         </div>
-        <div
+        {/* <div
           className={css(styles.tab, depositScreen && styles.tabActive)}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: true }))
           }
         >
           Deposit
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -812,6 +812,7 @@ const styles = StyleSheet.create({
   tabBar: {
     display: "flex",
     width: "100%",
+    justifyContent: "center",
   },
   tab: {
     display: "flex",
