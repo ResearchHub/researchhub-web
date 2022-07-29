@@ -94,7 +94,7 @@ const ELNEditor = ({
   const noteIdLength = `${currentNote.id}`.length;
   const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
   const parsedNoteTitle = unescapeHtmlString(
-    editorInstance.plugins.get("Title").getTitle() ?? "Untitled"
+    editorInstance?.plugins?.get("Title")?.getTitle() ?? "Untitled"
   );
 
   useEffect(() => {
