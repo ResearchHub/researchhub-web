@@ -52,7 +52,7 @@ function SuccessScreen({
       </p>
       <div className={css(styles.shareRow)}>
         <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURI(
+          href={`https://twitter.com/intent/tweet?utm_campaign=twitter_bounty&text=${encodeURI(
             twitterPreText + twitterBountyPreview
           )}`}
           data-size="large"
