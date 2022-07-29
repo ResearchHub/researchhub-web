@@ -32,7 +32,9 @@ export function flagGrmContent({
   onSuccess,
 }: FlagGrmContentArgs): void {
   const parsedContentType = ["post", "question"].includes(contentType)
-    ? "researchhub_posts"
+    ? commentPayload?.commentType
+      ? "post"
+      : "researchhub_posts"
     : contentType;
   fetch(
     API.FLAG_GRM_CONTENT({
