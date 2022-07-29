@@ -9,6 +9,7 @@ import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
 const BOUNTY_DEFAULT_AMOUNT = 1000;
 const BOUNTY_RH_PERCENTAGE = 9;
@@ -45,11 +46,19 @@ function BountyModal({
   useEffect(() => {
     ReactTooltip.rebuild();
   });
-
-  const [offeredAmount, setOfferedAmount] = useState<Number>(parseFloat(BOUNTY_DEFAULT_AMOUNT + ""));
+  const currentUserBalance = getCurrentUser()?.balance ?? 0;
+  const [offeredAmount, setOfferedAmount] = useState<Number>(
+    parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
+  );
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect((): void => {
+    setHasMinRscAlert(
+      currentUserBalance < 50 || currentUserBalance < offeredAmount
+    );
+  }, [currentUserBalance, offeredAmount]);
 
   const handleClose = () => {
     closeModal();
@@ -72,12 +81,16 @@ function BountyModal({
   };
 
   const calcResearchHubAmount = ({ offeredAmount }) => {
-    return parseFloat(((BOUNTY_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10))
-  }
+    return parseFloat(
+      ((BOUNTY_RH_PERCENTAGE / 100) * offeredAmount).toFixed(10)
+    );
+  };
 
   const calcTotalAmount = ({ offeredAmount }) => {
-    return parseFloat(offeredAmount + "") + calcResearchHubAmount({ offeredAmount });
-  }  
+    return (
+      parseFloat(offeredAmount + "") + calcResearchHubAmount({ offeredAmount })
+    );
+  };
 
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
@@ -92,14 +105,16 @@ function BountyModal({
         Bounty.createAPI({
           bountyAmount: offeredAmount,
           unifiedDocId: unifiedDocId,
-        }).then((createdBounty) => {
-          handleBountyAdded(createdBounty);
-          setSuccess(true);
-        }).catch((error) => {
-          console.log('error', error);
-          setMessage("Failed to create bounty");
-          showMessage({ show: true, error: true });
         })
+          .then((createdBounty) => {
+            handleBountyAdded(createdBounty);
+            setSuccess(true);
+          })
+          .catch((error) => {
+            console.log("error", error);
+            setMessage("Failed to create bounty");
+            showMessage({ show: true, error: true });
+          });
       }
     }
   };
@@ -230,9 +245,7 @@ function BountyModal({
                       )}
                     >
                       <span className={css(styles.valueNumber)}>
-                        <span>
-                          {totalAmount.toLocaleString()}
-                        </span>
+                        <span>{totalAmount.toLocaleString()}</span>
                         <ResearchCoinIcon
                           overrideStyle={styles.rscIcon}
                           width={20}
@@ -287,7 +300,9 @@ function BountyModal({
                     <div
                       className={css(alertStyles.alert, alertStyles.rscAlert)}
                     >
-                      Minimum bounty must be greater than 50 RSC
+                      {currentUserBalance < offeredAmount
+                        ? `Your RSC balance is below offered amount ${offeredAmount}`
+                        : `Minimum bounty must be greater than 50 RSC`}
                     </div>
                   ) : hasMaxRscAlert ? (
                     <div
