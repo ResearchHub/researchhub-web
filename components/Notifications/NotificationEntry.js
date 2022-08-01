@@ -207,8 +207,7 @@ const NotificationEntry = (props) => {
         );
         return (
           <div className={css(styles.message)}>
-            {notifCreator}
-            {` removed your `}
+            {` A ResearchHub Editor has removed your `}
             <HyperLink
               link={documentLink}
               onClick={onClick}
