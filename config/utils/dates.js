@@ -114,9 +114,8 @@ export function timeTo(date) {
 }
 
 export function timeToRoundUp(date) {
-  const inputDate = moment(date);
   const now = moment();
-
+  const inputDate = moment(date);
   const deltaInMins = inputDate.diff(now, "minutes");
 
   if (deltaInMins <= 1) {
@@ -133,7 +132,7 @@ export function timeToRoundUp(date) {
     return (
       flooredDays +
       // if the remaining hours is more than 13 hrs. we round up day integer
-      (remainingMinutes / THIRTEEN_HOURS_IN_MINUTES > 1 ? 1 : 0) +
+      (remainingMinutes / THIRTEEN_HOURS_IN_MINUTES >= 1 ? 1 : 0) +
       ` day${flooredDays > 1 ? "s" : ""}`
     );
   }
