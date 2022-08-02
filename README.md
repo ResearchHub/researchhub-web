@@ -4,7 +4,7 @@
 
 <p align="left">
   <a aria-label="Join the community" href="https://discord.gg/ZcCYgcnUp5">
-    <img alt="" src="https://badgen.net/badge/Join%20the%20community/Slack/yellow?icon=slack">
+    <img alt="Discord Badge" src="https://badgen.net/badge/Join%20the%20community/Discord/yellow?icon=discord">
   </a>
 </p>
 <p align="center">&nbsp;</p>
