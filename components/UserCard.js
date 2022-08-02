@@ -67,6 +67,7 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
             <img
               className={css(styles.logoIcon)}
               src="/static/ResearchHubIcon.png"
+              alt="ResearchHub Icon"
             />
             <span className={css(styles.lifetimeText)}>
               Lifetime reputation:{" "}

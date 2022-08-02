@@ -56,6 +56,7 @@ class ResearchHubBanner extends Component {
           src={"/static/background/background-home.webp"}
           className={css(styles.bannerOverlay)}
           draggable={false}
+          alt="Background Banner Image"
         />
         <div
           className={css(

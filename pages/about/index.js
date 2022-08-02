@@ -270,6 +270,7 @@ class Index extends Component {
               draggable={false}
               className={css(styles.contactIcon)}
               src={"/static/icons/email.png"}
+              alt="Email Icon"
             />
             <p className={css(styles.contactText)}>{text}</p>
           </Fragment>
@@ -280,6 +281,7 @@ class Index extends Component {
               draggable={false}
               className={css(styles.contactIcon)}
               src={"/static/icons/phone.png"}
+              alt="Phone Icon"
             />
             <p className={css(styles.contactText)}>{text}</p>
           </Fragment>
@@ -314,6 +316,7 @@ class Index extends Component {
             draggable={false}
             src={"/static/background/background-about.jpg"}
             className={css(styles.bannerOverlay)}
+            alt="About Background Banner"
           />
           <ReactTransitionComponent>
             <div className={css(styles.column, styles.titleContainer)}>
@@ -339,6 +342,7 @@ class Index extends Component {
               draggable={false}
               src={"/static/about/valueOverlay.png"}
               className={css(styles.bannerOverlay)}
+              alt=""
             />
 
             <div className={css(styles.pointCardList)}>
@@ -434,6 +438,7 @@ class Index extends Component {
             draggable={false}
             src={"/static/about/valueOverlay.png"}
             className={css(styles.bannerOverlay, styles.flipBanner)}
+            alt=""
           />
           <div className={css(styles.collapsibleContainer)}>
             <div className={css(styles.faqContainer)}>

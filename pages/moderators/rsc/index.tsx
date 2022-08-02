@@ -57,6 +57,7 @@ export default function RSCDashboard(): ReactElement<
                 <img
                   src={user.author_profile.profile_image}
                   className={css(styles.img)}
+                  alt="Author Profile Image"
                 />
                 {user.first_name} {user.last_name}
                 {user.headline?.title ? `: ${user.headline.title}` : ""}

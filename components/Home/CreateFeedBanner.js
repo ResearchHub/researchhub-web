@@ -151,6 +151,7 @@ const CreateFeedBanner = (props) => {
             draggable={false}
             src={"/static/icons/hubs-feed.svg"}
             className={css(styles.bannerImage)}
+            alt="Hubs Feed Icon"
           />
         </div>
       </div>

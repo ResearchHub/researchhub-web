@@ -28,10 +28,12 @@ class OrcidLoginSuccessPage extends Component {
               <img
                 className={css(styles.rhIcon)}
                 src={"/static/ResearchHubLogo.webp"}
+                alt="ResearchHub Logo"
               />
               <img
                 className={css(styles.orcidIcon)}
                 src={"/static/icons/orcid.png"}
+                alt="Orcid Logo"
               />
             </div>
             <div className={css(styles.headerContainer)}>

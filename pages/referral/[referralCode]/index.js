@@ -29,6 +29,7 @@ const Index = ({ code, user }) => {
           <img
             className={css(styles.beakerImg)}
             src={"/static/about/about-hubs.png"}
+            alt="People standing around a large boiling flask"
           />
           <div className={css(styles.signinContainer)}>
             <h1 className={css(styles.title)}>

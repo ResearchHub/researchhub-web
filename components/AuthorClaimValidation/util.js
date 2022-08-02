@@ -51,6 +51,7 @@ export const getPageBody = (validationState) => {
             src={"/static/icons/success2.png"}
             className={css(styles.successImg)}
             draggable={false}
+            alt="Success Icon"
           />
           <div className={css(styles.textRow)}>
             {"You have successfully authenticated your email address!"}

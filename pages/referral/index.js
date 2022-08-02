@@ -85,6 +85,7 @@ const Index = ({ auth }) => {
           draggable={false}
           src={"/static/referrals/referral-banner.svg"}
           className={css(styles.bannerOverlay)}
+          alt="Blue Referral Banner"
         />
         <ReactTransitionComponent>
           <div className={css(styles.column, styles.titleContainer)}>
@@ -156,6 +157,7 @@ const Index = ({ auth }) => {
                     <img
                       className={css(styles.emptyState)}
                       src={"/static/referrals/second-step.svg"}
+                      alt="Contact Icon"
                     ></img>
                   }
                 />

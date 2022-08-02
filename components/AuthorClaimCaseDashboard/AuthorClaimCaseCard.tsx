@@ -88,6 +88,7 @@ export default function AuthorClaimCaseCard({
             <img
               className={css(styles.requestorFaceImg)}
               src={requestorFaceImg}
+              alt="Requestor Image"
             />
             <a
               className={css(styles.link)}

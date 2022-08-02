@@ -105,6 +105,7 @@ function AuthorClaimModal({
                 <img
                   className={css(acceptRejectStyles.requestorFaceImg)}
                   src={profileImg}
+                  alt="Requestor Image"
                 />
                 <span className={css(acceptRejectStyles.requestorName)}>
                   {requestorName}

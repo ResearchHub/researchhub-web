@@ -34,6 +34,7 @@ const MobileFeedTabs = (props) => {
         <img
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
+          alt="ResearchHub Icon"
         />
         My Hubs
       </div>

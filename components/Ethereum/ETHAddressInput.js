@@ -62,6 +62,7 @@ const ETHAddressInput = (props) => {
           <img
             src={"/static/icons/metamask.svg"}
             className={css(styles.metaMaskIcon)}
+            alt="MetaMask Logo"
           />
         </div>
       );

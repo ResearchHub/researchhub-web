@@ -14,6 +14,7 @@ export default function AuthorClaimPromptSuccess({
         src={"/static/icons/success2.png"}
         className={css(successStyles.successImg)}
         draggable={false}
+        alt="Success Icon"
       />
       <div className={css(successStyles.titleContainer)}>
         <div className={css(successStyles.title)}>{"Thank you!"}</div>

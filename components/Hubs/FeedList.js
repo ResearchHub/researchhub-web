@@ -34,6 +34,7 @@ class FeedList extends Component {
           <img
             src={"/static/ResearchHubIcon.png"}
             className={css(styles.rhIcon)}
+            alt="ResearchHub Icon"
           />
         ),
         href: "/my-hubs",

@@ -49,6 +49,7 @@ export default function PaperUploadWizardHeader({
         <img
           style={{ width: 60, marginBottom: 16 }}
           src="/static/icons/check.svg"
+          alt="Check Icon"
         />
         <div className={css(styles.title)}>
           {"Your paper was uploaded successfully."}

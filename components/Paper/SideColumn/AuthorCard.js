@@ -45,7 +45,11 @@ const AuthorCard = (props) => {
       >
         <a className={css(styles.container, styles.hover)}>
           {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userImage)} />
+            <img
+              src={author.profile_image}
+              className={css(styles.userImage)}
+              alt="Author Profile Image"
+            />
           ) : (
             <span className={css(styles.userIcon)}>{icons.user}</span>
           )}

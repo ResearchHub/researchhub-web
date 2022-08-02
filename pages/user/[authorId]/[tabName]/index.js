@@ -529,7 +529,11 @@ function AuthorPage(props) {
       data-tip={"Open Orcid Profile"}
       rel="noreferrer noopener"
     >
-      <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
+      <img
+        src="/static/icons/orcid.png"
+        className={css(styles.orcidLogo)}
+        alt="Orcid Logo"
+      />
     </a>
   ) : (
     <div
@@ -549,7 +553,11 @@ function AuthorPage(props) {
           iconButton={true}
         />
       ) : (
-        <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
+        <img
+          src="/static/icons/orcid.png"
+          className={css(styles.orcidLogo)}
+          alt="Orcid Logo"
+        />
       )}
     </div>
   );
@@ -599,7 +607,7 @@ function AuthorPage(props) {
         <img
           src="/static/ResearchHubIcon.png"
           className={css(styles.rhIcon)}
-          alt="reserachhub-icon"
+          alt="ResearchHub Icon"
         />
       </span>
       <div className={css(styles.reputationTitle)}>
@@ -902,6 +910,7 @@ function AuthorPage(props) {
                               src="/static/icons/editor-star.png"
                               width={20}
                               className={css(styles.editorImg)}
+                              alt="Star Icon"
                             />
                             <span
                               style={{

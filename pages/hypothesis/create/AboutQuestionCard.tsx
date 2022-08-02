@@ -18,6 +18,7 @@ export default function AboutQuestionCard({
         <img
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
+          alt="ResearchHub Icon"
         />
         <div className={css(styles.aboutTitleText)}>Creating a Meta-Sudy</div>
       </div>

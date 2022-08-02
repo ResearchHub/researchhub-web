@@ -17,6 +17,7 @@ export default function AboutQuestionCard({
         <img
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
+          alt="ResearchHub Icon"
         />
         <div className={css(styles.aboutTitleText)}>
           Posting to Research Hub

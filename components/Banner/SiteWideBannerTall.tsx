@@ -34,6 +34,7 @@ export default function SiteWideBannerTall({
           <img
             className={css(styles.bannerImg)}
             src={imgSrc ? imgSrc : "/static/icons/person-lightbulb-hypo.webp"}
+            alt="Person holding a lightbulb with text '90% of scientists think yes'"
           />
         </div>
       </div>

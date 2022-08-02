@@ -14,6 +14,7 @@ const HubBanner = (props) => {
       <img
         className={css(styles.hubBanner)}
         src={hub_image ? hub_image : "/static/background/background-home.webp"}
+        alt="Background Banner Image"
       />
     );
   }

@@ -88,6 +88,7 @@ const AuthorAvatar = (props) => {
           <img
             src={"/static/icons/moderatorBadge.png"}
             className={css(styles.moderatorBadge)}
+            alt={"Moderator Badge Icon"}
           />
         )}
       </>

@@ -23,6 +23,7 @@ export default function SiteWideBanner({
           <img
             className={css(styles.bannerImg)}
             src={imgSrc ? imgSrc : "/static/icons/site-wide-banner.png"}
+            alt="Site Wide Banner"
           />
         </div>
       </div>

@@ -54,7 +54,7 @@ export default function HypothesisCitationConsensusCard({
               )}
             >
               {sentiment > 0 ? (
-                <img src="/static/icons/check.svg" />
+                <img src="/static/icons/check.svg" alt="Check Icon"/>
               ) : sentiment < 0 ? (
                 icons.timesCircle
               ) : (
