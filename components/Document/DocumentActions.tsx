@@ -1,19 +1,19 @@
-import { ReactElement, useEffect, useState } from "react";
-import { RhDocumentType, UnifiedDocument } from "~/config/types/root_types";
-import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { MessageActions } from "~/redux/message";
+import { ReactElement, useState } from "react";
+import { RhDocumentType, UnifiedDocument } from "~/config/types/root_types";
+import { StyleSheet, css } from "aphrodite";
 import ActionButton from "../ActionButton";
+import AdminButton from "../Admin/AdminButton";
+import censorDocument from "./api/censorDocAPI";
+import colors from "~/config/themes/colors";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
 import icons from "~/config/themes/icons";
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
-import { MessageActions } from "~/redux/message";
-import { connect } from "react-redux";
-import colors from "~/config/themes/colors";
-import censorDocument from "./api/censorDocAPI";
-import AdminButton from "../Admin/AdminButton";
-import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   currentUser: any;
