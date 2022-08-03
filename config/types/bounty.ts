@@ -1,4 +1,4 @@
-import { formatDateStandard, timeTo } from "../utils/dates";
+import { formatDateStandard, timeToRoundUp } from "../utils/dates";
 import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
 import api, { generateApiUrl } from "../api";
@@ -35,7 +35,7 @@ export default class Bounty {
   constructor(raw: any) {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
-    this._timeRemaining = timeTo(raw.expiration_date);
+    this._timeRemaining = timeToRoundUp(raw.expiration_date);
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseInt(raw.amount);
     this._status = raw.status;
