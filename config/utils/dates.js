@@ -4,6 +4,9 @@ import * as moment from "dayjs";
 
 TimeAgo.addLocale(en);
 
+const THIRTEEN_HOURS_IN_MINUTES = 60 * 13;
+const MINUTES_IN_A_DAY = 1440;
+
 export const timeAgo = new TimeAgo("en-US");
 
 export function formatDateStandard(inputDate) {
@@ -59,7 +62,7 @@ export function timeAgoStamp(date) {
 export function timeSince(date) {
   const inputDate = moment(date);
   const now = moment();
-  const minsInOneDay = 1440;
+  const MINUTES_IN_A_DAY = 1440;
 
   const deltaInMins = now.diff(inputDate, "minutes");
   let timeSince = "";
@@ -69,13 +72,13 @@ export function timeSince(date) {
   } else if (deltaInMins < 60) {
     timeSince = Math.floor(deltaInMins);
     timeSince += timeSince == 1 ? " minute ago" : " minutes ago";
-  } else if (deltaInMins < minsInOneDay) {
+  } else if (deltaInMins < MINUTES_IN_A_DAY) {
     timeSince = Math.floor(deltaInMins / 60);
     timeSince += timeSince === 1 ? " hour ago" : " hours ago";
-  } else if (deltaInMins < minsInOneDay * 30) {
+  } else if (deltaInMins < MINUTES_IN_A_DAY * 30) {
     timeSince = Math.floor(deltaInMins / 60 / 24);
     timeSince += timeSince === 1 ? " day ago" : " days ago";
-  } else if (deltaInMins < minsInOneDay * 365) {
+  } else if (deltaInMins < MINUTES_IN_A_DAY * 365) {
     timeSince = Math.floor(deltaInMins / 30 / 60 / 24);
     timeSince += timeSince === 1 ? " month ago" : " months ago";
   } else {
@@ -89,7 +92,6 @@ export function timeSince(date) {
 export function timeTo(date) {
   const inputDate = moment(date);
   const now = moment();
-  const minsInOneDay = 1440;
 
   const deltaInMins = inputDate.diff(now, "minutes");
   let timeSince = "";
@@ -99,7 +101,7 @@ export function timeTo(date) {
   } else if (deltaInMins < 60) {
     timeSince = Math.floor(deltaInMins);
     timeSince += timeSince == 1 ? " minute" : " minutes";
-  } else if (deltaInMins < minsInOneDay) {
+  } else if (deltaInMins < MINUTES_IN_A_DAY) {
     timeSince = Math.floor(deltaInMins / 60);
     timeSince += timeSince === 1 ? " hour" : " hours";
   } else {
@@ -109,6 +111,31 @@ export function timeTo(date) {
   }
 
   return timeSince;
+}
+
+export function timeToRoundUp(date) {
+  const now = moment();
+  const inputDate = moment(date);
+  const deltaInMins = inputDate.diff(now, "minutes");
+
+  if (deltaInMins <= 1) {
+    return "one minute";
+  } else if (deltaInMins < 60) {
+    const flooredMinutes = Math.floor(deltaInMins);
+    return flooredMinutes + ` minute${flooredMinutes > 1 ? "s" : ""}`;
+  } else if (deltaInMins < MINUTES_IN_A_DAY) {
+    const flooredHours = Math.floor(deltaInMins / 60);
+    return flooredHours + ` hour${flooredHours > 1 ? "s" : ""}`;
+  } else {
+    const flooredDays = Math.floor(deltaInMins / 60 / 24);
+    const remainingMinutes = deltaInMins - flooredDays * 24 * 60;
+    return (
+      flooredDays +
+      // if the remaining hours is more than 13 hrs. we round up day integer
+      (remainingMinutes / THIRTEEN_HOURS_IN_MINUTES >= 1 ? 1 : 0) +
+      ` day${flooredDays > 1 ? "s" : ""}`
+    );
+  }
 }
 
 export function calculateScopeFromSlug(scopeId) {
