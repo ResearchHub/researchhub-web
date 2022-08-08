@@ -53,7 +53,7 @@ export const createVoteHandler = ({
   const formattedDocumentType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
     documentType
   )
-    ? "researchhub_posts"
+    ? "researchhub_post"
     : documentType;
   const resolvedDocumentAuthorID =
     documentCreatedBy?.authorProfile?.id ||
