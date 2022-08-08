@@ -7,14 +7,17 @@ import {
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import {
+  getBEUnifiedDocType,
+  RESEARCHHUB_POST_DOCUMENT_TYPES,
+} from "~/config/utils/getUnifiedDocType";
 
 export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   const documentIds = { hypothesis: [], paper: [], posts: [] };
 
   unifiedDocs.forEach(({ documents, document_type }) => {
     const beDocType = getBEUnifiedDocType(document_type);
-    if (["posts", "questions"].includes(beDocType)) {
+    if (RESEARCHHUB_POST_DOCUMENT_TYPES.includes(beDocType)) {
       // below assumes we are only getting the first version of post
       (documents ?? []).length > 0 && documentIds.posts.push(documents[0].id);
     } else {
@@ -44,7 +47,8 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
           // TODO: calvihlee - resolve this
           const docTypeOverride =
             currBeDocType === "questions" ? "posts" : currBeDocType;
-          const isPost = ["posts", "questions"].includes(currBeDocType);
+          const isPost =
+            RESEARCHHUB_POST_DOCUMENT_TYPES.includes(currBeDocType);
           const targetDoc = isPost
             ? (currUniDoc.documents ?? [])[0] ?? null
             : currUniDoc.documents;
