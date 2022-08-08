@@ -27,7 +27,7 @@ Post.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
 
   const posts = await fetch(
-    API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
+    API.RESEARCHHUB_POST({ post_id: query.documentId }),
     API.GET_CONFIG()
   ).then(helpers.parseJSON);
   const post = posts.results[0];

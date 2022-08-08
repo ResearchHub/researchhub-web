@@ -94,7 +94,7 @@ class PostPageCard extends Component {
     };
 
     this.toggleShowPostEditor();
-    return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
+    return fetch(API.RESEARCHHUB_POST({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .catch((error) => {

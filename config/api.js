@@ -6,6 +6,7 @@ import {
   doesNotExist,
   nullthrows,
 } from "~/config/utils/nullchecks";
+import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "./utils/getUnifiedDocType";
 
 export const apiRoot = {
   production: "backend.researchhub.com",
@@ -90,10 +91,10 @@ const routes = (BASE_URL) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
     EXCLUDE_FROM_FEED: ({ unifiedDocumentId }) => {
-      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/exclude_from_feed/`;
+      return `${BASE_URL}researchhub_unified_document/${unifiedDocumentId}/exclude_from_feed/`;
     },
     INCLUDE_IN_FEED: ({ unifiedDocumentId }) => {
-      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/include_in_feed/`;
+      return `${BASE_URL}researchhub_unified_document/${unifiedDocumentId}/include_in_feed/`;
     },
     CONTRIBUTIONS: ({ hubId }) => {
       return (
@@ -138,10 +139,10 @@ const routes = (BASE_URL) => {
       }
     },
     FEATURE_DOCUMENT: ({ unifiedDocumentId }) => {
-      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/feature_document/`;
+      return `${BASE_URL}researchhub_unified_document/${unifiedDocumentId}/feature_document/`;
     },
     REMOVE_FROM_FEATURED: ({ unifiedDocumentId }) => {
-      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/remove_from_featured/`;
+      return `${BASE_URL}researchhub_unified_document/${unifiedDocumentId}/remove_from_featured/`;
     },
     FLAG_AND_REMOVE: () => {
       return BASE_URL + "audit/flag_and_remove/";
@@ -260,8 +261,8 @@ const routes = (BASE_URL) => {
         querystring: { hub_id, order_by, page, startDate, endDate },
       });
     },
-    RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
-      let url = BASE_URL + "researchhub_posts/";
+    RESEARCHHUB_POST: ({ created_by, post_id }) => {
+      let url = BASE_URL + "researchhub_post/";
       let params = {
         querystring: {
           created_by,
@@ -533,8 +534,9 @@ const routes = (BASE_URL) => {
       twitter,
     }) => {
       // question is a post behind the scenes and hence needs to be handled as such.
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url = `${BASE_URL}${docType}/${documentId}/discussion/${
         targetId != null ? targetId + "/" : ""
       }`;
@@ -588,8 +590,9 @@ const routes = (BASE_URL) => {
     },
 
     THREAD: (documentType, paperId, documentId, threadId) => {
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url =
         `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
@@ -618,8 +621,9 @@ const routes = (BASE_URL) => {
 
     THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
       // question is a post behind the scenes and hence needs to be handled as such.
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url =
         `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
@@ -641,8 +645,9 @@ const routes = (BASE_URL) => {
       page
     ) => {
       // question is a post behind the scenes and hence needs to be handled as such.
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url =
         `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
@@ -755,7 +760,7 @@ const routes = (BASE_URL) => {
       type, // docType
     }) => {
       const url =
-        BASE_URL + "researchhub_unified_documents/get_unified_documents/";
+        BASE_URL + "researchhub_unified_document/get_unified_documents/";
       const params = {
         querystring: {
           external_source: externalSource,
@@ -772,7 +777,7 @@ const routes = (BASE_URL) => {
       return finalUrl;
     },
     UNIFIED_DOC: ({ id }) => {
-      const url = BASE_URL + "researchhub_unified_documents/";
+      const url = BASE_URL + "researchhub_unified_document/";
       const params = {
         querystring: {},
         rest: {
@@ -795,11 +800,11 @@ const routes = (BASE_URL) => {
     },
     RH_POST_UPVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_posts/${postId}/upvote/`;
+      return `${BASE_URL}researchhub_post/${postId}/upvote/`;
     },
     RH_POST_DOWNVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_posts/${postId}/downvote/`;
+      return `${BASE_URL}researchhub_post/${postId}/downvote/`;
     },
     UPVOTE: (
       documentType,
@@ -997,10 +1002,10 @@ const routes = (BASE_URL) => {
       return url + "censor/";
     },
     CENSOR_DOC: ({ documentId }) => {
-      return `${BASE_URL}researchhub_unified_documents/${documentId}/censor/`;
+      return `${BASE_URL}researchhub_unified_document/${documentId}/censor/`;
     },
     RESTORE_DOC: ({ documentId }) => {
-      return `${BASE_URL}researchhub_unified_documents/${documentId}/restore/`;
+      return `${BASE_URL}researchhub_unified_document/${documentId}/restore/`;
     },
     CENSOR_HUB: ({ hubId }) => {
       return BASE_URL + `hub/${hubId}/censor/`;
@@ -1172,7 +1177,7 @@ const routes = (BASE_URL) => {
       postIds = [],
     }) => {
       // NOTE: calvinhlee - this is a terrible way to handle vote. There has to be a better way
-      const url = BASE_URL + "researchhub_unified_documents/check_user_vote/";
+      const url = BASE_URL + "researchhub_unified_document/check_user_vote/";
       let query = null;
       if (paperIds.length > 0) {
         query = `?paper_ids=`;
@@ -1203,12 +1208,11 @@ const routes = (BASE_URL) => {
       if (reviewId) {
         return (
           BASE_URL +
-          `researchhub_unified_documents/${unifiedDocumentId}/review/${reviewId}/`
+          `researchhub_unified_document/${unifiedDocumentId}/review/${reviewId}/`
         );
       } else {
         return (
-          BASE_URL +
-          `researchhub_unified_documents/${unifiedDocumentId}/review/`
+          BASE_URL + `researchhub_unified_document/${unifiedDocumentId}/review/`
         );
       }
     },
@@ -1223,8 +1227,9 @@ const routes = (BASE_URL) => {
     commentId,
     replyId
   ) {
-    let docType = documentType === "question" ? "post" : documentType;
-
+    const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+      ? "researchhub_post"
+      : documentType;
     let url =
       `${BASE_URL}${docType}/` +
       (paperId != null ? `${paperId}` : `${documentId}`) +
