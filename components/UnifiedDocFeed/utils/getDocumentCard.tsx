@@ -2,7 +2,7 @@ import FeedCard from "~/components/Author/Tabs/FeedCard";
 import { ReactElement } from "react";
 import { filterNull } from "~/config/utils/nullchecks";
 import {
-  getUnifiedDocType,
+  getFEUnifiedDocType,
   RESEARCHHUB_POST_DOCUMENT_TYPES,
 } from "~/config/utils/getUnifiedDocType";
 
@@ -15,7 +15,9 @@ export function getDocumentCard({
 }): UnifiedCard[] {
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
-      const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
+      const formattedDocType = getFEUnifiedDocType(
+        uniDoc?.document_type ?? null
+      );
       const docTypeLabel = (uniDoc?.document_type ?? "").toLowerCase() ?? null;
       const formattedDocLabel =
         docTypeLabel === "hypothesis"
