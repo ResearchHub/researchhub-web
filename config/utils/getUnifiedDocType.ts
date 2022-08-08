@@ -5,9 +5,16 @@ import { isNullOrUndefined } from "./nullchecks";
 type FEReturnType = "hypothesis" | "post" | "paper" | "question" | "all";
 type BEReturnType = "hypothesis" | "paper" | "posts" | "questions" | "all";
 
+export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
+  "discussion",
+  "post",
+  "posts",
+  "question",
+];
+
 // this function is used to resolve BE model name discrepencies with FE naming conventions
 // the return type is intentionally kept strict.
-export function getUnifiedDocType(
+export function getFEUnifiedDocType(
   input: string | null | undefined
 ): FEReturnType {
   const lowerCasedInput = (input ?? "").toLowerCase() ?? null;

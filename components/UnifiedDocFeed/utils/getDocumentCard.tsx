@@ -1,7 +1,10 @@
 import FeedCard from "~/components/Author/Tabs/FeedCard";
 import { ReactElement } from "react";
 import { filterNull } from "~/config/utils/nullchecks";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import {
+  getUnifiedDocType,
+  RESEARCHHUB_POST_DOCUMENT_TYPES,
+} from "~/config/utils/getUnifiedDocType";
 
 export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
@@ -20,7 +23,9 @@ export function getDocumentCard({
           : docTypeLabel === "discussion"
           ? "post"
           : docTypeLabel;
-      const targetDoc = !["post", "question"].includes(formattedDocType)
+      const targetDoc = !RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
+        formattedDocType
+      )
         ? uniDoc.documents
         : uniDoc.documents[0];
       const docID = targetDoc.id;
