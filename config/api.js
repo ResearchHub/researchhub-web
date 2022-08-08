@@ -6,6 +6,7 @@ import {
   doesNotExist,
   nullthrows,
 } from "~/config/utils/nullchecks";
+import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "./utils/getUnifiedDocType";
 
 export const apiRoot = {
   production: "backend.researchhub.com",
@@ -533,8 +534,9 @@ const routes = (BASE_URL) => {
       twitter,
     }) => {
       // question is a post behind the scenes and hence needs to be handled as such.
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url = `${BASE_URL}${docType}/${documentId}/discussion/${
         targetId != null ? targetId + "/" : ""
       }`;
@@ -588,8 +590,9 @@ const routes = (BASE_URL) => {
     },
 
     THREAD: (documentType, paperId, documentId, threadId) => {
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url =
         `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
@@ -618,8 +621,9 @@ const routes = (BASE_URL) => {
 
     THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
       // question is a post behind the scenes and hence needs to be handled as such.
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url =
         `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
@@ -641,8 +645,9 @@ const routes = (BASE_URL) => {
       page
     ) => {
       // question is a post behind the scenes and hence needs to be handled as such.
-      let docType = documentType === "question" ? "post" : documentType;
-
+      const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+        ? "researchhub_post"
+        : documentType;
       let url =
         `${BASE_URL}${docType}/` +
         (paperId != null ? `${paperId}` : `${documentId}`) +
@@ -1223,8 +1228,9 @@ const routes = (BASE_URL) => {
     commentId,
     replyId
   ) {
-    let docType = documentType === "question" ? "post" : documentType;
-
+    const docType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(documentType)
+      ? "researchhub_post"
+      : documentType;
     let url =
       `${BASE_URL}${docType}/` +
       (paperId != null ? `${paperId}` : `${documentId}`) +

@@ -34,6 +34,7 @@ import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
+import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -129,8 +130,10 @@ function FeedCard({
     ])
   );
   const docUrl = `/${
-    formattedDocType === "question" ? "post" : formattedDocType
-  }/${id}/${slug ?? "new-paper"}`;
+    RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
+      ? "post"
+      : formattedDocType
+  }/${id}/${slug ?? "new"}`;
 
   useEffect((): void => {
     if (!isEmpty(userVote)) {
