@@ -35,7 +35,7 @@ export function flagGrmContent({
   const parsedContentType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
     contentType
   )
-    ? "researchhub_posts"
+    ? "researchhub_post"
     : contentType;
   fetch(
     API.FLAG_GRM_CONTENT({

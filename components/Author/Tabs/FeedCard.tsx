@@ -129,7 +129,7 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
-  const docUrl = `/${
+  const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
       : formattedDocType
@@ -188,7 +188,7 @@ function FeedCard({
       key={`${formattedDocType}-${id}`}
       onClick={handleClick}
     >
-      <Link href={docUrl}>
+      <Link href={feDocUrl}>
         <a
           className={css(styles.feedCard, featured && styles.featuredContainer)}
         >
@@ -305,7 +305,7 @@ function FeedCard({
                       >
                         <PeerReviewScoreSummary
                           summary={reviews}
-                          docUrl={docUrl}
+                          feDocUrl={feDocUrl}
                         />
                       </div>
                     )}

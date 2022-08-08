@@ -10,7 +10,7 @@ type Args = {
 };
 
 export const createQuestion = ({ onError, onSuccess, payload }: Args): void => {
-  fetch(buildApiUri({ apiPath: "researchhub_posts" }), API.POST_CONFIG(payload))
+  fetch(buildApiUri({ apiPath: "researchhub_post" }), API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any) => {

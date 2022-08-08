@@ -1,9 +1,10 @@
-import { ID } from "../types/root_types";
+import { ID, NullableString } from "../types/root_types";
 import { getInitialScope } from "./dates";
 import { isNullOrUndefined } from "./nullchecks";
 
 type FEReturnType = "hypothesis" | "post" | "paper" | "question" | "all";
 type BEReturnType = "hypothesis" | "paper" | "posts" | "questions" | "all";
+type BEDocumentModelName = "researchhub_post" | "hypothesis" | "paper" | null;
 
 export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "discussion",
@@ -12,6 +13,24 @@ export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "question",
 ];
 
+export function getBeDocumentModelName(
+  input: NullableString
+): BEDocumentModelName {
+  const lowerCasedInput = (input ?? "").toLowerCase() ?? null;
+  switch (lowerCasedInput) {
+    case "question":
+    case "discussion":
+    case "post":
+    case "posts":
+      return "researchhub_post";
+    case "hypothesis":
+      return "hypothesis";
+    case "paper":
+      return "paper";
+    default:
+      return null;
+  }
+}
 // this function is used to resolve BE model name discrepencies with FE naming conventions
 // the return type is intentionally kept strict.
 export function getFEUnifiedDocType(

@@ -30,10 +30,7 @@ const PaperTransactionModal = dynamic(() =>
 
 function useEffectFetchPost({ setPost, setPostV2, query }) {
   useEffect(() => {
-    fetch(
-      API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
-      API.GET_CONFIG()
-    )
+    fetch(API.RESEARCHHUB_POST({ post_id: query.documentId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {

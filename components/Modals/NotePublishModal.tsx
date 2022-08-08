@@ -241,7 +241,7 @@ function NotePublishModal({
       };
     }
 
-    return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
+    return fetch(API.RESEARCHHUB_POST({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
