@@ -149,7 +149,7 @@ function PaperTab(props) {
           <iframe src={httpsUrl} height={800} width={"100%"} loading="lazy" />
         </div>
       );
-    } else if (!paper.is_open_access) {
+    } else if (paper.oa_status && paper.oa_status === "closed") {
       return null;
     } else {
       if (showDnd) {
