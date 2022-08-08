@@ -11,6 +11,7 @@ export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "post",
   "posts",
   "question",
+  "questions",
 ];
 
 export function getBeDocumentModelName(
