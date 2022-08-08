@@ -128,7 +128,7 @@ const UnifiedDocFeedMenu = ({
         label: "Posts",
       },
       {
-        value: "questions",
+        value: "question",
         label: "Questions",
       },
       {

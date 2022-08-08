@@ -62,7 +62,7 @@ export function getBEUnifiedDocType(
   switch (lowerCasedInput) {
     case "question":
     case "questions":
-      return "questions";
+      return "question";
     case "discussion":
     case "post":
     case "posts":
