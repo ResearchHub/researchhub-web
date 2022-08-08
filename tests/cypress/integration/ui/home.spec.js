@@ -3,7 +3,7 @@ import unifiedFeedFixture from '../../fixtures/unified-feed.json';
 
 describe('Home', () => {
   const APP_PATH = "/";
-  const UNIFIED_DOCS_API_PATH = `${Cypress.env('serverBaseUrl')}/api/researchhub_unified_documents/get_unified_documents/*`;
+  const UNIFIED_DOCS_API_PATH = `${Cypress.env('serverBaseUrl')}/api/researchhub_unified_document/get_unified_documents/*`;
 
   context("Page elements", () => {
 

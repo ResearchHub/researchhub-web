@@ -14,6 +14,7 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
+import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 
 type Args = {
   currentAuthor: AuthorProfile;
@@ -49,11 +50,13 @@ export const createVoteHandler = ({
   onSuccess,
   voteType,
 }: Args) => {
-  const formattedDocumentType = ["post", "question"].includes(documentType)
-    ? "researchhub_posts"
+  const formattedDocumentType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
+    documentType
+  )
+    ? "researchhub_post"
     : documentType;
   const resolvedDocumentAuthorID =
-    documentCreatedBy?.authorProfile  ?.id ||
+    documentCreatedBy?.authorProfile?.id ||
     documentCreatedBy?.author_profile?.id;
 
   return async (event: SyntheticEvent) => {

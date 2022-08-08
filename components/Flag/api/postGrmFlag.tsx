@@ -8,6 +8,7 @@ import {
   RhDocumentType,
 } from "~/config/types/root_types";
 import API from "~/config/api";
+import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 
 type FlagGrmContentArgs = {
   commentPayload?: {
@@ -31,10 +32,10 @@ export function flagGrmContent({
   onError,
   onSuccess,
 }: FlagGrmContentArgs): void {
-  const parsedContentType = ["post", "question"].includes(contentType)
-    ? commentPayload?.commentType
-      ? "post"
-      : "researchhub_posts"
+  const parsedContentType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
+    contentType
+  )
+    ? "researchhub_post"
     : contentType;
   fetch(
     API.FLAG_GRM_CONTENT({

@@ -34,6 +34,7 @@ import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
+import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -128,9 +129,11 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
-  const docUrl = `/${
-    formattedDocType === "question" ? "post" : formattedDocType
-  }/${id}/${slug ?? "new-paper"}`;
+  const feDocUrl = `/${
+    RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
+      ? "post"
+      : formattedDocType
+  }/${id}/${slug ?? "new"}`;
 
   useEffect((): void => {
     if (!isEmpty(userVote)) {
@@ -185,7 +188,7 @@ function FeedCard({
       key={`${formattedDocType}-${id}`}
       onClick={handleClick}
     >
-      <Link href={docUrl}>
+      <Link href={feDocUrl}>
         <a
           className={css(styles.feedCard, featured && styles.featuredContainer)}
         >
@@ -302,7 +305,7 @@ function FeedCard({
                       >
                         <PeerReviewScoreSummary
                           summary={reviews}
-                          docUrl={docUrl}
+                          feDocUrl={feDocUrl}
                         />
                       </div>
                     )}

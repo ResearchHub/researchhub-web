@@ -7,7 +7,7 @@ import icons, {
   HypothesisIcon,
 } from "~/config/themes/icons";
 import { useRouter } from "next/router";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 
 const DocumentBadge = ({ docType, label, onClick }) => {
@@ -18,7 +18,7 @@ const DocumentBadge = ({ docType, label, onClick }) => {
     event.stopPropagation();
 
     if (onClick) {
-      return onClick(getBEUnifiedDocType(docType));
+      return onClick(getFEUnifiedDocType(docType));
     } else {
       const isCurrentRouteAFeed = ["/hubs/[slug]", "/"].includes(
         router.pathname
@@ -26,12 +26,12 @@ const DocumentBadge = ({ docType, label, onClick }) => {
       if (isCurrentRouteAFeed) {
         router.push({
           pathname: router.pathname,
-          query: { ...router.query, type: getBEUnifiedDocType(docType) },
+          query: { ...router.query, type: getFEUnifiedDocType(docType) },
         });
       } else {
         router.push({
           pathname: "/",
-          query: { type: getBEUnifiedDocType(docType) },
+          query: { type: getFEUnifiedDocType(docType) },
         });
       }
     }
