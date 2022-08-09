@@ -1,4 +1,4 @@
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { timeAgo } from "~/config/utils/dates";
 import dayjs from "dayjs";
@@ -70,12 +70,12 @@ export const getCardType = ({ item, itemType }) => {
     if (item.contribution_type === "COMMENTER") {
       cardType = "comment";
     } else if (item.contribution_type === "SUBMITTER") {
-      cardType = getUnifiedDocType(uniDoc?.document_type);
+      cardType = getFEUnifiedDocType(uniDoc?.document_type);
     } else if (item.contribution_type === "SUPPORTER") {
       if (item.source?.content_type?.app_label === "discussion") {
         cardType = "comment";
       } else {
-        cardType = getUnifiedDocType(uniDoc?.document_type);
+        cardType = getFEUnifiedDocType(uniDoc?.document_type);
       }
     }
   } else {

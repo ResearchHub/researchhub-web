@@ -13,7 +13,7 @@ import {
   getUrlFromItem,
   getCardType,
 } from "./utils/AuthorFeedUtils";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 const AuthorFeedItem = ({
   author,
@@ -53,7 +53,7 @@ const AuthorFeedItem = ({
             ? item.source.source
             : item.source;
         const uniDoc = item.unified_document;
-        const docType = getUnifiedDocType(uniDoc?.document_type);
+        const docType = getFEUnifiedDocType(uniDoc?.document_type);
 
         // If paper we need to shim things around
         // so that component works properly
