@@ -4,6 +4,7 @@ import {
   MAX_RSC_REQUIRED,
   MIN_RSC_REQUIRED,
 } from "./config/constants";
+import { sendAmpEvent } from "~/config/fetch";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -47,7 +48,8 @@ function BountyModal({
   useEffect(() => {
     ReactTooltip.rebuild();
   });
-  const currentUserBalance = getCurrentUser()?.balance ?? 0;
+  const currentUser = getCurrentUser();
+  const currentUserBalance = currentUser?.balance ?? 0;
   const [offeredAmount, setOfferedAmount] = useState<Number>(
     parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
   );
@@ -95,6 +97,25 @@ function BountyModal({
     );
   };
 
+  const sendBountyCreateAmpEvent = ({ currentUser, createdBounty }) => {
+    const rh_fee = createdBounty?.amount * 0.07;
+    const dao_fee = createdBounty?.amount * 0.02;
+    const payload = {
+      event_type: "create_bounty",
+      time: +new Date(),
+      user_id: currentUser?.id,
+      insert_id: `bounty_${createdBounty?.id}`,
+      event_properties: {
+        interaction: "Bounty created",
+        expiration_date: createdBounty?.expiration_date,
+        rh_fee: rh_fee,
+        dao_fee: dao_fee,
+        net_fee: rh_fee + dao_fee,
+      },
+    };
+    sendAmpEvent(payload);
+  };
+
   const handleAddBounty = () => {
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
       const totalBountyAmount = calcTotalAmount({ offeredAmount });
@@ -110,6 +131,7 @@ function BountyModal({
           unifiedDocId: unifiedDocId,
         })
           .then((createdBounty) => {
+            sendBountyCreateAmpEvent({ currentUser, createdBounty });
             handleBountyAdded(createdBounty);
             setSuccess(true);
           })
