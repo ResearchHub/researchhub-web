@@ -22,6 +22,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import { Post as PostDoc } from "~/config/types/post";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { sendAmpEvent } from "~/config/fetch";
 import Bounty from "~/config/types/bounty";
 
 const PaperTransactionModal = dynamic(() =>
@@ -56,6 +58,7 @@ const Post = (props) => {
 
   const store = useStore();
 
+  const currentUser = getCurrentUser();
   const [post, setPost] = useState({});
   const [postV2, setPostV2] = useState(new PostDoc({}));
   const [discussionCount, setCount] = useState(0);
@@ -74,6 +77,20 @@ const Post = (props) => {
       setCount(post.discussion_count);
     }
   }, [post]);
+
+  const sendBountyAwardAmpEvent = ({ currentUser, bounty }) => {
+    const payload = {
+      event_type: "award_bounty",
+      time: +new Date(),
+      user_id: currentUser?.id,
+      insert_id: `award_bounty_${bounty?.id}`,
+      event_properties: {
+        interaction: "Bounty awarded",
+        amount: bounty?.amount,
+      },
+    };
+    sendAmpEvent(payload);
+  };
 
   const handleAwardBounty = ({
     objectId,
@@ -98,6 +115,7 @@ const Post = (props) => {
             detail: { objectId, contentType, amount: bounty.amount },
           });
           document.dispatchEvent(event);
+          sendBountyAwardAmpEvent({ currentUser, bounty });
         })
         .catch((err) => {
           props.setMessage("Failed to award bounty");
