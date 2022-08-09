@@ -68,7 +68,11 @@ export default class Bounty {
     });
   }
 
-  static createAPI({ bountyAmount, unifiedDocId }) {
+  static createAPI({
+    bountyAmount,
+    itemObjectId,
+    itemContentType = "researchhubunifieddocument",
+  }) {
     // TODO: Change hard coded value
 
     const today = new Date();
@@ -78,8 +82,8 @@ export default class Bounty {
 
     const data = {
       amount: parseFloat(bountyAmount),
-      item_content_type: "researchhubunifieddocument",
-      item_object_id: unifiedDocId,
+      item_content_type: itemContentType,
+      item_object_id: itemObjectId,
       expiration_date: thirtyDaysFromNow,
     };
 

@@ -80,16 +80,16 @@ function TextEditor(props) {
     onCancel && onCancel();
   }
 
-  function submit({ content, plainText, callback, discussionType }) {
+  function submit(submitContent) {
     if (!isLoggedIn) {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
-      if (isQuillEmpty(content)) {
+      if (isQuillEmpty(submitContent.content)) {
         setMessage("Content cannot be empty.");
         return showMessage({ error: true, show: true, clickoff: true });
       }
 
-      onSubmit && onSubmit({ content, plainText, callback, discussionType });
+      onSubmit && onSubmit(submitContent);
       if (clearOnSubmit) {
         callback();
       }
@@ -101,36 +101,34 @@ function TextEditor(props) {
   }
 
   return (
-    <div>
-      <QuillTextEditor
-        value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
-        uid={uid}
-        key={`textEditor-${uid}`}
-        setRef={setInternalRef}
-        readOnly={readOnly}
-        mediaOnly={mediaOnly}
-        onChange={handleChange}
-        clearOnSubmit={clearOnSubmit}
-        containerStyles={containerStyles}
-        cancel={cancel}
-        submit={submit}
-        focusEditor={focusEditor}
-        commentEditor={commentEditor}
-        hideButton={hideButton}
-        hideCancelButton={hideCancelButton && hideCancelButton}
-        commentStyles={commentStyles && commentStyles}
-        loading={loading && loading}
-        isTopLevelComment={isTopLevelComment}
-        commentEditorStyles={commentEditorStyles && commentEditorStyles}
-        editing={editing}
-        hasHeader={hasHeader && hasHeader}
-        summary={summary && summary}
-        setSelectedPostTypeStruct={setSelectedPostTypeStruct}
-        selectedPostTypeStruct={selectedPostTypeStruct}
-        documentType={documentType}
-        isAcceptedAnswer={isAcceptedAnswer}
-      />
-    </div>
+    <QuillTextEditor
+      value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
+      uid={uid}
+      key={`textEditor-${uid}`}
+      setRef={setInternalRef}
+      readOnly={readOnly}
+      mediaOnly={mediaOnly}
+      onChange={handleChange}
+      clearOnSubmit={clearOnSubmit}
+      containerStyles={containerStyles}
+      cancel={cancel}
+      submit={submit}
+      focusEditor={focusEditor}
+      commentEditor={commentEditor}
+      hideButton={hideButton}
+      hideCancelButton={hideCancelButton && hideCancelButton}
+      commentStyles={commentStyles && commentStyles}
+      loading={loading && loading}
+      isTopLevelComment={isTopLevelComment}
+      commentEditorStyles={commentEditorStyles && commentEditorStyles}
+      editing={editing}
+      hasHeader={hasHeader && hasHeader}
+      summary={summary && summary}
+      setSelectedPostTypeStruct={setSelectedPostTypeStruct}
+      selectedPostTypeStruct={selectedPostTypeStruct}
+      documentType={documentType}
+      isAcceptedAnswer={isAcceptedAnswer}
+    />
   );
 }
 

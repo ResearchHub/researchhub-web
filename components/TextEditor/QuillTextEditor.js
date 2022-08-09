@@ -3,6 +3,7 @@ import ReactDOMServer from "react-dom/server";
 import { createRef, Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
+import numeral from "numeral";
 
 // Component
 import FormButton from "~/components/Form/Button";
@@ -26,6 +27,7 @@ import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
+import icons from "~/config/themes/icons";
 
 class Editor extends Component {
   constructor(props) {
@@ -37,6 +39,7 @@ class Editor extends Component {
       plainText: "",
       events: [],
       editValue: this.props.value ? this.props.value : { ops: [] },
+      interimBounty: null,
       focus: false,
       ReactQuill: null,
       Quill: null,
@@ -330,6 +333,7 @@ class Editor extends Component {
       editValue: content,
     });
     this.props.submit({
+      interimBounty: this.state.interimBounty,
       content,
       plainText,
       callback: this.clearEditorContent,
@@ -461,6 +465,12 @@ class Editor extends Component {
     this.focusEditor();
   };
 
+  setBountyInterim = (bounty) => {
+    this.setState({
+      interimBounty: bounty,
+    });
+  };
+
   renderButtons = (props) => {
     const isRequestMode =
       this.state.selectedPostTypeStruct?.group === "request";
@@ -498,14 +508,46 @@ class Editor extends Component {
                   Cancel
                 </div>
               )}
-              {/* <div className={css(styles.bountyBtnContainer)}>
-                <CreateBountyBtn
-                  onBountyChange={
-                    (amountDetails) => null
-                    // setBountyAmountDetails(amountDetails)
-                  }
-                />
-              </div>               */}
+              <div className={css(styles.bountyBtnContainer)}>
+                {this.state.interimBounty ? (
+                  <button
+                    className={css(styles.bountyAdded)}
+                    onClick={() => {
+                      this.setState({
+                        interimBounty: null,
+                      });
+                    }}
+                  >
+                    <img
+                      className={css(styles.RSCIcon)}
+                      src="/static/icons/coin-filled.png"
+                      alt="Pot of Gold"
+                    />
+                    <span className={css(styles.bountyText)}>
+                      {numeral(this.state.interimBounty.amount).format(
+                        "0,0.[0000000000]"
+                      )}{" "}
+                      ResearchCoin Bounty Added{" "}
+                    </span>
+                    <span className={css(styles.closeBounty)}>
+                      {icons.times}
+                    </span>
+                  </button>
+                ) : (
+                  <CreateBountyBtn
+                    onBountyAdd={(bounty) => {
+                      this.setBountyInterim(bounty);
+                    }}
+                    withPreview={true}
+                    bountyText={this.quillRef?.getText()}
+                    // post={post}
+                    bounty={this.props.bounty}
+                    onBountyCancelled={() => {
+                      this.props.setBounty(null);
+                    }}
+                  />
+                )}
+              </div>
               <FormButton
                 onClick={this.onSubmit}
                 label={this.props.editing ? "Save changes" : label}
@@ -677,6 +719,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
   },
+  RSCIcon: {
+    height: 20,
+    marginRight: 4,
+  },
   readOnly: {
     background: "white",
     padding: "12px 15px",
@@ -719,6 +765,26 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     background: "white",
     boxSizing: "border-box",
+  },
+  bountyAdded: {
+    background: colors.GREY(0.2),
+    border: 0,
+    height: 30,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 4,
+    fontFamily: "'Roboto', sans-serif",
+    fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  closeBounty: {
+    color: "grey",
+  },
+  bountyText: {
+    marginRight: 8,
+    fontSize: 15,
   },
   editable: {},
   focus: {

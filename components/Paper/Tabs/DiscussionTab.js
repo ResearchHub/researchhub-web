@@ -42,6 +42,7 @@ import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
+import Bounty from "~/config/types/bounty";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -263,7 +264,13 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
-  const save = async ({ content, plainText, callback, discussionType }) => {
+  const save = async ({
+    content,
+    plainText,
+    callback,
+    discussionType,
+    interimBounty,
+  }) => {
     setSubmitInProgress(true);
     let param;
     let documentId;
@@ -370,6 +377,15 @@ const DiscussionTab = (props) => {
         props.getUser();
         setTextEditorKey(genClientId());
         sendAmpEvent(payload);
+
+        if (interimBounty) {
+          debugger;
+          Bounty.createAPI({
+            bountyAmount: interimBounty.amount,
+            itemObjectId: resp.id,
+            itemContentType: "thread",
+          });
+        }
       })
       .catch((err) => {
         setSubmitInProgress(false);

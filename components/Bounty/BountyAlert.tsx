@@ -33,7 +33,7 @@ const BountyAlert = ({ bounty }: BountyAlertParams) => {
           )}
           {` `}is offering{" "}
           <span className={css(styles.strong)}>
-            {numeral(amount).format("0.[0000000000]")} RSC
+            {numeral(amount).format("0,0.[0000000000]")} RSC
             <ResearchCoinIcon
               width={16}
               height={16}
