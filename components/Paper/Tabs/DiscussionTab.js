@@ -187,9 +187,11 @@ const DiscussionTab = (props) => {
           >
             {threads.length > 0
               ? threads.map((t, i) => {
+                  console.log(t);
                   return (
                     <DiscussionEntry
                       key={`thread-${t.data.id}`}
+                      {...t.data}
                       data={t.data}
                       hostname={hostname}
                       hoverEvents={true}
@@ -379,7 +381,6 @@ const DiscussionTab = (props) => {
         sendAmpEvent(payload);
 
         if (interimBounty) {
-          debugger;
           Bounty.createAPI({
             bountyAmount: interimBounty.amount,
             itemObjectId: resp.id,

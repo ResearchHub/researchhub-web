@@ -534,18 +534,20 @@ class Editor extends Component {
                     </span>
                   </button>
                 ) : (
-                  <CreateBountyBtn
-                    onBountyAdd={(bounty) => {
-                      this.setBountyInterim(bounty);
-                    }}
-                    withPreview={true}
-                    bountyText={this.quillRef?.getText()}
-                    // post={post}
-                    bounty={this.props.bounty}
-                    onBountyCancelled={() => {
-                      this.props.setBounty(null);
-                    }}
-                  />
+                  !this.props.editing && (
+                    <CreateBountyBtn
+                      onBountyAdd={(bounty) => {
+                        this.setBountyInterim(bounty);
+                      }}
+                      withPreview={true}
+                      bountyText={this.quillRef?.getText()}
+                      // post={post}
+                      bounty={this.props.bounty}
+                      onBountyCancelled={() => {
+                        this.props.setBounty(null);
+                      }}
+                    />
+                  )
                 )}
               </div>
               <FormButton
