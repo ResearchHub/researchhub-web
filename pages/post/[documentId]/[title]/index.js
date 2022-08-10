@@ -24,6 +24,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { Post as PostDoc } from "~/config/types/post";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { sendAmpEvent } from "~/config/fetch";
+import { trackEvent } from "~/config/utils/analytics";
 import Bounty from "~/config/types/bounty";
 
 const PaperTransactionModal = dynamic(() =>
@@ -79,17 +80,16 @@ const Post = (props) => {
   }, [post]);
 
   const sendBountyAwardAmpEvent = ({ currentUser, bounty }) => {
-    const payload = {
-      event_type: "award_bounty",
-      time: +new Date(),
-      user_id: currentUser?.id,
-      insert_id: `award_bounty_${bounty?.id}`,
-      event_properties: {
+    trackEvent({
+      eventType: "award_bounty",
+      vendor: "amp",
+      user: currentUser,
+      insertId: `award_bounty_${bounty?.id}`,
+      data: {
         interaction: "Bounty awarded",
         amount: bounty?.amount,
       },
-    };
-    sendAmpEvent(payload);
+    });
   };
 
   const handleAwardBounty = ({
