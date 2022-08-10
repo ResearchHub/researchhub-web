@@ -396,6 +396,7 @@ class DiscussionEntry extends Component {
             noVote={noVote}
             hostname={hostname}
             context={context}
+            openBounties={this.props.bounties}
             currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
@@ -651,8 +652,8 @@ class DiscussionEntry extends Component {
                     bounties={this.props.bounties}
                     isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
-                    date={date}
                     documentType={documentType}
+                    date={date}
                     dropDownEnabled={true}
                     hostname={hostname}
                     paper={paper}
@@ -719,6 +720,7 @@ class DiscussionEntry extends Component {
                   contentType="thread"
                   count={commentCount}
                   documentID={documentId}
+                  showBountyAward={bounty?.status === "OPEN"}
                   documentType={this.props.documentType}
                   editing={this.state.editing}
                   hideReply={data.source === "twitter"}

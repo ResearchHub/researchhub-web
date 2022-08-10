@@ -92,7 +92,6 @@ function TextEditor(props) {
 
       onSubmit && onSubmit(submitContent);
 
-      debugger;
       if (clearOnSubmit) {
         callback && callback();
       }

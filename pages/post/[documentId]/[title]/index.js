@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import { Post as PostDoc } from "~/config/types/post";
-import Bounty from "~/config/types/bounty";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -81,7 +81,14 @@ const Post = (props) => {
     recipientUserId,
     contentType,
   }) => {
-    if (bounty && confirm(`Award ${bounty.amount} to ${recipientUserName}?`)) {
+    if (
+      bounty &&
+      confirm(
+        `Award ${formatBountyAmount({
+          amount: bounty.amount,
+        })} to ${recipientUserName}?`
+      )
+    ) {
       Bounty.awardAPI({
         bountyId: bounty.id,
         recipientUserId,

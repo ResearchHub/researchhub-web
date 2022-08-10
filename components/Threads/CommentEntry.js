@@ -40,6 +40,7 @@ class CommentEntry extends Component {
       // Editing,
       editing: false,
       canEdit: false,
+      isAcceptedAnswer: this.props.comment.is_accepted_answer,
     };
     this.commentRef = null;
   }
@@ -320,6 +321,12 @@ class CommentEntry extends Component {
     }
   };
 
+  onBountyAward = () => {
+    this.setState({
+      isAcceptedAnswer: true,
+    });
+  };
+
   submitReply = async ({ content, plainText, callback }) => {
     let {
       data,
@@ -509,6 +516,8 @@ class CommentEntry extends Component {
     replies = replies.sort(
       (a, b) => new Date(a.created_date) - new Date(b.created_date)
     );
+
+    console.log(comment);
     return replies.map((reply, i) => {
       return (
         <ReplyEntry
@@ -542,6 +551,7 @@ class CommentEntry extends Component {
       mediaOnly,
       documentType,
       noVote,
+      openBounties,
     } = this.props;
     let threadId = comment.id;
     let commentCount =
@@ -553,6 +563,8 @@ class CommentEntry extends Component {
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
+
+    console.log(comment);
 
     return (
       <div
@@ -616,6 +628,7 @@ class CommentEntry extends Component {
                   data={comment}
                   username={username}
                   date={date}
+                  isAcceptedAnswer={this.state.isAcceptedAnswer}
                   paper={paper}
                   documentType={documentType}
                   smaller={true}
@@ -632,7 +645,12 @@ class CommentEntry extends Component {
             )}
             {this.handleStateRendering() && (
               <Fragment>
-                <div className={css(styles.content)}>
+                <div
+                  className={css(
+                    styles.content,
+                    this.state.isAcceptedAnswer && styles.acceptedAnswer
+                  )}
+                >
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
@@ -647,7 +665,15 @@ class CommentEntry extends Component {
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
                     comment
+                    showBountyAward={
+                      openBounties?.length > 0 &&
+                      openBounties[0].status === "OPEN"
+                    }
+                    bounty={openBounties[0]}
+                    onBountyAward={this.onBountyAward}
+                    bountyAwarded={openBounties[0].status === "CLOSED"}
                     commentID={comment?.id}
+                    createdBy={comment.created_by}
                     contentType="comment"
                     count={commentCount}
                     documentID={documentID}
@@ -716,6 +742,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  acceptedAnswer: {
+    border: `1px solid ${colors.NEW_GREEN()}`,
+  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -768,6 +797,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflowWrap: "break-word",
     lineHeight: 1.6,
+    borderRadius: 4,
   },
   metaData: {
     display: "table-cell",
