@@ -41,6 +41,7 @@ class CommentEntry extends Component {
       editing: false,
       canEdit: false,
       isAcceptedAnswer: this.props.comment.is_accepted_answer,
+      bountyAmount: 0,
     };
     this.commentRef = null;
   }
@@ -321,9 +322,10 @@ class CommentEntry extends Component {
     }
   };
 
-  onBountyAward = () => {
+  onBountyAward = ({ bountyAmount }) => {
     this.setState({
       isAcceptedAnswer: true,
+      bountyAmount,
     });
   };
 
@@ -564,7 +566,9 @@ class CommentEntry extends Component {
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
 
-    console.log(comment);
+    if (this.state.bountyAmount) {
+      comment.awarded_bounty_amount = this.state.bountyAmount;
+    }
 
     return (
       <div

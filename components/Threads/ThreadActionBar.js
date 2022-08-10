@@ -196,7 +196,10 @@ class ThreadActionBar extends Component {
                           });
 
                           const { onBountyAward } = this.props;
-                          onBountyAward && onBountyAward();
+                          onBountyAward &&
+                            onBountyAward({
+                              bountyAmount: formattedBountyAmount,
+                            });
                         });
                       }
                     },
