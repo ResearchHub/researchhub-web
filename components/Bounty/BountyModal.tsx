@@ -4,7 +4,7 @@ import {
   MAX_RSC_REQUIRED,
   MIN_RSC_REQUIRED,
 } from "./config/constants";
-import { sendAmpEvent } from "~/config/fetch";
+import { trackEvent } from "~/config/utils/analytics";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -100,20 +100,19 @@ function BountyModal({
   const sendBountyCreateAmpEvent = ({ currentUser, createdBounty }) => {
     const rh_fee = createdBounty?.amount * 0.07;
     const dao_fee = createdBounty?.amount * 0.02;
-    const payload = {
-      event_type: "create_bounty",
-      time: +new Date(),
-      user_id: currentUser?.id,
-      insert_id: `bounty_${createdBounty?.id}`,
-      event_properties: {
+    trackEvent({
+      eventType: "create_bounty",
+      vendor: "amp",
+      user: currentUser,
+      insertId: `bounty_${createdBounty?.id}`,
+      data: {
         interaction: "Bounty created",
         expiration_date: createdBounty?.expiration_date,
         rh_fee: rh_fee,
         dao_fee: dao_fee,
         net_fee: rh_fee + dao_fee,
       },
-    };
-    sendAmpEvent(payload);
+    });
   };
 
   const handleAddBounty = () => {
