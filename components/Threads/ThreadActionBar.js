@@ -9,13 +9,15 @@ import ThreadTextEditor from "./ThreadTextEditor";
 import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
-import Bounty from "~/config/types/bounty";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
+import { captureException } from "@sentry/browser";
 
 class ThreadActionBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showReplyBox: false,
+      bountyAwarded: this.props.bountyAwarded,
     };
   }
 
@@ -71,7 +73,39 @@ class ThreadActionBar extends Component {
     });
   };
 
+  handleAwardBounty = ({
+    objectId,
+    recipientUserName,
+    recipientUserId,
+    contentType,
+  }) => {
+    const { bounty } = this.props;
+    return Bounty.awardAPI({
+      bountyId: bounty.id,
+      recipientUserId,
+      objectId,
+      contentType,
+    })
+      .then((bounty) => {
+        var event = new CustomEvent("bounty-awarded", {
+          detail: { objectId, contentType, amount: bounty.amount },
+        });
+        document.dispatchEvent(event);
+      })
+      .catch((error) => {
+        this.props.setMessage("Failed to award bounty");
+        this.props.showMessage({
+          show: true,
+          error: true,
+        });
+
+        captureException(error);
+        throw new Error(error);
+      });
+  };
+
   render() {
+    const { showBountyAward } = this.props;
     if (this.props.isRemoved) {
       return null;
     }
@@ -109,17 +143,73 @@ class ThreadActionBar extends Component {
             </div>
           )}
 
-          {this.props.showAwardBountyBtn && (
+          {/* TODO: This will be turned on with the onset of bounty feature */}
+          {showBountyAward && !this.state.bountyAwarded && (
             <div
               className={css(styles.text, styles.action)}
               onClick={() => {
-                this.props.handleAwardBounty({
-                  bountyId: this.props.bounty.id,
-                  recipientUserId: this.props.createdBy.id,
-                  recipientUserName: `${this.props.createdBy.author_profile.first_name} ${this.props.createdBy.author_profile.last_name}`,
-                  objectId: this.props.threadID,
-                  contentType: "thread",
+                const formattedBountyAmount = formatBountyAmount({
+                  amount: this.props.bounty.amount,
                 });
+
+                const recipientUserName = `${this.props.createdBy.author_profile.first_name} ${this.props.createdBy.author_profile.last_name}`;
+
+                if (
+                  confirm(
+                    `Award ${formattedBountyAmount} to ${recipientUserName}?`
+                  )
+                ) {
+                  acceptAnswerAPI({
+                    documentType: this.props.documentType,
+                    threadId: this.props.threadID,
+                    documentId: this.props.documentID,
+                    commentId: this.props.commentID,
+                    onSuccess: (response) => {
+                      const bountyRes = this.handleAwardBounty({
+                        bountyId: this.props.bounty.id,
+                        recipientUserId: this.props.createdBy.id,
+                        recipientUserName,
+                        objectId:
+                          this.props.contentType === "thread"
+                            ? this.props.threadID
+                            : this.props.commentID,
+                        contentType: this.props.contentType,
+                      });
+                      if (bountyRes) {
+                        bountyRes.then((_) => {
+                          if (this.props.contentType === "thread") {
+                            const event = new CustomEvent("answer-accepted", {
+                              detail: {
+                                threadId: this.props.threadID,
+                              },
+                            });
+                            document.dispatchEvent(event);
+                          }
+                          this.setState({
+                            bountyAwarded: true,
+                          });
+                          this.props.setMessage(
+                            `Your ${formattedBountyAmount} RSC Bounty was awarded to ${recipientUserName}`
+                          );
+                          this.props.showMessage({
+                            show: true,
+                          });
+
+                          const { onBountyAward } = this.props;
+                          onBountyAward && onBountyAward();
+                        });
+                      }
+                    },
+                    onError: (error) => {
+                      console.log(error);
+                      this.props.setMessage("Failed to set accepted answer");
+                      this.props.showMessage({
+                        show: true,
+                        error: true,
+                      });
+                    },
+                  });
+                }
               }}
             >
               <span
@@ -128,53 +218,7 @@ class ThreadActionBar extends Component {
               >
                 {icons.medal}
               </span>
-              Award Bounty
-            </div>
-          )}
-          {this.props.showAcceptedAnswerBtn && (
-            <div
-              className={css(styles.text, styles.action)}
-              onClick={() =>
-                acceptAnswerAPI({
-                  documentType: this.props.documentType,
-                  threadId: this.props.threadID,
-                  documentId: this.props.documentID,
-                  onSuccess: (response) => {
-                    var event = new CustomEvent("answer-accepted", {
-                      detail: { threadId: this.props.threadID },
-                    });
-                    document.dispatchEvent(event);
-                  },
-                  onError: (error) => {
-                    this.props.setMessage("Failed to set accepted answer");
-                    this.props.showMessage({ show: true, error: true });
-                  },
-                })
-              }
-            >
-              <span
-                className={css(styles.icon, styles.acceptAnswerIcon)}
-                id={"acceptAnswerIcon"}
-              >
-                {icons.commentLightAltCheck}
-              </span>
-              Accept Answer
-            </div>
-          )}
-
-          {/* TODO: This will be turned on with the onset of bounty feature */}
-          {false && (
-            <div
-              className={css(styles.text, styles.action)}
-              onClick={() => null}
-            >
-              <span
-                className={css(styles.icon, styles.awardBountyIcon)}
-                id={"awardBountyIcon"}
-              >
-                {icons.medal}
-              </span>
-              Award Bounty
+              Accept Answer & Award Bounty
             </div>
           )}
 

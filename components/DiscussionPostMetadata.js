@@ -51,6 +51,7 @@ const DiscussionPostMetadata = (props) => {
     twitterUrl,
     username,
     bounties,
+    isAcceptedAnswer,
   } = props;
 
   const alert = useAlert();
@@ -94,7 +95,7 @@ const DiscussionPostMetadata = (props) => {
           </span>
         </div>
       );
-    } else if (type === POST_TYPES.ANSWER) {
+    } else if (type === POST_TYPES.ANSWER || isAcceptedAnswer) {
       const postType = questionPostTypes.find((t) => t.value === type);
       return (
         <div className={css(styles.badgeContainer)}>
@@ -108,7 +109,7 @@ const DiscussionPostMetadata = (props) => {
             <span className={css(badge.icon)}>
               {isAcceptedAnswer ? icons.check : postType.icon}
             </span>
-            <span className={css(badge.label)}>{postType.label}</span>
+            <span className={css(badge.label)}>ANSWER</span>
           </span>
         </div>
       );
@@ -126,7 +127,6 @@ const DiscussionPostMetadata = (props) => {
   } else if (discussionType === POST_TYPES.SUMMARY) {
     text = "posted summary";
   } else if (bounties && bounties.length > 0) {
-    console.log(bounties);
     text = (
       <span>
         is offering{" "}
@@ -180,7 +180,7 @@ const DiscussionPostMetadata = (props) => {
               metaData={metaData}
               fetching={fetching}
             />
-            {bounties.length > 0 && (
+            {bounties && bounties.length > 0 && (
               <span className={css(styles.expiryDate)}>
                 <span className={css(styles.divider)}>•</span>
                 expires in {timeToRoundUp(bounties[0].expiration_date)}
@@ -192,7 +192,7 @@ const DiscussionPostMetadata = (props) => {
       </div>
       {renderBadge({
         type: discussionType,
-        isAcceptedAnswer: data.is_accepted_answer,
+        isAcceptedAnswer: isAcceptedAnswer || data.is_accepted_answer,
       })}
     </div>
   );

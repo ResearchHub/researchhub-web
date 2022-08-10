@@ -187,7 +187,6 @@ const DiscussionTab = (props) => {
           >
             {threads.length > 0
               ? threads.map((t, i) => {
-                  console.log(t);
                   return (
                     <DiscussionEntry
                       key={`thread-${t.data.id}`}

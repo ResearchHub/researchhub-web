@@ -7,8 +7,9 @@ type Args = {
   documentId: ID;
   documentType: string;
   threadId: ID;
-  onSuccess: Function,
-  onError: Function,
+  onSuccess: Function;
+  onError: Function;
+  commentId?: ID;
 };
 
 export default function acceptAnswerAPI({
@@ -16,19 +17,18 @@ export default function acceptAnswerAPI({
   documentType,
   threadId,
   onSuccess,
-  onError
+  onError,
+  commentId,
 }: Args): void {
-  const url = API.buildPaperChainUrl(
-    documentType,
-    null,
-    documentId,
-    threadId,
-  ) + "mark_as_accepted_answer/";
-
-  fetch(
-    url,
-    API.POST_CONFIG({})
-  )
+  const url =
+    API.buildPaperChainUrl(
+      documentType,
+      null,
+      documentId,
+      threadId,
+      commentId
+    ) + "mark_as_accepted_answer/";
+  fetch(url, API.POST_CONFIG({}))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((_res) => onSuccess())
@@ -39,7 +39,7 @@ export default function acceptAnswerAPI({
         data: {
           documentId,
           documentType,
-          threadId,          
+          threadId,
         },
       });
       onError(error);

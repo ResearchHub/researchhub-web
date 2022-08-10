@@ -6,7 +6,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import numeral from "numeral";
 import { captureEvent } from "../utils/events";
 
-export function formatBountyAmount({amount}) {
+export function formatBountyAmount({ amount }) {
   return numeral(amount).format("0,0.[0000000000]");
 }
 
