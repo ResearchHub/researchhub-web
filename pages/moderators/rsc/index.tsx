@@ -2,13 +2,13 @@ import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useDispatch, useStore } from "react-redux";
-import { useEffectCheckModCredentials } from "~/components/Moderator/useEffectCheckModCredentials";
+import { useDispatch } from "react-redux";
 import api from "~/config/api";
 import AsyncSelect from "react-select/async";
 import Button from "~/components/Form/Button";
 import ContentPage from "~/components/ContentPage/ContentPage";
 import FormInput from "~/components/Form/FormInput";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import get from "lodash/get";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
 import SideColumn from "~/components/Home/SideColumn";
@@ -20,8 +20,11 @@ export default function RSCDashboard(): ReactElement<
   const dispatch = useDispatch();
   const [chosenOption, setChosenOption] = useState(null);
   const [inputAmount, setInputAmount] = useState(null);
-  const shouldRenderUI = useEffectCheckModCredentials({ shouldRedirect: true });
-  if (!shouldRenderUI) {
+  const userAllowedSendRSC = gateKeepCurrentUser({
+    application: "SEND_RSC",
+    shouldRedirect: true,
+  });
+  if (!userAllowedSendRSC) {
     return null;
   }
 

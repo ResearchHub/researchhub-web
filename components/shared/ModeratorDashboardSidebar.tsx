@@ -31,8 +31,6 @@ export default function ModeratorDashboardSidebar({}: Props) {
     shouldRedirect: false,
   });
 
-  const userAllowedToManagePeerReviews = killswitch("peerReview");
-
   const SIDE_BAR_ITEMS = filterNull([
     isUserModerator
       ? {
@@ -58,12 +56,21 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/permissions",
         }
       : null,
-    userAllowedToManagePeerReviews
+    // TODO: kobe - take care of this
+    // userAllowedToManagePeerReviews
+    //   ? {
+    //       icon: icons.commentCheck,
+    //       id: "review",
+    //       name: "Peer Reviews",
+    //       pathname: "/moderators/reviews",
+    //     }
+    //   : null,
+    userAllowedSendRSC
       ? {
-          icon: icons.commentCheck,
-          id: "review",
-          name: "Peer Reviews",
-          pathname: "/moderators/reviews",
+          icon: icons.coin,
+          id: "rsc",
+          name: "Manage RSC",
+          pathname: "/moderators/rsc",
         }
       : null,
     isUserHubEditor || isUserModerator
@@ -80,7 +87,10 @@ export default function ModeratorDashboardSidebar({}: Props) {
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",
-          extraHTML: numNavInteractions > 0 ? <span className={css(style.count)}>{numNavInteractions}</span> : null
+          extraHTML:
+            numNavInteractions > 0 ? (
+              <span className={css(style.count)}>{numNavInteractions}</span>
+            ) : null,
         }
       : null,
   ]);
@@ -108,9 +118,8 @@ export default function ModeratorDashboardSidebar({}: Props) {
   return <Fragment>{listItems}</Fragment>;
 }
 
-
 const style = StyleSheet.create({
-  "count": {
+  count: {
     backgroundColor: colors.RED(),
     color: "white",
     fontSize: 10,
@@ -120,5 +129,5 @@ const style = StyleSheet.create({
     width: 12,
     height: 12,
     textAlign: "center",
-  }
+  },
 });
