@@ -49,6 +49,7 @@ function TextEditor(props) {
     documentType,
     isAcceptedAnswer,
     isTopLevelComment = false,
+    callback,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -90,8 +91,10 @@ function TextEditor(props) {
       }
 
       onSubmit && onSubmit(submitContent);
+
+      debugger;
       if (clearOnSubmit) {
-        callback();
+        callback && callback();
       }
     }
   }

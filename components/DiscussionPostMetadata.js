@@ -17,7 +17,7 @@ import ShareModal from "~/components/ShareModal";
 
 // Config
 import { createUserSummary } from "~/config/utils/user";
-import { timeSince } from "~/config/utils/dates";
+import { timeSince, timeToRoundUp } from "~/config/utils/dates";
 import colors, { badgeColors, voteWidgetColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -28,6 +28,7 @@ import postTypes, {
   questionPostTypes,
 } from "./TextEditor/config/postTypes";
 import { breakpoints } from "~/config/themes/screen";
+import { formatBountyAmount } from "~/config/types/bounty";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -49,6 +50,7 @@ const DiscussionPostMetadata = (props) => {
     noTimeStamp,
     twitterUrl,
     username,
+    bounties,
   } = props;
 
   const alert = useAlert();
@@ -123,8 +125,20 @@ const DiscussionPostMetadata = (props) => {
     text = "answered";
   } else if (discussionType === POST_TYPES.SUMMARY) {
     text = "posted summary";
+  } else if (bounties && bounties.length > 0) {
+    console.log(bounties);
+    text = (
+      <span>
+        is offering{" "}
+        <span className={css(styles.strong)}>
+          {formatBountyAmount({
+            amount: bounties[0].amount,
+          })}{" "}
+          RSC
+        </span>
+      </span>
+    );
   }
-
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <div className={css(styles.authorDetails)}>
@@ -166,6 +180,12 @@ const DiscussionPostMetadata = (props) => {
               metaData={metaData}
               fetching={fetching}
             />
+            {bounties.length > 0 && (
+              <span className={css(styles.expiryDate)}>
+                <span className={css(styles.divider)}>•</span>
+                expires in {timeToRoundUp(bounties[0].expiration_date)}
+              </span>
+            )}
           </div>
           {/* {renderHeadline()} */}
         </div>
@@ -307,6 +327,15 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+  expiryDate: {
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 15,
+    fontWeight: 400,
+    fontSize: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+    },
+  },
   action: {
     [`@media only screen and (max-width: 615px)`]: {
       display: "none",
@@ -428,6 +457,10 @@ const styles = StyleSheet.create({
     ":hover #hideText": {
       color: colors.BLUE(),
     },
+  },
+  strong: {
+    color: "#111",
+    fontWeight: 500,
   },
   text: {
     fontFamily: "Roboto",

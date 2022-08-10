@@ -46,7 +46,6 @@ const DiscussionCommentEditor = (props) => {
   const { paperId, discussionThreadId } = router.query;
 
   const post = async (text, plain_text) => {
-    debugger;
     await postMethod(
       { dispatch, store, paperId, discussionThreadId, commentId, onSubmit },
       text,

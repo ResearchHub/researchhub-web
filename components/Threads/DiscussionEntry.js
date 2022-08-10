@@ -648,6 +648,7 @@ class DiscussionEntry extends Component {
                         null
                       )
                     }
+                    bounties={this.props.bounties}
                     isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
                     date={date}
