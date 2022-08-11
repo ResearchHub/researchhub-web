@@ -109,6 +109,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
             documentType={"hypothesis"}
             hypothesis={hypothesis}
             hypothesisId={id}
+            showBountyBtn={true}
             isCollapsible={false}
             setCount={setDiscussionCount}
           />

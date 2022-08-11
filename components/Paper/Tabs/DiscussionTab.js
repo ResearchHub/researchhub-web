@@ -66,6 +66,7 @@ const DiscussionTab = (props) => {
     hypothesis,
     hypothesisId,
     handleAwardBounty,
+    showBountyBtn,
   } = props;
 
   const router = useRouter();
@@ -478,6 +479,7 @@ const DiscussionTab = (props) => {
       focusEditor={focus}
       initialValue={discussion.question}
       onCancel={cancel}
+      showBountyBtn={showBountyBtn}
       onSubmit={save}
       readOnly={false}
       loading={submitInProgress}

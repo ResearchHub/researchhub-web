@@ -373,6 +373,7 @@ const Paper = ({
                       documentType={"paper"}
                       paperId={paper.id}
                       paperState={paper}
+                      showBountyBtn={true}
                       calculatedCount={discussionCount}
                       setCount={setCount}
                       isCollapsible={false}
