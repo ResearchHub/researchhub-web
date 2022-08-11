@@ -90,6 +90,7 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
+  const [bountyMap, setBountyMap] = useState({});
   const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
     useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
@@ -192,6 +193,11 @@ const DiscussionTab = (props) => {
                     <DiscussionEntry
                       key={`thread-${t.data.id}`}
                       {...t.data}
+                      bounties={
+                        bountyMap[t.data.id]
+                          ? [bountyMap[t.data.id]]
+                          : t.data.bounties
+                      }
                       data={t.data}
                       hostname={hostname}
                       hoverEvents={true}
@@ -346,7 +352,7 @@ const DiscussionTab = (props) => {
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((resp) => {
+      .then(async (resp) => {
         setSubmitInProgress(false);
         props.showMessage({ show: false });
         props.setMessage("");
@@ -381,11 +387,14 @@ const DiscussionTab = (props) => {
         sendAmpEvent(payload);
 
         if (interimBounty) {
-          Bounty.createAPI({
+          const bounty = await Bounty.createAPI({
             bountyAmount: interimBounty.amount,
             itemObjectId: resp.id,
             itemContentType: "thread",
           });
+          const newBountyMap = { ...bountyMap };
+          newBountyMap[resp.id] = bounty;
+          onBountyCreate(newBountyMap);
         }
       })
       .catch((err) => {
@@ -398,6 +407,10 @@ const DiscussionTab = (props) => {
         props.setMessage("Something went wrong");
         props.showMessage({ show: true, error: true });
       });
+  };
+
+  const onBountyCreate = (newBountyMap) => {
+    setBountyMap(newBountyMap);
   };
 
   const createFormattedDiscussion = (newDiscussion) => {

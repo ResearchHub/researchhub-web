@@ -25,6 +25,7 @@ import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCatego
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
+import Bounty from "~/config/types/bounty";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ class DiscussionEntry extends Component {
       editing: false,
       // Review
       isReview: false,
+      bounties: this.props.bounties,
       review: null,
       bountyAmount: 0,
     };
@@ -102,6 +104,12 @@ class DiscussionEntry extends Component {
 
   componentDidUpdate = async (prevProps, prevState) => {
     this.handleVoteTypeUpdate(prevProps);
+
+    if (prevProps.bounties !== this.props.bounties) {
+      this.setState({
+        bounties: this.props.bounties,
+      });
+    }
     if (prevProps.auth !== this.props.auth) {
       let { data } = this.props;
       this.setState({
@@ -397,7 +405,7 @@ class DiscussionEntry extends Component {
             noVote={noVote}
             hostname={hostname}
             context={context}
-            openBounties={this.props.bounties}
+            openBounties={this.state.bounties}
             currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
@@ -544,8 +552,6 @@ class DiscussionEntry extends Component {
   };
 
   render() {
-    console.log(this.state.bountyAmount);
-
     const {
       data,
       data: {
@@ -571,6 +577,8 @@ class DiscussionEntry extends Component {
       store: inlineCommentStore,
       currentAuthor,
     } = this.props;
+
+    console.log(this.state.bounties);
 
     const commentCount =
       data.comment_count +
@@ -658,7 +666,7 @@ class DiscussionEntry extends Component {
                         null
                       )
                     }
-                    bounties={this.props.bounties}
+                    bounties={this.state.bounties}
                     isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
                     awardedBountyAmount={this.state.bountyAmount}

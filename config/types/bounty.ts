@@ -36,6 +36,7 @@ export default class Bounty {
   _createdBy: CreatedBy | null;
   _amount: number;
   _status: BOUNTY_STATUS;
+  _expiration_date: string;
 
   constructor(raw: any) {
     this._id = raw.id;
@@ -44,6 +45,7 @@ export default class Bounty {
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseInt(raw.amount);
     this._status = raw.status;
+    this._expiration_date = raw.expiration_date;
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -149,5 +151,9 @@ export default class Bounty {
 
   get status(): BOUNTY_STATUS {
     return this._status;
+  }
+
+  get expiration_date(): string {
+    return this._expiration_date;
   }
 }
