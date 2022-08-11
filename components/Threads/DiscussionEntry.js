@@ -47,6 +47,7 @@ class DiscussionEntry extends Component {
       // Review
       isReview: false,
       review: null,
+      bountyAmount: 0,
     };
     this.divRef = null;
   }
@@ -536,7 +537,15 @@ class DiscussionEntry extends Component {
     }
   };
 
+  onBountyAward = ({ bountyAmount }) => {
+    this.setState({
+      bountyAmount,
+    });
+  };
+
   render() {
+    console.log(this.state.bountyAmount);
+
     const {
       data,
       data: {
@@ -652,6 +661,7 @@ class DiscussionEntry extends Component {
                     bounties={this.props.bounties}
                     isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
+                    awardedBountyAmount={this.state.bountyAmount}
                     documentType={documentType}
                     date={date}
                     dropDownEnabled={true}
@@ -718,6 +728,7 @@ class DiscussionEntry extends Component {
               <div className={css(styles.row, styles.bottom)}>
                 <ThreadActionBar
                   contentType="thread"
+                  onBountyAward={this.onBountyAward}
                   count={commentCount}
                   documentID={documentId}
                   showBountyAward={bounty?.status === "OPEN"}

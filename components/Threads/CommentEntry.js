@@ -566,6 +566,7 @@ class CommentEntry extends Component {
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
 
+    console.log(this.state.bountyAmount);
     if (this.state.bountyAmount) {
       comment.awarded_bounty_amount = this.state.bountyAmount;
     }
@@ -630,6 +631,7 @@ class CommentEntry extends Component {
                   ])}
                   isCreatedByEditor={comment?.is_created_by_editor}
                   data={comment}
+                  awardedBountyAmount={this.state.bountyAmount}
                   username={username}
                   date={date}
                   isAcceptedAnswer={this.state.isAcceptedAnswer}
@@ -673,9 +675,12 @@ class CommentEntry extends Component {
                       openBounties?.length > 0 &&
                       openBounties[0].status === "OPEN"
                     }
-                    bounty={openBounties[0]}
+                    bounty={openBounties?.length > 0 && openBounties[0]}
                     onBountyAward={this.onBountyAward}
-                    bountyAwarded={openBounties[0].status === "CLOSED"}
+                    bountyAwarded={
+                      openBounties?.length > 0 &&
+                      openBounties[0].status === "CLOSED"
+                    }
                     commentID={comment?.id}
                     createdBy={comment.created_by}
                     contentType="comment"

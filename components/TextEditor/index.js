@@ -50,6 +50,7 @@ function TextEditor(props) {
     isAcceptedAnswer,
     isTopLevelComment = false,
     callback,
+    showBountyBtn,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -108,6 +109,7 @@ function TextEditor(props) {
       uid={uid}
       key={`textEditor-${uid}`}
       setRef={setInternalRef}
+      showBountyBtn={showBountyBtn}
       readOnly={readOnly}
       mediaOnly={mediaOnly}
       onChange={handleChange}

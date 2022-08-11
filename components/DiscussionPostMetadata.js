@@ -51,6 +51,7 @@ const DiscussionPostMetadata = (props) => {
     twitterUrl,
     username,
     bounties,
+    awardedBountyAmount,
     isAcceptedAnswer,
   } = props;
 
@@ -179,6 +180,7 @@ const DiscussionPostMetadata = (props) => {
               data={data}
               metaData={metaData}
               fetching={fetching}
+              awardedBountyAmount={awardedBountyAmount}
             />
             {bounties && bounties.length > 0 && (
               <span className={css(styles.expiryDate)}>

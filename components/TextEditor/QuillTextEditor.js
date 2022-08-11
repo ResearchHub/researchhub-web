@@ -534,7 +534,7 @@ class Editor extends Component {
                     </span>
                   </button>
                 ) : (
-                  !this.props.editing && (
+                  this.props.showBountyBtn && (
                     <CreateBountyBtn
                       onBountyAdd={(bounty) => {
                         this.setBountyInterim(bounty);
