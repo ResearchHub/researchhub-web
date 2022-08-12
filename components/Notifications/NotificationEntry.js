@@ -179,7 +179,7 @@ const NotificationEntry = (props) => {
     );
 
     const etherscanLink = getEtherscanLink(txHash);
-
+    console.warn("props: ", props);
     switch (content_type) {
       case "withdrawal":
         return (
@@ -306,13 +306,21 @@ const NotificationEntry = (props) => {
               style={styles.link}
               text={"reply"}
             />
-            {"to your comment in "}
+            {`to a comment `}
             <HyperLink
               dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.paper}
               text={truncateText(action_tip)}
+            />
+            {"in "}
+            <HyperLink
+              link={documentLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={document_title}
+              text={truncateText(document_title)}
             />
             {timeStamp}
           </div>
