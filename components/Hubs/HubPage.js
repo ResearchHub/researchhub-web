@@ -32,6 +32,7 @@ import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 import MobileOnly from "../MobileOnly";
 import ExitableBanner from "../Banner/ExitableBanner";
 import { breakpoints } from "~/config/themes/screen";
+import RhHomeRightSidebar from "../Home/sidebar/RhHomeRightSidebar";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -584,7 +585,8 @@ class HubPage extends Component {
             />
             <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.rightSidebarContainer)}>
-                <ActivityList
+                <RhHomeRightSidebar />
+                {/* <ActivityList
                   // hubIds={
                   //   feed === 0
                   //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
@@ -594,7 +596,7 @@ class HubPage extends Component {
                   hub={hub}
                   hubId={hub ? hub.id : null}
                   feed={feed}
-                />
+                /> */}
               </div>
             </div>
           </div>
