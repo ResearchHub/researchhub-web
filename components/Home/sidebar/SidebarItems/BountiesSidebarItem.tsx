@@ -57,7 +57,7 @@ export default function BountiesSidebarItem({
             </span>
           </div>
           <div className={css(styles.bountiesSidebarItemContent)}>
-            {bountyContentSnippet + bountyContentSnippet + bountyContentSnippet}
+            {bountyContentSnippet}
           </div>
         </div>
       </a>
