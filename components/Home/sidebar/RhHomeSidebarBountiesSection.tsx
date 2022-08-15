@@ -50,7 +50,7 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
   const { isFetching, page = 1 } = paginationInfo;
   const isReadyToRender = !isFetching && page > 0;
   const isLoadingMore = !isFetching && page !== 1;
-  console.warn("openBounties: ", openBounties);
+
   const bountyItems = openBounties?.map(
     ({
       amount,
