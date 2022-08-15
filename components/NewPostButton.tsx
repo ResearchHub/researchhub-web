@@ -150,7 +150,7 @@ export default function NewPostButton({
                 <span>{"New"}</span>
               </div>
             }
-            onClick={() => onClick && onClick}
+            onClick={() => onClick && onClick()}
             size={"newPost"}
           />
         }
