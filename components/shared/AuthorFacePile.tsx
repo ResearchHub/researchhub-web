@@ -29,6 +29,7 @@ export default function AuthorFacePile({
               marginRight: 12,
               marginBottom: !Boolean(horizontal) ? 8 : 0,
             }}
+            key={`AuthorFacePile-${index}`}
           >
             <AuthorAvatar
               author={author}
