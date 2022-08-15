@@ -48,7 +48,7 @@ git checkout -b MY_BRANCH_NAME
 
 - Bounties are regularly listed in the <a href="issues">issues</a> section.
 - Issues with a bounty associated will have the bounty badge
-- Bounties will be paid in the form or Research Coin (RSC)
+- Bounties will be paid in the form of Research Coin (RSC)
 - Bounty will need to be explicitly approved by a member of the Research Hub team
 
 ## Tests
