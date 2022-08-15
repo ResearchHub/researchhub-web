@@ -107,6 +107,7 @@ function UnifiedDocFeedContainer({
         page: updatedPage,
         documents,
       }): void => {
+        console.log('hererer')
         setUnifiedDocsLoading(false);
         setUnifiedDocuments(documents);
         setPaginationInfo({
@@ -166,6 +167,7 @@ function UnifiedDocFeedContainer({
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
   const onDocTypeFilterSelect = (selected) => {
+
     if (docTypeFilter !== selected) {
       // logical ordering
       setUnifiedDocuments([]);

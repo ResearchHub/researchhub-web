@@ -105,6 +105,7 @@ import {
   faArrowAltToBottom as download,
   faArrowDownToLine,
   faArrowRightToLine,
+  faHome,
   faCommentAltLines as faCommentAltLinesSolid,
   faUndo,
   faFontCase,
@@ -388,6 +389,7 @@ const icons = {
   editHub: <FontAwesomeIcon icon={faEdit} />,
   ellipsisH: <FontAwesomeIcon icon={faEllipsisH} />,
   ellipsisV: <FontAwesomeIcon icon={faEllipsisV} />,
+  home: <FontAwesomeIcon icon={faHome} />,
   error: <FontAwesomeIcon icon={faExclamationTriangle} />,
   exclamationCircle: <FontAwesomeIcon icon={faExclamationCircle} />,
   expandArrows: <FontAwesomeIcon icon={faExpandArrows} />,
@@ -973,6 +975,31 @@ export const MedalIcon = ({
   );
 };
 
+export const NotebookIcon = ({
+  onClick = undefined,
+  overrideStyle = null,
+  width = 25,
+  height = 25,
+  color = colors.BLACK(),
+}) => {
+  return (
+    <span onClick={onClick} className={css(overrideStyle && overrideStyle)}>
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 33 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.1667 2.66667V29.3333H5.83335V24H3.16669V21.3333H5.83335V17.3333H3.16669V14.6667H5.83335V10.6667H3.16669V8H5.83335V2.66667H11.1667ZM27.1734 2.66667C28.6427 2.66667 29.8334 3.864 29.8334 5.32V26.68C29.8334 28.1453 28.6427 29.3333 27.1734 29.3333H13.8334V2.66667H27.1734Z"
+          fill="#241F3A"
+        />
+      </svg>
+    </span>
+  );
+};
+
 export const ResearchCoinIcon = ({
   onClick = undefined,
   overrideStyle,
@@ -1004,6 +1031,15 @@ export const ResearchCoinIcon = ({
           onClick={onClick}
           className={css(overrideStyle && overrideStyle)}
           src={"/static/icons/rsc_v3.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      ) : version === 4 ? (
+        <img
+          onClick={onClick}
+          className={css(overrideStyle && overrideStyle)}
+          src={"/static/icons/coin-alt.png"}
           alt="RSC Coin"
           width={width}
           height={height}

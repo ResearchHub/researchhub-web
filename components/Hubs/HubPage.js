@@ -32,6 +32,7 @@ import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 import MobileOnly from "../MobileOnly";
 import ExitableBanner from "../Banner/ExitableBanner";
 import { breakpoints } from "~/config/themes/screen";
+import icons, { NotebookIcon } from "~/config/themes/icons";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -547,7 +548,27 @@ class HubPage extends Component {
           </div>
           <div className={css(styles.row, styles.body)}>
             <div className={css(styles.column, styles.sidebar)}>
-              <div className={css(styles.leftSidebarContainer)}>
+              <div className={css(newSidebar.sidebarContainer)}>
+                <div className={newSidebar.group}>
+                  <div className={css(newSidebar.row, newSidebar.rowSelected)}>
+                    <div className={css(newSidebar.selected)}></div>
+                    <span className={css(newSidebar.icon)}>{icons.home}</span>
+                    <span className={css(newSidebar.label)}>Home</span>
+                  </div>
+                  <div className={css(newSidebar.row)}>
+                    <span className={css(newSidebar.icon)}>
+                      <NotebookIcon width={21} height={21} />
+                    </span>
+                    <span className={css(newSidebar.label)}>Notebook</span>
+                  </div>
+                  {/* <div>
+                    <span className={css(newSidebar.icon)}><img /></span>
+                    <span className={css(newSidebar.label)}>Home</span>
+                  </div>                   */}
+                </div>
+              </div>
+
+              {/* <div className={css(styles.leftSidebarContainer)}>
                 <FeedList
                   activeFeed={feed}
                   onFeedSelect={this.onFeedSelect}
@@ -562,7 +583,7 @@ class HubPage extends Component {
                   initialHubList={initialHubList}
                   onHubSelect={this.onHubSelect}
                 />
-              </div>
+              </div> */}
             </div>
             <UnifiedDocFeedContainer
               feed={feed}
@@ -603,6 +624,42 @@ class HubPage extends Component {
     );
   }
 }
+
+var newSidebar = StyleSheet.create({
+  sidebarContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: 260,
+    minWidth: 260,
+    maxWidth: 260,
+    minHeight: "100%",
+    height: "100vh",
+    borderRight: `1px solid rgb(193, 193, 207)`,
+    color: colors.BLACK(),
+  },
+  selected: {
+    borderRadius: "4px",
+    background: colors.NEW_BLUE(),
+    position: "absolute",
+    height: 30,
+    width: 4,
+    left: -20,
+  },
+  icon: {
+    marginRight: 10,
+    fontSize: 18,
+  },
+  label: {
+    fontSize: 18,
+  },
+  row: {
+    position: "relative",
+    marginTop: 15,
+    display: "flex",
+    alignItems: "center",
+  },
+});
 
 var styles = StyleSheet.create({
   rhHomeContainer: {

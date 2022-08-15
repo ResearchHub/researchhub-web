@@ -5,7 +5,7 @@ import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { PostIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import killswitch from "~/config/killswitch/killswitch";
 import { filterNull } from "~/config/utils/nullchecks";
 
@@ -37,49 +37,66 @@ const UnifiedDocFeedMenu = ({
       {
         value: "hot",
         label: "Trending",
-        icon: icons.starAlt,
+        icon: icons.fire,
+        disableScope: true,
+      },
+      {
+        value: "paper",
+        label: "Papers",
+        icon: icons.paperRegular,
         disableScope: true,
       },
       {
         value: "newest",
-        label: "Newest",
-        icon: icons.calendar,
+        label: "Posts",
+        icon: <PostIcon color="#7b7b7b" />,
         disableScope: true,
       },
       {
         value: "is_open_access",
-        label: "Open Access",
-        icon: icons.bookOpenAlt,
+        label: "Questions",
+        icon: icons.question,
         disableScope: false,
       },
       {
-        value: "more",
-        type: "dropdown",
-        label: "More",
-        icon: icons.chevronDown,
-        iconPos: "right",
-        options: [
-          {
-            value: "most_discussed",
-            label: "Most Discussed",
-            selectedLabel: "Discussed",
-            icon: icons.commentsAlt,
-          },
-          {
-            value: "top_rated",
-            label: "Most Upvoted",
-            selectedLabel: "Upvoted",
-            icon: icons.up,
-          },
-          {
-            value: "author_claimed",
-            label: "Author Claimed",
-            selectedLabel: "Claimed",
-            icon: icons.verifiedBadgeAlt,
-            disableScope: true,
-          },
-        ].map((opt) => ({ html: _renderOption(opt), ...opt })),
+        value: "bounties",
+        label: "Bounties",
+        icon: (
+          <ResearchCoinIcon
+            version={4}
+            overrideStyle={nestedOptsStyles.overrideRSC}
+          />
+        ),
+        disableScope: false,
       },
+      // {
+      //   value: "more",
+      //   type: "dropdown",
+      //   label: "Bounties",
+      //   icon: icons.chevronDown,
+      //   iconPos: "right",
+      //   options: [
+      //     {
+      //       value: "most_discussed",
+      //       label: "Most Discussed",
+      //       selectedLabel: "Discussed",
+      //       icon: icons.commentsAlt,
+      //     },
+      //     {
+      //       value: "top_rated",
+      //       label: "Most Upvoted",
+      //       selectedLabel: "Upvoted",
+      //       icon: icons.up,
+      //     },
+      //     {
+      //       value: "author_claimed",
+      //       label: "Author Claimed",
+      //       selectedLabel: "Claimed",
+      //       icon: icons.verifiedBadgeAlt,
+      //       disableScope: true,
+      //     },
+      //   ].map((opt) => ({ html: _renderOption(opt), ...opt })),
+      // },
     ].map((opt) => ({ html: _renderOption(opt), ...opt }));
 
     let additionalTabs = [];
@@ -198,6 +215,7 @@ const UnifiedDocFeedMenu = ({
             >
               <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
               <span className={css(styles.tabText)}>{tabObj.label}</span>
+              {tabObj.value === "hot" && <span>&nbsp;{icons.chevronDown}</span>}
             </div>
           </>
         )}
@@ -256,6 +274,19 @@ const UnifiedDocFeedMenu = ({
         {type.label}
       </div>
     );
+  };
+
+  const nestedOpts = {
+    ["paper"]: [
+      {
+        value: "open_access",
+        label: "Open Access",
+      },
+      {
+        value: "peer_reviewed",
+        label: "Peer Reviewed",
+      },
+    ],
   };
 
   const tabs = getTabs({});
@@ -345,7 +376,7 @@ const UnifiedDocFeedMenu = ({
                 </div>
               )}
             </div>
-            <div className={css(styles.tab, styles.typeFilter)}>
+            {/* <div className={css(styles.tab, styles.typeFilter)}>
               <DropdownButton
                 opts={types}
                 label={selectedType.label}
@@ -381,14 +412,38 @@ const UnifiedDocFeedMenu = ({
                 }}
                 onClose={() => setIsTypeFilterOpen(false)}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
+      <div></div>
+      {/* <div className={css(nestedOptsStyles.optsContainer)}>
+        {nestedOpts["paper"].map((opt) => <div className={css(nestedOptsStyles.opt)}>{opt.label}</div> )}
+      </div> */}
       {/* <div className={css(styles.typesContainer)}>{types}</div> */}
     </div>
   );
 };
+
+const nestedOptsStyles = StyleSheet.create({
+  optsContainer: {
+    display: "flex",
+    marginRight: 5,
+  },
+  opt: {
+    padding: "5px 15px",
+    fontSize: 14,
+    // background: colors.LIGHTER_GREY(1.0),
+    border: `1px solid ${colors.GREY()}`,
+    borderRadius: 50,
+    marginRight: 10,
+    color: colors.MEDIUM_GREY2(),
+  },
+  overrideRSC: {
+    // height: 25,
+    marginTop: -2,
+  },
+});
 
 const styles = StyleSheet.create({
   typeFilter: {
@@ -466,6 +521,7 @@ const styles = StyleSheet.create({
   iconWrapper: {
     marginRight: 7,
     fontSize: 16,
+    maxHeight: 20,
     [`@media only screen and (max-width: 1350px)`]: {
       fontSize: 14,
       display: "none",
@@ -499,15 +555,23 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
-    color: colors.BLACK(),
     color: colors.BLACK(0.6),
-    padding: "0 8px 0px 8px",
-    marginRight: 20,
+    padding: "11px 17px",
+    marginRight: 0,
     textTransform: "unset",
+    border: `1px solid ${colors.GREY()}`,
     fontSize: 16,
     fontWeight: 500,
-    height: 32,
+    // height: 32,
+    borderRight: 0,
     cursor: "pointer",
+    ":first-child": {
+      borderRadius: "4px 0 0px 4px",
+    },
+    ":last-child": {
+      borderRight: `1px solid ${colors.GREY()}`,
+      borderRadius: "0px 4px 4px 0",
+    },
     ":active": {
       color: colors.NEW_BLUE(),
     },
@@ -533,8 +597,9 @@ const styles = StyleSheet.create({
 
   tabSelected: {
     color: colors.NEW_BLUE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.NEW_BLUE(),
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    // borderBottom: "solid 3px",
+    // borderColor: colors.NEW_BLUE(),
   },
   moreOptsSelected: {
     color: colors.NEW_BLUE(),
@@ -640,7 +705,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     width: "100%",
-    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    // borderBottom: `1px solid ${colors.BLACK(0.1)}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       borderBottom: `unset`,
     },
