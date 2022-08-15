@@ -5,6 +5,7 @@ import colors from "../../config/themes/colors";
 
 type Props = {
   authorProfiles: Object[];
+  fontColor?: string;
   horizontal?: boolean;
   imgSize: number | string;
   labelSpacing?: number;
@@ -13,6 +14,7 @@ type Props = {
 
 export default function AuthorFacePile({
   authorProfiles = [],
+  fontColor,
   horizontal,
   imgSize,
   labelSpacing,
@@ -32,6 +34,7 @@ export default function AuthorFacePile({
               author={author}
               border={`2px solid ${colors.LIGHT_GREY(1)}`}
               key={index}
+              fontColor={fontColor}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();
                 event.preventDefault();

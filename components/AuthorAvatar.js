@@ -28,6 +28,7 @@ const AuthorAvatar = (props) => {
     trueSize,
     twitterUrl,
     withAuthorName,
+    fontColor,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -135,8 +136,8 @@ const AuthorAvatar = (props) => {
             {Boolean(withAuthorName) ? (
               <span
                 style={{
-                  color: colors.BLACK(),
-                  fontSize: fontSize,
+                  color: fontColor ?? colors.BLACK(),
+                  fontSize: size ?? fontSize,
                   fontWeight: boldName ? 500 : 400,
                   marginLeft: spacing ?? 8,
                   whiteSpace: "nowrap",

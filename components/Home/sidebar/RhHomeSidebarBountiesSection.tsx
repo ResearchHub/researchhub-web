@@ -6,6 +6,7 @@ import { SideColumnTitle } from "~/components/Typography";
 import { styles } from "./styles/RhHomeRightSidebarStyles";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
+import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
@@ -22,10 +23,10 @@ const useEffectFetchOpenBounties = ({
   useEffect((): void => {
     if (isFetching) {
       fetchOpenBounties({
-        onSuccess: (res: any) => {
+        onSuccess: (bounties: any) => {
           // TODO: calvinhlee deal with page when supported by BE
           setPaginationInfo({ isFetching: false, page });
-          setOpenBounties;
+          setOpenBounties(bounties);
         },
         onError: emptyFncWithMsg,
       });
@@ -38,7 +39,7 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
     isFetching: true,
     page: 1,
   });
-  const [openBounties, setOpenBounties] = useState<any>({});
+  const [openBounties, setOpenBounties] = useState<any>([]);
 
   useEffectFetchOpenBounties({
     paginationInfo,
@@ -50,6 +51,26 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
   const isReadyToRender = !isFetching && page > 0;
   const isLoadingMore = !isFetching && page !== 1;
 
+  const bountyItems = openBounties?.map(
+    ({
+      amount,
+      created_by,
+      expiration_date,
+      item,
+      id,
+    }): ReactElement<typeof BountiesSidebarItem> => {
+      const { title, slug } = item ?? {};
+      return (
+        <BountiesSidebarItem
+          bountyAmount={parseFloat(amount)}
+          bountyContentSnippet={title}
+          createdByAuthor={created_by?.author_profile}
+          expirationDate={expiration_date}
+          key={id}
+        />
+      );
+    }
+  );
   return (
     <ReactPlaceholder
       ready={isReadyToRender}
@@ -59,6 +80,7 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
         title={"Open Bounties"}
         overrideStyles={styles.RightSidebarTitle}
       />
+      {bountyItems}
     </ReactPlaceholder>
   );
 }

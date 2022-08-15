@@ -11,11 +11,11 @@ type Args = {
 
 export const fetchOpenBounties = ({ onError, onSuccess, page }: Args): void => {
   fetch(
-    buildApiUri({ apiPath: "bounty/get_bounties/?status=OPEN" }),
+    buildApiUri({ apiPath: "bounty/get_bounties?status=OPEN" }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((res: any): void => onSuccess({ res }))
+    .then((bounties: any): void => onSuccess(bounties))
     .catch(onError);
 };
