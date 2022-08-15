@@ -99,6 +99,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     display: "flex",
     fontSize: 14,
+    overflowX: "scroll",
+    whiteSpace: "nowrap",
   },
   bountiesSidebarItemContent: {
     color: colors.BLACK(1),
