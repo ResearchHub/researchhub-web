@@ -59,7 +59,11 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
       item,
       id,
     }): ReactElement<typeof BountiesSidebarItem> => {
-      const { id: relatedDocID, title, slug } = item?.documents[0] ?? {};
+      const {
+        id: relatedDocID,
+        title,
+        slug,
+      } = (item?.documents ?? [])[0] ?? {};
       return (
         <BountiesSidebarItem
           bountyAmount={parseFloat(amount)}
