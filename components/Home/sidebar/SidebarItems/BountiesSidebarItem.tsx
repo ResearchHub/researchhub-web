@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     borderLeft: "2px solid transparent",
     color: colors.TEXT_GREY(1),
     cursor: "pointer",
-    padding: "16px 0",
+    padding: "12px 0",
     textDecoration: "none",
     width: "100%",
     ":hover": {
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
   bountiesSidebarItemContent: {
     color: colors.BLACK(1),
     display: "flex",
-    fontSize: 16,
-    fontWeight: 400,
+    fontSize: 14,
+    fontWeight: 500,
     textOverflow: "ellipsis",
   },
 });
