@@ -50,7 +50,7 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
   const { isFetching, page = 1 } = paginationInfo;
   const isReadyToRender = !isFetching && page > 0;
   const isLoadingMore = !isFetching && page !== 1;
-
+  console.warn("openBounties: ", openBounties);
   const bountyItems = openBounties?.map(
     ({
       amount,
@@ -59,14 +59,16 @@ export default function RhHomeSidebarBountiesSection(): ReactElement {
       item,
       id,
     }): ReactElement<typeof BountiesSidebarItem> => {
-      const { title, slug } = item ?? {};
+      const { id: relatedDocID, title, slug } = item?.documents[0] ?? {};
       return (
         <BountiesSidebarItem
           bountyAmount={parseFloat(amount)}
           bountyContentSnippet={title}
           createdByAuthor={created_by?.author_profile}
           expirationDate={expiration_date}
-          key={id}
+          relatedDocID={relatedDocID}
+          key={`bounty-${id}-related-doc-${relatedDocID}`}
+          slug={slug}
         />
       );
     }
