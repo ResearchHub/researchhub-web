@@ -9,12 +9,15 @@ import { StyleSheet, css } from "aphrodite";
 import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import Bounty from "~/config/types/bounty";
+import { ResearchCoinIcon } from "~/config/themes/icons";
 
 type Args = {
   createdBy: CreatedBy | null;
   hubs: Array<Hub>;
   createdDate: string;
   avatarSize: number;
+  bounties: Bounty[];
 };
 
 function SubmissionDetails({
@@ -22,6 +25,7 @@ function SubmissionDetails({
   hubs,
   createdDate,
   avatarSize = 30,
+  bounties = [],
 }: Args): ReactElement<"div"> {
   const showAllHubs =
     process.browser && window.innerWidth > breakpoints.medium.int;
@@ -35,28 +39,55 @@ function SubmissionDetails({
   const visibleHubs = hubs?.slice(0, sliceIndex) ?? [];
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
+  let authorProfile = createdBy?.authorProfile;
+  let bounty;
+  if (bounties.length > 0) {
+    // @ts-ignore
+    authorProfile = bounties[0].createdBy;
+    bounty = bounties[0];
+  }
+
+
   return (
     <div className={css(styles.submittedBy)}>
       <div className={css(styles.createdByContainer)}>
         <AuthorAvatar
-          author={createdBy?.authorProfile}
+          author={authorProfile}
           size={avatarSize}
           trueSize
         />
       </div>
       <div className={css(styles.submittedByDetails)}>
         <ALink
-          href={`/user/${createdBy?.authorProfile?.id}/overview`}
-          key={`/user/${createdBy?.authorProfile?.id}/overview-key`}
+          href={`/user/${authorProfile?.id}/overview`}
+          key={`/user/${authorProfile?.id}/overview-key`}
           overrideStyle={styles.link}
         >
-          {createdBy?.authorProfile?.firstName || "Deleted"}{" "}
-          {createdBy?.authorProfile?.lastName || "User"}
+          {authorProfile?.firstName || "Deleted"}{" "}
+          {authorProfile?.lastName || "User"}
         </ALink>
         <div className={css(styles.hubsContainer)}>
           <>
             <span className={css(styles.textSecondary, styles.postedText)}>
-              {` posted`}
+              {bounty
+                ? (
+                  <>
+                    {` is offering`}
+                    <span className={css(styles.rscText)}>
+                      {` `}{bounty.amount} RSC
+                      <ResearchCoinIcon
+                        width={16}
+                        height={16}
+                        overrideStyle={styles.rscIcon}
+                      />
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {` posted`}  
+                  </>
+                )
+              }
               {visibleHubs.length > 0 ? ` in` : ""}
             </span>
             {visibleHubs.map((h, index) => (
@@ -133,6 +164,14 @@ const styles = StyleSheet.create({
   dot: {
     color: colors.MEDIUM_GREY(),
   },
+  rscIcon: {
+    verticalAlign: "text-top",
+    marginLeft: 5,
+  },  
+  rscText: {
+    fontWeight: 600,
+    color: colors.ORANGE_DARK2(),
+  }
 });
 
 export default SubmissionDetails;

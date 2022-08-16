@@ -35,6 +35,7 @@ import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
+import Bounty from "~/config/types/bounty";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -42,6 +43,7 @@ const PaperPDFModal = dynamic(
 
 export type FeedCardProps = {
   abstract: string;
+  bounties: Bounty[];
   created_by: any;
   created_date: any;
   featured: boolean;
@@ -86,6 +88,7 @@ const documentIcons = {
 
 function FeedCard({
   abstract,
+  bounties,
   created_by,
   created_date,
   discussion_count,
@@ -215,6 +218,7 @@ function FeedCard({
                   hubs={hubs}
                   createdBy={createdBy}
                   avatarSize={20}
+                  bounties={bounties}
                 />
               </div>
               <div className={css(styles.rowContainer)}>

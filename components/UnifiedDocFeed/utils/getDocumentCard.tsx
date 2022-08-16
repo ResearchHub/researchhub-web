@@ -5,6 +5,7 @@ import {
   getFEUnifiedDocType,
   RESEARCHHUB_POST_DOCUMENT_TYPES,
 } from "~/config/utils/getUnifiedDocType";
+import Bounty from "~/config/types/bounty";
 
 export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
@@ -31,6 +32,8 @@ export function getDocumentCard({
         ? uniDoc.documents
         : uniDoc.documents[0];
       const docID = targetDoc.id;
+      const bounties = (uniDoc.bounties || []).map(b => new Bounty(b)).filter(b => b.status === "OPEN");
+
       return (
         <FeedCard
           {...targetDoc}
@@ -43,6 +46,7 @@ export function getDocumentCard({
           vote={uniDoc.user_vote}
           featured={uniDoc.featured}
           reviews={uniDoc.reviews}
+          bounties={bounties}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [
               { ...uniDoc },
