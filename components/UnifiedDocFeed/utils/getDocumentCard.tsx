@@ -33,7 +33,7 @@ export function getDocumentCard({
         : uniDoc.documents[0];
       const docID = targetDoc.id;
       const bounties = (uniDoc.bounties || []).map(b => new Bounty(b)).filter(b => b.status === "OPEN");
-
+        console.log('uniDoc', uniDoc)
       return (
         <FeedCard
           {...targetDoc}
@@ -47,6 +47,7 @@ export function getDocumentCard({
           featured={uniDoc.featured}
           reviews={uniDoc.reviews}
           bounties={bounties}
+          hasAcceptedAnswer={targetDoc.has_accepted_answer}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [
               { ...uniDoc },

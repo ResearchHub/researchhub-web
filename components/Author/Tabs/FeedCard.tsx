@@ -52,6 +52,7 @@ export type FeedCardProps = {
   first_preview: any;
   formattedDocLabel?: string;
   formattedDocType: RhDocumentType | null;
+  hasAcceptedAnswer: boolean;
   hubs: any[];
   id: number;
   index: number;
@@ -97,6 +98,7 @@ function FeedCard({
   first_preview,
   formattedDocLabel,
   formattedDocType,
+  hasAcceptedAnswer,
   handleClick,
   hubs,
   id,
@@ -288,17 +290,41 @@ function FeedCard({
                         selected={voteState}
                       />
                     </div>
-                    <div className={css(styles.metaItem)}>
-                      <span className={css(styles.metadataIcon)}>
-                        {icons.commentRegular}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        <span>{discussion_count}</span>
-                        <span
-                          className={css(styles.hideTextMobile)}
-                        >{` Comment${discussion_count === 1 ? "" : "s"}`}</span>
-                      </span>
-                    </div>
+                    {formattedDocType === "question" ? (
+                      <div className={css(styles.metaItem, hasAcceptedAnswer && styles.acceptedAnswer)}>
+                        <span className={css(styles.metadataIcon, hasAcceptedAnswer && styles.acceptedAnswer)}>
+                          {hasAcceptedAnswer
+                            ? icons.check
+                            : icons.commentAltLineSolid
+                          }
+                        </span>
+                        <span className={css(styles.metadataText)}>
+                          <span>{discussion_count}</span>
+                          <span
+                            className={css(styles.hideTextMobile)}
+                          >
+                              {` Answer${discussion_count === 1 ? "" : "s"}`}
+                          </span>
+                            
+                        </span>
+                      </div>
+                      ) : (
+                        <div className={css(styles.metaItem)}>
+                          <span className={css(styles.metadataIcon)}>
+                            {icons.commentRegular}
+                          </span>
+                          <span className={css(styles.metadataText)}>
+                            <span>{discussion_count}</span>
+                            <span
+                              className={css(styles.hideTextMobile)}
+                            >
+                              {` Comment${discussion_count === 1 ? "" : "s"}`}
+                            </span>
+                              
+                          </span>
+                        </div>
+                      )
+                    }
 
                     {reviews?.count > 0 && (
                       <div
@@ -428,6 +454,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "space-between",
     marginRight: "8px",
+    color: colors.BLACK(0.6),
   },
   metadataContainer: {
     maxWidth: "100%",
@@ -439,7 +466,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   metadataText: {
-    color: colors.BLACK(0.6),
     fontSize: 14,
     marginRight: 15,
     textTransform: "capitalize",
@@ -582,6 +608,9 @@ const styles = StyleSheet.create({
   reviewSummaryContainer: {
     marginRight: 16,
   },
+  acceptedAnswer: {
+    color: colors.NEW_GREEN(),
+  }
 });
 
 const mapStateToProps = (state) => ({
