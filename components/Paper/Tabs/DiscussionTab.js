@@ -67,6 +67,8 @@ const DiscussionTab = (props) => {
     hypothesisId,
     handleAwardBounty,
     showBountyBtn,
+    setHasBounties,
+    setAllBounties,
   } = props;
 
   const router = useRouter();
@@ -478,6 +480,19 @@ const DiscussionTab = (props) => {
     });
 
     const threads = res.payload.threads;
+    let hasBounties = false;
+    const allBounties = [];
+    threads.forEach((thread) => {
+      if (thread.bounties.length) {
+        hasBounties = true;
+        allBounties.push(thread.bounties[0]);
+      }
+    });
+
+    if (hasBounties) {
+      setHasBounties(hasBounties);
+      setAllBounties(allBounties);
+    }
     setFetching(false);
     setLoading(false);
     setThreads(threads);

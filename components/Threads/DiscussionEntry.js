@@ -576,9 +576,8 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
       currentAuthor,
+      bounties,
     } = this.props;
-
-    console.log(this.state.bounties);
 
     const commentCount =
       data.comment_count +
@@ -720,6 +719,11 @@ class DiscussionEntry extends Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
+                    isBounty={
+                      bounties &&
+                      bounties.length &&
+                      bounties[0].status !== "CLOSED"
+                    }
                     postType={postType}
                     isAcceptedAnswer={isAcceptedAnswer}
                   />

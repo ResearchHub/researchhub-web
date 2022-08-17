@@ -47,6 +47,7 @@ function TextEditor(props) {
     postType,
     uid = genClientId(),
     documentType,
+    isBounty,
     isAcceptedAnswer,
     isTopLevelComment = false,
     callback,
@@ -117,6 +118,7 @@ function TextEditor(props) {
       containerStyles={containerStyles}
       cancel={cancel}
       submit={submit}
+      isBounty={isBounty}
       focusEditor={focusEditor}
       commentEditor={commentEditor}
       hideButton={hideButton}

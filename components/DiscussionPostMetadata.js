@@ -128,17 +128,31 @@ const DiscussionPostMetadata = (props) => {
   } else if (discussionType === POST_TYPES.SUMMARY) {
     text = "posted summary";
   } else if (bounties && bounties.length > 0) {
-    text = (
-      <span>
-        is offering{" "}
-        <span className={css(styles.strong)}>
-          {formatBountyAmount({
-            amount: bounties[0].amount,
-          })}{" "}
-          RSC
+    if (bounties[0].status === "CLOSED") {
+      text = (
+        <span>
+          awarded{" "}
+          <span className={css(styles.strong)}>
+            {formatBountyAmount({
+              amount: bounties[0].amount,
+            })}{" "}
+            RSC
+          </span>
         </span>
-      </span>
-    );
+      );
+    } else {
+      text = (
+        <span>
+          is offering{" "}
+          <span className={css(styles.strong)}>
+            {formatBountyAmount({
+              amount: bounties[0].amount,
+            })}{" "}
+            RSC
+          </span>
+        </span>
+      );
+    }
   }
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
@@ -182,12 +196,14 @@ const DiscussionPostMetadata = (props) => {
               fetching={fetching}
               awardedBountyAmount={awardedBountyAmount}
             />
-            {bounties && bounties.length > 0 && (
-              <span className={css(styles.expiryDate)}>
-                <span className={css(styles.divider)}>•</span>
-                expires in {timeToRoundUp(bounties[0].expiration_date)}
-              </span>
-            )}
+            {bounties &&
+              bounties.length > 0 &&
+              bounties[0].status !== "CLOSED" && (
+                <span className={css(styles.expiryDate)}>
+                  <span className={css(styles.divider)}>•</span>
+                  expires in {timeToRoundUp(bounties[0].expiration_date)}
+                </span>
+              )}
           </div>
           {/* {renderHeadline()} */}
         </div>
