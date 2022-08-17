@@ -490,8 +490,8 @@ const DiscussionTab = (props) => {
     });
 
     if (hasBounties) {
-      setHasBounties(hasBounties);
-      setAllBounties(allBounties);
+      setHasBounties && setHasBounties(hasBounties);
+      setAllBounties && setAllBounties(allBounties);
     }
     setFetching(false);
     setLoading(false);
