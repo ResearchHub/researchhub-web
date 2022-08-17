@@ -123,8 +123,9 @@ class PostPageCard extends Component {
             document={post}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
-            hasBounties={this.props.bounty}
+            hasBounties={this.props.hasBounties || this.props.bounty}
             bounty={this.props.bounty}
+            allBounties={this.props.allBounties}
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder

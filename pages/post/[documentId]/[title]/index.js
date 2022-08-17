@@ -60,6 +60,8 @@ const Post = (props) => {
   const [postV2, setPostV2] = useState(new PostDoc({}));
   const [discussionCount, setCount] = useState(0);
   const [bounty, setBounty] = useState(null);
+  const [hasBounties, setHasBounties] = useState(false);
+  const [allBounties, setAllBounties] = useState([]);
 
   useEffectFetchPost({ setPost, setPostV2, query: props.query });
 
@@ -177,7 +179,9 @@ const Post = (props) => {
               removePost={removePost}
               restorePost={restorePost}
               setBounty={setBounty}
+              hasBounties={hasBounties}
               bounty={bounty}
+              allBounties={allBounties}
               shareUrl={process.browser && window.location.href}
             />
             <div className={css(styles.postPageSection)}>
@@ -187,6 +191,8 @@ const Post = (props) => {
                   hostname={props.hostname}
                   documentType={postV2.unifiedDocument.documentType}
                   post={post}
+                  setHasBounties={setHasBounties}
+                  setAllBounties={setAllBounties}
                   postId={post.id}
                   showBountyBtn={
                     postV2.unifiedDocument.documentType !== "question"

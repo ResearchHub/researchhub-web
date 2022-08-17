@@ -111,6 +111,7 @@ class ThreadTextEditor extends Component {
             onCancel={this.onCancel}
             onChange={this.onChange}
             mediaOnly={mediaOnly}
+            isBounty={this.props.isBounty}
             placeholder={placeholder || "What are your thoughts?"}
             loading={this.state.loading}
             editing={this.props.editing}
@@ -132,6 +133,7 @@ class ThreadTextEditor extends Component {
           onChange={this.onChange}
           smallToolBar={true}
           commentEditor={true}
+          isBounty={this.props.isBounty}
           mediaOnly={mediaOnly}
           loading={this.state.loading}
           commentStyles={[

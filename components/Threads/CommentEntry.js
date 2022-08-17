@@ -519,7 +519,6 @@ class CommentEntry extends Component {
       (a, b) => new Date(a.created_date) - new Date(b.created_date)
     );
 
-    console.log(comment);
     return replies.map((reply, i) => {
       return (
         <ReplyEntry
@@ -566,7 +565,6 @@ class CommentEntry extends Component {
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
 
-    console.log(this.state.bountyAmount);
     if (this.state.bountyAmount) {
       comment.awarded_bounty_amount = this.state.bountyAmount;
     }

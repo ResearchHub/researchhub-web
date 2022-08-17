@@ -667,7 +667,8 @@ class Editor extends Component {
           key={this.props.uid}
           className={css(
             styles.readOnly,
-            this.props.isAcceptedAnswer && styles.isAcceptedAnswer
+            this.props.isAcceptedAnswer && styles.isAcceptedAnswer,
+            this.props.isBounty && styles.isBounty
           )}
         >
           <ReactQuill
@@ -734,6 +735,9 @@ const styles = StyleSheet.create({
   },
   isAcceptedAnswer: {
     border: `1px solid ${colors.NEW_GREEN()}`,
+  },
+  isBounty: {
+    border: `1px solid ${colors.ORANGE()}`,
   },
   footerContainer: {
     display: "flex",
