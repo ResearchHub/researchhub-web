@@ -31,10 +31,10 @@ class BaseModal extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.isOpen !== this.props.isOpen) {
-      if (this.state.mobileView) {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0;
-      }
+      // if (this.state.mobileView) {
+      //   document.body.scrollTop = 0; // For Safari
+      //   document.documentElement.scrollTop = 0;
+      // }
       this.updateDimensions();
       if (this.state.reveal) {
         this.setState({ reveal: false });
@@ -205,6 +205,7 @@ const styles = StyleSheet.create({
     boxShadow: " 0px 2px 4px rgba(185, 185, 185, 0.25)",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
+      borderRadius: 0,
     },
     "@media only screen and (max-width: 436px)": {
       width: "100%",
