@@ -1,5 +1,8 @@
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { fetchOpenBounties } from "~/components/Bounty/api/fetchOpenBounties";
+import {
+  fetchOpenBounties,
+  SimpleBounty,
+} from "~/components/Bounty/api/fetchOpenBounties";
 import { ReactElement, useEffect, useState } from "react";
 import { SideColumnTitle } from "~/components/Typography";
 import { styles } from "./styles/HomeRightSidebarStyles";
@@ -38,7 +41,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
     isFetching: true,
     page: 1,
   });
-  const [openBounties, setOpenBounties] = useState<any>([]);
+  const [openBounties, setOpenBounties] = useState<SimpleBounty[]>([]);
 
   useEffectFetchOpenBounties({
     paginationInfo,
@@ -48,7 +51,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
 
   const { isFetching, page = 1 } = paginationInfo;
   const isReadyToRender = !isFetching && page > 0;
-  const isLoadingMore = !isFetching && page !== 1;
+  const _isLoadingMore = !isFetching && page !== 1;
 
   const bountyItems = openBounties?.map(
     ({
@@ -57,7 +60,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       expiration_date,
       item,
       id,
-    }): ReactElement<typeof BountiesSidebarItem> => {
+    }: SimpleBounty): ReactElement<typeof BountiesSidebarItem> => {
       const {
         id: relatedDocID,
         title,
