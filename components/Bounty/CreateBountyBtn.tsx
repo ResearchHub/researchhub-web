@@ -8,6 +8,7 @@ import colors from "~/config/themes/colors";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
+import { breakpoints } from "~/config/themes/screen";
 
 function CreateBountyBtn({
   withPreview = false,
@@ -63,22 +64,6 @@ function CreateBountyBtn({
         unifiedDocId={post?.unifiedDocument?.id}
         postSlug={post?.unifiedDocument?.document?.slug}
       />
-      {/* {bountyAmountDetails && withPreview ? (
-        <span className={css(styles.bountyPreview)}>
-          <div className={css(styles.bountyAmount)}>
-            <span className={css(styles.check)}>{icons.checkCircleSolid}</span>
-            <span className={css(styles.bountyAmountText)}>
-              {bountyAmountDetails?.netBountyAmount} ResearchCoin bounty
-            </span>
-            <span
-              className={css(styles.removeBounty)}
-              onClick={() => null}
-            >
-              {icons.times}
-            </span>
-          </div>
-        </span>
-      ) : ( */}
       <div
         className={css(styles.addBounty)}
         onClick={() => (bounty ? closeBounty() : setIsModalOpen(true))}
@@ -97,11 +82,17 @@ function CreateBountyBtn({
               data-for="bountyTooltip"
               className={css(styles.addBountyLabel)}
             >
-              {bounty
-                ? `Close your ${numeral(bounty.amount).format(
-                    "0,0.[0000000000]"
-                  )} RSC Bounty`
-                : "Add ResearchCoin Bounty"}
+              {bounty ? (
+                `Close your ${numeral(bounty.amount).format(
+                  "0,0.[0000000000]"
+                )} RSC Bounty`
+              ) : (
+                <span>
+                  Add <span className={css(styles.desktop)}>ResearchCoin </span>
+                  <span className={css(styles.mobile)}>RSC </span>
+                  Bounty
+                </span>
+              )}
             </span>
           </span>
         </div>
@@ -172,6 +163,16 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginRight: 5,
+  },
+  desktop: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "none",
+    },
+  },
+  mobile: {
+    [`@media only screen and (min-width: ${breakpoints.tablet.str})`]: {
+      display: "none",
+    },
   },
   addBounty: {
     // color: colors.ORANGE_DARK(),

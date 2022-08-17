@@ -527,7 +527,9 @@ class Editor extends Component {
                       {numeral(this.state.interimBounty.amount).format(
                         "0,0.[0000000000]"
                       )}{" "}
-                      ResearchCoin Bounty Added{" "}
+                      <span className={css(styles.mobile)}>RSC </span>
+                      <span className={css(styles.desktop)}>ResearchCoin </span>
+                      Bounty Added{" "}
                     </span>
                     <span className={css(styles.closeBounty)}>
                       {icons.times}
@@ -742,6 +744,20 @@ const styles = StyleSheet.create({
   footerContainer: {
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
+    alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      flexWrap: "wrap",
+    },
+  },
+  desktop: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "none",
+    },
+  },
+  mobile: {
+    [`@media only screen and (min-width: ${breakpoints.tablet.str})`]: {
+      display: "none",
+    },
   },
   postButtonContainer: {
     padding: 12,
@@ -750,6 +766,12 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      marginLeft: "unset",
+      paddingLeft: 0,
+      width: "100%",
+      justifyContent: "space-between",
+    },
   },
   postTypeContainer: {
     marginBottom: 25,
@@ -775,7 +797,7 @@ const styles = StyleSheet.create({
   bountyAdded: {
     background: colors.GREY(0.2),
     border: 0,
-    height: 30,
+    minHeight: 30,
     paddingLeft: 8,
     paddingRight: 8,
     borderRadius: 4,
@@ -784,6 +806,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     cursor: "pointer",
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   closeBounty: {
     color: "grey",

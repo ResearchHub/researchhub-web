@@ -48,4 +48,8 @@ export const breakpoints = {
     int: 767,
     str: "767px",
   },
+  tablet: {
+    int: 768,
+    str: "768px",
+  },
 };
