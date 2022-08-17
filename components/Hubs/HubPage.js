@@ -1,38 +1,27 @@
-import { Component, Fragment } from "react";
+import { AuthActions } from "~/redux/auth";
+import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
+import { Component } from "react";
 import { connect } from "react-redux";
+import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
+import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { getFragmentParameterByName } from "~/config/utils/parsers";
+import { Helpers } from "@quantfive/js-web-config";
+import { HubActions } from "~/redux/hub";
+import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
+import API from "~/config/api";
+import colors from "~/config/themes/colors";
+import FeedList from "./FeedList";
+import Head from "~/components/Head";
+import HomeRightSidebar from "../Home/sidebar/HomeRightSidebar";
+import HubsList from "~/components/Hubs/HubsList";
+import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
+import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
 import Router from "next/router";
-
-// Component
-import FeedList from "./FeedList";
-import HubsList from "~/components/Hubs/HubsList";
-import Loader from "~/components/Loader/Loader";
-import Head from "~/components/Head";
-import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 import SubscribeButton from "../Home/SubscribeButton";
-import MobileFeedTabs from "../Home/MobileFeedTabs";
-import ActivityList from "~/components/Activity/ActivityList";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
-
-// Redux
-import { AuthActions } from "~/redux/auth";
-import { MessageActions } from "~/redux/message";
-import { HubActions } from "~/redux/hub";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import colors from "~/config/themes/colors";
-import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
-import { getFragmentParameterByName } from "~/config/utils/parsers";
-import { filterOptions, scopeOptions } from "~/config/utils/options";
-import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
-import MobileOnly from "../MobileOnly";
-import ExitableBanner from "../Banner/ExitableBanner";
-import { breakpoints } from "~/config/themes/screen";
-import RhHomeRightSidebar from "../Home/sidebar/RhHomeRightSidebar";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -541,8 +530,8 @@ class HubPage extends Component {
     }
 
     return (
-      <div className={css(styles.rhHomeContainer)}>
-        <div className={css(styles.rhHomeContentContainer, styles.column)}>
+      <div className={css(styles.HomeContainer)}>
+        <div className={css(styles.HomeContentContainer, styles.column)}>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
@@ -585,7 +574,7 @@ class HubPage extends Component {
             />
             <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.rightSidebarContainer)}>
-                <RhHomeRightSidebar />
+                <HomeRightSidebar />
                 {/* <ActivityList
                   // hubIds={
                   //   feed === 0
@@ -607,13 +596,13 @@ class HubPage extends Component {
 }
 
 var styles = StyleSheet.create({
-  rhHomeContainer: {
+  HomeContainer: {
     display: "flex",
     height: "100%",
     justifyContent: "center",
     width: "100%",
   },
-  rhHomeContentContainer: {
+  HomeContentContainer: {
     width: "inherit",
     height: "inherit",
     maxWidth: 2000,

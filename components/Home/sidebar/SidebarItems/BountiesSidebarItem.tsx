@@ -34,7 +34,6 @@ export default function BountiesSidebarItem({
               authorProfiles={[createdByAuthor]}
               withAuthorName
               imgSize={12.3}
-              fontColor={colors.TEXT_GREY(1)}
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>

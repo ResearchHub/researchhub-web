@@ -1,12 +1,11 @@
-import { css } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { fetchOpenBounties } from "./api/fetchOpenBounties";
+import { fetchOpenBounties } from "~/components/Bounty/api/fetchOpenBounties";
 import { ReactElement, useEffect, useState } from "react";
 import { SideColumnTitle } from "~/components/Typography";
-import { styles } from "./styles/RhHomeRightSidebarStyles";
+import { styles } from "./styles/HomeRightSidebarStyles";
+import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
-import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
@@ -34,7 +33,7 @@ const useEffectFetchOpenBounties = ({
   }, [isFetching]);
 };
 
-export default function RhHomeSidebarBountiesSection(): ReactElement {
+export default function HomeSidebarBountiesSection(): ReactElement {
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isFetching: true,
     page: 1,
