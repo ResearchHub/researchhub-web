@@ -74,7 +74,7 @@ function SubmissionDetails({
                   <>
                     {` is offering`}
                     <span className={css(styles.rscText)}>
-                      {` `}{bounty.amount} RSC
+                      {` `}{bounty.amount.toLocaleString()} RSC
                       <ResearchCoinIcon
                         width={16}
                         height={16}
@@ -171,6 +171,8 @@ const styles = StyleSheet.create({
   rscText: {
     fontWeight: 600,
     color: colors.ORANGE_DARK2(),
+    marginRight: 5,
+    marginLeft: 2,
   }
 });
 

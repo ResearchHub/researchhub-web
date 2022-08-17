@@ -2,8 +2,8 @@ import { ID, NullableString } from "../types/root_types";
 import { getInitialScope } from "./dates";
 import { isNullOrUndefined } from "./nullchecks";
 
-type FEReturnType = "hypothesis" | "post" | "paper" | "question" | "all";
-type BEReturnType = "hypothesis" | "paper" | "posts" | "questions" | "all";
+type FEReturnType = "hypothesis" | "post" | "paper" | "question" | "bounty" | "all";
+type BEReturnType = "hypothesis" | "paper" | "posts" | "questions" | "question" | "bounty" | "all";
 type BEDocumentModelName = "researchhub_post" | "hypothesis" | "paper" | null;
 
 export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
@@ -47,6 +47,8 @@ export function getFEUnifiedDocType(
       return "post";
     case "hypothesis":
       return "hypothesis";
+    case "bounty":
+        return "bounty";      
     case "paper":
       return "paper";
     default:
@@ -69,6 +71,8 @@ export function getBEUnifiedDocType(
       return "posts";
     case "hypothesis":
       return "hypothesis";
+    case "bounty":
+        return "bounty";      
     case "paper":
       return "paper";
     default:

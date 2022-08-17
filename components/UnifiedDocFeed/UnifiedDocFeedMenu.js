@@ -1,16 +1,19 @@
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { useRouter } from "next/router";
-import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { scopeOptions } from "~/config/utils/options";
 import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { PostIcon } from "~/config/themes/icons";
 import killswitch from "~/config/killswitch/killswitch";
 import { filterNull } from "~/config/utils/nullchecks";
+import { sortOpts } from "./constants/UnifiedDocFilters";
+import FeedOrderingDropdown from "./FeedOrderingDropdown";
 
 const UnifiedDocFeedMenu = ({
   subFilters: { filterBy, scope },
+  docTypeFilter,
   onDocTypeFilterSelect,
   onSubFilterSelect,
   onScopeSelect,
@@ -19,9 +22,22 @@ const UnifiedDocFeedMenu = ({
   const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
   const [isFilterSelectOpen, setIsFilterSelectOpen] = useState(false);
   const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
-  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
+
+  const getSortOptions = () => {
+    const _renderOption = (opt) => {
+      return (
+        <div className={css(styles.labelContainer)}>
+          <span className={css(styles.iconWrapper)}>{opt.icon}</span>
+          <span className={css(styles.optLabel)}>{opt.label}</span>
+        </div>
+      );
+    };
+
+    return sortOpts.map((opt) => ({ html: _renderOption(opt), ...opt }));
+  };
 
   const getTabs = ({ asFlatList = false }) => {
     const _renderOption = (opt) => {
@@ -35,50 +51,28 @@ const UnifiedDocFeedMenu = ({
 
     const tabs = [
       {
-        value: "hot",
-        label: "Trending",
-        icon: icons.starAlt,
-        disableScope: true,
+        value: "all",
+        label: "All",
       },
       {
-        value: "newest",
-        label: "Newest",
-        icon: icons.calendar,
-        disableScope: true,
+        value: "paper",
+        label: "Papers",
       },
       {
-        value: "is_open_access",
-        label: "Open Access",
-        icon: icons.bookOpenAlt,
-        disableScope: false,
+        value: "posts",
+        label: "Posts",
       },
       {
-        value: "more",
-        type: "dropdown",
-        label: "More",
-        icon: icons.chevronDown,
-        iconPos: "right",
-        options: [
-          {
-            value: "most_discussed",
-            label: "Most Discussed",
-            selectedLabel: "Discussed",
-            icon: icons.commentsAlt,
-          },
-          {
-            value: "top_rated",
-            label: "Most Upvoted",
-            selectedLabel: "Upvoted",
-            icon: icons.up,
-          },
-          {
-            value: "author_claimed",
-            label: "Author Claimed",
-            selectedLabel: "Claimed",
-            icon: icons.verifiedBadgeAlt,
-            disableScope: true,
-          },
-        ].map((opt) => ({ html: _renderOption(opt), ...opt })),
+        value: "question",
+        label: "Questions",
+      },
+      {
+        value: "hypothesis",
+        label: "Meta-Studies",
+      },
+      {
+        value: "bounty",
+        label: "Bounties",
       },
     ].map((opt) => ({ html: _renderOption(opt), ...opt }));
 
@@ -99,7 +93,7 @@ const UnifiedDocFeedMenu = ({
         });
         tabObj.isSelected = isNestedSelected;
       } else {
-        tabObj.isSelected = tabObj.value === filterBy.value;
+        tabObj.isSelected = tabObj.value === docTypeFilter;
       }
 
       return tabObj;
@@ -153,50 +147,14 @@ const UnifiedDocFeedMenu = ({
     return (
       <div className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}>
         {hasNestedOptions ? (
-          <DropdownButton
-            opts={tabObj.options}
-            labelAsHtml={
-              <div>
-                <span>
-                  {selectedNestedObj?.selectedLabel ||
-                    selectedNestedObj?.label ||
-                    tabObj?.label}
-                </span>
-              </div>
-            }
-            selected={tabObj.value}
-            isOpen={isMoreDropdownOpen}
-            onClick={() => setIsMoreDropdownOpen(true)}
-            dropdownClassName="moreOptions"
-            onClickOutside={() => {
-              setIsMoreDropdownOpen(false);
-            }}
-            // overrideTitleStyle={styles.customTitleStyle}
-            overridePopoverStyle={styles.overridePopoverStyle}
-            positions={["bottom", "right"]}
-            customButtonClassName={[
-              styles.tab,
-              tabObj.isSelected && styles.moreOptsSelected,
-              styles.moreFiltersBtnContainer,
-            ]}
-            overrideOptionsStyle={styles.moreDropdownOptions}
-            overrideDownIconStyle={styles.downIcon}
-            onSelect={(selectedFilter) => {
-              const selectedFilterObj = tabObj.options.find(
-                (t) => t.value === selectedFilter
-              );
-
-              onSubFilterSelect(selectedFilterObj);
-            }}
-            onClose={() => setIsMoreDropdownOpen(false)}
-          />
+          <></>
         ) : (
           <>
             <div
-              onClick={() => onSubFilterSelect(tabObj)}
+              onClick={() => onDocTypeFilterSelect(tabObj.value)}
               className={css(styles.labelContainer)}
             >
-              <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
+              {/* <span className={css(styles.iconWrapper)}>{tabObj.icon}</span> */}
               <span className={css(styles.tabText)}>{tabObj.label}</span>
             </div>
           </>
@@ -259,9 +217,10 @@ const UnifiedDocFeedMenu = ({
   };
 
   const tabs = getTabs({});
+  const sortOptsAsHtml = getSortOptions();
   const optsForSmallScreen = getTabs({ asFlatList: true });
-  const types = getTypeFilters(); //.map((t) => renderTypeOpt(t));
-  const selectedType = types.find((t) => t.isSelected);
+  // const types = getTypeFilters(); //.map((t) => renderTypeOpt(t));
+  // const selectedType = types.find((t) => t.isSelected);
   const { selectedTab, parentTab } = getSelectedTab(tabs);
   // const filterOptsAsHtml = tabs
   //   .map((t) => renderFilterDropdownOpt(t))
@@ -303,8 +262,6 @@ const UnifiedDocFeedMenu = ({
                   overrideOptionsStyle={styles.moreDropdownOptions}
                   overrideDownIconStyle={styles.downIcon}
                   onSelect={(selectedFilter) => {
-                    console.log("selectedFilter", selectedFilter);
-                    console.log("tabs", tabs);
                     const selectedFilterObj = optsForSmallScreen.find(
                       (t) => t.value === selectedFilter
                     );
@@ -318,34 +275,17 @@ const UnifiedDocFeedMenu = ({
               <div className={css(styles.largeScreenFilters)}>
                 {tabs.map((t) => renderTab(t))}
               </div>
-              {!selectedTab.disableScope && (
-                <div className={css(styles.tab, styles.timeScope)}>
-                  <DropdownButton
-                    opts={scopeOptions}
-                    label={scope.label}
-                    selected={scope.value}
-                    isOpen={isScopeSelectOpen}
-                    overrideDownIconStyle={styles.downIcon}
-                    onClick={() => setIsScopeSelectOpen(true)}
-                    dropdownClassName="scopeSelect"
-                    onClickOutside={() => {
-                      setIsScopeSelectOpen(false);
-                    }}
-                    overrideTitleStyle={styles.customTitleStyle}
-                    positions={["bottom", "right"]}
-                    customButtonClassName={styles.secondaryDropdownContainer}
-                    onSelect={(selectedScope) => {
-                      const obj = scopeOptions.find(
-                        (s) => selectedScope === s.value
-                      );
-                      onScopeSelect(obj);
-                    }}
-                    onClose={() => setIsScopeSelectOpen(false)}
-                  />
-                </div>
-              )}
+
+              <div className={css(styles.orderingContainer)}>
+                <FeedOrderingDropdown
+                  selectedOrderingValue={filterBy.value}
+                  selectedScopeValue={scope.value}
+                  onOrderingSelect={(selected) => onSubFilterSelect(selected)}
+                  onScopeSelect={(selected) => onScopeSelect(selected)}
+                />
+              </div>
             </div>
-            <div className={css(styles.tab, styles.typeFilter)}>
+            {/* <div className={css(styles.tab, styles.typeFilter)}>
               <DropdownButton
                 opts={types}
                 label={selectedType.label}
@@ -381,7 +321,7 @@ const UnifiedDocFeedMenu = ({
                 }}
                 onClose={() => setIsTypeFilterOpen(false)}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -475,6 +415,7 @@ const styles = StyleSheet.create({
     },
   },
   filtersAsTabs: {
+    width: "100%",
     display: "flex",
     // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
     //   display: "none",
@@ -499,7 +440,6 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
-    color: colors.BLACK(),
     color: colors.BLACK(0.6),
     padding: "0 8px 0px 8px",
     marginRight: 20,
@@ -541,6 +481,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: 1450px)`]: {
       marginRight: 0,
     },
+  },
+  orderingContainer: {
+    marginLeft: "auto",
   },
   // dropdownButtonOverride: {
   //   whiteSpace: "nowrap",
@@ -630,7 +573,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 10,
-    overflow: "auto",
+    overflow: "visible",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },

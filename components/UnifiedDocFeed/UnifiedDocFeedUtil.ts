@@ -17,5 +17,5 @@ export function formatMainHeader({
     return "My Hubs";
   }
 
-  return isHomePage ? `Explore Scientific Knowledge` : `${capitalize(hubName)}`;
+  return isHomePage ? `Explore Research Hub` : `${capitalize(hubName)}`;
 }

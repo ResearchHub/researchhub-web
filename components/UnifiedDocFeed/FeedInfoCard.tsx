@@ -11,7 +11,7 @@ import Image from "next/image";
 type Props = {
   hub: any;
   hubSubscribeButton?: ReactNode | null;
-  isHomePage: Boolean;
+  isHomePage: boolean;
   mainHeaderText: string;
 };
 
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     minWidth: 100,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       minWidth: 70,
-    }
+    },
   },
   title: {
     fontSize: 30,

@@ -32,8 +32,10 @@ export function getDocumentCard({
         ? uniDoc.documents
         : uniDoc.documents[0];
       const docID = targetDoc.id;
-      const bounties = (uniDoc.bounties || []).map(b => new Bounty(b)).filter(b => b.status === "OPEN");
-        console.log('uniDoc', uniDoc)
+      const bounties = (uniDoc.bounties || [])
+        .map((b) => new Bounty(b))
+        .filter((b) => b.status === "OPEN");
+      console.log("uniDoc", uniDoc);
       return (
         <FeedCard
           {...targetDoc}

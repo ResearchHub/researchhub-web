@@ -7,21 +7,21 @@ import fetchUnifiedDocs from "../api/unifiedDocFetch";
 
 export type UniDocFetchParams = {
   docTypeFilter?: NullableString;
-  hotV2: Boolean;
+  hotV2: boolean;
   hubID: ID;
-  isLoggedIn: Boolean;
+  isLoggedIn: boolean;
   onError: Function;
   onSuccess: Function;
   page: number;
   subFilters: any;
-  subscribedHubs: Boolean;
+  subscribedHubs: boolean;
 };
 
 export type PaginationInfo = {
-  hasMore: Boolean;
-  isLoading: Boolean;
-  isLoadingMore: Boolean;
-  isServerLoaded: Boolean;
+  hasMore: boolean;
+  isLoading: boolean;
+  isLoadingMore: boolean;
+  isServerLoaded: boolean;
   localPage: number; // for UI
   page: number; // for BE
 };
@@ -69,7 +69,7 @@ export const useEffectPrefetchNext = ({
   prevFetchParams: UniDocFetchParams | null;
   setPrevFetchParams: any;
   setIsPrefetching: (flag: boolean) => void;
-  shouldPrefetch: Boolean;
+  shouldPrefetch: boolean;
 }): void => {
   const {
     docTypeFilter: prevDocTypeFilter,

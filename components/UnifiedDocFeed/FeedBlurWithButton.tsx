@@ -10,7 +10,7 @@ type Props = {
   auth: any;
   currentAuthorId: ID;
   hubState: any;
-  isLoggedIn: Boolean;
+  isLoggedIn: boolean;
 };
 
 function FeedBlurWithButton(
@@ -21,7 +21,7 @@ function FeedBlurWithButton(
 
   const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
   const hasSubscribed = useMemo(
-    (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
+    (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
 
