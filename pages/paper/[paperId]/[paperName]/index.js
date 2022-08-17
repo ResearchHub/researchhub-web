@@ -92,6 +92,8 @@ const Paper = ({
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [loadingSummary, setLoadingSummary] = useState(true);
+  const [hasBounties, setHasBounties] = useState(false);
+  const [allBounties, setAllBounties] = useState([]);
 
   const [discussionCount, setCount] = useState(null);
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
@@ -331,6 +333,8 @@ const Paper = ({
               <div className={css(styles.headerContainer)}>
                 <DocumentHeader
                   document={paperV2}
+                  hasBounties={hasBounties}
+                  allBounties={allBounties}
                   onDocumentRemove={removePaper}
                   onDocumentRestore={restorePaper}
                   openPaperPDFModal={openPaperPDFModal}
@@ -373,6 +377,8 @@ const Paper = ({
                       documentType={"paper"}
                       paperId={paper.id}
                       paperState={paper}
+                      setHasBounties={setHasBounties}
+                      setAllBounties={setAllBounties}
                       showBountyBtn={true}
                       calculatedCount={discussionCount}
                       setCount={setCount}
