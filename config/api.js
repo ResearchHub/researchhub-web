@@ -774,12 +774,10 @@ const routes = (BASE_URL) => {
           time: timePeriod,
         },
       };
-      console.log("e", tags);
+
       for (let i = 0; i < tags.length; i++) {
         params.querystring = { ...params.querystring, ...tags[i] };
       }
-
-      console.log("ttt", params);
 
       const finalUrl = prepURL(url, params);
       return finalUrl;

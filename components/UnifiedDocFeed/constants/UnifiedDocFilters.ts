@@ -39,3 +39,31 @@ export const sortOpts = [
     disableScope: false,
   },
 ];
+
+export const feedTypeOpts = [
+  {
+    value: "all",
+    label: "All",
+  },
+  {
+    value: "paper",
+    label: "Papers",
+  },
+  {
+    value: "posts",
+    label: "Posts",
+  },
+  {
+    value: "question",
+    label: "Questions",
+  },
+  {
+    value: "hypothesis",
+    label: "Meta-Studies",
+  },
+  {
+    value: "bounties",
+    tag: { bounties: "all" },
+    label: "Bounties",
+  },
+]

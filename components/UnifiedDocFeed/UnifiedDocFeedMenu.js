@@ -4,6 +4,7 @@ import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
+import { feedTypeOpts } from "./constants/UnifiedDocFilters";
 
 const UnifiedDocFeedMenu = ({
   subFilters: { filterBy, scope, tags },
@@ -26,33 +27,10 @@ const UnifiedDocFeedMenu = ({
       );
     };
 
-    const tabs = [
-      {
-        value: "all",
-        label: "All",
-      },
-      {
-        value: "paper",
-        label: "Papers",
-      },
-      {
-        value: "posts",
-        label: "Posts",
-      },
-      {
-        value: "question",
-        label: "Questions",
-      },
-      {
-        value: "hypothesis",
-        label: "Meta-Studies",
-      },
-      {
-        value: "bounties",
-        tag: { bounties: "all" },
-        label: "Bounties",
-      },
-    ].map((opt) => ({ html: _renderOption(opt), ...opt }));
+    const tabs = feedTypeOpts.map((opt) => ({
+      html: _renderOption(opt),
+      ...opt,
+    }));
 
     let tabsAsHTML = tabs.map((tabObj) => {
       if (tabObj.value === docTypeFilter) {
