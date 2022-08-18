@@ -138,7 +138,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       </div>
       <FormInput
         containerStyle={[styles.titleInputContainer]}
-        placeholder={"e.g. What is the relationship between telomeres and aging?"}
+        placeholder={"e.g. Are there limits to human knowledge?"}
         error={
           shouldDisplayError && formErrors.title
             ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
