@@ -39,13 +39,8 @@ function SubmissionDetails({
   const visibleHubs = hubs?.slice(0, sliceIndex) ?? [];
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
-  let authorProfile = createdBy?.authorProfile;
-  let bounty: Bounty | undefined;
-  if (bounties.length > 0) {
-    // @ts-ignore
-    authorProfile = bounties[0].createdBy?.authorProfile;
-    bounty = bounties[0];
-  }
+  const bounty = bounties?.[0];
+  let authorProfile = (bounty?.createdBy?.authorProfile) ?? (createdBy?.authorProfile);
 
   return (
     <div className={css(styles.submittedBy)}>
@@ -183,7 +178,7 @@ const styles = StyleSheet.create({
   },
   rscText: {
     fontWeight: 600,
-    color: colors.ORANGE_DARK2(),
+    color: colors.ORANGE_DARK2(1),
     marginRight: 5,
     marginLeft: 2,
   },

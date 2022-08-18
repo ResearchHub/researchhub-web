@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
   },
   display: {
     display: "flex",
-    // color: colors.BLACK(0.6),
     fontWeight: 500,
     cursor: "pointer",
   },
@@ -118,7 +117,7 @@ const styles = StyleSheet.create({
     zIndex: 50,
     height: "auto",
     width: 200,
-    background: "#fefefe",
+    background: "white",
     boxShadow: "0px 0px 10px 0px #00000026",
     color: colors.BLACK(0.8),
   },

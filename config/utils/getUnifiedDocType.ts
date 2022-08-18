@@ -71,10 +71,9 @@ export function getBEUnifiedDocType(
       return "posts";
     case "hypothesis":
       return "hypothesis";
-    case "bounties":
-        return "all";
     case "paper":
       return "paper";
+    case "bounties":
     default:
       return "all";
   }
