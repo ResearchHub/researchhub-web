@@ -960,10 +960,10 @@
   resolved "https://registry.yarnpkg.com/@ramonak/react-progress-bar/-/react-progress-bar-4.4.0.tgz#094ce2275599cc43349ca11f21fb6efa25a84bc0"
   integrity sha512-/djk0ZzQZXd2x6uMJ1YL5EeFBN1uJQVFcV5NrP1B29m31LL6xb5ahbpz255m3bFY3ZHpI7awE6L4SlfBW4mDWw==
 
-"@researchhub/ckeditor5-custom-build@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@researchhub/ckeditor5-custom-build/-/ckeditor5-custom-build-0.0.33.tgz#e9531f68cda08577d1a4309c457f6a4e36b994f5"
-  integrity sha512-azZzESQDijDlwZoeAPi4lN0hSZC2qcfL6IhsWVV/r32CG7RTzDHHKSR2QNT3WIvKFXntpO4FifDmV1zRR4f09g==
+"@researchhub/ckeditor5-custom-build@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@researchhub/ckeditor5-custom-build/-/ckeditor5-custom-build-0.0.35.tgz#51b7cd80dfaf3f0cbb701b4c0b7845224b48e2ed"
+  integrity sha512-tPjbUCj3NDYMgcMjYEaV5lDvofskDmoNeiga/1lNAb54M6lwkY9IeBCqAkTIjYxD06hyricIr04cZ+S/FJz/sQ==
   dependencies:
     "@visao/ckeditor5-video" "^29.1.0"
 
