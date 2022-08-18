@@ -38,11 +38,4 @@ export const sortOpts = [
     icon: icons.up,
     disableScope: false,
   },
-  {
-    value: "author_claimed",
-    label: "Author Claimed",
-    selectedLabel: "Claimed",
-    icon: icons.verifiedBadgeAlt,
-    disableScope: true,
-  },
 ];

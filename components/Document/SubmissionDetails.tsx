@@ -40,7 +40,7 @@ function SubmissionDetails({
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
   let authorProfile = createdBy?.authorProfile;
-  let bounty;
+  let bounty:Bounty|undefined;
   if (bounties.length > 0) {
     // @ts-ignore
     authorProfile = bounties[0].createdBy?.authorProfile;

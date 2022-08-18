@@ -491,6 +491,11 @@ const styles = StyleSheet.create({
   },
   orderingContainer: {
     marginLeft: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: 10,
+      alignSelf: "center",
+      fontSize: 15,
+    },
   },
   // dropdownButtonOverride: {
   //   whiteSpace: "nowrap",
