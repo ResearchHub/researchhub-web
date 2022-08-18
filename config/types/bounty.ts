@@ -1,4 +1,4 @@
-import { formatDateStandard, timeToRoundUp } from "../utils/dates";
+import { formatDateStandard, timeToInUnits, timeToRoundUp } from "../utils/dates";
 import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
 import api, { generateApiUrl } from "../api";
@@ -33,6 +33,7 @@ export default class Bounty {
   _id: ID;
   _createdDate: string;
   _timeRemaining: string;
+  _timeRemainingInDays: number;
   _createdBy: CreatedBy | null;
   _amount: number;
   _status: BOUNTY_STATUS;
@@ -42,7 +43,7 @@ export default class Bounty {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
-    this._expirationDate = raw.expiration_date;
+    this._timeRemainingInDays = timeToInUnits({ date: raw.expiration_date, unit: "day" });
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._status = raw.status;
@@ -141,6 +142,10 @@ export default class Bounty {
   get timeRemaining(): string {
     return this._timeRemaining;
   }
+
+  get timeRemainingInDays(): number {
+    return this._timeRemainingInDays;
+  }  
 
   get createdBy(): CreatedBy | null {
     return this._createdBy;

@@ -124,7 +124,10 @@ function SubmissionDetails({
         </div>
         <span className={css(styles.dot)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
-          {timeSince(createdDate)}
+          {bounty
+            ? <span className={css(bounty.timeRemainingInDays <= 2 && styles.expiringSoon)}>{bounty.timeRemaining} remaining</span>
+            : timeSince(createdDate)
+          }
         </span>
       </div>
     </div>
@@ -181,6 +184,9 @@ const styles = StyleSheet.create({
     color: colors.ORANGE_DARK2(),
     marginRight: 5,
     marginLeft: 2,
+  },
+  expiringSoon: {
+    color: colors.RED(),
   }
 });
 

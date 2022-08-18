@@ -113,6 +113,19 @@ export function timeTo(date) {
   return timeSince;
 }
 
+export function timeToInUnits({ date, unit }) {
+  let timeTo = 0;
+  if (unit === "day") {
+    const inputDate = moment(date);
+    const now = moment();
+
+    timeTo = inputDate.diff(now, "day");
+  }
+  // FIXME: Implement other units
+
+  return timeTo;
+}
+
 export function timeToRoundUp(date) {
   const now = moment();
   const inputDate = moment(date);
