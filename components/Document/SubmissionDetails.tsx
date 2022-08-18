@@ -43,7 +43,7 @@ function SubmissionDetails({
   let bounty;
   if (bounties.length > 0) {
     // @ts-ignore
-    authorProfile = bounties[0].createdBy;
+    authorProfile = bounties[0].createdBy?.authorProfile;
     bounty = bounties[0];
   }
 
