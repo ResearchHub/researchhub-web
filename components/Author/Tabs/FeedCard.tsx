@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   acceptedAnswer: {
-    color: colors.NEW_GREEN(),
+    color: colors.DARK_GREEN(),
   }
 });
 

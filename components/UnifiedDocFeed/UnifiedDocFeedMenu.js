@@ -12,10 +12,11 @@ import { sortOpts } from "./constants/UnifiedDocFilters";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
 
 const UnifiedDocFeedMenu = ({
-  subFilters: { filterBy, scope },
+  subFilters: { filterBy, scope, tags },
   docTypeFilter,
   onDocTypeFilterSelect,
   onSubFilterSelect,
+  onTagsSelect,
   onScopeSelect,
 }) => {
   const router = useRouter();
@@ -71,31 +72,29 @@ const UnifiedDocFeedMenu = ({
         label: "Meta-Studies",
       },
       {
-        value: "bounty",
+        value: "all",
+        isTag: true,
+        tag: { bounties: "all" },
         label: "Bounties",
       },
     ].map((opt) => ({ html: _renderOption(opt), ...opt }));
 
     let additionalTabs = [];
     let tabsAsHTML = tabs.map((tabObj) => {
-      const hasNestedOptions = tabObj.options;
-      if (hasNestedOptions) {
-        let isNestedSelected = false;
-        tabObj.options.map((nestedOpt) => {
-          nestedOpt.isSelected = nestedOpt.value === filterBy.value;
-          if (nestedOpt.isSelected) {
-            isNestedSelected = nestedOpt.isSelected;
-          }
-
-          if (asFlatList) {
-            additionalTabs.push(nestedOpt);
-          }
-        });
-        tabObj.isSelected = isNestedSelected;
-      } else {
-        tabObj.isSelected = tabObj.value === docTypeFilter;
+      // if (tags.find((t) => t.bounties) ) {
+      //   if ()
+      // }
+      console.log("tags", tags);
+      if (tabObj.value === docTypeFilter) {
+        if (tabObj.isTag && tags.length > 0) {
+          tabObj.isSelected = true;
+        } else if (!tabObj.isTag && tags.length == 0) {
+          tabObj.isSelected = true;
+        }
       }
 
+      // const isBountiesTab = tabObj?.tag?.bounties && tags.find((t) => t.bounties);
+      // tabObj.isSelected = isBountiesTab || (tabObj.value === docTypeFilter && !tabObj.isTag);
       return tabObj;
     });
 
@@ -151,7 +150,15 @@ const UnifiedDocFeedMenu = ({
         ) : (
           <>
             <div
-              onClick={() => onDocTypeFilterSelect(tabObj.value)}
+              onClick={() => {
+                if (tabObj.isTag) {
+                  onTagsSelect({ tags: [tabObj.tag] });
+                  onDocTypeFilterSelect(tabObj.value);
+                } else {
+                  onTagsSelect({ tags: [] });
+                  onDocTypeFilterSelect(tabObj.value);
+                }
+              }}
               className={css(styles.labelContainer)}
             >
               {/* <span className={css(styles.iconWrapper)}>{tabObj.icon}</span> */}

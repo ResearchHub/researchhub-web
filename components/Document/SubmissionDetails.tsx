@@ -74,7 +74,7 @@ function SubmissionDetails({
                   <>
                     {` is offering`}
                     <span className={css(styles.rscText)}>
-                      {` `}{bounty.amount.toLocaleString()} RSC
+                      {` `}{bounty.amount.toLocaleString()} RSC Bounty
                       <ResearchCoinIcon
                         width={16}
                         height={16}
@@ -88,7 +88,15 @@ function SubmissionDetails({
                   </>
                 )
               }
-              {visibleHubs.length > 0 ? ` in` : ""}
+              {visibleHubs &&
+                <>
+                  {
+                    bounty
+                      ? <span className={css(styles.dot)}> • </span>
+                      : ` in`
+                  }
+                </>
+              }
             </span>
             {visibleHubs.map((h, index) => (
               <span key={index}>

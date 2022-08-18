@@ -362,6 +362,7 @@ export const fetchUnifiedDocFeed = async (
   authToken = null,
   withVotes = false
 ) => {
+  console.log("PARAMS", PARAMS);
   const docPayload = await fetch(
     API.GET_UNIFIED_DOCS(PARAMS),
     API.GET_CONFIG(authToken)

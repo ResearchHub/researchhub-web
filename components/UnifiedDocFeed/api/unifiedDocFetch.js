@@ -94,8 +94,8 @@ export default function fetchUnifiedDocs(args) {
     prevDocuments = [],
     hotV2,
   } = args;
-  const { filterBy, scope } = subFilters;
-
+  const { filterBy, scope, tags } = subFilters;
+  console.log("tags", tags);
   fetchUnifiedDocFeed(
     /* PARAMS is: 
       { 
@@ -111,6 +111,7 @@ export default function fetchUnifiedDocs(args) {
     {
       hubId: hubID,
       ordering: filterBy.value,
+      tags,
       page,
       subscribedHubs,
       timePeriod: scope.valueForApi,

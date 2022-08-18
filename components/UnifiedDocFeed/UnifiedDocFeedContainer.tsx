@@ -53,6 +53,7 @@ function UnifiedDocFeedContainer({
   const [subFilters, setSubFilters] = useState({
     filterBy: sortOpts[0],
     scope: scopeOptions[0],
+    tags: [] as any,
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
@@ -166,6 +167,10 @@ function UnifiedDocFeedContainer({
 
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
+  const onTagsSelect = ({ tags }) => {
+    setSubFilters({ ...subFilters, tags });
+  }
+
   const onDocTypeFilterSelect = (selected) => {
     if (docTypeFilter !== selected) {
       // logical ordering
@@ -234,12 +239,13 @@ function UnifiedDocFeedContainer({
       <UnifiedDocFeedMenu
         subFilters={subFilters}
         docTypeFilter={docTypeFilter}
+        onTagsSelect={onTagsSelect}
         onDocTypeFilterSelect={onDocTypeFilterSelect}
         onSubFilterSelect={(filterBy) =>
-          setSubFilters({ filterBy, scope: subFilters.scope })
+          setSubFilters({ ...subFilters, filterBy, scope: subFilters.scope })
         }
         onScopeSelect={(scope) =>
-          setSubFilters({ filterBy: subFilters.filterBy, scope })
+          setSubFilters({ ...subFilters, filterBy: subFilters.filterBy, scope })
         }
       />
       {unifiedDocsLoading || isServer() ? (
