@@ -134,6 +134,7 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
+  const bounty = bounties?.[0];
   const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
@@ -179,6 +180,28 @@ function FeedCard({
     voteType: UPVOTE,
   });
 
+  const getTitle = () => {
+    if (bounty && bounty.contentType.name === "comment") {
+      return bounty.relatedItem.plain_text;
+    }
+    else {
+      if (titleAsHtml) {
+        return titleAsHtml;
+      }
+      return unescapeHtmlString(title ?? "")
+    }
+  }
+
+  const getBody = () => {
+    if (bounty && bounty.contentType.name === "comment") {
+      return null;
+    }
+    
+    return abstract || renderableText;
+  }  
+  
+  const cardTitle = getTitle();
+  const cardBody = getBody();
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
 
@@ -228,13 +251,11 @@ function FeedCard({
                   <div className={css(styles.rowContainer)}>
                     <div>
                       <h2 className={css(styles.title)}>
-                        {titleAsHtml
-                          ? titleAsHtml
-                          : unescapeHtmlString(title ?? "")}
+                        {cardTitle}
                       </h2>
-                      {(abstract || renderableText) && (
+                      {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
-                          {abstract || renderableText}
+                          {cardBody}
                         </div>
                       )}
                     </div>

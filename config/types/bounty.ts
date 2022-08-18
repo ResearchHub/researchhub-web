@@ -5,6 +5,7 @@ import api, { generateApiUrl } from "../api";
 import { Helpers } from "@quantfive/js-web-config";
 import numeral from "numeral";
 import { captureEvent } from "../utils/events";
+import { ContentType, parseContentType } from "./contentType";
 
 export function formatBountyAmount({ amount }) {
   return numeral(amount).format("0,0.[0000000000]");
@@ -37,7 +38,13 @@ export default class Bounty {
   _createdBy: CreatedBy | null;
   _amount: number;
   _status: BOUNTY_STATUS;
+<<<<<<< HEAD
   _expiration_date: string;
+=======
+  _contentType: ContentType
+   // FIXME: Update to ContributionType if needed
+  _relatedItem: any
+>>>>>>> 98f9b5e40 (Updating feed card contents if thread)
 
   constructor(raw: any) {
     this._id = raw.id;
@@ -47,7 +54,12 @@ export default class Bounty {
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._status = raw.status;
+<<<<<<< HEAD
     this._expiration_date = raw.expiration_date;
+=======
+    this._contentType = parseContentType(raw.content_type);
+    this._relatedItem = raw.item;
+>>>>>>> 98f9b5e40 (Updating feed card contents if thread)
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -159,7 +171,17 @@ export default class Bounty {
     return this._status;
   }
 
+<<<<<<< HEAD
   get expiration_date(): string {
     return this._expiration_date;
   }
+=======
+  get contentType(): ContentType {
+    return this._contentType;
+  }
+
+  get relatedItem(): any {
+    return this._relatedItem;
+  }  
+>>>>>>> 98f9b5e40 (Updating feed card contents if thread)
 }
