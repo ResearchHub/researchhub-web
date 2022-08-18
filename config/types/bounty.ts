@@ -43,7 +43,7 @@ export default class Bounty {
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
     this._createdBy = parseCreatedBy(raw.created_by);
-    this._amount = parseInt(raw.amount);
+    this._amount = parseFloat(raw.amount);
     this._status = raw.status;
     this._expiration_date = raw.expiration_date;
   }
