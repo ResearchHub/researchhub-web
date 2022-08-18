@@ -3,7 +3,12 @@ import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
 import api, { generateApiUrl } from "../api";
 import { Helpers } from "@quantfive/js-web-config";
+import numeral from "numeral";
 import { captureEvent } from "../utils/events";
+
+export function formatBountyAmount({ amount }) {
+  return numeral(amount).format("0,0.[0000000000]");
+}
 
 export enum BOUNTY_STATUS {
   OPEN = "OPEN",
@@ -31,6 +36,7 @@ export default class Bounty {
   _createdBy: CreatedBy | null;
   _amount: number;
   _status: BOUNTY_STATUS;
+  _expiration_date: string;
 
   constructor(raw: any) {
     this._id = raw.id;
@@ -38,8 +44,9 @@ export default class Bounty {
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
     this._expirationDate = raw.expiration_date;
     this._createdBy = parseCreatedBy(raw.created_by);
-    this._amount = parseInt(raw.amount);
+    this._amount = parseFloat(raw.amount);
     this._status = raw.status;
+    this._expiration_date = raw.expiration_date;
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -69,7 +76,11 @@ export default class Bounty {
     });
   }
 
-  static createAPI({ bountyAmount, unifiedDocId }) {
+  static createAPI({
+    bountyAmount,
+    itemObjectId,
+    itemContentType = "researchhubunifieddocument",
+  }) {
     // TODO: Change hard coded value
 
     const today = new Date();
@@ -79,8 +90,8 @@ export default class Bounty {
 
     const data = {
       amount: parseFloat(bountyAmount),
-      item_content_type: "researchhubunifieddocument",
-      item_object_id: unifiedDocId,
+      item_content_type: itemContentType,
+      item_object_id: itemObjectId,
       expiration_date: thirtyDaysFromNow,
     };
 
@@ -141,5 +152,9 @@ export default class Bounty {
 
   get status(): BOUNTY_STATUS {
     return this._status;
+  }
+
+  get expiration_date(): string {
+    return this._expiration_date;
   }
 }

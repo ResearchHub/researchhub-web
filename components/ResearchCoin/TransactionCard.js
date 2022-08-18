@@ -215,7 +215,7 @@ const TransactionCard = (props) => {
           )}
         </div>
         <div className={css(styles.amountContainer)}>
-          {numeral(transaction.amount).format("0.[0000000000]")}
+          {numeral(transaction.amount).format("0,0.[0000000000]")}
           <img
             className={css(styles.coin)}
             src={"/static/icons/coin-filled.png"}

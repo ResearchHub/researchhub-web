@@ -87,7 +87,10 @@ function PostTypeSelector({
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
       >
-        <NewFeatureTooltip featureName={`discussiontypes`} position={["bottom"]} />
+        <NewFeatureTooltip
+          featureName={`discussiontypes`}
+          position={["bottom"]}
+        />
         <span className={css(styles.selectedTypeIcon)}>
           {selectedType?.icon}
         </span>
@@ -107,12 +110,13 @@ function PostTypeSelector({
             : toggle.containerForDiscuss
         )}
       >
-        {questionPostTypes.map((t) => (
+        {questionPostTypes.map((t, index) => (
           <div
             className={css(
               toggle.opt,
               selectedType.value === t.value && toggle[`${t.value}_OPT`]
             )}
+            key={index}
             onClick={() => _handleSelect(t)}
           >
             <span className={css(toggle.optIcon)}>{t.icon}</span>

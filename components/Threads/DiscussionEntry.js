@@ -25,6 +25,7 @@ import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCatego
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
+import Bounty from "~/config/types/bounty";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -46,7 +47,9 @@ class DiscussionEntry extends Component {
       editing: false,
       // Review
       isReview: false,
+      bounties: this.props.bounties,
       review: null,
+      bountyAmount: 0,
     };
     this.divRef = null;
   }
@@ -101,6 +104,12 @@ class DiscussionEntry extends Component {
 
   componentDidUpdate = async (prevProps, prevState) => {
     this.handleVoteTypeUpdate(prevProps);
+
+    if (prevProps.bounties !== this.props.bounties) {
+      this.setState({
+        bounties: this.props.bounties,
+      });
+    }
     if (prevProps.auth !== this.props.auth) {
       let { data } = this.props;
       this.setState({
@@ -396,6 +405,7 @@ class DiscussionEntry extends Component {
             noVote={noVote}
             hostname={hostname}
             context={context}
+            openBounties={this.state.bounties}
             currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
@@ -535,6 +545,12 @@ class DiscussionEntry extends Component {
     }
   };
 
+  onBountyAward = ({ bountyAmount }) => {
+    this.setState({
+      bountyAmount,
+    });
+  };
+
   render() {
     const {
       data,
@@ -560,6 +576,7 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
       currentAuthor,
+      bounties,
     } = this.props;
 
     const commentCount =
@@ -648,10 +665,12 @@ class DiscussionEntry extends Component {
                         null
                       )
                     }
+                    bounties={this.state.bounties}
                     isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
-                    date={date}
+                    awardedBountyAmount={this.state.bountyAmount}
                     documentType={documentType}
+                    date={date}
                     dropDownEnabled={true}
                     hostname={hostname}
                     paper={paper}
@@ -700,6 +719,11 @@ class DiscussionEntry extends Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
+                    isBounty={
+                      bounties &&
+                      bounties.length &&
+                      bounties[0].status !== "CLOSED"
+                    }
                     postType={postType}
                     isAcceptedAnswer={isAcceptedAnswer}
                   />
@@ -716,8 +740,10 @@ class DiscussionEntry extends Component {
               <div className={css(styles.row, styles.bottom)}>
                 <ThreadActionBar
                   contentType="thread"
+                  onBountyAward={this.onBountyAward}
                   count={commentCount}
                   documentID={documentId}
+                  showBountyAward={bounty?.status === "OPEN"}
                   documentType={this.props.documentType}
                   editing={this.state.editing}
                   hideReply={data.source === "twitter"}

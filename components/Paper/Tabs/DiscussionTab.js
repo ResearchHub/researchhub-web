@@ -42,6 +42,7 @@ import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
+import Bounty from "~/config/types/bounty";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -65,6 +66,9 @@ const DiscussionTab = (props) => {
     hypothesis,
     hypothesisId,
     handleAwardBounty,
+    showBountyBtn,
+    setHasBounties,
+    setAllBounties,
   } = props;
 
   const router = useRouter();
@@ -88,6 +92,7 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
+  const [bountyMap, setBountyMap] = useState({});
   const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
     useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
@@ -189,6 +194,12 @@ const DiscussionTab = (props) => {
                   return (
                     <DiscussionEntry
                       key={`thread-${t.data.id}`}
+                      {...t.data}
+                      bounties={
+                        bountyMap[t.data.id]
+                          ? [bountyMap[t.data.id]]
+                          : t.data.bounties
+                      }
                       data={t.data}
                       hostname={hostname}
                       hoverEvents={true}
@@ -263,7 +274,13 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
-  const save = async ({ content, plainText, callback, discussionType }) => {
+  const save = async ({
+    content,
+    plainText,
+    callback,
+    discussionType,
+    interimBounty,
+  }) => {
     setSubmitInProgress(true);
     let param;
     let documentId;
@@ -337,7 +354,7 @@ const DiscussionTab = (props) => {
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((resp) => {
+      .then(async (resp) => {
         setSubmitInProgress(false);
         props.showMessage({ show: false });
         props.setMessage("");
@@ -370,6 +387,17 @@ const DiscussionTab = (props) => {
         props.getUser();
         setTextEditorKey(genClientId());
         sendAmpEvent(payload);
+
+        if (interimBounty) {
+          const bounty = await Bounty.createAPI({
+            bountyAmount: interimBounty.amount,
+            itemObjectId: resp.id,
+            itemContentType: "thread",
+          });
+          const newBountyMap = { ...bountyMap };
+          newBountyMap[resp.id] = bounty;
+          onBountyCreate(newBountyMap);
+        }
       })
       .catch((err) => {
         setSubmitInProgress(false);
@@ -381,6 +409,10 @@ const DiscussionTab = (props) => {
         props.setMessage("Something went wrong");
         props.showMessage({ show: true, error: true });
       });
+  };
+
+  const onBountyCreate = (newBountyMap) => {
+    setBountyMap(newBountyMap);
   };
 
   const createFormattedDiscussion = (newDiscussion) => {
@@ -448,6 +480,19 @@ const DiscussionTab = (props) => {
     });
 
     const threads = res.payload.threads;
+    let hasBounties = false;
+    const allBounties = [];
+    threads.forEach((thread) => {
+      if (thread.bounties.length) {
+        hasBounties = true;
+        allBounties.push(thread.bounties[0]);
+      }
+    });
+
+    if (hasBounties) {
+      setHasBounties && setHasBounties(hasBounties);
+      setAllBounties && setAllBounties(allBounties);
+    }
     setFetching(false);
     setLoading(false);
     setThreads(threads);
@@ -462,6 +507,7 @@ const DiscussionTab = (props) => {
       focusEditor={focus}
       initialValue={discussion.question}
       onCancel={cancel}
+      showBountyBtn={showBountyBtn}
       onSubmit={save}
       readOnly={false}
       loading={submitInProgress}

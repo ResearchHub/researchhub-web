@@ -123,6 +123,7 @@ export function postComment(
       action = actions.setPostCommentSuccess(comment);
     } else {
       logFetchError(response);
+      throw new Error(response);
     }
 
     return dispatch(action);
