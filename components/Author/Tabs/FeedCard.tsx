@@ -291,40 +291,42 @@ function FeedCard({
                       />
                     </div>
                     {formattedDocType === "question" ? (
-                      <div className={css(styles.metaItem, hasAcceptedAnswer && styles.acceptedAnswer)}>
-                        <span className={css(styles.metadataIcon, hasAcceptedAnswer && styles.acceptedAnswer)}>
+                      <div
+                        className={css(
+                          styles.metaItem,
+                          hasAcceptedAnswer && styles.acceptedAnswer
+                        )}
+                      >
+                        <span
+                          className={css(
+                            styles.metadataIcon,
+                            hasAcceptedAnswer && styles.acceptedAnswer
+                          )}
+                        >
                           {hasAcceptedAnswer
                             ? icons.check
-                            : icons.commentAltLineSolid
-                          }
+                            : icons.commentAltLineSolid}
                         </span>
                         <span className={css(styles.metadataText)}>
                           <span>{discussion_count}</span>
-                          <span
-                            className={css(styles.hideTextMobile)}
-                          >
-                              {` Answer${discussion_count === 1 ? "" : "s"}`}
+                          <span className={css(styles.hideTextMobile)}>
+                            {` Answer${discussion_count === 1 ? "" : "s"}`}
                           </span>
-                            
                         </span>
                       </div>
-                      ) : (
-                        <div className={css(styles.metaItem)}>
-                          <span className={css(styles.metadataIcon)}>
-                            {icons.commentRegular}
+                    ) : (
+                      <div className={css(styles.metaItem)}>
+                        <span className={css(styles.metadataIcon)}>
+                          {icons.commentRegular}
+                        </span>
+                        <span className={css(styles.metadataText)}>
+                          <span>{discussion_count}</span>
+                          <span className={css(styles.hideTextMobile)}>
+                            {` Comment${discussion_count === 1 ? "" : "s"}`}
                           </span>
-                          <span className={css(styles.metadataText)}>
-                            <span>{discussion_count}</span>
-                            <span
-                              className={css(styles.hideTextMobile)}
-                            >
-                              {` Comment${discussion_count === 1 ? "" : "s"}`}
-                            </span>
-                              
-                          </span>
-                        </div>
-                      )
-                    }
+                        </span>
+                      </div>
+                    )}
 
                     {reviews?.count > 0 && (
                       <div
@@ -610,7 +612,7 @@ const styles = StyleSheet.create({
   },
   acceptedAnswer: {
     color: colors.DARK_GREEN(),
-  }
+  },
 });
 
 const mapStateToProps = (state) => ({

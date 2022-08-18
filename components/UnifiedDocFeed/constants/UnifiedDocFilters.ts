@@ -66,4 +66,4 @@ export const feedTypeOpts = [
     tag: { bounties: "all" },
     label: "Bounties",
   },
-]
+];

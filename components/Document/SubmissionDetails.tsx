@@ -40,22 +40,17 @@ function SubmissionDetails({
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
   let authorProfile = createdBy?.authorProfile;
-  let bounty:Bounty|undefined;
+  let bounty: Bounty | undefined;
   if (bounties.length > 0) {
     // @ts-ignore
     authorProfile = bounties[0].createdBy?.authorProfile;
     bounty = bounties[0];
   }
 
-
   return (
     <div className={css(styles.submittedBy)}>
       <div className={css(styles.createdByContainer)}>
-        <AuthorAvatar
-          author={authorProfile}
-          size={avatarSize}
-          trueSize
-        />
+        <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
       </div>
       <div className={css(styles.submittedByDetails)}>
         <ALink
@@ -69,34 +64,31 @@ function SubmissionDetails({
         <div className={css(styles.hubsContainer)}>
           <>
             <span className={css(styles.textSecondary, styles.postedText)}>
-              {bounty
-                ? (
-                  <>
-                    {` is offering`}
-                    <span className={css(styles.rscText)}>
-                      {` `}{bounty.amount.toLocaleString()} RSC Bounty
-                      <ResearchCoinIcon
-                        width={16}
-                        height={16}
-                        overrideStyle={styles.rscIcon}
-                      />
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {` posted`}  
-                  </>
-                )
-              }
-              {visibleHubs &&
+              {bounty ? (
                 <>
-                  {
-                    bounty
-                      ? <span className={css(styles.dot)}> • </span>
-                      : ` in`
-                  }
+                  {` is offering`}
+                  <span className={css(styles.rscText)}>
+                    {` `}
+                    {bounty.amount.toLocaleString()} RSC Bounty
+                    <ResearchCoinIcon
+                      width={16}
+                      height={16}
+                      overrideStyle={styles.rscIcon}
+                    />
+                  </span>
                 </>
-              }
+              ) : (
+                <>{` posted`}</>
+              )}
+              {visibleHubs && (
+                <>
+                  {bounty ? (
+                    <span className={css(styles.dot)}> • </span>
+                  ) : (
+                    ` in`
+                  )}
+                </>
+              )}
             </span>
             {visibleHubs.map((h, index) => (
               <span key={index}>
@@ -122,12 +114,19 @@ function SubmissionDetails({
             )}
           </>
         </div>
-        <span className={css(styles.dot,  styles.dotWithMargin)}> • </span>
+        <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
-          {bounty
-            ? <span className={css(bounty.timeRemainingInDays <= 2 && styles.expiringSoon)}>{bounty.timeRemaining} remaining</span>
-            : timeSince(createdDate)
-          }
+          {bounty ? (
+            <span
+              className={css(
+                bounty.timeRemainingInDays <= 2 && styles.expiringSoon
+              )}
+            >
+              {bounty.timeRemaining} remaining
+            </span>
+          ) : (
+            timeSince(createdDate)
+          )}
         </span>
       </div>
     </div>
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
   rscIcon: {
     verticalAlign: "text-top",
     marginLeft: 5,
-  },  
+  },
   rscText: {
     fontWeight: 600,
     color: colors.ORANGE_DARK2(),
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
   },
   expiringSoon: {
     color: colors.RED(),
-  }
+  },
 });
 
 export default SubmissionDetails;

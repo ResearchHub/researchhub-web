@@ -95,7 +95,7 @@ export default function fetchUnifiedDocs(args) {
     hotV2,
   } = args;
   const { filterBy, scope, tags } = subFilters;
-  console.log("tags", tags);
+
   fetchUnifiedDocFeed(
     /* PARAMS is: 
       { 

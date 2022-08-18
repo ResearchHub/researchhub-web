@@ -18,7 +18,6 @@ function FeedOrderingDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const _handleOrderingClick = (selected) => {
-    console.log("2");
     onOrderingSelect(selected);
     if (selected.disableScope) {
       setIsOpen(false);

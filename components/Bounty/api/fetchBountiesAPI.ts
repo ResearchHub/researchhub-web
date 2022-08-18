@@ -9,10 +9,7 @@ type Args = {
 };
 
 export const fetchBounties = ({ onError, onSuccess, page }: Args): void => {
-  fetch(
-    buildApiUri({ apiPath: "bounty/get_bounties" }),
-    API.GET_CONFIG()
-  )
+  fetch(buildApiUri({ apiPath: "bounty/get_bounties" }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any): void => onSuccess({ res }))
