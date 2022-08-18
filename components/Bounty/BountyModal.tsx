@@ -123,11 +123,16 @@ function BountyModal({
         //   grossBountyAmount: bountyAmount,
         //   totalBountyAmount: totalBountyAmount,
         // });
+        handleBountyAdded(
+          new Bounty({
+            amount: offeredAmount,
+          })
+        );
         closeModal();
       } else {
         Bounty.createAPI({
           bountyAmount: offeredAmount,
-          unifiedDocId: unifiedDocId,
+          itemObjectId: unifiedDocId,
         })
           .then((createdBounty) => {
             sendBountyCreateAmpEvent({ currentUser, createdBounty });

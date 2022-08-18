@@ -22,10 +22,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import { Post as PostDoc } from "~/config/types/post";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { sendAmpEvent } from "~/config/fetch";
 import { trackEvent } from "~/config/utils/analytics";
-import Bounty from "~/config/types/bounty";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -64,6 +64,8 @@ const Post = (props) => {
   const [postV2, setPostV2] = useState(new PostDoc({}));
   const [discussionCount, setCount] = useState(0);
   const [bounty, setBounty] = useState(null);
+  const [hasBounties, setHasBounties] = useState(false);
+  const [allBounties, setAllBounties] = useState([]);
 
   useEffectFetchPost({ setPost, setPostV2, query: props.query });
 
@@ -98,7 +100,14 @@ const Post = (props) => {
     recipientUserId,
     contentType,
   }) => {
-    if (bounty && confirm(`Award ${bounty.amount} to ${recipientUserName}?`)) {
+    if (
+      bounty &&
+      confirm(
+        `Award ${formatBountyAmount({
+          amount: bounty.amount,
+        })} to ${recipientUserName}?`
+      )
+    ) {
       Bounty.awardAPI({
         bountyId: bounty.id,
         recipientUserId,
@@ -188,7 +197,9 @@ const Post = (props) => {
               removePost={removePost}
               restorePost={restorePost}
               setBounty={setBounty}
+              hasBounties={hasBounties}
               bounty={bounty}
+              allBounties={allBounties}
               shareUrl={process.browser && window.location.href}
             />
             <div className={css(styles.postPageSection)}>
@@ -198,7 +209,12 @@ const Post = (props) => {
                   hostname={props.hostname}
                   documentType={postV2.unifiedDocument.documentType}
                   post={post}
+                  setHasBounties={setHasBounties}
+                  setAllBounties={setAllBounties}
                   postId={post.id}
+                  showBountyBtn={
+                    postV2.unifiedDocument.documentType !== "question"
+                  }
                   calculatedCount={discussionCount}
                   setCount={setCount}
                   isCollapsible={false}

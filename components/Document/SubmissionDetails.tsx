@@ -60,7 +60,7 @@ function SubmissionDetails({
               {visibleHubs.length > 0 ? ` in` : ""}
             </span>
             {visibleHubs.map((h, index) => (
-              <>
+              <span key={index}>
                 <ALink
                   key={`/hubs/${h.slug ?? ""}-index`}
                   theme="blankAndBlue"
@@ -70,7 +70,7 @@ function SubmissionDetails({
                   {toTitleCase(h.name)}
                 </ALink>
                 {index < visibleHubs?.length - 1 ? "," : ""}
-              </>
+              </span>
             ))}
             {hiddenHubs.length > 0 && (
               <HubDropDown

@@ -17,7 +17,7 @@ import ShareModal from "~/components/ShareModal";
 
 // Config
 import { createUserSummary } from "~/config/utils/user";
-import { timeSince } from "~/config/utils/dates";
+import { timeSince, timeToRoundUp } from "~/config/utils/dates";
 import colors, { badgeColors, voteWidgetColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -28,6 +28,7 @@ import postTypes, {
   questionPostTypes,
 } from "./TextEditor/config/postTypes";
 import { breakpoints } from "~/config/themes/screen";
+import { formatBountyAmount } from "~/config/types/bounty";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -49,6 +50,9 @@ const DiscussionPostMetadata = (props) => {
     noTimeStamp,
     twitterUrl,
     username,
+    bounties,
+    awardedBountyAmount,
+    isAcceptedAnswer,
   } = props;
 
   const alert = useAlert();
@@ -92,7 +96,7 @@ const DiscussionPostMetadata = (props) => {
           </span>
         </div>
       );
-    } else if (type === POST_TYPES.ANSWER) {
+    } else if (type === POST_TYPES.ANSWER || isAcceptedAnswer) {
       const postType = questionPostTypes.find((t) => t.value === type);
       return (
         <div className={css(styles.badgeContainer)}>
@@ -106,7 +110,7 @@ const DiscussionPostMetadata = (props) => {
             <span className={css(badge.icon)}>
               {isAcceptedAnswer ? icons.check : postType.icon}
             </span>
-            <span className={css(badge.label)}>{postType.label}</span>
+            <span className={css(badge.label)}>ANSWER</span>
           </span>
         </div>
       );
@@ -123,8 +127,33 @@ const DiscussionPostMetadata = (props) => {
     text = "answered";
   } else if (discussionType === POST_TYPES.SUMMARY) {
     text = "posted summary";
+  } else if (bounties && bounties.length > 0) {
+    if (bounties[0].status === "CLOSED") {
+      text = (
+        <span>
+          awarded{" "}
+          <span className={css(styles.strong)}>
+            {formatBountyAmount({
+              amount: bounties[0].amount,
+            })}{" "}
+            RSC
+          </span>
+        </span>
+      );
+    } else {
+      text = (
+        <span>
+          is offering{" "}
+          <span className={css(styles.strong)}>
+            {formatBountyAmount({
+              amount: bounties[0].amount,
+            })}{" "}
+            RSC
+          </span>
+        </span>
+      );
+    }
   }
-
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <div className={css(styles.authorDetails)}>
@@ -165,14 +194,23 @@ const DiscussionPostMetadata = (props) => {
               data={data}
               metaData={metaData}
               fetching={fetching}
+              awardedBountyAmount={awardedBountyAmount}
             />
+            {bounties &&
+              bounties.length > 0 &&
+              bounties[0].status !== "CLOSED" && (
+                <span className={css(styles.expiryDate)}>
+                  <span className={css(styles.divider)}>•</span>
+                  expires in {timeToRoundUp(bounties[0].expiration_date)}
+                </span>
+              )}
           </div>
           {/* {renderHeadline()} */}
         </div>
       </div>
       {renderBadge({
         type: discussionType,
-        isAcceptedAnswer: data.is_accepted_answer,
+        isAcceptedAnswer: isAcceptedAnswer || data.is_accepted_answer,
       })}
     </div>
   );
@@ -307,6 +345,15 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+  expiryDate: {
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 15,
+    fontWeight: 400,
+    fontSize: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+    },
+  },
   action: {
     [`@media only screen and (max-width: 615px)`]: {
       display: "none",
@@ -428,6 +475,10 @@ const styles = StyleSheet.create({
     ":hover #hideText": {
       color: colors.BLUE(),
     },
+  },
+  strong: {
+    color: "#111",
+    fontWeight: 500,
   },
   text: {
     fontFamily: "Roboto",

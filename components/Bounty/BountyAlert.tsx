@@ -7,23 +7,45 @@ import numeral from "numeral";
 
 type BountyAlertParams = {
   bounty: Bounty;
+  allBounties: [Bounty];
 };
 
-const BountyAlert = ({ bounty }: BountyAlertParams) => {
-  if (!bounty) {
+const BountyAlert = ({ bounty, allBounties }: BountyAlertParams) => {
+  let timeRemaining, createdBy, status;
+  let amount = 0;
+  if (bounty) {
+    timeRemaining = bounty.timeRemaining;
+    createdBy = bounty.createdBy;
+    amount = bounty.amount;
+    status = bounty.status;
+
+    if (status !== BOUNTY_STATUS.OPEN && !allBounties.length) {
+      return null;
+    }
+  } else if (allBounties.length) {
+    const firstBounty = new Bounty(allBounties[0]);
+    timeRemaining = firstBounty.timeRemaining;
+    createdBy = firstBounty.createdBy;
+    allBounties.forEach((bounty) => {
+      amount += parseFloat(bounty.amount);
+    });
+    status = firstBounty.status;
+  }
+
+  if (!bounty && !allBounties.length) {
     return null;
   }
-  const { timeRemaining, createdBy, amount, status } = bounty;
-  if (status !== BOUNTY_STATUS.OPEN) {
-    return null;
-  }
+
+  const bountyQuestions = allBounties.length;
 
   return (
     <div className={css(styles.bountyAlert)}>
       <div className={css(styles.alertIcon)}></div>
       <div className={css(styles.alertDetails)}>
         <div>
-          {createdBy ? (
+          {allBounties.length > 1 ? (
+            <span>A group of users</span>
+          ) : createdBy ? (
             <ALink href={createdBy.authorProfile.url}>
               {createdBy?.authorProfile?.firstName}{" "}
               {createdBy?.authorProfile?.lastName}
@@ -31,19 +53,22 @@ const BountyAlert = ({ bounty }: BountyAlertParams) => {
           ) : (
             <span>Deleted User</span>
           )}
-          {` `}is offering{" "}
+          {` `}
+          {allBounties.length > 1 ? "are" : "is"} offering{" "}
           <span className={css(styles.strong)}>
-            {numeral(amount).format("0.[0000000000]")} RSC
+            {numeral(amount).format("0,0.[0000000000]")} RSC
             <ResearchCoinIcon
               width={16}
               height={16}
               overrideStyle={styles.rscIcon}
             />
           </span>{" "}
-          for answers to this question
+          for answers{" "}
+          {allBounties.length > 1 ? "to their questions" : "to this question"}
           <span className={css(styles.divider)}>•</span>
           <span className={css(styles.expireTime)}>
-            Bounty expires in {timeRemaining}
+            {allBounties.length > 1 ? "Bounties expire" : "Bounty expires"} in{" "}
+            {timeRemaining}
           </span>
           <div>
             <ALink href="#comments" theme="green">

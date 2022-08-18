@@ -14,6 +14,7 @@ import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
 import PaperBanner from "../Paper/PaperBanner";
 import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
+import BountyAlert from "../Bounty/BountyAlert";
 
 type Props = {};
 
@@ -23,6 +24,9 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
   const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [discussionCount, setDiscussionCount] = useState(0);
+  const [hasBounties, setHasBounties] = useState(false);
+  const [allBounties, setAllBounties] = useState([]);
+
   const hypothesisID = castUriID(router.query.documentId);
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
@@ -70,6 +74,12 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         }`}
       />
       <div className={css(styles.container)}>
+        {hasBounties && (
+          <div className={css(styles.bountyAlertContainer)}>
+            {/*@ts-ignore*/}
+            <BountyAlert allBounties={allBounties} />
+          </div>
+        )}
         <HypothesisPageCard
           authors={authors}
           hubs={hubs}
@@ -108,7 +118,10 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
             calculatedCount={discussionCount}
             documentType={"hypothesis"}
             hypothesis={hypothesis}
+            setHasBounties={setHasBounties}
+            setAllBounties={setAllBounties}
             hypothesisId={id}
+            showBountyBtn={true}
             isCollapsible={false}
             setCount={setDiscussionCount}
           />
@@ -193,6 +206,9 @@ const styles = StyleSheet.create({
   },
   space: {
     marginTop: 30,
+  },
+  bountyAlertContainer: {
+    marginBottom: 30,
   },
   hypothesisContainerWrap: {
     display: "flex",

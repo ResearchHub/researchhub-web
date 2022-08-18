@@ -21,6 +21,7 @@ const ContentSupport = (props) => {
     auth,
     openLoginModal,
     openContentSupportModal,
+    awardedBountyAmount,
   } = props;
 
   const [count, setCount] = useState(
@@ -29,8 +30,16 @@ const ContentSupport = (props) => {
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
-    setCount(parseFloat(data?.promoted + data?.awarded_bounty_amount) || 0);
+    setCount(
+      parseFloat(data?.promoted || 0 + data?.awarded_bounty_amount) || 0
+    );
   }, [data]);
+
+  useEffect(() => {
+    if (awardedBountyAmount) {
+      setCount(parseFloat(data?.promoted || 0 + awardedBountyAmount) || 0);
+    }
+  }, [awardedBountyAmount]);
 
   const handleClick = () => {
     if (auth.isLoggedIn) {

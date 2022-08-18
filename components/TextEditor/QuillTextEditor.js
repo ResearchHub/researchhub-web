@@ -3,6 +3,7 @@ import ReactDOMServer from "react-dom/server";
 import { createRef, Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
+import numeral from "numeral";
 
 // Component
 import FormButton from "~/components/Form/Button";
@@ -26,6 +27,7 @@ import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
+import icons from "~/config/themes/icons";
 
 class Editor extends Component {
   constructor(props) {
@@ -37,6 +39,7 @@ class Editor extends Component {
       plainText: "",
       events: [],
       editValue: this.props.value ? this.props.value : { ops: [] },
+      interimBounty: null,
       focus: false,
       ReactQuill: null,
       Quill: null,
@@ -319,9 +322,7 @@ class Editor extends Component {
     );
   };
 
-  onSubmit = (event) => {
-    event?.preventDefault();
-    event?.stopPropagation();
+  onSubmit = () => {
     let content = this.quillRef.getContents();
     let plainText = this.quillRef.getText();
     this.setState({
@@ -330,6 +331,7 @@ class Editor extends Component {
       editValue: content,
     });
     this.props.submit({
+      interimBounty: this.state.interimBounty,
       content,
       plainText,
       callback: this.clearEditorContent,
@@ -461,6 +463,12 @@ class Editor extends Component {
     this.focusEditor();
   };
 
+  setBountyInterim = (bounty) => {
+    this.setState({
+      interimBounty: bounty,
+    });
+  };
+
   renderButtons = (props) => {
     const isRequestMode =
       this.state.selectedPostTypeStruct?.group === "request";
@@ -498,14 +506,50 @@ class Editor extends Component {
                   Cancel
                 </div>
               )}
-              {/* <div className={css(styles.bountyBtnContainer)}>
-                <CreateBountyBtn
-                  onBountyChange={
-                    (amountDetails) => null
-                    // setBountyAmountDetails(amountDetails)
-                  }
-                />
-              </div>               */}
+              <div className={css(styles.bountyBtnContainer)}>
+                {this.state.interimBounty ? (
+                  <button
+                    className={css(styles.bountyAdded)}
+                    onClick={() => {
+                      this.setState({
+                        interimBounty: null,
+                      });
+                    }}
+                  >
+                    <img
+                      className={css(styles.RSCIcon)}
+                      src="/static/icons/coin-filled.png"
+                      alt="Pot of Gold"
+                    />
+                    <span className={css(styles.bountyText)}>
+                      {numeral(this.state.interimBounty.amount).format(
+                        "0,0.[0000000000]"
+                      )}{" "}
+                      <span className={css(styles.mobile)}>RSC </span>
+                      <span className={css(styles.desktop)}>ResearchCoin </span>
+                      Bounty Added{" "}
+                    </span>
+                    <span className={css(styles.closeBounty)}>
+                      {icons.times}
+                    </span>
+                  </button>
+                ) : (
+                  this.props.showBountyBtn && (
+                    <CreateBountyBtn
+                      onBountyAdd={(bounty) => {
+                        this.setBountyInterim(bounty);
+                      }}
+                      withPreview={true}
+                      bountyText={this.quillRef?.getText()}
+                      // post={post}
+                      bounty={this.props.bounty}
+                      onBountyCancelled={() => {
+                        this.props.setBounty(null);
+                      }}
+                    />
+                  )
+                )}
+              </div>
               <FormButton
                 onClick={this.onSubmit}
                 label={this.props.editing ? "Save changes" : label}
@@ -532,11 +576,27 @@ class Editor extends Component {
     }
 
     if (canEdit) {
-      const modules = Editor.modules(
-        this.props.uid,
-        this.imageHandler
-        // this.linkHandler
-      );
+      const modules = {
+        magicUrl: true,
+        keyboard: {
+          bindings: {
+            commandEnter: {
+              key: 13,
+              shortKey: true,
+              metaKey: true,
+              handler: this.onSubmit,
+            },
+          },
+        },
+        toolbar: {
+          magicUrl: true,
+          container: "#" + this.props.uid,
+          handlers: {
+            image: this.imageHandler,
+          },
+        },
+      };
+
       return (
         <div
           className={css(
@@ -623,7 +683,8 @@ class Editor extends Component {
           key={this.props.uid}
           className={css(
             styles.readOnly,
-            this.props.isAcceptedAnswer && styles.isAcceptedAnswer
+            this.props.isAcceptedAnswer && styles.isAcceptedAnswer,
+            this.props.isBounty && styles.isBounty
           )}
         >
           <ReactQuill
@@ -638,17 +699,6 @@ class Editor extends Component {
     }
   }
 }
-
-Editor.modules = (toolbarId, imageHandler, linkHandler) => ({
-  magicUrl: true,
-  toolbar: {
-    magicUrl: true,
-    container: "#" + toolbarId,
-    handlers: {
-      image: imageHandler,
-    },
-  },
-});
 
 Editor.formats = [
   "image",
@@ -677,6 +727,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
   },
+  RSCIcon: {
+    height: 20,
+    marginRight: 4,
+  },
   readOnly: {
     background: "white",
     padding: "12px 15px",
@@ -687,9 +741,26 @@ const styles = StyleSheet.create({
   isAcceptedAnswer: {
     border: `1px solid ${colors.NEW_GREEN()}`,
   },
+  isBounty: {
+    border: `1px solid ${colors.ORANGE()}`,
+  },
   footerContainer: {
     display: "flex",
     borderTop: `1px solid ${colors.GREY_BORDER}`,
+    alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      flexWrap: "wrap",
+    },
+  },
+  desktop: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "none",
+    },
+  },
+  mobile: {
+    [`@media only screen and (min-width: ${breakpoints.tablet.str})`]: {
+      display: "none",
+    },
   },
   postButtonContainer: {
     padding: 12,
@@ -698,6 +769,12 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      marginLeft: "unset",
+      paddingLeft: 0,
+      width: "100%",
+      justifyContent: "space-between",
+    },
   },
   postTypeContainer: {
     marginBottom: 25,
@@ -719,6 +796,28 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     background: "white",
     boxSizing: "border-box",
+  },
+  bountyAdded: {
+    background: colors.GREY(0.2),
+    border: 0,
+    minHeight: 30,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 4,
+    fontFamily: "'Roboto', sans-serif",
+    fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  closeBounty: {
+    color: "grey",
+  },
+  bountyText: {
+    marginRight: 8,
+    fontSize: 15,
   },
   editable: {},
   focus: {
