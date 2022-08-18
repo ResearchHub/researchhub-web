@@ -379,7 +379,9 @@ const Navbar = (props) => {
         ) : (
           <NewPostButton
             customButtonStyle={[styles.newPostButton]}
-            onClick={() => setSideMenu(!sideMenu)}
+            onClick={() => {
+              setSideMenu(false);
+            }}
           />
         )}
       </Fragment>

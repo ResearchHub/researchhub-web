@@ -41,12 +41,13 @@ export const trackEvent = ({
   vendor,
   user = null,
   interactionType = null,
+  insertId = null,
 }: EventData): void => {
   try {
     emptyFncWithMsg;
     switch (vendor) {
       case "amp":
-        return trackAmplitudeEvent({ eventType, data, user, interactionType });
+        return trackAmplitudeEvent({ eventType, data, user, interactionType, insertId });
       // doesn't seem to be used
       // case "google":
       //   return trackAmplitudeEvent();
@@ -65,6 +66,7 @@ const trackAmplitudeEvent = ({
   data,
   user = null,
   interactionType = null,
+  insertId = null,
 }: Omit<EventData, "vendor">): void => {
   if (interactionType) {
     (data as any).interaction = interactionType;
@@ -76,6 +78,10 @@ const trackAmplitudeEvent = ({
     time: +new Date(),
     event_properties: data,
   };
+
+  if (insertId) {
+    payload.insertId = insertId;
+  }
 
   fetch(API.AMP_ANALYTICS, API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)

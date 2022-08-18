@@ -1,5 +1,5 @@
 import { ID } from "../types/root_types";
-import { getUnifiedDocType } from "./getUnifiedDocType";
+import { getFEUnifiedDocType } from "./getUnifiedDocType";
 import { isNullOrUndefined, nullthrows } from "./nullchecks";
 
 export const UNIFIED_DOC_PAGE_URL_PATTERN =
@@ -16,7 +16,7 @@ export function formatUnifiedDocPageUrl({
   documentID,
   slug,
 }: FormatUnifiedDocPageUrlArgs): string {
-  const feFormattedDocType = getUnifiedDocType(docType);
+  const feFormattedDocType = getFEUnifiedDocType(docType);
   if (isNullOrUndefined(feFormattedDocType) || isNullOrUndefined(documentID)) {
     nullthrows(
       feFormattedDocType,
