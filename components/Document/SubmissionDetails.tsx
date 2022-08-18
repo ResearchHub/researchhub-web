@@ -40,7 +40,8 @@ function SubmissionDetails({
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
   const bounty = bounties?.[0];
-  let authorProfile = (bounty?.createdBy?.authorProfile) ?? (createdBy?.authorProfile);
+  const authorProfile =
+    bounty?.createdBy?.authorProfile ?? createdBy?.authorProfile;
 
   return (
     <div className={css(styles.submittedBy)}>
