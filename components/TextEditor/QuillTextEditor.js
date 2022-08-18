@@ -322,9 +322,7 @@ class Editor extends Component {
     );
   };
 
-  onSubmit = (event) => {
-    event?.preventDefault();
-    event?.stopPropagation();
+  onSubmit = () => {
     let content = this.quillRef.getContents();
     let plainText = this.quillRef.getText();
     this.setState({
@@ -578,11 +576,27 @@ class Editor extends Component {
     }
 
     if (canEdit) {
-      const modules = Editor.modules(
-        this.props.uid,
-        this.imageHandler
-        // this.linkHandler
-      );
+      const modules = {
+        magicUrl: true,
+        keyboard: {
+          bindings: {
+            commandEnter: {
+              key: 13,
+              shortKey: true,
+              metaKey: true,
+              handler: this.onSubmit,
+            },
+          },
+        },
+        toolbar: {
+          magicUrl: true,
+          container: "#" + this.props.uid,
+          handlers: {
+            image: this.imageHandler,
+          },
+        },
+      };
+
       return (
         <div
           className={css(
@@ -685,17 +699,6 @@ class Editor extends Component {
     }
   }
 }
-
-Editor.modules = (toolbarId, imageHandler, linkHandler) => ({
-  magicUrl: true,
-  toolbar: {
-    magicUrl: true,
-    container: "#" + toolbarId,
-    handlers: {
-      image: imageHandler,
-    },
-  },
-});
 
 Editor.formats = [
   "image",
