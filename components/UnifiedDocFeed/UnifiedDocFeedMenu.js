@@ -72,8 +72,7 @@ const UnifiedDocFeedMenu = ({
         label: "Meta-Studies",
       },
       {
-        value: "all",
-        isTag: true,
+        value: "bounties",
         tag: { bounties: "all" },
         label: "Bounties",
       },
@@ -84,26 +83,29 @@ const UnifiedDocFeedMenu = ({
       // if (tags.find((t) => t.bounties) ) {
       //   if ()
       // }
-      console.log("tags", tags);
       if (tabObj.value === docTypeFilter) {
-        if (tabObj.isTag && tags.length > 0) {
-          tabObj.isSelected = true;
-        } else if (!tabObj.isTag && tags.length == 0) {
-          tabObj.isSelected = true;
-        }
+        tabObj.isSelected = true;
       }
+      // if (tabObj.value === docTypeFilter) {
+      //   if (tabObj.isTag && tags.length > 0) {
+      //     tabObj.isSelected = true;
+      //   } else if (!tabObj.isTag && tags.length == 0) {
+      //     tabObj.isSelected = true;
+      //   }
+      // }
 
       // const isBountiesTab = tabObj?.tag?.bounties && tags.find((t) => t.bounties);
       // tabObj.isSelected = isBountiesTab || (tabObj.value === docTypeFilter && !tabObj.isTag);
       return tabObj;
     });
 
-    let finalTabs = [...tabsAsHTML, ...additionalTabs];
-    if (asFlatList) {
-      finalTabs = finalTabs.filter((t) => !t.options);
-    }
+    return tabsAsHTML;
+    // let finalTabs = [...tabsAsHTML, ...additionalTabs];
+    // if (asFlatList) {
+    //   finalTabs = finalTabs.filter((t) => !t.options);
+    // }
 
-    return finalTabs;
+    // return finalTabs;
   };
 
   const getTypeFilters = () => {
@@ -151,7 +153,7 @@ const UnifiedDocFeedMenu = ({
           <>
             <div
               onClick={() => {
-                if (tabObj.isTag) {
+                if (tabObj.tag) {
                   onTagsSelect({ tags: [tabObj.tag] });
                   onDocTypeFilterSelect(tabObj.value);
                 } else {
@@ -224,8 +226,6 @@ const UnifiedDocFeedMenu = ({
   };
 
   const tabs = getTabs({});
-  const sortOptsAsHtml = getSortOptions();
-  const optsForSmallScreen = getTabs({ asFlatList: true });
   // const types = getTypeFilters(); //.map((t) => renderTypeOpt(t));
   // const selectedType = types.find((t) => t.isSelected);
   const { selectedTab, parentTab } = getSelectedTab(tabs);
@@ -253,7 +253,7 @@ const UnifiedDocFeedMenu = ({
                   }
                   selected={selectedTab.value}
                   isOpen={isSmallScreenDropdownOpen}
-                  opts={optsForSmallScreen}
+                  opts={tabs}
                   onClick={() => setIsSmallScreenDropdownOpen(true)}
                   dropdownClassName="combinedDropdown"
                   onClickOutside={() => {
@@ -268,12 +268,16 @@ const UnifiedDocFeedMenu = ({
                   ]}
                   overrideOptionsStyle={styles.moreDropdownOptions}
                   overrideDownIconStyle={styles.downIcon}
-                  onSelect={(selectedFilter) => {
-                    const selectedFilterObj = optsForSmallScreen.find(
-                      (t) => t.value === selectedFilter
-                    );
+                  onSelect={(selected) => {
+                    const tabObj = tabs.find((t) => t.value === selected);
 
-                    onSubFilterSelect(selectedFilterObj);
+                    if (tabObj.tag) {
+                      onTagsSelect({ tags: [tabObj.tag] });
+                      onDocTypeFilterSelect(tabObj.value);
+                    } else {
+                      onTagsSelect({ tags: [] });
+                      onDocTypeFilterSelect(tabObj.value);
+                    }
                   }}
                   onClose={() => setIsSmallScreenDropdownOpen(false)}
                 />

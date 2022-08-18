@@ -122,7 +122,7 @@ function SubmissionDetails({
             )}
           </>
         </div>
-        <span className={css(styles.dot)}> • </span>
+        <span className={css(styles.dot,  styles.dotWithMargin)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
           {bounty
             ? <span className={css(bounty.timeRemainingInDays <= 2 && styles.expiringSoon)}>{bounty.timeRemaining} remaining</span>
@@ -174,6 +174,9 @@ const styles = StyleSheet.create({
   },
   dot: {
     color: colors.MEDIUM_GREY(),
+  },
+  dotWithMargin: {
+    marginLeft: 5,
   },
   rscIcon: {
     verticalAlign: "text-top",

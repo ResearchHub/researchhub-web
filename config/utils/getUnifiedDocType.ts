@@ -48,7 +48,7 @@ export function getFEUnifiedDocType(
     case "hypothesis":
       return "hypothesis";
     case "bounties":
-        return "bounties";      
+        return "bounties";
     case "paper":
       return "paper";
     default:
@@ -72,7 +72,7 @@ export function getBEUnifiedDocType(
     case "hypothesis":
       return "hypothesis";
     case "bounties":
-        return "bounties";      
+        return "all";
     case "paper":
       return "paper";
     default:
