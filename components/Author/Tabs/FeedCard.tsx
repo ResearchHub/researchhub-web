@@ -181,7 +181,7 @@ function FeedCard({
   });
 
   const getTitle = () => {
-    if (bounty && bounty.contentType.name === "comment") {
+    if (bounty && bounty?.contentType?.name === "comment") {
       return bounty.relatedItem.plain_text;
     }
     else {
@@ -193,7 +193,7 @@ function FeedCard({
   }
 
   const getBody = () => {
-    if (bounty && bounty.contentType.name === "comment") {
+    if (bounty && bounty?.contentType?.name === "comment") {
       return null;
     }
     
