@@ -73,7 +73,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const onFormSubmit = (event: SyntheticEvent): void => {
-    event.preventDefault();
+    event?.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
       return;
@@ -138,7 +138,9 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       </div>
       <FormInput
         containerStyle={[styles.titleInputContainer]}
-        placeholder={"e.g. What is the relationship between telomeres and aging?"}
+        placeholder={
+          "e.g. What is the relationship between telomeres and aging?"
+        }
         error={
           shouldDisplayError && formErrors.title
             ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
@@ -157,10 +159,13 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         id="text"
         initialData={mutableFormFields.text}
         label="Body"
-        placeholder={"Include all the information someone would need to answer your question. Be specific about what you need."}
+        placeholder={
+          "Include all the information someone would need to answer your question. Be specific about what you need."
+        }
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
         containerStyle={styles.editor}
+        onSubmit={onFormSubmit}
         required
       />
       <FormSelect

@@ -17,6 +17,7 @@ export default function SimpleEditor({
   placeholder,
   readOnly,
   required,
+  onSubmit,
 }) {
   const editorRef = useRef();
   const observerRef = useRef();
@@ -84,6 +85,15 @@ export default function SimpleEditor({
                 if (readOnly) {
                   editor.isReadOnly = true;
                 } else {
+                  // Execute the bold command on Ctrl+E:
+                  editor.keystrokes.set(
+                    "Cmd+Enter",
+                    (evt, cancel) => {
+                      onSubmit && onSubmit();
+                      cancel();
+                    },
+                    { priority: "high" }
+                  );
                   editor.editing.view.change((writer) => {
                     writer.setStyle(
                       "min-height",
