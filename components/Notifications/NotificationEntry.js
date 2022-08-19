@@ -179,7 +179,6 @@ const NotificationEntry = (props) => {
     );
 
     const etherscanLink = getEtherscanLink(txHash);
-    console.warn("props: ", props);
     switch (content_type) {
       case "withdrawal":
         return (
