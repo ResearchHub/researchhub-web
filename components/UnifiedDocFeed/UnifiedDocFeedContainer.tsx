@@ -2,7 +2,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
-import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
@@ -27,6 +27,7 @@ import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import ExitableBanner from "../Banner/ExitableBanner";
 import DesktopOnly from "../DesktopOnly";
+import { sortOpts } from "./constants/UnifiedDocFilters";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -50,8 +51,9 @@ function UnifiedDocFeedContainer({
     getFilterFromRouter(router)
   );
   const [subFilters, setSubFilters] = useState({
-    filterBy: filterOptions[0],
+    filterBy: sortOpts[0],
     scope: scopeOptions[0],
+    tags: [] as any,
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
@@ -165,6 +167,10 @@ function UnifiedDocFeedContainer({
 
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
+  const onTagsSelect = ({ tags }) => {
+    setSubFilters({ ...subFilters, tags });
+  }
+
   const onDocTypeFilterSelect = (selected) => {
     if (docTypeFilter !== selected) {
       // logical ordering
@@ -232,12 +238,14 @@ function UnifiedDocFeedContainer({
 
       <UnifiedDocFeedMenu
         subFilters={subFilters}
+        docTypeFilter={docTypeFilter}
+        onTagsSelect={onTagsSelect}
         onDocTypeFilterSelect={onDocTypeFilterSelect}
         onSubFilterSelect={(filterBy) =>
-          setSubFilters({ filterBy, scope: subFilters.scope })
+          setSubFilters({ ...subFilters, filterBy, scope: subFilters.scope })
         }
         onScopeSelect={(scope) =>
-          setSubFilters({ filterBy: subFilters.filterBy, scope })
+          setSubFilters({ ...subFilters, filterBy: subFilters.filterBy, scope })
         }
       />
       {unifiedDocsLoading || isServer() ? (

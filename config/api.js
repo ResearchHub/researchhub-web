@@ -758,6 +758,7 @@ const routes = (BASE_URL) => {
       subscribedHubs,
       timePeriod,
       type, // docType
+      tags = [],
     }) => {
       const url =
         BASE_URL + "researchhub_unified_document/get_unified_documents/";
@@ -773,6 +774,11 @@ const routes = (BASE_URL) => {
           time: timePeriod,
         },
       };
+
+      for (let i = 0; i < tags.length; i++) {
+        params.querystring = { ...params.querystring, ...tags[i] };
+      }
+
       const finalUrl = prepURL(url, params);
       return finalUrl;
     },

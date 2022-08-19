@@ -7,6 +7,7 @@ const colors = {
   ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
+  DARK_GREEN: (opacity = 1) => `rgba(61, 143, 88, ${opacity})`,
   NEW_GREEN: (opacity = 1) => `rgba(72, 192, 85, ${opacity})`,
   GREY_BORDER: "#EBEBEB",
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,

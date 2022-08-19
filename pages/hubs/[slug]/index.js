@@ -50,6 +50,7 @@ class Index extends Component {
             ordering: "hot",
             timePeriod: "today",
             type: beDocType,
+            ...(type === "bounties" && { tags: [{ bounties: "all" }] }),
           },
           authToken,
           fetchFeedWithVotes /* withVotes */

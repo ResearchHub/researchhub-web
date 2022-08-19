@@ -19,6 +19,6 @@ export function isUserEditorOfHubs({
 }: {
   currUserID: ID;
   hubs: any[];
-}): Boolean {
+}): boolean {
   return getEditorUserIDsFromHubs(hubs).includes(currUserID);
 }
