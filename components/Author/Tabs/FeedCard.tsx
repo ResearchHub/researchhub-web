@@ -25,7 +25,7 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 import Link from "next/link";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
@@ -46,6 +46,7 @@ export type FeedCardProps = {
   bounties: Bounty[];
   created_by: any;
   created_date: any;
+  boost_amount: number;
   featured: boolean;
   discussion_count: number;
   first_figure: any;
@@ -90,6 +91,7 @@ const documentIcons = {
 function FeedCard({
   abstract,
   bounties,
+  boost_amount: boostAmount,
   created_by,
   created_date,
   discussion_count,
@@ -183,23 +185,22 @@ function FeedCard({
   const getTitle = () => {
     if (bounty && bounty?.contentType?.name === "comment") {
       return bounty.relatedItem.plain_text;
-    }
-    else {
+    } else {
       if (titleAsHtml) {
         return titleAsHtml;
       }
-      return unescapeHtmlString(title ?? "")
+      return unescapeHtmlString(title ?? "");
     }
-  }
+  };
 
   const getBody = () => {
     if (bounty && bounty?.contentType?.name === "comment") {
       return null;
     }
-    
+
     return abstract || renderableText;
-  }  
-  
+  };
+
   const cardTitle = getTitle();
   const cardBody = getBody();
   const createdDate = formatDateStandard(created_date || uploaded_date);
@@ -250,9 +251,7 @@ function FeedCard({
                 <div className={css(styles.column, styles.metaData)}>
                   <div className={css(styles.rowContainer)}>
                     <div>
-                      <h2 className={css(styles.title)}>
-                        {cardTitle}
-                      </h2>
+                      <h2 className={css(styles.title)}>{cardTitle}</h2>
                       {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
                           {cardBody}
@@ -360,6 +359,21 @@ function FeedCard({
                           summary={reviews}
                           feDocUrl={feDocUrl}
                         />
+                      </div>
+                    )}
+                    {boostAmount > 0 && (
+                      <div className={css(styles.metaItem)}>
+                        <span className={css(styles.metadataIcon)}>
+                          <ResearchCoinIcon
+                            width={14}
+                            height={14}
+                            version={4}
+                            overrideStyle={styles.rscIcon}
+                          />
+                        </span>
+                        <span className={css(styles.metadataText)}>
+                          +{boostAmount}
+                        </span>
                       </div>
                     )}
                     <div className={css(styles.metaItem)}>
@@ -633,6 +647,10 @@ const styles = StyleSheet.create({
   },
   acceptedAnswer: {
     color: colors.DARK_GREEN(),
+  },
+  rscIcon: {
+    display: "inline-flex",
+    verticalAlign: "middle",
   },
 });
 
