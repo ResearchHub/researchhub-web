@@ -147,7 +147,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         errorStyle={styles.errorText}
         id="title"
         inputStyle={shouldDisplayError && formErrors.title && styles.error}
-        label={"Title"}
+        label={"Question"}
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
         required
@@ -156,7 +156,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       <SimpleEditor
         id="text"
         initialData={mutableFormFields.text}
-        label="Body"
+        label="Additional Details"
         placeholder={"Include all the information someone would need to answer your question. Be specific about what you need."}
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
