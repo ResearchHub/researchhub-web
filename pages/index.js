@@ -1,7 +1,7 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
-import { getBeUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isServer } from "~/config/server/isServer";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
@@ -36,7 +36,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const beDocType = getBeUnifiedDocType(type);
+    const beDocType = getBEUnifiedDocType(type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
         hubId: null,
@@ -46,6 +46,7 @@ Index.getInitialProps = async (ctx) => {
         subscribedHubs: false,
         timePeriod: "today",
         type: beDocType,
+        ...(type === "bounties" && { tags: [{ bounties: "all" }] }),
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
@@ -55,6 +56,7 @@ Index.getInitialProps = async (ctx) => {
       initialFeed,
     };
   } catch (error) {
+    console.log("error", error);
     return defaultProps;
   }
 };

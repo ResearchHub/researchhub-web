@@ -38,17 +38,10 @@ export default class Bounty {
   _createdBy: CreatedBy | null;
   _amount: number;
   _status: BOUNTY_STATUS;
-<<<<<<< HEAD
-<<<<<<< HEAD
   _expiration_date: string;
-=======
   _contentType: ContentType
-=======
-  _contentType: ContentType|undefined
->>>>>>> e13b758c8 (fix for content_type missing)
    // FIXME: Update to ContributionType if needed
   _relatedItem: any
->>>>>>> 98f9b5e40 (Updating feed card contents if thread)
 
   constructor(raw: any) {
     this._id = raw.id;
@@ -58,16 +51,9 @@ export default class Bounty {
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._status = raw.status;
-<<<<<<< HEAD
-<<<<<<< HEAD
     this._expiration_date = raw.expiration_date;
-=======
     this._contentType = parseContentType(raw.content_type);
-=======
-    this._contentType = typeof(raw.content_type) === "object" ? parseContentType(raw.content_type) : undefined;
->>>>>>> e13b758c8 (fix for content_type missing)
     this._relatedItem = raw.item;
->>>>>>> 98f9b5e40 (Updating feed card contents if thread)
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -179,21 +165,14 @@ export default class Bounty {
     return this._status;
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   get expiration_date(): string {
     return this._expiration_date;
   }
-=======
   get contentType(): ContentType {
-=======
-  get contentType(): ContentType|undefined {
->>>>>>> e13b758c8 (fix for content_type missing)
     return this._contentType;
   }
 
   get relatedItem(): any {
     return this._relatedItem;
   }  
->>>>>>> 98f9b5e40 (Updating feed card contents if thread)
 }

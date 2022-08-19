@@ -46,6 +46,7 @@ Index.getInitialProps = async (ctx) => {
         subscribedHubs: true,
         timePeriod: "today",
         type: beDocType,
+        ...(urlQuery.type === "bounties" && { tags: [{ bounties: "all" }] }),
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
