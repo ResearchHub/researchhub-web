@@ -10,6 +10,8 @@ import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import Link from "next/link";
+import { css, StyleSheet } from "aphrodite";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
@@ -69,7 +71,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       } = (item?.documents ?? [])[0] ?? {};
       return (
         <BountiesSidebarItem
-          bountyAmount={parseFloat(amount)}
+          bountyAmount={formatBountyAmount({ amount })}
           bountyContentSnippet={title || item?.plain_text}
           createdByAuthor={created_by?.author_profile}
           expirationDate={expiration_date}
@@ -90,18 +92,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
           <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
             <div>Open Bounties </div>
             <Link href="/?type=bounties">
-              <a
-                style={{
-                  marginLeft: "auto",
-                  color: "rgb(78, 83, 255)",
-                  textDecoration: "none",
-                  textTransform: "initial",
-                  fontSize: 14,
-                  letterSpacing: "normal",
-                }}
-              >
-                View All
-              </a>
+              <a className={css(styles.viewAll)}>View All</a>
             </Link>
           </div>
         }

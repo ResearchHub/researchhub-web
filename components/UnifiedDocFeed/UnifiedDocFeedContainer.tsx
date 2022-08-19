@@ -91,8 +91,6 @@ function UnifiedDocFeedContainer({
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
 
-  console.log(docTypeFilter);
-
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
     fetchParams: {

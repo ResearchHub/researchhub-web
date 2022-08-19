@@ -19,7 +19,7 @@ export default function BountiesSidebarItem({
   relatedDocID,
   slug,
 }: Props): ReactElement {
-  const roundedOfferAmount = bountyAmount.toFixed(0);
+  const roundedOfferAmount = bountyAmount;
 
   return (
     <div className={css(styles.bountiesSidebarItemContainer)}>
