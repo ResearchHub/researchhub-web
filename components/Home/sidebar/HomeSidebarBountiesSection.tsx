@@ -69,7 +69,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       return (
         <BountiesSidebarItem
           bountyAmount={parseFloat(amount)}
-          bountyContentSnippet={title}
+          bountyContentSnippet={title || item?.plain_text}
           createdByAuthor={created_by?.author_profile}
           expirationDate={expiration_date}
           relatedDocID={relatedDocID}

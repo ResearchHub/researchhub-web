@@ -37,18 +37,12 @@ export default function BountiesSidebarItem({
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 500,
-                  marginLeft: 4,
-                }}
-              >
+              <span className={css(styles.bountiesAmount)}>
                 {roundedOfferAmount}
                 {" RSC"}
               </span>
               <img
-                style={{ width: 12, marginLeft: 8 }}
+                style={{ width: 12, marginLeft: 5 }}
                 src={"/static/icons/coin-filled.png"}
                 draggable={false}
                 alt="RSC Coin"
@@ -107,5 +101,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     textOverflow: "ellipsis",
+  },
+  bountiesAmount: {
+    color: colors.ORANGE_DARK2(1),
+    fontWeight: 600,
+    marginLeft: 4,
   },
 });

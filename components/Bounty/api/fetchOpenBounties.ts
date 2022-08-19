@@ -21,7 +21,7 @@ export type SimpleBounty = {
 
 export const fetchOpenBounties = ({ onError, onSuccess, page }: Args): void => {
   fetch(
-    buildApiUri({ apiPath: "bounty/get_bounties?status=OPEN" }),
+    buildApiUri({ apiPath: "bounty/get_bounties", queryString: "?status=OPEN" }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
