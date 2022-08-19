@@ -96,7 +96,6 @@ class HubPage extends Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    // window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -118,6 +117,9 @@ class HubPage extends Component {
           page: 1,
         });
       }
+    }
+
+    if (this.props.query.type !== prevProps.query.type) {
     }
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {

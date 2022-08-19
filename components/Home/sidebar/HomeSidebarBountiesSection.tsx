@@ -9,6 +9,7 @@ import { styles } from "./styles/HomeRightSidebarStyles";
 import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
+import Link from "next/link";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
@@ -85,7 +86,25 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
     >
       <SideColumnTitle
-        title={"Open Bounties"}
+        title={
+          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+            <div>Open Bounties </div>
+            <Link href="/?type=bounties">
+              <a
+                style={{
+                  marginLeft: "auto",
+                  color: "rgb(78, 83, 255)",
+                  textDecoration: "none",
+                  textTransform: "initial",
+                  fontSize: 14,
+                  letterSpacing: "normal",
+                }}
+              >
+                View All
+              </a>
+            </Link>
+          </div>
+        }
         overrideStyles={styles.RightSidebarTitle}
       />
       {bountyItems}

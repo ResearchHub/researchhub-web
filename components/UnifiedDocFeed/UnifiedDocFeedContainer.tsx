@@ -25,8 +25,6 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
-import ExitableBanner from "../Banner/ExitableBanner";
-import DesktopOnly from "../DesktopOnly";
 import { sortOpts } from "./constants/UnifiedDocFilters";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
@@ -81,6 +79,10 @@ function UnifiedDocFeedContainer({
     setUnifiedDocsLoading(false);
   }, []);
 
+  useEffect(() => {
+    setDocTypeFilter(getFilterFromRouter(router));
+  }, [router.query.type]);
+
   useEffectUpdateStatesOnServerChanges({
     routePath: routerPathName,
     serverLoadedData,
@@ -88,6 +90,8 @@ function UnifiedDocFeedContainer({
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
+
+  console.log(docTypeFilter);
 
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
@@ -169,7 +173,7 @@ function UnifiedDocFeedContainer({
 
   const onTagsSelect = ({ tags }) => {
     setSubFilters({ ...subFilters, tags });
-  }
+  };
 
   const onDocTypeFilterSelect = (selected) => {
     if (docTypeFilter !== selected) {
