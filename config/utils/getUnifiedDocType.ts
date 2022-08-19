@@ -1,15 +1,15 @@
 import { ID, NullableString } from "../types/root_types";
 import { getInitialScope } from "./dates";
-import { isNullOrUndefined } from "./nullchecks";
 
-type FEReturnType =
+export type FEDocType =
   | "hypothesis"
   | "post"
   | "paper"
   | "question"
   | "bounties"
   | "all";
-type BEReturnType =
+
+export type BEReturnType =
   | "hypothesis"
   | "paper"
   | "posts"
@@ -17,7 +17,12 @@ type BEReturnType =
   | "question"
   | "bounties"
   | "all";
-type BEDocumentModelName = "researchhub_post" | "hypothesis" | "paper" | null;
+
+export type BEDocumentModelName =
+  | "researchhub_post"
+  | "hypothesis"
+  | "paper"
+  | null;
 
 export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "discussion",
@@ -49,7 +54,7 @@ export function getBeDocumentModelName(
 // the return type is intentionally kept strict.
 export function getFEUnifiedDocType(
   input: string | null | undefined
-): FEReturnType {
+): FEDocType {
   const lowerCasedInput = (input ?? "").toLowerCase() ?? null;
   switch (lowerCasedInput) {
     case "question":

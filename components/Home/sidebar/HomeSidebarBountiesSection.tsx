@@ -1,17 +1,18 @@
+import { css } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import {
   fetchOpenBounties,
   SimpleBounty,
 } from "~/components/Bounty/api/fetchOpenBounties";
+import { formatBountyAmount } from "~/config/types/bounty";
+import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { ReactElement, useEffect, useState } from "react";
 import { SideColumnTitle } from "~/components/Typography";
 import { styles } from "./styles/HomeRightSidebarStyles";
 import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
-import ReactPlaceholder from "react-placeholder/lib";
 import Link from "next/link";
-import { css, StyleSheet } from "aphrodite";
-import { formatBountyAmount } from "~/config/types/bounty";
+import ReactPlaceholder from "react-placeholder/lib";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
@@ -28,7 +29,7 @@ const useEffectFetchOpenBounties = ({
   useEffect((): void => {
     if (isFetching) {
       fetchOpenBounties({
-        onSuccess: (bounties: any) => {
+        onSuccess: (bounties: SimpleBounty) => {
           // TODO: calvinhlee deal with page when supported by BE
           setPaginationInfo({ isFetching: false, page });
           setOpenBounties(bounties);
@@ -55,33 +56,53 @@ export default function HomeSidebarBountiesSection(): ReactElement {
   const { isFetching, page = 1 } = paginationInfo;
   const isReadyToRender = !isFetching && page > 0;
   const _isLoadingMore = !isFetching && page !== 1;
+  console.warn("openBounties: ", openBounties);
 
   const bountyItems = openBounties?.map(
     ({
       amount,
+      content_type: { name: contentTypeName },
       created_by,
       expiration_date,
-      item,
       id,
+      item,
     }: SimpleBounty): ReactElement<typeof BountiesSidebarItem> => {
+      // TODO: calvinhlee - Change backend payload format to resolve docType
       const {
         id: relatedDocID,
         title,
         slug,
       } = (item?.documents ?? [])[0] ?? {};
+      const { document_type: itemDocType, unified_document } = item ?? {};
+
+      const documentType = itemDocType
+        ? getFEUnifiedDocType(itemDocType)
+        : getFEUnifiedDocType(unified_document?.document_type);
+      const resolvedRelatedDocID =
+        relatedDocID ??
+        unified_document?.documents?.id ??
+        (unified_document?.documents ?? [])[0]?.id;
+      const resolvedSlug =
+        slug ??
+        unified_document?.documents?.slug ??
+        (unified_document?.documents ?? [])[0]?.slug;
+
       return (
         <BountiesSidebarItem
           bountyAmount={formatBountyAmount({ amount })}
           bountyContentSnippet={title || item?.plain_text}
           createdByAuthor={created_by?.author_profile}
+          documentType={documentType}
           expirationDate={expiration_date}
-          relatedDocID={relatedDocID}
+          isCommentBounty={Boolean(contentTypeName)}
           key={`bounty-${id}-related-doc-${relatedDocID}`}
-          slug={slug}
+          relatedDocID={resolvedRelatedDocID}
+          slug={resolvedSlug}
         />
       );
     }
   );
+
   return (
     <ReactPlaceholder
       ready={isReadyToRender}

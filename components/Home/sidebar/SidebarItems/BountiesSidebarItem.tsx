@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import { FEDocType } from "~/config/utils/getUnifiedDocType";
 import { ID, NullableString } from "~/config/types/root_types";
 import { ReactElement } from "react";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
@@ -8,14 +9,19 @@ type Props = {
   bountyAmount: number;
   bountyContentSnippet: string;
   createdByAuthor: any;
+  documentType: FEDocType;
   expirationDate: string;
+  isCommentBounty: boolean;
   relatedDocID: ID;
   slug: NullableString;
 };
+
 export default function BountiesSidebarItem({
   bountyAmount,
   bountyContentSnippet,
   createdByAuthor,
+  documentType,
+  isCommentBounty,
   relatedDocID,
   slug,
 }: Props): ReactElement {
@@ -26,7 +32,9 @@ export default function BountiesSidebarItem({
       {/* NOTE: href is subject to change */}
       <a
         style={{ textDecoration: "none" }}
-        href={`/post/${relatedDocID}/${slug ?? ""}`}
+        href={`/${
+          documentType === "question" ? "post" : documentType
+        }/${relatedDocID}/${slug ?? ""}${isCommentBounty ? "#comments" : ""}`}
       >
         <div className={css(styles.bountiesSidebarItem)}>
           <div className={css(styles.bountiesSidebarItemHeader)}>
