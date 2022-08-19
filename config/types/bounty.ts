@@ -39,7 +39,7 @@ export default class Bounty {
   _amount: number;
   _status: BOUNTY_STATUS;
   _expiration_date: string;
-  _contentType: ContentType
+  _contentType: ContentType|undefined;
    // FIXME: Update to ContributionType if needed
   _relatedItem: any
 
@@ -52,7 +52,7 @@ export default class Bounty {
     this._amount = parseFloat(raw.amount);
     this._status = raw.status;
     this._expiration_date = raw.expiration_date;
-    this._contentType = parseContentType(raw.content_type);
+    this._contentType = typeof(raw.content_type) === "object" ? parseContentType(raw.content_type) : undefined;
     this._relatedItem = raw.item;
   }
 
@@ -168,7 +168,7 @@ export default class Bounty {
   get expiration_date(): string {
     return this._expiration_date;
   }
-  get contentType(): ContentType {
+  get contentType(): ContentType|undefined {
     return this._contentType;
   }
 
