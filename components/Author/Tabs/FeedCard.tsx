@@ -35,6 +35,7 @@ import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
+import Bounty from "~/config/types/bounty";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -42,6 +43,7 @@ const PaperPDFModal = dynamic(
 
 export type FeedCardProps = {
   abstract: string;
+  bounties: Bounty[];
   created_by: any;
   created_date: any;
   featured: boolean;
@@ -50,6 +52,7 @@ export type FeedCardProps = {
   first_preview: any;
   formattedDocLabel?: string;
   formattedDocType: RhDocumentType | null;
+  hasAcceptedAnswer: boolean;
   hubs: any[];
   id: number;
   index: number;
@@ -86,6 +89,7 @@ const documentIcons = {
 
 function FeedCard({
   abstract,
+  bounties,
   created_by,
   created_date,
   discussion_count,
@@ -94,6 +98,7 @@ function FeedCard({
   first_preview,
   formattedDocLabel,
   formattedDocType,
+  hasAcceptedAnswer,
   handleClick,
   hubs,
   id,
@@ -129,6 +134,7 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
+  const bounty = bounties?.[0];
   const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
@@ -174,6 +180,28 @@ function FeedCard({
     voteType: UPVOTE,
   });
 
+  const getTitle = () => {
+    if (bounty && bounty?.contentType?.name === "comment") {
+      return bounty.relatedItem.plain_text;
+    }
+    else {
+      if (titleAsHtml) {
+        return titleAsHtml;
+      }
+      return unescapeHtmlString(title ?? "")
+    }
+  }
+
+  const getBody = () => {
+    if (bounty && bounty?.contentType?.name === "comment") {
+      return null;
+    }
+    
+    return abstract || renderableText;
+  }  
+  
+  const cardTitle = getTitle();
+  const cardBody = getBody();
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
 
@@ -215,6 +243,7 @@ function FeedCard({
                   hubs={hubs}
                   createdBy={createdBy}
                   avatarSize={20}
+                  bounties={bounties}
                 />
               </div>
               <div className={css(styles.rowContainer)}>
@@ -222,13 +251,11 @@ function FeedCard({
                   <div className={css(styles.rowContainer)}>
                     <div>
                       <h2 className={css(styles.title)}>
-                        {titleAsHtml
-                          ? titleAsHtml
-                          : unescapeHtmlString(title ?? "")}
+                        {cardTitle}
                       </h2>
-                      {(abstract || renderableText) && (
+                      {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
-                          {abstract || renderableText}
+                          {cardBody}
                         </div>
                       )}
                     </div>
@@ -284,17 +311,43 @@ function FeedCard({
                         selected={voteState}
                       />
                     </div>
-                    <div className={css(styles.metaItem)}>
-                      <span className={css(styles.metadataIcon)}>
-                        {icons.commentRegular}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        <span>{discussion_count}</span>
+                    {formattedDocType === "question" ? (
+                      <div
+                        className={css(
+                          styles.metaItem,
+                          hasAcceptedAnswer && styles.acceptedAnswer
+                        )}
+                      >
                         <span
-                          className={css(styles.hideTextMobile)}
-                        >{` Comment${discussion_count === 1 ? "" : "s"}`}</span>
-                      </span>
-                    </div>
+                          className={css(
+                            styles.metadataIcon,
+                            hasAcceptedAnswer && styles.acceptedAnswer
+                          )}
+                        >
+                          {hasAcceptedAnswer
+                            ? icons.check
+                            : icons.commentAltLineSolid}
+                        </span>
+                        <span className={css(styles.metadataText)}>
+                          <span>{discussion_count}</span>
+                          <span className={css(styles.hideTextMobile)}>
+                            {` Answer${discussion_count === 1 ? "" : "s"}`}
+                          </span>
+                        </span>
+                      </div>
+                    ) : (
+                      <div className={css(styles.metaItem)}>
+                        <span className={css(styles.metadataIcon)}>
+                          {icons.commentRegular}
+                        </span>
+                        <span className={css(styles.metadataText)}>
+                          <span>{discussion_count}</span>
+                          <span className={css(styles.hideTextMobile)}>
+                            {` Comment${discussion_count === 1 ? "" : "s"}`}
+                          </span>
+                        </span>
+                      </div>
+                    )}
 
                     {reviews?.count > 0 && (
                       <div
@@ -424,6 +477,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "space-between",
     marginRight: "8px",
+    color: colors.BLACK(0.6),
   },
   metadataContainer: {
     maxWidth: "100%",
@@ -435,7 +489,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   metadataText: {
-    color: colors.BLACK(0.6),
     fontSize: 14,
     marginRight: 15,
     textTransform: "capitalize",
@@ -577,6 +630,9 @@ const styles = StyleSheet.create({
   },
   reviewSummaryContainer: {
     marginRight: 16,
+  },
+  acceptedAnswer: {
+    color: colors.DARK_GREEN(),
   },
 });
 
