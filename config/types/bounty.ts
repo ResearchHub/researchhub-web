@@ -1,10 +1,11 @@
-import { formatDateStandard, timeToRoundUp } from "../utils/dates";
+import { formatDateStandard, timeToInUnits, timeToRoundUp } from "../utils/dates";
 import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
 import api, { generateApiUrl } from "../api";
 import { Helpers } from "@quantfive/js-web-config";
 import numeral from "numeral";
 import { captureEvent } from "../utils/events";
+import { ContentType, parseContentType } from "./contentType";
 
 export function formatBountyAmount({ amount }) {
   return numeral(amount).format("0,0.[0000000000]");
@@ -33,20 +34,26 @@ export default class Bounty {
   _id: ID;
   _createdDate: string;
   _timeRemaining: string;
+  _timeRemainingInDays: number;
   _createdBy: CreatedBy | null;
   _amount: number;
   _status: BOUNTY_STATUS;
   _expiration_date: string;
+  _contentType: ContentType|undefined;
+   // FIXME: Update to ContributionType if needed
+  _relatedItem: any
 
   constructor(raw: any) {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
-    this._expirationDate = raw.expiration_date;
+    this._timeRemainingInDays = timeToInUnits({ date: raw.expiration_date, unit: "day" });
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._status = raw.status;
     this._expiration_date = raw.expiration_date;
+    this._contentType = typeof(raw.content_type) === "object" ? parseContentType(raw.content_type) : undefined;
+    this._relatedItem = raw.item;
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -142,6 +149,10 @@ export default class Bounty {
     return this._timeRemaining;
   }
 
+  get timeRemainingInDays(): number {
+    return this._timeRemainingInDays;
+  }  
+
   get createdBy(): CreatedBy | null {
     return this._createdBy;
   }
@@ -157,4 +168,11 @@ export default class Bounty {
   get expiration_date(): string {
     return this._expiration_date;
   }
+  get contentType(): ContentType|undefined {
+    return this._contentType;
+  }
+
+  get relatedItem(): any {
+    return this._relatedItem;
+  }  
 }

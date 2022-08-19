@@ -11,7 +11,7 @@ import Image from "next/image";
 type Props = {
   hub: any;
   hubSubscribeButton?: ReactNode | null;
-  isHomePage: Boolean;
+  isHomePage: boolean;
   mainHeaderText: string;
 };
 

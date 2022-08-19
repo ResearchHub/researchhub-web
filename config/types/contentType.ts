@@ -20,7 +20,8 @@ export const parseContentType = (raw: any): ContentType => {
     contentTypeName = "hypothesis";
   }
   else {
-    throw Error("Could not parse object with content_type=" + raw.name)
+    contentTypeName = raw.name;
+    console.error("Could not parse object with content_type=" + raw.name)
   }    
 
   return {
