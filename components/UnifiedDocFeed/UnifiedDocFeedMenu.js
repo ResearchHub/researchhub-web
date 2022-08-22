@@ -4,7 +4,16 @@ import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
-import { feedTypeOpts } from "./constants/UnifiedDocFilters";
+import {
+  feedTypeOpts,
+  sortOpts,
+  subFilters,
+  topLevelFilters,
+} from "./constants/UnifiedDocFilters";
+import icons from "~/config/themes/icons";
+import { useRouter } from "next/router";
+import AuthorAvatar from "../AuthorAvatar";
+import { connect, useStore, useDispatch } from "react-redux";
 
 const UnifiedDocFeedMenu = ({
   subFilters: { filterBy, scope, tags },
@@ -13,7 +22,11 @@ const UnifiedDocFeedMenu = ({
   onSubFilterSelect,
   onTagsSelect,
   onScopeSelect,
+  currentUser,
 }) => {
+  const router = useRouter();
+  const store = useStore();
+
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
 
@@ -27,7 +40,7 @@ const UnifiedDocFeedMenu = ({
       );
     };
 
-    const tabs = feedTypeOpts.map((opt) => ({
+    const tabs = Object.values(feedTypeOpts).map((opt) => ({
       html: _renderOption(opt),
       ...opt,
     }));
@@ -91,13 +104,79 @@ const UnifiedDocFeedMenu = ({
     return selectedTab;
   };
 
+  const getSelectedUrlFilters = () => {
+    const defaults = {
+      topLevel: topLevelFilters.find((f) => f.isDefault).value,
+      type: Object.values(feedTypeOpts).find((t) => t.isDefault).value,
+      sort: sortOpts.find((opt) => opt.isDefault).value,
+      subFilters: {},
+    };
+    const selected = { ...defaults };
+
+    const foundTopLevelFilter = topLevelFilters.find(
+      (f) => f.url === router.pathname
+    ).value;
+    if (foundTopLevelFilter) {
+      selected.topLevel = foundTopLevelFilter;
+    }
+
+    const foundSort = sortOpts.find((opt) => opt.url === router?.query?.sort);
+    if (foundSort) {
+      selected.sort = foundSort;
+    }
+
+    const foundTypeFilter = Object.values(feedTypeOpts).find(
+      (opt) => opt.value === router?.query?.type
+    );
+    if (foundTypeFilter) {
+      selected.type = foundSort;
+    }
+
+    for (let i = 0; i < subFilters.length; i++) {
+      const f = subFilters[i];
+
+      if (router?.query?.[f.value] && f.availableFor.includes(selected.type)) {
+        selected.subFilters[f.value] = true;
+      }
+    }
+
+    return selected;
+  };
+
   const tabs = getTabs();
   const selectedTab = getSelectedTab(tabs);
+  const selectedFilters = getSelectedUrlFilters();
+  console.log("selectedFilters", selectedFilters);
 
   return (
     <div className={css(styles.filtersContainer)}>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
+          <div className={css(topLevelFilterStyles.container)}>
+            {topLevelFilters.map((f) => (
+              <div
+                className={css(
+                  topLevelFilterStyles.filter,
+                  f.value === selectedFilters.topLevel &&
+                    topLevelFilterStyles.filterSelected
+                )}
+                onClick={() => _handleTopLevelFilterSelect(f)}
+              >
+                <span className={css(topLevelFilterStyles.filterIcon)}>
+                  {f.value === "for-you" && (
+                    <AuthorAvatar
+                      author={currentUser?.author_profile}
+                      size={20}
+                    />
+                  )}
+                  {f.icon}
+                </span>
+                <span className={css(topLevelFilterStyles.filterLabel)}>
+                  {f.label}
+                </span>
+              </div>
+            ))}
+          </div>
           <div className={css(styles.feedMenu)}>
             <div className={css(styles.filtersAsTabs)}>
               <div className={css(styles.tab, styles.smallScreenFilters)}>
@@ -160,6 +239,33 @@ const UnifiedDocFeedMenu = ({
   );
 };
 
+const topLevelFilterStyles = StyleSheet.create({
+  container: {
+    display: "flex",
+    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
+    width: "100%",
+    marginBottom: 15,
+  },
+  filter: {
+    padding: "0px 4px 12px 0px",
+    display: "flex",
+    marginRight: 25,
+    alignItems: "center",
+    cursor: "pointer",
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
+  },
+  filterIcon: {
+    marginRight: 5,
+  },
+  filterLabel: {},
+  filterSelected: {
+    borderBottom: `2px solid ${colors.NEW_BLUE()}`,
+    color: colors.NEW_BLUE(),
+  },
+});
+
 const styles = StyleSheet.create({
   downIcon: {
     marginTop: 2,
@@ -204,12 +310,13 @@ const styles = StyleSheet.create({
   },
   tab: {
     color: colors.BLACK(0.6),
-    padding: "0 8px 0px 8px",
-    marginRight: 20,
+    background: colors.LIGHTER_GREY(1.0),
+    padding: "4px 12px",
+    marginRight: 10,
     textTransform: "unset",
-    fontSize: 16,
-    fontWeight: 500,
-    height: 32,
+    fontSize: 15,
+    fontWeight: 400,
+    borderRadius: 4,
     cursor: "pointer",
     ":active": {
       color: colors.NEW_BLUE(),
@@ -217,9 +324,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     },
-    [`@media only screen and (max-width: 1500px)`]: {
-      fontSize: 15,
-    },
+    // [`@media only screen and (max-width: 1500px)`]: {
+    //   fontSize: 15,
+    // },
     [`@media only screen and (max-width: 1450px)`]: {
       marginRight: 10,
     },
@@ -235,9 +342,10 @@ const styles = StyleSheet.create({
   },
 
   tabSelected: {
-    color: colors.NEW_BLUE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.NEW_BLUE(),
+    color: colors.NEW_BLUE(1.0),
+    background: colors.LIGHTER_BLUE(1.0),
+    // borderBottom: "solid 3px",
+    // borderColor: colors.NEW_BLUE(),
   },
   moreOptsSelected: {
     color: colors.NEW_BLUE(),
@@ -280,21 +388,22 @@ const styles = StyleSheet.create({
     },
   },
   mainFilters: {
-    alignItems: "center",
-    display: "flex",
     height: "inherit",
     width: "100%",
-    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       borderBottom: `unset`,
     },
   },
   filtersContainer: {
-    marginBottom: 35,
+    marginBottom: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginBottom: 10,
+      // marginBottom: 10,
     },
   },
 });
 
-export default UnifiedDocFeedMenu;
+const mapStateToProps = (state) => ({
+  currentUser: state.auth.user,
+});
+
+export default connect(mapStateToProps, null)(UnifiedDocFeedMenu);
