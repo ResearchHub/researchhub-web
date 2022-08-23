@@ -5,7 +5,6 @@ export const topLevelFilters = [{
   url: "/",
   value: "frontpage",
   icon: icons.globeLight,
-  isDefault: true,
 }, {
   label: "For you",
   url: "/for-you",
@@ -27,43 +26,10 @@ export const UnifiedDocFilterLabels = {
   POSTS: "Posts",
 };
 
-export const sortOpts = [
-  {
-    value: "hot",
-    label: "Trending",
-    selectedLabel: "Trending",
-    icon: icons.fire,
-    isDefault: true,
-    disableScope: true,
-  },
-  {
-    value: "newest",
-    label: "Newest",
-    selectedLabel: "Newest",
-    icon: icons.bolt,
-    disableScope: false,
-  },  
-  {
-    value: "most_discussed",
-    label: "Most Discussed",
-    selectedLabel: "Discussed",
-    icon: icons.commentsAlt,
-    disableScope: false,
-  },
-  {
-    value: "top_rated",
-    label: "Most Upvoted",
-    selectedLabel: "Upvoted",
-    icon: icons.up,
-    disableScope: false,
-  },
-];
-
 export const feedTypeOpts = {
   "all": {
     value: "all",
     label: "All",
-    isDefault: true,
   },
   "paper": {
     value: "paper",
@@ -87,6 +53,88 @@ export const feedTypeOpts = {
     tag: { bounties: "all" },
   },
 }
+
+export const sortOpts = [
+  {
+    value: "hot",
+    label: "Trending",
+    selectedLabel: "Trending",
+    icon: icons.fire,
+    disableScope: true,
+    availableFor: [
+      feedTypeOpts["all"].value,
+      feedTypeOpts["paper"].value,
+      feedTypeOpts["post"].value,
+      feedTypeOpts["question"].value,
+      feedTypeOpts["meta-study"].value,
+    ],
+  },
+  {
+    value: "expiring_soon",
+    label: "Expiring Soon",
+    selectedLabel: "Expiring Soon",
+    icon: icons.clock,
+    disableScope: true,
+    availableFor: [
+      feedTypeOpts["bounty"].value,
+    ],    
+  },
+  {
+    value: "rsc_offered",
+    label: "RSC Offered",
+    selectedLabel: "RSC Offered",
+    icon: icons.clock,
+    disableScope: true,
+    availableFor: [
+      feedTypeOpts["bounty"].value,
+    ],    
+  },  
+  {
+    value: "newest",
+    label: "Newest",
+    selectedLabel: "Newest",
+    icon: icons.bolt,
+    disableScope: false,
+    availableFor: [
+      feedTypeOpts["all"].value,
+      feedTypeOpts["paper"].value,
+      feedTypeOpts["post"].value,
+      feedTypeOpts["question"].value,
+      feedTypeOpts["meta-study"].value,
+      feedTypeOpts["bounty"].value,
+    ],    
+  },  
+  {
+    value: "most_discussed",
+    label: "Most Discussed",
+    selectedLabel: "Discussed",
+    icon: icons.commentsAlt,
+    disableScope: false,
+    availableFor: [
+      feedTypeOpts["all"].value,
+      feedTypeOpts["paper"].value,
+      feedTypeOpts["post"].value,
+      feedTypeOpts["question"].value,
+      feedTypeOpts["meta-study"].value,
+      feedTypeOpts["bounty"].value,
+    ],
+  },
+  {
+    value: "top_rated",
+    label: "Most Upvoted",
+    selectedLabel: "Upvoted",
+    icon: icons.up,
+    disableScope: false,
+    availableFor: [
+      feedTypeOpts["all"].value,
+      feedTypeOpts["paper"].value,
+      feedTypeOpts["post"].value,
+      feedTypeOpts["question"].value,
+      feedTypeOpts["meta-study"].value,
+      feedTypeOpts["bounty"].value,
+    ],    
+  },
+];
 
 export const subFilters = [{
   value: "peer_reviewed",

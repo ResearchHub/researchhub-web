@@ -7,6 +7,7 @@ import icons from "~/config/themes/icons";
 
 function FeedOrderingDropdown({
   selectedOrderingValue,
+  selectedFilters,
   selectedScopeValue,
   onOrderingSelect,
   onScopeSelect,
@@ -15,6 +16,8 @@ function FeedOrderingDropdown({
   const selectedOrderingObj = sortOpts.find(
     (o) => o.value === selectedOrderingValue
   );
+
+  const availSortOpts = sortOpts.filter(s => s.availableFor.includes(selectedFilters.type));
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const _handleOrderingClick = (selected) => {
@@ -57,7 +60,7 @@ function FeedOrderingDropdown({
       </div>
       {isOpen && (
         <div className={css(styles.dropdownBody)}>
-          {sortOpts.map((opt) => (
+          {availSortOpts.map((opt) => (
             <div
               onClick={() => _handleOrderingClick(opt)}
               className={css(

@@ -16,11 +16,11 @@ type SelectedUrlFilters = {
 
 export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
   const defaults = {
-    topLevel: topLevelFilters.find((f) => f.isDefault)?.value,
+    topLevel: topLevelFilters[0].value,
     // @ts-ignore
-    type: Object.values(feedTypeOpts).find((t) => t.isDefault)?.value,
-    sort: sortOpts.find((opt) => opt.isDefault)?.value,
-    time: scopeOptions.find((opt) => opt.isDefault)?.value,
+    type: Object.values(feedTypeOpts)[0].value,
+    sort: sortOpts[0].value,
+    time: scopeOptions[0].value,
     subFilters: {},
   };
   const selected = { ...defaults };
@@ -34,16 +34,19 @@ export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
   )?.value;
   const foundTimeScope = scopeOptions.find(
     (opt) => opt.value === router?.query?.time
-  )?.value;  
+  )?.value;
 
+  if (foundTypeFilter) {
+    selected.type = foundTypeFilter;
+
+    // Update default sort
+    selected.sort = sortOpts.filter(sort => sort.availableFor.includes(selected.type))[0].value;
+  }
   if (foundTopLevelFilter) {
     selected.topLevel = foundTopLevelFilter;
   }
   if (foundSort) {
     selected.sort = foundSort;
-  }
-  if (foundTypeFilter) {
-    selected.type = foundTypeFilter;
   }
   if (foundTimeScope) {
     selected.time = foundTimeScope;
@@ -56,6 +59,6 @@ export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
       selected.subFilters[f.value] = true;
     }
   }
-
+console.log('selected', selected)
   return selected;
 };

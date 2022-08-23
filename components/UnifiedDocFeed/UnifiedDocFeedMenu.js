@@ -6,6 +6,7 @@ import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
 import {
   feedTypeOpts,
+  sortOpts,
   subFilters,
   topLevelFilters,
 } from "./constants/UnifiedDocFilters";
@@ -50,8 +51,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
 
   const _handleFilterSelect = ({ typeFilter, subFilter, sort, timeScope }) => {
     const query = { ...router.query };
-    console.log("timescope", timeScope);
-    console.log("sort", sort);
+
     if (subFilter) {
       if (query[subFilter]) {
         delete query[subFilter];
@@ -61,11 +61,22 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     }
 
     if (typeFilter) {
-      query.type = typeFilter;
+      const isDefault = Object.values(feedTypeOpts)[0].value == typeFilter;
+      if (isDefault) {
+        delete query.type;
+      } else {
+        query.type = typeFilter;
+      }
     }
 
     if (sort) {
-      query.sort = sort;
+      const isDefault = sortOpts[0].value == sort;
+      if (isDefault) {
+        delete query.sort;
+        delete query.time;
+      } else {
+        query.sort = sort;
+      }
     }
 
     if (timeScope) {
@@ -243,6 +254,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
 
               <div className={css(styles.orderingContainer)}>
                 <FeedOrderingDropdown
+                  selectedFilters={selectedFilters}
                   selectedOrderingValue={selectedFilters.sort}
                   selectedScopeValue={selectedFilters.time}
                   onOrderingSelect={(selected) =>
