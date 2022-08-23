@@ -6,32 +6,24 @@ import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
 import {
   feedTypeOpts,
-  sortOpts,
   subFilters,
   topLevelFilters,
 } from "./constants/UnifiedDocFilters";
 import icons from "~/config/themes/icons";
 import { useRouter } from "next/router";
 import AuthorAvatar from "../AuthorAvatar";
-import { connect, useStore, useDispatch } from "react-redux";
+import { connect } from "react-redux";
+import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 
-const UnifiedDocFeedMenu = ({
-  subFilters: { filterBy, scope, tags },
-  docTypeFilter,
-  onDocTypeFilterSelect,
-  onSubFilterSelect,
-  onTagsSelect,
-  onScopeSelect,
-  currentUser,
-}) => {
+const UnifiedDocFeedMenu = ({ currentUser }) => {
   const router = useRouter();
-  const store = useStore();
 
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
   const [subFilterMenuOpenFor, setSubFilterMenuOpenFor] = useState(null);
+  const selectedFilters = getSelectedUrlFilters({ router });
 
-  const getTabs = () => {
+  const getTabs = ({ selectedFilters }) => {
     const _renderOption = (opt) => {
       return (
         <div className={css(styles.labelContainer)}>
@@ -47,7 +39,7 @@ const UnifiedDocFeedMenu = ({
     }));
 
     let tabsAsHTML = tabs.map((tabObj) => {
-      if (tabObj.value === docTypeFilter) {
+      if (tabObj.value === selectedFilters.type) {
         tabObj.isSelected = true;
       }
       return tabObj;
@@ -56,9 +48,10 @@ const UnifiedDocFeedMenu = ({
     return tabsAsHTML;
   };
 
-  const _handleFilterSelect = ({ typeFilter, subFilter }) => {
+  const _handleFilterSelect = ({ typeFilter, subFilter, sort, timeScope }) => {
     const query = { ...router.query };
-
+    console.log("timescope", timeScope);
+    console.log("sort", sort);
     if (subFilter) {
       if (query[subFilter]) {
         delete query[subFilter];
@@ -68,6 +61,15 @@ const UnifiedDocFeedMenu = ({
     }
 
     if (typeFilter) {
+      query.type = typeFilter;
+    }
+
+    if (sort) {
+      query.sort = sort;
+    }
+
+    if (timeScope) {
+      query.time = timeScope;
     }
 
     router.push({
@@ -102,13 +104,15 @@ const UnifiedDocFeedMenu = ({
                 setSubFilterMenuOpenFor(tabObj.value);
               }
             } else {
-              if (tabObj.tag) {
-                onTagsSelect({ tags: [tabObj.tag] });
-                onDocTypeFilterSelect(tabObj.value);
-              } else {
-                onTagsSelect({ tags: [] });
-                onDocTypeFilterSelect(tabObj.value);
-              }
+              _handleFilterSelect({ typeFilter: tabObj.value });
+
+              // if (tabObj.tag) {
+              //   onTagsSelect({ tags: [tabObj.tag] });
+              //   onDocTypeFilterSelect(tabObj.value);
+              // } else {
+              //   onTagsSelect({ tags: [] });
+              //   onDocTypeFilterSelect(tabObj.value);
+              // }
             }
           }}
           className={css(styles.labelContainer)}
@@ -166,49 +170,8 @@ const UnifiedDocFeedMenu = ({
     return selectedTab;
   };
 
-  const getSelectedUrlFilters = () => {
-    const defaults = {
-      topLevel: topLevelFilters.find((f) => f.isDefault).value,
-      type: Object.values(feedTypeOpts).find((t) => t.isDefault).value,
-      sort: sortOpts.find((opt) => opt.isDefault).value,
-      subFilters: {},
-    };
-    const selected = { ...defaults };
-
-    const foundTopLevelFilter = topLevelFilters.find(
-      (f) => f.url === router.pathname
-    ).value;
-    if (foundTopLevelFilter) {
-      selected.topLevel = foundTopLevelFilter;
-    }
-
-    const foundSort = sortOpts.find((opt) => opt.url === router?.query?.sort);
-    if (foundSort) {
-      selected.sort = foundSort;
-    }
-
-    const foundTypeFilter = Object.values(feedTypeOpts).find(
-      (opt) => opt.value === router?.query?.type
-    );
-    if (foundTypeFilter) {
-      selected.type = foundSort;
-    }
-
-    for (let i = 0; i < subFilters.length; i++) {
-      const f = subFilters[i];
-
-      if (router?.query?.[f.value] && f.availableFor.includes(selected.type)) {
-        selected.subFilters[f.value] = true;
-      }
-    }
-
-    return selected;
-  };
-
-  const tabs = getTabs();
+  const tabs = getTabs({ selectedFilters });
   const selectedTab = getSelectedTab(tabs);
-  const selectedFilters = getSelectedUrlFilters();
-  console.log("selectedFilters", selectedFilters);
 
   return (
     <div className={css(styles.filtersContainer)}>
@@ -268,14 +231,7 @@ const UnifiedDocFeedMenu = ({
                   overrideDownIconStyle={styles.downIcon}
                   onSelect={(selected) => {
                     const tabObj = tabs.find((t) => t.value === selected);
-
-                    if (tabObj.tag) {
-                      onTagsSelect({ tags: [tabObj.tag] });
-                      onDocTypeFilterSelect(tabObj.value);
-                    } else {
-                      onTagsSelect({ tags: [] });
-                      onDocTypeFilterSelect(tabObj.value);
-                    }
+                    _handleFilterSelect({ typeFilter: tabObj.value });
                   }}
                   onClose={() => setIsSmallScreenDropdownOpen(false)}
                 />
@@ -287,10 +243,14 @@ const UnifiedDocFeedMenu = ({
 
               <div className={css(styles.orderingContainer)}>
                 <FeedOrderingDropdown
-                  selectedOrderingValue={filterBy.value}
-                  selectedScopeValue={scope.value}
-                  onOrderingSelect={(selected) => onSubFilterSelect(selected)}
-                  onScopeSelect={(selected) => onScopeSelect(selected)}
+                  selectedOrderingValue={selectedFilters.sort}
+                  selectedScopeValue={selectedFilters.time}
+                  onOrderingSelect={(selected) =>
+                    _handleFilterSelect({ sort: selected.value })
+                  }
+                  onScopeSelect={(selected) =>
+                    _handleFilterSelect({ timeScope: selected.value })
+                  }
                 />
               </div>
             </div>

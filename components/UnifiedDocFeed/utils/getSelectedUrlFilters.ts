@@ -1,0 +1,61 @@
+import {
+  feedTypeOpts,
+  sortOpts,
+  subFilters,
+  topLevelFilters,
+} from "../constants/UnifiedDocFilters";
+import { scopeOptions } from "~/config/utils/options";
+
+type SelectedUrlFilters = {
+  topLevel: string | undefined;
+  type: string | undefined;
+  sort: string | undefined;
+  time: string | undefined;
+  subFilters: any;
+}
+
+export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
+  const defaults = {
+    topLevel: topLevelFilters.find((f) => f.isDefault)?.value,
+    // @ts-ignore
+    type: Object.values(feedTypeOpts).find((t) => t.isDefault)?.value,
+    sort: sortOpts.find((opt) => opt.isDefault)?.value,
+    time: scopeOptions.find((opt) => opt.isDefault)?.value,
+    subFilters: {},
+  };
+  const selected = { ...defaults };
+
+  const foundSort = sortOpts.find((opt) => opt.value === router?.query?.sort)?.value;
+  const foundTopLevelFilter = topLevelFilters.find(
+    (f) => f.url === router.pathname
+  )?.value;
+  const foundTypeFilter = Object.values(feedTypeOpts).find(
+    (opt) => opt.value === router?.query?.type
+  )?.value;
+  const foundTimeScope = scopeOptions.find(
+    (opt) => opt.value === router?.query?.time
+  )?.value;  
+
+  if (foundTopLevelFilter) {
+    selected.topLevel = foundTopLevelFilter;
+  }
+  if (foundSort) {
+    selected.sort = foundSort;
+  }
+  if (foundTypeFilter) {
+    selected.type = foundTypeFilter;
+  }
+  if (foundTimeScope) {
+    selected.time = foundTimeScope;
+  }  
+
+  for (let i = 0; i < subFilters.length; i++) {
+    const f = subFilters[i];
+
+    if (router?.query?.[f.value] && f.availableFor.includes(String(selected.type))) {
+      selected.subFilters[f.value] = true;
+    }
+  }
+
+  return selected;
+};

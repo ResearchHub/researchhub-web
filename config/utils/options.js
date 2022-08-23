@@ -101,6 +101,7 @@ const scopeOptions = [
     value: "today",
     valueForApi: "today",
     label: "Today",
+    isDefault: true,
   },
   {
     value: "week",
