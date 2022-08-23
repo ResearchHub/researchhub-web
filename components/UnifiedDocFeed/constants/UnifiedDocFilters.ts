@@ -136,7 +136,7 @@ export const sortOpts = [
   },
 ];
 
-export const subFilters = [{
+export const tagFilters = [{
   value: "peer_reviewed",
   label: "Peer reviewed",
   availableFor: [

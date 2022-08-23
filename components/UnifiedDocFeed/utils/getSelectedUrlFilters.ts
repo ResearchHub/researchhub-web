@@ -1,7 +1,7 @@
 import {
   feedTypeOpts,
   sortOpts,
-  subFilters,
+  tagFilters,
   topLevelFilters,
 } from "../constants/UnifiedDocFilters";
 import { scopeOptions } from "~/config/utils/options";
@@ -11,19 +11,25 @@ type SelectedUrlFilters = {
   type: string | undefined;
   sort: string | undefined;
   time: string | undefined;
-  subFilters: any;
+  tags: string[];
 }
 
 export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
   const defaults = {
     topLevel: topLevelFilters[0].value,
-    // @ts-ignore
     type: Object.values(feedTypeOpts)[0].value,
     sort: sortOpts[0].value,
     time: scopeOptions[0].value,
-    subFilters: {},
+    tags: <string[]>[],
   };
   const selected = { ...defaults };
+
+  if (Array.isArray(router.query.tags)) {
+    selected.tags = [...router.query.tags];
+  }
+  else if (router.query.tags) {
+    selected.tags.push(router.query.tags);
+  }
 
   const foundSort = sortOpts.find((opt) => opt.value === router?.query?.sort)?.value;
   const foundTopLevelFilter = topLevelFilters.find(
@@ -52,13 +58,13 @@ export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
     selected.time = foundTimeScope;
   }  
 
-  for (let i = 0; i < subFilters.length; i++) {
-    const f = subFilters[i];
-
-    if (router?.query?.[f.value] && f.availableFor.includes(String(selected.type))) {
-      selected.subFilters[f.value] = true;
+  for (let i = 0; i < selected.tags.length; i++) {
+    const t = selected.tags[i];
+    const tagIsAnOptionForThisType = tagFilters.find((tf) => tf.value === t)?.availableFor?.includes(selected.type);
+    if (!tagIsAnOptionForThisType) {
+      delete selected.tags[t];
     }
   }
-console.log('selected', selected)
+
   return selected;
 };
