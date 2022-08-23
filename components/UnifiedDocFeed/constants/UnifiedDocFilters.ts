@@ -92,27 +92,27 @@ export const subFilters = [{
   value: "peer_reviewed",
   label: "Peer reviewed",
   availableFor: [
-    feedTypeOpts["all"],
-    feedTypeOpts["paper"],
-    feedTypeOpts["post"]
+    feedTypeOpts["all"].value,
+    feedTypeOpts["paper"].value,
+    feedTypeOpts["post"].value
   ],
 },{
   value: "open_access",
   label: "Open access",
   availableFor: [
-    feedTypeOpts["all"],
-    feedTypeOpts["paper"],
+    feedTypeOpts["all"].value,
+    feedTypeOpts["paper"].value,
   ],
 },{
   value: "expired",
   label: "Show expired bounties",
   availableFor: [
-    feedTypeOpts["bounty"],
+    feedTypeOpts["bounty"].value,
   ],
 },{
   value: "answered",
   label: "Show answered",
   availableFor: [
-    feedTypeOpts["question"],
+    feedTypeOpts["question"].value,
   ],
 }]

@@ -29,6 +29,7 @@ const UnifiedDocFeedMenu = ({
 
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
+  const [subFilterMenuOpenFor, setSubFilterMenuOpenFor] = useState(null);
 
   const getTabs = () => {
     const _renderOption = (opt) => {
@@ -55,34 +56,95 @@ const UnifiedDocFeedMenu = ({
     return tabsAsHTML;
   };
 
-  const renderTab = (tabObj) => {
-    const hasNestedOptions = tabObj.options;
-    const selectedNestedObj = hasNestedOptions
-      ? tabObj.options.find((opt) => opt.isSelected)
-      : null;
+  const _handleFilterSelect = ({ typeFilter, subFilter }) => {
+    const query = { ...router.query };
+
+    if (subFilter) {
+      if (query[subFilter]) {
+        delete query[subFilter];
+      } else {
+        query[subFilter] = "true";
+      }
+    }
+
+    if (typeFilter) {
+    }
+
+    router.push({
+      pathname: router.pathname,
+      query,
+    });
+  };
+
+  const renderTab = (tabObj, selectedFilters) => {
+    const isSelected = tabObj.value === selectedFilters.type;
+
+    // const nestedOptions = [];
+    // for (let i = 0; i < subFilters.length; i++) {
+    //   if (subFilters[i].availableFor.includes("all")) {
+    //     nestedOptions.push(subFilters[i])
+    //   }
+    // }
+    // console.log('nestedOptions', nestedOptions)
+    // console.log('subFilters', subFilters)
+    const nestedOptions = subFilters.filter((sub) =>
+      sub.availableFor.includes(tabObj.value)
+    );
 
     return (
       <div className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}>
-        {hasNestedOptions ? (
-          <></>
-        ) : (
-          <>
-            <div
-              onClick={() => {
-                if (tabObj.tag) {
-                  onTagsSelect({ tags: [tabObj.tag] });
-                  onDocTypeFilterSelect(tabObj.value);
-                } else {
-                  onTagsSelect({ tags: [] });
-                  onDocTypeFilterSelect(tabObj.value);
-                }
-              }}
-              className={css(styles.labelContainer)}
-            >
-              <span className={css(styles.tabText)}>{tabObj.label}</span>
+        <div
+          onClick={() => {
+            if (isSelected && nestedOptions.length > 0) {
+              if (subFilterMenuOpenFor) {
+                setSubFilterMenuOpenFor(null);
+              } else {
+                setSubFilterMenuOpenFor(tabObj.value);
+              }
+            } else {
+              if (tabObj.tag) {
+                onTagsSelect({ tags: [tabObj.tag] });
+                onDocTypeFilterSelect(tabObj.value);
+              } else {
+                onTagsSelect({ tags: [] });
+                onDocTypeFilterSelect(tabObj.value);
+              }
+            }
+          }}
+          className={css(styles.labelContainer)}
+        >
+          <span className={css(styles.tabText)}>{tabObj.label}</span>
+          <span className={css(styles.downIcon)}>
+            {tabObj.value === selectedFilters.type && icons.chevronDown}
+          </span>
+          {subFilterMenuOpenFor === tabObj.value && (
+            <div className={css(styles.additionalOpts)}>
+              {nestedOptions.map((opt) => (
+                <div
+                  className={css(styles.subfilter)}
+                  onClick={() => _handleFilterSelect({ subFilter: opt.value })}
+                >
+                  <span className={css(styles.subfilterLabel)}>
+                    {opt.label}
+                  </span>
+                  {selectedFilters.subFilters[opt.value] ? (
+                    <span
+                      className={css(styles.subfilterIcon, styles.toggleOn)}
+                    >
+                      {icons.toggleOn}
+                    </span>
+                  ) : (
+                    <span
+                      className={css(styles.subfilterIcon, styles.toggleOff)}
+                    >
+                      {icons.toggleOff}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     );
   };
@@ -220,7 +282,7 @@ const UnifiedDocFeedMenu = ({
               </div>
 
               <div className={css(styles.largeScreenFilters)}>
-                {tabs.map((t) => renderTab(t))}
+                {tabs.map((t) => renderTab(t, selectedFilters))}
               </div>
 
               <div className={css(styles.orderingContainer)}>
@@ -252,6 +314,7 @@ const topLevelFilterStyles = StyleSheet.create({
     marginRight: 25,
     alignItems: "center",
     cursor: "pointer",
+    color: colors.BLACK(),
     ":hover": {
       color: colors.NEW_BLUE(),
     },
@@ -281,6 +344,9 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%",
   },
+  downIcon: {
+    marginLeft: 5,
+  },
   iconWrapper: {
     marginRight: 7,
     fontSize: 16,
@@ -291,6 +357,34 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: 1200px)`]: {
       display: "block",
     },
+  },
+  additionalOpts: {
+    position: "absolute",
+    background: "white",
+    top: 30,
+    left: 0,
+    width: 150,
+    zIndex: 5,
+    padding: 5,
+    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
+  },
+  subfilter: {
+    padding: "6px 5px ",
+    color: colors.BLACK(1.0),
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  subfilterLabel: {},
+  subfilterIcon: {
+    fontSize: 22,
+    color: colors.NEW_BLUE(),
+  },
+  toggleOn: {
+    color: colors.NEW_BLUE(),
+  },
+  toggleOff: {
+    color: "#c3c3c3",
   },
   filtersAsTabs: {
     width: "100%",
@@ -309,6 +403,7 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
+    position: "relative",
     color: colors.BLACK(0.6),
     background: colors.LIGHTER_GREY(1.0),
     padding: "4px 12px",

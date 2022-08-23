@@ -60,6 +60,7 @@ import {
   faCheckDouble,
   faVideo,
   faQuestionCircle as solidQuestion,
+  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faDiscord,
@@ -190,6 +191,7 @@ import {
   faTrophy,
   faUser as faSimpleUser,
   faUserCircle,
+  faToggleOff,
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
@@ -492,6 +494,8 @@ const icons = {
   verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
   video: <FontAwesomeIcon icon={faVideo} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
+  toggleOn: <FontAwesomeIcon icon={faToggleOn} />,
+  toggleOff: <FontAwesomeIcon icon={faToggleOff} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
   coinStack: ({ styles, grey }) => (
