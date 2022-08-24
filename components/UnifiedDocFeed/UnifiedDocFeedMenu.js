@@ -15,10 +15,12 @@ import { useRouter } from "next/router";
 import AuthorAvatar from "../AuthorAvatar";
 import { connect } from "react-redux";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
+import MyHubsDropdown from "../Hubs/MyHubsDropdown";
 
 const UnifiedDocFeedMenu = ({ currentUser }) => {
   const router = useRouter();
 
+  const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
@@ -209,10 +211,20 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                   f.value === selectedFilters.topLevel &&
                     topLevelFilterStyles.filterSelected
                 )}
-                onClick={() => _handleTopLevelFilterSelect(f)}
+                onClick={() => {
+                  if (
+                    f.value === "my-hubs" &&
+                    f.value === selectedFilters.topLevel
+                  ) {
+                    setIsHubSelectOpen(!isHubSelectOpen);
+                  } else {
+                    _handleTopLevelFilterSelect(f);
+                  }
+                }}
               >
+                {f.value === "my-hubs" && isHubSelectOpen && <MyHubsDropdown />}
                 <span className={css(topLevelFilterStyles.filterIcon)}>
-                  {f.value === "for-you" && (
+                  {f.value === "my-hubs" && (
                     <AuthorAvatar
                       author={currentUser?.author_profile}
                       size={20}
@@ -292,6 +304,7 @@ const topLevelFilterStyles = StyleSheet.create({
     borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
     width: "100%",
     marginBottom: 15,
+    position: "relative",
   },
   filter: {
     padding: "0px 4px 12px 0px",
