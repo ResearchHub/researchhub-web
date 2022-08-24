@@ -14,7 +14,7 @@ export type SelectedUrlFilters = {
   tags: string[];
 }
 
-export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
+export const getSelectedUrlFilters = ({ query, pathname }):SelectedUrlFilters => {
   const defaults = {
     topLevel: topLevelFilters[0].value,
     type: Object.values(feedTypeOpts)[0].value,
@@ -24,26 +24,26 @@ export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
   };
   const selected = { ...defaults };
 
-  if (!router) {
+  if (!(query || pathname)) {
     return defaults;
   }
 
-  if (Array.isArray(router.query.tags)) {
-    selected.tags = [...router.query.tags];
+  if (Array.isArray(query.tags)) {
+    selected.tags = [...query.tags];
   }
-  else if (router.query.tags) {
-    selected.tags.push(router.query.tags);
+  else if (query.tags) {
+    selected.tags.push(query.tags);
   }
 
-  const foundSort = sortOpts.find((opt) => opt.value === router?.query?.sort)?.value;
+  const foundSort = sortOpts.find((opt) => opt.value === query?.sort)?.value;
   const foundTopLevelFilter = topLevelFilters.find(
-    (f) => f.url === router.pathname
+    (f) => f.url === pathname
   )?.value;
   const foundTypeFilter = Object.values(feedTypeOpts).find(
-    (opt) => opt.value === router?.query?.type
+    (opt) => opt.value === query?.type
   )?.value;
   const foundTimeScope = scopeOptions.find(
-    (opt) => opt.value === router?.query?.time
+    (opt) => opt.value === query?.time
   )?.value;
 
   if (foundTypeFilter) {

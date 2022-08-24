@@ -21,7 +21,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const selectedFilters = getSelectedUrlFilters({});
+    const selectedFilters = getSelectedUrlFilters({ query, pathname: "/" });
     const initialFeed = await fetchUnifiedDocFeed(
       {
         selectedFilters,

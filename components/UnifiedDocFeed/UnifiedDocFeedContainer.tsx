@@ -43,7 +43,7 @@ function UnifiedDocFeedContainer({
   const router = useRouter();
   const routerPathName = router.pathname;
   const selectedFilters = useMemo(() => {
-    return getSelectedUrlFilters({ router })
+    return getSelectedUrlFilters({ query: router.query, pathname: router.pathname })
   }, [router.pathname, router.query]);
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
     getPaginationInfoFromServerLoaded(serverLoadedData)

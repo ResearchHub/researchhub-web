@@ -6,9 +6,9 @@ export const topLevelFilters = [{
   value: "frontpage",
   icon: icons.globeLight,
 }, {
-  label: "For you",
-  url: "/for-you",
-  value: "for-you",
+  label: "My Hubs",
+  url: "/my-hubs",
+  value: "my-hubs",
 }]
 
 export const UnifiedDocFilters = {

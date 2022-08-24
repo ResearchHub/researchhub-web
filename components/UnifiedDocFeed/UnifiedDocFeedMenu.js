@@ -22,7 +22,10 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
-  const selectedFilters = getSelectedUrlFilters({ router });
+  const selectedFilters = getSelectedUrlFilters({
+    query: router.query,
+    pathname: router.pathname,
+  });
 
   const getTabs = ({ selectedFilters }) => {
     const _renderOption = (opt) => {
