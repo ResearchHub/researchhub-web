@@ -20,7 +20,13 @@ import { useRouter } from "next/router";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 
-const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
+const saveData = async ({
+  editor,
+  noteId,
+  onSaveSuccess,
+  onSaveFail,
+  parsedNoteTitle,
+}) => {
   if (editor.isReadOnly) {
     return false;
   }
@@ -232,6 +238,7 @@ const ELNEditor = ({
                 autosave: {
                   save(editor) {
                     return saveData({
+                      parsedNoteTitle,
                       editor,
                       noteId: currentNote.id,
                       onSaveFail,
