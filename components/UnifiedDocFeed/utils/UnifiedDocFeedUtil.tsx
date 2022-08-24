@@ -4,17 +4,16 @@ import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
 import { useEffect } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
+import { SelectedUrlFilters } from "./getSelectedUrlFilters";
+
 
 export type UniDocFetchParams = {
-  docTypeFilter?: NullableString;
-  hotV2: boolean;
   hubID: ID;
   isLoggedIn: boolean;
   onError: Function;
   onSuccess: Function;
   page: number;
-  subFilters: any;
-  subscribedHubs: boolean;
+  selectedFilters: SelectedUrlFilters;
 };
 
 export type PaginationInfo = {
@@ -71,35 +70,35 @@ export const useEffectPrefetchNext = ({
   setIsPrefetching: (flag: boolean) => void;
   shouldPrefetch: boolean;
 }): void => {
-  const {
-    docTypeFilter: prevDocTypeFilter,
-    subFilters: prevSubFilters,
-    page: prevPage,
-  } = prevFetchParams ?? {};
-  const { docTypeFilter, subFilters, page } = fetchParams ?? {};
+  // const {
+  //   docTypeFilter: prevDocTypeFilter,
+  //   subFilters: prevSubFilters,
+  //   page: prevPage,
+  // } = prevFetchParams ?? {};
+  // const { docTypeFilter, subFilters, page } = fetchParams ?? {};
 
-  useEffect((): void => {
-    const readyToPrefetch =
-      shouldPrefetch &&
-      prevPage !== page &&
-      (prevFetchParams === null ||
-        (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
+  // useEffect((): void => {
+  //   const readyToPrefetch =
+  //     shouldPrefetch &&
+  //     prevPage !== page &&
+  //     (prevFetchParams === null ||
+  //       (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
 
-    if (readyToPrefetch) {
-      setIsPrefetching(true);
-      fetchUnifiedDocs(fetchParams);
-      setPrevFetchParams(fetchParams);
-    }
-  }, [
-    shouldPrefetch,
-    prevDocTypeFilter,
-    prevSubFilters,
-    docTypeFilter,
-    subFilters,
-  ]);
+  //   if (readyToPrefetch) {
+  //     setIsPrefetching(true);
+  //     fetchUnifiedDocs(fetchParams);
+  //     setPrevFetchParams(fetchParams);
+  //   }
+  // }, [
+  //   shouldPrefetch,
+  //   prevDocTypeFilter,
+  //   prevSubFilters,
+  //   docTypeFilter,
+  //   subFilters,
+  // ]);
 };
 
-export const useEffectForceUpdate = ({
+export const useEffectFetchDocs = ({
   fetchParams,
   updateOn,
   setUnifiedDocsLoading,

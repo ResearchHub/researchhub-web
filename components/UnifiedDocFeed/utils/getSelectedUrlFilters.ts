@@ -6,7 +6,7 @@ import {
 } from "../constants/UnifiedDocFilters";
 import { scopeOptions } from "~/config/utils/options";
 
-type SelectedUrlFilters = {
+export type SelectedUrlFilters = {
   topLevel: string | undefined;
   type: string | undefined;
   sort: string | undefined;

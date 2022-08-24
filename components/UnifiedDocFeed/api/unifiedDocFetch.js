@@ -83,42 +83,20 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
 
 export default function fetchUnifiedDocs(args) {
   const {
-    docTypeFilter,
+    selectedFilters,
     hubID,
     isLoggedIn,
     onError,
     onSuccess,
     page,
-    subscribedHubs,
-    subFilters,
     prevDocuments = [],
-    hotV2,
   } = args;
-  const { filterBy, scope, tags } = subFilters;
 
-  fetchUnifiedDocFeed(
-    /* PARAMS is: 
-      { 
-        externalSource,
-        hubId,
-        ordering,
-        page,
-        slug,
-        subscribedHubs,
-        timePeriod,
-        type, // docType
-      } */
-    {
-      hubId: hubID,
-      ordering: filterBy.value,
-      tags,
-      page,
-      subscribedHubs,
-      timePeriod: scope.valueForApi,
-      type: docTypeFilter,
-      hotV2,
-    }
-  )
+  fetchUnifiedDocFeed({
+    selectedFilters,
+    hubId: hubID,
+    page,
+  })
     .then(async (res) => {
       const { count, next, results: fetchedUnifiedDocs = [] } = res ?? {};
       const voteFormattedDocs = await fetchUserVote(

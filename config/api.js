@@ -7,6 +7,7 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "./utils/getUnifiedDocType";
+import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/converToBackendFilters";
 
 export const apiRoot = {
   production: "backend.researchhub.com",
@@ -752,32 +753,34 @@ const routes = (BASE_URL) => {
     GET_UNIFIED_DOCS: ({
       externalSource,
       hubId,
-      ordering,
       page = 1,
       slug,
-      subscribedHubs,
-      timePeriod,
-      type, // docType
-      tags = [],
+      selectedFilters,
     }) => {
+      console.log("selectedFilters", selectedFilters);
+
+      const backendFilters = convertToBackendFilters({
+        frontendFilters: selectedFilters,
+      });
+
       const url =
         BASE_URL + "researchhub_unified_document/get_unified_documents/";
       const params = {
         querystring: {
           external_source: externalSource,
           hub_id: hubId,
-          ordering,
           page,
           slug,
-          subscribed_hubs: subscribedHubs,
-          type,
-          time: timePeriod,
+          ordering: backendFilters.sort,
+          time: backendFilters.time,
+          type: backendFilters.type,
+          ...(backendFilters.topLevel === "for-you" && {
+            subscribed_hubs: true,
+          }),
         },
       };
 
-      for (let i = 0; i < tags.length; i++) {
-        params.querystring = { ...params.querystring, ...tags[i] };
-      }
+      // const tagsPortion = backendFilters.tags.reduce((tagStr, t) => `${tagStr}&${t}` ,"");
 
       const finalUrl = prepURL(url, params);
       return finalUrl;

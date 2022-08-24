@@ -12,7 +12,6 @@ export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 export function getDocumentCard({
   setUnifiedDocuments,
   unifiedDocumentData,
-  onBadgeClick,
 }): UnifiedCard[] {
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
@@ -42,7 +41,6 @@ export function getDocumentCard({
           formattedDocLabel={formattedDocLabel}
           index={arrIndex}
           key={`${formattedDocType}-${docID}-${arrIndex}`}
-          onBadgeClick={onBadgeClick}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}
           featured={uniDoc.featured}
