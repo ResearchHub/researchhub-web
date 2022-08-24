@@ -24,6 +24,10 @@ export const getSelectedUrlFilters = ({ router }):SelectedUrlFilters => {
   };
   const selected = { ...defaults };
 
+  if (!router) {
+    return defaults;
+  }
+
   if (Array.isArray(router.query.tags)) {
     selected.tags = [...router.query.tags];
   }
