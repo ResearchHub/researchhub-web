@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: 320,
+    // TODO: calvinhlee - add media query width
   },
   HomeRightSidebarContainer: {
     borderRadius: 4,

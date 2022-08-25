@@ -195,62 +195,62 @@ const Navbar = (props) => {
     ],
   };
 
-  function renderTabs() {
-    return (
-      <Fragment>
-        <Link href={"/about"} key={`navbar_tab_about`}>
-          <a className={css(styles.tabLink, styles.lessImportantTab)}>
-            <div className={css(styles.tab, styles.firstTab)}>About</div>
-          </a>
-        </Link>
-        <Link href={"/hubs"} key={`navbar_tab_hubs`}>
-          <a className={css(styles.tabLink)}>
-            <div className={css(styles.tab)}>Hubs</div>
-          </a>
-        </Link>
-        {user?.id ? (
-          <Link
-            href={`/${user.organization_slug}/notebook`}
-            key={`navbar_tab_publish`}
-          >
-            <a className={css(styles.tabLink)}>
-              <div className={css(styles.tab)}>Publish</div>
-            </a>
-          </Link>
-        ) : (
-          <PermissionNotificationWrapper
-            modalMessage="access our publishing tools"
-            loginRequired={true}
-            hideRipples={true}
-            onClick={() => router.push(`/${user.organization_slug}/notebook`)}
-            styling={styles.tab}
-          >
-            {`Publish`}
-          </PermissionNotificationWrapper>
-        )}
-        <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
-          <a className={css(styles.tabLink)}>
-            <div className={css(styles.tab)}>Leaderboard</div>
-          </a>
-        </Link>
-        <Link href={"/live"} key={`navbar_tab_live`}>
-          <a className={css(styles.tabLink)}>
-            <div className={css(styles.tab)}>Live</div>
-          </a>
-        </Link>
-        <Link
-          href={
-            "https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-          }
-          key={`navbar_tab_jobs`}
-        >
-          <a className={css(styles.tabLink)} target="_blank">
-            <div className={css(styles.tab)}>Jobs</div>
-          </a>
-        </Link>
-      </Fragment>
-    );
-  }
+  // function renderTabs() {
+  //   return (
+  //     <Fragment>
+  //       <Link href={"/about"} key={`navbar_tab_about`}>
+  //         <a className={css(styles.tabLink, styles.lessImportantTab)}>
+  //           <div className={css(styles.tab, styles.firstTab)}>About</div>
+  //         </a>
+  //       </Link>
+  //       <Link href={"/hubs"} key={`navbar_tab_hubs`}>
+  //         <a className={css(styles.tabLink)}>
+  //           <div className={css(styles.tab)}>Hubs</div>
+  //         </a>
+  //       </Link>
+  //       {user?.id ? (
+  //         <Link
+  //           href={`/${user.organization_slug}/notebook`}
+  //           key={`navbar_tab_publish`}
+  //         >
+  //           <a className={css(styles.tabLink)}>
+  //             <div className={css(styles.tab)}>Publish</div>
+  //           </a>
+  //         </Link>
+  //       ) : (
+  //         <PermissionNotificationWrapper
+  //           modalMessage="access our publishing tools"
+  //           loginRequired={true}
+  //           hideRipples={true}
+  //           onClick={() => router.push(`/${user.organization_slug}/notebook`)}
+  //           styling={styles.tab}
+  //         >
+  //           {`Publish`}
+  //         </PermissionNotificationWrapper>
+  //       )}
+  //       <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
+  //         <a className={css(styles.tabLink)}>
+  //           <div className={css(styles.tab)}>Leaderboard</div>
+  //         </a>
+  //       </Link>
+  //       <Link href={"/live"} key={`navbar_tab_live`}>
+  //         <a className={css(styles.tabLink)}>
+  //           <div className={css(styles.tab)}>Live</div>
+  //         </a>
+  //       </Link>
+  //       <Link
+  //         href={
+  //           "https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+  //         }
+  //         key={`navbar_tab_jobs`}
+  //       >
+  //         <a className={css(styles.tabLink)} target="_blank">
+  //           <div className={css(styles.tab)}>Jobs</div>
+  //         </a>
+  //       </Link>
+  //     </Fragment>
+  //   );
+  // }
 
   function toggleMenu(e) {
     setOpenMenu(!openMenu);
@@ -431,6 +431,14 @@ const Navbar = (props) => {
   return (
     <Fragment>
       <NewPostModal />
+      <UploadPaperModal />
+      <LoginModal />
+      <WithdrawalModal />
+      <FirstVoteModal auth={auth} updateUser={updateUser} />
+      <OrcidConnectModal />
+      <DndModal />
+      <PromotionInfoModal />
+      <ReCaptchaPrompt />
       <MobileOnly>
         <Menu
           top
@@ -451,30 +459,7 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
-        <UploadPaperModal />
-        <LoginModal />
-        <WithdrawalModal />
-        <FirstVoteModal auth={auth} updateUser={updateUser} />
-        <OrcidConnectModal />
-        <DndModal />
-        <PromotionInfoModal />
-        <ReCaptchaPrompt />
-        <div className={css(styles.tabsWrapper)}>
-          <div className={css(styles.tabs)}>{renderTabs()}</div>
-          <div className={css(styles.searchWrapper)}>
-            <Search
-              overrideStyle={styles.navbarSearchOverride}
-              navbarRef={navbarRef}
-              id="navbarSearch"
-            />
-          </div>
-        </div>
-
-        <div className={css(styles.hubPopoverWrapper)}>
-          <HubSelector />
-        </div>
-
-        <div className={css(styles.searchSmallScreen)}>
+        <div className={css(styles.searchWrapper)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
             navbarRef={navbarRef}
@@ -678,13 +663,6 @@ const burgerMenuStyle = {
 };
 
 const styles = StyleSheet.create({
-  hubPopoverWrapper: {
-    display: "none",
-    marginRight: "auto",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
-    },
-  },
   modBtnContainer: {
     position: "relative",
     padding: "2px 10px",
@@ -699,19 +677,21 @@ const styles = StyleSheet.create({
     },
   },
   navbarContainer: {
-    width: "100%",
-    padding: "28px 28px",
+    alignItems: "center",
+    background: "#fff",
+    borderBottom: "1px solid #e8e8ef",
     boxSizing: "border-box",
     display: "flex",
+    fontSize: 24,
+    fontWeight: 500,
     height: NAVBAR_HEIGHT,
-    background: "#fff",
-    alignItems: "center",
-    borderBottom: "1px solid #e8e8ef",
-    justifyContent: "space-around",
-    position: "sticky",
-    zIndex: 4,
-    top: 0,
+    justifyContent: "space-between",
     left: 0,
+    padding: "0 28px",
+    position: "sticky",
+    top: 0,
+    width: "100%",
+    zIndex: 4,
     backgroundColor: "#FFF",
     [`@media only screen and (max-width: ${breakpoints.medium.large})`]: {
       padding: "20px 20px",
@@ -722,17 +702,11 @@ const styles = StyleSheet.create({
   unstickyNavbar: {
     position: "initial",
   },
-  tabsWrapper: {
-    marginTop: 2,
-    display: "flex",
-    width: "100%",
-    marginRight: "auto",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
   tabs: {
+    alignItems: "center",
     display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
   },
   buttonLeft: {
     marginRight: 15,
@@ -808,26 +782,8 @@ const styles = StyleSheet.create({
     },
   },
   searchWrapper: {
-    marginTop: 9,
-    marginLeft: 15,
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      marginTop: 15,
-      marginLeft: 10,
-      width: "auto",
-    },
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      marginLeft: 0,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  searchSmallScreen: {
-    display: "none",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
-    },
+    maxWidth: 427,
   },
   tab: {
     cursor: "pointer",

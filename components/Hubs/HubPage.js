@@ -389,7 +389,7 @@ class HubPage extends Component {
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
-          <div className={css(styles.row, styles.body)}>
+          <div className={css(styles.row, styles.HomeContentContainerBody)}>
             <UnifiedDocFeedContainer
               feed={feed}
               home={home}
@@ -432,11 +432,6 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
     alignItems: "center",
   },
   text: {
@@ -495,12 +490,14 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
-  body: {
-    width: "100%",
-    height: "100%",
-    marginTop: 28,
+  HomeContentContainerBody: {
     alignItems: "flex-start",
     boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "row",
+    height: "100%",
+    marginTop: 12,
+    width: "100%",
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
