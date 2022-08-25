@@ -16,6 +16,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import { connect } from "react-redux";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 import MyHubsDropdown from "../Hubs/MyHubsDropdown";
+import TagDropdown from "./TagDropdown";
 
 const UnifiedDocFeedMenu = ({ currentUser }) => {
   const router = useRouter();
@@ -113,66 +114,37 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
 
   const renderTab = (tabObj, selectedFilters) => {
     const isSelected = tabObj.value === selectedFilters.type;
-
-    // const nestedOptions = [];
-    // for (let i = 0; i < tagFilters.length; i++) {
-    //   if (tagFilters[i].availableFor.includes("all")) {
-    //     nestedOptions.push(tagFilters[i])
-    //   }
-    // }
-    // console.log('nestedOptions', nestedOptions)
-    // console.log('tagFilters', tagFilters)
     const nestedOptions = tagFilters.filter((sub) =>
       sub.availableFor.includes(tabObj.value)
     );
     return (
-      <div className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}>
-        <div
-          onClick={() => {
-            if (isSelected && nestedOptions.length > 0) {
-              if (tagsMenuOpenFor) {
-                setTagsMenuOpenFor(null);
-              } else {
-                setTagsMenuOpenFor(tabObj.value);
-              }
+      <div
+        className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}
+        onClick={() => {
+          if (isSelected && nestedOptions.length > 0) {
+            if (tagsMenuOpenFor) {
+              setTagsMenuOpenFor(null);
             } else {
-              _handleFilterSelect({ typeFilter: tabObj.value });
-
-              // if (tabObj.tag) {
-              //   onTagsSelect({ tags: [tabObj.tag] });
-              //   onDocTypeFilterSelect(tabObj.value);
-              // } else {
-              //   onTagsSelect({ tags: [] });
-              //   onDocTypeFilterSelect(tabObj.value);
-              // }
+              setTagsMenuOpenFor(tabObj.value);
             }
-          }}
-          className={css(styles.labelContainer)}
-        >
+          } else {
+            _handleFilterSelect({ typeFilter: tabObj.value });
+          }
+        }}
+      >
+        <div className={css(styles.labelContainer)}>
           <span className={css(styles.tabText)}>{tabObj.label}</span>
           <span className={css(styles.downIcon)}>
             {tabObj.value === selectedFilters.type && icons.chevronDown}
           </span>
           {tagsMenuOpenFor === tabObj.value && (
-            <div className={css(styles.additionalOpts)}>
-              {nestedOptions.map((opt) => (
-                <div
-                  className={css(styles.tag)}
-                  onClick={() => _handleFilterSelect({ tags: [opt.value] })}
-                >
-                  <span className={css(styles.tagLabel)}>{opt.label}</span>
-                  {selectedFilters.tags.includes(opt.value) ? (
-                    <span className={css(styles.tagIcon, styles.toggleOn)}>
-                      {icons.toggleOn}
-                    </span>
-                  ) : (
-                    <span className={css(styles.tagIcon, styles.toggleOff)}>
-                      {icons.toggleOff}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
+            <TagDropdown
+              options={nestedOptions}
+              selectedTags={selectedFilters.tags}
+              handleSelect={(selected) =>
+                _handleFilterSelect({ tags: [selected] })
+              }
+            />
           )}
         </div>
       </div>
@@ -355,34 +327,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: 1200px)`]: {
       display: "block",
     },
-  },
-  additionalOpts: {
-    position: "absolute",
-    background: "white",
-    top: 30,
-    left: 0,
-    width: 150,
-    zIndex: 5,
-    padding: 5,
-    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
-  },
-  tag: {
-    padding: "6px 5px ",
-    color: colors.BLACK(1.0),
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  tagLabel: {},
-  tagIcon: {
-    fontSize: 22,
-    color: colors.NEW_BLUE(),
-  },
-  toggleOn: {
-    color: colors.NEW_BLUE(),
-  },
-  toggleOff: {
-    color: "#c3c3c3",
   },
   filtersAsTabs: {
     width: "100%",
