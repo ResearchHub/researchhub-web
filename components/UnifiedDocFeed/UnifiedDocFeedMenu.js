@@ -6,7 +6,6 @@ import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
 import {
   feedTypeOpts,
-  sortOpts,
   tagFilters,
   topLevelFilters,
 } from "./constants/UnifiedDocFilters";
@@ -16,7 +15,8 @@ import AuthorAvatar from "../AuthorAvatar";
 import { connect } from "react-redux";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 import MyHubsDropdown from "../Hubs/MyHubsDropdown";
-import TagDropdown from "./TagDropdown";
+import handleFilterSelect from "./utils/handleFilterSelect";
+import FeedTab from "./FeedTab";
 
 const UnifiedDocFeedMenu = ({ currentUser }) => {
   const router = useRouter();
@@ -46,7 +46,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     };
   }, []);
 
-  const getTabs = ({ selectedFilters }) => {
+  const _getTabs = ({ selectedFilters }) => {
     const _renderOption = (opt) => {
       return (
         <div className={css(styles.labelContainer)}>
@@ -71,119 +71,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     return tabsAsHTML;
   };
 
-  const _handleFilterSelect = ({
-    topLevel,
-    typeFilter,
-    tags,
-    sort,
-    timeScope,
-  }) => {
-    const query = { ...router.query };
-
-    if (topLevel) {
-      const navigateToUrl = topLevelFilters.find(
-        (f) => f.value === topLevel
-      ).url;
-      return router.push({ pathname: navigateToUrl });
-    }
-
-    if (Array.isArray(tags)) {
-      let newTags = [];
-      if (Array.isArray(query.tags)) {
-        newTags = [...query.tags];
-      } else if (query.tags) {
-        newTags.push(query.tags);
-      }
-
-      for (let i = 0; i < tags.length; i++) {
-        const tagAlreadyInList = newTags.includes(tags[i]);
-        if (tagAlreadyInList) {
-          newTags = newTags.filter((t) => t !== tags[i]);
-        } else {
-          newTags.push(tags[i]);
-        }
-      }
-
-      query.tags = newTags;
-    }
-
-    if (typeFilter) {
-      const isDefault = Object.values(feedTypeOpts)[0].value == typeFilter;
-      if (isDefault) {
-        delete query.type;
-      } else {
-        query.type = typeFilter;
-      }
-
-      // Reset tags when switching type filters
-      if (!tags || tags.length === 0) {
-        delete query.tags;
-      }
-    }
-
-    if (sort) {
-      const isDefault = sortOpts[0].value == sort;
-      if (isDefault) {
-        delete query.sort;
-        delete query.time;
-      } else {
-        query.sort = sort;
-      }
-    }
-
-    if (timeScope) {
-      query.time = timeScope;
-    }
-
-    router.push({
-      pathname: router.pathname,
-      query,
-    });
-  };
-
-  const renderTab = (tabObj, selectedFilters) => {
-    const isSelected = tabObj.value === selectedFilters.type;
-    const nestedOptions = tagFilters.filter((sub) =>
-      sub.availableFor.includes(tabObj.value)
-    );
-    return (
-      <div
-        className={`${css(
-          styles.tab,
-          tabObj.isSelected && styles.tabSelected
-        )} typeFilter`}
-        onClick={() => {
-          if (isSelected && nestedOptions.length > 0) {
-            if (tagsMenuOpenFor) {
-              setTagsMenuOpenFor(null);
-            } else {
-              setTagsMenuOpenFor(tabObj.value);
-            }
-          } else {
-            _handleFilterSelect({ typeFilter: tabObj.value });
-          }
-        }}
-      >
-        <div className={css(styles.labelContainer)}>
-          <span className={css(styles.tabText)}>{tabObj.label}</span>
-          <span className={css(styles.downIcon)}>
-            {tabObj.value === selectedFilters.type && icons.chevronDown}
-          </span>
-          {tagsMenuOpenFor === tabObj.value && (
-            <TagDropdown
-              options={nestedOptions}
-              selectedTags={selectedFilters.tags}
-              handleSelect={(selected) =>
-                _handleFilterSelect({ tags: [selected] })
-              }
-            />
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const getSelectedTab = (tabs) => {
+  const _getSelectedTab = (tabs) => {
     let selectedTab = null;
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].isSelected) {
@@ -200,8 +88,8 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     return selectedTab;
   };
 
-  const tabs = getTabs({ selectedFilters });
-  const selectedTab = getSelectedTab(tabs);
+  const tabs = _getTabs({ selectedFilters });
+  const selectedTab = _getSelectedTab(tabs);
 
   return (
     <div className={css(styles.filtersContainer)}>
@@ -222,7 +110,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                   ) {
                     setIsHubSelectOpen(!isHubSelectOpen);
                   } else {
-                    _handleFilterSelect({ topLevel: f.value });
+                    handleFilterSelect({ router, topLevel: f.value });
                   }
                 }}
               >
@@ -244,7 +132,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
           </div>
           <div className={css(styles.feedMenu)}>
             <div className={css(styles.filtersAsTabs)}>
-              <div className={css(styles.tab, styles.smallScreenFilters)}>
+              {/* <div className={css(styles.tab, styles.smallScreenFilters)}>
                 <DropdownButton
                   labelAsHtml={
                     <div className={css(styles.labelContainer)}>
@@ -271,14 +159,27 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                   overrideDownIconStyle={styles.downIcon}
                   onSelect={(selected) => {
                     const tabObj = tabs.find((t) => t.value === selected);
-                    _handleFilterSelect({ typeFilter: tabObj.value });
+                    handleFilterSelect({ router, typeFilter: tabObj.value });
                   }}
                   onClose={() => setIsSmallScreenDropdownOpen(false)}
                 />
-              </div>
+              </div> */}
 
               <div className={css(styles.largeScreenFilters)}>
-                {tabs.map((t) => renderTab(t, selectedFilters))}
+                {tabs.map((t) => (
+                  <FeedTab
+                    selectedFilters={selectedFilters}
+                    tabObj={t}
+                    router={router}
+                    handleOpenTagsMenu={(forType) =>
+                      setTagsMenuOpenFor(forType)
+                    }
+                    handleFilterSelect={(selected) =>
+                      handleFilterSelect({ router, ...selected })
+                    }
+                    isTagsMenuOpen={tagsMenuOpenFor === t.value}
+                  />
+                ))}
               </div>
 
               <div className={css(styles.orderingContainer)}>
@@ -287,10 +188,10 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                   selectedOrderingValue={selectedFilters.sort}
                   selectedScopeValue={selectedFilters.time}
                   onOrderingSelect={(selected) =>
-                    _handleFilterSelect({ sort: selected.value })
+                    handleFilterSelect({ router, sort: selected.value })
                   }
                   onScopeSelect={(selected) =>
-                    _handleFilterSelect({ timeScope: selected.value })
+                    handleFilterSelect({ router, timeScope: selected.value })
                   }
                 />
               </div>
@@ -332,11 +233,6 @@ const topLevelFilterStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  downIcon: {
-    marginTop: 2,
-    padding: "0px 3px",
-    fontSize: 14,
-  },
   feedMenu: {
     display: "flex",
     alignItems: "center",
@@ -345,9 +241,6 @@ const styles = StyleSheet.create({
   labelContainer: {
     display: "flex",
     height: "100%",
-  },
-  downIcon: {
-    marginLeft: 5,
   },
   iconWrapper: {
     marginRight: 7,
@@ -376,52 +269,7 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  tab: {
-    position: "relative",
-    color: colors.BLACK(0.6),
-    background: colors.LIGHTER_GREY(1.0),
-    padding: "4px 12px",
-    marginRight: 10,
-    textTransform: "unset",
-    fontSize: 15,
-    fontWeight: 400,
-    borderRadius: 4,
-    cursor: "pointer",
-    ":active": {
-      color: colors.NEW_BLUE(),
-    },
-    ":hover": {
-      color: colors.NEW_BLUE(),
-    },
-    // [`@media only screen and (max-width: 1500px)`]: {
-    //   fontSize: 15,
-    // },
-    [`@media only screen and (max-width: 1450px)`]: {
-      marginRight: 10,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      height: "auto",
-      ":last-child": {
-        marginRight: 0,
-      },
-      ":first-child": {
-        paddingLeft: 0,
-      },
-    },
-  },
 
-  tabSelected: {
-    color: colors.NEW_BLUE(1.0),
-    background: colors.LIGHTER_BLUE(1.0),
-    // borderBottom: "solid 3px",
-    // borderColor: colors.NEW_BLUE(),
-  },
-  moreOptsSelected: {
-    color: colors.NEW_BLUE(),
-    [`@media only screen and (max-width: 1450px)`]: {
-      marginRight: 0,
-    },
-  },
   orderingContainer: {
     marginLeft: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
