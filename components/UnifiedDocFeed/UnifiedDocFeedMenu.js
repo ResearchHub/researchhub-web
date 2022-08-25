@@ -71,8 +71,21 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     return tabsAsHTML;
   };
 
-  const _handleFilterSelect = ({ typeFilter, tags, sort, timeScope }) => {
+  const _handleFilterSelect = ({
+    topLevel,
+    typeFilter,
+    tags,
+    sort,
+    timeScope,
+  }) => {
     const query = { ...router.query };
+
+    if (topLevel) {
+      const navigateToUrl = topLevelFilters.find(
+        (f) => f.value === topLevel
+      ).url;
+      return router.push({ pathname: navigateToUrl });
+    }
 
     if (Array.isArray(tags)) {
       let newTags = [];
@@ -209,7 +222,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                   ) {
                     setIsHubSelectOpen(!isHubSelectOpen);
                   } else {
-                    _handleTopLevelFilterSelect(f);
+                    _handleFilterSelect({ topLevel: f.value });
                   }
                 }}
               >
