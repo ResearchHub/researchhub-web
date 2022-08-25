@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     width: "100%",
-    maxWidth: 427,
+    maxWidth: 364,
   },
   tab: {
     cursor: "pointer",

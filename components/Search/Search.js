@@ -127,16 +127,6 @@ const styles = StyleSheet.create({
       borderColor: colors.BLUE(),
     },
   },
-  searchSmallScreen: {
-    width: "auto",
-    border: 0,
-    flex: 1,
-    alignItems: "flex-end",
-    flexDirection: "column",
-    ":hover": {
-      borderColor: 0,
-    },
-  },
   searchIcon: {
     boxSizing: "border-box",
     cursor: "pointer",
