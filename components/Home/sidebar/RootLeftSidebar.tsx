@@ -11,20 +11,27 @@ type Props = {};
 export default function RootLeftSidebar({}: Props): ReactElement {
   return (
     <div className={css(styles.rootLeftSidebar)}>
-      <Link href={"/"} as={`/`}>
-        <div className={css(styles.logoContainer)}>
-          <RHLogo iconStyle={styles.logo} white={false} />
-        </div>
-      </Link>
+      <div className={css(styles.rootLeftSidebarStickyWrap)}>
+        <Link href={"/"} as={`/`}>
+          <div className={css(styles.logoContainer)}>
+            <RHLogo iconStyle={styles.logo} white={false} />
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
   rootLeftSidebar: {
-    width: 315,
     background: colors.GREY_ICY_BLUE_HUE,
     position: "relative",
+    width: 315,
+  },
+  rootLeftSidebarStickyWrap: {
+    position: "sticky",
+    top: 0,
+    width: "100%",
   },
   logoContainer: {
     alignItems: "center",
@@ -35,8 +42,6 @@ const styles = StyleSheet.create({
     paddingBottom: 2.7,
     userSelect: "none",
     width: "100%",
-    position: "sticky",
-    top: 0,
   },
   logo: {
     height: 36,
