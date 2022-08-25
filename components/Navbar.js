@@ -40,6 +40,7 @@ import api from "~/config/api";
 import MobileOnly from "./MobileOnly";
 import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 
+export const NAVBAR_HEIGHT = 68;
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -438,13 +439,6 @@ const Navbar = (props) => {
           customBurgerIcon={false}
           onStateChange={menuChange}
         >
-          <Link href={"/"} as={`/`}>
-            <a
-              className={css(styles.logoContainer, styles.logoContainerForMenu)}
-            >
-              <RHLogo iconStyle={styles.logo} white={true} />
-            </a>
-          </Link>
           {renderMenuItems()}
         </Menu>
       </MobileOnly>
@@ -465,12 +459,6 @@ const Navbar = (props) => {
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
-        <Link href={"/"} as={`/`}>
-          <a className={css(styles.logoContainer)}>
-            <RHLogo iconStyle={styles.logo} withText={true} />
-          </a>
-        </Link>
-
         <div className={css(styles.tabsWrapper)}>
           <div className={css(styles.tabs)}>{renderTabs()}</div>
           <div className={css(styles.searchWrapper)}>
@@ -715,7 +703,7 @@ const styles = StyleSheet.create({
     padding: "28px 28px",
     boxSizing: "border-box",
     display: "flex",
-    height: 68,
+    height: NAVBAR_HEIGHT,
     background: "#fff",
     alignItems: "center",
     borderBottom: "1px solid #e8e8ef",

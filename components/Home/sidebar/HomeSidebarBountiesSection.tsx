@@ -110,9 +110,9 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       <SideColumnTitle
         title={
           <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-            <div>Open Bounties </div>
+            <div>{"Open Bounties"}</div>
             <Link href="/?type=bounties">
-              <a className={css(styles.viewAll)}>View All</a>
+              <a className={css(styles.viewAll)}>{"View All"}</a>
             </Link>
           </div>
         }

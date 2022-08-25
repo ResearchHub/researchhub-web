@@ -1,4 +1,5 @@
 import { StyleSheet } from "aphrodite";
+import { NAVBAR_HEIGHT } from "~/components/Navbar";
 import colors from "~/config/themes/colors";
 
 export const styles = StyleSheet.create({
@@ -14,13 +15,18 @@ export const styles = StyleSheet.create({
     },
   },
   HomeRightSidebar: {
+    borderLeft: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
     height: "100%",
+    position: "relative",
     width: "100%",
+    maxWidth: 320,
   },
   HomeRightSidebarContainer: {
-    border: "1.5px solid #F0F0F0",
     borderRadius: 4,
+    borderTop: "none",
     color: colors.GREY_LIST_LABEL,
+    position: "sticky",
+    top: NAVBAR_HEIGHT,
   },
   RightSidebarTitle: {
     background: "#FFF",

@@ -15,13 +15,13 @@ import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 
 const DynamicPermissionNotification = dynamic(() =>
-  import("../components/PermissionNotification")
+  import("~/components/PermissionNotification")
 );
 const DynamicMessage = dynamic(() => import("~/components/Loader/Message"));
 const DynamicAlertTemplate = dynamic(() =>
   import("~/components/Modals/AlertTemplate")
 );
-const DynamicFooter = dynamic(() => import("./footer"));
+// const DynamicFooter = dynamic(() => import("./footer"));
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 
 export const NavbarContext = createContext();
@@ -99,7 +99,6 @@ function Base({
               <Component {...pageProps} />
             </div>
           </div>
-          <DynamicFooter />
         </NewPostButtonContext.Provider>
       </NavbarContext.Provider>
     </AlertProvider>
@@ -108,7 +107,7 @@ function Base({
 
 const styles = StyleSheet.create({
   pageWrapper: {
-    background: "#FCFCFC",
+    background: "#fff",
     display: "flex",
     minHeight: "100vh",
     position: "relative",

@@ -313,129 +313,6 @@ class HubPage extends Component {
     }
   };
 
-  calculateScope = () => {
-    const scope = {
-      start: 0,
-      end: 0,
-    };
-    const scopeId = this.state.scope.value;
-
-    const now = moment();
-    const today = moment().startOf("day");
-    const week = moment().startOf("day").subtract(7, "days");
-    const month = moment().startOf("day").subtract(30, "days");
-    const year = moment().startOf("day").subtract(365, "days");
-
-    scope.end = now.unix();
-
-    if (scopeId === "day") {
-      scope.start = today.unix();
-    } else if (scopeId === "week") {
-      scope.start = week.unix();
-    } else if (scopeId === "month") {
-      scope.start = month.unix();
-    } else if (scopeId === "year") {
-      scope.start = year.unix();
-    } else if (scopeId === "all-time") {
-      const start = "2019-01-01";
-      const diff = now.diff(start, "days") + 1;
-      const alltime = now.startOf("day").subtract(diff, "days");
-      scope.start = alltime.unix();
-    }
-
-    return scope;
-  };
-
-  formatMainHeader = () => {
-    const { filterBy, feed } = this.state;
-
-    if (feed === 0) {
-      return "";
-    }
-
-    const isHomePage = this.props.home;
-    let prefix = "";
-    switch (filterBy.value) {
-      case "removed":
-        prefix = "Removed";
-        break;
-      case "hot":
-        prefix = "Trending";
-        break;
-      case "top_rated":
-        prefix = "Top";
-        break;
-      case "newest":
-        prefix = "Newest";
-        break;
-      case "most_discussed":
-        prefix = "Most Discussed";
-        break;
-      case "pulled-papers":
-        prefix = "Pulled";
-        break;
-    }
-
-    return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
-  };
-
-  onFilterSelect = (type, option) => {
-    const { disableScope, label } = option;
-
-    if (this.state[type].label === label) return;
-
-    this.setState(
-      {
-        page: 1,
-        [type]: option,
-        disableScope: disableScope || false,
-      },
-      () => {
-        this.updateSlugs();
-      }
-    );
-  };
-
-  onScopeSelect = (type, option) => {
-    const { label } = option;
-
-    if (this.state[type].label === label) return;
-
-    this.setState(
-      {
-        page: 1,
-        [type]: option,
-      },
-      () => {
-        this.updateSlugs();
-      }
-    );
-  };
-
-  onFeedSelect = (index) => {
-    this.setState(
-      {
-        feed: index,
-        page: 1,
-      },
-      () => {
-        this.updateSlugs();
-      }
-    );
-  };
-
-  // onHubSelect = (e) => {
-  //   this.setState({ feed: undefined });
-  // };
-
-  voteCallback = (index, paper) => {
-    const papers = [...this.state.papers];
-    papers[index] = paper;
-    this.setState({
-      papers,
-    });
-  };
-
   updateSubscription = (subscribing) => {
     const { hub, hubState, updateSubscribedHubs } = this.props;
     let subscribedHubs;
@@ -470,31 +347,6 @@ class HubPage extends Component {
       transition: false,
       subscribe: !this.state.subscribe,
     });
-  };
-
-  renderLoadMoreButton = () => {
-    const { next, loadingMore } = this.state;
-    if (next !== null) {
-      return (
-        <div className={css(styles.buttonContainer)}>
-          {!loadingMore ? (
-            <Ripples
-              className={css(styles.loadMoreButton)}
-              onClick={this.loadMore}
-            >
-              Load More Papers
-            </Ripples>
-          ) : (
-            <Loader
-              key={"paperLoader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          )}
-        </div>
-      );
-    }
   };
 
   render() {
@@ -538,24 +390,6 @@ class HubPage extends Component {
             {home && <Head title={home && null} />}
           </div>
           <div className={css(styles.row, styles.body)}>
-            <div className={css(styles.column, styles.sidebar)}>
-              <div className={css(styles.leftSidebarContainer)}>
-                <FeedList
-                  activeFeed={feed}
-                  onFeedSelect={this.onFeedSelect}
-                  current={home ? null : hub}
-                />
-                <LeaderboardContainer
-                  hubId={0}
-                  initialUsers={leaderboardFeed}
-                />
-                <HubsList
-                  current={home ? null : hub}
-                  initialHubList={initialHubList}
-                  onHubSelect={this.onHubSelect}
-                />
-              </div>
-            </div>
             <UnifiedDocFeedContainer
               feed={feed}
               home={home}
@@ -574,24 +408,9 @@ class HubPage extends Component {
                 />
               }
             />
-            <div className={css(styles.column, styles.sidebar)}>
-              <div className={css(styles.rightSidebarContainer)}>
-                <HomeRightSidebar />
-                {/* <ActivityList
-                  // hubIds={
-                  //   feed === 0
-                  //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
-                  //     : hub ? [hub.id] : null // Single hub or All feed
-                  // }
-                  subscribedHubs={hubState.subscribedHubs}
-                  hub={hub}
-                  hubId={hub ? hub.id : null}
-                  feed={feed}
-                /> */}
-              </div>
-            </div>
           </div>
         </div>
+        <HomeRightSidebar />
       </div>
     );
   }
@@ -618,7 +437,6 @@ var styles = StyleSheet.create({
   row: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   text: {
@@ -681,13 +499,8 @@ var styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     marginTop: 28,
-    // display: "table",
-    // minWidth: "100vw",
-    borderSpacing: "20px 0px",
     alignItems: "flex-start",
     boxSizing: "border-box",
-    paddingLeft: 28,
-    paddingRight: 28,
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
@@ -745,16 +558,6 @@ var styles = StyleSheet.create({
     width: 260,
     minWidth: 260,
     maxWidth: 260,
-    minHeight: "100%",
-    height: "100%",
-  },
-  rightSidebarContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    width: 280,
-    minWidth: 280,
-    maxWidth: 280,
     minHeight: "100%",
     height: "100%",
   },

@@ -225,11 +225,7 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      {isHomePage || isEmpty(hub) ? (
-        <div className={css(styles.title) + " clamp2"}>
-          {formattedMainHeader}
-        </div>
-      ) : (
+      {isHomePage || isEmpty(hub) ? null : (
         <FeedInfoCard
           hub={hub}
           hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
@@ -307,9 +303,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
-      paddingLeft: 28,
-      paddingRight: 28,
+    padding: "0 28px",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      padding: "none",
     },
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
