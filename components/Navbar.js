@@ -213,18 +213,18 @@ const Navbar = (props) => {
             key={`navbar_tab_publish`}
           >
             <a className={css(styles.tabLink)}>
-              <div className={css(styles.tab)}>Publish</div>
+              <div className={css(styles.tab)}>Notebook</div>
             </a>
           </Link>
         ) : (
           <PermissionNotificationWrapper
-            modalMessage="access our publishing tools"
+            modalMessage="access the notebook"
             loginRequired={true}
             hideRipples={true}
             onClick={() => router.push(`/${user.organization_slug}/notebook`)}
             styling={styles.tab}
           >
-            {`Publish`}
+            {`Notebook`}
           </PermissionNotificationWrapper>
         )}
         <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
@@ -235,16 +235,6 @@ const Navbar = (props) => {
         <Link href={"/live"} key={`navbar_tab_live`}>
           <a className={css(styles.tabLink)}>
             <div className={css(styles.tab)}>Live</div>
-          </a>
-        </Link>
-        <Link
-          href={
-            "https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-          }
-          key={`navbar_tab_jobs`}
-        >
-          <a className={css(styles.tabLink)} target="_blank">
-            <div className={css(styles.tab)}>Jobs</div>
           </a>
         </Link>
       </Fragment>

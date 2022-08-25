@@ -41,13 +41,14 @@ const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSele
     >
       <div className={css(styles.labelContainer)}>
         <span className={css(styles.tabText)}>{tabObj.label}</span>
-        {isTagsMenuOpen
+        {/* {isTagsMenuOpen
           ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
           : isSelected
           ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
           : null
-        }
-        {isTagsMenuOpen && (
+        } */}
+        {/* FIXME: Kobe, commenting out until BE is done */}
+        {/* {isTagsMenuOpen && (
           <TagDropdown
             options={nestedOptions}
             selectedTags={selectedFilters.tags}
@@ -55,7 +56,7 @@ const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSele
               handleFilterSelect({ router, tags: [selected] })
             }
           />
-        )}
+        )} */}
       </div>
     </div>
   );

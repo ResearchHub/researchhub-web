@@ -50,7 +50,6 @@ export const feedTypeOpts = {
   "bounty": {
     value: "bounty",
     label: "Bounties",
-    tag: { bounties: "all" },
   },
 }
 
@@ -67,28 +66,29 @@ export const sortOpts = [
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
       feedTypeOpts["meta-study"].value,
+      feedTypeOpts["bounty"].value,
     ],
   },
-  {
-    value: "expiring_soon",
-    label: "Expiring Soon",
-    selectedLabel: "Expiring Soon",
-    icon: icons.clock,
-    disableScope: true,
-    availableFor: [
-      feedTypeOpts["bounty"].value,
-    ],    
-  },
-  {
-    value: "rsc_offered",
-    label: "RSC Offered",
-    selectedLabel: "RSC Offered",
-    icon: icons.clock,
-    disableScope: true,
-    availableFor: [
-      feedTypeOpts["bounty"].value,
-    ],    
-  },  
+  // {
+  //   value: "expiring_soon",
+  //   label: "Expiring Soon",
+  //   selectedLabel: "Expiring Soon",
+  //   icon: icons.clock,
+  //   disableScope: true,
+  //   availableFor: [
+  //     feedTypeOpts["bounty"].value,
+  //   ],    
+  // },
+  // {
+  //   value: "rsc_offered",
+  //   label: "RSC Offered",
+  //   selectedLabel: "RSC Offered",
+  //   icon: icons.clock,
+  //   disableScope: true,
+  //   availableFor: [
+  //     feedTypeOpts["bounty"].value,
+  //   ],    
+  // },
   {
     value: "newest",
     label: "Newest",
