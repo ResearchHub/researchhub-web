@@ -3,6 +3,8 @@ import { ReactElement } from "react";
 import Link from "next/link";
 import { RHLogo } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
+import { NAVBAR_HEIGHT } from "~/components/Navbar";
 
 type Props = {};
 
@@ -10,9 +12,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   return (
     <div className={css(styles.rootLeftSidebar)}>
       <Link href={"/"} as={`/`}>
-        <a className={css(styles.logoContainer, styles.logoContainerForMenu)}>
+        <div className={css(styles.logoContainer)}>
           <RHLogo iconStyle={styles.logo} white={false} />
-        </a>
+        </div>
       </Link>
     </div>
   );
@@ -21,21 +23,23 @@ export default function RootLeftSidebar({}: Props): ReactElement {
 const styles = StyleSheet.create({
   rootLeftSidebar: {
     width: 315,
-  },
-  logo: {
-
+    background: colors.GREY_ICY_BLUE_HUE,
+    position: "relative",
   },
   logoContainer: {
-    display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    width: 176,
-    paddingBottom: 2.7,
     cursor: "pointer",
+    display: "flex",
+    height: NAVBAR_HEIGHT,
+    justifyContent: "center",
+    paddingBottom: 2.7,
     userSelect: "none",
-    marginTop: 2,
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: 148,
-    },
+    width: "100%",
+    position: "sticky",
+    top: 0,
+  },
+  logo: {
+    height: 36,
+    userSelect: "none",
   },
 });
