@@ -41,9 +41,12 @@ const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSele
     >
       <div className={css(styles.labelContainer)}>
         <span className={css(styles.tabText)}>{tabObj.label}</span>
-        <span className={css(styles.downIcon)}>
-          {tabObj.value === selectedFilters.type && icons.chevronDown}
-        </span>
+        {isTagsMenuOpen
+          ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
+          : isSelected
+          ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
+          : null
+        }
         {isTagsMenuOpen && (
           <TagDropdown
             options={nestedOptions}
@@ -60,6 +63,7 @@ const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSele
 
 const styles = StyleSheet.create({
   tab: {
+    userSelect: "none",
     position: "relative",
     color: colors.BLACK(0.6),
     background: colors.LIGHTER_GREY(1.0),
@@ -76,9 +80,6 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     },
-    // [`@media only screen and (max-width: 1500px)`]: {
-    //   fontSize: 15,
-    // },
     [`@media only screen and (max-width: 1450px)`]: {
       marginRight: 10,
     },
@@ -95,8 +96,6 @@ const styles = StyleSheet.create({
   tabSelected: {
     color: colors.NEW_BLUE(1.0),
     background: colors.LIGHTER_BLUE(1.0),
-    // borderBottom: "solid 3px",
-    // borderColor: colors.NEW_BLUE(),
   },
   tabText: {
 
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%",
   },  
-  downIcon: {
+  icon: {
     marginLeft: 5,
   },  
 });

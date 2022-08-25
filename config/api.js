@@ -757,8 +757,6 @@ const routes = (BASE_URL) => {
       slug,
       selectedFilters,
     }) => {
-      console.log("selectedFilters", selectedFilters);
-
       const backendFilters = convertToBackendFilters({
         frontendFilters: selectedFilters,
       });

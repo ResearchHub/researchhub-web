@@ -29,12 +29,9 @@ const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
 });
 
 function UnifiedDocFeedContainer({
-  auth, // redux
-  feed,
   home: isHomePage,
   hub, // selected hub
   hubName,
-  hubState, // hub data of current user
   isLoggedIn,
   loggedIn,
   serverLoadedData, // Loaded on the server via getInitialProps on full page load
@@ -110,72 +107,46 @@ function UnifiedDocFeedContainer({
     updateOn: [selectedFilters, hubID, loggedIn],
   });
 
-  // const loadMore = () => {
-  //   const nextLocalPage = localPage + 1;
-  //   setPaginationInfo({ ...paginationInfo, localPage: nextLocalPage });
-  //   if (nextLocalPage === page * 2 && hasMore) {
-  //     fetchUnifiedDocs({
-  //       ...fetchParams,
-  //       onError: (error: Error): void => {
-  //         emptyFncWithMsg(error);
-  //         setPaginationInfo({
-  //           hasMore,
-  //           isLoading: false,
-  //           isLoadingMore: false,
-  //           isServerLoaded: false,
-  //           localPage: nextLocalPage,
-  //           page,
-  //         });
-  //       },
-  //       onSuccess: ({
-  //         hasMore: nextPageHasMore,
-  //         page: updatedPage,
-  //         documents: nextDocs,
-  //       }): void => {
-  //         setUnifiedDocsLoading(false);
-  //         setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-  //         setPaginationInfo({
-  //           hasMore: nextPageHasMore,
-  //           isLoading: false,
-  //           isLoadingMore: false,
-  //           isServerLoaded: false,
-  //           localPage: nextLocalPage,
-  //           page: updatedPage,
-  //         });
-  //       },
-  //       page: page + 1,
-  //     });
-  //   }
-  // };
+  const loadMore = () => {
+    const nextLocalPage = localPage + 1;
+    setPaginationInfo({ ...paginationInfo, localPage: nextLocalPage });
+    if (nextLocalPage === page * 2 && hasMore) {
+      fetchUnifiedDocs({
+        ...fetchParams,
+        onError: (error: Error): void => {
+          emptyFncWithMsg(error);
+          setPaginationInfo({
+            hasMore,
+            isLoading: false,
+            isLoadingMore: false,
+            isServerLoaded: false,
+            localPage: nextLocalPage,
+            page,
+          });
+        },
+        onSuccess: ({
+          hasMore: nextPageHasMore,
+          page: updatedPage,
+          documents: nextDocs,
+        }): void => {
+          setUnifiedDocsLoading(false);
+          setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+          setPaginationInfo({
+            hasMore: nextPageHasMore,
+            isLoading: false,
+            isLoadingMore: false,
+            isServerLoaded: false,
+            localPage: nextLocalPage,
+            page: updatedPage,
+          });
+        },
+        page: page + 1,
+      });
+    }
+  };
 
-  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
+  const showLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
-  // const onDocTypeFilterSelect = (selected) => {
-  //   if (docTypeFilter !== selected) {
-  //     // logical ordering
-  //     setUnifiedDocuments([]);
-  //     setDocTypeFilter(selected);
-  //     setUnifiedDocsLoading(true);
-  //     setPaginationInfo({
-  //       hasMore: false,
-  //       isLoading: true,
-  //       isLoadingMore: false,
-  //       isServerLoaded: false,
-  //       localPage: 1,
-  //       page: 1,
-  //     });
-
-  //     const query = { ...router.query, type: selected };
-  //     if (!query.type) {
-  //       delete query.type;
-  //     }
-
-  //     router.push({
-  //       pathname: routerPathName,
-  //       query,
-  //     });
-  //   }
-  // };
 
   const formattedMainHeader = useMemo(
     (): string =>
@@ -207,6 +178,7 @@ function UnifiedDocFeedContainer({
         />
       )}
 
+      {/* @ts-ignore */}
       <UnifiedDocFeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
@@ -220,7 +192,7 @@ function UnifiedDocFeedContainer({
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
-      {/* {(!isLoggedIn && isOnMyHubsTab) || unifiedDocsLoading ? null : (
+      {unifiedDocsLoading || (selectedFilters.topLevel === "my-hubs" && !isLoggedIn) ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -229,13 +201,13 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : canShowLoadMoreButton ? (
+          ) : showLoadMoreButton ? (
             <Ripples className={css(styles.loadMoreButton)} onClick={loadMore}>
               {"Load More"}
             </Ripples>
           ) : null}
         </div>
-      )} */}
+      )}
     </div>
   );
 }

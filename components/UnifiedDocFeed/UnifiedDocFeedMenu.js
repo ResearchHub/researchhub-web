@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
@@ -26,10 +26,12 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     useState(false);
 
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
-  const selectedFilters = getSelectedUrlFilters({
-    query: router.query,
-    pathname: router.pathname,
-  });
+  const selectedFilters = useMemo(() => {
+    return getSelectedUrlFilters({
+      query: router.query,
+      pathname: router.pathname,
+    });
+  }, [router.pathname, router.query]);
 
   useEffect(() => {
     const _handleOutsideClick = (e) => {
@@ -71,25 +73,25 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     return tabsAsHTML;
   };
 
-  const _getSelectedTab = (tabs) => {
-    let selectedTab = null;
-    for (let i = 0; i < tabs.length; i++) {
-      if (tabs[i].isSelected) {
-        selectedTab = tabs[i];
-        break;
-      }
-    }
+  // const _getSelectedTab = (tabs) => {
+  //   let selectedTab = null;
+  //   for (let i = 0; i < tabs.length; i++) {
+  //     if (tabs[i].isSelected) {
+  //       selectedTab = tabs[i];
+  //       break;
+  //     }
+  //   }
 
-    if (!selectedTab) {
-      console.error("Selected tab not found. This should not happen.");
-      selectedTab = tabs[0];
-    }
+  //   if (!selectedTab) {
+  //     console.error("Selected tab not found. This should not happen.");
+  //     selectedTab = tabs[0];
+  //   }
 
-    return selectedTab;
-  };
+  //   return selectedTab;
+  // };
 
   const tabs = _getTabs({ selectedFilters });
-  const selectedTab = _getSelectedTab(tabs);
+  // const selectedTab = _getSelectedTab(tabs);
 
   return (
     <div className={css(styles.filtersContainer)}>
@@ -127,6 +129,13 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                 <span className={css(topLevelFilterStyles.filterLabel)}>
                   {f.label}
                 </span>
+                {/* {f.value === "my-hubs" && (
+                  isTagsMenuOpen
+                    ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
+                    : isSelected
+                    ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
+                    : null
+                )} */}
               </div>
             ))}
           </div>

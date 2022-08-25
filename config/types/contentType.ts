@@ -1,7 +1,7 @@
 import { ID } from "./root_types";
 
 export type ContentType = {
-  name: "paper" | "post" | "hypothesis" | "comment" ,
+  name: "paper" | "post" | "hypothesis" | "comment" | "document" ,
   id: ID,
 }
 
@@ -19,6 +19,9 @@ export const parseContentType = (raw: any): ContentType => {
   else if (raw.name === "hypothesis") {
     contentTypeName = "hypothesis";
   }
+  else if (raw.name === "researchhubunifieddocument") {
+    contentTypeName = "document";
+  }  
   else {
     contentTypeName = raw.name;
     console.error("Could not parse object with content_type=" + raw.name)
