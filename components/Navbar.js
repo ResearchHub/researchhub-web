@@ -482,10 +482,6 @@ const Navbar = (props) => {
           </div>
         </div>
 
-        <div className={css(styles.hubPopoverWrapper)}>
-          <HubSelector />
-        </div>
-
         <div className={css(styles.searchSmallScreen)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
@@ -725,10 +721,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
-    [`@media only screen and (max-width: ${breakpoints.medium.large})`]: {
-      padding: "20px 20px",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: "20px 20px 20px 10px",
       justifyContent: "space-between",
-      height: 66,
     },
   },
   unstickyNavbar: {
@@ -839,6 +834,8 @@ const styles = StyleSheet.create({
     display: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
+      position: "absolute",
+      right: 40,
     },
   },
   tab: {

@@ -274,9 +274,9 @@ const styles = StyleSheet.create({
   },
   largeScreenFilters: {
     display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   display: "none",
+    // },
   },
 
   orderingContainer: {
