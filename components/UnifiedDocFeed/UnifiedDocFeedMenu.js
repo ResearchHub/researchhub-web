@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
@@ -24,11 +24,27 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
   const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
+
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
   const selectedFilters = getSelectedUrlFilters({
     query: router.query,
     pathname: router.pathname,
   });
+
+  useEffect(() => {
+    const _handleOutsideClick = (e) => {
+      const isTypeFilterClicked = e.target.closest(".typeFilter");
+      if (!isTypeFilterClicked) {
+        setTagsMenuOpenFor(null);
+      }
+    };
+
+    document.addEventListener("click", _handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("click", _handleOutsideClick);
+    };
+  }, []);
 
   const getTabs = ({ selectedFilters }) => {
     const _renderOption = (opt) => {
@@ -119,7 +135,10 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
     );
     return (
       <div
-        className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}
+        className={`${css(
+          styles.tab,
+          tabObj.isSelected && styles.tabSelected
+        )} typeFilter`}
         onClick={() => {
           if (isSelected && nestedOptions.length > 0) {
             if (tagsMenuOpenFor) {
