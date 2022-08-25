@@ -304,11 +304,11 @@ const topLevelFilterStyles = StyleSheet.create({
     borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
     width: "100%",
     marginBottom: 15,
-    position: "relative",
   },
   filter: {
     padding: "0px 4px 12px 0px",
     display: "flex",
+    position: "relative",
     marginRight: 25,
     alignItems: "center",
     cursor: "pointer",

@@ -4,12 +4,13 @@ import { useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
+import icons from "~/config/themes/icons";
 
 const HubSelector = ({ hubState, isOpen = false }) => {
   const renderDropdownOpt = (hub) => {
     return (
       <Link href={`/hubs/${hub.slug}`}>
-        <a className={css(styles.hubLink)}>
+        <a className={css(styles.hubOpt)}>
           <img
             className={css(styles.hubImage)}
             src={
@@ -34,7 +35,20 @@ const HubSelector = ({ hubState, isOpen = false }) => {
 
   return (
     <div className={css(styles.myHubsDropdown)}>
-      {hubOpts}
+      <div className={css(styles.hubsList)}>
+        {hubOpts}
+      </div>
+      <div className={css(styles.configure)}>
+        <span className={css(styles.configureBtn)}>
+          <span className={css(styles.configureBtnIcon)}>{icons.plusThick}</span>
+          <span className={css(styles.configureBtnLabel)}>Hub</span>
+        </span>
+        <span className={css(styles.configureBtn)}>
+          <span className={css(styles.configureBtnIcon)}>{icons.pen}</span>
+          <span className={css(styles.configureBtnLabel)}>Edit</span>
+        </span>        
+
+      </div>
     </div>
   );
 };
@@ -45,11 +59,44 @@ const styles = StyleSheet.create({
     background: "white",
     top: 30,
     left: 0,
-    width: 150,
+    width: 270,
     zIndex: 5,
-    padding: 5,
+    paddingTop: 10,
+    paddingBottom: 10,
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",    
   },
+  configure: {
+    display: "flex",
+    paddingTop: 15,
+    borderTop: `1px solid`
+  },
+  hubsList: {
+    height: 200,
+    overflowY: "scroll",
+  },
+  configureBtn: {
+    display: "flex",
+    padding: "5px 5px",
+    marginBottom: 10,
+    // background: colors.GREY(0.4),
+    borderRadius: 4,
+    paddingLeft: 10,
+    paddingRight: 10,
+    width: "50%",
+    marginLeft: 5,
+    marginRight: 5,
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    ":last-child": {
+      marginLeft: "auto"
+    },
+  },
+  configureBtnIcon: {
+    marginLeft: 10,
+  },
+  configureBtnLabel: {
+    marginLeft: 18,
+    fontWeight: 500,
+  },  
   hubDetails: {
 
   },
@@ -58,23 +105,29 @@ const styles = StyleSheet.create({
     fontWeight: 400,
   },
   hubImage: {
-    height: 35,
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35,
+    height: 25,
+    width: 25,
+    minWidth: 25,
+    maxWidth: 25,
     borderRadius: 4,
     objectFit: "cover",
     marginRight: 10,
     background: colors.LIGHT_GREY(),
     border: "1px solid #ededed",
   },
-  hubLink: {
+  hubOpt: {
     textDecoration: "none",
     color: colors.BLACK(),
     width: "100%",
     display: "flex",
     alignItems: "center",
-    fontWeight: 500,
+    fontWeight: 400,
+    padding: "5px 10px",
+    boxSizing: "border-box",
+    fontSize: 15,
+    ":hover": {
+      backgroundColor: colors.GREY(0.1),
+    }
   },
 });
 
