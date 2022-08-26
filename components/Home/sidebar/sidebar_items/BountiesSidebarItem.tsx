@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    maxWidth: 260,
+    maxWidth: 296,
     paddingLeft: 18,
     width: "100%",
   },
