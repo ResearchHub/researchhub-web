@@ -100,10 +100,14 @@ function FeedOrderingDropdown({
 const styles = StyleSheet.create({
   feedOrderingDropdown: {
     position: "relative",
+    border: `1px solid ${colors.GREY_LINE(1)}`,
+    borderRadius: 4,
+    padding: "5px 12px",
+    fontSize: 15,
+    userSelect: "none",
   },
   display: {
     display: "flex",
-    fontWeight: 500,
     cursor: "pointer",
   },
   displayIcon: {
@@ -115,7 +119,7 @@ const styles = StyleSheet.create({
   displayDown: {},
   dropdownBody: {
     position: "absolute",
-    top: 25,
+    top: 35,
     right: 0,
     zIndex: 50,
     height: "auto",
@@ -132,8 +136,7 @@ const styles = StyleSheet.create({
   },
   optLineItem: {
     display: "flex",
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 15,
     cursor: "pointer",
   },
   selectedOpt: {
@@ -142,6 +145,7 @@ const styles = StyleSheet.create({
   optLabel: {},
   optIcon: {
     marginRight: 5,
+    width: 20,
   },
   timeScopeContainer: {
     display: "flex",

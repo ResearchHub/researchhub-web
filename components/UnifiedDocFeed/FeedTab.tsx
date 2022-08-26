@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 400,
     borderRadius: 4,
+    lineHeight: "20px",
     cursor: "pointer",
     ":active": {
       color: colors.NEW_BLUE(),
