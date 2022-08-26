@@ -5,6 +5,7 @@ import { css, StyleSheet } from "aphrodite";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import Link from "next/link";
 
 type Args = {
   selectedFilters: SelectedUrlFilters,
@@ -28,36 +29,41 @@ const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSele
         tabObj.isSelected && styles.tabSelected
       )} typeFilter`}
       onClick={() => {
-        if (isSelected && nestedOptions.length > 0) {
+        if (isSelected) {
+          // Already handled by <Link>
+          return null;
+        }
+
+        if (nestedOptions.length > 0) {
           if (isTagsMenuOpen) {
             handleOpenTagsMenu(null);
           } else {
             handleOpenTagsMenu(tabObj.value);
           }
-        } else {
-          handleFilterSelect({ typeFilter: tabObj.value });
         }
       }}
     >
-      <div className={css(styles.labelContainer)}>
-        <span className={css(styles.tabText)}>{tabObj.label}</span>
-        {/* {isTagsMenuOpen
-          ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
-          : isSelected
-          ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
-          : null
-        } */}
-        {/* FIXME: Kobe, commenting out until BE is done */}
-        {/* {isTagsMenuOpen && (
-          <TagDropdown
-            options={nestedOptions}
-            selectedTags={selectedFilters.tags}
-            handleSelect={(selected) =>
-              handleFilterSelect({ router, tags: [selected] })
-            }
-          />
-        )} */}
-      </div>
+      <Link href={`/?type=${tabObj.value}`}>
+        <a className={css(styles.labelContainer)}>
+          <span className={css(styles.tabText)}>{tabObj.label}</span>
+          {/* {isTagsMenuOpen
+            ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
+            : isSelected
+            ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
+            : null
+          } */}
+          {/* FIXME: Kobe, commenting out until BE is done */}
+          {/* {isTagsMenuOpen && (
+            <TagDropdown
+              options={nestedOptions}
+              selectedTags={selectedFilters.tags}
+              handleSelect={(selected) =>
+                handleFilterSelect({ router, tags: [selected] })
+              }
+            />
+          )} */}
+        </a>
+      </Link>
     </div>
   );
 }
@@ -68,7 +74,6 @@ const styles = StyleSheet.create({
     position: "relative",
     color: colors.BLACK(0.6),
     background: colors.LIGHTER_GREY(1.0),
-    padding: "4px 12px",
     marginRight: 10,
     textTransform: "unset",
     fontSize: 15,
@@ -105,6 +110,9 @@ const styles = StyleSheet.create({
   labelContainer: {
     display: "flex",
     height: "100%",
+    textDecoration: "none",
+    color: "inherit",
+    padding: "4px 12px",
   },  
   icon: {
     marginLeft: 5,

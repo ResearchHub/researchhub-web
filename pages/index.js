@@ -27,7 +27,6 @@ Index.getInitialProps = async (ctx) => {
         selectedFilters,
         hubId: null,
         page: 1,
-        subscribedHubs: false,
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
