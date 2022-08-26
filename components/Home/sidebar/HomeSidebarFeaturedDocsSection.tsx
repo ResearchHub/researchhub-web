@@ -12,7 +12,7 @@ import { styles } from "./styles/HomeRightSidebarStyles";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
-import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
+import BountiesSidebarItem from "./sidebar_items/BountiesSidebarItem";
 import { SimpleBounty } from "~/components/Bounty/api/fetchOpenBounties";
 
 type PaginationInfo = { isFetching: boolean; page?: number };

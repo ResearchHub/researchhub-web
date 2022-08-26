@@ -9,7 +9,7 @@ import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import { SideColumnTitle } from "~/components/Typography";
 import { styles } from "./styles/HomeRightSidebarStyles";
-import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
+import BountiesSidebarItem from "./sidebar_items/BountiesSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
