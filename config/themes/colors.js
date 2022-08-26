@@ -1,6 +1,7 @@
 const colors = {
   BLACK: (opacity = 1) => `rgba(36, 31, 58, ${opacity})`,
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
+  BLUE_ACTIVE_BACKGROUND: "#EBF1FF",
   DARK_GREEN: (opacity = 1) => `rgba(61, 143, 88, ${opacity})`,
   DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`,
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`,

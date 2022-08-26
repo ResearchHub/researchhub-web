@@ -5,7 +5,7 @@ import colors from "~/config/themes/colors";
 export const styles = StyleSheet.create({
   viewAll: {
     marginLeft: "auto",
-    color: colors.BLUE(1),
+    color: colors.NEW_BLUE(0.9),
     textDecoration: "none",
     textTransform: "initial",
     fontSize: 14,

@@ -1,14 +1,69 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement } from "react";
-import Link from "next/link";
-import { RHLogo } from "~/config/themes/icons";
-import { breakpoints } from "~/config/themes/screen";
-import colors from "~/config/themes/colors";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
+import { ReactElement, SyntheticEvent } from "react";
+import icons, { RHLogo } from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
+import Link from "next/link";
+import RootLeftSidebarItem, {
+  Props as RootLeftSidebarItemProps,
+} from "./sidebar_items/RootLeftSidebarItem";
 
 type Props = {};
 
+const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
+  {
+    icon: <img src="/static/icons/coin-stack.png" width={16} />,
+    isActive: true,
+    label: "Home",
+    onClick: (event: SyntheticEvent): void => {
+      event.preventDefault();
+    },
+  },
+  {
+    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    label: "Hubs",
+    onClick: (event: SyntheticEvent): void => {
+      event.preventDefault();
+    },
+  },
+  {
+    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    label: "Notebook",
+    onClick: (event: SyntheticEvent): void => {
+      event.preventDefault();
+    },
+  },
+  {
+    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    label: "Research Coin",
+    onClick: (event: SyntheticEvent): void => {
+      event.preventDefault();
+    },
+  },
+  {
+    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    label: "Community",
+    onClick: (event: SyntheticEvent): void => {
+      event.preventDefault();
+    },
+  },
+  {
+    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    label: "Leaderboard",
+    onClick: (event: SyntheticEvent): void => {
+      event.preventDefault();
+    },
+  },
+];
+
 export default function RootLeftSidebar({}: Props): ReactElement {
+  const leftSidebarItems = LeftSidebarItemAttrs.map(
+    (
+      attrs: RootLeftSidebarItemProps
+    ): ReactElement<typeof RootLeftSidebarItem> => (
+      <RootLeftSidebarItem {...attrs} />
+    )
+  );
   return (
     <div className={css(styles.rootLeftSidebar)}>
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
@@ -17,6 +72,11 @@ export default function RootLeftSidebar({}: Props): ReactElement {
             <RHLogo iconStyle={styles.logo} white={false} />
           </div>
         </Link>
+        <div className={css(styles.leftSidebarItemsContainer)}>
+          <div className={css(styles.leftSidebarItemsInnerContainer)}>
+            {leftSidebarItems}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -27,6 +87,7 @@ const styles = StyleSheet.create({
     background: colors.GREY_ICY_BLUE_HUE,
     position: "relative",
     width: 315,
+    minWidth: 315,
   },
   rootLeftSidebarStickyWrap: {
     position: "sticky",
@@ -38,13 +99,29 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     height: NAVBAR_HEIGHT,
-    justifyContent: "center",
-    paddingBottom: 2.7,
     userSelect: "none",
+    paddingLeft: 32,
+    paddingTop: 8,
     width: "100%",
   },
   logo: {
     height: 36,
     userSelect: "none",
+  },
+  leftSidebarItemsContainer: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
+  leftSidebarItemsInnerContainer: {
+    alignItems: "center",
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    marginTop: 24,
+    maxWidth: 252,
+    width: "100%",
   },
 });
