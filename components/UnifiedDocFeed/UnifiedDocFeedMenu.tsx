@@ -7,13 +7,16 @@ import { feedTypeOpts, topLevelFilters } from "./constants/UnifiedDocFilters";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
-import MyHubsDropdown from "../Hubs/MyHubsDropdown";
 import handleFilterSelect from "./utils/handleFilterSelect";
 import FeedTab from "./FeedTab";
 import icons from "~/config/themes/icons";
 import TopLevelFilters from "./TopLevelFilters";
 
-const UnifiedDocFeedMenu = ({}) => {
+type Args = {
+  hubState?: any,
+}
+
+const UnifiedDocFeedMenu = ({ hubState }: Args) => {
   const router = useRouter();
 
   const hubsDownRef = useRef(null);
@@ -52,7 +55,7 @@ const UnifiedDocFeedMenu = ({}) => {
       return (
         <div className={css(styles.labelContainer)}>
           <span className={css(styles.iconWrapper)}>{opt.icon}</span>
-          <span className={css(styles.optLabel)}>{opt.label}</span>
+          <span>{opt.label}</span>
         </div>
       );
     };
@@ -64,6 +67,7 @@ const UnifiedDocFeedMenu = ({}) => {
 
     let tabsAsHTML = tabs.map((tabObj) => {
       if (tabObj.value === selectedFilters.type) {
+        // @ts-ignore
         tabObj.isSelected = true;
       }
       return tabObj;
@@ -113,7 +117,7 @@ const UnifiedDocFeedMenu = ({}) => {
     <div className={css(styles.filtersContainer)}>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
-          <TopLevelFilters selectedFilters={selectedFilters} />
+          <TopLevelFilters selectedFilters={selectedFilters} hubState={hubState} />
           <div className={css(styles.feedMenu)}>
             <div className={css(styles.filtersAsTabs)}>
               {/* <div className={css(styles.tab, styles.smallScreenFilters)}>
@@ -259,4 +263,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UnifiedDocFeedMenu;
+const mapStateToProps = (state) => ({
+  hubState: state.hubs,
+});
+
+export default connect(mapStateToProps, null)(UnifiedDocFeedMenu);

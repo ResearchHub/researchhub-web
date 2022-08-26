@@ -34,7 +34,7 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   };
 
   const hubOpts = useMemo(() => {
-    const myHubsOpts = (hubState.subscribedHubs || []).map((h) => renderDropdownOpt(h))
+    const myHubsOpts =  (hubState.subscribedHubs || []).map((h) => renderDropdownOpt(h))
     return myHubsOpts;
   }, [hubState.subscribedHubs]);
 
@@ -43,16 +43,13 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
       <div className={css(styles.hubsList)}>
         {hubOpts}
       </div>
-      <div className={css(styles.configure)}>
-        <span className={css(styles.configureBtn)}>
-          <span className={css(styles.configureBtnIcon)}>{icons.plusThick}</span>
-          <span className={css(styles.configureBtnLabel)}>View all</span>
-        </span>
-        <span className={css(styles.configureBtn)}>
-          <span className={css(styles.configureBtnIcon)}>{icons.pen}</span>
-          <span className={css(styles.configureBtnLabel)}>Edit</span>
-        </span>        
-      </div>
+      <Link href="/settings"> 
+        <a className={css(styles.configure)}>
+          <span className={css(styles.configureBtn)}>
+            Edit Hubs
+          </span>
+        </a>
+      </Link>
     </div>
   );
 };
@@ -72,35 +69,21 @@ const styles = StyleSheet.create({
   configure: {
     display: "flex",
     paddingTop: 15,
-    borderTop: `1px solid`
+    borderTop: `1px solid ${colors.GREY_LINE(1.0)}`,
+    textDecoration: "none",
+    ":hover": {
+      textDecoration: "underline",
+    }
   },
   hubsList: {
-    height: 200,
+    maxHeight: 200,
     overflowY: "scroll",
   },
   configureBtn: {
-    display: "flex",
-    padding: "5px 5px",
-    marginBottom: 10,
-    // background: colors.GREY(0.4),
-    borderRadius: 4,
-    paddingLeft: 10,
-    paddingRight: 10,
-    width: "50%",
-    marginLeft: 5,
-    marginRight: 5,
-    border: `1px solid ${colors.NEW_BLUE()}`,
-    ":last-child": {
-      marginLeft: "auto"
-    },
-  },
-  configureBtnIcon: {
-    marginLeft: 10,
-  },
-  configureBtnLabel: {
+    color: colors.NEW_BLUE(1.0),
     marginLeft: 18,
     fontWeight: 500,
-  },  
+  },
   hubDetails: {
 
   },
@@ -135,8 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  hubState: state.hubs,
-});
-
-export default connect(mapStateToProps, null)(MyHubsDropdown);
+export default MyHubsDropdown;

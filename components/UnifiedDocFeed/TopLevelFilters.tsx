@@ -8,8 +8,15 @@ import AuthorAvatar from "../AuthorAvatar";
 import icons from "~/config/themes/icons";
 import { connect } from "react-redux";
 import MyHubsDropdown from "../Hubs/MyHubsDropdown";
+import { SelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 
-const TopLevelFilters = ({ selectedFilters, currentUser }) => {
+type Args = {
+  selectedFilters: SelectedUrlFilters,
+  currentUser?: any,
+  hubState: any,
+}
+
+const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
   const router = useRouter();
   const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
   const hubsDownRef = useRef(null);
@@ -31,7 +38,7 @@ const TopLevelFilters = ({ selectedFilters, currentUser }) => {
             }
           }}
         >
-          {f.value === "my-hubs" && isHubSelectOpen && <MyHubsDropdown hubState={undefined} />}
+          {f.value === "my-hubs" && isHubSelectOpen && <MyHubsDropdown hubState={hubState} />}
           <span className={css(styles.filterIcon)}>
             {f.value === "my-hubs" && (
               <AuthorAvatar
@@ -44,7 +51,7 @@ const TopLevelFilters = ({ selectedFilters, currentUser }) => {
           <span className={css(styles.filterLabel)}>
             {f.label}
           </span>
-          {f.value === "my-hubs" && (
+          {f.value === "my-hubs" && hubState?.subscribedHubs?.length > 0 && (
             <span
               className={css(styles.myHubsDown)}
               onClick={() => setIsHubSelectOpen(!isHubSelectOpen)}
