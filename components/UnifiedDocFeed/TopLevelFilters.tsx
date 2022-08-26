@@ -1,7 +1,7 @@
 import colors, { iconColors } from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
 import { topLevelFilters } from "./constants/UnifiedDocFilters";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import handleFilterSelect from "./utils/handleFilterSelect";
 import { useRouter } from "next/router";
 import AuthorAvatar from "../AuthorAvatar";
@@ -20,29 +20,30 @@ const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
   const router = useRouter();
   const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
   const hubsDownRef = useRef(null);
-    
-  return (
-    <div className={css(styles.container)}>
-      {topLevelFilters.map((f) => (
+  const isSubscribedToHubs = hubState?.subscribedHubs?.length > 0;
+  const isCurrentUserLoaded = !!currentUser;
+
+  const filterElems = useMemo(() => {
+    return topLevelFilters.map((f) => {
+      const isSelected = f.value === selectedFilters.topLevel;
+      const isMyHubs = f.value === "my-hubs";
+      return ( 
         <div
           className={css(
-            styles.filter,
-            f.value === selectedFilters.topLevel &&
-              styles.filterSelected
+            styles.filter, isSelected && styles.filterSelected
           )}
           onClick={() => {
-            if (f.value === "my-hubs") {
+            if (isSelected && isMyHubs) {
               setIsHubSelectOpen(!isHubSelectOpen);
             } else {
               handleFilterSelect({ router, topLevel: f.value });
             }
           }}
         >
-          {f.value === "my-hubs" && isHubSelectOpen && <MyHubsDropdown hubState={hubState} />}
           <span className={css(styles.filterIcon)}>
-            {f.value === "my-hubs" && (
+            {isMyHubs && (
               <AuthorAvatar
-                author={currentUser?.author_profile}
+                author={currentUser?.author_profile || {}}
                 size={20}
               />
             )}
@@ -51,16 +52,20 @@ const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
           <span className={css(styles.filterLabel)}>
             {f.label}
           </span>
-          {f.value === "my-hubs" && hubState?.subscribedHubs?.length > 0 && (
+          {isMyHubs && isSubscribedToHubs && (
             <span
               className={css(styles.myHubsDown)}
-              onClick={() => setIsHubSelectOpen(!isHubSelectOpen)}
+              onClick={(event) => {
+                event.stopPropagation();
+                setIsHubSelectOpen(!isHubSelectOpen);
+              }}
               ref={hubsDownRef}
             >
               {isHubSelectOpen ? icons.chevronUp : icons.chevronDown}
             </span>
           )}
-          {/* {f.value === "my-hubs" && (
+          {isHubSelectOpen && isMyHubs && <MyHubsDropdown hubState={hubState} />}
+          {/* {isMyHubs && (
             isTagsMenuOpen
               ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
               : isSelected
@@ -68,7 +73,12 @@ const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
               : null
           )} */}
         </div>
-      ))}
+      )
+  })}, [selectedFilters, isSubscribedToHubs, isCurrentUserLoaded, isHubSelectOpen] )  
+
+  return (
+    <div className={css(styles.container)}>
+      {filterElems}
     </div>    
   )
 }
@@ -87,7 +97,8 @@ const styles = StyleSheet.create({
     marginRight: 25,
     alignItems: "center",
     cursor: "pointer",
-    color: colors.BLACK(),
+    userSelect: "none",
+    color: colors.BLACK(0.6),
     ":hover": {
       color: colors.NEW_BLUE(),
     },
