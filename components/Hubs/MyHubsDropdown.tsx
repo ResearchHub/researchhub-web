@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   hubState?: any,
@@ -14,7 +15,7 @@ type Args = {
 const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   const renderDropdownOpt = (hub) => {
     return (
-      <Link href={`/hubs/${hub.slug}`}>
+      <Link href={`/hubs/${hub.slug}`} key={hub.id}>
         <a className={css(styles.hubOpt)}>
           <img
             className={css(styles.hubImage)}
@@ -64,7 +65,10 @@ const styles = StyleSheet.create({
     zIndex: 5,
     paddingTop: 10,
     paddingBottom: 10,
-    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",    
+    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",   
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: 220,
+    } 
   },
   configure: {
     display: "flex",

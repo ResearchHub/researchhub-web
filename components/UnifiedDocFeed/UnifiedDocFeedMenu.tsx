@@ -18,10 +18,17 @@ type Args = {
 
 const UnifiedDocFeedMenu = ({ hubState }: Args) => {
   const router = useRouter();
-
   const hubsDownRef = useRef(null);
+  const tabsContainerRef = useRef<HTMLInputElement | null>(null);
+
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
+  const [showMobileLeftScroll, setShowMobileLeftScroll] =
+    useState(false);
+  const [showMobileRightScroll, setShowMobileRightScroll] =
+    useState(false);
+  const [showMobileScrollNav, setShowMobileScrollNav] =
+    useState(false);    
 
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
   const selectedFilters = useMemo(() => {
@@ -38,18 +45,46 @@ const UnifiedDocFeedMenu = ({ hubState }: Args) => {
         setTagsMenuOpenFor(null);
       }
 
+      
       // if ((hubsDownRef.current.contains(e.target) && isHubSelectOpen) || !hubsDownRef.current.contains(e.target)) {
       //   setIsHubSelectOpen(false);
       // }
     };
 
     document.addEventListener("click", _handleOutsideClick);
-
+    
     return () => {
       document.removeEventListener("click", _handleOutsideClick);
     };
   }, []);
+  
+  useEffect(() => {    
+    const _handleScroll = (event) => {
+      const showMobileRightScroll = (event.currentTarget.scrollWidth - event.currentTarget.scrollLeft) !== event.currentTarget.offsetWidth;
+      const showMobileLeftScroll = event.currentTarget.scrollLeft > 0;
+      
+      setShowMobileLeftScroll(showMobileLeftScroll);
+      setShowMobileRightScroll(showMobileRightScroll);
+    }
+    
+    if (tabsContainerRef?.current) {
+      const hasHorizontalScroll = tabsContainerRef.current.clientWidth < tabsContainerRef.current.scrollWidth
+      
+      if (hasHorizontalScroll) {
+        setShowMobileScrollNav(hasHorizontalScroll);
+        setShowMobileRightScroll(true);
+      }
 
+      tabsContainerRef.current.addEventListener("scroll", _handleScroll);
+    }
+
+    return () => {
+      if (tabsContainerRef?.current) {
+        tabsContainerRef.current.removeEventListener("scroll", _handleScroll);
+      }
+    }
+  }, [tabsContainerRef])
+  
   const _getTabs = ({ selectedFilters }) => {
     const _renderOption = (opt) => {
       return (
@@ -153,7 +188,22 @@ const UnifiedDocFeedMenu = ({ hubState }: Args) => {
                 />
               </div> */}
 
-              <div className={css(styles.largeScreenFilters)}>{tabElems}</div>
+              <div className={css(styles.typeFiltersContainer)} >
+                <div className={css(styles.mobileScrollNav, !showMobileScrollNav && styles.hideMobileScroll)}>
+                  <span className={css(styles.mobileScrollBtn, styles.mobileLeftScroll, !showMobileLeftScroll && styles.hideMobileScroll)} onClick={() =>
+                    // @ts-ignore
+                    tabsContainerRef.current.scrollBy({left: -60, behavior: 'smooth' }) 
+                  }>{icons.chevronLeft}</span>
+                  <span className={css(styles.mobileScrollBtn, styles.mobileRightScroll, !showMobileRightScroll && styles.hideMobileScroll)} onClick={() => {
+                    console.log('here')
+                    // @ts-ignore
+                    tabsContainerRef.current.scrollBy({left: 60, behavior: 'smooth' }) 
+                  }}>{icons.chevronRight}</span>
+                </div>
+                <div className={css(styles.tabsContainer)} ref={tabsContainerRef}>
+                  {tabElems}
+                </div>
+              </div>
 
               <div className={css(styles.orderingContainer)}>
                 <FeedOrderingDropdown
@@ -207,14 +257,49 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
-  largeScreenFilters: {
-    display: "flex",
+  typeFiltersContainer: {
+    width: "100%",
+    position: "relative",
     // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-    //   display: "none",
-    // },
+      //   display: "none",
+      // },
+    },
+    
+    tabsContainer: {
+      boxSizing: "border-box",
+      overflowX: "scroll",
+      overflowScrolling: "touch",
+      display: "flex",
+      scrollbarWidth: "none",
+      "::-webkit-scrollbar": {
+        display: "none",
+      }
   },
+  mobileScrollNav: {
+
+  },
+  mobileScrollBtn: {
+    position: "absolute",
+    // background: "white",    
+    zIndex: 2,
+  },
+  hideMobileScroll: {
+    display: "none",
+  },
+  mobileLeftScroll: {
+    left: 0,
+    padding: "5px 30px 5px 10px",
+    background: "linear-gradient(270deg, rgba(255, 255, 255, 0) 0px, rgb(255, 255, 255) 50%)",
+  },
+  
+  mobileRightScroll: {
+    right: 0,
+    padding: "5px 10px 5px 30px",
+    background: "linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, rgb(255, 255, 255) 50%)"
+  },  
 
   orderingContainer: {
+    display: "none",
     marginLeft: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: 10,

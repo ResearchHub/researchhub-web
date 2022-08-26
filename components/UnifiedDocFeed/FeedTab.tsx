@@ -112,7 +112,9 @@ const styles = StyleSheet.create({
     height: "100%",
     textDecoration: "none",
     color: "inherit",
+    whiteSpace: "nowrap",
     padding: "4px 12px",
+    boxSizing: "border-box",
   },  
   icon: {
     marginLeft: 5,

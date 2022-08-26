@@ -67,6 +67,7 @@ function FeedOrderingDropdown({
                 styles.opt,
                 selectedScopeValue === opt.value && styles.selectedOpt
               )}
+              key={"sort-" + opt.value}
             >
               <div className={css(styles.optLineItem)}>
                 <div className={css(styles.optIcon)}>{opt.icon}</div>
