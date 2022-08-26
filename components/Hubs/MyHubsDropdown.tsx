@@ -6,7 +6,12 @@ import { connect } from "react-redux";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
 
-const MyHubsDropdown = ({ hubState, isOpen = false }) => {
+type Args = {
+  hubState?: any,
+  isOpen?: boolean,
+}
+
+const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   const renderDropdownOpt = (hub) => {
     return (
       <Link href={`/hubs/${hub.slug}`}>

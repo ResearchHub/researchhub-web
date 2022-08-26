@@ -1,5 +1,14 @@
 import { feedTypeOpts, sortOpts, topLevelFilters } from "../constants/UnifiedDocFilters";
 
+type Args = {
+  router: any,
+  topLevel?: string,
+  typeFilter?: string,
+  tags?: string[],
+  sort?: string,
+  timeScope?: string,
+}
+
 const handleFilterSelect = ({
   router,
   topLevel,
@@ -7,7 +16,7 @@ const handleFilterSelect = ({
   tags,
   sort,
   timeScope,
-}) => {
+}: Args) => {
   const query = { ...router.query };
 
   if (topLevel) {
