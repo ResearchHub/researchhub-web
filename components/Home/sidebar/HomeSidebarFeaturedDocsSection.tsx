@@ -1,63 +1,64 @@
 import { css } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import {
-  fetchOpenBounties,
-  SimpleBounty,
-} from "~/components/Bounty/api/fetchOpenBounties";
+// import {
+//   fetchOpenFeaturedDocs,
+//   SimpleBounty,
+// } from "~/components/Bounty/api/fetchOpenFeaturedDocs";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import { SideColumnTitle } from "~/components/Typography";
 import { styles } from "./styles/HomeRightSidebarStyles";
-import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
+import BountiesSidebarItem from "./SidebarItems/BountiesSidebarItem";
+import { SimpleBounty } from "~/components/Bounty/api/fetchOpenBounties";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
-const useEffectFetchOpenBounties = ({
-  paginationInfo,
-  setOpenBounties,
-  setPaginationInfo,
-}: {
-  paginationInfo: PaginationInfo;
-  setOpenBounties: (bounties: any) => void;
-  setPaginationInfo: (paginationInfo: PaginationInfo) => void;
-}): void => {
-  const { isFetching, page } = paginationInfo;
-  useEffect((): void => {
-    if (isFetching) {
-      fetchOpenBounties({
-        onSuccess: (bounties: SimpleBounty) => {
-          // TODO: calvinhlee deal with page when supported by BE
-          setPaginationInfo({ isFetching: false, page });
-          setOpenBounties(bounties);
-        },
-        onError: emptyFncWithMsg,
-      });
-    }
-  }, [isFetching]);
-};
+// const useEffectFetchOpenFeaturedDocs = ({
+//   paginationInfo,
+//   setOpenFeaturedDocs,
+//   setPaginationInfo,
+// }: {
+//   paginationInfo: PaginationInfo;
+//   setOpenFeaturedDocs: (FeaturedDocs: any) => void;
+//   setPaginationInfo: (paginationInfo: PaginationInfo) => void;
+// }): void => {
+//   const { isFetching, page } = paginationInfo;
+//   useEffect((): void => {
+//     if (isFetching) {
+//       fetchOpenFeaturedDocs({
+//         onSuccess: (FeaturedDocs: SimpleBounty) => {
+//           // TODO: calvinhlee deal with page when supported by BE
+//           setPaginationInfo({ isFetching: false, page });
+//           setOpenFeaturedDocs(FeaturedDocs);
+//         },
+//         onError: emptyFncWithMsg,
+//       });
+//     }
+//   }, [isFetching]);
+// };
 
-export default function HomeSidebarBountiesSection(): ReactElement {
+export default function HomeSidebarFeaturedDocsSection(): ReactElement {
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isFetching: true,
     page: 1,
   });
-  const [openBounties, setOpenBounties] = useState<SimpleBounty[]>([]);
+  const [openFeaturedDocs, setOpenFeaturedDocs] = useState<SimpleBounty[]>([]);
 
-  useEffectFetchOpenBounties({
-    paginationInfo,
-    setOpenBounties,
-    setPaginationInfo,
-  });
+  // useEffectFetchOpenFeaturedDocs({
+  //   paginationInfo,
+  //   setOpenFeaturedDocs,
+  //   setPaginationInfo,
+  // });
 
   const { isFetching, page = 1 } = paginationInfo;
   const isReadyToRender = !isFetching && page > 0;
   const _isLoadingMore = !isFetching && page !== 1;
 
-  const bountyItems = openBounties?.map(
+  const featuredDocItems = openFeaturedDocs?.map(
     ({
       amount,
       content_type: { name: contentTypeName },
@@ -107,8 +108,8 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       <SideColumnTitle
         title={
           <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-            <div>{"Open Bounties"}</div>
-            <Link href="/?type=bounties">
+            <div>{"Featured Documents"}</div>
+            <Link href="/?type=FeaturedDocs">
               <a className={css(styles.viewAll)}>{"View All"}</a>
             </Link>
           </div>
@@ -119,7 +120,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
         ready={isReadyToRender}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
       >
-        {bountyItems}
+        {featuredDocItems}
       </ReactPlaceholder>
     </Fragment>
   );
