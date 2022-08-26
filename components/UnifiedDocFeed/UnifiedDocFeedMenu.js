@@ -1,15 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { useState, useEffect, useMemo } from "react";
-import DropdownButton from "~/components/Form/DropdownButton";
-import colors, { pillNavColors } from "~/config/themes/colors";
+import { useState, useEffect, useMemo, useRef } from "react";
+import colors, { pillNavColors, iconColors } from "~/config/themes/colors";
 import FeedOrderingDropdown from "./FeedOrderingDropdown";
-import {
-  feedTypeOpts,
-  tagFilters,
-  topLevelFilters,
-} from "./constants/UnifiedDocFilters";
-import icons from "~/config/themes/icons";
+import { feedTypeOpts, topLevelFilters } from "./constants/UnifiedDocFilters";
 import { useRouter } from "next/router";
 import AuthorAvatar from "../AuthorAvatar";
 import { connect } from "react-redux";
@@ -17,11 +11,13 @@ import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 import MyHubsDropdown from "../Hubs/MyHubsDropdown";
 import handleFilterSelect from "./utils/handleFilterSelect";
 import FeedTab from "./FeedTab";
+import icons from "~/config/themes/icons";
 
 const UnifiedDocFeedMenu = ({ currentUser }) => {
   const router = useRouter();
 
   const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
+  const hubsDownRef = useRef(null);
   const [isSmallScreenDropdownOpen, setIsSmallScreenDropdownOpen] =
     useState(false);
 
@@ -39,6 +35,14 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
       if (!isTypeFilterClicked) {
         setTagsMenuOpenFor(null);
       }
+
+      console.log("hubsDownRef", hubsDownRef);
+      console.log(e.target);
+      console.log(hubsDownRef.current.contains(e.target));
+
+      // if ((hubsDownRef.current.contains(e.target) && isHubSelectOpen) || !hubsDownRef.current.contains(e.target)) {
+      //   setIsHubSelectOpen(false);
+      // }
     };
 
     document.addEventListener("click", _handleOutsideClick);
@@ -106,10 +110,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                     topLevelFilterStyles.filterSelected
                 )}
                 onClick={() => {
-                  if (
-                    f.value === "my-hubs" &&
-                    f.value === selectedFilters.topLevel
-                  ) {
+                  if (f.value === "my-hubs") {
                     setIsHubSelectOpen(!isHubSelectOpen);
                   } else {
                     handleFilterSelect({ router, topLevel: f.value });
@@ -129,6 +130,15 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                 <span className={css(topLevelFilterStyles.filterLabel)}>
                   {f.label}
                 </span>
+                {f.value === "my-hubs" && (
+                  <span
+                    className={css(topLevelFilterStyles.myHubsDown)}
+                    onClick={() => setIsHubSelectOpen(!isHubSelectOpen)}
+                    ref={hubsDownRef}
+                  >
+                    {isHubSelectOpen ? icons.chevronUp : icons.chevronDown}
+                  </span>
+                )}
                 {/* {f.value === "my-hubs" && (
                   isTagsMenuOpen
                     ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
@@ -232,12 +242,22 @@ const topLevelFilterStyles = StyleSheet.create({
     },
   },
   filterIcon: {
-    marginRight: 5,
+    marginRight: 8,
+    fontSize: 18,
   },
   filterLabel: {},
   filterSelected: {
     borderBottom: `2px solid ${colors.NEW_BLUE()}`,
     color: colors.NEW_BLUE(),
+  },
+  myHubsDown: {
+    marginLeft: 3,
+    padding: "5px 5px",
+    ":hover": {
+      background: iconColors.BACKGROUND,
+      borderRadius: 3,
+      transition: "0.3s",
+    },
   },
 });
 

@@ -806,7 +806,7 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     marginTop: 9,
-    marginLeft: 15,
+    marginLeft: "auto",
     width: "100%",
     maxWidth: 400,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {

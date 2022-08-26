@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
 
-const HubSelector = ({ hubState, isOpen = false }) => {
+const MyHubsDropdown = ({ hubState, isOpen = false }) => {
   const renderDropdownOpt = (hub) => {
     return (
       <Link href={`/hubs/${hub.slug}`}>
@@ -34,20 +34,19 @@ const HubSelector = ({ hubState, isOpen = false }) => {
   }, [hubState.subscribedHubs]);
 
   return (
-    <div className={css(styles.myHubsDropdown)}>
+    <div className={`${css(styles.myHubsDropdown)} myHubsDropdown`}>
       <div className={css(styles.hubsList)}>
         {hubOpts}
       </div>
       <div className={css(styles.configure)}>
         <span className={css(styles.configureBtn)}>
           <span className={css(styles.configureBtnIcon)}>{icons.plusThick}</span>
-          <span className={css(styles.configureBtnLabel)}>Hub</span>
+          <span className={css(styles.configureBtnLabel)}>View all</span>
         </span>
         <span className={css(styles.configureBtn)}>
           <span className={css(styles.configureBtnIcon)}>{icons.pen}</span>
           <span className={css(styles.configureBtnLabel)}>Edit</span>
         </span>        
-
       </div>
     </div>
   );
@@ -135,4 +134,4 @@ const mapStateToProps = (state) => ({
   hubState: state.hubs,
 });
 
-export default connect(mapStateToProps, null)(HubSelector);
+export default connect(mapStateToProps, null)(MyHubsDropdown);
