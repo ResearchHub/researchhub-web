@@ -97,6 +97,23 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
   const tabs = _getTabs({ selectedFilters });
   // const selectedTab = _getSelectedTab(tabs);
 
+  const tabElems = useMemo(
+    () =>
+      tabs.map((t) => (
+        <FeedTab
+          selectedFilters={selectedFilters}
+          tabObj={t}
+          router={router}
+          handleOpenTagsMenu={(forType) => setTagsMenuOpenFor(forType)}
+          handleFilterSelect={(selected) =>
+            handleFilterSelect({ router, ...selected })
+          }
+          isTagsMenuOpen={tagsMenuOpenFor === t.value}
+        />
+      )),
+    [tagsMenuOpenFor, selectedFilters]
+  );
+
   return (
     <div className={css(styles.filtersContainer)}>
       <div className={css(styles.buttonGroup)}>
@@ -184,22 +201,7 @@ const UnifiedDocFeedMenu = ({ currentUser }) => {
                 />
               </div> */}
 
-              <div className={css(styles.largeScreenFilters)}>
-                {tabs.map((t) => (
-                  <FeedTab
-                    selectedFilters={selectedFilters}
-                    tabObj={t}
-                    router={router}
-                    handleOpenTagsMenu={(forType) =>
-                      setTagsMenuOpenFor(forType)
-                    }
-                    handleFilterSelect={(selected) =>
-                      handleFilterSelect({ router, ...selected })
-                    }
-                    isTagsMenuOpen={tagsMenuOpenFor === t.value}
-                  />
-                ))}
-              </div>
+              <div className={css(styles.largeScreenFilters)}>{tabElems}</div>
 
               <div className={css(styles.orderingContainer)}>
                 <FeedOrderingDropdown
