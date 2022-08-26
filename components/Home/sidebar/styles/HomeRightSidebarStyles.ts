@@ -5,7 +5,7 @@ import colors from "~/config/themes/colors";
 export const styles = StyleSheet.create({
   viewAll: {
     marginLeft: "auto",
-    color: "rgb(78, 83, 255)",
+    color: colors.BLUE(1),
     textDecoration: "none",
     textTransform: "initial",
     fontSize: 14,
@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     top: NAVBAR_HEIGHT,
   },
   RightSidebarTitle: {
-    background: "#FFF",
+    background: colors.WHITE,
     padding: "15px 20px 10px 20px",
     width: "100%",
     "@media only screen and (max-width: 415px)": {
