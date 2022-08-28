@@ -9,19 +9,22 @@ import icons from "~/config/themes/icons";
 import { connect } from "react-redux";
 import MyHubsDropdown from "../Hubs/MyHubsDropdown";
 import { SelectedUrlFilters } from "./utils/getSelectedUrlFilters";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   selectedFilters: SelectedUrlFilters,
   currentUser?: any,
   hubState: any,
+  feedOrderingElem: React.ReactNode, 
 }
 
-const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
+const TopLevelFilters = ({ selectedFilters, currentUser, hubState, feedOrderingElem }: Args) => {
   const router = useRouter();
-  const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const hubsDownRef = useRef(null);
   const isSubscribedToHubs = hubState?.subscribedHubs?.length > 0;
   const isCurrentUserLoaded = !!currentUser;
+  const renderAsDropdown = false;
 
   const filterElems = useMemo(() => {
     return topLevelFilters.map((f) => {
@@ -29,12 +32,12 @@ const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
       const isMyHubs = f.value === "my-hubs";
       return ( 
         <div
-          className={css(
-            styles.filter, isSelected && styles.filterSelected
-          )}
+          className={`${css(
+            styles.filter, isSelected && styles.filterSelected, renderAsDropdown && styles.filterAsDropdownOpt
+          )} filterSelected`}
           onClick={() => {
             if (isSelected && isMyHubs) {
-              setIsHubSelectOpen(!isHubSelectOpen);
+              setIsDropdownOpen(!isDropdownOpen);
             } else {
               handleFilterSelect({ router, topLevel: f.value });
             }
@@ -52,19 +55,19 @@ const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
           <span className={css(styles.filterLabel)}>
             {f.label}
           </span>
-          {isMyHubs && isSubscribedToHubs && (
+          {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
             <span
               className={css(styles.myHubsDown)}
               onClick={(event) => {
                 event.stopPropagation();
-                setIsHubSelectOpen(!isHubSelectOpen);
+                setIsDropdownOpen(!isDropdownOpen);
               }}
               ref={hubsDownRef}
             >
-              {isHubSelectOpen ? icons.chevronUp : icons.chevronDown}
+              {isDropdownOpen ? icons.chevronUp : icons.chevronDown}
             </span>
           )}
-          {isHubSelectOpen && isMyHubs && <MyHubsDropdown hubState={hubState} />}
+          {isDropdownOpen && isMyHubs && !renderAsDropdown && <MyHubsDropdown hubState={hubState} />}
           {/* {isMyHubs && (
             isTagsMenuOpen
               ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
@@ -74,21 +77,65 @@ const TopLevelFilters = ({ selectedFilters, currentUser, hubState }: Args) => {
           )} */}
         </div>
       )
-  })}, [selectedFilters, isSubscribedToHubs, isCurrentUserLoaded, isHubSelectOpen] )  
+  })}, [selectedFilters, isSubscribedToHubs, isCurrentUserLoaded, isDropdownOpen] )  
 
-  return (
-    <div className={css(styles.container)}>
-      {filterElems}
-    </div>    
-  )
+  if (renderAsDropdown) {
+    const selected = topLevelFilters.find(f => f.value === selectedFilters.topLevel);
+    return (
+      <div className={css(styles.container)} onClick={() => {
+        setIsDropdownOpen(!isDropdownOpen);
+      }}>
+        <div className={css(styles.filter)}>
+          <div className={css(styles.filterIcon)}>{selected?.icon}</div>
+          <div className={css(styles.filterLabel)}>{selected?.label}</div>
+          {isDropdownOpen
+            ? <div className={css(styles.chevronIcon)}>{icons.chevronUp}</div>
+            : <div className={css(styles.chevronIcon)}>{icons.chevronDown}</div>
+          }
+        </div>
+        {isDropdownOpen &&
+          <div className={css(styles.dropdown)}>
+            {filterElems}
+          </div>
+        }
+        <div className={css(styles.orderingContainer)}>
+          {feedOrderingElem}
+        </div>
+      </div>
+    )
+  }
+  else {
+    return (
+      <div className={css(styles.container)}>
+        {filterElems}
+      </div>    
+    )
+  }
 }
 
 const styles = StyleSheet.create({
+  dropdown: {
+    position: "absolute",
+    top: 30,
+    left: 0,
+    zIndex: 10,
+    padding: "5px 12px",
+    background: "white",
+    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
+  },
+  orderingContainer: {
+
+  },
   container: {
     display: "flex",
     borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
     width: "100%",
     marginBottom: 15,
+    position: "relative",
+  },
+  filterAsDropdownOpt: {
+    borderBottom: 0,
+    padding: "10px 14px",    
   },
   filter: {
     padding: "0px 4px 12px 0px",
@@ -102,10 +149,19 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 15,
+    }
+  },
+  chevronIcon: {
+    marginLeft: 8,
   },
   filterIcon: {
     marginRight: 8,
     fontSize: 18,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 16,
+    }
   },
   filterLabel: {},
   filterSelected: {

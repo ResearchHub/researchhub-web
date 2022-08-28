@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 function FeedOrderingDropdown({
   selectedOrderingValue,
@@ -106,6 +107,13 @@ const styles = StyleSheet.create({
     padding: "5px 12px",
     fontSize: 15,
     userSelect: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      border: 0,
+      paddingTop: 0,
+      paddingLeft: 0,
+      color: colors.BLACK(0.6),
+      paddingRight: 0,
+    }    
   },
   display: {
     display: "flex",
@@ -113,9 +121,13 @@ const styles = StyleSheet.create({
   },
   displayIcon: {
     marginRight: 8,
+    fontSize: 16,
   },
   displayLabel: {
     marginRight: 8,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    }
   },
   displayDown: {},
   dropdownBody: {

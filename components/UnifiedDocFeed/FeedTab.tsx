@@ -73,13 +73,13 @@ const styles = StyleSheet.create({
     userSelect: "none",
     position: "relative",
     color: colors.BLACK(0.6),
+    lineHeight: "20px",
     background: colors.LIGHTER_GREY(1.0),
     marginRight: 10,
     textTransform: "unset",
     fontSize: 15,
     fontWeight: 400,
     borderRadius: 4,
-    lineHeight: "20px",
     cursor: "pointer",
     ":active": {
       color: colors.NEW_BLUE(),
@@ -87,11 +87,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     },
-    [`@media only screen and (max-width: 1450px)`]: {
-      marginRight: 10,
-    },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "auto",
+      lineHeight: "25px",
       ":last-child": {
         marginRight: 0,
       },
