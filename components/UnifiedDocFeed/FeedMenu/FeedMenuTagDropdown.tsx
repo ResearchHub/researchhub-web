@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-const TagDropdown = ({ options, handleSelect, selectedTags }) => {
+const FeedMenuTagDropdown = ({ options, handleSelect, selectedTags }) => {
   return (
     <div className={css(styles.additionalOpts)}>
       {options.map((opt) => (
@@ -64,4 +64,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default TagDropdown;
+export default FeedMenuTagDropdown;

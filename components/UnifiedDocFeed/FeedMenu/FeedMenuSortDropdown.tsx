@@ -1,4 +1,4 @@
-import { sortOpts } from "./constants/UnifiedDocFilters";
+import { sortOpts } from "../constants/UnifiedDocFilters";
 import { scopeOptions } from "~/config/utils/options";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 
-function FeedOrderingDropdown({
+function FeedMenuSortDropdown({
   selectedOrderingValue,
   selectedFilters,
   selectedScopeValue,
@@ -49,7 +49,7 @@ function FeedOrderingDropdown({
   }, []);
 
   return (
-    <div className={css(styles.feedOrderingDropdown)} ref={dropdownRef}>
+    <div className={css(styles.FeedMenuSortDropdown)} ref={dropdownRef}>
       <div className={css(styles.display)} onClick={() => setIsOpen(!isOpen)}>
         <div className={css(styles.displayIcon)}>
           {selectedOrderingObj?.icon}
@@ -100,7 +100,7 @@ function FeedOrderingDropdown({
 }
 
 const styles = StyleSheet.create({
-  feedOrderingDropdown: {
+  FeedMenuSortDropdown: {
     position: "relative",
     border: `1px solid ${colors.GREY_LINE(1)}`,
     borderRadius: 4,
@@ -182,4 +182,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FeedOrderingDropdown;
+export default FeedMenuSortDropdown;

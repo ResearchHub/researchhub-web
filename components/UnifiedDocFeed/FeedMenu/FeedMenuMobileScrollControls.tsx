@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import useEffectForHorizontalScroll from "./utils/useEffectForHorizontalScroll";
+import useEffectForHorizontalScroll from "../utils/useEffectForHorizontalScroll";
 import { css, StyleSheet } from "aphrodite";
 import icons from "~/config/themes/icons";
 
-const UnifiedDocFeedMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
+const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   const [showMobileLeftScroll, setShowMobileLeftScroll] =
     useState(false);
   const [showMobileRightScroll, setShowMobileRightScroll] =
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   },  
 });
 
-export default UnifiedDocFeedMobileScrollControls;
+export default FeedMenuMobileScrollControls;

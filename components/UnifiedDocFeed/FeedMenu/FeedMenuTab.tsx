@@ -1,6 +1,6 @@
-import { tagFilters } from "./constants/UnifiedDocFilters";
-import TagDropdown from "./TagDropdown";
-import { SelectedUrlFilters } from "./utils/getSelectedUrlFilters";
+import { tagFilters } from "../constants/UnifiedDocFilters";
+import FeedMenuTagDropdown from "./FeedMenuTagDropdown";
+import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
 import { css, StyleSheet } from "aphrodite";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
@@ -16,7 +16,7 @@ type Args = {
   router: any,
 }
 
-const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSelect, isTagsMenuOpen, router }:Args) => {
+const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSelect, isTagsMenuOpen, router }:Args) => {
   const isSelected = tabObj.value === selectedFilters.type;
   const nestedOptions = tagFilters.filter((sub) =>
     sub.availableFor.includes(tabObj.value)
@@ -54,7 +54,7 @@ const FeedTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSele
           } */}
           {/* FIXME: Kobe, commenting out until BE is done */}
           {/* {isTagsMenuOpen && (
-            <TagDropdown
+            <FeedMenuTagDropdown
               options={nestedOptions}
               selectedTags={selectedFilters.tags}
               handleSelect={(selected) =>
@@ -119,4 +119,4 @@ const styles = StyleSheet.create({
   },  
 });
 
-export default FeedTab;
+export default FeedMenuTab;

@@ -20,7 +20,7 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
-import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
+import FeedMenu from "./FeedMenu/FeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
 
@@ -179,7 +179,7 @@ function UnifiedDocFeedContainer({
       )}
 
       {/* @ts-ignore */}
-      <UnifiedDocFeedMenu />
+      <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />

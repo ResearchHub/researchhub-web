@@ -1,14 +1,14 @@
 import colors, { iconColors } from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
-import { topLevelFilters } from "./constants/UnifiedDocFilters";
+import { topLevelFilters } from "../constants/UnifiedDocFilters";
 import { useMemo, useRef, useState } from "react";
-import handleFilterSelect from "./utils/handleFilterSelect";
+import handleFilterSelect from "../utils/handleFilterSelect";
 import { useRouter } from "next/router";
-import AuthorAvatar from "../AuthorAvatar";
+import AuthorAvatar from "../../AuthorAvatar";
 import icons from "~/config/themes/icons";
 import { connect } from "react-redux";
-import MyHubsDropdown from "../Hubs/MyHubsDropdown";
-import { SelectedUrlFilters } from "./utils/getSelectedUrlFilters";
+import MyHubsDropdown from "../../Hubs/MyHubsDropdown";
+import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
 import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
@@ -18,7 +18,7 @@ type Args = {
   feedOrderingElem: React.ReactNode, 
 }
 
-const TopLevelFilters = ({ selectedFilters, currentUser, hubState, feedOrderingElem }: Args) => {
+const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedOrderingElem }: Args) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const hubsDownRef = useRef(null);
@@ -183,4 +183,4 @@ const mapStateToProps = (state) => ({
   currentUser: state.auth.user,
 });
 
-export default connect(mapStateToProps, null)(TopLevelFilters);
+export default connect(mapStateToProps, null)(FeedMenuTopLevelFilters);

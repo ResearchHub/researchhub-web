@@ -2,24 +2,24 @@ import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { useState, useEffect, useMemo, useRef } from "react";
 import colors, { pillNavColors, iconColors } from "~/config/themes/colors";
-import FeedOrderingDropdown from "./FeedOrderingDropdown";
-import { feedTypeOpts, topLevelFilters } from "./constants/UnifiedDocFilters";
+import FeedMenuSortDropdown from "./FeedMenuSortDropdown";
+import { feedTypeOpts, topLevelFilters } from "../constants/UnifiedDocFilters";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
-import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
-import handleFilterSelect from "./utils/handleFilterSelect";
-import FeedTab from "./FeedTab";
+import { getSelectedUrlFilters } from "../utils/getSelectedUrlFilters";
+import handleFilterSelect from "../utils/handleFilterSelect";
+import FeedMenuTab from "./FeedMenuTab";
 import icons from "~/config/themes/icons";
-import TopLevelFilters from "./TopLevelFilters";
-import useEffectForOutsideMenuClick from "./utils/useEffectForOutsideMenuClick";
-import UnifiedDocFeedMobileScrollControls from "./UnifiedDocFeedMobileScrollControls";
+import FeedMenuTopLevelFilters from "./FeedMenuTopLevelFilters";
+import useEffectForOutsideMenuClick from "../utils/useEffectForOutsideMenuClick";
+import FeedMenuMobileScrollControls from "./FeedMenuMobileScrollControls";
 
 
 type Args = {
   hubState?: any,
 }
 
-const UnifiedDocFeedMenu = ({ hubState }: Args) => {
+const FeedMenu = ({ hubState }: Args) => {
   const router = useRouter();
   const hubsDownRef = useRef(null);
   const tabsContainerRef = useRef<HTMLInputElement | null>(null);
@@ -104,7 +104,7 @@ const UnifiedDocFeedMenu = ({ hubState }: Args) => {
   const tabElems = useMemo(
     () =>
       tabs.map((t) => (
-        <FeedTab
+        <FeedMenuTab
           selectedFilters={selectedFilters}
           tabObj={t}
           router={router}
@@ -119,7 +119,7 @@ const UnifiedDocFeedMenu = ({ hubState }: Args) => {
   );
 
   const feedOrderingElem = (
-    <FeedOrderingDropdown
+    <FeedMenuSortDropdown
       selectedFilters={selectedFilters}
       selectedOrderingValue={selectedFilters.sort}
       selectedScopeValue={selectedFilters.time}
@@ -136,7 +136,7 @@ const UnifiedDocFeedMenu = ({ hubState }: Args) => {
     <div className={css(styles.filtersContainer)}>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
-          <TopLevelFilters
+          <FeedMenuTopLevelFilters
             selectedFilters={selectedFilters}
             hubState={hubState}
             feedOrderingElem={feedOrderingElem}
@@ -183,7 +183,7 @@ const UnifiedDocFeedMenu = ({ hubState }: Args) => {
                   {feedOrderingElem}
                 </div>                  
                 <div className={css(styles.divider)}></div>                
-                <UnifiedDocFeedMobileScrollControls
+                <FeedMenuMobileScrollControls
                   tabsContainerRef={tabsContainerRef}
                   viewportWidth={viewportWidth}
                 />
@@ -322,4 +322,4 @@ const mapStateToProps = (state) => ({
   hubState: state.hubs,
 });
 
-export default connect(mapStateToProps, null)(UnifiedDocFeedMenu);
+export default connect(mapStateToProps, null)(FeedMenu);
