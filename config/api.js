@@ -31,7 +31,7 @@ const prepFilters = (filters) => {
  * @param { Object } params -- params for querystring
  * @param { String } arrayParamSeparator -- seperator for array values
  */
-const prepURL = (url, params, arrayParamSeparator = ",") => {
+export const prepURL = (url, params, arrayParamSeparator = ",") => {
   let { querystring, rest, filters } = params;
 
   let qs = "";

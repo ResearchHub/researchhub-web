@@ -109,10 +109,9 @@ const styles = StyleSheet.create({
     userSelect: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       border: 0,
-      paddingTop: 0,
-      paddingLeft: 0,
+      padding: 0,
       color: colors.BLACK(0.6),
-      paddingRight: 0,
+      lineHeight: "25px",
     }    
   },
   display: {
@@ -140,6 +139,9 @@ const styles = StyleSheet.create({
     background: "white",
     boxShadow: "0px 0px 10px 0px #00000026",
     color: colors.BLACK(0.8),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      left: -10,
+    }
   },
   opt: {
     padding: "10px 14px",

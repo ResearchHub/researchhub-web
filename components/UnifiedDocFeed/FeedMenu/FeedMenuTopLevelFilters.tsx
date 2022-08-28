@@ -48,6 +48,7 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
               <AuthorAvatar
                 author={currentUser?.author_profile || {}}
                 size={20}
+                trueSize={true}
               />
             )}
             {f.icon}
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     padding: "10px 14px",    
   },
   filter: {
-    padding: "0px 4px 12px 0px",
+    padding: "0px 0px 12px 0px",
     display: "flex",
     position: "relative",
     marginRight: 25,
@@ -149,8 +150,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     },
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 15,
+      padding: "0px 4px 10px 0px",
     }
   },
   chevronIcon: {
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
   },
   myHubsDown: {
     marginLeft: 3,
-    padding: "5px 5px",
+    padding: "5px 5px 5px 5px",
     ":hover": {
       background: iconColors.BACKGROUND,
       borderRadius: 3,

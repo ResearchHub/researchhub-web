@@ -6,6 +6,8 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { prepURL } from "~/config/api";
 
 type Args = {
   selectedFilters: SelectedUrlFilters,
@@ -13,15 +15,32 @@ type Args = {
   handleOpenTagsMenu: Function,
   handleFilterSelect: Function,
   isTagsMenuOpen: boolean,
-  router: any,
 }
 
-const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSelect, isTagsMenuOpen, router }:Args) => {
+const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSelect, isTagsMenuOpen }:Args) => {
+  const router = useRouter();  
   const isSelected = tabObj.value === selectedFilters.type;
   const nestedOptions = tagFilters.filter((sub) =>
     sub.availableFor.includes(tabObj.value)
   );
 
+  const _buildTabUrl = () => {
+    const params = {
+      querystring: {
+        ...(tabObj.value !== "all" && { "type": tabObj.value }),
+        ...(router.query.sort && { "sort": router.query.sort }),
+      }
+    }
+
+    let url = prepURL(router.pathname, params);
+    if (url.charAt(url.length-1) === "&") {
+      url = url.substring(0, url.length-1);  
+    }
+
+    return url;
+  }
+
+  const url = _buildTabUrl();
   return (
     <div
       className={`${css(
@@ -43,7 +62,7 @@ const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilter
         }
       }}
     >
-      <Link href={`/?type=${tabObj.value}`}>
+      <Link href={url}>
         <a className={css(styles.labelContainer)}>
           <span className={css(styles.tabText)}>{tabObj.label}</span>
           {/* {isTagsMenuOpen

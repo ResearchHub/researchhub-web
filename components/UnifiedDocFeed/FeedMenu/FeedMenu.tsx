@@ -84,7 +84,6 @@ const FeedMenu = ({ hubState }: Args) => {
         <FeedMenuTab
           selectedFilters={selectedFilters}
           tabObj={t}
-          router={router}
           handleOpenTagsMenu={(forType) => setTagsMenuOpenFor(forType)}
           handleFilterSelect={(selected) =>
             handleFilterSelect({ router, ...selected })
