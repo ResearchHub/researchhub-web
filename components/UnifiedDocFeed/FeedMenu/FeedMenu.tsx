@@ -46,35 +46,8 @@ const FeedMenu = ({ hubState }: Args) => {
     };
   }, []);
 
-  const getTabFilters = ({ selectedFilters }) => {
-    const _renderOption = (opt) => {
-      return (
-        <div className={css(styles.labelContainer)}>
-          <span className={css(styles.iconWrapper)}>{opt.icon}</span>
-          <span>{opt.label}</span>
-        </div>
-      );
-    };
-
-    const tabs = Object.values(feedTypeOpts).map((opt) => ({
-      html: _renderOption(opt),
-      ...opt,
-    }));
-
-    const tabsAsHTML = tabs.map((tabObj) => {
-      if (tabObj.value === selectedFilters.type) {
-        // @ts-ignore
-        tabObj.isSelected = true;
-      }
-      return tabObj;
-    });
-
-    return tabsAsHTML;
-  };
-
   const tabElems = useMemo(() => {
-    const tabs = getTabFilters({ selectedFilters });
-    return tabs.map((t) => (
+    return Object.values(feedTypeOpts).map((t) => (
       <FeedMenuTab
         selectedFilters={selectedFilters}
         tabObj={t}

@@ -36,7 +36,7 @@ const FeedMenuTab = ({
     <div
       className={`${css(
         styles.tab,
-        tabObj.isSelected && styles.tabSelected
+        isSelected && styles.tabSelected
       )} typeFilter`}
       onClick={() => {
         if (isSelected) {
