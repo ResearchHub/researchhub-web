@@ -99,8 +99,9 @@ const ELNEditor = ({
   const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
   const noteIdLength = `${currentNote.id}`.length;
   const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
+  const editorInstanceTitle = editorInstance?.plugins?.get("Title")?.getTitle();
   const parsedNoteTitle = unescapeHtmlString(
-    editorInstance?.plugins?.get("Title")?.getTitle() ?? "Untitled"
+    editorInstanceTitle ? editorInstanceTitle : "Untitled"
   );
 
   useEffect(() => {
@@ -237,6 +238,13 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
+                    const editorInstanceTitle = editor?.plugins
+                      ?.get("Title")
+                      ?.getTitle();
+                    const parsedNoteTitle = unescapeHtmlString(
+                      editorInstanceTitle ? editorInstanceTitle : "Untitled"
+                    );
+
                     return saveData({
                       parsedNoteTitle,
                       editor,
