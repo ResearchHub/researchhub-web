@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
 import { SelectedUrlFilters } from "./getSelectedUrlFilters";
 
-
 export type UniDocFetchParams = {
   hubID: ID;
   isLoggedIn: boolean;
@@ -76,14 +75,12 @@ export const useEffectPrefetchNext = ({
   //   page: prevPage,
   // } = prevFetchParams ?? {};
   // const { docTypeFilter, subFilters, page } = fetchParams ?? {};
-
   // useEffect((): void => {
   //   const readyToPrefetch =
   //     shouldPrefetch &&
   //     prevPage !== page &&
   //     (prevFetchParams === null ||
   //       (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
-
   //   if (readyToPrefetch) {
   //     setIsPrefetching(true);
   //     fetchUnifiedDocs(fetchParams);

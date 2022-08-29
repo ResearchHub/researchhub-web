@@ -12,9 +12,12 @@ export type SelectedUrlFilters = {
   sort: string | undefined;
   time: string | undefined;
   tags: string[];
-}
+};
 
-export const getSelectedUrlFilters = ({ query, pathname }):SelectedUrlFilters => {
+export const getSelectedUrlFilters = ({
+  query,
+  pathname,
+}): SelectedUrlFilters => {
   const defaults = {
     topLevel: topLevelFilters[0].value,
     type: Object.values(feedTypeOpts)[0].value,
@@ -30,8 +33,7 @@ export const getSelectedUrlFilters = ({ query, pathname }):SelectedUrlFilters =>
 
   if (Array.isArray(query.tags)) {
     selected.tags = [...query.tags];
-  }
-  else if (query.tags) {
+  } else if (query.tags) {
     selected.tags.push(query.tags);
   }
 
@@ -50,7 +52,9 @@ export const getSelectedUrlFilters = ({ query, pathname }):SelectedUrlFilters =>
     selected.type = foundTypeFilter;
 
     // Update default sort
-    selected.sort = sortOpts.filter(sort => sort.availableFor.includes(selected.type))[0].value;
+    selected.sort = sortOpts.filter((sort) =>
+      sort.availableFor.includes(selected.type)
+    )[0].value;
   }
   if (foundTopLevelFilter) {
     selected.topLevel = foundTopLevelFilter;
@@ -60,11 +64,13 @@ export const getSelectedUrlFilters = ({ query, pathname }):SelectedUrlFilters =>
   }
   if (foundTimeScope) {
     selected.time = foundTimeScope;
-  }  
+  }
 
   for (let i = 0; i < selected.tags.length; i++) {
     const t = selected.tags[i];
-    const tagIsAnOptionForThisType = tagFilters.find((tf) => tf.value === t)?.availableFor?.includes(selected.type);
+    const tagIsAnOptionForThisType = tagFilters
+      .find((tf) => tf.value === t)
+      ?.availableFor?.includes(selected.type);
     if (!tagIsAnOptionForThisType) {
       delete selected.tags[t];
     }

@@ -25,9 +25,9 @@ const FeedMenuTagDropdown = ({ options, handleSelect, selectedTags }) => {
           )}
         </div>
       ))}
-    </div>    
-  )
-}
+    </div>
+  );
+};
 
 const styles = StyleSheet.create({
   additionalOpts: {
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     ":hover": {
       color: colors.NEW_BLUE(1.0),
-    }
+    },
   },
   tagLabel: {},
   tagIcon: {
@@ -60,8 +60,7 @@ const styles = StyleSheet.create({
   },
   toggleOff: {
     color: "#c3c3c3",
-  },  
+  },
 });
-
 
 export default FeedMenuTagDropdown;

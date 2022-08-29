@@ -10,15 +10,21 @@ import { useRouter } from "next/router";
 import { prepURL } from "~/config/api";
 
 type Args = {
-  selectedFilters: SelectedUrlFilters,
-  tabObj: any,
-  handleOpenTagsMenu: Function,
-  handleFilterSelect: Function,
-  isTagsMenuOpen: boolean,
-}
+  selectedFilters: SelectedUrlFilters;
+  tabObj: any;
+  handleOpenTagsMenu: Function;
+  handleFilterSelect: Function;
+  isTagsMenuOpen: boolean;
+};
 
-const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilterSelect, isTagsMenuOpen }:Args) => {
-  const router = useRouter();  
+const FeedMenuTab = ({
+  selectedFilters,
+  tabObj,
+  handleOpenTagsMenu,
+  handleFilterSelect,
+  isTagsMenuOpen,
+}: Args) => {
+  const router = useRouter();
   const isSelected = tabObj.value === selectedFilters.type;
   const nestedOptions = tagFilters.filter((sub) =>
     sub.availableFor.includes(tabObj.value)
@@ -26,21 +32,21 @@ const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilter
   const _buildTabUrl = () => {
     const params = {
       querystring: {
-        ...(tabObj.value !== "all" && { "type": tabObj.value }),
-        ...(router.query.sort && { "sort": router.query.sort }),
-      }
-    }
-    
+        ...(tabObj.value !== "all" && { type: tabObj.value }),
+        ...(router.query.sort && { sort: router.query.sort }),
+      },
+    };
+
     let path = router.asPath;
     const idx = path.indexOf("?");
     if (idx >= 0) {
       path = path.substring(0, idx);
     }
 
-    let url = prepURL(path, params);
+    const url = prepURL(path, params);
 
     return url;
-  }
+  };
 
   const url = _buildTabUrl();
   return (
@@ -87,7 +93,7 @@ const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilter
       </Link>
     </div>
   );
-}
+};
 
 const styles = StyleSheet.create({
   tab: {
@@ -118,14 +124,12 @@ const styles = StyleSheet.create({
         paddingLeft: 0,
       },
     },
-  },  
+  },
   tabSelected: {
     color: colors.NEW_BLUE(1.0),
     background: colors.LIGHTER_BLUE(1.0),
   },
-  tabText: {
-
-  },
+  tabText: {},
   labelContainer: {
     display: "flex",
     height: "100%",
@@ -134,10 +138,10 @@ const styles = StyleSheet.create({
     whiteSpace: "nowrap",
     padding: "4px 12px",
     boxSizing: "border-box",
-  },  
+  },
   icon: {
     marginLeft: 5,
-  },  
+  },
 });
 
 export default FeedMenuTab;

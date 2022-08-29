@@ -40,7 +40,10 @@ function UnifiedDocFeedContainer({
   const router = useRouter();
   const routerPathName = router.pathname;
   const selectedFilters = useMemo(() => {
-    return getSelectedUrlFilters({ query: router.query, pathname: router.pathname })
+    return getSelectedUrlFilters({
+      query: router.query,
+      pathname: router.pathname,
+    });
   }, [router.pathname, router.query]);
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
     getPaginationInfoFromServerLoaded(serverLoadedData)
@@ -147,7 +150,6 @@ function UnifiedDocFeedContainer({
 
   const showLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
-
   const formattedMainHeader = useMemo(
     (): string =>
       formatMainHeader({
@@ -192,7 +194,8 @@ function UnifiedDocFeedContainer({
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
-      {unifiedDocsLoading || (selectedFilters.topLevel === "my-hubs" && !isLoggedIn) ? null : (
+      {unifiedDocsLoading ||
+      (selectedFilters.topLevel === "my-hubs" && !isLoggedIn) ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader

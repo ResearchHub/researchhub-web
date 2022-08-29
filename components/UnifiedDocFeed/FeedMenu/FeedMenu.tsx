@@ -13,18 +13,16 @@ import FeedMenuTopLevelFilters from "./FeedMenuTopLevelFilters";
 import useEffectForOutsideMenuClick from "../utils/useEffectForOutsideMenuClick";
 import FeedMenuMobileScrollControls from "./FeedMenuMobileScrollControls";
 
-
 type Args = {
-  hubState?: any,
-}
+  hubState?: any;
+};
 
 const FeedMenu = ({ hubState }: Args) => {
   const router = useRouter();
   const tabsContainerRef = useRef<HTMLInputElement | null>(null);
-  const [viewportWidth, setViewportWidth] =
-    useState(0);
+  const [viewportWidth, setViewportWidth] = useState(0);
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
-  const isHomeOrMyHubs = ["/", "/my-hubs"].includes(router.pathname); 
+  const isHomeOrMyHubs = ["/", "/my-hubs"].includes(router.pathname);
   const selectedFilters = useMemo(() => {
     return getSelectedUrlFilters({
       query: router.query,
@@ -35,9 +33,8 @@ const FeedMenu = ({ hubState }: Args) => {
   useEffect(() => {
     useEffectForOutsideMenuClick({
       setTagsMenuOpenFor,
-    })
+    });
   }, []);
-  
 
   useEffect(() => {
     const _setViewportWidth = () => setViewportWidth(window.innerWidth);
@@ -48,7 +45,6 @@ const FeedMenu = ({ hubState }: Args) => {
       window.removeEventListener("resize", _setViewportWidth, true);
     };
   }, []);
-
 
   const getTabFilters = ({ selectedFilters }) => {
     const _renderOption = (opt) => {
@@ -65,7 +61,7 @@ const FeedMenu = ({ hubState }: Args) => {
       ...opt,
     }));
 
-    let tabsAsHTML = tabs.map((tabObj) => {
+    const tabsAsHTML = tabs.map((tabObj) => {
       if (tabObj.value === selectedFilters.type) {
         // @ts-ignore
         tabObj.isSelected = true;
@@ -75,24 +71,21 @@ const FeedMenu = ({ hubState }: Args) => {
 
     return tabsAsHTML;
   };
-  
-  const tabElems = useMemo(
-    () => {
-      const tabs = getTabFilters({ selectedFilters });
-      return tabs.map((t) => (
-        <FeedMenuTab
-          selectedFilters={selectedFilters}
-          tabObj={t}
-          handleOpenTagsMenu={(forType) => setTagsMenuOpenFor(forType)}
-          handleFilterSelect={(selected) =>
-            handleFilterSelect({ router, ...selected })
-          }
-          isTagsMenuOpen={tagsMenuOpenFor === t.value}
-        />
-      ))
-    },
-    [tagsMenuOpenFor, selectedFilters]
-  );
+
+  const tabElems = useMemo(() => {
+    const tabs = getTabFilters({ selectedFilters });
+    return tabs.map((t) => (
+      <FeedMenuTab
+        selectedFilters={selectedFilters}
+        tabObj={t}
+        handleOpenTagsMenu={(forType) => setTagsMenuOpenFor(forType)}
+        handleFilterSelect={(selected) =>
+          handleFilterSelect({ router, ...selected })
+        }
+        isTagsMenuOpen={tagsMenuOpenFor === t.value}
+      />
+    ));
+  }, [tagsMenuOpenFor, selectedFilters]);
 
   const feedOrderingElem = (
     <FeedMenuSortDropdown
@@ -106,31 +99,34 @@ const FeedMenu = ({ hubState }: Args) => {
         handleFilterSelect({ router, timeScope: selected.value })
       }
     />
-  )
+  );
 
   return (
     <div className={css(styles.filtersContainer)}>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
-          {isHomeOrMyHubs &&
+          {isHomeOrMyHubs && (
             <FeedMenuTopLevelFilters
               selectedFilters={selectedFilters}
               hubState={hubState}
               feedOrderingElem={feedOrderingElem}
             />
-          }
+          )}
           <div className={css(styles.feedMenu)}>
             <div className={css(styles.filtersAsTabs)}>
               <div className={css(styles.typeFiltersContainer)}>
                 <div className={css(styles.orderingContainer)}>
                   {feedOrderingElem}
-                </div>                  
-                <div className={css(styles.divider)}></div>                
+                </div>
+                <div className={css(styles.divider)}></div>
                 <FeedMenuMobileScrollControls
                   tabsContainerRef={tabsContainerRef}
                   viewportWidth={viewportWidth}
                 />
-                <div className={css(styles.tabsContainer)} ref={tabsContainerRef}>
+                <div
+                  className={css(styles.tabsContainer)}
+                  ref={tabsContainerRef}
+                >
                   {tabElems}
                 </div>
               </div>
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     [`@media only screen and (min-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }
+    },
   },
   iconWrapper: {
     marginRight: 7,
@@ -184,9 +180,9 @@ const styles = StyleSheet.create({
     position: "relative",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "row",
-      },
+    },
   },
-    
+
   tabsContainer: {
     boxSizing: "border-box",
     overflowX: "scroll",
@@ -195,7 +191,7 @@ const styles = StyleSheet.create({
     scrollbarWidth: "none",
     "::-webkit-scrollbar": {
       display: "none",
-    }
+    },
   },
 
   orderingContainer: {

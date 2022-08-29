@@ -11,4 +11,4 @@ export const getFetchDefaults = ({ query, authToken }) => {
   };
 
   return defaultProps;
-}
+};

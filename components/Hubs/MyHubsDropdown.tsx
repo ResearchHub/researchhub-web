@@ -8,12 +8,11 @@ import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
-  hubState?: any,
-  isOpen?: boolean,
-}
+  hubState?: any;
+  isOpen?: boolean;
+};
 
 const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
-
   const renderDropdownOpt = (hub) => {
     return (
       <Link href={`/hubs/${hub.slug}`} key={hub.id}>
@@ -32,24 +31,22 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
           </div>
         </a>
       </Link>
-    )
+    );
   };
 
   const hubOpts = useMemo(() => {
-    const myHubsOpts =  (hubState.subscribedHubs || []).map((h) => renderDropdownOpt(h))
+    const myHubsOpts = (hubState.subscribedHubs || []).map((h) =>
+      renderDropdownOpt(h)
+    );
     return myHubsOpts;
   }, [hubState.subscribedHubs]);
 
   return (
     <div className={`${css(styles.myHubsDropdown)} myHubsDropdown`}>
-      <div className={css(styles.hubsList)}>
-        {hubOpts}
-      </div>
-      <Link href="/settings"> 
+      <div className={css(styles.hubsList)}>{hubOpts}</div>
+      <Link href="/settings">
         <a className={css(styles.configure)}>
-          <span className={css(styles.configureBtn)}>
-            Edit Hubs
-          </span>
+          <span className={css(styles.configureBtn)}>Edit Hubs</span>
         </a>
       </Link>
     </div>
@@ -66,10 +63,10 @@ const styles = StyleSheet.create({
     zIndex: 5,
     paddingTop: 10,
     paddingBottom: 10,
-    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",   
+    boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       width: 220,
-    } 
+    },
   },
   configure: {
     display: "flex",
@@ -78,7 +75,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     ":hover": {
       textDecoration: "underline",
-    }
+    },
   },
   hubsList: {
     maxHeight: 200,
@@ -89,9 +86,7 @@ const styles = StyleSheet.create({
     marginLeft: 18,
     fontWeight: 500,
   },
-  hubDetails: {
-
-  },
+  hubDetails: {},
   hubName: {
     textTransform: "capitalize",
     fontWeight: 400,
@@ -119,7 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     ":hover": {
       backgroundColor: colors.GREY(0.1),
-    }
+    },
   },
 });
 

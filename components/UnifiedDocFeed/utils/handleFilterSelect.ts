@@ -1,13 +1,17 @@
-import { feedTypeOpts, sortOpts, topLevelFilters } from "../constants/UnifiedDocFilters";
+import {
+  feedTypeOpts,
+  sortOpts,
+  topLevelFilters,
+} from "../constants/UnifiedDocFilters";
 
 type Args = {
-  router: any,
-  topLevel?: string,
-  typeFilter?: string,
-  tags?: string[],
-  sort?: string,
-  timeScope?: string,
-}
+  router: any;
+  topLevel?: string;
+  typeFilter?: string;
+  tags?: string[];
+  sort?: string;
+  timeScope?: string;
+};
 
 const handleFilterSelect = ({
   router,
@@ -27,7 +31,7 @@ const handleFilterSelect = ({
   }
 
   if (Array.isArray(tags)) {
-    let newTags:string[] = [];
+    let newTags: string[] = [];
     if (Array.isArray(query.tags)) {
       newTags = [...query.tags];
     } else if (query.tags) {

@@ -18,7 +18,9 @@ function FeedMenuSortDropdown({
     (o) => o.value === selectedOrderingValue
   );
 
-  const availSortOpts = sortOpts.filter(s => s.availableFor.includes(selectedFilters.type));
+  const availSortOpts = sortOpts.filter((s) =>
+    s.availableFor.includes(selectedFilters.type)
+  );
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const _handleOrderingClick = (selected) => {
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
       padding: 0,
       color: colors.BLACK(0.6),
       lineHeight: "25px",
-    }    
+    },
   },
   display: {
     display: "flex",
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }
+    },
   },
   displayDown: {},
   dropdownBody: {
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.8),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       left: -10,
-    }
+    },
   },
   opt: {
     padding: "10px 14px",

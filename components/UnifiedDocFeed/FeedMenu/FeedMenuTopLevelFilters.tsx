@@ -12,13 +12,18 @@ import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
 import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
-  selectedFilters: SelectedUrlFilters,
-  currentUser?: any,
-  hubState: any,
-  feedOrderingElem: React.ReactNode, 
-}
+  selectedFilters: SelectedUrlFilters;
+  currentUser?: any;
+  hubState: any;
+  feedOrderingElem: React.ReactNode;
+};
 
-const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedOrderingElem }: Args) => {
+const FeedMenuTopLevelFilters = ({
+  selectedFilters,
+  currentUser,
+  hubState,
+  feedOrderingElem,
+}: Args) => {
   const router = useRouter();
   const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false);
   const filterEl = useRef(null);
@@ -29,27 +34,29 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
 
   useEffect(() => {
     const _handleClickOutside = (event) => {
-      // @ts-ignore      
+      // @ts-ignore
       if (!filterEl.current.contains(event.target)) {
         setIsMyHubsDropdownOpen(false);
       }
-    }
+    };
 
     document.addEventListener("click", _handleClickOutside);
 
     return () => {
       document.removeEventListener("click", _handleClickOutside);
-    }
+    };
   }, []);
 
   const filterElems = useMemo(() => {
     return topLevelFilters.map((f) => {
       const isSelected = f.value === selectedFilters.topLevel;
       const isMyHubs = f.value === "my-hubs";
-      return ( 
+      return (
         <div
           className={`${css(
-            styles.filter, isSelected && styles.filterSelected, renderAsDropdown && styles.filterAsDropdownOpt
+            styles.filter,
+            isSelected && styles.filterSelected,
+            renderAsDropdown && styles.filterAsDropdownOpt
           )} filterSelected`}
           ref={filterEl}
           onClick={() => {
@@ -70,9 +77,7 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
             )}
             {f.icon}
           </span>
-          <span className={css(styles.filterLabel)}>
-            {f.label}
-          </span>
+          <span className={css(styles.filterLabel)}>{f.label}</span>
           {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
             <span
               className={css(styles.myHubsDown)}
@@ -84,7 +89,9 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
               {isMyHubsDropdownOpen ? icons.chevronUp : icons.chevronDown}
             </span>
           )}
-          {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && <MyHubsDropdown hubState={hubState} />}
+          {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
+            <MyHubsDropdown hubState={hubState} />
+          )}
           {/* {isMyHubs && (
             isTagsMenuOpen
               ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
@@ -93,42 +100,45 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
               : null
           )} */}
         </div>
-      )
-  })}, [selectedFilters, isSubscribedToHubs, isCurrentUserLoaded, isMyHubsDropdownOpen] )  
+      );
+    });
+  }, [
+    selectedFilters,
+    isSubscribedToHubs,
+    isCurrentUserLoaded,
+    isMyHubsDropdownOpen,
+  ]);
 
   if (renderAsDropdown) {
-    const selected = topLevelFilters.find(f => f.value === selectedFilters.topLevel);
+    const selected = topLevelFilters.find(
+      (f) => f.value === selectedFilters.topLevel
+    );
     return (
-      <div className={css(styles.topLevelFilters)} onClick={() => {
-        setIsTagsDropdownOpen(!isTagsDropdownOpen);
-      }}>
+      <div
+        className={css(styles.topLevelFilters)}
+        onClick={() => {
+          setIsTagsDropdownOpen(!isTagsDropdownOpen);
+        }}
+      >
         <div className={css(styles.filter)}>
           <div className={css(styles.filterIcon)}>{selected?.icon}</div>
           <div className={css(styles.filterLabel)}>{selected?.label}</div>
-          {isTagsDropdownOpen
-            ? <div className={css(styles.chevronIcon)}>{icons.chevronUp}</div>
-            : <div className={css(styles.chevronIcon)}>{icons.chevronDown}</div>
-          }
+          {isTagsDropdownOpen ? (
+            <div className={css(styles.chevronIcon)}>{icons.chevronUp}</div>
+          ) : (
+            <div className={css(styles.chevronIcon)}>{icons.chevronDown}</div>
+          )}
         </div>
-        {isTagsDropdownOpen &&
-          <div className={css(styles.dropdown)}>
-            {filterElems}
-          </div>
-        }
-        <div className={css(styles.orderingContainer)}>
-          {feedOrderingElem}
-        </div>
+        {isTagsDropdownOpen && (
+          <div className={css(styles.dropdown)}>{filterElems}</div>
+        )}
+        <div className={css(styles.orderingContainer)}>{feedOrderingElem}</div>
       </div>
-    )
+    );
+  } else {
+    return <div className={css(styles.topLevelFilters)}>{filterElems}</div>;
   }
-  else {
-    return (
-      <div className={css(styles.topLevelFilters)}>
-        {filterElems}
-      </div>    
-    )
-  }
-}
+};
 
 const styles = StyleSheet.create({
   topLevelFilters: {
@@ -147,12 +157,10 @@ const styles = StyleSheet.create({
     background: "white",
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
   },
-  orderingContainer: {
-
-  },
+  orderingContainer: {},
   filterAsDropdownOpt: {
     borderBottom: 0,
-    padding: "10px 14px",    
+    padding: "10px 14px",
   },
   filter: {
     padding: "0px 0px 12px 0px",
@@ -169,7 +177,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 15,
       padding: "0px 4px 10px 0px",
-    }
+    },
   },
   chevronIcon: {
     marginLeft: 8,
@@ -179,7 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
-    }
+    },
   },
   filterLabel: {},
   filterSelected: {

@@ -1,15 +1,18 @@
 import icons from "~/config/themes/icons";
 
-export const topLevelFilters = [{
-  label: "Frontpage",
-  url: "/",
-  value: "frontpage",
-  icon: icons.globeLight,
-}, {
-  label: "My Hubs",
-  url: "/my-hubs",
-  value: "my-hubs",
-}]
+export const topLevelFilters = [
+  {
+    label: "Frontpage",
+    url: "/",
+    value: "frontpage",
+    icon: icons.globeLight,
+  },
+  {
+    label: "My Hubs",
+    url: "/my-hubs",
+    value: "my-hubs",
+  },
+];
 
 export const UnifiedDocFilters = {
   // intentional ordering
@@ -27,19 +30,19 @@ export const UnifiedDocFilterLabels = {
 };
 
 export const feedTypeOpts = {
-  "all": {
+  all: {
     value: "all",
     label: "All",
   },
-  "paper": {
+  paper: {
     value: "paper",
     label: "Papers",
   },
-  "post": {
+  post: {
     value: "post",
     label: "Posts",
   },
-  "question": {
+  question: {
     value: "question",
     label: "Questions",
   },
@@ -47,11 +50,11 @@ export const feedTypeOpts = {
     value: "meta-study",
     label: "Meta-Studies",
   },
-  "bounty": {
+  bounty: {
     value: "bounty",
     label: "Bounties",
   },
-}
+};
 
 export const sortOpts = [
   {
@@ -77,7 +80,7 @@ export const sortOpts = [
   //   disableScope: true,
   //   availableFor: [
   //     feedTypeOpts["bounty"].value,
-  //   ],    
+  //   ],
   // },
   // {
   //   value: "rsc_offered",
@@ -87,7 +90,7 @@ export const sortOpts = [
   //   disableScope: true,
   //   availableFor: [
   //     feedTypeOpts["bounty"].value,
-  //   ],    
+  //   ],
   // },
   {
     value: "newest",
@@ -102,8 +105,8 @@ export const sortOpts = [
       feedTypeOpts["question"].value,
       feedTypeOpts["meta-study"].value,
       feedTypeOpts["bounty"].value,
-    ],    
-  },  
+    ],
+  },
   {
     value: "most_discussed",
     label: "Most Discussed",
@@ -132,35 +135,33 @@ export const sortOpts = [
       feedTypeOpts["question"].value,
       feedTypeOpts["meta-study"].value,
       feedTypeOpts["bounty"].value,
-    ],    
+    ],
   },
 ];
 
-export const tagFilters = [{
-  value: "peer_reviewed",
-  label: "Peer reviewed",
-  availableFor: [
-    feedTypeOpts["all"].value,
-    feedTypeOpts["paper"].value,
-    feedTypeOpts["post"].value
-  ],
-},{
-  value: "open_access",
-  label: "Open access",
-  availableFor: [
-    feedTypeOpts["all"].value,
-    feedTypeOpts["paper"].value,
-  ],
-},{
-  value: "expired",
-  label: "Show expired bounties",
-  availableFor: [
-    feedTypeOpts["bounty"].value,
-  ],
-},{
-  value: "answered",
-  label: "Show answered",
-  availableFor: [
-    feedTypeOpts["question"].value,
-  ],
-}]
+export const tagFilters = [
+  {
+    value: "peer_reviewed",
+    label: "Peer reviewed",
+    availableFor: [
+      feedTypeOpts["all"].value,
+      feedTypeOpts["paper"].value,
+      feedTypeOpts["post"].value,
+    ],
+  },
+  {
+    value: "open_access",
+    label: "Open access",
+    availableFor: [feedTypeOpts["all"].value, feedTypeOpts["paper"].value],
+  },
+  {
+    value: "expired",
+    label: "Show expired bounties",
+    availableFor: [feedTypeOpts["bounty"].value],
+  },
+  {
+    value: "answered",
+    label: "Show answered",
+    availableFor: [feedTypeOpts["question"].value],
+  },
+];
