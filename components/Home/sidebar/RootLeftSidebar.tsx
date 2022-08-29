@@ -13,7 +13,6 @@ type Props = {};
 const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
   {
     icon: icons.home,
-    isActive: true,
     label: "Home",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
@@ -61,9 +60,10 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     (
       attrs: RootLeftSidebarItemProps
     ): ReactElement<typeof RootLeftSidebarItem> => (
-      <RootLeftSidebarItem {...attrs} />
+      <RootLeftSidebarItem {...attrs} isActive />
     )
   );
+
   return (
     <div className={css(styles.rootLeftSidebar)}>
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
