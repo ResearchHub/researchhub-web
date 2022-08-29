@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
   rootLeftSidebarItem: {
     alignItems: "center",
     borderRadius: 6,
+    boxSizing: "border-box",
     cursor: "pointer",
     display: "flex",
     height: 48,

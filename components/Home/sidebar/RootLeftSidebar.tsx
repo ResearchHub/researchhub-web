@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   rootLeftSidebar: {
     background: colors.GREY_ICY_BLUE_HUE,
     position: "relative",
-    width: 315,
-    minWidth: 315,
+    width: 280,
+    minWidth: 280,
   },
   rootLeftSidebarStickyWrap: {
     position: "sticky",
@@ -117,11 +117,12 @@ const styles = StyleSheet.create({
   leftSidebarItemsInnerContainer: {
     alignItems: "center",
     borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     height: "100%",
     marginTop: 24,
-    maxWidth: 240,
-    width: "100%",
+    maxWidth: "90%",
+    width: "90%",
   },
 });
