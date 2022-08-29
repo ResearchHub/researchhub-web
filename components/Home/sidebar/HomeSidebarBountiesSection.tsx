@@ -119,7 +119,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
         ready={isReadyToRender}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
       >
-        {bountyItems}
+        {bountyItems.slice(0,4)}
       </ReactPlaceholder>
     </Fragment>
   );
