@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useEffectForHorizontalScroll from "../utils/useEffectForHorizontalScroll";
+import useEffectShowHorizontalMobileScroll from "../utils/useEffectShowHorizontalMobileScroll";
 import { css, StyleSheet } from "aphrodite";
 import icons from "~/config/themes/icons";
 
@@ -9,11 +9,11 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   const [showMobileScrollNav, setShowMobileScrollNav] = useState(false);
 
   useEffect(() => {
-    useEffectForHorizontalScroll({
-      tabsContainerRef,
-      setShowMobileLeftScroll,
-      setShowMobileRightScroll,
-      setShowMobileScrollNav,
+    useEffectShowHorizontalMobileScroll({
+      elem: tabsContainerRef?.current,
+      handleShowScrollUI: setShowMobileScrollNav,
+      handleShowLeftScrollBtn: setShowMobileLeftScroll,
+      handleShowRightScrollBtn: setShowMobileRightScroll,
     });
   }, [tabsContainerRef]);
 
