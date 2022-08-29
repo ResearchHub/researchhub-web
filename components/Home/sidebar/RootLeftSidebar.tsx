@@ -20,7 +20,7 @@ const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
     },
   },
   {
-    icon: icons.tableCell,
+    icon: icons.squares,
     label: "Hubs",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
@@ -34,21 +34,21 @@ const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
     },
   },
   {
-    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    icon: icons.coins,
     label: "Research Coin",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
     },
   },
   {
-    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    icon: icons.users,
     label: "Community",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
     },
   },
   {
-    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    icon: icons.chartSimple,
     label: "Leaderboard",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
