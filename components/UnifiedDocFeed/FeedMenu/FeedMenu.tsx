@@ -21,11 +21,10 @@ type Args = {
 const FeedMenu = ({ hubState }: Args) => {
   const router = useRouter();
   const tabsContainerRef = useRef<HTMLInputElement | null>(null);
-
   const [viewportWidth, setViewportWidth] =
     useState(0);
-
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
+  const isHomeOrMyHubs = ["/", "/my-hubs"].includes(router.pathname); 
   const selectedFilters = useMemo(() => {
     return getSelectedUrlFilters({
       query: router.query,
@@ -113,11 +112,13 @@ const FeedMenu = ({ hubState }: Args) => {
     <div className={css(styles.filtersContainer)}>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
-          <FeedMenuTopLevelFilters
-            selectedFilters={selectedFilters}
-            hubState={hubState}
-            feedOrderingElem={feedOrderingElem}
-          />
+          {isHomeOrMyHubs &&
+            <FeedMenuTopLevelFilters
+              selectedFilters={selectedFilters}
+              hubState={hubState}
+              feedOrderingElem={feedOrderingElem}
+            />
+          }
           <div className={css(styles.feedMenu)}>
             <div className={css(styles.filtersAsTabs)}>
               <div className={css(styles.typeFiltersContainer)}>

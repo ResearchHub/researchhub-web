@@ -83,7 +83,7 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
   if (renderAsDropdown) {
     const selected = topLevelFilters.find(f => f.value === selectedFilters.topLevel);
     return (
-      <div className={css(styles.container)} onClick={() => {
+      <div className={css(styles.topLevelFilters)} onClick={() => {
         setIsDropdownOpen(!isDropdownOpen);
       }}>
         <div className={css(styles.filter)}>
@@ -107,7 +107,7 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
   }
   else {
     return (
-      <div className={css(styles.container)}>
+      <div className={css(styles.topLevelFilters)}>
         {filterElems}
       </div>    
     )
@@ -115,6 +115,13 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
 }
 
 const styles = StyleSheet.create({
+  topLevelFilters: {
+    display: "flex",
+    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
+    width: "100%",
+    marginBottom: 15,
+    position: "relative",
+  },
   dropdown: {
     position: "absolute",
     top: 30,
@@ -126,13 +133,6 @@ const styles = StyleSheet.create({
   },
   orderingContainer: {
 
-  },
-  container: {
-    display: "flex",
-    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
-    width: "100%",
-    marginBottom: 15,
-    position: "relative",
   },
   filterAsDropdownOpt: {
     borderBottom: 0,

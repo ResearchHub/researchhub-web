@@ -23,7 +23,6 @@ const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilter
   const nestedOptions = tagFilters.filter((sub) =>
     sub.availableFor.includes(tabObj.value)
   );
-
   const _buildTabUrl = () => {
     const params = {
       querystring: {
@@ -31,11 +30,14 @@ const FeedMenuTab = ({ selectedFilters, tabObj, handleOpenTagsMenu, handleFilter
         ...(router.query.sort && { "sort": router.query.sort }),
       }
     }
-
-    let url = prepURL(router.pathname, params);
-    if (url.charAt(url.length-1) === "&") {
-      url = url.substring(0, url.length-1);  
+    
+    let path = router.asPath;
+    const idx = path.indexOf("?");
+    if (idx >= 0) {
+      path = path.substring(0, idx);
     }
+
+    let url = prepURL(path, params);
 
     return url;
   }

@@ -69,6 +69,10 @@ export const prepURL = (url, params, arrayParamSeparator = ",") => {
 
   url += prepFilters(filters);
 
+  if (url.charAt(url.length - 1) === "&") {
+    url = url.substring(0, url.length - 1);
+  }
+
   return url;
 };
 
