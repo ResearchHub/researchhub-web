@@ -23,7 +23,7 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import FeedMenu from "./FeedMenu/FeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
-
+import ResearchHubBanner from "~/components/ResearchHubBanner";
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
 });
@@ -190,6 +190,7 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
+          <ResearchHubBanner hub={{name: "Research Hub" }} />
           <FeedBlurWithButton />
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
