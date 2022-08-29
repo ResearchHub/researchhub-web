@@ -71,6 +71,7 @@
   left: unset !important;
   right: -15px !important;
   transform: unset !important; */
+  z-index: 10;
 }
 .ql-tooltip[data-mode="video"] {
   left: 0 !important;
