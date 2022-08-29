@@ -27,7 +27,7 @@ const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
     },
   },
   {
-    icon: icons.bookOpen,
+    icon: icons.book,
     label: "Notebook",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
