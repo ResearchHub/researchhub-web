@@ -92,6 +92,7 @@ const FeedMenuTopLevelFilters = ({
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
+          {/* FIXME: Kobe - temporarily off until new sub-filtering backend is ready */}
           {/* {isMyHubs && (
             isTagsMenuOpen
               ? <span className={css(styles.icon)}>{icons.chevronUp}</span>

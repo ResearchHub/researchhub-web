@@ -56,45 +56,6 @@ export const useEffectUpdateStatesOnServerChanges = ({
   }, [routePath, serverLoadedData]);
 };
 
-export const useEffectPrefetchNext = ({
-  fetchParams,
-  prevFetchParams,
-  setPrevFetchParams,
-  setIsPrefetching,
-  shouldPrefetch,
-}: {
-  fetchParams: UniDocFetchParams;
-  prevFetchParams: UniDocFetchParams | null;
-  setPrevFetchParams: any;
-  setIsPrefetching: (flag: boolean) => void;
-  shouldPrefetch: boolean;
-}): void => {
-  // const {
-  //   docTypeFilter: prevDocTypeFilter,
-  //   subFilters: prevSubFilters,
-  //   page: prevPage,
-  // } = prevFetchParams ?? {};
-  // const { docTypeFilter, subFilters, page } = fetchParams ?? {};
-  // useEffect((): void => {
-  //   const readyToPrefetch =
-  //     shouldPrefetch &&
-  //     prevPage !== page &&
-  //     (prevFetchParams === null ||
-  //       (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
-  //   if (readyToPrefetch) {
-  //     setIsPrefetching(true);
-  //     fetchUnifiedDocs(fetchParams);
-  //     setPrevFetchParams(fetchParams);
-  //   }
-  // }, [
-  //   shouldPrefetch,
-  //   prevDocTypeFilter,
-  //   prevSubFilters,
-  //   docTypeFilter,
-  //   subFilters,
-  // ]);
-};
-
 export const useEffectFetchDocs = ({
   fetchParams,
   updateOn,

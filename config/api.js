@@ -783,8 +783,6 @@ const routes = (BASE_URL) => {
         },
       };
 
-      // const tagsPortion = backendFilters.tags.reduce((tagStr, t) => `${tagStr}&${t}` ,"");
-
       const finalUrl = prepURL(url, params);
       return finalUrl;
     },

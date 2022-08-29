@@ -7,7 +7,8 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { prepURL } from "~/config/api";
+import { buildTypeFilterUrl } from "../utils/buildTypeFilterUrl";
+
 
 type Args = {
   selectedFilters: SelectedUrlFilters;
@@ -29,26 +30,8 @@ const FeedMenuTab = ({
   const nestedOptions = tagFilters.filter((sub) =>
     sub.availableFor.includes(tabObj.value)
   );
-  const _buildTabUrl = () => {
-    const params = {
-      querystring: {
-        ...(tabObj.value !== "all" && { type: tabObj.value }),
-        ...(router.query.sort && { sort: router.query.sort }),
-      },
-    };
 
-    let path = router.asPath;
-    const idx = path.indexOf("?");
-    if (idx >= 0) {
-      path = path.substring(0, idx);
-    }
-
-    const url = prepURL(path, params);
-
-    return url;
-  };
-
-  const url = _buildTabUrl();
+  const url = buildTypeFilterUrl({ tabObj, router });
   return (
     <div
       className={`${css(

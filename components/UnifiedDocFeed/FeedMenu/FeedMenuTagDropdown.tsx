@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
   },
   toggleOff: {
-    color: "#c3c3c3",
+    color: colors.LIGHT_GREY(1.0),
   },
 });
 

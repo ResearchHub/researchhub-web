@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
   mobileScrollNav: {},
   mobileScrollBtn: {
     position: "absolute",
-    // background: "white",
     zIndex: 2,
   },
   hideMobileScroll: {

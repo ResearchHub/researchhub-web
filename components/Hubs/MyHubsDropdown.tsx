@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     marginRight: 10,
     background: colors.LIGHT_GREY(),
-    border: "1px solid #ededed",
   },
   hubOpt: {
     textDecoration: "none",
