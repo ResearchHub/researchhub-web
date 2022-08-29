@@ -10,6 +10,7 @@ import { Fragment, ReactElement, useEffect, useState } from "react";
 import { SideColumnTitle } from "~/components/Typography";
 import { styles } from "./styles/HomeRightSidebarStyles";
 import BountiesSidebarItem from "./sidebar_items/BountiesSidebarItem";
+import colors from "~/config/themes/colors";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -117,9 +118,14 @@ export default function HomeSidebarBountiesSection(): ReactElement {
       />
       <ReactPlaceholder
         ready={isReadyToRender}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
+        customPlaceholder={
+          <HubEntryPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+            rows={3}
+          />
+        }
       >
-        {bountyItems.slice(0,4)}
+        {bountyItems.slice(0, 4)}
       </ReactPlaceholder>
     </Fragment>
   );

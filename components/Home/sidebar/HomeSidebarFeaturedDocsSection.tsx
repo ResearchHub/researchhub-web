@@ -5,15 +5,16 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 //   SimpleBounty,
 // } from "~/components/Bounty/api/fetchOpenFeaturedDocs";
 import { formatBountyAmount } from "~/config/types/bounty";
-import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Fragment, ReactElement, useEffect, useState } from "react";
+import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { SideColumnTitle } from "~/components/Typography";
+import { SimpleBounty } from "~/components/Bounty/api/fetchOpenBounties";
 import { styles } from "./styles/HomeRightSidebarStyles";
+import BountiesSidebarItem from "./sidebar_items/BountiesSidebarItem";
+import colors from "~/config/themes/colors";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
-import BountiesSidebarItem from "./sidebar_items/BountiesSidebarItem";
-import { SimpleBounty } from "~/components/Bounty/api/fetchOpenBounties";
 
 type PaginationInfo = { isFetching: boolean; page?: number };
 
@@ -108,17 +109,19 @@ export default function HomeSidebarFeaturedDocsSection(): ReactElement {
       <SideColumnTitle
         title={
           <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-            <div>{"Featured Documents"}</div>
-            <Link href="/?type=FeaturedDocs">
-              <a className={css(styles.viewAll)}>{"View All"}</a>
-            </Link>
+            <div>{"From ResearchHub"}</div>
           </div>
         }
         overrideStyles={styles.RightSidebarTitle}
       />
       <ReactPlaceholder
         ready={isReadyToRender}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
+        customPlaceholder={
+          <HubEntryPlaceholder
+            color={colors.PLACEHOLDER_CARD_BACKGROUND}
+            rows={3}
+          />
+        }
       >
         {featuredDocItems}
       </ReactPlaceholder>
