@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { useState, useEffect, useMemo, useRef } from "react";
-import colors, { pillNavColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import FeedMenuSortDropdown from "./FeedMenuSortDropdown";
 import { feedTypeOpts } from "../constants/UnifiedDocFilters";
 import { useRouter } from "next/router";
@@ -23,12 +23,10 @@ const FeedMenu = ({ hubState }: Args) => {
   const [viewportWidth, setViewportWidth] = useState(0);
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
   const isHomeOrMyHubs = ["/", "/my-hubs"].includes(router.pathname);
-  const selectedFilters = useMemo(() => {
-    return getSelectedUrlFilters({
-      query: router.query,
-      pathname: router.pathname,
-    });
-  }, [router.pathname, router.query]);
+  const selectedFilters = getSelectedUrlFilters({
+    query: router.query,
+    pathname: router.pathname,
+  });
 
   useEffect(() => {
     useEffectForOutsideMenuClick({
