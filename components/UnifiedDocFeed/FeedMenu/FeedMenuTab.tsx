@@ -16,6 +16,7 @@ type Args = {
   handleOpenTagsMenu: Function;
   handleFilterSelect: Function;
   isTagsMenuOpen: boolean;
+  isSelected: boolean;
 };
 
 const FeedMenuTab = ({
@@ -23,10 +24,10 @@ const FeedMenuTab = ({
   tabObj,
   handleOpenTagsMenu,
   handleFilterSelect,
+  isSelected,
   isTagsMenuOpen,
 }: Args) => {
   const router = useRouter();
-  const isSelected = tabObj.value === selectedFilters.type;
   const nestedOptions = tagFilters.filter((sub) =>
     sub.availableFor.includes(tabObj.value)
   );

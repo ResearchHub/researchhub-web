@@ -55,6 +55,7 @@ const FeedMenu = ({ hubState }: Args) => {
         handleFilterSelect={(selected) =>
           handleFilterSelect({ router, ...selected })
         }
+        isSelected={t.value === selectedFilters.type}
         isTagsMenuOpen={tagsMenuOpenFor === t.value}
       />
     ));
