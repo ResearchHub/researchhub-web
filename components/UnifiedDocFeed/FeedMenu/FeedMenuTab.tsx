@@ -119,8 +119,11 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     color: "inherit",
     whiteSpace: "nowrap",
-    padding: "4px 12px",
+    padding: "5px 12px",
     boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "4px 12px",
+    }
   },
   icon: {
     marginLeft: 5,

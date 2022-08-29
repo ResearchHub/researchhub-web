@@ -108,6 +108,7 @@ const FeedMenuTopLevelFilters = ({
     isSubscribedToHubs,
     isCurrentUserLoaded,
     isMyHubsDropdownOpen,
+    currentUser
   ]);
 
   if (renderAsDropdown) {

@@ -113,12 +113,14 @@ const styles = StyleSheet.create({
       border: 0,
       padding: 0,
       color: colors.BLACK(0.6),
-      lineHeight: "25px",
     },
   },
   display: {
     display: "flex",
     cursor: "pointer",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      lineHeight: "25px",
+    }
   },
   displayIcon: {
     marginRight: 8,
@@ -172,13 +174,14 @@ const styles = StyleSheet.create({
   scope: {
     border: `1px solid ${colors.GREY()}`,
     borderRadius: "4px",
-    marginRight: 4,
-    marginTop: 4,
+    marginRight: 7,
+    marginTop: 7,
     fontSize: 13,
-    padding: 4,
+    padding: "4px 6px",
     ":hover": {
       background: colors.LIGHT_GREY(),
       cursor: "pointer",
+
     },
   },
   selectedScope: {
