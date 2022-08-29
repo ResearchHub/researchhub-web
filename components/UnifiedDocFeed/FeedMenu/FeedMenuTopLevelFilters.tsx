@@ -1,7 +1,7 @@
 import colors, { iconColors } from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
 import { topLevelFilters } from "../constants/UnifiedDocFilters";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import handleFilterSelect from "../utils/handleFilterSelect";
 import { useRouter } from "next/router";
 import AuthorAvatar from "../../AuthorAvatar";
@@ -20,11 +20,27 @@ type Args = {
 
 const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedOrderingElem }: Args) => {
   const router = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const hubsDownRef = useRef(null);
+  const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false);
+  const filterEl = useRef(null);
+  const [isMyHubsDropdownOpen, setIsMyHubsDropdownOpen] = useState(false);
   const isSubscribedToHubs = hubState?.subscribedHubs?.length > 0;
   const isCurrentUserLoaded = !!currentUser;
   const renderAsDropdown = false;
+
+  useEffect(() => {
+    const _handleClickOutside = (event) => {
+      // @ts-ignore      
+      if (!filterEl.current.contains(event.target)) {
+        setIsMyHubsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("click", _handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", _handleClickOutside);
+    }
+  }, []);
 
   const filterElems = useMemo(() => {
     return topLevelFilters.map((f) => {
@@ -35,9 +51,10 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
           className={`${css(
             styles.filter, isSelected && styles.filterSelected, renderAsDropdown && styles.filterAsDropdownOpt
           )} filterSelected`}
+          ref={filterEl}
           onClick={() => {
             if (isSelected && isMyHubs) {
-              setIsDropdownOpen(!isDropdownOpen);
+              setIsMyHubsDropdownOpen(!isMyHubsDropdownOpen);
             } else {
               handleFilterSelect({ router, topLevel: f.value });
             }
@@ -61,14 +78,13 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
               className={css(styles.myHubsDown)}
               onClick={(event) => {
                 event.stopPropagation();
-                setIsDropdownOpen(!isDropdownOpen);
+                setIsMyHubsDropdownOpen(!isMyHubsDropdownOpen);
               }}
-              ref={hubsDownRef}
             >
-              {isDropdownOpen ? icons.chevronUp : icons.chevronDown}
+              {isMyHubsDropdownOpen ? icons.chevronUp : icons.chevronDown}
             </span>
           )}
-          {isDropdownOpen && isMyHubs && !renderAsDropdown && <MyHubsDropdown hubState={hubState} />}
+          {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && <MyHubsDropdown hubState={hubState} />}
           {/* {isMyHubs && (
             isTagsMenuOpen
               ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
@@ -78,23 +94,23 @@ const FeedMenuTopLevelFilters = ({ selectedFilters, currentUser, hubState, feedO
           )} */}
         </div>
       )
-  })}, [selectedFilters, isSubscribedToHubs, isCurrentUserLoaded, isDropdownOpen] )  
+  })}, [selectedFilters, isSubscribedToHubs, isCurrentUserLoaded, isMyHubsDropdownOpen] )  
 
   if (renderAsDropdown) {
     const selected = topLevelFilters.find(f => f.value === selectedFilters.topLevel);
     return (
       <div className={css(styles.topLevelFilters)} onClick={() => {
-        setIsDropdownOpen(!isDropdownOpen);
+        setIsTagsDropdownOpen(!isTagsDropdownOpen);
       }}>
         <div className={css(styles.filter)}>
           <div className={css(styles.filterIcon)}>{selected?.icon}</div>
           <div className={css(styles.filterLabel)}>{selected?.label}</div>
-          {isDropdownOpen
+          {isTagsDropdownOpen
             ? <div className={css(styles.chevronIcon)}>{icons.chevronUp}</div>
             : <div className={css(styles.chevronIcon)}>{icons.chevronDown}</div>
           }
         </div>
-        {isDropdownOpen &&
+        {isTagsDropdownOpen &&
           <div className={css(styles.dropdown)}>
             {filterElems}
           </div>

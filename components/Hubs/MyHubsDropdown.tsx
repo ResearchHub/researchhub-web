@@ -1,6 +1,6 @@
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors from "~/config/themes/colors";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
@@ -13,6 +13,7 @@ type Args = {
 }
 
 const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
+
   const renderDropdownOpt = (hub) => {
     return (
       <Link href={`/hubs/${hub.slug}`} key={hub.id}>
