@@ -21,7 +21,7 @@ export default function HomeRightSidebar(): ReactElement {
             background: colors.NEW_BLUE(0.07),
             width: "280px !important",
             borderRadius: 6,
-            height: 186,
+            height: 152,
             margin: 16,
           }}
           exitButton={
