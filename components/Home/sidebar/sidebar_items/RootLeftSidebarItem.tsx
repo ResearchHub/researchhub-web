@@ -59,8 +59,9 @@ const styles = StyleSheet.create({
   },
   iconWrap: {
     color: colors.GREY(1),
-    fontSize: 18,
+    fontSize: 16,
     width: 18,
+    height: 18,
     marginRight: 8,
     display: "flex",
     alignItems: "center",

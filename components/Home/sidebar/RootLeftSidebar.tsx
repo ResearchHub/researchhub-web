@@ -12,7 +12,7 @@ type Props = {};
 
 const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
   {
-    icon: <img src="/static/icons/coin-stack.png" width={16} />,
+    icon: icons.home,
     isActive: true,
     label: "Home",
     onClick: (event: SyntheticEvent): void => {
@@ -20,14 +20,14 @@ const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
     },
   },
   {
-    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    icon: icons.tableCell,
     label: "Hubs",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
     },
   },
   {
-    icon: <img src="/static/icons/coin-stack-grey.png" width={16} />,
+    icon: icons.bookOpen,
     label: "Notebook",
     onClick: (event: SyntheticEvent): void => {
       event.preventDefault();
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     marginTop: 24,
-    maxWidth: 252,
+    maxWidth: 240,
     width: "100%",
   },
 });
