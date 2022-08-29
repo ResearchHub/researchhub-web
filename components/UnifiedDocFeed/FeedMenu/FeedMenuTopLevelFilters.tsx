@@ -15,14 +15,12 @@ type Args = {
   selectedFilters: SelectedUrlFilters;
   currentUser?: any;
   hubState: any;
-  feedOrderingElem: React.ReactNode;
 };
 
 const FeedMenuTopLevelFilters = ({
   selectedFilters,
   currentUser,
   hubState,
-  feedOrderingElem,
 }: Args) => {
   const router = useRouter();
   const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false);
@@ -111,35 +109,12 @@ const FeedMenuTopLevelFilters = ({
     currentUser
   ]);
 
-  if (renderAsDropdown) {
-    const selected = topLevelFilters.find(
-      (f) => f.value === selectedFilters.topLevel
-    );
-    return (
-      <div
-        className={css(styles.topLevelFilters)}
-        onClick={() => {
-          setIsTagsDropdownOpen(!isTagsDropdownOpen);
-        }}
-      >
-        <div className={css(styles.filter)}>
-          <div className={css(styles.filterIcon)}>{selected?.icon}</div>
-          <div className={css(styles.filterLabel)}>{selected?.label}</div>
-          {isTagsDropdownOpen ? (
-            <div className={css(styles.chevronIcon)}>{icons.chevronUp}</div>
-          ) : (
-            <div className={css(styles.chevronIcon)}>{icons.chevronDown}</div>
-          )}
-        </div>
-        {isTagsDropdownOpen && (
-          <div className={css(styles.dropdown)}>{filterElems}</div>
-        )}
-        <div className={css(styles.orderingContainer)}>{feedOrderingElem}</div>
-      </div>
-    );
-  } else {
-    return <div className={css(styles.topLevelFilters)}>{filterElems}</div>;
-  }
+
+  return (
+    <div className={css(styles.topLevelFilters)}>
+      {filterElems}
+    </div>
+  );
 };
 
 const styles = StyleSheet.create({

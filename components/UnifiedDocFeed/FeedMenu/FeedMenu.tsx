@@ -82,7 +82,6 @@ const FeedMenu = ({ hubState }: Args) => {
             <FeedMenuTopLevelFilters
               selectedFilters={selectedFilters}
               hubState={hubState}
-              feedOrderingElem={feedOrderingElem}
             />
           )}
           <div className={css(styles.feedMenu)}>
