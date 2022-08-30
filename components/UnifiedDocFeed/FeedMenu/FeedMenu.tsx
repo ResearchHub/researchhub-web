@@ -30,7 +30,7 @@ const FeedMenu = ({ hubState }: Args) => {
 
   useEffect(() => {
     useEffectForOutsideMenuClick({
-      setTagsMenuOpenFor,
+      handleDismissTagMenu: setTagsMenuOpenFor,
     });
   }, []);
 

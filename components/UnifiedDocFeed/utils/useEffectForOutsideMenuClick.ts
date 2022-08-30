@@ -1,8 +1,8 @@
-const useEffectForOutsideMenuClick = ({ setTagsMenuOpenFor }) => {
+const useEffectForOutsideMenuClick = ({ handleDismissTagMenu }) => {
   const _handleOutsideClick = (e) => {
     const isTypeFilterClicked = e.target.closest(".typeFilter");
     if (!isTypeFilterClicked) {
-      setTagsMenuOpenFor(null);
+      handleDismissTagMenu(null);
     }
 
     // if ((hubsDownRef.current.contains(e.target) && isHubSelectOpen) || !hubsDownRef.current.contains(e.target)) {
