@@ -29,19 +29,19 @@ export const UnifiedDocFilterLabels = {
 };
 
 export const feedTypeOpts = {
-  "all": {
+  all: {
     value: "all",
     label: "All",
   },
-  "paper": {
+  paper: {
     value: "paper",
     label: "Papers",
   },
-  "post": {
+  post: {
     value: "post",
     label: "Posts",
   },
-  "question": {
+  question: {
     value: "question",
     label: "Questions",
   },
@@ -49,14 +49,14 @@ export const feedTypeOpts = {
     value: "meta-study",
     label: "Meta-Studies",
   },
-  "bounty": {
+  bounty: {
     value: "bounty",
     label: "Bounties",
   },
 };
 
 export const sortOpts = {
-  "hot": {
+  hot: {
     value: "hot",
     label: "Trending",
     selectedLabel: "Trending",
@@ -91,7 +91,7 @@ export const sortOpts = {
   //     feedTypeOpts["bounty"].value,
   //   ],
   // },
-  "newest": {
+  newest: {
     value: "newest",
     label: "Newest",
     selectedLabel: "Newest",
@@ -106,7 +106,7 @@ export const sortOpts = {
       feedTypeOpts["bounty"].value,
     ],
   },
-  "most_discussed": {
+  most_discussed: {
     value: "most_discussed",
     label: "Most Discussed",
     selectedLabel: "Discussed",
@@ -121,7 +121,7 @@ export const sortOpts = {
       feedTypeOpts["bounty"].value,
     ],
   },
-  "top_rated": {
+  top_rated: {
     value: "top_rated",
     label: "Most Upvoted",
     selectedLabel: "Upvoted",
@@ -139,7 +139,7 @@ export const sortOpts = {
 };
 
 export const tagFilters = {
-  "peer_reviewed": {
+  peer_reviewed: {
     value: "peer_reviewed",
     label: "Peer reviewed",
     availableFor: [
@@ -148,41 +148,41 @@ export const tagFilters = {
       feedTypeOpts["post"].value,
     ],
   },
-  "open_access": {
+  open_access: {
     value: "open_access",
     label: "Open access",
     availableFor: [feedTypeOpts["all"].value, feedTypeOpts["paper"].value],
   },
-  "expired": {
+  expired: {
     value: "expired",
     label: "Show expired bounties",
     availableFor: [feedTypeOpts["bounty"].value],
   },
-  "answered": {
+  answered: {
     value: "answered",
     label: "Show answered",
     availableFor: [feedTypeOpts["question"].value],
   },
-}
+};
 
 export const scopeOptions = {
-  "today": {
+  today: {
     value: "today",
     valueForApi: "today",
     label: "Today",
     isDefault: true,
   },
-  "week": {
+  week: {
     value: "week",
     valueForApi: "week",
     label: "This Week",
   },
-  "month": {
+  month: {
     value: "month",
     valueForApi: "month",
     label: "This Month",
   },
-  "year": {
+  year: {
     value: "year",
     valueForApi: "year",
     label: "This Year",
@@ -192,5 +192,4 @@ export const scopeOptions = {
     valueForApi: "all_time",
     label: "All Time",
   },
-}
-
+};

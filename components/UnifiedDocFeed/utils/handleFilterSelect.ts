@@ -1,9 +1,5 @@
-import {
-  feedTypeOpts,
-  topLevelFilters,
-} from "../constants/UnifiedDocFilters";
+import { feedTypeOpts, topLevelFilters } from "../constants/UnifiedDocFilters";
 import { getSortValue } from "./getSortValue";
-
 
 type Args = {
   router: any;
@@ -13,7 +9,6 @@ type Args = {
   sort?: string;
   timeScope?: string;
 };
-
 
 const handleFilterSelect = ({
   router,
@@ -30,8 +25,13 @@ const handleFilterSelect = ({
     return router.push({ pathname: navigateToUrl });
   }
 
-  const isDefaultTypeFilter = Object.values(feedTypeOpts)[0].value == typeFilter;
-  const sortValue = getSortValue({ query: router.query, userSelectedSort: sort, type: query.type || "all" });
+  const isDefaultTypeFilter =
+    Object.values(feedTypeOpts)[0].value == typeFilter;
+  const sortValue = getSortValue({
+    query: router.query,
+    userSelectedSort: sort,
+    type: query.type || "all",
+  });
   const timeScopeValue = sortValue && (timeScope || router.query.time);
   const typeValue = isDefaultTypeFilter ? null : router.query.type;
 
@@ -40,7 +40,7 @@ const handleFilterSelect = ({
     ...(typeValue && { type: typeValue }),
     ...(sortValue && { sort: sortValue }),
     ...(timeScopeValue && { time: timeScopeValue }),
-  }
+  };
 
   router.push({
     pathname: router.pathname,

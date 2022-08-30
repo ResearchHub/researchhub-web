@@ -108,15 +108,10 @@ const FeedMenuTopLevelFilters = ({
     isSubscribedToHubs,
     isCurrentUserLoaded,
     isMyHubsDropdownOpen,
-    currentUser
+    currentUser,
   ]);
 
-
-  return (
-    <div className={css(styles.topLevelFilters)}>
-      {filterElems}
-    </div>
-  );
+  return <div className={css(styles.topLevelFilters)}>{filterElems}</div>;
 };
 
 const styles = StyleSheet.create({

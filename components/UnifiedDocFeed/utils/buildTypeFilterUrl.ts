@@ -3,7 +3,6 @@ import { getSortValue } from "./getSortValue";
 
 // Used for static link generation for SEO purposes
 export const buildTypeFilterUrl = ({ tabObj, router }) => {
-
   const sort = getSortValue({ query: router.query, type: tabObj.value });
   const params = {
     querystring: {

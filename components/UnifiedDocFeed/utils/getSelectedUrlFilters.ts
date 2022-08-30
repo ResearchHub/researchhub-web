@@ -3,7 +3,7 @@ import {
   sortOpts,
   tagFilters,
   topLevelFilters,
-  scopeOptions
+  scopeOptions,
 } from "../constants/UnifiedDocFilters";
 import { NullableString } from "~/config/types/root_types";
 import { getAvailableSortOptions } from "./getAvailableSortOptions";
@@ -33,13 +33,16 @@ export const getSelectedUrlFilters = ({
     return defaults;
   }
 
-  const isTagsAString = typeof(query.tags) === "string";
+  const isTagsAString = typeof query.tags === "string";
   const isTagsAnArray = Array.isArray(query.tags);
 
-  let selectedTopLevelFilter = topLevelFilters[pathname]?.value;
-  let selectedTypeFilter = feedTypeOpts[query?.type]?.value
-  let selectedTimeScope = scopeOptions[query?.time]?.value;
-  const selectedSort = getSortValue({ query, type: selectedTypeFilter || "all" });
+  const selectedTopLevelFilter = topLevelFilters[pathname]?.value;
+  const selectedTypeFilter = feedTypeOpts[query?.type]?.value;
+  const selectedTimeScope = scopeOptions[query?.time]?.value;
+  const selectedSort = getSortValue({
+    query,
+    type: selectedTypeFilter || "all",
+  });
 
   const selected = {
     ...defaults,
@@ -47,7 +50,9 @@ export const getSelectedUrlFilters = ({
     ...(selectedTypeFilter && { type: selectedTypeFilter }),
     ...(selectedSort && { sort: selectedSort }),
     ...(selectedTimeScope && { time: selectedTimeScope }),
-    ...(query.tags && { tags: isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [] })
-  }
+    ...(query.tags && {
+      tags: isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [],
+    }),
+  };
   return selected;
 };

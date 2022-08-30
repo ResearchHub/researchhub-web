@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { buildTypeFilterUrl } from "../utils/buildTypeFilterUrl";
 
-
 type Args = {
   selectedFilters: SelectedUrlFilters;
   tabObj: any;
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: "4px 12px",
-    }
+    },
   },
   icon: {
     marginLeft: 5,

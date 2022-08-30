@@ -13,7 +13,7 @@ function FeedMenuSortDropdown({
   onScopeSelect,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedOrderingObj = sortOpts[selectedOrderingValue]
+  const selectedOrderingObj = sortOpts[selectedOrderingValue];
 
   const availSortOpts = Object.values(sortOpts).filter((s) =>
     s.availableFor.includes(selectedFilters.type)
@@ -47,7 +47,7 @@ function FeedMenuSortDropdown({
     };
   }, []);
 
-  const timeScopeObj = scopeOptions[selectedScopeValue]
+  const timeScopeObj = scopeOptions[selectedScopeValue];
   return (
     <div className={css(styles.FeedMenuSortDropdown)} ref={dropdownRef}>
       <div className={css(styles.display)} onClick={() => setIsOpen(!isOpen)}>
@@ -55,10 +55,13 @@ function FeedMenuSortDropdown({
           {selectedOrderingObj?.icon}
         </div>
         <div className={css(styles.displayLabel)}>
-          {selectedOrderingObj?.selectedLabel}{!selectedOrderingObj.disableScope && (
+          {selectedOrderingObj?.selectedLabel}
+          {!selectedOrderingObj.disableScope && (
             <span className={css(styles.displayTimeScope)}>
               <span className={css(styles.rightIcon)}>{icons.arrowRight}</span>
-              <span className={css(styles.selectedTimeScopeLabel)}>{timeScopeObj.label}</span>
+              <span className={css(styles.selectedTimeScopeLabel)}>
+                {timeScopeObj.label}
+              </span>
             </span>
           )}
         </div>
@@ -123,13 +126,13 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       lineHeight: "25px",
-    }
+    },
   },
   displayTimeScope: {
     display: "none",
     [`@media only screen and (min-width: ${breakpoints.bigDesktop.str})`]: {
       display: "initial",
-    }
+    },
   },
   selectedTimeScopeLabel: {
     fontWeight: 300,
@@ -198,7 +201,6 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.LIGHT_GREY(),
       cursor: "pointer",
-
     },
   },
   selectedScope: {
