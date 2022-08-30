@@ -30,10 +30,6 @@ export const getSelectedUrlFilters = ({
   query,
   pathname,
 }): SelectedUrlFilters => {
-  if (isEmpty(query ?? pathname)) {
-    return defaults;
-  }
-
   const isTagsAString = typeof query.tags === "string";
   const isTagsAnArray = Array.isArray(query.tags);
 

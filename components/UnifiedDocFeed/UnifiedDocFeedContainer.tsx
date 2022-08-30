@@ -36,6 +36,7 @@ function UnifiedDocFeedContainer({
   loggedIn,
   serverLoadedData, // Loaded on the server via getInitialProps on full page load
   subscribeButton,
+  auth,
 }): ReactElement<"div"> {
   const router = useRouter();
   const routerPathName = router.pathname;
@@ -164,6 +165,7 @@ function UnifiedDocFeedContainer({
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
+  const onMyHubsLoggedOut = selectedFilters.topLevel === "/my-hubs" && auth?.authChecked && !auth?.user?.id;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -190,13 +192,15 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          <ResearchHubBanner hub={{name: "Research Hub" }} />
+          {onMyHubsLoggedOut &&
+            <ResearchHubBanner hub={{name: "Research Hub" }} />
+          }
           <FeedBlurWithButton />
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
       {unifiedDocsLoading ||
-      (selectedFilters.topLevel === "my-hubs" && !isLoggedIn) ? null : (
+      (onMyHubsLoggedOut) ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader

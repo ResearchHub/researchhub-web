@@ -92,6 +92,7 @@ function FeedMenuSortDropdown({
                           selectedScopeValue === scope.value &&
                             styles.selectedScope
                         )}
+                        key={`scope-` + scope.value}
                         onClick={(event) => _handleScopeClick({ event, scope })}
                       >
                         {scope.label.replace("This ", "")}

@@ -141,6 +141,8 @@ var styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     zIndex: 0,
+    borderRadius: "4px",
+    marginBottom: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       position: "relative",
       alignItems: "unset",
@@ -198,13 +200,13 @@ var styles = StyleSheet.create({
     },
   },
   header: {
-    fontSize: 42,
+    fontSize: 38,
     fontWeight: 400,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 32,
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      fontSize: 28,
+      fontSize: 26,
     },
   },
   subtext: {
@@ -230,10 +232,6 @@ var styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       padding: "5px 15px",
     },
-  },
-  iconStyle: {
-    height: 33,
-    width: 33,
   },
   promo: {
     marginTop: 15,

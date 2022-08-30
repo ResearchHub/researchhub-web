@@ -96,7 +96,7 @@ export const sortOpts = {
     label: "Newest",
     selectedLabel: "Newest",
     icon: icons.bolt,
-    disableScope: false,
+    disableScope: true,
     availableFor: [
       feedTypeOpts["all"].value,
       feedTypeOpts["paper"].value,
