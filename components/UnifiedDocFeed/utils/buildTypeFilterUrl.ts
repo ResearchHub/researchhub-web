@@ -1,10 +1,15 @@
 import { prepURL } from "~/config/api";
+import { getSortValue } from "./getSortValue";
 
+// Used for static link generation for SEO purposes
 export const buildTypeFilterUrl = ({ tabObj, router }) => {
+
+  const sort = getSortValue({ query: router.query, type: tabObj.value });
   const params = {
     querystring: {
       ...(tabObj.value !== "all" && { type: tabObj.value }),
-      ...(router.query.sort && { sort: router.query.sort }),
+      ...(sort && { sort }),
+      ...(sort && router.query.time && { time: router.query.time }),
     },
   };
 

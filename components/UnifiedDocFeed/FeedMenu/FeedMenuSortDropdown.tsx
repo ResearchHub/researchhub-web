@@ -1,5 +1,4 @@
-import { sortOpts } from "../constants/UnifiedDocFilters";
-import { scopeOptions } from "~/config/utils/options";
+import { scopeOptions, sortOpts } from "../constants/UnifiedDocFilters";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
@@ -14,11 +13,9 @@ function FeedMenuSortDropdown({
   onScopeSelect,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedOrderingObj = sortOpts.find(
-    (o) => o.value === selectedOrderingValue
-  );
+  const selectedOrderingObj = sortOpts[selectedOrderingValue]
 
-  const availSortOpts = sortOpts.filter((s) =>
+  const availSortOpts = Object.values(sortOpts).filter((s) =>
     s.availableFor.includes(selectedFilters.type)
   );
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -50,6 +47,7 @@ function FeedMenuSortDropdown({
     };
   }, []);
 
+  const timeScopeObj = scopeOptions[selectedScopeValue]
   return (
     <div className={css(styles.FeedMenuSortDropdown)} ref={dropdownRef}>
       <div className={css(styles.display)} onClick={() => setIsOpen(!isOpen)}>
@@ -57,7 +55,12 @@ function FeedMenuSortDropdown({
           {selectedOrderingObj?.icon}
         </div>
         <div className={css(styles.displayLabel)}>
-          {selectedOrderingObj?.label}
+          {selectedOrderingObj?.selectedLabel}{!selectedOrderingObj.disableScope && (
+            <span className={css(styles.displayTimeScope)}>
+              <span className={css(styles.rightIcon)}>{icons.arrowRight}</span>
+              <span className={css(styles.selectedTimeScopeLabel)}>{timeScopeObj.label}</span>
+            </span>
+          )}
         </div>
         <div className={css(styles.displayDown)}>{icons.chevronDown}</div>
       </div>
@@ -79,7 +82,7 @@ function FeedMenuSortDropdown({
               {selectedOrderingObj?.value === opt.value &&
                 !selectedOrderingObj?.disableScope && (
                   <div className={css(styles.timeScopeContainer)}>
-                    {scopeOptions.map((scope) => (
+                    {Object.values(scopeOptions).map((scope) => (
                       <div
                         className={css(
                           styles.scope,
@@ -121,6 +124,20 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       lineHeight: "25px",
     }
+  },
+  displayTimeScope: {
+    display: "none",
+    [`@media only screen and (min-width: ${breakpoints.bigDesktop.str})`]: {
+      display: "initial",
+    }
+  },
+  selectedTimeScopeLabel: {
+    fontWeight: 300,
+  },
+  rightIcon: {
+    marginLeft: 7,
+    marginRight: 7,
+    fontSize: 14,
   },
   displayIcon: {
     marginRight: 8,

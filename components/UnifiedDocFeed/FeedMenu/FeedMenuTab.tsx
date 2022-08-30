@@ -28,7 +28,7 @@ const FeedMenuTab = ({
   isTagsMenuOpen,
 }: Args) => {
   const router = useRouter();
-  const nestedOptions = tagFilters.filter((sub) =>
+  const nestedOptions = Object.values(tagFilters).filter((sub) =>
     sub.availableFor.includes(tabObj.value)
   );
 

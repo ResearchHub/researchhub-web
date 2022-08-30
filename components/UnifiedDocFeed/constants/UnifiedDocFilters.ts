@@ -1,18 +1,17 @@
 import icons from "~/config/themes/icons";
 
-export const topLevelFilters = [
-  {
+export const topLevelFilters = {
+  "/": {
     label: "Frontpage",
-    url: "/",
-    value: "frontpage",
+    value: "/",
     icon: icons.globeLight,
   },
-  {
+  "/my-hubs": {
     label: "My Hubs",
-    url: "/my-hubs",
-    value: "my-hubs",
+    value: "/my-hubs",
+    icon: null,
   },
-];
+};
 
 export const UnifiedDocFilters = {
   // intentional ordering
@@ -30,19 +29,19 @@ export const UnifiedDocFilterLabels = {
 };
 
 export const feedTypeOpts = {
-  all: {
+  "all": {
     value: "all",
     label: "All",
   },
-  paper: {
+  "paper": {
     value: "paper",
     label: "Papers",
   },
-  post: {
+  "post": {
     value: "post",
     label: "Posts",
   },
-  question: {
+  "question": {
     value: "question",
     label: "Questions",
   },
@@ -50,14 +49,14 @@ export const feedTypeOpts = {
     value: "meta-study",
     label: "Meta-Studies",
   },
-  bounty: {
+  "bounty": {
     value: "bounty",
     label: "Bounties",
   },
 };
 
-export const sortOpts = [
-  {
+export const sortOpts = {
+  "hot": {
     value: "hot",
     label: "Trending",
     selectedLabel: "Trending",
@@ -72,7 +71,7 @@ export const sortOpts = [
       feedTypeOpts["bounty"].value,
     ],
   },
-  // {
+  // "expiring_soon": {
   //   value: "expiring_soon",
   //   label: "Expiring Soon",
   //   selectedLabel: "Expiring Soon",
@@ -82,7 +81,7 @@ export const sortOpts = [
   //     feedTypeOpts["bounty"].value,
   //   ],
   // },
-  // {
+  // "rsc_offered": {
   //   value: "rsc_offered",
   //   label: "RSC Offered",
   //   selectedLabel: "RSC Offered",
@@ -92,7 +91,7 @@ export const sortOpts = [
   //     feedTypeOpts["bounty"].value,
   //   ],
   // },
-  {
+  "newest": {
     value: "newest",
     label: "Newest",
     selectedLabel: "Newest",
@@ -107,7 +106,7 @@ export const sortOpts = [
       feedTypeOpts["bounty"].value,
     ],
   },
-  {
+  "most_discussed": {
     value: "most_discussed",
     label: "Most Discussed",
     selectedLabel: "Discussed",
@@ -122,7 +121,7 @@ export const sortOpts = [
       feedTypeOpts["bounty"].value,
     ],
   },
-  {
+  "top_rated": {
     value: "top_rated",
     label: "Most Upvoted",
     selectedLabel: "Upvoted",
@@ -137,10 +136,10 @@ export const sortOpts = [
       feedTypeOpts["bounty"].value,
     ],
   },
-];
+};
 
-export const tagFilters = [
-  {
+export const tagFilters = {
+  "peer_reviewed": {
     value: "peer_reviewed",
     label: "Peer reviewed",
     availableFor: [
@@ -149,19 +148,49 @@ export const tagFilters = [
       feedTypeOpts["post"].value,
     ],
   },
-  {
+  "open_access": {
     value: "open_access",
     label: "Open access",
     availableFor: [feedTypeOpts["all"].value, feedTypeOpts["paper"].value],
   },
-  {
+  "expired": {
     value: "expired",
     label: "Show expired bounties",
     availableFor: [feedTypeOpts["bounty"].value],
   },
-  {
+  "answered": {
     value: "answered",
     label: "Show answered",
     availableFor: [feedTypeOpts["question"].value],
   },
-];
+}
+
+export const scopeOptions = {
+  "today": {
+    value: "today",
+    valueForApi: "today",
+    label: "Today",
+    isDefault: true,
+  },
+  "week": {
+    value: "week",
+    valueForApi: "week",
+    label: "This Week",
+  },
+  "month": {
+    value: "month",
+    valueForApi: "month",
+    label: "This Month",
+  },
+  "year": {
+    value: "year",
+    valueForApi: "year",
+    label: "This Year",
+  },
+  "all-time": {
+    value: "all-time",
+    valueForApi: "all_time",
+    label: "All Time",
+  },
+}
+

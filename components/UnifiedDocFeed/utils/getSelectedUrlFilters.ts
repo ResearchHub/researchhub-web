@@ -3,78 +3,51 @@ import {
   sortOpts,
   tagFilters,
   topLevelFilters,
+  scopeOptions
 } from "../constants/UnifiedDocFilters";
-import { scopeOptions } from "~/config/utils/options";
+import { NullableString } from "~/config/types/root_types";
+import { getAvailableSortOptions } from "./getAvailableSortOptions";
+import { getSortValue } from "./getSortValue";
 
 export type SelectedUrlFilters = {
-  topLevel: string | undefined;
-  type: string | undefined;
-  sort: string | undefined;
-  time: string | undefined;
+  topLevel: NullableString;
+  type: NullableString;
+  sort: NullableString;
+  time: NullableString;
   tags: string[];
+};
+
+const defaults = {
+  topLevel: Object.values(topLevelFilters)[0].value,
+  type: Object.values(feedTypeOpts)[0].value,
+  sort: Object.values(sortOpts)[0].value,
+  time: Object.values(scopeOptions)[0].value,
+  tags: <string[]>[],
 };
 
 export const getSelectedUrlFilters = ({
   query,
   pathname,
 }): SelectedUrlFilters => {
-  const defaults = {
-    topLevel: topLevelFilters[0].value,
-    type: Object.values(feedTypeOpts)[0].value,
-    sort: sortOpts[0].value,
-    time: scopeOptions[0].value,
-    tags: <string[]>[],
-  };
-  const selected = { ...defaults };
-
   if (!(query || pathname)) {
     return defaults;
   }
 
-  if (Array.isArray(query.tags)) {
-    selected.tags = [...query.tags];
-  } else if (query.tags) {
-    selected.tags.push(query.tags);
-  }
+  const isTagsAString = typeof(query.tags) === "string";
+  const isTagsAnArray = Array.isArray(query.tags);
 
-  const foundSort = sortOpts.find((opt) => opt.value === query?.sort)?.value;
-  const foundTopLevelFilter = topLevelFilters.find(
-    (f) => f.url === pathname
-  )?.value;
-  const foundTypeFilter = Object.values(feedTypeOpts).find(
-    (opt) => opt.value === query?.type
-  )?.value;
-  const foundTimeScope = scopeOptions.find(
-    (opt) => opt.value === query?.time
-  )?.value;
+  let selectedTopLevelFilter = topLevelFilters[pathname]?.value;
+  let selectedTypeFilter = feedTypeOpts[query?.type]?.value
+  let selectedTimeScope = scopeOptions[query?.time]?.value;
+  const selectedSort = getSortValue({ query, type: selectedTypeFilter || "all" });
 
-  if (foundTypeFilter) {
-    selected.type = foundTypeFilter;
-
-    // Update default sort
-    selected.sort = sortOpts.filter((sort) =>
-      sort.availableFor.includes(selected.type)
-    )[0].value;
+  const selected = {
+    ...defaults,
+    ...(selectedTopLevelFilter && { topLevel: selectedTopLevelFilter }),
+    ...(selectedTypeFilter && { type: selectedTypeFilter }),
+    ...(selectedSort && { sort: selectedSort }),
+    ...(selectedTimeScope && { time: selectedTimeScope }),
+    ...(query.tags && { tags: isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [] })
   }
-  if (foundTopLevelFilter) {
-    selected.topLevel = foundTopLevelFilter;
-  }
-  if (foundSort) {
-    selected.sort = foundSort;
-  }
-  if (foundTimeScope) {
-    selected.time = foundTimeScope;
-  }
-
-  for (let i = 0; i < selected.tags.length; i++) {
-    const t = selected.tags[i];
-    const tagIsAnOptionForThisType = tagFilters
-      .find((tf) => tf.value === t)
-      ?.availableFor?.includes(selected.type);
-    if (!tagIsAnOptionForThisType) {
-      delete selected.tags[t];
-    }
-  }
-
   return selected;
 };

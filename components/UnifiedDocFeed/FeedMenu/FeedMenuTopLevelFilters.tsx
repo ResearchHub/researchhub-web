@@ -46,9 +46,10 @@ const FeedMenuTopLevelFilters = ({
   }, []);
 
   const filterElems = useMemo(() => {
-    return topLevelFilters.map((f) => {
+    return Object.values(topLevelFilters).map((f) => {
       const isSelected = f.value === selectedFilters.topLevel;
-      const isMyHubs = f.value === "my-hubs";
+      const isMyHubs = f.value === "/my-hubs";
+
       return (
         <div
           className={`${css(
@@ -66,14 +67,15 @@ const FeedMenuTopLevelFilters = ({
           }}
         >
           <span className={css(styles.filterIcon)}>
-            {isMyHubs && (
+            {isMyHubs ? (
               <AuthorAvatar
                 author={currentUser?.author_profile || {}}
                 size={20}
                 trueSize={true}
               />
+            ) : (
+              f.icon
             )}
-            {f.icon}
           </span>
           <span className={css(styles.filterLabel)}>{f.label}</span>
           {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
