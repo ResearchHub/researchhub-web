@@ -8,6 +8,7 @@ import {
 import { NullableString } from "~/config/types/root_types";
 import { getAvailableSortOptions } from "./getAvailableSortOptions";
 import { getSortValue } from "./getSortValue";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 export type SelectedUrlFilters = {
   topLevel: NullableString;
@@ -29,7 +30,7 @@ export const getSelectedUrlFilters = ({
   query,
   pathname,
 }): SelectedUrlFilters => {
-  if (!(query || pathname)) {
+  if (isEmpty(query ?? pathname)) {
     return defaults;
   }
 

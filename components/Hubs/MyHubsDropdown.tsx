@@ -35,7 +35,7 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   };
 
   const hubOpts = useMemo(() => {
-    const myHubsOpts = (hubState.subscribedHubs || []).map((h) =>
+    const myHubsOpts = (hubState.subscribedHubs ?? []).map((h) =>
       renderDropdownOpt(h)
     );
     return myHubsOpts;
