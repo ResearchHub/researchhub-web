@@ -152,6 +152,15 @@ const NotificationEntry = (props) => {
         href: "/paper/[paperId]/[paperName]",
         as: `/${document_type}/${documentId}/${formattedSlug}`,
       };
+    } else if (document_type === "question") {
+      documentLink = {
+        href: "/[document_type]/[documentId]/[title]",
+        as: `/post/${documentId}/${formattedSlug}`,
+      };
+      discussionLink = {
+        href: "/[document_type]/[documentId]/[title]",
+        as: `/post/${documentId}/${formattedSlug}`,
+      };
     } else {
       documentLink = {
         href: "/[document_type]/[documentId]/[title]",
