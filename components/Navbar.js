@@ -40,6 +40,8 @@ import api from "~/config/api";
 import MobileOnly from "./MobileOnly";
 import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 
+export const NAVBAR_HEIGHT = 68;
+
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>

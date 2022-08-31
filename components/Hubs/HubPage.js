@@ -572,21 +572,6 @@ class HubPage extends Component {
                 />
               }
             />
-            <div className={css(styles.column, styles.sidebar)}>
-              <div className={css(styles.rightSidebarContainer)}>
-                <ActivityList
-                  // hubIds={
-                  //   feed === 0
-                  //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
-                  //     : hub ? [hub.id] : null // Single hub or All feed
-                  // }
-                  subscribedHubs={hubState.subscribedHubs}
-                  hub={hub}
-                  hubId={hub ? hub.id : null}
-                  feed={feed}
-                />
-              </div>
-            </div>
           </div>
         </div>
         <HomeRightSidebar />
