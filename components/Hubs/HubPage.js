@@ -548,11 +548,6 @@ class HubPage extends Component {
           <div className={css(styles.row, styles.body)}>
             <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.leftSidebarContainer)}>
-                <FeedList
-                  activeFeed={feed}
-                  onFeedSelect={this.onFeedSelect}
-                  current={home ? null : hub}
-                />
                 <LeaderboardContainer
                   hubId={0}
                   initialUsers={leaderboardFeed}

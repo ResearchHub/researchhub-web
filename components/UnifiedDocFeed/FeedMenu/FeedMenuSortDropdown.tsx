@@ -1,19 +1,22 @@
-import { sortOpts } from "./constants/UnifiedDocFilters";
-import { scopeOptions } from "~/config/utils/options";
+import { scopeOptions, sortOpts } from "../constants/UnifiedDocFilters";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
-function FeedOrderingDropdown({
+function FeedMenuSortDropdown({
   selectedOrderingValue,
+  selectedFilters,
   selectedScopeValue,
   onOrderingSelect,
   onScopeSelect,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedOrderingObj = sortOpts.find(
-    (o) => o.value === selectedOrderingValue
+  const selectedOrderingObj = sortOpts[selectedOrderingValue];
+
+  const availSortOpts = Object.values(sortOpts).filter((s) =>
+    s.availableFor.includes(selectedFilters.type)
   );
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -44,26 +47,36 @@ function FeedOrderingDropdown({
     };
   }, []);
 
+  const timeScopeObj = scopeOptions[selectedScopeValue];
   return (
-    <div className={css(styles.feedOrderingDropdown)} ref={dropdownRef}>
+    <div className={css(styles.FeedMenuSortDropdown)} ref={dropdownRef}>
       <div className={css(styles.display)} onClick={() => setIsOpen(!isOpen)}>
         <div className={css(styles.displayIcon)}>
           {selectedOrderingObj?.icon}
         </div>
         <div className={css(styles.displayLabel)}>
-          {selectedOrderingObj?.label}
+          {selectedOrderingObj?.selectedLabel}
+          {!selectedOrderingObj.disableScope && (
+            <span className={css(styles.displayTimeScope)}>
+              <span className={css(styles.rightIcon)}>{icons.arrowRight}</span>
+              <span className={css(styles.selectedTimeScopeLabel)}>
+                {timeScopeObj.label}
+              </span>
+            </span>
+          )}
         </div>
         <div className={css(styles.displayDown)}>{icons.chevronDown}</div>
       </div>
       {isOpen && (
         <div className={css(styles.dropdownBody)}>
-          {sortOpts.map((opt) => (
+          {availSortOpts.map((opt) => (
             <div
               onClick={() => _handleOrderingClick(opt)}
               className={css(
                 styles.opt,
                 selectedScopeValue === opt.value && styles.selectedOpt
               )}
+              key={"sort-" + opt.value}
             >
               <div className={css(styles.optLineItem)}>
                 <div className={css(styles.optIcon)}>{opt.icon}</div>
@@ -72,13 +85,14 @@ function FeedOrderingDropdown({
               {selectedOrderingObj?.value === opt.value &&
                 !selectedOrderingObj?.disableScope && (
                   <div className={css(styles.timeScopeContainer)}>
-                    {scopeOptions.map((scope) => (
+                    {Object.values(scopeOptions).map((scope) => (
                       <div
                         className={css(
                           styles.scope,
                           selectedScopeValue === scope.value &&
                             styles.selectedScope
                         )}
+                        key={`scope-` + scope.value}
                         onClick={(event) => _handleScopeClick({ event, scope })}
                       >
                         {scope.label.replace("This ", "")}
@@ -95,24 +109,54 @@ function FeedOrderingDropdown({
 }
 
 const styles = StyleSheet.create({
-  feedOrderingDropdown: {
+  FeedMenuSortDropdown: {
     position: "relative",
+    border: `1px solid ${colors.GREY_LINE(1)}`,
+    borderRadius: 4,
+    padding: "5px 12px",
+    fontSize: 15,
+    userSelect: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      border: 0,
+      padding: 0,
+      color: colors.BLACK(0.6),
+    },
   },
   display: {
     display: "flex",
-    fontWeight: 500,
     cursor: "pointer",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      lineHeight: "25px",
+    },
+  },
+  displayTimeScope: {
+    display: "none",
+    [`@media only screen and (min-width: ${breakpoints.bigDesktop.str})`]: {
+      display: "initial",
+    },
+  },
+  selectedTimeScopeLabel: {
+    fontWeight: 300,
+  },
+  rightIcon: {
+    marginLeft: 7,
+    marginRight: 7,
+    fontSize: 14,
   },
   displayIcon: {
     marginRight: 8,
+    fontSize: 16,
   },
   displayLabel: {
     marginRight: 8,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   displayDown: {},
   dropdownBody: {
     position: "absolute",
-    top: 25,
+    top: 35,
     right: 0,
     zIndex: 50,
     height: "auto",
@@ -120,6 +164,9 @@ const styles = StyleSheet.create({
     background: "white",
     boxShadow: "0px 0px 10px 0px #00000026",
     color: colors.BLACK(0.8),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      left: -10,
+    },
   },
   opt: {
     padding: "10px 14px",
@@ -129,8 +176,7 @@ const styles = StyleSheet.create({
   },
   optLineItem: {
     display: "flex",
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 15,
     cursor: "pointer",
   },
   selectedOpt: {
@@ -139,6 +185,7 @@ const styles = StyleSheet.create({
   optLabel: {},
   optIcon: {
     marginRight: 5,
+    width: 20,
   },
   timeScopeContainer: {
     display: "flex",
@@ -148,10 +195,10 @@ const styles = StyleSheet.create({
   scope: {
     border: `1px solid ${colors.GREY()}`,
     borderRadius: "4px",
-    marginRight: 4,
-    marginTop: 4,
+    marginRight: 7,
+    marginTop: 7,
     fontSize: 13,
-    padding: 4,
+    padding: "4px 6px",
     ":hover": {
       background: colors.LIGHT_GREY(),
       cursor: "pointer",
@@ -162,4 +209,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FeedOrderingDropdown;
+export default FeedMenuSortDropdown;

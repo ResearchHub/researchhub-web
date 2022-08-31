@@ -36,6 +36,7 @@ import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 import Bounty from "~/config/types/bounty";
+import { truncateText } from "~/config/utils/string";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -184,7 +185,7 @@ function FeedCard({
 
   const getTitle = () => {
     if (bounty && bounty?.contentType?.name === "comment") {
-      return bounty.relatedItem.plain_text;
+      return truncateText(bounty.relatedItem.plain_text, 250);
     } else {
       if (titleAsHtml) {
         return titleAsHtml;

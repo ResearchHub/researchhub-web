@@ -7,6 +7,7 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "./utils/getUnifiedDocType";
+import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/converToBackendFilters";
 
 export const apiRoot = {
   production: "backend.researchhub.com",
@@ -30,7 +31,7 @@ const prepFilters = (filters) => {
  * @param { Object } params -- params for querystring
  * @param { String } arrayParamSeparator -- seperator for array values
  */
-const prepURL = (url, params, arrayParamSeparator = ",") => {
+export const prepURL = (url, params, arrayParamSeparator = ",") => {
   let { querystring, rest, filters } = params;
 
   let qs = "";
@@ -67,6 +68,10 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
   url += qs;
 
   url += prepFilters(filters);
+
+  if (url.charAt(url.length - 1) === "&") {
+    url = url.substring(0, url.length - 1);
+  }
 
   return url;
 };
@@ -752,32 +757,31 @@ const routes = (BASE_URL) => {
     GET_UNIFIED_DOCS: ({
       externalSource,
       hubId,
-      ordering,
       page = 1,
       slug,
-      subscribedHubs,
-      timePeriod,
-      type, // docType
-      tags = [],
+      selectedFilters,
     }) => {
+      const backendFilters = convertToBackendFilters({
+        frontendFilters: selectedFilters,
+      });
+
       const url =
         BASE_URL + "researchhub_unified_document/get_unified_documents/";
       const params = {
         querystring: {
           external_source: externalSource,
           hub_id: hubId,
-          ordering,
           page,
           slug,
-          subscribed_hubs: subscribedHubs,
-          type,
-          time: timePeriod,
+          ordering: backendFilters.sort,
+          time: backendFilters.time,
+          type: backendFilters.type,
+          ...(backendFilters.topLevel === "my-hubs" && {
+            subscribed_hubs: true,
+          }),
+          ...(selectedFilters.type === "bounty" && { bounties: "all" }),
         },
       };
-
-      for (let i = 0; i < tags.length; i++) {
-        params.querystring = { ...params.querystring, ...tags[i] };
-      }
 
       const finalUrl = prepURL(url, params);
       return finalUrl;

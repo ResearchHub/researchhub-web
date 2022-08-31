@@ -138,7 +138,9 @@ h3 {
   overflow: scroll !important;
 }
 
-#askQuestionForm .ck-content p {
+#askQuestionForm .ck-content p,
+#askQuestionForm .ck-content ul,
+#askQuestionForm .ck-content li {
   font-size: 16px !important;
 }
 

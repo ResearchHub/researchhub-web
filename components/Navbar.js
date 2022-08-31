@@ -213,18 +213,18 @@ const Navbar = (props) => {
             key={`navbar_tab_publish`}
           >
             <a className={css(styles.tabLink)}>
-              <div className={css(styles.tab)}>Publish</div>
+              <div className={css(styles.tab)}>Notebook</div>
             </a>
           </Link>
         ) : (
           <PermissionNotificationWrapper
-            modalMessage="access our publishing tools"
+            modalMessage="access the notebook"
             loginRequired={true}
             hideRipples={true}
             onClick={() => router.push(`/${user.organization_slug}/notebook`)}
             styling={styles.tab}
           >
-            {`Publish`}
+            {`Notebook`}
           </PermissionNotificationWrapper>
         )}
         <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
@@ -235,16 +235,6 @@ const Navbar = (props) => {
         <Link href={"/live"} key={`navbar_tab_live`}>
           <a className={css(styles.tabLink)}>
             <div className={css(styles.tab)}>Live</div>
-          </a>
-        </Link>
-        <Link
-          href={
-            "https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-          }
-          key={`navbar_tab_jobs`}
-        >
-          <a className={css(styles.tabLink)} target="_blank">
-            <div className={css(styles.tab)}>Jobs</div>
           </a>
         </Link>
       </Fragment>
@@ -480,10 +470,6 @@ const Navbar = (props) => {
               id="navbarSearch"
             />
           </div>
-        </div>
-
-        <div className={css(styles.hubPopoverWrapper)}>
-          <HubSelector />
         </div>
 
         <div className={css(styles.searchSmallScreen)}>
@@ -725,10 +711,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
-    [`@media only screen and (max-width: ${breakpoints.medium.large})`]: {
-      padding: "20px 20px",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: "20px 20px 20px 10px",
       justifyContent: "space-between",
-      height: 66,
     },
   },
   unstickyNavbar: {
@@ -821,8 +806,9 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     marginTop: 9,
-    marginLeft: 15,
+    marginLeft: "auto",
     width: "100%",
+    maxWidth: 400,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       marginTop: 15,
       marginLeft: 10,
@@ -839,6 +825,8 @@ const styles = StyleSheet.create({
     display: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
+      position: "absolute",
+      right: 40,
     },
   },
   tab: {

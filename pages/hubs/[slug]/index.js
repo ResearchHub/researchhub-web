@@ -12,6 +12,7 @@ import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
+import { getSelectedUrlFilters } from "~/components/UnifiedDocFeed/utils/getSelectedUrlFilters";
 
 class Index extends Component {
   static async getInitialProps(ctx) {
@@ -40,17 +41,15 @@ class Index extends Component {
     }
 
     try {
-      const beDocType = getBEUnifiedDocType(type);
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
+      const selectedFilters = getSelectedUrlFilters({ query, pathname: "/" });
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
           {
+            selectedFilters,
             // Initial Feed
             hubId: currentHub?.id,
-            ordering: "hot",
-            timePeriod: "today",
-            type: beDocType,
-            ...(type === "bounties" && { tags: [{ bounties: "all" }] }),
+            page: 1,
           },
           authToken,
           fetchFeedWithVotes /* withVotes */

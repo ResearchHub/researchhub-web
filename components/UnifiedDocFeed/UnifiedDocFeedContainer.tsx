@@ -2,16 +2,13 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
-import { scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import { isServer } from "~/config/server/isServer";
 import {
-  getFilterFromRouter,
   getPaginationInfoFromServerLoaded,
   PaginationInfo,
-  useEffectForceUpdate,
+  useEffectFetchDocs,
   useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
@@ -23,39 +20,32 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
-import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
+import FeedMenu from "./FeedMenu/FeedMenu";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
-import ExitableBanner from "../Banner/ExitableBanner";
-import DesktopOnly from "../DesktopOnly";
-import { sortOpts } from "./constants/UnifiedDocFilters";
-
+import { getSelectedUrlFilters } from "./utils/getSelectedUrlFilters";
+import ResearchHubBanner from "~/components/ResearchHubBanner";
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
 });
 
 function UnifiedDocFeedContainer({
-  auth, // redux
-  feed,
   home: isHomePage,
   hub, // selected hub
   hubName,
-  hubState, // hub data of current user
   isLoggedIn,
   loggedIn,
   serverLoadedData, // Loaded on the server via getInitialProps on full page load
   subscribeButton,
+  auth,
 }): ReactElement<"div"> {
   const router = useRouter();
   const routerPathName = router.pathname;
-  const [docTypeFilter, setDocTypeFilter] = useState<string>(
-    getFilterFromRouter(router)
-  );
-  const [subFilters, setSubFilters] = useState({
-    filterBy: sortOpts[0],
-    scope: scopeOptions[0],
-    tags: [] as any,
-  });
-
+  const selectedFilters = useMemo(() => {
+    return getSelectedUrlFilters({
+      query: router.query,
+      pathname: router.pathname,
+    });
+  }, [router.pathname, router.query]);
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
     getPaginationInfoFromServerLoaded(serverLoadedData)
   );
@@ -63,18 +53,13 @@ function UnifiedDocFeedContainer({
     serverLoadedData?.results || []
   );
   const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(true);
-
   const { hasMore, isLoadingMore, localPage, page } = paginationInfo;
-  const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
-  const fetchParamsWithoutCallbacks = {
-    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
-    hotV2: router.query?.hot_v2 == "true",
+  const fetchParams = {
+    selectedFilters,
     hubID,
     isLoggedIn,
     page,
-    subFilters,
-    subscribedHubs: isOnMyHubsTab,
   };
 
   useEffect(() => {
@@ -89,10 +74,9 @@ function UnifiedDocFeedContainer({
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
 
-  /* Force update when hubs or docType changes. start from page 1 */
-  useEffectForceUpdate({
+  useEffectFetchDocs({
     fetchParams: {
-      ...fetchParamsWithoutCallbacks,
+      ...fetchParams,
       onError: (error: Error): void => {
         emptyFncWithMsg(error);
         setPaginationInfo({
@@ -124,7 +108,7 @@ function UnifiedDocFeedContainer({
     },
     firstLoad,
     setUnifiedDocsLoading,
-    updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
+    updateOn: [selectedFilters, hubID, loggedIn],
   });
 
   const loadMore = () => {
@@ -132,7 +116,7 @@ function UnifiedDocFeedContainer({
     setPaginationInfo({ ...paginationInfo, localPage: nextLocalPage });
     if (nextLocalPage === page * 2 && hasMore) {
       fetchUnifiedDocs({
-        ...fetchParamsWithoutCallbacks,
+        ...fetchParams,
         onError: (error: Error): void => {
           emptyFncWithMsg(error);
           setPaginationInfo({
@@ -165,61 +149,23 @@ function UnifiedDocFeedContainer({
     }
   };
 
-  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-
-  const onTagsSelect = ({ tags }) => {
-    setSubFilters({ ...subFilters, tags });
-  }
-
-  const onDocTypeFilterSelect = (selected) => {
-    if (docTypeFilter !== selected) {
-      // logical ordering
-      setUnifiedDocuments([]);
-      setDocTypeFilter(selected);
-      setUnifiedDocsLoading(true);
-      setPaginationInfo({
-        hasMore: false,
-        isLoading: true,
-        isLoadingMore: false,
-        isServerLoaded: false,
-        localPage: 1,
-        page: 1,
-      });
-
-      const query = { ...router.query, type: selected };
-      if (!query.type) {
-        delete query.type;
-      }
-
-      router.push({
-        pathname: routerPathName,
-        query,
-      });
-    }
-  };
-
-  const hasSubscribed = useMemo(
-    (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
-    [auth.authChecked, hubState.subscribedHubs]
-  );
+  const showLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
   const formattedMainHeader = useMemo(
     (): string =>
       formatMainHeader({
-        feed,
-        filterBy: subFilters.filterBy ?? null,
         hubName: hubName ?? "",
         isHomePage,
       }),
-    [hubName, feed, subFilters, isHomePage]
+    [hubName, isHomePage]
   );
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     setUnifiedDocuments,
-    onBadgeClick: onDocTypeFilterSelect,
     unifiedDocumentData: renderableUniDoc,
   });
+  const onMyHubsLoggedOut = selectedFilters.topLevel === "/my-hubs" && auth?.authChecked && !auth?.user?.id;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -236,18 +182,8 @@ function UnifiedDocFeedContainer({
         />
       )}
 
-      <UnifiedDocFeedMenu
-        subFilters={subFilters}
-        docTypeFilter={docTypeFilter}
-        onTagsSelect={onTagsSelect}
-        onDocTypeFilterSelect={onDocTypeFilterSelect}
-        onSubFilterSelect={(filterBy) =>
-          setSubFilters({ ...subFilters, filterBy, scope: subFilters.scope })
-        }
-        onScopeSelect={(scope) =>
-          setSubFilters({ ...subFilters, filterBy: subFilters.filterBy, scope })
-        }
-      />
+      {/* @ts-ignore */}
+      <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -256,12 +192,15 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
+          {onMyHubsLoggedOut &&
+            <ResearchHubBanner hub={{name: "Research Hub" }} />
+          }
           <FeedBlurWithButton />
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
-      {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {(!isLoggedIn && isOnMyHubsTab) || unifiedDocsLoading ? null : (
+      {unifiedDocsLoading ||
+      (onMyHubsLoggedOut) ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -270,7 +209,7 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : canShowLoadMoreButton ? (
+          ) : showLoadMoreButton ? (
             <Ripples className={css(styles.loadMoreButton)} onClick={loadMore}>
               {"Load More"}
             </Ripples>

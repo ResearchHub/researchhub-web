@@ -10,6 +10,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
 
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 class ResearchHubBanner extends Component {
   constructor(props) {
@@ -70,12 +71,11 @@ class ResearchHubBanner extends Component {
               {this.props.all || this.props.home
                 ? "ResearchHub"
                 : this.props.hub.name}
-              !
             </span>
           </div>
           <div className={css(styles.subtext, styles.text)}>
-            We're a community seeking to improve prioritization, collaboration,
-            reproducibility, and funding of scientific research.{" "}
+            {`We are bulding an open platform and community whose goal it is to
+            accelerate science. `}
             <Link href={"/about"}>
               <a className={css(styles.readMore)}>Read more</a>
             </Link>
@@ -115,9 +115,7 @@ var styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: "flex-start",
-    marginLeft: "calc(100% * .08)",
     justifyContent: "space-between",
-    height: 200,
     zIndex: 2,
     "@media only screen and (max-width: 767px)": {
       height: "unset",
@@ -136,16 +134,20 @@ var styles = StyleSheet.create({
   homeBanner: {
     background: "linear-gradient(#684ef5, #4d58f6)",
     width: "100%",
-    height: 320,
     position: "relative",
     display: "flex",
+    padding: "20px 40px",
+    boxSizing: "border-box",
     justifyContent: "flex-start",
     alignItems: "center",
     zIndex: 0,
-    "@media only screen and (max-width: 767px)": {
+    borderRadius: "4px",
+    marginBottom: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       position: "relative",
       alignItems: "unset",
       height: "unset",
+      padding: "20px 20px",
     },
   },
   showBanner: {
@@ -177,6 +179,7 @@ var styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     zIndex: 2,
+    borderRadius: 4,
     "@media only screen and (max-width: 577px)": {
       objectFit: "cover",
       position: "absolute",
@@ -197,55 +200,38 @@ var styles = StyleSheet.create({
     },
   },
   header: {
-    fontSize: 50,
+    fontSize: 38,
     fontWeight: 400,
-    "@media only screen and (max-width: 685px)": {
-      fontSize: 40,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 32,
     },
-    "@media only screen and (max-width: 577px)": {
-      fontSize: 25,
-      marginTop: 16,
-      width: 300,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 26,
     },
   },
   subtext: {
     whiteSpace: "initial",
     width: 670,
     fontSize: 16,
-    fontWeight: 300,
-    "@media only screen and (max-width: 799px)": {
-      fontSize: 15,
+    fontWeight: 400,
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
-    "@media only screen and (max-width: 577px)": {
-      fontSize: 16,
-      width: 305,
-      marginTop: 20,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
-    },
-  },
-  googleLogin: {
-    "@media only screen and (max-width: 767px)": {
-      marginBottom: 18,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 15,
+      width: "100%",
     },
   },
   googleLoginButton: {
     border: "1px solid #fff",
-  },
-  button: {
-    height: 55,
-    width: 230,
-    marginTop: 10,
-    marginBottom: 0,
-  },
-  iconStyle: {
-    height: 33,
-    width: 33,
+    width: "auto",
+    height: "auto",
+    marginTop: 20,
+    padding: "8px 19px",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      padding: "5px 15px",
+    },
   },
   promo: {
     marginTop: 15,

@@ -83,6 +83,7 @@ export function getBEUnifiedDocType(
     case "posts":
       return "posts";
     case "hypothesis":
+    case "meta-study":
       return "hypothesis";
     case "paper":
       return "paper";

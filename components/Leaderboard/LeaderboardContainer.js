@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     border: "1px solid #ededed",
     padding: "15px 0",
     boxSizing: "border-box",
-    marginTop: 20,
   },
   title: {
     textTransform: "uppercase",
