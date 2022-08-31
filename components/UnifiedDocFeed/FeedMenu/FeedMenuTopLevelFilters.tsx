@@ -71,8 +71,9 @@ const FeedMenuTopLevelFilters = ({
             {isMyHubs ? (
               <AuthorAvatar
                 author={currentUser?.author_profile || {}}
-                size={20}
+                size={23}
                 trueSize={true}
+                disableLink={true}
               />
             ) : (
               f.icon
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     padding: "10px 14px",
   },
   filter: {
-    padding: "0px 0px 12px 0px",
+    padding: "0px 2px 12px 2px",
     display: "flex",
     position: "relative",
     marginRight: 25,
