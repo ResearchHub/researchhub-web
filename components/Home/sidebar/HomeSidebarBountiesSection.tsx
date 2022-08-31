@@ -1,5 +1,5 @@
 import { css } from "aphrodite";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import {
   fetchOpenBounties,
   SimpleBounty,
@@ -41,7 +41,7 @@ const useEffectFetchOpenBounties = ({
   }, [isFetching]);
 };
 
-export default function HomeSidebarBountiesSection(): ReactElement {
+export default function HomeSidebarBountiesSection(): ReactElement | null {
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isFetching: true,
     page: 1,
@@ -57,6 +57,10 @@ export default function HomeSidebarBountiesSection(): ReactElement {
   const { isFetching, page = 1 } = paginationInfo;
   const isReadyToRender = !isFetching && page > 0;
   const _isLoadingMore = !isFetching && page !== 1;
+
+  if (isEmpty(openBounties) && !isFetching) {
+    return null;
+  }
 
   const bountyItems = openBounties?.map(
     ({
