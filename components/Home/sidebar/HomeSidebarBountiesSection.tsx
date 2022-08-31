@@ -107,7 +107,13 @@ export default function HomeSidebarBountiesSection(): ReactElement {
     <Fragment>
       <SideColumnTitle
         title={
-          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "space-between",
+              width: "100%",
+            }}
+          >
             <div>{"Open Bounties"}</div>
             <Link href="/?type=bounties">
               <a className={css(styles.viewAll)}>{"View All"}</a>
