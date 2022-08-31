@@ -110,7 +110,7 @@ export default function HomeSidebarBountiesSection(): ReactElement {
           <div
             style={{
               display: "flex",
-              alignItems: "space-between",
+              alignItems: "center",
               width: "100%",
             }}
           >

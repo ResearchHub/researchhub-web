@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
-    // width: "100%",
+    justifyContent: "space-between",
+    width: "100%",
   },
   count: {
     color: colors.BLUE(),
