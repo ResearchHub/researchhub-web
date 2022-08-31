@@ -776,7 +776,7 @@ const routes = (BASE_URL) => {
           ordering: backendFilters.sort,
           time: backendFilters.time,
           type: backendFilters.type,
-          ...(backendFilters.topLevel === "my-hubs" && {
+          ...(backendFilters.topLevel === "/my-hubs" && {
             subscribed_hubs: true,
           }),
           ...(selectedFilters.type === "bounty" && { bounties: "all" }),

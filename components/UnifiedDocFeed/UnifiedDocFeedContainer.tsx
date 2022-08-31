@@ -73,7 +73,6 @@ function UnifiedDocFeedContainer({
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
-
   useEffectFetchDocs({
     fetchParams: {
       ...fetchParams,
