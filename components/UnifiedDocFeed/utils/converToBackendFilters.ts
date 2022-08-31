@@ -1,5 +1,7 @@
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { scopeOptions } from "../constants/UnifiedDocFilters";
 import { SelectedUrlFilters } from "./getSelectedUrlFilters";
+
 
 type Args = {
   frontendFilters: SelectedUrlFilters;
@@ -9,6 +11,10 @@ export const convertToBackendFilters = ({
   frontendFilters,
 }: Args): SelectedUrlFilters => {
   const backendFilters = { ...frontendFilters };
-  backendFilters.type = getBEUnifiedDocType(frontendFilters.type);
-  return backendFilters;
+
+  return {
+    ...frontendFilters,
+    type: getBEUnifiedDocType(frontendFilters.type),
+    ...(frontendFilters.time && { time: scopeOptions[frontendFilters.time].valueForApi }) 
+  }
 };
