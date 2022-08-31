@@ -19,7 +19,7 @@ import ShareModal from "~/components/ShareModal";
 import { createUserSummary } from "~/config/utils/user";
 import { timeSince, timeToRoundUp } from "~/config/utils/dates";
 import colors, { badgeColors, voteWidgetColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -85,8 +85,21 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  const renderBadge = ({ type, isAcceptedAnswer = false }) => {
-    if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
+  const renderBadge = ({ type, isAcceptedAnswer = false, bounties = [] }) => {
+    const openBounty = bounties.find((b) => b.status === "OPEN");
+    if (openBounty) {
+      return (
+        <div className={css(styles.badgeContainer)}>
+          <span className={css(badge.container, badge.bounty)}>
+            <span className={css(badge.icon)}>
+              {/* <MedalIcon color={"black"} height={15} width={15} /> */}
+              {/* <ResearchCoinIcon version={4} height={15} width={15} /> */}
+            </span>
+            <span className={css(badge.label)}>Open Bounty</span>
+          </span>
+        </div>
+      );
+    } else if (type === POST_TYPES.REVIEW || type === POST_TYPES.SUMMARY) {
       const postType = postTypes.find((t) => t.value === type);
       return (
         <div className={css(styles.badgeContainer)}>
@@ -211,6 +224,7 @@ const DiscussionPostMetadata = (props) => {
       {renderBadge({
         type: discussionType,
         isAcceptedAnswer: isAcceptedAnswer || data.is_accepted_answer,
+        bounties,
       })}
     </div>
   );
@@ -302,6 +316,10 @@ function formatTimestamp(props) {
 
 const badge = StyleSheet.create({
   review: {},
+  bounty: {
+    background: colors.ORANGE_DARK(1),
+    color: "white",
+  },
   answer: {
     background: colors.NEW_GREEN(0.1),
     color: colors.NEW_GREEN(),
@@ -352,6 +370,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 14,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
     },
   },
   action: {
