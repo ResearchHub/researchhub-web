@@ -1,6 +1,7 @@
 import { StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 export const styles = StyleSheet.create({
   viewAll: {
@@ -20,7 +21,9 @@ export const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: 320,
-    // TODO: calvinhlee - add media query width
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      display: "none",
+    },
   },
   HomeRightSidebarContainer: {
     borderRadius: 4,
@@ -33,7 +36,7 @@ export const styles = StyleSheet.create({
     background: colors.WHITE,
     padding: "15px 20px 10px 20px",
     width: "100%",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       padding: "15px 0 5px",
     },
   },
