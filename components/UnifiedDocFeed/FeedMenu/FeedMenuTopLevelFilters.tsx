@@ -46,7 +46,7 @@ const FeedMenuTopLevelFilters = ({
   }, []);
 
   const filterElems = useMemo(() => {
-    return Object.values(topLevelFilters).map((f) => {
+    return Object.values(topLevelFilters).map((f, idx) => {
       const isSelected = f.value === selectedFilters.topLevel;
       const isMyHubs = f.value === "/my-hubs";
 
@@ -58,6 +58,7 @@ const FeedMenuTopLevelFilters = ({
             renderAsDropdown && styles.filterAsDropdownOpt
           )} filterSelected`}
           ref={filterEl}
+          key={`filter-${idx}`}
           onClick={() => {
             if (isSelected && isMyHubs) {
               setIsMyHubsDropdownOpen(!isMyHubsDropdownOpen);
