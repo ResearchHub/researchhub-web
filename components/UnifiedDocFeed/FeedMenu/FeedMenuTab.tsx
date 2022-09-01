@@ -54,6 +54,9 @@ const FeedMenuTab = ({
                 }
               }
             }
+            else {
+              handleOpenTagsMenu(null);
+            }
           }}          
         >
           <span className={css(styles.tabText)}>{tabObj.label}</span>

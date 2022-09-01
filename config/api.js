@@ -765,6 +765,8 @@ const routes = (BASE_URL) => {
         frontendFilters: selectedFilters,
       });
 
+      const hasTags = (backendFilters.tags ?? []).length > 0;
+
       const url =
         BASE_URL + "researchhub_unified_document/get_unified_documents/";
       const params = {
@@ -776,6 +778,7 @@ const routes = (BASE_URL) => {
           ordering: backendFilters.sort,
           time: backendFilters.time,
           type: backendFilters.type,
+          ...(hasTags && { tags: backendFilters.tags }),
           ...(backendFilters.topLevel === "/my-hubs" && {
             subscribed_hubs: true,
           }),
