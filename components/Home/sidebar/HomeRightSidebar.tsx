@@ -26,10 +26,31 @@ export default function HomeRightSidebar(): ReactElement {
                     <div
                       className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}
                     >
+                      <img
+                        src="/static/beaker.svg"
+                        style={{ marginRight: 6, marginTop: -3, width: 12 }}
+                      />
+                      {" What is ResearchHub?"}
+                    </div>
+                  }
+                  body={
+                    <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+                      {
+                        "A blockchain token earned by users when they share scientific content on ResearchHub. Once earned, RSC gives users the ability to create bounties, tip other users, and gain voting rights within community decision making."
+                      }
+                    </div>
+                  }
+                  key={"what-is-researchhub?"}
+                />,
+                <RhCarouselItem
+                  title={
+                    <div
+                      className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}
+                    >
                       <span style={{ marginRight: 4, marginTop: 3 }}>
                         {icons.RSC()}
                       </span>
-                      {" What is ResearchCoin?"}
+                      {" What is ResearchCoin (RSC)?"}
                     </div>
                   }
                   body={
@@ -41,18 +62,29 @@ export default function HomeRightSidebar(): ReactElement {
                   }
                   key={"what-is-rsc"}
                 />,
+
                 <RhCarouselItem
-                  body={
-                    <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-                      {"CONTENT TBD 1"}
+                  title={
+                    <div
+                      className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}
+                    >
+                      <span style={{ marginRight: 4 }}>{icons.user}</span>
+                      {" Community"}
                     </div>
                   }
-                  key={"what-is-long-text"}
-                />,
-                <RhCarouselItem
                   body={
                     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-                      {"CONTENT TBD 2"}
+                      <span>
+                        {
+                          "We’re a collection of skeptical, yet optimistic individuals who want to accelerate the pace of science. We think the incentives of scientific funding and publishing are broken, and that blockchain can help. If you'd like to "
+                        }
+                        <a
+                          href="https://discord.gg/researchhub"
+                          target="__blank"
+                        >
+                          {" join us"}
+                        </a>
+                      </span>
                     </div>
                   }
                   key={"what-is-long-text-2"}
