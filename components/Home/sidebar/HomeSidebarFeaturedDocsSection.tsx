@@ -1,11 +1,11 @@
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchFeaturedDocs } from "./api/fetchFeaturedDocs";
 import { Fragment, ReactElement, useEffect, useState } from "react";
-import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { SideColumnTitle } from "~/components/Typography";
-import { SimpleBounty } from "~/components/Bounty/api/fetchOpenBounties";
 import { styles } from "./styles/HomeRightSidebarStyles";
+import { UnifiedDocument } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
+import FeaturedDocSidebarItem from "./sidebar_items/FeaturedDocSidebarItem";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 
@@ -17,17 +17,17 @@ const useEffectFetchFeaturedDocs = ({
   setPaginationInfo,
 }: {
   paginationInfo: PaginationInfo;
-  setFeaturedDocs: (FeaturedDocs: any) => void;
+  setFeaturedDocs: (featuredDocs: any) => void;
   setPaginationInfo: (paginationInfo: PaginationInfo) => void;
 }): void => {
   const { isFetching, page } = paginationInfo;
   useEffect((): void => {
     if (isFetching) {
       fetchFeaturedDocs({
-        onSuccess: (FeaturedDocs: SimpleBounty) => {
+        onSuccess: (featuredDocs: UnifiedDocument) => {
           // TODO: calvinhlee deal with page when supported by BE
           setPaginationInfo({ isFetching: false, page });
-          setFeaturedDocs(FeaturedDocs);
+          setFeaturedDocs(featuredDocs);
         },
         onError: emptyFncWithMsg,
       });
@@ -40,7 +40,7 @@ export default function HomeSidebarFeaturedDocsSection(): ReactElement | null {
     isFetching: true,
     page: 1,
   });
-  const [featuredDocs, setFeaturedDocs] = useState<SimpleBounty[]>([]);
+  const [featuredDocs, setFeaturedDocs] = useState<UnifiedDocument[]>([]);
 
   useEffectFetchFeaturedDocs({
     paginationInfo,
@@ -55,40 +55,17 @@ export default function HomeSidebarFeaturedDocsSection(): ReactElement | null {
   if (isEmpty(featuredDocs) && !isFetching) {
     return null;
   }
-  console.warn("featuredDcos: ", featuredDocs);
-  const featuredDocItems = []
-  // (featuredDocs ?? [])?.map(
-  //   ({
-  //     amount,
-  //     content_type: { name: contentTypeName },
-  //     created_by,
-  //     expiration_date,
-  //     id,
-  //     item,
-  //   }: SimpleBounty): ReactElement<"div"> => {
-  //     // TODO: calvinhlee - Change backend payload format to resolve docType
-  //     const {
-  //       id: relatedDocID,
-  //       title,
-  //       slug,
-  //     } = (item?.documents ?? [])[0] ?? {};
-  //     const { document_type: itemDocType, unified_document } = item ?? {};
 
-  //     const documentType = itemDocType
-  //       ? getFEUnifiedDocType(itemDocType)
-  //       : getFEUnifiedDocType(unified_document?.document_type);
-  //     const resolvedRelatedDocID =
-  //       relatedDocID ??
-  //       unified_document?.documents?.id ??
-  //       (unified_document?.documents ?? [])[0]?.id;
-  //     const resolvedSlug =
-  //       slug ??
-  //       unified_document?.documents?.slug ??
-  //       (unified_document?.documents ?? [])[0]?.slug;
-
-  //     return <div>hi</div>;
-  //   }
-  // );
+  const featuredDocItems = (featuredDocs ?? [])?.map(
+    (uniDoc: UnifiedDocument, ind: number): ReactElement<"div"> => {
+      return (
+        <FeaturedDocSidebarItem
+          {...uniDoc}
+          key={`featuredDocSidebarItem-${ind}`}
+        />
+      );
+    }
+  );
 
   return (
     <Fragment>
