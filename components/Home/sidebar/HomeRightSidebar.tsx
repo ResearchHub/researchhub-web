@@ -29,7 +29,7 @@ export default function HomeRightSidebar(): ReactElement {
                       <span style={{ marginRight: 4, marginTop: 3 }}>
                         {icons.RSC()}
                       </span>
-                      {" What is ResearchCoin "}
+                      {" What is ResearchCoin?"}
                     </div>
                   }
                   body={
@@ -49,6 +49,14 @@ export default function HomeRightSidebar(): ReactElement {
                   }
                   key={"what-is-long-text"}
                 />,
+                <RhCarouselItem
+                body={
+                  <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+                    {"This is a LongText11"}
+                  </div>
+                }
+                key={"what-is-long-tet"}
+              />,
               ]}
             />
           }
