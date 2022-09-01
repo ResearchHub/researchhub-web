@@ -96,7 +96,7 @@ export default function HomeRightSidebar(): ReactElement {
             background: colors.NEW_BLUE(0.07),
             width: "280px !important",
             borderRadius: 6,
-            height: 152,
+            height: 172,
             margin: 16,
             padding: 16,
           }}
