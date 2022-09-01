@@ -34,7 +34,7 @@ export interface TopLevelDocument {
   boostAmount: number;
   id: ID;
   isOpenAccess?: boolean;
-  bounties?: Bounty[]
+  bounties?: Bounty[];
   document_type: string;
 }
 
@@ -44,7 +44,7 @@ export type PaperFormat = {
 };
 
 export type UrlDocument = {
-  id?: ID;
+  id: ID;
   title?: string;
   slug?: string;
   paperTitle?: string;
@@ -52,6 +52,8 @@ export type UrlDocument = {
 };
 
 export type RhDocumentType =
+  | "all"
+  | "bounties"
   | "eln"
   | "hypothesis"
   | "paper"
@@ -65,22 +67,22 @@ export type VoteEnumType = 0 /* nuetral */ | 1 /* upvote */ | 2; /* downvote */
 export type CommentType = "comment" | "reply" | "thread";
 
 export type UnifiedDocument = {
-  id: ID;
-  documentType: RhDocumentType;
-  document?: UrlDocument;
   createdBy?: CreatedBy;
-  reviewSummary?: PeerReviewScoreSummary;
+  document?: UrlDocument;
+  documentType: RhDocumentType;
+  id: ID;
   isRemoved: boolean;
+  reviewSummary?: PeerReviewScoreSummary;
 };
 
 export type AuthorProfile = {
-  id?: ID;
-  profileImage?: string;
   firstName?: string;
-  lastName?: string;
+  id?: ID;
   isClaimed: boolean;
-  url: string;
+  lastName?: string;
+  profileImage?: string;
   sequence?: "first" | "additional";
+  url: string;
 };
 
 export type RHUser = {
