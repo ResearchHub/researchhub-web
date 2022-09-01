@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     },
   },
   HomeRightSidebar: {
-    borderLeft: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
+    margin: "32px 32px 0 0",
     height: "100%",
     position: "relative",
     width: "100%",
@@ -27,7 +27,6 @@ export const styles = StyleSheet.create({
   },
   HomeRightSidebarContainer: {
     borderRadius: 4,
-    borderTop: "none",
     color: colors.GREY_LIST_LABEL,
     padding: "0 0 16px 0",
     position: "sticky",
