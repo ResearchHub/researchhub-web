@@ -6,7 +6,6 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import ExitableBanner from "~/components/Banner/ExitableBanner";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
-import RhCarouselItem from "~/components/shared/carousel/RhCarouselItem";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
@@ -32,7 +31,10 @@ export default function HomeRightSidebar(): ReactElement {
               {icons.times}
             </div>
           }
-          exitButtonPositionOverride={{ top: "4px !important", right: "4px !important" }}
+          exitButtonPositionOverride={{
+            top: "4px !important",
+            right: "4px !important",
+          }}
         />
         <HomeSidebarBountiesSection />
         <HomeSidebarFeaturedDocsSection />
