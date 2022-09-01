@@ -26,6 +26,7 @@ const FeedMenuTagDropdown = ({ options, forTab, handleSelect, selectedTags }: Ar
         <div
           className={css(styles.tag)}
           onClick={(event) => {
+            console.log('selecerd')
             event.stopPropagation();
             event.preventDefault();
             handleSelect(opt.value);
@@ -52,11 +53,12 @@ const styles = StyleSheet.create({
   additionalOpts: {
     position: "absolute",
     background: "white",
-    top: 30,
+    top: 33,
     left: 2,
     width: 150,
     zIndex: 5,
     padding: 5,
+    paddingBottom: 10,
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
   },
   additionalOptsRightAlign: {
@@ -64,7 +66,8 @@ const styles = StyleSheet.create({
     right: 2,
   },
   tag: {
-    padding: "6px 5px ",
+    marginTop: 5,
+    padding: "2px 5px ",
     color: colors.BLACK(1.0),
     display: "flex",
     justifyContent: "space-between",
