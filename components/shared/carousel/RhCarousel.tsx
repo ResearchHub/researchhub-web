@@ -1,9 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
-import RhCarouselItem, { RhCarouselItemProps } from "./RhCarouselItem";
+import RhCarouselItem from "./RhCarouselItem";
 
 type Props = {
-  rhCarouselItemProps: RhCarouselItemProps[];
+  rhCarouselItem: ReactElement<typeof RhCarouselItem>[];
 };
 
 const RhCarouselControl = ({
@@ -15,19 +15,22 @@ const RhCarouselControl = ({
   setIndex: (ind: number) => void;
   totalItems: number;
 }): ReactElement => {
-  return <div>I'm control</div>;
+  return (
+    <div className={css(styles.rhCarouselControl)}>
+      <div>I'm control</div>
+      <div>I'm pills</div>
+    </div>
+  );
 };
 
-export default function RhCarousel({
-  rhCarouselItemProps,
-}: Props): ReactElement {
-  const totalNumItems = rhCarouselItemProps.length;
+export default function RhCarousel({ rhCarouselItem }: Props): ReactElement {
+  const totalNumItems = rhCarouselItem.length;
   const shouldDisplayControl = totalNumItems > 1;
   const [displayItemInd, setDisplayItemInd] = useState<number>(0);
 
   return (
     <div className={css(styles.rhCarousel)}>
-      {<RhCarouselItem {...rhCarouselItemProps[displayItemInd]} />}
+      {rhCarouselItem[displayItemInd]}
       {shouldDisplayControl ? (
         <RhCarouselControl
           currIndex={displayItemInd}
@@ -48,5 +51,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     minWidth: "100%",
     width: "100%",
+  },
+  rhCarouselControl: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    height: 24,
   },
 });

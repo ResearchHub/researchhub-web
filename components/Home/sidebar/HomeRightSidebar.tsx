@@ -1,13 +1,16 @@
 import { css } from "aphrodite";
+import RhCarouselItem, {
+  DEFAULT_ITEM_STYLE,
+} from "~/components/shared/carousel/RhCarouselItem";
 import { ReactElement } from "react";
 import { styles } from "./styles/HomeRightSidebarStyles";
+import colors from "~/config/themes/colors";
 import ColumnContainer from "../../Paper/SideColumn/ColumnContainer";
+import ExitableBanner from "~/components/Banner/ExitableBanner";
 import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
-import ExitableBanner from "~/components/Banner/ExitableBanner";
-import RhCarousel from "~/components/shared/carousel/RhCarousel";
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import RhCarousel from "~/components/shared/carousel/RhCarousel";
 
 export default function HomeRightSidebar(): ReactElement {
   return (
@@ -16,7 +19,38 @@ export default function HomeRightSidebar(): ReactElement {
         <ExitableBanner
           bannerKey={"$rhRightSidebarInfoCarousel"}
           content={
-            <RhCarousel rhCarouselItemProps={[{ title: "", body: "yoyo" }]} />
+            <RhCarousel
+              rhCarouselItem={[
+                <RhCarouselItem
+                  title={
+                    <div
+                      className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}
+                    >
+                      <span style={{ marginRight: 4, marginTop: 3 }}>
+                        {icons.RSC()}
+                      </span>
+                      {" What is ResearchCoin "}
+                    </div>
+                  }
+                  body={
+                    <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+                      {
+                        "ResearchCoin (RSC) is a token that empowers the scientific community of Research Hub. Scientists can earn RSC by engaging in various activities that empower the acceleration and openness of science."
+                      }
+                    </div>
+                  }
+                  key={"what-is-rsc"}
+                />,
+                <RhCarouselItem
+                  body={
+                    <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+                      {"This is a LongText11"}
+                    </div>
+                  }
+                  key={"what-is-long-text"}
+                />,
+              ]}
+            />
           }
           contentStyleOverride={{
             background: colors.NEW_BLUE(0.07),
