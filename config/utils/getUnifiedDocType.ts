@@ -15,9 +15,10 @@ type BEReturnType =
   | "posts"
   | "questions"
   | "question"
+  | "bounty"
   | "bounties"
   | "all";
-type BEDocumentModelName = "researchhub_post" | "hypothesis" | "paper" | null;
+type BEDocumentModelName = "researchhub_post" | "hypothesis" | "paper" | "bounty" | null;
 
 export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "discussion",
@@ -87,7 +88,9 @@ export function getBEUnifiedDocType(
       return "hypothesis";
     case "paper":
       return "paper";
+    case "bounty":
     case "bounties":
+      return "bounty";
     default:
       return "all";
   }

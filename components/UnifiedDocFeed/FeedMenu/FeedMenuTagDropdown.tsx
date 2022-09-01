@@ -1,10 +1,27 @@
 import { css, StyleSheet } from "aphrodite";
+import { useMemo } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { feedTypeOpts } from "../constants/UnifiedDocFilters";
 
-const FeedMenuTagDropdown = ({ options, handleSelect, selectedTags }) => {
+type Args = {
+  options: any[],
+  handleSelect: Function,
+  selectedTags: string[],
+  forTab: any,
+}
+
+const FeedMenuTagDropdown = ({ options, forTab, handleSelect, selectedTags }: Args) => {
+
+  // Kobe: This could be done with CSS however, aphrodite makes it quite time
+  // consuming to implement a css-based solution.
+  const isWithinLastTab = useMemo(() => {
+    const tabList = Object.values(feedTypeOpts);
+    return tabList.findIndex((t) => t.value === forTab.value) === (tabList.length - 1);
+  }, [feedTypeOpts])
+
   return (
-    <div className={css(styles.additionalOpts)}>
+    <div className={css(styles.additionalOpts, isWithinLastTab && styles.additionalOptsRightAlign)}>
       {options.map((opt) => (
         <div
           className={css(styles.tag)}
@@ -36,11 +53,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     background: "white",
     top: 30,
-    left: 0,
+    left: 2,
     width: 150,
     zIndex: 5,
     padding: 5,
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
+  },
+  additionalOptsRightAlign: {
+    left: "unset",
+    right: 2,
   },
   tag: {
     padding: "6px 5px ",

@@ -782,7 +782,6 @@ const routes = (BASE_URL) => {
           ...(backendFilters.topLevel === "/my-hubs" && {
             subscribed_hubs: true,
           }),
-          ...(selectedFilters.type === "bounty" && { bounties: "all" }),
         },
       };
 

@@ -69,6 +69,7 @@ const FeedMenuTab = ({
           {isTagsMenuOpen && (
             <FeedMenuTagDropdown
               options={nestedOptions}
+              forTab={tabObj}
               selectedTags={selectedFilters.tags}
               handleSelect={(selected) =>
                 handleFilterSelect({ router, tags: [selected] })

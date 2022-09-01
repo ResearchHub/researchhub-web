@@ -153,16 +153,26 @@ export const tagFilters = {
     label: "Open access",
     availableFor: [feedTypeOpts["all"].value, feedTypeOpts["paper"].value],
   },
-  expired: {
-    value: "expired",
-    label: "Show expired bounties",
-    availableFor: [feedTypeOpts["bounty"].value],
+  author_claimed: {
+    value: "author_claimed",
+    label: "Author claimed",
+    availableFor: [feedTypeOpts["paper"].value],
   },
+  "open,closed,expired": {
+    value: "open,closed,expired",
+    label: "Closed bounties",
+    availableFor: [feedTypeOpts["bounty"].value],
+  },  
   answered: {
     value: "answered",
-    label: "Show answered",
+    label: "Answered",
     availableFor: [feedTypeOpts["question"].value],
   },
+  unanswered: {
+    value: "unanswered",
+    label: "Unanswered",
+    availableFor: [feedTypeOpts["question"].value],
+  },  
 };
 
 export const scopeOptions = {

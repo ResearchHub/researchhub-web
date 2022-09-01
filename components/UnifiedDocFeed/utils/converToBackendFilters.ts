@@ -10,8 +10,6 @@ type Args = {
 export const convertToBackendFilters = ({
   frontendFilters,
 }: Args): SelectedUrlFilters => {
-  const backendFilters = { ...frontendFilters };
-
   return {
     ...frontendFilters,
     type: getBEUnifiedDocType(frontendFilters.type),
