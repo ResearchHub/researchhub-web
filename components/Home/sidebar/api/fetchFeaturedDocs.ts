@@ -26,7 +26,7 @@ export const fetchFeaturedDocs = ({ onError, onSuccess, page }: Args): void => {
           const isDocPaper = !Array.isArray(documents);
           const targetDoc = (!isDocPaper ? documents[0] : documents) ?? {};
           return {
-            createdBy: isDocPaper ? targetDoc?.uploaded_by ?? {} : {},
+            createdBy: isDocPaper ? targetDoc?.uploaded_by ?? {} : targetDoc?.created_by,
             document: targetDoc,
             documentType: getFEUnifiedDocType(document_type ?? ""),
             id,
