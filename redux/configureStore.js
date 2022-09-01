@@ -22,3 +22,7 @@ export function configureStore(initialState = {}) {
   );
   return store;
 }
+
+const store = configureStore({});
+
+export default store;

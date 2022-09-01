@@ -3,6 +3,8 @@ import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureException } from "@sentry/browser";
 import API from "~/config/api";
+import store from "~/redux/configureStore";
+import { ModalConstants } from "~/redux/modals";
 
 export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
@@ -12,6 +14,19 @@ export const fetchNoteInviteByToken = ({ token }) => {
   return fetch(API.NOTE_INVITE_DETAILS({ token }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
+};
+
+export const handleError = (error) => {
+  if (error.response.status === 429) {
+    store.dispatch({
+      type: ModalConstants.RECAPTCHA_PROMPT_TOGGLE,
+      payload: {
+        openRecaptchaPrompt: true,
+      },
+    });
+  } else {
+    captureException(error);
+  }
 };
 
 export const updateNoteUserPermissions = ({
@@ -255,7 +270,8 @@ export const updateEmailPreference = async (emailRecipientId, data) => {
 export const subscribeToHub = async ({ hubId }) => {
   return await fetch(API.HUB_SUBSCRIBE({ hubId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    .then(Helpers.parseJSON)
+    .catch(handleError);
 };
 
 export const unsubscribeFromHub = async ({ hubId }) => {

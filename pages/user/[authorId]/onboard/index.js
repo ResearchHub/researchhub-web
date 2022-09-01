@@ -22,6 +22,7 @@ import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
 import VerificationForm from "../../../../components/Form/VerificationForm";
 import ComponentWrapper from "../../../../components/ComponentWrapper";
 import { MessageActions } from "../../../../redux/message";
+import { captureException } from "@sentry/browser";
 
 const SEARCH_TIMEOUT = 400;
 
@@ -50,7 +51,7 @@ const Index = (props) => {
   const [userHubIds, setUserHubIds] = useState(
     mapArrayToObject(props.hubs.subscribedHubs)
   );
-  const { showMessage } = props;
+  const { showMessage, setMessage } = props;
 
   useEffect(() => {
     setHubs(props.hubs.topHubs || []);
@@ -182,14 +183,24 @@ const Index = (props) => {
       }
     }
 
-    await Promise.all([
-      ...subscribedHubIds.map((hubId) => {
-        return subscribeToHub({ hubId });
-      }),
-      ...unsubscribedHubIds.map((hubId) => {
-        return unsubscribeFromHub({ hubId });
-      }),
-    ]);
+    try {
+      await Promise.all([
+        ...subscribedHubIds.map((hubId) => {
+          return subscribeToHub({ hubId });
+        }),
+        ...unsubscribedHubIds.map((hubId) => {
+          return unsubscribeFromHub({ hubId });
+        }),
+      ]);
+    } catch (e) {
+      console.log(e);
+      captureException(e);
+      // setMessage("Something went wrong during onboarding! Please try again.");
+      // showMessage({
+      //   show: true,
+      //   error: true,
+      // });
+    }
 
     props.updateSubscribedHubs(newState); // update client
     toggleSaving(false);
@@ -493,6 +504,7 @@ const mapDispatchToProps = {
   openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
   showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
