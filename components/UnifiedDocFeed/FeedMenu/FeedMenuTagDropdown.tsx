@@ -10,8 +10,10 @@ const FeedMenuTagDropdown = ({ options, handleSelect, selectedTags }) => {
           className={css(styles.tag)}
           onClick={(event) => {
             event.stopPropagation();
+            event.preventDefault();
             handleSelect(opt.value);
           }}
+          key={`tag-${opt.value}`}
         >
           <span className={css(styles.tagLabel)}>{opt.label}</span>
           {selectedTags.includes(opt.value) ? (

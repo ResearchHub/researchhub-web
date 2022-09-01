@@ -10,6 +10,27 @@ type Args = {
   timeScope?: string;
 };
 
+const _getTags = ({ incomingTags, query }) => {
+  const isTagsAString = typeof query.tags === "string";
+  const isTagsAnArray = Array.isArray(query.tags);
+
+  const existingTags = isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [];
+  
+  let newTags:string[] = [...existingTags]
+  if (incomingTags && incomingTags.length > 0) {
+    for (let i = 0; i < incomingTags.length; i++) {
+      const tagAlreadyInList = existingTags.includes(incomingTags[i]);
+      if (tagAlreadyInList) {
+        newTags = newTags.filter((t) => t !== incomingTags[i]);
+      } else {
+        newTags.push(incomingTags[i]);
+      }
+    }
+  }
+
+  return newTags;
+}
+
 const handleFilterSelect = ({
   router,
   topLevel,
@@ -25,6 +46,7 @@ const handleFilterSelect = ({
     return router.push({ pathname: navigateToUrl });
   }
 
+
   const isDefaultTypeFilter =
     Object.values(feedTypeOpts)[0].value == typeFilter;
   const sortValue = getSortValue({
@@ -34,12 +56,14 @@ const handleFilterSelect = ({
   });
   const timeScopeValue = sortValue && (timeScope || router.query.time);
   const typeValue = isDefaultTypeFilter ? null : router.query.type;
+  const tagsValue = _getTags({ incomingTags: tags, query })
 
   const newQuery = {
     ...(router.query.slug && { slug: router.query.slug }),
     ...(typeValue && { type: typeValue }),
     ...(sortValue && { sort: sortValue }),
     ...(timeScopeValue && { time: timeScopeValue }),
+    ...(tagsValue.length > 0 && { tags: tagsValue })
   };
 
   router.push({

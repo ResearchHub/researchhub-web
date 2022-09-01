@@ -163,6 +163,10 @@ const styles = StyleSheet.create({
     "::-webkit-scrollbar": {
       display: "none",
     },
+    // Kobe: padding solution to deal with overflow issue on tags dropdown
+    // https://stackoverflow.com/a/39554003/1869326
+    paddingBottom: 250,
+    marginBottom: -250,
   },
 
   orderingContainer: {

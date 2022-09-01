@@ -38,32 +38,32 @@ const FeedMenuTab = ({
         styles.tab,
         isSelected && styles.tabSelected
       )} typeFilter`}
-      onClick={() => {
-        if (isSelected) {
-          // Already handled by <Link>
-          return null;
-        }
-
-        if (nestedOptions.length > 0) {
-          if (isTagsMenuOpen) {
-            handleOpenTagsMenu(null);
-          } else {
-            handleOpenTagsMenu(tabObj.value);
-          }
-        }
-      }}
     >
       <Link href={url}>
-        <a className={css(styles.labelContainer)}>
+        <a
+          className={css(styles.labelContainer)}
+          onClick={(event) => {
+            if (isSelected) {
+              event.preventDefault();
+
+              if (nestedOptions.length > 0) {
+                if (isTagsMenuOpen) {
+                  handleOpenTagsMenu(null);
+                } else {
+                  handleOpenTagsMenu(tabObj.value);
+                }
+              }
+            }
+          }}          
+        >
           <span className={css(styles.tabText)}>{tabObj.label}</span>
-          {/* {isTagsMenuOpen
+          {isTagsMenuOpen
             ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
             : isSelected
             ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
             : null
-          } */}
-          {/* FIXME: Kobe, commenting out until BE is done */}
-          {/* {isTagsMenuOpen && (
+          }
+          {isTagsMenuOpen && (
             <FeedMenuTagDropdown
               options={nestedOptions}
               selectedTags={selectedFilters.tags}
@@ -71,7 +71,7 @@ const FeedMenuTab = ({
                 handleFilterSelect({ router, tags: [selected] })
               }
             />
-          )} */}
+          )}
         </a>
       </Link>
     </div>
