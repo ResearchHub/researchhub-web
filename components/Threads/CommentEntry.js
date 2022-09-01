@@ -677,6 +677,7 @@ class CommentEntry extends Component {
                         auth.user.author_profile.id
                     }
                     bounty={openBounties?.length > 0 && openBounties[0]}
+                    bounties={openBounties}
                     onBountyAward={this.onBountyAward}
                     bountyAwarded={
                       openBounties?.length > 0 &&

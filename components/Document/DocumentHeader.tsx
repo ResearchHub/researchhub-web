@@ -37,6 +37,7 @@ type Args = {
   bounty: any;
   bounties: any;
   allBounties: any;
+  bountyType: string;
 };
 
 function DocumentHeader({
@@ -51,6 +52,7 @@ function DocumentHeader({
   bounty,
   bounties,
   allBounties,
+  bountyType,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -248,7 +250,7 @@ function DocumentHeader({
           {hasBounties && (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}
-              <BountyAlert bounty={bounty} allBounties={allBounties} />
+              <BountyAlert allBounties={allBounties} bountyType={bountyType} />
             </div>
           )}
           <ReactTooltip />

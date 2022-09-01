@@ -123,9 +123,9 @@ class PostPageCard extends Component {
             document={post}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
-            hasBounties={this.props.hasBounties || this.props.bounty}
-            bounty={this.props.bounty}
-            allBounties={this.props.allBounties}
+            hasBounties={this.props.hasBounties || this.props.bounties}
+            allBounties={this.props.bounties}
+            bountyType="question"
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
@@ -179,22 +179,28 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post.unifiedDocument.documentType === "question" &&
-                    post.unifiedDocument.createdBy.id === user.id && (
-                      <div className={css(styles.createBountyContainer)}>
-                        <CreateBountyBtn
-                          onBountyAdd={(bounty) => {
-                            this.props.setBounty(bounty);
-                          }}
-                          bountyText={this.toPlaintext(postBody)}
-                          post={post}
-                          bounty={this.props.bounty}
-                          onBountyCancelled={() => {
-                            this.props.setBounty(null);
-                          }}
-                        />
-                      </div>
-                    )}
+                  {post.unifiedDocument.documentType === "question" && (
+                    <div className={css(styles.createBountyContainer)}>
+                      <CreateBountyBtn
+                        onBountyAdd={(bounty) => {
+                          this.props.setBounties([
+                            ...this.props.bounties,
+                            bounty,
+                          ]);
+                        }}
+                        isOriginalPoster={
+                          post.unifiedDocument.createdBy.id === user.id
+                        }
+                        currentUser={user}
+                        bountyText={this.toPlaintext(postBody)}
+                        post={post}
+                        bounties={this.props.bounties}
+                        onBountyCancelled={() => {
+                          this.props.setBounty(null);
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </ReactPlaceholder>

@@ -16,10 +16,21 @@ function CreateBountyBtn({
   bountyText,
   post,
   bounty,
+  bounties,
   onBountyCancelled,
+  isOriginalPoster,
+  currentUser,
 }): ReactElement {
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const userHasBounty =
+    bounties &&
+    bounties.some((bounty) => bounty.createdBy.id === currentUser.id);
+
+  const userBounty =
+    bounties &&
+    bounties.find((bounty) => bounty.createdBy.id === currentUser.id);
 
   const closeBounty = () => {
     alert.show({
@@ -66,12 +77,12 @@ function CreateBountyBtn({
       />
       <div
         className={css(styles.addBounty)}
-        onClick={() => (bounty ? closeBounty() : setIsModalOpen(true))}
+        onClick={() => (userHasBounty ? closeBounty() : setIsModalOpen(true))}
       >
         <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
         <div>
           <span className={css(styles.bountyTextContainer)}>
-            {!bounty && (
+            {!userHasBounty && (
               <span className={css(styles.bountyIcon)}>
                 {/* @ts-ignore */}
                 <ResearchCoinIcon width={22} height={22} version={3} />
@@ -82,10 +93,16 @@ function CreateBountyBtn({
               data-for="bountyTooltip"
               className={css(styles.addBountyLabel)}
             >
-              {bounty ? (
-                `Close your ${numeral(bounty.amount).format(
+              {userHasBounty ? (
+                `Close your ${numeral(userBounty.amount).format(
                   "0,0.[0000000000]"
                 )} RSC Bounty`
+              ) : !isOriginalPoster && bounties && bounties.length ? (
+                <span>
+                  Contribute{" "}
+                  <span className={css(styles.desktop)}>ResearchCoin </span>
+                  <span className={css(styles.mobile)}>RSC </span> to the Bounty
+                </span>
               ) : (
                 <span>
                   Add <span className={css(styles.desktop)}>ResearchCoin </span>

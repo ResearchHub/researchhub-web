@@ -8,9 +8,14 @@ import numeral from "numeral";
 type BountyAlertParams = {
   bounty: Bounty;
   allBounties: [Bounty];
+  bountyType: string;
 };
 
-const BountyAlert = ({ bounty, allBounties }: BountyAlertParams) => {
+const BountyAlert = ({
+  bounty,
+  allBounties,
+  bountyType,
+}: BountyAlertParams) => {
   let timeRemaining, createdBy, status;
   let amount = 0;
   if (bounty) {
@@ -23,7 +28,8 @@ const BountyAlert = ({ bounty, allBounties }: BountyAlertParams) => {
       return null;
     }
   } else if (allBounties.length) {
-    const firstBounty = new Bounty(allBounties[0]);
+    const firstBounty =
+      bountyType === "question" ? allBounties[0] : new Bounty(allBounties[0]);
     timeRemaining = firstBounty.timeRemaining;
     createdBy = firstBounty.createdBy;
     allBounties.forEach((bounty) => {
@@ -37,13 +43,14 @@ const BountyAlert = ({ bounty, allBounties }: BountyAlertParams) => {
   }
 
   const bountyQuestions = allBounties.length;
+  const showPlural = bountyType !== "question" && allBounties.length > 1;
 
   return (
     <div className={css(styles.bountyAlert)}>
       <div className={css(styles.alertIcon)}></div>
       <div className={css(styles.alertDetails)}>
         <div>
-          {allBounties.length > 1 ? (
+          {showPlural ? (
             <span>A group of users</span>
           ) : createdBy ? (
             <ALink href={createdBy.authorProfile.url}>
@@ -53,6 +60,7 @@ const BountyAlert = ({ bounty, allBounties }: BountyAlertParams) => {
           ) : (
             <span>Deleted User</span>
           )}
+          {bountyType === "question" && allBounties.length > 1 && " and others"}
           {` `}
           {allBounties.length > 1 ? "are" : "is"} offering{" "}
           <span className={css(styles.strong)}>
@@ -63,11 +71,10 @@ const BountyAlert = ({ bounty, allBounties }: BountyAlertParams) => {
               overrideStyle={styles.rscIcon}
             />
           </span>{" "}
-          for answers{" "}
-          {allBounties.length > 1 ? "to their questions" : "to this question"}
+          for answers {showPlural ? "to their questions" : "to this question"}
           <span className={css(styles.divider)}>•</span>
           <span className={css(styles.expireTime)}>
-            {allBounties.length > 1 ? "Bounties expire" : "Bounty expires"} in{" "}
+            {showPlural ? "Bounties expire" : "Bounty expires"} in{" "}
             {timeRemaining}
           </span>
           <div>

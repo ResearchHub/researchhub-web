@@ -576,7 +576,7 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
       currentAuthor,
-      bounties,
+      bountyType,
     } = this.props;
 
     const commentCount =
@@ -599,15 +599,24 @@ class DiscussionEntry extends Component {
       objectId: data.id,
     };
 
-    const showAcceptAnswerBtn =
+    const { bounties } = this.state;
+
+    const currentUser = this.props?.auth?.user;
+
+    const userBounty =
+      bounties &&
+      bounties.find(
+        (bounty) =>
+          bounty?.createdBy?.id === currentUser.id ||
+          bounty?.created_by?.id === currentUser.id
+      );
+
+    const showBountyAward =
       documentType === "question" &&
       post?.created_by?.id === this.props?.auth?.user?.id &&
+      userBounty?.status === "OPEN" &&
       postType === POST_TYPES.ANSWER;
 
-    const showAwardBountyBtn =
-      documentType === "question" &&
-      bounty?.createdBy?.id === this.props?.auth?.user?.id &&
-      post?.created_by?.id === this.props?.auth?.user?.id;
     return (
       <div
         className={css(
@@ -673,6 +682,7 @@ class DiscussionEntry extends Component {
                     date={date}
                     dropDownEnabled={true}
                     hostname={hostname}
+                    bountyType={bountyType}
                     paper={paper}
                     post={post}
                     threadPath={path}
@@ -720,6 +730,7 @@ class DiscussionEntry extends Component {
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
                     isBounty={
+                      bountyType !== "question" &&
                       bounties &&
                       bounties.length &&
                       bounties[0].status !== "CLOSED"
@@ -743,12 +754,13 @@ class DiscussionEntry extends Component {
                   onBountyAward={this.onBountyAward}
                   count={commentCount}
                   documentID={documentId}
-                  showBountyAward={bounty?.status === "OPEN"}
+                  showBountyAward={showBountyAward}
                   documentType={this.props.documentType}
                   editing={this.state.editing}
                   hideReply={data.source === "twitter"}
                   isRemoved={this.state.removed}
                   mediaOnly={mediaOnly}
+                  bounties={bounties}
                   onClick={this.toggleCommentView}
                   onCountHover={this.toggleHover}
                   onSubmit={this.submitComment}
@@ -758,8 +770,6 @@ class DiscussionEntry extends Component {
                   title={title}
                   bounty={bounty}
                   createdBy={data.created_by}
-                  showAcceptedAnswerBtn={showAcceptAnswerBtn}
-                  showAwardBountyBtn={showAwardBountyBtn}
                   handleAwardBounty={this.props.handleAwardBounty}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />

@@ -30,9 +30,13 @@ function NewFeatureTooltip({
     postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName });
   };
 
-  const tooltipPos = (process.browser && window.innerWidth > breakpoints.small.int || position.length === 1) ? position[0] : position[1];
+  const tooltipPos =
+    (process.browser && window.innerWidth > breakpoints.small.int) ||
+    position.length === 1
+      ? position[0]
+      : position[1];
 
-  let html:ReactElement = <></>;
+  let html: ReactElement = <></>;
   if (normalizedFeatureName === "discussiontypes") {
     html = (
       <>
@@ -89,13 +93,26 @@ function NewFeatureTooltip({
 
   if (shouldAlert) {
     return (
-      <div className={css(styles.tooltipContainer, styles["tooltipContainer_" + tooltipPos])}>
-        <span className={css(styles.caret, styles["caret_" + tooltipPos], colorStyles["caret_" + color])}>{icons.caretLeft}</span>
+      <div
+        className={css(
+          styles.tooltipContainer,
+          styles["tooltipContainer_" + tooltipPos]
+        )}
+      >
+        <span
+          className={css(
+            styles.caret,
+            styles["caret_" + tooltipPos],
+            colorStyles["caret_" + color]
+          )}
+        >
+          {icons.caretLeft}
+        </span>
         <div className={css(styles.body, colorStyles["body_" + color])}>
           {html}
         </div>
       </div>
-    )
+    );
   } else {
     return null;
   }
@@ -107,7 +124,7 @@ const colorStyles = StyleSheet.create({
   },
   body_blue: {
     background: colors.NEW_BLUE(),
-  },  
+  },
   btn_orange: {
     color: colors.ORANGE_DARK2(),
   },
@@ -119,8 +136,8 @@ const colorStyles = StyleSheet.create({
   },
   caret_orange: {
     color: colors.ORANGE_DARK2(),
-  },  
-})
+  },
+});
 
 const styles = StyleSheet.create({
   tooltipContainer: {
@@ -153,7 +170,7 @@ const styles = StyleSheet.create({
     left: 15,
     top: -18,
     transform: "rotate(90deg)",
-  },  
+  },
   new: {
     display: "flex",
     alignItems: "center",
@@ -181,10 +198,11 @@ const styles = StyleSheet.create({
     color: "white",
     padding: "10px 15px",
     boxSizing: "border-box",
-    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: 320,
-    }
+    },
   },
   bolded: {
     fontWeight: 600,
@@ -208,7 +226,7 @@ const styles = StyleSheet.create({
       height: "auto",
       width: "auto",
       padding: "9px 19px",
-    },    
+    },
   },
   btnLabel: {
     // color: colors.NEW_BLUE(),
