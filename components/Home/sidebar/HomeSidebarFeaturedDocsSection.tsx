@@ -55,39 +55,40 @@ export default function HomeSidebarFeaturedDocsSection(): ReactElement | null {
   if (isEmpty(featuredDocs) && !isFetching) {
     return null;
   }
-  
-  const featuredDocItems = (featuredDocs ?? [])?.map(
-    ({
-      amount,
-      content_type: { name: contentTypeName },
-      created_by,
-      expiration_date,
-      id,
-      item,
-    }: SimpleBounty): ReactElement<"div"> => {
-      // TODO: calvinhlee - Change backend payload format to resolve docType
-      const {
-        id: relatedDocID,
-        title,
-        slug,
-      } = (item?.documents ?? [])[0] ?? {};
-      const { document_type: itemDocType, unified_document } = item ?? {};
+  console.warn("featuredDcos: ", featuredDocs);
+  const featuredDocItems = []
+  // (featuredDocs ?? [])?.map(
+  //   ({
+  //     amount,
+  //     content_type: { name: contentTypeName },
+  //     created_by,
+  //     expiration_date,
+  //     id,
+  //     item,
+  //   }: SimpleBounty): ReactElement<"div"> => {
+  //     // TODO: calvinhlee - Change backend payload format to resolve docType
+  //     const {
+  //       id: relatedDocID,
+  //       title,
+  //       slug,
+  //     } = (item?.documents ?? [])[0] ?? {};
+  //     const { document_type: itemDocType, unified_document } = item ?? {};
 
-      const documentType = itemDocType
-        ? getFEUnifiedDocType(itemDocType)
-        : getFEUnifiedDocType(unified_document?.document_type);
-      const resolvedRelatedDocID =
-        relatedDocID ??
-        unified_document?.documents?.id ??
-        (unified_document?.documents ?? [])[0]?.id;
-      const resolvedSlug =
-        slug ??
-        unified_document?.documents?.slug ??
-        (unified_document?.documents ?? [])[0]?.slug;
+  //     const documentType = itemDocType
+  //       ? getFEUnifiedDocType(itemDocType)
+  //       : getFEUnifiedDocType(unified_document?.document_type);
+  //     const resolvedRelatedDocID =
+  //       relatedDocID ??
+  //       unified_document?.documents?.id ??
+  //       (unified_document?.documents ?? [])[0]?.id;
+  //     const resolvedSlug =
+  //       slug ??
+  //       unified_document?.documents?.slug ??
+  //       (unified_document?.documents ?? [])[0]?.slug;
 
-      return <div>hi</div>;
-    }
-  );
+  //     return <div>hi</div>;
+  //   }
+  // );
 
   return (
     <Fragment>
