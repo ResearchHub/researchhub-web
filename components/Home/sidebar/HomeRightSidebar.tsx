@@ -44,7 +44,7 @@ export default function HomeRightSidebar(): ReactElement {
                 <RhCarouselItem
                   body={
                     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-                      {"CONTENT TBH 1"}
+                      {"CONTENT TBD 1"}
                     </div>
                   }
                   key={"what-is-long-text"}
@@ -52,7 +52,7 @@ export default function HomeRightSidebar(): ReactElement {
                 <RhCarouselItem
                   body={
                     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-                      {"CONTENT TBH 2"}
+                      {"CONTENT TBD 2"}
                     </div>
                   }
                   key={"what-is-long-text-2"}
