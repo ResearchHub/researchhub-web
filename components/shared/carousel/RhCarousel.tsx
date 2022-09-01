@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RhCarouselItem from "./RhCarouselItem";
@@ -37,10 +37,26 @@ const RhCarouselControl = ({
   return (
     <div className={css(styles.rhCarouselControl)}>
       <div className={css(styles.rhCarouselControlIconsWrap)}>
-        <div className={css(styles.rhCarouselControlIcon)}>
+        <div
+          className={css(styles.rhCarouselControlIcon)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            const newIndex = currIndex - 1;
+            setIndex(newIndex < 0 ? totalNumItems - 1 : newIndex);
+          }}
+          role="button"
+        >
           {icons.chevronLeft}
         </div>
-        <div className={css(styles.rhCarouselControlIcon)}>
+        <div
+          className={css(styles.rhCarouselControlIcon)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            const newIndex = currIndex + 1;
+            setIndex(newIndex === totalNumItems ? 0 : newIndex);
+          }}
+          role="button"
+        >
           {icons.chevronRight}
         </div>
       </div>
@@ -102,7 +118,7 @@ const styles = StyleSheet.create({
     width: "12%",
   },
   rhCarouselControlIcon: {
-    color: colors.TEXT_GREY(.7),
+    color: colors.TEXT_GREY(0.7),
     cursor: "pointer",
     fontSize: 12,
   },
