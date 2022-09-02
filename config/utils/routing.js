@@ -110,6 +110,7 @@ export function getUrlToUniDoc(uniDoc) {
     case "discussion":
     case "DISCUSSION":
     case "post":
+    case "question":
     case "QUESTION":
     case "researchhubpost":
       url = `/post/${doc?.id}/${doc?.slug}`;
