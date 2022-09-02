@@ -15,8 +15,9 @@ import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
 
-type PaginationInfo = { isFetching: boolean; page?: number };
+const TEMP_BOUNTY_DISPLAY_CUT_OFF = 4;
 
+type PaginationInfo = { isFetching: boolean; page?: number };
 const useEffectFetchOpenBounties = ({
   paginationInfo,
   setOpenBounties,
@@ -135,7 +136,7 @@ export default function HomeSidebarBountiesSection(): ReactElement | null {
           />
         }
       >
-        {bountyItems.slice(0, 4)}
+        {bountyItems.slice(0, TEMP_BOUNTY_DISPLAY_CUT_OFF)}
       </ReactPlaceholder>
     </Fragment>
   );
