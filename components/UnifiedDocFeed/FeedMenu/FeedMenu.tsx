@@ -47,6 +47,7 @@ const FeedMenu = ({ hubState }: Args) => {
   const tabElems = useMemo(() => {
     return Object.values(feedTypeOpts).map((t) => (
       <FeedMenuTab
+        key={`tab-${t.value}`}
         selectedFilters={selectedFilters}
         tabObj={t}
         setTagsMenuOpenFor={setTagsMenuOpenFor}

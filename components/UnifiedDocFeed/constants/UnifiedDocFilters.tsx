@@ -1,4 +1,4 @@
-import icons from "~/config/themes/icons";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 
 export const topLevelFilters = {
   "/": {
@@ -84,7 +84,7 @@ export const sortOpts = {
     value: "most_rsc",
     label: "RSC Offered",
     selectedLabel: "RSC Offered",
-    icon: icons.clock,
+    icon: <ResearchCoinIcon version={4} height={16} width={16} overrideStyle={undefined} />,
     disableScope: true,
     availableFor: [
       feedTypeOpts["bounty"].value,

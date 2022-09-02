@@ -2,7 +2,7 @@ import { scopeOptions, sortOpts } from "../constants/UnifiedDocFilters";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
-import icons from "~/config/themes/icons";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 
 function FeedMenuSortDropdown({
@@ -79,7 +79,9 @@ function FeedMenuSortDropdown({
               key={"sort-" + opt.value}
             >
               <div className={css(styles.optLineItem)}>
-                <div className={css(styles.optIcon)}>{opt.icon}</div>
+                <div className={css(styles.optIcon)}>
+                  {opt.icon}
+                </div>
                 <div className={css(styles.optLabel)}>{opt.label}</div>
               </div>
               {selectedOrderingObj?.value === opt.value &&
