@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
     padding: "0 0 16px 0",
     position: "sticky",
     top: NAVBAR_HEIGHT,
+    boxShadow: "none",
   },
   RightSidebarTitle: {
     background: colors.WHITE,
