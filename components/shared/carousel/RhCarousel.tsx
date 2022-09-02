@@ -52,8 +52,7 @@ const RhCarouselControl = ({
           className={css(styles.rhCarouselControlIcon)}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
-            const newIndex = currIndex + 1;
-            setIndex(newIndex === totalNumItems ? 0 : newIndex);
+            setIndex((currIndex + 1) % totalNumItems);
           }}
           role="button"
         >
