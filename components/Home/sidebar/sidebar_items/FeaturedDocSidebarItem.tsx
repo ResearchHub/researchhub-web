@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   featuredDocSidebarItemContent: {
     color: colors.BLACK(1),
     display: "flex",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
     textOverflow: "ellipsis",
   },

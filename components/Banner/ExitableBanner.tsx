@@ -88,11 +88,7 @@ const styles = StyleSheet.create({
   exitButtonWrap: {
     cursor: "pointer",
     position: "absolute",
-    right: 8,
-    top: 4,
-    [`@media only screen and (min-width: ${breakpoints.mobile.str})`]: {
-      right: 16,
-      top: 12,
-    },
+    right: 0,
+    top: 0,
   },
 });
