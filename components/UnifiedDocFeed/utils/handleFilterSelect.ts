@@ -10,7 +10,7 @@ type Args = {
   timeScope?: string;
 };
 
-const _getTags = ({ incomingTags, query }) => {
+const _getTagsValue = ({ incomingTags, query }) => {
   const isTagsAString = typeof query.tags === "string";
   const isTagsAnArray = Array.isArray(query.tags);
 
@@ -56,7 +56,7 @@ const handleFilterSelect = ({
   });
   const timeScopeValue = sortValue && (timeScope || router.query.time);
   const typeValue = isDefaultTypeFilter ? null : router.query.type;
-  const tagsValue = _getTags({ incomingTags: tags, query })
+  const tagsValue = _getTagsValue({ incomingTags: tags, query })
 
   const newQuery = {
     ...(router.query.slug && { slug: router.query.slug }),

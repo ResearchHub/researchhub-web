@@ -19,6 +19,7 @@ type Args = {
   isSelected: boolean;
 };
 
+
 const FeedMenuTab = ({
   selectedFilters,
   tabObj,
@@ -45,19 +46,16 @@ const FeedMenuTab = ({
         <a
           className={css(styles.labelContainer)}
           onClick={(event) => {
-            if (isSelected) {
-              event.preventDefault();
+            const thisTabIsSelected = isSelected;
+            const thisTabHasTags = nestedOptions.length > 0;
 
-              if (nestedOptions.length > 0) {
-                if (isTagsMenuOpen) {
-                  handleOpenTagsMenu(null);
-                } else {
-                  handleOpenTagsMenu(tabObj.value);
-                }
+            if (thisTabIsSelected && thisTabHasTags) {
+              event.preventDefault();
+              if (isTagsMenuOpen) {
+                handleOpenTagsMenu(null);
+              } else {
+                handleOpenTagsMenu(tabObj.value);
               }
-            }
-            else {
-              handleOpenTagsMenu(null);
             }
           }}          
         >
