@@ -193,7 +193,7 @@ export const scopeOptions = {
   },
   "all-time": {
     value: "all-time",
-    valueForApi: "all_time",
+    valueForApi: "all",
     label: "All Time",
   },
 };
