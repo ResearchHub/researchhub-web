@@ -15,6 +15,9 @@ export const styles = StyleSheet.create({
       opacity: 0.5,
     },
   },
+  RSC: {
+    height: 20,
+  },
   HomeRightSidebar: {
     margin: "32px 32px 0 0",
     height: "100%",

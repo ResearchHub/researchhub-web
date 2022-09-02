@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode } from "react";
+import colors from "~/config/themes/colors";
 import { NullableString } from "~/config/types/root_types";
 
 export type RhCarouselItemProps = {
@@ -37,7 +38,7 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     height: "100%",
-    marginBottom: 4,
+    marginBottom: 8,
     textOverflow: "ellipsis",
     width: "100%",
   },
@@ -45,7 +46,9 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
     display: "flex",
     width: "100%",
     height: "100%",
-    fontSize: 12,
+    fontSize: 14,
+    color: colors.BLACK(),
+    lineHeight: "20px",
     textOverflow: "ellipsis",
   },
 });

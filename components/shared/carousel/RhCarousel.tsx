@@ -114,11 +114,11 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%",
     justifyContent: "space-between",
-    maxWidth: 200,
-    width: "12%",
+    marginLeft: -8,
   },
   rhCarouselControlIcon: {
     color: colors.TEXT_GREY(0.7),
+    padding: 8,
     cursor: "pointer",
     fontSize: 12,
   },
