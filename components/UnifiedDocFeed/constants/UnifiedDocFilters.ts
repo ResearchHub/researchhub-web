@@ -68,31 +68,30 @@ export const sortOpts = {
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
       feedTypeOpts["meta-study"].value,
+    ],
+  },
+  "expiring_soon": {
+    value: "expiring_soon",
+    label: "Expiring Soon",
+    selectedLabel: "Expiring Soon",
+    icon: icons.clock,
+    disableScope: true,
+    availableFor: [
       feedTypeOpts["bounty"].value,
     ],
   },
-  // "expiring_soon": {
-  //   value: "expiring_soon",
-  //   label: "Expiring Soon",
-  //   selectedLabel: "Expiring Soon",
-  //   icon: icons.clock,
-  //   disableScope: true,
-  //   availableFor: [
-  //     feedTypeOpts["bounty"].value,
-  //   ],
-  // },
-  // "rsc_offered": {
-  //   value: "rsc_offered",
-  //   label: "RSC Offered",
-  //   selectedLabel: "RSC Offered",
-  //   icon: icons.clock,
-  //   disableScope: true,
-  //   availableFor: [
-  //     feedTypeOpts["bounty"].value,
-  //   ],
-  // },
-  newest: {
-    value: "newest",
+  "most_rsc": {
+    value: "most_rsc",
+    label: "RSC Offered",
+    selectedLabel: "RSC Offered",
+    icon: icons.clock,
+    disableScope: true,
+    availableFor: [
+      feedTypeOpts["bounty"].value,
+    ],
+  },
+  new: {
+    value: "new",
     label: "Newest",
     selectedLabel: "Newest",
     icon: icons.bolt,
@@ -106,8 +105,8 @@ export const sortOpts = {
       feedTypeOpts["bounty"].value,
     ],
   },
-  most_discussed: {
-    value: "most_discussed",
+  discussed: {
+    value: "discussed",
     label: "Most Discussed",
     selectedLabel: "Discussed",
     icon: icons.commentsAlt,
@@ -121,8 +120,8 @@ export const sortOpts = {
       feedTypeOpts["bounty"].value,
     ],
   },
-  top_rated: {
-    value: "top_rated",
+  upvoted: {
+    value: "upvoted",
     label: "Most Upvoted",
     selectedLabel: "Upvoted",
     icon: icons.up,
@@ -168,11 +167,6 @@ export const tagFilters = {
     label: "Answered",
     availableFor: [feedTypeOpts["question"].value],
   },
-  unanswered: {
-    value: "unanswered",
-    label: "Unanswered",
-    availableFor: [feedTypeOpts["question"].value],
-  },  
 };
 
 export const scopeOptions = {

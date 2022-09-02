@@ -14,6 +14,7 @@ type Args = {
   tabObj: any;
   handleOpenTagsMenu: Function;
   handleFilterSelect: Function;
+  setTagsMenuOpenFor: Function;
   isTagsMenuOpen: boolean;
   isSelected: boolean;
 };
@@ -23,6 +24,7 @@ const FeedMenuTab = ({
   tabObj,
   handleOpenTagsMenu,
   handleFilterSelect,
+  setTagsMenuOpenFor,
   isSelected,
   isTagsMenuOpen,
 }: Args) => {
@@ -73,9 +75,10 @@ const FeedMenuTab = ({
                   options={nestedOptions}
                   forTab={tabObj}
                   selectedTags={selectedFilters.tags}
-                  handleSelect={(selected) =>
+                  handleSelect={(selected) => {
                     handleFilterSelect({ router, tags: [selected] })
-                  }
+                    setTagsMenuOpenFor(null);
+                  }}
                 />
               )}
             </>

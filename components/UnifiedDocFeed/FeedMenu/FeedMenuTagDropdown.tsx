@@ -26,7 +26,6 @@ const FeedMenuTagDropdown = ({ options, forTab, handleSelect, selectedTags }: Ar
         <div
           className={css(styles.tag)}
           onClick={(event) => {
-            console.log('selecerd')
             event.stopPropagation();
             event.preventDefault();
             handleSelect(opt.value);
