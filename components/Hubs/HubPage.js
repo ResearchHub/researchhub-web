@@ -664,13 +664,10 @@ var styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     marginTop: 28,
-    // display: "table",
-    // minWidth: "100vw",
     borderSpacing: "20px 0px",
     alignItems: "flex-start",
     boxSizing: "border-box",
     paddingLeft: 28,
-    paddingRight: 28,
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },

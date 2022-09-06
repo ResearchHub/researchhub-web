@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     width: "100%",
     ":hover": {
       background: colors.LIGHT_GREY_BACKGROUND,
-      borderLeft: "2px solid blue",
+      borderLeft: `2px solid ${colors.BLUE(1)}`,
     },
   },
   bountiesSidebarItem: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   bountiesSidebarItemContent: {
     color: colors.BLACK(1),
     display: "flex",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
     textOverflow: "ellipsis",
   },
