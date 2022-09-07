@@ -51,7 +51,7 @@ export default class Bounty {
     this._timeRemainingInDays = timeToInUnits({ date: raw.expiration_date, unit: "day" });
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
-    this._formattedAmount = parseInt(this._amount.toFixed(0)).toLocaleString();
+    this._formattedAmount = this._amount.toLocaleString();
     this._status = raw.status;
     this._expiration_date = raw.expiration_date;
     this._contentType = typeof(raw.content_type) === "object" ? parseContentType(raw.content_type) : undefined;
