@@ -184,21 +184,13 @@ function FeedCard({
   });
 
   const getTitle = () => {
-    if (bounty && bounty?.contentType?.name === "comment") {
-      return truncateText(bounty.relatedItem.plain_text, 250);
-    } else {
       if (titleAsHtml) {
         return titleAsHtml;
       }
       return unescapeHtmlString(title ?? "");
-    }
   };
 
   const getBody = () => {
-    if (bounty && bounty?.contentType?.name === "comment") {
-      return null;
-    }
-
     return abstract || renderableText;
   };
 
@@ -297,7 +289,7 @@ function FeedCard({
                       styles.publishContainer
                     )}
                   >
-                    <div className={css(styles.mobileVoteWidget)}>
+                    <div className={css(styles.metaItem, styles.mobileVoteWidget)}>
                       {/* TODO: migrate to VoteWidgetV2 */}
                       <VoteWidget
                         horizontalView={true}
@@ -311,6 +303,14 @@ function FeedCard({
                         selected={voteState}
                       />
                     </div>
+                    <div className={css(styles.metaItem)}>
+                      <span className={css(styles.metadataIcon)}>
+                        {documentIcons[formattedDocType!]}
+                      </span>
+                      <span className={css(styles.metadataText)}>
+                        {formattedDocLabel ?? formattedDocType}
+                      </span>
+                    </div>                    
                     {formattedDocType === "question" ? (
                       <div
                         className={css(
@@ -377,14 +377,17 @@ function FeedCard({
                         </span>
                       </div>
                     )}
-                    <div className={css(styles.metaItem)}>
-                      <span className={css(styles.metadataIcon)}>
-                        {documentIcons[formattedDocType!]}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        {formattedDocLabel ?? formattedDocType}
-                      </span>
-                    </div>
+
+                    {bounty &&
+                      <div className={css(styles.metaItem, styles.bountyBadge)}>
+                        <span className={css(styles.badgeRscIcon)}>
+                          <ResearchCoinIcon height={16} width={16} version={4} overrideStyle={undefined} />
+                        </span>
+                        <span className={css(styles.bountyAmount)}>
+                          {bounty.formattedAmount} Bounty
+                        </span>
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
@@ -397,6 +400,24 @@ function FeedCard({
 }
 
 const styles = StyleSheet.create({
+  bountyBadge: {
+    display: "flex",
+    // One-off color, need not be constantenized
+    background: "rgb(252 242 220)",
+    padding: "5px 8px 5px 8px",
+    borderRadius: "4px",
+    color: colors.ORANGE_DARK2(),
+    fontWeight: 500,
+    fontSize: 13,
+    alignItems: "center",
+  },
+  badgeRscIcon: {
+    marginRight: 5,
+    height: 16,
+  },
+  bountyAmount: {
+    marginTop: -1,
+  },  
   ripples: {
     display: "flex",
     width: "100%",
@@ -465,14 +486,11 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    // display: "flex",
-    // justifyContent: "space-between",
     width: "100%",
   },
   rowContainer: {
     display: "flex",
     alignItems: "flex-start",
-    justifyContent: "space-between",
     width: "100%",
   },
   column: {
@@ -498,6 +516,7 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
   },
   publishContainer: {
     marginRight: 10,
@@ -505,16 +524,21 @@ const styles = StyleSheet.create({
   },
   metadataText: {
     fontSize: 14,
-    marginRight: 15,
+    
     textTransform: "capitalize",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 13,
-      marginRight: 24,
+      // marginRight: 24,
     },
   },
   metaItem: {
+    marginRight: 15,
+    marginBottom: 5,
     display: "flex",
     alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      marginRight: 20,
+    },    
   },
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
@@ -534,7 +558,7 @@ const styles = StyleSheet.create({
     },
   },
   voteWidget: {
-    marginRight: 24,
+    marginRight: 0,
   },
   link: {
     textDecoration: "none",
