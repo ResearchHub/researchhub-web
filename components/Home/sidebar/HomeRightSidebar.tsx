@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPeopleGroup } from "@fortawesome/pro-duotone-svg-icons";
 
 const INFO_BANNER_KEY = "%&!rhRightSidebarInfoCarousel%&!";
+
 export default function HomeRightSidebar(): ReactElement {
   return (
     <div className={css(styles.HomeRightSidebar)}>
