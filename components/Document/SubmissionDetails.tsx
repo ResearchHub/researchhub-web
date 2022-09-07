@@ -39,7 +39,7 @@ function SubmissionDetails({
   const visibleHubs = hubs?.slice(0, sliceIndex) ?? [];
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
-  const bounty = bounties?.[0];
+  const bounty =bounties?.[0];
   const authorProfile =
     bounty?.createdBy?.authorProfile ?? createdBy?.authorProfile;
 
@@ -60,31 +60,7 @@ function SubmissionDetails({
         <div className={css(styles.hubsContainer)}>
           <>
             <span className={css(styles.textSecondary, styles.postedText)}>
-              {bounty ? (
-                <>
-                  {` is offering`}
-                  <span className={css(styles.rscText)}>
-                    {` `}
-                    {bounty.amount.toLocaleString()} RSC Bounty
-                    <ResearchCoinIcon
-                      width={16}
-                      height={16}
-                      overrideStyle={styles.rscIcon}
-                    />
-                  </span>
-                </>
-              ) : (
-                <>{` posted`}</>
-              )}
-              {visibleHubs && (
-                <>
-                  {bounty ? (
-                    <span className={css(styles.dot)}> • </span>
-                  ) : (
-                    ` in`
-                  )}
-                </>
-              )}
+              {` posted in`}
             </span>
             {visibleHubs.map((h, index) => (
               <span key={index}>
@@ -112,16 +88,16 @@ function SubmissionDetails({
         </div>
         <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
-          {bounty ? (
+          {timeSince(createdDate)}
+          {bounty && bounty.timeRemainingInDays <= 2 && (
             <span
               className={css(
-                bounty.timeRemainingInDays <= 2 && styles.expiringSoon
+                styles.expiringSoon
               )}
             >
-              {bounty.timeRemaining} remaining
+              <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
+              bounty ending in {bounty.timeRemaining}
             </span>
-          ) : (
-            timeSince(createdDate)
           )}
         </span>
       </div>
@@ -172,6 +148,7 @@ const styles = StyleSheet.create({
   },
   dotWithMargin: {
     marginLeft: 5,
+    marginRight: 5,
   },
   rscIcon: {
     verticalAlign: "text-top",
