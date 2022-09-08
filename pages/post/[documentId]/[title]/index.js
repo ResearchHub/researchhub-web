@@ -81,10 +81,21 @@ const Post = (props) => {
     }
   }, [post]);
 
-  const onBountyCancelled = (bounty) => {
-    const newBounties = bounties.filter(
-      (oldBounty) => bounty.id !== oldBounty.id
-    );
+  const onBountyCancelled = (bountiesCancelled) => {
+    const bountyMap = {};
+    bounties.forEach((bounty) => {
+      bountyMap[bounty.id] = bounty;
+    });
+
+    bountiesCancelled.forEach((bounty) => {
+      if (bountyMap[bounty.id]) {
+        bountyMap[bounty.id] = null;
+      }
+    });
+
+    const newBounties = bounties.filter((bounty) => {
+      return !!bountyMap[bounty.id];
+    });
 
     setBounties(newBounties);
   };

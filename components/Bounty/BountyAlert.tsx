@@ -24,7 +24,6 @@ const BountyAlert = ({
     return a.id - b.id;
   });
 
-  console.log(allBounties);
   let amount = 0;
   if (bounty) {
     timeRemaining = bounty.timeRemaining;

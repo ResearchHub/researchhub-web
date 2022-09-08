@@ -23,6 +23,13 @@ function CreateBountyBtn({
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  let totalBountyAmount = 0;
+
+  bounties &&
+    bounties.forEach((bounty) => {
+      totalBountyAmount += bounty.amount;
+    });
+
   const userHasBounty =
     bounties &&
     bounties.some((bounty) => bounty.createdBy.id === currentUser.id);
@@ -36,8 +43,8 @@ function CreateBountyBtn({
       text: <div>Are you sure you want to close your bounty?</div>,
       buttonText: "Yes",
       onClick: () => {
-        Bounty.closeBountyAPI({ bounty: userBounty }).then((bounty) => {
-          onBountyCancelled && onBountyCancelled(bounty);
+        Bounty.closeBountyAPI({ bounty: userBounty }).then((bounties) => {
+          onBountyCancelled && onBountyCancelled(bounties);
         });
       },
     });
@@ -115,9 +122,9 @@ function CreateBountyBtn({
               className={css(styles.addBountyLabel)}
             >
               {userHasBounty ? (
-                `Close your ${numeral(userBounty.amount).format(
-                  "0,0.[0000000000]"
-                )} RSC Bounty`
+                `Close your ${numeral(
+                  isOriginalPoster ? totalBountyAmount : userBounty.amount
+                ).format("0,0.[0000000000]")} RSC Bounty`
               ) : !isOriginalPoster && bounties && bounties.length ? (
                 <span>
                   Contribute{" "}
