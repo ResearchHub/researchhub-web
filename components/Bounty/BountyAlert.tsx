@@ -95,9 +95,6 @@ const BountyAlert = ({
                 onClickOutside={(_event) => setPopoverOpen(false)}
                 targetContent={
                   <span
-                    onMouseEnter={() => {
-                      setPopoverOpen(!popoverOpen);
-                    }}
                     onClick={() => {
                       setPopoverOpen(!popoverOpen);
                     }}
