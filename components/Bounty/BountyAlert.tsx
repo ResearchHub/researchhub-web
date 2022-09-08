@@ -6,19 +6,32 @@ import colors from "~/config/themes/colors";
 import numeral from "numeral";
 import ResearchHubPopover from "../ResearchHubPopover";
 import { useState } from "react";
+import BountyModal from "./BountyModal";
 
 type BountyAlertParams = {
   bounty: Bounty;
   allBounties: [Bounty];
   bountyType: string;
+  bountyText?: string;
+  onBountyAdd?: Function;
+  isOriginalPoster?: boolean;
+  post?: any; // TODO: make a post type
+  currentUser?: any; //TODO: make an any type
 };
 
 const BountyAlert = ({
   bounty,
   allBounties,
   bountyType,
+  onBountyAdd,
+  isOriginalPoster,
+  bountyText,
+  post,
+  currentUser,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   let timeRemaining, createdBy, status;
   allBounties.sort((a, b) => {
     return a.id - b.id;
@@ -49,10 +62,31 @@ const BountyAlert = ({
     return null;
   }
 
+  const userHasBounty =
+    allBounties &&
+    allBounties.length &&
+    allBounties.some((bounty) => bounty?.createdBy?.id === currentUser?.id);
+
   const showPlural = bountyType !== "question" && allBounties.length > 1;
+  const showContributeBounty =
+    !isOriginalPoster && !userHasBounty && bountyType === "question";
 
   return (
     <div className={css(styles.bountyAlert)}>
+      <BountyModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        handleBountyAdded={(bounty) => {
+          onBountyAdd(bounty);
+        }}
+        isOriginalPoster={isOriginalPoster}
+        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
+        withPreview={false}
+        bountyText={bountyText}
+        postId={post?.id}
+        unifiedDocId={post?.unifiedDocument?.id}
+        postSlug={post?.unifiedDocument?.document?.slug}
+      />
       <div className={css(styles.alertIcon)}></div>
       <div className={css(styles.alertDetails)}>
         <div>
@@ -124,8 +158,19 @@ const BountyAlert = ({
           </span>
           <div>
             <ALink href="#comments" theme="green">
-              Submit your answer.
-            </ALink>
+              Submit your answer{showContributeBounty ? "" : "."}
+            </ALink>{" "}
+            {showContributeBounty ? (
+              <>
+                or{" "}
+                <span
+                  className={css(styles.contribute)}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  contribute to the bounty.
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
@@ -142,6 +187,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     border: `1px solid ${colors.NEW_GREEN()}`,
     lineHeight: "22px",
+  },
+  contribute: {
+    color: colors.NEW_GREEN(),
+    fontWeight: 500,
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
   alertDetails: {},
   strong: {

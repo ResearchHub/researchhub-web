@@ -125,7 +125,14 @@ class PostPageCard extends Component {
             onDocumentRestore={restorePost}
             hasBounties={this.props.hasBounties || this.props.bounties}
             allBounties={this.props.bounties}
+            bountyText={this.toPlaintext(postBody)}
             bountyType="question"
+            isOriginalPoster={post?.unifiedDocument?.createdBy?.id === user.id}
+            currentUser={user}
+            post={post}
+            onBountyAdd={(bounty) => {
+              this.props.setBounties([...this.props.bounties, bounty]);
+            }}
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
