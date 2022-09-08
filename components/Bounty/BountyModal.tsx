@@ -17,6 +17,7 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons, { WarningIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
+import numeral from "numeral";
 
 type Props = {
   isOpen: Boolean;
@@ -344,7 +345,9 @@ function BountyModal({
                       className={css(alertStyles.alert, alertStyles.rscAlert)}
                     >
                       {currentUserBalance < offeredAmount
-                        ? `Your RSC balance is below offered amount ${offeredAmount}`
+                        ? `Your RSC balance is below offered amount ${numeral(
+                            offeredAmount
+                          ).format("0[,]0")}`
                         : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
                     </div>
                   ) : hasMaxRscAlert ? (
@@ -535,13 +538,15 @@ const styles = StyleSheet.create({
     // background: colors.ORANGE_LIGHT(),
     color: "#fff",
     borderRadius: "4px",
-    minWidth: 126,
+    minWidth: 140,
     paddingLeft: 8,
     paddingRight: 8,
     width: "unset",
     boxSizing: "border-box",
   },
-  addBtnContainer: {},
+  addBtnContainer: {
+    paddingLeft: 8,
+  },
   addButtonLabel: {
     // color: colors.BLACK(),
     fontWeight: 500,
