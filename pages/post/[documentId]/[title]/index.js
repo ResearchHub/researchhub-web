@@ -81,6 +81,14 @@ const Post = (props) => {
     }
   }, [post]);
 
+  const onBountyCancelled = (bounty) => {
+    const newBounties = bounties.filter(
+      (oldBounty) => bounty.id !== oldBounty.id
+    );
+
+    setBounties(newBounties);
+  };
+
   const sendBountyAwardAmpEvent = ({ currentUser, bounty }) => {
     trackEvent({
       eventType: "award_bounty",
@@ -200,6 +208,7 @@ const Post = (props) => {
               hasBounties={hasBounties}
               bounties={bounties}
               allBounties={allBounties}
+              onBountyCancelled={onBountyCancelled}
               shareUrl={process.browser && window.location.href}
             />
             <div className={css(styles.postPageSection)}>

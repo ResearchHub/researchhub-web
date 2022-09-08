@@ -157,6 +157,7 @@ import {
   faStar as faStarOutline,
   faWallet,
   faMedal,
+  faCircleExclamation,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -195,6 +196,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faCircleExclamation,
   faAngleDown,
   faAngleLeft,
   faAngleRight,
@@ -549,6 +551,10 @@ export const textEditorIcons = {
   quote: <FontAwesomeIcon icon={faQuoteRight} />,
   underline: <FontAwesomeIcon icon={faUnderline} />,
   video: <FontAwesomeIcon icon={faVideoPlus} />,
+};
+
+export const WarningIcon = (props) => {
+  return <FontAwesomeIcon {...props} icon={faCircleExclamation} />;
 };
 
 export const RHLogo = ({ iconStyle, white, withText = true }) => {

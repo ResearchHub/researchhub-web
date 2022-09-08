@@ -4,6 +4,8 @@ import ALink from "../ALink";
 import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
 import colors from "~/config/themes/colors";
 import numeral from "numeral";
+import ResearchHubPopover from "../ResearchHubPopover";
+import { useState } from "react";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -16,7 +18,13 @@ const BountyAlert = ({
   allBounties,
   bountyType,
 }: BountyAlertParams) => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
   let timeRemaining, createdBy, status;
+  allBounties.sort((a, b) => {
+    return a.id - b.id;
+  });
+
+  console.log(allBounties);
   let amount = 0;
   if (bounty) {
     timeRemaining = bounty.timeRemaining;
@@ -42,7 +50,6 @@ const BountyAlert = ({
     return null;
   }
 
-  const bountyQuestions = allBounties.length;
   const showPlural = bountyType !== "question" && allBounties.length > 1;
 
   return (
@@ -60,7 +67,49 @@ const BountyAlert = ({
           ) : (
             <span>Deleted User</span>
           )}
-          {bountyType === "question" && allBounties.length > 1 && " and others"}
+          {bountyType === "question" && allBounties.length > 1 && (
+            <span>
+              {" "}
+              <ResearchHubPopover
+                isOpen={popoverOpen}
+                popoverContent={
+                  <div className={css(styles.popover)}>
+                    {allBounties.map((bounty, index) => {
+                      if (
+                        bounty.createdBy?.authorProfile.id ===
+                        createdBy.authorProfile.id
+                      ) {
+                        return null;
+                      }
+
+                      const curProfile = bounty.createdBy?.authorProfile;
+                      return (
+                        <ALink href={curProfile?.url}>
+                          {curProfile?.firstName} {curProfile?.lastName}
+                          {index < allBounties.length - 1 && ", "}
+                        </ALink>
+                      );
+                    })}
+                  </div>
+                }
+                positions={["bottom", "top"]}
+                onClickOutside={(_event) => setPopoverOpen(false)}
+                targetContent={
+                  <span
+                    onMouseEnter={() => {
+                      setPopoverOpen(!popoverOpen);
+                    }}
+                    onClick={() => {
+                      setPopoverOpen(!popoverOpen);
+                    }}
+                    className={css(styles.groupLanguage)}
+                  >
+                    and others
+                  </span>
+                }
+              />
+            </span>
+          )}
           {` `}
           {allBounties.length > 1 ? "are" : "is"} offering{" "}
           <span className={css(styles.strong)}>
@@ -111,6 +160,20 @@ const styles = StyleSheet.create({
   divider: {
     marginLeft: 7,
     marginRight: 7,
+  },
+  popover: {
+    background: "#fff",
+    padding: 16,
+    borderRadius: 4,
+    marginTop: 8,
+    boxShadow: "0 5px 10px 0 #ddd",
+  },
+  groupLanguage: {
+    // color: colors.NEW_BLUE(),
+    // color: colors.BLACK(),
+    fontWeight: 500,
+    textDecoration: "underline",
+    cursor: "pointer",
   },
   expireTime: {},
   submitText: {},

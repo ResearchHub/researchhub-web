@@ -195,8 +195,9 @@ class PostPageCard extends Component {
                         bountyText={this.toPlaintext(postBody)}
                         post={post}
                         bounties={this.props.bounties}
-                        onBountyCancelled={() => {
-                          this.props.setBounty(null);
+                        onBountyCancelled={(bounty) => {
+                          this.props.onBountyCancelled &&
+                            this.props.onBountyCancelled(bounty);
                         }}
                       />
                     </div>
