@@ -32,11 +32,11 @@ function CreateBountyBtn({
 
   const userHasBounty =
     bounties &&
-    bounties.some((bounty) => bounty.createdBy.id === currentUser.id);
+    bounties.some((bounty) => bounty?.createdBy?.id === currentUser?.id);
 
   const userBounty =
     bounties &&
-    bounties.find((bounty) => bounty.createdBy.id === currentUser.id);
+    bounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
 
   const closeBounty = () => {
     alert.show({
@@ -101,7 +101,7 @@ function CreateBountyBtn({
         postSlug={post?.unifiedDocument?.document?.slug}
       />
       <button
-        disabled={!currentUser.id}
+        disabled={!currentUser?.id}
         className={css(styles.addBounty)}
         onClick={() => {
           userHasBounty ? closeBounty() : setIsModalOpen(true);
