@@ -70,21 +70,21 @@ export const sortOpts = {
       feedTypeOpts["meta-study"].value,
     ],
   },
-  "expiring_soon": {
-    value: "expiring_soon",
-    label: "Expiring Soon",
-    selectedLabel: "Expiring Soon",
-    icon: icons.clock,
-    disableScope: true,
-    availableFor: [
-      feedTypeOpts["bounty"].value,
-    ],
-  },
   "most_rsc": {
     value: "most_rsc",
     label: "RSC Offered",
     selectedLabel: "RSC Offered",
     icon: <ResearchCoinIcon version={4} height={16} width={16} overrideStyle={undefined} />,
+    disableScope: true,
+    availableFor: [
+      feedTypeOpts["bounty"].value,
+    ],
+  },
+  "expiring_soon": {
+    value: "expiring_soon",
+    label: "Expiring Soon",
+    selectedLabel: "Expiring Soon",
+    icon: icons.clock,
     disableScope: true,
     availableFor: [
       feedTypeOpts["bounty"].value,
