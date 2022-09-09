@@ -157,11 +157,11 @@ export const tagFilters = {
     label: "Author claimed",
     availableFor: [feedTypeOpts["paper"].value],
   },
-  "open,closed,expired": {
-    value: "open,closed,expired",
-    label: "Closed bounties",
-    availableFor: [feedTypeOpts["bounty"].value],
-  },  
+  // "open,closed,expired": {
+  //   value: "open,closed,expired",
+  //   label: "Closed bounties",
+  //   availableFor: [feedTypeOpts["bounty"].value],
+  // },  
   answered: {
     value: "answered",
     label: "Answered",
