@@ -37,6 +37,11 @@ type Args = {
   bounty: any;
   bounties: any;
   allBounties: any;
+  bountyType: string;
+  isOriginalPoster?: boolean;
+  onBountyAdd?: any; // TODO: add function type here
+  post?: any; // TODO: add post type
+  bountyText?: string;
 };
 
 function DocumentHeader({
@@ -48,9 +53,12 @@ function DocumentHeader({
   openPaperPDFModal,
   currentUser,
   hasBounties,
-  bounty,
-  bounties,
   allBounties,
+  bountyType,
+  onBountyAdd,
+  isOriginalPoster,
+  post,
+  bountyText,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -248,7 +256,15 @@ function DocumentHeader({
           {hasBounties && (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}
-              <BountyAlert bounty={bounty} allBounties={allBounties} />
+              <BountyAlert
+                allBounties={allBounties}
+                bountyType={bountyType}
+                currentUser={currentUser}
+                bountyText={bountyText}
+                onBountyAdd={onBountyAdd}
+                post={post}
+                isOriginalPoster={isOriginalPoster}
+              />
             </div>
           )}
           <ReactTooltip />

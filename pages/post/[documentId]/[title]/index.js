@@ -63,7 +63,7 @@ const Post = (props) => {
   const [post, setPost] = useState({});
   const [postV2, setPostV2] = useState(new PostDoc({}));
   const [discussionCount, setCount] = useState(0);
-  const [bounty, setBounty] = useState(null);
+  const [bounties, setBounties] = useState(null);
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
 
@@ -71,7 +71,7 @@ const Post = (props) => {
 
   useEffect(() => {
     if (postV2.isReady) {
-      setBounty(postV2.bounties[0]);
+      setBounties(postV2.bounties);
     }
   }, [postV2]);
 
@@ -80,6 +80,25 @@ const Post = (props) => {
       setCount(post.discussion_count);
     }
   }, [post]);
+
+  const onBountyCancelled = (bountiesCancelled) => {
+    const bountyMap = {};
+    bounties.forEach((bounty) => {
+      bountyMap[bounty.id] = bounty;
+    });
+
+    bountiesCancelled.forEach((bounty) => {
+      if (bountyMap[bounty.id]) {
+        bountyMap[bounty.id] = null;
+      }
+    });
+
+    const newBounties = bounties.filter((bounty) => {
+      return !!bountyMap[bounty.id];
+    });
+
+    setBounties(newBounties);
+  };
 
   const sendBountyAwardAmpEvent = ({ currentUser, bounty }) => {
     trackEvent({
@@ -118,7 +137,7 @@ const Post = (props) => {
           props.setMessage("Bounty awarded successfully");
           props.showMessage({ show: true, error: false });
 
-          setBounty(null);
+          setBounties(null);
 
           var event = new CustomEvent("bounty-awarded", {
             detail: { objectId, contentType, amount: bounty.amount },
@@ -196,10 +215,11 @@ const Post = (props) => {
               post={postV2}
               removePost={removePost}
               restorePost={restorePost}
-              setBounty={setBounty}
+              setBounties={setBounties}
               hasBounties={hasBounties}
-              bounty={bounty}
+              bounties={bounties}
               allBounties={allBounties}
+              onBountyCancelled={onBountyCancelled}
               shareUrl={process.browser && window.location.href}
             />
             <div className={css(styles.postPageSection)}>
@@ -209,6 +229,7 @@ const Post = (props) => {
                   hostname={props.hostname}
                   documentType={postV2.unifiedDocument.documentType}
                   post={post}
+                  bountyType={postV2.unifiedDocument.documentType}
                   setHasBounties={setHasBounties}
                   setAllBounties={setAllBounties}
                   postId={post.id}
@@ -218,7 +239,7 @@ const Post = (props) => {
                   calculatedCount={discussionCount}
                   setCount={setCount}
                   isCollapsible={false}
-                  bounty={bounty}
+                  bounties={bounties || post.bounties}
                   handleAwardBounty={handleAwardBounty}
                 />
               )}

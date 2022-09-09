@@ -196,7 +196,9 @@ const DiscussionTab = (props) => {
                       key={`thread-${t.data.id}`}
                       {...t.data}
                       bounties={
-                        bountyMap[t.data.id]
+                        props.bounties && props.bounties.length
+                          ? props.bounties
+                          : bountyMap[t.data.id]
                           ? [bountyMap[t.data.id]]
                           : t.data.bounties
                       }
@@ -211,10 +213,10 @@ const DiscussionTab = (props) => {
                       documentType={documentType}
                       paper={paperState}
                       post={post}
+                      bountyType={props.bountyType}
                       currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
                       context="DOCUMENT"
-                      bounty={props.bounty}
                       isAcceptedAnswer={t.data.is_accepted_answer}
                       handleAwardBounty={handleAwardBounty}
                     />

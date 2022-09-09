@@ -243,9 +243,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       width: "auto",
     },
-    ":hover": {
-      borderColor: colors.BLUE(),
-    },
+    // ":hover": {
+    //   borderColor: colors.BLUE(),
+    // },
   },
   searchSmallScreen: {
     width: "auto",
@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
     padding: 10,
     boxSizing: "border-box",
     height: "100%",
+    borderRadius: 4,
     width: "100%",
     background: "transparent",
     border: "none",

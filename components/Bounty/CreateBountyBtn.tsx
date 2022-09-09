@@ -15,19 +15,36 @@ function CreateBountyBtn({
   onBountyAdd,
   bountyText,
   post,
-  bounty,
+  bounties,
   onBountyCancelled,
+  isOriginalPoster,
+  currentUser,
 }): ReactElement {
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  let totalBountyAmount = 0;
+
+  bounties &&
+    bounties.forEach((bounty) => {
+      totalBountyAmount += bounty.amount;
+    });
+
+  const userHasBounty =
+    bounties &&
+    bounties.some((bounty) => bounty?.createdBy?.id === currentUser?.id);
+
+  const userBounty =
+    bounties &&
+    bounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
 
   const closeBounty = () => {
     alert.show({
       text: <div>Are you sure you want to close your bounty?</div>,
       buttonText: "Yes",
       onClick: () => {
-        Bounty.closeBountyAPI({ bounty }).then(() => {
-          onBountyCancelled && onBountyCancelled();
+        Bounty.closeBountyAPI({ bounty: userBounty }).then((bounties) => {
+          onBountyCancelled && onBountyCancelled(bounties);
         });
       },
     });
@@ -44,11 +61,28 @@ function CreateBountyBtn({
       >
         <div className={css(bountyTooltip.bodyContainer)}>
           <div className={css(bountyTooltip.title)}>
-            Add ResearchCoin Bounty
+            {userHasBounty ? "Close your Bounty" : "Add ResearchCoin Bounty"}
           </div>
           <div className={css(bountyTooltip.desc)}>
-            <div>• Offer ResearchCoin to the best solution</div>
-            <div>• Improves chances of quality submissions</div>
+            {userHasBounty ? (
+              <>
+                {isOriginalPoster ? (
+                  <>
+                    <div>
+                      • Once closed, all group bounties will also be closed
+                    </div>
+                    <div>• Once closed, your RSC will be returned to you</div>
+                  </>
+                ) : (
+                  <div>• Once closed, your RSC will be returned to you</div>
+                )}
+              </>
+            ) : (
+              <>
+                <div>• Offer ResearchCoin to the best solution</div>
+                <div>• Improves chances of quality submissions</div>
+              </>
+            )}
           </div>
         </div>
       </ReactTooltip>
@@ -58,20 +92,25 @@ function CreateBountyBtn({
         handleBountyAdded={(bounty) => {
           onBountyAdd(bounty);
         }}
+        isOriginalPoster={isOriginalPoster}
+        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
         withPreview={withPreview}
         bountyText={bountyText}
         postId={post?.id}
         unifiedDocId={post?.unifiedDocument?.id}
         postSlug={post?.unifiedDocument?.document?.slug}
       />
-      <div
+      <button
+        disabled={!currentUser?.id}
         className={css(styles.addBounty)}
-        onClick={() => (bounty ? closeBounty() : setIsModalOpen(true))}
+        onClick={() => {
+          userHasBounty ? closeBounty() : setIsModalOpen(true);
+        }}
       >
         <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
         <div>
           <span className={css(styles.bountyTextContainer)}>
-            {!bounty && (
+            {!userHasBounty && (
               <span className={css(styles.bountyIcon)}>
                 {/* @ts-ignore */}
                 <ResearchCoinIcon width={22} height={22} version={3} />
@@ -82,10 +121,16 @@ function CreateBountyBtn({
               data-for="bountyTooltip"
               className={css(styles.addBountyLabel)}
             >
-              {bounty ? (
-                `Close your ${numeral(bounty.amount).format(
-                  "0,0.[0000000000]"
-                )} RSC Bounty`
+              {userHasBounty ? (
+                `Close your ${numeral(
+                  isOriginalPoster ? totalBountyAmount : userBounty.amount
+                ).format("0,0.[0000000000]")} RSC Bounty`
+              ) : !isOriginalPoster && bounties && bounties.length ? (
+                <span>
+                  Contribute{" "}
+                  <span className={css(styles.desktop)}>ResearchCoin </span>
+                  <span className={css(styles.mobile)}>RSC </span> to the Bounty
+                </span>
               ) : (
                 <span>
                   Add <span className={css(styles.desktop)}>ResearchCoin </span>
@@ -96,30 +141,11 @@ function CreateBountyBtn({
             </span>
           </span>
         </div>
-      </div>
+      </button>
       {/* )} */}
     </div>
   );
 }
-
-const popover = StyleSheet.create({
-  container: {
-    position: "absolute",
-    display: "none",
-    zIndex: 1,
-    background: "white",
-    padding: "15px 0 10px 0",
-    border: `1px solid ${colors.GREY()}`,
-    borderRadius: 4,
-    marginTop: 5,
-    width: 100,
-    boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
-  },
-  open: {
-    display: "block",
-  },
-});
 
 const bountyTooltip = StyleSheet.create({
   tooltipContainer: {
@@ -175,20 +201,15 @@ const styles = StyleSheet.create({
     },
   },
   addBounty: {
-    // color: colors.ORANGE_DARK(),
     color: colors.ORANGE_DARK2(),
     fontSize: 15,
     fontWeight: 500,
     cursor: "pointer",
-    // borderBottom: `1px solid ${colors.ORANGE_DARK2()}`,
-    // borderRadius: 4,
-    // padding: "7px 16px",
-    // paddingLeft: 0,
-    ":hover": {
-      // color: colors.ORANGE()
-    },
+    border: "none",
+    background: "unset",
+    padding: "unset",
+    fontFamily: "Roboto",
     boxSizing: "border-box",
-    // height: 42,
   },
   addBountyLabel: {
     // fontWeight: 500,

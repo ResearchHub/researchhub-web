@@ -15,8 +15,9 @@ import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { ResearchCoinIcon } from "~/config/themes/icons";
+import icons, { WarningIcon, ResearchCoinIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
+import numeral from "numeral";
 
 type Props = {
   isOpen: Boolean;
@@ -30,6 +31,7 @@ type Props = {
   unifiedDocId: number;
   showMessage: Function;
   setMessage: Function;
+  isOriginalPoster: boolean;
 };
 
 function BountyModal({
@@ -43,6 +45,7 @@ function BountyModal({
   bountyText,
   showMessage,
   setMessage,
+  isOriginalPoster,
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
@@ -72,7 +75,7 @@ function BountyModal({
   };
 
   const handleBountyInputChange = (event) => {
-    setOfferedAmount(parseFloat(event.target.value || "0"));
+    setOfferedAmount(event.target.value ? parseInt(event.target.value) : "0");
     if (event.target.value < MIN_RSC_REQUIRED) {
       setHasMinRscAlert(true);
       setHasMaxRscAlert(false);
@@ -159,7 +162,10 @@ function BountyModal({
       modalContentStyle={styles.modalContentStyle}
       title={
         success ? null : (
-          <span className={css(styles.modalTitle)}> Add Bounty </span>
+          <span className={css(styles.modalTitle)}>
+            {" "}
+            {isOriginalPoster ? "Add" : "Contribute"} Bounty{" "}
+          </span>
         )
       }
     >
@@ -230,6 +236,7 @@ function BountyModal({
                           type="number"
                           onChange={handleBountyInputChange}
                           value={offeredAmount + ""}
+                          pattern="\d*"
                         />
                       </span>
                       <span className={css(styles.rscText)}>RSC</span>
@@ -287,6 +294,27 @@ function BountyModal({
                 </div>
               </div>
               <div className={css(infoSectionStyles.bountyInfo)}>
+                {isOriginalPoster ? null : (
+                  <div
+                    className={css(
+                      infoSectionStyles.infoRow,
+                      infoSectionStyles.specialInfoRow
+                    )}
+                  >
+                    <span className={css(infoSectionStyles.infoIcon)}>
+                      {
+                        <WarningIcon
+                          color={colors.DARKER_GREY()}
+                          width={20}
+                          height={20}
+                        />
+                      }
+                    </span>{" "}
+                    By contributing to the open bounty, you are giving the
+                    original poster control to award your bounty.
+                  </div>
+                )}
+
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
                     {icons.clock}
@@ -296,19 +324,6 @@ function BountyModal({
                     solution
                   </span>
                 </div>
-                {/* <div className={css(infoSectionStyles.infoRow)}>
-                  <span className={css(infoSectionStyles.infoIcon)}>
-                    {
-                      <MedalIcon
-                        color={colors.DARKER_GREY()}
-                        width={20}
-                        height={20}
-                      />
-                    }
-                  </span>{" "}
-                  Award either a partial or full bounty depending on whether the
-                  solution satisfies your request
-                </div> */}
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
                     {icons.undo}
@@ -330,7 +345,9 @@ function BountyModal({
                       className={css(alertStyles.alert, alertStyles.rscAlert)}
                     >
                       {currentUserBalance < offeredAmount
-                        ? `Your RSC balance is below offered amount ${offeredAmount}`
+                        ? `Your RSC balance is below offered amount ${numeral(
+                            offeredAmount
+                          ).format("0[,]0")}`
                         : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
                     </div>
                   ) : hasMaxRscAlert ? (
@@ -405,6 +422,16 @@ const alertStyles = StyleSheet.create({
 });
 
 const infoSectionStyles = StyleSheet.create({
+  specialInfoRow: {
+    borderBottom: "1px solid rgb(232 232 242)",
+    padding: 0,
+    marginLeft: 30,
+    marginRight: 30,
+    paddingBottom: 8,
+    // background: colors.YELLOW(0.1),
+    // paddingTop: 8,
+    // paddingBottom: 8,
+  },
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,
@@ -511,10 +538,15 @@ const styles = StyleSheet.create({
     // background: colors.ORANGE_LIGHT(),
     color: "#fff",
     borderRadius: "4px",
-    width: 126,
+    minWidth: 140,
+    paddingLeft: 8,
+    paddingRight: 8,
+    width: "unset",
     boxSizing: "border-box",
   },
-  addBtnContainer: {},
+  addBtnContainer: {
+    paddingLeft: 8,
+  },
   addButtonLabel: {
     // color: colors.BLACK(),
     fontWeight: 500,

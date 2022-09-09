@@ -53,6 +53,7 @@ const DiscussionPostMetadata = (props) => {
     bounties,
     awardedBountyAmount,
     isAcceptedAnswer,
+    bountyType,
   } = props;
 
   const alert = useAlert();
@@ -86,7 +87,8 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const renderBadge = ({ type, isAcceptedAnswer = false, bounties = [] }) => {
-    const openBounty = bounties.find((b) => b.status === "OPEN");
+    const openBounty =
+      bounties.find((b) => b.status === "OPEN") && bountyType !== "question";
     if (openBounty) {
       return (
         <div className={css(styles.badgeContainer)}>

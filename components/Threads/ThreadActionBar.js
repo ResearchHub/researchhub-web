@@ -75,6 +75,7 @@ class ThreadActionBar extends Component {
   };
 
   handleAwardBounty = ({
+    bountyId,
     objectId,
     recipientUserName,
     recipientUserId,
@@ -82,7 +83,7 @@ class ThreadActionBar extends Component {
   }) => {
     const { bounty } = this.props;
     return Bounty.awardAPI({
-      bountyId: bounty.id,
+      bountyId: bountyId ? bountyId : bounty.id,
       recipientUserId,
       objectId,
       contentType,
@@ -149,8 +150,12 @@ class ThreadActionBar extends Component {
             <div
               className={css(styles.text, styles.action)}
               onClick={() => {
+                let amount = 0;
+                this.props.bounties.forEach(
+                  (bounty) => (amount += bounty.amount)
+                );
                 const formattedBountyAmount = formatBountyAmount({
-                  amount: this.props.bounty.amount,
+                  amount,
                 });
 
                 const recipientUserName = `${this.props.createdBy.author_profile.first_name} ${this.props.createdBy.author_profile.last_name}`;
@@ -166,18 +171,23 @@ class ThreadActionBar extends Component {
                     documentId: this.props.documentID,
                     commentId: this.props.commentID,
                     onSuccess: (response) => {
-                      const bountyRes = this.handleAwardBounty({
-                        bountyId: this.props.bounty.id,
-                        recipientUserId: this.props.createdBy.id,
-                        recipientUserName,
-                        objectId:
-                          this.props.contentType === "thread"
-                            ? this.props.threadID
-                            : this.props.commentID,
-                        contentType: this.props.contentType,
+                      const promises = [];
+                      this.props.bounties.forEach((bounty) => {
+                        const bountyRes = this.handleAwardBounty({
+                          bountyId: bounty.id,
+                          recipientUserId: this.props.createdBy.id,
+                          recipientUserName,
+                          objectId:
+                            this.props.contentType === "thread"
+                              ? this.props.threadID
+                              : this.props.commentID,
+                          contentType: this.props.contentType,
+                        });
+                        promises.push(bountyRes);
                       });
-                      if (bountyRes) {
-                        bountyRes.then((_) => {
+
+                      if (promises.length) {
+                        Promise.all(promises).then((_) => {
                           if (this.props.contentType === "thread") {
                             const event = new CustomEvent("answer-accepted", {
                               detail: {

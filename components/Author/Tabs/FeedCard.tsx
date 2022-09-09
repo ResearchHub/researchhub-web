@@ -35,7 +35,7 @@ import VoteWidget from "~/components/VoteWidget";
 import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
-import Bounty from "~/config/types/bounty";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 
 const PaperPDFModal = dynamic(
@@ -137,7 +137,7 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
-  const bounty = bounties?.[0];
+  // const bounty = bounties?.[0];
   const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
@@ -184,10 +184,10 @@ function FeedCard({
   });
 
   const getTitle = () => {
-      if (titleAsHtml) {
-        return titleAsHtml;
-      }
-      return unescapeHtmlString(title ?? "");
+    if (titleAsHtml) {
+      return titleAsHtml;
+    }
+    return unescapeHtmlString(title ?? "");
   };
 
   const getBody = () => {
@@ -198,6 +198,12 @@ function FeedCard({
   const cardBody = getBody();
   const createdDate = formatDateStandard(created_date || uploaded_date);
   const createdBy = parseCreatedBy(uploaded_by || created_by);
+
+  let bountyAmount = 0;
+
+  bounties.forEach((bounty) => {
+    bountyAmount += bounty.amount;
+  });
 
   return (
     <Ripples
@@ -289,7 +295,9 @@ function FeedCard({
                       styles.publishContainer
                     )}
                   >
-                    <div className={css(styles.metaItem, styles.mobileVoteWidget)}>
+                    <div
+                      className={css(styles.metaItem, styles.mobileVoteWidget)}
+                    >
                       {/* TODO: migrate to VoteWidgetV2 */}
                       <VoteWidget
                         horizontalView={true}
@@ -310,7 +318,7 @@ function FeedCard({
                       <span className={css(styles.metadataText)}>
                         {formattedDocLabel ?? formattedDocType}
                       </span>
-                    </div>                    
+                    </div>
                     {formattedDocType === "question" ? (
                       <div
                         className={css(
@@ -378,16 +386,21 @@ function FeedCard({
                       </div>
                     )}
 
-                    {bounty &&
+                    {bountyAmount > 0 && (
                       <div className={css(styles.metaItem, styles.bountyBadge)}>
                         <span className={css(styles.badgeRscIcon)}>
-                          <ResearchCoinIcon height={16} width={16} version={4} overrideStyle={undefined} />
+                          <ResearchCoinIcon
+                            height={16}
+                            width={16}
+                            version={4}
+                            overrideStyle={undefined}
+                          />
                         </span>
                         <span className={css(styles.bountyAmount)}>
-                          {bounty.formattedAmount} Bounty
+                          {formatBountyAmount({ amount: bountyAmount })} Bounty
                         </span>
                       </div>
-                    }
+                    )}
                   </div>
                 </div>
               </div>
@@ -417,7 +430,7 @@ const styles = StyleSheet.create({
   },
   bountyAmount: {
     marginTop: -1,
-  },  
+  },
   ripples: {
     display: "flex",
     width: "100%",
@@ -524,7 +537,7 @@ const styles = StyleSheet.create({
   },
   metadataText: {
     fontSize: 14,
-    
+
     textTransform: "capitalize",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 13,
@@ -538,7 +551,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginRight: 20,
-    },    
+    },
   },
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {

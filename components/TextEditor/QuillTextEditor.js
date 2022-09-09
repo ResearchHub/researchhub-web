@@ -28,6 +28,7 @@ import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import icons from "~/config/themes/icons";
+import { getCurrentUserLegacy } from "~/config/utils/user";
 
 class Editor extends Component {
   constructor(props) {
@@ -541,6 +542,7 @@ class Editor extends Component {
                       }}
                       withPreview={true}
                       bountyText={this.quillRef?.getText()}
+                      currentUser={this.props.currentUser}
                       // post={post}
                       bounty={this.props.bounty}
                       onBountyCancelled={() => {
@@ -1057,10 +1059,16 @@ const toolbarStyles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => {
+  return {
+    currentUser: getCurrentUserLegacy(state),
+  };
+};
+
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(null, mapDispatchToProps)(Editor);
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);
