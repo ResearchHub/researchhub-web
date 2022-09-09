@@ -26,6 +26,7 @@ import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
 import Bounty from "~/config/types/bounty";
+import { timeToRoundUp } from "~/config/utils/dates";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -720,9 +721,9 @@ class DiscussionEntry extends Component {
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
                     isBounty={
-                      bounties &&
-                      bounties.length &&
-                      bounties[0].status !== "CLOSED"
+                      this.state.bounties &&
+                      this.state.bounties.length &&
+                      this.state.bounties[0].status !== "CLOSED"
                     }
                     postType={postType}
                     isAcceptedAnswer={isAcceptedAnswer}
@@ -763,6 +764,15 @@ class DiscussionEntry extends Component {
                   handleAwardBounty={this.props.handleAwardBounty}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
+                {this.state.bounties &&
+                  this.state.bounties.length > 0 &&
+                  this.state.bounties[0].status !== "CLOSED" && (
+                    <span className={css(styles.expiryDate)}>
+                      <span className={css(styles.divider)}>•</span>
+                      expires in{" "}
+                      {timeToRoundUp(this.state.bounties[0].expiration_date)}
+                    </span>
+                  )}
               </div>
             )}
           </div>
@@ -799,6 +809,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     maxWidth: "100%",
+  },
+  expiryDate: {
+    color: colors.MEDIUM_GREY2(),
+  },
+  divider: {
+    fontSize: 16,
+    padding: "0px 8px",
+    color: colors.GREY(1),
+    "@media only screen and (max-width: 767px)": {
+      padding: "0px 8px",
+    },
   },
   threadline: {
     height: "100%",

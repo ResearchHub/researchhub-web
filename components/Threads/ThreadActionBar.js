@@ -11,6 +11,7 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { captureException } from "@sentry/browser";
+import { timeToRoundUp } from "~/config/utils/dates";
 
 class ThreadActionBar extends Component {
   constructor(props) {
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    flex: 1,
   },
   row: {
     display: "flex",

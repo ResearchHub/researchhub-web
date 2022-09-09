@@ -91,10 +91,6 @@ const DiscussionPostMetadata = (props) => {
       return (
         <div className={css(styles.badgeContainer)}>
           <span className={css(badge.container, badge.bounty)}>
-            <span className={css(badge.icon)}>
-              {/* <MedalIcon color={"black"} height={15} width={15} /> */}
-              {/* <ResearchCoinIcon version={4} height={15} width={15} /> */}
-            </span>
             <span className={css(badge.label)}>Open Bounty</span>
           </span>
         </div>
@@ -209,14 +205,6 @@ const DiscussionPostMetadata = (props) => {
               fetching={fetching}
               awardedBountyAmount={awardedBountyAmount}
             />
-            {bounties &&
-              bounties.length > 0 &&
-              bounties[0].status !== "CLOSED" && (
-                <span className={css(styles.expiryDate)}>
-                  <span className={css(styles.divider)}>•</span>
-                  expires in {timeToRoundUp(bounties[0].expiration_date)}
-                </span>
-              )}
           </div>
           {/* {renderHeadline()} */}
         </div>
@@ -319,6 +307,7 @@ const badge = StyleSheet.create({
   bounty: {
     background: colors.ORANGE_DARK(1),
     color: "white",
+    display: "unset",
   },
   answer: {
     background: colors.NEW_GREEN(0.1),
@@ -358,7 +347,6 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY2(),
     fontWeight: 400,
     fontSize: 15,
-    marginLeft: 8,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 14,
     },
@@ -376,6 +364,7 @@ const styles = StyleSheet.create({
     },
   },
   action: {
+    marginLeft: 6,
     [`@media only screen and (max-width: 615px)`]: {
       display: "none",
     },
@@ -409,6 +398,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    paddingLeft: 8,
     // width: "100%",
   },
 
@@ -416,6 +406,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    flexWrap: "wrap",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      gap: "6px 0px",
+    },
   },
 
   userContainer: {
@@ -448,7 +443,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   name: {
-    marginLeft: 8,
     color: colors.BLACK(1),
     fontWeight: 500,
   },
