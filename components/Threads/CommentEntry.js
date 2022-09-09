@@ -62,6 +62,7 @@ class CommentEntry extends Component {
         // revealReply,
         selectedVoteType,
         score,
+        removed: this.props.comment.is_removed,
         highlight: this.shouldHighlight(),
         canEdit:
           this.props.comment.source === "twitter"
