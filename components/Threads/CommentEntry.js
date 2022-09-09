@@ -672,9 +672,9 @@ class CommentEntry extends Component {
                     comment
                     showBountyAward={
                       openBounties?.length > 0 &&
-                      openBounties[0].status === "OPEN" &&
-                      openBounties[0].created_by.author_profile.id ===
-                        auth.user.author_profile.id
+                      openBounties[0]?.status === "OPEN" &&
+                      openBounties[0]?.created_by?.author_profile?.id ===
+                        auth?.user?.author_profile?.id
                     }
                     bounty={openBounties?.length > 0 && openBounties[0]}
                     onBountyAward={this.onBountyAward}
