@@ -201,9 +201,10 @@ function FeedCard({
 
   let bountyAmount = 0;
 
-  bounties.forEach((bounty) => {
-    bountyAmount += bounty.amount;
-  });
+  bounties &&
+    bounties.forEach((bounty) => {
+      bountyAmount += bounty.amount;
+    });
 
   return (
     <Ripples
