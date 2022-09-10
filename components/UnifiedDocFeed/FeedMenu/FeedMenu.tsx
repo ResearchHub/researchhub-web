@@ -47,8 +47,10 @@ const FeedMenu = ({ hubState }: Args) => {
   const tabElems = useMemo(() => {
     return Object.values(feedTypeOpts).map((t) => (
       <FeedMenuTab
+        key={`tab-${t.value}`}
         selectedFilters={selectedFilters}
         tabObj={t}
+        setTagsMenuOpenFor={setTagsMenuOpenFor}
         handleOpenTagsMenu={(forType) => setTagsMenuOpenFor(forType)}
         handleFilterSelect={(selected) =>
           handleFilterSelect({ router, ...selected })
@@ -163,6 +165,10 @@ const styles = StyleSheet.create({
     "::-webkit-scrollbar": {
       display: "none",
     },
+    // Kobe: padding solution to deal with overflow issue on tags dropdown
+    // https://stackoverflow.com/a/39554003/1869326
+    paddingBottom: 250,
+    marginBottom: -250,
   },
 
   orderingContainer: {

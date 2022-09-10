@@ -1,4 +1,4 @@
-import icons from "~/config/themes/icons";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 
 export const topLevelFilters = {
   "/": {
@@ -68,31 +68,30 @@ export const sortOpts = {
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
       feedTypeOpts["meta-study"].value,
+    ],
+  },
+  "most_rsc": {
+    value: "most_rsc",
+    label: "RSC Offered",
+    selectedLabel: "RSC Offered",
+    icon: <ResearchCoinIcon version={4} height={16} width={16} overrideStyle={undefined} />,
+    disableScope: true,
+    availableFor: [
       feedTypeOpts["bounty"].value,
     ],
   },
-  // "expiring_soon": {
-  //   value: "expiring_soon",
-  //   label: "Expiring Soon",
-  //   selectedLabel: "Expiring Soon",
-  //   icon: icons.clock,
-  //   disableScope: true,
-  //   availableFor: [
-  //     feedTypeOpts["bounty"].value,
-  //   ],
-  // },
-  // "rsc_offered": {
-  //   value: "rsc_offered",
-  //   label: "RSC Offered",
-  //   selectedLabel: "RSC Offered",
-  //   icon: icons.clock,
-  //   disableScope: true,
-  //   availableFor: [
-  //     feedTypeOpts["bounty"].value,
-  //   ],
-  // },
-  newest: {
-    value: "newest",
+  "expiring_soon": {
+    value: "expiring_soon",
+    label: "Expiring Soon",
+    selectedLabel: "Expiring Soon",
+    icon: icons.clock,
+    disableScope: true,
+    availableFor: [
+      feedTypeOpts["bounty"].value,
+    ],
+  },
+  new: {
+    value: "new",
     label: "Newest",
     selectedLabel: "Newest",
     icon: icons.bolt,
@@ -106,8 +105,8 @@ export const sortOpts = {
       feedTypeOpts["bounty"].value,
     ],
   },
-  most_discussed: {
-    value: "most_discussed",
+  discussed: {
+    value: "discussed",
     label: "Most Discussed",
     selectedLabel: "Discussed",
     icon: icons.commentsAlt,
@@ -121,8 +120,8 @@ export const sortOpts = {
       feedTypeOpts["bounty"].value,
     ],
   },
-  top_rated: {
-    value: "top_rated",
+  upvoted: {
+    value: "upvoted",
     label: "Most Upvoted",
     selectedLabel: "Upvoted",
     icon: icons.up,
@@ -153,14 +152,19 @@ export const tagFilters = {
     label: "Open access",
     availableFor: [feedTypeOpts["all"].value, feedTypeOpts["paper"].value],
   },
-  expired: {
-    value: "expired",
-    label: "Show expired bounties",
-    availableFor: [feedTypeOpts["bounty"].value],
+  author_claimed: {
+    value: "author_claimed",
+    label: "Author claimed",
+    availableFor: [feedTypeOpts["paper"].value],
   },
+  // "open,closed,expired": {
+  //   value: "open,closed,expired",
+  //   label: "Closed bounties",
+  //   availableFor: [feedTypeOpts["bounty"].value],
+  // },  
   answered: {
     value: "answered",
-    label: "Show answered",
+    label: "Answered",
     availableFor: [feedTypeOpts["question"].value],
   },
 };
@@ -189,7 +193,7 @@ export const scopeOptions = {
   },
   "all-time": {
     value: "all-time",
-    valueForApi: "all_time",
+    valueForApi: "all",
     label: "All Time",
   },
 };

@@ -12,6 +12,9 @@ import { MessageActions } from "~/redux/message";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { captureException } from "@sentry/browser";
 import { timeToRoundUp } from "~/config/utils/dates";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import { captureEvent } from "~/config/utils/events";
 
 class ThreadActionBar extends Component {
   constructor(props) {
@@ -68,6 +71,65 @@ class ThreadActionBar extends Component {
     );
   };
 
+  renderDeleteButton = () => {
+    let classNames = [styles.action, styles.text];
+
+    const _handleDelete = () => {
+      const url =
+        API.buildPaperChainUrl(
+          this.props.documentType,
+          null,
+          this.props.documentID,
+          this.props.threadID,
+          this.props.commentID,
+          this.props.replyID
+        ) + "delete/";
+
+      fetch(url, API.PATCH_CONFIG())
+        .then(Helpers.checkStatus)
+        .then((_res) => {
+          let deletedId;
+          let deletedContentType;
+          if (this.props.replyID) {
+            deletedId = this.props.replyID;
+            deletedContentType = "reply";
+          } else if (this.props.commentID) {
+            deletedId = this.props.commentID;
+            deletedContentType = "comment";
+          } else if (this.props.threadID) {
+            deletedId = this.props.threadID;
+            deletedContentType = "thread";
+          } else {
+            return false;
+          }
+
+          const event = new CustomEvent("discussion-deleted", {
+            detail: {
+              deletedId,
+              deletedContentType,
+            },
+          });
+          document.dispatchEvent(event);
+        })
+        .catch((error) => {
+          captureEvent({
+            error,
+            msg: "Failed to remove user comment",
+            data: { url },
+          });
+        });
+    };
+
+    return (
+      <div className={css(classNames)} onClick={_handleDelete}>
+        <span className={css(styles.icon)} id={"deleteIcon"}>
+          {icons.trash}
+        </span>
+        <span id={"delete"}>Delete</span>
+      </div>
+    );
+  };
+
   toggleReplyBox = () => {
     this.setState({
       showReplyBox: !this.state.showReplyBox,
@@ -113,6 +175,7 @@ class ThreadActionBar extends Component {
     }
 
     const editButton = this.renderEditButton();
+    const deleteButton = this.renderDeleteButton();
     return (
       <div
         className={css(styles.column)}
@@ -145,7 +208,6 @@ class ThreadActionBar extends Component {
             </div>
           )}
 
-          {/* TODO: This will be turned on with the onset of bounty feature */}
           {showBountyAward && !this.state.bountyAwarded && (
             <div
               className={css(styles.text, styles.action)}
@@ -237,6 +299,7 @@ class ThreadActionBar extends Component {
           )}
 
           {this.props.toggleEdit && editButton}
+          {this.props.toggleEdit && deleteButton}
           <FlagButtonV2
             buttonText=""
             iconOverride={icons.flagOutline}
@@ -312,6 +375,12 @@ const styles = StyleSheet.create({
     },
     ":hover #awardBountyIcon": {
       color: colors.NEW_BLUE(),
+    },
+    ":hover #deleteIcon": {
+      color: colors.RED(),
+    },
+    ":hover #delete": {
+      color: colors.RED(),
     },
   },
   replyContainer: {

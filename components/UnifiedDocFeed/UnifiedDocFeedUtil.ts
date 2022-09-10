@@ -9,5 +9,5 @@ export function formatMainHeader({
   hubName,
   isHomePage,
 }: FormatMainHeaderArgs): string {
-  return isHomePage ? `Explore Research Hub` : `${capitalize(hubName)}`;
+  return isHomePage ? `Explore ResearchHub` : `${capitalize(hubName)}`;
 }

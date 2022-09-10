@@ -138,13 +138,53 @@ const DiscussionTab = (props) => {
     setFormattedThreads(formatThreads(threads, basePath));
   }
 
+  function handleDiscussionDeleted(e) {
+    const { deletedId, deletedContentType } = e.detail;
+
+    for (let i = 0; i < threads.length; i++) {
+      const thread = threads[i];
+
+      if (deletedContentType === "thread" && deletedId === thread.id) {
+        thread.is_removed = true;
+        break;
+      }
+
+      for (let j = 0; j < (thread.comments || []).length; j++) {
+        const comment = thread.comments[j];
+
+        if (deletedContentType === "comment" && deletedId === comment.id) {
+          comment.is_removed = true;
+          break;
+        }
+
+        for (let k = 0; k < (comment.replies || []).length; k++) {
+          const reply = comment.replies[k];
+
+          if (deletedContentType === "reply" && deletedId === reply.id) {
+            reply.is_removed = true;
+            break;
+          }
+        }
+      }
+    }
+
+    // Forces refresh of discussion section
+    setFetching(true);
+    setFetching(false);
+  }
+
   useEffect(() => {
     document.addEventListener("answer-accepted", handleAcceptedAnswer);
     document.addEventListener("bounty-awarded", handleAwardedBounty);
+    document.addEventListener("discussion-deleted", handleDiscussionDeleted);
 
     return () => {
       document.removeEventListener("bounty-awarded", handleAwardedBounty);
       document.removeEventListener("answer-accepted", handleAcceptedAnswer);
+      document.removeEventListener(
+        "discussion-deleted",
+        handleDiscussionDeleted
+      );
     };
   }, [threads]);
 

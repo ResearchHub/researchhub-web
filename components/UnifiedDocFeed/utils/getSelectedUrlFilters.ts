@@ -18,28 +18,34 @@ export type SelectedUrlFilters = {
   tags: string[];
 };
 
-const defaults = {
-  topLevel: Object.values(topLevelFilters)[0].value,
-  type: Object.values(feedTypeOpts)[0].value,
-  sort: Object.values(sortOpts)[0].value,
-  time: Object.values(scopeOptions)[0].value,
-  tags: <string[]>[],
-};
+
+const _getDefaults = ({ typeFilter }) => {
+  const availSorts = Object.values(sortOpts).filter(s => s.availableFor.includes(typeFilter));
+  const defaults = {
+    topLevel: Object.values(topLevelFilters)[0].value,
+    type: Object.values(feedTypeOpts)[0].value,
+    sort: Object.values(availSorts)[0].value,
+    time: Object.values(scopeOptions)[0].value,
+    tags: <string[]>[],
+  };
+  
+  return defaults;
+}
 
 export const getSelectedUrlFilters = ({
   query,
   pathname,
 }): SelectedUrlFilters => {
-  const isTagsAString = typeof query.tags === "string";
-  const isTagsAnArray = Array.isArray(query.tags);
-
   const selectedTopLevelFilter = topLevelFilters[pathname]?.value;
-  const selectedTypeFilter = feedTypeOpts[query?.type]?.value;
-  const selectedTimeScope = scopeOptions[query?.time]?.value;
+  const selectedTypeFilter = feedTypeOpts[query?.type]?.value || "all";
   const selectedSort = getSortValue({
     query,
     type: selectedTypeFilter || "all",
   });
+  const selectedTimeScope = selectedSort === "new" ? "all-time" : scopeOptions[query?.time]?.value;
+  const isTagsAString = typeof query.tags === "string";
+  const isTagsAnArray = Array.isArray(query.tags);
+  const defaults = _getDefaults({ typeFilter: selectedTypeFilter })  
 
   const selected = {
     ...defaults,
@@ -51,5 +57,6 @@ export const getSelectedUrlFilters = ({
       tags: isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [],
     }),
   };
+
   return selected;
 };
