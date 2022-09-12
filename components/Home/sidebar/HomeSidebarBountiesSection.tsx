@@ -120,7 +120,7 @@ export default function HomeSidebarBountiesSection(): ReactElement | null {
             }}
           >
             <div>{"Open Bounties"}</div>
-            <Link href="/?type=bounties">
+            <Link href="/?type=bounty">
               <a className={css(styles.viewAll)}>{"View All"}</a>
             </Link>
           </div>
