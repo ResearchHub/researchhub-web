@@ -2,14 +2,9 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-export const SideColumnTitle = ({
-  title,
-  count,
-  overrideStyles,
-  onClick,
-  state,
-  children,
-}) => {
+export const SideColumnTitle = (props) => {
+  const { title, count, overrideStyles, onClick, state, children } =
+    props ?? {};
   return (
     <h5
       className={css(styles.sidecolumnHeader, overrideStyles && overrideStyles)}
@@ -68,8 +63,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
-    // width: "100%",
+    justifyContent: "space-between",
+    width: "100%",
   },
   count: {
     color: colors.BLUE(),
