@@ -27,7 +27,7 @@ export default function BountiesSidebarItem({
 }: Props): ReactElement {
   const roundedOfferAmount = bountyAmount;
 
-C  return (
+  return (
     <div className={css(styles.bountiesSidebarItemContainer)}>
       {/* NOTE: href is subject to change */}
       <a
