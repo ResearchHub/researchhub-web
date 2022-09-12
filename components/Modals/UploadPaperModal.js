@@ -93,11 +93,12 @@ class UploadPaperModal extends Component {
             <FeedCard
               {...paper}
               formattedDocType={"paper"}
-              paper={paper}
               handleClick={(event) => {
                 event?.preventDefault();
                 this.props.modalActions.openUploadPaperModal(false);
               }}
+              hideVotes
+              paper={paper}
             />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}

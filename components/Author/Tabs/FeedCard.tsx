@@ -44,17 +44,19 @@ const PaperPDFModal = dynamic(
 
 export type FeedCardProps = {
   abstract: string;
+  boost_amount: number;
   bounties: Bounty[];
   created_by: any;
   created_date: any;
-  boost_amount: number;
-  featured: boolean;
   discussion_count: number;
+  featured: boolean;
   first_figure: any;
   first_preview: any;
   formattedDocLabel?: string;
   formattedDocType: RhDocumentType | null;
+  handleClick?: (SyntheticEvent) => void;
   hasAcceptedAnswer: boolean;
+  hideVotes?: boolean;
   hubs: any[];
   id: number;
   index: number;
@@ -64,22 +66,21 @@ export type FeedCardProps = {
   postDownvote: any;
   postUpvote: any;
   preview_img: string;
-  renderableTextAsHtml: any;
   renderable_text: string;
+  renderableTextAsHtml: any;
   reviews: any;
   score: number;
   singleCard: boolean;
   slug: string;
   title: string;
   titleAsHtml: any;
-  unified_document: any;
   unified_document_id: number;
+  unified_document: any;
   uploaded_by: any;
   uploaded_date: any;
-  user: any;
   user_vote: any;
+  user: any;
   voteCallback: any;
-  handleClick?: (SyntheticEvent) => void;
 };
 
 const documentIcons = {
@@ -103,6 +104,7 @@ function FeedCard({
   formattedDocType,
   hasAcceptedAnswer,
   handleClick,
+  hideVotes,
   hubs,
   id,
   openPaperPDFModal,
@@ -221,18 +223,20 @@ function FeedCard({
         <a
           className={css(styles.feedCard, featured && styles.featuredContainer)}
         >
-          <DesktopOnly>
-            <div className={css(styles.leftSection)}>
-              {/* TODO: migrate to VoteWidgetV2 */}
-              <ResponsivePostVoteWidget
-                onDesktop
-                onDownvote={onDownvote}
-                onUpvote={onUpvote}
-                score={score}
-                voteState={voteState}
-              />
-            </div>
-          </DesktopOnly>
+          {!hideVotes && (
+            <DesktopOnly>
+              <div className={css(styles.leftSection)}>
+                {/* TODO: migrate to VoteWidgetV2 */}
+                <ResponsivePostVoteWidget
+                  onDesktop
+                  onDownvote={onDownvote}
+                  onUpvote={onUpvote}
+                  score={score}
+                  voteState={voteState}
+                />
+              </div>
+            </DesktopOnly>
+          )}
           <div className={css(styles.container)}>
             <div>
               {featured && (
@@ -296,22 +300,27 @@ function FeedCard({
                       styles.publishContainer
                     )}
                   >
-                    <div
-                      className={css(styles.metaItem, styles.mobileVoteWidget)}
-                    >
-                      {/* TODO: migrate to VoteWidgetV2 */}
-                      <VoteWidget
-                        horizontalView={true}
-                        onDownvote={onDownvote}
-                        onUpvote={onUpvote}
-                        score={score}
-                        styles={styles.voteWidget}
-                        upvoteStyleClass={styles.mobileVote}
-                        downvoteStyleClass={styles.mobileVote}
-                        type="Discussion"
-                        selected={voteState}
-                      />
-                    </div>
+                    {!hideVotes && (
+                      <div
+                        className={css(
+                          styles.metaItem,
+                          styles.mobileVoteWidget
+                        )}
+                      >
+                        {/* TODO: migrate to VoteWidgetV2 */}
+                        <VoteWidget
+                          horizontalView={true}
+                          onDownvote={onDownvote}
+                          onUpvote={onUpvote}
+                          score={score}
+                          styles={styles.voteWidget}
+                          upvoteStyleClass={styles.mobileVote}
+                          downvoteStyleClass={styles.mobileVote}
+                          type="Discussion"
+                          selected={voteState}
+                        />
+                      </div>
+                    )}
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
                         {documentIcons[formattedDocType!]}
