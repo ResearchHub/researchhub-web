@@ -27,7 +27,7 @@ export default function BountiesSidebarItem({
 }: Props): ReactElement {
   const roundedOfferAmount = bountyAmount;
 
-  return (
+C  return (
     <div className={css(styles.bountiesSidebarItemContainer)}>
       {/* NOTE: href is subject to change */}
       <a
@@ -58,7 +58,9 @@ export default function BountiesSidebarItem({
             </span>
           </div>
           <div className={css(styles.bountiesSidebarItemContent)}>
-            {bountyContentSnippet}
+            {bountyContentSnippet.length > 180
+              ? bountyContentSnippet.slice(0, 180) + " ..."
+              : bountyContentSnippet}
           </div>
         </div>
       </a>
