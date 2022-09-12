@@ -2,6 +2,8 @@ import { css } from "aphrodite";
 import RhCarouselItem, {
   DEFAULT_ITEM_STYLE,
 } from "~/components/shared/carousel/RhCarouselItem";
+import { faPeopleGroup } from "@fortawesome/pro-duotone-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement } from "react";
 import { styles } from "./styles/HomeRightSidebarStyles";
 import colors from "~/config/themes/colors";
@@ -11,15 +13,15 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import icons from "~/config/themes/icons";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPeopleGroup } from "@fortawesome/pro-duotone-svg-icons";
+
+const INFO_TAB_EXIT_KEY = "$rhRightSidebarInfoCarouselExitKey$";
 
 export default function HomeRightSidebar(): ReactElement {
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
         <ExitableBanner
-          bannerKey={"$rhRightSidebarInfoCarousel"}
+          bannerKey={INFO_TAB_EXIT_KEY}
           content={
             <RhCarousel
               rhCarouselItem={[
