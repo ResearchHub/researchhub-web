@@ -93,8 +93,36 @@ export default function RootLeftSidebar({}: Props): ReactElement {
             <ALink href="/about" overrideStyle={styles.leftSidebarFooterItem}>
               {"About"}
             </ALink>
+            <ALink href="/jobs" overrideStyle={styles.leftSidebarFooterItem}>
+              {"Jobs"}
+            </ALink>
           </div>
-          <div className={css(styles.leftSidebarFooterItemsBottom)}>
+          <div className={css(styles.leftSidebarFooterItemsBottomRow)}>
+            <ALink
+              href="https://twitter.com/researchhub"
+              overrideStyle={styles.leftSidebarFooterIcon}
+              target="__blank"
+            >
+              {icons.twitter}
+            </ALink>
+            <ALink
+              href="https://discord.com/invite/ZcCYgcnUp5"
+              overrideStyle={styles.leftSidebarFooterIcon}
+              target="__blank"
+            >
+              {icons.discord}
+            </ALink>
+            <ALink
+              href="https://medium.com/researchhub"
+              overrideStyle={
+                (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
+              }
+              target="__blank"
+            >
+              {icons.medium}
+            </ALink>
+          </div>
+          <div className={css(styles.leftSidebarFooterItemsBottomRow)}>
             <ALink
               href="/about/tos"
               overrideStyle={styles.leftSidebarFooterBotItem}
@@ -153,7 +181,7 @@ const styles = StyleSheet.create({
   leftSidebarFooter: {
     display: "flex",
     flexDirection: "column",
-    height: "50vh",
+    height: "49vh",
     justifyContent: "space-between",
   },
   leftSidebarFooterItem: {
@@ -161,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
     textDecoration: "none",
-    margin: "24px 32px",
+    margin: "0 32px 18px",
     ":hover": {
       color: colors.TEXT_GREY(1),
     },
@@ -170,13 +198,20 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
+    paddingTop: 24,
   },
-  leftSidebarFooterItemsBottom: {
+  leftSidebarFooterItemsBottomRow: {
     alignItems: "center",
     display: "flex",
-    height: 80,
+    height: 20,
+    marginBottom: 20,
     justifyContent: "center",
     width: "100%",
+  },
+  leftSidebarFooterIcon: {
+    fontSize: 18,
+    marginRight: 32,
+    display: "block",
   },
   leftSidebarFooterBotItem: {
     color: colors.TEXT_GREY(1),
@@ -186,4 +221,5 @@ const styles = StyleSheet.create({
       color: colors.TEXT_GREY(1),
     },
   },
+  mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
 });
