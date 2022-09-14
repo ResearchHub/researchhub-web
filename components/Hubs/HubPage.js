@@ -9,15 +9,10 @@ import { Helpers } from "@quantfive/js-web-config";
 import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
-import * as moment from "dayjs";
 import API from "~/config/api";
 import colors from "~/config/themes/colors";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
-import HubsList from "~/components/Hubs/HubsList";
-import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
-import Loader from "~/components/Loader/Loader";
-import Ripples from "react-ripples";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
@@ -386,20 +381,7 @@ class HubPage extends Component {
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
-          <div className={css(styles.row, styles.body)}>
-            <div className={css(styles.column, styles.sidebar)}>
-              <div className={css(styles.leftSidebarContainer)}>
-                <LeaderboardContainer
-                  hubId={0}
-                  initialUsers={leaderboardFeed}
-                />
-                <HubsList
-                  current={home ? null : hub}
-                  initialHubList={initialHubList}
-                  onHubSelect={this.onHubSelect}
-                />
-              </div>
-            </div>
+          <div className={css(styles.row, styles.rhHomeContentContainerBody)}>
             <UnifiedDocFeedContainer
               feed={feed}
               home={home}
@@ -506,14 +488,14 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
-  body: {
-    width: "100%",
-    height: "100%",
-    marginTop: 28,
-    borderSpacing: "20px 0px",
+  HomeContentContainerBody: {
     alignItems: "flex-start",
     boxSizing: "border-box",
-    paddingLeft: 28,
+    display: "flex",
+    flexDirection: "row",
+    height: "100%",
+    marginTop: 12,
+    width: "100%",
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
@@ -574,272 +556,11 @@ var styles = StyleSheet.create({
     minHeight: "100%",
     height: "100%",
   },
-  rightSidebarContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    width: 280,
-    minWidth: 280,
-    maxWidth: 280,
-    minHeight: "100%",
-    height: "100%",
-  },
-  subtext: {
-    whiteSpace: "initial",
-    width: 670,
-    fontSize: 16,
-    fontWeight: 300,
-    "@media only screen and (max-width: 799px)": {
-      width: "100%",
-      fontSize: 16,
-    },
-    "@media only screen and (max-width: 577px)": {
-      fontSize: 16,
-      width: 305,
-      marginTop: 20,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
-    },
-  },
-  feedPapers: {
-    position: "relative",
-  },
-  bannerContainer: {
-    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    "@media only screen and (max-width: 415px)": {
-      padding: 0,
-      width: "100%",
-    },
-  },
-  sampleFeed: {
-    height: "calc(100vh - 420px)",
-    minHeight: 600,
-    overflow: "hidden",
-  },
   banner: {
     width: "100%",
   },
-  promo: {
-    marginTop: 15,
-    fontSize: 15,
-    fontWeight: 500,
-    display: "flex",
-    alignItems: "center",
-  },
-  button: {
-    height: 55,
-    width: 230,
-    marginTop: 10,
-    marginBottom: 0,
-  },
   titleBoxShadow: {
     boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
-  },
-  topbar: {
-    paddingTop: 30,
-    paddingBottom: 20,
-    width: "100%",
-    paddingLeft: 70,
-    paddingRight: 70,
-    boxSizing: "border-box",
-    alignItems: "center",
-    zIndex: 2,
-    top: 65,
-    "@media only screen and (min-width: 900px)": {
-      paddingLeft: 25,
-      paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 50,
-      paddingRight: 50,
-    },
-
-    "@media only screen and (max-width: 767px)": {
-      position: "relative",
-      top: 0,
-      paddingLeft: 0,
-      paddingRight: 0,
-    },
-    "@media only screen and (max-width: 665px)": {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "center",
-      paddingBottom: 20,
-    },
-  },
-  /**
-   * INFINITE SCROLL
-   */
-  infiniteScroll: {
-    minWidth: "100%",
-    width: "100%",
-    boxSizing: "border-box",
-    minHeight: "calc(100vh - 200px)",
-    marginTop: 10,
-    paddingBottom: 30,
-    "@media only screen and (min-width: 1920px)": {
-      minWidth: 1200,
-    },
-  },
-  blank: {
-    opacity: 0,
-    height: 60,
-  },
-  hubName: {
-    textTransform: "capitalize",
-    marginRight: 13,
-    "@media only screen and (max-width: 1343px)": {
-      marginRight: 8,
-    },
-    "@media only screen and (max-width: 1149px)": {
-      marginRight: 5,
-    },
-  },
-  mobileHubListContainer: {
-    display: "none",
-    backgroundColor: "#FFF",
-  },
-  mobileList: {
-    paddingTop: 20,
-    width: "90%",
-  },
-
-  optionContainer: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  icon: {
-    marginLeft: 5,
-  },
-  loader: {
-    opacity: 1,
-    height: 15,
-    width: 55,
-    "@media only screen and (max-width: 768px)": {
-      width: 48,
-    },
-  },
-  noResultsLine: {
-    textAlign: "center",
-    fontSize: 20,
-    marginBottom: 16,
-    padding: 16,
-    borderBottom: "1px solid",
-  },
-  relatedResults: {
-    textAlign: "center",
-    fontSize: 25,
-    marginBottom: 16,
-  },
-  subscribeContainer: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    "@media only screen and (max-width: 665px)": {
-      marginRight: 10,
-    },
-    "@media only screen and (max-width: 799px)": {
-      marginRight: 0,
-      width: "100%",
-      justifyContent: "center",
-      marginBottom: 16,
-    },
-  },
-  subscribe: {
-    fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: 0.7,
-    width: 120,
-    height: 37,
-    boxSizing: "border-box",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    color: "#FFF",
-    backgroundColor: colors.BLUE(),
-    borderRadius: 3,
-    border: "none",
-    outline: "none",
-    boxSizing: "border-box",
-    ":hover": {
-      background: "#3E43E8",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 801px)": {
-      width: "100%",
-    },
-  },
-  subscribed: {
-    backgroundColor: "#FFF",
-    color: colors.BLUE(1),
-    border: `1px solid ${colors.BLUE(1)}`,
-    ":hover": {
-      border: `1px solid ${colors.BLUE(1)}`,
-      backgroundColor: colors.BLUE(1),
-      color: "#FFF",
-    },
-  },
-  leaderboard: {
-    display: "none",
-    "@media only screen and (min-width: 900px)": {
-      display: "block",
-      width: "20%",
-      marginRight: 40,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      width: "18%",
-    },
-    "@media only screen and (min-width: 1440px)": {
-      width: "15%",
-      marginRight: 50,
-    },
-  },
-  subscribeHover: {
-    ":hover": {
-      color: "#fff",
-      backgroundColor: colors.RED(1),
-      border: `1px solid ${colors.RED(1)}`,
-    },
-  },
-  buttonContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 25,
-    height: 45,
-    "@media only screen and (max-width: 768px)": {
-      marginTop: 15,
-      marginBottom: 15,
-    },
-  },
-  loadMoreButton: {
-    fontSize: 14,
-    border: `1px solid ${colors.BLUE()}`,
-    boxSizing: "border-box",
-    borderRadius: 4,
-    height: 45,
-    width: 155,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: colors.BLUE(),
-    cursor: "pointer",
-    userSelect: "none",
-    ":hover": {
-      color: "#FFF",
-      backgroundColor: colors.BLUE(),
-    },
-  },
-  hidden: {
-    display: "none",
   },
 });
 
