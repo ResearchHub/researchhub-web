@@ -2,7 +2,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
 import { NextRouter, useRouter } from "next/router";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -13,17 +13,22 @@ import {
   getCurrMediaWidth,
   useEffectOnScreenResize,
 } from "~/config/utils/useEffectOnScreenResize";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
 type Props = {};
 
 const getLeftSidebarItemAttrs = ({
+  currentUser,
   isLargeScreen,
   router,
 }: {
+  currentUser: any;
   isLargeScreen: boolean;
   router: NextRouter;
 }): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
+  const { organization_slug = "" } = currentUser ?? {};
+
   return [
     {
       icon: icons.home,
@@ -48,7 +53,7 @@ const getLeftSidebarItemAttrs = ({
       label: isLargeScreen ? "Notebook" : "",
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
-        router.push("/");
+        router.push(`/${organization_slug}/notebook`);
       },
     },
     {
@@ -81,6 +86,8 @@ const getLeftSidebarItemAttrs = ({
 
 export default function RootLeftSidebar({}: Props): ReactElement {
   const router = useRouter();
+  const currentUser = getCurrentUser();
+
   const [isLargeScreen, setIsLargeisLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
@@ -90,10 +97,15 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       setIsLargeisLargeScreen(newMediaWidth >= breakpoints.large.int),
   });
 
-  const leftSidebarItems = getLeftSidebarItemAttrs({
-    isLargeScreen,
-    router,
-  }).map(
+  const leftSidebarItems = useMemo(
+    (): RootLeftSidebarItemProps[] =>
+      getLeftSidebarItemAttrs({
+        currentUser,
+        isLargeScreen,
+        router,
+      }),
+    [currentUser.id, router.pathname]
+  ).map(
     (
       attrs: RootLeftSidebarItemProps
     ): ReactElement<typeof RootLeftSidebarItem> => (
