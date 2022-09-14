@@ -1,7 +1,6 @@
 import { AuthActions } from "~/redux/auth";
-import { breakpoints } from "~/config/themes/screen";
 import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
@@ -11,18 +10,13 @@ import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
-import ActivityList from "~/components/Activity/ActivityList";
 import API from "~/config/api";
 import colors from "~/config/themes/colors";
-import ExitableBanner from "../Banner/ExitableBanner";
-import FeedList from "./FeedList";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
 import HubsList from "~/components/Hubs/HubsList";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 import Loader from "~/components/Loader/Loader";
-import MobileFeedTabs from "../Home/MobileFeedTabs";
-import MobileOnly from "../MobileOnly";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
@@ -316,129 +310,6 @@ class HubPage extends Component {
     }
   };
 
-  calculateScope = () => {
-    const scope = {
-      start: 0,
-      end: 0,
-    };
-    const scopeId = this.state.scope.value;
-
-    const now = moment();
-    const today = moment().startOf("day");
-    const week = moment().startOf("day").subtract(7, "days");
-    const month = moment().startOf("day").subtract(30, "days");
-    const year = moment().startOf("day").subtract(365, "days");
-
-    scope.end = now.unix();
-
-    if (scopeId === "day") {
-      scope.start = today.unix();
-    } else if (scopeId === "week") {
-      scope.start = week.unix();
-    } else if (scopeId === "month") {
-      scope.start = month.unix();
-    } else if (scopeId === "year") {
-      scope.start = year.unix();
-    } else if (scopeId === "all-time") {
-      const start = "2019-01-01";
-      const diff = now.diff(start, "days") + 1;
-      const alltime = now.startOf("day").subtract(diff, "days");
-      scope.start = alltime.unix();
-    }
-
-    return scope;
-  };
-
-  formatMainHeader = () => {
-    const { filterBy, feed } = this.state;
-
-    if (feed === 0) {
-      return "";
-    }
-
-    const isHomePage = this.props.home;
-    let prefix = "";
-    switch (filterBy.value) {
-      case "removed":
-        prefix = "Removed";
-        break;
-      case "hot":
-        prefix = "Trending";
-        break;
-      case "top_rated":
-        prefix = "Top";
-        break;
-      case "newest":
-        prefix = "Newest";
-        break;
-      case "most_discussed":
-        prefix = "Most Discussed";
-        break;
-      case "pulled-papers":
-        prefix = "Pulled";
-        break;
-    }
-
-    return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
-  };
-
-  onFilterSelect = (type, option) => {
-    const { disableScope, label } = option;
-
-    if (this.state[type].label === label) return;
-
-    this.setState(
-      {
-        page: 1,
-        [type]: option,
-        disableScope: disableScope || false,
-      },
-      () => {
-        this.updateSlugs();
-      }
-    );
-  };
-
-  onScopeSelect = (type, option) => {
-    const { label } = option;
-
-    if (this.state[type].label === label) return;
-
-    this.setState(
-      {
-        page: 1,
-        [type]: option,
-      },
-      () => {
-        this.updateSlugs();
-      }
-    );
-  };
-
-  onFeedSelect = (index) => {
-    this.setState(
-      {
-        feed: index,
-        page: 1,
-      },
-      () => {
-        this.updateSlugs();
-      }
-    );
-  };
-
-  // onHubSelect = (e) => {
-  //   this.setState({ feed: undefined });
-  // };
-
-  voteCallback = (index, paper) => {
-    const papers = [...this.state.papers];
-    papers[index] = paper;
-    this.setState({
-      papers,
-    });
-  };
-
   updateSubscription = (subscribing) => {
     const { hub, hubState, updateSubscribedHubs } = this.props;
     let subscribedHubs;
@@ -473,31 +344,6 @@ class HubPage extends Component {
       transition: false,
       subscribe: !this.state.subscribe,
     });
-  };
-
-  renderLoadMoreButton = () => {
-    const { next, loadingMore } = this.state;
-    if (next !== null) {
-      return (
-        <div className={css(styles.buttonContainer)}>
-          {!loadingMore ? (
-            <Ripples
-              className={css(styles.loadMoreButton)}
-              onClick={this.loadMore}
-            >
-              Load More Papers
-            </Ripples>
-          ) : (
-            <Loader
-              key={"paperLoader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          )}
-        </div>
-      );
-    }
   };
 
   render() {
