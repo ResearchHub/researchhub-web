@@ -3,8 +3,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 export const SideColumnTitle = (props) => {
-  const { title, count, overrideStyles, onClick, state, children } =
-    props ?? {};
+  const { title, count, overrideStyles, onClick, state, children } = props;
   return (
     <h5
       className={css(styles.sidecolumnHeader, overrideStyles && overrideStyles)}

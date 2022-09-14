@@ -164,7 +164,10 @@ function UnifiedDocFeedContainer({
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
-  const onMyHubsLoggedOut = selectedFilters.topLevel === "/my-hubs" && auth?.authChecked && !auth?.user?.id;
+  const onMyHubsLoggedOut =
+    selectedFilters.topLevel === "/my-hubs" &&
+    auth?.authChecked &&
+    !auth?.user?.id;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -191,15 +194,14 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          {onMyHubsLoggedOut &&
-            <ResearchHubBanner hub={{name: "Research Hub" }} />
-          }
+          {onMyHubsLoggedOut && (
+            <ResearchHubBanner hub={{ name: "Research Hub" }} />
+          )}
           <FeedBlurWithButton />
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
-      {unifiedDocsLoading ||
-      (onMyHubsLoggedOut) ? null : (
+      {unifiedDocsLoading || onMyHubsLoggedOut ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -243,6 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
+    padding: "0 28px",
     [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
       paddingLeft: 28,
       paddingRight: 28,

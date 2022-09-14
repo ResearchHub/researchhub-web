@@ -26,7 +26,7 @@ export default function FeedInfoCard({
     editor_permission_groups = [],
     hub_image: hubImage,
     subscriber_count: subCount,
-  } = hub;
+  } = hub ?? {};
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     minWidth: 100,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       minWidth: 70,
-    }
+    },
   },
   title: {
     fontSize: 30,
