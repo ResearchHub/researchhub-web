@@ -1,61 +1,78 @@
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
 import { ReactElement, SyntheticEvent } from "react";
-import icons from "~/config/themes/icons";
+import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
+import { NextRouter, useRouter } from "next/router";
 
 type Props = {};
 
-const LeftSidebarItemAttrs: RootLeftSidebarItemProps[] = [
-  {
-    icon: icons.home,
-    label: "Home",
-    onClick: (event: SyntheticEvent): void => {
-      event.preventDefault();
+const getLeftSidebarItemAttrs = (
+  router: NextRouter
+): RootLeftSidebarItemProps[] => {
+  const { pathname = "" } = router ?? {};
+  return [
+    {
+      icon: icons.home,
+      label: "Home",
+      isActive: ["", "/"].includes(pathname),
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        router.push("/");
+      },
     },
-  },
-  {
-    icon: icons.squares,
-    label: "Hubs",
-    onClick: (event: SyntheticEvent): void => {
-      event.preventDefault();
+    {
+      icon: icons.squares,
+      label: "Hubs",
+      isActive: ["hubs"].includes(pathname),
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        router.push("/hubs");
+      },
     },
-  },
-  {
-    icon: icons.book,
-    label: "Notebook",
-    onClick: (event: SyntheticEvent): void => {
-      event.preventDefault();
+    {
+      icon: icons.book,
+      label: "Notebook",
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        router.push("/");
+      },
     },
-  },
-  {
-    icon: icons.coins,
-    label: "Research Coin",
-    onClick: (event: SyntheticEvent): void => {
-      event.preventDefault();
+    {
+      icon: icons.coins,
+      label: "Research Coin",
+      isActive: ["hubs"].includes(pathname),
+      onClick: (event: SyntheticEvent): void => {
+        // TODO: calvinhlee - placeholder
+        event.preventDefault();
+      },
     },
-  },
-  {
-    icon: icons.users,
-    label: "Community",
-    onClick: (event: SyntheticEvent): void => {
-      event.preventDefault();
+    {
+      icon: icons.users,
+      label: "Community",
+      onClick: (event: SyntheticEvent): void => {
+        // TODO: calvinhlee - placeholder
+        event.preventDefault();
+      },
     },
-  },
-  {
-    icon: icons.chartSimple,
-    label: "Leaderboard",
-    onClick: (event: SyntheticEvent): void => {
-      event.preventDefault();
+    {
+      icon: icons.chartSimple,
+      label: "Leaderboard",
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        router.push("/leaderboard/users");
+      },
     },
-  },
-];
+  ];
+};
 
 export default function RootLeftSidebar({}: Props): ReactElement {
-  const leftSidebarItems = LeftSidebarItemAttrs.map(
+  const router = useRouter();
+  const leftSidebarItems = getLeftSidebarItemAttrs(router).map(
     (
       attrs: RootLeftSidebarItemProps
     ): ReactElement<typeof RootLeftSidebarItem> => (
@@ -69,6 +86,33 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         <div className={css(styles.leftSidebarItemsContainer)}>
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
             {leftSidebarItems}
+          </div>
+        </div>
+        <div className={css(styles.leftSidebarFooter)}>
+          <div className={css(styles.leftSidebarFooterItemsTop)}>
+            <ALink href="/about" overrideStyle={styles.leftSidebarFooterItem}>
+              {"About"}
+            </ALink>
+          </div>
+          <div className={css(styles.leftSidebarFooterItemsBottom)}>
+            <ALink
+              href="/about/tos"
+              overrideStyle={styles.leftSidebarFooterBotItem}
+            >
+              {"Terms"}
+            </ALink>
+            <ALink
+              href="/about/privacy"
+              overrideStyle={styles.leftSidebarFooterBotItem}
+            >
+              {"Privacy"}
+            </ALink>
+            <ALink
+              href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
+              overrideStyle={styles.leftSidebarFooterBotItem}
+            >
+              {"Help"}
+            </ALink>
           </div>
         </div>
       </div>
@@ -105,5 +149,41 @@ const styles = StyleSheet.create({
     marginTop: 20,
     maxWidth: "90%",
     width: "90%",
+  },
+  leftSidebarFooter: {
+    display: "flex",
+    flexDirection: "column",
+    height: "50vh",
+    justifyContent: "space-between",
+  },
+  leftSidebarFooterItem: {
+    color: colors.TEXT_GREY(1),
+    fontSize: 18,
+    fontWeight: 400,
+    textDecoration: "none",
+    margin: "24px 32px",
+    ":hover": {
+      color: colors.TEXT_GREY(1),
+    },
+  },
+  leftSidebarFooterItemsTop: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  },
+  leftSidebarFooterItemsBottom: {
+    alignItems: "center",
+    display: "flex",
+    height: 80,
+    justifyContent: "center",
+    width: "100%",
+  },
+  leftSidebarFooterBotItem: {
+    color: colors.TEXT_GREY(1),
+    fontSize: 14,
+    marginRight: 14,
+    ":hover": {
+      color: colors.TEXT_GREY(1),
+    },
   },
 });
