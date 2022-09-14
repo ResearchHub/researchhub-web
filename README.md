@@ -29,6 +29,7 @@ We believe that by empowering scientists to independently fund, create, and publ
 
 ## Setup
 
+1. Run `cp .env.development.example .env.development`
 1. `nvm install 14.15.5` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 2. `nvm use 14.15.5`
 3. `yarn install`
