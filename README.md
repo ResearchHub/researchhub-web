@@ -29,13 +29,15 @@ We believe that by empowering scientists to independently fund, create, and publ
 
 ## Setup
 
-1. `nvm use` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
-2. `yarn install`
-3. `npm run dev`
+1. `nvm install 14.15.5` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+2. `nvm use 14.15.5`
+3. `yarn install`
+4. `yarn run dev`
+5. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
 
 ## Contributing to the codebase
 
-1. Fork this repo and then clone it to your local device
+1. Fork this repo and then clone it to your local env
 2. Create a new branch
 
 ```
@@ -44,20 +46,10 @@ git checkout -b MY_BRANCH_NAME
 
 3. Submit a pull request against `master` branch of this repository
 
-## Bounties
+## Code Bounties
 
 - Bounties are regularly listed in the <a href="issues">issues</a> section.
 - Issues with a bounty associated will have the bounty badge
 - Bounties will be paid in the form of ResearchCoin (RSC)
 - Bounty will need to be explicitly approved by a member of the Research Hub team
 
-## Tests
-
-#### Integration Tests
-
-Integration tests are created using [cypress](https://www.cypress.io/)
-
-- Run `npm run test` to run all integration tests in headless mode
-- Run `npm run cy:open` to pick which tests to run in browser mode
-- Run `npm run cy:spec --spec path/to/your/test` to run a specific spec.  
-  e.g. `npm run cy:spec --spec tests/cypress/integration/ui/search.spec.js`
