@@ -104,7 +104,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         isLargeScreen,
         router,
       }),
-    [currentUser.id, router.pathname]
+    [currentUser.id, router.pathname, isLargeScreen]
   ).map(
     (
       attrs: RootLeftSidebarItemProps
