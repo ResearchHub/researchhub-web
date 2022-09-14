@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 export type Props = {
   icon: ReactNode;
@@ -53,6 +54,9 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.LIGHTER_GREY(1),
     },
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      justifyContent: "center",
+    },
   },
   rootLeftSidebarItemActive: {
     background: colors.BLUE_ACTIVE_BACKGROUND,
@@ -70,6 +74,9 @@ const styles = StyleSheet.create({
     maxWidth: 16,
     textAlign: "center",
     width: 16,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: "1.2em",
+    },
   },
   icontWrapActive: { color: colors.NEW_BLUE(1) },
   labelWrap: {

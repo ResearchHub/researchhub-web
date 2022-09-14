@@ -1,7 +1,7 @@
-import { StyleSheet } from "aphrodite";
-import { NAVBAR_HEIGHT } from "~/components/Navbar";
-import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import { NAVBAR_HEIGHT } from "~/components/Navbar";
+import { StyleSheet } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 export const styles = StyleSheet.create({
   viewAll: {

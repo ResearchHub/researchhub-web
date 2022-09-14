@@ -1,24 +1,33 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
-import { ReactElement, SyntheticEvent } from "react";
+import { NextRouter, useRouter } from "next/router";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
-import { NextRouter, useRouter } from "next/router";
+import {
+  getCurrMediaWidth,
+  useEffectOnScreenResize,
+} from "~/config/utils/useEffectOnScreenResize";
 
 type Props = {};
 
-const getLeftSidebarItemAttrs = (
-  router: NextRouter
-): RootLeftSidebarItemProps[] => {
+const getLeftSidebarItemAttrs = ({
+  isLargeScreen,
+  router,
+}: {
+  isLargeScreen: boolean;
+  router: NextRouter;
+}): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
   return [
     {
       icon: icons.home,
-      label: "Home",
+      label: isLargeScreen ? "Home" : "",
       isActive: ["", "/"].includes(pathname),
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
@@ -27,7 +36,7 @@ const getLeftSidebarItemAttrs = (
     },
     {
       icon: icons.squares,
-      label: "Hubs",
+      label: isLargeScreen ? "Hubs" : "",
       isActive: ["hubs"].includes(pathname),
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
@@ -36,7 +45,7 @@ const getLeftSidebarItemAttrs = (
     },
     {
       icon: icons.book,
-      label: "Notebook",
+      label: isLargeScreen ? "Notebook" : "",
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/");
@@ -44,7 +53,7 @@ const getLeftSidebarItemAttrs = (
     },
     {
       icon: icons.coins,
-      label: "Research Coin",
+      label: isLargeScreen ? "Research Coin" : "",
       isActive: ["hubs"].includes(pathname),
       onClick: (event: SyntheticEvent): void => {
         // TODO: calvinhlee - placeholder
@@ -53,7 +62,7 @@ const getLeftSidebarItemAttrs = (
     },
     {
       icon: icons.users,
-      label: "Community",
+      label: isLargeScreen ? "Community" : "",
       onClick: (event: SyntheticEvent): void => {
         // TODO: calvinhlee - placeholder
         event.preventDefault();
@@ -61,7 +70,7 @@ const getLeftSidebarItemAttrs = (
     },
     {
       icon: icons.chartSimple,
-      label: "Leaderboard",
+      label: isLargeScreen ? "Leaderboard" : "",
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/leaderboard/users");
@@ -72,7 +81,19 @@ const getLeftSidebarItemAttrs = (
 
 export default function RootLeftSidebar({}: Props): ReactElement {
   const router = useRouter();
-  const leftSidebarItems = getLeftSidebarItemAttrs(router).map(
+  const [isLargeScreen, setIsLargeisLargeScreen] = useState<boolean>(
+    getCurrMediaWidth() >= breakpoints.large.int
+  );
+
+  useEffectOnScreenResize({
+    onResize: (newMediaWidth): void =>
+      setIsLargeisLargeScreen(newMediaWidth >= breakpoints.large.int),
+  });
+
+  const leftSidebarItems = getLeftSidebarItemAttrs({
+    isLargeScreen,
+    router,
+  }).map(
     (
       attrs: RootLeftSidebarItemProps
     ): ReactElement<typeof RootLeftSidebarItem> => (
@@ -90,10 +111,13 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <ALink href="/about" overrideStyle={styles.leftSidebarFooterItem}>
+            <ALink
+              href="/about"
+              overrideStyle={styles.leftSidebarFooterTxtItem}
+            >
               {"About"}
             </ALink>
-            <ALink href="/jobs" overrideStyle={styles.leftSidebarFooterItem}>
+            <ALink href="/jobs" overrideStyle={styles.leftSidebarFooterTxtItem}>
               {"Jobs"}
             </ALink>
           </div>
@@ -152,9 +176,14 @@ const styles = StyleSheet.create({
   rootLeftSidebar: {
     background: colors.GREY_ICY_BLUE_HUE,
     borderRight: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
+    boxSizing: "border-box",
     minWidth: 280,
     position: "relative",
     width: 280,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      minWidth: "unset",
+      width: 80,
+    },
   },
   rootLeftSidebarStickyWrap: {
     position: "sticky",
@@ -184,7 +213,7 @@ const styles = StyleSheet.create({
     height: "49vh",
     justifyContent: "space-between",
   },
-  leftSidebarFooterItem: {
+  leftSidebarFooterTxtItem: {
     color: colors.TEXT_GREY(1),
     fontSize: 18,
     fontWeight: 400,
@@ -192,6 +221,11 @@ const styles = StyleSheet.create({
     margin: "0 32px 18px",
     ":hover": {
       color: colors.TEXT_GREY(1),
+    },
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: 14,
+      fontWeight: 300,
+      margin: "8px auto",
     },
   },
   leftSidebarFooterItemsTop: {
@@ -207,6 +241,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: "center",
     width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      display: "none",
+    },
   },
   leftSidebarFooterIcon: {
     fontSize: 18,
