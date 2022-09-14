@@ -10,9 +10,9 @@ import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
-import colors from "~/config/themes/colors";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
+import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
@@ -376,12 +376,13 @@ class HubPage extends Component {
     }
 
     return (
-      <div className={css(styles.rhHomeContainer)}>
-        <div className={css(styles.rhHomeContentContainer, styles.column)}>
+      <div className={css(styles.homeContainer)}>
+        <RootLeftSidebar />
+        <div className={css(styles.homeContentContainer, styles.column)}>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
-          <div className={css(styles.row, styles.rhHomeContentContainerBody)}>
+          <div className={css(styles.row, styles.homeContentContainerBody)}>
             <UnifiedDocFeedContainer
               feed={feed}
               home={home}
@@ -409,13 +410,13 @@ class HubPage extends Component {
 }
 
 var styles = StyleSheet.create({
-  rhHomeContainer: {
+  homeContainer: {
     display: "flex",
     height: "100%",
     justifyContent: "center",
     width: "100%",
   },
-  rhHomeContentContainer: {
+  homeContentContainer: {
     width: "inherit",
     height: "inherit",
     maxWidth: 2000,
@@ -488,7 +489,7 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
-  HomeContentContainerBody: {
+  homeContentContainerBody: {
     alignItems: "flex-start",
     boxSizing: "border-box",
     display: "flex",

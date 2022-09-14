@@ -1,21 +1,17 @@
-import { Component, createContext, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-
-// NPM Modules
-import { connect } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-import { transitions, positions, Provider as AlertProvider } from "react-alert";
-import Router from "next/router";
-
-// Components
 import { AuthActions } from "../redux/auth";
+import { createContext, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { HubActions } from "../redux/hub";
 import { isDevEnv } from "~/config/utils/env";
 import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext.ts";
 import { NotificationActions } from "~/redux/notification";
+import { StyleSheet, css } from "aphrodite";
 import { TransactionActions } from "../redux/transaction";
+import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import { UniversityActions } from "../redux/universities";
+import dynamic from "next/dynamic";
 import PermissionActions from "../redux/permission";
+import Router from "next/router";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -24,7 +20,7 @@ const DynamicMessage = dynamic(() => import("~/components/Loader/Message"));
 const DynamicAlertTemplate = dynamic(() =>
   import("~/components/Modals/AlertTemplate")
 );
-const DynamicFooter = dynamic(() => import("./footer"));
+// const DynamicFooter = dynamic(() => import("./footer"));
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 
 export const NavbarContext = createContext();
@@ -95,11 +91,12 @@ function Base({
           {isDevEnv() && SPEC__reloadClientSideData()}
           <div className={css(styles.pageWrapper)}>
             <DynamicPermissionNotification />
-            <DynamicNavbar />
-            <Component {...pageProps} />
             <DynamicMessage />
+            <div className={css(styles.main)}>
+              <DynamicNavbar />
+              <Component {...pageProps} />
+            </div>
           </div>
-          <DynamicFooter />
         </NewPostButtonContext.Provider>
       </NavbarContext.Provider>
     </AlertProvider>
@@ -108,13 +105,16 @@ function Base({
 
 const styles = StyleSheet.create({
   pageWrapper: {
-    width: "100%",
+    background: "#fff",
+    display: "flex",
     minHeight: "100vh",
-    // background: "#FAFAFA",
-    background: "#FCFCFC",
+    position: "relative",
+    width: "100%",
   },
-  hide: {
-    display: "none",
+  main: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
   },
 });
 

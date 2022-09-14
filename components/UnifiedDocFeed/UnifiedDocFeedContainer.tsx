@@ -149,16 +149,6 @@ function UnifiedDocFeedContainer({
   };
 
   const showLoadMoreButton = unifiedDocuments.length > localPage * 10;
-
-  const formattedMainHeader = useMemo(
-    (): string =>
-      formatMainHeader({
-        hubName: hubName ?? "",
-        isHomePage,
-      }),
-    [hubName, isHomePage]
-  );
-
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     setUnifiedDocuments,
@@ -171,20 +161,17 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      {isHomePage || isEmpty(hub) ? (
-        <div className={css(styles.title) + " clamp2"}>
-          {formattedMainHeader}
-        </div>
-      ) : (
+      {isHomePage || isEmpty(hub) ? null : (
         <FeedInfoCard
           hub={hub}
           hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
           isHomePage={isHomePage}
-          mainHeaderText={formattedMainHeader}
+          mainHeaderText={formatMainHeader({
+            hubName: hubName ?? "",
+            isHomePage,
+          })}
         />
       )}
-
-      {/* @ts-ignore */}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
@@ -246,10 +233,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     padding: "0 28px",
-    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
-      paddingLeft: 28,
-      paddingRight: 28,
-    },
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
     },

@@ -391,6 +391,11 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
+        <Link href={"/"} as={`/`}>
+          <div className={css(styles.logoContainer)}>
+            <RHLogo iconStyle={styles.logo} white={false} />
+          </div>
+        </Link>
         <div className={css(styles.searchWrapper)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
@@ -832,17 +837,17 @@ const styles = StyleSheet.create({
     maxWidth: "auto",
   },
   logoContainer: {
-    display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    width: 176,
-    paddingBottom: 2.7,
     cursor: "pointer",
+    display: "flex",
+    height: NAVBAR_HEIGHT,
     userSelect: "none",
-    marginTop: 2,
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: 148,
-    },
+    paddingTop: 8,
+    width: "100%",
+  },
+  logo: {
+    height: 36,
+    userSelect: "none",
   },
   logoContainerForMenu: {
     position: "absolute",

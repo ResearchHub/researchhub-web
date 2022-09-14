@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     height: 20,
   },
   HomeRightSidebar: {
-    margin: "32px 32px 0 0",
+    borderLeft: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
     height: "100%",
     position: "relative",
     width: "100%",
