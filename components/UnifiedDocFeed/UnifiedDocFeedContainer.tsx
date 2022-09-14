@@ -236,6 +236,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "0",
+    },
     [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
     },

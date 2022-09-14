@@ -53,7 +53,7 @@ const getLeftSidebarItemAttrs = ({
     },
     {
       icon: icons.coins,
-      label: isLargeScreen ? "Research Coin" : "",
+      label: isLargeScreen ? "ResearchCoin" : "",
       isActive: ["hubs"].includes(pathname),
       onClick: (event: SyntheticEvent): void => {
         // TODO: calvinhlee - placeholder
@@ -183,6 +183,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       minWidth: "unset",
       width: 80,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
     },
   },
   rootLeftSidebarStickyWrap: {
