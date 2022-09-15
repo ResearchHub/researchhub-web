@@ -1,6 +1,7 @@
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
+import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { Helpers } from "@quantfive/js-web-config";
 import { isDevEnv } from "~/config/utils/env";
@@ -17,7 +18,7 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 import GoogleLoginButton from "../components/GoogleLoginButton";
-import icons, { RHLogo, voteWidgetIcons } from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
 import Link from "next/link";
 import MobileOnly from "./MobileOnly";
 import NewPostButton from "./NewPostButton";
@@ -26,6 +27,7 @@ import Reputation from "./Reputation";
 import Router, { useRouter } from "next/router";
 import Search from "./Search/Search";
 import UserStateBanner from "./Banner/UserStateBanner";
+import RHLogo from "~/components/Home/RHLogo";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -339,6 +341,8 @@ const Navbar = (props) => {
     setSideMenu(state.isOpen);
   }
 
+  const pathname = router?.pathname ?? "";
+
   function renderLoginButtons(isLoggedIn) {
     return (
       <div className={css(styles.oauthContainer)}>
@@ -390,6 +394,19 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
+        {pathname.includes("notebook") ? (
+          <Link href={"/"} as={`/`}>
+            <div className={css(styles.logoContainer)}>
+              <RHLogo iconStyle={styles.logo} white={false} />
+            </div>
+          </Link>
+        ) : (
+          ["", "/"].includes(pathname) && (
+            <div className={css(styles.logoContainer)}>
+              {formatMainHeader({ isHomePage: true })}
+            </div>
+          )
+        )}
         <div className={css(styles.searchWrapper)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
@@ -829,6 +846,19 @@ const styles = StyleSheet.create({
   },
   actionsLoggedIn: {
     maxWidth: "auto",
+  },
+  logoContainer: {
+    alignItems: "center",
+    cursor: "pointer",
+    display: "flex",
+    height: NAVBAR_HEIGHT,
+    userSelect: "none",
+    paddingTop: 8,
+    width: "100%",
+  },
+  logo: {
+    height: 36,
+    userSelect: "none",
   },
   logoContainerForMenu: {
     position: "absolute",

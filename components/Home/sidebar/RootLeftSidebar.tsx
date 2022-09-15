@@ -1,6 +1,13 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
+import {
+  getCurrMediaWidth,
+  useEffectOnScreenResize,
+} from "~/config/utils/useEffectOnScreenResize";
+import { filterNull, isEmpty } from "~/config/utils/nullchecks";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { isServer } from "~/config/server/isServer";
 import { NextRouter, useRouter } from "next/router";
 import {
   ReactElement,
@@ -11,15 +18,11 @@ import {
 } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons, { RHLogo } from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
+import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
-import {
-  getCurrMediaWidth,
-  useEffectOnScreenResize,
-} from "~/config/utils/useEffectOnScreenResize";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
 type Props = {};
 
@@ -33,9 +36,10 @@ const getLeftSidebarItemAttrs = ({
   router: NextRouter;
 }): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
-  const { organization_slug = "" } = currentUser ?? {};
+  const { organization_slug = "", id } = currentUser ?? {};
+  const isLoggedIn = !isEmpty(id);
 
-  return [
+  return filterNull([
     {
       icon: icons.home,
       label: shouldMaximize ? "Home" : "",
@@ -48,24 +52,25 @@ const getLeftSidebarItemAttrs = ({
     {
       icon: icons.squares,
       label: shouldMaximize ? "Hubs" : "",
-      isActive: ["hubs"].includes(pathname),
+      isActive: ["/hubs"].includes(pathname),
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/hubs");
       },
     },
-    {
-      icon: icons.book,
-      label: shouldMaximize ? "Notebook" : "",
-      onClick: (event: SyntheticEvent): void => {
-        event.preventDefault();
-        router.push(`/${organization_slug}/notebook`);
-      },
-    },
+    isLoggedIn
+      ? {
+          icon: icons.book,
+          label: shouldMaximize ? "Notebook" : "",
+          onClick: (event: SyntheticEvent): void => {
+            event.preventDefault();
+            router.push(`/${organization_slug}/notebook`);
+          },
+        }
+      : null,
     {
       icon: icons.coins,
       label: shouldMaximize ? "ResearchCoin" : "",
-      isActive: ["hubs"].includes(pathname),
       onClick: (event: SyntheticEvent): void => {
         // TODO: calvinhlee - placeholder
         event.preventDefault();
@@ -87,25 +92,21 @@ const getLeftSidebarItemAttrs = ({
         router.push("/leaderboard/users");
       },
     },
-  ];
+  ]);
 };
 
 export default function RootLeftSidebar({}: Props): ReactElement {
   const router = useRouter();
-  const { pathname } = router ?? {};
+  const { pathname = "" } = router ?? {};
   const currentUser = getCurrentUser();
   const [screenSize, setScreenSize] = useState<number>(getCurrMediaWidth());
   const [isLargeScreen, setIsLargeisLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
-  const [isAtHomePage, setIsAtHomePage] = useState<boolean>(
-    ["", "/"].includes(pathname)
-  );
+  const shouldMaximize = isLargeScreen; // NOTE: Leaving this here. We may need more logic in the future.
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
-      console.warn("BEING CALLED");
-
       const largeScreen = newMediaWidth >= breakpoints.large.int;
       setIsLargeisLargeScreen(largeScreen);
     },
@@ -115,12 +116,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     setScreenSize(getCurrMediaWidth());
   });
 
-  useEffect((): void => {
-    setIsAtHomePage(["", "/"].includes(pathname));
-  }, [pathname]);
-
-  const shouldMaximize = isAtHomePage && isLargeScreen;
-  const leftSidebarItems = useMemo(
+  const leftSidebarItemAttrs = useMemo(
     (): RootLeftSidebarItemProps[] =>
       getLeftSidebarItemAttrs({
         currentUser,
@@ -128,17 +124,20 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         router,
       }),
     [currentUser.id, router.pathname, shouldMaximize, screenSize]
-  ).map(
+  );
+
+  const isOnNoteBookPage = pathname.includes("notebook");
+  if (isOnNoteBookPage) {
+    return <></>;
+  }
+
+  const leftSidebarItems = leftSidebarItemAttrs.map(
     (
       attrs: RootLeftSidebarItemProps
     ): ReactElement<typeof RootLeftSidebarItem> => (
       <RootLeftSidebarItem {...attrs} />
     )
   );
-
-  const formattedTextItemsStyles = {
-    ...styles.leftSidebarFooterTxtItem,
-  };
 
   return (
     <div className={css(styles.rootLeftSidebar)}>
@@ -147,7 +146,11 @@ export default function RootLeftSidebar({}: Props): ReactElement {
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
             <div className={css(styles.logoDiv)}>
               <ALink href={"/"} as={`/`} overrideStyle={[styles.logoContainer]}>
-                <RHLogo iconStyle={styles.logo} white={false} />
+                <RHLogo
+                  iconStyle={styles.logo}
+                  white={false}
+                  withText={isServer() ? undefined : shouldMaximize}
+                />
               </ALink>
             </div>
             {leftSidebarItems}
@@ -155,10 +158,13 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <ALink href="/about" overrideStyle={formattedTextItemsStyles}>
+            <ALink
+              href="/about"
+              overrideStyle={styles.leftSidebarFooterTxtItem}
+            >
               {"About"}
             </ALink>
-            <ALink href="/jobs" overrideStyle={formattedTextItemsStyles}>
+            <ALink href="/jobs" overrideStyle={styles.leftSidebarFooterTxtItem}>
               {"Jobs"}
             </ALink>
           </div>

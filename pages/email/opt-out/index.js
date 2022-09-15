@@ -1,23 +1,15 @@
 import { Component } from "react";
 import { connect } from "react-redux";
+import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 import { withRouter } from "next/router";
-
-// Component
+import API from "~/config/api";
 import Button from "~/components/Form/Button";
+import ComponentWrapper from "~/components/ComponentWrapper";
 import Input from "~/components/Form/FormInput";
 import Message from "~/components/Loader/Message";
-import ComponentWrapper from "~/components/ComponentWrapper";
-
-import { RHLogo } from "~/config/themes/icons";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-
-// Redux
-import { MessageActions } from "~/redux/message";
+import RHLogo from "~/components/Home/RHLogo";
 
 class OptOut extends Component {
   constructor(props) {

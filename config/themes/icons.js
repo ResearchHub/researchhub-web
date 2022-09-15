@@ -566,29 +566,6 @@ export const WarningIcon = (props) => {
   return <FontAwesomeIcon {...props} icon={faCircleExclamation} />;
 };
 
-export const RHLogo = ({ iconStyle, white, withText = true }) => {
-  return (
-    <>
-      <img
-        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.png"}
-        className={css(styles.logo, styles.desktop, iconStyle && iconStyle)}
-        draggable={false}
-        alt="RH Logo"
-      />
-      <img
-        src={"/static/ResearchHubIcon.png"}
-        className={css(
-          styles.logoNoText,
-          styles.mobile,
-          iconStyle && iconStyle
-        )}
-        draggable={false}
-        alt="RH Logo"
-      />
-    </>
-  );
-};
-
 export const BoltSvg = ({ height, width, color, opacity }) => {
   return (
     <svg
@@ -1128,14 +1105,7 @@ const styles = StyleSheet.create({
     color: "black",
     display: "inline-block",
   },
-  logo: {
-    transform: "scale(1)",
-    height: 33,
-  },
-  logoNoText: {
-    transform: "scale(1)",
-    height: 33,
-  },
+
   coinStack: {},
   iconPartyPopper: {
     height: 15,

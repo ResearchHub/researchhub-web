@@ -1,7 +1,7 @@
 import { css } from "aphrodite";
 import Modal from "react-modal";
 
-import { RHLogo } from "~/config/themes/icons";
+import RHLogo from "~/components/Home/RHLogo";
 import { modalStyles as styles } from "~/config/themes/styles";
 
 const ModalComponent = (props) => {
