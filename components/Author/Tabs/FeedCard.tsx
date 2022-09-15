@@ -254,7 +254,7 @@ function FeedCard({
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
                   <div className={css(styles.rowContainer)}>
-                    <div>
+                    <div className={css(styles.cardBody)}>
                       <h2 className={css(styles.title)}>{cardTitle}</h2>
                       {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
@@ -443,6 +443,9 @@ const styles = StyleSheet.create({
   },
   ripples: {
     display: "flex",
+    width: "100%",
+  },
+  cardBody: {
     width: "100%",
   },
   feedCard: {
