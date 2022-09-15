@@ -42,7 +42,8 @@ const handleFilterSelect = ({
   const query = { ...router.query };
 
   if (topLevel) {
-    const navigateToUrl = topLevelFilters[topLevel]?.value;
+    const topLevelFilterObj = topLevelFilters[topLevel];
+    const navigateToUrl = (topLevelFilterObj.relative ? router.asPath : "") + topLevelFilterObj?.value;
     return router.push({ pathname: navigateToUrl });
   }
 

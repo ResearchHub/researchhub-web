@@ -27,6 +27,8 @@ import Ripples from "react-ripples";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
+import LiveFeed from "~/components/LiveFeed/LiveFeed";
+import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -554,24 +556,34 @@ class HubPage extends Component {
                 />
               </div>
             </div>
-            <UnifiedDocFeedContainer
-              feed={feed}
-              home={home}
-              hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
-              hubState={hubState}
-              hub={hub}
-              loggedIn={loggedIn}
-              serverLoadedData={initialFeed}
-              subscribeButton={
-                <SubscribeButton
-                  {...this.props}
-                  {...this.state}
-                  onClick={() => this.setState({ transition: true })}
-                  onSubscribe={this.onSubscribe}
-                  onUnsubscribe={this.onUnsubscribe}
-                />
-              }
-            />
+            {this.props.isLiveFeed ? (
+              <div className={css(styles.wrapper)}>
+                <div className={css(styles.title) + " clamp2"}>
+                  Explore ResearchHub
+                </div>
+                <FeedMenu />
+                <LiveFeed />
+              </div>
+            ) : (
+              <UnifiedDocFeedContainer
+                feed={feed}
+                home={home}
+                hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+                hubState={hubState}
+                hub={hub}
+                loggedIn={loggedIn}
+                serverLoadedData={initialFeed}
+                subscribeButton={
+                  <SubscribeButton
+                    {...this.props}
+                    {...this.state}
+                    onClick={() => this.setState({ transition: true })}
+                    onSubscribe={this.onSubscribe}
+                    onUnsubscribe={this.onUnsubscribe}
+                  />
+                }
+              />
+            )}
           </div>
         </div>
         <HomeRightSidebar />
@@ -581,6 +593,39 @@ class HubPage extends Component {
 }
 
 var styles = StyleSheet.create({
+  title: {
+    fontSize: 30,
+    fontWeight: 500,
+    textOverflow: "ellipsis",
+    marginBottom: 5,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: 30,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 24,
+      marginTop: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
+      fontSize: 20,
+    },
+  },
+  wrapper: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    width: "100%",
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
+      paddingLeft: 28,
+      paddingRight: 28,
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "100%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
+      width: "100%",
+    },
+  },
+
   rhHomeContainer: {
     display: "flex",
     height: "100%",

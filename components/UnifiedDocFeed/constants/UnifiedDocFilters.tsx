@@ -5,12 +5,20 @@ export const topLevelFilters = {
     label: "Frontpage",
     value: "/",
     icon: icons.globeLight,
+    relative: false,
   },
   "/my-hubs": {
     label: "My Hubs",
     value: "/my-hubs",
     icon: null,
+    relative: false,
   },
+  "/live": {
+    label: "Live",
+    value: "/live",
+    relative: true,
+    icon: icons.live,
+  },  
 };
 
 export const UnifiedDocFilters = {

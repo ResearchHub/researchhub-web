@@ -21,7 +21,7 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import renderContributionEntry from "./utils/renderContributionEntry";
 
-export default function AuditContentDashboard({}): ReactElement<"div"> {
+export default function LiveFeed({}): ReactElement<"div"> {
   const router = useRouter();
   const multiSelectRef = useRef<HTMLDivElement>(null);
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
@@ -183,23 +183,26 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
           label: "Flag & Remove",
           style: styles.flagAndRemove,
           isActive: true,
-        },
-      ];
+        },{
+          isActive: true,          
+          html: (
+            <div className={`${css(styles.checkbox)} cbx`}>
+              <CheckBox
+                key={`${r.contentType}-${r.item.id}`}
+                label=""
+                isSquare
+                // @ts-ignore
+                id={r.item.id}
+                active={selectedResultIds.includes(r.item.id)}
+                onChange={(id) => handleResultSelect(id)}
+                labelStyle={undefined}
+              />
+            </div>          
+          )
+      }];
 
       return (
         <div className={css(styles.result)} key={r.item.id}>
-          <div className={`${css(styles.checkbox)} cbx`}>
-            <CheckBox
-              key={`${r.contentType}-${r.item.id}`}
-              label=""
-              isSquare
-              // @ts-ignore
-              id={r.item.id}
-              active={selectedResultIds.includes(r.item.id)}
-              onChange={(id) => handleResultSelect(id)}
-              labelStyle={undefined}
-            />
-          </div>
           <div className={css(styles.entry)}>
             {renderContributionEntry(
               r,
@@ -217,34 +220,8 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
     (h) => String(appliedFilters.hubId) === String(h.id)
   ) || { label: "All hubs", id: undefined, value: undefined };
   return (
-    <div className={css(styles.dashboardContainer)}>
-      <div className={css(styles.header)}>
-        <div className={css(styles.title)}>
-          Audit Content
-          <span
-            className={css(styles.redo)}
-            onClick={() => loadResults(appliedFilters)}
-          >
-            {icons.redo}
-          </span>
-        </div>
-        <div className={css(styles.filters)}>
-          <div className={css(styles.filter)}>
-            <FormSelect
-              containerStyle={styles.hubDropdown}
-              inputStyle={styles.inputOverride}
-              id="hubs"
-              label=""
-              onChange={(_id: ID, selectedHub: any): void =>
-                handleHubFilterChange(selectedHub)
-              }
-              options={suggestedHubs}
-              placeholder=""
-              value={selectedHub}
-            />
-          </div>
-        </div>
-      </div>
+    <div>
+    {selectedResultIds.length > 0 && (
       <div
         className={css(
           styles.multiSelect,
@@ -252,7 +229,6 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
         )}
         ref={multiSelectRef}
       >
-        {selectedResultIds.length > 0 && (
           <div className={css(styles.activeDetailsRow)}>
             <span className={css(styles.numSelected)}>
               {selectedResultIds.length} selected.
@@ -295,8 +271,8 @@ export default function AuditContentDashboard({}): ReactElement<"div"> {
               </span>
             </div>
           </div>
-        )}
       </div>
+      )}
       {isLoadingPage ? (
         <Loader
           containerStyle={styles.pageLoader}
@@ -410,10 +386,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     fontSize: 14,
     width: "100%",
-  },
-  dashboardContainer: {
-    padding: "0 32px",
-    maxWidth: 1200,
   },
   filters: {
     display: "flex",

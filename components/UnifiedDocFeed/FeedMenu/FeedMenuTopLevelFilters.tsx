@@ -29,6 +29,7 @@ const FeedMenuTopLevelFilters = ({
   const isSubscribedToHubs = hubState?.subscribedHubs?.length > 0;
   const isCurrentUserLoaded = !!currentUser;
   const renderAsDropdown = false;
+  const shouldShowMyHubs = router.pathname.indexOf("/hubs/") === -1;
 
   useEffect(() => {
     const _handleClickOutside = (event) => {
@@ -49,6 +50,10 @@ const FeedMenuTopLevelFilters = ({
     return Object.values(topLevelFilters).map((f, idx) => {
       const isSelected = f.value === selectedFilters.topLevel;
       const isMyHubs = f.value === "/my-hubs";
+
+      if (isMyHubs && !shouldShowMyHubs) {
+        return null;
+      }
 
       return (
         <div
@@ -94,14 +99,6 @@ const FeedMenuTopLevelFilters = ({
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
-          {/* FIXME: Kobe - temporarily off until new sub-filtering backend is ready */}
-          {/* {isMyHubs && (
-            isTagsMenuOpen
-              ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
-              : isSelected
-              ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
-              : null
-          )} */}
         </div>
       );
     });

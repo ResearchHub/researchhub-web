@@ -1,9 +1,10 @@
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { ReactElement } from "react";
-import AuditContentDashboard from "~/components/AuditContent/AuditContentDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
 import SideColumn from "~/components/Home/SideColumn";
+import ActivityFeed from "~/components/ActivityFeed/ActivityFeed";
+
 
 export default function AuditContentPage(): ReactElement<
   typeof ContentPage
@@ -18,7 +19,7 @@ export default function AuditContentPage(): ReactElement<
 
   return (
     <ContentPage
-      mainFeed={<AuditContentDashboard />}
+      mainFeed={<ActivityFeed />}
       sidebar={
         <SideColumn
           listItems={<ModeratorDashboardSidebar />}

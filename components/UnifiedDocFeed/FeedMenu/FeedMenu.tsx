@@ -22,7 +22,7 @@ const FeedMenu = ({ hubState }: Args) => {
   const tabsContainerRef = useRef<HTMLInputElement | null>(null);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
-  const isHomeOrMyHubs = ["/", "/my-hubs"].includes(router.pathname);
+  const shouldShowTabs = router.pathname.indexOf("live") === -1;
   const selectedFilters = getSelectedUrlFilters({
     query: router.query,
     pathname: router.pathname,
@@ -76,16 +76,14 @@ const FeedMenu = ({ hubState }: Args) => {
   );
 
   return (
-    <div className={css(styles.filtersContainer)}>
+    <div>
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
-          {isHomeOrMyHubs && (
-            <FeedMenuTopLevelFilters
-              selectedFilters={selectedFilters}
-              hubState={hubState}
-            />
-          )}
-          <div className={css(styles.feedMenu)}>
+          <FeedMenuTopLevelFilters
+            selectedFilters={selectedFilters}
+            hubState={hubState}
+          />
+          {shouldShowTabs &&
             <div className={css(styles.filtersAsTabs)}>
               <div className={css(styles.typeFiltersContainer)}>
                 <div className={css(styles.orderingContainer)}>
@@ -104,19 +102,14 @@ const FeedMenu = ({ hubState }: Args) => {
                 </div>
               </div>
             </div>
+          }
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
 const styles = StyleSheet.create({
-  feedMenu: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
-  },
   labelContainer: {
     display: "flex",
     height: "100%",
@@ -200,9 +193,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       borderBottom: `unset`,
     },
-  },
-  filtersContainer: {
-    marginBottom: 15,
   },
 });
 
