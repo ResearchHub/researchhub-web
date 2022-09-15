@@ -401,11 +401,9 @@ const Navbar = (props) => {
             </div>
           </Link>
         ) : (
-          ["", "/"].includes(pathname) && (
-            <div className={css(styles.logoContainer)}>
-              {formatMainHeader({ isHomePage: true })}
-            </div>
-          )
+          <div className={css(styles.logoContainer)}>
+            {formatMainHeader({ isHomePage: true })}
+          </div>
         )}
         <div className={css(styles.searchWrapper)}>
           <Search
@@ -849,7 +847,6 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    cursor: "pointer",
     display: "flex",
     height: NAVBAR_HEIGHT,
     userSelect: "none",
