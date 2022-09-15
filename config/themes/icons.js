@@ -197,6 +197,7 @@ import {
   faUserCircle,
   faToggleOff,
 } from "@fortawesome/pro-duotone-svg-icons";
+import { breakpoints } from "./screen";
 
 library.add(
   faCircleExclamation,
@@ -566,25 +567,26 @@ export const WarningIcon = (props) => {
 };
 
 export const RHLogo = ({ iconStyle, white, withText = true }) => {
-  if (withText) {
-    return (
+  return (
+    <>
       <img
-        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
-        className={css(styles.logo, iconStyle && iconStyle)}
+        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.png"}
+        className={css(styles.logo, styles.desktop, iconStyle && iconStyle)}
         draggable={false}
         alt="RH Logo"
       />
-    );
-  } else {
-    return (
       <img
         src={"/static/ResearchHubIcon.png"}
-        className={css(styles.logoNoText, iconStyle && iconStyle)}
+        className={css(
+          styles.logoNoText,
+          styles.mobile,
+          iconStyle && iconStyle
+        )}
         draggable={false}
         alt="RH Logo"
       />
-    );
-  }
+    </>
+  );
 };
 
 export const BoltSvg = ({ height, width, color, opacity }) => {
@@ -1096,6 +1098,17 @@ const styles = StyleSheet.create({
     padding: 8,
     marginLeft: 8,
     display: "inline-flex",
+  },
+  mobile: {
+    [`@media only screen and (min-width: ${breakpoints.large.int - 1}px)`]: {
+      display: "none",
+    },
+  },
+  desktop: {
+    display: "none",
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
+      display: "block",
+    },
   },
   discussionWrapper: {
     padding: 3,

@@ -94,6 +94,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const router = useRouter();
   const { pathname } = router ?? {};
   const currentUser = getCurrentUser();
+  const [screenSize, setScreenSize] = useState<number>(getCurrMediaWidth());
   const [isLargeScreen, setIsLargeisLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
@@ -105,8 +106,13 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     onResize: (newMediaWidth): void => {
       console.warn("BEING CALLED");
 
-      setIsLargeisLargeScreen(newMediaWidth >= breakpoints.large.int);
+      const largeScreen = newMediaWidth >= breakpoints.large.int;
+      setIsLargeisLargeScreen(largeScreen);
     },
+  });
+
+  useEffect((): void => {
+    setScreenSize(getCurrMediaWidth());
   });
 
   useEffect((): void => {
@@ -121,7 +127,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         shouldMaximize,
         router,
       }),
-    [currentUser.id, router.pathname, shouldMaximize]
+    [currentUser.id, router.pathname, shouldMaximize, screenSize]
   ).map(
     (
       attrs: RootLeftSidebarItemProps
@@ -130,47 +136,20 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     )
   );
 
-  const {
-    formattedRootStyle,
-    formattedTextItemsStyles,
-    formattedLogoContainerStyle,
-  } = useMemo(() => {
-    console.warn("CALCULATING: ", shouldMaximize);
-
-    return {
-      formattedRootStyle: {
-        ...styles.rootLeftSidebar,
-        ...(!shouldMaximize ? styles.rootLeftSidebarMin : {}),
-      },
-      formattedTextItemsStyles: {
-        ...styles.leftSidebarFooterTxtItem,
-        ...(!shouldMaximize ? styles.leftSidebarFooterTxtItemMin : {}),
-      },
-      formattedLogoContainerStyle: {
-        ...styles.logoContainer,
-        ...(!shouldMaximize ? styles.logoContainerMin : {}),
-      },
-    };
-  }, [shouldMaximize]);
-
-  console.warn("shouldMaximize: ", shouldMaximize);
+  const formattedTextItemsStyles = {
+    ...styles.leftSidebarFooterTxtItem,
+  };
 
   return (
-    <div className={css(formattedRootStyle)}>
+    <div className={css(styles.rootLeftSidebar)}>
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
         <div className={css(styles.leftSidebarItemsContainer)}>
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
-            <ALink
-              href={"/"}
-              as={`/`}
-              overrideStyle={formattedLogoContainerStyle}
-            >
-              <RHLogo
-                iconStyle={styles.logo}
-                white={false}
-                withText={isLargeScreen}
-              />
-            </ALink>
+            <div className={css(styles.logoDiv)}>
+              <ALink href={"/"} as={`/`} overrideStyle={[styles.logoContainer]}>
+                <RHLogo iconStyle={styles.logo} white={false} />
+              </ALink>
+            </div>
             {leftSidebarItems}
           </div>
         </div>
@@ -245,11 +224,10 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
-  },
-  rootLeftSidebarMin: {
-    background: colors.GREY_ICY_BLUE_HUE,
-    minWidth: 80,
-    width: 80,
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
+      minWidth: 80,
+      width: 80,
+    },
   },
   rootLeftSidebarStickyWrap: {
     position: "sticky",
@@ -288,11 +266,11 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.TEXT_GREY(1),
     },
-  },
-  leftSidebarFooterTxtItemMin: {
-    fontSize: 14,
-    fontWeight: 300,
-    margin: "8px auto",
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
+      fontSize: 14,
+      fontWeight: 300,
+      margin: "8px auto",
+    },
   },
   leftSidebarFooterItemsTop: {
     display: "flex",
@@ -307,7 +285,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: "center",
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
       display: "none",
     },
   },
@@ -324,6 +302,11 @@ const styles = StyleSheet.create({
       color: colors.TEXT_GREY(1),
     },
   },
+  logoDiv: {
+    [`@media only screen and (min-width: ${breakpoints.large.int}px)`]: {
+      width: "100%",
+    },
+  },
   logoContainer: {
     boxSizing: "border-box",
     cursor: "pointer",
@@ -332,10 +315,10 @@ const styles = StyleSheet.create({
     padding: "0 16px",
     userSelect: "none",
     width: "100%",
-  },
-  logoContainerMin: {
-    padding: 0,
-    marginBottom: 14,
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
+      padding: 0,
+      marginBottom: 14,
+    },
   },
   logo: {
     height: 36,
