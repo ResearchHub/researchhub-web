@@ -235,12 +235,13 @@ const DiscussionTab = (props) => {
                     <DiscussionEntry
                       key={`thread-${t.data.id}`}
                       {...t.data}
-                      bounties={
-                        props.bounties && props.bounties.length
-                          ? props.bounties
+                      bounties={props.bounties}
+                      commentBounties={
+                        t.data.bounties.length
+                          ? t.data.bounties
                           : bountyMap[t.data.id]
                           ? [bountyMap[t.data.id]]
-                          : t.data.bounties
+                          : []
                       }
                       data={t.data}
                       hostname={hostname}

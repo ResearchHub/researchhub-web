@@ -54,6 +54,7 @@ const DiscussionPostMetadata = (props) => {
     awardedBountyAmount,
     isAcceptedAnswer,
     bountyType,
+    commentBounties,
   } = props;
 
   const alert = useAlert();
@@ -138,32 +139,34 @@ const DiscussionPostMetadata = (props) => {
     text = "answered";
   } else if (discussionType === POST_TYPES.SUMMARY) {
     text = "posted summary";
-  } else if (bounties && bounties.length > 0) {
-    if (bounties[0].status === "CLOSED") {
-      text = (
-        <span>
-          awarded{" "}
-          <span className={css(styles.strong)}>
-            {formatBountyAmount({
-              amount: bounties[0].amount,
-            })}{" "}
-            RSC
-          </span>
+  } else if (
+    bounties &&
+    bounties.length > 0 &&
+    bounties[0].status === "CLOSED"
+  ) {
+    text = (
+      <span>
+        awarded{" "}
+        <span className={css(styles.strong)}>
+          {formatBountyAmount({
+            amount: bounties[0].amount,
+          })}{" "}
+          RSC
         </span>
-      );
-    } else {
-      text = (
-        <span>
-          is offering{" "}
-          <span className={css(styles.strong)}>
-            {formatBountyAmount({
-              amount: bounties[0].amount,
-            })}{" "}
-            RSC
-          </span>
+      </span>
+    );
+  } else if (commentBounties && commentBounties.length > 0) {
+    text = (
+      <span>
+        is offering{" "}
+        <span className={css(styles.strong)}>
+          {formatBountyAmount({
+            amount: commentBounties[0].amount,
+          })}{" "}
+          RSC
         </span>
-      );
-    }
+      </span>
+    );
   }
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
@@ -214,7 +217,7 @@ const DiscussionPostMetadata = (props) => {
       {renderBadge({
         type: discussionType,
         isAcceptedAnswer: isAcceptedAnswer || data.is_accepted_answer,
-        bounties,
+        bounties: commentBounties,
       })}
     </div>
   );

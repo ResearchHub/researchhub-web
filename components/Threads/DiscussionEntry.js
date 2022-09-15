@@ -49,6 +49,7 @@ class DiscussionEntry extends Component {
       // Review
       isReview: false,
       bounties: this.props.bounties,
+      commentBounties: this.props.commentBounties,
       review: null,
       bountyAmount: 0,
     };
@@ -109,6 +110,12 @@ class DiscussionEntry extends Component {
     if (prevProps.bounties !== this.props.bounties) {
       this.setState({
         bounties: this.props.bounties,
+      });
+    }
+
+    if (prevProps.commentBounties !== this.props.commentBounties) {
+      this.setState({
+        commentBounties: this.props.commentBounties,
       });
     }
     if (prevProps.auth !== this.props.auth) {
@@ -406,7 +413,7 @@ class DiscussionEntry extends Component {
             noVote={noVote}
             hostname={hostname}
             context={context}
-            openBounties={this.state.bounties}
+            openBounties={this.state.commentBounties}
             currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
@@ -601,7 +608,6 @@ class DiscussionEntry extends Component {
     };
 
     const { bounties } = this.state;
-
     const currentUser = this.props?.auth?.user;
 
     const userBounty =
@@ -675,6 +681,7 @@ class DiscussionEntry extends Component {
                         null
                       )
                     }
+                    commentBounties={this.props.commentBounties}
                     bounties={this.state.bounties}
                     isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
@@ -732,9 +739,9 @@ class DiscussionEntry extends Component {
                     onError={this.onSaveError}
                     isBounty={
                       bountyType !== "question" &&
-                      this.state.bounties &&
-                      this.state.bounties.length &&
-                      this.state.bounties[0].status !== "CLOSED"
+                      this.state.commentBounties &&
+                      this.state.commentBounties.length &&
+                      this.state.commentBounties[0].status !== "CLOSED"
                     }
                     postType={postType}
                     isAcceptedAnswer={isAcceptedAnswer}
