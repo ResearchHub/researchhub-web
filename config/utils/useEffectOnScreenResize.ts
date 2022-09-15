@@ -1,11 +1,14 @@
 import { useEffect } from "react";
+import { isServer } from "~/config/server/isServer";
 
 type Args = {
   onResize: (getDisplayWidth: number) => void;
 };
 
 export const getCurrMediaWidth = (): number =>
-  typeof window !== "undefined"
+  isServer()
+    ? 0
+    : typeof window !== "undefined"
     ? window?.innerWidth ??
       document?.documentElement?.clientWidth ??
       document?.body?.clientWidth ??
@@ -13,13 +16,18 @@ export const getCurrMediaWidth = (): number =>
     : 0;
 
 export function useEffectOnScreenResize({ onResize }: Args): void {
+  const isReadyToCalc = !isServer();
   const handleResize = (): void => {
     onResize(getCurrMediaWidth());
   };
   useEffect((): (() => void) => {
-    window.addEventListener("resize", handleResize);
+    if (isReadyToCalc) {
+      console.warn("HI")
+      handleResize();
+      window.addEventListener("resize", handleResize);
+    }
     return (): void => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isReadyToCalc]);
 }

@@ -23,7 +23,6 @@ const DynamicAlertTemplate = dynamic(() =>
 );
 // const DynamicFooter = dynamic(() => import("./footer"));
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
-
 export const NavbarContext = createContext();
 
 function Base({
