@@ -5,7 +5,7 @@ import { NextRouter, useRouter } from "next/router";
 import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { RHLogo } from "~/config/themes/icons";
 import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
@@ -118,6 +118,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
         <div className={css(styles.leftSidebarItemsContainer)}>
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
+            <ALink href={"/"} as={`/`} overrideStyle={styles.logoContainer}>
+              <RHLogo iconStyle={styles.logo} white={false} />
+            </ALink>
             {leftSidebarItems}
           </div>
         </div>
@@ -202,7 +205,7 @@ const styles = StyleSheet.create({
   },
   rootLeftSidebarStickyWrap: {
     position: "sticky",
-    top: NAVBAR_HEIGHT,
+    top: 0,
     width: "100%",
   },
   leftSidebarItemsContainer: {
@@ -272,6 +275,19 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.TEXT_GREY(1),
     },
+  },
+  logoContainer: {
+    boxSizing: "border-box",
+    cursor: "pointer",
+    display: "flex",
+    height: NAVBAR_HEIGHT,
+    padding: "0 16px",
+    userSelect: "none",
+    width: "100%",
+  },
+  logo: {
+    height: 36,
+    userSelect: "none",
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
 });

@@ -377,7 +377,6 @@ class HubPage extends Component {
 
     return (
       <div className={css(styles.homeContainer)}>
-        <RootLeftSidebar />
         <div className={css(styles.homeContentContainer, styles.column)}>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}

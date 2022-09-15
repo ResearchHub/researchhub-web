@@ -11,6 +11,7 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import { UniversityActions } from "../redux/universities";
 import dynamic from "next/dynamic";
 import PermissionActions from "../redux/permission";
+import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 
 const DynamicPermissionNotification = dynamic(() =>
@@ -92,6 +93,7 @@ function Base({
           <div className={css(styles.pageWrapper)}>
             <DynamicPermissionNotification />
             <DynamicMessage />
+            <RootLeftSidebar />
             <div className={css(styles.main)}>
               <DynamicNavbar />
               <Component {...pageProps} />

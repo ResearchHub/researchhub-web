@@ -22,7 +22,6 @@ import Link from "next/link";
 import MobileOnly from "./MobileOnly";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Router, { useRouter } from "next/router";
 import Search from "./Search/Search";
@@ -391,11 +390,6 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
-        <Link href={"/"} as={`/`}>
-          <div className={css(styles.logoContainer)}>
-            <RHLogo iconStyle={styles.logo} white={false} />
-          </div>
-        </Link>
         <div className={css(styles.searchWrapper)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
@@ -835,19 +829,6 @@ const styles = StyleSheet.create({
   },
   actionsLoggedIn: {
     maxWidth: "auto",
-  },
-  logoContainer: {
-    alignItems: "center",
-    cursor: "pointer",
-    display: "flex",
-    height: NAVBAR_HEIGHT,
-    userSelect: "none",
-    paddingTop: 8,
-    width: "100%",
-  },
-  logo: {
-    height: 36,
-    userSelect: "none",
   },
   logoContainerForMenu: {
     position: "absolute",

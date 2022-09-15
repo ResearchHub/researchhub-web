@@ -27,7 +27,7 @@ export default function RootLeftSidebarItem({
       onClick={onClick}
       role="button"
     >
-      <div className={css(styles.iconWrap, isActive && styles.icontWrapActive)}>
+      <div className={css(styles.iconWrap, isActive && styles.iconWrapActive)}>
         {icon}
       </div>
       <div
@@ -42,6 +42,7 @@ export default function RootLeftSidebarItem({
 const styles = StyleSheet.create({
   rootLeftSidebarItem: {
     alignItems: "center",
+    backbround: colors.GREY_ICY_BLUE_HUE,
     borderRadius: 6,
     boxSizing: "border-box",
     cursor: "pointer",
@@ -60,7 +61,9 @@ const styles = StyleSheet.create({
   },
   rootLeftSidebarItemActive: {
     background: colors.BLUE_ACTIVE_BACKGROUND,
-    ":hover": { background: colors.BLUE_ACTIVE_BACKGROUND },
+    ":hover": {
+      background: colors.LIGHTER_GREY(1),
+    },
   },
   iconWrap: {
     alignItems: "center",
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
       fontSize: "1.2em",
     },
   },
-  icontWrapActive: { color: colors.NEW_BLUE(1) },
+  iconWrapActive: { color: colors.NEW_BLUE(1) },
   labelWrap: {
     color: colors.BLACK(1),
     fontSize: 18,
@@ -86,5 +89,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  labelWrapActive: { color: colors.NEW_BLUE(1) },
+  labelWrapActive: {
+    color: colors.NEW_BLUE(1),
+  },
 });
