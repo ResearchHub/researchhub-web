@@ -22,7 +22,6 @@ export function useEffectOnScreenResize({ onResize }: Args): void {
   };
   useEffect((): (() => void) => {
     if (isReadyToCalc) {
-      console.warn("HI")
       handleResize();
       window.addEventListener("resize", handleResize);
     }
