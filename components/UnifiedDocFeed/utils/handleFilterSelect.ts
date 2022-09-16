@@ -43,7 +43,15 @@ const handleFilterSelect = ({
 
   if (topLevel) {
     const topLevelFilterObj = topLevelFilters[topLevel];
-    const navigateToUrl = (topLevelFilterObj.relative ? router.asPath : "") + topLevelFilterObj?.value;
+    const isUserOnHubPage = router.pathname.indexOf("/hubs") >= 0;
+
+    let basePath = "";
+    if (isUserOnHubPage) {
+      const urlParts = router.asPath.split("/")
+      basePath = "/" + urlParts[1] + "/" + urlParts[2];
+    }
+    
+    const navigateToUrl = basePath + topLevelFilterObj?.value;
     return router.push({ pathname: navigateToUrl });
   }
 
