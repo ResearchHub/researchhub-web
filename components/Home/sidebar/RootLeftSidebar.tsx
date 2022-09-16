@@ -106,11 +106,15 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   useEffect((): void => {
     if (!["", "/"].includes(pathname)) {
       // if not homepage, we render minimized version no matter what
-      setIsMinimized(true);
+      setTimeout(() => {
+        setIsMinimized(true);
+      }, 200);
       setGrowMinimized(true);
     } else {
       // if on homepage, we consider user scree nsize
-      setIsMinimized(!isLargeScreen);
+      setTimeout(() => {
+        setIsMinimized(!isLargeScreen);
+      }, 200);
       setGrowMinimized(!isLargeScreen);
     }
   }, [pathname, isLargeScreen]);
@@ -264,7 +268,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
                 setGrowMinimized(true);
                 setTimeout(() => {
                   setIsMinimized(true);
-                }, 200);
+                }, 300);
               }}
             >
               {icons.arrowLeftToLine}
