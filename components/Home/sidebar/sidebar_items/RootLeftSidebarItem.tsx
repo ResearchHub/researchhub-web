@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     width: 16,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       fontSize: "1.2em",
+      marginRight: 0,
     },
   },
   iconWrapActive: { color: colors.NEW_BLUE(1) },

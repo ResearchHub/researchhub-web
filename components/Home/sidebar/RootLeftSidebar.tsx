@@ -66,6 +66,7 @@ const getLeftSidebarItemAttrs = ({
           icon: icons.book,
           label: !isMinimized ? "Notebook" : "",
           isMinimized,
+          isActive: pathname.includes("notebook"),
           onClick: (event: SyntheticEvent): void => {
             event.preventDefault();
             router.push(`/${organization_slug}/notebook`);
@@ -76,6 +77,7 @@ const getLeftSidebarItemAttrs = ({
       icon: icons.chartSimple,
       label: !isMinimized ? "Leaderboard" : "",
       isMinimized,
+      isActive: pathname.includes("leaderboard"),
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/leaderboard/users");
@@ -92,6 +94,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     getCurrMediaWidth() >= breakpoints.large.int
   );
   const [isMinimized, setIsMinimized] = useState(true);
+  const [growMinimized, setGrowMinimized] = useState(false);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -104,9 +107,11 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     if (!["", "/"].includes(pathname)) {
       // if not homepage, we render minimized version no matter what
       setIsMinimized(true);
+      setGrowMinimized(true);
     } else {
       // if on homepage, we consider user scree nsize
       setIsMinimized(!isLargeScreen);
+      setGrowMinimized(!isLargeScreen);
     }
   }, [pathname, isLargeScreen]);
 
@@ -155,6 +160,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const variants = {
     minimized: {
       width: 80,
+      opacity: 0,
     },
     full: {
       width: 280,
@@ -163,9 +169,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
 
   return (
     <motion.div
-      animate={isMinimized ? "minimzed" : "full"}
+      animate={growMinimized ? "minimzed" : "full"}
       variants={variants}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.7 }}
       className={formattedRootLeftSidebar}
     >
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
@@ -192,7 +198,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
               {"Jobs"}
             </ALink>
           </div>
-          <div>
+          <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
               <ALink
                 href="https://twitter.com/researchhub"
@@ -239,6 +245,31 @@ export default function RootLeftSidebar({}: Props): ReactElement {
               </ALink>
             </div>
           </div>
+          {isMinimized ? (
+            <div
+              className={css(styles.arrowRight)}
+              onClick={() => {
+                setGrowMinimized(false);
+                setTimeout(() => {
+                  setIsMinimized(false);
+                }, 300);
+              }}
+            >
+              {icons.arrowRightToLine}
+            </div>
+          ) : (
+            <div
+              className={css(styles.arrowRight, styles.arrowLeft)}
+              onClick={() => {
+                setGrowMinimized(true);
+                setTimeout(() => {
+                  setIsMinimized(true);
+                }, 200);
+              }}
+            >
+              {icons.arrowLeftToLine}
+            </div>
+          )}
         </div>
       </div>
     </motion.div>
@@ -250,23 +281,19 @@ const styles = StyleSheet.create({
     background: colors.GREY_ICY_BLUE_HUE,
     borderRight: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
     boxSizing: "border-box",
-    minWidth: 280,
     position: "relative",
-    width: 280,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
   },
-  rootLeftSidebarMin: {
-    minWidth: 80,
-    width: 80,
-  },
+  rootLeftSidebarMin: {},
   rootLeftSidebarStickyWrap: {
     display: "flex",
     justifyContent: "space-between",
     flexDirection: "column",
     position: "sticky",
     top: 0,
+    height: "100%",
     width: "100%",
   },
   leftSidebarItemsContainer: {
@@ -336,6 +363,19 @@ const styles = StyleSheet.create({
     [`@media only screen and (min-width: ${breakpoints.large.int}px)`]: {
       width: "100%",
     },
+  },
+  footer: {
+    marginTop: "auto",
+  },
+  arrowRight: {
+    margin: "auto",
+    marginBottom: 0,
+    padding: 16,
+    color: "#aaa",
+    cursor: "pointer",
+  },
+  arrowLeft: {
+    marginTop: 0,
   },
   logoContainer: {
     boxSizing: "border-box",
