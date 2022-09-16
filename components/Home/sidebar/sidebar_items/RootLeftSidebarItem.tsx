@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   rootLeftSidebarItemMin: {
     justifyContent: "center",
-    fontSize: 20
+    fontSize: 20,
   },
   rootLeftSidebarItemActive: {
     background: colors.BLUE_ACTIVE_BACKGROUND,

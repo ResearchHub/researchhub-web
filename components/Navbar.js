@@ -394,13 +394,7 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
-        {pathname.includes("notebook") ? (
-          <Link href={"/"} as={`/`}>
-            <div className={css(styles.logoContainer)}>
-              <RHLogo iconStyle={styles.logo} white={false} />
-            </div>
-          </Link>
-        ) : (
+        {pathname.includes("notebook") ? null : (
           <div className={css(styles.logoContainer)}>
             {formatMainHeader({ isHomePage: true })}
           </div>
@@ -965,6 +959,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 2,
     display: "flex",
+    alignItems: "center",
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },

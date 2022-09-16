@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     left: 0,
     maxWidth: 300,
     minWidth: 240,
-    position: "fixed",
+    // position: "fixed",
     top: 68,
     width: "16%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
