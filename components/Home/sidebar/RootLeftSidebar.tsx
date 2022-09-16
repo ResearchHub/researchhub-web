@@ -28,11 +28,11 @@ type Props = {};
 
 const getLeftSidebarItemAttrs = ({
   currentUser,
-  shouldMaximize,
+  isMinimized,
   router,
 }: {
   currentUser: any;
-  shouldMaximize: boolean;
+  isMinimized: boolean;
   router: NextRouter;
 }): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
@@ -42,8 +42,9 @@ const getLeftSidebarItemAttrs = ({
   return filterNull([
     {
       icon: icons.home,
-      label: shouldMaximize ? "Home" : "",
+      label: !isMinimized ? "Home" : "",
       isActive: ["", "/"].includes(pathname),
+      isMinimized,
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/");
@@ -51,8 +52,9 @@ const getLeftSidebarItemAttrs = ({
     },
     {
       icon: icons.squares,
-      label: shouldMaximize ? "Hubs" : "",
+      label: !isMinimized ? "Hubs" : "",
       isActive: ["/hubs"].includes(pathname),
+      isMinimized,
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/hubs");
@@ -61,7 +63,8 @@ const getLeftSidebarItemAttrs = ({
     isLoggedIn
       ? {
           icon: icons.book,
-          label: shouldMaximize ? "Notebook" : "",
+          label: !isMinimized ? "Notebook" : "",
+          isMinimized,
           onClick: (event: SyntheticEvent): void => {
             event.preventDefault();
             router.push(`/${organization_slug}/notebook`);
@@ -69,24 +72,9 @@ const getLeftSidebarItemAttrs = ({
         }
       : null,
     {
-      icon: icons.coins,
-      label: shouldMaximize ? "ResearchCoin" : "",
-      onClick: (event: SyntheticEvent): void => {
-        // TODO: calvinhlee - placeholder
-        event.preventDefault();
-      },
-    },
-    {
-      icon: icons.users,
-      label: shouldMaximize ? "Community" : "",
-      onClick: (event: SyntheticEvent): void => {
-        // TODO: calvinhlee - placeholder
-        event.preventDefault();
-      },
-    },
-    {
       icon: icons.chartSimple,
-      label: shouldMaximize ? "Leaderboard" : "",
+      label: !isMinimized ? "Leaderboard" : "",
+      isMinimized,
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
         router.push("/leaderboard/users");
@@ -99,37 +87,37 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
   const currentUser = getCurrentUser();
-  const [screenSize, setScreenSize] = useState<number>(getCurrMediaWidth());
-  const [isLargeScreen, setIsLargeisLargeScreen] = useState<boolean>(
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
-  const shouldMaximize = isLargeScreen; // NOTE: Leaving this here. We may need more logic in the future.
+  const [isMinimized, setIsMinimized] = useState(true);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
       const largeScreen = newMediaWidth >= breakpoints.large.int;
-      setIsLargeisLargeScreen(largeScreen);
+      setIsLargeScreen(largeScreen);
     },
   });
 
   useEffect((): void => {
-    setScreenSize(getCurrMediaWidth());
-  });
+    if (!["", "/"].includes(pathname)) {
+      // if not homepage, we render minimized version no matter what
+      setIsMinimized(true);
+    } else {
+      // if on homepage, we consider user scree nsize
+      setIsMinimized(!isLargeScreen);
+    }
+  }, [pathname, isLargeScreen]);
 
   const leftSidebarItemAttrs = useMemo(
     (): RootLeftSidebarItemProps[] =>
       getLeftSidebarItemAttrs({
         currentUser,
-        shouldMaximize,
+        isMinimized,
         router,
       }),
-    [currentUser.id, router.pathname, shouldMaximize, screenSize]
+    [currentUser.id, router.pathname, isMinimized]
   );
-
-  const isOnNoteBookPage = pathname.includes("notebook");
-  if (isOnNoteBookPage) {
-    return <></>;
-  }
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
     (
@@ -139,17 +127,41 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     )
   );
 
+  const {
+    formattedLogoContainer,
+    formattedRootLeftSidebar,
+    formattedFooterTxtItem,
+    formattedFooterItemsButtonRow,
+  } = {
+    formattedLogoContainer: [
+      styles.logoContainer,
+      isMinimized && styles.logoContainerMin,
+    ],
+    formattedRootLeftSidebar: css(
+      styles.rootLeftSidebar,
+      isMinimized && styles.rootLeftSidebarMin
+    ),
+    formattedFooterTxtItem: [
+      styles.leftSidebarFooterTxtItem,
+      isMinimized && styles.leftSidebarFooterTxtItemMin,
+    ],
+    formattedFooterItemsButtonRow: css(
+      styles.leftSidebarFooterItemsBottomRow,
+      isMinimized && styles.leftSidebarFooterItemsBottomRowMin
+    ),
+  };
+
   return (
-    <div className={css(styles.rootLeftSidebar)}>
+    <div className={formattedRootLeftSidebar}>
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
         <div className={css(styles.leftSidebarItemsContainer)}>
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
             <div className={css(styles.logoDiv)}>
-              <ALink href={"/"} as={`/`} overrideStyle={[styles.logoContainer]}>
+              <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
                 <RHLogo
                   iconStyle={styles.logo}
                   white={false}
-                  withText={isServer() ? undefined : shouldMaximize}
+                  withText={!isMinimized}
                 />
               </ALink>
             </div>
@@ -158,60 +170,59 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <ALink
-              href="/about"
-              overrideStyle={styles.leftSidebarFooterTxtItem}
-            >
+            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
-            <ALink href="/jobs" overrideStyle={styles.leftSidebarFooterTxtItem}>
+            <ALink href="/jobs" overrideStyle={formattedFooterTxtItem}>
               {"Jobs"}
             </ALink>
           </div>
-          <div className={css(styles.leftSidebarFooterItemsBottomRow)}>
-            <ALink
-              href="https://twitter.com/researchhub"
-              overrideStyle={styles.leftSidebarFooterIcon}
-              target="__blank"
-            >
-              {icons.twitter}
-            </ALink>
-            <ALink
-              href="https://discord.com/invite/ZcCYgcnUp5"
-              overrideStyle={styles.leftSidebarFooterIcon}
-              target="__blank"
-            >
-              {icons.discord}
-            </ALink>
-            <ALink
-              href="https://medium.com/researchhub"
-              overrideStyle={
-                (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
-              }
-              target="__blank"
-            >
-              {icons.medium}
-            </ALink>
-          </div>
-          <div className={css(styles.leftSidebarFooterItemsBottomRow)}>
-            <ALink
-              href="/about/tos"
-              overrideStyle={styles.leftSidebarFooterBotItem}
-            >
-              {"Terms"}
-            </ALink>
-            <ALink
-              href="/about/privacy"
-              overrideStyle={styles.leftSidebarFooterBotItem}
-            >
-              {"Privacy"}
-            </ALink>
-            <ALink
-              href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
-              overrideStyle={styles.leftSidebarFooterBotItem}
-            >
-              {"Help"}
-            </ALink>
+          <div>
+            <div className={formattedFooterItemsButtonRow}>
+              <ALink
+                href="https://twitter.com/researchhub"
+                overrideStyle={styles.leftSidebarFooterIcon}
+                target="__blank"
+              >
+                {icons.twitter}
+              </ALink>
+              <ALink
+                href="https://discord.com/invite/ZcCYgcnUp5"
+                overrideStyle={styles.leftSidebarFooterIcon}
+                target="__blank"
+              >
+                {icons.discord}
+              </ALink>
+              <ALink
+                href="https://medium.com/researchhub"
+                overrideStyle={
+                  (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
+                }
+                target="__blank"
+              >
+                {icons.medium}
+              </ALink>
+            </div>
+            <div className={formattedFooterItemsButtonRow}>
+              <ALink
+                href="/about/tos"
+                overrideStyle={styles.leftSidebarFooterBotItem}
+              >
+                {"Terms"}
+              </ALink>
+              <ALink
+                href="/about/privacy"
+                overrideStyle={styles.leftSidebarFooterBotItem}
+              >
+                {"Privacy"}
+              </ALink>
+              <ALink
+                href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
+                overrideStyle={styles.leftSidebarFooterBotItem}
+              >
+                {"Help"}
+              </ALink>
+            </div>
           </div>
         </div>
       </div>
@@ -230,19 +241,21 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
-    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
-      minWidth: 80,
-      width: 80,
-    },
+  },
+  rootLeftSidebarMin: {
+    minWidth: 80,
+    width: 80,
   },
   rootLeftSidebarStickyWrap: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "column",
     position: "sticky",
     top: 0,
     width: "100%",
   },
   leftSidebarItemsContainer: {
     width: "100%",
-    height: "100%",
     display: "flex",
     justifyContent: "center",
   },
@@ -252,7 +265,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    height: "100%",
     marginTop: 20,
     maxWidth: "90%",
     width: "90%",
@@ -260,7 +272,7 @@ const styles = StyleSheet.create({
   leftSidebarFooter: {
     display: "flex",
     flexDirection: "column",
-    height: "49vh",
+    height: "65vh",
     justifyContent: "space-between",
   },
   leftSidebarFooterTxtItem: {
@@ -272,16 +284,15 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.TEXT_GREY(1),
     },
-    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
-      fontSize: 14,
-      fontWeight: 300,
-      margin: "8px auto",
-    },
+  },
+  leftSidebarFooterTxtItemMin: {
+    fontSize: 14,
+    fontWeight: 300,
+    margin: "8px auto",
   },
   leftSidebarFooterItemsTop: {
     display: "flex",
     flexDirection: "column",
-    height: "100%",
     paddingTop: 24,
   },
   leftSidebarFooterItemsBottomRow: {
@@ -291,10 +302,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: "center",
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
-      display: "none",
-    },
   },
+  leftSidebarFooterItemsBottomRowMin: { display: "none" },
   leftSidebarFooterIcon: {
     fontSize: 18,
     marginRight: 32,
@@ -321,10 +330,10 @@ const styles = StyleSheet.create({
     padding: "0 16px",
     userSelect: "none",
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
-      padding: 0,
-      marginBottom: 14,
-    },
+  },
+  logoContainerMin: {
+    padding: 0,
+    justifyContent: "center",
   },
   logo: {
     height: 36,

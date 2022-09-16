@@ -6,6 +6,7 @@ import { breakpoints } from "~/config/themes/screen";
 export type Props = {
   icon: ReactNode;
   isActive?: boolean;
+  isMinimized: boolean;
   label: string;
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
@@ -14,6 +15,7 @@ export type Props = {
 export default function RootLeftSidebarItem({
   icon,
   isActive = false,
+  isMinimized,
   label,
   onClick,
   subItems,
@@ -22,6 +24,7 @@ export default function RootLeftSidebarItem({
     <div
       className={css(
         styles.rootLeftSidebarItem,
+        isMinimized && styles.rootLeftSidebarItemMin,
         isActive && styles.rootLeftSidebarItemActive
       )}
       onClick={onClick}
@@ -55,9 +58,10 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.LIGHTER_GREY(1),
     },
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      justifyContent: "center",
-    },
+  },
+  rootLeftSidebarItemMin: {
+    justifyContent: "center",
+    fontSize: 20
   },
   rootLeftSidebarItemActive: {
     background: colors.BLUE_ACTIVE_BACKGROUND,
