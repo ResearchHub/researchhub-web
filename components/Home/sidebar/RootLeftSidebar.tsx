@@ -1,6 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
+import { motion } from "framer-motion";
 import {
   getCurrMediaWidth,
   useEffectOnScreenResize,
@@ -151,8 +152,22 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     ),
   };
 
+  const variants = {
+    minimized: {
+      width: 80,
+    },
+    full: {
+      width: 280,
+    },
+  };
+
   return (
-    <div className={formattedRootLeftSidebar}>
+    <motion.div
+      animate={isMinimized ? "minimzed" : "full"}
+      variants={variants}
+      transition={{ duration: 0.5 }}
+      className={formattedRootLeftSidebar}
+    >
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
         <div className={css(styles.leftSidebarItemsContainer)}>
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
@@ -226,7 +241,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
