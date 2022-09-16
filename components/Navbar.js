@@ -1,6 +1,7 @@
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
+import { deSlug } from "~/config/utils/deSlug";
 import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { Helpers } from "@quantfive/js-web-config";
@@ -24,10 +25,10 @@ import MobileOnly from "./MobileOnly";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
 import Reputation from "./Reputation";
+import RHLogo from "~/components/Home/RHLogo";
 import Router, { useRouter } from "next/router";
 import Search from "./Search/Search";
 import UserStateBanner from "./Banner/UserStateBanner";
-import RHLogo from "~/components/Home/RHLogo";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -342,7 +343,10 @@ const Navbar = (props) => {
   }
 
   const pathname = router?.pathname ?? "";
+  const hubName = deSlug(router?.query?.slug ?? "");
 
+  console.warn("router: ", router);
+  console.warn("hubName: ", hubName);
   function renderLoginButtons(isLoggedIn) {
     return (
       <div className={css(styles.oauthContainer)}>
@@ -362,7 +366,6 @@ const Navbar = (props) => {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
-
   return (
     <Fragment>
       <DndModal />
@@ -396,7 +399,7 @@ const Navbar = (props) => {
       >
         {pathname.includes("notebook") ? null : (
           <div className={css(styles.logoContainer)}>
-            {formatMainHeader({ isHomePage: true })}
+            {formatMainHeader({ hubName, isHomePage: !Boolean(hubName) })}
           </div>
         )}
         <div className={css(styles.searchWrapper)}>
