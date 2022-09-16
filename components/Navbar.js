@@ -343,7 +343,9 @@ const Navbar = (props) => {
   }
 
   const pathname = router?.pathname ?? "";
-  const hubName = deSlug(router?.query?.slug ?? "");
+  const hubName = pathname.includes("notebook")
+    ? "Notebook"
+    : deSlug(router?.query?.slug ?? "");
 
   function renderLoginButtons(isLoggedIn) {
     return (
@@ -395,11 +397,12 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
-        {pathname.includes("notebook") ? null : (
-          <div className={css(styles.logoContainer)}>
-            {formatMainHeader({ hubName, isHomePage: !Boolean(hubName) })}
-          </div>
-        )}
+        <div className={css(styles.logoContainer)}>
+          {formatMainHeader({
+            hubName,
+            isHomePage: !Boolean(hubName),
+          })}
+        </div>
         <div className={css(styles.searchWrapper)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
