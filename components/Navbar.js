@@ -345,8 +345,6 @@ const Navbar = (props) => {
   const pathname = router?.pathname ?? "";
   const hubName = deSlug(router?.query?.slug ?? "");
 
-  console.warn("router: ", router);
-  console.warn("hubName: ", hubName);
   function renderLoginButtons(isLoggedIn) {
     return (
       <div className={css(styles.oauthContainer)}>
