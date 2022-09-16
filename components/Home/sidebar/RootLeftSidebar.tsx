@@ -104,7 +104,10 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   });
 
   useEffect((): void => {
-    if (!["", "/"].includes(pathname)) {
+    if (
+      !["", "/"].includes(pathname) &&
+      !pathname.includes("paper", "post", "hypothesis", "question")
+    ) {
       // if not homepage, we render minimized version no matter what
       setTimeout(() => {
         setIsMinimized(true);
