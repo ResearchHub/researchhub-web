@@ -293,11 +293,10 @@ const styles = StyleSheet.create({
   rootLeftSidebarMin: {},
   rootLeftSidebarStickyWrap: {
     display: "flex",
-    justifyContent: "space-between",
     flexDirection: "column",
     position: "sticky",
     top: 0,
-    height: "100%",
+    height: "100vh",
     width: "100%",
   },
   leftSidebarItemsContainer: {
@@ -318,7 +317,7 @@ const styles = StyleSheet.create({
   leftSidebarFooter: {
     display: "flex",
     flexDirection: "column",
-    height: "65vh",
+    height: "100%",
     justifyContent: "space-between",
   },
   leftSidebarFooterTxtItem: {
