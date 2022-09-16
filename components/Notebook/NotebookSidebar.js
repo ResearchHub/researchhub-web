@@ -32,6 +32,7 @@ const NotebookSidebar = ({
   orgSlug,
   orgs,
   redirectToNote,
+  noteCreated,
   refetchTemplates,
   setTemplates,
   templates,
@@ -208,6 +209,7 @@ const NotebookSidebar = ({
             <NotebookSidebarGroup
               availGroups={Object.keys(groupedNotes)}
               currentNoteId={currentNoteId}
+              noteCreated={noteCreated}
               currentOrg={currentOrg}
               groupKey={groupKey}
               isOrgMember={isOrgMember}

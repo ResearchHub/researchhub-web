@@ -127,6 +127,10 @@ const Notebook = ({ auth, user, wsResponse }) => {
     setTemplates(templates);
   }, [orgSlug]);
 
+  const noteCreated = () => {
+    fetchAndSetCurrentOrgNotes();
+  };
+
   const fetchAndSetCurrentOrgNotes = useCallback(async () => {
     let response;
     let notes;
@@ -384,6 +388,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
         notes={notes}
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
+        noteCreated={noteCreated}
         orgs={organizations}
         redirectToNote={redirectToNote}
         refetchTemplates={fetchAndSetOrgTemplates}

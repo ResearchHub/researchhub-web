@@ -21,6 +21,7 @@ const NotebookSidebarGroup = ({
   setMessage,
   showMessage,
   titles,
+  noteCreated,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -36,6 +37,7 @@ const NotebookSidebarGroup = ({
 
       redirectToNote(note);
       setIsHidden(false);
+      noteCreated && noteCreated();
     } catch (error) {
       setMessage("You do not have permission to create note");
       showMessage({ show: true, error: true });
