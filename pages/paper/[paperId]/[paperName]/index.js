@@ -135,6 +135,23 @@ const Paper = ({
   // but since useEffect does not work with SSG, we need a standard if statement.
   const noSetPaperData = !isEmpty(initialPaperData) && isEmpty(paper);
   if (noSetPaperData) {
+    resetPaper(initialPaperData);
+  }
+
+  useEffect(() => {
+    if (fetchFreshDataStatus === "NOT_FETCHED" && !isEmpty(paper)) {
+      fetchFreshData(paper?.id);
+    }
+  }, [fetchFreshDataStatus, paper]);
+
+  useEffect(() => {
+    const paperPageHasChanged = paper.id !== router.query.paperId;
+    if (paperPageHasChanged) {
+      resetPaper(initialPaperData);
+    }
+  }, [router.query.paperId]);
+
+  function resetPaper(initialPaperData) {
     const paper = shims.paper(initialPaperData);
     setPaper(paper);
     setPaperV2(new PaperDoc(paper));
@@ -144,15 +161,9 @@ const Paper = ({
     }
   }
 
-  useEffect(() => {
-    if (fetchFreshDataStatus === "NOT_FETCHED" && !isEmpty(paper)) {
-      fetchFreshData(paper);
-    }
-  }, [fetchFreshDataStatus, paper]);
-
-  function fetchFreshData(paper) {
+  function fetchFreshData(paperId) {
     setFetchFreshDataStatus("FETCHING");
-    fetchPaper(API.PAPER({ paperId: paper.id }), API.GET_CONFIG()).then(
+    fetchPaper(API.PAPER({ paperId: paperId }), API.GET_CONFIG()).then(
       (freshPaperData) => {
         setFetchFreshDataStatus("COMPLETED");
 
