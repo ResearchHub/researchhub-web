@@ -562,7 +562,7 @@ class HubPage extends Component {
                   Explore ResearchHub
                 </div>
                 <FeedMenu />
-                <LiveFeed />
+                <LiveFeed hub={hub} isHomePage={home} />
               </div>
             ) : (
               <UnifiedDocFeedContainer

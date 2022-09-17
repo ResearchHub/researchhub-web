@@ -5,7 +5,6 @@ import { FLAG_REASON } from "../Flag/config/flag_constants";
 import { ID } from "~/config/types/root_types";
 import { KeyOf } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect, useRef } from "react";
-import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import CheckBox from "~/components/Form/CheckBox";
 import colors from "~/config/themes/colors";
@@ -21,14 +20,14 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import renderContributionEntry from "./utils/renderContributionEntry";
 
-export default function LiveFeed({}): ReactElement<"div"> {
+export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
+
   const router = useRouter();
   const multiSelectRef = useRef<HTMLDivElement>(null);
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
 
-  const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({
-    hubId: router.query.hub_id as ID,
+    hubId: hub?.id as ID,
   });
   const [isLoadingMore, setIsLoadingMore] = useState<Boolean>(false);
   const [isLoadingPage, setIsLoadingPage] = useState<Boolean>(true);
@@ -40,10 +39,14 @@ export default function LiveFeed({}): ReactElement<"div"> {
     useState<any>(false);
 
   useEffect(() => {
-    const appliedFilters = { hubId: router.query.hub_id as ID };
+    let appliedFilters = { hubId: null }  
+    if (hub?.id) {
+      appliedFilters = { hubId: hub.id }
+    }
+    console.log('appliedFilters', appliedFilters)
     setAppliedFilters(appliedFilters);
     loadResults(appliedFilters, null);
-  }, [router.query]);
+  }, [hub, isHomePage]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -62,16 +65,6 @@ export default function LiveFeed({}): ReactElement<"div"> {
     };
   }, [selectedResultIds]);
 
-  useEffectFetchSuggestedHubs({
-    setSuggestedHubs: (hubs) => {
-      setSuggestedHubs([{ label: "All hubs", value: undefined }, ...hubs]);
-      const selected = hubs.find(
-        (h) => String(h.id) === String(router.query.hub_id)
-      );
-      setAppliedFilters({ hubId: selected?.id });
-    },
-  });
-
   const handleWindowScroll = () => {
     const navEl: HTMLElement | null = document.querySelector(".navbar");
     const multiSelectEl: HTMLElement | null = multiSelectRef.current;
@@ -87,24 +80,6 @@ export default function LiveFeed({}): ReactElement<"div"> {
     } else {
       setIsMultiSelectSticky(false);
     }
-  };
-
-  const handleHubFilterChange = (selectedHub: any) => {
-    let query = { ...router.query };
-    if (selectedHub.id) {
-      query.hub_id = selectedHub.id;
-    } else {
-      delete query.hub_id;
-    }
-
-    setIsLoadingPage(true);
-    setSelectedResultIds([]);
-    setAppliedFilters({ hubId: selectedHub.id });
-    loadResults({ hubId: selectedHub.id }, null);
-
-    router.push({
-      query,
-    });
   };
 
   const handleResultSelect = (selectedId) => {
@@ -216,9 +191,6 @@ export default function LiveFeed({}): ReactElement<"div"> {
     });
   };
 
-  const selectedHub = suggestedHubs.find(
-    (h) => String(appliedFilters.hubId) === String(h.id)
-  ) || { label: "All hubs", id: undefined, value: undefined };
   return (
     <div>
     {selectedResultIds.length > 0 && (
