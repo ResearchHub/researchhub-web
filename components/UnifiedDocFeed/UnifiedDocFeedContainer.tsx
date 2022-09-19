@@ -113,39 +113,37 @@ function UnifiedDocFeedContainer({
   const loadMore = () => {
     const nextLocalPage = localPage + 1;
     setPaginationInfo({ ...paginationInfo, localPage: nextLocalPage });
-    if (nextLocalPage === page * 2 && hasMore) {
-      fetchUnifiedDocs({
-        ...fetchParams,
-        onError: (error: Error): void => {
-          emptyFncWithMsg(error);
-          setPaginationInfo({
-            hasMore,
-            isLoading: false,
-            isLoadingMore: false,
-            isServerLoaded: false,
-            localPage: nextLocalPage,
-            page,
-          });
-        },
-        onSuccess: ({
+    fetchUnifiedDocs({
+      ...fetchParams,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: nextLocalPage,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents: nextDocs,
+      }): void => {
+        setUnifiedDocsLoading(false);
+        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+        setPaginationInfo({
           hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: nextLocalPage,
           page: updatedPage,
-          documents: nextDocs,
-        }): void => {
-          setUnifiedDocsLoading(false);
-          setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-          setPaginationInfo({
-            hasMore: nextPageHasMore,
-            isLoading: false,
-            isLoadingMore: false,
-            isServerLoaded: false,
-            localPage: nextLocalPage,
-            page: updatedPage,
-          });
-        },
-        page: page + 1,
-      });
-    }
+        });
+      },
+      page: page + 1,
+    });
   };
 
   const showLoadMoreButton = hasMore;
