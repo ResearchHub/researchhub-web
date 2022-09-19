@@ -10,6 +10,7 @@ import { ModalActions } from "~/redux/modals";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils/form";
+import ReactTooltip from "react-tooltip";
 
 const DEFAULT_SHIMMER_TIME = 1150;
 
@@ -24,6 +25,7 @@ const ContentSupport = (props) => {
     awardedBountyAmount,
   } = props;
 
+  const [tooltip, showTooltip] = useState(true);
   const [count, setCount] = useState(
     parseFloat(data?.promoted + data?.awarded_bounty_amount) || 0
   );
@@ -112,7 +114,13 @@ const ContentSupport = (props) => {
       className={css(styles.container)}
       data-tip={dataTip()}
       onClick={handleClick}
+      onMouseEnter={() => showTooltip(true)}
+      onMouseLeave={() => {
+        showTooltip(false);
+        setTimeout(() => showTooltip(true), 50);
+      }}
     >
+      {tooltip && <ReactTooltip effect="solid" />}
       {renderAnimation()}
       {renderCount()}
       {!isUserContent() && (
@@ -135,6 +143,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     position: "relative",
+    zIndex: 1,
     ":hover #plusIcon": {
       color: colors.BLUE(),
       transform: "scale(1.05)",

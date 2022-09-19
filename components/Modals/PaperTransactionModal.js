@@ -48,7 +48,7 @@ class PaperTransactionModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      value: 1,
+      value: 50,
       error: false,
       nextScreen: true,
       offChain: true,
@@ -235,8 +235,9 @@ class PaperTransactionModal extends Component {
   };
 
   handleInput = (e) => {
-    let value = parseInt(sanitizeNumber(e.target.value), 10);
-    value = value || 0;
+    const inputValue = e.target.value.replace(/^0+/, "");
+    const value = inputValue ? parseInt(sanitizeNumber(inputValue)) : "";
+
     this.setState({
       value,
       error: this.handleError(value),
@@ -687,6 +688,9 @@ class PaperTransactionModal extends Component {
       finish,
       transactionHash,
     } = this.state;
+
+    const hasMinRscError = this.state.value < 1;
+
     if (finish) {
       return (
         <Fragment>
@@ -768,9 +772,13 @@ class PaperTransactionModal extends Component {
           <div className={css(styles.row, styles.numbers)}>
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>{"Amount"}</div>
-              <div className={css(styles.subtitle)}>
-                {"Select the amount of RSC"}
-              </div>
+              {hasMinRscError ? (
+                <div className={css(styles.errorMsg)}>Enter at least 1 RSC</div>
+              ) : (
+                <div className={css(styles.subtitle)}>
+                  {"Amount of RSC you wish to support"}
+                </div>
+              )}
             </div>
             <div className={css(styles.column, styles.right)}>
               <input
@@ -786,7 +794,11 @@ class PaperTransactionModal extends Component {
             </div>
           </div>
           <div className={css(styles.buttonRow)}>
-            <Button label="Confirm" onClick={this.confirmTransaction} />
+            <Button
+              label="Confirm"
+              onClick={this.confirmTransaction}
+              disabled={hasMinRscError}
+            />
           </div>
         </div>
       );
@@ -1198,6 +1210,10 @@ const styles = StyleSheet.create({
     background: "#eaebfe",
     borderRadius: 4,
     color: colors.BLUE(),
+  },
+  errorMsg: {
+    fontSize: 14,
+    color: colors.RED(),
   },
 });
 
