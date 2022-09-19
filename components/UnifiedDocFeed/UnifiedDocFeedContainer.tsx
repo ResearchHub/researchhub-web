@@ -167,7 +167,7 @@ function UnifiedDocFeedContainer({
           hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
           isHomePage={isHomePage}
           mainHeaderText={formatMainHeader({
-            hubName: hubName ?? "",
+            label: hubName ?? "",
             isHomePage,
           })}
         />

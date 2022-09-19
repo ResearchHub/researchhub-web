@@ -343,8 +343,10 @@ const Navbar = (props) => {
   }
 
   const pathname = router?.pathname ?? "";
-  const hubName = pathname.includes("notebook")
-    ? "Notebook"
+  const headerLabel = pathname.includes("notebook")
+    ? "Lab Notebook"
+    : pathname.includes("leaderboard")
+    ? "Leaderboard"
     : deSlug(router?.query?.slug ?? "");
 
   function renderLoginButtons(isLoggedIn) {
@@ -399,8 +401,8 @@ const Navbar = (props) => {
       >
         <div className={css(styles.logoContainer)}>
           {formatMainHeader({
-            hubName,
-            isHomePage: !Boolean(hubName),
+            label: headerLabel,
+            isHomePage: !Boolean(headerLabel),
           })}
         </div>
         <div className={css(styles.searchWrapper)}>

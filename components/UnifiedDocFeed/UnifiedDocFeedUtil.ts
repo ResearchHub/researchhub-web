@@ -1,13 +1,13 @@
 import { capitalize } from "../../config/utils/string";
 
 type FormatMainHeaderArgs = {
-  hubName: string;
+  label: string;
   isHomePage: boolean;
 };
 
 export function formatMainHeader({
-  hubName,
+  label,
   isHomePage,
 }: FormatMainHeaderArgs): string {
-  return isHomePage ? `Explore ResearchHub` : `${capitalize(hubName)}`;
+  return isHomePage ? `Explore ResearchHub` : `${capitalize(label)}`;
 }
