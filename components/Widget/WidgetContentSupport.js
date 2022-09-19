@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
@@ -25,7 +25,7 @@ const ContentSupport = (props) => {
     awardedBountyAmount,
   } = props;
 
-  const [tooltip, showTooltip] = useState(true);
+  const tooltipRef = useRef(null);
   const [count, setCount] = useState(
     parseFloat(data?.promoted + data?.awarded_bounty_amount) || 0
   );
@@ -113,14 +113,13 @@ const ContentSupport = (props) => {
     <div
       className={css(styles.container)}
       data-tip={dataTip()}
-      onClick={handleClick}
-      onMouseEnter={() => showTooltip(true)}
-      onMouseLeave={() => {
-        showTooltip(false);
-        setTimeout(() => showTooltip(true), 50);
+      ref={tooltipRef}
+      data-effect="solid"
+      onClick={(event) => {
+        handleClick(event);
+        ReactTooltip.hide();
       }}
     >
-      {tooltip && <ReactTooltip effect="solid" />}
       {renderAnimation()}
       {renderCount()}
       {!isUserContent() && (
