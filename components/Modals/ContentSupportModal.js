@@ -17,12 +17,13 @@ import { AuthActions } from "~/redux/auth";
 import { supportContent } from "../../config/fetch";
 import colors from "../../config/themes/colors";
 import { sanitizeNumber } from "~/config/utils/form";
+import { breakpoints } from "~/config/themes/screen";
 
 class ContentSupportModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      amount: 1,
+      amount: 50,
       error: false,
     };
     this.state = {
@@ -36,8 +37,9 @@ class ContentSupportModal extends Component {
   };
 
   handleAmount = (e) => {
-    let amount = parseInt(sanitizeNumber(e.target.value), 10);
-    amount = amount || 0;
+    const inputValue = e.target.value.replace(/^0+/, "");
+    const amount = inputValue ? parseInt(sanitizeNumber(inputValue)) : "";
+
     this.setState({
       amount,
     });
@@ -98,10 +100,20 @@ class ContentSupportModal extends Component {
   };
 
   renderInputs = () => {
+    const hasMinRscError = this.state.amount < 1;
     return (
       <Fragment>
         <div className={css(styles.row)}>
-          <AmountInput value={this.state.amount} onChange={this.handleAmount} />
+          <div>
+            <AmountInput
+              value={this.state.amount}
+              onChange={this.handleAmount}
+              hideBalance={hasMinRscError}
+            />
+            {hasMinRscError && (
+              <div className={css(styles.errorMsg)}>Enter at least 1 RSC</div>
+            )}
+          </div>
           <RecipientInput author={this.getAuthorProfile()} />
         </div>
         <div className={css(styles.column)}>
@@ -110,14 +122,20 @@ class ContentSupportModal extends Component {
             containerStyles={styles.recipientContainer}
             cardStyles={styles.recipientCard}
           />
-          <AmountInput
-            value={this.state.amount}
-            onChange={this.handleAmount}
-            containerStyles={styles.amountInputContainer}
-            inputContainerStyles={styles.amountInput}
-            inputStyles={styles.amountInput}
-            rightAlignBalance={true}
-          />
+          <div className={css(styles.amountWrapper)}>
+            <AmountInput
+              value={this.state.amount}
+              onChange={this.handleAmount}
+              containerStyles={styles.amountInputContainer}
+              inputContainerStyles={styles.amountInput}
+              inputStyles={styles.amountInput}
+              rightAlignBalance={true}
+              hideBalance={hasMinRscError}
+            />
+            {hasMinRscError && (
+              <div className={css(styles.errorMsg)}>Enter at least 1 RSC</div>
+            )}
+          </div>
         </div>
       </Fragment>
     );
@@ -137,7 +155,7 @@ class ContentSupportModal extends Component {
             RSC.{" "}
             <a
               href={
-                "https://www.notion.so/researchhub/RSC-Promotion-f3cb4ee4487046d88201062b1d6b1efa"
+                "https://researchhub.notion.site/ResearchCoin-RSC-1e8e25b771ec4b92b9095e060c4095f6"
               }
               className={css(styles.link)}
               target="_blank"
@@ -158,6 +176,7 @@ class ContentSupportModal extends Component {
               customButtonStyle={styles.button}
               rippleClass={styles.button}
               type="submit"
+              disabled={this.state.amount < 1}
             />
           </div>
         </form>
@@ -179,6 +198,9 @@ const styles = StyleSheet.create({
       padding: 40,
       paddingTop: 50,
     },
+  },
+  amountWrapper: {
+    width: "100%",
   },
   subtitleStyle: {
     lineHeight: 1.6,
@@ -263,6 +285,14 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  errorMsg: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      textAlign: "right",
+    },
+    fontSize: 14,
+    color: colors.RED(),
+    marginTop: 10,
   },
 });
 
