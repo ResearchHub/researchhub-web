@@ -38,8 +38,8 @@ function FeedBlurWithButton(
                 },
               }
             : {
-                href: "/",
-                linkAs: "/",
+                href: "/hubs",
+                linkAs: "/hubs",
               }
         }
         hideRipples={true}
