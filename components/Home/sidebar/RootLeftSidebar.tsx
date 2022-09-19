@@ -103,10 +103,11 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       setIsLargeScreen(largeScreen);
     },
   });
-
   useEffect((): void => {
-    /* if homepage, we consider user's screen size. Else, we minimize */
-    if (!["", "/"].includes(pathname)) {
+    /* if [below] we consider user's screen size. Else, we minimize */
+    if (
+      !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
+    ) {
       setTimeout(() => {
         setIsMinimized(true);
       }, 200);
