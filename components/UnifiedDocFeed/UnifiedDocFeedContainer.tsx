@@ -148,11 +148,11 @@ function UnifiedDocFeedContainer({
     }
   };
 
-  const showLoadMoreButton = unifiedDocuments.length > localPage * 10;
+  const showLoadMoreButton = hasMore;
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     setUnifiedDocuments,
-    unifiedDocumentData: renderableUniDoc,
+    unifiedDocumentData: unifiedDocuments,
   });
   const onMyHubsLoggedOut =
     selectedFilters.topLevel === "/my-hubs" &&
