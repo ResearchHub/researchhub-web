@@ -23,7 +23,6 @@ import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
-import { isServer } from "~/config/server/isServer";
 
 type Props = {};
 
