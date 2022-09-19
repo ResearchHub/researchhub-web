@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
   },
   rootLeftSidebarItemMin: {
     justifyContent: "center",
-    fontSize: 20,
+    fontSize: 16,
+    padding: 0,
   },
   rootLeftSidebarItemActive: {
     background: colors.BLUE_ACTIVE_BACKGROUND,
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     width: 16,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       fontSize: "1.2em",
-      marginRight: 0,
+      marginRight: 8,
     },
   },
   iconWrapActive: { color: colors.NEW_BLUE(1) },

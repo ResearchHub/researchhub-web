@@ -104,17 +104,14 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   });
 
   useEffect((): void => {
-    if (
-      !["", "/"].includes(pathname) &&
-      !pathname.includes("paper", "post", "hypothesis", "question")
-    ) {
+    if (!["", "/"].includes(pathname)) {
       // if not homepage, we render minimized version no matter what
       setTimeout(() => {
         setIsMinimized(true);
       }, 200);
       setGrowMinimized(true);
     } else {
-      // if on homepage, we consider user scree nsize
+      // if on homepage, we consider user's screen size
       setTimeout(() => {
         setIsMinimized(!isLargeScreen);
       }, 200);
@@ -393,7 +390,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   logoContainerMin: {
-    padding: 0,
+    paddingLeft: 16,
     justifyContent: "center",
   },
   logo: {
