@@ -32,9 +32,9 @@ We believe that by empowering scientists to independently fund, create, and publ
 1. Run `cp .env.development.example .env.development`
 1. `nvm install 14.15.5` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 2. `nvm use 14.15.5`
-3. `yarn install`
-4. `yarn run dev`
-5. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
+4. `yarn install` (installing [yarn](https://classic.yarnpkg.com/lang/en/docs/install/))
+5. `yarn run dev`
+6. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
 
 ## Contributing to the codebase
 
