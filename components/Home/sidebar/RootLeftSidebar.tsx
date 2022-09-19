@@ -1,14 +1,13 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   getCurrMediaWidth,
   useEffectOnScreenResize,
 } from "~/config/utils/useEffectOnScreenResize";
 import { filterNull, isEmpty } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { isServer } from "~/config/server/isServer";
 import { NextRouter, useRouter } from "next/router";
 import {
   ReactElement,
@@ -24,6 +23,7 @@ import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
+import { isServer } from "~/config/server/isServer";
 
 type Props = {};
 
@@ -43,7 +43,7 @@ const getLeftSidebarItemAttrs = ({
   return filterNull([
     {
       icon: icons.home,
-      label: !isMinimized ? "Home" : "",
+      label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,
       onClick: (event: SyntheticEvent): void => {
@@ -53,7 +53,7 @@ const getLeftSidebarItemAttrs = ({
     },
     {
       icon: icons.squares,
-      label: !isMinimized ? "Hubs" : "",
+      label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
       onClick: (event: SyntheticEvent): void => {
@@ -64,7 +64,7 @@ const getLeftSidebarItemAttrs = ({
     isLoggedIn
       ? {
           icon: icons.book,
-          label: !isMinimized ? "Notebook" : "",
+          label: "Notebook",
           isMinimized,
           isActive: pathname.includes("notebook"),
           onClick: (event: SyntheticEvent): void => {
@@ -75,7 +75,7 @@ const getLeftSidebarItemAttrs = ({
       : null,
     {
       icon: icons.chartSimple,
-      label: !isMinimized ? "Leaderboard" : "",
+      label: "Leaderboard",
       isMinimized,
       isActive: pathname.includes("leaderboard"),
       onClick: (event: SyntheticEvent): void => {
@@ -93,8 +93,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
-  const [isMinimized, setIsMinimized] = useState(true);
-  const [growMinimized, setGrowMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState<boolean>(true);
+  const [growMinimized, setGrowMinimized] = useState<boolean>(false);
+  const [didMount, setDidMount] = useState<boolean>(false);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -104,19 +105,21 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   });
 
   useEffect((): void => {
+    /* if homepage, we consider user's screen size. Else, we minimize */
     if (!["", "/"].includes(pathname)) {
-      // if not homepage, we render minimized version no matter what
       setTimeout(() => {
         setIsMinimized(true);
       }, 200);
       setGrowMinimized(true);
     } else {
-      // if on homepage, we consider user's screen size
       setTimeout(() => {
         setIsMinimized(!isLargeScreen);
       }, 200);
       setGrowMinimized(!isLargeScreen);
     }
+    setTimeout(() => {
+      setDidMount(true);
+    }, 1000);
   }, [pathname, isLargeScreen]);
 
   const leftSidebarItemAttrs = useMemo(
@@ -175,7 +178,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     <motion.div
       animate={growMinimized ? "minimzed" : "full"}
       variants={variants}
-      transition={{ duration: 0.7 }}
+      transition={{
+        duration: didMount ? 0.7 : 0 /* avoids landing animation */,
+      }}
       className={formattedRootLeftSidebar}
     >
       <div className={css(styles.rootLeftSidebarStickyWrap)}>

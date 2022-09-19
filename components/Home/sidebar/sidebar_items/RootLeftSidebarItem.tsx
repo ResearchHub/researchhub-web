@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
+import { AnimatePresence, motion } from "framer-motion";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
 import colors from "~/config/themes/colors";
-import { breakpoints } from "~/config/themes/screen";
 
 export type Props = {
   icon: ReactNode;
@@ -11,6 +11,8 @@ export type Props = {
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
 };
+
+const FADE_DURATION = 0;
 
 export default function RootLeftSidebarItem({
   icon,
@@ -30,14 +32,46 @@ export default function RootLeftSidebarItem({
       onClick={onClick}
       role="button"
     >
-      <div className={css(styles.iconWrap, isActive && styles.iconWrapActive)}>
-        {icon}
-      </div>
-      <div
-        className={css(styles.labelWrap, isActive && styles.labelWrapActive)}
-      >
-        {label}
-      </div>
+      <AnimatePresence initial={false} key={label}>
+        {isMinimized ? (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className={css(
+              styles.iconWrapMin,
+              isActive && styles.iconWrapActive
+            )}
+            initial={{ opacity: 0 }}
+            key={`${label}-min`}
+            transition={{ duration: FADE_DURATION }}
+          >
+            {icon}
+          </motion.div>
+        ) : (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className={css(styles.iconWrap, isActive && styles.iconWrapActive)}
+            initial={{ opacity: 0 }}
+            key={`${label}-max`}
+            transition={{ duration: FADE_DURATION }}
+          >
+            {icon}
+          </motion.div>
+        )}
+        {!isMinimized && (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className={css(
+              styles.labelWrap,
+              isActive && styles.labelWrapActive
+            )}
+            initial={{ opacity: 0 }}
+            key={`${label}-max-label`}
+            transition={{ duration: FADE_DURATION }}
+          >
+            {label}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -82,10 +116,19 @@ const styles = StyleSheet.create({
     maxWidth: 16,
     textAlign: "center",
     width: 16,
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      fontSize: "1.2em",
-      marginRight: 8,
-    },
+  },
+  iconWrapMin: {
+    alignItems: "center",
+    boxSizing: "border-box",
+    color: colors.GREY(1),
+    display: "flex",
+    fontSize: "1.2em",
+    height: 16,
+    marginRight: 8,
+    maxHeight: 16,
+    maxWidth: 16,
+    textAlign: "center",
+    width: 16,
   },
   iconWrapActive: { color: colors.NEW_BLUE(1) },
   labelWrap: {
