@@ -21,6 +21,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
+  FADE_DURATION,
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
 
@@ -179,7 +180,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       animate={growMinimized ? "minimzed" : "full"}
       variants={variants}
       transition={{
-        duration: didMount ? 0.7 : 0 /* avoids landing animation */,
+        duration: didMount ? FADE_DURATION : 0 /* avoids landing animation */,
       }}
       className={formattedRootLeftSidebar}
     >
@@ -188,11 +189,33 @@ export default function RootLeftSidebar({}: Props): ReactElement {
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
             <div className={css(styles.logoDiv)}>
               <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
-                <RHLogo
-                  iconStyle={styles.logo}
-                  white={false}
-                  withText={!isMinimized}
-                />
+                {isMinimized ? (
+                  <motion.span
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    key={`RHLogo-min`}
+                    transition={{ duration: FADE_DURATION }}
+                  >
+                    <RHLogo
+                      iconStyle={styles.logo}
+                      white={false}
+                      withText={false}
+                    />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    key={`RHLogo-max`}
+                    transition={{
+                      duration: didMount
+                        ? FADE_DURATION
+                        : 0 /* avoids landing animation */,
+                    }}
+                  >
+                    <RHLogo iconStyle={styles.logo} white={false} withText />
+                  </motion.span>
+                )}
               </ALink>
             </div>
             {leftSidebarItems}

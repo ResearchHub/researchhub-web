@@ -12,7 +12,7 @@ export type Props = {
   subItems?: ReactElement[];
 };
 
-const FADE_DURATION = 0;
+export const FADE_DURATION = 0.7;
 
 export default function RootLeftSidebarItem({
   icon,
