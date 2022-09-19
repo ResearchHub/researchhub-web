@@ -21,7 +21,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
-  FADE_DURATION,
+  ITEM_FADE_DURATION,
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
 
@@ -180,7 +180,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       animate={growMinimized ? "minimzed" : "full"}
       variants={variants}
       transition={{
-        duration: didMount ? FADE_DURATION : 0 /* avoids landing animation */,
+        duration: didMount ? 0.9 : 0 /* avoids landing animation */,
       }}
       className={formattedRootLeftSidebar}
     >
@@ -194,7 +194,11 @@ export default function RootLeftSidebar({}: Props): ReactElement {
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
                     key={`RHLogo-min`}
-                    transition={{ duration: FADE_DURATION }}
+                    transition={{
+                      duration: didMount
+                        ? ITEM_FADE_DURATION
+                        : 0 /* avoids landing animation */,
+                    }}
                   >
                     <RHLogo
                       iconStyle={styles.logo}
@@ -209,7 +213,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
                     key={`RHLogo-max`}
                     transition={{
                       duration: didMount
-                        ? FADE_DURATION
+                        ? ITEM_FADE_DURATION
                         : 0 /* avoids landing animation */,
                     }}
                   >
