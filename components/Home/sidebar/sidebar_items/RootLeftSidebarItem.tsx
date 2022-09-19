@@ -1,6 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import { AnimatePresence, motion } from "framer-motion";
-import { ReactElement, ReactNode, SyntheticEvent } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from "react";
 import colors from "~/config/themes/colors";
 
 export type Props = {
@@ -22,6 +28,13 @@ export default function RootLeftSidebarItem({
   onClick,
   subItems,
 }: Props): ReactElement {
+  const [didMount, setDidMount] = useState<boolean>(false);
+  useEffect((): void => {
+    setTimeout((): void => setDidMount(true), 1000);
+  }, []);
+  /* avoids landing animation */
+  const itemFadeDuration = didMount ? FADE_DURATION : 0;
+
   return (
     <div
       className={css(
@@ -42,7 +55,7 @@ export default function RootLeftSidebarItem({
             )}
             initial={{ opacity: 0 }}
             key={`${label}-min`}
-            transition={{ duration: FADE_DURATION }}
+            transition={{ duration: itemFadeDuration }}
           >
             {icon}
           </motion.div>
@@ -52,7 +65,7 @@ export default function RootLeftSidebarItem({
             className={css(styles.iconWrap, isActive && styles.iconWrapActive)}
             initial={{ opacity: 0 }}
             key={`${label}-max`}
-            transition={{ duration: FADE_DURATION }}
+            transition={{ duration: itemFadeDuration }}
           >
             {icon}
           </motion.div>
@@ -66,7 +79,7 @@ export default function RootLeftSidebarItem({
             )}
             initial={{ opacity: 0 }}
             key={`${label}-max-label`}
-            transition={{ duration: FADE_DURATION }}
+            transition={{ duration: itemFadeDuration }}
           >
             {label}
           </motion.div>
