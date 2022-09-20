@@ -48,7 +48,8 @@ export default function HomeRightSidebar(): ReactElement {
                   body={
                     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
                         <span className={css(DEFAULT_ITEM_STYLE.emphasized)}>Funding ends 09/22. {` `}</span>
-                        Consider donating to the ResearchHub on Gitcoin. <span className={css(DEFAULT_ITEM_STYLE.emphasizedBlue)}>A $1 donation will get matched > $100 and all proceeds will go to the Community</span> to host online conferences, reward contributors and help cover community operations.
+                        Consider donating to the ResearchHub on Gitcoin. <span className={css(DEFAULT_ITEM_STYLE.emphasizedBlue)}>A $1 donation will get matched > $100 and all proceeds will go to the Community</span> to host online conferences, reward contributors and help cover community operations.{` `}
+                        <ALink theme="solidPrimary" href="https://gitcoin.co/grants/4698/researchhub-a-github-for-science"><span style={{textDecoration: "underline"}}>Donate here.</span></ALink>
                     </div>
                   }
                   key={"what-is-researchhub?"}
@@ -117,12 +118,7 @@ export default function HomeRightSidebar(): ReactElement {
                         {
                           "We’re a collection of skeptical, yet optimistic individuals who want to accelerate the pace of science. We think the incentives of scientific funding and publishing are broken, and that blockchain can help. If you'd like, "
                         }
-                        <a
-                          href="https://discord.gg/researchhub"
-                          target="__blank"
-                        >
-                          {" join us"}
-                        </a>
+                        <ALink target="__blank" theme="solidPrimary" href="https://discord.gg/researchhub"><span style={{textDecoration: "underline"}}> Join us.</span></ALink>
                       </span>
                     </div>
                   }
