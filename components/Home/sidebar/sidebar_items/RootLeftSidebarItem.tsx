@@ -18,7 +18,7 @@ export type Props = {
   subItems?: ReactElement[];
 };
 
-export const ITEM_FADE_DURATION = 0.7;
+export const ITEM_FADE_DURATION = 0.4;
 
 export default function RootLeftSidebarItem({
   icon,
@@ -30,7 +30,7 @@ export default function RootLeftSidebarItem({
 }: Props): ReactElement {
   const [didMount, setDidMount] = useState<boolean>(false);
   useEffect((): void => {
-    setTimeout((): void => setDidMount(true), 1000);
+    setTimeout((): void => setDidMount(true), 2000);
   }, []);
   /* avoids landing animation */
   const itemFadeDuration = didMount ? ITEM_FADE_DURATION : 0;

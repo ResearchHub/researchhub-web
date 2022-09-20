@@ -118,10 +118,13 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       }, 200);
       setGrowMinimized(!isLargeScreen);
     }
+  }, [pathname, isLargeScreen]);
+
+  useEffect((): void => {
     setTimeout(() => {
       setDidMount(true);
-    }, 1000);
-  }, [pathname, isLargeScreen]);
+    }, 2000);
+  }, []);
 
   const leftSidebarItemAttrs = useMemo(
     (): RootLeftSidebarItemProps[] =>
@@ -180,7 +183,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       animate={growMinimized ? "minimzed" : "full"}
       variants={variants}
       transition={{
-        duration: didMount ? 0.9 : 0 /* avoids landing animation */,
+        duration: didMount ? 0.8 : 0 /* avoids landing animation */,
       }}
       className={formattedRootLeftSidebar}
     >
