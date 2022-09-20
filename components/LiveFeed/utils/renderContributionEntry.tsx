@@ -138,7 +138,7 @@ export default function renderContributionEntry(
       return (
         <div className={css(styles.entryContent)}>
           {renderHeader(entry)}
-          <div className={css(styles.comment)}>
+          <div className={css(styles.comment, styles.body)}>
             <div className={css(styles.quoteBar)} />
             <div className={css(styles.commentBody)}>
               {/*// @ts-ignore*/}
@@ -149,15 +149,24 @@ export default function renderContributionEntry(
       );
     case "paper":
       return (
-        <div className={css(styles.entryContent)}>{renderHeader(entry)}</div>
+        <div className={css(styles.entryContent)}>
+          {renderHeader(entry)}
+          <div className={css(styles.comment, styles.body)}>Empty</div>
+        </div>
       );
     case "hypothesis":
       return (
-        <div className={css(styles.entryContent)}>{renderHeader(entry)}</div>
+        <div className={css(styles.entryContent)}>
+          {renderHeader(entry)}
+          <div className={css(styles.comment, styles.body)}>Empty</div>
+        </div>
       );
     case "post":
       return (
-        <div className={css(styles.entryContent)}>{renderHeader(entry)}</div>
+        <div className={css(styles.entryContent)}>
+          {renderHeader(entry)}
+          <div className={css(styles.comment, styles.body)}>Empty</div>
+        </div>
       );
   }
 }
@@ -191,6 +200,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   details: {},
+  body: {
+    borderRadius: 4,
+    border: `1px solid ${colors.GREY(0.5)}`,
+    background: "white",
+    padding: 15,
+  },
   hubDropdownContainer: {
     display: "inline-block",
   },

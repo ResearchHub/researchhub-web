@@ -284,13 +284,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   entry: {
-    borderRadius: 4,
-    background: "white",
-    border: `1px solid ${colors.GREY(0.5)}`,
+    // borderRadius: 4,
+    // border: `1px solid ${colors.GREY(0.5)}`,
+    // background: "white",
+    // padding: 15,
     width: "100%",
     display: "flex",
     userSelect: "none",
-    padding: 15,
   },
   redo: {
     fontSize: 17,

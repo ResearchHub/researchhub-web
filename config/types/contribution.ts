@@ -6,6 +6,7 @@ import {
   parseAuthorProfile,
   parseUnifiedDocument,
   UnifiedDocument,
+  User,
 } from "./root_types";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { parseContentType, ContentType } from "./contentType";
@@ -34,6 +35,17 @@ export type HypothesisContributionItem = {
   slug: string;
   createdBy: CreatedBy | null;
   createdDate: string;
+  id: ID;
+};
+
+export type RscSupportContributionItem = {
+  unifiedDocument: UnifiedDocument;
+  title: string;
+  slug: string;
+  createdBy: CreatedBy | null;
+  createdDate: string;
+  recipient: CreatedBy;
+  amount: number; 
   id: ID;
 };
 
@@ -75,6 +87,7 @@ export type Contribution = {
 };
 
 export const parseCreatedBy = (raw: any): CreatedBy | null => {
+  
   if (!raw || !raw?.author_profile) {
     return null;
   }
@@ -125,13 +138,16 @@ export const parseContribution = (raw: any): Contribution => {
   };
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
-    mapped["item"] = parseCommentContributionItem(raw.item);
+    mapped["item"] = parseCommentContributionItem(raw);
   } else if (raw.content_type.name === "paper") {
-    mapped["item"] = parsePaperContributionItem(raw.item);
+    mapped["item"] = parsePaperContributionItem(raw);
   } else if (raw.content_type.name === "researchhubpost") {
-    mapped["item"] = parsePostContributionItem(raw.item);
+    mapped["item"] = parsePostContributionItem(raw);
   } else if (raw.content_type.name === "hypothesis") {
-    mapped["item"] = parseHypothesisContributionItem(raw.item);
+    mapped["item"] = parseHypothesisContributionItem(raw);
+  } else if (raw.content_type.name === "purchase") {
+    console.log('raw', raw)
+    mapped["item"] = parseRscSupportContributionItem(raw);    
   } else {
     throw Error(
       "Could not parse object with content_type=" + raw.content_type.name
@@ -159,9 +175,9 @@ export const parseCommentContributionItem = (
   raw: any
 ): CommentContributionItem => {
   const mapped = {
-    plainText: raw.plain_text,
+    plainText: raw.item.plain_text,
     createdBy: parseCreatedBy(raw.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
   };
@@ -170,18 +186,18 @@ export const parseCommentContributionItem = (
 };
 
 export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
-  raw.unified_document.documents = {
+  raw.item.unified_document.documents = {
     id: raw.id,
     title: raw.title,
     slug: raw.slug,
   };
-
+  
   const mapped = {
     id: raw.id,
-    title: raw.title,
-    slug: raw.slug,
-    createdBy: parseCreatedBy(raw.uploaded_by),
-    unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    title: raw.item.title,
+    slug: raw.item.slug,
+    createdBy: parseCreatedBy(raw.created_by),
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     createdDate: raw.created_date,
   };
 
@@ -192,10 +208,10 @@ export const parseHypothesisContributionItem = (
   raw: any
 ): HypothesisContributionItem => {
   const mapped = {
-    title: raw.title,
-    slug: raw.slug,
+    title: raw.item.title,
+    slug: raw.item.slug,
     createdBy: parseCreatedBy(raw.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
   };
@@ -203,12 +219,29 @@ export const parseHypothesisContributionItem = (
   return mapped;
 };
 
+export const parseRscSupportContributionItem = (
+  raw: any
+): RscSupportContributionItem => {
+  const mapped = {
+    title: raw.item.title,
+    slug: raw.item.slug,
+    createdBy: parseCreatedBy(raw.created_by),
+    createdDate: raw.created_date,
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
+    id: raw.id,
+    amount: parseFloat(raw.item.amount),
+    recipient: raw.item.user,
+  };
+
+  return mapped;
+};
+
 export const parsePostContributionItem = (raw: any): PostContributionItem => {
   const mapped = {
-    title: raw.title,
-    slug: raw.slug,
+    title: raw.item.title,
+    slug: raw.item.slug,
     createdBy: parseCreatedBy(raw.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
   };
