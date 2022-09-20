@@ -13,8 +13,9 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import icons from "~/config/themes/icons";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
+import ALink from "~/components/ALink";
 
-const INFO_TAB_EXIT_KEY = "$rhRightSidebarInfoCarouselExitKey$";
+const INFO_TAB_EXIT_KEY = "$infoCarouselWithGitcoinBanner$";
 
 export default function HomeRightSidebar(): ReactElement {
   return (
@@ -25,6 +26,33 @@ export default function HomeRightSidebar(): ReactElement {
           content={
             <RhCarousel
               rhCarouselItem={[
+                <RhCarouselItem
+                  onBodyClick={() => window.open("https://gitcoin.co/grants/4698/researchhub-a-github-for-science")}
+                  title={
+                    <div
+                      className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}
+                    >
+                      <img
+                        src="/static/beaker.svg"
+                        style={{ marginRight: 6, marginTop: -3, height: 20 }}
+                      />
+                      ResearchHub
+                      <span style={{marginLeft: 10, marginRight: 10}}>{icons.times}</span>
+                      <img
+                        src="/static/icons/gitcoin.svg"
+                        style={{ marginRight: 6, marginTop: -1, height: 22 }}
+                      />                      
+                      Gitcoin
+                    </div>
+                  }
+                  body={
+                    <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+                        <span className={css(DEFAULT_ITEM_STYLE.emphasized)}>Funding ends 09/22. {` `}</span>
+                        Consider donating to the ResearchHub on Gitcoin. <span className={css(DEFAULT_ITEM_STYLE.emphasizedBlue)}>A $1 donation will get matched > $100 and all proceeds will go to the Community</span> to host online conferences, reward contributors and help cover community operations.
+                    </div>
+                  }
+                  key={"what-is-researchhub?"}
+                />,                
                 <RhCarouselItem
                   title={
                     <div
@@ -87,7 +115,7 @@ export default function HomeRightSidebar(): ReactElement {
                     <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
                       <span>
                         {
-                          "We’re a collection of skeptical, yet optimistic individuals who want to accelerate the pace of science. We think the incentives of scientific funding and publishing are broken, and that blockchain can help. If you'd like to "
+                          "We’re a collection of skeptical, yet optimistic individuals who want to accelerate the pace of science. We think the incentives of scientific funding and publishing are broken, and that blockchain can help. If you'd like, "
                         }
                         <a
                           href="https://discord.gg/researchhub"

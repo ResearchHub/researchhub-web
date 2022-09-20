@@ -752,9 +752,9 @@ class PaperTransactionModal extends Component {
           {/* {this.renderToggleContainer(css(styles.toggleContainer))} */}
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>Total Balance</div>
+              <div className={css(styles.title)}>Balance</div>
               <div className={css(styles.subtitle)}>
-                Your current total balance in ResearchHub
+                Your current balance on ResearchHub
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -1029,12 +1029,16 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   input: {
-    height: 50,
-    width: 80,
+    height: 55,
+    width: 100,
     fontSize: 16,
-    padding: "0 10px",
+    fontWeight: "bold",
+    padding: "5px 5px 5px 10px",
     boxSizing: "border-box",
-    borderRadius: 4,
+    color: colors.BLACK(0.9),
+    background: "#FBFBFD",
+    border: "1px solid #E8E8F2",
+    borderRadius: 2,
   },
   error: {
     borderColor: "red",

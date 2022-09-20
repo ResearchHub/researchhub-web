@@ -234,9 +234,9 @@ const AuthorSupportModal = (props) => {
         </div>
         <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
           <div className={css(styles.column, styles.left)}>
-            <div className={css(styles.title)}>Total Balance</div>
+            <div className={css(styles.title)}>Balance</div>
             <div className={css(styles.subtitle)}>
-              Your current total balance in ResearchHub
+              Your current balance on ResearchHub
             </div>
           </div>
           <div className={css(styles.column, styles.right)}>

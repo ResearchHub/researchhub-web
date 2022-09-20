@@ -3,19 +3,22 @@ import { ReactElement, ReactNode } from "react";
 import colors from "~/config/themes/colors";
 import { NullableString } from "~/config/types/root_types";
 
+
 export type RhCarouselItemProps = {
   title?: ReactNode;
   body: ReactNode;
+  onBodyClick?: Function;
 };
 
 export default function RhCarouselItem({
   title,
   body,
+  onBodyClick,
 }: RhCarouselItemProps): ReactElement {
   return (
     <div className={css(styles.rhCarouselItemRoot)}>
       {title}
-      {body}
+      <div className={css(onBodyClick && DEFAULT_ITEM_STYLE.clickableBody)} onClick={() => onBodyClick ? onBodyClick() : null}>{body}</div>
     </div>
   );
 }
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
     height: "100%",
     minWidth: 248,
     width: "100%",
-  },
+  }
 });
 
 export const DEFAULT_ITEM_STYLE = StyleSheet.create({
@@ -38,12 +41,23 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     height: "100%",
-    marginBottom: 8,
+    marginBottom: 10,
     textOverflow: "ellipsis",
     width: "100%",
   },
+  emphasized: {
+    fontWeight: 600,
+  },
+  emphasizedBlue: {
+    // one-off gitcoin color
+    color: "#00a37c",
+    fontWeight: 600,
+  },
+  clickableBody: {
+    cursor: "pointer",
+  },
   rhCarouselItemBody: {
-    display: "flex",
+    display: "block",
     width: "100%",
     height: "100%",
     fontSize: 14,

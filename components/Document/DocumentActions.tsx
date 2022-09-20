@@ -14,6 +14,7 @@ import icons from "~/config/themes/icons";
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
+import ReactTooltip from "react-tooltip";
 
 type Args = {
   currentUser: any;
@@ -73,6 +74,7 @@ function DocumentActions({
     {
       active: canEdit,
       key: "edit",
+      tooltip: "Edit",
       html: (
         <PermissionNotificationWrapper
           modalMessage="edit document"
@@ -81,7 +83,7 @@ function DocumentActions({
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)} data-tip={"Edit"}>
+          <div className={css(styles.actionIcon)}>
             {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
@@ -90,8 +92,9 @@ function DocumentActions({
     {
       active: true,
       key: "support",
+      tooltip: `Support ${unifiedDocument?.documentType}`,
       html: (
-        <span data-tip={"Support Paper"}>
+        <span>
           <PaperPromotionButton
             paper={unifiedDocument.document}
             customStyle={styles.actionIcon}
@@ -102,8 +105,9 @@ function DocumentActions({
     {
       active: true,
       key: "flag",
+      tooltip: "Flag content",
       html: (
-        <span data-tip={"Flag Paper"}>
+        <span>
           <FlagButtonV2
             modalHeaderText="Flagging"
             flagIconOverride={styles.flagButton}
@@ -123,10 +127,10 @@ function DocumentActions({
     {
       active: isModerator || isSubmitter || isHubEditor,
       key: "remove-restore",
+      tooltip: isRemoved ? "Restore Page" : "Remove Page",
       html: (
         <span
           className={css(styles.actionIcon, styles.moderatorAction)}
-          data-tip={isRemoved ? "Restore Page" : "Remove Page"}
         >
           <ActionButton
             isModerator={true}
@@ -167,10 +171,10 @@ function DocumentActions({
     {
       active: isModerator,
       key: "admin",
+      tooltip: "Admin",
       html: (
         <span
           className={css(styles.actionIcon, styles.moderatorAction)}
-          data-tip="Admin"
         >
           <AdminButton unifiedDocumentId={unifiedDocument.id} />
         </span>
@@ -181,7 +185,14 @@ function DocumentActions({
   return (
     <div className={css(styles.documentActions)}>
       {actionButtons.map((actionButton) => (
-        <span key={actionButton.key} className={css(styles.button)}>
+        <span 
+          data-tip={actionButton.tooltip}
+          data-effect="solid"
+          onClick={(event) => {
+            ReactTooltip.hide();
+          }}            
+          key={actionButton.key} className={css(styles.button)}
+        >
           {actionButton.html}
         </span>
       ))}
