@@ -193,7 +193,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       animate={growMinimized ? "minimized" : "full"}
       variants={variants}
       transition={{
-        duration: didMount ? 0.4 : 0 /* avoids landing animation */,
+        duration: didMount ? 0.6 : 0 /* avoids landing animation */,
       }}
       className={formattedRootLeftSidebar}
     >
@@ -286,9 +286,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
               className={css(styles.arrowRight)}
               onClick={() => {
                 setGrowMinimized(false);
-                setTimeout(() => {
-                  setIsMinimized(false);
-                }, 300);
+                setIsMinimized(false);
               }}
             >
               {icons.arrowRightToLine}
@@ -298,9 +296,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
               className={css(styles.arrowRight, styles.arrowLeft)}
               onClick={() => {
                 setGrowMinimized(true);
-                setTimeout(() => {
-                  setIsMinimized(true);
-                }, 300);
+                setIsMinimized(true);
               }}
             >
               {icons.arrowLeftToLine}
