@@ -35,6 +35,19 @@ export default function RootLeftSidebarItem({
   /* avoids landing animation */
   const itemFadeDuration = didMount ? ITEM_FADE_DURATION : 0;
 
+  const variants = {
+    minimized: {
+      opacity: 0,
+      width: 0,
+      transform: "scaleX(0)",
+    },
+    full: {
+      opacity: 1,
+      width: "100%",
+      transform: "scaleX(1)",
+    },
+  };
+
   return (
     <div
       className={css(
@@ -45,46 +58,24 @@ export default function RootLeftSidebarItem({
       onClick={onClick}
       role="button"
     >
-      <AnimatePresence initial={false} key={label}>
-        {isMinimized ? (
-          <motion.div
-            animate={{ opacity: 1 }}
-            className={css(
-              styles.iconWrapMin,
-              isActive && styles.iconWrapActive
-            )}
-            initial={{ opacity: 0 }}
-            key={`${label}-min`}
-            transition={{ duration: itemFadeDuration }}
-          >
-            {icon}
-          </motion.div>
-        ) : (
-          <motion.div
-            animate={{ opacity: 1 }}
-            className={css(styles.iconWrap, isActive && styles.iconWrapActive)}
-            initial={{ opacity: 0 }}
-            key={`${label}-max`}
-            transition={{ duration: itemFadeDuration }}
-          >
-            {icon}
-          </motion.div>
+      <div
+        className={css(
+          styles.iconWrap,
+          isMinimized && styles.iconWrapMin,
+          isActive && styles.iconWrapActive
         )}
-        {!isMinimized && (
-          <motion.div
-            animate={{ opacity: 1 }}
-            className={css(
-              styles.labelWrap,
-              isActive && styles.labelWrapActive
-            )}
-            initial={{ opacity: 0 }}
-            key={`${label}-max-label`}
-            transition={{ duration: itemFadeDuration }}
-          >
-            {label}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      >
+        {icon}
+      </div>
+      <motion.div
+        initial={false}
+        className={css(styles.labelWrap, isActive && styles.labelWrapActive)}
+        transition={{ duration: itemFadeDuration }}
+        animate={isMinimized ? "minimized" : "full"}
+        variants={variants}
+      >
+        {label}
+      </motion.div>
     </div>
   );
 }

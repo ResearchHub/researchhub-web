@@ -108,14 +108,10 @@ export default function RootLeftSidebar({}: Props): ReactElement {
     if (
       !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
     ) {
-      setTimeout(() => {
-        setIsMinimized(true);
-      }, 200);
+      setIsMinimized(true);
       setGrowMinimized(true);
     } else {
-      setTimeout(() => {
-        setIsMinimized(!isLargeScreen);
-      }, 200);
+      setIsMinimized(!isLargeScreen);
       setGrowMinimized(!isLargeScreen);
     }
   }, [pathname, isLargeScreen]);
@@ -171,19 +167,33 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const variants = {
     minimized: {
       width: 80,
-      opacity: 0,
+      // opacity: 0,
     },
     full: {
       width: 280,
     },
   };
 
+  const rscIconVariants = {
+    minimized: {
+      opacity: 0,
+      width: 0,
+      transform: "scaleX(0)",
+      marginLeft: 0,
+    },
+    full: {
+      transform: "scaleX(1)",
+      width: "100%",
+      opacity: 1,
+    },
+  };
+
   return (
     <motion.div
-      animate={growMinimized ? "minimzed" : "full"}
+      animate={growMinimized ? "minimized" : "full"}
       variants={variants}
       transition={{
-        duration: didMount ? 0.8 : 0 /* avoids landing animation */,
+        duration: didMount ? 0.4 : 0 /* avoids landing animation */,
       }}
       className={formattedRootLeftSidebar}
     >
@@ -192,37 +202,24 @@ export default function RootLeftSidebar({}: Props): ReactElement {
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
             <div className={css(styles.logoDiv)}>
               <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
-                {isMinimized ? (
-                  <motion.span
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    key={`RHLogo-min`}
-                    transition={{
-                      duration: didMount
-                        ? ITEM_FADE_DURATION
-                        : 0 /* avoids landing animation */,
-                    }}
-                  >
-                    <RHLogo
-                      iconStyle={styles.logo}
-                      white={false}
-                      withText={false}
-                    />
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    key={`RHLogo-max`}
-                    transition={{
-                      duration: didMount
-                        ? ITEM_FADE_DURATION
-                        : 0 /* avoids landing animation */,
-                    }}
-                  >
-                    <RHLogo iconStyle={styles.logo} white={false} withText />
-                  </motion.span>
-                )}
+                <RHLogo
+                  iconStyle={styles.logo}
+                  white={false}
+                  withText={false}
+                />
+                <motion.img
+                  variants={rscIconVariants}
+                  animate={isMinimized ? "minimized" : "full"}
+                  key={`RHLogo-max`}
+                  transition={{
+                    duration: didMount
+                      ? ITEM_FADE_DURATION
+                      : 0 /* avoids landing animation */,
+                  }}
+                  className={css(styles.researchHubLogoText)}
+                  src={"/static/ResearchHubText.png"}
+                  alt="ResearchHub Text Logo"
+                />
               </ALink>
             </div>
             {leftSidebarItems}
@@ -423,6 +420,7 @@ const styles = StyleSheet.create({
     padding: "0 16px",
     userSelect: "none",
     width: "100%",
+    alignItems: "center",
   },
   logoContainerMin: {
     paddingLeft: 16,
@@ -431,6 +429,15 @@ const styles = StyleSheet.create({
   logo: {
     height: 36,
     userSelect: "none",
+  },
+  researchHubLogoText: {
+    height: 15,
+    marginLeft: 4,
+    objectFit: "contain",
+
+    "@media only screen and (max-width: 1023px)": {
+      marginLeft: 0,
+    },
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
 });
