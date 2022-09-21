@@ -37,6 +37,8 @@ import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
+import ContentBadge from "~/components/ContentBadge";
+
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -321,14 +323,31 @@ function FeedCard({
                         />
                       </div>
                     )}
-                    <div className={css(styles.metaItem)}>
-                      <span className={css(styles.metadataIcon)}>
+                    <div className={css(styles.metaItem, styles.metaItemAsBadge)}>
+                      <ContentBadge contentType={formattedDocType} />
+                      {/* <span className={css(styles.metadataIcon)}>
                         {documentIcons[formattedDocType!]}
                       </span>
                       <span className={css(styles.metadataText)}>
                         {formattedDocLabel ?? formattedDocType}
-                      </span>
+                      </span> */}
                     </div>
+                    {bountyAmount > 0 && (
+                      <div className={css(styles.metaItem)}>
+                        <ContentBadge contentType="bounty" label={formatBountyAmount({ amount: bountyAmount }) + " Bounty"} />
+                        {/* <span className={css(styles.badgeRscIcon)}>
+                          <ResearchCoinIcon
+                            height={16}
+                            width={16}
+                            version={4}
+                            overrideStyle={undefined}
+                          />
+                        </span>
+                        <span className={css(styles.bountyAmount)}>
+                          {formatBountyAmount({ amount: bountyAmount })} Bounty
+                        </span> */}
+                      </div>
+                    )}                    
                     {formattedDocType === "question" ? (
                       <div
                         className={css(
@@ -395,22 +414,6 @@ function FeedCard({
                         </span>
                       </div>
                     )}
-
-                    {bountyAmount > 0 && (
-                      <div className={css(styles.metaItem, styles.bountyBadge)}>
-                        <span className={css(styles.badgeRscIcon)}>
-                          <ResearchCoinIcon
-                            height={16}
-                            width={16}
-                            version={4}
-                            overrideStyle={undefined}
-                          />
-                        </span>
-                        <span className={css(styles.bountyAmount)}>
-                          {formatBountyAmount({ amount: bountyAmount })} Bounty
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -427,9 +430,9 @@ const styles = StyleSheet.create({
     display: "flex",
     // One-off color, need not be constantenized
     background: "rgb(252 242 220)",
+    color: colors.ORANGE_DARK2(),
     padding: "5px 8px 5px 8px",
     borderRadius: "4px",
-    color: colors.ORANGE_DARK2(),
     fontWeight: 500,
     fontSize: 13,
     alignItems: "center",
@@ -562,6 +565,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginRight: 20,
     },
+  },
+  metaItemAsBadge: {
+    marginRight: 10,
   },
   hideTextMobile: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {

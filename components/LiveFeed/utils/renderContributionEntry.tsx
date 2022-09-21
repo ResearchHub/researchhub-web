@@ -9,6 +9,8 @@ import icons from "~/config/themes/icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ReactTooltip from "react-tooltip";
 import HubDropDown from "~/components/Hubs/HubDropDown";
+import DocumentBadge from "~/components/ContentBadge";
+
 
 export default function renderContributionEntry(
   entry: Contribution,
@@ -115,7 +117,8 @@ export default function renderContributionEntry(
           </span>
         </div>
         <div className={`${css(styles.actions)} actions`}>
-          {actions
+          <DocumentBadge contentType={entry.contentType.name} />
+          {/* {actions
             .filter((action) => action.isActive)
             .map((action) => (
               <span
@@ -125,7 +128,7 @@ export default function renderContributionEntry(
               >
                 {action.html}
               </span>
-            ))}
+            ))} */}
         </div>
       </div>
     );
@@ -168,6 +171,13 @@ export default function renderContributionEntry(
           <div className={css(styles.comment, styles.body)}>Empty</div>
         </div>
       );
+      case "rsc_support":
+        return (
+          <div className={css(styles.entryContent)}>
+            {renderHeader(entry)}
+            <div className={css(styles.comment, styles.body)}>RSC Support</div>
+          </div>
+        );      
   }
 }
 

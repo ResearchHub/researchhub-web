@@ -17,6 +17,8 @@ export const parseContentType = (raw: any): ContentType => {
     contentTypeName = "hypothesis";
   } else if (raw.name === "researchhubunifieddocument") {
     contentTypeName = "document";
+  } else if (raw.name === "purchase") {
+      contentTypeName = "rsc_support";    
   } else {
     contentTypeName = raw.name;
     console.error("Could not parse object with content_type=" + raw.name);

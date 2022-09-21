@@ -146,7 +146,6 @@ export const parseContribution = (raw: any): Contribution => {
   } else if (raw.content_type.name === "hypothesis") {
     mapped["item"] = parseHypothesisContributionItem(raw);
   } else if (raw.content_type.name === "purchase") {
-    console.log('raw', raw)
     mapped["item"] = parseRscSupportContributionItem(raw);    
   } else {
     throw Error(
