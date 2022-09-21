@@ -36,6 +36,7 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
+import { isServer } from "~/config/server/isServer";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -159,6 +160,10 @@ const MyApp = ({ Component, pageProps, store }) => {
       }
     );
   };
+
+  if (isServer()) {
+    return null;
+  }
 
   return (
     <Provider store={store}>
