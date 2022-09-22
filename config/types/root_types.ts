@@ -47,6 +47,7 @@ export type UrlDocument = {
   id: ID;
   title?: string;
   slug?: string;
+  body?: string;
   paperTitle?: string;
   isRemoved?: boolean;
 };
@@ -213,6 +214,10 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
 
   if (raw.reviews) {
     parsed["reviewSummary"] = parsePeerReviewScoreSummary(raw.reviews);
+  }
+
+  if (unparsedInnerDoc.renderable_text) {
+    parsed.document["body"] = unparsedInnerDoc.renderable_text;
   }
 
   return parsed;

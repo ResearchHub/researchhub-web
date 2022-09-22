@@ -11,6 +11,7 @@ import icons, {
 import { useRouter } from "next/router";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
+import { POST_TYPES } from "./TextEditor/config/postTypes";
 
 const ContentBadge = ({ contentType, label = null, onClick = null }) => {
   const router = useRouter();
@@ -34,13 +35,7 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
   };
 
   return (
-    <Badge
-      badgeClassName={[
-        styles.badge,
-        ["rsc_support", "bounty"].includes(contentType) && styles.badgeRsc,
-        contentType === "comment" && styles.badgeComment,
-      ]}
-    >
+    <Badge badgeClassName={[styles.badge, styles["badgeFor_" + contentType]]}>
       {contentType === "paper" ? (
         <>
           <span className={css(styles.icon)}>
@@ -69,10 +64,25 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
           </span>
           <span>Question</span>
         </>
-      ) : contentType === "comment" ? (
+      ) : contentType === POST_TYPES.DISCUSSION ? (
         <>
           <span className={css(styles.icon)}>{icons.commentsSolid}</span>
           <span>Comment</span>
+        </>
+      ) : contentType === POST_TYPES.ANSWER ? (
+        <>
+          <span className={css(styles.icon)}>{icons.commentAltLineSolid}</span>
+          <span>Answer</span>
+        </>
+      ) : contentType === POST_TYPES.SUMMARY ? (
+        <>
+          <span className={css(styles.icon)}>{icons.layerGroup}</span>
+          <span>Summary</span>
+        </>
+      ) : contentType === POST_TYPES.REVIEW ? (
+        <>
+          <span className={css(styles.icon)}>{icons.starFilled}</span>
+          <span>Review</span>
         </>
       ) : contentType === "rsc_support" ? (
         <>
@@ -80,7 +90,7 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
             <ResearchCoinIcon version={4} height={16} width={16} />
             {` `}
           </span>
-          <span className={css(styles.rscContent)}>Support</span>
+          <span className={css(styles.rscContent)}>{label}</span>
         </>
       ) : contentType === "bounty" ? (
         <>
@@ -98,24 +108,33 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
 const styles = StyleSheet.create({
   icon: {
     marginRight: 6,
-    color: colors.NEW_BLUE(1.0),
     fontSize: 16,
     height: 21,
   },
-  badgeRsc: {
+  badgeFor_rsc_support: {
     background: "rgb(252 242 220)",
     color: colors.ORANGE_DARK2(),
   },
-  badgeComment: {
+  badgeFor_bounty: {
+    background: "rgb(252 242 220)",
+    color: colors.ORANGE_DARK2(),
+  },
+  badgeFor_DISCUSSION: {
     background: colors.NEW_BLUE(0.1),
     color: colors.NEW_BLUE(1.0),
+  },
+  badgeFor_ANSWER: {
+    background: colors.NEW_GREEN(0.1),
+    color: colors.NEW_GREEN(),
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),
   },
   badge: {
-    color: colors.BLACK(0.6),
-    background: colors.LIGHTER_GREY(1.0),
+    background: colors.LIGHT_GREY(),
+    color: colors.BLACK(),
+    // color: colors.BLACK(0.6),
+    // background: colors.LIGHTER_GREY(1.0),
     display: "flex",
     padding: "4px 8px 1px 8px",
     textTransform: "capitalize",

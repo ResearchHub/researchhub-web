@@ -12,10 +12,18 @@ import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { parseContentType, ContentType } from "./contentType";
 import { parseHub, Hub } from "./hub";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 
 export type RelatedBountyItem = {
   contentType: ContentType;
   unifiedDocument: UnifiedDocument;
+}
+
+export type RscSupportSourceItem = {
+  id: ID,
+  plainText: string;
+  unifiedDocument: UnifiedDocument;
+  contentType: ContentType;
 }
 
 export type CommentContributionItem = {
@@ -24,6 +32,7 @@ export type CommentContributionItem = {
   createdBy: CreatedBy | null;
   createdDate: string;
   id: ID;
+  postType: POST_TYPES
 };
 
 export type PaperContributionItem = {
@@ -45,14 +54,11 @@ export type HypothesisContributionItem = {
 };
 
 export type RscSupportContributionItem = {
-  unifiedDocument: UnifiedDocument;
-  title: string;
-  slug: string;
   createdBy: CreatedBy | null;
   createdDate: string;
-  recipient: CreatedBy;
+  recipient: CreatedBy | null;
   amount: number; 
-  id: ID;
+  source: RscSupportSourceItem;
 };
 
 export type BountyContributionItem = {
@@ -92,7 +98,8 @@ export type Contribution = {
     | PostContributionItem
     | HypothesisContributionItem
     | CommentContributionItem
-    | BountyContributionItem;
+    | BountyContributionItem
+    | RscSupportContributionItem;
   createdDate: Date;
   contentType: ContentType;
   flaggedBy?: FlaggedBy | null;
@@ -212,6 +219,7 @@ export const parseCommentContributionItem = (
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
+    postType: raw.item.discussion_post_type,
   };
 
   return mapped;
@@ -267,18 +275,25 @@ export const parseHypothesisContributionItem = (
   return mapped;
 };
 
+export const parseSupportSourceItem = (raw: any, contentType: any): RscSupportSourceItem => {
+  return {
+    unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    plainText: raw.plain_text,
+    id: raw.id,
+    contentType: parseContentType(contentType)
+  }
+}
+
 export const parseRscSupportContributionItem = (
   raw: any
 ): RscSupportContributionItem => {
+  
   const mapped = {
-    title: raw.item.title,
-    slug: raw.item.slug,
     createdBy: parseCreatedBy(raw.created_by),
     createdDate: raw.created_date,
-    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
-    id: raw.id,
-    amount: formatBountyAmount({amount: raw.amount}),
-    recipient: raw.item.user,
+    source: parseSupportSourceItem(raw.item.source, raw.item.content_type),
+    amount: parseFloat(raw.item.amount),
+    recipient: parseCreatedBy(raw.item.user),
   };
 
   return mapped;
