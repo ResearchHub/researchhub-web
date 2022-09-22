@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { timeSince } from "~/config/utils/dates";
-import { BountyContributionItem, Contribution, RscSupportContributionItem } from "~/config/types/contribution";
+import { BountyContributionItem, CommentContributionItem, Contribution, HypothesisContributionItem, PaperContributionItem, PostContributionItem, RscSupportContributionItem } from "~/config/types/contribution";
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import icons, { ResearchCoinIcon } from "~/config/themes/icons";
@@ -56,16 +56,20 @@ export default function renderContributionEntry(
     }
     else if (contentType.name === "rsc_support") {
       item = item as RscSupportContributionItem;
-      contentBadgeLabel = item.amount + " Support";      
-      console.log('|||', item.amount + " Support")
-      // @ts-ignore
+      contentBadgeLabel = item.amount + " Supported";      
       if (item.source.contentType.name === "comment") {
         actionLabel = 
           <>
             supported {renderAuthor(item.recipient?.authorProfile)}
             <ResearchCoinIcon version={4} width={16} height={16} /> {item.amount} RSC for their comment
           </>
-        {/* @ts-ignore */}
+      }
+      else {
+        actionLabel = 
+          <>
+            supported authors
+            <ResearchCoinIcon version={4} width={16} height={16} /> {item.amount} RSC for their {item.source?.contentType.name}
+          </>
       }
     }
 
@@ -86,113 +90,6 @@ export default function renderContributionEntry(
         </div>
       </div>
     )
-
-    return (
-      <div className={css(styles.header)}>
-        <ReactTooltip />
-        <div className={css(styles.avatarContainer)}>
-          <AuthorAvatar author={createdBy?.authorProfile} size={25} />
-        </div>
-        <div className={css(styles.details)}>
-          {createdBy?.authorProfile ? (
-            <ALink href={`/user/${createdBy?.authorProfile.id}/overview`}>
-              {createdBy?.authorProfile?.firstName}{" "}
-              {createdBy?.authorProfile?.lastName}
-            </ALink>
-          ) : (
-            <span>User N/A</span>
-          )}
-
-          {contentType.name === "comment" ? (
-            <>
-              {` `}
-              <span className={css(styles.icon)}>{icons.commentsAlt}</span>
-              {`commented in `}
-              <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">
-                {truncateText(uniDoc.document?.title, 200)}
-              </ALink>
-            </>
-          ) : contentType.name === "paper" ? (
-            <>
-              {` `}
-              <span className={css(styles.icon)}>{icons.fileUpload}</span>
-              {`uploaded paper `}
-              {/*// @ts-ignore*/}
-              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
-                {truncateText(item?.title, 100)}
-              </ALink>
-            </>
-          ) : contentType.name === "post" || contentType.name === "question" ? (
-            <>
-              {` `}
-              {/* {`posted ${uniDoc?.documentType} `} */}
-              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
-                {truncateText(uniDoc.document?.title, 200)}
-              </ALink>
-            </>
-          ) : contentType.name === "hypothesis" ? (
-            <>
-              {` `}
-              <span className={css(styles.icon)}>{icons.lightbulb}</span>
-              {`proposed hypothesis `}
-              {/*// @ts-ignore*/}
-              <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
-                {truncateText(item?.title, 200)}
-              </ALink>
-            </>
-          ) : null}
-
-          {hubs?.length > 0 && (
-            <>
-              <span className={css(styles.dot)}> • </span>
-              {hubs?.slice(0, 2).map((h, index) => (
-                <>
-                  <ALink
-                    theme="solidPrimary"
-                    href={`/hubs/${h.slug}`}
-                    overrideStyle={styles.hubLink}
-                  >
-                    {h.name}
-                  </ALink>
-                  {index < hubs?.slice(0, 2).length - 1 ? ", " : ""}
-                </>
-              ))}
-              &nbsp;
-              {hubs?.slice(2).length > 0 && (
-                <HubDropDown
-                  hubs={hubs?.slice(1)}
-                  labelStyle={styles.hubLink}
-                  containerStyle={styles.hubDropdownContainer}
-                  isOpen={hubsDropdownOpenForKey === key}
-                  setIsOpen={(isOpen) => {
-                    setHubsDropdownOpenForKey(isOpen ? key : false);
-                  }}
-                />
-              )}
-            </>
-          )}
-
-          <span className={css(styles.dot)}> • </span>
-          <span className={css(styles.timestamp)}>
-            {timeSince(createdDate)}
-          </span>
-        </div>
-        <div className={`${css(styles.actions)} actions`}>
-          <ContentBadge contentType={entry.contentType.name} />
-          {/* {actions
-            .filter((action) => action.isActive)
-            .map((action) => (
-              <span
-                className={css(styles.action, action.style)}
-                data-tip={action.label}
-                onClick={action.onClick}
-              >
-                {action.html}
-              </span>
-            ))} */}
-        </div>
-      </div>
-    );
   };
 
   const { contentType } = entry;
@@ -200,54 +97,42 @@ export default function renderContributionEntry(
 
   switch (contentType.name) {
     case "comment":
+      item = item as CommentContributionItem;
       return (
         <div className={css(styles.entryContent)}>
           {renderHeader(entry)}
           <div className={css(styles.highlightedContent)}>
-            <div className={css(styles.quoteBar)} />
-            <div className={css(styles.commentBody)}>
-              {/*// @ts-ignore*/}
-              {truncateText(item.plainText, 500)}
+            <div className={css(styles.body, styles.commentBody)}>
+              <div className={css(styles.quoteBar)} />
+              {truncateText(item.plainText, 300)}
             </div>
           </div>
         </div>
       );
-    case "paper":
-      console.log('paper', entry)
-      return (
-        <div className={css(styles.entryContent)}>
-          {renderHeader(entry)}
-          <div className={css(styles.highlightedContent)}>Empty</div>
-        </div>
-      );
-    case "hypothesis":
-      return (
-        <div className={css(styles.entryContent)}>
-          {renderHeader(entry)}
-          <div className={css(styles.highlightedContent)}>Empty</div>
-        </div>
-      );
+    case "hypothesis":  
     case "post":
-      return (
-        <div className={css(styles.entryContent)}>
-          {renderHeader(entry)}
-          <div className={css(styles.comment, styles.body)}>Empty</div>
-        </div>
-      );
     case "question":
-      console.log('question', entry)
+    case "paper":
+      item = entry.contentType.name === "hypothesis"
+        ? item as HypothesisContributionItem :
+          entry.contentType.name === "post"
+        ? item as PostContributionItem :
+          item as PaperContributionItem;
+
       return (
         <div className={css(styles.entryContent)}>
           {renderHeader(entry)}
           <div className={css(styles.highlightedContent)}>
             <div className={css(styles.title)}>
-              <ALink href={getUrlToUniDoc(entry.item?.unifiedDocument)}>
-                {entry.item?.unifiedDocument?.document?.title}
+              <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
+                {item?.unifiedDocument?.document?.title}
               </ALink>
             </div>
-            <div className={css(styles.body)}>
-              {truncateText(entry.item?.unifiedDocument?.document?.body, 300)}
-            </div>
+            {item?.unifiedDocument?.document?.body &&
+              <div className={css(styles.body)}>
+                {truncateText(item?.unifiedDocument?.document?.body, 300)}
+              </div>
+            }
           </div>
         </div>
       );      
@@ -352,6 +237,7 @@ const styles = StyleSheet.create({
   },
   commentBody: {
     marginTop: 0,
+    display: "flex",
   },
   hubDropdownContainer: {
     display: "inline-block",
@@ -376,9 +262,6 @@ const styles = StyleSheet.create({
   },
   comment: {
     display: "flex",
-  },
-  commentBody: {
-    color: colors.BLACK(0.8),
   },
   quoteBar: {
     marginRight: 10,

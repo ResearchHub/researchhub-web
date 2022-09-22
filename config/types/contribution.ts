@@ -166,7 +166,9 @@ export const parseContribution = (raw: any): Contribution => {
     createdDate: raw.created_date,
     contentType: parseContentType(raw.content_type),
     id: raw.id,
-    hubs: (raw.hubs || []).map((h) => parseHub(h)),
+    // Note: On paper, hubs is available on nested "item" key due to async nature of paper upload
+    // "hubs" not available during creation of "user action" record so we need to get it elsewhere.
+    hubs: raw.content_type.name === "paper" ? (raw.item.hubs || []) : (raw.hubs || []).map((h) => parseHub(h)),
   };
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
@@ -242,12 +244,6 @@ export const parseBountyContributionItem = (
 };
 
 export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
-  raw.item.unified_document.documents = {
-    id: raw.id,
-    title: raw.title,
-    slug: raw.slug,
-  };
-  
   const mapped = {
     id: raw.id,
     title: raw.item.title,

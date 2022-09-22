@@ -64,7 +64,7 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
           </span>
           <span>Question</span>
         </>
-      ) : contentType === POST_TYPES.DISCUSSION ? (
+      ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
         <>
           <span className={css(styles.icon)}>{icons.commentsSolid}</span>
           <span>Comment</span>
