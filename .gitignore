@@ -32,7 +32,6 @@ yarn-error.log*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk
-.ebextensions
 
 # lint
 .eslintcache
