@@ -1,1 +1,10 @@
 node_modules
+Dockerfile
+/build
+/dist
+/.next
+
+# testing
+/coverage
+**/cypress/videos
+**/cypress/screenshots
