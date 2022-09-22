@@ -11,6 +11,12 @@ import {
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { parseContentType, ContentType } from "./contentType";
 import { parseHub, Hub } from "./hub";
+import { formatBountyAmount } from "~/config/types/bounty";
+
+export type RelatedBountyItem = {
+  contentType: ContentType;
+  unifiedDocument: UnifiedDocument;
+}
 
 export type CommentContributionItem = {
   unifiedDocument: UnifiedDocument;
@@ -49,6 +55,15 @@ export type RscSupportContributionItem = {
   id: ID;
 };
 
+export type BountyContributionItem = {
+  unifiedDocument: UnifiedDocument;
+  // item: Contribution
+  createdBy: CreatedBy | null;
+  createdDate: string;
+  amount: number;
+  id: ID;
+};
+
 export type PostContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
@@ -57,6 +72,7 @@ export type PostContributionItem = {
   createdDate: string;
   id: ID;
 };
+
 export type FlaggedBy = {
   firstName: string;
   lastName: string;
@@ -75,16 +91,25 @@ export type Contribution = {
     | PaperContributionItem
     | PostContributionItem
     | HypothesisContributionItem
-    | CommentContributionItem;
+    | CommentContributionItem
+    | BountyContributionItem;
   createdDate: Date;
   contentType: ContentType;
   flaggedBy?: FlaggedBy | null;
   verdict?: Verdict;
   reason?: string;
+  relatedItem?: RelatedBountyItem;
   reasonChoice?: KeyOf<typeof FLAG_REASON>;
   id?: ID;
   hubs: Array<Hub>;
 };
+
+export const parseBountyRelatedItem = (raw: any):RelatedBountyItem => {
+  return {
+    contentType: parseContentType(raw.content_type),
+    unifiedDocument: parseUnifiedDocument(raw),
+  }
+}
 
 export const parseCreatedBy = (raw: any): CreatedBy | null => {
   
@@ -134,19 +159,27 @@ export const parseContribution = (raw: any): Contribution => {
     createdDate: raw.created_date,
     contentType: parseContentType(raw.content_type),
     id: raw.id,
-    hubs: raw.hubs.map((h) => parseHub(h)),
+    hubs: (raw.hubs || []).map((h) => parseHub(h)),
   };
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
     mapped["item"] = parseCommentContributionItem(raw);
   } else if (raw.content_type.name === "paper") {
     mapped["item"] = parsePaperContributionItem(raw);
-  } else if (raw.content_type.name === "researchhubpost") {
+  } else if (raw.content_type.name === "researchhubpost" || raw.content_type.name === "researchhubunifieddocument") {
+    // Info: Since question is a post in the BE, we need to shim the values on the FE
+    // to make downstream components behave properly
+    if (raw?.item?.unified_document?.document_type?.toLowerCase() === "question") {
+      mapped.contentType.name = "question";
+    }
     mapped["item"] = parsePostContributionItem(raw);
   } else if (raw.content_type.name === "hypothesis") {
     mapped["item"] = parseHypothesisContributionItem(raw);
+  } else if (raw.content_type.name === "bounty") {
+    mapped["item"] = parseBountyContributionItem(raw);
+    mapped["relatedItem"] = parseBountyRelatedItem(raw.item.item);
   } else if (raw.content_type.name === "purchase") {
-    mapped["item"] = parseRscSupportContributionItem(raw);    
+    mapped["item"] = parseRscSupportContributionItem(raw);
   } else {
     throw Error(
       "Could not parse object with content_type=" + raw.content_type.name
@@ -179,6 +212,22 @@ export const parseCommentContributionItem = (
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
+  };
+
+  return mapped;
+};
+
+export const parseBountyContributionItem = (
+  raw: any
+): BountyContributionItem => {
+
+  raw.item.item.content_type = raw.item.content_type;
+  const mapped = {
+    createdBy: parseCreatedBy(raw.created_by),
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
+    id: raw.id,
+    createdDate: raw.created_date,
+    amount: formatBountyAmount({amount: raw.item.amount}),
   };
 
   return mapped;
@@ -228,7 +277,7 @@ export const parseRscSupportContributionItem = (
     createdDate: raw.created_date,
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
-    amount: parseFloat(raw.item.amount),
+    amount: formatBountyAmount({amount: raw.amount}),
     recipient: raw.item.user,
   };
 

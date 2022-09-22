@@ -1,7 +1,7 @@
 import { ID } from "./root_types";
 
 export type ContentType = {
-  name: "paper" | "post" | "hypothesis" | "comment" | "document";
+  name: "paper" | "post" | "hypothesis" | "comment" | "document" | "question" | "bounty";
   id: ID;
 };
 

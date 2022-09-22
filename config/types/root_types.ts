@@ -222,7 +222,6 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
   if (typeof raw !== "object") {
     return raw;
   }
-  console.log('raw', raw)
   const parsed = {
     id: raw.id,
     profileImage: raw.profile_image,

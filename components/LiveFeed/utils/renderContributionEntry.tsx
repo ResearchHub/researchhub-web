@@ -5,12 +5,12 @@ import { timeSince } from "~/config/utils/dates";
 import { Contribution } from "~/config/types/contribution";
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { ResearchCoinIcon } from "~/config/themes/icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ReactTooltip from "react-tooltip";
 import HubDropDown from "~/components/Hubs/HubDropDown";
-import DocumentBadge from "~/components/ContentBadge";
-
+import ContentBadge from "~/components/ContentBadge";
+import SubmissionDetails from "~/components/Document/SubmissionDetails";
 
 export default function renderContributionEntry(
   entry: Contribution,
@@ -20,10 +20,35 @@ export default function renderContributionEntry(
 ) {
   const renderHeader = (entry: Contribution) => {
     const { item, contentType, hubs, id } = entry;
-
     const { createdBy, unifiedDocument: uniDoc, createdDate } = item;
-
     const key = `${id}-${item.id}`;
+
+    let contentBadgeLabel;
+    let actionLabel = <>posted in</>;
+    if (contentType.name === "bounty") {
+      actionLabel = 
+        <>
+          {/* @ts-ignore */}
+          created <ResearchCoinIcon version={4} width={16} height={16} /> {entry.item.amount} RSC bounty in
+        </>
+      {/* @ts-ignore */}
+      contentBadgeLabel = entry.item.amount + " Bounty"
+    }
+
+    return (
+      <div className={css(styles.header)}>
+        <SubmissionDetails
+          createdBy={createdBy}
+          hubs={hubs}
+          createdDate={createdDate}
+          avatarSize={25}
+          actionLabel={actionLabel}
+        />
+        <div className={`${css(styles.actions)} actions`}>
+          <ContentBadge label={contentBadgeLabel} contentType={entry.contentType.name} />
+        </div>
+      </div>
+    )
 
     return (
       <div className={css(styles.header)}>
@@ -60,11 +85,10 @@ export default function renderContributionEntry(
                 {truncateText(item?.title, 100)}
               </ALink>
             </>
-          ) : contentType.name === "post" ? (
+          ) : contentType.name === "post" || contentType.name === "question" ? (
             <>
               {` `}
-              <span className={css(styles.icon)}>{icons.penSquare}</span>
-              {`created ${uniDoc?.documentType} `}
+              {/* {`posted ${uniDoc?.documentType} `} */}
               <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>
                 {truncateText(uniDoc.document?.title, 200)}
               </ALink>
@@ -117,7 +141,7 @@ export default function renderContributionEntry(
           </span>
         </div>
         <div className={`${css(styles.actions)} actions`}>
-          <DocumentBadge contentType={entry.contentType.name} />
+          <ContentBadge contentType={entry.contentType.name} />
           {/* {actions
             .filter((action) => action.isActive)
             .map((action) => (
@@ -171,13 +195,30 @@ export default function renderContributionEntry(
           <div className={css(styles.comment, styles.body)}>Empty</div>
         </div>
       );
+      case "question":
+        return (
+          <div className={css(styles.entryContent)}>
+            {renderHeader(entry)}
+            <div className={css(styles.comment, styles.body)}>Empty</div>
+          </div>
+        );      
       case "rsc_support":
         return (
           <div className={css(styles.entryContent)}>
             {renderHeader(entry)}
             <div className={css(styles.comment, styles.body)}>RSC Support</div>
           </div>
-        );      
+        );
+      case "bounty":
+        console.log('bbb', entry.relatedItem)
+        return (
+          <div className={css(styles.entryContent)}>
+            {renderHeader(entry)}
+            <div className={css(styles.comment, styles.body)}>
+              {entry.relatedItem?.unifiedDocument?.document?.title}
+            </div>
+          </div>
+        );
   }
 }
 
@@ -213,7 +254,7 @@ const styles = StyleSheet.create({
   body: {
     borderRadius: 4,
     border: `1px solid ${colors.GREY(0.5)}`,
-    background: "white",
+    background: `rgba(249, 249, 249)`,
     padding: 15,
   },
   hubDropdownContainer: {

@@ -17,7 +17,8 @@ type Args = {
   hubs: Array<Hub>;
   createdDate: string;
   avatarSize: number;
-  bounties: Bounty[];
+  bounties?: Bounty[];
+  actionLabel?: string | ReactElement
 };
 
 function SubmissionDetails({
@@ -26,6 +27,7 @@ function SubmissionDetails({
   createdDate,
   avatarSize = 30,
   bounties = [],
+  actionLabel = "posted in"
 }: Args): ReactElement<"div"> {
   const showAllHubs =
     process.browser && window.innerWidth > breakpoints.medium.int;
@@ -60,7 +62,7 @@ function SubmissionDetails({
         <div className={css(styles.hubsContainer)}>
           <>
             <span className={css(styles.textSecondary, styles.postedText)}>
-              {` posted in`}
+              {` `}{actionLabel}
             </span>
             {visibleHubs.map((h, index) => (
               <span key={index}>

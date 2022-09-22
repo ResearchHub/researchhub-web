@@ -987,7 +987,7 @@ export const MedalIcon = ({
 
 export const ResearchCoinIcon = ({
   onClick = undefined,
-  overrideStyle,
+  overrideStyle = undefined,
   height = 25,
   width = 25,
   version = 1,
