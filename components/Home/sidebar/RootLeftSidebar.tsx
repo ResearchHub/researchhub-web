@@ -105,9 +105,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   });
   useEffect((): void => {
     /* if [below] we consider user's screen size. Else, we minimize */
-    if (
-      !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
-    ) {
+    if (!["", "/"].includes(pathname.split("/")[1])) {
       setIsMinimized(true);
       setGrowMinimized(true);
     } else {
@@ -193,7 +191,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       animate={growMinimized ? "minimized" : "full"}
       variants={variants}
       transition={{
-        duration: didMount ? 0.6 : 0 /* avoids landing animation */,
+        duration: didMount
+          ? ITEM_FADE_DURATION
+          : 0 /* avoids landing animation */,
       }}
       className={formattedRootLeftSidebar}
     >
