@@ -8,3 +8,11 @@ Dockerfile
 /coverage
 **/cypress/videos
 **/cypress/screenshots
+.eslintcache
+.eslintignore
+.eslintrc.json
+.git
+.husky
+.nvmrc
+.env.development
+.DS_Store
