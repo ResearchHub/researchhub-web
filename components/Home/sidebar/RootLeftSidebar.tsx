@@ -106,7 +106,9 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   });
   useEffect((): void => {
     /* if [below] we consider user's screen size. Else, we minimize */
-    if (!["", "/"].includes(pathname.split("/")[1])) {
+    if (
+      !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
+    ) {
       setIsMinimized(true);
       setGrowMinimized(true);
     } else {
