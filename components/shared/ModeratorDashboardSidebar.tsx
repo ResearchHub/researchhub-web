@@ -75,14 +75,6 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserHubEditor || isUserModerator
       ? {
-          icon: icons.commentCheck,
-          id: "audit",
-          name: "Audit Content",
-          pathname: "/moderators/audit/all",
-        }
-      : null,
-    isUserHubEditor || isUserModerator
-      ? {
           icon: icons.flag,
           id: "flag",
           name: "Flagged Content",

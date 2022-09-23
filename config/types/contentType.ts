@@ -20,6 +20,8 @@ export const parseContentType = (raw: any): ContentType => {
     contentTypeName = "document";
   } else if (inputName === "purchase") {
       contentTypeName = "rsc_support";    
+  } else if (inputName === "bounty") {
+      contentTypeName = "bounty";          
   } else {
     contentTypeName = inputName;
     console.error("Could not parse object with content_type=" + inputName);
