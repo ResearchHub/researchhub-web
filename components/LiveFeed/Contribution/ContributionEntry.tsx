@@ -37,7 +37,6 @@ const ContributionEntry = ({
       item = item as CommentContributionItem;
       body = 
         <>
-          <div className={css(styles.quoteBar)} />
           {truncateText(item.plainText, 300)}
         </>
       break;
@@ -48,7 +47,6 @@ const ContributionEntry = ({
       if (item.source.contentType.name === "comment") {
         body = 
           <>
-            <div className={css(styles.quoteBar)} />
             {truncateText(item?.source.plainText, 300)}
           </>        
       }
@@ -182,12 +180,6 @@ const styles = StyleSheet.create({
   },
   comment: {
     display: "flex",
-  },
-  quoteBar: {
-    marginRight: 10,
-    minWidth: 4,
-    background: colors.GREY(),
-    borderRadius: "2px",
   },
   actions: {
     

@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ResearchCoinIcon } from "~/config/themes/icons";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import ALink from "../ALink";
 import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
 import colors from "~/config/themes/colors";

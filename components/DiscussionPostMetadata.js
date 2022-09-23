@@ -1,15 +1,13 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Fragment, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import * as moment from "dayjs";
 import Link from "next/link";
 import PropTypes from "prop-types";
-import Ripples from "react-ripples";
 
 // Components
-import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 import UserRoleTag from "~/components/shared/UserRoleTag";
@@ -17,9 +15,9 @@ import ShareModal from "~/components/ShareModal";
 
 // Config
 import { createUserSummary } from "~/config/utils/user";
-import { timeSince, timeToRoundUp } from "~/config/utils/dates";
-import colors, { badgeColors, voteWidgetColors } from "~/config/themes/colors";
-import icons, { MedalIcon, ResearchCoinIcon } from "~/config/themes/icons";
+import { timeSince } from "~/config/utils/dates";
+import colors, { voteWidgetColors } from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";

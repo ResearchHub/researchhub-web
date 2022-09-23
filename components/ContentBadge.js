@@ -1,17 +1,17 @@
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
-import colors, { badgeColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import icons, {
   PostIcon,
   PaperIcon,
   HypothesisIcon,
-  ResearchCoinIcon,
   QuestionIcon,
 } from "~/config/themes/icons";
 import { useRouter } from "next/router";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "./TextEditor/config/postTypes";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 const ContentBadge = ({ contentType, label = null, onClick = null }) => {
   const router = useRouter();
@@ -119,14 +119,6 @@ const styles = StyleSheet.create({
     background: "rgb(252 242 220)",
     color: colors.ORANGE_DARK2(),
   },
-  badgeFor_DISCUSSION: {
-    background: colors.NEW_BLUE(0.1),
-    color: colors.NEW_BLUE(1.0),
-  },
-  badgeFor_ANSWER: {
-    background: colors.NEW_GREEN(0.1),
-    color: colors.NEW_GREEN(),
-  },
   rscContent: {
     color: colors.ORANGE_DARK2(),
   },
@@ -134,7 +126,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     background: colors.LIGHT_GREY(1.0),
     display: "flex",
-    padding: "4px 8px 1px 8px",
+    padding: "4px 10px 1px 10px",
     textTransform: "capitalize",
     borderRadius: "4px",
     marginBottom: 0,

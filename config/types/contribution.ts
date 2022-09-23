@@ -41,7 +41,7 @@ export type PaperContributionItem = {
   createdBy: CreatedBy | null;
   createdDate: string;
   id: ID;
-  abstract: string;
+  abstract?: string;
 };
 
 export type HypothesisContributionItem = {
@@ -251,7 +251,7 @@ export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
     createdBy: parseCreatedBy(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     createdDate: raw.created_date,
-    abstract: raw.abstract,
+    abstract: raw.item.abstract,
   };
 
   return mapped;

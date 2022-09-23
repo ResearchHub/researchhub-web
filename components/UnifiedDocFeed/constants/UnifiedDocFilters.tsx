@@ -1,4 +1,5 @@
-import icons, { ResearchCoinIcon } from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 export const topLevelFilters = {
   "/": {

@@ -1,5 +1,4 @@
 import { css, StyleSheet } from "aphrodite";
-import { ResearchCoinIcon } from "~/config/themes/icons";
 import { BountyContributionItem, CommentContributionItem, Contribution, RscSupportContributionItem } from "~/config/types/contribution";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import ContributionAuthor from "./ContributionAuthor";
@@ -8,6 +7,8 @@ import ContentBadge from "~/components/ContentBadge";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
+import colors from "~/config/themes/colors";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 type Args = {
   entry: Contribution;
@@ -25,7 +26,7 @@ const ContributionHeader = ({ entry }: Args) => {
     item = item as BountyContributionItem;
     actionLabel = 
       <>
-        created <ResearchCoinIcon version={4} width={16} height={16} /> {item.amount} RSC bounty in
+        created <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> bounty in
       </>
     contentBadgeLabel = item.amount + " Bounty"
   }
@@ -35,15 +36,15 @@ const ContributionHeader = ({ entry }: Args) => {
     if (item.source.contentType.name === "comment") {
       actionLabel = 
         <>
-          supported <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          <ResearchCoinIcon version={4} width={16} height={16} /> {item.amount} RSC for their comment
+          supported <ContributionAuthor authorProfile={item.recipient?.authorProfile} />{` `}
+          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their comment
         </>
     }
     else {
       actionLabel = 
         <>
-          supported authors
-          <ResearchCoinIcon version={4} width={16} height={16} /> {item.amount} RSC for their {item.source?.contentType.name}
+          supported authors{` `}
+          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their {item.source?.contentType.name}
         </>
     }
   }
@@ -99,6 +100,12 @@ const styles = StyleSheet.create({
   },  
   link: {
     fontWeight: 400,
+  },
+  rsc: {
+    color: colors.ORANGE_DARK2()
+  },
+  rscIcon: {
+    verticalAlign: "text-top",
   }
 });
 

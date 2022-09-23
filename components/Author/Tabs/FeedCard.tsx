@@ -25,7 +25,8 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-import icons, { ResearchCoinIcon } from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import Link from "next/link";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";

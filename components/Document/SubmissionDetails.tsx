@@ -10,7 +10,6 @@ import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Bounty from "~/config/types/bounty";
-import { ResearchCoinIcon } from "~/config/themes/icons";
 
 type Args = {
   createdBy: CreatedBy | null;
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   textSecondary: {
-    color: colors.MEDIUM_GREY(),
+    color: colors.MEDIUM_GREY2(),
   },
   hubsContainer: {
     display: "inline",
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     display: "inline-block",
   },
   dot: {
-    color: colors.MEDIUM_GREY(),
+    color: colors.MEDIUM_GREY2(),
   },
   dotWithMargin: {
     marginLeft: 5,
