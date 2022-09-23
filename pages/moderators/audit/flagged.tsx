@@ -1,7 +1,7 @@
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { ReactElement } from "react";
 import ContentPage from "~/components/ContentPage/ContentPage";
-import FlaggedContentDashboard from "~/components/AuditContent/FlaggedContentDashboard";
+import FlaggedContentDashboard from "~/components/LiveFeed/FlaggedContentDashboard";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
 import SideColumn from "~/components/Home/SideColumn";
 

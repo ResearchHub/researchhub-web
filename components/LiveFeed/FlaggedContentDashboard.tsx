@@ -24,7 +24,7 @@ import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
-import renderContributionEntry from "./utils/renderContributionEntry";
+import ContributionEntry from "./Contribution/ContributionEntry";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -406,12 +406,12 @@ function FlaggedContentDashboard({
               />
             </div>
             <div className={css(styles.entry)}>
-              {renderContributionEntry(
-                r,
-                cardActions,
-                setHubsDropdownOpenForKey,
-                hubsDropdownOpenForKey
-              )}
+              <ContributionEntry
+                entry={r}
+                actions={cardActions}
+                setHubsDropdownOpenForKey={setHubsDropdownOpenForKey}
+                hubsDropdownOpenForKey={hubsDropdownOpenForKey}
+              />
             </div>
           </div>
         </div>
