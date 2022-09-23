@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { CloseIcon } from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import colors, { badgeColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
 import { ReactNode } from "react";
@@ -24,7 +24,7 @@ const Badge = ({
 }: Args) => {
   return (
     <div
-      className={css(styles.badge, badgeClassName)}
+      className={css(styles.badge, onClick && styles.badgeWithOnClick, badgeClassName)}
       onClick={(event) => onClick && onClick(event)}
       data-test={isDevEnv() ? `badge-${id}` : undefined}
     >
@@ -52,18 +52,21 @@ const styles = StyleSheet.create({
     margin: "0px 10px 0px 0",
     minWidth: "0",
     boxSizing: "border-box",
-    backgroundColor: colors.LIGHT_BLUE(),
+    backgroundColor: colors.NEW_BLUE(0.1),
     borderRadius: "4px",
-    color: colors.BLUE(),
-    cursor: "pointer",
+    color: colors.NEW_BLUE(1.0),
     padding: "5px 8px",
-    ":hover": {
-      boxShadow: `inset 0px 0px 0px 1px ${colors.BLUE()}`,
-    },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       margin: "0px 6px 6px 0",
     },
   },
+  badgeWithOnClick: {
+    ":hover": {
+      background: badgeColors.HOVER,
+      color: badgeColors.HOVER_COLOR,
+      boxShadow: "unset",
+    },
+  },  
   badgeLabel: {
     borderRadius: "2px",
     overflow: "hidden",

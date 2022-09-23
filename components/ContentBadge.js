@@ -131,10 +131,8 @@ const styles = StyleSheet.create({
     color: colors.ORANGE_DARK2(),
   },
   badge: {
-    background: colors.LIGHT_GREY(),
-    color: colors.BLACK(),
-    // color: colors.BLACK(0.6),
-    // background: colors.LIGHTER_GREY(1.0),
+    color: colors.BLACK(0.6),
+    background: colors.LIGHT_GREY(1.0),
     display: "flex",
     padding: "4px 8px 1px 8px",
     textTransform: "capitalize",
@@ -144,11 +142,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: "17px",
     fontWeight: 500,
-    ":hover": {
-      background: badgeColors.HOVER,
-      color: badgeColors.HOVER_COLOR,
-      boxShadow: "unset",
-    },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginBottom: 0,
     },

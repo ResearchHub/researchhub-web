@@ -805,7 +805,7 @@ export const PaperIcon = ({
   height = 16,
   withAnimation = true,
   overrideStyle = null,
-  color = "#B3B4BF",
+  color = "currentColor",
 }) => {
   return (
     <span
@@ -839,7 +839,7 @@ export const PostIcon = ({
   height = 18,
   withAnimation = true,
   overrideStyle = null,
-  color = "#B0AFB8",
+  color = "currentColor",
 }) => {
   return (
     <span
@@ -868,7 +868,7 @@ export const PostIcon = ({
 };
 
 export const QuestionIcon = ({
-  color = "#B0AFB8",
+  color = "currentColor",
   onClick,
   overrideStyle = null,
   size = 18,
@@ -897,7 +897,7 @@ export const HypothesisIcon = ({
   height = 18,
   withAnimation = true,
   overrideStyle = null,
-  color = "#B0AFB8",
+  color = "currentColor",
 }) => {
   return (
     <span

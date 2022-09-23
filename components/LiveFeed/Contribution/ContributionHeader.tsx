@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 import ContentBadge from "~/components/ContentBadge";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
+import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 
 type Args = {
   entry: Contribution;
@@ -49,9 +50,20 @@ const ContributionHeader = ({ entry }: Args) => {
   else if (contentType.name === "comment") {
     item = item as CommentContributionItem;
     hubs = [];
+    let action = "commented on"
+    if (item.postType === POST_TYPES.ANSWER) {
+      action = "submitted answer for";
+    }
+    else if (item.postType === POST_TYPES.SUMMARY) {
+      action = "submitted summary for";
+    }
+    else if (item.postType === POST_TYPES.REVIEW) {
+      action = "submitted review for";
+    }    
+
     actionLabel = 
       <>
-        commented on <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument)}>{item.unifiedDocument?.document?.title}</ALink>
+        {action} <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument)}>{item.unifiedDocument?.document?.title}</ALink>
       </>
   }
 

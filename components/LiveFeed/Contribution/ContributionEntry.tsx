@@ -45,10 +45,12 @@ const ContributionEntry = ({
     case "rsc_support":
       item = item as RscSupportContributionItem;
 
-      console.log('item', item)
-      console.log('entry', entry)
       if (item.source.contentType.name === "comment") {
-        body = truncateText(item?.source.plainText, 300);
+        body = 
+          <>
+            <div className={css(styles.quoteBar)} />
+            {truncateText(item?.source.plainText, 300)}
+          </>        
       }
       else {
         body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
@@ -80,7 +82,7 @@ const ContributionEntry = ({
           item as PaperContributionItem;
       
       // @ts-ignore
-      body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract);
+      body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract, 300);
       title =
         <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
           {item?.unifiedDocument?.document?.title}
