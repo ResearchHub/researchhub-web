@@ -407,6 +407,9 @@ const styles = StyleSheet.create({
     padding: 16,
     color: "#aaa",
     cursor: "pointer",
+    [`@media only screen and (max-width: ${breakpoints.large.int}px)`]: {
+      display: "none",
+    },
   },
   arrowLeft: {
     marginTop: 0,
