@@ -1,22 +1,31 @@
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
 import { CloseIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
+import { ReactNode } from "react";
+
+type Args = {
+  label: string,
+  id?: string,
+  children?: ReactNode[],
+  onClick?: Function,
+  onRemove?: Function,
+  badgeClassName: any,
+}
 
 const Badge = ({
   label,
   id,
   children,
-  onClick = null,
-  onRemove = null,
-  badgeClassName = null,
-}) => {
+  onClick,
+  onRemove,
+  badgeClassName,
+}: Args) => {
   return (
     <div
       className={css(styles.badge, badgeClassName)}
-      onClick={onClick}
+      onClick={(event) => onClick && onClick(event)}
       data-test={isDevEnv() ? `badge-${id}` : undefined}
     >
       {children}
@@ -24,11 +33,12 @@ const Badge = ({
         <div className={css(styles.badgeLabel)}>{label}</div>
       )}
       {onRemove && (
-        <div className={css(styles.badgeRemove)} onClick={onRemove}>
+        <div className={css(styles.badgeRemove)} onClick={(event) => onRemove && onRemove(event)}>
           <CloseIcon
             width={8}
             height={8}
-            overrideStyle={styles.closeIconOverride}
+            overrideStyle={null}
+            onClick={undefined}
           />
         </div>
       )}
@@ -56,7 +66,6 @@ const styles = StyleSheet.create({
   },
   badgeLabel: {
     borderRadius: "2px",
-    fontSize: "85%",
     overflow: "hidden",
     padding: "3px 3px 3px 6px",
     textOverflow: "ellipsis",
@@ -79,11 +88,5 @@ const styles = StyleSheet.create({
   },
 });
 
-Badge.propTypes = {
-  label: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  onRemove: PropTypes.func,
-};
 
 export default Badge;

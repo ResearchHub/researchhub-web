@@ -43,7 +43,7 @@ const ContributionEntry = ({
                 {truncateText(item.plainText, 300)}
               </div>
               <div className={css(styles.actions)}>
-                {actions.map(a => a.isActive && a.html)}
+                {actions.map((a,idx) => a.isActive && <span key={`action-${idx}`}>{a.html}</span>)}
               </div>              
             </div>
           </div>

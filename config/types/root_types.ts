@@ -199,8 +199,6 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     ? raw.documents
     : {};
 
-  console.log("1111", raw)
-
   parsed.document = {
     id: unparsedInnerDoc?.id,
     title: unparsedInnerDoc?.title,
@@ -222,6 +220,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     parsed.document["body"] = unparsedInnerDoc.renderable_text;
   }
 
+  // @ts-ignore
   return parsed;
 };
 

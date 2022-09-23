@@ -23,7 +23,6 @@ const FeedMenuTopLevelFilters = ({
   hubState,
 }: Args) => {
   const router = useRouter();
-  const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false);
   const filterEl = useRef(null);
   const [isMyHubsDropdownOpen, setIsMyHubsDropdownOpen] = useState(false);
   const isSubscribedToHubs = hubState?.subscribedHubs?.length > 0;
@@ -60,7 +59,8 @@ const FeedMenuTopLevelFilters = ({
           className={`${css(
             styles.filter,
             isSelected && styles.filterSelected,
-            renderAsDropdown && styles.filterAsDropdownOpt
+            renderAsDropdown && styles.filterAsDropdownOpt,
+            isMyHubs && styles.filterForMyHubs,
           )} filterSelected`}
           ref={filterEl}
           key={`filter-${idx}`}
@@ -99,6 +99,9 @@ const FeedMenuTopLevelFilters = ({
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
+          {isMyHubs && 
+            <span style={{borderRight: `1px solid ${colors.GREY_LINE(1)}`, height: "80%", marginLeft: 12, marginRight: 12}}></span>
+          }
         </div>
       );
     });
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
     padding: "10px 14px",
   },
   filter: {
-    padding: "0px 2px 12px 2px",
+    padding: "0px 2px 10px 2px",
     display: "flex",
     position: "relative",
     marginRight: 25,
@@ -151,6 +154,9 @@ const styles = StyleSheet.create({
       fontSize: 15,
       padding: "0px 4px 10px 0px",
     },
+  },
+  filterForMyHubs: {
+    marginRight: 0,
   },
   chevronIcon: {
     marginLeft: 8,

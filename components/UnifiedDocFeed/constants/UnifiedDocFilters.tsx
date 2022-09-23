@@ -14,7 +14,7 @@ export const topLevelFilters = {
   "/live": {
     label: "Live",
     value: "/live",
-    icon: icons.live,
+    icon: icons.pulse,
   },  
 };
 

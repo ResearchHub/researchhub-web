@@ -62,7 +62,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
   };
 
   const resultCards = () => {
-    return results.map((r) => {
+    return results.map((r, idx) => {
       const cardActions = [
         {
           html: (
@@ -89,7 +89,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 
       return (
         // @ts-ignore
-        <div className={css(styles.result)} key={`${r.id} ${r.item?.id}` }>
+        <div className={css(styles.result)} key={`result-${idx}` }>
           <div className={css(styles.entry)}>
             <ContributionEntry
               entry={r}
