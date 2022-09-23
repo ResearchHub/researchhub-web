@@ -230,7 +230,10 @@ export default function RootLeftSidebar({}: Props): ReactElement {
             <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
-            <ALink href="/jobs" overrideStyle={formattedFooterTxtItem}>
+            <ALink
+              href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+              overrideStyle={formattedFooterTxtItem}
+            >
               {"Jobs"}
             </ALink>
           </div>
