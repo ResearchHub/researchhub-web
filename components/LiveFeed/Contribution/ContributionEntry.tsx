@@ -16,8 +16,8 @@ import ContributionHeader from "../Contribution/ContributionHeader";
 type Args = {
   entry: Contribution,
   actions: Array<any>,
-  setHubsDropdownOpenForKey: Function,
-  hubsDropdownOpenForKey: string  
+  setHubsDropdownOpenForKey?: Function,
+  hubsDropdownOpenForKey?: string  
 }
 
 const ContributionEntry = ({
@@ -38,7 +38,7 @@ const ContributionEntry = ({
           <ContributionHeader entry={entry} />
           <div className={css(styles.highlightedContent)}>
             <div className={css(styles.body, styles.commentBody)}>
-              <div>
+              <div className={css(styles.textContainer)}>
                 <div className={css(styles.quoteBar)} />
                 {truncateText(item.plainText, 300)}
               </div>
@@ -102,7 +102,9 @@ const ContributionEntry = ({
           entry.contentType.name === "post"
         ? item as PostContributionItem :
           item as PaperContributionItem;
-
+      
+      // @ts-ignore
+      const body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract);
       return (
         <div className={css(styles.entryContent)}>
           <ContributionHeader entry={entry} />
@@ -114,7 +116,7 @@ const ContributionEntry = ({
             </div>
             {item?.unifiedDocument?.document?.body &&
               <div className={css(styles.body)}>
-                {truncateText(item?.unifiedDocument?.document?.body, 300)}
+                {body}
               </div>
             }
           </div>
@@ -147,9 +149,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     border: `1px solid ${colors.GREY(0.5)}`,
     background: `rgba(249, 249, 249)`,
-    padding: 15,
+    padding: "15px 15px 14px 15px",
     marginTop: 10,
     position: "relative",
+  },
+  textContainer: {
+    display: "flex",
   },
   title: {
     fontSize: 18,

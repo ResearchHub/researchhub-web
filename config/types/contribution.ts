@@ -6,7 +6,6 @@ import {
   parseAuthorProfile,
   parseUnifiedDocument,
   UnifiedDocument,
-  User,
 } from "./root_types";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { parseContentType, ContentType } from "./contentType";
@@ -42,6 +41,7 @@ export type PaperContributionItem = {
   createdBy: CreatedBy | null;
   createdDate: string;
   id: ID;
+  abstract: string;
 };
 
 export type HypothesisContributionItem = {
@@ -251,6 +251,7 @@ export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
     createdBy: parseCreatedBy(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     createdDate: raw.created_date,
+    abstract: raw.abstract,
   };
 
   return mapped;

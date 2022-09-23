@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON } from "../Flag/config/flag_constants";
 import { ID } from "~/config/types/root_types";
 import { KeyOf } from "~/config/types/root_types";
-import { ReactElement, useState, useEffect, useRef } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import fetchContributionsAPI from "./api/fetchContributionsAPI";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";

@@ -1,18 +1,20 @@
 import { css, StyleSheet } from "aphrodite";
 import { ResearchCoinIcon } from "~/config/themes/icons";
-import { BountyContributionItem, Contribution, RscSupportContributionItem } from "~/config/types/contribution";
+import { BountyContributionItem, CommentContributionItem, Contribution, RscSupportContributionItem } from "~/config/types/contribution";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import ContributionAuthor from "./ContributionAuthor";
 import { ReactNode } from "react";
 import ContentBadge from "~/components/ContentBadge";
+import ALink from "~/components/ALink";
+import { getUrlToUniDoc } from "~/config/utils/routing";
 
 type Args = {
   entry: Contribution;
 }
 
 const ContributionHeader = ({ entry }: Args) => {
-  const { contentType, hubs } = entry;
-  let { item }  = entry 
+  const { contentType } = entry;
+  let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
 
   let contentBadgeLabel: ReactNode | string;
@@ -43,6 +45,14 @@ const ContributionHeader = ({ entry }: Args) => {
           <ResearchCoinIcon version={4} width={16} height={16} /> {item.amount} RSC for their {item.source?.contentType.name}
         </>
     }
+  }
+  else if (contentType.name === "comment") {
+    item = item as CommentContributionItem;
+    hubs = [];
+    actionLabel = 
+      <>
+        commented on <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument)}>{item.unifiedDocument?.document?.title}</ALink>
+      </>
   }
 
   // @ts-ignore
@@ -75,6 +85,9 @@ const styles = StyleSheet.create({
     opacity: 1,
     display: "flex",
   },  
+  link: {
+    fontWeight: 400,
+  }
 });
 
 export default ContributionHeader;
