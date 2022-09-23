@@ -93,7 +93,8 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
-  const [isMinimized, setIsMinimized] = useState<boolean>(true);
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
   const [growMinimized, setGrowMinimized] = useState<boolean>(false);
   const [didMount, setDidMount] = useState<boolean>(false);
 
@@ -119,6 +120,17 @@ export default function RootLeftSidebar({}: Props): ReactElement {
       setDidMount(true);
     }, 2000);
   }, []);
+
+  useEffect((): void => {
+    if (isMinimized) {
+      const timeout = ITEM_FADE_DURATION * 1000 - 10;
+      setTimeout(() => {
+        setIsMinimizedLocal(isMinimized);
+      }, timeout);
+    } else {
+      setIsMinimizedLocal(isMinimized);
+    }
+  }, [isMinimized]);
 
   const leftSidebarItemAttrs = useMemo(
     (): RootLeftSidebarItemProps[] =>
@@ -146,11 +158,11 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   } = {
     formattedLogoContainer: [
       styles.logoContainer,
-      isMinimized && styles.logoContainerMin,
+      isMinimizedLocal && isMinimized && styles.logoContainerMin,
     ],
     formattedRootLeftSidebar: css(
       styles.rootLeftSidebar,
-      isMinimized && styles.rootLeftSidebarMin
+      isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
     ),
     formattedFooterTxtItem: [
       styles.leftSidebarFooterTxtItem,
@@ -175,13 +187,13 @@ export default function RootLeftSidebar({}: Props): ReactElement {
   const rscIconVariants = {
     minimized: {
       opacity: 0,
-      width: 0,
-      transform: "scaleX(0)",
-      marginLeft: 0,
+      // width: 0,
+      // transform: "scaleX(0)",
+      // marginLeft: 0,
     },
     full: {
-      transform: "scaleX(1)",
-      width: "100%",
+      // transform: "scaleX(1)",
+      // width: "100%",
       opacity: 1,
     },
   };
@@ -207,19 +219,24 @@ export default function RootLeftSidebar({}: Props): ReactElement {
                   white={false}
                   withText={false}
                 />
-                <motion.img
-                  variants={rscIconVariants}
-                  animate={isMinimized ? "minimized" : "full"}
-                  key={`RHLogo-max`}
-                  transition={{
-                    duration: didMount
-                      ? ITEM_FADE_DURATION
-                      : 0 /* avoids landing animation */,
-                  }}
-                  className={css(styles.researchHubLogoText)}
-                  src={"/static/ResearchHubText.png"}
-                  alt="ResearchHub Text Logo"
-                />
+                <AnimatePresence initial={false}>
+                  {!isMinimized && (
+                    <motion.img
+                      variants={rscIconVariants}
+                      animate={isMinimized ? "minimized" : "full"}
+                      exit={"minimized"}
+                      key={`RHLogo-max`}
+                      transition={{
+                        duration: didMount
+                          ? ITEM_FADE_DURATION
+                          : 0 /* avoids landing animation */,
+                      }}
+                      className={css(styles.researchHubLogoText)}
+                      src={"/static/ResearchHubText.png"}
+                      alt="ResearchHub Text Logo"
+                    />
+                  )}
+                </AnimatePresence>
               </ALink>
             </div>
             {leftSidebarItems}
@@ -336,13 +353,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   leftSidebarItemsInnerContainer: {
-    alignItems: "center",
+    // alignItems: "center",
     borderBottom: `1px solid ${colors.GREY_BORDER}`,
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    maxWidth: "90%",
-    width: "90%",
+    width: "100%",
   },
   leftSidebarFooter: {
     display: "flex",
@@ -394,7 +410,8 @@ const styles = StyleSheet.create({
   },
   logoDiv: {
     display: "flex",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     height: NAVBAR_HEIGHT,
     marginBottom: 20,
     [`@media only screen and (min-width: ${breakpoints.large.int}px)`]: {
@@ -423,12 +440,14 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     height: "68px",
-    padding: "0 16px",
+    padding: "0 26px",
     userSelect: "none",
+    justifyContent: "flex-start",
+    // margin: "0 auto",
     width: "100%",
   },
   logoContainerMin: {
-    paddingLeft: 16,
+    padding: 0,
     justifyContent: "center",
   },
   logo: {
@@ -436,10 +455,11 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   researchHubLogoText: {
-    height: 16,
-    marginLeft: 4,
+    height: 14.05,
+    marginLeft: 11.5,
     objectFit: "contain",
-    marginTop: 7,
+    transform: "translateY(20%)",
+    // marginTop: 10,
     "@media only screen and (max-width: 1023px)": {
       marginLeft: 0,
     },

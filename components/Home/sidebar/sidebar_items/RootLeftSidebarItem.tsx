@@ -29,22 +29,37 @@ export default function RootLeftSidebarItem({
   subItems,
 }: Props): ReactElement {
   const [didMount, setDidMount] = useState<boolean>(false);
+  const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
+
+  /* avoids landing animation */
+  const itemFadeDuration = didMount ? ITEM_FADE_DURATION : 0;
+
   useEffect((): void => {
     setTimeout((): void => setDidMount(true), 2000);
   }, []);
-  /* avoids landing animation */
-  const itemFadeDuration = didMount ? ITEM_FADE_DURATION : 0;
+
+  useEffect((): void => {
+    if (isMinimized) {
+      setTimeout(() => {
+        setIsMinimizedLocal(isMinimized);
+      }, ITEM_FADE_DURATION * 1000 + 10);
+    } else {
+      setIsMinimizedLocal(isMinimized);
+    }
+  }, [isMinimized]);
 
   const variants = {
     minimized: {
       opacity: 0,
-      width: 0,
-      transform: "scaleX(0)",
+      display: "none",
+      // width: 0,
+      // transform: "scaleX(0)",
     },
     full: {
       opacity: 1,
-      width: "100%",
-      transform: "scaleX(1)",
+      display: "visible",
+      // width: "100%",
+      // transform: "scaleX(1)",
     },
   };
 
@@ -52,7 +67,7 @@ export default function RootLeftSidebarItem({
     <div
       className={css(
         styles.rootLeftSidebarItem,
-        isMinimized && styles.rootLeftSidebarItemMin,
+        isMinimizedLocal && isMinimized && styles.rootLeftSidebarItemMin,
         isActive && styles.rootLeftSidebarItemActive
       )}
       onClick={onClick}
@@ -61,21 +76,30 @@ export default function RootLeftSidebarItem({
       <div
         className={css(
           styles.iconWrap,
-          isMinimized && styles.iconWrapMin,
+          isMinimizedLocal && isMinimized && styles.iconWrapMin,
           isActive && styles.iconWrapActive
         )}
       >
         {icon}
       </div>
-      <motion.div
-        initial={false}
-        className={css(styles.labelWrap, isActive && styles.labelWrapActive)}
-        transition={{ duration: itemFadeDuration }}
-        animate={isMinimized ? "minimized" : "full"}
-        variants={variants}
-      >
-        {label}
-      </motion.div>
+      <AnimatePresence initial={false}>
+        {!isMinimized && (
+          <motion.div
+            initial={false}
+            className={css(
+              styles.labelWrap,
+              isActive && styles.labelWrapActive
+            )}
+            transition={{ duration: itemFadeDuration }}
+            // initial={"minimized"}
+            animate={"full"}
+            exit={"minimized"}
+            variants={variants}
+          >
+            {label}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -91,8 +115,9 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: "flex-start",
     marginBottom: 16,
-    padding: "0 16px",
+    padding: "0 26px",
     width: "100%",
+    overflow: "hidden",
     ":hover": {
       background: colors.LIGHTER_GREY(1),
     },
@@ -113,11 +138,11 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
     display: "flex",
     fontSize: "1.2em",
+    textAlign: "center",
     height: 16,
     marginRight: 16,
     maxHeight: 16,
     maxWidth: 16,
-    textAlign: "center",
     width: 16,
     userSelect: "none",
   },
