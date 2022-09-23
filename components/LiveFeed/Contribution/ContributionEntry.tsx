@@ -12,6 +12,7 @@ import {
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import ContributionHeader from "../Contribution/ContributionHeader";
+import { ReactNode } from "react";
 
 type Args = {
   entry: Contribution,
@@ -28,70 +29,45 @@ const ContributionEntry = ({
 }: Args) => {
   const { contentType } = entry;
   let { item } = entry;
-  
+
+  let title:string|ReactNode;
+  let body:string|ReactNode;
   switch (contentType.name) {
     case "comment":
       item = item as CommentContributionItem;
+      body = 
+        <>
+          <div className={css(styles.quoteBar)} />
+          {truncateText(item.plainText, 300)}
+        </>
+      break;
 
-      return (
-        <div className={css(styles.entryContent)}>
-          <ContributionHeader entry={entry} />
-          <div className={css(styles.highlightedContent)}>
-            <div className={css(styles.body, styles.commentBody)}>
-              <div className={css(styles.textContainer)}>
-                <div className={css(styles.quoteBar)} />
-                {truncateText(item.plainText, 300)}
-              </div>
-              <div className={css(styles.actions)}>
-                {actions.map((a,idx) => a.isActive && <span key={`action-${idx}`}>{a.html}</span>)}
-              </div>              
-            </div>
-          </div>
-        </div>
-      );     
     case "rsc_support":
-      item = item as RscSupportContributionItem 
-      return (
-        <div className={css(styles.entryContent)}>
-          <ContributionHeader entry={entry} />
-          <div className={css(styles.highlightedContent)}>
-            {item.source.contentType.name === "comment"
-              ? (
-                <div className={css(styles.body)}>
-                  {truncateText(item?.source.plainText, 300)}
-                </div>
-              ) : (
-                <>
-                  <div className={css(styles.title)}>
-                    <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
-                      {item?.source.unifiedDocument?.document?.title}
-                    </ALink>
-                  </div>
-                  <div className={css(styles.body)}>
-                    {truncateText(item?.source.unifiedDocument?.document?.body, 300)}
-                  </div>
-                </>
-              )
-            }
-          </div>
-        </div>
-      );
+      item = item as RscSupportContributionItem;
+
+      console.log('item', item)
+      console.log('entry', entry)
+      if (item.source.contentType.name === "comment") {
+        body = truncateText(item?.source.plainText, 300);
+      }
+      else {
+        body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
+        title =
+          <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
+            {item?.source.unifiedDocument?.document?.title}
+          </ALink>
+      }
+      break;
+
     case "bounty":
-      return (
-        <div className={css(styles.entryContent)}>
-          <ContributionHeader entry={entry} />
-          <div className={css(styles.highlightedContent)}>
-            <div className={css(styles.title)}>
-              <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
-                {entry.relatedItem?.unifiedDocument?.document?.title}
-              </ALink>
-            </div>
-            <div className={css(styles.body)}>
-              {truncateText(entry.relatedItem?.unifiedDocument?.document?.body, 300)}
-            </div>
-          </div>
-        </div>
-      );
+      title = 
+        <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
+          {entry.relatedItem?.unifiedDocument?.document?.title}
+        </ALink>
+
+      body = truncateText(entry.relatedItem?.unifiedDocument?.document?.body, 300);
+      break;
+
     case "hypothesis":  
     case "post":
     case "question":
@@ -104,25 +80,38 @@ const ContributionEntry = ({
           item as PaperContributionItem;
       
       // @ts-ignore
-      const body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract);
-      return (
-        <div className={css(styles.entryContent)}>
-          <ContributionHeader entry={entry} />
-          <div className={css(styles.highlightedContent)}>
-            <div className={css(styles.title)}>
-              <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
-                {item?.unifiedDocument?.document?.title}
-              </ALink>
+      body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract);
+      title =
+        <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
+          {item?.unifiedDocument?.document?.title}
+        </ALink>
+      break;
+  }
+
+  return (
+    <div className={css(styles.entryContent)}>
+      <ContributionHeader entry={entry} />
+      <div className={css(styles.highlightedContentContainer)}>
+        <div className={css(styles.highlightedContent)}>
+          {title && 
+            <div className={`${css(styles.title)} highlightedContentTitle`}>
+              {title}
             </div>
-            {item?.unifiedDocument?.document?.body &&
-              <div className={css(styles.body)}>
+          }
+          {body &&
+            <div className={`${css(styles.body)} highlightedContentBody`}>
+              <div className={css(styles.textContainer)}>
                 {body}
               </div>
-            }
-          </div>
+            </div>
+          }
         </div>
-      ); 
-  }
+        <div className={css(styles.actions)}>
+          {actions.map((a,idx) => a.isActive && <span key={`action-${idx}`}>{a.html}</span>)}
+        </div> 
+      </div>
+    </div>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -145,27 +134,28 @@ const styles = StyleSheet.create({
     marginRight: "8px",
   },
   details: {},
-  highlightedContent: {
+  highlightedContentContainer: {
     borderRadius: 4,
     border: `1px solid ${colors.GREY(0.5)}`,
     background: `rgba(249, 249, 249)`,
     padding: "15px 15px 14px 15px",
     marginTop: 10,
     position: "relative",
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  highlightedContent: {
   },
   textContainer: {
     display: "flex",
   },
   title: {
     fontSize: 18,
+    ":nth-child(1n) + .highlightedContentBody": {
+      marginTop: 10,
+    }
   },
   body: {
-    marginTop: 10,
-    display: "flex",
-    justifyContent: "space-between"
-  },
-  commentBody: {
-    marginTop: 0,
   },
   hubDropdownContainer: {
     display: "inline-block",

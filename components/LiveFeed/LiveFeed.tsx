@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
   entry: {
     width: "100%",
     display: "flex",
-    userSelect: "none",
   },
   flagIcon: {
     width: 14,
