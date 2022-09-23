@@ -338,7 +338,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    marginTop: 20,
     maxWidth: "90%",
     width: "90%",
   },
@@ -391,6 +390,10 @@ const styles = StyleSheet.create({
     },
   },
   logoDiv: {
+    display: "flex",
+    alignItems: "center",
+    height: NAVBAR_HEIGHT,
+    marginBottom: 20,
     [`@media only screen and (min-width: ${breakpoints.large.int}px)`]: {
       width: "100%",
     },
@@ -409,14 +412,14 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   logoContainer: {
+    alignItems: "center",
     boxSizing: "border-box",
     cursor: "pointer",
     display: "flex",
-    height: NAVBAR_HEIGHT,
+    height: "68px",
     padding: "0 16px",
     userSelect: "none",
     width: "100%",
-    alignItems: "center",
   },
   logoContainerMin: {
     paddingLeft: 16,
@@ -427,10 +430,10 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   researchHubLogoText: {
-    height: 15,
+    height: 16,
     marginLeft: 4,
     objectFit: "contain",
-
+    marginTop: 7,
     "@media only screen and (max-width: 1023px)": {
       marginLeft: 0,
     },
