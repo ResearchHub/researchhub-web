@@ -24,17 +24,23 @@ import RootLeftSidebarItem, {
   ITEM_FADE_DURATION,
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
+import { ModalActions } from "~/redux/modals";
+import { connect } from "react-redux";
 
-type Props = {};
+type Props = {
+  openLoginModal: any;
+};
 
 const getLeftSidebarItemAttrs = ({
   currentUser,
   isMinimized,
   router,
+  openLoginModal,
 }: {
   currentUser: any;
   isMinimized: boolean;
   router: NextRouter;
+  openLoginModal: any;
 }): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
@@ -61,18 +67,20 @@ const getLeftSidebarItemAttrs = ({
         router.push("/hubs");
       },
     },
-    isLoggedIn
-      ? {
-          icon: icons.book,
-          label: "Notebook",
-          isMinimized,
-          isActive: pathname.includes("notebook"),
-          onClick: (event: SyntheticEvent): void => {
-            event.preventDefault();
-            router.push(`/${organization_slug}/notebook`);
-          },
+    {
+      icon: icons.book,
+      label: "Notebook",
+      isMinimized,
+      isActive: pathname.includes("notebook"),
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        if (!isLoggedIn) {
+          openLoginModal(true, "Please Sign in with Google to continue.");
+        } else {
+          router.push(`/${organization_slug}/notebook`);
         }
-      : null,
+      },
+    },
     {
       icon: icons.chartSimple,
       label: "Leaderboard",
@@ -86,7 +94,7 @@ const getLeftSidebarItemAttrs = ({
   ]);
 };
 
-export default function RootLeftSidebar({}: Props): ReactElement {
+function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
   const currentUser = getCurrentUser();
@@ -140,6 +148,7 @@ export default function RootLeftSidebar({}: Props): ReactElement {
         currentUser,
         isMinimized,
         router,
+        openLoginModal,
       }),
     [currentUser.id, router.pathname, isMinimized]
   );
@@ -468,3 +477,9 @@ const styles = StyleSheet.create({
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
 });
+
+const mapDispatchToProps = {
+  openLoginModal: ModalActions.openLoginModal,
+};
+
+export default connect(null, mapDispatchToProps)(RootLeftSidebar);
