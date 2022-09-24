@@ -57,6 +57,8 @@ const NotificationEntry = (props) => {
             return styles.bold;
           case "italic":
             return styles.italic;
+          case "flex":
+            return styles.flex;
           case "link":
             return styles.link;
           default:
@@ -144,6 +146,9 @@ const styles = StyleSheet.create({
   },
   italic: {
     fontStyle: "italic",
+  },
+  flex: {
+    display: "flex",
   },
   container: {
     display: "flex",
