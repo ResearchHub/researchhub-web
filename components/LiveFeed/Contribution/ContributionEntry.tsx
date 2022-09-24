@@ -30,11 +30,13 @@ const ContributionEntry = ({
 }: Args) => {
   const { contentType } = entry;
   let { item } = entry;
+  let showActions = false;
 
   let title:string|ReactNode;
   let body:string|ReactNode;
   switch (contentType.name) {
     case "comment":
+      showActions = true;
       item = item as CommentContributionItem;
       body = 
         <span className={css(styles.commentBody)}>
@@ -74,6 +76,7 @@ const ContributionEntry = ({
     case "question":
     case "paper":
     default:
+      showActions = true;
       item = entry.contentType.name === "hypothesis"
         ? item as HypothesisContributionItem :
           entry.contentType.name === "post"
@@ -107,9 +110,11 @@ const ContributionEntry = ({
             </div>
           }
         </div>
-        <div className={css(styles.actions)}>
-          {actions.map((a,idx) => a.isActive && <span key={`action-${idx}`}>{a.html}</span>)}
-        </div> 
+        {showActions && 
+          <div className={css(styles.actions)}>
+            {actions.map((a,idx) => a.isActive && <span key={`action-${idx}`}>{a.html}</span>)}
+          </div> 
+        }
       </div>
     </div>
   )

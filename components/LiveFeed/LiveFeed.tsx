@@ -1,8 +1,8 @@
 import { ApiFilters } from "./api/fetchContributionsAPI";
-import { Contribution, parseContribution } from "~/config/types/contribution";
+import { CommentContributionItem, Contribution, HypothesisContributionItem, PaperContributionItem, parseContribution, PostContributionItem } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON } from "../Flag/config/flag_constants";
-import { ID } from "~/config/types/root_types";
+import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { KeyOf } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
@@ -12,6 +12,7 @@ import icons from "~/config/themes/icons";
 import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
 
 
 export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
@@ -118,12 +119,39 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
               successMsgText="Content flagged"
               primaryButtonLabel="Flag"
               subHeaderText="I am flagging this content because of:"
-              onSubmit={(
-                verdict: KeyOf<typeof FLAG_REASON>,
-                renderErrorMsg,
-                renderSuccessMsg
-              ) => {
-                console.log('flagged!')
+              onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+
+                let args:any = {
+                  flagReason,
+                  onError: renderErrorMsg,
+                  onSuccess: renderSuccessMsg
+                }
+
+                let item = r.item;
+                if (r.contentType.name === "comment") {
+                  item = item as CommentContributionItem
+                  args.commentPayload = {
+                    ...(r._raw.content_type.name === "thread" && {threadID: item.id}),
+                    ...(r._raw.content_type.name === "comment" && {commentID: item.id}),
+                    ...(r._raw.content_type.name === "reply" && {replyID: item.id}),
+                  };
+                }
+                
+                // @ts-ignore
+                const unifiedDocument:UnifiedDocument = item.unifiedDocument;
+                if (["paper", "post", "hypothesis", "question"].includes(unifiedDocument.documentType)) {
+                  args = {
+                    contentType: unifiedDocument.documentType,
+                    // @ts-ignore
+                    contentID: unifiedDocument.document.id,
+                    ...args
+                  }
+                }
+                else {
+                  console.error(`${r.contentType.name} Not supported for flagging`);
+                  return false;
+                }                
+                flagGrmContent(args);
               }}
             />
           ),

@@ -108,6 +108,7 @@ export type Contribution = {
   relatedItem?: RelatedBountyItem;
   reasonChoice?: KeyOf<typeof FLAG_REASON>;
   id?: ID;
+  _raw: any;
   hubs: Array<Hub>;
 };
 
@@ -209,6 +210,8 @@ export const parseContribution = (raw: any): Contribution => {
     mapped["reasonChoice"] = raw.reason_choice;
   }
 
+  mapped["_raw"] = raw;
+
   /* @ts-ignore */
   return mapped;
 };
@@ -220,7 +223,7 @@ export const parseCommentContributionItem = (
     plainText: raw.item.plain_text,
     createdBy: parseCreatedBy(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
-    id: raw.id,
+    id: raw.item.id,
     createdDate: raw.created_date,
     postType: raw.item.discussion_post_type,
   };
@@ -247,7 +250,7 @@ export const parseBountyContributionItem = (
 
 export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
   const mapped = {
-    id: raw.id,
+    id: raw.item.id,
     title: raw.item.title,
     slug: raw.item.slug,
     createdBy: parseCreatedBy(raw.created_by),
@@ -267,7 +270,7 @@ export const parseHypothesisContributionItem = (
     slug: raw.item.slug,
     createdBy: parseCreatedBy(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
-    id: raw.id,
+    id: raw.item.id,
     createdDate: raw.created_date,
   };
 
@@ -304,7 +307,7 @@ export const parsePostContributionItem = (raw: any): PostContributionItem => {
     slug: raw.item.slug,
     createdBy: parseCreatedBy(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
-    id: raw.id,
+    id: raw.item.id,
     createdDate: raw.created_date,
   };
 

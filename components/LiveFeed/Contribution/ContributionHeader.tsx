@@ -27,7 +27,8 @@ const ContributionHeader = ({ entry }: Args) => {
     item = item as BountyContributionItem;
     actionLabel = 
       <>
-        created <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> bounty
+        created &nbsp;<ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span>&nbsp; bounty
+        {hubs.length ? <>{` `}in</> : ''}
       </>
     contentBadgeLabel = item.amount + " Bounty"
   }
@@ -38,20 +39,19 @@ const ContributionHeader = ({ entry }: Args) => {
       actionLabel = 
         <>
           supported <ContributionAuthor authorProfile={item.recipient?.authorProfile} />{` `}
-          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}>comment</ALink> 
+          &nbsp;<ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span>&nbsp; for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}>comment</ALink> 
         </>
     }
     else {
       actionLabel = 
         <>
           supported authors{` `}
-          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument)}>{item.source?.contentType.name}</ALink>
+          &nbsp;<ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span>&nbsp; for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument)}>{item.source?.contentType.name}</ALink>
         </>
     }
   }
   else if (contentType.name === "comment") {
     item = item as CommentContributionItem;
-    hubs = [];
     let action = "commented on"
     if (item.postType === POST_TYPES.ANSWER) {
       action = "submitted answer for";
@@ -66,6 +66,7 @@ const ContributionHeader = ({ entry }: Args) => {
     actionLabel = 
       <>
         {action} <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument) + "#comments"}>{item.unifiedDocument?.document?.title}</ALink>
+        {hubs.length ? <>{` `}&nbsp;in</> : ''}
       </>
   }
 

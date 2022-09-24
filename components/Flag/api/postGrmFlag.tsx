@@ -10,7 +10,7 @@ import {
 import API from "~/config/api";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 
-type FlagGrmContentArgs = {
+export type FlagGrmContentArgs = {
   commentPayload?: {
     commentID?: ID;
     commentType?: CommentType;
