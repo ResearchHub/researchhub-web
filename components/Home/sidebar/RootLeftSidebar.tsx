@@ -342,7 +342,6 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
 const styles = StyleSheet.create({
   rootLeftSidebar: {
     background: colors.GREY_ICY_BLUE_HUE,
-    borderRight: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
     boxSizing: "border-box",
     position: "relative",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
