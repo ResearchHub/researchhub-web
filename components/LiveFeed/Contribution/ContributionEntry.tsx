@@ -13,6 +13,7 @@ import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   entry: Contribution,
@@ -36,9 +37,9 @@ const ContributionEntry = ({
     case "comment":
       item = item as CommentContributionItem;
       body = 
-        <>
+        <span className={css(styles.commentBody)}>
           {truncateText(item.plainText, 300)}
-        </>
+        </span>
       break;
 
     case "rsc_support":
@@ -46,9 +47,9 @@ const ContributionEntry = ({
 
       if (item.source.contentType.name === "comment") {
         body = 
-          <>
+          <span className={css(styles.commentBody)}>
             {truncateText(item?.source.plainText, 300)}
-          </>        
+          </span>        
       }
       else {
         body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
@@ -78,7 +79,7 @@ const ContributionEntry = ({
           entry.contentType.name === "post"
         ? item as PostContributionItem :
           item as PaperContributionItem;
-      
+
       // @ts-ignore
       body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract, 300);
       title =
@@ -156,6 +157,9 @@ const styles = StyleSheet.create({
     }
   },
   body: {
+  },
+  commentBody: {
+    fontStyle: "italic"
   },
   hubDropdownContainer: {
     display: "inline-block",

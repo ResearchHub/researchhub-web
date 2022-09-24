@@ -835,8 +835,8 @@ export const PaperIcon = ({
 
 export const PostIcon = ({
   onClick,
-  width = 18,
-  height = 18,
+  width = 16,
+  height = 16,
   withAnimation = true,
   overrideStyle = null,
   color = "currentColor",
@@ -871,7 +871,7 @@ export const QuestionIcon = ({
   color = "currentColor",
   onClick,
   overrideStyle = null,
-  size = 18,
+  size = 16,
   withAnimation = true,
 }) => {
   return (
@@ -893,8 +893,8 @@ export const QuestionIcon = ({
 
 export const HypothesisIcon = ({
   onClick,
-  width = 18,
-  height = 18,
+  width = 16,
+  height = 16,
   withAnimation = true,
   overrideStyle = null,
   color = "currentColor",

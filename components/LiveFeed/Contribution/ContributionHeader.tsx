@@ -9,6 +9,7 @@ import { getUrlToUniDoc } from "~/config/utils/routing";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import colors from "~/config/themes/colors";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   entry: Contribution;
@@ -26,7 +27,7 @@ const ContributionHeader = ({ entry }: Args) => {
     item = item as BountyContributionItem;
     actionLabel = 
       <>
-        created <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> bounty in
+        created <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> bounty
       </>
     contentBadgeLabel = item.amount + " Bounty"
   }
@@ -37,14 +38,14 @@ const ContributionHeader = ({ entry }: Args) => {
       actionLabel = 
         <>
           supported <ContributionAuthor authorProfile={item.recipient?.authorProfile} />{` `}
-          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their comment
+          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}>comment</ALink> 
         </>
     }
     else {
       actionLabel = 
         <>
           supported authors{` `}
-          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their {item.source?.contentType.name}
+          <ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span> for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument)}>{item.source?.contentType.name}</ALink>
         </>
     }
   }
@@ -64,7 +65,7 @@ const ContributionHeader = ({ entry }: Args) => {
 
     actionLabel = 
       <>
-        {action} <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument)}>{item.unifiedDocument?.document?.title}</ALink>
+        {action} <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument) + "#comments"}>{item.unifiedDocument?.document?.title}</ALink>
       </>
   }
 
@@ -97,6 +98,9 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     opacity: 1,
     display: "flex",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
+    },    
   },  
   link: {
     fontWeight: 400,
