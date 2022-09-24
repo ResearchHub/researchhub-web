@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     boxSizing: "border-box",
     background: "white",
-    border: `1px solid rgba(151, 151, 151, 0.2)`,
+    // border: `1px solid rgba(151, 151, 151, 0.2)`,
     display: "flex",
     alignItems: "center",
     position: "relative",
@@ -146,10 +146,11 @@ const styles = StyleSheet.create({
     padding: 10,
     position: "relative",
     width: "100%",
+    borderRadius: 4,
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
-    ":hover": {
-      boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
-    },
+    // ":hover": {
+    //   boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
+    // },
     ":focus": {
       boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
       ":hover": {
