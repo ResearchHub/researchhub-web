@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     color: colors.ORANGE_DARK2(),
   },
   badge: {
-    color: colors.BLACK(0.6),
+    color: colors.BLACK(0.5),
     background: colors.LIGHT_GREY(1.0),
     display: "flex",
     padding: "4px 10px 1px 10px",

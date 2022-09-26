@@ -24,6 +24,7 @@ import SubmissionDetails from "./SubmissionDetails";
 import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
+import ContentBadge from "../ContentBadge";
 
 type Args = {
   document: TopLevelDocument;
@@ -394,6 +395,9 @@ function DocumentHeader({
                   styles={[styles.smallScreenVoteWidget]}
                 />
               </div>
+              <div className={css(styles.type, styles.additionalDetail)}>
+                <ContentBadge contentType={documentType} />
+              </div>              
               <ALink
                 overrideStyle={[styles.comments, styles.additionalDetail]}
                 href={"#comments"}
@@ -440,7 +444,7 @@ function DocumentHeader({
                   </span>
                 </div>
               )}
-              {documentType && (
+              {/* {documentType && (
                 <div className={css(styles.type, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon)}>
                     {documentType === "paper" ? (
@@ -455,7 +459,7 @@ function DocumentHeader({
                   </span>
                   <span className={css(styles.typeText)}>{documentType}</span>
                 </div>
-              )}
+              )} */}
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions

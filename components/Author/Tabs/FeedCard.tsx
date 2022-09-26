@@ -326,27 +326,10 @@ function FeedCard({
                     )}
                     <div className={css(styles.metaItem, styles.metaItemAsBadge)}>
                       <ContentBadge contentType={formattedDocType} />
-                      {/* <span className={css(styles.metadataIcon)}>
-                        {documentIcons[formattedDocType!]}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        {formattedDocLabel ?? formattedDocType}
-                      </span> */}
                     </div>
                     {bountyAmount > 0 && (
                       <div className={css(styles.metaItem)}>
                         <ContentBadge contentType="bounty" label={formatBountyAmount({ amount: bountyAmount }) + " Bounty"} />
-                        {/* <span className={css(styles.badgeRscIcon)}>
-                          <ResearchCoinIcon
-                            height={16}
-                            width={16}
-                            version={4}
-                            overrideStyle={undefined}
-                          />
-                        </span>
-                        <span className={css(styles.bountyAmount)}>
-                          {formatBountyAmount({ amount: bountyAmount })} Bounty
-                        </span> */}
                       </div>
                     )}                    
                     {formattedDocType === "question" ? (
