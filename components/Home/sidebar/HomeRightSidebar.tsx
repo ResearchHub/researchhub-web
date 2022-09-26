@@ -15,52 +15,10 @@ import icons from "~/config/themes/icons";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
 import ALink from "~/components/ALink";
 
-const INFO_TAB_EXIT_KEY = "$infoCarouselWithGitcoinBanner$";
+const INFO_TAB_EXIT_KEY = "$rhRightSidebarInfoCarouselExitKey$";
 
 export default function HomeRightSidebar(): ReactElement {
   const carouselElements = [
-    {
-      onBodyClick: () =>
-        window.open(
-          "https://gitcoin.co/grants/4698/researchhub-a-github-for-science"
-        ),
-      title: (
-        <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
-          <img
-            src="/static/beaker.svg"
-            style={{ marginRight: 6, marginTop: -3, height: 20 }}
-          />
-          ResearchHub
-          <span style={{ marginLeft: 10, marginRight: 10 }}>{icons.times}</span>
-          <img
-            src="/static/icons/gitcoin.svg"
-            style={{ marginRight: 6, marginTop: -1, height: 22 }}
-          />
-          Gitcoin
-        </div>
-      ),
-      body: (
-        <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-          <span className={css(DEFAULT_ITEM_STYLE.emphasized)}>
-            Funding ends 09/22. {` `}
-          </span>
-          Consider donating to the ResearchHub on Gitcoin.{" "}
-          <span className={css(DEFAULT_ITEM_STYLE.emphasizedBlue)}>
-            {
-              "A $1 donation will get matched > $100 and all proceeds will go to the Community"
-            }
-          </span>{" "}
-          to host online conferences, reward contributors and help cover
-          community operations.{` `}
-          <ALink
-            theme="solidPrimary"
-            href="https://gitcoin.co/grants/4698/researchhub-a-github-for-science"
-          >
-            <span style={{ textDecoration: "underline" }}>Donate here.</span>
-          </ALink>
-        </div>
-      ),
-    },
     {
       title: (
         <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
