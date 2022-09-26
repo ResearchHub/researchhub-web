@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   filtersAsTabs: {
     width: "100%",
     display: "flex",
+    marginBottom: 15,
   },
   typeFiltersContainer: {
     width: "100%",

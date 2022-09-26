@@ -620,8 +620,8 @@ const styles = StyleSheet.create({
     minWidth: 14,
     minHeight: 14,
     fontSize: 13,
-    border: "1px solid rgba(36, 31, 58, 0.1)",
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
+    border: "0",
+    backgroundColor: "none",
     padding: 5,
     borderRadius: "50%",
     justifyContent: "center",
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   bulkAction: {
-    marginLeft: 5,
+    marginTop: 2,
     display: "flex",
   },
   noResults: {
@@ -724,9 +724,9 @@ const styles = StyleSheet.create({
   },
   bulkActionApprove: {},
   checkIcon: {
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    // border: "1px solid rgba(36, 31, 58, 0.1)",
     color: colors.GREEN(),
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
+    // backgroundColor: "rgba(36, 31, 58, 0.03)",
     cursor: "pointer",
     width: 14,
     height: 14,

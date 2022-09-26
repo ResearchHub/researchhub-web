@@ -167,7 +167,9 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 const styles = StyleSheet.create({
   result: {
     display: "flex",
-    marginBottom: 25,
+    marginBottom: 15,
+    borderBottom: `1px solid ${colors.GREY(0.5)}`,
+    paddingBottom: 13,    
   },
   entry: {
     width: "100%",

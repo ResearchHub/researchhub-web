@@ -183,12 +183,7 @@ const styles = StyleSheet.create({
   },
   details: {},
   highlightedContentContainer: {
-    // borderRadius: 4,
-    // border: `1px solid ${colors.GREY(0.5)}`,
-    // background: `rgba(249, 249, 249)`,
-    // padding: "15px 0px 14px 0px",
-    borderBottom: `1px solid ${colors.GREY(0.5)}`,
-    padding: "7px 0px 14px 0px",
+    padding: "7px 0px 0px 0px",
     marginTop: 0,
     position: "relative",
     display: "flex",
@@ -236,6 +231,7 @@ const styles = StyleSheet.create({
   },
   actions: {
     marginTop: 5,
+    display: "flex",
   }
 });
 
