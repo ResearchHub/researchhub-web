@@ -18,7 +18,8 @@ export type Props = {
   subItems?: ReactElement[];
 };
 
-export const ITEM_FADE_DURATION = 0.3;
+export const ITEM_FADE_DURATION = 0.3; // in sec
+export const BAR_ANIMATION_DURATION = 0.4;
 
 export default function RootLeftSidebarItem({
   icon,
@@ -29,76 +30,62 @@ export default function RootLeftSidebarItem({
   subItems,
 }: Props): ReactElement {
   const [didMount, setDidMount] = useState<boolean>(false);
-  const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
 
   /* avoids landing animation */
-  const itemFadeDuration = didMount ? ITEM_FADE_DURATION : 0;
+  const trueItemFadeDuration = didMount ? ITEM_FADE_DURATION : 0;
 
   useEffect((): void => {
     setTimeout((): void => setDidMount(true), 2000);
   }, []);
 
-  useEffect((): void => {
-    if (isMinimized) {
-      setTimeout(() => {
-        setIsMinimizedLocal(isMinimized);
-      }, ITEM_FADE_DURATION * 1000 + 10);
-    } else {
-      setIsMinimizedLocal(isMinimized);
-    }
-  }, [isMinimized]);
-
-  const variants = {
-    minimized: {
-      opacity: 0,
-      display: "none",
-      // width: 0,
-      // transform: "scaleX(0)",
-    },
-    full: {
-      opacity: 1,
-      display: "visible",
-      // width: "100%",
-      // transform: "scaleX(1)",
-    },
-  };
-
   return (
     <div
       className={css(
         styles.rootLeftSidebarItem,
-        isMinimizedLocal && isMinimized && styles.rootLeftSidebarItemMin,
+        isMinimized && styles.rootLeftSidebarItemMin,
         isActive && styles.rootLeftSidebarItemActive
       )}
       onClick={onClick}
       role="button"
     >
-      <div
-        className={css(
-          styles.iconWrap,
-          isMinimizedLocal && isMinimized && styles.iconWrapMin,
-          isActive && styles.iconWrapActive
-        )}
+      <AnimatePresence
+        initial={false}
+        key={`root-left-sidebar-item-animation-presence-${label}`}
       >
-        {icon}
-      </div>
-      <AnimatePresence initial={false}>
-        {!isMinimized && (
-          <motion.div
-            initial={false}
-            className={css(
-              styles.labelWrap,
-              isActive && styles.labelWrapActive
-            )}
-            transition={{ duration: itemFadeDuration }}
-            // initial={"minimized"}
-            animate={"full"}
-            exit={"minimized"}
-            variants={variants}
-          >
-            {label}
-          </motion.div>
-        )}
+        <div
+          className={css(
+            styles.iconWrap,
+            isMinimized && styles.iconWrapMin,
+            isActive && styles.iconWrapActive
+          )}
+        >
+          {icon}
+        </div>
+        <motion.div
+          key={label}
+          animate={isMinimized ? "minimized" : "full"}
+          className={css(isActive && styles.labelWrapActive)}
+          initial={false}
+          transition={{ duration: trueItemFadeDuration }}
+          variants={{
+            minimized: {
+              display: "none",
+              opacity: 0,
+              width: 0,
+            },
+            full: {
+              alignItems: "center",
+              color: colors.BLACK(1),
+              display: "flex",
+              fontSize: 18,
+              fontWeight: 500,
+              opacity: 1,
+              userSelect: "none",
+            },
+          }}
+        >
+          {label}
+        </motion.div>
       </AnimatePresence>
     </div>
   );
@@ -108,7 +95,6 @@ const styles = StyleSheet.create({
   rootLeftSidebarItem: {
     alignItems: "center",
     backbround: colors.GREY_ICY_BLUE_HUE,
-    borderRadius: 6,
     boxSizing: "border-box",
     cursor: "pointer",
     display: "flex",
@@ -148,14 +134,6 @@ const styles = StyleSheet.create({
   },
   iconWrapActive: { color: colors.NEW_BLUE(1) },
   iconWrapMin: { marginRight: 6 },
-  labelWrap: {
-    alignItems: "center",
-    color: colors.BLACK(1),
-    display: "flex",
-    fontSize: 18,
-    fontWeight: 500,
-    userSelect: "none",
-  },
   labelWrapActive: {
     color: colors.NEW_BLUE(1),
   },

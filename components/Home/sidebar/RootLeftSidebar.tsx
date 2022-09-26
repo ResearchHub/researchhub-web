@@ -21,11 +21,16 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
+  BAR_ANIMATION_DURATION,
   ITEM_FADE_DURATION,
   Props as RootLeftSidebarItemProps,
 } from "./sidebar_items/RootLeftSidebarItem";
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
+import {
+  getCookieOrLocalStorageValue,
+  storeToCookieOrLocalStorage,
+} from "~/config/utils/storeToCookieOrLocalStorage";
 
 type Props = {
   openLoginModal: any;
@@ -94,6 +99,10 @@ const getLeftSidebarItemAttrs = ({
   ]);
 };
 
+const ROOT_LEFT_SIDEBAR_FULL_WIDTH = 280;
+const ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY = "$%_ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY_%$";
+const ROOT_LEFT_SIDEBAR_MIN_WIDTH = 80;
+
 function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
@@ -102,8 +111,11 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     getCurrMediaWidth() >= breakpoints.large.int
   );
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
-  const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
-  const [growMinimized, setGrowMinimized] = useState<boolean>(false);
+  const [isMinimizeForced, setIsMinimizeForced] = useState<boolean>(
+    getCookieOrLocalStorageValue({
+      key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
+    })?.value === "true"
+  );
   const [didMount, setDidMount] = useState<boolean>(false);
 
   useEffectOnScreenResize({
@@ -112,16 +124,15 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
       setIsLargeScreen(largeScreen);
     },
   });
+
   useEffect((): void => {
     /* if [below] we consider user's screen size. Else, we minimize */
     if (
       !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
     ) {
       setIsMinimized(true);
-      setGrowMinimized(true);
     } else {
       setIsMinimized(!isLargeScreen);
-      setGrowMinimized(!isLargeScreen);
     }
   }, [pathname, isLargeScreen]);
 
@@ -131,26 +142,20 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     }, 2000);
   }, []);
 
-  useEffect((): void => {
-    if (isMinimized) {
-      const timeout = ITEM_FADE_DURATION * 1000 - 10;
-      setTimeout(() => {
-        setIsMinimizedLocal(isMinimized);
-      }, timeout);
-    } else {
-      setIsMinimizedLocal(isMinimized);
-    }
-  }, [isMinimized]);
+  const isMinimizedConclusion = isMinimizeForced || isMinimized;
+  console.warn("isMinimizeForced: ", isMinimizeForced);
+  console.warn("isMinimized: ", isMinimized);
+  console.warn("isMinimizedConclusion: ", isMinimizedConclusion);
 
   const leftSidebarItemAttrs = useMemo(
     (): RootLeftSidebarItemProps[] =>
       getLeftSidebarItemAttrs({
         currentUser,
-        isMinimized,
+        isMinimized: isMinimizedConclusion,
         router,
         openLoginModal,
       }),
-    [currentUser.id, router.pathname, isMinimized]
+    [currentUser.id, router.pathname, isMinimizedConclusion]
   );
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
@@ -162,180 +167,199 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
   );
 
   const {
+    formattedFooterItemsButtonRow,
+    formattedFooterTxtItem,
+    formattedLeftSidebarItemsContainer,
     formattedLogoContainer,
     formattedRootLeftSidebar,
-    formattedFooterTxtItem,
-    formattedFooterItemsButtonRow,
   } = {
     formattedLogoContainer: [
       styles.logoContainer,
-      isMinimizedLocal && isMinimized && styles.logoContainerMin,
+      isMinimizedConclusion && styles.logoContainerMin,
     ],
-    formattedRootLeftSidebar: css(
-      styles.rootLeftSidebar,
-      isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
+    formattedRootLeftSidebar: css(styles.rootLeftSidebar),
+    formattedLeftSidebarItemsContainer: css(
+      styles.leftSidebarItemsContainer,
+      isMinimizedConclusion && styles.leftSidebarItemsContainerMin
     ),
     formattedFooterTxtItem: [
       styles.leftSidebarFooterTxtItem,
-      isMinimized && styles.leftSidebarFooterTxtItemMin,
+      isMinimizedConclusion && styles.leftSidebarFooterTxtItemMin,
     ],
     formattedFooterItemsButtonRow: css(
       styles.leftSidebarFooterItemsBottomRow,
-      isMinimized && styles.leftSidebarFooterItemsBottomRowMin
+      isMinimizedConclusion && styles.leftSidebarFooterItemsBottomRowMin
     ),
   };
 
-  const variants = {
-    minimized: {
-      width: 80,
-      // opacity: 0,
-    },
-    full: {
-      width: 280,
-    },
-  };
-
-  const rscIconVariants = {
-    minimized: {
-      opacity: 0,
-      // width: 0,
-      // transform: "scaleX(0)",
-      // marginLeft: 0,
-    },
-    full: {
-      // transform: "scaleX(1)",
-      // width: "100%",
-      opacity: 1,
-    },
-  };
-
   return (
-    <motion.div
-      animate={growMinimized ? "minimized" : "full"}
-      variants={variants}
-      transition={{
-        duration: didMount
-          ? ITEM_FADE_DURATION
-          : 0 /* avoids landing animation */,
-      }}
-      className={formattedRootLeftSidebar}
+    <AnimatePresence
+      initial={false}
+      key={"root-left-sidebar-animation-presence"}
     >
-      <div className={css(styles.rootLeftSidebarStickyWrap)}>
-        <div className={css(styles.leftSidebarItemsContainer)}>
-          <div className={css(styles.leftSidebarItemsInnerContainer)}>
-            <div className={css(styles.logoDiv)}>
-              <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
-                <RHLogo
-                  iconStyle={styles.logo}
-                  white={false}
-                  withText={false}
-                />
-                <AnimatePresence initial={false}>
-                  {!isMinimized && (
-                    <motion.img
-                      variants={rscIconVariants}
-                      animate={isMinimized ? "minimized" : "full"}
-                      exit={"minimized"}
-                      key={`RHLogo-max`}
-                      transition={{
-                        duration: didMount
-                          ? ITEM_FADE_DURATION
-                          : 0 /* avoids landing animation */,
-                      }}
-                      className={css(styles.researchHubLogoText)}
-                      src={"/static/ResearchHubText.png"}
-                      alt="ResearchHub Text Logo"
-                    />
-                  )}
-                </AnimatePresence>
+      <motion.div
+        animate={isMinimizedConclusion ? "minimized" : "full"}
+        variants={{
+          minimized: {
+            maxWidth: ROOT_LEFT_SIDEBAR_MIN_WIDTH,
+            width: ROOT_LEFT_SIDEBAR_MIN_WIDTH,
+          },
+          full: {
+            maxWidth: ROOT_LEFT_SIDEBAR_FULL_WIDTH,
+            width: ROOT_LEFT_SIDEBAR_FULL_WIDTH,
+          },
+        }}
+        transition={{
+          duration: didMount
+            ? BAR_ANIMATION_DURATION
+            : 0 /* avoids landing animation */,
+        }}
+        className={formattedRootLeftSidebar}
+      >
+        <div className={css(styles.rootLeftSidebarStickyWrap)}>
+          <div className={formattedLeftSidebarItemsContainer}>
+            <div className={css(styles.leftSidebarItemsInnerContainer)}>
+              <div className={css(styles.logoDiv)}>
+                <ALink
+                  href={"/"}
+                  as={`/`}
+                  overrideStyle={formattedLogoContainer}
+                >
+                  <RHLogo
+                    iconStyle={styles.logo}
+                    white={false}
+                    withText={false}
+                  />
+
+                  <motion.img
+                    alt="ResearchHub Text Logo"
+                    animate={isMinimizedConclusion ? "minimized" : "full"}
+                    className={css(styles.researchHubLogoText)}
+                    initial={false}
+                    key={"researchHub-text-logo"}
+                    src={"/static/ResearchHubText.png"}
+                    transition={{
+                      duration: didMount
+                        ? ITEM_FADE_DURATION
+                        : 0 /* avoids landing animation */,
+                    }}
+                    variants={{
+                      minimized: {
+                        display: "none",
+                        opacity: 0,
+                        height: 14.05,
+                        width: 0,
+                      },
+                      full: {
+                        display: "flex",
+                        opacity: 1,
+                        height: 14.05,
+                        marginLeft: 11.5,
+                        width: "unset",
+                        objectFit: "contain",
+                        transform: "translateY(20%)",
+                      },
+                    }}
+                  />
+                </ALink>
+              </div>
+              {leftSidebarItems}
+            </div>
+          </div>
+          <div className={css(styles.leftSidebarFooter)}>
+            <div className={css(styles.leftSidebarFooterItemsTop)}>
+              <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
+                {"About"}
+              </ALink>
+              <ALink
+                href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+                overrideStyle={formattedFooterTxtItem}
+              >
+                {"Jobs"}
               </ALink>
             </div>
-            {leftSidebarItems}
+            <div className={css(styles.footer)}>
+              <div className={formattedFooterItemsButtonRow}>
+                <ALink
+                  href="https://twitter.com/researchhub"
+                  overrideStyle={styles.leftSidebarFooterIcon}
+                  target="__blank"
+                >
+                  {icons.twitter}
+                </ALink>
+                <ALink
+                  href="https://discord.com/invite/ZcCYgcnUp5"
+                  overrideStyle={styles.leftSidebarFooterIcon}
+                  target="__blank"
+                >
+                  {icons.discord}
+                </ALink>
+                <ALink
+                  href="https://medium.com/researchhub"
+                  overrideStyle={
+                    (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
+                  }
+                  target="__blank"
+                >
+                  {icons.medium}
+                </ALink>
+              </div>
+              <div className={formattedFooterItemsButtonRow}>
+                <ALink
+                  href="/about/tos"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Terms"}
+                </ALink>
+                <ALink
+                  href="/about/privacy"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Privacy"}
+                </ALink>
+                <ALink
+                  href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
+                  overrideStyle={styles.leftSidebarFooterBotItem}
+                >
+                  {"Help"}
+                </ALink>
+              </div>
+            </div>
+            {isMinimizedConclusion ? (
+              <div
+                className={css(styles.arrowRight)}
+                onClick={(event: SyntheticEvent): void => {
+                  // debugger;
+                  event.preventDefault();
+                  setIsMinimizeForced(false);
+                  storeToCookieOrLocalStorage({
+                    key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
+                    value: "false",
+                  });
+                }}
+              >
+                {icons.arrowRightToLine}
+              </div>
+            ) : (
+              <div
+                className={css(styles.arrowRight, styles.arrowLeft)}
+                onClick={(event: SyntheticEvent): void => {
+                  // debugger;
+                  event.preventDefault();
+                  setIsMinimizeForced(true);
+                  storeToCookieOrLocalStorage({
+                    key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
+                    value: "true",
+                  });
+                }}
+              >
+                {icons.arrowLeftToLine}
+              </div>
+            )}
           </div>
         </div>
-        <div className={css(styles.leftSidebarFooter)}>
-          <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
-              {"About"}
-            </ALink>
-            <ALink
-              href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Jobs"}
-            </ALink>
-          </div>
-          <div className={css(styles.footer)}>
-            <div className={formattedFooterItemsButtonRow}>
-              <ALink
-                href="https://twitter.com/researchhub"
-                overrideStyle={styles.leftSidebarFooterIcon}
-                target="__blank"
-              >
-                {icons.twitter}
-              </ALink>
-              <ALink
-                href="https://discord.com/invite/ZcCYgcnUp5"
-                overrideStyle={styles.leftSidebarFooterIcon}
-                target="__blank"
-              >
-                {icons.discord}
-              </ALink>
-              <ALink
-                href="https://medium.com/researchhub"
-                overrideStyle={
-                  (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
-                }
-                target="__blank"
-              >
-                {icons.medium}
-              </ALink>
-            </div>
-            <div className={formattedFooterItemsButtonRow}>
-              <ALink
-                href="/about/tos"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Terms"}
-              </ALink>
-              <ALink
-                href="/about/privacy"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Privacy"}
-              </ALink>
-              <ALink
-                href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
-                overrideStyle={styles.leftSidebarFooterBotItem}
-              >
-                {"Help"}
-              </ALink>
-            </div>
-          </div>
-          {isMinimized ? (
-            <div
-              className={css(styles.arrowRight)}
-              onClick={() => {
-                setGrowMinimized(false);
-                setIsMinimized(false);
-              }}
-            >
-              {icons.arrowRightToLine}
-            </div>
-          ) : (
-            <div
-              className={css(styles.arrowRight, styles.arrowLeft)}
-              onClick={() => {
-                setGrowMinimized(true);
-                setIsMinimized(true);
-              }}
-            >
-              {icons.arrowLeftToLine}
-            </div>
-          )}
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -348,7 +372,6 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  rootLeftSidebarMin: {},
   rootLeftSidebarStickyWrap: {
     display: "flex",
     flexDirection: "column",
@@ -361,9 +384,10 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
+    boxSizing: "border-box",
   },
+  leftSidebarItemsContainerMin: {},
   leftSidebarItemsInnerContainer: {
-    // alignItems: "center",
     borderBottom: `1px solid ${colors.GREY_BORDER}`,
     boxSizing: "border-box",
     display: "flex",
@@ -465,11 +489,6 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   researchHubLogoText: {
-    height: 14.05,
-    marginLeft: 11.5,
-    objectFit: "contain",
-    transform: "translateY(20%)",
-    // marginTop: 10,
     "@media only screen and (max-width: 1023px)": {
       marginLeft: 0,
     },
