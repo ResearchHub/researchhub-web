@@ -10,14 +10,14 @@ import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Bounty from "~/config/types/bounty";
-import { ResearchCoinIcon } from "~/config/themes/icons";
 
 type Args = {
   createdBy: CreatedBy | null;
   hubs: Array<Hub>;
   createdDate: string;
-  avatarSize: number;
-  bounties: Bounty[];
+  avatarSize?: number;
+  bounties?: Bounty[];
+  actionLabel?: string | ReactElement;
 };
 
 function SubmissionDetails({
@@ -26,6 +26,7 @@ function SubmissionDetails({
   createdDate,
   avatarSize = 30,
   bounties = [],
+  actionLabel = "posted in",
 }: Args): ReactElement<"div"> {
   const showAllHubs =
     process.browser && window.innerWidth > breakpoints.medium.int;
@@ -39,7 +40,7 @@ function SubmissionDetails({
   const visibleHubs = hubs?.slice(0, sliceIndex) ?? [];
   const hiddenHubs = hubs?.slice(sliceIndex) ?? [];
 
-  const bounty =bounties?.[0];
+  const bounty = bounties?.[0];
   const authorProfile =
     bounty?.createdBy?.authorProfile ?? createdBy?.authorProfile;
 
@@ -60,7 +61,8 @@ function SubmissionDetails({
         <div className={css(styles.hubsContainer)}>
           <>
             <span className={css(styles.textSecondary, styles.postedText)}>
-              {` posted in`}
+              {` `}
+              {actionLabel}
             </span>
             {visibleHubs.map((h, index) => (
               <span key={index}>
@@ -90,11 +92,7 @@ function SubmissionDetails({
         <span className={css(styles.textSecondary, styles.timestamp)}>
           {timeSince(createdDate)}
           {bounty && bounty.timeRemainingInDays <= 2 && (
-            <span
-              className={css(
-                styles.expiringSoon
-              )}
-            >
+            <span className={css(styles.expiringSoon)}>
               <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
               bounty ending in {bounty.timeRemaining}
             </span>
@@ -135,7 +133,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   textSecondary: {
-    color: colors.MEDIUM_GREY(),
+    color: colors.MEDIUM_GREY2(),
   },
   hubsContainer: {
     display: "inline",
@@ -144,7 +142,7 @@ const styles = StyleSheet.create({
     display: "inline-block",
   },
   dot: {
-    color: colors.MEDIUM_GREY(),
+    color: colors.MEDIUM_GREY2(),
   },
   dotWithMargin: {
     marginLeft: 5,

@@ -47,6 +47,7 @@ export type UrlDocument = {
   id: ID;
   title?: string;
   slug?: string;
+  body?: string;
   paperTitle?: string;
   isRemoved?: boolean;
 };
@@ -180,7 +181,6 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof raw !== "object") {
     return raw;
   }
-
   const parsed = {
     id: raw.id,
     documentType: raw?.document_type?.toLowerCase(),
@@ -215,6 +215,11 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     parsed["reviewSummary"] = parsePeerReviewScoreSummary(raw.reviews);
   }
 
+  if (unparsedInnerDoc.renderable_text) {
+    parsed.document["body"] = unparsedInnerDoc.renderable_text;
+  }
+
+  // @ts-ignore
   return parsed;
 };
 
@@ -222,7 +227,6 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
   if (typeof raw !== "object") {
     return raw;
   }
-
   const parsed = {
     id: raw.id,
     profileImage: raw.profile_image,

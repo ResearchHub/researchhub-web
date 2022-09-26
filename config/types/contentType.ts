@@ -1,25 +1,30 @@
 import { ID } from "./root_types";
 
 export type ContentType = {
-  name: "paper" | "post" | "hypothesis" | "comment" | "document";
+  name: "paper" | "post" | "hypothesis" | "comment" | "document" | "question" | "bounty" | "rsc_support";
   id: ID;
 };
 
 export const parseContentType = (raw: any): ContentType => {
   let contentTypeName;
-  if (["thread", "comment", "reply"].includes(raw.name)) {
+  const inputName = raw.name || raw.model;
+  if (["thread", "comment", "reply"].includes(inputName)) {
     contentTypeName = "comment";
-  } else if (raw.name === "paper") {
+  } else if (inputName === "paper") {
     contentTypeName = "paper";
-  } else if (raw.name === "researchhubpost") {
+  } else if (inputName === "researchhubpost") {
     contentTypeName = "post";
-  } else if (raw.name === "hypothesis") {
+  } else if (inputName === "hypothesis") {
     contentTypeName = "hypothesis";
-  } else if (raw.name === "researchhubunifieddocument") {
+  } else if (inputName === "researchhubunifieddocument") {
     contentTypeName = "document";
+  } else if (inputName === "purchase") {
+      contentTypeName = "rsc_support";    
+  } else if (inputName === "bounty") {
+      contentTypeName = "bounty";          
   } else {
-    contentTypeName = raw.name;
-    console.error("Could not parse object with content_type=" + raw.name);
+    contentTypeName = inputName;
+    console.error("Could not parse object with content_type=" + inputName);
   }
 
   return {

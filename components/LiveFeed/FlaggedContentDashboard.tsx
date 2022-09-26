@@ -1,10 +1,12 @@
-import { ApiFilters, verdictOpts } from "./api/fetchFlaggedContributionsAPI";
+import fetchFlaggedContributions, {
+  ApiFilters,
+  verdictOpts,
+} from "./api/fetchFlaggedContributionsAPI";
 import { connect } from "react-redux";
 import { Contribution, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
-import { ID } from "~/config/types/root_types";
-import { KeyOf } from "~/config/types/root_types";
+import { ID, KeyOf } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NavbarContext } from "~/pages/Base";
 import { ReactElement, useState, useEffect, useRef, useContext } from "react";
@@ -16,7 +18,6 @@ import AuthorAvatar from "../AuthorAvatar";
 import CheckBox from "~/components/Form/CheckBox";
 import colors from "~/config/themes/colors";
 import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
-import fetchFlaggedContributions from "./api/fetchFlaggedContributionsAPI";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import FormSelect from "~/components/Form/FormSelect";
 import icons from "~/config/themes/icons";
@@ -24,7 +25,7 @@ import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
-import renderContributionEntry from "./utils/renderContributionEntry";
+import ContributionEntry from "./Contribution/ContributionEntry";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -111,7 +112,7 @@ function FlaggedContentDashboard({
   };
 
   const handleHubFilterChange = (selectedHub: any) => {
-    let query = { ...router.query };
+    const query = { ...router.query };
     if (selectedHub.id) {
       query.hub_id = selectedHub.id;
     } else {
@@ -134,7 +135,7 @@ function FlaggedContentDashboard({
   };
 
   const handleVerdictChange = (selectedVerdict: any) => {
-    let query = { ...router.query };
+    const query = { ...router.query };
     if (selectedVerdict.value) {
       query.verdict = selectedVerdict.value;
     } else {
@@ -406,12 +407,12 @@ function FlaggedContentDashboard({
               />
             </div>
             <div className={css(styles.entry)}>
-              {renderContributionEntry(
-                r,
-                cardActions,
-                setHubsDropdownOpenForKey,
-                hubsDropdownOpenForKey
-              )}
+              <ContributionEntry
+                entry={r}
+                actions={cardActions}
+                setHubsDropdownOpenForKey={setHubsDropdownOpenForKey}
+                hubsDropdownOpenForKey={hubsDropdownOpenForKey}
+              />
             </div>
           </div>
         </div>
@@ -620,8 +621,8 @@ const styles = StyleSheet.create({
     minWidth: 14,
     minHeight: 14,
     fontSize: 13,
-    border: "1px solid rgba(36, 31, 58, 0.1)",
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
+    border: "0",
+    backgroundColor: "none",
     padding: 5,
     borderRadius: "50%",
     justifyContent: "center",
@@ -708,7 +709,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   bulkAction: {
-    marginLeft: 5,
+    marginTop: 2,
     display: "flex",
   },
   noResults: {
@@ -724,9 +725,7 @@ const styles = StyleSheet.create({
   },
   bulkActionApprove: {},
   checkIcon: {
-    border: "1px solid rgba(36, 31, 58, 0.1)",
     color: colors.GREEN(),
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
     cursor: "pointer",
     width: 14,
     height: 14,

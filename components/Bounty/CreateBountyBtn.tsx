@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState, useEffect } from "react";
-import { ResearchCoinIcon } from "~/config/themes/icons";
+import { ReactElement, useState } from "react";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { useAlert } from "react-alert";
 import Bounty from "~/config/types/bounty";
 import BountyModal from "./BountyModal";

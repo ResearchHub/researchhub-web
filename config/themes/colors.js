@@ -34,6 +34,7 @@ const colors = {
   ORANGE_DARK: (opacity = 1) => `rgba(237, 157, 20, ${opacity})`,
   ORANGE_DARK2: (opacity = 1) => `rgba(255, 122, 0, ${opacity})`,
   ORANGE_LIGHT: (opacity = 1) => `rgb(255, 195, 61, ${opacity})`,
+  ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`,
   PASTEL_GREEN_TEXT: "#88cb88",
   PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   PURPLE_LIGHT: (opacity = 1) => `rgb(112, 60, 255, ${opacity})`,
@@ -46,6 +47,11 @@ const colors = {
   DARK_YELLOW: (opacity = 1) => `rgb(239, 160, 0, ${opacity})`,
   PLACEHOLDER_CARD_BACKGROUND: "#efefef",
   STANDARD_BOX_SHADOW: "rgba(185, 185, 185, 0.25)",
+};
+
+export const bountyColors = {
+  BADGE_TEXT: colors.ORANGE_DARK2(1),
+  BADGE_BACKGROUND: colors.ORANGE_LIGHTER(),
 };
 
 export const genericCardColors = {

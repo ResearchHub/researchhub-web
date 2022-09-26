@@ -1,4 +1,5 @@
-import icons, { ResearchCoinIcon } from "~/config/themes/icons";
+import icons from "~/config/themes/icons";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 export const topLevelFilters = {
   "/": {
@@ -11,6 +12,11 @@ export const topLevelFilters = {
     value: "/my-hubs",
     icon: null,
   },
+  "/live": {
+    label: "Live",
+    value: "/live",
+    icon: icons.pulse,
+  },  
 };
 
 export const UnifiedDocFilters = {
