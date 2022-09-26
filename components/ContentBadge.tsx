@@ -1,6 +1,6 @@
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
-import colors from "~/config/themes/colors";
+import colors, { bountyColors } from "~/config/themes/colors";
 import icons, {
   PostIcon,
   PaperIcon,
@@ -8,7 +8,6 @@ import icons, {
   QuestionIcon,
 } from "~/config/themes/icons";
 import { useRouter } from "next/router";
-import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "./TextEditor/config/postTypes";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
@@ -16,51 +15,33 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 const ContentBadge = ({ contentType, label = null, onClick = null }) => {
   const router = useRouter();
 
-  const _onClick = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const isCurrentRouteAFeed = ["/hubs/[slug]", "/"].includes(router.pathname);
-    if (isCurrentRouteAFeed) {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, type: getFEUnifiedDocType(docType) },
-      });
-    } else {
-      router.push({
-        pathname: "/",
-        query: { type: getFEUnifiedDocType(docType) },
-      });
-    }
-  };
-
   return (
     <Badge badgeClassName={[styles.badge, styles["badgeFor_" + contentType]]}>
       {contentType === "paper" ? (
         <>
           <span className={css(styles.icon)}>
-            <PaperIcon withAnimation={false} />
+            <PaperIcon withAnimation={false} onClick={undefined} />
           </span>
           <span>Paper</span>
         </>
       ) : contentType === "post" ? (
         <>
           <span className={css(styles.icon)}>
-            <PostIcon withAnimation={false} />
+            <PostIcon withAnimation={false} onClick={undefined} />
           </span>
           <span>Post</span>
         </>
       ) : contentType === "hypothesis" ? (
         <>
           <span className={css(styles.icon)}>
-            <HypothesisIcon withAnimation={false} />
+            <HypothesisIcon withAnimation={false} onClick={undefined} />
           </span>
           <span>Meta Study</span>
         </>
       ) : contentType === "question" ? (
         <>
           <span className={css(styles.icon)}>
-            <QuestionIcon withAnimation={false} />
+            <QuestionIcon withAnimation={false} onClick={undefined} />
           </span>
           <span>Question</span>
         </>
@@ -100,7 +81,7 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
           </span>
           <span className={css(styles.rscContent)}>{label}</span>
         </>
-      ) : null}
+      ) : <></>}
     </Badge>
   );
 };
@@ -112,12 +93,12 @@ const styles = StyleSheet.create({
     height: 21,
   },
   badgeFor_rsc_support: {
-    background: "rgb(252 242 220)",
-    color: colors.ORANGE_DARK2(),
+    background: bountyColors.BADGE_BACKGROUND,
+    color: bountyColors.BADGE_TEXT,
   },
   badgeFor_bounty: {
-    background: "rgb(252 242 220)",
-    color: colors.ORANGE_DARK2(),
+    background: bountyColors.BADGE_BACKGROUND,
+    color: bountyColors.BADGE_TEXT,
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),

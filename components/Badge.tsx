@@ -6,9 +6,9 @@ import { isDevEnv } from "~/config/utils/env";
 import { ReactNode } from "react";
 
 type Args = {
-  label: string,
+  label?: string,
   id?: string,
-  children?: ReactNode[],
+  children?: any,
   onClick?: Function,
   onRemove?: Function,
   badgeClassName: any,
