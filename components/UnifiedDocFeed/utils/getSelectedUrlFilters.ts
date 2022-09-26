@@ -36,7 +36,8 @@ export const getSelectedUrlFilters = ({
   query,
   pathname,
 }): SelectedUrlFilters => {
-  const selectedTopLevelFilter = topLevelFilters[pathname]?.value;
+  const lastPathPart = "/" + pathname.split("/").slice(-1)[0];
+  const selectedTopLevelFilter = topLevelFilters[lastPathPart]?.value;
   const selectedTypeFilter = feedTypeOpts[query?.type]?.value || "all";
   const selectedSort = getSortValue({
     query,

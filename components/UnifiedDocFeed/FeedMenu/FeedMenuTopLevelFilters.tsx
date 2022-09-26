@@ -100,7 +100,7 @@ const FeedMenuTopLevelFilters = ({
             <MyHubsDropdown hubState={hubState} />
           )}
           {isMyHubs && 
-            <span style={{borderRight: `1px solid ${colors.GREY_LINE(1)}`, height: "80%", marginLeft: 12, marginRight: 12}}></span>
+            <span className={css(styles.divider)}></span>
           }
         </div>
       );
@@ -134,6 +134,12 @@ const styles = StyleSheet.create({
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
   },
   orderingContainer: {},
+  divider: {
+    borderRight: `1px solid ${colors.GREY_LINE(1)}`,
+    height: "80%",
+    position: "absolute",
+    right: -20
+  },
   filterAsDropdownOpt: {
     borderBottom: 0,
     padding: "10px 14px",
@@ -156,7 +162,7 @@ const styles = StyleSheet.create({
     },
   },
   filterForMyHubs: {
-    marginRight: 0,
+    marginRight: 40,
   },
   chevronIcon: {
     marginLeft: 8,
