@@ -107,7 +107,8 @@ function AuthorPage(props) {
   const authorUserID = author.user;
   const doesAuthorHaveUser = !isNullOrUndefined(authorUserID);
   const isAuthorUserSuspended =
-    authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
+    authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED ||
+    authorUserStatus === AUTHOR_USER_STATUS.SPAMMER;
   const isCurrentUserModerator =
     Boolean(auth.isLoggedIn) && Boolean(user.moderator);
   const doesAuthorHaveUserAndNotMe =
@@ -732,6 +733,35 @@ function AuthorPage(props) {
                   setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
               }}
             />
+            {!isAuthorUserSuspended && (
+              <ModeratorDeleteButton
+                actionType="user"
+                containerStyle={[styles.moderatorButton, styles.reinstateUser]}
+                icon={
+                  !fetchedUser
+                    ? " "
+                    : isAuthorUserSuspended
+                    ? icons.userPlus
+                    : icons.userSlash
+                }
+                iconStyle={styles.moderatorIcon}
+                key="user"
+                labelStyle={styles.moderatorLabel}
+                label={
+                  !fetchedUser ? (
+                    <Loader loading={true} color={"#FFF"} size={15} />
+                  ) : (
+                    "Reinstate User"
+                  )
+                }
+                metaData={{
+                  authorId: router.query.authorId,
+                  isSuspended: true,
+                  setIsSuspended: () =>
+                    setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+                }}
+              />
+            )}
           </div>
         ) : null,
         /* current user should not be able to ban / reinstate themselves */
@@ -1101,6 +1131,14 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
+    },
+  },
+  reinstateUser: {
+    marginTop: 16,
+    background: colors.DARK_GREEN(0.9),
+    ":hover": {
+      color: "#FFF",
+      background: colors.DARK_GREEN(1),
     },
   },
   editorImg: {
@@ -1624,7 +1662,7 @@ const styles = StyleSheet.create({
   },
   adminButton: {
     display: "block",
-    marginTop: 10,
+    marginTop: 16,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 0,
       marginRight: 10,
