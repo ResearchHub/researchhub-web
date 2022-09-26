@@ -557,7 +557,7 @@ class HubPage extends Component {
               </div>
             </div>
             {this.props.isLiveFeed ? (
-              <div className={css(styles.wrapper)}>
+              <div className={css(styles.liveFeedwrapper)}>
                 <div className={css(styles.title) + " clamp2"}>
                   Explore ResearchHub
                 </div>
@@ -609,7 +609,7 @@ var styles = StyleSheet.create({
       fontSize: 20,
     },
   },
-  wrapper: {
+  liveFeedwrapper: {
     display: "flex",
     flexDirection: "column",
     height: "100%",

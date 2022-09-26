@@ -724,9 +724,7 @@ const styles = StyleSheet.create({
   },
   bulkActionApprove: {},
   checkIcon: {
-    // border: "1px solid rgba(36, 31, 58, 0.1)",
     color: colors.GREEN(),
-    // backgroundColor: "rgba(36, 31, 58, 0.03)",
     cursor: "pointer",
     width: 14,
     height: 14,

@@ -63,7 +63,6 @@ export type RscSupportContributionItem = {
 
 export type BountyContributionItem = {
   unifiedDocument: UnifiedDocument;
-  // item: Contribution
   createdBy: CreatedBy | null;
   createdDate: string;
   amount: number;
@@ -301,9 +300,6 @@ export const parseRscSupportContributionItem = (
 };
 
 export const parsePostContributionItem = (raw: any): PostContributionItem => {
-  console.log('-------------')
-  console.log('raw', raw)
-  console.log('-------------')
 
   const mapped = {
     title: raw.item.title,
