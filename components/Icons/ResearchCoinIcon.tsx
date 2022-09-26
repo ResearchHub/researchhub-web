@@ -1,13 +1,13 @@
 import { css } from "aphrodite";
 
 type Args = {
-  onClick?: Function,
-  overrideStyle?: any,
-  height?: number,
-  width?: number,
-  version?: number,
-  color?: string,  
-}
+  onClick?: Function;
+  overrideStyle?: any;
+  height?: number;
+  width?: number;
+  version?: number;
+  color?: string;
+};
 
 const ResearchCoinIcon = ({
   onClick,
@@ -18,7 +18,10 @@ const ResearchCoinIcon = ({
   color = "#F3A113",
 }: Args) => {
   return (
-    <span onClick={(event) => onClick && onClick(event)} className={css(overrideStyle && overrideStyle)}>
+    <span
+      onClick={(event) => onClick && onClick(event)}
+      className={css(overrideStyle && overrideStyle)}
+    >
       {version === 1 ? (
         <img
           src={"/static/icons/coin-filled.png"}

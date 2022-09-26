@@ -83,7 +83,7 @@ const FeedMenu = ({ hubState }: Args) => {
             selectedFilters={selectedFilters}
             hubState={hubState}
           />
-          {shouldShowTabs &&
+          {shouldShowTabs && (
             <div className={css(styles.filtersAsTabs)}>
               <div className={css(styles.typeFiltersContainer)}>
                 <div className={css(styles.orderingContainer)}>
@@ -102,10 +102,10 @@ const FeedMenu = ({ hubState }: Args) => {
                 </div>
               </div>
             </div>
-          }
-          </div>
+          )}
         </div>
       </div>
+    </div>
   );
 };
 

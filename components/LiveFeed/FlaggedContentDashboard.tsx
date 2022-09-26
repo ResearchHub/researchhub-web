@@ -1,10 +1,12 @@
-import { ApiFilters, verdictOpts } from "./api/fetchFlaggedContributionsAPI";
+import fetchFlaggedContributions, {
+  ApiFilters,
+  verdictOpts,
+} from "./api/fetchFlaggedContributionsAPI";
 import { connect } from "react-redux";
 import { Contribution, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
-import { ID } from "~/config/types/root_types";
-import { KeyOf } from "~/config/types/root_types";
+import { ID, KeyOf } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NavbarContext } from "~/pages/Base";
 import { ReactElement, useState, useEffect, useRef, useContext } from "react";
@@ -16,7 +18,6 @@ import AuthorAvatar from "../AuthorAvatar";
 import CheckBox from "~/components/Form/CheckBox";
 import colors from "~/config/themes/colors";
 import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
-import fetchFlaggedContributions from "./api/fetchFlaggedContributionsAPI";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import FormSelect from "~/components/Form/FormSelect";
 import icons from "~/config/themes/icons";
@@ -111,7 +112,7 @@ function FlaggedContentDashboard({
   };
 
   const handleHubFilterChange = (selectedHub: any) => {
-    let query = { ...router.query };
+    const query = { ...router.query };
     if (selectedHub.id) {
       query.hub_id = selectedHub.id;
     } else {
@@ -134,7 +135,7 @@ function FlaggedContentDashboard({
   };
 
   const handleVerdictChange = (selectedVerdict: any) => {
-    let query = { ...router.query };
+    const query = { ...router.query };
     if (selectedVerdict.value) {
       query.verdict = selectedVerdict.value;
     } else {

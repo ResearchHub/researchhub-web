@@ -397,7 +397,7 @@ function DocumentHeader({
               </div>
               <div className={css(styles.type, styles.additionalDetail)}>
                 <ContentBadge contentType={documentType} />
-              </div>              
+              </div>
               <ALink
                 overrideStyle={[styles.comments, styles.additionalDetail]}
                 href={"#comments"}

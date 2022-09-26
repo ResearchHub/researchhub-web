@@ -6,13 +6,13 @@ import { isDevEnv } from "~/config/utils/env";
 import { ReactNode } from "react";
 
 type Args = {
-  label?: string,
-  id?: string,
-  children?: any,
-  onClick?: Function,
-  onRemove?: Function,
-  badgeClassName: any,
-}
+  label?: string;
+  id?: string;
+  children?: any;
+  onClick?: Function;
+  onRemove?: Function;
+  badgeClassName: any;
+};
 
 const Badge = ({
   label,
@@ -24,7 +24,11 @@ const Badge = ({
 }: Args) => {
   return (
     <div
-      className={css(styles.badge, onClick && styles.badgeWithOnClick, badgeClassName)}
+      className={css(
+        styles.badge,
+        onClick && styles.badgeWithOnClick,
+        badgeClassName
+      )}
       onClick={(event) => onClick && onClick(event)}
       data-test={isDevEnv() ? `badge-${id}` : undefined}
     >
@@ -33,7 +37,10 @@ const Badge = ({
         <div className={css(styles.badgeLabel)}>{label}</div>
       )}
       {onRemove && (
-        <div className={css(styles.badgeRemove)} onClick={(event) => onRemove && onRemove(event)}>
+        <div
+          className={css(styles.badgeRemove)}
+          onClick={(event) => onRemove && onRemove(event)}
+        >
           <CloseIcon
             width={8}
             height={8}
@@ -66,7 +73,7 @@ const styles = StyleSheet.create({
       color: badgeColors.HOVER_COLOR,
       boxShadow: "unset",
     },
-  },  
+  },
   badgeLabel: {
     borderRadius: "2px",
     overflow: "hidden",
@@ -90,6 +97,5 @@ const styles = StyleSheet.create({
     padding: 6,
   },
 });
-
 
 export default Badge;

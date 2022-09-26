@@ -40,7 +40,6 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import ContentBadge from "~/components/ContentBadge";
 
-
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
 );
@@ -324,14 +323,22 @@ function FeedCard({
                         />
                       </div>
                     )}
-                    <div className={css(styles.metaItem, styles.metaItemAsBadge)}>
+                    <div
+                      className={css(styles.metaItem, styles.metaItemAsBadge)}
+                    >
                       <ContentBadge contentType={formattedDocType} />
                     </div>
                     {bountyAmount > 0 && (
                       <div className={css(styles.metaItem)}>
-                        <ContentBadge contentType="bounty" label={formatBountyAmount({ amount: bountyAmount }) + " Bounty"} />
+                        <ContentBadge
+                          contentType="bounty"
+                          label={
+                            formatBountyAmount({ amount: bountyAmount }) +
+                            " Bounty"
+                          }
+                        />
                       </div>
-                    )}                    
+                    )}
                     {formattedDocType === "question" ? (
                       <div
                         className={css(

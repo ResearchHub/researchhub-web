@@ -5,7 +5,7 @@ import { AuthorProfile } from "~/config/types/root_types";
 
 type Args = {
   authorProfile: AuthorProfile | undefined;
-}
+};
 
 const ContributionAuthor = ({ authorProfile }: Args) => {
   return (
@@ -14,12 +14,11 @@ const ContributionAuthor = ({ authorProfile }: Args) => {
         href={`/user/${authorProfile?.id}/overview`}
         overrideStyle={styles.link}
       >
-        {authorProfile?.firstName || "N/A"}{" "}
-        {authorProfile?.lastName || "User"}
+        {authorProfile?.firstName || "N/A"} {authorProfile?.lastName || "User"}
       </ALink>
     </span>
-  )
-} 
+  );
+};
 
 const styles = StyleSheet.create({
   link: {
@@ -28,10 +27,10 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_BLUE(),
     },
-  }, 
+  },
   author: {
-    display: "inline-flex", 
-  },  
-})
+    display: "inline-flex",
+  },
+});
 
 export default ContributionAuthor;

@@ -8,7 +8,7 @@ import {
   HypothesisContributionItem,
   PaperContributionItem,
   PostContributionItem,
-  RscSupportContributionItem
+  RscSupportContributionItem,
 } from "~/config/types/contribution";
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
@@ -18,13 +18,13 @@ import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 
 type Args = {
-  entry: Contribution,
-  actions: Array<any>,
-  setHubsDropdownOpenForKey?: Function,
-  hubsDropdownOpenForKey?: string  
-}
+  entry: Contribution;
+  actions: Array<any>;
+  setHubsDropdownOpenForKey?: Function;
+  hubsDropdownOpenForKey?: string;
+};
 
-const _getPrimaryUrl = (entry: Contribution):string => {
+const _getPrimaryUrl = (entry: Contribution): string => {
   const { contentType } = entry;
   let { item } = entry;
 
@@ -41,82 +41,93 @@ const _getPrimaryUrl = (entry: Contribution):string => {
     case "paper":
       item = item as PaperContributionItem;
       return getUrlToUniDoc(item?.unifiedDocument);
-    case "hypothesis":  
+    case "hypothesis":
     case "post":
     case "question":
     default:
       item = item as PostContributionItem;
       return getUrlToUniDoc(item?.unifiedDocument);
   }
-}
+};
 
 const ContributionEntry = ({
   entry,
   actions,
   setHubsDropdownOpenForKey,
-  hubsDropdownOpenForKey
+  hubsDropdownOpenForKey,
 }: Args) => {
   const { contentType } = entry;
   let { item } = entry;
   let showActions = false;
 
-  let title:string|ReactNode;
-  let body:string|ReactNode;
+  let title: string | ReactNode;
+  let body: string | ReactNode;
   switch (contentType.name) {
     case "comment":
       showActions = true;
       item = item as CommentContributionItem;
-      body = 
+      body = (
         <span className={css(styles.commentBody)}>
           {truncateText(item.plainText, 300)}
         </span>
+      );
       break;
 
     case "rsc_support":
       item = item as RscSupportContributionItem;
 
       if (item.source.contentType.name === "comment") {
-        body = 
+        body = (
           <span className={css(styles.commentBody)}>
             {truncateText(item?.source.plainText, 300)}
-          </span>        
-      }
-      else {
+          </span>
+        );
+      } else {
         body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
-        title =
+        title = (
           <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
             {item?.source.unifiedDocument?.document?.title}
           </ALink>
+        );
       }
       break;
 
     case "bounty":
-      title = 
+      title = (
         <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
           {entry.relatedItem?.unifiedDocument?.document?.title}
         </ALink>
+      );
 
-      body = truncateText(entry.relatedItem?.unifiedDocument?.document?.body, 300);
+      body = truncateText(
+        entry.relatedItem?.unifiedDocument?.document?.body,
+        300
+      );
       break;
 
-    case "hypothesis":  
+    case "hypothesis":
     case "post":
     case "question":
     case "paper":
     default:
       showActions = true;
-      item = entry.contentType.name === "hypothesis"
-        ? item as HypothesisContributionItem :
-          entry.contentType.name === "post"
-        ? item as PostContributionItem :
-          item as PaperContributionItem;
+      item =
+        entry.contentType.name === "hypothesis"
+          ? (item as HypothesisContributionItem)
+          : entry.contentType.name === "post"
+          ? (item as PostContributionItem)
+          : (item as PaperContributionItem);
 
       // @ts-ignore
-      body = truncateText(item?.unifiedDocument?.document?.body || item?.abstract, 300);
-      title =
+      body = truncateText(
+        item?.unifiedDocument?.document?.body || item?.abstract,
+        300
+      );
+      title = (
         <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
           {item?.unifiedDocument?.document?.title}
         </ALink>
+      );
       break;
   }
 
@@ -124,38 +135,44 @@ const ContributionEntry = ({
   return (
     <Link href={primaryUrl}>
       <a className={css(styles.linkWrapper)}>
-      <div className={css(styles.entryContent)}>
-        <ContributionHeader entry={entry} />
-        <div className={css(styles.highlightedContentContainer)}>
-          <div className={css(styles.highlightedContent)}>
-            {title && 
-              <div className={`${css(styles.title)} highlightedContentTitle`}>
-                {title}
-              </div>
-            }
-            {body &&
-              <div className={`${css(styles.body)} highlightedContentBody`}>
-                <div className={css(styles.textContainer)}>
-                  {body}
+        <div className={css(styles.entryContent)}>
+          <ContributionHeader entry={entry} />
+          <div className={css(styles.highlightedContentContainer)}>
+            <div className={css(styles.highlightedContent)}>
+              {title && (
+                <div className={`${css(styles.title)} highlightedContentTitle`}>
+                  {title}
                 </div>
+              )}
+              {body && (
+                <div className={`${css(styles.body)} highlightedContentBody`}>
+                  <div className={css(styles.textContainer)}>{body}</div>
+                </div>
+              )}
+            </div>
+            {showActions && (
+              <div className={css(styles.actions)}>
+                {actions.map(
+                  (action, idx) =>
+                    action.isActive && (
+                      <span
+                        key={`action-${idx}`}
+                        onClick={(event) => {
+                          event.preventDefault();
+                        }}
+                      >
+                        {action.html}
+                      </span>
+                    )
+                )}
               </div>
-            }
+            )}
           </div>
-          {showActions && 
-            <div className={css(styles.actions)}>
-              {actions.map((action,idx) => (
-                action.isActive && <span key={`action-${idx}`} onClick={(event) => {
-                  event.preventDefault();
-                }}>{action.html}</span>
-              ))}
-            </div> 
-          }
         </div>
-      </div>
       </a>
     </Link>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   linkWrapper: {
@@ -187,10 +204,9 @@ const styles = StyleSheet.create({
     marginTop: 0,
     position: "relative",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
-  highlightedContent: {
-  },
+  highlightedContent: {},
   textContainer: {
     display: "flex",
   },
@@ -198,12 +214,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     ":nth-child(1n) + .highlightedContentBody": {
       marginTop: 10,
-    }
+    },
   },
-  body: {
-  },
+  body: {},
   commentBody: {
-    fontStyle: "italic"
+    fontStyle: "italic",
   },
   hubDropdownContainer: {
     display: "inline-block",
@@ -232,7 +247,7 @@ const styles = StyleSheet.create({
   actions: {
     marginTop: 5,
     display: "flex",
-  }
+  },
 });
 
 export default ContributionEntry;

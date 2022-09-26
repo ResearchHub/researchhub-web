@@ -1,5 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
-import { BountyContributionItem, CommentContributionItem, Contribution, RscSupportContributionItem } from "~/config/types/contribution";
+import {
+  BountyContributionItem,
+  CommentContributionItem,
+  Contribution,
+  RscSupportContributionItem,
+} from "~/config/types/contribution";
 import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import ContributionAuthor from "./ContributionAuthor";
 import { ReactNode } from "react";
@@ -13,10 +18,9 @@ import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   entry: Contribution;
-}
+};
 
 const ContributionHeader = ({ entry }: Args) => {
-
   const { contentType } = entry;
   let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
@@ -26,53 +30,108 @@ const ContributionHeader = ({ entry }: Args) => {
 
   if (contentType.name === "bounty") {
     item = item as BountyContributionItem;
-    actionLabel = 
+    actionLabel = (
       <>
-        created &nbsp;<ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span>&nbsp; bounty
-        {hubs.length ? <>{` `}in</> : ''}
+        created &nbsp;
+        <ResearchCoinIcon
+          overrideStyle={styles.rscIcon}
+          version={4}
+          width={16}
+          height={16}
+        />
+        <span className={css(styles.rsc)}>
+          {` `}
+          {item.amount} RSC
+        </span>
+        &nbsp; bounty
+        {hubs.length ? <>{` `}in</> : ""}
       </>
-    contentBadgeLabel = item.amount + " Bounty"
-  }
-  else if (contentType.name === "rsc_support") {
+    );
+    contentBadgeLabel = item.amount + " Bounty";
+  } else if (contentType.name === "rsc_support") {
     item = item as RscSupportContributionItem;
-    contentBadgeLabel = item.amount + " Supported";      
+    contentBadgeLabel = item.amount + " Supported";
     if (item.source.contentType.name === "comment") {
-      actionLabel = 
+      actionLabel = (
         <>
-          supported <ContributionAuthor authorProfile={item.recipient?.authorProfile} />{` `}
-          &nbsp;<ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span>&nbsp; for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}>comment</ALink> 
+          supported{" "}
+          <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
+          {` `}
+          &nbsp;
+          <ResearchCoinIcon
+            overrideStyle={styles.rscIcon}
+            version={4}
+            width={16}
+            height={16}
+          />
+          <span className={css(styles.rsc)}>
+            {` `}
+            {item.amount} RSC
+          </span>
+          &nbsp; for their{" "}
+          <ALink
+            overrideStyle={styles.link}
+            href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}
+          >
+            comment
+          </ALink>
         </>
-    }
-    else {
-      actionLabel = 
+      );
+    } else {
+      actionLabel = (
         <>
           supported authors{` `}
-          &nbsp;<ResearchCoinIcon overrideStyle={styles.rscIcon} version={4} width={16} height={16} /><span className={css(styles.rsc)}>{` `}{item.amount} RSC</span>&nbsp; for their <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.source.unifiedDocument)}>{item.source?.contentType.name}</ALink>
+          &nbsp;
+          <ResearchCoinIcon
+            overrideStyle={styles.rscIcon}
+            version={4}
+            width={16}
+            height={16}
+          />
+          <span className={css(styles.rsc)}>
+            {` `}
+            {item.amount} RSC
+          </span>
+          &nbsp; for their{" "}
+          <ALink
+            overrideStyle={styles.link}
+            href={getUrlToUniDoc(item.source.unifiedDocument)}
+          >
+            {item.source?.contentType.name}
+          </ALink>
         </>
+      );
     }
-  }
-  else if (contentType.name === "comment") {
+  } else if (contentType.name === "comment") {
     item = item as CommentContributionItem;
-    let action = "commented on"
+    let action = "commented on";
     if (item.postType === POST_TYPES.ANSWER) {
       action = "submitted answer for";
-    }
-    else if (item.postType === POST_TYPES.SUMMARY) {
+    } else if (item.postType === POST_TYPES.SUMMARY) {
       action = "submitted summary for";
-    }
-    else if (item.postType === POST_TYPES.REVIEW) {
+    } else if (item.postType === POST_TYPES.REVIEW) {
       action = "submitted review for";
-    }    
+    }
 
-    actionLabel = 
+    actionLabel = (
       <>
-        {action} <ALink overrideStyle={styles.link} href={getUrlToUniDoc(item.unifiedDocument) + "#comments"}>{item.unifiedDocument?.document?.title}</ALink>
-        {hubs.length ? <>{` `}&nbsp;in</> : ''}
+        {action}{" "}
+        <ALink
+          overrideStyle={styles.link}
+          href={getUrlToUniDoc(item.unifiedDocument) + "#comments"}
+        >
+          {item.unifiedDocument?.document?.title}
+        </ALink>
+        {hubs.length ? <>{` `}&nbsp;in</> : ""}
       </>
+    );
   }
 
   // @ts-ignore
-  const contentTypeForBadge = entry.contentType.name === "comment" ? entry.item.postType || POST_TYPES.DISCUSSION : entry.contentType.name;
+  const contentTypeForBadge =
+    entry.contentType.name === "comment"
+      ? entry.item.postType || POST_TYPES.DISCUSSION
+      : entry.contentType.name;
   return (
     <div className={css(styles.header)}>
       <SubmissionDetails
@@ -84,10 +143,13 @@ const ContributionHeader = ({ entry }: Args) => {
       />
       <div className={`${css(styles.contentBadge)}`}>
         {/* @ts-ignore */}
-        <ContentBadge label={contentBadgeLabel} contentType={contentTypeForBadge} />
+        <ContentBadge
+          label={contentBadgeLabel}
+          contentType={contentTypeForBadge}
+        />
       </div>
     </div>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -95,24 +157,24 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-  },  
+  },
   contentBadge: {
     marginLeft: "auto",
     opacity: 1,
     display: "flex",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
-    },    
-  },  
+    },
+  },
   link: {
     fontWeight: 400,
   },
   rsc: {
-    color: colors.ORANGE_DARK2()
+    color: colors.ORANGE_DARK2(),
   },
   rscIcon: {
     verticalAlign: "text-top",
-  }
+  },
 });
 
 export default ContributionHeader;

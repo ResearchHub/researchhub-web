@@ -81,7 +81,9 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
           </span>
           <span className={css(styles.rscContent)}>{label}</span>
         </>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
     </Badge>
   );
 };
