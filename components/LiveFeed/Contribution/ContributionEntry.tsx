@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import {
+  BountyContributionItem,
   CommentContributionItem,
   Contribution,
   HypothesisContributionItem,
@@ -14,12 +15,39 @@ import colors from "~/config/themes/colors";
 import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
 import { breakpoints } from "~/config/themes/screen";
+import Link from "next/link";
 
 type Args = {
   entry: Contribution,
   actions: Array<any>,
   setHubsDropdownOpenForKey?: Function,
   hubsDropdownOpenForKey?: string  
+}
+
+const _getPrimaryUrl = (entry: Contribution):string => {
+  const { contentType } = entry;
+  let { item } = entry;
+
+  switch (contentType.name) {
+    case "comment":
+      item = item as CommentContributionItem;
+      return getUrlToUniDoc(item.unifiedDocument) + "#comments";
+    case "rsc_support":
+      item = item as RscSupportContributionItem;
+      return getUrlToUniDoc(item?.source.unifiedDocument);
+    case "bounty":
+      item = item as BountyContributionItem;
+      return getUrlToUniDoc(entry?.relatedItem?.unifiedDocument);
+    case "paper":
+      item = item as PaperContributionItem;
+      return getUrlToUniDoc(item?.unifiedDocument);
+    case "hypothesis":  
+    case "post":
+    case "question":
+    default:
+      item = item as PostContributionItem;
+      return getUrlToUniDoc(item?.unifiedDocument);
+  }
 }
 
 const ContributionEntry = ({
@@ -92,35 +120,49 @@ const ContributionEntry = ({
       break;
   }
 
+  const primaryUrl = _getPrimaryUrl(entry);
   return (
-    <div className={css(styles.entryContent)}>
-      <ContributionHeader entry={entry} />
-      <div className={css(styles.highlightedContentContainer)}>
-        <div className={css(styles.highlightedContent)}>
-          {title && 
-            <div className={`${css(styles.title)} highlightedContentTitle`}>
-              {title}
-            </div>
-          }
-          {body &&
-            <div className={`${css(styles.body)} highlightedContentBody`}>
-              <div className={css(styles.textContainer)}>
-                {body}
+    <Link href={primaryUrl}>
+      <a className={css(styles.linkWrapper)}>
+      <div className={css(styles.entryContent)}>
+        <ContributionHeader entry={entry} />
+        <div className={css(styles.highlightedContentContainer)}>
+          <div className={css(styles.highlightedContent)}>
+            {title && 
+              <div className={`${css(styles.title)} highlightedContentTitle`}>
+                {title}
               </div>
-            </div>
+            }
+            {body &&
+              <div className={`${css(styles.body)} highlightedContentBody`}>
+                <div className={css(styles.textContainer)}>
+                  {body}
+                </div>
+              </div>
+            }
+          </div>
+          {showActions && 
+            <div className={css(styles.actions)}>
+              {actions.map((action,idx) => (
+                action.isActive && <span key={`action-${idx}`} onClick={(event) => {
+                  event.preventDefault();
+                }}>{action.html}</span>
+              ))}
+            </div> 
           }
         </div>
-        {showActions && 
-          <div className={css(styles.actions)}>
-            {actions.map((a,idx) => a.isActive && <span key={`action-${idx}`}>{a.html}</span>)}
-          </div> 
-        }
       </div>
-    </div>
+      </a>
+    </Link>
   )
 }
 
 const styles = StyleSheet.create({
+  linkWrapper: {
+    textDecoration: "none",
+    color: "inherit",
+    width: "100%",
+  },
   entryContent: {
     fontSize: 14,
     lineHeight: "20px",
@@ -141,11 +183,13 @@ const styles = StyleSheet.create({
   },
   details: {},
   highlightedContentContainer: {
-    borderRadius: 4,
-    border: `1px solid ${colors.GREY(0.5)}`,
-    background: `rgba(249, 249, 249)`,
-    padding: "15px 15px 14px 15px",
-    marginTop: 10,
+    // borderRadius: 4,
+    // border: `1px solid ${colors.GREY(0.5)}`,
+    // background: `rgba(249, 249, 249)`,
+    // padding: "15px 0px 14px 0px",
+    borderBottom: `1px solid ${colors.GREY(0.5)}`,
+    padding: "7px 0px 14px 0px",
+    marginTop: 0,
     position: "relative",
     display: "flex",
     justifyContent: "space-between"
@@ -191,7 +235,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   actions: {
-    
+    marginTop: 5,
   }
 });
 

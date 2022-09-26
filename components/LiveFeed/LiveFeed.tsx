@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     background: "none",
     border: "none",
     marginLeft: "auto",
-    color: colors.LIGHT_GREY_TEXT,
+    color: colors.GREY(0.6),
     ":hover": {
       background: "none",
       color: colors.NEW_BLUE(1),

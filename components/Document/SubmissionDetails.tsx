@@ -15,7 +15,7 @@ type Args = {
   createdBy: CreatedBy | null;
   hubs: Array<Hub>;
   createdDate: string;
-  avatarSize: number;
+  avatarSize?: number;
   bounties?: Bounty[];
   actionLabel?: string | ReactElement
 };

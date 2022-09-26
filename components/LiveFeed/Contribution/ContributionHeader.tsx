@@ -16,6 +16,7 @@ type Args = {
 }
 
 const ContributionHeader = ({ entry }: Args) => {
+
   const { contentType } = entry;
   let { item, hubs } = entry;
   const { createdBy, createdDate } = item;
@@ -78,7 +79,7 @@ const ContributionHeader = ({ entry }: Args) => {
         createdBy={createdBy}
         hubs={hubs}
         createdDate={createdDate}
-        avatarSize={25}
+        avatarSize={20}
         actionLabel={actionLabel}
       />
       <div className={`${css(styles.contentBadge)}`}>
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
   header: {
     display: "flex",
     justifyContent: "flex-start",
-    alignItems: "center",
+    alignItems: "flex-start",
   },  
   contentBadge: {
     marginLeft: "auto",

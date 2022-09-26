@@ -170,7 +170,7 @@ export const parseContribution = (raw: any): Contribution => {
     id: raw.id,
     // Note: On paper, hubs is available on nested "item" key due to async nature of paper upload
     // "hubs" not available during creation of "user action" record so we need to get it elsewhere.
-    hubs: raw.content_type.name === "paper" ? (raw.item.hubs || []) : (raw.hubs || []).map((h) => parseHub(h)),
+    hubs: (raw.hubs?.length ? raw.hubs : raw.item?.hubs?.length ? raw.item.hubs : []).map((h) => parseHub(h)),
   };
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
@@ -178,8 +178,6 @@ export const parseContribution = (raw: any): Contribution => {
   } else if (raw.content_type.name === "paper") {
     mapped["item"] = parsePaperContributionItem(raw);
   } else if (raw.content_type.name === "researchhubpost" || raw.content_type.name === "researchhubunifieddocument") {
-    // Info: Since question is a post in the BE, we need to shim the values on the FE
-    // to make downstream components behave properly
     if (raw?.item?.unified_document?.document_type?.toLowerCase() === "question") {
       mapped.contentType.name = "question";
     }
@@ -249,11 +247,12 @@ export const parseBountyContributionItem = (
 };
 
 export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
+
   const mapped = {
     id: raw.item.id,
     title: raw.item.title,
     slug: raw.item.slug,
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseCreatedBy(raw.created_by || raw.uploaded_by || raw.item.created_by || raw.item.uploaded_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     createdDate: raw.created_date,
     abstract: raw.item.abstract,
@@ -302,10 +301,14 @@ export const parseRscSupportContributionItem = (
 };
 
 export const parsePostContributionItem = (raw: any): PostContributionItem => {
+  console.log('-------------')
+  console.log('raw', raw)
+  console.log('-------------')
+
   const mapped = {
     title: raw.item.title,
     slug: raw.item.slug,
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseCreatedBy(raw.created_by || raw.item.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
