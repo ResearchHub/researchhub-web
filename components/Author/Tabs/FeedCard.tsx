@@ -26,7 +26,6 @@ import colors, {
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
-import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import Link from "next/link";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
@@ -39,6 +38,8 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import ContentBadge from "~/components/ContentBadge";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")

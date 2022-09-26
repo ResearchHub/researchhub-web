@@ -15,9 +15,12 @@ import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { WarningIcon, ResearchCoinIcon } from "~/config/themes/icons";
+import icons, { WarningIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+
+
 
 type Props = {
   isOpen: Boolean;
