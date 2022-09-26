@@ -61,6 +61,8 @@ const NotificationEntry = (props) => {
             return styles.flex;
           case "link":
             return styles.link;
+          case "rsc_color":
+            return styles.rscColor;
           default:
             return null;
         }
@@ -100,6 +102,8 @@ const NotificationEntry = (props) => {
               return (
                 <span className={css(...extraStyles)}> {element.value} </span>
               );
+            case "break":
+              return <br></br>;
             default:
               return "ERROR";
           }
@@ -149,6 +153,9 @@ const styles = StyleSheet.create({
   },
   flex: {
     display: "flex",
+  },
+  rscColor: {
+    color: colors.ORANGE_DARK2(),
   },
   container: {
     display: "flex",
