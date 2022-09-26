@@ -47,50 +47,6 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
       filters,
       onSuccess: (response: any) => {
         const incomingResults = response.results.map((r) =>{
-
-      //   const l =         {
-      //     "item": {
-      //         "content_type": {
-      //             "id": 24,
-      //             "name": "thread"
-      //         },
-      //         "item": {
-      //             "id": 311,
-      //             "unified_document": {
-      //                 "id": 1521,
-      //                 "documents": [
-      //                     {
-      //                         "id": 34,
-      //                         "renderable_text": "",
-      //                         "title": "Coffee Consumption May Mitigate the Risk for Acute Kidney Injury: Results From the Atherosclerosis Risk in Communities Study",
-      //                         "slug": "feedback-request-peer-reviews-feature-on-research-hub"
-      //                     }
-      //                 ],
-      //                 "document_type": "DISCUSSION"
-      //             }
-      //         },
-      //         "amount": "1000.0000000000",
-      //         "unified_document": 1521
-      //     },
-      //     "content_type": {
-      //         "id": 109,
-      //         "name": "bounty"
-      //     },
-      //     "created_by": {
-      //         "id": 8,
-      //         "author_profile": {
-      //             "id": 416,
-      //             "first_name": "Kobe",
-      //             "last_name": "Attias",
-      //             "profile_image": "https://lh3.googleusercontent.com/a/AATXAJxMWwF8N8q__74Pl5_Fvp_srsuekx5iNmsB54eBURA=s96-c"
-      //         },
-      //         "first_name": "Kobe",
-      //         "last_name": "Attias"
-      //     },
-      //     "hubs": [],
-      //     "created_date": "2022-08-18T19:41:43.043938Z"
-      // };
-
           return parseContribution(r)
         });
         if (url) {
