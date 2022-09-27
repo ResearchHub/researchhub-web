@@ -205,7 +205,6 @@ function FeedCard({
   const createdBy = parseCreatedBy(uploaded_by || created_by);
 
   let bountyAmount = 0;
-
   bounties &&
     bounties.forEach((bounty) => {
       bountyAmount += bounty.amount;

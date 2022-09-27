@@ -50,7 +50,7 @@ export default class Bounty {
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
     this._timeRemainingInDays = timeToInUnits({ date: raw.expiration_date, unit: "day" });
     this._createdBy = parseCreatedBy(raw.created_by);
-    this._amount = formatBountyAmount({ amount: raw.amount });
+    this._amount = parseFloat(raw.amount);
     this._formattedAmount = this._amount.toLocaleString();
     this._status = raw.status;
     this._expiration_date = raw.expiration_date;

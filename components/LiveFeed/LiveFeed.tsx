@@ -2,10 +2,7 @@ import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
 import {
   CommentContributionItem,
   Contribution,
-  HypothesisContributionItem,
-  PaperContributionItem,
   parseContribution,
-  PostContributionItem,
 } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { ID, UnifiedDocument } from "~/config/types/root_types";
@@ -13,10 +10,11 @@ import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import icons from "~/config/themes/icons";
-import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import UnifiedDocFeedCardPlaceholder from "../UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
+import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 
 export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
   const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({
@@ -142,13 +140,11 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
   return (
     <div>
       {isLoadingPage ? (
-        <Loader
-          containerStyle={styles.pageLoader}
-          key={"loader"}
-          loading={true}
-          size={45}
-          color={colors.NEW_BLUE()}
-        />
+        <div>
+          {Array(10).fill(null).map(() =>
+            <LiveFeedCardPlaceholder color="#efefef" />          
+          )}
+        </div>        
       ) : (
         <>
           <div className={css(styles.resultsContainer)}>
