@@ -23,8 +23,11 @@ export const emailPreference = (data) => {
     userId: data.user,
     isOptedOut: data.is_opted_out,
     isSubscribed: data.is_subscribed,
-    commentSubscription: transformSubscription(data.comment_subscription),
     digestSubscription: transformSubscription(data.digest_subscription),
+    weeklyBountyDigestSubscription: transformSubscription(
+      data.bounty_digest_subscription
+    ),
+    commentSubscription: transformSubscription(data.comment_subscription),
     paperSubscription: transformSubscription(data.paper_subscription),
     replySubscription: transformSubscription(data.reply_subscription),
     threadSubscription: transformSubscription(data.thread_subscription),
@@ -84,7 +87,7 @@ export const buildSubscriptionPatch = (subscription, receiveEmails) => {
 
 export const subscriptionPatchShims = {
   digestSubscription: digestSubscriptionPatch,
-  weeklyBountySubscription: weeklyBountySubscriptionPatch,
+  weeklyBountyDigestSubscription: weeklyBountyDigestSubscriptionPatch,
   paperSubscription: paperSubscriptionPatch,
   threadSubscription: threadSubscriptionPatch,
   commentSubscription: commentSubscriptionPatch,
@@ -99,7 +102,10 @@ export function digestSubscriptionPatch({ notificationFrequency, none }) {
   return { digest_subscription: data };
 }
 
-export function weeklyBountySubscriptionPatch({ notificationFrequency, none }) {
+export function weeklyBountyDigestSubscriptionPatch({
+  notificationFrequency,
+  none,
+}) {
   const data = {};
   !doesNotExist(notificationFrequency) &&
     (data["notification_frequency"] = notificationFrequency);

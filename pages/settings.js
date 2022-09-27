@@ -55,7 +55,7 @@ const contentSubscriptionOptions = [
     label: "Responses to my replies",
   },
   {
-    id: "weeklyBountySubscription",
+    id: "weeklyBountyDigestSubscription",
     label: "Bounty Digest",
   },
 ];
