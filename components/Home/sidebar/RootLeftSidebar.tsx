@@ -31,6 +31,7 @@ import {
   getCookieOrLocalStorageValue,
   storeToCookieOrLocalStorage,
 } from "~/config/utils/storeToCookieOrLocalStorage";
+import { isServer } from "~/config/server/isServer";
 
 type Props = {
   openLoginModal: any;
@@ -141,22 +142,18 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
       setDidMount(true);
     }, 2000);
   }, []);
-
   const isMinimizedConclusion = isMinimizeForced || isMinimized;
   console.warn("isMinimizeForced: ", isMinimizeForced);
   console.warn("isMinimized: ", isMinimized);
   console.warn("isMinimizedConclusion: ", isMinimizedConclusion);
 
-  const leftSidebarItemAttrs = useMemo(
-    (): RootLeftSidebarItemProps[] =>
-      getLeftSidebarItemAttrs({
-        currentUser,
-        isMinimized: isMinimizedConclusion,
-        router,
-        openLoginModal,
-      }),
-    [currentUser.id, router.pathname, isMinimizedConclusion]
-  );
+  const leftSidebarItemAttrs: RootLeftSidebarItemProps[] =
+    getLeftSidebarItemAttrs({
+      currentUser,
+      isMinimized: isMinimizedConclusion,
+      router,
+      openLoginModal,
+    });
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
     (
@@ -192,11 +189,12 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     ),
   };
 
+  console.warn(
+    "formattedFooterItemsButtonRow: ",
+    formattedFooterItemsButtonRow
+  );
+
   return (
-    <AnimatePresence
-      initial={false}
-      key={"root-left-sidebar-animation-presence"}
-    >
       <motion.div
         animate={isMinimizedConclusion ? "minimized" : "full"}
         variants={{
@@ -230,7 +228,6 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
                     white={false}
                     withText={false}
                   />
-
                   <motion.img
                     alt="ResearchHub Text Logo"
                     animate={isMinimizedConclusion ? "minimized" : "full"}
@@ -266,100 +263,101 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
               {leftSidebarItems}
             </div>
           </div>
-          <div className={css(styles.leftSidebarFooter)}>
-            <div className={css(styles.leftSidebarFooterItemsTop)}>
-              <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
-                {"About"}
-              </ALink>
-              <ALink
-                href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
-                overrideStyle={formattedFooterTxtItem}
-              >
-                {"Jobs"}
-              </ALink>
+          {
+            <div className={css(styles.leftSidebarFooter)}>
+              <div className={css(styles.leftSidebarFooterItemsTop)}>
+                <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
+                  {"About"}
+                </ALink>
+                <ALink
+                  href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+                  overrideStyle={formattedFooterTxtItem}
+                >
+                  {"Jobs"}
+                </ALink>
+              </div>
+              <div className={css(styles.footer)}>
+                <div className={formattedFooterItemsButtonRow}>
+                  <ALink
+                    href="https://twitter.com/researchhub"
+                    overrideStyle={styles.leftSidebarFooterIcon}
+                    target="__blank"
+                  >
+                    {icons.twitter}
+                  </ALink>
+                  <ALink
+                    href="https://discord.com/invite/ZcCYgcnUp5"
+                    overrideStyle={styles.leftSidebarFooterIcon}
+                    target="__blank"
+                  >
+                    {icons.discord}
+                  </ALink>
+                  <ALink
+                    href="https://medium.com/researchhub"
+                    overrideStyle={
+                      (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
+                    }
+                    target="__blank"
+                  >
+                    {icons.medium}
+                  </ALink>
+                </div>
+                <div className={formattedFooterItemsButtonRow}>
+                  <ALink
+                    href="/about/tos"
+                    overrideStyle={styles.leftSidebarFooterBotItem}
+                  >
+                    {"Terms"}
+                  </ALink>
+                  <ALink
+                    href="/about/privacy"
+                    overrideStyle={styles.leftSidebarFooterBotItem}
+                  >
+                    {"Privacy"}
+                  </ALink>
+                  <ALink
+                    href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
+                    overrideStyle={styles.leftSidebarFooterBotItem}
+                  >
+                    {"Help"}
+                  </ALink>
+                </div>
+              </div>
+              {isMinimizedConclusion ? (
+                <div
+                  className={css(styles.arrowRight)}
+                  onClick={(event: SyntheticEvent): void => {
+                    // debugger;
+                    event.preventDefault();
+                    setIsMinimizeForced(false);
+                    storeToCookieOrLocalStorage({
+                      key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
+                      value: "false",
+                    });
+                  }}
+                >
+                  {icons.arrowRightToLine}
+                </div>
+              ) : (
+                <div
+                  className={css(styles.arrowRight, styles.arrowLeft)}
+                  onClick={(event: SyntheticEvent): void => {
+                    // debugger;
+                    event.preventDefault();
+                    setIsMinimizeForced(true);
+                    storeToCookieOrLocalStorage({
+                      key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
+                      value: "true",
+                    });
+                  }}
+                >
+                  {icons.arrowLeftToLine}
+                </div>
+              )}
             </div>
-            <div className={css(styles.footer)}>
-              <div className={formattedFooterItemsButtonRow}>
-                <ALink
-                  href="https://twitter.com/researchhub"
-                  overrideStyle={styles.leftSidebarFooterIcon}
-                  target="__blank"
-                >
-                  {icons.twitter}
-                </ALink>
-                <ALink
-                  href="https://discord.com/invite/ZcCYgcnUp5"
-                  overrideStyle={styles.leftSidebarFooterIcon}
-                  target="__blank"
-                >
-                  {icons.discord}
-                </ALink>
-                <ALink
-                  href="https://medium.com/researchhub"
-                  overrideStyle={
-                    (styles.leftSidebarFooterIcon, styles.mediumIconOverride)
-                  }
-                  target="__blank"
-                >
-                  {icons.medium}
-                </ALink>
-              </div>
-              <div className={formattedFooterItemsButtonRow}>
-                <ALink
-                  href="/about/tos"
-                  overrideStyle={styles.leftSidebarFooterBotItem}
-                >
-                  {"Terms"}
-                </ALink>
-                <ALink
-                  href="/about/privacy"
-                  overrideStyle={styles.leftSidebarFooterBotItem}
-                >
-                  {"Privacy"}
-                </ALink>
-                <ALink
-                  href="https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0"
-                  overrideStyle={styles.leftSidebarFooterBotItem}
-                >
-                  {"Help"}
-                </ALink>
-              </div>
-            </div>
-            {isMinimizedConclusion ? (
-              <div
-                className={css(styles.arrowRight)}
-                onClick={(event: SyntheticEvent): void => {
-                  // debugger;
-                  event.preventDefault();
-                  setIsMinimizeForced(false);
-                  storeToCookieOrLocalStorage({
-                    key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
-                    value: "false",
-                  });
-                }}
-              >
-                {icons.arrowRightToLine}
-              </div>
-            ) : (
-              <div
-                className={css(styles.arrowRight, styles.arrowLeft)}
-                onClick={(event: SyntheticEvent): void => {
-                  // debugger;
-                  event.preventDefault();
-                  setIsMinimizeForced(true);
-                  storeToCookieOrLocalStorage({
-                    key: ROOT_LEFT_SIDEBAR_MIN_FORCE_KEY,
-                    value: "true",
-                  });
-                }}
-              >
-                {icons.arrowLeftToLine}
-              </div>
-            )}
-          </div>
+          }
         </div>
       </motion.div>
-    </AnimatePresence>
   );
 }
 
