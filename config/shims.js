@@ -84,6 +84,7 @@ export const buildSubscriptionPatch = (subscription, receiveEmails) => {
 
 export const subscriptionPatchShims = {
   digestSubscription: digestSubscriptionPatch,
+  weeklyBountySubscription: weeklyBountySubscriptionPatch,
   paperSubscription: paperSubscriptionPatch,
   threadSubscription: threadSubscriptionPatch,
   commentSubscription: commentSubscriptionPatch,
@@ -96,6 +97,14 @@ export function digestSubscriptionPatch({ notificationFrequency, none }) {
     (data["notification_frequency"] = notificationFrequency);
   !doesNotExist(none) && (data["none"] = none);
   return { digest_subscription: data };
+}
+
+export function weeklyBountySubscriptionPatch({ notificationFrequency, none }) {
+  const data = {};
+  !doesNotExist(notificationFrequency) &&
+    (data["notification_frequency"] = notificationFrequency);
+  !doesNotExist(none) && (data["none"] = none);
+  return { bounty_digest_subscription: data };
 }
 
 export function paperSubscriptionPatch({
