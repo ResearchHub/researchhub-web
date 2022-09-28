@@ -13,8 +13,7 @@ type StorageType = "cookie";
 const storageKeyPrefix = "researchhub";
 
 export function storeToCookie({ key, value }: Args): StorageType {
-  Cookies.set(key, value ?? "");
-  // debugger;
+  setCookie(null, key, value ?? "");
   return "cookie";
 }
 

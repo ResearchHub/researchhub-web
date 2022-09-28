@@ -32,10 +32,9 @@ import { getCookieValue, storeToCookie } from "~/config/utils/storeToCookie";
 type Props = {
   forceMinimized: boolean;
   openLoginModal: any;
-  setForceMinimized: (event: SyntheticEvent, value: string) => void;
 };
 
-export const LEFT_SIDE_BAR_FORCE_MIN_KEY = "%$%_RootLeftSidebar_Min_Key_$%$";
+export const LEFT_SIDE_BAR_FORCE_MIN_KEY = "RootLeftSidebar_Min_Key";
 
 const getLeftSidebarItemAttrs = ({
   currentUser,
@@ -103,7 +102,6 @@ const getLeftSidebarItemAttrs = ({
 function RootLeftSidebar({
   forceMinimized,
   openLoginModal,
-  setForceMinimized,
 }: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
@@ -111,17 +109,15 @@ function RootLeftSidebar({
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [isMinimized, setIsMinimized] = useState<boolean>(forceMinimized);
 
-  console.warn(
-    "getCookieValue({key:LEFT_SIDE_BAR_FORCE_MIN_KEY}): ",
-    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })
-  );
+  // console.warn(
+  //   "getCookieValue({key:LEFT_SIDE_BAR_FORCE_MIN_KEY}): ",
+  //   getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })
+  // );
   const [isMinimizedAniDelay, setIsMinimizedAniDelay] =
     useState<boolean>(false);
   const [didMount, setDidMount] = useState<boolean>(false);
-  const isMinimizedFinal = forceMinimized || isMinimized;
-  console.warn("isMinimizedFinal: ", isMinimizedFinal);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -146,7 +142,7 @@ function RootLeftSidebar({
     } else {
       setIsMinimized(!isLargeScreen);
     }
-  }, [pathname, isLargeScreen, isMinimizedFinal]);
+  }, [pathname, isLargeScreen, isMinimized]);
 
   useEffect((): void => {
     setTimeout(() => {
@@ -169,11 +165,11 @@ function RootLeftSidebar({
     (): RootLeftSidebarItemProps[] =>
       getLeftSidebarItemAttrs({
         currentUser,
-        isMinimized: isMinimizedFinal,
+        isMinimized: isMinimized,
         router,
         openLoginModal,
       }),
-    [currentUser.id, router.pathname, isMinimizedFinal]
+    [currentUser.id, router.pathname, isMinimized]
   );
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
@@ -193,27 +189,27 @@ function RootLeftSidebar({
     () => ({
       formattedLogoContainer: [
         styles.logoContainer,
-        isMinimizedFinal && styles.logoContainerMin,
+        isMinimized && styles.logoContainerMin,
       ],
       formattedRootLeftSidebar: css(
         styles.rootLeftSidebar,
-        isMinimizedFinal && styles.rootLeftSidebarMin
+        isMinimized && styles.rootLeftSidebarMin
       ),
       formattedFooterTxtItem: [
         styles.leftSidebarFooterTxtItem,
-        isMinimizedFinal && styles.leftSidebarFooterTxtItemMin,
+        isMinimized && styles.leftSidebarFooterTxtItemMin,
       ],
       formattedFooterItemsButtonRow: css(
         styles.leftSidebarFooterItemsBottomRow,
-        isMinimizedFinal && styles.leftSidebarFooterItemsBottomRowMin
+        isMinimized && styles.leftSidebarFooterItemsBottomRowMin
       ),
     }),
-    [isMinimizedFinal]
+    [isMinimized]
   );
 
   return (
     <motion.div
-      animate={isMinimizedFinal ? "minimized" : "full"}
+      animate={isMinimized ? "minimized" : "full"}
       className={formattedRootLeftSidebar}
       variants={{
         minimized: {
@@ -247,10 +243,10 @@ function RootLeftSidebar({
                   withText={false}
                 />
                 <AnimatePresence initial={false}>
-                  {!isMinimizedFinal && (
+                  {!isMinimized && (
                     <motion.img
                       alt="ResearchHub Text Logo"
-                      animate={isMinimizedFinal ? "minimized" : "full"}
+                      animate={isMinimized ? "minimized" : "full"}
                       className={css(styles.researchHubLogoText)}
                       exit={"minimized"}
                       key={`RHLogo-max`}
@@ -335,12 +331,15 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
-          {isMinimizedFinal ? (
+          {isMinimized ? (
             <div
               className={css(styles.arrowRight)}
               onClick={(event: SyntheticEvent): void => {
                 setIsMinimized(false);
-                setForceMinimized(event, "false");
+                storeToCookie({
+                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  value: "false",
+                });
               }}
             >
               {icons.arrowRightToLine}
@@ -350,7 +349,10 @@ function RootLeftSidebar({
               className={css(styles.arrowRight, styles.arrowLeft)}
               onClick={(event: SyntheticEvent): void => {
                 setIsMinimized(true);
-                setForceMinimized(event, "true");
+                storeToCookie({
+                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  value: "true",
+                });
               }}
             >
               {icons.arrowLeftToLine}

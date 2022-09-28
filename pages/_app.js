@@ -65,7 +65,7 @@ if (process.env.ELASTIC_APM_URL) {
   });
 }
 
-const MyApp = ({ Component, pageProps, store }) => {
+const MyApp = ({ Component, pageProps, store, sidebarForceMin }) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState(router.asPath);
 
@@ -165,9 +165,14 @@ const MyApp = ({ Component, pageProps, store }) => {
     );
   };
 
+  console.warn("sidebarForceMin111: ", sidebarForceMin);
   return (
     <Provider store={store}>
-      <Base pageProps={pageProps} Component={Component} />
+      <Base
+        pageProps={pageProps}
+        Component={Component}
+        sidebarForceMin={sidebarForceMin}
+      />
     </Provider>
   );
 };
@@ -185,15 +190,22 @@ MyApp.getInitialProps = async (appContext) => {
   ];
 
   const cookies = nookies.get(appContext.ctx);
-  console.warn("appContext.ctx: ", appContext.ctx);
-  const yo = cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY];
-  console.warn("yo: ", yo);
+  // console.warn("appContext.ctx: ", appContext.ctx);
+  const sidebarForceMin = cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY] === "true";
+  console.warn(
+    "cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY]: ",
+    cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY]
+  );
   if (
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)
   ) {
     const appProps = await App.getInitialProps(appContext);
-    return { ...appProps };
+    return { ...appProps, sidebarForceMin };
+  } else {
+    return {
+      sidebarForceMin,
+    };
   }
 };
 

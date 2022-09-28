@@ -38,20 +38,14 @@ function Base({
   auth,
   Component,
   pageProps,
+  sidebarForceMin,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
   const [newPostButtonValues, setNewPostButtonValues] = useState({
     isOpen: false,
     paperID: null,
   });
-  // getCookieValue NEEDS TO BE CHANGED
-  const [forceMinimizeSidebar, setForceMinimizeSidebar] = useState(
-    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })?.value === "true"
-  );
-  console.warn(
-    "getCookieValue({key:LEFT_SIDE_BAR_FORCE_MIN_KEY}): ",
-    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })
-  );
+  console.warn("sidebarForceMin: ", sidebarForceMin);
   useEffect(async () => {
     getUniversities();
     await getUser();
@@ -103,10 +97,9 @@ function Base({
             <DynamicPermissionNotification />
             <DynamicMessage />
             <RootLeftSidebar
-              forceMinimized={forceMinimizeSidebar}
+              forceMinimized={sidebarForceMin}
               setForceMinimized={(event, value) => {
                 event?.preventDefault();
-                setForceMinimizeSidebar(value === "true");
                 storeToCookie({
                   key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
                   value,
