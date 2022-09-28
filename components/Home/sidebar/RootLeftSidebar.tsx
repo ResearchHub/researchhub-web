@@ -103,6 +103,7 @@ const getLeftSidebarItemAttrs = ({
 function RootLeftSidebar({
   forceMinimized,
   openLoginModal,
+  setForceMinimized,
 }: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
@@ -111,18 +112,6 @@ function RootLeftSidebar({
     getCurrMediaWidth() >= breakpoints.large.int
   );
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
-  const [forceMinimizeSidebar, setForceMinimizeSidebar] = useState(
-    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })?.value === "true"
-  );
-
-  const setForceMinimized = (event, value) => {
-    event?.preventDefault();
-    setForceMinimizeSidebar(value === "true");
-    storeToCookie({
-      key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
-      value,
-    });
-  };
 
   console.warn(
     "getCookieValue({key:LEFT_SIDE_BAR_FORCE_MIN_KEY}): ",

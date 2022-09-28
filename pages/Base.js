@@ -44,6 +44,7 @@ function Base({
     isOpen: false,
     paperID: null,
   });
+  // getCookieValue NEEDS TO BE CHANGED
   const [forceMinimizeSidebar, setForceMinimizeSidebar] = useState(
     getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })?.value === "true"
   );

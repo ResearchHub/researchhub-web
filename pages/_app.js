@@ -7,6 +7,10 @@ import "isomorphic-unfetch";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";
+import { AUTH_TOKEN } from "~/config/constants";
+import RootLeftSidebar, {
+  LEFT_SIDE_BAR_FORCE_MIN_KEY,
+} from "~/components/Home/sidebar/RootLeftSidebar";
 
 // Components
 import Base from "./Base";
@@ -30,6 +34,7 @@ import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
+import nookies from "nookies";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -179,6 +184,10 @@ MyApp.getInitialProps = async (appContext) => {
     "/[orgSlug]/notebook",
   ];
 
+  const cookies = nookies.get(appContext.ctx);
+  console.warn("appContext.ctx: ", appContext.ctx);
+  const yo = cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY];
+  console.warn("yo: ", yo);
   if (
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)
