@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
   rootLeftSidebarItem: {
     alignItems: "center",
     backbround: colors.GREY_ICY_BLUE_HUE,
-    borderRadius: 6,
     boxSizing: "border-box",
     cursor: "pointer",
     display: "flex",

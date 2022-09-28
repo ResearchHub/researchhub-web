@@ -11,8 +11,11 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import { UniversityActions } from "../redux/universities";
 import dynamic from "next/dynamic";
 import PermissionActions from "../redux/permission";
-import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
+import RootLeftSidebar, {
+  LEFT_SIDE_BAR_FORCE_MIN_KEY,
+} from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
+import { getCookieValue, storeToCookie } from "~/config/utils/storeToCookie";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -41,7 +44,13 @@ function Base({
     isOpen: false,
     paperID: null,
   });
-
+  const [forceMinimizeSidebar, setForceMinimizeSidebar] = useState(
+    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })?.value === "true"
+  );
+  console.warn(
+    "getCookieValue({key:LEFT_SIDE_BAR_FORCE_MIN_KEY}): ",
+    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })
+  );
   useEffect(async () => {
     getUniversities();
     await getUser();
@@ -92,7 +101,17 @@ function Base({
           <div className={css(styles.pageWrapper)}>
             <DynamicPermissionNotification />
             <DynamicMessage />
-            <RootLeftSidebar />
+            <RootLeftSidebar
+              forceMinimized={forceMinimizeSidebar}
+              setForceMinimized={(event, value) => {
+                event?.preventDefault();
+                setForceMinimizeSidebar(value === "true");
+                storeToCookie({
+                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  value,
+                });
+              }}
+            />
             <div className={css(styles.main)}>
               <DynamicNavbar />
               <Component {...pageProps} />

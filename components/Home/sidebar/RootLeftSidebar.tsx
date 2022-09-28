@@ -26,10 +26,16 @@ import RootLeftSidebarItem, {
 } from "./sidebar_items/RootLeftSidebarItem";
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
+import { getCookieOrLocalStorageValue } from "~/config/utils/storeToCookieOrLocalStorage";
+import { getCookieValue, storeToCookie } from "~/config/utils/storeToCookie";
 
 type Props = {
+  forceMinimized: boolean;
   openLoginModal: any;
+  setForceMinimized: (event: SyntheticEvent, value: string) => void;
 };
+
+export const LEFT_SIDE_BAR_FORCE_MIN_KEY = "%$%_RootLeftSidebar_Min_Key_$%$";
 
 const getLeftSidebarItemAttrs = ({
   currentUser,
@@ -94,7 +100,10 @@ const getLeftSidebarItemAttrs = ({
   ]);
 };
 
-function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
+function RootLeftSidebar({
+  forceMinimized,
+  openLoginModal,
+}: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
   const currentUser = getCurrentUser();
@@ -102,9 +111,28 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     getCurrMediaWidth() >= breakpoints.large.int
   );
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
-  const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
-  const [growMinimized, setGrowMinimized] = useState<boolean>(false);
+  const [forceMinimizeSidebar, setForceMinimizeSidebar] = useState(
+    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })?.value === "true"
+  );
+
+  const setForceMinimized = (event, value) => {
+    event?.preventDefault();
+    setForceMinimizeSidebar(value === "true");
+    storeToCookie({
+      key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+      value,
+    });
+  };
+
+  console.warn(
+    "getCookieValue({key:LEFT_SIDE_BAR_FORCE_MIN_KEY}): ",
+    getCookieValue({ key: LEFT_SIDE_BAR_FORCE_MIN_KEY })
+  );
+  const [isMinimizedAniDelay, setIsMinimizedAniDelay] =
+    useState<boolean>(false);
   const [didMount, setDidMount] = useState<boolean>(false);
+  const isMinimizedFinal = forceMinimized || isMinimized;
+  console.warn("isMinimizedFinal: ", isMinimizedFinal);
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -112,33 +140,39 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
       setIsLargeScreen(largeScreen);
     },
   });
+
   useEffect((): void => {
-    /* if [below] we consider user's screen size. Else, we minimize */
     if (
-      !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
+      ["hubs"].includes(pathname.split("/")[1]) &&
+      !isEmpty(pathname.split("/")[2])
+    ) {
+      setIsMinimized(false);
+    } else if (
+      /* if [below] we consider user's screen size. Else, we minimize */
+      !["", "/", "paper", "post", "hypothesis", "my-hubs"].includes(
+        pathname.split("/")[1]
+      )
     ) {
       setIsMinimized(true);
-      setGrowMinimized(true);
     } else {
       setIsMinimized(!isLargeScreen);
-      setGrowMinimized(!isLargeScreen);
     }
-  }, [pathname, isLargeScreen]);
+  }, [pathname, isLargeScreen, isMinimizedFinal]);
 
   useEffect((): void => {
     setTimeout(() => {
       setDidMount(true);
-    }, 2000);
+    }, 2500);
   }, []);
 
   useEffect((): void => {
     if (isMinimized) {
       const timeout = ITEM_FADE_DURATION * 1000 - 10;
       setTimeout(() => {
-        setIsMinimizedLocal(isMinimized);
+        setIsMinimizedAniDelay(isMinimized);
       }, timeout);
     } else {
-      setIsMinimizedLocal(isMinimized);
+      setIsMinimizedAniDelay(isMinimized);
     }
   }, [isMinimized]);
 
@@ -146,11 +180,11 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     (): RootLeftSidebarItemProps[] =>
       getLeftSidebarItemAttrs({
         currentUser,
-        isMinimized,
+        isMinimized: isMinimizedFinal,
         router,
         openLoginModal,
       }),
-    [currentUser.id, router.pathname, isMinimized]
+    [currentUser.id, router.pathname, isMinimizedFinal]
   );
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
@@ -166,59 +200,52 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     formattedRootLeftSidebar,
     formattedFooterTxtItem,
     formattedFooterItemsButtonRow,
-  } = {
-    formattedLogoContainer: [
-      styles.logoContainer,
-      isMinimizedLocal && isMinimized && styles.logoContainerMin,
-    ],
-    formattedRootLeftSidebar: css(
-      styles.rootLeftSidebar,
-      isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
-    ),
-    formattedFooterTxtItem: [
-      styles.leftSidebarFooterTxtItem,
-      isMinimized && styles.leftSidebarFooterTxtItemMin,
-    ],
-    formattedFooterItemsButtonRow: css(
-      styles.leftSidebarFooterItemsBottomRow,
-      isMinimized && styles.leftSidebarFooterItemsBottomRowMin
-    ),
-  };
-
-  const variants = {
-    minimized: {
-      width: 80,
-      // opacity: 0,
-    },
-    full: {
-      width: 280,
-    },
-  };
-
-  const rscIconVariants = {
-    minimized: {
-      opacity: 0,
-      // width: 0,
-      // transform: "scaleX(0)",
-      // marginLeft: 0,
-    },
-    full: {
-      // transform: "scaleX(1)",
-      // width: "100%",
-      opacity: 1,
-    },
-  };
+  } = useMemo(
+    () => ({
+      formattedLogoContainer: [
+        styles.logoContainer,
+        isMinimizedFinal && styles.logoContainerMin,
+      ],
+      formattedRootLeftSidebar: css(
+        styles.rootLeftSidebar,
+        isMinimizedFinal && styles.rootLeftSidebarMin
+      ),
+      formattedFooterTxtItem: [
+        styles.leftSidebarFooterTxtItem,
+        isMinimizedFinal && styles.leftSidebarFooterTxtItemMin,
+      ],
+      formattedFooterItemsButtonRow: css(
+        styles.leftSidebarFooterItemsBottomRow,
+        isMinimizedFinal && styles.leftSidebarFooterItemsBottomRowMin
+      ),
+    }),
+    [isMinimizedFinal]
+  );
 
   return (
     <motion.div
-      animate={growMinimized ? "minimized" : "full"}
-      variants={variants}
+      animate={isMinimizedFinal ? "minimized" : "full"}
+      className={formattedRootLeftSidebar}
+      variants={{
+        minimized: {
+          width: 80,
+        },
+        full: {
+          width: 280,
+        },
+      }}
+      style={
+        pathname.includes("notebook")
+          ? {
+              borderRight: `1px solid ${colors.GREY_BORDER}`,
+            }
+          : {}
+      }
       transition={{
         duration: didMount
           ? ITEM_FADE_DURATION
           : 0 /* avoids landing animation */,
       }}
-      className={formattedRootLeftSidebar}
     >
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
         <div className={css(styles.leftSidebarItemsContainer)}>
@@ -231,20 +258,27 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
                   withText={false}
                 />
                 <AnimatePresence initial={false}>
-                  {!isMinimized && (
+                  {!isMinimizedFinal && (
                     <motion.img
-                      variants={rscIconVariants}
-                      animate={isMinimized ? "minimized" : "full"}
+                      alt="ResearchHub Text Logo"
+                      animate={isMinimizedFinal ? "minimized" : "full"}
+                      className={css(styles.researchHubLogoText)}
                       exit={"minimized"}
                       key={`RHLogo-max`}
+                      src={"/static/ResearchHubText.png"}
                       transition={{
                         duration: didMount
                           ? ITEM_FADE_DURATION
                           : 0 /* avoids landing animation */,
                       }}
-                      className={css(styles.researchHubLogoText)}
-                      src={"/static/ResearchHubText.png"}
-                      alt="ResearchHub Text Logo"
+                      variants={{
+                        minimized: {
+                          opacity: 0,
+                        },
+                        full: {
+                          opacity: 1,
+                        },
+                      }}
                     />
                   )}
                 </AnimatePresence>
@@ -312,12 +346,12 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
               </ALink>
             </div>
           </div>
-          {isMinimized ? (
+          {isMinimizedFinal ? (
             <div
               className={css(styles.arrowRight)}
-              onClick={() => {
-                setGrowMinimized(false);
+              onClick={(event: SyntheticEvent): void => {
                 setIsMinimized(false);
+                setForceMinimized(event, "false");
               }}
             >
               {icons.arrowRightToLine}
@@ -325,9 +359,9 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
           ) : (
             <div
               className={css(styles.arrowRight, styles.arrowLeft)}
-              onClick={() => {
-                setGrowMinimized(true);
+              onClick={(event: SyntheticEvent): void => {
                 setIsMinimized(true);
+                setForceMinimized(event, "true");
               }}
             >
               {icons.arrowLeftToLine}
