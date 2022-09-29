@@ -215,6 +215,19 @@ function RootLeftSidebar({
   return (
     <motion.div
       animate={growMinimized ? "minimized" : "full"}
+      className={formattedRootLeftSidebar}
+      style={
+        ["notebook"].includes(pathname.split("/")[2])
+          ? {
+              borderRight: `1px solid ${colors.GREY_BORDER}`,
+            }
+          : {}
+      }
+      transition={{
+        duration: didMount
+          ? ITEM_FADE_DURATION
+          : 0 /* avoids landing animation */,
+      }}
       variants={{
         minimized: {
           width: LEFT_SIDEBAR_MIN_WIDTH,
@@ -223,12 +236,6 @@ function RootLeftSidebar({
           width: LEFT_SIDEBAR_MAX_WIDTH,
         },
       }}
-      transition={{
-        duration: didMount
-          ? ITEM_FADE_DURATION
-          : 0 /* avoids landing animation */,
-      }}
-      className={formattedRootLeftSidebar}
     >
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
         <div className={formattedItemsContainer}>
@@ -243,6 +250,17 @@ function RootLeftSidebar({
                 <AnimatePresence initial={false}>
                   {!isMinimized && (
                     <motion.img
+                      alt="ResearchHub Text Logo"
+                      animate={isMinimized ? "minimized" : "full"}
+                      className={css(styles.researchHubLogoText)}
+                      exit={"minimized"}
+                      key={`RHLogo-max`}
+                      src={"/static/ResearchHubText.png"}
+                      transition={{
+                        duration: didMount
+                          ? ITEM_FADE_DURATION
+                          : 0 /* avoids landing animation */,
+                      }}
                       variants={{
                         minimized: {
                           display: "none",
@@ -254,17 +272,6 @@ function RootLeftSidebar({
                           opacity: 1,
                         },
                       }}
-                      animate={isMinimized ? "minimized" : "full"}
-                      exit={"minimized"}
-                      key={`RHLogo-max`}
-                      transition={{
-                        duration: didMount
-                          ? ITEM_FADE_DURATION
-                          : 0 /* avoids landing animation */,
-                      }}
-                      className={css(styles.researchHubLogoText)}
-                      src={"/static/ResearchHubText.png"}
-                      alt="ResearchHub Text Logo"
                     />
                   )}
                 </AnimatePresence>
@@ -459,16 +466,17 @@ const styles = StyleSheet.create({
     marginTop: "auto",
   },
   arrowRight: {
+    color: "#aaa",
+    cursor: "pointer",
     margin: "auto",
     marginBottom: 0,
     padding: 16,
-    color: "#aaa",
-    cursor: "pointer",
     [`@media only screen and (max-width: ${breakpoints.large.int}px)`]: {
       display: "none",
     },
   },
   arrowLeft: {
+    cursor: "pointer",
     marginTop: 0,
   },
   logoContainer: {
