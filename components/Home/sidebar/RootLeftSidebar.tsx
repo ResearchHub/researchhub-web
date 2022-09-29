@@ -31,7 +31,8 @@ type Props = {
   openLoginModal: any;
 };
 
-export const LEFT_SIDE_BAR_FORCE_MIN_KEY = "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
+export const LEFT_SIDE_BAR_FORCE_MIN_KEY =
+  "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
 
 const getLeftSidebarItemAttrs = ({
   currentUser,
@@ -117,10 +118,13 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
 
   useEffect((): void => {
     if (
+      /* if [below] we maximize unless the user sets a preference. */
       ["hubs"].includes(pathname.split("/")[1]) &&
       !isEmpty(pathname.split("/")[2])
     ) {
+      console.warn("DONT BE HERE");
       setIsMinimized(false);
+      setGrowMinimized(false);
     } else if (
       /* if [below] we consider user's screen size. Else, we minimize */
       !["", "/", "paper", "post", "hypothesis", "my-hubs"].includes(
@@ -128,10 +132,12 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
       )
     ) {
       setIsMinimized(true);
+      setGrowMinimized(true);
     } else {
       setIsMinimized(!isLargeScreen);
+      setGrowMinimized(!isLargeScreen);
     }
-  }, [pathname, isLargeScreen, isMinimized]);
+  }, [pathname, isLargeScreen]);
 
   useEffect((): void => {
     setTimeout(() => {
@@ -141,10 +147,10 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
 
   useEffect((): void => {
     if (isMinimized) {
-      const timeout = ITEM_FADE_DURATION * 1000 - 10;
+      const sidebarSlideDuration = ITEM_FADE_DURATION * 1000 - 10;
       setTimeout(() => {
         setIsMinimizedLocal(isMinimized);
-      }, timeout);
+      }, sidebarSlideDuration);
     } else {
       setIsMinimizedLocal(isMinimized);
     }
@@ -193,34 +199,17 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
     ),
   };
 
-  const variants = {
-    minimized: {
-      width: 80,
-      // opacity: 0,
-    },
-    full: {
-      width: 280,
-    },
-  };
-
-  const rscIconVariants = {
-    minimized: {
-      opacity: 0,
-      // width: 0,
-      // transform: "scaleX(0)",
-      // marginLeft: 0,
-    },
-    full: {
-      // transform: "scaleX(1)",
-      // width: "100%",
-      opacity: 1,
-    },
-  };
-
   return (
     <motion.div
       animate={growMinimized ? "minimized" : "full"}
-      variants={variants}
+      variants={{
+        minimized: {
+          width: 80,
+        },
+        full: {
+          width: 280,
+        },
+      }}
       transition={{
         duration: didMount
           ? ITEM_FADE_DURATION
@@ -241,7 +230,14 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
                 <AnimatePresence initial={false}>
                   {!isMinimized && (
                     <motion.img
-                      variants={rscIconVariants}
+                      variants={{
+                        minimized: {
+                          opacity: 0,
+                        },
+                        full: {
+                          opacity: 1,
+                        },
+                      }}
                       animate={isMinimized ? "minimized" : "full"}
                       exit={"minimized"}
                       key={`RHLogo-max`}
@@ -371,7 +367,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   leftSidebarItemsInnerContainer: {
-    // alignItems: "center",
     borderBottom: `1px solid ${colors.GREY_BORDER}`,
     boxSizing: "border-box",
     display: "flex",
