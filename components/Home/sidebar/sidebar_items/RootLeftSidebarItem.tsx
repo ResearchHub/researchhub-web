@@ -48,21 +48,6 @@ export default function RootLeftSidebarItem({
     }
   }, [isMinimized]);
 
-  const variants = {
-    minimized: {
-      opacity: 0,
-      display: "none",
-      // width: 0,
-      // transform: "scaleX(0)",
-    },
-    full: {
-      opacity: 1,
-      display: "visible",
-      // width: "100%",
-      // transform: "scaleX(1)",
-    },
-  };
-
   return (
     <div
       className={css(
@@ -85,16 +70,25 @@ export default function RootLeftSidebarItem({
       <AnimatePresence initial={false}>
         {!isMinimized && (
           <motion.div
-            initial={false}
+            animate={"full"}
             className={css(
               styles.labelWrap,
               isActive && styles.labelWrapActive
             )}
-            transition={{ duration: itemFadeDuration }}
-            // initial={"minimized"}
-            animate={"full"}
             exit={"minimized"}
-            variants={variants}
+            initial={false}
+            transition={{ duration: itemFadeDuration }}
+            variants={{
+              minimized: {
+                display: "none",
+                opacity: 0,
+                width: 0,
+              },
+              full: {
+                display: "visible",
+                opacity: 1,
+              },
+            }}
           >
             {label}
           </motion.div>

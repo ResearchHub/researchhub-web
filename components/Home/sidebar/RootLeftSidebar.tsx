@@ -33,9 +33,11 @@ type Props = {
   rootLeftSidebarForceMin: boolean;
 };
 
+const LEFT_SIDEBAR_MAX_WIDTH = 280;
+const LEFT_SIDEBAR_MIN_WIDTH = 80;
 export const LEFT_SIDEBAR_FORCE_MIN_KEY =
   "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
-const LEFT_SIDEBAR
+
 const getLeftSidebarItemAttrs = ({
   currentUser,
   isMinimized,
@@ -135,7 +137,7 @@ function RootLeftSidebar({
       "hypothesis",
       "my-hubs",
     ].includes(pathname.split("/")[1]);
-    
+
     if (onSpecficHubPage) {
       setIsMinimized(isForceMinimized);
       setGrowMinimized(isForceMinimized);
@@ -185,15 +187,20 @@ function RootLeftSidebar({
   );
 
   const {
+    formattedFooterTxtItem,
+    formattedItemsContainer,
     formattedLogoContainer,
     formattedRootLeftSidebar,
-    formattedFooterTxtItem,
     formattedFooterItemsButtonRow,
   } = {
     formattedLogoContainer: [
       styles.logoContainer,
       isMinimizedLocal && isMinimized && styles.logoContainerMin,
     ],
+    formattedItemsContainer: css(
+      styles.leftSidebarItemsContainer,
+      isMinimizedLocal && isMinimized && styles.leftSidebarItemsContainerMin
+    ),
     formattedRootLeftSidebar: css(
       styles.rootLeftSidebar,
       isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
@@ -213,10 +220,10 @@ function RootLeftSidebar({
       animate={growMinimized ? "minimized" : "full"}
       variants={{
         minimized: {
-          width: 80,
+          width: LEFT_SIDEBAR_MIN_WIDTH,
         },
         full: {
-          width: 280,
+          width: LEFT_SIDEBAR_MAX_WIDTH,
         },
       }}
       transition={{
@@ -227,7 +234,7 @@ function RootLeftSidebar({
       className={formattedRootLeftSidebar}
     >
       <div className={css(styles.rootLeftSidebarStickyWrap)}>
-        <div className={css(styles.leftSidebarItemsContainer)}>
+        <div className={formattedItemsContainer}>
           <div className={css(styles.leftSidebarItemsInnerContainer)}>
             <div className={css(styles.logoDiv)}>
               <ALink href={"/"} as={`/`} overrideStyle={formattedLogoContainer}>
@@ -241,9 +248,12 @@ function RootLeftSidebar({
                     <motion.img
                       variants={{
                         minimized: {
+                          display: "none",
                           opacity: 0,
+                          width: 0,
                         },
                         full: {
+                          display: "visible",
                           opacity: 1,
                         },
                       }}
@@ -332,7 +342,7 @@ function RootLeftSidebar({
                 setGrowMinimized(false);
                 setIsMinimized(false);
                 storeToCookie({
-                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
                   value: "false" /* intentional string literal */,
                 });
               }}
@@ -346,7 +356,7 @@ function RootLeftSidebar({
                 setGrowMinimized(true);
                 setIsMinimized(true);
                 storeToCookie({
-                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
                   value: "true" /* intentional string literal */,
                 });
               }}
@@ -389,6 +399,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+  },
+  leftSidebarItemsContainerMin: {
+    maxWidth: LEFT_SIDEBAR_MIN_WIDTH,
   },
   leftSidebarFooter: {
     display: "flex",
