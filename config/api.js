@@ -103,7 +103,9 @@ const routes = (BASE_URL) => {
     },
     CONTRIBUTIONS: ({ hubId }) => {
       return (
-        BASE_URL + "audit/contributions/?" + (hubId ? `hubs=${hubId}` : "")
+        BASE_URL +
+        "contribution/latest_contributions?" +
+        (hubId ? `hubs=${hubId}` : "")
       );
     },
     DISMISS_FLAGGED_CONTENT: () => {

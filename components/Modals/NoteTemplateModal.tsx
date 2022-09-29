@@ -319,6 +319,7 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     height: "80vh",
+    maxWidth: "90vw",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },

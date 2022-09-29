@@ -16,6 +16,9 @@ import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
+import LiveFeed from "~/components/LiveFeed/LiveFeed";
+import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
+import { breakpoints } from "~/config/themes/screen";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -376,30 +379,40 @@ class HubPage extends Component {
     }
 
     return (
-      <div className={css(styles.homeContainer)}>
+      <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
           <div className={css(styles.row, styles.homeContentContainerBody)}>
-            <UnifiedDocFeedContainer
-              feed={feed}
-              home={home}
-              hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
-              hubState={hubState}
-              hub={hub}
-              loggedIn={loggedIn}
-              serverLoadedData={initialFeed}
-              subscribeButton={
-                <SubscribeButton
-                  {...this.props}
-                  {...this.state}
-                  onClick={() => this.setState({ transition: true })}
-                  onSubscribe={this.onSubscribe}
-                  onUnsubscribe={this.onUnsubscribe}
-                />
-              }
-            />
+            {this.props.isLiveFeed ? (
+              <div className={css(styles.liveFeedwrapper)}>
+                <div className={css(styles.title) + " clamp2"}>
+                  Explore ResearchHub
+                </div>
+                <FeedMenu />
+                <LiveFeed hub={hub} isHomePage={home} />
+              </div>
+            ) : (
+              <UnifiedDocFeedContainer
+                feed={feed}
+                home={home}
+                hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+                hubState={hubState}
+                hub={hub}
+                loggedIn={loggedIn}
+                serverLoadedData={initialFeed}
+                subscribeButton={
+                  <SubscribeButton
+                    {...this.props}
+                    {...this.state}
+                    onClick={() => this.setState({ transition: true })}
+                    onSubscribe={this.onSubscribe}
+                    onUnsubscribe={this.onUnsubscribe}
+                  />
+                }
+              />
+            )}
           </div>
         </div>
         <HomeRightSidebar />
@@ -409,7 +422,40 @@ class HubPage extends Component {
 }
 
 var styles = StyleSheet.create({
-  homeContainer: {
+  title: {
+    fontSize: 30,
+    fontWeight: 500,
+    textOverflow: "ellipsis",
+    marginBottom: 5,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: 30,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 24,
+      marginTop: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
+      fontSize: 20,
+    },
+  },
+  liveFeedwrapper: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    width: "100%",
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
+      paddingLeft: 28,
+      paddingRight: 28,
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "100%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
+      width: "100%",
+    },
+  },
+
+  rhHomeContainer: {
     display: "flex",
     height: "100%",
     justifyContent: "center",

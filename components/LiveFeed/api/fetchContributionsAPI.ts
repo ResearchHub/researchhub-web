@@ -14,7 +14,7 @@ type Args = {
   filters: ApiFilters;
 }
 
-export default function fetchAuditContributions({
+export default function fetchContributionsAPI({
   pageUrl,
   onError,
   onSuccess,

@@ -124,6 +124,7 @@ import {
   faChevronDown as falChevronDown,
   faComments as faCommentsNoBackground,
   faGlobe as faGlobeLight,
+  faHeartRate,
   faUnlock,
   faExpandArrows,
   faLongArrowLeft,
@@ -462,6 +463,7 @@ const icons = {
   plusSquare: <FontAwesomeIcon icon={faPlusSquare} />,
   plusThick: <FontAwesomeIcon icon={faPlusThick} />,
   portrait: <FontAwesomeIcon icon={faPortrait} />,
+  pulse: <FontAwesomeIcon icon={faHeartRate} />,
   receipt: <FontAwesomeIcon icon={faReceipt} />,
   reddit: <FontAwesomeIcon icon={faReddit} />,
   redo: <FontAwesomeIcon icon={faRedo} />,
@@ -793,7 +795,7 @@ export const PaperIcon = ({
   height = 16,
   withAnimation = true,
   overrideStyle = null,
-  color = "#B0AFB8",
+  color = "currentColor",
 }) => {
   return (
     <span
@@ -811,10 +813,10 @@ export const PaperIcon = ({
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M3.95019 9.92658H7.54095C7.81158 9.92658 8.036 9.69991 8.036 9.42658C8.036 9.15324 7.81158 8.93324 7.54095 8.93324H3.95019C3.67956 8.93324 3.45514 9.15324 3.45514 9.42658C3.45514 9.69991 3.67956 9.92658 3.95019 9.92658ZM6.18121 5.59991H3.95019C3.67956 5.59991 3.45514 5.82658 3.45514 6.09991C3.45514 6.37324 3.67956 6.59324 3.95019 6.59324H6.18121C6.45184 6.59324 6.67626 6.37324 6.67626 6.09991C6.67626 5.82658 6.45184 5.59991 6.18121 5.59991ZM10.8917 5.01699C11.0469 5.0152 11.2158 5.01325 11.3693 5.01325C11.5343 5.01325 11.6663 5.14659 11.6663 5.31325V10.6733C11.6663 12.3266 10.3396 13.6666 8.70265 13.6666H3.44852C1.73235 13.6666 0.333008 12.2599 0.333008 10.5266V3.33992C0.333008 1.68659 1.66634 0.333252 3.30991 0.333252H6.83466C7.00628 0.333252 7.13829 0.473252 7.13829 0.639919V2.78659C7.13829 4.00659 8.13499 5.00659 9.34291 5.01325C9.62505 5.01325 9.87379 5.01536 10.0915 5.01721C10.2608 5.01864 10.4114 5.01992 10.5442 5.01992C10.6382 5.01992 10.76 5.01851 10.8917 5.01699ZM11.0737 4.04392C10.5311 4.04592 9.89149 4.04392 9.43143 4.03925C8.7014 4.03925 8.10007 3.43192 8.10007 2.69458V0.937249C8.10007 0.649916 8.44529 0.507249 8.64265 0.714582C9.00021 1.09009 9.49171 1.60639 9.98083 2.1202C10.4678 2.6317 10.9523 3.14074 11.3001 3.50592C11.4928 3.70792 11.3516 4.04325 11.0737 4.04392Z"
-          fill="#B3B4BF"
+          fill={color}
         />
       </svg>
     </span>
@@ -823,11 +825,11 @@ export const PaperIcon = ({
 
 export const PostIcon = ({
   onClick,
-  width = 18,
-  height = 18,
+  width = 16,
+  height = 16,
   withAnimation = true,
   overrideStyle = null,
-  color = "#B0AFB8",
+  color = "currentColor",
 }) => {
   return (
     <span
@@ -845,8 +847,8 @@ export const PostIcon = ({
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M11.1099 1.34014C12.0689 1.2802 13.0146 1.61319 13.7272 2.26585C14.3798 2.97845 14.7128 3.92414 14.6596 4.8898V11.11C14.7195 12.0757 14.3798 13.0214 13.7338 13.734C13.0212 14.3866 12.0689 14.7196 11.1099 14.6597H4.88959C3.92391 14.7196 2.97822 14.3866 2.26561 13.734C1.61295 13.0214 1.27996 12.0757 1.3399 11.11V4.8898C1.27996 3.92414 1.61295 2.97845 2.26561 2.26585C2.97822 1.61319 3.92391 1.2802 4.88959 1.34014H11.1099ZM7.32038 11.2299L11.8024 6.73456C12.2087 6.32166 12.2087 5.65568 11.8024 5.24943L10.9367 4.38366C10.5238 3.97076 9.85777 3.97076 9.44486 4.38366L8.99865 4.83653C8.93205 4.90313 8.93205 5.01634 8.99865 5.08294C8.99865 5.08294 10.0576 6.13518 10.0775 6.16182C10.1508 6.24174 10.1974 6.3483 10.1974 6.46817C10.1974 6.70792 10.0043 6.90772 9.75787 6.90772C9.64466 6.90772 9.5381 6.8611 9.46484 6.78784L8.35265 5.68232C8.29937 5.62904 8.20613 5.62904 8.15285 5.68232L4.97612 8.85903C4.75634 9.07881 4.6298 9.37184 4.62315 9.68484L4.58319 11.2632C4.58319 11.3498 4.60983 11.4297 4.66976 11.4896C4.7297 11.5496 4.80962 11.5829 4.8962 11.5829H6.46126C6.78093 11.5829 7.08728 11.4563 7.32038 11.2299Z"
           fill={color}
         />
@@ -856,10 +858,10 @@ export const PostIcon = ({
 };
 
 export const QuestionIcon = ({
-  color = "#B0AFB8",
+  color = "currentColor",
   onClick,
   overrideStyle = null,
-  size = 18,
+  size = 16,
   withAnimation = true,
 }) => {
   return (
@@ -881,11 +883,11 @@ export const QuestionIcon = ({
 
 export const HypothesisIcon = ({
   onClick,
-  width = 18,
-  height = 18,
+  width = 16,
+  height = 16,
   withAnimation = true,
   overrideStyle = null,
-  color = "#B0AFB8",
+  color = "currentColor",
 }) => {
   return (
     <span
@@ -971,104 +973,6 @@ export const MedalIcon = ({
           fill={color}
         />
       </svg>
-    </span>
-  );
-};
-
-export const ResearchCoinIcon = ({
-  onClick = undefined,
-  overrideStyle,
-  height = 25,
-  width = 25,
-  version = 1,
-  color = "#F3A113",
-}) => {
-  return (
-    <span onClick={onClick} className={css(overrideStyle && overrideStyle)}>
-      {version === 1 ? (
-        <img
-          className={css(styles.icon)}
-          src={"/static/icons/coin-filled.png"}
-          alt="RSC Coin"
-          width={width}
-          height={height}
-        />
-      ) : version === 2 ? (
-        <img
-          onClick={onClick}
-          className={css(overrideStyle && overrideStyle)}
-          src={"/static/icons/rsc_v2.png"}
-          alt="RSC Coin"
-          width={width}
-          height={height}
-        />
-      ) : version === 3 ? (
-        <img
-          onClick={onClick}
-          className={css(overrideStyle && overrideStyle)}
-          src={"/static/icons/rsc_v3.png"}
-          alt="RSC Coin"
-          width={width}
-          height={height}
-        />
-      ) : version === 4 ? (
-        <svg
-          width={width}
-          height={height}
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M6.96539 0.079115C10.2355 0.612213 12.4541 3.6951 11.9209 6.96525C11.3877 10.2355 8.30472 12.454 5.03461 11.9209C1.7645 11.3876 -0.454098 8.30493 0.0791078 5.03456C0.612313 1.7643 3.69517 -0.454097 6.96539 0.079115Z"
-            fill={color}
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M6.76253 6.13023L8.5816 9.00106C8.71656 9.21596 8.74249 9.39999 8.65926 9.55317C8.57612 9.70644 8.40678 9.78308 8.15131 9.78308H3.98532C3.7298 9.78308 3.56043 9.70644 3.47725 9.55317C3.39407 9.39999 3.42 9.21591 3.55497 9.00102L5.37393 6.13019V4.68565L5.37955 4.2511H6.75815L6.76253 4.68564V6.13023ZM5.76572 6.37631L4.90355 7.64457H7.23656L6.37316 6.37631L6.30086 6.26405V6.13013V4.68559H5.83803V6.13013V6.26405L5.76572 6.37631Z"
-            fill="white"
-          />
-          <path
-            d="M5.36161 6.42662L4.71875 7.92663L7.71875 8.1409L6.43304 6.21233V4.49805H5.57589V4.92662L5.36161 6.42662Z"
-            fill="white"
-          />
-          <rect
-            x="4.89844"
-            y="4.19885"
-            width="2.33301"
-            height="0.530231"
-            rx="0.265115"
-            fill="white"
-          />
-          <rect
-            x="4.64062"
-            y="2.3689"
-            width="0.849925"
-            height="0.850897"
-            rx="0.424962"
-            fill="white"
-          />
-          <rect
-            x="6.75"
-            y="2.3689"
-            width="0.849925"
-            height="0.850897"
-            rx="0.424962"
-            fill="white"
-          />
-          <rect
-            x="5.80469"
-            y="1.2854"
-            width="0.655656"
-            height="0.656406"
-            rx="0.327828"
-            fill="white"
-          />
-        </svg>
-      ) : null}
     </span>
   );
 };

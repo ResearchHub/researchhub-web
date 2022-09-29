@@ -23,12 +23,12 @@ const FeedMenuTopLevelFilters = ({
   hubState,
 }: Args) => {
   const router = useRouter();
-  const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false);
   const filterEl = useRef(null);
   const [isMyHubsDropdownOpen, setIsMyHubsDropdownOpen] = useState(false);
   const isSubscribedToHubs = hubState?.subscribedHubs?.length > 0;
   const isCurrentUserLoaded = !!currentUser;
   const renderAsDropdown = false;
+  const shouldShowMyHubs = router.pathname.indexOf("/hubs/") === -1;
 
   useEffect(() => {
     const _handleClickOutside = (event) => {
@@ -50,12 +50,17 @@ const FeedMenuTopLevelFilters = ({
       const isSelected = f.value === selectedFilters.topLevel;
       const isMyHubs = f.value === "/my-hubs";
 
+      if (isMyHubs && !shouldShowMyHubs) {
+        return null;
+      }
+
       return (
         <div
           className={`${css(
             styles.filter,
             isSelected && styles.filterSelected,
-            renderAsDropdown && styles.filterAsDropdownOpt
+            renderAsDropdown && styles.filterAsDropdownOpt,
+            isMyHubs && styles.filterForMyHubs
           )} filterSelected`}
           ref={filterEl}
           key={`filter-${idx}`}
@@ -94,14 +99,7 @@ const FeedMenuTopLevelFilters = ({
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
-          {/* FIXME: Kobe - temporarily off until new sub-filtering backend is ready */}
-          {/* {isMyHubs && (
-            isTagsMenuOpen
-              ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
-              : isSelected
-              ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
-              : null
-          )} */}
+          {isMyHubs && <span className={css(styles.divider)}></span>}
         </div>
       );
     });
@@ -119,7 +117,7 @@ const FeedMenuTopLevelFilters = ({
 const styles = StyleSheet.create({
   topLevelFilters: {
     display: "flex",
-    // borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
+    borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
     width: "100%",
     marginBottom: 15,
     position: "relative",
@@ -134,12 +132,18 @@ const styles = StyleSheet.create({
     boxShadow: "rgb(0 0 0 / 15%) 0px 0px 10px 0px",
   },
   orderingContainer: {},
+  divider: {
+    borderRight: `1px solid ${colors.GREY_LINE(1)}`,
+    height: "80%",
+    position: "absolute",
+    right: -20,
+  },
   filterAsDropdownOpt: {
     borderBottom: 0,
     padding: "10px 14px",
   },
   filter: {
-    padding: "0px 2px 12px 2px",
+    padding: "0px 2px 10px 2px",
     display: "flex",
     position: "relative",
     marginRight: 25,
@@ -154,6 +158,9 @@ const styles = StyleSheet.create({
       fontSize: 15,
       padding: "0px 4px 10px 0px",
     },
+  },
+  filterForMyHubs: {
+    marginRight: 40,
   },
   chevronIcon: {
     marginLeft: 8,

@@ -73,9 +73,8 @@ const styles = StyleSheet.create({
   contentWrap: {
     alignItems: "center",
     display: "flex",
+    width: "100%",
     height: "100%",
-    justifyContent: "space-between",
-    margin: "auto",
   },
   exitButtonDefault: {
     color: "#fff",

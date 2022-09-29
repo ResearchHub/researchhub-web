@@ -88,7 +88,9 @@ function FlagButtonV2({
   return (
     <Fragment>
       <div
-        onClick={(): void => setIsModalOpen(!isModalOpen)}
+        onClick={(event): void => {
+          setIsModalOpen(!isModalOpen);
+        }}
         className={css(styles.flagIcon, flagIconOverride)}
       >
         {iconOverride || icons.flag}

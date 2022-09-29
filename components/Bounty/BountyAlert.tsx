@@ -1,5 +1,4 @@
 import { css, StyleSheet } from "aphrodite";
-import { ResearchCoinIcon } from "~/config/themes/icons";
 import ALink from "../ALink";
 import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
 import colors from "~/config/themes/colors";
@@ -7,6 +6,8 @@ import numeral from "numeral";
 import ResearchHubPopover from "../ResearchHubPopover";
 import { useState } from "react";
 import BountyModal from "./BountyModal";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+
 
 type BountyAlertParams = {
   bounty: Bounty;

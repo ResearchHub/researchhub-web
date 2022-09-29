@@ -27,7 +27,6 @@ const ALink: FunctionComponent<Props> = ({
   overrideStyle = null,
   target = null,
 }): ReactElement => {
-
   return (
     <Link href={href} as={as}>
       <a className={css(styles.ALink, styles[themes[theme]], overrideStyle)} target={target || undefined}>

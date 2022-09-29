@@ -450,9 +450,7 @@ const Navbar = (props) => {
                       <div className={css(styles.modBtnContainer)}>
                         <Link
                           href={
-                            isUserHubEditor && !isUserModerator
-                              ? "/moderators/audit/all"
-                              : "/moderators/author-claim-case-dashboard?case_status=OPEN"
+                            "/moderators/author-claim-case-dashboard?case_status=OPEN"
                           }
                         >
                           <a className={css(styles.modBtn)}>

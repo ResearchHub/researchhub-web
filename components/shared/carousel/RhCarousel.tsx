@@ -1,20 +1,24 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RhCarouselItem from "./RhCarouselItem";
 
 type Props = {
-  rhCarouselItem: ReactElement<typeof RhCarouselItem>[];
+  rhCarouselItem: [];
 };
 
 const RhCarouselControl = ({
   currIndex,
   setIndex,
+  setDirection,
   totalNumItems,
 }: {
   currIndex: number;
   setIndex: (ind: number) => void;
+  setDirection: (direction: string) => void;
   totalNumItems: number;
 }): ReactElement => {
   const pills = Array.apply(null, Array(totalNumItems)).map(
@@ -42,6 +46,7 @@ const RhCarouselControl = ({
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
             const newIndex = currIndex - 1;
+            setDirection("left");
             setIndex(newIndex < 0 ? totalNumItems - 1 : newIndex);
           }}
           role="button"
@@ -52,6 +57,7 @@ const RhCarouselControl = ({
           className={css(styles.rhCarouselControlIcon)}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
+            setDirection("right");
             setIndex((currIndex + 1) % totalNumItems);
           }}
           role="button"
@@ -68,13 +74,29 @@ export default function RhCarousel({ rhCarouselItem }: Props): ReactElement {
   const totalNumItems = rhCarouselItem.length;
   const shouldDisplayControl = totalNumItems > 1;
   const [displayItemInd, setDisplayItemInd] = useState<number>(0);
+  const [direction, setDirection] = useState<string>("right");
+
+  console.log(direction);
+
+  const { onBodyClick, title, body } = rhCarouselItem[displayItemInd];
 
   return (
     <div className={css(styles.rhCarousel)}>
-      {rhCarouselItem[displayItemInd]}
+      <AnimatePresence initial={false} custom={direction}>
+        {
+          <RhCarouselItem
+            onBodyClick={onBodyClick}
+            title={title}
+            body={body}
+            key={`carousel-${displayItemInd}`}
+            direction={direction}
+          />
+        }
+      </AnimatePresence>
       {shouldDisplayControl ? (
         <RhCarouselControl
           currIndex={displayItemInd}
+          setDirection={setDirection}
           setIndex={setDisplayItemInd}
           totalNumItems={totalNumItems}
         />
@@ -89,16 +111,17 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    justifyContent: "space-between",
+    minHeight: 210,
     minWidth: "100%",
     width: "100%",
+    position: "relative",
   },
   rhCarouselControl: {
     alignItems: "center",
     display: "flex",
     height: 24,
     justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: "auto",
     width: "100%",
   },
   rhCarouselControlPillsContainer: {

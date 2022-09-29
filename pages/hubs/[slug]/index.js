@@ -21,6 +21,12 @@ class Index extends Component {
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
     const currentHub = await fetchHubFromSlug({ slug });
+    const isLiveFeed = ctx.pathname.indexOf("/live") >= 0;
+    if (isLiveFeed) {
+      return {
+        isLiveFeed: true,
+      };
+    }
 
     if (!isServer()) {
       return {
@@ -179,7 +185,12 @@ class Index extends Component {
             }
           />
         )}
-        <HubPage hub={currentHub} slug={slug} {...this.props.initialProps} />
+        <HubPage
+          hub={currentHub}
+          slug={slug}
+          isLiveFeed={this.props.isLiveFeed}
+          {...this.props.initialProps}
+        />
       </div>
     );
   }
