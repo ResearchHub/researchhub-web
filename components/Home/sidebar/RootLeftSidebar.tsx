@@ -204,7 +204,7 @@ function RootLeftSidebar({
     formattedItemsContainer: css(styles.leftSidebarItemsContainer),
     formattedLogoContainer: [
       styles.logoContainer,
-      isMinimized && styles.logoContainerMin,
+      isMinimizedLocal && isMinimized && styles.logoContainerMin,
     ],
     formattedRootLeftSidebar: css(
       styles.rootLeftSidebar,
@@ -379,6 +379,7 @@ const styles = StyleSheet.create({
     background: colors.GREY_ICY_BLUE_HUE,
     boxSizing: "border-box",
     position: "relative",
+    zIndex: 10,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },

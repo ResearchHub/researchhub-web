@@ -610,7 +610,8 @@ const burgerMenuStyle = {
 const styles = StyleSheet.create({
   modBtnContainer: {
     position: "relative",
-    padding: "2px 10px",
+    padding: "0px 10px",
+    marginBottom: 2,
   },
   modBtn: {
     fontSize: 20,
@@ -769,6 +770,7 @@ const styles = StyleSheet.create({
   },
   caret: {
     marginLeft: 10,
+    fontSize: 16,
     color: "#aaa",
   },
   userDropdown: {
