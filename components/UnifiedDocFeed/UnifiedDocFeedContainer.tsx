@@ -13,7 +13,7 @@ import {
 } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
   feedPosts: {
     position: "relative",
     minHeight: 200,
+    borderTop: `1px solid ${genericCardColors.BORDER}`,
   },
   tabFeature: {
     marginLeft: 8,

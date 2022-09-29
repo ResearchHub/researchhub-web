@@ -213,12 +213,15 @@ function RootLeftSidebar({
     ),
   };
 
+  console.log(pathname);
+
   return (
     <motion.div
       animate={growMinimized ? "minimized" : "full"}
       className={formattedRootLeftSidebar}
       style={
-        ["notebook"].includes(pathname.split("/")[2])
+        ["notebook"].includes(pathname.split("/")[2]) ||
+        ["hubs", "user"].includes(pathname.split("/")[1])
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,
             }
@@ -232,9 +235,11 @@ function RootLeftSidebar({
       variants={{
         minimized: {
           width: LEFT_SIDEBAR_MIN_WIDTH,
+          minWidth: LEFT_SIDEBAR_MIN_WIDTH,
         },
         full: {
           width: LEFT_SIDEBAR_MAX_WIDTH,
+          minWidth: LEFT_SIDEBAR_MAX_WIDTH,
         },
       }}
     >
@@ -391,7 +396,9 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  rootLeftSidebarMin: {},
+  rootLeftSidebarMin: {
+    minWidth: 80,
+  },
   rootLeftSidebarStickyWrap: {
     display: "flex",
     flexDirection: "column",

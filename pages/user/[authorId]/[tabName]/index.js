@@ -939,6 +939,7 @@ function AuthorPage(props) {
           <HorizontalTabBar
             id="tabBarForSearch"
             tabs={tabs}
+            showBorderBottom={false}
             onClick={handleTabClick}
             containerStyle={styles.tabContainer}
             dragging={true}
@@ -1017,7 +1018,7 @@ const styles = StyleSheet.create({
     },
   },
   tabMenuContainer: {
-    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    // borderBottom: `1px solid ${colors.BLACK(0.1)}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 30,
     },

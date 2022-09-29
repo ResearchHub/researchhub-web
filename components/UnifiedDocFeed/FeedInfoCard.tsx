@@ -87,6 +87,7 @@ export default function FeedInfoCard({
               authorProfiles={editorProfiles}
               horizontal
               imgSize={22}
+              fontSize={16}
               labelSpacing={6}
               withAuthorName
             />

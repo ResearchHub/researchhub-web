@@ -137,7 +137,7 @@ const AuthorAvatar = (props) => {
               <span
                 style={{
                   color: fontColor ?? colors.BLACK(),
-                  fontSize: size ?? fontSize,
+                  fontSize: fontSize ?? size,
                   fontWeight: boldName ? 500 : 400,
                   marginLeft: spacing ?? 8,
                   whiteSpace: "nowrap",

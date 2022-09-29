@@ -232,6 +232,9 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flexDirection: "row",
+    overflow: "hidden",
+    padding: 16,
+    boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       padding: "0px 0px",
     },
