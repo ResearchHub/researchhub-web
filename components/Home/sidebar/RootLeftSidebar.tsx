@@ -109,6 +109,7 @@ function RootLeftSidebar({
   const router = useRouter();
   const { pathname = "" } = router ?? {};
   const currentUser = getCurrentUser();
+  const { organization_slug = "", id } = currentUser ?? {};
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
@@ -290,6 +291,12 @@ function RootLeftSidebar({
               overrideStyle={formattedFooterTxtItem}
             >
               {"Jobs"}
+            </ALink>
+            <ALink
+              href={`/${organization_slug}/notebook`}
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {"Publish"}
             </ALink>
           </div>
           <div className={css(styles.footer)}>
