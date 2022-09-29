@@ -33,9 +33,9 @@ type Props = {
   rootLeftSidebarForceMin: boolean;
 };
 
-export const LEFT_SIDE_BAR_FORCE_MIN_KEY =
+export const LEFT_SIDEBAR_FORCE_MIN_KEY =
   "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
-
+const LEFT_SIDEBAR
 const getLeftSidebarItemAttrs = ({
   currentUser,
   isMinimized,

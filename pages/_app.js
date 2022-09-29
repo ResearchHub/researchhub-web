@@ -18,7 +18,7 @@ import "react-tagsinput/react-tagsinput.css";
 
 import { configureStore } from "~/redux/configureStore";
 import { init as initApm } from "@elastic/apm-rum";
-import { LEFT_SIDE_BAR_FORCE_MIN_KEY } from "~/components/Home/sidebar/RootLeftSidebar";
+import { LEFT_SIDEBAR_FORCE_MIN_KEY } from "~/components/Home/sidebar/RootLeftSidebar";
 import { MessageActions } from "~/redux/message";
 import { Provider } from "react-redux";
 import { SIFT_BEACON_KEY } from "~/config/constants";
@@ -152,7 +152,6 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
       }
     );
   };
-  console.warn("rootLeftSidebarForceMin 22: ", rootLeftSidebarForceMin);
 
   return (
     <Provider store={store}>
@@ -179,9 +178,9 @@ MyApp.getInitialProps = async (appContext) => {
 
   const cookies = nookies.get(appContext.ctx);
   const rootLeftSidebarForceMin =
-    cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY] ===
+    cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
     "true"; /* intentional string literal */
-  console.warn("rootLeftSidebarForceMin: ", rootLeftSidebarForceMin);
+
   if (
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)
