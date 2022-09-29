@@ -1,41 +1,33 @@
-import App from "next/app";
-import Router, { useRouter } from "next/router";
-import withRedux from "next-redux-wrapper";
-import { Provider } from "react-redux";
-import { configureStore } from "~/redux/configureStore";
-import "isomorphic-unfetch";
-import ReactGA from "react-ga";
-import { init as initApm } from "@elastic/apm-rum";
-import { useEffect, useState } from "react";
-
-// Components
-import Base from "./Base";
-
-// Stylesheets
-import "react-tagsinput/react-tagsinput.css";
-import "react-quill/dist/quill.snow.css";
-import "react-placeholder/lib/reactPlaceholder.css";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import "katex/dist/katex.min.css";
-
 import "./stylesheets/App.css";
-import "../components/Paper/progressbar.css";
-import "../components/SearchSuggestion/authorinput.css";
-import "../components/CKEditor/CKEditor.css";
-import "../components/EditorsDashboard/stylesheets/date.css";
-
-import "../components/Modals/Stylesheets/Dnd.css";
-import "../components/TextEditor/stylesheets/QuillTextEditor.css";
-import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import "~/components/CKEditor/CKEditor.css";
+import "~/components/EditorsDashboard/stylesheets/date.css";
+import "~/components/Modals/Stylesheets/Dnd.css";
+import "~/components/Paper/progressbar.css";
 import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
+import "~/components/Paper/Tabs/stylesheets/ReactPdf.css";
+import "~/components/SearchSuggestion/authorinput.css";
+import "~/components/TextEditor/stylesheets/QuillTextEditor.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
+import "isomorphic-unfetch";
+import "katex/dist/katex.min.css";
+import "react-placeholder/lib/reactPlaceholder.css";
+import "react-quill/dist/quill.snow.css";
+import "react-tagsinput/react-tagsinput.css";
 
-// Redux
+import { configureStore } from "~/redux/configureStore";
+import { init as initApm } from "@elastic/apm-rum";
+import { LEFT_SIDE_BAR_FORCE_MIN_KEY } from "~/components/Home/sidebar/RootLeftSidebar";
 import { MessageActions } from "~/redux/message";
-
-// Config
+import { Provider } from "react-redux";
 import { SIFT_BEACON_KEY } from "~/config/constants";
+import { useEffect, useState } from "react";
+import App from "next/app";
+import Base from "./Base";
+import ReactGA from "react-ga";
+import Router, { useRouter } from "next/router";
+import withRedux from "next-redux-wrapper";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -60,7 +52,7 @@ if (process.env.ELASTIC_APM_URL) {
   });
 }
 
-const MyApp = ({ Component, pageProps, store }) => {
+const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState(router.asPath);
 
@@ -162,7 +154,11 @@ const MyApp = ({ Component, pageProps, store }) => {
 
   return (
     <Provider store={store}>
-      <Base pageProps={pageProps} Component={Component} />
+      <Base
+        Component={Component}
+        pageProps={pageProps}
+        rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+      />
     </Provider>
   );
 };
@@ -179,12 +175,19 @@ MyApp.getInitialProps = async (appContext) => {
     "/[orgSlug]/notebook",
   ];
 
+  const cookies = nookies.get(appContext.ctx);
+  const rootLeftSidebarForceMin =
+    cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY] === "true";
   if (
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)
   ) {
     const appProps = await App.getInitialProps(appContext);
-    return { ...appProps };
+    return { ...appProps, rootLeftSidebarForceMin };
+  } else {
+    return {
+      rootLeftSidebarForceMin,
+    };
   }
 };
 

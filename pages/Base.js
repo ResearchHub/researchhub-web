@@ -21,20 +21,20 @@ const DynamicMessage = dynamic(() => import("~/components/Loader/Message"));
 const DynamicAlertTemplate = dynamic(() =>
   import("~/components/Modals/AlertTemplate")
 );
-// const DynamicFooter = dynamic(() => import("./footer"));
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
 
 function Base({
-  fetchPermissions,
-  getUser,
-  getUniversities,
-  getWithdrawals,
-  getTopHubs,
-  getNotifications,
   auth,
   Component,
+  fetchPermissions,
+  getNotifications,
+  getTopHubs,
+  getUniversities,
+  getUser,
+  getWithdrawals,
   pageProps,
+  rootLeftSidebarForceMin,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
   const [newPostButtonValues, setNewPostButtonValues] = useState({
@@ -92,7 +92,9 @@ function Base({
           <div className={css(styles.pageWrapper)}>
             <DynamicPermissionNotification />
             <DynamicMessage />
-            <RootLeftSidebar />
+            <RootLeftSidebar
+              rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+            />
             <div className={css(styles.main)}>
               <DynamicNavbar />
               <Component {...pageProps} />

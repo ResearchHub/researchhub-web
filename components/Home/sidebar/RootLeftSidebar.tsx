@@ -31,6 +31,8 @@ type Props = {
   openLoginModal: any;
 };
 
+export const LEFT_SIDE_BAR_FORCE_MIN_KEY = "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
+
 const getLeftSidebarItemAttrs = ({
   currentUser,
   isMinimized,
@@ -112,18 +114,24 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
       setIsLargeScreen(largeScreen);
     },
   });
+
   useEffect((): void => {
-    /* if [below] we consider user's screen size. Else, we minimize */
     if (
-      !["", "/", "paper", "post", "hypothesis"].includes(pathname.split("/")[1])
+      ["hubs"].includes(pathname.split("/")[1]) &&
+      !isEmpty(pathname.split("/")[2])
+    ) {
+      setIsMinimized(false);
+    } else if (
+      /* if [below] we consider user's screen size. Else, we minimize */
+      !["", "/", "paper", "post", "hypothesis", "my-hubs"].includes(
+        pathname.split("/")[1]
+      )
     ) {
       setIsMinimized(true);
-      setGrowMinimized(true);
     } else {
       setIsMinimized(!isLargeScreen);
-      setGrowMinimized(!isLargeScreen);
     }
-  }, [pathname, isLargeScreen]);
+  }, [pathname, isLargeScreen, isMinimized]);
 
   useEffect((): void => {
     setTimeout(() => {
