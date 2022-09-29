@@ -26,9 +26,11 @@ import RootLeftSidebarItem, {
 } from "./sidebar_items/RootLeftSidebarItem";
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
+import { storeToCookie } from "~/config/utils/storeToCookie";
 
 type Props = {
   openLoginModal: any;
+  rootLeftSidebarForceMin: boolean;
 };
 
 export const LEFT_SIDE_BAR_FORCE_MIN_KEY =
@@ -39,7 +41,8 @@ const getLeftSidebarItemAttrs = ({
   isMinimized,
   router,
   openLoginModal,
-}: {
+}: /* intentional string literal */
+{
   currentUser: any;
   isMinimized: boolean;
   router: NextRouter;
@@ -97,16 +100,20 @@ const getLeftSidebarItemAttrs = ({
   ]);
 };
 
-function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
+function RootLeftSidebar({
+  openLoginModal,
+  rootLeftSidebarForceMin: isForceMinimized,
+}: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
   const currentUser = getCurrentUser();
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
-  const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
-  const [growMinimized, setGrowMinimized] = useState<boolean>(false);
+  const [isMinimized, setIsMinimized] = useState<boolean>(isForceMinimized);
+  const [isMinimizedLocal, setIsMinimizedLocal] =
+    useState<boolean>(isForceMinimized);
+  const [growMinimized, setGrowMinimized] = useState<boolean>(isForceMinimized);
   const [didMount, setDidMount] = useState<boolean>(false);
 
   useEffectOnScreenResize({
@@ -117,25 +124,27 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
   });
 
   useEffect((): void => {
-    if (
-      /* if [below] we maximize unless the user sets a preference. */
+    const onSpecficHubPage =
       ["hubs"].includes(pathname.split("/")[1]) &&
-      !isEmpty(pathname.split("/")[2])
-    ) {
-      console.warn("DONT BE HERE");
-      setIsMinimized(false);
-      setGrowMinimized(false);
-    } else if (
-      /* if [below] we consider user's screen size. Else, we minimize */
-      !["", "/", "paper", "post", "hypothesis", "my-hubs"].includes(
-        pathname.split("/")[1]
-      )
-    ) {
-      setIsMinimized(true);
-      setGrowMinimized(true);
+      !isEmpty(pathname.split("/")[2]);
+    const onDefaultMinViewPages = ![
+      "",
+      "/",
+      "paper",
+      "post",
+      "hypothesis",
+      "my-hubs",
+    ].includes(pathname.split("/")[1]);
+    
+    if (onSpecficHubPage) {
+      setIsMinimized(isForceMinimized);
+      setGrowMinimized(isForceMinimized);
+    } else if (onDefaultMinViewPages) {
+      setIsMinimized(isForceMinimized || true);
+      setGrowMinimized(isForceMinimized || true);
     } else {
-      setIsMinimized(!isLargeScreen);
-      setGrowMinimized(!isLargeScreen);
+      setIsMinimized(isForceMinimized || !isLargeScreen);
+      setGrowMinimized(isForceMinimized || !isLargeScreen);
     }
   }, [pathname, isLargeScreen]);
 
@@ -322,6 +331,10 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
               onClick={() => {
                 setGrowMinimized(false);
                 setIsMinimized(false);
+                storeToCookie({
+                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  value: "false" /* intentional string literal */,
+                });
               }}
             >
               {icons.arrowRightToLine}
@@ -332,6 +345,10 @@ function RootLeftSidebar({ openLoginModal }: Props): ReactElement {
               onClick={() => {
                 setGrowMinimized(true);
                 setIsMinimized(true);
+                storeToCookie({
+                  key: LEFT_SIDE_BAR_FORCE_MIN_KEY,
+                  value: "true" /* intentional string literal */,
+                });
               }}
             >
               {icons.arrowLeftToLine}

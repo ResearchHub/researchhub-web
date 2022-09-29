@@ -152,6 +152,7 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
       }
     );
   };
+  console.warn("rootLeftSidebarForceMin 22: ", rootLeftSidebarForceMin);
 
   return (
     <Provider store={store}>
@@ -178,7 +179,9 @@ MyApp.getInitialProps = async (appContext) => {
 
   const cookies = nookies.get(appContext.ctx);
   const rootLeftSidebarForceMin =
-    cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY] === "true";
+    cookies[LEFT_SIDE_BAR_FORCE_MIN_KEY] ===
+    "true"; /* intentional string literal */
+  console.warn("rootLeftSidebarForceMin: ", rootLeftSidebarForceMin);
   if (
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)
