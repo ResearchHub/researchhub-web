@@ -187,31 +187,28 @@ function RootLeftSidebar({
   );
 
   const {
+    formattedFooterItemsButtonRow,
     formattedFooterTxtItem,
     formattedItemsContainer,
     formattedLogoContainer,
     formattedRootLeftSidebar,
-    formattedFooterItemsButtonRow,
   } = {
-    formattedLogoContainer: [
-      styles.logoContainer,
-      isMinimizedLocal && isMinimized && styles.logoContainerMin,
-    ],
-    formattedItemsContainer: css(
-      styles.leftSidebarItemsContainer,
-      isMinimizedLocal && isMinimized && styles.leftSidebarItemsContainerMin
-    ),
-    formattedRootLeftSidebar: css(
-      styles.rootLeftSidebar,
-      isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
+    formattedFooterItemsButtonRow: css(
+      styles.leftSidebarFooterItemsBottomRow,
+      isMinimized && styles.leftSidebarFooterItemsBottomRowMin
     ),
     formattedFooterTxtItem: [
       styles.leftSidebarFooterTxtItem,
       isMinimized && styles.leftSidebarFooterTxtItemMin,
     ],
-    formattedFooterItemsButtonRow: css(
-      styles.leftSidebarFooterItemsBottomRow,
-      isMinimized && styles.leftSidebarFooterItemsBottomRowMin
+    formattedItemsContainer: css(styles.leftSidebarItemsContainer),
+    formattedLogoContainer: [
+      styles.logoContainer,
+      isMinimized && styles.logoContainerMin,
+    ],
+    formattedRootLeftSidebar: css(
+      styles.rootLeftSidebar,
+      isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
     ),
   };
 
@@ -399,9 +396,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-  },
-  leftSidebarItemsContainerMin: {
-    maxWidth: LEFT_SIDEBAR_MIN_WIDTH,
   },
   leftSidebarFooter: {
     display: "flex",
