@@ -12,7 +12,6 @@ import icons from "~/config/themes/icons";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import { breakpoints } from "~/config/themes/screen";
 
-
 type BountyAlertParams = {
   bounty: Bounty;
   allBounties: [Bounty];
@@ -38,10 +37,6 @@ const BountyAlert = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-
-  
-
-console.log('allBounties', allBounties)
   let timeRemaining, createdBy, status;
   allBounties.sort((a, b) => {
     return a.id - b.id;
@@ -85,8 +80,8 @@ console.log('allBounties', allBounties)
     const twitterPreText = `Open bounty on Research Hub for ${amount} RSC:`;
 
     const link = process.browser
-    ? window.location.protocol + "//" + process.env.HOST + router.asPath
-    : ""
+      ? window.location.protocol + "//" + process.env.HOST + router.asPath
+      : "";
 
     const twitterBountyPreview = `\n\n"${bountyText.slice(
       0,
@@ -96,12 +91,12 @@ console.log('allBounties', allBounties)
     return `https://twitter.com/intent/tweet?utm_campaign=twitter_bounty&text=${encodeURI(
       twitterPreText + twitterBountyPreview
     )}`;
-  }
+  };
 
   const twitterUrl = _buildTwitterUrl({
     bountyText,
-    amount
-  })
+    amount,
+  });
 
   return (
     <div className={css(styles.bountyAlert)}>
@@ -121,7 +116,12 @@ console.log('allBounties', allBounties)
       />
       <div className={css(styles.wrapper)}>
         <div className={css(styles.avatars)}>
-          <AuthorFacePile overrideStyle={styles.facePileOverride} margin={-10} horizontal={true} authorProfiles={allBounties.map(b => b.createdBy?.authorProfile)} />
+          <AuthorFacePile
+            overrideStyle={styles.facePileOverride}
+            margin={-10}
+            horizontal={true}
+            authorProfiles={allBounties.map((b) => b.createdBy?.authorProfile)}
+          />
         </div>
         <div>
           {showPlural ? (
@@ -198,22 +198,26 @@ console.log('allBounties', allBounties)
           data-size="large"
           target="_blank"
           className={css(styles.share)}
-        >{icons.twitter}</a>
-        {isOriginalPoster ?
+        >
+          {icons.twitter}
+        </a>
+        {isOriginalPoster ? (
           <div className={css(styles.action, styles.closeBounty)}>
             Close your bouty
           </div>
-          : (
-            <>
-              {showContributeBounty &&
-                <div className={css(styles.action, styles.contribute)} onClick={() => setIsModalOpen(true)}>
-                  Contribute
-                </div>
-              }
-              <div className={css(styles.action)}>Answer</div>
-            </>
-          )
-        }
+        ) : (
+          <>
+            {showContributeBounty && (
+              <div
+                className={css(styles.action, styles.contribute)}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Contribute
+              </div>
+            )}
+            <div className={css(styles.action)}>Answer</div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -226,14 +230,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 15,
-    }
+    },
   },
   avatars: {
     display: "flex",
     marginRight: 20,
   },
   facePileOverride: {
-    flexWrap: "unset"
+    flexWrap: "unset",
   },
   action: {
     background: colors.NEW_BLUE(),
@@ -247,8 +251,8 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.NEW_BLUE()}`,
     whiteSpace: "nowrap",
     ":hover": {
-      opacity: 0.8
-    }
+      opacity: 0.8,
+    },
   },
   contribute: {
     background: "white",
@@ -264,7 +268,7 @@ const styles = StyleSheet.create({
   closeBounty: {
     background: "white",
     color: colors.ORANGE_DARK2(),
-    border: `1px solid ${colors.ORANGE_DARK2()}`,    
+    border: `1px solid ${colors.ORANGE_DARK2()}`,
   },
   bountyAlert: {
     background: colors.LIGHTER_GREY(),
@@ -277,7 +281,7 @@ const styles = StyleSheet.create({
     display: "flex",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
-    }
+    },
   },
   wrapper: {
     display: "flex",
