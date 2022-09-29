@@ -1,7 +1,5 @@
-import { parseCookies, setCookie } from "nookies";
+import { setCookie } from "nookies";
 import { NullableString } from "../types/root_types";
-import { isNullOrUndefined } from "./nullchecks";
-import Cookies from "js-cookie";
 
 type Args = {
   key: string;

@@ -25,6 +25,7 @@ import { SIFT_BEACON_KEY } from "~/config/constants";
 import { useEffect, useState } from "react";
 import App from "next/app";
 import Base from "./Base";
+import nookies from "nookies";
 import ReactGA from "react-ga";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
