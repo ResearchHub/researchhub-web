@@ -10,6 +10,8 @@ type Props = {
   labelSpacing?: number;
   withAuthorName?: boolean;
   fontSize?: number | string;
+  margin?: number;
+  overrideStyle: any,
 };
 
 export default function AuthorFacePile({
@@ -17,8 +19,10 @@ export default function AuthorFacePile({
   horizontal,
   imgSize,
   labelSpacing,
+  margin = 12,
   withAuthorName,
   fontSize,
+  overrideStyle
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
     () =>
@@ -26,7 +30,7 @@ export default function AuthorFacePile({
         return (
           <span
             style={{
-              marginRight: 12,
+              marginRight: margin,
               marginBottom: !Boolean(horizontal) ? 8 : 0,
             }}
           >
@@ -53,7 +57,8 @@ export default function AuthorFacePile({
     <div
       className={css(
         styles.authorFacePile,
-        Boolean(horizontal) && styles.horizontal
+        Boolean(horizontal) && styles.horizontal,
+        overrideStyle
       )}
     >
       {tags}

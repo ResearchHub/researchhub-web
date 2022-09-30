@@ -133,6 +133,11 @@ class PostPageCard extends Component {
             onBountyAdd={(bounty) => {
               this.props.setBounties([...this.props.bounties, bounty]);
             }}
+            onBountyRemove={(bountyId) =>
+              this.props.setBounties(
+                this.props.bounties.filter((b) => b.id !== bountyId)
+              )
+            }
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
             <ReactPlaceholder
