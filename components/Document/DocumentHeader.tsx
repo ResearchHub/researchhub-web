@@ -41,6 +41,7 @@ type Args = {
   bountyType: string;
   isOriginalPoster?: boolean;
   onBountyAdd?: any; // TODO: add function type here
+  onBountyRemove?: Function;
   post?: any; // TODO: add post type
   bountyText?: string;
 };
@@ -60,6 +61,7 @@ function DocumentHeader({
   isOriginalPoster,
   post,
   bountyText,
+  onBountyRemove,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -265,6 +267,7 @@ function DocumentHeader({
                 onBountyAdd={onBountyAdd}
                 post={post}
                 isOriginalPoster={isOriginalPoster}
+                onBountyRemove={onBountyRemove}
               />
             </div>
           )}
