@@ -40,7 +40,6 @@ import { truncateText } from "~/config/utils/string";
 import ContentBadge from "~/components/ContentBadge";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
-
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
 );
@@ -447,7 +446,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     cursor: "pointer",
     display: "flex",
-    padding: 15,
+    padding: "15px 0px",
     textDecoration: "none",
     width: "100%",
     ":hover": {
