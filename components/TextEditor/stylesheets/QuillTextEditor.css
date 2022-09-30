@@ -9,7 +9,7 @@
   color: rgb(124, 121, 137);
   content: attr(data-placeholder);
   pointer-events: none;
-  display: block;
+  display: none;
   margin-top: -1.42rem;
   font-size: 16px;
 }
@@ -203,7 +203,7 @@
   background: white;
 }
 .ql-toolbar.ql-snow {
-  border: 0;
+  border: 0 !important;
   padding-left: 0;
   padding-top: 13px;
   display: flex;

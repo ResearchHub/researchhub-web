@@ -224,8 +224,19 @@ function RootLeftSidebar({
         ["hubs", "user"].includes(pathname.split("/")[1])
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,
+              width: process.env.browser
+                ? isForceMinimized
+                  ? LEFT_SIDEBAR_MIN_WIDTH
+                  : LEFT_SIDEBAR_MAX_WIDTH
+                : "unset",
             }
-          : {}
+          : {
+              width: process.env.browser
+                ? isForceMinimized
+                  ? LEFT_SIDEBAR_MIN_WIDTH
+                  : LEFT_SIDEBAR_MAX_WIDTH
+                : "unset",
+            }
       }
       transition={{
         duration: didMount
@@ -390,12 +401,13 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     position: "relative",
     zIndex: 10,
+    // minWidth: LEFT_SIDEBAR_MAX_WIDTH,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
   },
   rootLeftSidebarMin: {
-    minWidth: 80,
+    minWidth: LEFT_SIDEBAR_MIN_WIDTH,
   },
   rootLeftSidebarStickyWrap: {
     display: "flex",
