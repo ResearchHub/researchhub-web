@@ -224,14 +224,14 @@ function RootLeftSidebar({
         ["hubs", "user"].includes(pathname.split("/")[1])
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,
-              width: process.env.browser
+              width: !process.env.browser
                 ? isForceMinimized
                   ? LEFT_SIDEBAR_MIN_WIDTH
                   : LEFT_SIDEBAR_MAX_WIDTH
                 : "unset",
             }
           : {
-              width: process.env.browser
+              width: !process.env.browser
                 ? isForceMinimized
                   ? LEFT_SIDEBAR_MIN_WIDTH
                   : LEFT_SIDEBAR_MAX_WIDTH
