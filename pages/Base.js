@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   main: {
     display: "flex",
     flexDirection: "column",
-    width: "100%",
+    flex: 1,
   },
 });
 
