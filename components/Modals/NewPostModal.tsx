@@ -63,6 +63,7 @@ export const getModalOptionItems = ({
         height={40}
         onClick={silentEmptyFnc}
         width={40}
+        color={`#aeaeae`}
         withAnimation={false}
       />
     ),
@@ -89,7 +90,7 @@ export const getModalOptionItems = ({
       });
     },
     icon: (
-      <QuestionIcon onClick={silentEmptyFnc} withAnimation={false} size={40} />
+      <QuestionIcon color={`#aeaeae`} onClick={silentEmptyFnc} withAnimation={false} size={40} />
     ),
   },
   {
@@ -112,6 +113,7 @@ export const getModalOptionItems = ({
         height={40}
         onClick={silentEmptyFnc}
         width={40}
+        color={`#aeaeae`}
         withAnimation={false}
       />
     ),
@@ -127,6 +129,7 @@ export const getModalOptionItems = ({
         height={40}
         onClick={silentEmptyFnc}
         width={40}
+        color={`#aeaeae`}
         withAnimation={false}
       />
     ),
