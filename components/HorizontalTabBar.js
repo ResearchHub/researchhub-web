@@ -17,6 +17,7 @@ const HorizontalTabBar = ({
   showArrowsOnWidth = null,
   showArrows = false,
   type = "FLAT_NAV",
+  showBorderBottom = true,
 }) => {
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
@@ -59,7 +60,9 @@ const HorizontalTabBar = ({
         containerStyle,
         type === "PILL_NAV"
           ? styles.containerTypePill
-          : styles.containerTypeFlat
+          : showBorderBottom
+          ? styles.containerTypeFlat
+          : null
       )}
       id={id}
     >

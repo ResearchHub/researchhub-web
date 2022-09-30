@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef, Fragment } from "react";
-import { css, StyleSheet } from "aphrodite";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import PropTypes from "prop-types";
-import { useRouter } from "next/router";
-import get from "lodash/get";
 import { breakpoints } from "~/config/themes/screen";
+import { css, StyleSheet } from "aphrodite";
 import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import { useState, useEffect, useRef, Fragment } from "react";
+import colors from "~/config/themes/colors";
+import get from "lodash/get";
+import icons from "~/config/themes/icons";
+import PropTypes from "prop-types";
 
 const Search = ({ navbarRef, id, overrideStyle }) => {
   const RETURN_KEY = 13;
@@ -288,7 +288,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     opacity: 0.4,
     zIndex: 2,
-    top: 5,
+    top: "50%",
+    fontSize: 18,
+    transform: "translateY(-50%)",
     right: 6,
     borderRadius: 6,
     padding: "4px 7px",

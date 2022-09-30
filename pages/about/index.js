@@ -358,7 +358,12 @@ class Index extends Component {
                     customStyles={styles.navArrow}
                   />
                 }
-                menuStyle={{ justifyContent: "center", width: "100%" }}
+                menuStyle={{
+                  justifyContent: "center",
+                  width: "100%",
+                  maxWidth: 1000,
+                  boxSizing: "border-box",
+                }}
                 wrapperStyle={{
                   boxShadow:
                     "inset 40px 0px 25px -25px rgba(255, 255, 255, 0.18), inset -25px 0px 40px -25px rgba(255, 255, 255, 0.18)",
@@ -642,7 +647,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    maxWidth: "100vw",
+    maxWidth: "100%",
     overflow: "hidden",
     background: "#FFF",
   },

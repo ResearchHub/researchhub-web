@@ -1,44 +1,34 @@
-import { useEffect, useState, Fragment, useRef, useContext } from "react";
-
-// NPM Components
-import Link from "next/link";
-import Router, { useRouter } from "next/router";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import { Helpers } from "@quantfive/js-web-config";
-
-import { slide as Menu } from "@quantfive/react-burger-menu";
-import Collapsible from "react-collapsible";
-
-// Redux
-import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
-import dynamic from "next/dynamic";
-
-// Components
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
+import { deSlug } from "~/config/utils/deSlug";
+import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
+import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
+import { Helpers } from "@quantfive/js-web-config";
+import { isDevEnv } from "~/config/utils/env";
+import { ModalActions } from "../redux/modals";
+import { NavbarContext } from "~/pages/Base";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import { slide as Menu } from "@quantfive/react-burger-menu";
+import { StyleSheet, css } from "aphrodite";
+import { useEffect, useState, Fragment, useRef, useContext } from "react";
+import api from "~/config/api";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import Collapsible from "react-collapsible";
+import colors from "~/config/themes/colors";
+import dynamic from "next/dynamic";
+import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 import GoogleLoginButton from "../components/GoogleLoginButton";
+import icons from "~/config/themes/icons";
+import Link from "next/link";
+import MobileOnly from "./MobileOnly";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
 import Reputation from "./Reputation";
+import RHLogo from "~/components/Home/RHLogo";
+import Router, { useRouter } from "next/router";
 import Search from "./Search/Search";
 import UserStateBanner from "./Banner/UserStateBanner";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-
-// Styles
-import icons, { RHLogo, voteWidgetIcons } from "~/config/themes/icons";
-
-// Config
-import { ROUTES as WS_ROUTES } from "~/config/ws";
-import colors from "~/config/themes/colors";
-import { isDevEnv } from "~/config/utils/env";
-import { breakpoints } from "~/config/themes/screen";
-import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
-import { NavbarContext } from "~/pages/Base";
-import HubSelector from "~/components/HubSelector";
-import api from "~/config/api";
-import MobileOnly from "./MobileOnly";
-import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -196,48 +186,6 @@ const Navbar = (props) => {
     ],
   };
 
-  function renderTabs() {
-    return (
-      <Fragment>
-        <Link href={"/about"} key={`navbar_tab_about`}>
-          <a className={css(styles.tabLink, styles.lessImportantTab)}>
-            <div className={css(styles.tab, styles.firstTab)}>About</div>
-          </a>
-        </Link>
-        <Link href={"/hubs"} key={`navbar_tab_hubs`}>
-          <a className={css(styles.tabLink)}>
-            <div className={css(styles.tab)}>Hubs</div>
-          </a>
-        </Link>
-        {user?.id ? (
-          <Link
-            href={`/${user.organization_slug}/notebook`}
-            key={`navbar_tab_publish`}
-          >
-            <a className={css(styles.tabLink)}>
-              <div className={css(styles.tab)}>Notebook</div>
-            </a>
-          </Link>
-        ) : (
-          <PermissionNotificationWrapper
-            modalMessage="access the notebook"
-            loginRequired={true}
-            hideRipples={true}
-            onClick={() => router.push(`/${user.organization_slug}/notebook`)}
-            styling={styles.tab}
-          >
-            {`Notebook`}
-          </PermissionNotificationWrapper>
-        )}
-        <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
-          <a className={css(styles.tabLink)}>
-            <div className={css(styles.tab)}>Leaderboard</div>
-          </a>
-        </Link>
-      </Fragment>
-    );
-  }
-
   function toggleMenu(e) {
     setOpenMenu(!openMenu);
   }
@@ -394,6 +342,13 @@ const Navbar = (props) => {
     setSideMenu(state.isOpen);
   }
 
+  const pathname = router?.pathname ?? "";
+  const headerLabel = pathname.includes("notebook")
+    ? "Lab Notebook"
+    : pathname.includes("leaderboard")
+    ? "Leaderboard"
+    : deSlug(router?.query?.slug ?? "");
+
   function renderLoginButtons(isLoggedIn) {
     return (
       <div className={css(styles.oauthContainer)}>
@@ -413,10 +368,17 @@ const Navbar = (props) => {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
-
   return (
     <Fragment>
+      <DndModal />
+      <FirstVoteModal auth={auth} updateUser={updateUser} />
+      <LoginModal />
       <NewPostModal />
+      <OrcidConnectModal />
+      <PromotionInfoModal />
+      <ReCaptchaPrompt />
+      <UploadPaperModal />
+      <WithdrawalModal />
       <MobileOnly>
         <Menu
           top
@@ -425,13 +387,6 @@ const Navbar = (props) => {
           customBurgerIcon={false}
           onStateChange={menuChange}
         >
-          <Link href={"/"} as={`/`}>
-            <a
-              className={css(styles.logoContainer, styles.logoContainerForMenu)}
-            >
-              <RHLogo iconStyle={styles.logo} white={true} />
-            </a>
-          </Link>
           {renderMenuItems()}
         </Menu>
       </MobileOnly>
@@ -444,32 +399,13 @@ const Navbar = (props) => {
             styles.unstickyNavbar
         )} navbar`}
       >
-        <UploadPaperModal />
-        <LoginModal />
-        <WithdrawalModal />
-        <FirstVoteModal auth={auth} updateUser={updateUser} />
-        <OrcidConnectModal />
-        <DndModal />
-        <PromotionInfoModal />
-        <ReCaptchaPrompt />
-        <Link href={"/"} as={`/`}>
-          <a className={css(styles.logoContainer)}>
-            <RHLogo iconStyle={styles.logo} withText={true} />
-          </a>
-        </Link>
-
-        <div className={css(styles.tabsWrapper)}>
-          <div className={css(styles.tabs)}>{renderTabs()}</div>
-          <div className={css(styles.searchWrapper)}>
-            <Search
-              overrideStyle={styles.navbarSearchOverride}
-              navbarRef={navbarRef}
-              id="navbarSearch"
-            />
-          </div>
+        <div className={css(styles.logoContainer)}>
+          {formatMainHeader({
+            label: headerLabel,
+            isHomePage: !Boolean(headerLabel),
+          })}
         </div>
-
-        <div className={css(styles.searchSmallScreen)}>
+        <div className={css(styles.searchWrapper)}>
           <Search
             overrideStyle={styles.navbarSearchOverride}
             navbarRef={navbarRef}
@@ -549,7 +485,7 @@ const Navbar = (props) => {
                         >
                           {icons.portrait}
                         </span>
-                        Profile
+                        {"Profile"}
                       </div>
                     </Link>
                     <Link href={`/${user.organization_slug}/notebook`}>
@@ -557,7 +493,7 @@ const Navbar = (props) => {
                         <span className={css(styles.profileIcon)}>
                           {icons.bookOpen}
                         </span>
-                        Notebook
+                        {"Notebook"}
                       </div>
                     </Link>
                     <Link href={"/settings"} as={`/settings`}>
@@ -565,7 +501,7 @@ const Navbar = (props) => {
                         <span className={css(styles.profileIcon)}>
                           {icons.cog}
                         </span>
-                        Settings
+                        {"Settings"}
                       </div>
                     </Link>
                     {showReferral && (
@@ -578,7 +514,7 @@ const Navbar = (props) => {
                           <span className={css(styles.profileIcon)}>
                             {icons.asterisk}
                           </span>
-                          Referral Program
+                          {"Referral Program"}
                         </div>
                       </Link>
                     )}
@@ -591,7 +527,7 @@ const Navbar = (props) => {
                       <span className={css(styles.profileIcon)}>
                         {icons.signOut}
                       </span>
-                      <span>Logout</span>
+                      <span>{"Logout"}</span>
                     </div>
                   </div>
                 )}
@@ -606,7 +542,6 @@ const Navbar = (props) => {
             />
           )}
         </div>
-
         <div
           className={css(styles.menuIcon)}
           onClick={toggleSideMenu}
@@ -671,16 +606,10 @@ const burgerMenuStyle = {
 };
 
 const styles = StyleSheet.create({
-  hubPopoverWrapper: {
-    display: "none",
-    marginRight: "auto",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
-    },
-  },
   modBtnContainer: {
     position: "relative",
-    padding: "2px 10px",
+    padding: "0px 10px",
+    marginBottom: 2,
   },
   modBtn: {
     fontSize: 20,
@@ -692,19 +621,21 @@ const styles = StyleSheet.create({
     },
   },
   navbarContainer: {
-    width: "100%",
-    padding: "28px 28px",
+    alignItems: "center",
+    background: "#fff",
+    borderBottom: "1px solid #e8e8ef",
     boxSizing: "border-box",
     display: "flex",
-    height: 68,
-    background: "#fff",
-    alignItems: "center",
-    borderBottom: "1px solid #e8e8ef",
-    justifyContent: "space-around",
-    position: "sticky",
-    zIndex: 4,
-    top: 0,
+    fontSize: 24,
+    fontWeight: 500,
+    height: NAVBAR_HEIGHT,
+    justifyContent: "space-between",
     left: 0,
+    padding: "0 28px",
+    position: "sticky",
+    top: 0,
+    width: "100%",
+    zIndex: 4,
     backgroundColor: "#FFF",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       padding: "20px 20px 20px 10px",
@@ -714,17 +645,11 @@ const styles = StyleSheet.create({
   unstickyNavbar: {
     position: "initial",
   },
-  tabsWrapper: {
-    marginTop: 2,
-    display: "flex",
-    width: "100%",
-    marginRight: "auto",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
   tabs: {
+    alignItems: "center",
     display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
   },
   buttonLeft: {
     marginRight: 15,
@@ -800,29 +725,8 @@ const styles = StyleSheet.create({
     },
   },
   searchWrapper: {
-    marginTop: 9,
-    marginLeft: "auto",
     width: "100%",
-    maxWidth: 400,
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      marginTop: 15,
-      marginLeft: 10,
-      width: "auto",
-    },
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      marginLeft: 0,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  searchSmallScreen: {
-    display: "none",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
-      position: "absolute",
-      right: 40,
-    },
+    maxWidth: 364,
   },
   tab: {
     cursor: "pointer",
@@ -864,6 +768,7 @@ const styles = StyleSheet.create({
   },
   caret: {
     marginLeft: 10,
+    fontSize: 16,
     color: "#aaa",
   },
   userDropdown: {
@@ -941,17 +846,16 @@ const styles = StyleSheet.create({
     maxWidth: "auto",
   },
   logoContainer: {
-    display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    width: 176,
-    paddingBottom: 2.7,
-    cursor: "pointer",
+    display: "flex",
+    height: NAVBAR_HEIGHT,
     userSelect: "none",
-    marginTop: 2,
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: 148,
-    },
+    paddingTop: 8,
+    width: "100%",
+  },
+  logo: {
+    height: 36,
+    userSelect: "none",
   },
   logoContainerForMenu: {
     position: "absolute",
@@ -1061,6 +965,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 2,
     display: "flex",
+    alignItems: "center",
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },

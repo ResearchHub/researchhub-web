@@ -1,7 +1,7 @@
-import { StyleSheet } from "aphrodite";
-import { NAVBAR_HEIGHT } from "~/components/Navbar";
-import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import { NAVBAR_HEIGHT } from "~/components/Navbar";
+import { StyleSheet } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 export const styles = StyleSheet.create({
   viewAll: {
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     height: 20,
   },
   HomeRightSidebar: {
-    margin: "32px 32px 0 0",
+    borderLeft: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
     height: "100%",
     position: "relative",
     width: "100%",

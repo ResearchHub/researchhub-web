@@ -40,7 +40,6 @@ import { truncateText } from "~/config/utils/string";
 import ContentBadge from "~/components/ContentBadge";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
-
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
 );
@@ -445,11 +444,9 @@ const styles = StyleSheet.create({
   feedCard: {
     alignItems: "flex-start",
     backgroundColor: "#FFF",
-    borderLeft: `1px solid ${genericCardColors.BORDER}`,
-    borderRight: `1px solid ${genericCardColors.BORDER}`,
     cursor: "pointer",
     display: "flex",
-    padding: 15,
+    padding: "15px 0px",
     textDecoration: "none",
     width: "100%",
     ":hover": {
@@ -460,15 +457,11 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${genericCardColors.BORDER}`,
     marginBottom: 0,
     marginTop: 0,
-    ":first-child": {
-      borderRadius: "4px 4px 0px 0px",
-      borderTop: `1px solid ${genericCardColors.BORDER}`,
-    },
     ":last-child": {
       borderRadius: "0px 0px 4px 4px",
     },
     ":only-child": {
-      border: `1px solid ${genericCardColors.BORDER}`,
+      borderBottom: `1px solid ${genericCardColors.BORDER}`,
       borderRadius: 4,
     },
   },
@@ -476,7 +469,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   fullBorder: {
-    border: `1px solid ${genericCardColors.BORDER}`,
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
   },
   overflow: {

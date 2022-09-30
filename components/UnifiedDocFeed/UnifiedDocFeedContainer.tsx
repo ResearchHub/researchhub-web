@@ -13,7 +13,7 @@ import {
 } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
@@ -113,75 +113,63 @@ function UnifiedDocFeedContainer({
   const loadMore = () => {
     const nextLocalPage = localPage + 1;
     setPaginationInfo({ ...paginationInfo, localPage: nextLocalPage });
-    if (nextLocalPage === page * 2 && hasMore) {
-      fetchUnifiedDocs({
-        ...fetchParams,
-        onError: (error: Error): void => {
-          emptyFncWithMsg(error);
-          setPaginationInfo({
-            hasMore,
-            isLoading: false,
-            isLoadingMore: false,
-            isServerLoaded: false,
-            localPage: nextLocalPage,
-            page,
-          });
-        },
-        onSuccess: ({
+    fetchUnifiedDocs({
+      ...fetchParams,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: nextLocalPage,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents: nextDocs,
+      }): void => {
+        setUnifiedDocsLoading(false);
+        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+        setPaginationInfo({
           hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: nextLocalPage,
           page: updatedPage,
-          documents: nextDocs,
-        }): void => {
-          setUnifiedDocsLoading(false);
-          setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-          setPaginationInfo({
-            hasMore: nextPageHasMore,
-            isLoading: false,
-            isLoadingMore: false,
-            isServerLoaded: false,
-            localPage: nextLocalPage,
-            page: updatedPage,
-          });
-        },
-        page: page + 1,
-      });
-    }
+        });
+      },
+      page: page + 1,
+    });
   };
 
-  const showLoadMoreButton = unifiedDocuments.length > localPage * 10;
-
-  const formattedMainHeader = useMemo(
-    (): string =>
-      formatMainHeader({
-        hubName: hubName ?? "",
-        isHomePage,
-      }),
-    [hubName, isHomePage]
-  );
-
+  const showLoadMoreButton = hasMore;
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     setUnifiedDocuments,
-    unifiedDocumentData: renderableUniDoc,
+    unifiedDocumentData: unifiedDocuments,
   });
-  const onMyHubsLoggedOut = selectedFilters.topLevel === "/my-hubs" && auth?.authChecked && !auth?.user?.id;
+  const onMyHubsLoggedOut =
+    selectedFilters.topLevel === "/my-hubs" &&
+    auth?.authChecked &&
+    !auth?.user?.id;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      {isHomePage || isEmpty(hub) ? (
-        <div className={css(styles.title) + " clamp2"}>
-          {formattedMainHeader}
-        </div>
-      ) : (
+      {isHomePage || isEmpty(hub) ? null : (
         <FeedInfoCard
           hub={hub}
           hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
           isHomePage={isHomePage}
-          mainHeaderText={formattedMainHeader}
+          mainHeaderText={formatMainHeader({
+            label: hubName ?? "",
+            isHomePage,
+          })}
         />
       )}
-
-      {/* @ts-ignore */}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
@@ -191,15 +179,14 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          {onMyHubsLoggedOut &&
-            <ResearchHubBanner hub={{name: "Research Hub" }} />
-          }
+          {onMyHubsLoggedOut && (
+            <ResearchHubBanner hub={{ name: "Research Hub" }} />
+          )}
           <FeedBlurWithButton />
           {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
-      {unifiedDocsLoading ||
-      (onMyHubsLoggedOut) ? null : (
+      {unifiedDocsLoading || onMyHubsLoggedOut ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -243,12 +230,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
-      paddingLeft: 28,
-      paddingRight: 28,
-    },
+    padding: "0 28px",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "0",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
@@ -302,6 +289,7 @@ const styles = StyleSheet.create({
   feedPosts: {
     position: "relative",
     minHeight: 200,
+    borderTop: `1px solid ${genericCardColors.BORDER}`,
   },
   tabFeature: {
     marginLeft: 8,

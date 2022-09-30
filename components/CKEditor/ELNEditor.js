@@ -280,7 +280,7 @@ const ELNEditor = ({
 const styles = StyleSheet.create({
   container: {
     height: "calc(100vh - 80px)",
-    marginLeft: "max(min(16%, 300px), 240px)",
+    // marginLeft: "max(min(16%, 300px), 160px)",
     overflow: "auto",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {

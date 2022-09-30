@@ -21,6 +21,7 @@ const AuthorAvatar = (props) => {
     border,
     disableLink,
     dropShadow,
+    fontColor,
     fontSize = 16,
     showModeratorBadge,
     size = 30,
@@ -135,8 +136,8 @@ const AuthorAvatar = (props) => {
             {Boolean(withAuthorName) ? (
               <span
                 style={{
-                  color: colors.BLACK(),
-                  fontSize: size ?? fontSize,
+                  color: fontColor ?? colors.BLACK(),
+                  fontSize: fontSize ?? size,
                   fontWeight: boldName ? 500 : 400,
                   marginLeft: spacing ?? 8,
                   whiteSpace: "nowrap",

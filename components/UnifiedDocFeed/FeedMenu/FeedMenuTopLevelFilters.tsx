@@ -60,7 +60,7 @@ const FeedMenuTopLevelFilters = ({
             styles.filter,
             isSelected && styles.filterSelected,
             renderAsDropdown && styles.filterAsDropdownOpt,
-            isMyHubs && styles.filterForMyHubs,
+            isMyHubs && styles.filterForMyHubs
           )} filterSelected`}
           ref={filterEl}
           key={`filter-${idx}`}
@@ -99,9 +99,7 @@ const FeedMenuTopLevelFilters = ({
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
-          {isMyHubs && 
-            <span className={css(styles.divider)}></span>
-          }
+          {isMyHubs && <span className={css(styles.divider)}></span>}
         </div>
       );
     });
@@ -138,7 +136,7 @@ const styles = StyleSheet.create({
     borderRight: `1px solid ${colors.GREY_LINE(1)}`,
     height: "80%",
     position: "absolute",
-    right: -20
+    right: -20,
   },
   filterAsDropdownOpt: {
     borderBottom: 0,

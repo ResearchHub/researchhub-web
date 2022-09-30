@@ -1,20 +1,14 @@
-import { createRef, Component } from "react";
 import { connect } from "react-redux";
-import ReCAPTCHA from "react-google-recaptcha";
-import { StyleSheet, css } from "aphrodite";
-
-// Component
-import BaseModal from "./BaseModal";
-import { RHLogo } from "~/config/themes/icons";
-
-// Redux
-import { ModalActions } from "~/redux/modals";
-
-// Config
-import API from "~/config/api";
+import { createRef, Component } from "react";
 import { Helpers } from "@quantfive/js-web-config";
-import colors from "~/config/themes/colors";
+import { ModalActions } from "~/redux/modals";
 import { RECAPTCHA_CLIENT_KEY } from "~/config/constants";
+import { StyleSheet, css } from "aphrodite";
+import API from "~/config/api";
+import BaseModal from "./BaseModal";
+import colors from "~/config/themes/colors";
+import ReCAPTCHA from "react-google-recaptcha";
+import RHLogo from "~/components/Home/RHLogo";
 
 class ReCaptchaPrompt extends Component {
   constructor(props) {

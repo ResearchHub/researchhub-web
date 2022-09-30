@@ -41,15 +41,17 @@ class LoginModal extends Component {
     //TODO: do something after google oauth api responds
     let { googleLogin, getUser } = this.props;
     response["access_token"] = response["accessToken"];
-    await googleLogin(response).then((_) => {
-      getUser().then((_) => {
-        this.closeModal();
+    if (!response.error) {
+      await googleLogin(response).then((_) => {
+        getUser().then((_) => {
+          this.closeModal();
+        });
       });
-    });
 
-    if (this.props.auth.loginFailed) {
-      this.props.setMessage("Sign in failed");
-      this.props.showMessage({ show: true, error: true });
+      if (this.props.auth.loginFailed) {
+        this.props.setMessage("Sign in failed");
+        this.props.showMessage({ show: true, error: true });
+      }
     }
   };
 

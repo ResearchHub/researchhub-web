@@ -1,11 +1,9 @@
-import { Component, Fragment } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-
-import { RHLogo } from "~/config/themes/icons";
-import GoogleLoginButton from "../GoogleLoginButton";
-
 import { BannerActions } from "~/redux/banner";
+import { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { StyleSheet, css } from "aphrodite";
+import GoogleLoginButton from "../GoogleLoginButton";
+import RHLogo from "~/components/Home/RHLogo";
 
 class SignUpOverlay extends Component {
   constructor(props) {

@@ -76,6 +76,7 @@ import {
   faArrowToBottom,
   faBracketsCurly,
   faChartNetwork,
+  faHome,
   faCommentCheck,
   faCheckCircle as checkCircleSolid,
   faFileEdit,
@@ -106,8 +107,10 @@ import {
   faArrowAltToBottom as download,
   faArrowDownToLine,
   faArrowRightToLine,
+  faArrowLeftToLine,
   faCommentAltLines as faCommentAltLinesSolid,
   faUndo,
+  faTableCells,
   faFontCase,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
@@ -144,21 +147,22 @@ import {
 import {
   faArrowAltUp as faArrowAltUpRegular,
   faCalendarDay,
+  faChartSimple,
   faChevronDown,
   faChevronLeft,
   faChevronRight,
   faChevronUp,
+  faCircleExclamation,
   faClock,
   faEllipsisH,
   faEllipsisV,
-  faFlag as faFlagOutline,
   faFileUpload,
+  faFlag as faFlagOutline,
   faLightbulb,
+  faMedal,
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
-  faMedal,
-  faCircleExclamation,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -195,6 +199,7 @@ import {
   faUserCircle,
   faToggleOff,
 } from "@fortawesome/pro-duotone-svg-icons";
+import { breakpoints } from "./screen";
 
 library.add(
   faCircleExclamation,
@@ -206,6 +211,7 @@ library.add(
   faArrowDownToLine,
   faArrowRight,
   faArrowRightToLine,
+  faArrowLeftToLine,
   faArrowToBottom,
   faAsterisk,
   faBan,
@@ -311,6 +317,7 @@ library.add(
   faStarHalf,
   faStarOutline,
   faStop,
+  faTableCells,
   faTasksAlt,
   faThumbtack,
   faThumbtackOutline,
@@ -347,6 +354,7 @@ const icons = {
   angleUp: <FontAwesomeIcon icon={faAngleUp} />,
   arrowRight: <FontAwesomeIcon icon={faArrowRight} />,
   arrowRightToLine: <FontAwesomeIcon icon={faArrowRightToLine} />,
+  arrowLeftToLine: <FontAwesomeIcon icon={faArrowLeftToLine} />,
   arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
   asterisk: <FontAwesomeIcon icon={faAsterisk} />,
   ban: <FontAwesomeIcon icon={faBan} />,
@@ -363,6 +371,7 @@ const icons = {
   caretLeft: <FontAwesomeIcon icon={faCaretLeft} />,
   chat: <FontAwesomeIcon icon={faComment} />,
   check: <FontAwesomeIcon icon={faCheck} />,
+  chartSimple: <FontAwesomeIcon icon={faChartSimple} />,
   checkCircle: <FontAwesomeIcon icon={faCheckCircle} />,
   checkCircleSolid: <FontAwesomeIcon icon={checkCircleSolid} />,
   chevronDown: <FontAwesomeIcon icon={faChevronDown} />,
@@ -418,6 +427,7 @@ const icons = {
   graduationCap: <FontAwesomeIcon icon={faGraduationCap} />,
   help: <FontAwesomeIcon icon={faQuestionCircle} />,
   hub: <FontAwesomeIcon icon={faChartNetwork} />,
+  home: <FontAwesomeIcon icon={faHome} />,
   image: <FontAwesomeIcon icon={faImage} />,
   layerGroup: <FontAwesomeIcon icon={faLayerGroup} />,
   lightbulb: <FontAwesomeIcon icon={faLightbulb} />,
@@ -477,6 +487,7 @@ const icons = {
   starHalf: <FontAwesomeIcon icon={faStarHalf} />,
   stop: <FontAwesomeIcon icon={faStop} />,
   subscribers: <FontAwesomeIcon icon={faUser} />,
+  tableCell: <FontAwesomeIcon icon={faTableCells} />,
   takeaway: <FontAwesomeIcon icon={faList} />,
   times: <FontAwesomeIcon icon={faTimes} />,
   timesCircle: <FontAwesomeIcon icon={faTimesCircle} />,
@@ -489,15 +500,16 @@ const icons = {
   upSolid: <FontAwesomeIcon icon={faUp} />,
   upRegular: <FontAwesomeIcon icon={faArrowAltUpRegular} />,
   upload: <FontAwesomeIcon icon={faUpload} />,
+  question: <FontAwesomeIcon icon={solidQuestion} />,
+  undo: <FontAwesomeIcon icon={faUndo} />,
   user: <FontAwesomeIcon icon={faUserCircle} />,
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
+  users: <FontAwesomeIcon icon={faUsers} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
-  undo: <FontAwesomeIcon icon={faUndo} />,
   verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
   verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
   video: <FontAwesomeIcon icon={faVideo} />,
-  question: <FontAwesomeIcon icon={solidQuestion} />,
   toggleOn: <FontAwesomeIcon icon={faToggleOn} />,
   toggleOff: <FontAwesomeIcon icon={faToggleOff} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
@@ -557,28 +569,6 @@ export const textEditorIcons = {
 
 export const WarningIcon = (props) => {
   return <FontAwesomeIcon {...props} icon={faCircleExclamation} />;
-};
-
-export const RHLogo = ({ iconStyle, white, withText = true }) => {
-  if (withText) {
-    return (
-      <img
-        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
-        className={css(styles.logo, iconStyle && iconStyle)}
-        draggable={false}
-        alt="RH Logo"
-      />
-    );
-  } else {
-    return (
-      <img
-        src={"/static/ResearchHubIcon.png"}
-        className={css(styles.logoNoText, iconStyle && iconStyle)}
-        draggable={false}
-        alt="RH Logo"
-      />
-    );
-  }
 };
 
 export const BoltSvg = ({ height, width, color, opacity }) => {
@@ -993,6 +983,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     display: "inline-flex",
   },
+  mobile: {
+    [`@media only screen and (min-width: ${breakpoints.large.int - 1}px)`]: {
+      display: "none",
+    },
+  },
+  desktop: {
+    display: "none",
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
+      display: "block",
+    },
+  },
   discussionWrapper: {
     padding: 3,
     display: "inline-flex",
@@ -1011,14 +1012,7 @@ const styles = StyleSheet.create({
     color: "black",
     display: "inline-block",
   },
-  logo: {
-    transform: "scale(1)",
-    height: 33,
-  },
-  logoNoText: {
-    transform: "scale(1)",
-    height: 33,
-  },
+
   coinStack: {},
   iconPartyPopper: {
     height: 15,

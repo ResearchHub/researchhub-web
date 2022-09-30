@@ -1,15 +1,9 @@
+import { ModalActions } from "~/redux/modals";
+import { RHLogo } from "~/config/themes/icons";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
-
-// Component
 import BaseModal from "./BaseModal";
 import GoogleLoginButton from "../GoogleLoginButton";
-
-// Redux
-import { ModalActions } from "~/redux/modals";
-
-// Config
-import { RHLogo } from "~/config/themes/icons";
 
 const SignUpModal = (props) => {
   const dispatch = useDispatch();
