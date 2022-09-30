@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.NEW_BLUE()}`,
   },
   bountyAlert: {
-    background: colors.LIGHTER_GREY(),
+    background: "rgba(242, 251, 243, 0.3)",
     borderRadius: "4px",
     padding: "15px 25px",
     color: colors.MEDIUM_GREY2(),
