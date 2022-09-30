@@ -104,53 +104,13 @@ class Notification extends Component {
   };
 
   formatNotification = (notification) => {
-    const { action_user, action, created_date, unified_document } =
-      notification;
-    const { item: actionItem } = action ?? {};
-    const { amount, plain_text } = actionItem ?? {};
-    const feDocType = getFEUnifiedDocType(unified_document?.document_type);
-    const content_type = action?.content_type?.name || null;
-
-    const documentContent = Array.isArray(unified_document?.documents)
-      ? unified_document?.documents[0]
-      : unified_document?.documents;
-
-    const withdrawal = content_type === "withdrawal";
-
-    if (!documentContent && !withdrawal) {
-      return null;
-    }
-
-    if (withdrawal) {
-      return {
-        action_tip: "",
-        content_type,
-        withdrawnAmount: notification.action.item.amount,
-        toAddress: notification.action.item.to_address,
-        txHash: notification.action.item.transaction_hash,
-        created_by: action_user,
-        created_date,
-      };
-    }
-
-    const {
-      title = null,
-      paper_title = null,
-      slug,
-      id: documentID,
-    } = documentContent;
+    const { action_user, body, created_date, navigation_url } = notification;
 
     return {
-      action_tip: plain_text ?? "",
-      action_item: action?.item ?? {},
-      content_type,
-      contribution_amount: amount ?? 0,
+      body: body,
       created_by: action_user,
       created_date,
-      document_id: documentID,
-      document_title: paper_title ?? title ?? "Title: N/A",
-      document_type: feDocType,
-      slug,
+      navigation_url,
     };
   };
 

@@ -54,6 +54,10 @@ const contentSubscriptionOptions = [
     id: "replySubscription",
     label: "Responses to my replies",
   },
+  {
+    id: "weeklyBountyDigestSubscription",
+    label: "Bounty Digest",
+  },
 ];
 
 class UserSettings extends Component {
