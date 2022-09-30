@@ -264,15 +264,14 @@ const styles = StyleSheet.create({
     },
   },
   contribute: {
-    background: "white",
     color: colors.NEW_BLUE(),
-    border: `1px solid ${colors.NEW_BLUE()}`,
-    marginRight: 15,
+    fontWeight: 500,
+    border: "unset",
+    background: "unset",
   },
   share: {
     color: colors.NEW_BLUE(),
     fontSize: 20,
-    marginRight: 15,
   },
   closeBounty: {
     background: "white",
@@ -285,7 +284,7 @@ const styles = StyleSheet.create({
     padding: "15px 25px",
     color: colors.MEDIUM_GREY2(),
     fontSize: 16,
-    border: `1px solid ${colors.NEW_BLUE()}`,
+    border: `1px solid ${colors.NEW_GREEN()}`,
     lineHeight: "22px",
     display: "flex",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
