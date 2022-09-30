@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     height: 48,
+    minHeight: 48,
     justifyContent: "flex-start",
     marginBottom: 16,
     padding: "0 26px",

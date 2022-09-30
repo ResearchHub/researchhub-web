@@ -75,9 +75,6 @@ export default function RhCarousel({ rhCarouselItem }: Props): ReactElement {
   const shouldDisplayControl = totalNumItems > 1;
   const [displayItemInd, setDisplayItemInd] = useState<number>(0);
   const [direction, setDirection] = useState<string>("right");
-
-  console.log(direction);
-
   const { onBodyClick, title, body } = rhCarouselItem[displayItemInd];
 
   return (

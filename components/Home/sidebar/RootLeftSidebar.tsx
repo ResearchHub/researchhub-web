@@ -113,6 +113,7 @@ function RootLeftSidebar({
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
   );
+
   const [isMinimized, setIsMinimized] = useState<boolean>(isForceMinimized);
   const [isMinimizedLocal, setIsMinimizedLocal] =
     useState<boolean>(isForceMinimized);
@@ -256,10 +257,8 @@ function RootLeftSidebar({
                   {!isMinimized && (
                     <motion.img
                       alt="ResearchHub Text Logo"
-                      animate={isMinimized ? "minimized" : "full"}
                       className={css(styles.researchHubLogoText)}
                       exit={"minimized"}
-                      key={`RHLogo-max`}
                       src={"/static/ResearchHubText.png"}
                       transition={{
                         duration: didMount
@@ -268,9 +267,9 @@ function RootLeftSidebar({
                       }}
                       variants={{
                         minimized: {
-                          display: "none",
+                          // display: "none",
                           opacity: 0,
-                          width: 0,
+                          // width: 0,
                         },
                         full: {
                           display: "visible",
@@ -403,12 +402,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     position: "sticky",
     top: 0,
-    height: "100vh",
+    minHeight: "100vh",
     width: "100%",
   },
   leftSidebarItemsContainer: {
     width: "100%",
     display: "flex",
+    overflow: "hidden",
     justifyContent: "center",
   },
   leftSidebarItemsInnerContainer: {
@@ -421,8 +421,9 @@ const styles = StyleSheet.create({
   leftSidebarFooter: {
     display: "flex",
     flexDirection: "column",
-    height: "100%",
     justifyContent: "space-between",
+    flex: 1,
+    height: "100%",
   },
   leftSidebarFooterTxtItem: {
     color: colors.TEXT_GREY(1),
