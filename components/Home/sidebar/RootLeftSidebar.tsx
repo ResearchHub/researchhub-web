@@ -137,6 +137,7 @@ function RootLeftSidebar({
       "post",
       "hypothesis",
       "my-hubs",
+      "live",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {
@@ -212,8 +213,6 @@ function RootLeftSidebar({
       isMinimizedLocal && isMinimized && styles.rootLeftSidebarMin
     ),
   };
-
-  console.log(pathname);
 
   return (
     <motion.div
