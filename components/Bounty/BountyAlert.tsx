@@ -21,6 +21,7 @@ type BountyAlertParams = {
   isOriginalPoster?: boolean;
   post?: any; // TODO: make a post type
   currentUser?: any; //TODO: make an any type
+  onBountyRemove?: Function;
 };
 
 const BountyAlert = ({
@@ -32,6 +33,7 @@ const BountyAlert = ({
   bountyText,
   post,
   currentUser,
+  onBountyRemove
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,14 +69,14 @@ const BountyAlert = ({
     return null;
   }
 
-  const userHasBounty =
+  const userBounty =
     allBounties &&
     allBounties.length &&
-    allBounties.some((bounty) => bounty?.createdBy?.id === currentUser?.id);
+    allBounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
 
   const showPlural = bountyType !== "question" && allBounties.length > 1;
   const showContributeBounty =
-    !isOriginalPoster && !userHasBounty && bountyType === "question";
+    !isOriginalPoster && !userBounty && bountyType === "question";
 
   const _buildTwitterUrl = ({ bountyText, amount }) => {
     const twitterPreText = `Open bounty on Research Hub for ${amount} RSC:`;
@@ -201,8 +203,15 @@ const BountyAlert = ({
         >
           {icons.twitter}
         </a>
-        {isOriginalPoster ? (
-          <div className={css(styles.action, styles.closeBounty)}>
+        {userBounty ? (
+          <div
+            className={css(styles.action, styles.closeBounty)}
+            onClick={() => {
+              Bounty.closeBountyAPI({ bounty: userBounty }).then((bounties) => {
+                onBountyRemove && onBountyRemove(userBounty.id)
+              });
+            }}            
+          >
             Close your bouty
           </div>
         ) : (
@@ -267,8 +276,8 @@ const styles = StyleSheet.create({
   },
   closeBounty: {
     background: "white",
-    color: colors.ORANGE_DARK2(),
-    border: `1px solid ${colors.ORANGE_DARK2()}`,
+    color: colors.NEW_BLUE(),
+    border: `1px solid ${colors.NEW_BLUE()}`,
   },
   bountyAlert: {
     background: colors.LIGHTER_GREY(),
