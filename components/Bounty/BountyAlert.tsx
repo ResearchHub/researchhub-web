@@ -218,7 +218,7 @@ const BountyAlert = ({
               });
             }}            
           >
-            Close your bouty
+            Close your bounty
           </div>
         ) : (
           <>

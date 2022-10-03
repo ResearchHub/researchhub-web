@@ -75,6 +75,10 @@ class ThreadActionBar extends Component {
     let classNames = [styles.action, styles.text];
 
     const _handleDelete = () => {
+      if (!confirm("Delete comment?")) {
+        return;
+      }
+
       const url =
         API.buildPaperChainUrl(
           this.props.documentType,
