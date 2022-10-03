@@ -79,6 +79,12 @@ const BountyAlert = ({
     !isOriginalPoster && !userBounty && bountyType === "question";
 
   const _buildTwitterUrl = ({ bountyText, amount }) => {
+
+    let baseTwitterUrl = "https://twitter.com/intent/tweet?utm_campaign=twitter_bounty"
+    if (!(bountyText && amount))  {
+      return baseTwitterUrl;
+    }
+
     const twitterPreText = `Open bounty on Research Hub for ${amount} RSC:`;
 
     const link = process.browser
@@ -90,7 +96,7 @@ const BountyAlert = ({
       249 - twitterPreText.length - link.length
     )}"\n\n${link}?utm_campaign=twitter_bounty`;
 
-    return `https://twitter.com/intent/tweet?utm_campaign=twitter_bounty&text=${encodeURI(
+    return `${baseTwitterUrl}&text=${encodeURI(
       twitterPreText + twitterBountyPreview
     )}`;
   };
@@ -122,7 +128,7 @@ const BountyAlert = ({
             overrideStyle={styles.facePileOverride}
             margin={-10}
             horizontal={true}
-            authorProfiles={allBounties.map((b) => b.createdBy?.authorProfile)}
+            authorProfiles={allBounties.map((b) => b.createdBy?.authorProfile || b.created_by?.author_profile)}
           />
         </div>
         <div>
@@ -268,10 +274,13 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     border: "unset",
     background: "unset",
+    paddingLeft: 0,
   },
   share: {
     color: colors.NEW_BLUE(),
     fontSize: 20,
+    marginRight: 15,
+    marginLeft: 15,
   },
   closeBounty: {
     background: "white",
