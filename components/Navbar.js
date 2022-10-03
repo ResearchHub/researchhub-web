@@ -448,11 +448,7 @@ const Navbar = (props) => {
                     />
                     {(isUserModerator || isUserHubEditor) && (
                       <div className={css(styles.modBtnContainer)}>
-                        <Link
-                          href={
-                            "/moderators/author-claim-case-dashboard?case_status=OPEN"
-                          }
-                        >
+                        <Link href={"/moderators/audit/flagged"}>
                           <a className={css(styles.modBtn)}>
                             {icons.shield}
                             {openCaseCounts > 0 && (
