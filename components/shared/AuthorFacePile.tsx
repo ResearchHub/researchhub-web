@@ -5,13 +5,13 @@ import colors from "../../config/themes/colors";
 
 type Props = {
   authorProfiles: Object[];
+  fontSize?: number | string;
   horizontal?: boolean;
   imgSize: number | string;
   labelSpacing?: number;
-  withAuthorName?: boolean;
-  fontSize?: number | string;
   margin?: number;
-  overrideStyle: any,
+  overrideStyle?: any;
+  withAuthorName?: boolean;
 };
 
 export default function AuthorFacePile({
@@ -22,7 +22,7 @@ export default function AuthorFacePile({
   margin = 12,
   withAuthorName,
   fontSize,
-  overrideStyle
+  overrideStyle,
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
     () =>

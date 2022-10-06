@@ -91,12 +91,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   bountiesSidebarTitle: {
-    alignItems: "flex-start",
+    alignItems: "center",
     color: colors.TEXT_GREY(1),
     display: "flex",
-    fontSize: 12,
+    fontSize: 14,
     marginLeft: -8,
+    height: "100%",
     textOverflow: "ellipsis",
+    marginTop: 1 // arbitrary to match AuthorFacePile
   },
   bountiesSidebarItemHeader: {
     alignItems: "flex-start",

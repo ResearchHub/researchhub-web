@@ -457,6 +457,7 @@ var styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     width: "100%",
+    boxSizing: "border-box",
   },
   homeContentContainer: {
     width: "inherit",

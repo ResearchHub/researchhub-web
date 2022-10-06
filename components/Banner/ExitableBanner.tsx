@@ -13,6 +13,7 @@ type Props = {
   contentStyleOverride?: Object;
   exitButton?: ReactNode;
   exitButtonPositionOverride?: Object;
+  onExit?: () => void;
 };
 
 export default function ExitableBanner({
@@ -21,6 +22,7 @@ export default function ExitableBanner({
   contentStyleOverride,
   exitButton,
   exitButtonPositionOverride,
+  onExit,
 }: Props): ReactElement | null {
   const [isExited, setIsExited] = useState<boolean>(
     getCookieOrLocalStorageValue({
@@ -29,28 +31,29 @@ export default function ExitableBanner({
   );
 
   if (isExited) {
+    onExit && onExit()
     return null;
   }
 
   return (
-    <div className={css(styles.exitableBannerContainer)}>
-      <div className={css(styles.exitableBanner)} style={contentStyleOverride}>
-        <div className={css(styles.contentWrap)}>{content}</div>
-        <div
-          className={css(styles.exitButtonWrap)}
-          onClick={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            event.stopPropagation();
-            storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
-            setIsExited(true);
-          }}
-          role="button"
-          style={exitButtonPositionOverride}
-        >
-          {exitButton ?? (
-            <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
-          )}
-        </div>
+    <div className={css(styles.exitableBanner)}>
+      <div className={css(styles.contentWrap)} style={contentStyleOverride}>
+        {content}
+      </div>
+      <div
+        className={css(styles.exitButtonWrap)}
+        onClick={(event: SyntheticEvent): void => {
+          event.preventDefault();
+          event.stopPropagation();
+          storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
+          setIsExited(true);
+        }}
+        role="button"
+        style={exitButtonPositionOverride}
+      >
+        {exitButton ?? (
+          <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
+        )}
       </div>
     </div>
   );

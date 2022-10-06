@@ -41,7 +41,6 @@ export default function RhCarouselItem({
 
   return (
     <motion.div
-      key={title}
       custom={direction}
       variants={variants}
       initial={"enter"}

@@ -20,10 +20,11 @@ export const styles = StyleSheet.create({
   },
   HomeRightSidebar: {
     borderLeft: `1.5px solid ${colors.LIGHT_GREY_BORDER}`,
+    boxSizing: "border-box",
     height: "100%",
+    maxWidth: 320,
     position: "relative",
     width: "100%",
-    maxWidth: 320,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
     },
