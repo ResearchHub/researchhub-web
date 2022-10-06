@@ -1,11 +1,11 @@
 import { css } from "aphrodite";
-import RhCarouselItem, {
-  DEFAULT_ITEM_STYLE,
-} from "~/components/shared/carousel/RhCarouselItem";
+import { DEFAULT_ITEM_STYLE } from "~/components/shared/carousel/RhCarouselItem";
 import { faPeopleGroup } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ReactElement } from "react";
+import { INFO_TAB_EXIT_KEY } from "~/components/Banner/constants/exitable_banner_keys";
+import { ReactElement, useState } from "react";
 import { styles } from "./styles/HomeRightSidebarStyles";
+import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import ColumnContainer from "../../Paper/SideColumn/ColumnContainer";
 import ExitableBanner from "~/components/Banner/ExitableBanner";
@@ -13,9 +13,6 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import icons from "~/config/themes/icons";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
-import ALink from "~/components/ALink";
-
-const INFO_TAB_EXIT_KEY = "$rhRightSidebarInfoCarouselExitKey$";
 
 export default function HomeRightSidebar(): ReactElement {
   const carouselElements = [
@@ -60,6 +57,7 @@ export default function HomeRightSidebar(): ReactElement {
       title: (
         <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
           <span style={{ marginRight: 8, fontSize: "20px" }}>
+            {/* @ts-ignore FontAwesome faulty ts error */}
             <FontAwesomeIcon icon={faPeopleGroup} color={colors.BLUE()} />
           </span>
           {" Community"}
@@ -84,29 +82,34 @@ export default function HomeRightSidebar(): ReactElement {
     },
   ];
 
+  const [shouldLimitNumCards, setShouldLimitNumCards] =
+    useState<boolean>(true);
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
         <ExitableBanner
           bannerKey={INFO_TAB_EXIT_KEY}
-          content={<RhCarousel rhCarouselItem={carouselElements} />}
+          content={<RhCarousel rhCarouselItems={carouselElements} />}
           contentStyleOverride={{
             background: colors.NEW_BLUE(0.07),
             borderRadius: 6,
             height: 240,
             margin: 16,
-            padding: 16,
+            padding: "24px 16px 14px",
           }}
           exitButton={
             <div style={{ fontSize: 14, padding: 8 }}>{icons.times}</div>
           }
           exitButtonPositionOverride={{
-            top: "0 !important",
-            right: "0 !important",
+            top: "16px !important",
+            right: "20px !important",
           }}
+          onExit={(): void => setShouldLimitNumCards(false)}
         />
-        <HomeSidebarBountiesSection />
-        <HomeSidebarFeaturedDocsSection />
+        <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
+        <HomeSidebarFeaturedDocsSection
+          shouldLimitNumCards={shouldLimitNumCards}
+        />
       </ColumnContainer>
     </div>
   );

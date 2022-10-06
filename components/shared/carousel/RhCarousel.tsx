@@ -1,13 +1,18 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RhCarouselItem from "./RhCarouselItem";
 
+type RhCarouselItem = {
+  onBodyClick?: (event?: SyntheticEvent) => void;
+  title: ReactNode;
+  body: ReactNode;
+};
+
 type Props = {
-  rhCarouselItem: [];
+  rhCarouselItems: RhCarouselItem[];
 };
 
 const RhCarouselControl = ({
@@ -70,25 +75,23 @@ const RhCarouselControl = ({
   );
 };
 
-export default function RhCarousel({ rhCarouselItem }: Props): ReactElement {
-  const totalNumItems = rhCarouselItem.length;
+export default function RhCarousel({ rhCarouselItems }: Props): ReactElement {
+  const totalNumItems = rhCarouselItems.length;
   const shouldDisplayControl = totalNumItems > 1;
   const [displayItemInd, setDisplayItemInd] = useState<number>(0);
   const [direction, setDirection] = useState<string>("right");
-  const { onBodyClick, title, body } = rhCarouselItem[displayItemInd];
+  const { onBodyClick, title, body } = rhCarouselItems[displayItemInd];
 
   return (
     <div className={css(styles.rhCarousel)}>
       <AnimatePresence initial={false} custom={direction}>
-        {
-          <RhCarouselItem
-            onBodyClick={onBodyClick}
-            title={title}
-            body={body}
-            key={`carousel-${displayItemInd}`}
-            direction={direction}
-          />
-        }
+        <RhCarouselItem
+          body={body}
+          direction={direction}
+          key={`carousel-${displayItemInd}`}
+          onBodyClick={onBodyClick}
+          title={title}
+        />
       </AnimatePresence>
       {shouldDisplayControl ? (
         <RhCarouselControl

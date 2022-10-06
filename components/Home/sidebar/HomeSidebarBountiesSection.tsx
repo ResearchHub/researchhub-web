@@ -42,7 +42,11 @@ const useEffectFetchOpenBounties = ({
   }, [isFetching]);
 };
 
-export default function HomeSidebarBountiesSection(): ReactElement | null {
+export default function HomeSidebarBountiesSection({
+  shouldLimitNumCards,
+}: {
+  shouldLimitNumCards: boolean;
+}): ReactElement | null {
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isFetching: true,
     page: 1,
@@ -136,7 +140,10 @@ export default function HomeSidebarBountiesSection(): ReactElement | null {
           />
         }
       >
-        {bountyItems.slice(0, TEMP_BOUNTY_DISPLAY_CUT_OFF)}
+        {bountyItems.slice(
+          0,
+          shouldLimitNumCards ? 3 : TEMP_BOUNTY_DISPLAY_CUT_OFF
+        )}
       </ReactPlaceholder>
     </Fragment>
   );

@@ -35,7 +35,11 @@ const useEffectFetchFeaturedDocs = ({
   }, [isFetching]);
 };
 
-export default function HomeSidebarFeaturedDocsSection(): ReactElement | null {
+export default function HomeSidebarFeaturedDocsSection({
+  shouldLimitNumCards,
+}: {
+  shouldLimitNumCards: boolean;
+}): ReactElement | null {
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isFetching: true,
     page: 1,
@@ -86,7 +90,7 @@ export default function HomeSidebarFeaturedDocsSection(): ReactElement | null {
           />
         }
       >
-        {featuredDocItems}
+        {shouldLimitNumCards ? featuredDocItems.slice(0, 2) : featuredDocItems}
       </ReactPlaceholder>
     </Fragment>
   );
