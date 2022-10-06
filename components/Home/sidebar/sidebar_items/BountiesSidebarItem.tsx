@@ -41,6 +41,7 @@ export default function BountiesSidebarItem({
             <AuthorFacePile
               authorProfiles={[createdByAuthor]}
               withAuthorName
+              fontSize={14}
               imgSize={12.3}
             />
             <span className={css(styles.bountiesSidebarTitle)}>
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: colors.TEXT_GREY(1),
     display: "flex",
-    fontSize: 14,
+    fontSize: 12,
     marginLeft: -8,
     height: "100%",
     textOverflow: "ellipsis",

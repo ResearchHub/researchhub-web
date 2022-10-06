@@ -28,6 +28,7 @@ export default function FeaturedDocSidebarItem({
                 createdBy?.authorProfile ?? createdBy?.author_profile ?? {},
               ]}
               withAuthorName
+              fontSize={14}
               imgSize={12.3}
               key={relatedDocID}
             />
