@@ -118,7 +118,6 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
             disableLink
             showModeratorBadge={user?.moderator}
           />
-          <span className={css(styles.caret)}>{icons.caretDown}</span>
         </div>
       </div>
       {isMenuOpen && (
@@ -184,11 +183,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     display: "flex",
-  },
-  caret: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#aaa",
+    position: "relative",
+    margin: "0 8px 0",
   },
   dropdown: {
     position: "absolute",
@@ -245,11 +241,12 @@ const styles = StyleSheet.create({
   },
   notifGrp: {
     alignItems: "center",
+    borderLeft: `1px solid ${colors.GREY(0.8)}`,
     borderRight: `1px solid ${colors.GREY(0.8)}`,
     display: "flex",
-    margin: `2px 12px 0 10px`,
-    paddingRight: 4,
     height: 24,
+    margin: `2px 12px 0 10px`,
+    padding: "0 8px 0 16px",
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },
@@ -280,7 +277,7 @@ const styles = StyleSheet.create({
   },
   rscBalanceButton: {
     cursor: "pointer",
-    marginRight: 18,
+    margin: "0 6px 0",
   },
   userDropdown: {
     position: "relative",

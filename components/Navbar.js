@@ -459,10 +459,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttonRight: {
-    marginRight: 15,
+    marginRight: 8,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
-      marginRight: 16,
     },
   },
   loginContainer: {
