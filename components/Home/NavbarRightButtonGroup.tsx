@@ -24,15 +24,23 @@ import RscBalanceButton from "./RscBalanceButton";
 import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
-type Props = { signout: any /* redux */; walletLink: any };
+type Props = {
+  // intentionally accessing redux directly because functional call to redux is problematic at server level
+  signout: any /* redux */;
+  user: any /* redux */;
+  walletLink: any /* redux */;
+};
 
-function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
+function NavbarRightButtonGroup({
+  signout,
+  user,
+  walletLink,
+}: Props): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const [showReferral, setShowReferral] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const user = getCurrentUser();
   const isLoggedIn = user?.id ?? null;
   const isUserModerator = Boolean(user?.moderator);
   const isUserHubEditor = Boolean(user?.author_profile?.is_hub_editor);
@@ -61,7 +69,7 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
           setShowReferral(res.show_referral);
         });
     }
-    user?.id && fetchReferrals();
+    isLoggedIn && fetchReferrals();
   }, [isLoggedIn]);
 
   useEffect((): void => {
@@ -85,7 +93,7 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
         >
           <Notification
             // @ts-ignore legacy
-            wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
+            wsUrl={WS_ROUTES.NOTIFICATIONS(user?.id)}
             // @ts-ignore legacy
             wsAuth
           />
@@ -128,7 +136,7 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
         >
           <Link
             href={"/user/[authorId]/[tabName]"}
-            as={`/user/${user.author_profile.id}/overview`}
+            as={`/user/${user?.author_profile.id}/overview`}
           >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
@@ -137,7 +145,7 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
               {"Profile"}
             </div>
           </Link>
-          <Link href={`/${user.organization_slug}/notebook`}>
+          <Link href={`/${user?.organization_slug}/notebook`}>
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon)}>{icons.bookOpen}</span>
               {"Notebook"}
@@ -292,4 +300,12 @@ const mapDispatchToProps = {
   signout: AuthActions.signout,
 };
 
-export default connect(() => {}, mapDispatchToProps)(NavbarRightButtonGroup);
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+  walletLink: state.auth.walletLink,
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavbarRightButtonGroup);
