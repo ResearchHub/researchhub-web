@@ -52,7 +52,6 @@ const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
-  const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const {
     isLoggedIn,
     user,

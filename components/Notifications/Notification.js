@@ -157,7 +157,6 @@ class Notification extends Component {
       }
     });
   };
-
   render() {
     return (
       <div className={css(styles.container)}>
@@ -182,10 +181,11 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bellIcon: {
-    fontSize: 20,
+    fontSize: 16,
     cursor: "pointer",
-    padding: "2px 10px",
-    color: "rgb(193, 193, 206)",
+    color: colors.GREY(),
+    padding: "8px",
+    marginTop: 2,
     position: "relative",
     ":hover": {
       color: colors.BLUE(),
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     padding: 3,
     float: "left",
     borderRadius: "50%",
-    backgroundColor: colors.RED(),
+    backgroundColor: colors.BLUE(),
     color: "#fff",
     display: "flex",
     justifyContent: "center",

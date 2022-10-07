@@ -28,7 +28,7 @@ type Props = { signout: any /* redux */; walletLink: any };
 
 function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [openCaseCounts, setOpenCaseCounts] = useState(0);
+  const [openCaseCounts, setOpenCaseCounts] = useState(1);
   const [showReferral, setShowReferral] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,23 +64,23 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
     user?.id && fetchReferrals();
   }, [isLoggedIn]);
 
-  useEffect((): void => {
-    let [caseCount, flagCount] = [{}, 0];
-    if (isUserModerator) {
-      caseCount = getCaseCounts({ onSuccess: silentEmptyFnc }) ?? {};
-    }
-    if (isUserModerator || isUserHubEditor) {
-      flagCount = getFlagCountAPI() ?? 0;
-    }
-    const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
-    setOpenCaseCounts(totalCount);
-  }, [isUserModerator, isUserHubEditor]);
+  // useEffect((): void => {
+  //   let [caseCount, flagCount] = [{}, 0];
+  //   if (isUserModerator) {
+  //     caseCount = getCaseCounts({ onSuccess: silentEmptyFnc }) ?? {};
+  //   }
+  //   if (isUserModerator || isUserHubEditor) {
+  //     flagCount = getFlagCountAPI() ?? 0;
+  //   }
+  //   const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
+  //   setOpenCaseCounts(totalCount);
+  // }, [isUserModerator, isUserHubEditor]);
 
   return (
     <div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
         <div
-          className={css(styles.notification)}
+          className={css(styles.notifGrp)}
           onClick={(event: SyntheticEvent): void => event.stopPropagation()}
         >
           <Notification
@@ -208,10 +208,10 @@ const styles = StyleSheet.create({
   modBtnContainer: {
     position: "relative",
     padding: "0px 10px",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   modBtn: {
-    fontSize: 20,
+    fontSize: 16,
     display: "inline-block",
     cursor: "pointer",
     color: "rgb(193, 193, 206)",
@@ -243,11 +243,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 10,
   },
-  notification: {
-    marginLeft: 10,
-    marginTop: 2,
-    display: "flex",
+  notifGrp: {
     alignItems: "center",
+    borderRight: `1px solid ${colors.GREY(0.8)}`,
+    display: "flex",
+    margin: `2px 12px 0 10px`,
+    paddingRight: 4,
+    height: 24,
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },

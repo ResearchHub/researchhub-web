@@ -57,11 +57,11 @@ const styles = StyleSheet.create({
     filter: "blur(2px)",
   },
   coinIcon: {
-    height: 20,
+    height: 16,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
     "@media only screen and (max-width: 900px)": {
-      height: 20,
+      height: 16,
     },
   },
 });
