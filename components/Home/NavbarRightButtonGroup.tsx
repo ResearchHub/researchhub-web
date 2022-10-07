@@ -28,7 +28,7 @@ type Props = { signout: any /* redux */; walletLink: any };
 
 function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [openCaseCounts, setOpenCaseCounts] = useState(1);
+  const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const [showReferral, setShowReferral] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,17 +64,17 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
     user?.id && fetchReferrals();
   }, [isLoggedIn]);
 
-  // useEffect((): void => {
-  //   let [caseCount, flagCount] = [{}, 0];
-  //   if (isUserModerator) {
-  //     caseCount = getCaseCounts({ onSuccess: silentEmptyFnc }) ?? {};
-  //   }
-  //   if (isUserModerator || isUserHubEditor) {
-  //     flagCount = getFlagCountAPI() ?? 0;
-  //   }
-  //   const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
-  //   setOpenCaseCounts(totalCount);
-  // }, [isUserModerator, isUserHubEditor]);
+  useEffect((): void => {
+    let [caseCount, flagCount] = [{}, 0];
+    if (isUserModerator) {
+      caseCount = getCaseCounts({ onSuccess: silentEmptyFnc }) ?? {};
+    }
+    if (isUserModerator || isUserHubEditor) {
+      flagCount = getFlagCountAPI() ?? 0;
+    }
+    const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
+    setOpenCaseCounts(totalCount);
+  }, [isUserModerator, isUserHubEditor]);
 
   return (
     <div className={css(styles.userDropdown)}>
@@ -114,7 +114,7 @@ function NavbarRightButtonGroup({ signout, walletLink }: Props): ReactElement {
         >
           <AuthorAvatar
             author={user?.author_profile}
-            size={36}
+            size={32}
             disableLink
             showModeratorBadge={user?.moderator}
           />
@@ -208,13 +208,13 @@ const styles = StyleSheet.create({
   modBtnContainer: {
     position: "relative",
     padding: "0px 10px",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   modBtn: {
     fontSize: 16,
     display: "inline-block",
     cursor: "pointer",
-    color: "rgb(193, 193, 206)",
+    color: colors.GREY(),
     ":hover": {
       color: colors.NEW_BLUE(),
     },
@@ -224,15 +224,15 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   notifCount: {
-    minWidth: 10,
-    width: 10,
-    maxWidth: 10,
-    minHeight: 10,
-    height: 10,
-    maxHeight: 10,
+    minWidth: 8,
+    width: 8,
+    maxWidth: 8,
+    minHeight: 8,
+    height: 8,
+    maxHeight: 8,
     position: "absolute",
-    top: -2,
-    right: 2,
+    top: 2,
+    right: 4,
     padding: 3,
     float: "left",
     borderRadius: "50%",
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontSize: 10,
+    fontSize: 8,
   },
   notifGrp: {
     alignItems: "center",
