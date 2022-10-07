@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     cursor: "pointer",
     color: colors.GREY(),
-    padding: "0px 8px",
     position: "relative",
     ":hover": {
       color: colors.BLUE(),

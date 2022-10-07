@@ -83,12 +83,15 @@ function NavbarRightButtonGroup({
     const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
     setOpenCaseCounts(totalCount);
   }, [isUserModerator, isUserHubEditor]);
-
+  console.warn(
+    ":isUserModerator || isUserHubEditor: ",
+    isUserModerator || isUserHubEditor
+  );
   return (
     <div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
         <div
-          className={css(styles.notifGrp)}
+          className={css(styles.buttonsGroup)}
           onClick={(event: SyntheticEvent): void => event.stopPropagation()}
         >
           <Notification
@@ -112,20 +115,22 @@ function NavbarRightButtonGroup({
             </div>
           )}
         </div>
-        <div className={css(styles.rscBalanceButton)}>
-          <RscBalanceButton />
-        </div>
-        <div
-          className={css(styles.avatarContainer)}
-          ref={avatarRef}
-          onClick={(): void => setIsMenuOpen(!isMenuOpen)}
-        >
-          <AuthorAvatar
-            author={user?.author_profile}
-            size={32}
-            disableLink
-            showModeratorBadge={user?.moderator}
-          />
+        <div className={css(styles.buttonsGroup, styles.borderNone)}>
+          <div className={css(styles.rscBalanceButton)}>
+            <RscBalanceButton />
+          </div>
+          <div
+            className={css(styles.avatarContainer)}
+            ref={avatarRef}
+            onClick={(): void => setIsMenuOpen(!isMenuOpen)}
+          >
+            <AuthorAvatar
+              author={user?.author_profile}
+              size={32}
+              disableLink
+              showModeratorBadge={user?.moderator}
+            />
+          </div>
         </div>
       </div>
       {isMenuOpen && (
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     position: "relative",
-    margin: "0 8px 0",
+    margin: "0 8px 0 14px",
   },
   dropdown: {
     position: "absolute",
@@ -210,12 +215,12 @@ const styles = StyleSheet.create({
     borderBottom: 0,
   },
   modBtnContainer: {
-    position: "relative",
-    padding: "0px 10px",
     marginBottom: 6,
+    marginLeft: 24,
+    position: "relative",
   },
   modBtn: {
-    fontSize: 16,
+    fontSize: 15,
     display: "inline-block",
     cursor: "pointer",
     color: colors.GREY(),
@@ -247,14 +252,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 8,
   },
-  notifGrp: {
+  buttonsGroup: {
     alignItems: "center",
     borderLeft: `1px solid ${colors.GREY(0.8)}`,
     borderRight: `1px solid ${colors.GREY(0.8)}`,
+    boxSizing: "border-box",
     display: "flex",
     height: 24,
-    margin: `2px 12px 0 10px`,
-    padding: "0 8px 0 16px",
+    justifyContent: "space-between",
+    padding: "0 20px",
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },
@@ -285,7 +291,7 @@ const styles = StyleSheet.create({
   },
   rscBalanceButton: {
     cursor: "pointer",
-    margin: "0 6px 0",
+    margin: "0 6px 3px",
   },
   userDropdown: {
     position: "relative",
@@ -293,6 +299,11 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
+  },
+  borderNone: {
+    borderLeft: "none !important",
+    borderRight: "none !important",
+    paddingRight: 8,
   },
 });
 
