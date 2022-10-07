@@ -83,10 +83,7 @@ function NavbarRightButtonGroup({
     const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
     setOpenCaseCounts(totalCount);
   }, [isUserModerator, isUserHubEditor]);
-  console.warn(
-    ":isUserModerator || isUserHubEditor: ",
-    isUserModerator || isUserHubEditor
-  );
+
   return (
     <div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
@@ -233,24 +230,24 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   notifCount: {
-    minWidth: 8,
-    width: 8,
-    maxWidth: 8,
-    minHeight: 8,
-    height: 8,
-    maxHeight: 8,
-    position: "absolute",
-    top: 2,
-    right: 4,
-    padding: 3,
-    float: "left",
-    borderRadius: "50%",
+    alignItems: "center",
     backgroundColor: colors.BLUE(),
+    borderRadius: "50%",
     color: "#fff",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    float: "left",
     fontSize: 8,
+    height: 8,
+    justifyContent: "center",
+    maxHeight: 8,
+    maxWidth: 8,
+    minHeight: 8,
+    minWidth: 8,
+    padding: 3,
+    position: "absolute",
+    right: -6,
+    top: 3,
+    width: 8,
   },
   buttonsGroup: {
     alignItems: "center",
