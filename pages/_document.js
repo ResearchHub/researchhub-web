@@ -53,6 +53,10 @@ export default class MyDocument extends Document {
             preload="true"
           />
           <link
+            href="https://fonts.googleapis.com/css?family=Roboto Condensed:400&display=swap"
+            rel="stylesheet"
+          />
+          <link
             rel="apple-touch-icon"
             sizes="152x152"
             href="/static/favicons/apple-touch-icon.png"

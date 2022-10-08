@@ -6,6 +6,7 @@ import {
   RESEARCHHUB_POST_DOCUMENT_TYPES,
 } from "~/config/utils/getUnifiedDocType";
 import Bounty from "~/config/types/bounty";
+import { Concept, JsonApiConcept } from "~/config/types/root_types";
 
 export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
@@ -34,6 +35,9 @@ export function getDocumentCard({
       const bounties = (uniDoc.bounties || [])
         .map((b) => new Bounty(b))
         .filter((b) => b.status === "OPEN");
+      const concepts = (uniDoc.concepts || []).map(
+        (c: JsonApiConcept) => new Concept(c)
+      );
       return (
         <FeedCard
           {...targetDoc}
@@ -46,6 +50,7 @@ export function getDocumentCard({
           featured={uniDoc.featured}
           reviews={uniDoc.reviews}
           bounties={bounties}
+          concepts={concepts}
           hasAcceptedAnswer={targetDoc.has_accepted_answer}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [

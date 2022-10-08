@@ -74,6 +74,7 @@ export type UnifiedDocument = {
   id: ID;
   isRemoved: boolean;
   reviewSummary?: PeerReviewScoreSummary;
+  concepts?: Concept[];
 };
 
 export type AuthorProfile = {
@@ -177,6 +178,24 @@ export type CreatedBy = {
   lastName: string;
 };
 
+export interface JsonApiConcept {
+  openalex_id: string;
+  display_name: string;
+  description: string;
+}
+
+export class Concept {
+  openalexId: string;
+  displayName: string;
+  description: string;
+
+  constructor({ description, display_name, openalex_id }: JsonApiConcept) {
+    this.openalexId = openalex_id;
+    this.displayName = display_name;
+    this.description = description;
+  }
+}
+
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof raw !== "object") {
     return raw;
@@ -215,6 +234,10 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
     parsed["reviewSummary"] = parsePeerReviewScoreSummary(raw.reviews);
   }
 
+  if (raw.concepts) {
+    parsed["concepts"] = parseConcepts(raw.concepts as Array<JsonApiConcept>);
+  }
+
   if (unparsedInnerDoc.renderable_text) {
     parsed.document["body"] = unparsedInnerDoc.renderable_text;
   }
@@ -222,6 +245,10 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   // @ts-ignore
   return parsed;
 };
+
+function parseConcepts(rawConcepts: Array<JsonApiConcept>): Array<Concept> {
+  return rawConcepts.map((raw) => new Concept(raw));
+}
 
 export const parseAuthorProfile = (raw: any): AuthorProfile => {
   if (typeof raw !== "object") {

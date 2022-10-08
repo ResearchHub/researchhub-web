@@ -25,6 +25,7 @@ import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import ContentBadge from "../ContentBadge";
+import Concepts from "~/components/Widget/Concepts";
 
 type Args = {
   document: TopLevelDocument;
@@ -373,6 +374,14 @@ function DocumentHeader({
               <div className={css(styles.metadataRow, styles.formatsRow)}>
                 <div className={css(styles.metaKey)}>Formats</div>
                 <div className={css(styles.metaVal)}>{formatElems}</div>
+              </div>
+            )}
+
+            {unifiedDocument.concepts && unifiedDocument.concepts.length > 0 && (
+              <div className={css(styles.metadataRow, styles.formatsRow)}>
+                <div className={css(styles.metaVal)}>
+                  <Concepts concepts={unifiedDocument.concepts} />
+                </div>
               </div>
             )}
           </div>

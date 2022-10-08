@@ -16,7 +16,7 @@ import { parseCreatedBy } from "~/config/types/contribution";
 import {
   VoteType,
   RhDocumentType,
-  NullableString,
+  Concept,
 } from "~/config/types/root_types";
 import { SyntheticEvent, useState, useEffect } from "react";
 import colors, {
@@ -39,6 +39,7 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { truncateText } from "~/config/utils/string";
 import ContentBadge from "~/components/ContentBadge";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import Concepts from "~/components/Widget/Concepts";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -48,6 +49,7 @@ export type FeedCardProps = {
   abstract: string;
   boost_amount: number;
   bounties: Bounty[];
+  concepts?: Concept[];
   created_by: any;
   created_date: any;
   discussion_count: number;
@@ -76,8 +78,6 @@ export type FeedCardProps = {
   slug: string;
   title: string;
   titleAsHtml: any;
-  unified_document_id: number;
-  unified_document: any;
   uploaded_by: any;
   uploaded_date: any;
   user_vote: any;
@@ -95,6 +95,7 @@ const documentIcons = {
 function FeedCard({
   abstract,
   bounties,
+  concepts,
   boost_amount: boostAmount,
   created_by,
   created_date,
@@ -402,6 +403,12 @@ function FeedCard({
                         <span className={css(styles.metadataText)}>
                           +{boostAmount}
                         </span>
+                      </div>
+                    )}
+
+                    {concepts && concepts.length > 0 && (
+                      <div className={css(styles.metaItem)}>
+                        <Concepts concepts={concepts} />
                       </div>
                     )}
                   </div>
