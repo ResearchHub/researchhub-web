@@ -2,7 +2,6 @@ import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { Helpers } from "@quantfive/js-web-config";
 import { getCaseCounts } from "~/components/AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 
@@ -132,7 +131,7 @@ function NavbarRightButtonGroup({
       </div>
       {isMenuOpen && (
         <div
-          className={css(styles.dropdown)}
+          className={css(styles.avatarDropdown)}
           ref={dropdownRef}
           onClick={(): void => setIsMenuOpen(!isMenuOpen)}
         >
@@ -196,16 +195,16 @@ const styles = StyleSheet.create({
     position: "relative",
     margin: "0 8px 0 14px",
   },
-  dropdown: {
-    position: "absolute",
-    top: 45,
-    left: -25,
-    width: 225,
-    boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
-    boxSizing: "border-box",
+  avatarDropdown: {
     background: "#fff",
     border: "1px solid #eee",
     borderRadius: 4,
+    boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
+    boxSizing: "border-box",
+    position: "absolute",
+    right: 0,
+    top: 45,
+    width: 225,
     zIndex: 3,
   },
   lastOption: {

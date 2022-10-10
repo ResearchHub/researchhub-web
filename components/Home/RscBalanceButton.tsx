@@ -4,27 +4,30 @@ import { ModalActions } from "~/redux/modals";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import ReputationTooltip from "~/components/ReputationTooltip";
 
-type Props = { auth?: any /* redux */; balance?: any /* redux */ };
+/* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
+type Props = { auth?: any /* redux */ };
 
-const RscBalanceButton = ({ auth, balance }: Props): ReactElement => {
+const RscBalanceButton = ({ auth }: Props): ReactElement => {
   const dispatch = useDispatch();
+  const { balance, should_display_rsc_balance_home } = auth?.user ?? {};
   const [_prevCount, _setPrevCount] = useState(balance);
   const [_count, setBalance] = useState(balance);
   const [_transition, setTransition] = useState(true);
+  const [shouldDisplayBalanceHome, setShouldDisplayBalanceHome] =
+    useState<boolean>(should_display_rsc_balance_home ?? true);
 
   useEffect(() => {
-    if (balance !== undefined && balance !== null) {
-      if (auth.isFetchingUser) {
-        setTransition(true);
-      }
-      if (!auth.isFetchingUser) {
-        setBalance(balance);
-        setTimeout(() => {
-          setTransition(false);
-        }, 200);
-      }
+    if (auth?.isFetchingUser) {
+      setTransition(true);
     }
-  }, [balance, auth]);
+    if (!auth?.isFetchingUser && Boolean(balance)) {
+      setBalance(balance);
+      setTimeout(() => {
+        setTransition(false);
+      }, 200);
+      setShouldDisplayBalanceHome(should_display_rsc_balance_home ?? true);
+    }
+  }, [auth, balance, should_display_rsc_balance_home]);
 
   return (
     <div
@@ -41,6 +44,11 @@ const RscBalanceButton = ({ auth, balance }: Props): ReactElement => {
         className={css(styles.coinIcon)}
         alt="RSC Coin"
       />
+      {shouldDisplayBalanceHome && (
+        <span className={css(styles.balanceText)}>
+          {Math.floor(balance ?? 0)}
+        </span>
+      )}
       <ReputationTooltip />
     </div>
   );
@@ -53,6 +61,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
+  balanceText: { fontSize: 12, fontWeight: 400, marginLeft: 4, marginTop: 2 },
   blur: {
     filter: "blur(2px)",
   },
@@ -66,7 +75,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  balance: state.auth.user.balance,
 });
 
 export default connect(mapStateToProps, null)(RscBalanceButton);

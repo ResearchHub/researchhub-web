@@ -10,7 +10,11 @@ import { createRef, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { defaultStyles, hubStyles, selectStyles } from "~/config/themes/styles";
 import { DIGEST_FREQUENCY } from "~/config/constants";
-import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
+import {
+  doesNotExist,
+  emptyFncWithMsg,
+  isEmpty,
+} from "~/config/utils/nullchecks";
 import {
   fetchEmailPreference,
   subscribeToHub,
@@ -19,6 +23,7 @@ import {
 } from "~/config/fetch";
 import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
+import { postShouldDisplayRscBalanceHome } from "~/components/Home/api/postShouldDisplayRscBalanceHome";
 import { withAlert } from "react-alert";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import FormInput from "~/components/Form/FormInput";
@@ -72,6 +77,8 @@ class UserSettings extends Component {
       email: this.props.user.email && this.props.user.email,
       activeEmailInput: false,
       transition: false,
+      shouldDisplayRscBalanceHome:
+        this.props.user?.should_display_rsc_balance_home,
     };
     this.emailInputRef = createRef();
     contentSubscriptionOptions.forEach((option) => {
@@ -87,6 +94,17 @@ class UserSettings extends Component {
     if (doesNotExist(this.props.user.email)) {
       await this.props.dispatch(AuthActions.getUser());
     }
+
+    if (
+      this.prevProps?.user?.should_display_rsc_balance_home !==
+      this.props?.user?.should_display_rsc_balance_home
+    ) {
+      this.setState({
+        shouldDisplayRscBalanceHome:
+          this.props.user?.should_display_rsc_balance_home ?? true,
+      });
+    }
+
     fetchEmailPreference().then((preference) => {
       const frequency = this.getInitialFrequencyOption(preference);
       const contentSubscriptions =
@@ -577,6 +595,34 @@ class UserSettings extends Component {
               {"Notifications"}
             </div>
             {this.renderContentSubscriptions()}
+            <div className={css(styles.checkboxEntry)}>
+              <div className={css(styles.checkboxLabel)}>
+                {"Should display RSC Balance in home page"}
+              </div>
+              <Toggle
+                id={"shouldDisplayRscBalanceHome"}
+                className={"react-toggle"}
+                checked={this.state.shouldDisplayRscBalanceHome}
+                onChange={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  postShouldDisplayRscBalanceHome({
+                    onError: emptyFncWithMsg,
+                    onSuccess: (flag) => {
+                      this.setState({ shouldDisplayRscBalanceHome: flag });
+                      this.props.dispatch(
+                        AuthActions.updateUser({
+                          should_display_rsc_balance_home: flag,
+                        })
+                      );
+                    },
+                    shouldDisplayRscBalanceHome:
+                      !this.state.shouldDisplayRscBalanceHome,
+                    targetUserID: this.props.user?.id,
+                  });
+                }}
+              />
+            </div>
             {this.renderOptOut()}
           </div>
         </div>
