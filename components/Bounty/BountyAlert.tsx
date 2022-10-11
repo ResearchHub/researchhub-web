@@ -34,7 +34,7 @@ const BountyAlert = ({
   bountyText,
   post,
   currentUser,
-  onBountyRemove
+  onBountyRemove,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,7 +79,7 @@ const BountyAlert = ({
   const showContributeBounty =
     !isOriginalPoster && !userBounty && bountyType === "question";
 
-  const _handleShareClick = (selectedOpt:any) => {
+  const _handleShareClick = (selectedOpt: any) => {
     if (selectedOpt.value === "twitter") {
       const twitterUrl = buildTwitterUrl({
         isBountyCreator: Boolean(isOriginalPoster),
@@ -88,12 +88,11 @@ const BountyAlert = ({
         hubs: post?.hubs,
       });
       return window.open(twitterUrl, "_blank");
-    }
-    else if (selectedOpt.value === "linkedin") {
-      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`
+    } else if (selectedOpt.value === "linkedin") {
+      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`;
       return window.open(url, "_blank");
     }
-  }
+  };
 
   return (
     <div className={css(styles.bountyAlert)}>
@@ -117,7 +116,9 @@ const BountyAlert = ({
             overrideStyle={styles.facePileOverride}
             margin={-10}
             horizontal={true}
-            authorProfiles={allBounties.map((b) => b.createdBy?.authorProfile || b.created_by?.author_profile)}
+            authorProfiles={allBounties.map(
+              (b) => b.createdBy?.authorProfile || b.created_by?.author_profile
+            )}
           />
         </div>
         <div>
@@ -198,11 +199,13 @@ const BountyAlert = ({
             className={css(styles.action, styles.closeBounty)}
             onClick={() => {
               if (window.confirm("Close bounty?")) {
-                Bounty.closeBountyAPI({ bounty: userBounty }).then((bounties) => {
-                  onBountyRemove && onBountyRemove(userBounty.id)
-                });
+                Bounty.closeBountyAPI({ bounty: userBounty }).then(
+                  (bounties) => {
+                    onBountyRemove && onBountyRemove(userBounty.id);
+                  }
+                );
               }
-            }}            
+            }}
           >
             Close your bounty
           </div>
@@ -217,14 +220,19 @@ const BountyAlert = ({
                 <ResearchCoinIcon version={4} height={20} width={20} />
               </div>
             )}
-            <div className={css(styles.action)} onClick={() => {
-              const scrollToEl = document.querySelector("#comments");
-              window.scrollTo({
-                // @ts-ignore
-                top: scrollToEl.offsetTop,
-                behavior: "smooth"
-              });
-            }}>Answer</div>
+            <div
+              className={css(styles.action)}
+              onClick={() => {
+                const scrollToEl = document.querySelector("#comments");
+                window.scrollTo({
+                  // @ts-ignore
+                  top: scrollToEl.offsetTop,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              Answer
+            </div>
           </>
         )}
       </div>

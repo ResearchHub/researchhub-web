@@ -8,11 +8,11 @@ import buildTwitterUrl from "./utils/buildTwitterUrl";
 import { Hub } from "~/config/types/hub";
 
 type Props = {
-  bountyAmount: Number;
+  bountyAmount: number;
   bountyText: string;
   postId: ID;
   postSlug: string;
-  hubs ?: Hub[];
+  hubs?: Hub[];
 };
 
 function SuccessScreen({
@@ -36,7 +36,7 @@ function SuccessScreen({
     bountyText,
     bountyAmount,
     hubs,
-  })
+  });
 
   function copyToClipboard() {
     navigator.clipboard.writeText(link);

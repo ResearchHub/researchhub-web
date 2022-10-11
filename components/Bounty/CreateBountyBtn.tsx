@@ -10,7 +10,6 @@ import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
-
 function CreateBountyBtn({
   withPreview = false,
   onBountyAdd,
