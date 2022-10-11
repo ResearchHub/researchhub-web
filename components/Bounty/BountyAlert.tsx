@@ -79,10 +79,11 @@ const BountyAlert = ({
   const showContributeBounty =
     !isOriginalPoster && !userBounty && bountyType === "question";
 
+
   const _handleShareClick = (selectedOpt: any) => {
     if (selectedOpt.value === "twitter") {
       const twitterUrl = buildTwitterUrl({
-        isBountyCreator: Boolean(isOriginalPoster),
+        isBountyCreator: Boolean(userBounty),
         bountyText: bountyType === "question" ? post.title : bountyText,
         bountyAmount: amount,
         hubs: post?.hubs,
@@ -102,7 +103,7 @@ const BountyAlert = ({
         handleBountyAdded={(bounty) => {
           onBountyAdd(bounty);
         }}
-        isOriginalPoster={isOriginalPoster}
+        isOriginalPoster={Boolean(isOriginalPoster)}
         addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
         withPreview={false}
         bountyText={bountyText}
@@ -217,7 +218,6 @@ const BountyAlert = ({
                 onClick={() => setIsModalOpen(true)}
               >
                 Contribute
-                <ResearchCoinIcon version={4} height={20} width={20} />
               </div>
             )}
             <div

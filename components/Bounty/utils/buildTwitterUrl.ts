@@ -24,7 +24,7 @@ const buildTwitterUrl = ({
 
   let twitterPreText: string;
   if (isBountyCreator) {
-    twitterPreText = `I created a ${bountyAmount} RSC bounty on @researchhub for solutions to:`;
+    twitterPreText = `I created a ${bountyAmount} RSC bounty on @researchhub:`;
   } else {
     twitterPreText = `Check out this ${bountyAmount} RSC bounty on @researchhub:`;
   }
