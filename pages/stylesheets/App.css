@@ -286,10 +286,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 30px;
   margin-top: 0;
   margin-bottom: 0.5em;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.25px;
   line-height: 1.2em;
 }
@@ -298,7 +298,7 @@ h2 {
   font-size: 26px;
   margin-top: 0;
   margin-bottom: 0.5em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 h3 {
@@ -323,8 +323,8 @@ strong {
 p,
 ol,
 ul {
-  font-size: 18px;
-  line-height: 1.6em;
+  font-size: 16px;
+  line-height: 1.4em;
   margin-top: 0;
   margin-bottom: 1em;
 }

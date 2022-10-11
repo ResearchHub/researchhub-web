@@ -25,6 +25,8 @@ import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import ContentBadge from "../ContentBadge";
+import AuthorAvatar from "../AuthorAvatar";
+import AuthorFacePile from "../shared/AuthorFacePile";
 
 type Args = {
   document: TopLevelDocument;
@@ -256,9 +258,8 @@ function DocumentHeader({
     >
       {document.isReady && (
         <div className={css(styles.documentHeader)}>
-          {hasBounties && (
+          {/* {hasBounties && (
             <div className={css(styles.bountyAlertContainer)}>
-              {/*@ts-ignore*/}
               <BountyAlert
                 allBounties={allBounties}
                 bountyType={bountyType}
@@ -270,7 +271,9 @@ function DocumentHeader({
                 onBountyRemove={onBountyRemove}
               />
             </div>
-          )}
+          )} */}
+
+
           <ReactTooltip />
           {claimableAuthors.length > 0 && (
             <AuthorClaimModal
@@ -292,16 +295,17 @@ function DocumentHeader({
             />
           </div>
 
-          <div className={css(styles.submissionDetailsContainer)}>
+          {/* <div className={css(styles.submissionDetailsContainer)}>
             <SubmissionDetails
               createdDate={createdDate}
               hubs={hubs}
               createdBy={createdBy}
               avatarSize={30}
             />
-          </div>
+          </div> */}
           <h1 className={css(styles.title)}>
-            {unescapeHtmlString(title ?? "")}
+            {/* {unescapeHtmlString(title ?? "")} */}
+            Can Vestibular Stimulation be Used to Treat Obesity?
           </h1>
           <div className={css(styles.metadata)}>
             {documentType !== "question" && authors.length > 0 && (
@@ -359,6 +363,61 @@ function DocumentHeader({
             )}
             {datePublished && (
               <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Posted</div>
+                <div className={css(styles.metaVal)}>{datePublished}</div>
+              </div>
+            )}
+            {true && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Hubs</div>
+                <div className={css(styles.metaVal)}>Biochemistry, Genetic Engineering</div>
+              </div>
+            )}            
+            {true && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Created by</div>
+                <div className={css(styles.metaVal)}>
+                  <div style={{ display: "flex", columnGap: 10,}}>
+                    <AuthorAvatar
+                      size={25}
+                      author={{
+                        id: 4566,
+                        profile_image: "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/author_profile_images/2021/12/09/blob?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=BqIM1xlMZzWz34UlgrS3EfpydZg%3D&Expires=1666018450",                        
+                      }}
+                    />
+                    <span>Kobe Attias</span>
+                  </div>
+                </div>
+              </div>
+            )}              
+            {true && (
+              <div className={css(styles.metadataRow)}>
+                <div className={css(styles.metaKey)}>Funded by</div>
+                <div className={css(styles.metaVal)}>
+                  <div style={{ display: "flex", columnGap: 10,}}>
+                    <AuthorFacePile
+                      // overrideStyle={styles.facePileOverride}
+                      margin={-10}
+                      imgSize={25}
+                      horizontal={true}
+                      authorProfiles={[{
+                        id: 4566,
+                        profile_image: "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/author_profile_images/2021/12/09/blob?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=BqIM1xlMZzWz34UlgrS3EfpydZg%3D&Expires=1666018450",                        
+                      }, {
+                        id: 4566,
+                        profile_image: "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/08/25/blob_Jphsjkr?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=23cyqxsxJHMAfukArzuibv3Ep%2Fs%3D&Expires=1666018827",                                                
+                      },{
+                        id: 4566,
+                        profile_image: "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/07/blob_ieGLGA5?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=U%2FiHJobPgND5L40pfl7gj4OZM4w%3D&Expires=1666018825",                                                
+                      }, ]}
+                    />
+                    <span style={{marginLeft: 8, }}>{icons.chevronDown}</span>
+                  </div>
+                </div>
+              </div>
+            )}                       
+            {/* {datePublished && (
+              <div className={css(styles.metadataRow)}>
                 <div className={css(styles.metaKey)}>Published</div>
                 <div className={css(styles.metaVal)}>{datePublished}</div>
               </div>
@@ -374,7 +433,7 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>Formats</div>
                 <div className={css(styles.metaVal)}>{formatElems}</div>
               </div>
-            )}
+            )} */}
           </div>
           <div className={css(styles.actionsAndDetailsRow)}>
             <div className={css(styles.additionalDetails)}>
@@ -397,9 +456,12 @@ function DocumentHeader({
                   type={documentType}
                   styles={[styles.smallScreenVoteWidget]}
                 />
-              </div>
+              </div>              
               <div className={css(styles.type, styles.additionalDetail)}>
-                <ContentBadge contentType={documentType} />
+                <ContentBadge contentType={"question"} />
+              </div>              
+              <div className={css(styles.type, styles.additionalDetail)}>
+                <ContentBadge contentType={"bounty"} label={"5,000 RSC Bounty"} />
               </div>
               <ALink
                 overrideStyle={[styles.comments, styles.additionalDetail]}
@@ -527,7 +589,7 @@ const styles = StyleSheet.create({
   actionsAndDetailsRow: {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: 25,
+    marginTop: 15,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "block",
       marginTop: 35,
@@ -539,7 +601,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   additionalDetail: {
-    marginRight: 20,
+    marginRight: 10,
     fontWeight: 400,
     color: colors.MEDIUM_GREY(),
   },
@@ -560,6 +622,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontWeight: 400,
     color: colors.MEDIUM_GREY(),
+    fontSize: 14,
   },
   reviews: {
     display: "flex",
@@ -619,7 +682,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   metadata: {
-    marginTop: 25,
+    marginTop: 15,
   },
   metadataRow: {
     display: "flex",
@@ -633,8 +696,7 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY(),
     fontWeight: 500,
     fontSize: 16,
-    width: 85,
-    minWidth: 85,
+    width: 155,
   },
   metaVal: {
     fontSize: 16,

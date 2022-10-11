@@ -20,6 +20,7 @@ import ReactTooltip from "react-tooltip";
 import removeMd from "remove-markdown";
 import router from "next/router";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
+import icons from "~/config/themes/icons";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -140,7 +141,83 @@ class PostPageCard extends Component {
             }
           />
           <div className={css(styles.section, styles.postBody) + " post-body"}>
-            <ReactPlaceholder
+            <div style={{ marginTop: 15 }}>
+              <h4>
+                Application type: <span>Open for submissions</span>&nbsp;
+                <span
+                  style={{
+                    marginLeft: 5,
+                    fontSize: 18,
+                    color: colors.DARKER_GREY(),
+                  }}
+                >
+                  {icons["info-circle-light"]}
+                </span>
+              </h4>
+            </div>
+
+            <div style={{ marginTop: 15 }}>
+              <h4>
+                Effort level: <span>In-Depth</span>&nbsp;
+                <span
+                  style={{
+                    color: colors.DARKER_GREY(),
+                    fontWeight: 400,
+                    fontSize: 15,
+                  }}
+                >
+                  (About 5-10 hours)
+                </span>
+                <span
+                  style={{
+                    marginLeft: 5,
+                    fontSize: 18,
+                    color: colors.DARKER_GREY(),
+                  }}
+                >
+                  {icons["info-circle-light"]}
+                </span>
+              </h4>
+            </div>
+
+            <div style={{ marginTop: 15 }}>
+              <h4>Request details</h4>
+              <p>
+                This paper doesn’t offer any direct evidence (no clinical trial
+                was done it seems) but it propose a pretty interesting theory
+                which is that by stimulating your inner ear which contributes to
+                balance, your body would adjust its fat reserves and physique
+                thinking you were much more active than you actually are.
+              </p>
+              <p>
+                Pretty creative idea, but would want to see some evidence of
+                this (extraordinary claims require extraordinary evidence). Does
+                anyone know of other studies attempting this?
+              </p>
+            </div>
+            <div style={{ marginTop: 15 }}>
+              <h4>Deliverable type</h4>
+              <ul
+                style={{ listStyleType: "none", paddingLeft: 0, marginLeft: 0 }}
+              >
+                <li>{icons.check} Comment</li>
+                <li>{icons.check} Post via Notebook</li>
+              </ul>
+            </div>
+
+            <div style={{ marginTop: 15 }}>
+              <span style={{ marginRight: 10 }}>
+                <Button size="small">{icons.plus}&nbsp; Contribute</Button>
+              </span>
+              <span style={{ marginRight: 10 }}>
+                <Button size="small">
+                  {icons.shareAlt}
+                  Share
+                </Button>
+              </span>
+            </div>
+
+            {/* <ReactPlaceholder
               ready={post.isReady}
               showLoadingAnimation
               customPlaceholder={<AbstractPlaceholder color="#efefef" />}
@@ -213,7 +290,7 @@ class PostPageCard extends Component {
                   )}
                 </div>
               )}
-            </ReactPlaceholder>
+            </ReactPlaceholder> */}
           </div>
         </div>
       </div>
@@ -227,8 +304,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   section: {
-    marginTop: 25,
-    paddingTop: 25,
+    marginTop: 15,
+    paddingTop: 15,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
   },
   postBody: {

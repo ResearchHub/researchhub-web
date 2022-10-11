@@ -44,10 +44,11 @@ const AuthorAvatar = (props) => {
   function renderAvatar() {
     let finalSize = size;
     const profileImage = author.profile_image || author.profileImage;
+    console.log(profileImage);
     if (deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
-
+    console.log("11");
     return (
       <>
         {author && profileImage && !error ? (
