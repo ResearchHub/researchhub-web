@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
 import { getCaseCounts } from "~/components/AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
-
 import {
   ReactElement,
   SyntheticEvent,
@@ -13,15 +12,15 @@ import {
   useState,
 } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import api from "~/config/api";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
+import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
 import Notification from "~/components/Notifications/Notification";
 import RscBalanceButton from "./RscBalanceButton";
-import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 type Props = {
   // intentionally accessing redux directly because functional call to redux is problematic at server level
