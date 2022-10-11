@@ -19,6 +19,7 @@ import icons, { WarningIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import { Hub } from "~/config/types/hub";
 
 
 
@@ -35,6 +36,7 @@ type Props = {
   showMessage: Function;
   setMessage: Function;
   isOriginalPoster: boolean;
+  hubs?: Hub[]
 };
 
 function BountyModal({
@@ -49,6 +51,7 @@ function BountyModal({
   showMessage,
   setMessage,
   isOriginalPoster,
+  hubs = [],
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
@@ -178,6 +181,7 @@ function BountyModal({
             bountyText={bountyText}
             postSlug={postSlug}
             postId={postId}
+            hubs={hubs}
             bountyAmount={offeredAmount}
           />
         ) : (

@@ -346,6 +346,7 @@ const Paper = ({
                   document={paperV2}
                   hasBounties={hasBounties}
                   allBounties={allBounties}
+                  bountyText={paperV2.title}
                   onDocumentRemove={removePaper}
                   onDocumentRestore={restorePaper}
                   openPaperPDFModal={openPaperPDFModal}

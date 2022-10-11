@@ -93,6 +93,7 @@ function CreateBountyBtn({
         handleBountyAdded={(bounty) => {
           onBountyAdd(bounty);
         }}
+        hubs={post?.hubs}
         isOriginalPoster={isOriginalPoster}
         addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
         withPreview={withPreview}
