@@ -47,7 +47,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
         alt="RSC Coin"
       />
       {shouldDisplayBalanceHome && (
-        <span className={css(styles.balanceText)}>
+      <span className={css(styles.balanceText)}>
           {getNumberWithCommas(Math.floor(balance ?? 0))}
         </span>
       )}
