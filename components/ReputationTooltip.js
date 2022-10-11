@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-// import Card from "react-bootstrap-card";
 import ReactTooltip from "react-tooltip";
 import colors from "~/config/themes/colors";
 
