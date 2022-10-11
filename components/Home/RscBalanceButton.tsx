@@ -3,6 +3,7 @@ import { useDispatch, connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import ReputationTooltip from "~/components/ReputationTooltip";
+import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
@@ -38,6 +39,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
         dispatch(ModalActions.openWithdrawalModal(true));
       }}
     >
+      <ReputationTooltip />
       <img
         src={"/static/icons/coin-filled.png"}
         draggable={false}
@@ -46,10 +48,9 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
       />
       {shouldDisplayBalanceHome && (
         <span className={css(styles.balanceText)}>
-          {Math.floor(balance ?? 0)}
+          {getNumberWithCommas(Math.floor(balance ?? 0))}
         </span>
       )}
-      <ReputationTooltip />
     </div>
   );
 };
