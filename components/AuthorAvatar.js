@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   userIcon: {
     color: "#aaa",
     position: "relative",
-    // top: 2,
+    marginBottom: 6,
     left: 0.25,
   },
   name: {

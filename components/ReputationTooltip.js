@@ -1,20 +1,21 @@
+import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
-import { Fragment } from "react";
+import colors from "~/config/themes/colors";
 
 const ReputationTooltip = (props) => {
   return (
     <Fragment>
       {process.browser && (
         <ReactTooltip
-          id="reputationTooltip"
+          id="reputation-tool-tip"
           className={css(styles.tooltip)}
           place="bottom"
           effect="solid"
           delayShow={500}
         >
           <div className={css(styles.comingSoon)}>
-            Withdraw RSC
+            {"Withdraw RSC"}
             <img
               className={css(styles.icon)}
               src={"/static/icons/coin-filled.png"}
@@ -22,12 +23,17 @@ const ReputationTooltip = (props) => {
             />
           </div>
           <div className={css(styles.paragraph, styles.description)}>
-            Earn Research Coin by participating in discussion, uploading papers,
-            upvoting papers, and updating summaries / adding notes to papers.
+            {
+              "Earn Research Coin by participating in discussion, uploading papers, upvoting papers, and updating summaries / adding notes to papers."
+            }
           </div>
           <div className={css(styles.description)}>
-            With Research Coin, you can support your favorite scientific papers
-            or put them towards funding areas of research.
+            {
+              "With Research Coin, you can support your favorite scientific papers or put them towards funding areas of research."
+            }
+          </div>
+          <div className={css(styles.settingsInfo)}>
+            {"You can show / hide your balance in the settings page"}
           </div>
         </ReactTooltip>
       )}
@@ -43,6 +49,7 @@ const styles = StyleSheet.create({
     // background: colors.BLUE(1),
     background: "rgba(0, 0, 0, 0.7)",
     opacity: 1,
+    boxSizing: "border-box",
   },
   paragraph: {
     marginBottom: 10,
@@ -65,6 +72,19 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: 5,
     height: 20,
+  },
+  settingsInfo: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "center",
+    padding: 8,
+    marginTop: 16,
+    borderRadius: 4,
+    width: "95%",
+    background: "#fff",
+    color: colors.BLACK(),
+    fontWeight: 300,
+    fontSize: 12,
   },
 });
 

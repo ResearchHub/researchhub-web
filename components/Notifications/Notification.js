@@ -157,7 +157,6 @@ class Notification extends Component {
       }
     });
   };
-
   render() {
     return (
       <div className={css(styles.container)}>
@@ -182,34 +181,33 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bellIcon: {
-    fontSize: 20,
+    fontSize: 16,
     cursor: "pointer",
-    padding: "2px 10px",
-    color: "rgb(193, 193, 206)",
+    color: colors.GREY(),
     position: "relative",
     ":hover": {
       color: colors.BLUE(),
     },
   },
   notifCount: {
-    minWidth: 10,
-    width: 10,
-    maxWidth: 10,
-    minHeight: 10,
-    height: 10,
-    maxHeight: 10,
-    position: "absolute",
-    top: -2,
-    right: 2,
-    padding: 3,
-    float: "left",
+    alignItems: "center",
+    backgroundColor: colors.BLUE(),
     borderRadius: "50%",
-    backgroundColor: colors.RED(),
     color: "#fff",
     display: "flex",
+    float: "left",
+    fontSize: 8,
+    height: 8,
     justifyContent: "center",
-    alignItems: "center",
-    fontSize: 10,
+    maxHeight: 8,
+    maxWidth: 8,
+    minHeight: 8,
+    minWidth: 8,
+    padding: 3,
+    position: "absolute",
+    right: -8,
+    top: -4,
+    width: 8,
   },
   notificationMenu: {
     width: 430,

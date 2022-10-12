@@ -3,8 +3,6 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { deSlug } from "~/config/utils/deSlug";
 import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
-import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
-import { Helpers } from "@quantfive/js-web-config";
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "../redux/modals";
 import { NavbarContext } from "~/pages/Base";
@@ -12,23 +10,18 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, Fragment, useRef, useContext } from "react";
-import api from "~/config/api";
-import AuthorAvatar from "~/components/AuthorAvatar";
 import Collapsible from "react-collapsible";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import getFlagCountAPI from "./Flag/api/getFlagCountAPI";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
-import Link from "next/link";
 import MobileOnly from "./MobileOnly";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
-import Reputation from "./Reputation";
-import RHLogo from "~/components/Home/RHLogo";
 import Router, { useRouter } from "next/router";
 import Search from "./Search/Search";
 import UserStateBanner from "./Banner/UserStateBanner";
+import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -53,19 +46,12 @@ const WithdrawalModal = dynamic(() =>
 const ReCaptchaPrompt = dynamic(() =>
   import("~/components/Modals/ReCaptchaPrompt")
 );
-const Notification = dynamic(() =>
-  import("~/components/Notifications/Notification")
-);
 
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 
 const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
-  const [openCaseCounts, setOpenCaseCounts] = useState(0);
-  const [showReferral, setShowReferral] = useState(false);
-  const { numNavInteractions, setNumNavInteractions } =
-    useContext(NavbarContext);
   const {
     isLoggedIn,
     user,
@@ -77,46 +63,12 @@ const Navbar = (props) => {
   } = props;
   const isUserModerator = Boolean(user?.moderator);
   const isUserHubEditor = Boolean(user?.author_profile?.is_hub_editor);
-  const dropdownRef = useRef();
-  const avatarRef = useRef();
 
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
    */
-  const handleOutsideClick = (e) => {
-    if (
-      !dropdownRef.current?.contains(e.target) &&
-      !avatarRef.current?.contains(e.target)
-    ) {
-      setOpenMenu(false);
-    }
-  };
 
-  useEffect(async () => {
-    let [caseCount, flagCount] = [{}, 0];
-    if (isUserModerator) {
-      caseCount = (await getCaseCounts({})) ?? {};
-    }
-    if (isUserModerator || isUserHubEditor) {
-      flagCount = (await getFlagCountAPI()) ?? 0;
-    }
-
-    const totalCount = (caseCount["OPEN"] ?? 0) + flagCount;
-
-    setOpenCaseCounts(totalCount);
-    setNumNavInteractions(totalCount);
-  }, [numNavInteractions, user]);
-
-  useEffect(async () => {
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
-  const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
 
   const menuTabsUpper = [
@@ -186,28 +138,9 @@ const Navbar = (props) => {
     ],
   };
 
-  function toggleMenu(e) {
-    setOpenMenu(!openMenu);
-  }
-
   function toggleSideMenu() {
     setSideMenu(!sideMenu);
   }
-
-  useEffect(() => {
-    function fetchReferrals() {
-      return fetch(api.SHOW_REFERRALS(), api.GET_CONFIG())
-        .then(Helpers.checKStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          setShowReferral(res.show_referral);
-        });
-    }
-
-    if (auth.isLoggedIn) {
-      fetchReferrals();
-    }
-  }, [auth.isLoggedIn]);
 
   function navigateToRoute(route) {
     let { href, as } = route;
@@ -415,119 +348,11 @@ const Navbar = (props) => {
         <div
           className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
         >
-          <div className={css(styles.buttonLeft)}>
+          <div className={css(styles.buttonRight)}>
             {!isLoggedIn ? (
               renderLoginButtons(isLoggedIn)
             ) : (
-              <div className={css(styles.userDropdown)}>
-                <div className={css(styles.navbarButtonContainer)}>
-                  <div
-                    className={css(styles.avatarContainer)}
-                    ref={avatarRef}
-                    onClick={toggleMenu}
-                  >
-                    <AuthorAvatar
-                      author={user.author_profile}
-                      size={35}
-                      textSizeRatio={2.5}
-                      disableLink
-                      showModeratorBadge={user && user.moderator}
-                    />
-                    <span className={css(styles.caret)}>{icons.caretDown}</span>
-                  </div>
-                  <div className={css(styles.reputation)}>
-                    <Reputation showBalance={true} />
-                  </div>
-                  <div
-                    className={css(styles.notification)}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Notification
-                      wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
-                      wsAuth={true}
-                    />
-                    {(isUserModerator || isUserHubEditor) && (
-                      <div className={css(styles.modBtnContainer)}>
-                        <Link href={"/moderators/audit/flagged"}>
-                          <a className={css(styles.modBtn)}>
-                            {icons.shield}
-                            {openCaseCounts > 0 && (
-                              <div className={css(styles.notifCount)}>
-                                {openCaseCounts}
-                              </div>
-                            )}
-                          </a>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {openMenu && (
-                  <div
-                    className={css(styles.dropdown)}
-                    ref={dropdownRef}
-                    onClick={toggleMenu}
-                  >
-                    <Link
-                      href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${user.author_profile.id}/overview`}
-                    >
-                      <div className={css(styles.option)}>
-                        <span
-                          className={css(
-                            styles.profileIcon,
-                            styles.portraitIcon
-                          )}
-                        >
-                          {icons.portrait}
-                        </span>
-                        {"Profile"}
-                      </div>
-                    </Link>
-                    <Link href={`/${user.organization_slug}/notebook`}>
-                      <div className={css(styles.option)}>
-                        <span className={css(styles.profileIcon)}>
-                          {icons.bookOpen}
-                        </span>
-                        {"Notebook"}
-                      </div>
-                    </Link>
-                    <Link href={"/settings"} as={`/settings`}>
-                      <div className={css(styles.option)}>
-                        <span className={css(styles.profileIcon)}>
-                          {icons.cog}
-                        </span>
-                        {"Settings"}
-                      </div>
-                    </Link>
-                    {showReferral && (
-                      <Link
-                        href={{
-                          pathname: "/referral",
-                        }}
-                      >
-                        <div className={css(styles.option)}>
-                          <span className={css(styles.profileIcon)}>
-                            {icons.asterisk}
-                          </span>
-                          {"Referral Program"}
-                        </div>
-                      </Link>
-                    )}
-                    <div
-                      className={css(styles.option, styles.lastOption)}
-                      onClick={() => {
-                        signout({ walletLink });
-                      }}
-                    >
-                      <span className={css(styles.profileIcon)}>
-                        {icons.signOut}
-                      </span>
-                      <span>{"Logout"}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <NavbarRightButtonGroup />
             )}
           </div>
           <NewPostButton />
@@ -602,20 +427,6 @@ const burgerMenuStyle = {
 };
 
 const styles = StyleSheet.create({
-  modBtnContainer: {
-    position: "relative",
-    padding: "0px 10px",
-    marginBottom: 2,
-  },
-  modBtn: {
-    fontSize: 20,
-    display: "inline-block",
-    cursor: "pointer",
-    color: "rgb(193, 193, 206)",
-    ":hover": {
-      color: colors.NEW_BLUE(),
-    },
-  },
   navbarContainer: {
     alignItems: "center",
     background: "#fff",
@@ -647,11 +458,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  buttonLeft: {
-    marginRight: 15,
+  buttonRight: {
+    marginRight: 8,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
-      marginRight: 16,
     },
   },
   loginContainer: {
@@ -751,30 +561,6 @@ const styles = StyleSheet.create({
       marginLeft: 15,
     },
   },
-  notifications: {
-    width: 12,
-    height: 12,
-    fontSize: 12,
-    backgroundColor: colors.RED(),
-    borderRadius: "50%",
-    color: "#fff",
-    padding: 3,
-    display: "inline-block",
-    textAlign: "center",
-  },
-  caret: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#aaa",
-  },
-  userDropdown: {
-    position: "relative",
-    zIndex: 5,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-    // width: 210,
-  },
   newPostButton: {
     width: "100%",
     height: 50,
@@ -871,22 +657,6 @@ const styles = StyleSheet.create({
       height: 30,
     },
   },
-  reputation: {
-    cursor: "pointer",
-    marginLeft: 18,
-  },
-  dropdown: {
-    position: "absolute",
-    top: 45,
-    left: -25,
-    width: 225,
-    boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
-    boxSizing: "border-box",
-    background: "#fff",
-    border: "1px solid #eee",
-    borderRadius: 4,
-    zIndex: 3,
-  },
   noMargin: {
     margin: 0,
   },
@@ -916,75 +686,8 @@ const styles = StyleSheet.create({
     color: "#FFF",
     textAlign: "center",
   },
-  lastOption: {
-    borderBottom: 0,
-  },
-  profileIcon: {
-    color: "#888A8C",
-    marginRight: 16,
-  },
-  portraitIcon: {
-    fontSize: "1.2em",
-  },
-  option: {
-    width: "100%",
-    padding: 16,
-    boxSizing: "border-box",
-    borderBottom: "1px solid #eee",
-    display: "flex",
-    alignItems: "center",
-    // justifyContent: "center",
-    cursor: "pointer",
-    position: "relative",
-    letterSpacing: 0.7,
-    color: "rgba(28, 28, 28, .8)",
-    fontWeight: 500,
-    fontSize: 15,
-
-    ":hover": {
-      background: "#eee",
-    },
-  },
   optionText: {
     position: "relative",
-  },
-  navbarButtonContainer: {
-    alignItems: "center",
-    display: "flex",
-  },
-  avatarContainer: {
-    alignItems: "center",
-    cursor: "pointer",
-    display: "flex",
-  },
-  notification: {
-    marginLeft: 10,
-    marginTop: 2,
-    display: "flex",
-    alignItems: "center",
-    "@media only screen and (max-width: 900px)": {
-      marginLeft: 10,
-    },
-  },
-  notifCount: {
-    minWidth: 10,
-    width: 10,
-    maxWidth: 10,
-    minHeight: 10,
-    height: 10,
-    maxHeight: 10,
-    position: "absolute",
-    top: -2,
-    right: 2,
-    padding: 3,
-    float: "left",
-    borderRadius: "50%",
-    backgroundColor: colors.RED(),
-    color: "#fff",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 10,
   },
   menuIcon: {
     display: "none",

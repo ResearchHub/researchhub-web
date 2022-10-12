@@ -178,7 +178,7 @@ function RootLeftSidebar({
         router,
         openLoginModal,
       }),
-    [currentUser.id, router.pathname, isMinimized]
+    [currentUser?.id, router.pathname, isMinimized]
   );
 
   const leftSidebarItems = leftSidebarItemAttrs.map(

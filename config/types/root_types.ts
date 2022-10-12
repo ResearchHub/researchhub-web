@@ -98,8 +98,8 @@ export type User = {
   author_profile: {
     academic_verification: any; // TODO
     author_score: number;
-    claimed: boolean;
     claimed_by_user_author_id: any; // TODO
+    claimed: boolean;
     created_date: string;
     description: null | string;
     education: any[]; // TODO
@@ -108,6 +108,7 @@ export type User = {
     headline: null | string;
     id: number;
     is_claimed: boolean;
+    is_hub_editor?: boolean;
     last_name: string;
     linkedin: null | string;
     merged_with: any; // TODO
@@ -133,13 +134,14 @@ export type User = {
   has_seen_first_coin_modal: boolean;
   has_seen_orcid_connect_modal: boolean;
   has_seen_stripe_modal: boolean;
-  id: number;
+  id: ID;
   invited_by: any; // TODO
   is_active: boolean;
   is_suspended: boolean;
   last_login: string;
   last_name: string;
   moderator: boolean;
+  organization_slug: NullableString;
   probable_spammer: boolean;
   referral_code: any; // TODO
   reputation: number;
