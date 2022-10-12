@@ -157,7 +157,6 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
   const blurAndCloseDeviceKeyboard = () => {
     document.activeElement.blur();
     const el = get(searchInputRef, "current");
-
     if (el) {
       el.blur();
     }
