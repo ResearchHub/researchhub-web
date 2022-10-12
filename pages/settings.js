@@ -597,7 +597,7 @@ class UserSettings extends Component {
             {this.renderContentSubscriptions()}
             <div className={css(styles.checkboxEntry)}>
               <div className={css(styles.checkboxLabel)}>
-                {"Should display RSC Balance in home page"}
+                {"Display RSC Balance in home page"}
               </div>
               <Toggle
                 id={"shouldDisplayRscBalanceHome"}
