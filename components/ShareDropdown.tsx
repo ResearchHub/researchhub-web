@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
+    boxShadow: "0px 0px 10px 0px #00000026",
     top: 40,
     left: 0,
     border: `1px solid ${colors.GREY_LINE(1)}`,
