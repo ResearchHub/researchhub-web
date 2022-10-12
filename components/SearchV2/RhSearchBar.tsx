@@ -1,28 +1,25 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
-import { trackEvent } from "~/config/utils/analytics";
-import { useRouter } from "next/router";
-import { useSelector, useStore } from "react-redux";
 import {
-  useState,
-  useEffect,
-  useRef,
   Fragment,
   ReactElement,
   RefObject,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
+import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
+import { trackEvent } from "~/config/utils/analytics";
+import { NextRouter, useRouter } from "next/router";
+import { useStore } from "react-redux";
+import { isServer } from "~/config/server/isServer";
+import { NullableString } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import PropTypes from "prop-types";
-import { NullableString } from "~/config/types/root_types";
-import { isServer } from "~/config/server/isServer";
-
-const RETURN_KEY = 13;
-const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
+  handleKeyPress: (event: KeyboardEvent) => void;
   pushSearchToUrlAndTrack: () => void;
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
@@ -42,6 +39,8 @@ export default function RhSearchBar(): ReactElement {
   const expendableSearchbarRef = useRef<HTMLInputElement>(null);
   const searchbarRef = useRef<HTMLInputElement>(null);
 
+  useEffectParseUrlToSearchState({ router, setSearchString });
+
   const blurAndCloseDeviceKeyboard = (): void => {
     if (isServer()) {
       return;
@@ -56,7 +55,6 @@ export default function RhSearchBar(): ReactElement {
   const pushSearchToUrlAndTrack = (): void => {
     const isUserOnSearchPage = router.pathname.includes("/search");
     const currentSearchType = isUserOnSearchPage ? router.query.type : "all";
-
     router.push({
       pathname: "/search/[type]",
       query: {
@@ -68,7 +66,6 @@ export default function RhSearchBar(): ReactElement {
         type: currentSearchType,
       },
     });
-
     blurAndCloseDeviceKeyboard();
     trackEvent({
       eventType: "search_query_submitted",
@@ -82,6 +79,11 @@ export default function RhSearchBar(): ReactElement {
 
   const searchProps: SearchProps = {
     expendableSearchbarRef,
+    handleKeyPress: (event: KeyboardEvent): void => {
+      if (event.key === "Enter") {
+        pushSearchToUrlAndTrack();
+      }
+    },
     pushSearchToUrlAndTrack,
     searchbarRef,
     searchString,
@@ -91,27 +93,28 @@ export default function RhSearchBar(): ReactElement {
   return (
     <Fragment>
       <div
-        children={<RhSearchBarInput {...searchProps} />}
-        style={{
-          display: "block",
-          width: "100%",
-          [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-            display: "none",
-            width: 0,
-          },
-        }}
+        children={<RhSearchBarExpandableInput {...searchProps} />}
+        className={css(styles.rhSearchBarExpandableInputDisplay)}
       />
       <div
-        children={<RhSearchBarExpandableInput {...searchProps} />}
-        style={{
-          display: "none",
-          width: 0,
-          [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-            display: "block",
-          },
-        }}
+        children={<RhSearchBarInput {...searchProps} />}
+        className={css(styles.rhSearchBarInputDisplay)}
       />
     </Fragment>
+  );
+}
+
+function useEffectParseUrlToSearchState({
+  router,
+  setSearchString,
+}: {
+  router: NextRouter;
+  setSearchString: (str: NullableString) => void;
+}): void {
+  useEffect(
+    (): void =>
+      setSearchString(((router?.query ?? {})?.[QUERY_PARAM] ?? [])[0] ?? null),
+    []
   );
 }
 
@@ -122,3 +125,21 @@ function RhSearchBarInput({}: SearchProps): ReactElement {
 function RhSearchBarExpandableInput({}: SearchProps): ReactElement {
   return <></>;
 }
+
+const styles = StyleSheet.create({
+  rhSearchBarExpandableInputDisplay: {
+    display: "none",
+    width: 0,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      display: "block",
+    },
+  },
+  rhSearchBarInputDisplay: {
+    display: "block",
+    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      display: "none",
+      width: 0,
+    },
+  },
+});
