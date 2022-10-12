@@ -289,9 +289,9 @@ const styles = StyleSheet.create({
     margin: "0 6px 0 0",
     padding: 8,
     borderRadius: 8,
-    // ":hover": {
-    //   background: colors.GREY(0.1),
-    // },
+    ":hover": {
+      background: colors.GREY(0.1),
+    },
   },
   userDropdown: {
     position: "relative",
