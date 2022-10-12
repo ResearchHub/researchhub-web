@@ -104,7 +104,7 @@ const BountyAlert = ({
           onBountyAdd(bounty);
         }}
         isOriginalPoster={Boolean(isOriginalPoster)}
-        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
+        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute to Bounty"}
         withPreview={false}
         bountyText={bountyText}
         postId={post?.id}

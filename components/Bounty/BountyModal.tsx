@@ -168,7 +168,7 @@ function BountyModal({
         success ? null : (
           <span className={css(styles.modalTitle)}>
             {" "}
-            {isOriginalPoster ? "Add" : "Contribute"} Bounty{" "}
+            {isOriginalPoster ? "Add" : "Contribute to"} Bounty{" "}
           </span>
         )
       }
