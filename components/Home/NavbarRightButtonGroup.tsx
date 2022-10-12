@@ -189,10 +189,15 @@ function NavbarRightButtonGroup({
 const styles = StyleSheet.create({
   avatarContainer: {
     alignItems: "center",
+    borderRadius: "50%",
     cursor: "pointer",
     display: "flex",
+    margin: "0 8px 0 8px",
+    padding: 4,
     position: "relative",
-    margin: "0 8px 0 14px",
+    ":hover": {
+      background: colors.GREY(0.14),
+    },
   },
   avatarDropdown: {
     background: "#fff",
@@ -290,7 +295,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     ":hover": {
-      background: colors.GREY(0.1),
+      background: colors.GREY(0.14),
     },
   },
   userDropdown: {
