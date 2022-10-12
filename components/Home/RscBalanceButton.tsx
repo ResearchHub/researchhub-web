@@ -33,9 +33,10 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   return (
     <div
       className={css(styles.rscBalanceButtonContainer)}
-      data-for="reputationTooltip"
+      data-tip="" /* necessary for ReputationTooltip */
+      data-for="reputation-tool-tip"
       onClick={(event: SyntheticEvent): void => {
-        event.stopPropagation();
+        event.preventDefault();
         dispatch(ModalActions.openWithdrawalModal(true));
       }}
     >
@@ -47,7 +48,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
         alt="RSC Coin"
       />
       {shouldDisplayBalanceHome && (
-      <span className={css(styles.balanceText)}>
+        <span className={css(styles.balanceText)}>
           {getNumberWithCommas(Math.floor(balance ?? 0))}
         </span>
       )}

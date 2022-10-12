@@ -8,7 +8,7 @@ const ReputationTooltip = (props) => {
     <Fragment>
       {process.browser && (
         <ReactTooltip
-          id="reputationTooltip"
+          id="reputation-tool-tip"
           className={css(styles.tooltip)}
           place="bottom"
           effect="solid"
