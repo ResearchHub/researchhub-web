@@ -31,10 +31,6 @@ const styles = StyleSheet.create({
       paddingLeft: 0,
     },
 
-    "@media only screen and (min-width: 900px)": {
-      width: "80%",
-    },
-
     "@media only screen and (min-width: 1280px)": {
       width: 900,
     },
