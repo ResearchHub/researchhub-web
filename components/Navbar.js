@@ -5,24 +5,22 @@ import { deSlug } from "~/config/utils/deSlug";
 import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "../redux/modals";
-import { NavbarContext } from "~/pages/Base";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, Fragment, useRef, useContext } from "react";
+import { useState, Fragment, useRef } from "react";
 import Collapsible from "react-collapsible";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
 import MobileOnly from "./MobileOnly";
+import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
-import Router, { useRouter } from "next/router";
-import Search from "./Search/Search";
-import UserStateBanner from "./Banner/UserStateBanner";
-import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import RhSearchBar from "./SearchV2/RhSearchBar";
+import Router, { useRouter } from "next/router";
+import UserStateBanner from "./Banner/UserStateBanner";
 
 export const NAVBAR_HEIGHT = 68;
 
