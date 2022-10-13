@@ -240,6 +240,9 @@ const styles = StyleSheet.create({
     zIndex: 10,
     fontSize: 20,
     padding: "0 52px 0 20px",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "calc(100% - 76px)" /* adjusted leftbar width */,
+    },
   },
   rhSearchBarInputDisplay: {
     backgroundColor: "#fff",

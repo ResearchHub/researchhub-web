@@ -278,9 +278,7 @@ function RootLeftSidebar({
                       }}
                       variants={{
                         minimized: {
-                          // display: "none",
                           opacity: 0,
-                          // width: 0,
                         },
                         full: {
                           display: "visible",
