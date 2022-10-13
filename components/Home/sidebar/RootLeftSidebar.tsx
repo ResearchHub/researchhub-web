@@ -33,8 +33,8 @@ type Props = {
   rootLeftSidebarForceMin: boolean;
 };
 
-const LEFT_SIDEBAR_MAX_WIDTH = 240;
-const LEFT_SIDEBAR_MIN_WIDTH = 80;
+export const LEFT_SIDEBAR_MAX_WIDTH = 240;
+export const LEFT_SIDEBAR_MIN_WIDTH = 80;
 export const LEFT_SIDEBAR_FORCE_MIN_KEY =
   "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
 

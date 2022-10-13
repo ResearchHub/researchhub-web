@@ -338,14 +338,9 @@ const Navbar = (props) => {
             label: headerLabel,
             isHomePage: !Boolean(headerLabel),
           })}
-        </div>
-        <div className={css(styles.searchWrapper)}>
-          <RhSearchBar />
-          {/* <Search
-            overrideStyle={styles.navbarSearchOverride}
-            navbarRef={navbarRef}
-            id="navbarSearch"
-          /> */}
+          <div className={css(styles.searchWrapper)}>
+            <RhSearchBar />
+          </div>
         </div>
         <div
           className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
@@ -446,7 +441,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 4,
     backgroundColor: "#FFF",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: "20px 20px 20px 10px",
       justifyContent: "space-between",
     },
@@ -527,14 +522,22 @@ const styles = StyleSheet.create({
     fontVariant: "small-caps",
     fontSize: 20,
     letterSpacing: 0.7,
-
     "@media only screen and (max-width: 767px)": {
       color: "#fff",
     },
   },
   searchWrapper: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "flex-end",
+    maxWidth: 340,
     width: "100%",
-    maxWidth: 364,
+    position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "unset",
+      marginBottom: 4,
+      maxWidth: "unset",
+    },
   },
   tab: {
     cursor: "pointer",
@@ -633,6 +636,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: NAVBAR_HEIGHT,
+    justifyContent: "space-between",
     userSelect: "none",
     width: "100%",
   },
