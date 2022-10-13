@@ -199,17 +199,17 @@ const styles = StyleSheet.create({
     },
   },
   searchIcon: {
-    position: "absolute",
-    cursor: "pointer",
-    opacity: 0.4,
-    zIndex: 2,
-    top: 4,
-    fontSize: 14,
-    right: 6,
     borderRadius: 6,
+    cursor: "pointer",
+    fontSize: 14,
+    opacity: 0.4,
     padding: "4px 7px",
+    position: "absolute",
+    right: 6,
+    top: 4,
+    zIndex: 2,
     ":hover": {
-      background: "rgb(146 145 145 / 50%)",
+      background: colors.GREY(0.14), /* matching NavbarRightButtonGroup */
     },
   },
 });
