@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bellIcon: {
-    fontSize: 16,
+    fontSize: 18,
     cursor: "pointer",
     color: colors.GREY(),
     position: "relative",

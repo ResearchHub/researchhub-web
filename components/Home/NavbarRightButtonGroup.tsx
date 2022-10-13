@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   modBtn: {
-    fontSize: 15,
+    fontSize: 18,
     display: "inline-block",
     cursor: "pointer",
     color: colors.GREY(),
@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     height: 24,
+    fontSize: 18,
     justifyContent: "space-between",
     padding: "0 20px",
     "@media only screen and (max-width: 900px)": {

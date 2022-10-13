@@ -297,6 +297,10 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "rgb(146 145 145 / 50%)",
     },
+
+    "@media only screen and (max-width: 767px)": {
+      transform: "unset",
+    },
   },
   searchIconSmallScreen: {
     position: "static",
