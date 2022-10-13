@@ -10,7 +10,6 @@ import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
-
 function CreateBountyBtn({
   withPreview = false,
   onBountyAdd,
@@ -21,6 +20,7 @@ function CreateBountyBtn({
   isOriginalPoster,
   currentUser,
 }): ReactElement {
+
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -31,13 +31,11 @@ function CreateBountyBtn({
       totalBountyAmount += bounty.amount;
     });
 
-  const userHasBounty =
-    bounties &&
-    bounties.some((bounty) => bounty?.createdBy?.id === currentUser?.id);
-
   const userBounty =
     bounties &&
     bounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
+
+  const userHasBounty = Boolean(userBounty);
 
   const closeBounty = () => {
     alert.show({
@@ -93,8 +91,9 @@ function CreateBountyBtn({
         handleBountyAdded={(bounty) => {
           onBountyAdd(bounty);
         }}
+        hubs={post?.hubs}
         isOriginalPoster={isOriginalPoster}
-        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
+        addBtnLabel={bounties?.length > 0 ? "Contribute to Bounty" : "Add Bounty" }
         withPreview={withPreview}
         bountyText={bountyText}
         postId={post?.id}

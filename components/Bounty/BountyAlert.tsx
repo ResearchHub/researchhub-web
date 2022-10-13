@@ -8,9 +8,10 @@ import { useState } from "react";
 import BountyModal from "./BountyModal";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { useRouter } from "next/router";
-import icons from "~/config/themes/icons";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import { breakpoints } from "~/config/themes/screen";
+import ShareDropdown from "../ShareDropdown";
+import buildTwitterUrl from "./utils/buildTwitterUrl";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -33,7 +34,7 @@ const BountyAlert = ({
   bountyText,
   post,
   currentUser,
-  onBountyRemove
+  onBountyRemove,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,33 +79,21 @@ const BountyAlert = ({
   const showContributeBounty =
     !isOriginalPoster && !userBounty && bountyType === "question";
 
-  const _buildTwitterUrl = ({ bountyText, amount }) => {
 
-    let baseTwitterUrl = "https://twitter.com/intent/tweet?utm_campaign=twitter_bounty"
-    if (!(bountyText && amount))  {
-      return baseTwitterUrl;
+  const _handleShareClick = (selectedOpt: any) => {
+    if (selectedOpt.value === "twitter") {
+      const twitterUrl = buildTwitterUrl({
+        isBountyCreator: Boolean(userBounty),
+        bountyText: bountyType === "question" ? post.title : bountyText,
+        bountyAmount: amount,
+        hubs: post?.hubs,
+      });
+      return window.open(twitterUrl, "_blank");
+    } else if (selectedOpt.value === "linkedin") {
+      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`;
+      return window.open(url, "_blank");
     }
-
-    const twitterPreText = `Open bounty on Research Hub for ${amount} RSC:`;
-
-    const link = process.browser
-      ? window.location.protocol + "//" + process.env.HOST + router.asPath
-      : "";
-
-    const twitterBountyPreview = `\n\n"${bountyText.slice(
-      0,
-      249 - twitterPreText.length - link.length
-    )}"\n\n${link}?utm_campaign=twitter_bounty`;
-
-    return `${baseTwitterUrl}&text=${encodeURI(
-      twitterPreText + twitterBountyPreview
-    )}`;
   };
-
-  const twitterUrl = _buildTwitterUrl({
-    bountyText,
-    amount,
-  });
 
   return (
     <div className={css(styles.bountyAlert)}>
@@ -114,8 +103,8 @@ const BountyAlert = ({
         handleBountyAdded={(bounty) => {
           onBountyAdd(bounty);
         }}
-        isOriginalPoster={isOriginalPoster}
-        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute Bounty"}
+        isOriginalPoster={Boolean(isOriginalPoster)}
+        addBtnLabel={isOriginalPoster ? "Add Bounty" : "Contribute to Bounty"}
         withPreview={false}
         bountyText={bountyText}
         postId={post?.id}
@@ -128,7 +117,9 @@ const BountyAlert = ({
             overrideStyle={styles.facePileOverride}
             margin={-10}
             horizontal={true}
-            authorProfiles={allBounties.map((b) => b.createdBy?.authorProfile || b.created_by?.author_profile)}
+            authorProfiles={allBounties.map(
+              (b) => b.createdBy?.authorProfile || b.created_by?.author_profile
+            )}
           />
         </div>
         <div>
@@ -201,22 +192,21 @@ const BountyAlert = ({
         </div>
       </div>
       <div className={css(styles.actions)}>
-        <a
-          href={twitterUrl}
-          data-size="large"
-          target="_blank"
-          className={css(styles.share)}
-        >
-          {icons.twitter}
-        </a>
+        <div className={css(styles.share)}>
+          <ShareDropdown handleClick={_handleShareClick} />
+        </div>
         {userBounty ? (
           <div
             className={css(styles.action, styles.closeBounty)}
             onClick={() => {
-              Bounty.closeBountyAPI({ bounty: userBounty }).then((bounties) => {
-                onBountyRemove && onBountyRemove(userBounty.id)
-              });
-            }}            
+              if (window.confirm("Close bounty?")) {
+                Bounty.closeBountyAPI({ bounty: userBounty }).then(
+                  (bounties) => {
+                    onBountyRemove && onBountyRemove(userBounty.id);
+                  }
+                );
+              }
+            }}
           >
             Close your bounty
           </div>
@@ -230,7 +220,19 @@ const BountyAlert = ({
                 Contribute
               </div>
             )}
-            <div className={css(styles.action)}>Answer</div>
+            <div
+              className={css(styles.action)}
+              onClick={() => {
+                const scrollToEl = document.querySelector("#comments");
+                window.scrollTo({
+                  // @ts-ignore
+                  top: scrollToEl.offsetTop,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              Answer
+            </div>
           </>
         )}
       </div>
@@ -270,11 +272,14 @@ const styles = StyleSheet.create({
     },
   },
   contribute: {
+    alignItems: "center",
+    display: "flex",
     color: colors.NEW_BLUE(),
+    border: `1px solid ${colors.NEW_BLUE()}`,
     fontWeight: 500,
-    border: "unset",
     background: "unset",
-    paddingLeft: 0,
+    marginRight: 10,
+    // paddingLeft: 0,
   },
   share: {
     color: colors.NEW_BLUE(),
@@ -288,6 +293,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.NEW_BLUE()}`,
   },
   bountyAlert: {
+    userSelect: "none",
     background: "rgba(242, 251, 243, 0.3)",
     borderRadius: "4px",
     padding: "15px 25px",

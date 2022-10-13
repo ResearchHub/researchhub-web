@@ -19,12 +19,11 @@ import icons, { WarningIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-
-
+import { Hub } from "~/config/types/hub";
 
 type Props = {
-  isOpen: Boolean;
-  withPreview: Boolean;
+  isOpen: boolean;
+  withPreview: boolean;
   closeModal: Function;
   handleBountyAdded: Function;
   addBtnLabel?: string;
@@ -35,6 +34,7 @@ type Props = {
   showMessage: Function;
   setMessage: Function;
   isOriginalPoster: boolean;
+  hubs?: Hub[];
 };
 
 function BountyModal({
@@ -49,6 +49,7 @@ function BountyModal({
   showMessage,
   setMessage,
   isOriginalPoster,
+  hubs = [],
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
@@ -56,7 +57,7 @@ function BountyModal({
   });
   const currentUser = getCurrentUser();
   const currentUserBalance = currentUser?.balance ?? 0;
-  const [offeredAmount, setOfferedAmount] = useState<Number>(
+  const [offeredAmount, setOfferedAmount] = useState<number>(
     parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
   );
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
@@ -167,7 +168,7 @@ function BountyModal({
         success ? null : (
           <span className={css(styles.modalTitle)}>
             {" "}
-            {isOriginalPoster ? "Add" : "Contribute"} Bounty{" "}
+            {isOriginalPoster ? "Add" : "Contribute to"} Bounty{" "}
           </span>
         )
       }
@@ -178,6 +179,7 @@ function BountyModal({
             bountyText={bountyText}
             postSlug={postSlug}
             postId={postId}
+            hubs={hubs}
             bountyAmount={offeredAmount}
           />
         ) : (

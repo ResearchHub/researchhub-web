@@ -4,12 +4,15 @@ import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
 import icons from "~/config/themes/icons";
 import Image from "next/image";
+import buildTwitterUrl from "./utils/buildTwitterUrl";
+import { Hub } from "~/config/types/hub";
 
 type Props = {
-  bountyAmount: Number;
+  bountyAmount: number;
   bountyText: string;
   postId: ID;
   postSlug: string;
+  hubs?: Hub[];
 };
 
 function SuccessScreen({
@@ -17,8 +20,8 @@ function SuccessScreen({
   bountyText,
   postId,
   postSlug,
+  hubs,
 }: Props): ReactElement {
-  const twitterPreText = `I created a ${bountyAmount} RSC bounty on ResearchHub for solutions to:`;
   const [copySuccess, setCopySuccess] = useState(false);
 
   const link = process.browser
@@ -28,10 +31,12 @@ function SuccessScreen({
       `/post/${postId}/${postSlug}`
     : "";
 
-  const twitterBountyPreview = `\n\n"${bountyText.slice(
-    0,
-    249 - twitterPreText.length - link.length
-  )}"\n\n${link}?utm_campaign=twitter_bounty`;
+  const twitterUrl = buildTwitterUrl({
+    isBountyCreator: true,
+    bountyText,
+    bountyAmount,
+    hubs,
+  });
 
   function copyToClipboard() {
     navigator.clipboard.writeText(link);
@@ -52,9 +57,7 @@ function SuccessScreen({
       </p>
       <div className={css(styles.shareRow)}>
         <a
-          href={`https://twitter.com/intent/tweet?utm_campaign=twitter_bounty&text=${encodeURI(
-            twitterPreText + twitterBountyPreview
-          )}`}
+          href={twitterUrl}
           data-size="large"
           target="_blank"
           className={css(styles.link)}
