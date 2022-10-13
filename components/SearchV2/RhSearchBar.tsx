@@ -130,7 +130,7 @@ function RhSearchBarInput({
   setSearchString,
 }: SearchProps): ReactElement {
   return (
-    <Fragment>
+    <div style={{ position: "relative" }}>
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
@@ -148,11 +148,17 @@ function RhSearchBarInput({
       >
         {icons.search}
       </span>
-    </Fragment>
+    </div>
   );
 }
 
-function RhSearchBarExpandableInput({}: SearchProps): ReactElement {
+function RhSearchBarExpandableInput({
+  handleKeyPress,
+  expendableSearchbarRef,
+  pushSearchToUrlAndTrack,
+  searchString,
+  setSearchString,
+}: SearchProps): ReactElement {
   return <></>;
 }
 
@@ -184,7 +190,6 @@ const styles = StyleSheet.create({
     maxHeight: 32,
     outline: "none",
     padding: 10,
-    position: "relative",
     width: "100%",
     ":focus": {
       border: `1px solid ${colors.BLUE()}`,
@@ -198,9 +203,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     opacity: 0.4,
     zIndex: 2,
-    top: "50%",
-    fontSize: 18,
-    transform: "translateY(-50%)",
+    top: 4,
+    fontSize: 14,
     right: 6,
     borderRadius: 6,
     padding: "4px 7px",
