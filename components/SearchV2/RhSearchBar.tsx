@@ -11,15 +11,15 @@ import {
   useRef,
   useState,
 } from "react";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { isServer } from "~/config/server/isServer";
+import { NextRouter, useRouter } from "next/router";
+import { NullableString } from "~/config/types/root_types";
 import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
-import { NextRouter, useRouter } from "next/router";
 import { useStore } from "react-redux";
-import { isServer } from "~/config/server/isServer";
-import { NullableString } from "~/config/types/root_types";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { isEmpty } from "~/config/utils/nullchecks";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
