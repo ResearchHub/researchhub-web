@@ -22,6 +22,7 @@ import Router, { useRouter } from "next/router";
 import Search from "./Search/Search";
 import UserStateBanner from "./Banner/UserStateBanner";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
+import RhSearchBar from "./SearchV2/RhSearchBar";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -339,11 +340,12 @@ const Navbar = (props) => {
           })}
         </div>
         <div className={css(styles.searchWrapper)}>
-          <Search
+          <RhSearchBar />
+          {/* <Search
             overrideStyle={styles.navbarSearchOverride}
             navbarRef={navbarRef}
             id="navbarSearch"
-          />
+          /> */}
         </div>
         <div
           className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
@@ -632,7 +634,6 @@ const styles = StyleSheet.create({
     display: "flex",
     height: NAVBAR_HEIGHT,
     userSelect: "none",
-    paddingTop: 8,
     width: "100%",
   },
   logo: {

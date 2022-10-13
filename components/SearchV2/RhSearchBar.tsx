@@ -1,9 +1,13 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import {
+  ChangeEvent,
+  ChangeEventHandler,
   Fragment,
+  KeyboardEventHandler,
   ReactElement,
   RefObject,
+  SyntheticEvent,
   useEffect,
   useRef,
   useState,
@@ -19,7 +23,7 @@ import icons from "~/config/themes/icons";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
-  handleKeyPress: (event: KeyboardEvent) => void;
+  handleKeyPress: KeyboardEventHandler<HTMLInputElement>;
   pushSearchToUrlAndTrack: () => void;
   searchbarRef?: RefObject<HTMLInputElement>;
   searchString: NullableString;
@@ -45,7 +49,7 @@ export default function RhSearchBar(): ReactElement {
     if (isServer()) {
       return;
     } else {
-      // @ts-ignore incomplete ts definition. activeElement exits
+      // @ts-ignore incomplete TS definition. activeElement exits
       document?.activeElement?.blur();
       searchbarRef?.current?.blur();
       expendableSearchbarRef?.current?.blur();
@@ -79,7 +83,7 @@ export default function RhSearchBar(): ReactElement {
 
   const searchProps: SearchProps = {
     expendableSearchbarRef,
-    handleKeyPress: (event: KeyboardEvent): void => {
+    handleKeyPress: (event): void => {
       if (event.key === "Enter") {
         pushSearchToUrlAndTrack();
       }
@@ -118,8 +122,34 @@ function useEffectParseUrlToSearchState({
   );
 }
 
-function RhSearchBarInput({}: SearchProps): ReactElement {
-  return <></>;
+function RhSearchBarInput({
+  handleKeyPress,
+  pushSearchToUrlAndTrack,
+  searchbarRef,
+  searchString,
+  setSearchString,
+}: SearchProps): ReactElement {
+  return (
+    <Fragment>
+      <input
+        className={css(styles.rhSearchBarInput)}
+        placeholder="Search"
+        onKeyDown={handleKeyPress}
+        onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+          setSearchString(event?.target?.value ?? null)
+        }
+        value={searchString ?? ""}
+        ref={searchbarRef}
+        type="text"
+      />
+      <span
+        className={css(styles.searchIcon)}
+        onClick={pushSearchToUrlAndTrack}
+      >
+        {icons.search}
+      </span>
+    </Fragment>
+  );
 }
 
 function RhSearchBarExpandableInput({}: SearchProps): ReactElement {
@@ -140,6 +170,42 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
       width: 0,
+    },
+  },
+  rhSearchBarInput: {
+    alignItems: "center",
+    background: "white",
+    border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+    borderRadius: 4,
+    boxSizing: "border-box",
+    display: "flex",
+    fontSize: 14,
+    height: "100%",
+    maxHeight: 32,
+    outline: "none",
+    padding: 10,
+    position: "relative",
+    width: "100%",
+    ":focus": {
+      border: `1px solid ${colors.BLUE()}`,
+    },
+    "::placeholder": {
+      opacity: 0.6,
+    },
+  },
+  searchIcon: {
+    position: "absolute",
+    cursor: "pointer",
+    opacity: 0.4,
+    zIndex: 2,
+    top: "50%",
+    fontSize: 18,
+    transform: "translateY(-50%)",
+    right: 6,
+    borderRadius: 6,
+    padding: "4px 7px",
+    ":hover": {
+      background: "rgb(146 145 145 / 50%)",
     },
   },
 });
