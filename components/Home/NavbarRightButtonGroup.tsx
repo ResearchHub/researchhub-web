@@ -215,8 +215,7 @@ const styles = StyleSheet.create({
     borderBottom: 0,
   },
   modBtnContainer: {
-    marginBottom: 6,
-    marginLeft: 24,
+    marginLeft: 16,
     position: "relative",
   },
   modBtn: {
