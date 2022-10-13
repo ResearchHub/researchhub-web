@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   rhSearchBarInput: {
     alignItems: "center",
     background: "white",
-    border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+    border: `1px solid ${colors.GREY_BORDER}`,
     borderRadius: 4,
     boxSizing: "border-box",
     display: "flex",
