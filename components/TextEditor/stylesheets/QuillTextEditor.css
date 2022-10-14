@@ -2,7 +2,19 @@
   border: none !important;
 }
 .ql-editor.ql-blank::before {
-  content: none;
+  left: 0 !important;
+}
+
+.ql-snow .ql-editor blockquote {
+  padding-left: 10px !important;
+}
+
+.ql-editor.peer-review.ql-blank::before {
+  top: 25px !important;
+}
+
+.ql-editor.ql-blank::before {
+  left: 0 !important;
 }
 
 .ql-editor.ql-blank::after {
@@ -16,9 +28,9 @@
 
 .ql-editor {
   /* cursor: text; */
-  padding: 0;
-  font-family: "Roboto";
-  font-size: 16px;
+  padding: 0 !important;
+  font-family: "Roboto" !important;
+  font-size: 16px !important;
 }
 
 .toolbar {
@@ -235,11 +247,11 @@
 }
 
 .ql-snow .ql-stroke {
-  stroke: rgb(124, 121, 137);
+  stroke: rgb(124, 121, 137) !important;
 }
 .ql-snow .ql-fill,
 .ql-snow .ql-stroke.ql-fill {
-  fill: rgb(124, 121, 137);
+  fill: rgb(124, 121, 137) !important;
 }
 
 .ql-snow .ql-editor a {
