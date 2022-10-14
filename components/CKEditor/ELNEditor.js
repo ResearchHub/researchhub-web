@@ -132,6 +132,7 @@ const ELNEditor = ({
   const getEditorContent = () => {
     return {
       full_src: editorInstance.getData(),
+      editorInstance,
       title: parsedNoteTitle,
     };
   };

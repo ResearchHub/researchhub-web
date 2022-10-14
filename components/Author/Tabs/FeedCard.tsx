@@ -200,7 +200,7 @@ function FeedCard({
 
   const cardTitle = getTitle();
   const cardBody = getBody();
-  const createdDate = formatDateStandard(created_date || uploaded_date);
+  const createdDate = created_date || uploaded_date;
   const createdBy = parseCreatedBy(uploaded_by || created_by);
 
   let bountyAmount = 0;

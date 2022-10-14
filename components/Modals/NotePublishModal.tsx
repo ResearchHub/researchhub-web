@@ -213,6 +213,10 @@ function NotePublishModal({
   const sendPost = () => {
     const editorContent = getEditorContent();
     const publishedType = getPublishedType(currentNote);
+    const noTitle = editorContent.editorInstance.getData().split("</h1>")[1];
+
+    const tempHtml = document.createElement("div");
+    tempHtml.innerHTML = noTitle;
 
     let params;
     if (publishedType === "UNPUBLISHED") {
@@ -224,7 +228,7 @@ function NotePublishModal({
         hubs: mutableFormFields.hubs.map((hub) => hub.value),
         note_id: currentNote.id,
         preview_img: null,
-        renderable_text: "",
+        renderable_text: tempHtml.textContent,
         title: editorContent.title,
       };
     } else {
@@ -236,7 +240,7 @@ function NotePublishModal({
         hubs: mutableFormFields.hubs.map((hub) => hub.value),
         post_id: currentNote.post.id,
         preview_img: null,
-        renderable_text: "",
+        renderable_text: tempHtml.textContent,
         title: editorContent.title,
       };
     }
