@@ -288,10 +288,10 @@ const styles = StyleSheet.create({
     },
   },
   searchIconLarge: {
-    fontSize: 16,
+    fontSize: 17,
     position: "static",
-    top: "unset",
     right: "unset",
+    top: "unset",
     ":hover": {
       color: colors.BLUE(),
     },
