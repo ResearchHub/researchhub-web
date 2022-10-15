@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     boxSizing: "border-box",
     display: "flex",
-    fontSize: 14,
+    fontSize: 16,
     height: "100%",
     maxHeight: 32,
     outline: "none",
@@ -276,12 +276,12 @@ const styles = StyleSheet.create({
   searchIcon: {
     borderRadius: 6,
     cursor: "pointer",
-    fontSize: 12,
+    fontSize: 14,
     opacity: 0.4,
     padding: "4px 7px",
     position: "absolute",
     right: 6,
-    top: 6,
+    top: 4,
     zIndex: 2,
     ":hover": {
       background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,

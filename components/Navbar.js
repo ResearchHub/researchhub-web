@@ -536,6 +536,12 @@ const styles = StyleSheet.create({
       marginBottom: 4,
       maxWidth: "unset",
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "unset",
+      marginBottom: 4,
+      marginRight: 16,
+      maxWidth: "unset",
+    },
   },
   tab: {
     cursor: "pointer",

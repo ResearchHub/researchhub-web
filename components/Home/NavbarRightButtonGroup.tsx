@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
   modBtnContainer: {
     marginLeft: 16,
     position: "relative",
+    fontSize: 18,
   },
   modBtn: {
     fontSize: 18,
@@ -230,6 +231,7 @@ const styles = StyleSheet.create({
   navbarButtonContainer: {
     alignItems: "center",
     display: "flex",
+    fontSize: 18,
   },
   notifCount: {
     alignItems: "center",
