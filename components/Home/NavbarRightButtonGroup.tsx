@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   rscBalanceButton: {
     cursor: "pointer",
-    margin: "0 6px 0 0",
+    margin: "-1px 6px 0 0",
     padding: 8,
     borderRadius: 8,
     ":hover": {

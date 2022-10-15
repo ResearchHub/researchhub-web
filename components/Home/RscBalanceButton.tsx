@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  balanceText: { fontSize: 16, fontWeight: 400, marginLeft: 6 },
+  balanceText: { fontSize: 14, fontWeight: 400, marginLeft: 6 },
   blur: {
     filter: "blur(2px)",
   },
