@@ -5,23 +5,22 @@ import { deSlug } from "~/config/utils/deSlug";
 import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "../redux/modals";
-import { NavbarContext } from "~/pages/Base";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, Fragment, useRef, useContext } from "react";
+import { useState, Fragment, useRef } from "react";
 import Collapsible from "react-collapsible";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
 import MobileOnly from "./MobileOnly";
+import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
+import RhSearchBar from "./SearchV2/RhSearchBar";
 import Router, { useRouter } from "next/router";
-import Search from "./Search/Search";
 import UserStateBanner from "./Banner/UserStateBanner";
-import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -337,13 +336,9 @@ const Navbar = (props) => {
             label: headerLabel,
             isHomePage: !Boolean(headerLabel),
           })}
-        </div>
-        <div className={css(styles.searchWrapper)}>
-          <Search
-            overrideStyle={styles.navbarSearchOverride}
-            navbarRef={navbarRef}
-            id="navbarSearch"
-          />
+          <div className={css(styles.searchWrapper)}>
+            <RhSearchBar />
+          </div>
         </div>
         <div
           className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
@@ -444,7 +439,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 4,
     backgroundColor: "#FFF",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: "20px 20px 20px 10px",
       justifyContent: "space-between",
     },
@@ -525,14 +520,28 @@ const styles = StyleSheet.create({
     fontVariant: "small-caps",
     fontSize: 20,
     letterSpacing: 0.7,
-
     "@media only screen and (max-width: 767px)": {
       color: "#fff",
     },
   },
   searchWrapper: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "flex-end",
+    maxWidth: 340,
     width: "100%",
-    maxWidth: 364,
+    position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "unset",
+      marginBottom: 4,
+      maxWidth: "unset",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "unset",
+      marginBottom: 4,
+      marginRight: 16,
+      maxWidth: "unset",
+    },
   },
   tab: {
     cursor: "pointer",
@@ -631,8 +640,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: NAVBAR_HEIGHT,
+    justifyContent: "space-between",
     userSelect: "none",
-    paddingTop: 8,
     width: "100%",
   },
   logo: {

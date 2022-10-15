@@ -63,13 +63,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  balanceText: { fontSize: 16, fontWeight: 400, marginLeft: 6 },
+  balanceText: { fontSize: 14, fontWeight: 400, marginLeft: 6 },
   blur: {
     filter: "blur(2px)",
   },
   coinIcon: {
-    height: 17,
-    width: 17,
+    height: 18,
+    width: 18,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
