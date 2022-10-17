@@ -143,7 +143,7 @@ class BaseModal extends Component {
               className={css(styles.backgroundImage)}
               src={"/static/background/background-modal.png"}
               draggable={false}
-              alt="Researchhub Modal Background"
+              alt="ResearchHub Modal Background"
             />
           )}
           {!this.props.removeDefault && (

@@ -308,7 +308,7 @@ class Index extends Component {
   render() {
     return (
       <div className={css(styles.page)}>
-        <Head title={"About Researchhub"} description={"What is Researchhub"} />
+        <Head title={"About ResearchHub"} description={"What is ResearchHub"} />
         <div className={css(styles.banner, this.state.reveal && styles.reveal)}>
           <img
             draggable={false}

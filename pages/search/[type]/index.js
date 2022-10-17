@@ -30,18 +30,18 @@ const Index = ({ apiResponse, hasError }) => {
 
   const buildPageTitle = () => {
     if (get(router, "query.type") === "all") {
-      return `${get(router, `query[${QUERY_PARAM}]`)} - Research Hub`;
+      return `${get(router, `query[${QUERY_PARAM}]`)} - ResearchHub`;
     } else {
       return `(${apiResponse.count}) ${get(
         router,
         `query[${QUERY_PARAM}]`
-      )} - Research Hub`;
+      )} - ResearchHub`;
     }
   };
 
   return (
     <Fragment>
-      <Head title={buildPageTitle()} description={"Search Researchhub"} />
+      <Head title={buildPageTitle()} description={"Search ResearchHub"} />
       <SearchResults apiResponse={apiResponse} />
     </Fragment>
   );

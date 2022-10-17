@@ -730,8 +730,8 @@ class Index extends Component {
       <Fragment>
         {!isEditorTab ? (
           <Head
-            title={"Leaderboard on Researchhub"}
-            description={"View the top categories on Researchhub"}
+            title={"Leaderboard on ResearchHub"}
+            description={"View the top categories on ResearchHub"}
           />
         ) : null}
         <ContentPage

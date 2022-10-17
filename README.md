@@ -31,10 +31,10 @@ We believe that by empowering scientists to independently fund, create, and publ
 
 1. Run `cp .env.development.example .env.development`
 1. `nvm install 14.15.5` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
-2. `nvm use 14.15.5`
-4. `yarn install` (installing [yarn](https://classic.yarnpkg.com/lang/en/docs/install/))
-5. `yarn run dev`
-6. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
+1. `nvm use 14.15.5`
+1. `yarn install` (installing [yarn](https://classic.yarnpkg.com/lang/en/docs/install/))
+1. `yarn run dev`
+1. You will also need to [install the backend app](https://github.com/ResearchHub/researchhub-backend) for the project to run
 
 ## Contributing to the codebase
 
@@ -52,5 +52,4 @@ git checkout -b MY_BRANCH_NAME
 - Bounties are regularly listed in the <a href="issues">issues</a> section.
 - Issues with a bounty associated will have the bounty badge
 - Bounties will be paid in the form of ResearchCoin (RSC)
-- Bounty will need to be explicitly approved by a member of the Research Hub team
-
+- Bounty will need to be explicitly approved by a member of the ResearchHub team

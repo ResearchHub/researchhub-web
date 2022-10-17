@@ -29,7 +29,7 @@ export default function HomeRightSidebar(): ReactElement {
       body: (
         <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
           {
-            "A tool for the open publication and discussion of scientific research. Researchhub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
+            "A tool for the open publication and discussion of scientific research. ResearchHub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
           }
         </div>
       ),
@@ -48,7 +48,7 @@ export default function HomeRightSidebar(): ReactElement {
       body: (
         <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
           {
-            "ResearchCoin (RSC) is a token that empowers the scientific community of Research Hub. Once earned, RSC gives users the ability to create bounties, tip other users, and gain voting rights within community decision making."
+            "ResearchCoin (RSC) is a token that empowers the scientific community of ResearchHub. Once earned, RSC gives users the ability to create bounties, tip other users, and gain voting rights within community decision making."
           }
         </div>
       ),
@@ -82,8 +82,7 @@ export default function HomeRightSidebar(): ReactElement {
     },
   ];
 
-  const [shouldLimitNumCards, setShouldLimitNumCards] =
-    useState<boolean>(true);
+  const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>

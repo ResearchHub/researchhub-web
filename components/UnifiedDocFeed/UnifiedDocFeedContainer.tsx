@@ -180,7 +180,7 @@ function UnifiedDocFeedContainer({
       ) : (
         <div className={css(styles.feedPosts)}>
           {onMyHubsLoggedOut && (
-            <ResearchHubBanner hub={{ name: "Research Hub" }} />
+            <ResearchHubBanner hub={{ name: "ResearchHub" }} />
           )}
           <FeedBlurWithButton />
           {cards.length > 0 ? cards : <EmptyFeedScreen />}

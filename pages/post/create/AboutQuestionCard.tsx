@@ -18,9 +18,7 @@ export default function AboutQuestionCard({
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
         />
-        <div className={css(styles.aboutTitleText)}>
-          Posting to Research Hub
-        </div>
+        <div className={css(styles.aboutTitleText)}>Posting to ResearchHub</div>
       </div>
       <Collapsible
         className={css(styles.collapsibleSection)}

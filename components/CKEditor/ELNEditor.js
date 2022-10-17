@@ -108,12 +108,12 @@ const ELNEditor = ({
     if (process.browser) {
       document.title =
         isEmpty(parsedNoteTitle) || parsedNoteTitle === "Untitled"
-          ? "Researchhub | Notebook"
+          ? "ResearchHub | Notebook"
           : parsedNoteTitle;
     }
 
     return () => {
-      document.title = "Researchhub";
+      document.title = "ResearchHub";
     };
   }, [parsedNoteTitle]);
 

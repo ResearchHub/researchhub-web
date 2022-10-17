@@ -198,8 +198,8 @@ class Index extends Component {
           <EditHubModal editHub={this.editHub} categories={categories} />
           <Message />
           <Head
-            title={"Hubs on Researchhub"}
-            description={"View all of the communities on Researchhub"}
+            title={"Hubs on ResearchHub"}
+            description={"View all of the communities on ResearchHub"}
           />
           <div className={css(styles.titleContainer)}>
             <span className={css(styles.title)}>Hubs</span>
