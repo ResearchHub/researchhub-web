@@ -24,7 +24,6 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     useState(["homepage"]);
   const [makeFeaturedChoices, setMakeFeaturedChoices] = useState(["homepage"]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isExcludeSubmenuOpen, setIsExcludeSubmenuOpen] = useState(false);
   const [isFeaturedSubmenuOpen, setIsFeaturedSubmenuOpen] = useState(false);
 
   const _includeInFeed = () => {
@@ -173,54 +172,12 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
           <div className={css(styles.opt)}>
             <span className={css(styles.iconWrapper)}>{opt.icon}</span>
             <span className={css(styles.optLabel)}>{opt.label}</span>
-            <span
-              className={css(styles.settingsBtn)}
-              onClick={(event) => {
-                event.stopPropagation();
-                setIsExcludeSubmenuOpen(!isExcludeSubmenuOpen);
-              }}
-            >
-              {icons.cog}
-            </span>
           </div>
           <div
             className={css(
               styles.menuSettings,
-              isExcludeSubmenuOpen && styles.excludeMenuSettingsVisible
             )}
           >
-            <div className={css(styles.checkboxContainer)}>
-              <CheckBox
-                key={`${opt.value}-homepage`}
-                label="Exclude from homepage"
-                isSquare
-                // @ts-ignore
-                id={"homepage"}
-                active={excludeFromFeedSelectedChoices.includes("homepage")}
-                onChange={handleExcludeFromFeedCheckbox}
-                labelStyle={styles.checkboxLabel}
-                // @ts-ignore
-                checkboxStyleOverride={styles.checkbox}
-                // @ts-ignore
-                checkStyleOverride={styles.checkIcon}
-              />
-            </div>
-            <div className={css(styles.checkboxContainer)}>
-              <CheckBox
-                key={`${opt.value}-hubs`}
-                label="Exclude from hubs"
-                isSquare
-                // @ts-ignore
-                id={"hubs"}
-                active={excludeFromFeedSelectedChoices.includes("hubs")}
-                onChange={handleExcludeFromFeedCheckbox}
-                labelStyle={styles.checkboxLabel}
-                // @ts-ignore
-                checkboxStyleOverride={styles.checkbox}
-                // @ts-ignore
-                checkStyleOverride={styles.checkIcon}
-              />
-            </div>
           </div>
         </div>
       );
@@ -317,7 +274,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       overrideTargetButton={styles.overrideTargetButton}
       withDownIcon={false}
       onClose={() => {
-        if (isExcludeSubmenuOpen || isFeaturedSubmenuOpen) {
+        if (isFeaturedSubmenuOpen) {
           return setIsOpen(true);
         }
         return setIsOpen(false);

@@ -765,8 +765,11 @@ const routes = (BASE_URL) => {
     }) => {
       const backendFilters = convertToBackendFilters({
         frontendFilters: selectedFilters,
+        hubId,
       });
 
+      const HOME_HUB = 0;
+      const isHomeHub = !hubId || hubId === HOME_HUB;
       const hasTags = (backendFilters.tags ?? []).length > 0;
 
       const url =
@@ -784,6 +787,7 @@ const routes = (BASE_URL) => {
           ...(backendFilters.topLevel === "/my-hubs" && {
             subscribed_hubs: true,
           }),
+          ...(isHomeHub && { ignore_excluded: true }),
         },
       };
 

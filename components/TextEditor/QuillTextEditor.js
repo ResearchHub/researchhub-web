@@ -423,6 +423,7 @@ class Editor extends Component {
       currentType.value !== selectedType.value;
 
     if (isPeerReview) {
+      this.quillRef.root.classList.add("peer-review");
       const trimmedContents = trimQuillEditorContents({
         contents: this.quillRef.getContents(),
       });
@@ -439,6 +440,7 @@ class Editor extends Component {
         });
       }
     } else {
+      this.quillRef.root.classList.remove("peer-review");
       const editorWithoutPeerReviewBlocks = this.quillRef
         .getContents([])
         .ops.filter((op) => !op.insert["peer-review-rating"]);
@@ -656,9 +658,6 @@ class Editor extends Component {
                 <ReviewCategorySelector
                   handleSelect={(category) => {
                     this.insertReviewCategory({ category });
-                    this.forcePlaceholderToShow({
-                      placeholderText: category.description,
-                    });
                   }}
                 />
               </div>
@@ -794,7 +793,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
     border: `1px solid ${colors.GREY_LINE()}`,
-    padding: "20px 20px 10px 20px",
+    padding: "15px",
     borderRadius: "4px",
     background: "white",
     boxSizing: "border-box",
