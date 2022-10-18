@@ -19,6 +19,33 @@ export default function HomeRightSidebar(): ReactElement {
     {
       title: (
         <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
+          <span style={{ fontSize: "24px", marginRight: 15, }}>{icons.books}</span>
+          {" Join us for a journal club on October 19 at 2pm PT"}
+        </div>
+      ),
+      body: (
+        <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+          Join the ResearchHub community on for a journal club hosted by Dr. Oliver Brown discussing the paper behind the post 
+          <ALink
+            target="__blank"
+            theme="solidPrimary"
+            href="https://www.researchhub.com/paper/1273284/the-impact-of-coffee-subtypes-on-incident-cardiovascular-disease-arrhythmias-and-mortality-long-term-outcomes-from-the-uk-biobank)"
+          >
+            &nbsp;2–3 cups of coffee per day is associated with significant reductions in incident CVD and mortality
+          </ALink>
+          <br/>
+          
+          <ALink
+            target="__blank"
+            theme="solidPrimary"
+            href="https://ama.researchhub.com/coffee"
+          ><span style={{ textDecoration: "underline" }}>More info</span></ALink>
+        </div>
+      ),
+    },    
+    {
+      title: (
+        <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
           <img
             src="/static/beaker.svg"
             style={{ marginRight: 6, marginTop: -3, height: 20 }}
