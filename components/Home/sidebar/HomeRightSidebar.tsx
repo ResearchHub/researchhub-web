@@ -25,7 +25,7 @@ export default function HomeRightSidebar(): ReactElement {
       ),
       body: (
         <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-          Join the ResearchHub community on for a journal club hosted by Dr. Oliver Brown discussing the paper behind the post 
+          Join the ResearchHub community for a journal club hosted by Dr. Oliver Brown discussing the paper behind the post 
           <ALink
             target="__blank"
             theme="solidPrimary"
