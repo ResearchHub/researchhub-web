@@ -182,7 +182,7 @@ function RhSearchBarExpandableInput({
     <Fragment>
       {!isExpanded && (
         <span
-          className={css(styles.searchIcon, styles.searchIconLarge)}
+          className={css(styles.searchIcon, styles.searchIconSmallScreen)}
           onClick={(): void => setIsExpanded(true)}
         >
           {icons.search}
@@ -203,7 +203,7 @@ function RhSearchBarExpandableInput({
             value={searchString ?? ""}
           />
           <span
-            className={css(styles.searchIcon, styles.searchIconXLarge)}
+            className={css(styles.searchIcon, styles.searchIconXLargeSize)}
             onClick={(event: SyntheticEvent): void => {
               event.stopPropagation();
               pushSearchToUrlAndTrack();
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
       background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,
     },
   },
-  searchIconLarge: {
+  searchIconSmallScreen: {
     fontSize: 17,
     position: "static",
     right: "unset",
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
       color: colors.BLUE(),
     },
   },
-  searchIconXLarge: {
+  searchIconXLargeSize: {
     fontSize: 20,
     position: "fixed",
     right: 16,
