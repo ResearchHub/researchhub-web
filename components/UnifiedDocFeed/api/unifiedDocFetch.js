@@ -115,7 +115,6 @@ export default function fetchUnifiedDocs(args) {
     .catch((err) => {
       // If we get a 401 error it means the token is expired.
       const { response } = err;
-      console.log(err);
       onError(err);
       Sentry.captureException(err);
     });

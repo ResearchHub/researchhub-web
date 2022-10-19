@@ -1,30 +1,30 @@
 const SentryCli = require("@sentry/cli");
+const { emptyFncWithMsg } = require("~/config/utils/nullchecks");
 
 async function createReleaseAndUpload() {
   const release = process.env.SENTRY_RELEASE;
   if (!release) {
-    console.warn("SENTRY_RELEASE is not set");
-
+    emptyFncWithMsg("SENTRY_RELEASE is not set");
     return;
   }
 
   const cli = new SentryCli();
 
   try {
-    console.log("Creating sentry release " + release);
+    emptyFncWithMsg("Creating sentry release " + release);
     await cli.releases.new(release);
 
-    console.log("Uploading source maps");
+    emptyFncWithMsg("Uploading source maps");
     await cli.releases.uploadSourceMaps(release, {
       include: [".next/server/static/"],
       urlPrefix: "~/static/js",
       rewrite: false,
     });
 
-    console.log("Finalizing release");
+    emptyFncWithMsg("Finalizing release");
     await cli.releases.finalize(release);
   } catch (e) {
-    console.error("Source maps uploading failed:", e);
+    emptyFncWithMsg("Source maps uploading failed:", e);
   }
 }
 

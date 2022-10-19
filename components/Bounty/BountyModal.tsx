@@ -4,22 +4,23 @@ import {
   MAX_RSC_REQUIRED,
   MIN_RSC_REQUIRED,
 } from "./config/constants";
-import { trackEvent } from "~/config/utils/analytics";
+import { captureEvent } from "@sentry/browser";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { Hub } from "~/config/types/hub";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
+import { trackEvent } from "~/config/utils/analytics";
 import BaseModal from "../Modals/BaseModal";
 import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons, { WarningIcon } from "~/config/themes/icons";
-import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
+import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import { Hub } from "~/config/types/hub";
 
 type Props = {
   isOpen: boolean;
@@ -79,7 +80,7 @@ function BountyModal({
   };
 
   const handleBountyInputChange = (event) => {
-    setOfferedAmount(event.target.value ? parseInt(event.target.value) : "0");
+    setOfferedAmount(event?.target?.value ? parseInt(event.target.value) : 0);
     if (event.target.value < MIN_RSC_REQUIRED) {
       setHasMinRscAlert(true);
       setHasMaxRscAlert(false);
@@ -147,7 +148,7 @@ function BountyModal({
             setSuccess(true);
           })
           .catch((error) => {
-            console.log("error", error);
+            captureEvent(error);
             setMessage("Failed to create bounty");
             showMessage({ show: true, error: true });
           });

@@ -13,6 +13,7 @@ import { ModalActions } from "./modals";
 import { HubActions } from "./hub";
 import Cookies from "js-cookie";
 import * as Sentry from "@sentry/browser";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -91,7 +92,6 @@ let getUserHelper = (dispatch, dispatchFetching) => {
       });
     })
     .catch((error) => {
-      console.log("error", error);
       Sentry.captureException(error);
       window.localStorage.removeItem(AUTH_TOKEN);
       dispatch({
@@ -293,9 +293,9 @@ export const AuthActions = {
         .catch((error) => {
           Sentry.captureException(error);
           if (error.response && error.response.status === 401) {
-            console.log(error.response);
+            emptyFncWithMsg(error.response);
           } else {
-            console.log(error);
+            emptyFncWithMsg(error);
           }
           return dispatch({
             type: AuthConstants.ORCID_CONNECT_FAILURE,

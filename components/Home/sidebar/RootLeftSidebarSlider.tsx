@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-import SlidingPane from "react-sliding-pane";
 
 // function openWithdrawalModal() {
 //   props.openWithdrawalModal(true);
@@ -77,4 +76,6 @@ import SlidingPane from "react-sliding-pane";
 //   );
 // }
 
-function RootLeftSidebarSlider(): ReactElement {}
+function RootLeftSidebarSlider(): ReactElement {
+  return <></>;
+}

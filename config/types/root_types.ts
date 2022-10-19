@@ -35,7 +35,7 @@ export interface TopLevelDocument {
   id: ID;
   isOpenAccess?: boolean;
   bounties?: Bounty[];
-  document_type: string;
+  document_type?: string;
 }
 
 export type PaperFormat = {

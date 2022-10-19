@@ -193,13 +193,7 @@ const Index = (props) => {
         }),
       ]);
     } catch (e) {
-      console.log(e);
       captureException(e);
-      // setMessage("Something went wrong during onboarding! Please try again.");
-      // showMessage({
-      //   show: true,
-      //   error: true,
-      // });
     }
 
     props.updateSubscribedHubs(newState); // update client

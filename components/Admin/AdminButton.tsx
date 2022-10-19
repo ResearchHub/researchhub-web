@@ -1,17 +1,16 @@
-import icons from "~/config/themes/icons";
-import { css, StyleSheet } from "aphrodite";
-import DropdownButton from "../Form/DropdownButton";
-import { useState } from "react";
-import excludeFromFeed from "./api/excludeDocFromFeedAPI";
-import includeInFeed from "./api/includeDocInFeedAPI";
-import CheckBox from "../Form/CheckBox";
-import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
+import { MessageActions } from "~/redux/message";
+import { useState } from "react";
+import CheckBox from "../Form/CheckBox";
 import colors from "~/config/themes/colors";
-import Button from "../Form/Button";
-import removeDocFromFeatured from "./api/removeDocFromFeaturedAPI";
+import DropdownButton from "../Form/DropdownButton";
+import excludeFromFeed from "./api/excludeDocFromFeedAPI";
 import featureDoc from "./api/featureDocAPI";
+import icons from "~/config/themes/icons";
+import includeInFeed from "./api/includeDocInFeedAPI";
+import removeDocFromFeatured from "./api/removeDocFromFeaturedAPI";
 
 type Args = {
   unifiedDocumentId: ID;
@@ -173,12 +172,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
             <span className={css(styles.iconWrapper)}>{opt.icon}</span>
             <span className={css(styles.optLabel)}>{opt.label}</span>
           </div>
-          <div
-            className={css(
-              styles.menuSettings,
-            )}
-          >
-          </div>
+          <div className={css(styles.menuSettings)}></div>
         </div>
       );
     }
@@ -267,9 +261,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
         setIsOpen(false);
       }}
       positions={["right", "bottom"]}
-      onSelect={(selected) => {
-        console.log(selected);
-      }}
+      onSelect={(_selected) => {}}
       // @ts-ignore
       overrideTargetButton={styles.overrideTargetButton}
       withDownIcon={false}

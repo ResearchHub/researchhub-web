@@ -20,20 +20,22 @@ import RHLogo from "./Home/RHLogo";
 import RhSearchBar from "./SearchV2/RhSearchBar";
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
+import ALink from "~/components/ALink";
 
-export const NAVBAR_HEIGHT = 68;
-
-// Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
   import("~/components/Modals/FirstVoteModal")
 );
 const LoginModal = dynamic(() => import("~/components/Modals/LoginModal"));
+const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 const OrcidConnectModal = dynamic(() =>
   import("~/components/Modals/OrcidConnectModal")
 );
 const PromotionInfoModal = dynamic(() =>
   import("~/components/Modals/PromotionInfoModal")
+);
+const ReCaptchaPrompt = dynamic(() =>
+  import("~/components/Modals/ReCaptchaPrompt")
 );
 const UploadPaperModal = dynamic(() =>
   import("~/components/Modals/UploadPaperModal")
@@ -41,11 +43,8 @@ const UploadPaperModal = dynamic(() =>
 const WithdrawalModal = dynamic(() =>
   import("~/components/Modals/WithdrawalModal")
 );
-const ReCaptchaPrompt = dynamic(() =>
-  import("~/components/Modals/ReCaptchaPrompt")
-);
 
-const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
+export const NAVBAR_HEIGHT = 68;
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -75,7 +74,15 @@ const Navbar = (props) => {
         >
           {icons.burgerMenu}
         </div>
-        <RHLogo withText />
+        <div
+          onClick={(event) => {
+            event.preventDefault();
+            router.push("/");
+          }}
+          style={{ cursor: "pointer" }}
+        >
+          <RHLogo withText />
+        </div>
       </div>
     </Fragment>
   );
@@ -107,6 +114,8 @@ const Navbar = (props) => {
               className={css()}
               overlayClassName={css()}
               isOpen={shouldShowSlider}
+              onRequestClose={() => {}}
+              children={<></>}
             />
           </MobileOnly>
           <div className={css(styles.searchWrapper)}>
