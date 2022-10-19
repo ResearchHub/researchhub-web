@@ -21,6 +21,7 @@ import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStat
 import RhSearchBar from "./SearchV2/RhSearchBar";
 import Router, { useRouter } from "next/router";
 import UserStateBanner from "./Banner/UserStateBanner";
+import RHLogo from "./Home/RHLogo";
 
 export const NAVBAR_HEIGHT = 68;
 
@@ -300,6 +301,27 @@ const Navbar = (props) => {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
+  const researchhubTitle = (
+    <Fragment>
+      <div className={css(styles.xsmallUpTitle)}>
+        {formatMainHeader({
+          label: headerLabel,
+          isHomePage: !Boolean(headerLabel),
+        })}
+      </div>
+      <div className={css(styles.xsmallDownTitle)}>
+        <div
+          className={css(styles.menuIcon)}
+          onClick={toggleSideMenu}
+          data-test={isDevEnv() ? `navbar-mobile-trigger` : undefined}
+        >
+          {icons.burgerMenu}
+        </div>
+        <RHLogo withText />
+      </div>
+    </Fragment>
+  );
+
   return (
     <Fragment>
       <DndModal />
@@ -332,10 +354,7 @@ const Navbar = (props) => {
         )} navbar`}
       >
         <div className={css(styles.logoContainer)}>
-          {formatMainHeader({
-            label: headerLabel,
-            isHomePage: !Boolean(headerLabel),
-          })}
+          {researchhubTitle}
           <div className={css(styles.searchWrapper)}>
             <RhSearchBar />
           </div>
@@ -357,13 +376,6 @@ const Navbar = (props) => {
               wsUrl={WS_ROUTES.PAPER_SUBMISSION(user.id)}
             />
           )}
-        </div>
-        <div
-          className={css(styles.menuIcon)}
-          onClick={toggleSideMenu}
-          data-test={isDevEnv() ? `navbar-mobile-trigger` : undefined}
-        >
-          {icons.burgerMenu}
         </div>
       </div>
       <UserStateBanner />
@@ -699,21 +711,12 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   menuIcon: {
-    display: "none",
-    fontSize: 22,
     cursor: "pointer",
-    // [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-    //   display: "unset",
-    //   position: "relative",
-    //   marginLeft: 20,
-    // },
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      display: "none",
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginLeft: 0,
-      display: "unset",
-    },
+    fontSize: 22,
+    height: "100%",
+    marginRight: 16,
+    marginTop: 6, // arbitrary to match nav visual
+    textAlign: "center",
   },
   oauthContainer: {
     position: "relative",
@@ -727,12 +730,28 @@ const styles = StyleSheet.create({
     },
   },
   notebookIcon: {
-    // fontSize: 18,
-    // marginTop: 2,
     display: "flex",
   },
   newFeature: {
     marginLeft: 10,
+  },
+  xsmallDownTitle: {
+    display: "none",
+    width: 0,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "flex",
+      marginLeft: 8,
+      width: "63%",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+  },
+  xsmallUpTitle: {
+    display: "block",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
+      width: 0,
+    },
   },
 });
 
