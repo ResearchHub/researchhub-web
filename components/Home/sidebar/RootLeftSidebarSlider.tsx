@@ -77,5 +77,7 @@ import { ReactElement } from "react";
 // }
 
 function RootLeftSidebarSlider(): ReactElement {
-  return <></>;
+  return <div>HIHIHIHI</div>;
 }
+
+export default RootLeftSidebarSlider;

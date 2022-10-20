@@ -1,3 +1,4 @@
+import "react-sliding-pane/dist/react-sliding-pane.css";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -20,7 +21,7 @@ import RHLogo from "./Home/RHLogo";
 import RhSearchBar from "./SearchV2/RhSearchBar";
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
-import ALink from "~/components/ALink";
+import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -111,11 +112,11 @@ const Navbar = (props) => {
           {researchhubTitle}
           <MobileOnly>
             <SlidingPane
-              className={css()}
-              overlayClassName={css()}
+              from="left"
+              width="260px"
               isOpen={shouldShowSlider}
-              onRequestClose={() => {}}
-              children={<></>}
+              onRequestClose={() => setShouldShowSlider(false)}
+              children={<RootLeftSidebarSlider />}
             />
           </MobileOnly>
           <div className={css(styles.searchWrapper)}>
