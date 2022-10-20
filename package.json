@@ -157,7 +157,7 @@
     "npm": "==7.19.1"
   },
   "lint-staged": {
-    "*.{.tsx}": "eslint --cache --fix",
+    "*..tsx": "eslint --cache --fix",
     "*.{js,css,md,.tsx}": "prettier --write"
   }
 }
