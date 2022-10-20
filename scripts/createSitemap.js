@@ -1,21 +1,20 @@
 const fs = require("fs");
 const axios = require("axios");
-const { emptyFncWithMsg } = require("~/config/utils/nullchecks");
 
 const LIMIT = 10000;
 
 const getConfig = () => {
-  emptyFncWithMsg("Reading Config");
+  console.log("Reading Config");
   let data = fs.readFileSync("./public/config.txt", {
     encoding: "utf8",
     flag: "r",
   });
 
   if (data) {
-    emptyFncWithMsg("Found Config:", JSON.parse(data));
+    console.log("Found Config:", JSON.parse(data));
     return JSON.parse(data);
   } else {
-    emptyFncWithMsg("No Config Found");
+    console.log("No Config Found");
   }
 };
 
@@ -106,7 +105,7 @@ const writeFile = () => {
         .then((res) => {
           next = res.data.next;
           count = res.data.count;
-          emptyFncWithMsg("Writing Papers", next);
+          console.log("Writing Papers", next);
 
           let papers = res.data.results;
           papers.forEach((paper) => {
@@ -131,7 +130,7 @@ const writeFile = () => {
           }
         })
         .catch((err) => {
-          emptyFncWithMsg("err", err);
+          console.log("err", err);
           return;
         });
     };
@@ -140,7 +139,7 @@ const writeFile = () => {
   };
 
   const collectAllHubSlugs = async () => {
-    emptyFncWithMsg("Writing Hubs");
+    console.log("Writing Hubs");
     var hubsWritten = 0;
     var next;
     var count;
@@ -186,7 +185,7 @@ const writeFile = () => {
   };
 
   const writeSitemapIndex = () => {
-    emptyFncWithMsg("Writing Sitemap Index");
+    console.log("Writing Sitemap Index");
     let fileName = `./public/sitemap-prod.xml`;
     let writeStream = fs.createWriteStream(fileName);
     let header = `<?xml version="1.0" encoding="UTF-8"?>
@@ -225,7 +224,7 @@ const writeFile = () => {
       prevTimestamp: prevTimestamp,
       timestamp: new Date(),
     };
-    emptyFncWithMsg("Saving Config:", newConfig);
+    console.log("Saving Config:", newConfig);
     writeStream.write(JSON.stringify(newConfig));
   };
 
