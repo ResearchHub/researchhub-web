@@ -13,7 +13,6 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
-import MobileOnly from "./MobileOnly";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
@@ -110,15 +109,16 @@ const Navbar = (props) => {
       >
         <div className={css(styles.logoContainer)}>
           {researchhubTitle}
-          <MobileOnly>
+          <div className={css(styles.slideLeftPaneOnXSmall)}>
             <SlidingPane
+              children={<RootLeftSidebarSlider />}
+              className={css(styles.slidingPaneBody)}
+              overlayClassName={css(styles.slidingPaneOverlay)}
               from="left"
-              width="260px"
               isOpen={shouldShowSlider}
               onRequestClose={() => setShouldShowSlider(false)}
-              children={<RootLeftSidebarSlider />}
             />
-          </MobileOnly>
+          </div>
           <div className={css(styles.searchWrapper)}>
             <RhSearchBar />
           </div>
@@ -361,6 +361,30 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
       width: 0,
+    },
+  },
+  slidingPaneBody: {
+    display: "none",
+    width: 0,
+    padding: 0,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      background: colors.GREY_ICY_BLUE_HUE,
+      display: "block",
+      width: 200,
+    },
+  },
+  slidingPaneOverlay: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "block",
+      width: "100%",
+    },
+  },
+  slideLeftPaneOnXSmall: {
+    display: "none",
+    width: 0,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "block",
     },
   },
 });

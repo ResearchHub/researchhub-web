@@ -38,7 +38,7 @@ export const LEFT_SIDEBAR_MIN_WIDTH = 80;
 export const LEFT_SIDEBAR_FORCE_MIN_KEY =
   "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
 
-const getLeftSidebarItemAttrs = ({
+export const getLeftSidebarItemAttrs = ({
   currentUser,
   isMinimized,
   router,
@@ -400,7 +400,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     position: "relative",
     zIndex: 10,
-    // minWidth: LEFT_SIDEBAR_MAX_WIDTH,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
