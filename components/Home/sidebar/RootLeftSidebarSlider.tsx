@@ -1,17 +1,16 @@
-import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import { ReactElement, SyntheticEvent, useMemo } from "react";
-import { connect } from "react-redux";
-import ALink from "~/components/ALink";
-import GoogleLoginButton from "~/components/GoogleLoginButton";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { NullableString } from "~/config/types/root_types";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { isEmpty } from "~/config/utils/nullchecks";
 import { AuthActions } from "~/redux/auth";
-import { ModalActions } from "~/redux/modals";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { getLeftSidebarItemAttrs } from "./RootLeftSidebar";
+import { ModalActions } from "~/redux/modals";
+import { NullableString } from "~/config/types/root_types";
+import { ReactElement, SyntheticEvent, useMemo } from "react";
+import { useRouter } from "next/router";
+import ALink from "~/components/ALink";
+import colors from "~/config/themes/colors";
+import GoogleLoginButton from "~/components/GoogleLoginButton";
+import icons from "~/config/themes/icons";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
