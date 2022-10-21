@@ -78,7 +78,6 @@ class Index extends Component {
         },
       };
     } catch (e) {
-      console.log(e);
       if (res) {
         res.statusCode = 404;
       }

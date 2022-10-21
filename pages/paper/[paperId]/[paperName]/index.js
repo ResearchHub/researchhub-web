@@ -61,7 +61,6 @@ const fetchPaper = (url, config) => {
       return resp;
     })
     .catch((error) => {
-      console.log(error);
       Sentry.captureException({ error, url, config });
     });
 };
@@ -450,7 +449,6 @@ export async function getStaticProps(ctx) {
   try {
     paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
-    console.log("err", err);
     return {
       props: {
         error: {

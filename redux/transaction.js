@@ -1,6 +1,6 @@
-import API from "~/config/api";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
-import { AuthActions } from "./auth";
+import API from "~/config/api";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -30,7 +30,7 @@ export const TransactionActions = {
           });
         })
         .catch((err) => {
-          console.log(err);
+          emptyFncWithMsg(err);
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {

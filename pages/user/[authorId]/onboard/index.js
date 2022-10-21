@@ -192,14 +192,8 @@ const Index = (props) => {
           return unsubscribeFromHub({ hubId });
         }),
       ]);
-    } catch (e) {
-      console.log(e);
-      captureException(e);
-      // setMessage("Something went wrong during onboarding! Please try again.");
-      // showMessage({
-      //   show: true,
-      //   error: true,
-      // });
+    } catch (error) {
+      captureException(error);
     }
 
     props.updateSubscribedHubs(newState); // update client

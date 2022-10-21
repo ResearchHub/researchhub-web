@@ -11,17 +11,17 @@ async function createReleaseAndUpload() {
   const cli = new SentryCli();
 
   try {
-    console.log("Creating sentry release " + release);
+    console.info("Creating sentry release " + release);
     await cli.releases.new(release);
 
-    console.log("Uploading source maps");
+    console.info("Uploading source maps");
     await cli.releases.uploadSourceMaps(release, {
       include: [".next/server/static/"],
       urlPrefix: "~/static/js",
       rewrite: false,
     });
 
-    console.log("Finalizing release");
+    console.info("Finalizing release");
     await cli.releases.finalize(release);
   } catch (e) {
     console.error("Source maps uploading failed:", e);

@@ -4,17 +4,17 @@ const axios = require("axios");
 const LIMIT = 10000;
 
 const getConfig = () => {
-  console.log("Reading Config");
+  console.info("Reading Config");
   let data = fs.readFileSync("./public/config.txt", {
     encoding: "utf8",
     flag: "r",
   });
 
   if (data) {
-    console.log("Found Config:", JSON.parse(data));
+    console.info("Found Config:", JSON.parse(data));
     return JSON.parse(data);
   } else {
-    console.log("No Config Found");
+    console.info("No Config Found");
   }
 };
 
@@ -105,7 +105,7 @@ const writeFile = () => {
         .then((res) => {
           next = res.data.next;
           count = res.data.count;
-          console.log("Writing Papers", next);
+          console.info("Writing Papers", next);
 
           let papers = res.data.results;
           papers.forEach((paper) => {
@@ -130,7 +130,7 @@ const writeFile = () => {
           }
         })
         .catch((err) => {
-          console.log("err", err);
+          console.info("err", err);
           return;
         });
     };
@@ -139,7 +139,7 @@ const writeFile = () => {
   };
 
   const collectAllHubSlugs = async () => {
-    console.log("Writing Hubs");
+    console.info("Writing Hubs");
     var hubsWritten = 0;
     var next;
     var count;
@@ -176,7 +176,7 @@ const writeFile = () => {
             return;
           }
         })
-        .catch((err) => {
+        .catch((_err) => {
           return;
         });
     };
@@ -185,7 +185,7 @@ const writeFile = () => {
   };
 
   const writeSitemapIndex = () => {
-    console.log("Writing Sitemap Index");
+    console.info("Writing Sitemap Index");
     let fileName = `./public/sitemap-prod.xml`;
     let writeStream = fs.createWriteStream(fileName);
     let header = `<?xml version="1.0" encoding="UTF-8"?>
@@ -224,7 +224,7 @@ const writeFile = () => {
       prevTimestamp: prevTimestamp,
       timestamp: new Date(),
     };
-    console.log("Saving Config:", newConfig);
+    console.info("Saving Config:", newConfig);
     writeStream.write(JSON.stringify(newConfig));
   };
 
