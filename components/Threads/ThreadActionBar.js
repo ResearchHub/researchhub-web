@@ -281,7 +281,6 @@ class ThreadActionBar extends Component {
                       }
                     },
                     onError: (error) => {
-                      console.log(error);
                       this.props.setMessage("Failed to set accepted answer");
                       this.props.showMessage({
                         show: true,
