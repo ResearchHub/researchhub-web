@@ -83,15 +83,10 @@ const Navbar = (props) => {
             event.preventDefault();
             router.push("/");
           }}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", width: 120, fontSize: 20 }}
         >
-          <Image
-            alt="Researchhub"
-            height={14}
-            layout="fixed"
-            src={"/static/ResearchhubText.png"}
-            width={120}
-          />
+          <span>{"Research"}</span>
+          <span style={{ fontWeight: 300 }}>{"hub"}</span>
         </div>
       </div>
     </Fragment>
