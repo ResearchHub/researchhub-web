@@ -17,7 +17,7 @@ import {
 } from "~/config/fetch";
 import { getNotePathname, isOrgMember } from "~/components/Org/utils/orgHelper";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef, useCallback } from "react";
 
@@ -224,7 +224,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
           setError({ statusCode: response.status });
         }
       } catch (error) {
-        console.log(error);
+        emptyFncWithMsg(error);
         captureEvent({
           statusCode: 500,
           msg: "Failed to fetch note",
