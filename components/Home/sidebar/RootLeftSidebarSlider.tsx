@@ -14,6 +14,7 @@ import icons from "~/config/themes/icons";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   isLoggedIn: boolean;
@@ -204,6 +205,9 @@ const styles = StyleSheet.create({
     minWidth: 136,
     padding: 8,
     width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: "95%",
+    },
   },
   googleIcon: {
     width: 25,
