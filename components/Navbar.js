@@ -13,14 +13,14 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
+import Image from "next/image";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
 import RhSearchBar from "./SearchV2/RhSearchBar";
+import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
-import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
-import Image from "next/image";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -86,11 +86,11 @@ const Navbar = (props) => {
           style={{ cursor: "pointer" }}
         >
           <Image
-            src={"/static/ResearchhubText.png"}
             alt="Researchhub"
-            width={120}
             height={14}
             layout="fixed"
+            src={"/static/ResearchhubText.png"}
+            width={120}
           />
         </div>
       </div>
