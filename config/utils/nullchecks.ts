@@ -1,5 +1,3 @@
-import { Exception } from "@sentry/types";
-
 export function emptyFncWithMsg(
   message: Error | string | null | undefined | unknown
 ): void {

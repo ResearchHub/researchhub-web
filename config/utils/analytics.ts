@@ -1,6 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { AuthStore } from "../types/root_types";
+import { AuthStore, ID, User } from "../types/root_types";
 import { emptyFncWithMsg } from "./nullchecks";
 
 type Event =
@@ -10,6 +10,8 @@ type Event =
     }
   | {
       eventType: "search_query_submitted";
+      vendor: string;
+      user: User;
       data: {
         query: string;
       };
@@ -27,27 +29,38 @@ type Event =
         searchType: string;
         query: string;
       };
+    }
+  | {
+      eventType: "create_bounty";
+      data: any;
     };
 
 type EventData = Event & {
+  insertId?: ID;
+  interactionType?: null | "click";
   user: AuthStore["user"] | null;
   vendor: "amp" | "google";
-  interactionType?: null | "click";
 };
 
 export const trackEvent = ({
-  eventType,
   data,
-  vendor,
-  user = null,
-  interactionType = null,
+  eventType,
   insertId = null,
+  interactionType = null,
+  user = null,
+  vendor,
 }: EventData): void => {
   try {
     emptyFncWithMsg;
     switch (vendor) {
       case "amp":
-        return trackAmplitudeEvent({ eventType, data, user, interactionType, insertId });
+        return trackAmplitudeEvent({
+          eventType,
+          data,
+          user,
+          interactionType,
+          insertId,
+        });
       // doesn't seem to be used
       // case "google":
       //   return trackAmplitudeEvent();
@@ -62,17 +75,17 @@ export const trackEvent = ({
 };
 
 const trackAmplitudeEvent = ({
-  eventType,
   data,
-  user = null,
-  interactionType = null,
+  eventType,
   insertId = null,
+  interactionType = null,
+  user = null,
 }: Omit<EventData, "vendor">): void => {
   if (interactionType) {
     (data as any).interaction = interactionType;
   }
 
-  const payload = {
+  const payload: any = {
     event_type: eventType,
     user_id: user ? user.id : null,
     time: +new Date(),
