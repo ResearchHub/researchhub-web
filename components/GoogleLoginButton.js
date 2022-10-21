@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
-
-import { GoogleLogin } from "react-google-login";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/browser";
 import { sendAmpEvent } from "~/config/fetch";
-
 import Button from "~/components/Form/Button";
 import GoogleButton from "~/components/GoogleLogin";
 import { AuthActions } from "../redux/auth";
@@ -32,13 +29,12 @@ const GoogleLoginButton = (props) => {
           callback: handleYolo,
         });
         google.accounts.id.prompt((notification) => {
-          console.log(notification);
           if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
           }
         });
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      Sentry.captureEvent(error);
     }
   }
 
@@ -68,7 +64,7 @@ const GoogleLoginButton = (props) => {
             sendAmpEvent(payload);
             // push user to onboarding if we are not on the notebook - will eventually see the orcid modal
             if (
-              !router.route.includes("/notebook") &&
+              !router.route.includes("notebook") &&
               !router.route.includes("org/join")
             ) {
               router.push(

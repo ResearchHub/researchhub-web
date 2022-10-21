@@ -15,6 +15,7 @@ import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
 import ReactTooltip from "react-tooltip";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 type Args = {
   currentUser: any;
@@ -83,9 +84,7 @@ function DocumentActions({
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)}>
-            {icons.pencil}
-          </div>
+          <div className={css(styles.actionIcon)}>{icons.pencil}</div>
         </PermissionNotificationWrapper>
       ),
     },
@@ -129,9 +128,7 @@ function DocumentActions({
       key: "remove-restore",
       tooltip: isRemoved ? "Restore Page" : "Remove Page",
       html: (
-        <span
-          className={css(styles.actionIcon, styles.moderatorAction)}
-        >
+        <span className={css(styles.actionIcon, styles.moderatorAction)}>
           <ActionButton
             isModerator={true}
             paperId={unifiedDocument?.document?.id}
@@ -141,9 +138,7 @@ function DocumentActions({
               if (isRemoved) {
                 restoreDocument({
                   unifiedDocumentId: unifiedDocument.id,
-                  onError: (error: Error) => {
-                    console.log("error");
-                  },
+                  onError: emptyFncWithMsg,
                   onSuccess: () => {
                     setIsRemoved(false);
                     onDocumentRestore();
@@ -152,9 +147,7 @@ function DocumentActions({
               } else {
                 censorDocument({
                   unifiedDocumentId: unifiedDocument.id,
-                  onError: (error: Error) => {
-                    console.log("error");
-                  },
+                  onError: emptyFncWithMsg,
                   onSuccess: (): void => {
                     setIsRemoved(true);
                     onDocumentRemove();
@@ -173,9 +166,7 @@ function DocumentActions({
       key: "admin",
       tooltip: "Admin",
       html: (
-        <span
-          className={css(styles.actionIcon, styles.moderatorAction)}
-        >
+        <span className={css(styles.actionIcon, styles.moderatorAction)}>
           <AdminButton unifiedDocumentId={unifiedDocument.id} />
         </span>
       ),
@@ -185,13 +176,14 @@ function DocumentActions({
   return (
     <div className={css(styles.documentActions)}>
       {actionButtons.map((actionButton) => (
-        <span 
+        <span
           data-tip={actionButton.tooltip}
           data-effect="solid"
           onClick={(event) => {
             ReactTooltip.hide();
-          }}            
-          key={actionButton.key} className={css(styles.button)}
+          }}
+          key={actionButton.key}
+          className={css(styles.button)}
         >
           {actionButton.html}
         </span>
