@@ -20,6 +20,7 @@ import RhSearchBar from "./SearchV2/RhSearchBar";
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
 import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
+import Image from "next/image";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -84,11 +85,12 @@ const Navbar = (props) => {
           }}
           style={{ cursor: "pointer" }}
         >
-          <img
+          <Image
             src={"/static/ResearchhubText.png"}
-            draggable={false}
-            alt="RH Logo Text"
+            alt="Researchhub"
             width={120}
+            height={14}
+            layout="fixed"
           />
         </div>
       </div>

@@ -190,7 +190,15 @@ function RhSearchBarExpandableInput({
       )}
       {isExpanded && (
         <Fragment>
-          <span className={css(styles.backButton)}>{icons.longArrowLeft}</span>
+          <span
+            className={css(styles.backButton)}
+            onClick={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setIsExpanded(false);
+            }}
+          >
+            {icons.longArrowLeft}
+          </span>
           <input
             autoFocus
             className={css(styles.rhSearchBarExpandableInput)}
