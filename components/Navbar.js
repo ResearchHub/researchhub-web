@@ -375,6 +375,7 @@ const styles = StyleSheet.create({
   },
   slidingPaneOverlay: {
     display: "none",
+    zIndex: 2,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "block",
       width: "100%",
