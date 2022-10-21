@@ -115,7 +115,7 @@ export default function NoteTemplateModal({
   const { CKEditor, Editor } = editorRef.current || {};
   const [hideTemplates, setHideTemplates] = useState(false);
   const [selected, setSelected] = useState((templates || [])[0]?.id);
-  const [editorInstance, setEditorInstance] = useState(null);
+  const [editorInstance, setEditorInstance] = useState<any>(null);
 
   const templateMap = {};
   for (const template of templates) {
@@ -148,7 +148,7 @@ export default function NoteTemplateModal({
     setIsOpen(false);
   };
 
-  const handleUseThisTemplate = async (e: SyntheticEvent): void => {
+  const handleUseThisTemplate = async (e: SyntheticEvent): Promise<void> => {
     e && e.preventDefault();
 
     const noteParams = {
@@ -161,10 +161,10 @@ export default function NoteTemplateModal({
           .replace(/&nbsp;/g, " ") || "Untitled",
     };
 
-    const note = await createNewNote(noteParams);
+    const note: any = await createNewNote(noteParams);
     const noteContent = await createNoteContent({
       editorData: templateMap[selected].src,
-      noteId: note.id,
+      noteId: note?.id,
     });
     redirectToNote(note);
     closeModal(e);

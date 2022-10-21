@@ -168,9 +168,6 @@ function FlaggedContentDashboard({
   const loadResults = (filters: ApiFilters, url = null) => {
     if (!url) {
       setIsLoadingPage(true);
-    } else {
-      console.log("loading more");
-      console.log("url", url);
       setIsLoadingMore(true);
     }
 
