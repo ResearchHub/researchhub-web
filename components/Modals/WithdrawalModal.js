@@ -1,35 +1,29 @@
-import { Component, Fragment } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-
-import Link from "next/link";
-
-// Component
-import BaseModal from "./BaseModal";
-import Loader from "../Loader/Loader";
-import ETHAddressInput from "../Ethereum/ETHAddressInput";
-import Button from "../Form/Button";
-import DepositScreen from "../Ethereum/DepositScreen";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
-
-// Redux
-import { ModalActions } from "~/redux/modals";
-import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
-import { useMetaMask } from "../connectEthereum";
-import { sanitizeNumber, formatBalance } from "~/config/utils/form";
+import { captureEvent } from "~/config/utils/events";
+import { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import {
   getEtherscanLink,
   isAddress,
   toCheckSumAddress,
 } from "~/config/utils/crypto";
-import { captureEvent } from "~/config/utils/events";
+import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
+import { sanitizeNumber, formatBalance } from "~/config/utils/form";
+import { StyleSheet, css } from "aphrodite";
+import { useMetaMask } from "../connectEthereum";
+import API from "~/config/api";
+import BaseModal from "./BaseModal";
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
+import DepositScreen from "../Ethereum/DepositScreen";
+import ETHAddressInput from "../Ethereum/ETHAddressInput";
+import icons from "~/config/themes/icons";
+import Link from "next/link";
+import Loader from "../Loader/Loader";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -379,7 +373,7 @@ class WithdrawalModal extends Component {
         this.provider = provider;
       }
     } else {
-      console.log("Failed to connect MetaMask");
+      emptyFncWithMsg("Failed to connect MetaMask");
       this.setState({
         connectedMetaMask: false,
         connectedWalletLink: false,
@@ -443,7 +437,7 @@ class WithdrawalModal extends Component {
         this.provider = provider;
       }
     } else {
-      console.log("Failed to connect WalletLink");
+      emptyFncWithMsg("Failed to connect WalletLink");
       this.setState({
         connectedMetaMask: false,
         connectedWalletLink: false,
@@ -454,9 +448,9 @@ class WithdrawalModal extends Component {
   disconnectWalletLink = async () => {
     if (this.state.walletLink) {
       this.state.walletLink.disconnect();
-      console.log("Disconnected WalletLink");
+      emptyFncWithMsg("Disconnected WalletLink");
     } else {
-      console.log("Nothing to disconnect");
+      emptyFncWithMsg("Nothing to disconnect");
     }
     this.setState({
       connectedWalletLink: false,
