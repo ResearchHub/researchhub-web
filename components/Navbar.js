@@ -8,7 +8,7 @@ import { ModalActions } from "../redux/modals";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
-import { useState, Fragment, useRef } from "react";
+import { useState, Fragment, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
@@ -16,7 +16,6 @@ import icons from "~/config/themes/icons";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
-import RHLogo from "./Home/RHLogo";
 import RhSearchBar from "./SearchV2/RhSearchBar";
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
@@ -59,6 +58,10 @@ const Navbar = (props) => {
     ? "Leaderboard"
     : deSlug(router?.query?.slug ?? "");
 
+  useEffect(() => {
+    setShouldShowSlider(false);
+  }, [pathname]);
+
   const researchhubTitle = (
     <Fragment>
       <div className={css(styles.xsmallUpTitle)}>
@@ -81,7 +84,12 @@ const Navbar = (props) => {
           }}
           style={{ cursor: "pointer" }}
         >
-          <RHLogo withText />
+          <img
+            src={"/static/ResearchhubText.png"}
+            draggable={false}
+            alt="RH Logo Text"
+            width={120}
+          />
         </div>
       </div>
     </Fragment>
@@ -194,6 +202,7 @@ const styles = StyleSheet.create({
   },
   googleLoginButton: {
     margin: 0,
+    marginLeft: 16,
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
@@ -241,7 +250,7 @@ const styles = StyleSheet.create({
       width: "unset",
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      margin: "2px 16px 0 0",
+      margin: "0 16px 0 0",
       maxWidth: "unset",
       width: "unset",
     },
@@ -333,10 +342,10 @@ const styles = StyleSheet.create({
   },
   burgerIcon: {
     cursor: "pointer",
-    fontSize: 22,
+    fontSize: 20,
     height: "100%",
     marginRight: 16,
-    marginTop: 6, // arbitrary to match nav visual
+    marginTop: 4, // arbitrary to match nav visual
     textAlign: "center",
   },
   oauthContainer: {
@@ -351,7 +360,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "flex",
       marginLeft: 8,
-      width: "63%",
+      width: "62%",
       justifyContent: "space-between",
       alignItems: "center",
     },
@@ -375,7 +384,7 @@ const styles = StyleSheet.create({
   },
   slidingPaneOverlay: {
     display: "none",
-    zIndex: 2,
+    zIndex: 3,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "block",
       width: "100%",

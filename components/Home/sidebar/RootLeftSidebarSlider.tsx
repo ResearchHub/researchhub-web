@@ -16,7 +16,7 @@ import RootLeftSidebarSliderItem, {
 } from "./sidebar_items/RootLeftSidebarSliderItem";
 
 type Props = {
-  isLoggedIn: boolean
+  isLoggedIn: boolean;
   openLoginModal: any /* redux */;
   signout: any /* redux */;
   walletLink: NullableString /* redux */;
@@ -68,7 +68,7 @@ function RootLeftSidebarSlider({
           >
             {"Jobs"}
           </ALink>
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <div
               className={css(styles.leftSidebarSliderFooterTxtItem)}
               onClick={(event: SyntheticEvent): void => {
@@ -78,18 +78,19 @@ function RootLeftSidebarSlider({
             >
               {"Sign out"}
             </div>
+          ) : (
+            <div className={css(styles.loginButtonWrap)}>
+              <GoogleLoginButton
+                styles={[styles.loginButton]}
+                iconStyle={styles.googleIcon}
+                customLabel="Sign In"
+                customLabelStyle={[styles.googleLabelMobile]}
+                isLoggedIn
+              />
+            </div>
           )}
         </div>
         <div className={css(styles.footer)}>
-          {!isLoggedIn && (
-            <GoogleLoginButton
-              styles={[styles.loginMobile]}
-              iconStyle={styles.googleIcon}
-              customLabel="Sign In"
-              customLabelStyle={[styles.googleLabelMobile]}
-              isLoggedIn
-            />
-          )}
           <div
             className={css(styles.leftSidebarSliderFooterItemsBottomRow)}
             style={{ marginLeft: "-4px !important" }}
@@ -195,11 +196,12 @@ const styles = StyleSheet.create({
     display: "block",
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
-  loginMobile: {
+  loginButtonWrap: { width: "100%", display: "flex", justifyContent: "center" },
+  loginButton: {
     height: "unset",
     justifyContent: "center",
     marginBottom: 16,
-    minWidth: 156,
+    minWidth: 136,
     padding: 8,
     width: "100%",
   },
