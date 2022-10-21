@@ -35,7 +35,7 @@ import {
   onPasteNumInput,
   formatBalance,
 } from "~/config/utils/form";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Constants
 import { ContentTypes, ChainStatus } from "./constants/SupportContent";
@@ -589,7 +589,7 @@ class PaperTransactionModal extends Component {
     const { connected, account, provider } = await useMetaMask();
     if (connected) {
       this.setUpEthListeners();
-      console.log("Connected to MetaMask");
+      emptyFncWithMsg("Connected to MetaMask");
       const valid = this.isAddress(account);
       this.setState(
         {
@@ -604,7 +604,7 @@ class PaperTransactionModal extends Component {
         }
       );
     } else {
-      console.log("Failed to connect MetaMask");
+      emptyFncWithMsg("Failed to connect MetaMask");
       this.setState({
         connectedMetaMask: false,
         connectedWalletLink: false,
@@ -629,9 +629,9 @@ class PaperTransactionModal extends Component {
   disconnectWalletLink = async () => {
     if (this.state.walletLink) {
       this.state.walletLink.disconnect();
-      console.log("Disconnected WalletLink");
+      emptyFncWithMsg("Disconnected WalletLink");
     } else {
-      console.log("Nothing to disconnect");
+      emptyFncWithMsg("Nothing to disconnect");
     }
     this.setState({
       connectedWalletLink: false,
