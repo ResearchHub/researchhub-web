@@ -38,7 +38,7 @@ export const LEFT_SIDEBAR_MIN_WIDTH = 80;
 export const LEFT_SIDEBAR_FORCE_MIN_KEY =
   "RESEARCHHUB_ROOT_LEFT_SIDEBAR_FORCE_MIN";
 
-const getLeftSidebarItemAttrs = ({
+export const getLeftSidebarItemAttrs = ({
   currentUser,
   isMinimized,
   router,
@@ -183,9 +183,10 @@ function RootLeftSidebar({
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
     (
-      attrs: RootLeftSidebarItemProps
+      attrs: RootLeftSidebarItemProps,
+      ind: number
     ): ReactElement<typeof RootLeftSidebarItem> => (
-      <RootLeftSidebarItem {...attrs} />
+      <RootLeftSidebarItem key={`${attrs.label}-${ind}`} {...attrs} />
     )
   );
 
@@ -295,7 +296,7 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
+            <ALink href="about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
             <ALink
@@ -305,7 +306,7 @@ function RootLeftSidebar({
               {"Jobs"}
             </ALink>
             <ALink
-              href={`/${organization_slug}/notebook`}
+              href={`${organization_slug}/notebook`}
               overrideStyle={formattedFooterTxtItem}
             >
               {"Publish"}
@@ -399,7 +400,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     position: "relative",
     zIndex: 10,
-    // minWidth: LEFT_SIDEBAR_MAX_WIDTH,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
