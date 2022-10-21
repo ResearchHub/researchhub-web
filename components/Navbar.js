@@ -83,10 +83,15 @@ const Navbar = (props) => {
             event.preventDefault();
             router.push("/");
           }}
-          style={{ cursor: "pointer", width: 120, fontSize: 20 }}
+          style={{ cursor: "pointer" }}
         >
-          <span>{"Research"}</span>
-          <span style={{ fontWeight: 300 }}>{"hub"}</span>
+          <img
+            alt="ResearchHub"
+            height={14}
+            layout="fixed"
+            src="/static/ResearchhubText.png"
+            width={120}
+          />
         </div>
       </div>
     </Fragment>
@@ -357,7 +362,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "flex",
       marginLeft: 8,
-      width: "62%",
+      width: "61%",
       justifyContent: "space-between",
       alignItems: "center",
     },
