@@ -21,6 +21,7 @@ import RhSearchBar from "./SearchV2/RhSearchBar";
 import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlider";
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
+import RHLogo from "./Home/RHLogo";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -85,13 +86,7 @@ const Navbar = (props) => {
           }}
           style={{ cursor: "pointer" }}
         >
-          <img
-            alt="ResearchHub"
-            height={14}
-            layout="fixed"
-            src="/static/ResearchHubText.png"
-            width={120}
-          />
+          <RHLogo withText width={120} />
         </div>
       </div>
     </Fragment>
@@ -189,7 +184,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 4,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "20px 20px 20px 10px",
+      padding: 20,
       justifyContent: "space-between",
     },
   },
@@ -252,7 +247,7 @@ const styles = StyleSheet.create({
       width: "unset",
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      margin: "0 16px 0 0",
+      margin: 0,
       maxWidth: "unset",
       width: "unset",
     },
@@ -361,8 +356,8 @@ const styles = StyleSheet.create({
     width: 0,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "flex",
-      marginLeft: 8,
-      width: "61%",
+      marginLeft: 0,
+      width: "62%",
       justifyContent: "space-between",
       alignItems: "center",
     },

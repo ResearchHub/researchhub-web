@@ -212,7 +212,11 @@ function RhSearchBarExpandableInput({
             value={searchString ?? ""}
           />
           <span
-            className={css(styles.searchIcon, styles.searchIconXLargeSize)}
+            className={css(
+              styles.searchIcon,
+              styles.searchIconSmallScreen,
+              styles.searchIconExpandedFloaty
+            )}
             onClick={(event: SyntheticEvent): void => {
               event.stopPropagation();
               pushSearchToUrlAndTrack();
@@ -324,11 +328,10 @@ const styles = StyleSheet.create({
       color: colors.BLUE(),
     },
   },
-  searchIconXLargeSize: {
-    fontSize: 20,
+  searchIconExpandedFloaty: {
     position: "fixed",
     right: 16,
-    top: 18,
+    top: 20,
     zIndex: 11,
     ":hover": {
       color: colors.BLUE(),
