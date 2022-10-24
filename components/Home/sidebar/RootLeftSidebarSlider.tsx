@@ -15,6 +15,7 @@ import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
 import { breakpoints } from "~/config/themes/screen";
+import RHLogo from "../RHLogo";
 
 type Props = {
   isLoggedIn: boolean;
@@ -53,7 +54,10 @@ function RootLeftSidebarSlider({
   );
 
   return (
-    <div>
+    <div className={css(styles.leftSidebarSliderBody)}>
+      <div className={css(styles.leftSidebarSliderHeader)}>
+        <RHLogo withText iconStyle={styles.rhLogoSlider} />
+      </div>
       {sliderMainItems}
       <div className={css(styles.leftSidebarSliderFooter)}>
         <div className={css(styles.leftSidebarSliderFooterItemsTop)}>
@@ -91,7 +95,7 @@ function RootLeftSidebarSlider({
             </div>
           )}
         </div>
-        <div className={css(styles.footer)}>
+        <div className={css(styles.leftSidebarSliderFooterBottom)}>
           <div
             className={css(styles.leftSidebarSliderFooterItemsBottomRow)}
             style={{ marginLeft: "-4px !important" }}
@@ -147,12 +151,24 @@ function RootLeftSidebarSlider({
 }
 
 const styles = StyleSheet.create({
+  leftSidebarSliderBody: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    width: "100%",
+  },
+  leftSidebarSliderHeader: {
+    display: "flex",
+    width: "100%",
+    marginBottom: 32,
+  },
   leftSidebarSliderFooter: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     flex: 1,
     height: "100%",
+    width: "100%",
   },
   leftSidebarSliderFooterTxtItem: {
     color: colors.TEXT_GREY(1),
@@ -167,7 +183,6 @@ const styles = StyleSheet.create({
   leftSidebarSliderFooterBotItem: {
     color: colors.TEXT_GREY(1),
     fontSize: 14,
-    marginRight: 14,
     ":hover": {
       color: colors.TEXT_GREY(1),
     },
@@ -177,27 +192,27 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 20,
     marginBottom: 20,
-    justifyContent: "center",
+    justifyContent: "space-around",
     width: "100%",
+    minWidth: 160,
   },
   leftSidebarSliderFooterItemsTop: {
     display: "flex",
     flexDirection: "column",
     paddingTop: 24,
   },
-  footer: {
+  leftSidebarSliderFooterBottom: {
     marginTop: "auto",
     position: "fixed",
     bottom: 0,
-    left: 20,
+    left: 40,
   },
   leftSidebarSliderFooterIcon: {
     fontSize: 18,
-    marginRight: 32,
     display: "block",
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
-  loginButtonWrap: { width: "100%", display: "flex", justifyContent: "center" },
+  loginButtonWrap: { width: "100%", display: "flex", },
   loginButton: {
     height: "unset",
     justifyContent: "center",
@@ -221,6 +236,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
     color: "#fff",
   },
+  rhLogoSlider: { width: 148 },
 });
 
 const mapStateToProps = (state) => ({

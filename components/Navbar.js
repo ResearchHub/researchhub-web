@@ -13,7 +13,6 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
-import Image from "next/image";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
@@ -86,7 +85,7 @@ const Navbar = (props) => {
           }}
           style={{ cursor: "pointer" }}
         >
-          <RHLogo withText width={120} />
+          <RHLogo withText iconStyle={styles.rhLogoNav} />
         </div>
       </div>
     </Fragment>
@@ -118,10 +117,11 @@ const Navbar = (props) => {
             <SlidingPane
               children={<RootLeftSidebarSlider />}
               className={css(styles.slidingPaneBody)}
-              overlayClassName={css(styles.slidingPaneOverlay)}
               from="left"
+              hideHeader
               isOpen={shouldShowSlider}
               onRequestClose={() => setShouldShowSlider(false)}
+              overlayClassName={css(styles.slidingPaneOverlay)}
             />
           </div>
           <div className={css(styles.searchWrapper)}>
@@ -373,15 +373,16 @@ const styles = StyleSheet.create({
     display: "none",
     width: 0,
     padding: 0,
+    zIndex: 30,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       background: colors.GREY_ICY_BLUE_HUE,
       display: "block",
-      width: 200,
+      width: 240,
     },
   },
   slidingPaneOverlay: {
     display: "none",
-    zIndex: 3,
+    zIndex: 4,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "block",
       width: "100%",
@@ -394,6 +395,7 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
+  rhLogoNav: { width: 140 },
 });
 
 const mapStateToProps = (state) => ({
