@@ -220,11 +220,12 @@ const styles = StyleSheet.create({
     height: "unset",
     justifyContent: "center",
     marginBottom: 16,
-    minWidth: 136,
+    minWidth: 172,
     padding: 8,
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: "95%",
+      minWidth: 172,
     },
   },
   googleIcon: {
