@@ -193,8 +193,7 @@ const styles = StyleSheet.create({
     height: 20,
     justifyContent: "space-around",
     marginBottom: 20,
-    minWidth: 180,
-    width: "100%",
+    width: 180,
   },
   leftSidebarSliderFooterItemsTop: {
     display: "flex",
@@ -205,7 +204,11 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     position: "fixed",
     bottom: 0,
-    left: 24,
+    width: "100%",
+    left: 0,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
   },
   leftSidebarSliderFooterIcon: {
     fontSize: 18,
