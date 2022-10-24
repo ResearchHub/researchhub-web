@@ -27,6 +27,8 @@ import RootLeftSidebarItem, {
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import { storeToCookie } from "~/config/utils/storeToCookie";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import InviteButton from "~/components/Referral/InviteButton";
 
 type Props = {
   openLoginModal: any;
@@ -297,6 +299,11 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
+            <InviteButton>
+              <span className={css(formattedFooterTxtItem)}>
+                {"Invite and Earn"} <ResearchCoinIcon width={16} height={16} />
+              </span>
+            </InviteButton>
             <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
