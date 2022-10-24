@@ -1,4 +1,5 @@
 import { AuthActions } from "~/redux/auth";
+import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -11,11 +12,10 @@ import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
+import RHLogo from "../RHLogo";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
-import { breakpoints } from "~/config/themes/screen";
-import RHLogo from "../RHLogo";
 
 type Props = {
   isLoggedIn: boolean;
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: 20,
-    marginBottom: 20,
     justifyContent: "space-around",
+    marginBottom: 20,
+    minWidth: 180,
     width: "100%",
-    minWidth: 160,
   },
   leftSidebarSliderFooterItemsTop: {
     display: "flex",
@@ -205,14 +205,14 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     position: "fixed",
     bottom: 0,
-    left: 40,
+    left: 24,
   },
   leftSidebarSliderFooterIcon: {
     fontSize: 18,
     display: "block",
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
-  loginButtonWrap: { width: "100%", display: "flex", },
+  loginButtonWrap: { width: "100%", display: "flex" },
   loginButton: {
     height: "unset",
     justifyContent: "center",
