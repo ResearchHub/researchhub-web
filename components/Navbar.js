@@ -89,7 +89,7 @@ const Navbar = (props) => {
             alt="ResearchHub"
             height={14}
             layout="fixed"
-            src="/static/ResearchhubText.png"
+            src="/static/ResearchHubText.png"
             width={120}
           />
         </div>
