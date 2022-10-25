@@ -245,9 +245,19 @@ function BountyModal({
           })
         );
       } else {
+        const effortLevelMap = {
+          0: "LIGHT",
+        };
+
+        descriptions["33.34"] = "IN-DEPTH";
+
+        descriptions["66.67"] = "COMPREHENSIVE";
+        descriptions["100"] = "RIGOROUS";
+
         Bounty.createAPI({
           bountyAmount: offeredAmount,
           itemObjectId: unifiedDocId,
+          effortLevel: effortLevelMap[progress],
         })
           .then((createdBounty) => {
             sendBountyCreateAmpEvent({ currentUser, createdBounty });

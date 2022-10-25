@@ -19,7 +19,6 @@ import icons from "~/config/themes/icons";
 import BountyWizardRSCForm from "./BountyWizardRSCForm";
 import { useRouter } from "next/router";
 
-type Props = {};
 type BountyChoiceProps = {
   icon: string;
   title: string;
@@ -91,12 +90,15 @@ const choiceStyles = StyleSheet.create({
   },
 });
 
-function BountyWizard({}: Props): ReactElement {
+type Props = {
+  onSuccess: () => void;
+};
+
+function BountyWizard({ onSuccess }: Props): ReactElement {
   const [step, setStep] = useState(1);
   const [active, setActive] = useState("");
   const [post, setPost] = useState();
   const router = useRouter();
-  const currentUser = getCurrentUser();
 
   const CHOICES = [
     {
@@ -180,6 +182,7 @@ function BountyWizard({}: Props): ReactElement {
             handleBountyAdded={(bounty) => {
               const { id, slug } = post;
               const route = `/post/${id}/${slug}`;
+              onSuccess && onSuccess();
               router.push(route);
             }}
             // otherButtons={

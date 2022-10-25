@@ -513,9 +513,16 @@ const DiscussionTab = (props) => {
     } else {
       documentId = router.query.documentId;
     }
+
+    let newDocumentType = documentType;
+
+    if (newDocumentType === "bounty") {
+      newDocumentType = "post";
+    }
+
     const res = await getThreads({
       documentId,
-      documentType,
+      documentType: newDocumentType,
       document: props.paper,
       filter,
       loadMore,

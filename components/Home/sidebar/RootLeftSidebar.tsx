@@ -222,7 +222,8 @@ function RootLeftSidebar({
       className={formattedRootLeftSidebar}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
-        ["hubs", "user"].includes(pathname.split("/")[1])
+        ["hubs", "user"].includes(pathname.split("/")[1]) ||
+        pathname === "/hypothesis/create"
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,
               width: !process.env.browser

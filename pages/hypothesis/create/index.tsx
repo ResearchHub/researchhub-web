@@ -3,8 +3,12 @@ import { Fragment } from "react";
 import AboutQuestionCard from "./AboutQuestionCard";
 import Head from "~/components/Head";
 import HypothesisSubmitForm from "~/components/Hypothesis/HypothesisSubmitForm";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import ALink from "~/components/ALink";
 
 export default function Index() {
+  const router = useRouter();
   return (
     <Fragment>
       <Head
@@ -14,10 +18,24 @@ export default function Index() {
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Create a Meta-Study</div>
-          <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
-          <div className={css(styles.row)}>
-            <HypothesisSubmitForm documentType={"hypothesis"} />
-            <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
+          {router.query.from === "bounty" && (
+            <div className={css(styles.description)}>
+              After creating the Meta-Study, link it back as a comment in the
+              bounty{" "}
+              <ALink href={`/post/${router.query.id}/${router.query.slug}`}>
+                {router.query.title}
+              </ALink>
+            </div>
+          )}
+          <div className={css(styles.contentSection)}>
+            <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
+            <div className={css(styles.row)}>
+              <HypothesisSubmitForm documentType={"hypothesis"} />
+              <AboutQuestionCard
+                customStyle={styles.cardOnSide}
+                isOpen={true}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -35,10 +53,15 @@ const styles = StyleSheet.create({
     position: "relative",
     minHeight: "100vh",
     paddingTop: "45px",
-    "@media only screen and (max-width: 1209px)": {
-      marginRight: "5vw",
-      marginLeft: "5vw",
+    paddingLeft: 16,
+    paddingRight: 16,
+    "@media only screen and (max-width: 1023px)": {
+      paddingRight: "5vw",
+      paddingLeft: "5vw",
     },
+  },
+  description: {
+    marginTop: 8,
   },
   title: {
     display: "flex",
@@ -46,7 +69,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: "30px",
     lineHeight: "38px",
-    marginBottom: "30px",
     "@media only screen and (max-width: 767px)": {
       alignItems: "center",
     },
@@ -57,6 +79,9 @@ const styles = StyleSheet.create({
     minWidth: 0,
     marginBottom: "60px",
   },
+  contentSection: {
+    marginTop: 30,
+  },
   row: {
     display: "flex",
     flexWrap: "wrap",
@@ -65,7 +90,7 @@ const styles = StyleSheet.create({
   },
   cardOnTop: {
     display: "none",
-    "@media only screen and (max-width: 1209px)": {
+    "@media only screen and (max-width: 1450px)": {
       /* 1209px is cutoff when AboutQuestionCard no longer fits on the side and must go to top */
       display: "flex",
       flexDirection: "column",
@@ -75,9 +100,9 @@ const styles = StyleSheet.create({
   },
   cardOnSide: {
     width: "100%",
-    maxWidth: "297px",
+    maxWidth: "260px",
     marginLeft: "30px",
-    "@media only screen and (max-width: 1209px)": {
+    "@media only screen and (max-width: 1450px)": {
       /* 1209px is cutoff when AboutQuestionCard has room to fit on the side */
       display: "none",
     },

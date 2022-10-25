@@ -245,7 +245,7 @@ function NewPostModal({
     <BaseModal
       children={
         bodyType === "bounty" ? (
-          <BountyWizard />
+          <BountyWizard onSuccess={closeModal} />
         ) : bodyType === "question" ? (
           <div className={css(styles.rootContainer)} key="question-wizard">
             <AskQuestionForm documentType="question" onExit={closeModal} />

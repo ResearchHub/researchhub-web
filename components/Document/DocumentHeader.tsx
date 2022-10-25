@@ -246,6 +246,10 @@ function DocumentHeader({
     );
   });
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
+  let bountyAmount = 0;
+  allBounties?.forEach((bounty) => {
+    bountyAmount += bounty.amount;
+  });
 
   return (
     // @ts-ignore
@@ -399,7 +403,12 @@ function DocumentHeader({
                 />
               </div>
               <div className={css(styles.type, styles.additionalDetail)}>
-                <ContentBadge contentType={documentType} />
+                <ContentBadge
+                  contentType={documentType}
+                  label={
+                    documentType === "bounty" && bountyAmount + " RSC Bounty"
+                  }
+                />
               </div>
               <ALink
                 overrideStyle={[styles.comments, styles.additionalDetail]}

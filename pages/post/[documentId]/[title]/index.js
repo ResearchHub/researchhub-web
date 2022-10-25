@@ -39,7 +39,8 @@ function useEffectFetchPost({ setPost, setPostV2, query }) {
       .then((data) => {
         const rawPost = data.results[0];
         setPost(rawPost);
-        setPostV2(new PostDoc(rawPost));
+        const postV2 = new PostDoc(rawPost);
+        setPostV2(postV2);
       });
   }, [query]);
 }

@@ -145,8 +145,22 @@ class PostPageCard extends Component {
               showLoadingAnimation
               customPlaceholder={<AbstractPlaceholder color="#efefef" />}
             >
+              {post?.unifiedDocument?.documentType === "bounty" && (
+                <div className={css(styles.table)}>
+                  <div className={css(styles.tableEntry)}>
+                    <div className={css(styles.tableKey)}>Effort Level</div>
+                    <div className={css(styles.tableValue)}>
+                      {this.props.bounties &&
+                        this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()}
+                    </div>
+                  </div>
+                </div>
+              )}
               {post.isReady && (
                 <div>
+                  <div style={{ fontWeight: 500, marginTop: 32 }}>
+                    Bounty Details
+                  </div>
                   {isEditMode ? (
                     <>
                       <DynamicCKEditor
@@ -191,7 +205,7 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post.unifiedDocument.documentType === "question" && (
+                  {post?.unifiedDocument?.documentType === "question" && (
                     <div className={css(styles.createBountyContainer)}>
                       <CreateBountyBtn
                         onBountyAdd={(bounty) => {
@@ -211,6 +225,24 @@ class PostPageCard extends Component {
                       />
                     </div>
                   )}
+                  {post?.unifiedDocument?.documentType === "bounty" &&
+                    post?.bountyType === "metastudy" && (
+                      <div className={css(styles.buttonRow)}>
+                        <Button
+                          label={"Create Meta-Study"}
+                          customButtonStyle={styles.metastudyButton}
+                          onClick={() => {
+                            router.push(
+                              `/hypothesis/create?from=bounty&id=${
+                                post.id
+                              }&postSlug=${
+                                post.slug
+                              }&title=${encodeURIComponent(post.title)}`
+                            );
+                          }}
+                        />
+                      </div>
+                    )}
                 </div>
               )}
             </ReactPlaceholder>
@@ -246,6 +278,23 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
   },
+  table: {
+    marginTop: 16,
+  },
+  tableKey: {
+    color: colors.MEDIUM_GREY(),
+    fontWeight: 500,
+    fontSize: 16,
+    width: 100,
+  },
+  tableValue: {
+    textTransform: "capitalize",
+    fontWeight: 500,
+  },
+  tableEntry: {
+    display: "flex",
+    alignItems: "center",
+  },
   main: {
     display: "flex",
     flexDirection: "column",
@@ -266,6 +315,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  buttonRow: {
+    marginTop: 16,
+  },
+  metastudyButton: {
+    width: "unset",
+    padding: "0px 16px",
   },
 });
 
