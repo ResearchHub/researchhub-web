@@ -21,6 +21,7 @@ import Button from "../../components/Form/Button";
 import Loader from "../../components/Loader/Loader";
 import HowItWorks from "../../components/Referral/HowItWorks";
 import { AUTH_TOKEN } from "~/config/constants";
+import ReferredUserList from "~/components/Referral/ReferredUserList";
 
 const Index = ({ auth }) => {
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);
@@ -121,6 +122,7 @@ const Index = ({ auth }) => {
             <span className={css(styles.rsc)}> {RSC_EARNED} RSC</span>
           </h2>
           <h3 className={css(styles.invitedFriendsTitle)}>Invited friends</h3>
+          <ReferredUserList />
           <ReactPlaceholder
             ready={!fetchingInvitedFriends}
             customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}

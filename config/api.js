@@ -931,6 +931,10 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    REFERRED_USERS: () => {
+      const url = BASE_URL + `user/get_referred_users/`;
+      return url;
+    },
     SHOW_REFERRALS: () => {
       const url = BASE_URL + `user/get_referral_reputation/`;
       return url;

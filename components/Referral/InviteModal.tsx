@@ -14,7 +14,7 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
   const formInputRef = useRef<HTMLInputElement>();
   const [copySuccessMessage, setCopySuccessMessage] = useState<null|string>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-console.log('user', user)
+
   function copyToClipboard() {
     setShowSuccessMessage(true);
     formInputRef!.current!.select();
