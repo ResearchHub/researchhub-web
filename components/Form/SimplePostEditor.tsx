@@ -1,6 +1,6 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
-import { createQuestion } from "./api/createQuestion";
+import { createQuestion } from "../Question/api/createQuestion";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
@@ -48,13 +48,25 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export type AskQuestionFormProps = {
+export type SimplePostEditorProps = {
   documentType: string;
-  onExit: (event?: SyntheticEvent) => void;
+  onSuccess: (post: Record<string, unknown>) => void;
   user: any;
+  label: string;
+  buttonLabel: string;
+  bountyType?: string;
+  otherButtons: any; // TODO: list of react elements?
 };
 
-function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
+function SimplePostEditor({
+  documentType,
+  label,
+  buttonLabel,
+  user,
+  otherButtons,
+  onSuccess,
+  bountyType,
+}: SimplePostEditorProps) {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
     hubs: true,
@@ -86,8 +98,9 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       payload: {
         admins: null,
         created_by: user.id,
-        document_type: "QUESTION",
+        document_type: documentType,
         editors: null,
+        bounty_type: bountyType,
         full_src: mutableFormFields.text,
         hubs: mutableFormFields.hubs.map((hub) => hub.id),
         is_public: true,
@@ -98,9 +111,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       },
       onError: (_err: Error): void => setIsSubmitting(false),
       onSuccess: (response: any): void => {
-        const { id, slug } = response ?? {};
-        router.push(`/post/${id}/${slug}`);
-        onExit();
+        onSuccess(response);
       },
     });
   };
@@ -121,24 +132,9 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
       id="askQuestionForm"
       onSubmit={onFormSubmit}
     >
-      <div className={css(formGenericStyles.text, styles.header)}>
-        {"Ask a Question"}
-        <a
-          className={css(formGenericStyles.authorGuidelines)}
-          style={{ color: colors.BLUE(1) }}
-          href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {"Submission Guidelines"}
-        </a>
-        <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
-        </span>
-      </div>
       <FormInput
         containerStyle={[styles.titleInputContainer]}
-        placeholder={"e.g. Are there limits to human knowledge?"}
+        placeholder={"e.g. Are sugar subtitutes safe to consume?"}
         error={
           shouldDisplayError && formErrors.title
             ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
@@ -147,7 +143,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         errorStyle={styles.errorText}
         id="title"
         inputStyle={shouldDisplayError && formErrors.title && styles.error}
-        label={"Question"}
+        label={label}
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
         required
@@ -158,7 +154,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         initialData={mutableFormFields.text}
         label="Additional Details"
         placeholder={
-          "Include all the information someone would need to answer your question. Be specific about what you need."
+          "Include all the information someone would need to fulfill your bounty. Be specific about what you need."
         }
         labelStyle={styles.label}
         onChange={handleOnChangeFields}
@@ -181,12 +177,15 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
         required
       />
       <div className={css(styles.buttonsContainer)}>
-        <Button
-          customButtonStyle={styles.buttonStyle}
-          disabled={isSubmitting}
-          label="Ask Question"
-          type="submit"
-        />
+        {otherButtons && otherButtons}
+        <div style={{ marginLeft: "auto" }}>
+          <Button
+            customButtonStyle={styles.buttonStyle}
+            disabled={isSubmitting}
+            label={buttonLabel}
+            type="submit"
+          />
+        </div>
       </div>
     </form>
   );
@@ -196,7 +195,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps)(AskQuestionForm);
+export default connect(mapStateToProps)(SimplePostEditor);
 
 const styles = StyleSheet.create({
   askQuestionForm: {
@@ -206,10 +205,6 @@ const styles = StyleSheet.create({
     background: "#FFFFFF",
     "@media only screen and (min-width: 1024px)": {
       minWidth: 720,
-    },
-    "@media only screen and (max-width: 1209px)": {
-      paddingLeft: "5vw",
-      paddingRight: "5vw",
     },
   },
   close: {
@@ -242,7 +237,6 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     width: "auto",
     display: "flex",
-    justifyContent: "flex-end",
     marginTop: "30px",
     "@media only screen and (max-width: 767px)": {
       width: "auto",
@@ -279,12 +273,7 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   buttonStyle: {
-    width: "160px",
-    height: "50px",
-    "@media only screen and (max-width: 415px)": {
-      width: "160px",
-      height: "50px",
-    },
+    marginLeft: "auto",
   },
   editor: {
     width: "721px",

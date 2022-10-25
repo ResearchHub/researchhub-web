@@ -884,6 +884,34 @@ export const QuestionIcon = ({
   );
 };
 
+export const RSCIcon = ({
+  color = "currentColor",
+  onClick,
+  overrideStyle = null,
+  size = 16,
+  withAnimation = true,
+}) => {
+  return (
+    <span
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+      onClick={onClick}
+      style={{
+        fontSize: size,
+        color: color,
+      }}
+    >
+      <img
+        src="/static/rsc-icon-gray.png"
+        className={css(styles.rscIcon)}
+        height="40px"
+      />
+    </span>
+  );
+};
+
 export const HypothesisIcon = ({
   onClick,
   width = 16,

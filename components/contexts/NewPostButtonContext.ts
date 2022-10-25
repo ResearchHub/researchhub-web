@@ -10,6 +10,7 @@ export type NewPostButtonContextValues = {
   isWithDOI?: boolean;
   paperID?: ID;
   submissionID?: ID;
+  type?: string;
   wizardBodyType: WizardBodyTypes | null;
 };
 
