@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "baseUrl": "./",
+    "checkJs": false /* do not type-check js files */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "isolatedModules": true,
@@ -10,6 +11,8 @@
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "moduleResolution": "node",
     "noEmit": true,
+    "noEmitOnError": true,
+    "noImplicitAny": false /* implicit any ignored while building */,
     "paths": {
       "~/*": ["*"]
     },
@@ -17,8 +20,7 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "strict": true /* Enable all strict type-checking options. */,
     "target": "es6",
-    "types": ["node"],
-    "noImplicitAny": false /* implicit any ignored while building */
+    "types": ["node"]
   },
   "include": [
     ".eslintrc.json",

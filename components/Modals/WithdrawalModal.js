@@ -30,6 +30,7 @@ import {
   toCheckSumAddress,
 } from "~/config/utils/crypto";
 import { captureEvent } from "~/config/utils/events";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -379,7 +380,7 @@ class WithdrawalModal extends Component {
         this.provider = provider;
       }
     } else {
-      console.log("Failed to connect MetaMask");
+      emptyFncWithMsg("Failed to connect MetaMask");
       this.setState({
         connectedMetaMask: false,
         connectedWalletLink: false,
@@ -443,7 +444,7 @@ class WithdrawalModal extends Component {
         this.provider = provider;
       }
     } else {
-      console.log("Failed to connect WalletLink");
+      emptyFncWithMsg("Failed to connect WalletLink");
       this.setState({
         connectedMetaMask: false,
         connectedWalletLink: false,
@@ -454,9 +455,9 @@ class WithdrawalModal extends Component {
   disconnectWalletLink = async () => {
     if (this.state.walletLink) {
       this.state.walletLink.disconnect();
-      console.log("Disconnected WalletLink");
+      emptyFncWithMsg("Disconnected WalletLink");
     } else {
-      console.log("Nothing to disconnect");
+      emptyFncWithMsg("Nothing to disconnect");
     }
     this.setState({
       connectedWalletLink: false,

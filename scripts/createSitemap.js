@@ -176,7 +176,7 @@ const writeFile = () => {
             return;
           }
         })
-        .catch((err) => {
+        .catch((_err) => {
           return;
         });
     };

@@ -237,7 +237,7 @@ const Body = (props) => {
       text = convertToEditorValue(props.text)?.document?.text;
     }
   } catch (e) {
-    console.log(e);
+    captureEvent(e);
     return null;
   }
 

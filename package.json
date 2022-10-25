@@ -38,6 +38,7 @@
     "@sentry/cli": "^1.58.0",
     "@sentry/nextjs": "^6.13.3",
     "@thomasvu/ckeditor5-custom-build": "^0.0.23",
+    "@types/react-alert": "^7.0.2",
     "@types/react-sidebar": "^3.0.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-source-maps": "^0.0.3",
@@ -72,7 +73,7 @@
     "quill-to-plaintext": "^1.0.0",
     "raw-loader": "^4.0.2",
     "react": "^17.0.2",
-    "react-alert": "^6.0.0",
+    "react-alert": "^7.0.3",
     "react-animated-text": "^0.1.4",
     "react-autosize-textarea": "^7.0.0",
     "react-avatar": "^3.7.0",
@@ -101,6 +102,7 @@
     "react-redux": "^7.1.1",
     "react-ripples": "^2.2.1",
     "react-select": "^3.0.7",
+    "react-sliding-pane": "^7.3.0",
     "react-sparkle": "^1.0.8",
     "react-spinners": "^0.6.1",
     "react-spring": "^8.0.27",
@@ -155,7 +157,7 @@
     "npm": "==7.19.1"
   },
   "lint-staged": {
-    "*.{js,.tsx}": "eslint --cache --fix",
+    "*..tsx": "eslint --cache --fix",
     "*.{js,css,md,.tsx}": "prettier --write"
   }
 }

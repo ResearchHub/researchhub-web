@@ -1,5 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export const getHubs = () => {
   // Passing large page limit to return all hubs for hubs page
@@ -33,9 +34,7 @@ export const getCategories = () => {
 
       return categories;
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch(emptyFncWithMsg);
 };
 
 const shims = {

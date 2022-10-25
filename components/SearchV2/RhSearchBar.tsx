@@ -182,7 +182,7 @@ function RhSearchBarExpandableInput({
     <Fragment>
       {!isExpanded && (
         <span
-          className={css(styles.searchIcon, styles.searchIconLarge)}
+          className={css(styles.searchIcon, styles.searchIconSmallScreen)}
           onClick={(): void => setIsExpanded(true)}
         >
           {icons.search}
@@ -190,6 +190,15 @@ function RhSearchBarExpandableInput({
       )}
       {isExpanded && (
         <Fragment>
+          <span
+            className={css(styles.backButton)}
+            onClick={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setIsExpanded(false);
+            }}
+          >
+            {icons.longArrowLeft}
+          </span>
           <input
             autoFocus
             className={css(styles.rhSearchBarExpandableInput)}
@@ -203,7 +212,11 @@ function RhSearchBarExpandableInput({
             value={searchString ?? ""}
           />
           <span
-            className={css(styles.searchIcon, styles.searchIconXLarge)}
+            className={css(
+              styles.searchIcon,
+              styles.searchIconSmallScreen,
+              styles.searchIconExpandedFloaty
+            )}
             onClick={(event: SyntheticEvent): void => {
               event.stopPropagation();
               pushSearchToUrlAndTrack();
@@ -232,16 +245,18 @@ const styles = StyleSheet.create({
   },
   rhSearchBarExpandableInput: {
     bottom: 0,
-    height: 64 /* NAVBAR HEIGHT */,
+    boxSizing: "border-box",
+    fontSize: 20,
+    height: 68 /* NAVBAR HEIGHT */,
+    padding: "0 54px 0 36px",
     position: "fixed",
     right: 0,
     top: 0,
-    width: "calc(100% - 160px)" /* adjusted leftbar width */,
+    width: "calc(100% - 80px)" /* adjusted leftbar width */,
     zIndex: 10,
-    fontSize: 20,
-    padding: "0 52px 0 20px",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      width: "calc(100% - 76px)" /* adjusted leftbar width */,
+      padding: "0 52px",
+      width: "100%" /* adjusted leftbar width */,
     },
   },
   rhSearchBarInputDisplay: {
@@ -264,13 +279,30 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: 32,
     outline: "none",
-    padding: "8px 32px 8px 8px",
+    padding: "8px 32px 8px 32px",
     width: "100%",
     ":focus": {
       border: `1px solid ${colors.BLUE()}`,
     },
     "::placeholder": {
       opacity: 0.6,
+    },
+  },
+  backButton: {
+    borderRadius: 6,
+    cursor: "pointer",
+    fontSize: 18,
+    opacity: 0.6,
+    padding: "4px 7px",
+    position: "fixed",
+    left: "86px",
+    top: 20,
+    zIndex: 11,
+    ":hover": {
+      background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      left: "12px",
     },
   },
   searchIcon: {
@@ -287,8 +319,8 @@ const styles = StyleSheet.create({
       background: colors.GREY(0.14) /* matching NavbarRightButtonGroup */,
     },
   },
-  searchIconLarge: {
-    fontSize: 17,
+  searchIconSmallScreen: {
+    fontSize: 18,
     position: "static",
     right: "unset",
     top: "unset",
@@ -296,8 +328,7 @@ const styles = StyleSheet.create({
       color: colors.BLUE(),
     },
   },
-  searchIconXLarge: {
-    fontSize: 20,
+  searchIconExpandedFloaty: {
     position: "fixed",
     right: 16,
     top: 20,

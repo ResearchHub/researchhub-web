@@ -46,7 +46,6 @@ export async function getServerSideProps(ctx) {
   try {
     const response = await fetchOrgNotes({ orgSlug }, authToken);
     const parsed = await Helpers.parseJSON(response);
-    console.log("response", response);
     if (response.ok) {
       notes = parsed.results;
     } else {

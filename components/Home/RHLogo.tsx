@@ -1,7 +1,13 @@
-import { css, StyleSheet } from "aphrodite";
+import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 
-export default function RHLogo({ iconStyle, white, withText }) {
+type Props = {
+  iconStyle: StyleDeclarationValue;
+  white?: boolean;
+  withText?: boolean;
+};
+
+export default function RHLogo({ iconStyle, white, withText }: Props) {
   // intentional strict check
   if (withText === true) {
     return (

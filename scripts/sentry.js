@@ -3,8 +3,7 @@ const SentryCli = require("@sentry/cli");
 async function createReleaseAndUpload() {
   const release = process.env.SENTRY_RELEASE;
   if (!release) {
-    console.warn("SENTRY_RELEASE is not set");
-
+    console.log("SENTRY_RELEASE is not set");
     return;
   }
 
@@ -24,7 +23,7 @@ async function createReleaseAndUpload() {
     console.log("Finalizing release");
     await cli.releases.finalize(release);
   } catch (e) {
-    console.error("Source maps uploading failed:", e);
+    console.log("Source maps uploading failed:", e);
   }
 }
 
