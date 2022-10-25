@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: 32,
     outline: "none",
-    padding: "8px 32px 8px 32px",
+    padding: "8px 32px 8px 16px",
     width: "100%",
     ":focus": {
       border: `1px solid ${colors.BLUE()}`,
