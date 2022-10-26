@@ -141,6 +141,7 @@ function RootLeftSidebar({
       "hypothesis",
       "my-hubs",
       "live",
+      "referral",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {
