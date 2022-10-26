@@ -12,8 +12,8 @@ const InviteButton = ({ children }: Args) => {
   const user = useSelector((state) => state?.auth?.user);
 
   return (
-    <span onClick={() => setIsOpen(true)}>
-      <span>{children}</span>
+    <span>
+      <span onClick={() => setIsOpen(true)}>{children}</span>
       <InviteModal
         isOpen={isOpen}
         handleClose={() => setIsOpen(false)}

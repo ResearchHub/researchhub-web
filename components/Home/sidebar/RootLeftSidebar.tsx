@@ -299,11 +299,21 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <InviteButton>
-              <span className={css(formattedFooterTxtItem)}>
-                {"Invite and Earn"} <ResearchCoinIcon width={16} height={16} />
-              </span>
-            </InviteButton>
+            <span className={css(formattedFooterTxtItem)}>
+              <InviteButton>
+                <span className={css(styles.referralProgramItem)}>
+                  {isMinimized
+                    ? "Invite"
+                    : (
+                      <>
+                        {"Invite and Earn"}
+                        <ResearchCoinIcon width={20} height={20} overrideStyle={styles.rscIcon} />
+                      </>
+                    )
+                  }
+                </span>
+              </InviteButton>
+            </span>
             <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
@@ -474,6 +484,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   leftSidebarFooterItemsBottomRowMin: { display: "none" },
+  referralProgramItem: {
+    color: colors.ORANGE_DARK2(),
+    display: "flex",
+    alignItems: "center",
+    columnGap: "10px",
+    cursor: "pointer",
+  },
+  rscIcon: {
+    marginTop: 5,
+  },
   leftSidebarFooterIcon: {
     fontSize: 18,
     marginRight: 32,

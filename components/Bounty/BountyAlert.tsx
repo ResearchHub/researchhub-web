@@ -12,6 +12,7 @@ import AuthorFacePile from "../shared/AuthorFacePile";
 import { breakpoints } from "~/config/themes/screen";
 import ShareDropdown from "../ShareDropdown";
 import buildTwitterUrl from "./utils/buildTwitterUrl";
+import InviteButton from "~/components/Referral/InviteButton";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -192,6 +193,14 @@ const BountyAlert = ({
         </div>
       </div>
       <div className={css(styles.actions)}>
+        <div style={{color: colors.ORANGE_DARK2()}}>
+          <InviteButton>
+            <span>
+              {"Invite and Earn"}
+              <ResearchCoinIcon width={16} height={16} overrideStyle={styles.rscIcon} />
+            </span>
+          </InviteButton>
+        </div>
         <div className={css(styles.share)}>
           <ShareDropdown handleClick={_handleShareClick} />
         </div>
@@ -301,10 +310,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     border: `1px solid ${colors.NEW_GREEN()}`,
     lineHeight: "22px",
-    display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexDirection: "column",
-    },
   },
   wrapper: {
     display: "flex",

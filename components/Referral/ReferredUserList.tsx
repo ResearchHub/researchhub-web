@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ReferredUserList
+export default ReferredUserList;
