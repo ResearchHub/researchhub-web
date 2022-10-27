@@ -307,7 +307,7 @@ function RootLeftSidebar({
                     ? "Invite"
                     : (
                       <>
-                        {"Invite and Earn"}
+                        {"Invite and earn"}
                         <ResearchCoinIcon width={20} height={20} overrideStyle={styles.rscIcon} />
                       </>
                     )

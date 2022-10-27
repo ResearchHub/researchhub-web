@@ -10,7 +10,7 @@ import LeaderboardPlaceholder from "~/components/Placeholders/LeaderboardPlaceho
 import colors from "~/config/themes/colors";
 import { formatDateStandard } from "~/config/utils/dates";
 import { breakpoints } from "~/config/themes/screen";
-
+import dayjs from "dayjs";
 
 const fetchReferredUsersAPI = ({ onSuccess }) => {
   return fetch(
@@ -43,8 +43,6 @@ const ReferredUserList = () => {
 
   const rscEarned = referredUsers.reduce((total:number, current:any) => total + (current.rsc_earned || 0), 0)
 
-  console.log('referred', referredUsers)
-
   return (
     <div>
       <h2 className={css(styles.earnTitle)}>
@@ -72,23 +70,33 @@ const ReferredUserList = () => {
           </div>
         ) : (
           <div>
-            {referredUsers.map((referredUser:any) => (
-              <div className={css(styles.user)} key={`user-${referredUser.user.id}`}>
-                <div>
-                  <AuthorAvatar author={referredUser.user.author_profile} />
+            {referredUsers.map((referredUser:any) => {
+
+              const expireDate = dayjs(referredUser.benefits_expire_on);
+              const now = dayjs();
+              const didExpire = now > expireDate;
+
+              return (
+                <div className={css(styles.user)} key={`user-${referredUser.user.id}`}>
+                  <div>
+                    <AuthorAvatar author={referredUser.user.author_profile} />
+                  </div>
+                  <div className={css(styles.userDetails)}>
+                    <span className={css(styles.userName)}>{referredUser.user.author_profile.first_name} {referredUser.user.author_profile.last_name}</span>
+                    {didExpire
+                      ? <span className={css(styles.didExpire)}>Referral earnings expired on {formatDateStandard(referredUser.benefits_expire_on)}</span>
+                      : <span className={css(styles.willExpire)}>Referral earnings expire on {formatDateStandard(referredUser.benefits_expire_on)}</span>
+                    }
+                  </div>
+                  <div className={css(styles.userRscEarned)}>
+                    {referredUser?.rsc_earned > 0
+                      ? <span className={css(styles.yesEarnings)}>+{referredUser.rsc_earned} RSC</span>
+                      : <span className={css(styles.noEarnings)}>0 RSC</span>
+                    }
+                  </div>
                 </div>
-                <div className={css(styles.userDetails)}>
-                  <span className={css(styles.userName)}>{referredUser.user.author_profile.first_name} {referredUser.user.author_profile.last_name}</span>
-                  <span className={css(styles.expire)}>Referral earnings expire on {formatDateStandard(referredUser.benefits_expire_on)}</span>
-                </div>
-                <div className={css(styles.userRscEarned)}>
-                  {(!referredUser.rsc_earned || referredUser.rsc_earned === 0)
-                    ? <span className={css(styles.noEarnings)}>0 RSC</span>
-                    : <span className={css(styles.yesEarnings)}>+{referredUser.rsc_earned} RSC</span>
-                  }
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </ReactPlaceholder>
@@ -103,15 +111,20 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     columnGap: "10px",
+    paddingBottom: 15,
   },
   userRscEarned: {
     color: colors.ORANGE_DARK2(1.0),
     marginLeft: "auto",
   },
-  expire: {
+  willExpire: {
+    fontSize: 13,
+    color: colors.BLACK(),
+  },
+  didExpire: {
     fontSize: 13,
     color: colors.MEDIUM_GREY(),
-  },
+  },  
   userDetails: {
     display: "flex",
     flexDirection: "column",
