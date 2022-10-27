@@ -40,15 +40,14 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
       titleStyle={styles.modalTitle}
       title={
         <div style={{textAlign: "left"}}>
-          <div>{`Invite others to ResearchHub`}</div>
-          <p style={{ textAlign: "left", fontWeight: 400, margin:0 }}>
-            Get rewarded for referring scientists and reserachers to our platform.
-          </p>          
-       </div>
+          {`Invite others to ResearchHub`}
+        </div>
       }
     >
       <div className={css(styles.divider)}></div>
-
+      <p className={css(styles.details)}>
+        Get rewarded for referring scientists and reserachers to our platform.
+      </p>
       <div className={css(styles.referralLinkSection)}>
         <h4 className={css(styles.sectionTitle)}>
           Your referral link
@@ -119,11 +118,18 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTop: `1px solid ${colors.GREY_LINE()}`,
     marginTop: 5,
-    marginBottom: 35,
+    
   },
   squaresContainer: {
     display: "flex",
     columnGap: "15px"
+  },
+  details: {
+    textAlign: "left",
+    fontWeight: 400,
+    width: "100%",
+    marginBottom: 35,
+    marginTop: 10,
   },
   sectionTitle: {
     display: "flex",
