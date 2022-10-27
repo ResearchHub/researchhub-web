@@ -303,15 +303,18 @@ function RootLeftSidebar({
             <span className={css(formattedFooterTxtItem)}>
               <InviteButton>
                 <span className={css(styles.referralProgramItem)}>
-                  {isMinimized
-                    ? "Invite"
-                    : (
-                      <>
-                        {"Invite and earn"}
-                        <ResearchCoinIcon width={20} height={20} overrideStyle={styles.rscIcon} />
-                      </>
-                    )
-                  }
+                  {isMinimized ? (
+                    "Invite"
+                  ) : (
+                    <>
+                      {"Invite and earn"}
+                      <ResearchCoinIcon
+                        width={20}
+                        height={20}
+                        overrideStyle={styles.rscIcon}
+                      />
+                    </>
+                  )}
                 </span>
               </InviteButton>
             </span>

@@ -13,20 +13,17 @@ import { breakpoints } from "~/config/themes/screen";
 import dayjs from "dayjs";
 
 const fetchReferredUsersAPI = ({ onSuccess }) => {
-  return fetch(
-    API.REFERRED_USERS(),
-    API.GET_CONFIG(),
-  )
+  return fetch(API.REFERRED_USERS(), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any): void => onSuccess({ res }))
     .catch((error) => {
       captureEvent({
         error,
-        msg: "Failed to fetch referred users"
+        msg: "Failed to fetch referred users",
       });
     });
-}
+};
 
 const ReferredUserList = () => {
   const [referredUsers, setReferredUsers] = useState([]);
@@ -37,17 +34,19 @@ const ReferredUserList = () => {
       onSuccess: ({ res }) => {
         setReferredUsers(res);
         setIsFetching(false);
-      }
-    })
-  },[]);
+      },
+    });
+  }, []);
 
-  const rscEarned = referredUsers.reduce((total:number, current:any) => total + (current.rsc_earned || 0), 0)
+  const rscEarned = referredUsers.reduce(
+    (total: number, current: any) => total + (current.rsc_earned || 0),
+    0
+  );
 
   return (
     <div>
       <h2 className={css(styles.earnTitle)}>
-        You've Earned{" "}
-        <span className={css(styles.rsc)}> {rscEarned} RSC</span>
+        You've Earned <span className={css(styles.rsc)}> {rscEarned} RSC</span>
       </h2>
       <h3 className={css(styles.invitedUsersTitle)}>Invited users</h3>
       <ReactPlaceholder
@@ -55,8 +54,7 @@ const ReferredUserList = () => {
         // @ts-ignore
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
       >
-        {referredUsers.length === 0
-        ? (
+        {referredUsers.length === 0 ? (
           <div>
             <EmptyState
               text={"You haven't invited any friends yet"}
@@ -70,41 +68,54 @@ const ReferredUserList = () => {
           </div>
         ) : (
           <div>
-            {referredUsers.map((referredUser:any) => {
-
+            {referredUsers.map((referredUser: any) => {
               const expireDate = dayjs(referredUser.benefits_expire_on);
               const now = dayjs();
               const didExpire = now > expireDate;
 
               return (
-                <div className={css(styles.user)} key={`user-${referredUser.user.id}`}>
+                <div
+                  className={css(styles.user)}
+                  key={`user-${referredUser.user.id}`}
+                >
                   <div>
                     <AuthorAvatar author={referredUser.user.author_profile} />
                   </div>
                   <div className={css(styles.userDetails)}>
-                    <span className={css(styles.userName)}>{referredUser.user.author_profile.first_name} {referredUser.user.author_profile.last_name}</span>
-                    {didExpire
-                      ? <span className={css(styles.didExpire)}>Referral earnings expired on {formatDateStandard(referredUser.benefits_expire_on)}</span>
-                      : <span className={css(styles.willExpire)}>Referral earnings expire on {formatDateStandard(referredUser.benefits_expire_on)}</span>
-                    }
+                    <span className={css(styles.userName)}>
+                      {referredUser.user.author_profile.first_name}{" "}
+                      {referredUser.user.author_profile.last_name}
+                    </span>
+                    {didExpire ? (
+                      <span className={css(styles.didExpire)}>
+                        Referral earnings expired on{" "}
+                        {formatDateStandard(referredUser.benefits_expire_on)}
+                      </span>
+                    ) : (
+                      <span className={css(styles.willExpire)}>
+                        Referral earnings expire on{" "}
+                        {formatDateStandard(referredUser.benefits_expire_on)}
+                      </span>
+                    )}
                   </div>
                   <div className={css(styles.userRscEarned)}>
-                    {referredUser?.rsc_earned > 0
-                      ? <span className={css(styles.yesEarnings)}>+{referredUser.rsc_earned} RSC</span>
-                      : <span className={css(styles.noEarnings)}>0 RSC</span>
-                    }
+                    {referredUser?.rsc_earned > 0 ? (
+                      <span className={css(styles.yesEarnings)}>
+                        +{referredUser.rsc_earned} RSC
+                      </span>
+                    ) : (
+                      <span className={css(styles.noEarnings)}>0 RSC</span>
+                    )}
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         )}
       </ReactPlaceholder>
-
-
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   user: {
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
   didExpire: {
     fontSize: 13,
     color: colors.MEDIUM_GREY(),
-  },  
+  },
   userDetails: {
     display: "flex",
     flexDirection: "column",
@@ -143,7 +154,7 @@ const styles = StyleSheet.create({
   },
   rsc: {
     color: colors.ORANGE_DARK2(1.0),
-  },  
+  },
   invitedFriendsSection: {
     margin: "0 auto",
     paddingBottom: 50,
@@ -155,15 +166,15 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 26,
-    }
-  },  
+    },
+  },
   invitedUsersTitle: {
     fontWeight: 500,
     fontSize: 18,
     borderBottom: `1px solid ${colors.GREY_LINE()}`,
     paddingBottom: 15,
     marginTop: 50,
-  },  
+  },
 });
 
 export default ReferredUserList;

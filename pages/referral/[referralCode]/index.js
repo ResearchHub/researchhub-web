@@ -35,7 +35,7 @@ const Index = ({ code, user }) => {
               {user.author_profile.first_name} has invited you to ResearchHub
             </h1>
             <p className={css(styles.text)}>
-              Sign up to ResearchHub to become a part of a growing scientific
+              Sign up for ResearchHub to become a part of a growing scientific
               community dedicated to accelerating science.
             </p>
             <GoogleLoginButton

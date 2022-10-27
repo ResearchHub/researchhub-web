@@ -9,28 +9,28 @@ import InviteIcon from "../Icons/InviteIcon";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 
-
 type Args = {
   isOpen: boolean;
   handleClose: Function;
   user: any;
-}
+};
 
 const InviteModal = ({ isOpen, handleClose, user }: Args) => {
   const formInputRef = useRef<HTMLInputElement>();
-  const [copySuccessMessage, setCopySuccessMessage] = useState<null|string>(null);
+  const [copySuccessMessage, setCopySuccessMessage] = useState<null | string>(
+    null
+  );
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   function copyToClipboard() {
     setShowSuccessMessage(true);
     formInputRef!.current!.select();
     document.execCommand("copy");
-    // e.target.focus(); // TODO: Uncomment if we don't want highlighting
     setCopySuccessMessage("Copied!");
     setTimeout(() => {
       setShowSuccessMessage(false);
     }, 2000);
-  }  
+  }
 
   return (
     <BaseModal
@@ -49,7 +49,9 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
         <h4 className={css(styles.sectionTitle)}>
           Your referral link
           <span onClick={() => handleClose()}>
-            <ALink href="/referral" overrideStyle={styles.link}>View invites</ALink>
+            <ALink href="/referral" overrideStyle={styles.link}>
+              View invites
+            </ALink>
           </span>
         </h4>
         <FormInput
@@ -57,7 +59,11 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
           onClick={copyToClipboard}
           inlineNodeRight={
             <a className={css(styles.copyLink)} onClick={copyToClipboard}>
-              {showSuccessMessage ? "Copied!" : <span className={css(styles.copyIcon)}>{icons.copy}</span>}
+              {showSuccessMessage ? (
+                "Copied!"
+              ) : (
+                <span className={css(styles.copyIcon)}>{icons.copy}</span>
+              )}
             </a>
           }
           inlineNodeStyles={styles.inlineNodeStyles}
@@ -69,7 +75,7 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
             process.browser
               ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
               : ""
-            }
+          }
           containerStyle={styles.containerStyle}
           inputStyle={styles.inputStyle}
         />
@@ -78,12 +84,24 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
       <div className={css(styles.howItWorksSection)}>
         <h4 className={css(styles.sectionTitle)}>
           How it works
-          <ALink href="https://researchhub.notion.site/ResearchHub-Referral-Program-67f25909a320432eb1071078084bf5b9" overrideStyle={styles.link} target="_blank">FAQs</ALink>
+          <ALink
+            href="https://researchhub.notion.site/ResearchHub-Referral-Program-67f25909a320432eb1071078084bf5b9"
+            overrideStyle={styles.link}
+            target="_blank"
+          >
+            FAQs
+          </ALink>
         </h4>
         <div className={css(styles.highlightedSection)}>
           <ol className={css(styles.highlightedSectionList)}>
             <li>Share your referral link with others</li>
-            <li>Whenever invitee earns RSC on ReserachHub, you will receive a <span style={{color: colors.ORANGE_DARK2(), fontWeight: 500}}>7% bonus</span> for the first six month period</li>
+            <li>
+              Whenever invitee earns RSC on ReserachHub, you will receive a{" "}
+              <span style={{ color: colors.ORANGE_DARK2(), fontWeight: 500 }}>
+                7% bonus
+              </span>{" "}
+              for the first six month period
+            </li>
           </ol>
           <div className={css(styles.squaresContainer)}>
             <div className={css(styles.square)}>
@@ -91,41 +109,43 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
                 <AuthorAvatar author={user.author_profile} />
               </div>
               <span className={css(styles.personTitle)}>You</span>
-              <span className={css(styles.subtitle)}><span className={css(styles.emphasizedEarn)}>+7% RSC</span> bonus for first six months</span>
+              <span className={css(styles.subtitle)}>
+                <span className={css(styles.emphasizedEarn)}>+7% RSC</span>{" "}
+                bonus for first six months
+              </span>
             </div>
             <div className={css(styles.square)}>
               <div className={css(styles.iconContainer)}>
                 <InviteIcon />
               </div>
               <span className={css(styles.personTitle)}>Invitee</span>
-              <span className={css(styles.subtitle)}><span className={css(styles.emphasizedEarn)}>+50 RSC</span> on sign up</span>
-            </div>          
+              <span className={css(styles.subtitle)}>
+                <span className={css(styles.emphasizedEarn)}>+50 RSC</span> on
+                sign up
+              </span>
+            </div>
           </div>
         </div>
       </div>
-
-
-
     </BaseModal>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   divider: {
     width: "100%",
     borderTop: `1px solid ${colors.GREY_LINE()}`,
     marginTop: 5,
-    
   },
   squaresContainer: {
     display: "flex",
-    columnGap: "15px"
+    columnGap: "15px",
   },
   highlightedSectionList: {
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
       paddingLeft: 20,
-    }
+    },
   },
   details: {
     textAlign: "left",
@@ -135,7 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
-    }
+    },
   },
   sectionTitle: {
     display: "flex",
@@ -155,7 +175,7 @@ const styles = StyleSheet.create({
   },
   highlightedSection: {
     backgroundColor: colors.ICY_GREY,
-    padding: 15
+    padding: 15,
   },
   referralLinkSection: {
     width: "100%",
@@ -174,7 +194,7 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY(),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 13,
-    }
+    },
   },
   square: {
     rowGap: "5px",
@@ -190,16 +210,16 @@ const styles = StyleSheet.create({
       paddingLeft: 15,
       paddingRight: 15,
       padding: 10,
-    },    
+    },
   },
   modalStyle: {
     width: 650,
     padding: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "90%"
+      width: "90%",
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      width: "100%"
+      width: "100%",
     },
   },
   modalContentStyle: {
@@ -207,7 +227,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       padding: 5,
       paddingTop: 25,
-    }
+    },
   },
   inputStyle: {
     paddingRight: 85,
@@ -233,13 +253,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: -70,
     top: "50%",
-    color: "#fff",
+    color: "white",
     transform: "translateY(-50%)",
   },
   inlineNodeStyles: {
     paddingRight: 0,
     right: 16,
-  },  
-})
+  },
+});
 
 export default InviteModal;

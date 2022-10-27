@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 type Args = {
   children: any;
-}
+};
 
 const InviteButton = ({ children }: Args) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +20,7 @@ const InviteButton = ({ children }: Args) => {
         user={user}
       />
     </span>
-  )
-}
+  );
+};
 
 export default InviteButton;
