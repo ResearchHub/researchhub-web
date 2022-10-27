@@ -53,8 +53,10 @@ export type SimplePostEditorProps = {
   onSuccess: (post: Record<string, unknown>) => void;
   user: any;
   label: string;
+  editorCTA: string;
   buttonLabel: string;
   bountyType?: string;
+  title: string;
   otherButtons: any; // TODO: list of react elements?
 };
 
@@ -66,6 +68,8 @@ function SimplePostEditor({
   otherButtons,
   onSuccess,
   bountyType,
+  editorCTA,
+  title,
 }: SimplePostEditorProps) {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
@@ -134,7 +138,9 @@ function SimplePostEditor({
     >
       <FormInput
         containerStyle={[styles.titleInputContainer]}
-        placeholder={"e.g. Are sugar subtitutes safe to consume?"}
+        placeholder={
+          title ? title : "e.g. Are sugar subtitutes safe to consume?"
+        }
         error={
           shouldDisplayError && formErrors.title
             ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
@@ -154,7 +160,9 @@ function SimplePostEditor({
         initialData={mutableFormFields.text}
         label="Additional Details"
         placeholder={
-          "Include all the information someone would need to fulfill your bounty. Be specific about what you need."
+          editorCTA
+            ? editorCTA
+            : "Include all the information someone would need to fulfill your bounty. Be specific about what you need."
         }
         labelStyle={styles.label}
         onChange={handleOnChangeFields}

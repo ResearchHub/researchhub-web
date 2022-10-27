@@ -8,7 +8,6 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { formatDateStandard } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";

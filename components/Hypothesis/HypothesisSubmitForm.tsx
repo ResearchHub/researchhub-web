@@ -104,7 +104,11 @@ function HypothesisSubmitForm({ documentType, user }: Props) {
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
       const { id, slug } = response;
-      router.push(`/hypothesis/${id}/${slug}`);
+      router.push(
+        `/hypothesis/${id}/${slug}${
+          router.query.from ? "?from=" + router.query.from : ""
+        }`
+      );
     };
   };
 

@@ -195,9 +195,6 @@ const styles = StyleSheet.create({
     margin: "0 8px 0 8px",
     padding: 4,
     position: "relative",
-    ":hover": {
-      background: colors.GREY(0.14),
-    },
   },
   avatarDropdown: {
     background: "#fff",

@@ -662,10 +662,11 @@ class Editor extends Component {
                 />
               </div>
             )}
+            <div className={css(styles.toolbarContainer)}>
+              {ReactQuill && this.renderToolbar(this.props.uid)}
+            </div>
+
             <div className={css(styles.footerContainer)}>
-              <div className={css(styles.toolbarContainer)}>
-                {ReactQuill && this.renderToolbar(this.props.uid)}
-              </div>
               {!this.props.readOnly && this.renderButtons(this.props)}
             </div>
           </div>
@@ -767,8 +768,8 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingRight: 0,
     paddingBottom: 0,
-    marginLeft: "auto",
     display: "flex",
+    width: "100%",
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginLeft: "unset",
@@ -784,7 +785,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   bountyBtnContainer: {
-    marginRight: 15,
+    marginRight: "auto",
   },
   showFullEditor: {
     display: "block",

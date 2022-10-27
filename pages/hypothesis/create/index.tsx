@@ -21,9 +21,9 @@ export default function Index() {
           {router.query.from === "bounty" && (
             <div className={css(styles.description)}>
               After creating the Meta-Study, link it back as a comment in the
-              bounty{" "}
+              bounty:{" "}
               <ALink href={`/post/${router.query.id}/${router.query.slug}`}>
-                {router.query.title}
+                "{router.query.title}"
               </ALink>
             </div>
           )}

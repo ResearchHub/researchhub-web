@@ -11,7 +11,7 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect, SyntheticEvent } from "react";
 import { ProgressBar, Step } from "react-step-progress-bar";
-import Bounty from "~/config/types/bounty";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
@@ -113,6 +113,32 @@ const progressStyles = StyleSheet.create({
   },
 });
 
+export const EFFORT_LEVEL_DESCRIPTIONS = {
+  question: {
+    casual: "30 minutes max. No need to add any references.",
+    light:
+      "About 1-3 hours. Typically a comment with a few relevant citations.",
+    medium:
+      "A full day's worth of work. A 1000-1500 word post that cites at least 5 references.",
+    comprehensive:
+      "Multiple days' worth of research. A narrative review on the topic worthy of publication.",
+  },
+  metastudy: {
+    casual: "30 minutes max. 2-3 relevant citations with minimal context.",
+    light: "About 1-3 hours. 5-10 citations with detailed context.",
+    medium:
+      "A full day's worth of work. Around 20 references with detailed context.",
+    comprehensive:
+      "Multiple days' worth of research. A complete collection of references with detailed context.",
+  },
+  somethingelse: {
+    casual: "30 minutes max.",
+    light: "About 1-3 hours.",
+    medium: "A full day's worth of work.",
+    comprehensive: "Multiple days' worth of effort.",
+  },
+};
+
 type Props = {
   withPreview: boolean;
   handleBountyAdded: Function;
@@ -125,10 +151,11 @@ type Props = {
   setMessage: Function;
   isOriginalPoster: boolean;
   hubs?: Hub[];
+  bountyType: string;
   otherButtons: any;
 };
 
-function BountyModal({
+function BountyWizardRSCForm({
   withPreview,
   handleBountyAdded,
   unifiedDocId,
@@ -140,6 +167,7 @@ function BountyModal({
   isOriginalPoster,
   hubs = [],
   otherButtons,
+  bountyType,
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
@@ -156,6 +184,7 @@ function BountyModal({
   const [progress, setProgress] = useState(0);
   const [hoverProgress, setHoverProgress] = useState(0);
   const [progressHover, setProgressHover] = useState(false);
+  const [workAmount, setWorkAmount] = useState("light");
 
   useEffect((): void => {
     setHasMinRscAlert(
@@ -164,28 +193,6 @@ function BountyModal({
         currentUserBalance < offeredAmount
     );
   }, [currentUserBalance, offeredAmount]);
-
-  useEffect((): void => {
-    let offeredAmount = 100;
-    switch (progress) {
-      case 0:
-        offeredAmount = 100;
-        break;
-      case 33.34:
-        offeredAmount = 400;
-        break;
-      case 66.67:
-        offeredAmount = 800;
-        break;
-      case 100:
-        offeredAmount = 1000;
-        break;
-      default:
-        offeredAmount = 100;
-    }
-
-    setOfferedAmount(offeredAmount);
-  }, [progress]);
 
   const handleBountyInputChange = (event) => {
     setOfferedAmount(event.target.value ? parseInt(event.target.value) : "0");
@@ -246,13 +253,13 @@ function BountyModal({
         );
       } else {
         const effortLevelMap = {
-          0: "LIGHT",
+          0: "CASUAL",
         };
 
-        descriptions["33.34"] = "IN-DEPTH";
+        effortLevelMap["33.34"] = "LIGHT";
 
-        descriptions["66.67"] = "COMPREHENSIVE";
-        descriptions["100"] = "RIGOROUS";
+        effortLevelMap["66.67"] = "MEDIUM";
+        effortLevelMap["100"] = "COMPREHENSIVE";
 
         Bounty.createAPI({
           bountyAmount: offeredAmount,
@@ -277,15 +284,26 @@ function BountyModal({
   const researchHubAmount = calcResearchHubAmount({ offeredAmount });
   const totalAmount = calcTotalAmount({ offeredAmount });
 
-  const descriptions = {
-    0: "About 1-3 hours. Typically a comment with a few references.",
+  const suggestedRSC = {
+    question: {
+      casual: 750,
+      light: 3000,
+      medium: 12000,
+      comprehensive: 50000,
+    },
+    metastudy: {
+      casual: 750,
+      light: 3000,
+      medium: 12000,
+      comprehensive: 50000,
+    },
+    somethingelse: {
+      casual: 500,
+      light: 1500,
+      medium: 12000,
+      comprehensive: 50000,
+    },
   };
-
-  descriptions["33.34"] =
-    "About 5-10 hours. A report or post submitted via the notebook typically suffices.";
-
-  descriptions["66.67"] = "About a day's worth of work.";
-  descriptions["100"] = "Multiple day's worth of research.";
 
   return (
     <>
@@ -351,9 +369,11 @@ function BountyModal({
                         onClick={() => {
                           setProgress(0);
                           setHoverProgress(0);
+                          setWorkAmount("casual");
+
                           setProgressHover(false);
                         }}
-                        label="LIGHT"
+                        label="CASUAL"
                       />
                     )}
                   </Step>
@@ -361,7 +381,7 @@ function BountyModal({
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
-                        label="IN-DEPTH"
+                        label="LIGHT"
                         progress={progress}
                         hoverProgress={hoverProgress}
                         onMouseEnter={() => {
@@ -375,6 +395,8 @@ function BountyModal({
                         onClick={() => {
                           setProgress(33.34);
                           setHoverProgress(0);
+                          setWorkAmount("light");
+
                           setProgressHover(false);
                         }}
                       />
@@ -384,12 +406,14 @@ function BountyModal({
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
-                        label="COMPREHENSIVE"
+                        label="MEDIUM"
                         progress={progress}
                         hoverProgress={hoverProgress}
                         onClick={() => {
                           setProgress(66.67);
                           setHoverProgress(0);
+                          setWorkAmount("medium");
+
                           setProgressHover(false);
                         }}
                         onMouseEnter={() => {
@@ -407,7 +431,7 @@ function BountyModal({
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
-                        label="RIGOROUS"
+                        label="COMPREHENSIVE"
                         progress={progress}
                         hoverProgress={hoverProgress}
                         onMouseEnter={() => {
@@ -420,6 +444,8 @@ function BountyModal({
                         }}
                         onClick={() => {
                           setProgress(100);
+                          setWorkAmount("comprehensive");
+
                           setHoverProgress(0);
                           setProgressHover(false);
                         }}
@@ -429,7 +455,13 @@ function BountyModal({
                 </ProgressBar>
               </div>
               <div className={css(styles.progressDescription)}>
-                {descriptions[progress]}
+                {EFFORT_LEVEL_DESCRIPTIONS[bountyType][workAmount]}
+                {"\n"}
+                {"\n"}Suggested Offer Amount:{" "}
+                {formatBountyAmount({
+                  amount: suggestedRSC[bountyType][workAmount],
+                })}{" "}
+                RSC
               </div>
             </div>
             <div className={css(styles.values)}>
@@ -438,23 +470,28 @@ function BountyModal({
                   <div
                     className={css(styles.lineItemText, styles.offeringText)}
                   >
-                    I am offering
+                    <div>I am offering</div>
                   </div>
-                  <div
-                    className={css(styles.lineItemValue, styles.offeringValue)}
-                  >
-                    <span
-                      className={css(styles.valueNumber, styles.valueInInput)}
+                  <div style={{ marginLeft: "auto" }}>
+                    <div
+                      className={css(
+                        styles.lineItemValue,
+                        styles.offeringValue
+                      )}
                     >
-                      <input
-                        className={css(styles.input)}
-                        type="number"
-                        onChange={handleBountyInputChange}
-                        value={offeredAmount + ""}
-                        pattern="\d*"
-                      />
-                    </span>
-                    <span className={css(styles.rscText)}>RSC</span>
+                      <span
+                        className={css(styles.valueNumber, styles.valueInInput)}
+                      >
+                        <input
+                          className={css(styles.input)}
+                          type="number"
+                          onChange={handleBountyInputChange}
+                          value={offeredAmount + ""}
+                          pattern="\d*"
+                        />
+                      </span>
+                      <span className={css(styles.rscText)}>RSC</span>
+                    </div>
                   </div>
                 </div>
 
@@ -685,6 +722,7 @@ const styles = StyleSheet.create({
     color: "#7C7989",
     textAlign: "left",
     fontSize: 14,
+    whiteSpace: "pre-wrap",
   },
   modalTitle: {
     // color: colors.ORANGE_DARK(),
@@ -790,6 +828,14 @@ const styles = StyleSheet.create({
   },
   offeringText: {
     fontWeight: 500,
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  suggestedAmount: {
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#7C7989",
+    marginTop: 8,
   },
   offeringValue: {
     alignItems: "center",
@@ -823,4 +869,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(null, mapDispatchToProps)(BountyModal);
+export default connect(null, mapDispatchToProps)(BountyWizardRSCForm);

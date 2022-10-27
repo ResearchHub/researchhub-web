@@ -104,22 +104,38 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
     {
       id: "question",
       title: "Answer to a question",
-      text: "Get an answer to your question with references",
+      text: "Pay an expert to answer your question",
       icon: "answer-a-question.png",
     },
     {
       id: "metastudy",
       title: "Meta-Study",
-      text: "Get a page created for a meta-study",
+      text: "Fund the creation of a meta-study",
       icon: "meta-study.png",
     },
     {
-      id: "something-else",
+      id: "somethingelse",
       title: "Something else",
       text: "Any other bounty you wish to create",
       icon: "something-else.png",
     },
   ];
+
+  const TITLES = {
+    question:
+      "e.g. What are the pros and cons of Buspirone as a treatment for anxiety?",
+    metastudy: "e.g. How safe is it to consume sugar substitutes?",
+    somethingelse: "e.g. Will an expert please peer review this paper?",
+  };
+
+  const EDITORCTAS = {
+    question:
+      "Include all of the information someone would need to answer the question and fulfill your bounty. Be specific about your ideal submission.",
+    metastudy:
+      "Include all of the information someone would need to create a meta-study that fulfills your bounty. Be specific about your ideal meta-study.",
+    somethingelse:
+      "Include all of the information someone would need to fulfill your bounty. Be specific about your ideal work output. ",
+  };
 
   function renderSection() {
     switch (step) {
@@ -152,6 +168,8 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
             <SimplePostEditor
               documentType="BOUNTY"
               bountyType={active}
+              title={TITLES[active]}
+              editorCTA={EDITORCTAS[active]}
               onSuccess={(post) => {
                 setPost(post);
                 setStep(step + 1);
@@ -176,6 +194,7 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
           <BountyWizardRSCForm
             addBtnLabel="Create Bounty"
             isOriginalPoster={true}
+            bountyType={active}
             postId={post?.id}
             unifiedDocId={post?.unified_document_id}
             postSlug={post?.slug}

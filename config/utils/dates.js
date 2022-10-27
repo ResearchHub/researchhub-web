@@ -18,7 +18,7 @@ export function formatDateStandard(inputDate) {
   if (typeof inputDate === "string") {
     date = moment(inputDate);
   }
-  return date.format("MMM D, YYYY");
+  return date.format("MMM D, YYYY h:mma");
 }
 
 export function formatTransactionDate(momentDate) {

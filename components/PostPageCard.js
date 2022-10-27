@@ -20,6 +20,8 @@ import ReactTooltip from "react-tooltip";
 import removeMd from "remove-markdown";
 import router from "next/router";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
+import { EFFORT_LEVEL_DESCRIPTIONS } from "./Bounty/BountyWizardRSCForm";
+import icons from "~/config/themes/icons";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -150,15 +152,30 @@ class PostPageCard extends Component {
                   <div className={css(styles.tableEntry)}>
                     <div className={css(styles.tableKey)}>Effort Level</div>
                     <div className={css(styles.tableValue)}>
-                      {this.props.bounties &&
-                        this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()}
+                      <span className={css(styles.bold)}>
+                        {this.props.bounties &&
+                          this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()}
+                      </span>
+
+                      <span
+                        className={css(styles.effortDescription)}
+                        data-tip={
+                          EFFORT_LEVEL_DESCRIPTIONS[post?.bountyType][
+                            this.props.bounties &&
+                              this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()
+                          ]
+                        }
+                      >
+                        {" "}
+                        {icons["info-circle-light"]}
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
               {post.isReady && (
                 <div>
-                  <div style={{ fontWeight: 500, marginTop: 32 }}>
+                  <div style={{ fontWeight: 500, marginTop: 24, fontSize: 20 }}>
                     Bounty Details
                   </div>
                   {isEditMode ? (
@@ -229,7 +246,8 @@ class PostPageCard extends Component {
                     post?.bountyType === "metastudy" && (
                       <div className={css(styles.buttonRow)}>
                         <Button
-                          label={"Create Meta-Study"}
+                          label={"Start a Meta-Study"}
+                          hideRipples
                           customButtonStyle={styles.metastudyButton}
                           onClick={() => {
                             router.push(
@@ -289,7 +307,17 @@ const styles = StyleSheet.create({
   },
   tableValue: {
     textTransform: "capitalize",
+    display: "flex",
+    alignItems: "center",
+  },
+  bold: {
     fontWeight: 500,
+  },
+  effortDescription: {
+    cursor: "pointer",
+    display: "flex",
+    marginLeft: 4,
+    color: colors.MEDIUM_GREY(),
   },
   tableEntry: {
     display: "flex",
@@ -318,10 +346,13 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     marginTop: 16,
+    width: "100%",
+    display: "flex",
   },
   metastudyButton: {
     width: "unset",
     padding: "0px 16px",
+    marginLeft: "auto",
   },
 });
 

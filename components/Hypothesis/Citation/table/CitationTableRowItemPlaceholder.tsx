@@ -5,10 +5,10 @@ import colors from "~/config/themes/colors";
 
 export default function CitationTableRowItemPlaceholder(): ReactElement<"div"> {
   return (
-    <div className={css(styles.tableRowItem)}>
+    <div className={css(styles.tableRowItem) + " show-loading-animation"}>
       <TextRow
         color={colors.LIGHT_GREY_BORDER}
-        style={{ width: "100%", height: 24, margin: "16px 0", borderRadius: 4 }}
+        style={{ width: "95%", height: 24, margin: "0 auto", borderRadius: 4 }}
       />
     </div>
   );
