@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%",
     overflow: "hidden",
-    paddingLeft: 12,
     textOverflow: "ellipsis",
     width: "100%",
     wordWrap: "break-word",
