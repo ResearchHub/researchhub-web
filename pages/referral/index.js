@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
-import { isServer } from "~/config/server/isServer";
 import { useState, useRef, useEffect } from "react";
 import { useTransition, animated } from "react-spring";
 import nookies from "nookies";
@@ -13,26 +12,14 @@ import colors from "../../config/themes/colors";
 import FormInput from "../../components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
-import EmptyState from "../../components/Placeholders/EmptyState";
-import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
-import ReactPlaceholder from "react-placeholder/lib";
-import LeaderboardPlaceholder from "../../components/Placeholders/LeaderboardPlaceholder";
-import Button from "../../components/Form/Button";
-import Loader from "../../components/Loader/Loader";
-import HowItWorks from "../../components/Referral/HowItWorks";
 import { AUTH_TOKEN } from "~/config/constants";
 import ReferredUserList from "~/components/Referral/ReferredUserList";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 const Index = ({ auth }) => {
-  const [copySuccessMessage, setCopySuccessMessage] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [fetchingInvitedFriends, setFetchingInvitedFriends] = useState(true);
-  const [fetchingLoadMore, setFetchingLoadMore] = useState(true);
-  const [RSC_EARNED, setRSCEarned] = useState(0);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [invitedFriends, setInvitedFriends] = useState([]);
+  const [copySuccessMessage, setCopySuccessMessage] = useState(null);
   const formInputRef = useRef();
 
   function copyToClipboard() {
@@ -90,8 +77,6 @@ const Index = ({ auth }) => {
         </ReactTransitionComponent>
       </div>
       <ComponentWrapper>
-        <h2 className={css(styles.howItWorksTitle)}>How it Works</h2>
-        <HowItWorks />
         <div className={css(styles.invitedFriendsSection)}>
           <ReferredUserList />
         </div>
@@ -141,15 +126,20 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #EFEFEF",
   },
   banner: {
-    height: 250,
+    height: 300,
     width: "100%",
     position: "relative",
     display: "flex",
     flexDirection: "column",
+    boxSizing: "border-box",
     justifyContent: "center",
     alignItems: "center",
     // opacity: 0,
     transition: "all ease-in-out 0.5s",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
   },
   earnedRSC: {
     color: "#59BD5C",
@@ -164,9 +154,7 @@ const styles = StyleSheet.create({
     maxWidth: 624,
     margin: "0 auto",
     paddingBottom: 50,
-    "@media only screen and (min-width: 768px)": {
-      marginTop: 150,
-    },
+    marginTop: 100,
   },
   invitedFriendsTitle: {
     fontWeight: 500,
@@ -190,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 500,
 
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 50,
     },
   },
@@ -208,6 +196,9 @@ const styles = StyleSheet.create({
     minHeight: "unset",
     width: 700,
     margin: "0 auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "auto",
+    },
   },
   noShow: {
     display: "none",
@@ -215,26 +206,11 @@ const styles = StyleSheet.create({
   copySuccessMessageStyle: {
     position: "absolute",
     right: -70,
-    top: "50%",
     color: "#fff",
-    transform: "translateY(-50%)",
   },
   inlineNodeStyles: {
     paddingRight: 0,
     right: 16,
-
-    "@media only screen and (max-width: 767px)": {
-      textAlign: "center",
-      marginTop: 16,
-      background: "#fff",
-      padding: 16,
-      top: 50,
-      transform: "translateX(-50%)",
-      right: "unset",
-      left: "50%",
-      border: "2px solid rgb(78, 83, 255)",
-      borderRadius: 4,
-    },
   },
   title: {
     color: "#fff",

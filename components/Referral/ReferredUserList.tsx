@@ -9,6 +9,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "~/components/Placeholders/LeaderboardPlaceholder";
 import colors from "~/config/themes/colors";
 import { formatDateStandard } from "~/config/utils/dates";
+import { breakpoints } from "~/config/themes/screen";
 
 
 const fetchReferredUsersAPI = ({ onSuccess }) => {
@@ -139,6 +140,9 @@ const styles = StyleSheet.create({
     marginTop: 105,
     fontSize: 33,
     fontWeight: 500,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 26,
+    }
   },  
   invitedUsersTitle: {
     fontWeight: 500,
