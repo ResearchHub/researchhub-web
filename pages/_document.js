@@ -75,10 +75,6 @@ export default class MyDocument extends Document {
           <link rel="manifest" href="/static/favicons/site.webmanifest" async />
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
-          <meta
-            name="viewport"
-            content="width=device-width, minimum-scale=1.0, maximum-scale = 1.0, user-scalable = no"
-          />
           <style
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: this.props.css.content }}

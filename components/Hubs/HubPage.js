@@ -1,11 +1,11 @@
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
-import { carouselElements } from "~/components/Home/sidebar/HomeRightSidebar";
 import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { getEducationalCarouselElements } from "~/components/shared/carousel/presets/RhEducationalCarouselElements";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { Helpers } from "@quantfive/js-web-config";
 import { HubActions } from "~/redux/hub";
@@ -341,7 +341,6 @@ class HubPage extends Component {
 
   render() {
     const { feed } = this.state;
-
     const {
       auth,
       home,
@@ -373,30 +372,34 @@ class HubPage extends Component {
       );
     }
 
+    const carouselElements = getEducationalCarouselElements();
+
     return (
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>
-          <ExitableBanner
-            bannerKey={INFO_TAB_EXIT_KEY}
-            // content={<RhCarousel rhCarouselItems={carouselElements} />}
-            contentStyleOverride={{
-              background: colors.NEW_BLUE(0.07),
-              borderRadius: 6,
-              boxSizing: "border-box !important",
-              height: "160px !important",
-              margin: 16,
-              maxHeight: "160px !important",
-              padding: 16,
-            }}
-            exitButton={
-              <div style={{ fontSize: 14, padding: 8 }}>{icons.times}</div>
-            }
-            exitButtonPositionOverride={{
-              top: "16px !important",
-              right: "20px !important",
-            }}
-            onExit={silentEmptyFnc}
-          />
+          <div className={css(styles.mobileInfoTab)}>
+            <ExitableBanner
+              bannerKey={INFO_TAB_EXIT_KEY}
+              content={<RhCarousel rhCarouselItems={carouselElements} />}
+              contentStyleOverride={{
+                background: colors.NEW_BLUE(0.07),
+                borderRadius: 6,
+                boxSizing: "border-box !important",
+                height: "160px !important",
+                margin: 16,
+                maxHeight: "160px !important",
+                padding: 16,
+              }}
+              exitButton={
+                <div style={{ fontSize: 20, padding: 8 }}>{icons.times}</div>
+              }
+              exitButtonPositionOverride={{
+                top: "20px !important",
+                right: "24px !important",
+              }}
+              onExit={silentEmptyFnc}
+            />
+          </div>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
@@ -621,6 +624,14 @@ var styles = StyleSheet.create({
   },
   titleBoxShadow: {
     boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+  },
+  mobileInfoTab: {
+    display: "none",
+    width: 0,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "block",
+      width: "100%",
+    },
   },
 });
 

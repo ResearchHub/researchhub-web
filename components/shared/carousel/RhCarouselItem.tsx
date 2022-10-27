@@ -1,9 +1,8 @@
+
 import { css, StyleSheet } from "aphrodite";
+import { motion } from "framer-motion";
 import { ReactElement, ReactNode } from "react";
 import colors from "~/config/themes/colors";
-import { motion } from "framer-motion";
-import { NullableString } from "~/config/types/root_types";
-
 export type RhCarouselItemProps = {
   title?: ReactNode;
   body: ReactNode;
@@ -20,7 +19,7 @@ export default function RhCarouselItem({
   const variants = {
     enter: (direction: string) => {
       return {
-        x: direction === "right" ? -50 : 50,
+        x: direction === "right" ? 50 : -50,
         opacity: 0,
       };
     },
@@ -32,7 +31,7 @@ export default function RhCarouselItem({
     exit: (direction: string) => {
       return {
         zIndex: 0,
-        x: direction === "right" ? 50 : -50,
+        x: direction === "right" ? -50 : 50,
         opacity: 0,
         top: 0,
       };
@@ -41,13 +40,13 @@ export default function RhCarouselItem({
 
   return (
     <motion.div
-      custom={direction}
-      variants={variants}
-      initial={"enter"}
       animate={"center"}
-      exit={"exit"}
-      transition={{ duration: 0.5 }}
       className={css(styles.rhCarouselItemRoot)}
+      custom={direction}
+      exit={"exit"}
+      initial={"enter"}
+      transition={{ duration: 0.5 }}
+      variants={variants}
     >
       <div className={css(styles.title)}>{title}</div>
       <div
@@ -72,6 +71,7 @@ const styles = StyleSheet.create({
     minWidth: 248,
     width: "100%",
     position: "absolute",
+    boxSizing: "border-box",
   },
 });
 

@@ -4,6 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RhCarouselItem from "./RhCarouselItem";
+import { breakpoints } from "~/config/themes/screen";
 
 type RhCarouselItem = {
   onBodyClick?: (event?: SyntheticEvent) => void;
@@ -115,6 +116,9 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     width: "100%",
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minHeight: 120,
+    },
   },
   rhCarouselControl: {
     alignItems: "center",
