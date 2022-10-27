@@ -7,6 +7,7 @@ import ALink from "../ALink";
 import AuthorAvatar from "../AuthorAvatar";
 import InviteIcon from "../Icons/InviteIcon";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 
 type Args = {
@@ -37,12 +38,8 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
-      titleStyle={styles.modalTitle}
-      title={
-        <div style={{textAlign: "left"}}>
-          {`Invite others to ResearchHub`}
-        </div>
-      }
+      textAlign="left"
+      title={`Invite others to ResearchHub`}
     >
       <div className={css(styles.divider)}></div>
       <p className={css(styles.details)}>
@@ -52,7 +49,7 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
         <h4 className={css(styles.sectionTitle)}>
           Your referral link
           <span onClick={() => handleClose()}>
-            <ALink href="/referral" overrideStyle={styles.link}>View referral progress</ALink>
+            <ALink href="/referral" overrideStyle={styles.link}>View invites</ALink>
           </span>
         </h4>
         <FormInput
@@ -84,7 +81,7 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
           <ALink href="https://researchhub.notion.site/ResearchHub-Referral-Program-67f25909a320432eb1071078084bf5b9" overrideStyle={styles.link} target="_blank">FAQs</ALink>
         </h4>
         <div className={css(styles.highlightedSection)}>
-          <ol>
+          <ol className={css(styles.highlightedSectionList)}>
             <li>Share your referral link with others</li>
             <li>Whenever invitee earns RSC on ReserachHub, you will receive a <span style={{color: colors.ORANGE_DARK2(), fontWeight: 500}}>7% bonus</span> for the first six month period</li>
           </ol>
@@ -124,12 +121,21 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "15px"
   },
+  highlightedSectionList: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 16,
+      paddingLeft: 20,
+    }
+  },
   details: {
     textAlign: "left",
     fontWeight: 400,
     width: "100%",
     marginBottom: 35,
     marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 16,
+    }
   },
   sectionTitle: {
     display: "flex",
@@ -137,7 +143,7 @@ const styles = StyleSheet.create({
   },
   link: {
     fontSize: 14,
-    fontWeight: 400,
+    fontWeight: 500,
     color: colors.NEW_BLUE(),
   },
   emphasizedEarn: {
@@ -146,9 +152,6 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     height: 34,
-  },
-  modalTitle: {
-    height: "auto"
   },
   highlightedSection: {
     backgroundColor: colors.ICY_GREY,
@@ -169,6 +172,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     color: colors.MEDIUM_GREY(),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 13,
+    }
   },
   square: {
     rowGap: "5px",
@@ -179,14 +185,29 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     border: `2px solid ${colors.GREY_LINE()}`,
-    borderRadius: "4px"
+    borderRadius: "4px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+      padding: 10,
+    },    
   },
   modalStyle: {
-    maxWidth: 650,
+    width: 650,
     padding: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "90%"
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "100%"
+    },
   },
   modalContentStyle: {
     padding: 25,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      padding: 5,
+      paddingTop: 25,
+    }
   },
   inputStyle: {
     paddingRight: 85,
@@ -206,7 +227,6 @@ const styles = StyleSheet.create({
   containerStyle: {
     paddingRight: "unset",
     minHeight: "unset",
-    // width: 700,
     margin: "0 auto",
   },
   copySuccessMessageStyle: {
