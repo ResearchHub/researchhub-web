@@ -19,7 +19,7 @@ export default function RhCarouselItem({
   const variants = {
     enter: (direction: string) => {
       return {
-        x: direction === "right" ? 50 : -50,
+        x: direction === "right" ? 20 : -20,
         opacity: 0,
       };
     },
@@ -31,7 +31,7 @@ export default function RhCarouselItem({
     exit: (direction: string) => {
       return {
         zIndex: 0,
-        x: direction === "right" ? -50 : 50,
+        x: direction === "right" ? -20 : 20,
         opacity: 0,
         top: 0,
       };
