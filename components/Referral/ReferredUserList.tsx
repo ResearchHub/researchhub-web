@@ -41,7 +41,7 @@ const ReferredUserList = () => {
     })
   },[]);
 
-  const rscEarned = referredUsers.reduce((total:number, current:any) => total + current.rsc_earned, 0)
+  const rscEarned = referredUsers.reduce((total:number, current:any) => total + (current.rsc_earned || 0), 0)
 
   console.log('referred', referredUsers)
 
@@ -82,9 +82,9 @@ const ReferredUserList = () => {
                   <span className={css(styles.expire)}>Referral earnings expire on {formatDateStandard(referredUser.benefits_expire_on)}</span>
                 </div>
                 <div className={css(styles.userRscEarned)}>
-                  {referredUser.rsc_earned === 0
-                    ? <span className={css(styles.noEarnings)}>0</span>
-                    : <span className={css(styles.yesEarnings)}>+{referredUser.rsc_earned}</span>
+                  {(!referredUser.rsc_earned || referredUser.rsc_earned === 0)
+                    ? <span className={css(styles.noEarnings)}>0 RSC</span>
+                    : <span className={css(styles.yesEarnings)}>+{referredUser.rsc_earned} RSC</span>
                   }
                 </div>
               </div>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   noEarnings: {
-
+    color: colors.BLACK(1.0),
   },
   yesEarnings: {
     color: colors.ORANGE_DARK2(1.0),
