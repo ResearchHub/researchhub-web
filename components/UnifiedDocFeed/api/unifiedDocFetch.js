@@ -76,8 +76,8 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
       );
     })
     .catch((error) => {
+      console.log(error);
       emptyFncWithMsg(error);
-      return unifiedDocs;
     });
 };
 

@@ -88,7 +88,6 @@ export const getModalOptionItems = ({
         isOpen: true,
         type: "bounty",
       });
-      debugger;
     },
     description:
       "Offer ResearchCoin in exchange for work or knowledge. Must be science related.",

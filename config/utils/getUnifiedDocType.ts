@@ -19,7 +19,12 @@ export type BEReturnType =
   | "bounty"
   | "bounties"
   | "all";
-type BEDocumentModelName = "researchhub_post" | "hypothesis" | "paper" | "bounty" | null;
+type BEDocumentModelName =
+  | "researchhub_post"
+  | "hypothesis"
+  | "paper"
+  | "bounty"
+  | null;
 
 export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "discussion",
@@ -27,6 +32,7 @@ export const RESEARCHHUB_POST_DOCUMENT_TYPES = [
   "posts",
   "question",
   "questions",
+  "bounty",
 ];
 
 export function getBeDocumentModelName(

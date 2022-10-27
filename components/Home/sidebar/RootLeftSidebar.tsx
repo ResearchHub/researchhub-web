@@ -306,12 +306,14 @@ function RootLeftSidebar({
             >
               {"Jobs"}
             </ALink>
-            <ALink
-              href={`${organization_slug}/notebook`}
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Publish"}
-            </ALink>
+            {organization_slug && (
+              <ALink
+                href={`/${organization_slug}/notebook`}
+                overrideStyle={formattedFooterTxtItem}
+              >
+                {"Publish"}
+              </ALink>
+            )}
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
