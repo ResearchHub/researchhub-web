@@ -1,24 +1,30 @@
 import { AuthActions } from "~/redux/auth";
+import { breakpoints } from "~/config/themes/screen";
 import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { getEducationalCarouselElements } from "~/components/shared/carousel/presets/RhEducationalCarouselElements";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { Helpers } from "@quantfive/js-web-config";
 import { HubActions } from "~/redux/hub";
+import { INFO_TAB_EXIT_KEY } from "~/components/Banner/constants/exitable_banner_keys";
 import { MessageActions } from "~/redux/message";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
+import colors from "~/config/themes/colors";
+import ExitableBanner from "~/components/Banner/ExitableBanner";
+import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
-import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
+import icons from "~/config/themes/icons";
+import LiveFeed from "~/components/LiveFeed/LiveFeed";
+import RhCarousel from "../shared/carousel/RhCarousel";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
-import LiveFeed from "~/components/LiveFeed/LiveFeed";
-import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
-import { breakpoints } from "~/config/themes/screen";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -136,10 +142,6 @@ class HubPage extends Component {
     }
   };
 
-  // componentWillUnmount() {
-  //   window.removeEventListener("scroll", this.scrollListener);
-  // }
-
   checkUserVotes = (papers) => {
     if (!papers || !papers.length) return;
 
@@ -181,13 +183,6 @@ class HubPage extends Component {
       created_location: "FEED",
       created_location_meta: "trending",
     };
-
-    // fetch(
-    //   API.PROMOTION_STATS({ route: "batch_views" }),
-    //   API.POST_CONFIG(PAYLOAD)
-    // )
-    //   .then(Helpers.checkStatus)
-    //   .then(Helpers.parseJSON);
   };
 
   loadMore = () => {
@@ -346,7 +341,6 @@ class HubPage extends Component {
 
   render() {
     const { feed } = this.state;
-
     const {
       auth,
       home,
@@ -378,9 +372,34 @@ class HubPage extends Component {
       );
     }
 
+    const carouselElements = getEducationalCarouselElements();
+
     return (
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>
+          <div className={css(styles.mobileInfoTab)}>
+            <ExitableBanner
+              bannerKey={INFO_TAB_EXIT_KEY}
+              content={<RhCarousel rhCarouselItems={carouselElements} />}
+              contentStyleOverride={{
+                background: colors.NEW_BLUE(0.07),
+                borderRadius: 6,
+                boxSizing: "border-box !important",
+                height: "160px !important",
+                margin: 16,
+                maxHeight: "160px !important",
+                padding: 16,
+              }}
+              exitButton={
+                <div style={{ fontSize: 20, padding: 8 }}>{icons.times}</div>
+              }
+              exitButtonPositionOverride={{
+                top: "20px !important",
+                right: "24px !important",
+              }}
+              onExit={silentEmptyFnc}
+            />
+          </div>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
@@ -605,6 +624,14 @@ var styles = StyleSheet.create({
   },
   titleBoxShadow: {
     boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+  },
+  mobileInfoTab: {
+    display: "none",
+    width: 0,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "block",
+      width: "100%",
+    },
   },
 });
 

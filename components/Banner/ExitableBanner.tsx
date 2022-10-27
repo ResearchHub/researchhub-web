@@ -31,7 +31,7 @@ export default function ExitableBanner({
   );
 
   if (isExited) {
-    onExit && onExit()
+    onExit && onExit();
     return null;
   }
 
