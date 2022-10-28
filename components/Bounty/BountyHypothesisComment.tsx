@@ -14,12 +14,14 @@ import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 import Button from "../Form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ALink from "../ALink";
 
 type Params = {
   postId: number;
   unifiedDocumentId: number;
   auth: any;
   postSlug: string;
+  postName: string;
   setMessage: (message) => void;
   showMessage: ({ show, error }) => void;
   openRecaptchaPrompt: (boolean) => void;
@@ -28,6 +30,7 @@ type Params = {
 const BountyHypothesisComment = ({
   postId,
   postSlug,
+  postName,
   unifiedDocumentId,
   openRecaptchaPrompt,
   setMessage,
@@ -127,37 +130,51 @@ const BountyHypothesisComment = ({
               />
             </div>
           ) : (
-            <TextEditor
-              canEdit
-              commentEditor
-              commentEditorStyles={styles.commentEditorStyles}
-              placeholder={
-                "Post the link to your Meta-Study to answer the bounty."
-              }
-              initialValue={{
-                ops: [
-                  {
-                    insert: hypothesisLink,
-                    attributes: {
-                      link: hypothesisLink,
+            <>
+              <div className={css(styles.subtext)}>
+                Your Meta-Study was created in response to the bounty:{" "}
+                <ALink
+                  theme={"solidPrimary"}
+                  href={`/post/${postId}/${postSlug}`}
+                >
+                  {postName}
+                </ALink>
+                <br />
+                <br />
+                Post a comment and link your Meta-Study to that bounty below!
+              </div>
+              <TextEditor
+                canEdit
+                commentEditor
+                commentEditorStyles={styles.commentEditorStyles}
+                placeholder={
+                  "Post the link to your Meta-Study to answer the bounty."
+                }
+                initialValue={{
+                  ops: [
+                    {
+                      insert: hypothesisLink,
+                      attributes: {
+                        link: hypothesisLink,
+                      },
                     },
-                  },
-                  {
-                    insert: "\n",
-                  },
-                ],
-              }}
-              // focusEditor={focus}
-              // initialValue={discussion.question}
-              // onCancel={cancel}
-              // showBountyBtn={showBountyBtn}
-              onSubmit={saveComment}
-              // readOnly={false}
-              // loading={submitInProgress}
-              // uid={textEditorKey}
-              // isTopLevelComment={true}
-              // documentType={documentType}
-            ></TextEditor>
+                    {
+                      insert: "\n",
+                    },
+                  ],
+                }}
+                // focusEditor={focus}
+                // initialValue={discussion.question}
+                // onCancel={cancel}
+                // showBountyBtn={showBountyBtn}
+                onSubmit={saveComment}
+                // readOnly={false}
+                // loading={submitInProgress}
+                // uid={textEditorKey}
+                // isTopLevelComment={true}
+                // documentType={documentType}
+              ></TextEditor>
+            </>
           )}
         </div>
       </BaseModal>
@@ -236,6 +253,10 @@ const styles = StyleSheet.create({
     background: "white",
     color: colors.NEW_BLUE(),
     border: `1px solid ${colors.NEW_BLUE()}`,
+  },
+  subtext: {
+    color: colors.BLACK(0.6),
+    marginBottom: 16,
   },
   bountyAlert: {
     userSelect: "none",

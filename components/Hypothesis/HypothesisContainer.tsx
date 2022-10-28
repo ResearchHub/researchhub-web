@@ -57,6 +57,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     slug,
     title,
   } = hypothesis || {};
+
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
@@ -81,6 +82,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
               unifiedDocumentId={hypothesis.from_post.unified_document_id}
               postId={hypothesis.from_post.post_id}
               postSlug={hypothesis.from_post.post_slug}
+              postName={hypothesis.from_post.post_name}
             />
           </div>
         )}
