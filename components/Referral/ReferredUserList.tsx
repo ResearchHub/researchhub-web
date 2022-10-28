@@ -43,6 +43,46 @@ const ReferredUserList = () => {
     0
   );
 
+  const referredUserList = referredUsers.map((referredUser: any) => {
+    const expireDate = dayjs(referredUser.benefits_expire_on);
+    const now = dayjs();
+    const didExpire = now > expireDate;
+
+    return (
+      <div className={css(styles.user)} key={`user-${referredUser.id}`}>
+        <div>
+          <AuthorAvatar author={referredUser.author_profile} />
+        </div>
+        <div className={css(styles.userDetails)}>
+          <span className={css(styles.userName)}>
+            {referredUser.author_profile.first_name}{" "}
+            {referredUser.author_profile.last_name}
+          </span>
+          {didExpire ? (
+            <span className={css(styles.didExpire)}>
+              Referral earnings expired on{" "}
+              {formatDateStandard(referredUser.benefits_expire_on)}
+            </span>
+          ) : (
+            <span className={css(styles.willExpire)}>
+              Referral earnings expire on{" "}
+              {formatDateStandard(referredUser.benefits_expire_on)}
+            </span>
+          )}
+        </div>
+        <div className={css(styles.userRscEarned)}>
+          {referredUser?.rsc_earned > 0 ? (
+            <span className={css(styles.yesEarnings)}>
+              +{referredUser.rsc_earned} RSC
+            </span>
+          ) : (
+            <span className={css(styles.noEarnings)}>0 RSC</span>
+          )}
+        </div>
+      </div>
+    );
+  });
+
   return (
     <div>
       <h2 className={css(styles.earnTitle)}>
@@ -67,50 +107,7 @@ const ReferredUserList = () => {
             />
           </div>
         ) : (
-          <div>
-            {referredUsers.map((referredUser: any) => {
-              const expireDate = dayjs(referredUser.benefits_expire_on);
-              const now = dayjs();
-              const didExpire = now > expireDate;
-
-              return (
-                <div
-                  className={css(styles.user)}
-                  key={`user-${referredUser.user.id}`}
-                >
-                  <div>
-                    <AuthorAvatar author={referredUser.user.author_profile} />
-                  </div>
-                  <div className={css(styles.userDetails)}>
-                    <span className={css(styles.userName)}>
-                      {referredUser.user.author_profile.first_name}{" "}
-                      {referredUser.user.author_profile.last_name}
-                    </span>
-                    {didExpire ? (
-                      <span className={css(styles.didExpire)}>
-                        Referral earnings expired on{" "}
-                        {formatDateStandard(referredUser.benefits_expire_on)}
-                      </span>
-                    ) : (
-                      <span className={css(styles.willExpire)}>
-                        Referral earnings expire on{" "}
-                        {formatDateStandard(referredUser.benefits_expire_on)}
-                      </span>
-                    )}
-                  </div>
-                  <div className={css(styles.userRscEarned)}>
-                    {referredUser?.rsc_earned > 0 ? (
-                      <span className={css(styles.yesEarnings)}>
-                        +{referredUser.rsc_earned} RSC
-                      </span>
-                    ) : (
-                      <span className={css(styles.noEarnings)}>0 RSC</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <div>{referredUserList}</div>
         )}
       </ReactPlaceholder>
     </div>

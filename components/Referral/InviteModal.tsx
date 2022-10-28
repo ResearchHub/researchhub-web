@@ -8,6 +8,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import InviteIcon from "../Icons/InviteIcon";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import { NullableString } from "~/config/types/root_types";
 
 type Args = {
   isOpen: boolean;
@@ -17,7 +18,7 @@ type Args = {
 
 const InviteModal = ({ isOpen, handleClose, user }: Args) => {
   const formInputRef = useRef<HTMLInputElement>();
-  const [copySuccessMessage, setCopySuccessMessage] = useState<null | string>(
+  const [copySuccessMessage, setCopySuccessMessage] = useState<NullableString>(
     null
   );
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
