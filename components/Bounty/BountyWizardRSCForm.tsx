@@ -42,6 +42,12 @@ const ProgressBarCircle = ({
   onMouseLeave,
   onClick,
 }: ProgressBarCircleProps) => {
+  const transitionStyles = {
+    entering: { transform: "scale(1.1)" },
+    entered: { transform: "scale(1)" },
+    exiting: { transform: "scale(1.1)" },
+    exited: { transform: "scale(1)" },
+  };
   return (
     <div className={css(progressStyles.container)}>
       <div className={css(progressStyles.label)}>{label}</div>
@@ -362,7 +368,7 @@ function BountyWizardRSCForm({
                     progressHover ? colors.NEW_BLUE(0.1) : colors.NEW_BLUE(1)
                   }
                 >
-                  <Step transition="scale">
+                  <Step>
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
@@ -377,7 +383,7 @@ function BountyWizardRSCForm({
                       />
                     )}
                   </Step>
-                  <Step transition="scale">
+                  <Step>
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
@@ -402,7 +408,7 @@ function BountyWizardRSCForm({
                       />
                     )}
                   </Step>
-                  <Step transition="scale">
+                  <Step>
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
@@ -427,7 +433,7 @@ function BountyWizardRSCForm({
                       />
                     )}
                   </Step>
-                  <Step transition="scale">
+                  <Step>
                     {({ accomplished }) => (
                       <ProgressBarCircle
                         accomplished={accomplished}
