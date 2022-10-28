@@ -8,6 +8,7 @@ export type FEDocType =
   | "paper"
   | "question"
   | "bounties"
+  | "bounty"
   | "all";
 
 export type BEReturnType =
@@ -72,6 +73,8 @@ export function getFEUnifiedDocType(
       return "bounties";
     case "paper":
       return "paper";
+    case "bounty":
+      return "bounty";
     default:
       return "all";
   }

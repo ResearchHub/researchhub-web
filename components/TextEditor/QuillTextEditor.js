@@ -490,6 +490,7 @@ class Editor extends Component {
           (props.loading ? (
             <FormButton
               onClick={null}
+              hideRipples
               disabled={this.state.submitDisabled}
               label={<Loader loading={true} color={"#FFF"} size={20} />}
               customButtonStyle={[
@@ -1035,6 +1036,7 @@ const toolbarStyles = StyleSheet.create({
     height: 30,
     width: "auto",
     fontSize: 16,
+    marginLeft: "auto",
     padding: "17px 30px",
     display: "flex",
     justifyContent: "center",
