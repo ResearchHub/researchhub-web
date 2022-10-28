@@ -22,6 +22,7 @@ import router from "next/router";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
 import { EFFORT_LEVEL_DESCRIPTIONS } from "./Bounty/BountyWizardRSCForm";
 import icons from "~/config/themes/icons";
+import EffortLevel from "./shared/EffortLevel";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -152,22 +153,32 @@ class PostPageCard extends Component {
                   <div className={css(styles.tableEntry)}>
                     <div className={css(styles.tableKey)}>Effort Level</div>
                     <div className={css(styles.tableValue)}>
-                      <span className={css(styles.bold)}>
-                        {this.props.bounties &&
-                          this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()}
-                      </span>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span className={css(styles.bold)}>
+                          {this.props.bounties &&
+                            this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()}
+                        </span>
 
-                      <span
-                        className={css(styles.effortDescription)}
-                        data-tip={
-                          EFFORT_LEVEL_DESCRIPTIONS[post?.bountyType][
+                        <span
+                          className={css(styles.effortDescription)}
+                          data-tip={
+                            EFFORT_LEVEL_DESCRIPTIONS[post?.bountyType][
+                              this.props.bounties &&
+                                this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()
+                            ]
+                          }
+                        >
+                          {" "}
+                          {icons["info-circle-light"]}
+                        </span>
+                      </div>
+                      <span style={{ marginLeft: 16 }}>
+                        <EffortLevel
+                          level={
                             this.props.bounties &&
-                              this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()
-                          ]
-                        }
-                      >
-                        {" "}
-                        {icons["info-circle-light"]}
+                            this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()
+                          }
+                        />
                       </span>
                     </div>
                   </div>
@@ -310,7 +321,7 @@ const styles = StyleSheet.create({
   tableValue: {
     textTransform: "capitalize",
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   bold: {
     fontWeight: 500,
@@ -318,12 +329,16 @@ const styles = StyleSheet.create({
   effortDescription: {
     cursor: "pointer",
     display: "flex",
-    marginLeft: 4,
+    marginLeft: 6,
+    fontSize: 14,
     color: colors.MEDIUM_GREY(),
+  },
+  effortLevel: {
+    marginLeft: 8,
   },
   tableEntry: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   main: {
     display: "flex",

@@ -496,7 +496,9 @@ function BountyWizardRSCForm({
                 </div>
 
                 <div className={css(styles.lineItem, styles.platformFeeLine)}>
-                  <div className={css(styles.lineItemText)}>
+                  <div
+                    className={css(styles.lineItemText, styles.platformFeeText)}
+                  >
                     Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
                     <span
                       className={css(styles.tooltipIcon)}
@@ -734,7 +736,8 @@ const styles = StyleSheet.create({
     // paddingTop: 25,
   },
   progressBar: {
-    padding: 30,
+    padding: "30px 40px",
+    paddingRight: 50,
     marginTop: 44,
   },
   rscIcon: {
@@ -823,6 +826,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 18,
   },
+  platformFeeText: {
+    color: "#7C7989",
+  },
   offeringLine: {
     // marginBottom: 7,
   },
@@ -833,7 +839,7 @@ const styles = StyleSheet.create({
   },
   suggestedAmount: {
     fontWeight: 400,
-    fontSize: 14,
+    fontSize: 16,
     color: "#7C7989",
     marginTop: 8,
   },
