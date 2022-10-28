@@ -1,4 +1,8 @@
-import { formatDateStandard, timeToInUnits, timeToRoundUp } from "../utils/dates";
+import {
+  formatDateStandard,
+  timeToInUnits,
+  timeToRoundUp,
+} from "../utils/dates";
 import { CreatedBy, ID } from "./root_types";
 import { parseCreatedBy } from "./contribution";
 import api, { generateApiUrl } from "../api";
@@ -40,22 +44,30 @@ export default class Bounty {
   _formattedAmount: string;
   _status: BOUNTY_STATUS;
   _expiration_date: string;
-  _contentType: ContentType|undefined;
-   // FIXME: Update to ContributionType if needed
-  _relatedItem: any
+  _contentType: ContentType | undefined;
+  // FIXME: Update to ContributionType if needed
+  _relatedItem: any;
+  _effortLevel: string;
 
   constructor(raw: any) {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
-    this._timeRemainingInDays = timeToInUnits({ date: raw.expiration_date, unit: "day" });
+    this._timeRemainingInDays = timeToInUnits({
+      date: raw.expiration_date,
+      unit: "day",
+    });
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._formattedAmount = this._amount.toLocaleString();
     this._status = raw.status;
     this._expiration_date = raw.expiration_date;
-    this._contentType = typeof(raw.content_type) === "object" ? parseContentType(raw.content_type) : undefined;
+    this._contentType =
+      typeof raw.content_type === "object"
+        ? parseContentType(raw.content_type)
+        : undefined;
     this._relatedItem = raw.item;
+    this._effortLevel = raw.effort_level;
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -88,6 +100,7 @@ export default class Bounty {
   static createAPI({
     bountyAmount,
     itemObjectId,
+    effortLevel,
     itemContentType = "researchhubunifieddocument",
   }) {
     // TODO: Change hard coded value
@@ -101,6 +114,7 @@ export default class Bounty {
       amount: parseFloat(bountyAmount),
       item_content_type: itemContentType,
       item_object_id: itemObjectId,
+      effort_level: effortLevel,
       expiration_date: thirtyDaysFromNow,
     };
 
@@ -153,7 +167,7 @@ export default class Bounty {
 
   get timeRemainingInDays(): number {
     return this._timeRemainingInDays;
-  }  
+  }
 
   get createdBy(): CreatedBy | null {
     return this._createdBy;
@@ -170,7 +184,7 @@ export default class Bounty {
   get expiration_date(): string {
     return this._expiration_date;
   }
-  get contentType(): ContentType|undefined {
+  get contentType(): ContentType | undefined {
     return this._contentType;
   }
 
@@ -180,5 +194,9 @@ export default class Bounty {
 
   get formattedAmount(): string {
     return this._formattedAmount;
-  }  
+  }
+
+  get effortLevel(): string {
+    return this._effortLevel;
+  }
 }

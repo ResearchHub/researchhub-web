@@ -45,6 +45,7 @@ export default function NewPostButton({
     !isOnMobileScreen &&
     buttonValues?.isOpen &&
     !buttonValues?.isQuestionType &&
+    buttonValues?.type !== "bounty" &&
     isEmpty(buttonValues.wizardBodyType);
 
   const popoverOptionCards = filterNull(
@@ -93,6 +94,13 @@ export default function NewPostButton({
               ...DEFAULT_POST_BUTTON_VALUES,
               isOpen: true,
               isQuestionType: true,
+            });
+            break;
+          case "bounty":
+            setButtonValues({
+              ...DEFAULT_POST_BUTTON_VALUES,
+              isOpen: true,
+              type: "bounty",
             });
             break;
           default:

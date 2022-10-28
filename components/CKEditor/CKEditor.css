@@ -25,6 +25,10 @@
   --ck-user-avatar-size: 30px !important;
 }
 
+.ck.ck-editor__editable_inline > :first-child {
+  margin-top: 8px !important;
+}
+
 /* ckeditor5-font/theme/fontsize.css */
 .ck-content .text-tiny {
   font-size: 0.7em;

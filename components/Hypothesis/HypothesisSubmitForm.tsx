@@ -104,7 +104,11 @@ function HypothesisSubmitForm({ documentType, user }: Props) {
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
       const { id, slug } = response;
-      router.push(`/hypothesis/${id}/${slug}`);
+      router.push(
+        `/hypothesis/${id}/${slug}${
+          router.query.from ? "?from=" + router.query.from : ""
+        }`
+      );
     };
   };
 
@@ -114,6 +118,7 @@ function HypothesisSubmitForm({ documentType, user }: Props) {
       created_by: user.id,
       document_type: "HYPOTHESIS",
       editors: null,
+      from_bounty: router.query.bounty_id,
       full_src: mutableFormFields.text,
       /* @ts-ignore */
       hubs: mutableFormFields.hubs.map((hub) => hub.id),

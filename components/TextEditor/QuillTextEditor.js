@@ -490,6 +490,7 @@ class Editor extends Component {
           (props.loading ? (
             <FormButton
               onClick={null}
+              hideRipples
               disabled={this.state.submitDisabled}
               label={<Loader loading={true} color={"#FFF"} size={20} />}
               customButtonStyle={[
@@ -573,6 +574,7 @@ class Editor extends Component {
 
   render() {
     const { ReactQuill, selectedPostTypeStruct } = this.state;
+    const { placeholder } = this.props;
     const canEdit = !this.props.readOnly;
 
     if (!ReactQuill) {
@@ -651,7 +653,9 @@ class Editor extends Component {
                 styles.editSection,
                 this.props.commentStyles && this.props.commentStyles
               )}
-              placeholder={selectedPostTypeStruct.placeholder}
+              placeholder={
+                placeholder ? placeholder : selectedPostTypeStruct.placeholder
+              }
             />
             {selectedPostTypeStruct.value === POST_TYPES.REVIEW && (
               <div className={css(styles.reviewCategoryContainer)}>
@@ -662,10 +666,11 @@ class Editor extends Component {
                 />
               </div>
             )}
+            <div className={css(styles.toolbarContainer)}>
+              {ReactQuill && this.renderToolbar(this.props.uid)}
+            </div>
+
             <div className={css(styles.footerContainer)}>
-              <div className={css(styles.toolbarContainer)}>
-                {ReactQuill && this.renderToolbar(this.props.uid)}
-              </div>
               {!this.props.readOnly && this.renderButtons(this.props)}
             </div>
           </div>
@@ -767,8 +772,8 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingRight: 0,
     paddingBottom: 0,
-    marginLeft: "auto",
     display: "flex",
+    width: "100%",
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginLeft: "unset",
@@ -784,7 +789,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   bountyBtnContainer: {
-    marginRight: 15,
+    marginRight: "auto",
   },
   showFullEditor: {
     display: "block",
@@ -1031,6 +1036,7 @@ const toolbarStyles = StyleSheet.create({
     height: 30,
     width: "auto",
     fontSize: 16,
+    marginLeft: "auto",
     padding: "17px 30px",
     display: "flex",
     justifyContent: "center",

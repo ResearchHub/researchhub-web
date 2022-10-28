@@ -222,7 +222,8 @@ function RootLeftSidebar({
       className={formattedRootLeftSidebar}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
-        ["hubs", "user"].includes(pathname.split("/")[1])
+        ["hubs", "user"].includes(pathname.split("/")[1]) ||
+        pathname === "/hypothesis/create"
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,
               width: !process.env.browser
@@ -305,12 +306,14 @@ function RootLeftSidebar({
             >
               {"Jobs"}
             </ALink>
-            <ALink
-              href={`${organization_slug}/notebook`}
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Publish"}
-            </ALink>
+            {organization_slug && (
+              <ALink
+                href={`/${organization_slug}/notebook`}
+                overrideStyle={formattedFooterTxtItem}
+              >
+                {"Publish"}
+              </ALink>
+            )}
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>

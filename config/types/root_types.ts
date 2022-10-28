@@ -10,7 +10,7 @@ import Bounty from "./bounty";
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
 export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
-export type NullableString = string | null;
+export type NullableString = string | null | undefined;
 
 export interface TopLevelDocument {
   authors: Array<AuthorProfile>;

@@ -33,6 +33,7 @@ function TextEditor(props) {
     onChange,
     focusEditor,
     hideButton,
+    placeholder,
     hideCancelButton,
     containerStyles,
     commentStyles,
@@ -128,6 +129,7 @@ function TextEditor(props) {
       isTopLevelComment={isTopLevelComment}
       commentEditorStyles={commentEditorStyles && commentEditorStyles}
       editing={editing}
+      placeholder={placeholder}
       hasHeader={hasHeader && hasHeader}
       summary={summary && summary}
       setSelectedPostTypeStruct={setSelectedPostTypeStruct}

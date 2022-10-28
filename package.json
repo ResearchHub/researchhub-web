@@ -41,6 +41,7 @@
     "@types/react-sidebar": "^3.0.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-source-maps": "^0.0.3",
+    "add": "^2.0.6",
     "aphrodite": "^2.4.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "dayjs": "^1.10.3",
@@ -105,6 +106,7 @@
     "react-sparkle": "^1.0.8",
     "react-spinners": "^0.6.1",
     "react-spring": "^8.0.27",
+    "react-step-progress-bar": "^1.0.3",
     "react-tagsinput": "^3.19.0",
     "react-tiny-popover": "^6.0.5",
     "react-toastify": "^8.2.0",
@@ -123,7 +125,8 @@
     "typescript": "^4.4.2",
     "undux": "^5.2.0",
     "webpack": "^5.50.0",
-    "webpack-bundle-analyzer": "^4.3.0"
+    "webpack-bundle-analyzer": "^4.3.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-inspector": "^2.2.2",

@@ -10,8 +10,10 @@ export function formatMainHeader({
   label,
   isHomePage,
   isLiveFeed,
-}: FormatMainHeaderArgs): string {
+}: FormatMainHeaderArgs): string | null {
   return isHomePage || isLiveFeed
     ? `Explore ResearchHub`
-    : `${capitalize(label)}`;
+    : label
+    ? `${capitalize(label)}`
+    : null;
 }

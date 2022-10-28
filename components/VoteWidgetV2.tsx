@@ -234,28 +234,29 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
     boxSizing: "border-box",
     fontWeight: "bold",
-    borderRadius: 24,
+    borderRadius: 5,
     padding: ".2em .5em",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: 30,
+    minWidth: 24,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
   icon: {
     cursor: "pointer",
+    padding: 6,
     color: voteWidgetColors.ARROW,
     ":hover": {
       color: colors.BLUE(1),
     },
-    fontSize: 20,
+    fontSize: 14,
   },
   iconDisabled: {
     color: voteWidgetColors.ARROW,
     cursor: "unset",
-    fontSize: 20,
+    fontSize: 14,
   },
   selected: {
     color: colors.GREEN(),

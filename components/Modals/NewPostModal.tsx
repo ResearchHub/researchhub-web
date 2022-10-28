@@ -13,6 +13,7 @@ import icons, {
   PaperIcon,
   HypothesisIcon,
   QuestionIcon,
+  RSCIcon,
 } from "~/config/themes/icons";
 import {
   ReactElement,
@@ -39,6 +40,7 @@ import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import killswitch from "~/config/killswitch/killswitch";
 import AskQuestionForm from "~/components/Question/AskQuestionForm";
 import colors from "~/config/themes/colors";
+import BountyWizard from "../Bounty/BountyWizard";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -70,14 +72,33 @@ export const getModalOptionItems = ({
   },
 
   {
-    key: "question",
+    key: "bounty",
     header: (
       <div className={css(styles.header)}>
-        <span>Ask a Question</span>
+        <span>Start a Bounty</span>
         <span className={css(styles.new)}>
           <span className={css(styles.fireIcon)}>{icons.fire}</span>
           <span className={css(styles.newText)}>New</span>
         </span>
+      </div>
+    ),
+    onClick: (): void => {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        type: "bounty",
+      });
+    },
+    description:
+      "Offer ResearchCoin in exchange for work or knowledge. Must be science related.",
+    icon: <RSCIcon onClick={silentEmptyFnc} />,
+  },
+
+  {
+    key: "question",
+    header: (
+      <div className={css(styles.header)}>
+        <span>Ask a Question</span>
       </div>
     ),
     description:
@@ -90,7 +111,12 @@ export const getModalOptionItems = ({
       });
     },
     icon: (
-      <QuestionIcon color={`#aeaeae`} onClick={silentEmptyFnc} withAnimation={false} size={40} />
+      <QuestionIcon
+        color={`#aeaeae`}
+        onClick={silentEmptyFnc}
+        withAnimation={false}
+        size={40}
+      />
     ),
   },
   {
@@ -142,34 +168,33 @@ function NewPostModal({
   const router = useRouter();
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const { isOpen, isQuestionType, wizardBodyType } = buttonValues;
+  const { isOpen, isQuestionType, wizardBodyType, type } = buttonValues;
 
   // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
   const [modalSelectedItemIndex, setModalSelectedItemIndex] = useState(0);
   const [bodyType, setBodyType] = useState<NullableString>(
-    isQuestionType ? "question" : Boolean(wizardBodyType) ? "paperWizard" : null
+    isQuestionType ? "question" : Boolean(wizardBodyType) ? "paperWizard" : type
   );
   const isMobileScreen = getIsOnMobileScreenSize();
   const shouldModalStayOpen =
     isOpen &&
-    (["paperWizard", "question"].includes(bodyType ?? "") || isMobileScreen);
+    (["paperWizard", "question", "bounty"].includes(bodyType ?? "") ||
+      isMobileScreen);
   const modalOptionItems = getModalOptionItems({
     currentUser,
     router,
     setButtonValues,
   });
 
-  useEffect(
-    (): void =>
-      setBodyType(
-        isQuestionType
-          ? "question"
-          : Boolean(wizardBodyType)
-          ? "paperWizard"
-          : null
-      ),
-    [isQuestionType, wizardBodyType]
-  );
+  useEffect((): void => {
+    setBodyType(
+      isQuestionType
+        ? "question"
+        : Boolean(wizardBodyType)
+        ? "paperWizard"
+        : type
+    );
+  }, [isQuestionType, wizardBodyType, type]);
 
   const closeModal = (event?: SyntheticEvent): void => {
     event?.preventDefault();
@@ -218,7 +243,9 @@ function NewPostModal({
   return (
     <BaseModal
       children={
-        bodyType === "question" ? (
+        bodyType === "bounty" ? (
+          <BountyWizard onSuccess={closeModal} />
+        ) : bodyType === "question" ? (
           <div className={css(styles.rootContainer)} key="question-wizard">
             <AskQuestionForm documentType="question" onExit={closeModal} />
           </div>

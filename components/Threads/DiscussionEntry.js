@@ -219,7 +219,11 @@ class DiscussionEntry extends Component {
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -280,7 +284,11 @@ class DiscussionEntry extends Component {
     let paperId = data.paper;
     let unifiedDocumentId = data.unified_document.id;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -469,7 +477,11 @@ class DiscussionEntry extends Component {
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -494,7 +506,11 @@ class DiscussionEntry extends Component {
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;

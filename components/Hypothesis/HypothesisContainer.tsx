@@ -15,6 +15,7 @@ import PaperBanner from "../Paper/PaperBanner";
 import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 import BountyAlert from "../Bounty/BountyAlert";
+import BountyHypothesisComment from "../Bounty/BountyHypothesisComment";
 
 type Props = {};
 
@@ -56,6 +57,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     slug,
     title,
   } = hypothesis || {};
+
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
@@ -74,6 +76,16 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         }`}
       />
       <div className={css(styles.container)}>
+        {router.query.from === "bounty" && (
+          <div className={css(styles.bountyHypothesis)}>
+            <BountyHypothesisComment
+              unifiedDocumentId={hypothesis.from_post.unified_document_id}
+              postId={hypothesis.from_post.post_id}
+              postSlug={hypothesis.from_post.post_slug}
+              postName={hypothesis.from_post.post_name}
+            />
+          </div>
+        )}
         {hasBounties && (
           <div className={css(styles.bountyAlertContainer)}>
             {/*@ts-ignore*/}
@@ -179,6 +191,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (min-width: 1200px)": {
       width: "90%",
+      maxWidth: 1250,
     },
   },
   regSidebar: {
@@ -218,5 +231,8 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%",
     width: "100%",
+  },
+  bountyHypothesis: {
+    marginBottom: 30,
   },
 });

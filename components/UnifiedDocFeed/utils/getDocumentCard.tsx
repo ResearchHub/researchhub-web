@@ -34,6 +34,7 @@ export function getDocumentCard({
       const bounties = (uniDoc.bounties || [])
         .map((b) => new Bounty(b))
         .filter((b) => b.status === "OPEN");
+
       return (
         <FeedCard
           {...targetDoc}

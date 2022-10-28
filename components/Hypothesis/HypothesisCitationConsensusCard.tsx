@@ -50,7 +50,7 @@ export default function HypothesisCitationConsensusCard({
                   ? styles.positiveGreen
                   : sentiment < 0
                   ? styles.negativeRed
-                  : null
+                  : styles.neutral
               )}
             >
               {sentiment > 0 ? (
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
   },
   iconGroup: {
     display: "flex",
+    alignItems: "center",
 
     "@media only screen and (max-width: 767px)": {
       marginBottom: 16,
@@ -190,6 +191,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
+  },
+  neutral: {
+    color: colors.TEXT_GREY(1),
   },
   positiveGreen: {
     color: colors.GREEN(1),

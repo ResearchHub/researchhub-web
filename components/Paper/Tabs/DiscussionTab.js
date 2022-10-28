@@ -337,7 +337,11 @@ const DiscussionTab = (props) => {
         paper: paperId,
         plain_text: plainText,
       };
-    } else if (documentType === "post" || documentType === "question") {
+    } else if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = router.query.documentId;
       unifiedDocumentId = props.post.unified_document.id;
       param = {
@@ -513,9 +517,16 @@ const DiscussionTab = (props) => {
     } else {
       documentId = router.query.documentId;
     }
+
+    let newDocumentType = documentType;
+
+    if (newDocumentType === "bounty") {
+      newDocumentType = "post";
+    }
+
     const res = await getThreads({
       documentId,
-      documentType,
+      documentType: newDocumentType,
       document: props.paper,
       filter,
       loadMore,

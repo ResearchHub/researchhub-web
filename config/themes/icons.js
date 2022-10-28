@@ -164,6 +164,7 @@ import {
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
+  faFileLines,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -343,7 +344,8 @@ library.add(
   opaqueThumbsDown,
   opaqueThumbsUp,
   solidThumbsDown,
-  solidThumbsUp
+  solidThumbsUp,
+  faFileLines
 );
 
 const icons = {
@@ -880,6 +882,34 @@ export const QuestionIcon = ({
       }}
     >
       <FontAwesomeIcon icon={faQuestionCircle} />
+    </span>
+  );
+};
+
+export const RSCIcon = ({
+  color = "currentColor",
+  onClick,
+  overrideStyle = null,
+  size = 16,
+  withAnimation = true,
+}) => {
+  return (
+    <span
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+      onClick={onClick}
+      style={{
+        fontSize: size,
+        color: color,
+      }}
+    >
+      <img
+        src="/static/rsc-icon-gray.png"
+        className={css(styles.rscIcon)}
+        height="40px"
+      />
     </span>
   );
 };

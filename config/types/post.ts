@@ -31,13 +31,15 @@ export class Post implements TopLevelDocument {
   _isReady: boolean;
   _boostAmount: number;
   _bounties: Bounty[];
+  _bountyType: string;
+  _slug: string;
 
   constructor(raw: any) {
     this._authors = (raw.authors || []).map((a) => parseAuthorProfile(a));
     this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
-    this._createdDate = formatDateStandard(raw.created_date);
+    this._createdDate = raw.created_date;
     this._datePublished = formatDateStandard(raw.created_date);
     this._createdBy = parseCreatedBy(raw.created_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
@@ -47,7 +49,9 @@ export class Post implements TopLevelDocument {
     this._isReady = raw.id ? true : false;
     this._boostAmount = raw.boost_amount || 0;
     this._id = raw.id;
+    this._bountyType = raw.bounty_type;
     this._bounties = (raw.bounties ?? []).map((b) => new Bounty(b));
+    this._slug = raw.slug;
     // this._bounties = [new Bounty({
     //   created_date: "2022-07-11T19:58:16.564810Z",
     //   expiration_date: "2022-12-07T17:06:00Z",
@@ -126,6 +130,14 @@ export class Post implements TopLevelDocument {
 
   get hubs(): Array<Hub> {
     return this._hubs;
+  }
+
+  get bountyType(): string {
+    return this._bountyType;
+  }
+
+  get slug(): string {
+    return this._slug;
   }
 
   get bounties(): Array<Bounty> {

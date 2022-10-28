@@ -20,6 +20,9 @@ import ReactTooltip from "react-tooltip";
 import removeMd from "remove-markdown";
 import router from "next/router";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
+import { EFFORT_LEVEL_DESCRIPTIONS } from "./Bounty/BountyWizardRSCForm";
+import icons from "~/config/themes/icons";
+import EffortLevel from "./shared/EffortLevel";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -145,8 +148,47 @@ class PostPageCard extends Component {
               showLoadingAnimation
               customPlaceholder={<AbstractPlaceholder color="#efefef" />}
             >
+              {post?.unifiedDocument?.documentType === "bounty" && (
+                <div className={css(styles.table)}>
+                  <div className={css(styles.tableEntry)}>
+                    <div className={css(styles.tableKey)}>Effort Level</div>
+                    <div className={css(styles.tableValue)}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span className={css(styles.bold)}>
+                          {this.props.bounties &&
+                            this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()}
+                        </span>
+
+                        <span
+                          className={css(styles.effortDescription)}
+                          data-tip={
+                            EFFORT_LEVEL_DESCRIPTIONS[post?.bountyType][
+                              this.props.bounties &&
+                                this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()
+                            ]
+                          }
+                        >
+                          {" "}
+                          {icons["info-circle-light"]}
+                        </span>
+                      </div>
+                      <span style={{ marginLeft: 16 }}>
+                        <EffortLevel
+                          level={
+                            this.props.bounties &&
+                            this.props.bounties[0]?.effortLevel?.toLocaleLowerCase()
+                          }
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
               {post.isReady && (
                 <div>
+                  <div style={{ fontWeight: 500, marginTop: 36, fontSize: 20 }}>
+                    Bounty Details
+                  </div>
                   {isEditMode ? (
                     <>
                       <DynamicCKEditor
@@ -191,7 +233,7 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post.unifiedDocument.documentType === "question" && (
+                  {post?.unifiedDocument?.documentType === "question" && (
                     <div className={css(styles.createBountyContainer)}>
                       <CreateBountyBtn
                         onBountyAdd={(bounty) => {
@@ -211,6 +253,27 @@ class PostPageCard extends Component {
                       />
                     </div>
                   )}
+                  {post?.unifiedDocument?.documentType === "bounty" &&
+                    post?.bountyType === "metastudy" && (
+                      <div className={css(styles.buttonRow)}>
+                        <Button
+                          label={"Start a Meta-Study"}
+                          hideRipples
+                          customButtonStyle={styles.metastudyButton}
+                          onClick={() => {
+                            router.push(
+                              `/hypothesis/create?from=bounty&id=${
+                                post.id
+                              }&postSlug=${
+                                post.slug
+                              }&title=${encodeURIComponent(
+                                post.title
+                              )}&bounty_id=${this.props.bounties[0].id}`
+                            );
+                          }}
+                        />
+                      </div>
+                    )}
                 </div>
               )}
             </ReactPlaceholder>
@@ -246,6 +309,37 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
   },
+  table: {
+    marginTop: 16,
+  },
+  tableKey: {
+    color: colors.MEDIUM_GREY(),
+    fontWeight: 500,
+    fontSize: 16,
+    width: 100,
+  },
+  tableValue: {
+    textTransform: "capitalize",
+    display: "flex",
+    alignItems: "flex-end",
+  },
+  bold: {
+    fontWeight: 500,
+  },
+  effortDescription: {
+    cursor: "pointer",
+    display: "flex",
+    marginLeft: 6,
+    fontSize: 14,
+    color: colors.MEDIUM_GREY(),
+  },
+  effortLevel: {
+    marginLeft: 8,
+  },
+  tableEntry: {
+    display: "flex",
+    alignItems: "flex-end",
+  },
   main: {
     display: "flex",
     flexDirection: "column",
@@ -266,6 +360,16 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  buttonRow: {
+    marginTop: 16,
+    width: "100%",
+    display: "flex",
+  },
+  metastudyButton: {
+    width: "unset",
+    padding: "0px 16px",
+    marginLeft: "auto",
   },
 });
 
