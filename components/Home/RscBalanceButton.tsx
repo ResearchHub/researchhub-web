@@ -4,18 +4,44 @@ import { ModalActions } from "~/redux/modals";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
+import { useRouter } from "next/router";
+import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
 
 const RscBalanceButton = ({ auth }: Props): ReactElement => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const tabname = router?.query?.tabName;
+  const currentUser = getCurrentUser();
+  const rscDeltaSinceSeen = currentUser?.balance_history ?? 0;
   const { balance, should_display_rsc_balance_home } = auth?.user ?? {};
   const [_prevCount, _setPrevCount] = useState(balance);
   const [_count, setBalance] = useState(balance);
   const [_transition, setTransition] = useState(true);
   const [shouldDisplayBalanceHome, setShouldDisplayBalanceHome] =
     useState<boolean>(should_display_rsc_balance_home ?? true);
+  const [shouldDisplayRscDelta, setShouldDisplayRscDelta] = useState<boolean>(
+    rscDeltaSinceSeen !== 0
+  );
+
+  useEffect((): void => {
+    if (tabname?.includes("rsc")) {
+      setShouldDisplayRscDelta(false);
+      postLastTimeClickedRscTab({
+        onSuccess: (): void => {
+          setShouldDisplayRscDelta(false);
+        },
+        onError: emptyFncWithMsg,
+      });
+    } else {
+      setShouldDisplayRscDelta(rscDeltaSinceSeen !== 0);
+    }
+  }, [tabname, rscDeltaSinceSeen]);
 
   useEffect(() => {
     if (auth?.isFetchingUser) {
@@ -52,6 +78,15 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           {getNumberWithCommas(Math.floor(balance ?? 0))}
         </span>
       )}
+      {shouldDisplayRscDelta && (
+        <div
+          className={css(styles.rscDelta)}
+          onClick={(event: SyntheticEvent): void => {
+            event?.stopPropagation(); // prevents button click
+            router.push(`/user/${currentUser.id}/rsc`);
+          }}
+        >{`+ ${getNumberWithCommas(Math.floor(rscDeltaSinceSeen))}`}</div>
+      )}
     </div>
   );
 };
@@ -72,6 +107,18 @@ const styles = StyleSheet.create({
     width: 18,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+  },
+  rscDelta: {
+    background: colors.LIGHT_GREEN(0.5),
+    color: colors.PASTEL_GREEN_TEXT,
+    padding: 4,
+    top: -12,
+    right: -24,
+    fontSize: 12,
+    fontWeight: 400,
+    display: "flex",
+    position: "absolute",
+    borderRadius: 8,
   },
 });
 
