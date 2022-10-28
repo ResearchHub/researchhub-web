@@ -390,9 +390,7 @@ class HubPage extends Component {
                 maxHeight: "160px !important",
                 padding: 16,
               }}
-              exitButton={
-                <div style={{ fontSize: 20, padding: 8 }}>{icons.times}</div>
-              }
+              exitButton={<div style={{ fontSize: 20 }}>{icons.times}</div>}
               exitButtonPositionOverride={{
                 top: "20px !important",
                 right: "24px !important",

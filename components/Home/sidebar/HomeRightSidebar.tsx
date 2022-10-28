@@ -28,9 +28,7 @@ export default function HomeRightSidebar(): ReactElement {
             margin: 16,
             padding: "24px 16px 14px",
           }}
-          exitButton={
-            <div style={{ fontSize: 16, padding: 8 }}>{icons.times}</div>
-          }
+          exitButton={<div style={{ fontSize: 16 }}>{icons.times}</div>}
           exitButtonPositionOverride={{
             top: "16px !important",
             right: "16px !important",
