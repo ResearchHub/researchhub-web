@@ -16,6 +16,7 @@ import RHLogo from "../RHLogo";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
+import InviteButton from "~/components/Referral/InviteButton";
 
 type Props = {
   isLoggedIn: boolean;
@@ -61,6 +62,13 @@ function RootLeftSidebarSlider({
       {sliderMainItems}
       <div className={css(styles.leftSidebarSliderFooter)}>
         <div className={css(styles.leftSidebarSliderFooterItemsTop)}>
+          <span className={css(styles.leftSidebarSliderFooterTxtItem)}>
+            <InviteButton>
+              <span className={css(styles.referralProgramItem)}>
+                {"Invite"}
+              </span>
+            </InviteButton>
+          </span>          
           <ALink
             href="about"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
@@ -240,6 +248,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
     color: "#fff",
   },
+  referralProgramItem: {
+    color: colors.ORANGE_DARK2(),
+  },  
   rhLogoSlider: { width: 148 },
 });
 

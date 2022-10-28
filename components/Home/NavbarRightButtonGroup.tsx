@@ -36,7 +36,6 @@ function NavbarRightButtonGroup({
 }: Props): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
-  const [showReferral, setShowReferral] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const isLoggedIn = user?.id ?? null;
@@ -57,18 +56,6 @@ function NavbarRightButtonGroup({
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [dropdownRef, avatarRef]);
-
-  useEffect(() => {
-    function fetchReferrals() {
-      return fetch(api.SHOW_REFERRALS(), api.GET_CONFIG())
-        .then(Helpers.checKStatus)
-        .then(Helpers.parseJSON)
-        .then((res: any) => {
-          setShowReferral(res.show_referral);
-        });
-    }
-    isLoggedIn && fetchReferrals();
-  }, [isLoggedIn]);
 
   useEffect((): void => {
     let [caseCount, flagCount] = [{}, 0];
@@ -157,20 +144,6 @@ function NavbarRightButtonGroup({
               {"Settings"}
             </div>
           </Link>
-          {showReferral && (
-            <Link
-              href={{
-                pathname: "/referral",
-              }}
-            >
-              <div className={css(styles.option)}>
-                <span className={css(styles.profileIcon)}>
-                  {icons.asterisk}
-                </span>
-                {"Referral Program"}
-              </div>
-            </Link>
-          )}
           <div
             className={css(styles.option, styles.lastOption)}
             onClick={() => {
