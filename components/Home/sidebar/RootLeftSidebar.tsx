@@ -296,7 +296,7 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
-            <ALink href="about" overrideStyle={formattedFooterTxtItem}>
+            <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
             <ALink
