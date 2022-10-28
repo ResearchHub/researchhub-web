@@ -97,7 +97,7 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
           <ol className={css(styles.highlightedSectionList)}>
             <li>Share your referral link with others</li>
             <li>
-              Whenever invitee earns RSC on ReserachHub, you will receive a{" "}
+              Whenever invitee earns RSC on ResearchHub, you will receive a{" "}
               <span style={{ color: colors.ORANGE_DARK2(), fontWeight: 500 }}>
                 7% bonus
               </span>{" "}
@@ -219,13 +219,13 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "90%",
     },
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: "100%",
     },
   },
   modalContentStyle: {
     padding: 25,
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       padding: 5,
       paddingTop: 25,
     },

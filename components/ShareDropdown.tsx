@@ -5,9 +5,10 @@ import icons from "~/config/themes/icons";
 
 type Args = {
   handleClick: Function;
+  children: any;
 };
 
-const ShareDropdown = ({ handleClick }: Args) => {
+const ShareDropdown = ({ handleClick, children }: Args) => {
   const options = [
     { label: "Twitter", value: "twitter", icon: icons.twitter },
     { label: "LinkedIn", value: "linkedin", icon: icons.linkedIn },
@@ -40,7 +41,7 @@ const ShareDropdown = ({ handleClick }: Args) => {
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerEl}
       >
-        {icons.shareAlt}
+        {children}
       </div>
       {isOpen && (
         <div className={css(styles.dropdown)}>
@@ -78,12 +79,9 @@ const styles = StyleSheet.create({
     width: 150,
   },
   trigger: {
-    padding: 10,
-    ":hover": {
-      opacity: 0.8,
-    },
   },
   opt: {
+    background: "white",
     display: "flex",
     columnGap: "10px",
     padding: "10px 14px",
