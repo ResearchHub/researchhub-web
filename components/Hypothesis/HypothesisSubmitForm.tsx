@@ -118,6 +118,7 @@ function HypothesisSubmitForm({ documentType, user }: Props) {
       created_by: user.id,
       document_type: "HYPOTHESIS",
       editors: null,
+      from_bounty: router.query.bounty_id,
       full_src: mutableFormFields.text,
       /* @ts-ignore */
       hubs: mutableFormFields.hubs.map((hub) => hub.id),

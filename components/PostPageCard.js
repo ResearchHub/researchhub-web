@@ -255,7 +255,9 @@ class PostPageCard extends Component {
                                 post.id
                               }&postSlug=${
                                 post.slug
-                              }&title=${encodeURIComponent(post.title)}`
+                              }&title=${encodeURIComponent(
+                                post.title
+                              )}&bounty_id=${this.props.bounties[0].id}`
                             );
                           }}
                         />

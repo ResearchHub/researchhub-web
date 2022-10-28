@@ -7,18 +7,14 @@ type Args = {
   unifiedDocumentId: ID;
   onError?: Function;
   onSuccess: Function;
-}
+};
 
 export default function includeInFeed({
   unifiedDocumentId,
   onError,
   onSuccess,
 }: Args) {
-
-  return fetch(
-    API.INCLUDE_IN_FEED({ unifiedDocumentId }),
-    API.POST_CONFIG()
-  )
+  return fetch(API.INCLUDE_IN_FEED({ unifiedDocumentId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
     .then((response) => onSuccess(response))
     .catch((error) => {
@@ -27,6 +23,6 @@ export default function includeInFeed({
         msg: "Failed to include in feed",
         data: { unifiedDocumentId },
       });
-      onError && onError(error)
-    })
+      onError && onError(error);
+    });
 }

@@ -573,6 +573,7 @@ class Editor extends Component {
 
   render() {
     const { ReactQuill, selectedPostTypeStruct } = this.state;
+    const { placeholder } = this.props;
     const canEdit = !this.props.readOnly;
 
     if (!ReactQuill) {
@@ -651,7 +652,9 @@ class Editor extends Component {
                 styles.editSection,
                 this.props.commentStyles && this.props.commentStyles
               )}
-              placeholder={selectedPostTypeStruct.placeholder}
+              placeholder={
+                placeholder ? placeholder : selectedPostTypeStruct.placeholder
+              }
             />
             {selectedPostTypeStruct.value === POST_TYPES.REVIEW && (
               <div className={css(styles.reviewCategoryContainer)}>

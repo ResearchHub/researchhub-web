@@ -337,7 +337,11 @@ const DiscussionTab = (props) => {
         paper: paperId,
         plain_text: plainText,
       };
-    } else if (documentType === "post" || documentType === "question") {
+    } else if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = router.query.documentId;
       unifiedDocumentId = props.post.unified_document.id;
       param = {

@@ -1,10 +1,10 @@
 import Script from "next/script";
-import HypothesisContainerWithRedux from "~/components/Hypothesis/HypothesisContainer";
+import HypothesisContainer from "~/components/Hypothesis/HypothesisContainer";
 
 export default function Hypothesis(props) {
   return (
     <>
-      <HypothesisContainerWithRedux />
+      <HypothesisContainer />
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script
         src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/mhchem.min.js"

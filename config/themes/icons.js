@@ -164,6 +164,7 @@ import {
   faPlus as faPlusReg,
   faStar as faStarOutline,
   faWallet,
+  faFileLines,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -343,7 +344,8 @@ library.add(
   opaqueThumbsDown,
   opaqueThumbsUp,
   solidThumbsDown,
-  solidThumbsUp
+  solidThumbsUp,
+  faFileLines
 );
 
 const icons = {
