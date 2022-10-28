@@ -186,7 +186,7 @@ class PostPageCard extends Component {
               )}
               {post.isReady && (
                 <div>
-                  <div style={{ fontWeight: 500, marginTop: 24, fontSize: 20 }}>
+                  <div style={{ fontWeight: 500, marginTop: 36, fontSize: 20 }}>
                     Bounty Details
                   </div>
                   {isEditMode ? (
