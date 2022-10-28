@@ -48,7 +48,6 @@ export default function ExitableBanner({
           storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
           setIsExited(true);
         }}
-        role="button"
         style={exitButtonPositionOverride}
       >
         {exitButton ?? (
@@ -88,9 +87,14 @@ const styles = StyleSheet.create({
     },
   },
   exitButtonWrap: {
+    alignItems: "center",
     cursor: "pointer",
+    display: "flex",
+    height: 28,
+    justifyContent: "center",
     position: "absolute",
-    right: 20,
-    top: 20,
+    right: 22,
+    top: 22,
+    width: 28,
   },
 });

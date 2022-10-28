@@ -147,5 +147,8 @@ const styles = StyleSheet.create({
     padding: 8,
     cursor: "pointer",
     fontSize: 12,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 16,
+    },
   },
 });

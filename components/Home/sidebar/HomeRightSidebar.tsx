@@ -33,7 +33,7 @@ export default function HomeRightSidebar(): ReactElement {
           }
           exitButtonPositionOverride={{
             top: "16px !important",
-            right: "22px !important",
+            right: "16px !important",
           }}
           onExit={(): void => setShouldLimitNumCards(false)}
         />
