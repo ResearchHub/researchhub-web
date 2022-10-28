@@ -321,12 +321,7 @@ function FeedCard({
                         />
                       </div>
                     )}
-                    <div
-                      className={css(styles.metaItem, styles.metaItemAsBadge)}
-                    >
-                      <ContentBadge contentType={formattedDocType} />
-                    </div>
-                    {bountyAmount > 0 && (
+                    {bountyAmount > 0 ? (
                       <div className={css(styles.metaItem)}>
                         <ContentBadge
                           contentType="bounty"
@@ -335,6 +330,12 @@ function FeedCard({
                             " Bounty"
                           }
                         />
+                      </div>
+                    ) : (
+                      <div
+                        className={css(styles.metaItem, styles.metaItemAsBadge)}
+                      >
+                        <ContentBadge contentType={formattedDocType} />
                       </div>
                     )}
                     {formattedDocType === "question" ? (
