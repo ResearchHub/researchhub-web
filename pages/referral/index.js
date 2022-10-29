@@ -256,31 +256,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export async function getServerSideProps(context) {
-  function fetchReferrals(authToken) {
-    return fetch(API.SHOW_REFERRALS(), API.GET_CONFIG(authToken))
-      .then(Helpers.checKStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        return res.show_referral;
-      });
-  }
-
-  const cookies = nookies.get(context);
-  const authToken = cookies[AUTH_TOKEN];
-  const showReferral = await fetchReferrals(authToken);
-
-  if (!showReferral) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  // Pass data to the page via props
-  return { props: { showReferral } };
-}
-
 export default connect(mapStateToProps)(Index);
