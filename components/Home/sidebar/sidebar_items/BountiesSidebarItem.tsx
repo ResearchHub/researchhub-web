@@ -59,7 +59,7 @@ export default function BountiesSidebarItem({
             </span>
           </div>
           <div className={css(styles.bountiesSidebarItemContent)}>
-            {bountyContentSnippet.length > 180
+            {bountyContentSnippet?.length > 180
               ? bountyContentSnippet.slice(0, 180) + " ..."
               : bountyContentSnippet}
           </div>

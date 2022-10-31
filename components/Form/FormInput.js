@@ -189,7 +189,6 @@ const styles = StyleSheet.create({
     ":focus": {
       borderColor: "#3f85f7",
       ":hover": {
-        boxShadow: "0px 0px 1px 1px #3f85f7",
         cursor: "text",
       },
     },

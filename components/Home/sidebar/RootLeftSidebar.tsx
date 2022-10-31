@@ -27,6 +27,8 @@ import RootLeftSidebarItem, {
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import { storeToCookie } from "~/config/utils/storeToCookie";
+import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import InviteButton from "~/components/Referral/InviteButton";
 
 type Props = {
   openLoginModal: any;
@@ -139,6 +141,7 @@ function RootLeftSidebar({
       "hypothesis",
       "my-hubs",
       "live",
+      "referral",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {
@@ -297,6 +300,24 @@ function RootLeftSidebar({
         </div>
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
+            <span className={css(formattedFooterTxtItem)}>
+              <InviteButton>
+                <span className={css(styles.referralProgramItem)}>
+                  {isMinimized ? (
+                    "Invite"
+                  ) : (
+                    <>
+                      {"Invite and earn"}
+                      <ResearchCoinIcon
+                        width={20}
+                        height={20}
+                        overrideStyle={styles.rscIcon}
+                      />
+                    </>
+                  )}
+                </span>
+              </InviteButton>
+            </span>
             <ALink href="/about" overrideStyle={formattedFooterTxtItem}>
               {"About"}
             </ALink>
@@ -467,6 +488,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   leftSidebarFooterItemsBottomRowMin: { display: "none" },
+  referralProgramItem: {
+    color: colors.ORANGE_DARK2(),
+    display: "flex",
+    alignItems: "center",
+    columnGap: "10px",
+    cursor: "pointer",
+  },
+  rscIcon: {
+    marginTop: 5,
+  },
   leftSidebarFooterIcon: {
     fontSize: 18,
     marginRight: 32,

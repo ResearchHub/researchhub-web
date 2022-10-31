@@ -124,6 +124,7 @@ import {
   faCheckCircle,
   faChevronDown as falChevronDown,
   faComments as faCommentsNoBackground,
+  faCopy,
   faGlobe as faGlobeLight,
   faHeartRate,
   faUnlock,
@@ -155,6 +156,7 @@ import {
   faChevronUp,
   faCircleExclamation,
   faClock,
+  faCommentDots,
   faEllipsisH,
   faEllipsisV,
   faFileUpload,
@@ -163,6 +165,7 @@ import {
   faMedal,
   faPlus as faPlusReg,
   faStar as faStarOutline,
+  faShareAlt as faShareRegular,
   faWallet,
   faFileLines,
 } from "@fortawesome/pro-regular-svg-icons";
@@ -241,12 +244,14 @@ library.add(
   faCog,
   faCoin,
   faCoins,
+  faCopy,
   faComment,
   faCommentAltDots,
   faCommentAltEdit,
   faCommentAltLines,
   faCommentAltLinesSolid,
   faComments,
+  faCommentDots,
   faDiscord,
   faDotCircle,
   faDown,
@@ -310,6 +315,7 @@ library.add(
   faSearch,
   faShare,
   faShareAlt,
+  faShareRegular,
   faShareSquare,
   faSignOut,
   faSimpleUser,
@@ -384,6 +390,7 @@ const icons = {
   chevronLeft: <FontAwesomeIcon icon={faChevronLeft} />,
   chevronRight: <FontAwesomeIcon icon={faChevronRight} />,
   chevronUp: <FontAwesomeIcon icon={faChevronUp} />,
+  copy: <FontAwesomeIcon icon={faCopy} />,
   clock: <FontAwesomeIcon icon={faClock} />,
   clone: <FontAwesomeIcon icon={faClone} />,
   cog: <FontAwesomeIcon icon={faCog} />,
@@ -399,6 +406,7 @@ const icons = {
   comments: <FontAwesomeIcon icon={faComments} />,
   commentsSolid: <FontAwesomeIcon icon={faCommentsSolid} />,
   commentsAlt: <FontAwesomeIcon icon={faCommentsNoBackground} />,
+  commentDots: <FontAwesomeIcon icon={faCommentDots} />,
   chevronCircleRight: <FontAwesomeIcon icon={faChevronCircleRight} />,
   chevronCircleLeft: <FontAwesomeIcon icon={faChevronCircleLeft} />,
   checkDouble: <FontAwesomeIcon icon={faCheckDouble} />,
@@ -477,6 +485,7 @@ const icons = {
   shapes: <FontAwesomeIcon icon={faShapes} />,
   share: <FontAwesomeIcon icon={faShare} />,
   shareAlt: <FontAwesomeIcon icon={faShareAlt} />,
+  shareRegular: <FontAwesomeIcon icon={faShareRegular} />,
   shareSquare: <FontAwesomeIcon icon={faShareSquare} />,
   signOut: <FontAwesomeIcon icon={faSignOut} />,
   simpleUser: <FontAwesomeIcon icon={faSimpleUser} />,
@@ -760,6 +769,7 @@ export const CloseIcon = ({
   height = 14,
   withAnimation = true,
   overrideStyle = null,
+  color = colors.BLACK(),
 }) => {
   return (
     <span
@@ -784,7 +794,10 @@ export const CloseIcon = ({
           {" "}
           <g>
             {" "}
-            <path d="M228.929,205.01L404.596,29.343c6.78-6.548,6.968-17.352,0.42-24.132c-6.548-6.78-17.352-6.968-24.132-0.42 c-0.142,0.137-0.282,0.277-0.42,0.42L204.796,180.878L29.129,5.21c-6.78-6.548-17.584-6.36-24.132,0.42 c-6.388,6.614-6.388,17.099,0,23.713L180.664,205.01L4.997,380.677c-6.663,6.664-6.663,17.468,0,24.132 c6.664,6.662,17.468,6.662,24.132,0l175.667-175.667l175.667,175.667c6.78,6.548,17.584,6.36,24.132-0.42 c6.387-6.614,6.387-17.099,0-23.712L228.929,205.01z" />{" "}
+            <path
+              fill={color}
+              d="M228.929,205.01L404.596,29.343c6.78-6.548,6.968-17.352,0.42-24.132c-6.548-6.78-17.352-6.968-24.132-0.42 c-0.142,0.137-0.282,0.277-0.42,0.42L204.796,180.878L29.129,5.21c-6.78-6.548-17.584-6.36-24.132,0.42 c-6.388,6.614-6.388,17.099,0,23.713L180.664,205.01L4.997,380.677c-6.663,6.664-6.663,17.468,0,24.132 c6.664,6.662,17.468,6.662,24.132,0l175.667-175.667l175.667,175.667c6.78,6.548,17.584,6.36,24.132-0.42 c6.387-6.614,6.387-17.099,0-23.712L228.929,205.01z"
+            />{" "}
           </g>{" "}
         </g>{" "}
         <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}

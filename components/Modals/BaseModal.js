@@ -5,11 +5,11 @@ import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
 import { CloseIcon } from "~/config/themes/icons";
-
 import "./Stylesheets/Modal.module.css";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
+import colors from "~/config/themes/colors";
 
 class BaseModal extends Component {
   constructor(props) {
@@ -149,7 +149,11 @@ class BaseModal extends Component {
           {!this.props.removeDefault && (
             <Fragment>
               <div className={css(styles.closeButtonWrapper)}>
-                <CloseIcon onClick={this.closeModal} />
+                <CloseIcon
+                  overrideStyle={styles.close}
+                  color={colors.MEDIUM_GREY()}
+                  onClick={this.closeModal}
+                />
               </div>
               <div
                 className={css(
@@ -258,8 +262,8 @@ const styles = StyleSheet.create({
   closeButtonWrapper: {
     position: "absolute",
     cursor: "pointer",
-    top: 8,
-    right: 8,
+    top: 0,
+    right: 0,
     zIndex: 2,
   },
   titleContainer: {

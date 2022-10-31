@@ -15,8 +15,6 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 const ContentBadge = ({ contentType, label = null, onClick = null }) => {
   const router = useRouter();
 
-  console.log(contentType);
-
   return (
     <Badge badgeClassName={[styles.badge, styles["badgeFor_" + contentType]]}>
       {contentType === "paper" ? (

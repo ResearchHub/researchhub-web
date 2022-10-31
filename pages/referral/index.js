@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
-import { isServer } from "~/config/server/isServer";
 import { useState, useRef, useEffect } from "react";
 import { useTransition, animated } from "react-spring";
 import nookies from "nookies";
@@ -13,24 +12,14 @@ import colors from "../../config/themes/colors";
 import FormInput from "../../components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
-import EmptyState from "../../components/Placeholders/EmptyState";
-import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
-import ReactPlaceholder from "react-placeholder/lib";
-import LeaderboardPlaceholder from "../../components/Placeholders/LeaderboardPlaceholder";
-import Button from "../../components/Form/Button";
-import Loader from "../../components/Loader/Loader";
-import HowItWorks from "../../components/Referral/HowItWorks";
 import { AUTH_TOKEN } from "~/config/constants";
+import ReferredUserList from "~/components/Referral/ReferredUserList";
+import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 const Index = ({ auth }) => {
-  const [copySuccessMessage, setCopySuccessMessage] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [fetchingInvitedFriends, setFetchingInvitedFriends] = useState(true);
-  const [fetchingLoadMore, setFetchingLoadMore] = useState(true);
-  const [RSC_EARNED, setRSCEarned] = useState(0);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [invitedFriends, setInvitedFriends] = useState([]);
+  const [copySuccessMessage, setCopySuccessMessage] = useState(null);
   const formInputRef = useRef();
 
   function copyToClipboard() {
@@ -44,40 +33,6 @@ const Index = ({ auth }) => {
     }, 2000);
   }
 
-  useEffect(() => {
-    if (auth.user.id) {
-      fetchInvitedFriends();
-      fetchRSCTotal();
-    }
-  }, [auth.user.id]);
-
-  const fetchRSCTotal = () => {
-    return fetch(API.USER({ route: "referral_rsc" }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setRSCEarned(res.amount);
-      });
-  };
-
-  const fetchInvitedFriends = (loadMore) => {
-    if (loadMore) {
-      setFetchingLoadMore(true);
-    } else {
-      setFetchingInvitedFriends(true);
-    }
-    return fetch(API.USER({ invitedBy: auth.user.id, page }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setFetchingInvitedFriends(false);
-        setFetchingLoadMore(false);
-        setInvitedFriends(res.results);
-        setPage(page + 1);
-        setTotalCount(res.count);
-      });
-  };
-
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.banner)}>
@@ -90,14 +45,19 @@ const Index = ({ auth }) => {
           <div className={css(styles.column, styles.titleContainer)}>
             <h1 className={css(styles.title)}>ResearchHub Referral Program</h1>
             <p className={css(styles.subtitle)}>
-              Invite your friends to ResearchHub. Both you and the person you
-              invite will receive 50 RSC.
+              Get rewarded for referring scientists and reserachers to our
+              platform.
             </p>
             <FormInput
               getRef={formInputRef}
+              onClick={copyToClipboard}
               inlineNodeRight={
                 <a className={css(styles.copyLink)} onClick={copyToClipboard}>
-                  {showSuccessMessage ? "Copied!" : "Copy Referral Link"}
+                  {showSuccessMessage ? (
+                    "Copied!"
+                  ) : (
+                    <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                  )}
                 </a>
               }
               inlineNodeStyles={styles.inlineNodeStyles}
@@ -105,7 +65,11 @@ const Index = ({ auth }) => {
                 styles.copySuccessMessageStyle,
                 !showSuccessMessage && styles.noShow,
               ]}
-              value={`https://www.researchhub.com/referral/${auth.user.referral_code}`}
+              value={
+                process.browser
+                  ? `${window.location.protocol}//${window.location.host}/referral/${auth?.user?.referral_code}`
+                  : ""
+              }
               containerStyle={styles.containerStyle}
               inputStyle={styles.inputStyle}
             />
@@ -113,76 +77,8 @@ const Index = ({ auth }) => {
         </ReactTransitionComponent>
       </div>
       <ComponentWrapper>
-        <h2 className={css(styles.howItWorksTitle)}>How it Works</h2>
-        <HowItWorks />
         <div className={css(styles.invitedFriendsSection)}>
-          <h2 className={css(styles.howItWorksTitle)}>
-            You've Earned{" "}
-            <span className={css(styles.rsc)}> {RSC_EARNED} RSC</span>
-          </h2>
-          <h3 className={css(styles.invitedFriendsTitle)}>Invited friends</h3>
-          <ReactPlaceholder
-            ready={!fetchingInvitedFriends}
-            customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
-          >
-            {invitedFriends.length > 0 ? (
-              invitedFriends.map((friend) => {
-                return (
-                  <div className={css(styles.user)} key={`user_${friend.id}`}>
-                    <LeaderboardUser
-                      name={
-                        friend.author_profile.first_name +
-                        " " +
-                        friend.author_profile.last_name
-                      }
-                      reputation={
-                        <span className={css(styles.earnedRSC)}>
-                          {friend.has_seen_first_coin_modal
-                            ? "+50 RSC"
-                            : "0 RSC"}
-                        </span>
-                      }
-                      authorProfile={friend.author_profile}
-                      authorId={friend.author_profile.id}
-                    />
-                  </div>
-                );
-              })
-            ) : (
-              <div>
-                <EmptyState
-                  text={"You haven't invited any friends yet"}
-                  icon={
-                    <img
-                      className={css(styles.emptyState)}
-                      src={"/static/referrals/second-step.svg"}
-                    ></img>
-                  }
-                />
-              </div>
-            )}
-
-            {totalCount > invitedFriends.length && (
-              <div className={css(styles.buttonContainer)}>
-                {!fetchingLoadMore ? (
-                  <Button
-                    onClick={() => {
-                      fetchingInvitedFriends(true);
-                    }}
-                    isWhite={true}
-                    label={"Load More"}
-                  ></Button>
-                ) : (
-                  <Loader
-                    key={"paperLoader"}
-                    loading={true}
-                    size={25}
-                    color={colors.BLUE()}
-                  />
-                )}
-              </div>
-            )}
-          </ReactPlaceholder>
+          <ReferredUserList />
         </div>
       </ComponentWrapper>
       <CustomHead title="ResearchHub Referral Program" />
@@ -230,15 +126,20 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #EFEFEF",
   },
   banner: {
-    height: 345,
+    height: 300,
     width: "100%",
     position: "relative",
     display: "flex",
     flexDirection: "column",
+    boxSizing: "border-box",
     justifyContent: "center",
     alignItems: "center",
     // opacity: 0,
     transition: "all ease-in-out 0.5s",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
   },
   earnedRSC: {
     color: "#59BD5C",
@@ -253,9 +154,7 @@ const styles = StyleSheet.create({
     maxWidth: 624,
     margin: "0 auto",
     paddingBottom: 50,
-    "@media only screen and (min-width: 768px)": {
-      marginTop: 150,
-    },
+    marginTop: 100,
   },
   invitedFriendsTitle: {
     fontWeight: 500,
@@ -279,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 500,
 
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 50,
     },
   },
@@ -290,25 +189,15 @@ const styles = StyleSheet.create({
     height: 50,
   },
   inputStyle: {
-    paddingRight: 166,
-
-    "@media only screen and (max-width: 767px)": {
-      paddingRight: 16,
-    },
+    paddingRight: 70,
   },
   containerStyle: {
     paddingRight: "unset",
     minHeight: "unset",
     width: 700,
     margin: "0 auto",
-    "@media only screen and (max-width: 665px)": {
-      width: 360,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "auto",
     },
   },
   noShow: {
@@ -317,26 +206,11 @@ const styles = StyleSheet.create({
   copySuccessMessageStyle: {
     position: "absolute",
     right: -70,
-    top: "50%",
     color: "#fff",
-    transform: "translateY(-50%)",
   },
   inlineNodeStyles: {
     paddingRight: 0,
     right: 16,
-
-    "@media only screen and (max-width: 767px)": {
-      textAlign: "center",
-      marginTop: 16,
-      background: "#fff",
-      padding: 16,
-      top: 50,
-      transform: "translateX(-50%)",
-      right: "unset",
-      left: "50%",
-      border: "2px solid rgb(78, 83, 255)",
-      borderRadius: 4,
-    },
   },
   title: {
     color: "#fff",
@@ -365,9 +239,12 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
   },
   copyLink: {
-    color: colors.PURPLE(),
+    color: colors.NEW_BLUE(),
     cursor: "pointer",
     fontWeight: 500,
+  },
+  copyIcon: {
+    fontSize: 22,
   },
   innerTitle: {
     fontSize: 22,
@@ -378,32 +255,5 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
-
-export async function getServerSideProps(context) {
-  function fetchReferrals(authToken) {
-    return fetch(API.SHOW_REFERRALS(), API.GET_CONFIG(authToken))
-      .then(Helpers.checKStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        return res.show_referral;
-      });
-  }
-
-  const cookies = nookies.get(context);
-  const authToken = cookies[AUTH_TOKEN];
-  const showReferral = await fetchReferrals(authToken);
-
-  if (!showReferral) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  // Pass data to the page via props
-  return { props: { showReferral } };
-}
 
 export default connect(mapStateToProps)(Index);

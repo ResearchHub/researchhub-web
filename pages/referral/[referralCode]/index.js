@@ -10,8 +10,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
 import GoogleLoginButton from "../../../components/GoogleLoginButton";
-import HowItWorks from "../../../components/Referral/HowItWorks";
 import Router from "next/router";
+import { breakpoints } from "~/config/themes/screen";
 
 const Index = ({ code, user }) => {
   useEffect(() => {
@@ -35,23 +35,17 @@ const Index = ({ code, user }) => {
               {user.author_profile.first_name} has invited you to ResearchHub
             </h1>
             <p className={css(styles.text)}>
-              Sign up for ResearchHub now and contribute to earn you and{" "}
-              {user.author_profile.first_name} a referral bonus of 50 RSC.
+              Sign up for ResearchHub to become a part of a growing scientific
+              community dedicated to accelerating science.
             </p>
             <GoogleLoginButton
-              customLabel={
-                "Sign In With Google and contribute to receive 50 RSC"
-              }
+              customLabel={"Sign In With Google to receive 50 RSC"}
               rippleClass={styles.buttonClass}
               styles={[styles.buttonClass, styles.buttonContainer]}
               customLabelStyle={styles.customLabelStyle}
               loginCallback={loginCallback}
             />
           </div>
-        </div>
-        <div className={css(styles.howItWorksSection)}>
-          <h2 className={css(styles.howItWorksTitle)}> How It Works </h2>
-          <HowItWorks />
         </div>
       </ComponentWrapper>
       <CustomHead title="ResearchHub Referral Program" />
@@ -103,12 +97,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 0,
     margin: 0,
+    marginBottom: 15,
     "@media only screen and (min-width: 800px)": {
       textAlign: "left",
       paddingRight: 16,
     },
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 33,
+      fontSize: 28,
     },
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
@@ -128,12 +123,19 @@ const styles = StyleSheet.create({
   beakerImg: {
     height: 550,
     paddingRight: 50,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: 350,
+      paddingTop: 0,
+    },
   },
   componentContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: 50,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+    },
   },
   signinContainer: {
     borderRadius: 16,
