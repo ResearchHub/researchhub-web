@@ -9,7 +9,6 @@ import InviteIcon from "../Icons/InviteIcon";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { NullableString } from "~/config/types/root_types";
-import ReactTooltip from "react-tooltip";
 
 type Args = {
   isOpen: boolean;
@@ -48,13 +47,11 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
           : `Invite others to ResearchHub`
       }
     >
-      <ReactTooltip />
       <div className={css(styles.divider)}></div>
       {context === "bounty" ? (
         <p className={css(styles.details, styles.detailsBounty)}>
-          <strong>Know someone who can answer this bounty?</strong> You could
-          earn a 7% bonus based on this bounty and for every contribution they
-          make for six months.
+          <strong>Know someone who can complete this bounty?</strong> You will earn a 7%
+          bonus every contribution they make for six months.
         </p>
       ) : (
         <p className={css(styles.details)}>
@@ -70,31 +67,36 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
             </ALink>
           </span>
         </h4>
-        <FormInput
-          getRef={formInputRef}
-          onClick={copyToClipboard}
-          inlineNodeRight={
-            <a className={css(styles.copyLink)} onClick={copyToClipboard}>
-              {showSuccessMessage ? (
-                "Copied"
-              ) : (
-                <span className={css(styles.copyIcon)}>{icons.copy}</span>
-              )}
-            </a>
-          }
-          inlineNodeStyles={styles.inlineNodeStyles}
-          messageStyle={[
-            styles.copySuccessMessageStyle,
-            !showSuccessMessage && styles.noShow,
-          ]}
-          value={
-            process.browser
-              ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
-              : ""
-          }
-          containerStyle={styles.containerStyle}
-          inputStyle={styles.inputStyle}
-        />
+        {user?.id ?
+          <FormInput
+            getRef={formInputRef}
+            onClick={copyToClipboard}
+            inlineNodeRight={
+              <a className={css(styles.copyLink)} onClick={copyToClipboard}>
+                {showSuccessMessage ? (
+                  "Copied"
+                ) : (
+                  <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                )}
+              </a>
+            }
+            inlineNodeStyles={styles.inlineNodeStyles}
+            messageStyle={[
+              styles.copySuccessMessageStyle,
+              !showSuccessMessage && styles.noShow,
+            ]}
+            value={
+              process.browser
+                ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
+                : ""
+            }
+            containerStyle={styles.containerStyle}
+            inputStyle={styles.inputStyle}
+          />
+          : (
+            <div>Login first to view your personalized link</div>
+          )
+        }
       </div>
 
       <div className={css(styles.howItWorksSection)}>
@@ -110,30 +112,32 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
         </h4>
         <div className={css(styles.highlightedSection)}>
           <ol className={css(styles.highlightedSectionList)}>
-            <li>Share your referral link person of interest</li>
+            <li>Share your referral link</li>
             <li>
               Earn{" "}
               <span
                 style={{
                   color: colors.ORANGE_DARK2(),
                   fontWeight: 500,
-                  borderBottom: "2px dotted",
                 }}
-                data-tip="7% bonus will be paid by ResearchHub and not referral"
               >
                 7% bonus
               </span>{" "}
               every time they earn RSC on ResearchHub for the first six month
               period
               <div className={css(styles.example)}>
-                Example: You will recieve 7 RSC if they earn 100 RSC
+                Example: If they earn 100 RSC, you will earn 7 RSC
               </div>
             </li>
           </ol>
           <div className={css(styles.squaresContainer)}>
             <div className={css(styles.square)}>
               <div className={css(styles.iconContainer)}>
-                <AuthorAvatar author={user.author_profile} />
+                {user?.id
+                  ? <AuthorAvatar author={user?.author_profile} />
+                  : <div className={css(styles.userIcon)}>{icons.user}</div>
+                }
+                
               </div>
               <span className={css(styles.personTitle)}>You</span>
               <span className={css(styles.subtitle)}>
@@ -177,6 +181,10 @@ const styles = StyleSheet.create({
       fontSize: 16,
       paddingLeft: 20,
     },
+  },
+  userIcon: {
+    fontSize: 30,
+    color: colors.MEDIUM_GREY2(),
   },
   details: {
     textAlign: "left",

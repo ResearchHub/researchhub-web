@@ -18,11 +18,7 @@ const InviteButton = ({ children, openLoginModal, context }: Args) => {
     <span>
       <span
         onClick={() => {
-          if (!auth?.user?.id) {
-            openLoginModal(true, "Please Sign in with Google to continue.");
-          } else {
-            setIsOpen(true);
-          }
+          setIsOpen(true);
         }}
       >
         {children}

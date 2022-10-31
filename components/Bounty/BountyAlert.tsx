@@ -81,7 +81,7 @@ const BountyAlert = ({
       // Sometimes bounty is "any" and other times it is a proper "Bounty" object.
       // This should be rewritten to ensure bounties referenced here are always proper Bounty objects.
       if (!currentUser) {
-        return null
+        return null;
       }
       else if (bounty?.created_by && bounty?.created_by?.author_profile?.id === currentUser.author_profile?.id) { 
         return bounty;
