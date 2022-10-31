@@ -76,7 +76,23 @@ const BountyAlert = ({
   const userBounty =
     allBounties &&
     allBounties.length &&
-    allBounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
+    allBounties.find((bounty) => {
+      // These various conditions are meant to cover various types a bounty can take.
+      // Sometimes bounty is "any" and other times it is a proper "Bounty" object.
+      // This should be rewritten to ensure bounties referenced here are always proper Bounty objects.
+      if (!currentUser) {
+        return null
+      }
+      else if (bounty?.created_by && bounty?.created_by?.author_profile?.id === currentUser.author_profile?.id) { 
+        return bounty;
+      }
+      else if (bounty?.createdBy && bounty.createdBy.id === currentUser.id) {
+        return bounty;
+      }
+    });
+
+
+  console.log('userBount', userBounty)
 
   const showPlural = bountyType !== "question" && allBounties.length > 1;
   const showContributeBounty =
