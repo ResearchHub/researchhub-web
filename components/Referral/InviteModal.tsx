@@ -9,18 +9,19 @@ import InviteIcon from "../Icons/InviteIcon";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { NullableString } from "~/config/types/root_types";
+import ReactTooltip from "react-tooltip";
 
 type Args = {
   isOpen: boolean;
   handleClose: Function;
   user: any;
+  context: "bounty" | "referral";
 };
 
-const InviteModal = ({ isOpen, handleClose, user }: Args) => {
+const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
   const formInputRef = useRef<HTMLInputElement>();
-  const [copySuccessMessage, setCopySuccessMessage] = useState<NullableString>(
-    null
-  );
+  const [copySuccessMessage, setCopySuccessMessage] =
+    useState<NullableString>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   function copyToClipboard() {
@@ -39,13 +40,27 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
       modalContentStyle={styles.modalContentStyle}
+      titleStyle={styles.titleStyle}
       textAlign="left"
-      title={`Invite others to ResearchHub`}
+      title={
+        context === "bounty"
+          ? `Invite others to answer this bounty`
+          : `Invite others to ResearchHub`
+      }
     >
+      <ReactTooltip />
       <div className={css(styles.divider)}></div>
-      <p className={css(styles.details)}>
-        Get rewarded for referring scientists and reserachers to our platform.
-      </p>
+      {context === "bounty" ? (
+        <p className={css(styles.details, styles.detailsBounty)}>
+          <strong>Know someone who can answer this bounty?</strong> You could
+          earn a 7% bonus based on this bounty and for every contribution they
+          make for six months.
+        </p>
+      ) : (
+        <p className={css(styles.details)}>
+          Get rewarded for referring scientists and reserachers to our platform.
+        </p>
+      )}
       <div className={css(styles.referralLinkSection)}>
         <h4 className={css(styles.sectionTitle)}>
           Your referral link
@@ -61,7 +76,7 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
           inlineNodeRight={
             <a className={css(styles.copyLink)} onClick={copyToClipboard}>
               {showSuccessMessage ? (
-                "Copied!"
+                "Copied"
               ) : (
                 <span className={css(styles.copyIcon)}>{icons.copy}</span>
               )}
@@ -95,13 +110,24 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
         </h4>
         <div className={css(styles.highlightedSection)}>
           <ol className={css(styles.highlightedSectionList)}>
-            <li>Share your referral link with others</li>
+            <li>Share your referral link person of interest</li>
             <li>
-              Whenever invitee earns RSC on ResearchHub, you will receive a{" "}
-              <span style={{ color: colors.ORANGE_DARK2(), fontWeight: 500 }}>
+              Earn{" "}
+              <span
+                style={{
+                  color: colors.ORANGE_DARK2(),
+                  fontWeight: 500,
+                  borderBottom: "2px dotted",
+                }}
+                data-tip="7% bonus will be paid by ResearchHub and not referral"
+              >
                 7% bonus
               </span>{" "}
-              for the first six month period
+              every time they earn RSC on ResearchHub for the first six month
+              period
+              <div className={css(styles.example)}>
+                Example: You will recieve 7 RSC if they earn 100 RSC
+              </div>
             </li>
           </ol>
           <div className={css(styles.squaresContainer)}>
@@ -133,6 +159,10 @@ const InviteModal = ({ isOpen, handleClose, user }: Args) => {
 };
 
 const styles = StyleSheet.create({
+  example: {
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 14,
+  },
   divider: {
     width: "100%",
     borderTop: `1px solid ${colors.GREY_LINE()}`,
@@ -157,6 +187,13 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
     },
+  },
+  detailsBounty: {
+    padding: 15,
+    background: colors.NEW_BLUE(0.1),
+    border: `2px solid ${colors.NEW_BLUE(0.7)}`,
+    borderRadius: "4px",
+    boxSizing: "border-box",
   },
   sectionTitle: {
     display: "flex",
@@ -229,6 +266,9 @@ const styles = StyleSheet.create({
       padding: 5,
       paddingTop: 25,
     },
+  },
+  titleStyle: {
+    height: "auto",
   },
   inputStyle: {
     paddingRight: 85,

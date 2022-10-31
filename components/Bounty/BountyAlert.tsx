@@ -16,7 +16,6 @@ import InviteButton from "~/components/Referral/InviteButton";
 import icons from "~/config/themes/icons";
 import CoinStackIcon from "../Icons/CoinStackIcon";
 
-
 type BountyAlertParams = {
   bounty: Bounty;
   allBounties: [Bounty];
@@ -79,11 +78,9 @@ const BountyAlert = ({
     allBounties.length &&
     allBounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
 
-
   const showPlural = bountyType !== "question" && allBounties.length > 1;
   const showContributeBounty =
     !isOriginalPoster && !userBounty && bountyType === "question";
-
 
   const _handleShareClick = (selectedOpt: any) => {
     if (selectedOpt.value === "twitter") {
@@ -226,7 +223,9 @@ const BountyAlert = ({
                 });
               }}
             >
-              <span className={css(styles.actionIcon)}>{icons.commentDots}</span>
+              <span className={css(styles.actionIcon)}>
+                {icons.commentDots}
+              </span>
               Answer
             </div>
             {showContributeBounty && (
@@ -234,7 +233,9 @@ const BountyAlert = ({
                 className={css(styles.action)}
                 onClick={() => setIsModalOpen(true)}
               >
-                <span className={css(styles.actionIcon)}><CoinStackIcon /></span>
+                <span className={css(styles.actionIcon)}>
+                  <CoinStackIcon />
+                </span>
                 Contribute
               </div>
             )}
@@ -247,10 +248,14 @@ const BountyAlert = ({
           </ShareDropdown>
         </div>
         <div className={css(styles.action, styles.inviteAction)}>
-          <InviteButton>
+          <InviteButton context="bounty">
             <span>
               <span className={css(styles.actionIcon, styles.inviteIcon)}>
-                <ResearchCoinIcon width={16} height={16} overrideStyle={styles.rscIcon} />
+                <ResearchCoinIcon
+                  width={16}
+                  height={16}
+                  overrideStyle={styles.rscIcon}
+                />
               </span>
               {"Invite and Earn"}
             </span>
@@ -288,8 +293,7 @@ const styles = StyleSheet.create({
       color: colors.NEW_BLUE(0.8),
     },
   },
-  shareAction: {
-  }, 
+  shareAction: {},
   actionIcon: {
     marginRight: 5,
     fontSize: 16,
@@ -308,7 +312,7 @@ const styles = StyleSheet.create({
     marginTop: -6,
     ":hover": {
       color: bountyColors.BADGE_TEXT,
-    },    
+    },
   },
   contribute: {
     alignItems: "center",
@@ -326,7 +330,7 @@ const styles = StyleSheet.create({
   bountyAlert: {
     userSelect: "none",
     boxShadow:
-    "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
     // background: "rgba(242, 251, 243, 0.3)",
     borderRadius: "4px",
     padding: "12px 20px",
@@ -341,7 +345,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 10,
     marginBottom: 15,
-    borderBottom: `1px solid ${colors.GREY_LINE()}`
+    borderBottom: `1px solid ${colors.GREY_LINE()}`,
   },
   strong: {
     fontWeight: 500,
