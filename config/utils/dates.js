@@ -62,6 +62,7 @@ export function timeAgoStamp(date) {
 export function timeSince(date) {
   const inputDate = moment(date);
   const now = moment();
+
   const MINUTES_IN_A_DAY = 1440;
 
   const deltaInMins = now.diff(inputDate, "minutes");

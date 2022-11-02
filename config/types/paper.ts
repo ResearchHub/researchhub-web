@@ -80,7 +80,7 @@ export class Paper implements TopLevelDocument {
     this._unifiedDocument = parseUnifiedDocument(raw.unified_document);
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
-    this._createdDate = formatDateStandard(raw.created_date);
+    this._createdDate = raw.created_date;
     this._createdBy = parseCreatedBy(raw.uploaded_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
     this._title = raw.title;
