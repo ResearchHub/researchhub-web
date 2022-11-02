@@ -10,20 +10,23 @@ import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import colors from "~/config/themes/colors";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import icons from "~/config/themes/icons";
+import ResearchHubPopover from "../ResearchHubPopover";
+import RscBalanceHistory from "./RscBalanceHistory";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
 
 const RscBalanceButton = ({ auth }: Props): ReactElement => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const tabname = router?.query?.tabName;
   const currentUser = getCurrentUser();
   const rscDeltaSinceSeen = currentUser?.balance_history ?? 0;
   const { balance, should_display_rsc_balance_home } = auth?.user ?? {};
-  const [_prevCount, _setPrevCount] = useState(balance);
+
   const [_count, setBalance] = useState(balance);
+  const [_prevCount, _setPrevCount] = useState(balance);
   const [_transition, setTransition] = useState(true);
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [shouldDisplayBalanceHome, setShouldDisplayBalanceHome] =
     useState<boolean>(should_display_rsc_balance_home ?? true);
   const [shouldDisplayRscDelta, setShouldDisplayRscDelta] = useState<boolean>(
@@ -58,38 +61,42 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   }, [auth, balance, should_display_rsc_balance_home]);
 
   return (
-    <div
-      className={css(styles.rscBalanceButtonContainer)}
-      data-tip="" /* necessary for ReputationTooltip */
-      data-for="reputation-tool-tip"
-      onClick={(event: SyntheticEvent): void => {
-        event.preventDefault();
-        dispatch(ModalActions.openWithdrawalModal(true));
-      }}
-    >
-      <ReputationTooltip />
-      <img
-        src={"/static/icons/coin-filled.png"}
-        draggable={false}
-        className={css(styles.coinIcon)}
-        alt="RSC Coin"
-      />
-      {shouldDisplayBalanceHome && (
-        <span className={css(styles.balanceText)}>
-          {getNumberWithCommas(Math.floor(balance ?? 0))}
-        </span>
-      )}
-      {true && (
+    <ResearchHubPopover
+      containerStyle={{ zIndex: 4, left: -120, top: 8 }}
+      isOpen={isPopoverOpen}
+      onClickOutside={(_event): void => setIsPopoverOpen(false)}
+      positions={["bottom"]}
+      popoverContent={<RscBalanceHistory />}
+      targetContent={
         <div
-          className={css(styles.rscDelta)}
-          onClick={(event: SyntheticEvent): void => {
-            event?.stopPropagation(); // prevents button click
-            router.push(`/user/${currentUser.id}/rsc`);
-          }}
-        >{`+ ${getNumberWithCommas(Math.floor(rscDeltaSinceSeen))}`}</div>
-      )}
-      <div className={css(styles.caretDown)}>{icons.caretDown}</div>
-    </div>
+          className={css(styles.rscBalanceButtonContainer)}
+          data-tip="" /* necessary for ReputationTooltip */
+          data-for="reputation-tool-tip"
+          onClick={(_event: SyntheticEvent): void =>
+            setIsPopoverOpen(!isPopoverOpen)
+          }
+        >
+          <ReputationTooltip />
+          <img
+            src={"/static/icons/coin-filled.png"}
+            draggable={false}
+            className={css(styles.coinIcon)}
+            alt="RSC Coin"
+          />
+          {shouldDisplayBalanceHome && (
+            <span className={css(styles.balanceText)}>
+              {getNumberWithCommas(Math.floor(balance ?? 0))}
+            </span>
+          )}
+          {shouldDisplayRscDelta && (
+            <div className={css(styles.rscDelta)}>{`+ ${getNumberWithCommas(
+              Math.floor(rscDeltaSinceSeen)
+            )}`}</div>
+          )}
+          <div className={css(styles.caretDown)}>{icons.caretDown}</div>
+        </div>
+      }
+    />
   );
 };
 
