@@ -1,14 +1,15 @@
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
+import { ModalActions } from "~/redux/modals";
+import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, connect } from "react-redux";
-import { ModalActions } from "~/redux/modals";
-import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
-import ReputationTooltip from "~/components/ReputationTooltip";
-import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
 import { useRouter } from "next/router";
-import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import colors from "~/config/themes/colors";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import ReputationTooltip from "~/components/ReputationTooltip";
+import icons from "~/config/themes/icons";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
@@ -78,7 +79,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           {getNumberWithCommas(Math.floor(balance ?? 0))}
         </span>
       )}
-      {shouldDisplayRscDelta && (
+      {true && (
         <div
           className={css(styles.rscDelta)}
           onClick={(event: SyntheticEvent): void => {
@@ -87,6 +88,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           }}
         >{`+ ${getNumberWithCommas(Math.floor(rscDeltaSinceSeen))}`}</div>
       )}
+      <div className={css(styles.caretDown)}>{icons.caretDown}</div>
     </div>
   );
 };
@@ -113,13 +115,14 @@ const styles = StyleSheet.create({
     color: colors.PASTEL_GREEN_TEXT,
     padding: 4,
     top: -12,
-    right: -24,
+    right: -12,
     fontSize: 12,
     fontWeight: 400,
     display: "flex",
     position: "absolute",
     borderRadius: 8,
   },
+  caretDown: { marginLeft: 4, opacity: 0.5 },
 });
 
 const mapStateToProps = (state) => ({
