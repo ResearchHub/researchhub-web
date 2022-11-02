@@ -16,8 +16,7 @@ export default function RscBalanceHistoryDropContent({
 
   return (
     <div className={css(styles.rscBalanceHistoryDropContent)}>
-      <div className={css(styles.header)}>
-        <ALink href={`/user/${currentUser?.id}/rsc`}>{"View all"}</ALink>
+      <div className={css(styles.historyHeader)}>
         <div
           className={css(styles.withdrawButton)}
           onClick={(event: SyntheticEvent): void => {
@@ -26,10 +25,11 @@ export default function RscBalanceHistoryDropContent({
             dispatch(ModalActions.openWithdrawalModal(true));
           }}
         >
-          {"Withdraw"}
+          {"Withdraw RSC"}
         </div>
+        <ALink href={`/user/${currentUser?.id}/rsc`}>{"View all"}</ALink>
       </div>
-      HIjkl;jkfld;jskafl;djksla;fjdkls;ajfkdl;sajfkl;dsjak;l
+      <div className={css(styles.historyContent)}></div>
     </div>
   );
 }
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     border: `2px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
   },
-  header: {
+  historyHeader: {
     alignItems: "center",
     borderBottom: `2px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: "0 16px",
   },
+  historyContent: {},
   withdrawButton: {
     alignItems: "center",
     background: colors.NEW_BLUE(),
