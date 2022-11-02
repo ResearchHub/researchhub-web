@@ -51,11 +51,11 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
       {context === "bounty" ? (
         <p className={css(styles.details, styles.detailsBounty)}>
           <strong>Know someone who can complete this bounty?</strong> You will earn a 7%
-          bonus every contribution they make for six months.
+          bonus for every contribution they make for six months.
         </p>
       ) : (
         <p className={css(styles.details)}>
-          Get rewarded for referring scientists and reserachers to our platform.
+          Get rewarded for referring scientists and researchers to our platform.
         </p>
       )}
       <div className={css(styles.referralLinkSection)}>
@@ -149,7 +149,7 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
               <div className={css(styles.iconContainer)}>
                 <InviteIcon />
               </div>
-              <span className={css(styles.personTitle)}>Invitee</span>
+              <span className={css(styles.personTitle)}>Referral</span>
               <span className={css(styles.subtitle)}>
                 <span className={css(styles.emphasizedEarn)}>+50 RSC</span> on
                 sign up
