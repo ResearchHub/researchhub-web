@@ -11,7 +11,7 @@ import colors from "~/config/themes/colors";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import icons from "~/config/themes/icons";
 import ResearchHubPopover from "../ResearchHubPopover";
-import RscBalanceHistory from "./RscBalanceHistory";
+import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
@@ -62,11 +62,18 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
 
   return (
     <ResearchHubPopover
-      containerStyle={{ zIndex: 4, left: -120, top: 8 }}
+      align="end"
+      containerStyle={{
+        zIndex: 4,
+      }}
       isOpen={isPopoverOpen}
       onClickOutside={(_event): void => setIsPopoverOpen(false)}
       positions={["bottom"]}
-      popoverContent={<RscBalanceHistory />}
+      popoverContent={
+        <RscBalanceHistoryDropContent
+          closeDropdown={(): void => setIsPopoverOpen(false)}
+        />
+      }
       targetContent={
         <div
           className={css(styles.rscBalanceButtonContainer)}
