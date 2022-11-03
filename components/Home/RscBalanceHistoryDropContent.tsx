@@ -110,7 +110,9 @@ export default function RscBalanceHistoryDropContent({
         >
           {"Withdraw RSC"}
         </div>
-        <ALink href={`/user/${currentUser?.id}/rsc`}>{"View all"}</ALink>
+        <ALink href={`/user/${currentUser?.author_profile?.id}/rsc`}>
+          <span onClick={closeDropdown}>{"View all"}</span>
+        </ALink>
       </div>
       <div className={css(styles.transactionCardWrap)}>
         <ReactPlaceholder
