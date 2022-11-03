@@ -1,11 +1,16 @@
 import { css, StyleSheet } from "aphrodite";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { ModalActions } from "~/redux/modals";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import ALink from "../ALink";
 import colors from "~/config/themes/colors";
-import { nullthrows } from "~/config/utils/nullchecks";
+import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
+import { formatDateStandard } from "~/config/utils/dates";
+import icons from "~/config/themes/icons";
+import { TransactionActions } from "~/redux/transaction";
+import ReactPlaceholder from "react-placeholder/lib";
+import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 type Props = { closeDropdown: () => void };
 
@@ -37,20 +42,25 @@ function RscBalanceHistoryDropContentCard({
     return title;
   };
   const displayTitle = getTitle();
-  const displayCreatedDate = withdrawal?.created_date;
+  const displayCreatedDate = formatDateStandard(withdrawal?.created_date);
 
   return (
     <div className={css(styles.rscBalanceHistoryDropContentCard)}>
-      <div>
+      <div className={css(styles.dropContentContent)}>
         <div>{displayTitle}</div>
-        <div>
+        <div style={{ display: "flex", alignItems: "center" }}>
           {nullthrows(
             withdrawal?.amount,
             "withdrawal amount should not be null"
           ) ?? 0}
+          <img
+            src="/static/icons/coin-filled.png"
+            className={css(styles.rscIcon)}
+            alt="researchhub-coin-icon"
+          />
         </div>
       </div>
-      <div>{displayCreatedDate}</div>
+      <div className={css(styles.dropContentDate)}>{displayCreatedDate}</div>
     </div>
   );
 }
@@ -60,7 +70,25 @@ export default function RscBalanceHistoryDropContent({
 }: Props): ReactElement {
   const dispatch = useDispatch();
   const reduxState = useStore()?.getState() ?? {};
-  const transactionWidthdrawls = reduxState.transactions?.withdrawals ?? [];
+  const reduxTransactions = reduxState.transactions ?? {};
+  const transactionCount = reduxState?.transactions?.count;
+  // we are making an assumption here that if count is NULL (not 0) the data isn't fetched.
+  const [isDataFetched, setIsDataFetched] = useState<boolean>(
+    !isNullOrUndefined(transactionCount)
+  );
+  console.warn("transactionCount: ", transactionCount);
+  console.warn("reduxState: ", reduxState);
+
+  useEffect((): void => {
+    if (isNullOrUndefined(transactionCount)) {
+      dispatch(TransactionActions.getWithdrawals(1, reduxTransactions));
+    } else {
+      console.warn("wtf");
+      setIsDataFetched(true);
+    }
+  }, [transactionCount, reduxState]);
+
+  const transactionWidthdrawls = reduxTransactions.withdrawals ?? [];
   const currentUser = getCurrentUser();
 
   const transactionCards = transactionWidthdrawls.map(
@@ -90,7 +118,20 @@ export default function RscBalanceHistoryDropContent({
         </div>
         <ALink href={`/user/${currentUser?.id}/rsc`}>{"View all"}</ALink>
       </div>
-      <div className={css(styles.historyContent)}>{transactionCards}</div>
+      <div className={css(styles.transactionCardWrap)}>
+        <ReactPlaceholder
+          ready={isDataFetched}
+          customPlaceholder={[
+            <PreviewPlaceholder
+              previewStyles={styles.previewPlaceholder}
+              hideAnimation={false}
+              color="#efefef"
+            />,
+          ]}
+        >
+          {transactionCards}
+        </ReactPlaceholder>
+      </div>
     </div>
   );
 }
@@ -106,7 +147,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+    paddingBottom: 8,
   },
+  rscIcon: { width: 14, margin: "0 0 0 4px" },
   historyHeader: {
     alignItems: "center",
     borderBottom: `2px solid ${colors.LIGHT_GREY_BORDER}`,
@@ -116,7 +160,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: "0 16px",
   },
-  historyContent: {},
+  transactionCardWrap: {
+    maxHeight: 320,
+    overflowY: "scroll",
+  },
   withdrawButton: {
     alignItems: "center",
     background: colors.NEW_BLUE(),
@@ -128,5 +175,26 @@ const styles = StyleSheet.create({
     height: 20,
     justifyContent: "center",
     padding: "4px 8px",
+  },
+  dropContentContent: {
+    alignItems: "center",
+    display: "flex",
+    fontSize: 14,
+    fontWeight: 500,
+    justifyContent: "space-between",
+    padding: "8px 12px",
+  },
+  dropContentDate: {
+    padding: "0 12px",
+    fontSize: 12,
+    color: colors.LIGHT_GREY_TEXT,
+  },
+  previewPlaceholder: {
+    width: "calc(100% - 16px)",
+    height: 36,
+    borderRadius: 4,
+    border: "none",
+    boxSizing: "border-box",
+    margin: 8,
   },
 });
