@@ -53,7 +53,7 @@ function RscBalanceHistoryDropContentCard({
         <div>{displayTitle}</div>
         <div style={{ display: "flex", alignItems: "center" }}>
           {nullthrows(
-            withdrawal?.amount,
+            parseFloat(withdrawal?.amount ?? 0)?.toFixed(3),
             "withdrawal amount should not be null"
           ) ?? 0}
           <img
