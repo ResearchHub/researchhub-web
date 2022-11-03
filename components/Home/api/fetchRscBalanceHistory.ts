@@ -4,20 +4,18 @@ import API from "~/config/api";
 
 type Args = {
   onError: (error: Error) => void;
-  onSuccess: () => void;
+  onSuccess: ({ withdrawals }) => void;
 };
 
-export function postLastTimeClickedRscTab({ onError, onSuccess }: Args): void {
+export function fetchRscBalanceHistory({ onError, onSuccess }: Args): void {
   fetch(
     buildApiUri({
-      apiPath: `user/update_balance_history_clicked`,
+      apiPath: `transactions`,
     }),
-    API.POST_CONFIG({})
+    API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((): void => onSuccess())
-    .catch((error: any): void => {
-      onError(error);
-    });
+    .then(({ results }: any): void => onSuccess({ withdrawals: results }))
+    .catch((error: any): void => onError(error));
 }

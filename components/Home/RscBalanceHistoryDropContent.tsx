@@ -5,12 +5,18 @@ import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import ALink from "../ALink";
 import colors from "~/config/themes/colors";
-import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { formatDateStandard } from "~/config/utils/dates";
 import icons from "~/config/themes/icons";
 import { TransactionActions } from "~/redux/transaction";
 import ReactPlaceholder from "react-placeholder/lib";
 import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
+import { fetchRscBalanceHistory } from "./api/fetchRscBalanceHistory";
 
 type Props = { closeDropdown: () => void };
 
@@ -69,27 +75,18 @@ export default function RscBalanceHistoryDropContent({
   closeDropdown,
 }: Props): ReactElement {
   const dispatch = useDispatch();
-  const reduxState = useStore()?.getState() ?? {};
-  const reduxTransactions = reduxState.transactions ?? {};
-  const transactionCount = reduxState?.transactions?.count;
-  // we are making an assumption here that if count is NULL (not 0) the data isn't fetched.
-  const [isDataFetched, setIsDataFetched] = useState<boolean>(
-    !isNullOrUndefined(transactionCount)
-  );
-  console.warn("transactionCount: ", transactionCount);
-  console.warn("reduxState: ", reduxState);
+  const currentUser = getCurrentUser();
+  const [transactionWidthdrawls, setTransWithdrawals] = useState<any[]>([]);
+  const isDataFetched = !isEmpty(transactionWidthdrawls);
 
   useEffect((): void => {
-    if (isNullOrUndefined(transactionCount)) {
-      dispatch(TransactionActions.getWithdrawals(1, reduxTransactions));
-    } else {
-      console.warn("wtf");
-      setIsDataFetched(true);
+    if (!isDataFetched) {
+      fetchRscBalanceHistory({
+        onError: emptyFncWithMsg,
+        onSuccess: ({ withdrawals }) => setTransWithdrawals(withdrawals),
+      });
     }
-  }, [transactionCount, reduxState]);
-
-  const transactionWidthdrawls = reduxTransactions.withdrawals ?? [];
-  const currentUser = getCurrentUser();
+  }, [isDataFetched]);
 
   const transactionCards = transactionWidthdrawls.map(
     (
@@ -120,12 +117,25 @@ export default function RscBalanceHistoryDropContent({
       </div>
       <div className={css(styles.transactionCardWrap)}>
         <ReactPlaceholder
-          ready={isDataFetched}
+          ready={false}
           customPlaceholder={[
             <PreviewPlaceholder
-              previewStyles={styles.previewPlaceholder}
-              hideAnimation={false}
               color="#efefef"
+              hideAnimation={false}
+              key="placeholder-1"
+              previewStyles={styles.previewPlaceholder}
+            />,
+            <PreviewPlaceholder
+              color="#efefef"
+              hideAnimation={false}
+              key="placeholder-2"
+              previewStyles={styles.previewPlaceholder}
+            />,
+            <PreviewPlaceholder
+              color="#efefef"
+              hideAnimation={false}
+              key="placeholder-3"
+              previewStyles={styles.previewPlaceholder}
             />,
           ]}
         >
@@ -191,7 +201,7 @@ const styles = StyleSheet.create({
   },
   previewPlaceholder: {
     width: "calc(100% - 16px)",
-    height: 36,
+    height: 28,
     borderRadius: 4,
     border: "none",
     boxSizing: "border-box",
