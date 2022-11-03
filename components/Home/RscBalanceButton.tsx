@@ -1,15 +1,14 @@
+import { connect } from "react-redux";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
-import { ModalActions } from "~/redux/modals";
 import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
-import { useDispatch, connect } from "react-redux";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import colors from "~/config/themes/colors";
-import ReputationTooltip from "~/components/ReputationTooltip";
 import icons from "~/config/themes/icons";
+import ReputationTooltip from "~/components/ReputationTooltip";
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
 
@@ -79,9 +78,10 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           className={css(styles.rscBalanceButtonContainer)}
           data-tip="" /* necessary for ReputationTooltip */
           data-for="reputation-tool-tip"
-          onClick={(_event: SyntheticEvent): void =>
-            setIsPopoverOpen(!isPopoverOpen)
-          }
+          onClick={(_event: SyntheticEvent): void => {
+            setIsPopoverOpen(!isPopoverOpen);
+            postLastTimeClickedRscTab();
+          }}
         >
           <ReputationTooltip />
           <img

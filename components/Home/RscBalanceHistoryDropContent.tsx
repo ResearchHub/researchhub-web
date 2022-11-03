@@ -1,22 +1,19 @@
 import { css, StyleSheet } from "aphrodite";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { ModalActions } from "~/redux/modals";
-import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
-import { useDispatch, useStore } from "react-redux";
-import ALink from "../ALink";
-import colors from "~/config/themes/colors";
 import {
   emptyFncWithMsg,
   isEmpty,
-  isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { formatDateStandard } from "~/config/utils/dates";
-import icons from "~/config/themes/icons";
-import { TransactionActions } from "~/redux/transaction";
-import ReactPlaceholder from "react-placeholder/lib";
-import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 import { fetchRscBalanceHistory } from "./api/fetchRscBalanceHistory";
+import { formatDateStandard } from "~/config/utils/dates";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { ModalActions } from "~/redux/modals";
+import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import ALink from "../ALink";
+import colors from "~/config/themes/colors";
+import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
 
 type Props = { closeDropdown: () => void };
 
