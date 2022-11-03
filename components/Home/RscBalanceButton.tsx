@@ -76,8 +76,8 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
       targetContent={
         <div
           className={css(styles.rscBalanceButtonContainer)}
-          data-tip="" /* necessary for ReputationTooltip */
-          data-for="reputation-tool-tip"
+          data-tip={""} /* necessary for ReputationTooltip */
+          data-for={"reputation-tool-tip"}
           onClick={(_event: SyntheticEvent): void => {
             setIsPopoverOpen(!isPopoverOpen);
             postLastTimeClickedRscTab({
@@ -86,7 +86,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
             });
           }}
         >
-          <ReputationTooltip />
+          {!isPopoverOpen && <ReputationTooltip />}
           <img
             src={"/static/icons/coin-filled.png"}
             draggable={false}
