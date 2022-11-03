@@ -76,30 +76,31 @@ class UserTransaction extends Component {
   render() {
     const { transactions, maxCardsToRender, auth } = this.props;
 
-    return "HI";
-    // <ReactPlaceholder
-    //   ready={transactions && !this.props.fetching}
-    //   showLoadingAnimation
-    //   customPlaceholder={<PaperPlaceholder color="#efefef" />}
-    // >
-    //   {transactions && transactions.withdrawals.length ? (
-    //     transactions.withdrawals.map((transaction, i) => {
-    //       return (
-    //         <TransactionCard
-    //           key={`transactionCard-${i}`}
-    //           transaction={transaction}
-    //           mobileView={this.props.mobileView}
-    //         />
-    //       );
-    //     })
-    //   ) : (
-    //     <EmptyState
-    //       message={"User has not created any transactions"}
-    //       icon={icons.receipt}
-    //     />
-    //   )}
-    //   {!maxCardsToRender && this.renderLoadMoreButton()}
-    // </ReactPlaceholder>
+    return (
+      <ReactPlaceholder
+        ready={transactions && !this.props.fetching}
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      >
+        {transactions && transactions.withdrawals.length ? (
+          transactions.withdrawals.map((transaction, i) => {
+            return (
+              <TransactionCard
+                key={`transactionCard-${i}`}
+                transaction={transaction}
+                mobileView={this.props.mobileView}
+              />
+            );
+          })
+        ) : (
+          <EmptyState
+            message={"User has not created any transactions"}
+            icon={icons.receipt}
+          />
+        )}
+        {!maxCardsToRender && this.renderLoadMoreButton()}
+      </ReactPlaceholder>
+    );
   }
 }
 
