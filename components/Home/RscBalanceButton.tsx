@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
 import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
@@ -80,7 +80,10 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           data-for="reputation-tool-tip"
           onClick={(_event: SyntheticEvent): void => {
             setIsPopoverOpen(!isPopoverOpen);
-            postLastTimeClickedRscTab();
+            postLastTimeClickedRscTab({
+              onError: emptyFncWithMsg,
+              onSuccess: (): void => setShouldDisplayRscDelta(false),
+            });
           }}
         >
           <ReputationTooltip />
