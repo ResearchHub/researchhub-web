@@ -117,7 +117,7 @@ export default function RscBalanceHistoryDropContent({
       </div>
       <div className={css(styles.transactionCardWrap)}>
         <ReactPlaceholder
-          ready={false}
+          ready={isDataFetched}
           customPlaceholder={[
             <PreviewPlaceholder
               color="#efefef"
