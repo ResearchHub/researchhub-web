@@ -2,14 +2,16 @@ import { useState } from "react";
 import InviteModal from "./InviteModal";
 import { useSelector, connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
+import { UnifiedDocument } from "~/config/types/root_types";
 
 type Args = {
   children: any;
   openLoginModal: Function;
+  unifiedDocument?: UnifiedDocument;
   context: "bounty" | "referral";
 };
 
-const InviteButton = ({ children, openLoginModal, context }: Args) => {
+const InviteButton = ({ children, openLoginModal, context, unifiedDocument }: Args) => {
   const [isOpen, setIsOpen] = useState(false);
   // @ts-ignore
   const auth = useSelector((state) => state.auth);
@@ -28,6 +30,7 @@ const InviteButton = ({ children, openLoginModal, context }: Args) => {
         handleClose={() => setIsOpen(false)}
         user={auth?.user}
         context={context}
+        unifiedDocument={unifiedDocument}
       />
     </span>
   );

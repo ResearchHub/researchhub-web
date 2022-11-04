@@ -8,20 +8,87 @@ import AuthorAvatar from "../AuthorAvatar";
 import InviteIcon from "../Icons/InviteIcon";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
-import { NullableString } from "~/config/types/root_types";
-
+import { ID, NullableString, UnifiedDocument } from "~/config/types/root_types";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import Button from "../Form/Button";
+import Loader from "../Loader/Loader";
+import { MessageActions } from "~/redux/message";
+import { useAlert } from "react-alert";
+import { useDispatch } from "react-redux";
 type Args = {
   isOpen: boolean;
   handleClose: Function;
   user: any;
   context: "bounty" | "referral";
+  unifiedDocument?: UnifiedDocument;
 };
 
-const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
+type sendInviteApiArgs = {
+  email: String,
+  inviteType: "BOUNTY" | "JOIN_RH",
+  unifiedDocumentId?: ID,
+}
+
+const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Args) => {
+  const alert = useAlert();
+  const dispatch = useDispatch();
   const formInputRef = useRef<HTMLInputElement>();
   const [copySuccessMessage, setCopySuccessMessage] =
     useState<NullableString>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<"LINK"|"EMAIL">("LINK");
+  const [email, setEmail] = useState<String>("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+
+  const handleKeyDown = (e) => {
+    if (e?.key === 13 /*Enter*/) {
+      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e?.preventDefault();
+
+    if (email.length > 0) {
+      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email });
+    }
+  }
+
+  const sendInviteApi = async ({ email, inviteType }: sendInviteApiArgs) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(API.SEND_REFERRAL_INVITE(), API.POST_CONFIG({
+        email,
+        type: inviteType,
+        ...(unifiedDocument && { unified_document_id: unifiedDocument.id }),
+      }));
+
+      const body = await response.json();
+      if (body.error) {
+        dispatch(MessageActions.setMessage( body.message ));  
+        // @ts-ignore
+        dispatch(MessageActions.showMessage({ show: true, error: true }));
+      }
+      else {
+        dispatch(MessageActions.setMessage( "Invite sent" ));
+        // @ts-ignore
+        dispatch(MessageActions.showMessage({ show: true, error: false }));      
+        setEmail("");
+      }
+
+    }
+    catch(error) {
+      dispatch(MessageActions.setMessage( "Failed to send invite" ));
+      // @ts-ignore
+      dispatch(MessageActions.showMessage({ show: true, error: true }));      
+    }
+    finally {
+      setIsLoading(false);      
+    }
+  }
+
 
   function copyToClipboard() {
     setShowSuccessMessage(true);
@@ -58,44 +125,102 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
           Get rewarded for referring scientists and researchers to our platform.
         </p>
       )}
+
       <div className={css(styles.referralLinkSection)}>
-        <h4 className={css(styles.sectionTitle)}>
+        <div className={css(styles.tabs)}>
+          <div
+            className={css(styles.tab, selectedTab === "LINK" && styles.tabSelected)}
+            onClick={() => setSelectedTab("LINK")}
+          >
+            <span className={css(styles.tabIcon)}>{icons.link}</span> Invite by link
+          </div>
+          <div
+            onClick={() => setSelectedTab("EMAIL")}
+            className={css(styles.tab, selectedTab === "EMAIL" && styles.tabSelected)}
+          >
+            <span className={css(styles.tabIcon)}>{icons.paperPlane}</span> Invite by email
+          </div>
+        </div>
+        {/* <h4 className={css(styles.sectionTitle)}>
           Your referral link
           <span onClick={() => handleClose()}>
             <ALink href="/referral" overrideStyle={styles.link}>
               View invites
             </ALink>
           </span>
-        </h4>
-        {user?.id ?
-          <FormInput
-            getRef={formInputRef}
-            onClick={copyToClipboard}
-            inlineNodeRight={
-              <a className={css(styles.copyLink)} onClick={copyToClipboard}>
-                {showSuccessMessage ? (
-                  "Copied"
-                ) : (
-                  <span className={css(styles.copyIcon)}>{icons.copy}</span>
-                )}
-              </a>
+        </h4> */}
+        {selectedTab === "LINK" &&
+          <div className={css(styles.howItWorksSection)}>
+            {user?.id ?
+              <FormInput
+                getRef={formInputRef}
+                onClick={copyToClipboard}
+                inlineNodeRight={
+                  <a className={css(styles.copyLink)} onClick={copyToClipboard}>
+                    {showSuccessMessage ? (
+                      "Copied"
+                    ) : (
+                      <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                    )}
+                  </a>
+                }
+                inlineNodeStyles={styles.inlineNodeStyles}
+                messageStyle={[
+                  styles.copySuccessMessageStyle,
+                  !showSuccessMessage && styles.noShow,
+                ]}
+                value={
+                  process.browser
+                    ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
+                    : ""
+                }
+                containerStyle={styles.containerStyle}
+                inputStyle={styles.inputStyle}
+              />
+              : (
+                <div>Login first to view your personalized link</div>
+              )
             }
-            inlineNodeStyles={styles.inlineNodeStyles}
-            messageStyle={[
-              styles.copySuccessMessageStyle,
-              !showSuccessMessage && styles.noShow,
-            ]}
-            value={
-              process.browser
-                ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
-                : ""
-            }
-            containerStyle={styles.containerStyle}
-            inputStyle={styles.inputStyle}
-          />
-          : (
-            <div>Login first to view your personalized link</div>
-          )
+          </div>
+        }
+        {selectedTab === "EMAIL" &&
+          <div className={css(styles.howItWorksSection)}>
+            {user?.id ? (
+              <div>
+                <form
+                  onSubmit={(e) => handleSubmit(e)}
+                  className={css(styles.emailForm)}
+                >
+                  <FormInput
+                    value={email}
+                    getRef={formInputRef}
+                    required
+                    containerStyle={styles.containerStyle}
+                    inputStyle={styles.inputStyle}
+                    type="email"
+                    placeholder="Email"
+                    onKeyDown={handleKeyDown}
+                    onChange={(id, value) => setEmail(value)}
+                  />
+                  {isLoading ? (
+                    <Button
+                      onClick={handleSubmit}
+                      children={<Loader color="white" size={24} />}
+                      customButtonStyle={styles.inviteBtn}
+                    />                    
+                  ) : (
+                    <Button
+                      onClick={handleSubmit}
+                      label="Invite"
+                      customButtonStyle={styles.inviteBtn}
+                    />
+                  )}
+                </form>                
+              </div>
+            ) : (
+              <div>Login first in order to invite others</div>
+            )}
+          </div>
         }
       </div>
 
@@ -163,6 +288,49 @@ const InviteModal = ({ isOpen, handleClose, user, context }: Args) => {
 };
 
 const styles = StyleSheet.create({
+  inviteBtn: {
+    height: "100%",
+    borderRadius: "0px",
+
+  },
+  emailForm: {
+    display: "flex",
+    columnGap: "0px",
+  },
+  tabs: {
+    display: "flex",
+    marginBottom: 15,
+    justifyContent: "center",
+  },
+  tabIcon: {
+    fontSize: 16,
+  },
+  tab: {
+    padding: `9px 15px`,
+    border: `1px solid ${colors.GREY_LINE()}`,
+    position: "relative",
+    cursor: "pointer",
+    color: colors.BLACK(0.7),
+    // background: colors.LIGHTER_GREY(1.0),
+    marginRight: 0,
+    ":first-child": {
+      borderRadius: "4px 0px 0px 4px",
+    },
+    ":last-child": {
+      borderRadius: "0px 4px 4px 0px",
+      marginLeft: -1,
+    },
+    ":hover": {
+      background: `${colors.LIGHTER_GREY(0.5)}`,
+      transition: "0.5s",
+    },
+  },
+  tabSelected: {
+    // background: colors.NEW_BLUE(0.1),
+    color: colors.NEW_BLUE(),
+    zIndex: 2,
+    border: `1px solid ${colors.NEW_BLUE()}`,
+  },  
   example: {
     color: colors.MEDIUM_GREY2(),
     fontSize: 14,
