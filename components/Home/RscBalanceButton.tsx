@@ -29,7 +29,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   const [shouldDisplayBalanceHome, setShouldDisplayBalanceHome] =
     useState<boolean>(should_display_rsc_balance_home ?? true);
   const [shouldDisplayRscDelta, setShouldDisplayRscDelta] = useState<boolean>(
-    rscDeltaSinceSeen !== 0
+    rscDeltaSinceSeen > 0
   );
 
   useEffect((): void => {
@@ -42,7 +42,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
         onError: emptyFncWithMsg,
       });
     } else {
-      setShouldDisplayRscDelta(rscDeltaSinceSeen !== 0);
+      setShouldDisplayRscDelta(rscDeltaSinceSeen > 0);
     }
   }, [tabname, rscDeltaSinceSeen]);
 
@@ -106,7 +106,6 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           <div className={css(styles.caretDown)}>{icons.caretDown}</div>
         </div>
       }
-      
     />
   );
 };
