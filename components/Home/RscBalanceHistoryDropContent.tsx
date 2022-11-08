@@ -14,6 +14,7 @@ import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
+import { toTitleCase } from "~/config/utils/string";
 
 type Props = { closeDropdown: () => void };
 
@@ -42,7 +43,7 @@ function RscBalanceHistoryDropContentCard({
     } else if (withdrawal.readable_content_type === "bountyfee") {
       title = "ResearchHub Platform Fee";
     }
-    return title;
+    return toTitleCase(title);
   };
   const displayTitle = getTitle();
   const displayCreatedDate = formatDateStandard(withdrawal?.created_date);
