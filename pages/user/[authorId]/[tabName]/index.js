@@ -860,7 +860,7 @@ function AuthorPage(props) {
 
   return (
     <div
-      className={css(styles.root)}
+      className={css(styles.profilePageRoot)}
       vocab="https://schema.org/"
       typeof="Person"
     >
@@ -1035,8 +1035,11 @@ export async function getStaticProps(ctx) {
 }
 
 const styles = StyleSheet.create({
-  root: {
+  profilePageRoot: {
     background: "#FFF",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      maxWidth: breakpoints.xxsmall.str,
+    },
   },
   showAmount: {
     textDecoration: "underline",
