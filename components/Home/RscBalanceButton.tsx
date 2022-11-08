@@ -106,16 +106,24 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           <div className={css(styles.caretDown)}>{icons.caretDown}</div>
         </div>
       }
+      
     />
   );
 };
 
 const styles = StyleSheet.create({
   rscBalanceButtonContainer: {
+    alignItems: "center",
+    borderRadius: 8,
+    cursor: "pointer",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    margin: "-1px 6px 0 0",
+    padding: 8,
     position: "relative",
+    ":hover": {
+      background: colors.GREY(0.14),
+    },
   },
   balanceText: { fontSize: 14, fontWeight: 400, marginLeft: 6 },
   blur: {

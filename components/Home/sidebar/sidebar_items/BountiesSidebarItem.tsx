@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginLeft: -8,
     height: "100%",
     textOverflow: "ellipsis",
-    marginTop: 1 // arbitrary to match AuthorFacePile
+    marginTop: 1, // arbitrary to match AuthorFacePile
   },
   bountiesSidebarItemHeader: {
     alignItems: "flex-start",
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     fontWeight: 500,
+    overflowWrap: "anywhere",
     textOverflow: "ellipsis",
   },
   bountiesAmount: {

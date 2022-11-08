@@ -98,9 +98,7 @@ function NavbarRightButtonGroup({
           )}
         </div>
         <div className={css(styles.buttonsGroup, styles.borderNone)}>
-          <div className={css(styles.rscBalanceButton)}>
-            <RscBalanceButton />
-          </div>
+          <RscBalanceButton />
           <div
             className={css(styles.avatarContainer)}
             ref={avatarRef}
@@ -176,8 +174,8 @@ const styles = StyleSheet.create({
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
     boxSizing: "border-box",
     position: "absolute",
-    right: 0,
-    top: 45,
+    right: 20,
+    top: 32,
     width: 225,
     zIndex: 3,
   },
@@ -260,15 +258,6 @@ const styles = StyleSheet.create({
   },
   portraitIcon: {
     fontSize: "1.2em",
-  },
-  rscBalanceButton: {
-    cursor: "pointer",
-    margin: "-1px 6px 0 0",
-    padding: 8,
-    borderRadius: 8,
-    ":hover": {
-      background: colors.GREY(0.14),
-    },
   },
   userDropdown: {
     position: "relative",

@@ -162,12 +162,12 @@ const styles = StyleSheet.create({
   rscIcon: { width: 14, margin: "0 0 0 4px" },
   historyHeader: {
     alignItems: "center",
-    borderBottom: `2px solid ${colors.LIGHT_GREY_BORDER}`,
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     fontSize: 14,
     height: 44,
     justifyContent: "space-between",
-    padding: "0 16px",
+    padding: "0 12px",
   },
   transactionCardWrap: {
     maxHeight: 320,
@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
   previewPlaceholder: {
     width: "calc(100% - 16px)",
     height: 28,
-    borderRadius: 4,
     border: "none",
     boxSizing: "border-box",
     margin: 8,
