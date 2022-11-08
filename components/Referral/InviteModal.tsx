@@ -26,6 +26,8 @@ type Args = {
 
 type sendInviteApiArgs = {
   email: String,
+  firstName: NullableString,
+  lastName: NullableString,
   inviteType: "BOUNTY" | "JOIN_RH",
   unifiedDocumentId?: ID,
 }
@@ -34,17 +36,21 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
   const alert = useAlert();
   const dispatch = useDispatch();
   const formInputRef = useRef<HTMLInputElement>();
+  const firstNameInputRef = useRef<HTMLInputElement>();
+  const lastNameInputRef = useRef<HTMLInputElement>();
   const [copySuccessMessage, setCopySuccessMessage] =
     useState<NullableString>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [selectedTab, setSelectedTab] = useState<"LINK"|"EMAIL">("LINK");
   const [email, setEmail] = useState<String>("");
+  const [firstName, setFirstName] = useState<NullableString>("");
+  const [lastName, setLastName] = useState<NullableString>("");
   const [isLoading, setIsLoading] = useState(false);
   
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
-      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email });
+      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email, firstName, lastName });
     }
   };
 
@@ -52,16 +58,18 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
     e?.preventDefault();
 
     if (email.length > 0) {
-      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email });
+      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email, firstName, lastName });
     }
   }
 
-  const sendInviteApi = async ({ email, inviteType }: sendInviteApiArgs) => {
+  const sendInviteApi = async ({ email, inviteType, firstName, lastName }: sendInviteApiArgs) => {
     setIsLoading(true);
     try {
       const response = await fetch(API.SEND_REFERRAL_INVITE(), API.POST_CONFIG({
         email,
         type: inviteType,
+        ...(firstName && { first_name: firstName }),
+        ...(lastName &&  { last_name: lastName }),
         ...(unifiedDocument && { unified_document_id: unifiedDocument.id }),
       }));
 
@@ -141,42 +149,36 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
             <span className={css(styles.tabIcon)}>{icons.paperPlane}</span> Invite by email
           </div>
         </div>
-        {/* <h4 className={css(styles.sectionTitle)}>
-          Your referral link
-          <span onClick={() => handleClose()}>
-            <ALink href="/referral" overrideStyle={styles.link}>
-              View invites
-            </ALink>
-          </span>
-        </h4> */}
         {selectedTab === "LINK" &&
           <div className={css(styles.howItWorksSection)}>
             {user?.id ?
-              <FormInput
-                getRef={formInputRef}
-                onClick={copyToClipboard}
-                inlineNodeRight={
-                  <a className={css(styles.copyLink)} onClick={copyToClipboard}>
-                    {showSuccessMessage ? (
-                      "Copied"
-                    ) : (
-                      <span className={css(styles.copyIcon)}>{icons.copy}</span>
-                    )}
-                  </a>
-                }
-                inlineNodeStyles={styles.inlineNodeStyles}
-                messageStyle={[
-                  styles.copySuccessMessageStyle,
-                  !showSuccessMessage && styles.noShow,
-                ]}
-                value={
-                  process.browser
-                    ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
-                    : ""
-                }
-                containerStyle={styles.containerStyle}
-                inputStyle={styles.inputStyle}
-              />
+              <div className={css(styles.form)}>
+                <FormInput
+                  getRef={formInputRef}
+                  onClick={copyToClipboard}
+                  inlineNodeRight={
+                    <a className={css(styles.copyLink)} onClick={copyToClipboard}>
+                      {showSuccessMessage ? (
+                        "Copied"
+                      ) : (
+                        <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                      )}
+                    </a>
+                  }
+                  inlineNodeStyles={styles.inlineNodeStyles}
+                  messageStyle={[
+                    styles.copySuccessMessageStyle,
+                    !showSuccessMessage && styles.noShow,
+                  ]}
+                  value={
+                    process.browser
+                      ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
+                      : ""
+                  }
+                  containerStyle={styles.containerStyle}
+                  inputStyle={[styles.inputStyle, styles.referralInputStyle]}
+                />
+              </div>
               : (
                 <div>Login first to view your personalized link</div>
               )
@@ -188,34 +190,64 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
             {user?.id ? (
               <div>
                 <form
-                  onSubmit={(e) => handleSubmit(e)}
+                  // onSubmit={(e) => handleSubmit(e)}
                   className={css(styles.emailForm)}
                 >
-                  <FormInput
-                    value={email}
-                    getRef={formInputRef}
-                    required
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                    type="email"
-                    placeholder="Email"
-                    onKeyDown={handleKeyDown}
-                    onChange={(id, value) => setEmail(value)}
-                  />
-                  {isLoading ? (
-                    <Button
-                      onClick={handleSubmit}
-                      children={<Loader color="white" size={24} />}
-                      customButtonStyle={styles.inviteBtn}
-                    />                    
-                  ) : (
-                    <Button
-                      onClick={handleSubmit}
-                      label="Invite"
-                      customButtonStyle={styles.inviteBtn}
+                  <div className={css(styles.referralEmailInput)}>
+                    <FormInput
+                      value={email}
+                      getRef={formInputRef}
+                      required
+                      containerStyle={styles.containerStyle}
+                      inputStyle={styles.inputStyle}
+                      type="email"
+                      placeholder="Email"
+                      onKeyDown={handleKeyDown}
+                      onChange={(id, value) => setEmail(value)}
                     />
-                  )}
-                </form>                
+                  </div>
+                  <div className={css(styles.referralNameInput)}>
+                    <div className={css(styles.referralFirstNameInput)}>
+                      <FormInput
+                        value={firstName}
+                        getRef={firstNameInputRef}
+                        required
+                        containerStyle={styles.containerStyle}
+                        inputStyle={styles.inputStyle}
+                        placeholder="First name (optional)"
+                        onKeyDown={handleKeyDown}
+                        onChange={(id, value) => setFirstName(value)}
+                      />
+                    </div>
+                    <div className={css(styles.referralLastNameInput)}>
+                      <FormInput
+                        value={lastName}
+                        getRef={lastNameInputRef}
+                        required
+                        containerStyle={styles.containerStyle}
+                        inputStyle={styles.inputStyle}
+                        placeholder="Last name (optional)"
+                        onKeyDown={handleKeyDown}
+                        onChange={(id, value) => setLastName(value)}
+                      />
+                    </div>                  
+                  </div>
+                  <div className={css(styles.referralBtnWrapper)}>
+                    {isLoading ? (
+                      <Button
+                        onClick={handleSubmit}
+                        children={<Loader color="white" size={24} />}
+                        customButtonStyle={styles.inviteBtn}
+                      />                    
+                    ) : (
+                      <Button
+                        onClick={handleSubmit}
+                        label="Send invite"
+                        customButtonStyle={styles.inviteBtn}
+                      />
+                    )}
+                  </div>
+                </form>   
               </div>
             ) : (
               <div>Login first in order to invite others</div>
@@ -288,6 +320,35 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
 };
 
 const styles = StyleSheet.create({
+  referralEmailInput: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  referralBtnWrapper: {
+    height: 50,
+    display: "flex",
+    marginTop: 15,
+  },
+  authorNameTitle: {
+    marginBottom: 0,
+    marginTop: 15,
+  },
+  engagementDetails: {
+    marginBottom: 0,
+    marginTop: 0,
+  },
+  referralNameInput: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: 15,
+  },
+  referralFirstNameInput: {
+    width: "50%",
+    marginRight: 15,
+  },
+  referralLastNameInput: {
+    width: "50%",
+  },  
   inviteBtn: {
     height: "100%",
     borderRadius: "0px",
@@ -296,11 +357,11 @@ const styles = StyleSheet.create({
   emailForm: {
     display: "flex",
     columnGap: "0px",
+    flexDirection: "column",
   },
   tabs: {
     display: "flex",
     marginBottom: 15,
-    justifyContent: "center",
   },
   tabIcon: {
     fontSize: 16,
@@ -311,7 +372,6 @@ const styles = StyleSheet.create({
     position: "relative",
     cursor: "pointer",
     color: colors.BLACK(0.7),
-    // background: colors.LIGHTER_GREY(1.0),
     marginRight: 0,
     ":first-child": {
       borderRadius: "4px 0px 0px 4px",
@@ -326,7 +386,6 @@ const styles = StyleSheet.create({
     },
   },
   tabSelected: {
-    // background: colors.NEW_BLUE(0.1),
     color: colors.NEW_BLUE(),
     zIndex: 2,
     border: `1px solid ${colors.NEW_BLUE()}`,
@@ -447,8 +506,10 @@ const styles = StyleSheet.create({
     height: "auto",
   },
   inputStyle: {
-    paddingRight: 85,
     cursor: "pointer",
+  },
+  referralInputStyle: {
+    paddingRight: 80,
   },
   copyLink: {
     color: colors.NEW_BLUE(),
@@ -457,6 +518,8 @@ const styles = StyleSheet.create({
   },
   copyIcon: {
     fontSize: 22,
+    zIndex: 3,
+    background: "white",
   },
   noShow: {
     display: "none",

@@ -46,8 +46,6 @@ const BountyAlert = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-  console.log('allBountuies', allBounties)
-
   let timeRemaining, createdBy, status;
   allBounties.sort((a, b) => {
     return a.id - b.id;
