@@ -32,6 +32,7 @@ export function flagGrmContent({
   onError,
   onSuccess,
 }: FlagGrmContentArgs): void {
+
   const parsedContentType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
     contentType
   )

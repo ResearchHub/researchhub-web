@@ -228,7 +228,7 @@ export const parseCommentContributionItem = (
 ): CommentContributionItem => {
   const mapped = {
     plainText: raw.item.plain_text,
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseCreatedBy(raw.item.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
