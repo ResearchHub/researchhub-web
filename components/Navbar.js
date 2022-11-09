@@ -357,7 +357,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "flex",
       marginLeft: 0,
-      width: "62%",
       justifyContent: "space-between",
       alignItems: "center",
     },
@@ -395,7 +394,14 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
-  rhLogoNav: { width: 140 },
+  rhLogoNav: {
+    width: 140,
+    position: "absolute",
+    width: "auto",
+    transform: "translateX(-50%)",
+    left: "50%",
+    top: 15,
+  },
 });
 
 const mapStateToProps = (state) => ({

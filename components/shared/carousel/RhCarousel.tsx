@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      minHeight: 120,
+      minHeight: 160,
     },
   },
   rhCarouselControl: {

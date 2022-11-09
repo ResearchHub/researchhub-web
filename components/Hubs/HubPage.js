@@ -385,9 +385,9 @@ class HubPage extends Component {
                 background: colors.NEW_BLUE(0.07),
                 borderRadius: 6,
                 boxSizing: "border-box !important",
-                height: "160px !important",
+                height: "180px !important",
                 margin: 16,
-                maxHeight: "160px !important",
+                maxHeight: "180px !important",
                 padding: 16,
               }}
               exitButton={<div style={{ fontSize: 20 }}>{icons.times}</div>}
