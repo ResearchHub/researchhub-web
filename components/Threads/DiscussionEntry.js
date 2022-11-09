@@ -797,15 +797,22 @@ class DiscussionEntry extends Component {
                   handleAwardBounty={this.props.handleAwardBounty}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
-                {this.state.bounties &&
+
+                {/*
+                  Kobe: Commenting this out for now as it seems to be non-trivial to fix and ROI
+                  on it is low atm. "expires in" shows across all comments in particular papers instead
+                  of just the one pertaining to. Appears to be because data about the comment it is attached
+                  to is missing.
+                */}
+                {/* {this.state.bounties &&
                   this.state.bounties.length > 0 &&
-                  this.state.bounties[0].status !== "CLOSED" && (
+                  this.state.bounties[0].status == "OPEN" && (
                     <span className={css(styles.expiryDate)}>
                       <span className={css(styles.divider)}>•</span>
                       expires in{" "}
                       {timeToRoundUp(this.state.bounties[0].expiration_date)}
                     </span>
-                  )}
+                  )} */}
               </div>
             )}
           </div>
