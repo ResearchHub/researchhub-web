@@ -74,8 +74,8 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
       }));
 
       const body = await response.json();
-      if (body.error) {
-        dispatch(MessageActions.setMessage( body.message ));  
+      if (!body.id) {
+        dispatch(MessageActions.setMessage( body.message || "Failed to send invite" ));  
         // @ts-ignore
         dispatch(MessageActions.showMessage({ show: true, error: true }));
       }
@@ -84,6 +84,8 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
         // @ts-ignore
         dispatch(MessageActions.showMessage({ show: true, error: false }));      
         setEmail("");
+        setFirstName("");
+        setLastName("");
       }
 
     }

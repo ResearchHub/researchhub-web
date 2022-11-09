@@ -940,7 +940,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     SEND_REFERRAL_INVITE: () => {
-      return BASE_URL + `referral/invite/`;
+      return BASE_URL + `referral/`;
     },
     TRANSACTIONS: ({ transactionId, page }) => {
       let url = BASE_URL + "transactions/";
