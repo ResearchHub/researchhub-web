@@ -76,6 +76,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
               primaryButtonLabel="Flag"
               subHeaderText="I am flagging this content because of:"
               onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+                
                 let args: any = {
                   flagReason,
                   onError: renderErrorMsg,
@@ -88,12 +89,15 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                   args.commentPayload = {
                     ...(r._raw.content_type.name === "thread" && {
                       threadID: item.id,
+                      commentType: "thread",
                     }),
                     ...(r._raw.content_type.name === "comment" && {
                       commentID: item.id,
+                      commentType: "comment",
                     }),
                     ...(r._raw.content_type.name === "reply" && {
                       replyID: item.id,
+                      commentType: "reply",
                     }),
                   };
                 }
@@ -105,6 +109,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                     unifiedDocument.documentType
                   )
                 ) {
+
                   args = {
                     contentType: unifiedDocument.documentType,
                     // @ts-ignore
@@ -117,6 +122,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                   );
                   return false;
                 }
+
                 flagGrmContent(args);
               }}
             />

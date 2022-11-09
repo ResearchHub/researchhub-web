@@ -15,6 +15,7 @@ import { timeToRoundUp } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureEvent } from "~/config/utils/events";
+import { breakpoints } from "~/config/themes/screen";
 
 class ThreadActionBar extends Component {
   constructor(props) {
@@ -297,7 +298,10 @@ class ThreadActionBar extends Component {
               >
                 {icons.medal}
               </span>
-              Accept Answer & Award Bounty
+              <span className={css(styles.smallAwardText)}>Award Bounty</span>
+              <span className={css(styles.awardText)}>
+                Accept Answer & Award Bounty
+              </span>
             </div>
           )}
 
@@ -355,6 +359,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     fontWeight: 500,
+  },
+  smallAwardText: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "inline",
+    },
+  },
+  awardText: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   action: {
     marginRight: 15,
