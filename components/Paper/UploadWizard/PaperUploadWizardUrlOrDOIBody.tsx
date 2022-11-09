@@ -76,7 +76,7 @@ function PaperUploadWizardURLBody({
               break;
             default:
               messageActions.setMessage(
-                "Please provide valid DOI / URL source"
+                "Please provide a valid DOI / URL source"
               );
               messageActions.showMessage({ show: true, error: true });
               return;
@@ -106,7 +106,7 @@ function PaperUploadWizardURLBody({
               break;
             default:
               messageActions.setMessage(
-                "Please provide valid DOI / URL source"
+                "Please provide a valid DOI / URL source"
               );
               messageActions.showMessage({ show: true, error: true });
               return;

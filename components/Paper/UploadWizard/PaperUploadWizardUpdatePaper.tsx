@@ -192,7 +192,6 @@ function PaperUploadWizardUpdatePaper({
         label={
           <div>
             <span>{"Hubs"}</span>
-            <span style={{ color: colors.BLUE(1) }}>{"*"}</span>
           </div>
         }
         inputStyle={

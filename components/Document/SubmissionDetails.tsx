@@ -28,7 +28,6 @@ function SubmissionDetails({
   bounties = [],
   actionLabel = "posted in",
 }: Args): ReactElement<"div"> {
-  console.log(createdDate);
   const showAllHubs =
     process.browser && window.innerWidth > breakpoints.medium.int;
 
