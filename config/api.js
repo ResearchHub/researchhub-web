@@ -939,6 +939,9 @@ const routes = (BASE_URL) => {
       const url = BASE_URL + `user/get_referral_reputation/`;
       return url;
     },
+    SEND_REFERRAL_INVITE: () => {
+      return BASE_URL + `referral/`;
+    },
     TRANSACTIONS: ({ transactionId, page }) => {
       let url = BASE_URL + "transactions/";
 

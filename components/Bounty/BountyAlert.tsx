@@ -15,6 +15,7 @@ import buildTwitterUrl from "./utils/buildTwitterUrl";
 import InviteButton from "~/components/Referral/InviteButton";
 import icons from "~/config/themes/icons";
 import CoinStackIcon from "../Icons/CoinStackIcon";
+import { UnifiedDocument } from "~/config/types/root_types";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -26,6 +27,7 @@ type BountyAlertParams = {
   post?: any; // TODO: make a post type
   currentUser?: any; //TODO: make an any type
   onBountyRemove?: Function;
+  unifiedDocument: UnifiedDocument;
 };
 
 const BountyAlert = ({
@@ -38,6 +40,7 @@ const BountyAlert = ({
   post,
   currentUser,
   onBountyRemove,
+  unifiedDocument,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -264,7 +267,7 @@ const BountyAlert = ({
           </ShareDropdown>
         </div>
         <div className={css(styles.action, styles.inviteAction)}>
-          <InviteButton context="bounty">
+          <InviteButton context="bounty" unifiedDocument={unifiedDocument}>
             <span>
               <span className={css(styles.actionIcon, styles.inviteIcon)}>
                 <ResearchCoinIcon

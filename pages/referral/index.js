@@ -256,4 +256,21 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  const authToken = cookies[AUTH_TOKEN];
+
+  if (!authToken) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // Pass data to the page via props
+  return { props: {} };
+}
+
 export default connect(mapStateToProps)(Index);

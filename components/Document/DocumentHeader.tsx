@@ -272,6 +272,7 @@ function DocumentHeader({
                 post={post}
                 isOriginalPoster={isOriginalPoster}
                 onBountyRemove={onBountyRemove}
+                unifiedDocument={unifiedDocument}
               />
             </div>
           )}

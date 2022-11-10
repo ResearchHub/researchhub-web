@@ -159,6 +159,11 @@ function AuthorPage(props) {
           label: "Authored Papers",
           name: "Authored Papers",
         },
+        {
+          href: "/referral",
+          label: "Referral Invites",
+          name: "Referral Invites",
+        },
       ];
 
       if (allowEdit) {
@@ -190,14 +195,20 @@ function AuthorPage(props) {
       tabName: tab.href,
     };
 
-    router.push(
-      {
-        pathname: "/user/[authorId]/[tabName]",
-        query: updatedQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
+    if (tab.href.charAt(0) === "/") {
+      router.push({
+        pathname: tab.href,
+      });
+    } else {
+      router.push(
+        {
+          pathname: "/user/[authorId]/[tabName]",
+          query: updatedQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
   };
 
   function fetchAuthorSuspended() {

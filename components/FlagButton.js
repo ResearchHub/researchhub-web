@@ -15,8 +15,8 @@ import colors from "~/config/themes/colors";
 
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
   const alert = useAlert();
-  const store = useStore();
   const dispatch = useDispatch();
+  const store = useStore();
 
   async function flagPaper(paperId, reason) {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
