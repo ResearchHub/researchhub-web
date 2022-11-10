@@ -16,6 +16,8 @@ import Loader from "../Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { useDispatch } from "react-redux";
+import { captureEvent } from "~/config/utils/events";
+
 type Args = {
   isOpen: boolean;
   handleClose: Function;
@@ -66,11 +68,11 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
     setIsLoading(true);
     try {
       const response = await fetch(API.SEND_REFERRAL_INVITE(), API.POST_CONFIG({
-        email,
-        type: inviteType,
-        ...(firstName && { first_name: firstName }),
-        ...(lastName &&  { last_name: lastName }),
-        ...(unifiedDocument && { unified_document_id: unifiedDocument.id }),
+        recipient_email: email,
+        invite_type: inviteType,
+        ...(firstName && { referral_first_name: firstName }),
+        ...(lastName &&  { referral_last_name: lastName }),
+        ...(unifiedDocument && { unified_document: unifiedDocument.id }),
       }));
 
       const body = await response.json();
@@ -87,12 +89,16 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
         setFirstName("");
         setLastName("");
       }
-
     }
     catch(error) {
       dispatch(MessageActions.setMessage( "Failed to send invite" ));
       // @ts-ignore
       dispatch(MessageActions.showMessage({ show: true, error: true }));      
+
+      captureEvent({
+        error,
+        msg: "Failed to invite user",
+      });      
     }
     finally {
       setIsLoading(false);      
@@ -150,6 +156,14 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
           >
             <span className={css(styles.tabIcon)}>{icons.paperPlane}</span> Invite by email
           </div>
+          <div className={css(styles.invitesSent)}>
+            <ALink
+              href="/referral"
+              overrideStyle={styles.link}
+            >
+              View invites sent
+            </ALink>
+          </div> 
         </div>
         {selectedTab === "LINK" &&
           <div className={css(styles.howItWorksSection)}>
@@ -322,6 +336,13 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
 };
 
 const styles = StyleSheet.create({
+  invitesSent: {
+    marginLeft: "auto",
+    alignSelf: "center",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none"
+    }
+  },
   referralEmailInput: {
     display: "flex",
     flexDirection: "row",
@@ -350,6 +371,9 @@ const styles = StyleSheet.create({
   },
   referralLastNameInput: {
     width: "50%",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "46%",
+    }
   },  
   inviteBtn: {
     height: "100%",
