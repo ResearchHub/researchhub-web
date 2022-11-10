@@ -44,15 +44,17 @@ const Index = ({ code, user }) => {
                 <div className={css(styles.name)}>
                   <AuthorAvatar author={user?.author_profile} size={35} />
                 </div>
-                {`${user.author_profile.first_name} ${user.author_profile.last_name} has invited you to join ResearchHub`}
+                <div className={css(styles.invitedText)}>
+                  {`${user.author_profile.first_name} ${user.author_profile.last_name} has invited you to join ResearchHub`}
+                </div>
               </div>
             </h1>
             <p className={css(styles.text)}>
-              Sign up for ResearchHub and become a part of a growing scientific
-              community dedicated to accelerating science 🚀
+              Sign up below to become a part of our growing community dedicated
+              to accelerating the pace of scientific research 🚀
             </p>
             <GoogleLoginButton
-              customLabel={"Sign In With Google to receive 50 RSC"}
+              customLabel={"Sign up with Google to join ResearchHub"}
               rippleClass={styles.buttonClass}
               styles={[styles.buttonClass, styles.buttonContainer]}
               customLabelStyle={styles.customLabelStyle}
@@ -65,10 +67,10 @@ const Index = ({ code, user }) => {
         <div className={css(styles.aboutResearchHubWrapper)}>
           <h2 className={css(styles.about)}>About ResearchHub</h2>
           <p className={css(styles.aboutDescription)}>
-            We believe that by empowering scientists to independently fund,
-            create, and publish academic content we can revolutionize the speed
-            at which new knowledge is created and transformed into life-changing
-            products.
+            Researchhub is a platform that empowers scientists to independently
+            fund, create, and publish academic content. Our goal is to
+            revolutionize the speed at which new knowledge is created and shared
+            with the world.
           </p>
 
           <div className={css(styles.whyJoinWrapper)}>
@@ -82,7 +84,7 @@ const Index = ({ code, user }) => {
                   />
                 </div>
                 <div className={css(styles.reasonText)}>
-                  Discuss papers and publications with scientists and scholars
+                  Discuss the latest research with our community of scientists
                 </div>
               </div>
               <div className={css(styles.reason)}>
@@ -94,7 +96,7 @@ const Index = ({ code, user }) => {
                   />
                 </div>
                 <div className={css(styles.reasonText)}>
-                  Publish your pre-prints using our notebook feature
+                  Draft and publish your preprint using our notebook feature
                 </div>
               </div>
               <div className={css(styles.reason)}>
@@ -106,15 +108,16 @@ const Index = ({ code, user }) => {
                   />
                 </div>
                 <div className={css(styles.reasonText)}>
-                  Get rewarded ResearchCoin for your scientific contributions
+                  Earn ResearchCoin for sharing valuable content
                 </div>
               </div>
               <div className={css(styles.reason)}>
                 <div className={css(styles.reasonIcon, styles.reasonIconFlask)}>
-                  <img height={30} src={"/static/referrals/flask.png"} />
+                  {icons.coinsSolid}
                 </div>
                 <div className={css(styles.reasonText)}>
-                  Create or complete scientific bounties for ResearchCoin
+                  Create bounties to reward other scientists for completing
+                  tasks
                 </div>
               </div>
             </div>
@@ -146,7 +149,15 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
   },
-  nameWrapper: {},
+  invitedText: {},
+  nameWrapper: {
+    display: "flex",
+    alignItems: "flex-start",
+    textAlign: "left",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      textAlign: "center",
+    },
+  },
   reasons: {
     maxWidth: 350,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -155,10 +166,14 @@ const styles = StyleSheet.create({
     },
   },
   name: {
-    display: "inline-flex",
-    verticalAlign: "middle",
-    marginRight: 15,
-    marginTop: -5,
+    marginRight: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+    // display: "inline-flex",
+    // verticalAlign: "middle",
+    // marginRight: 15,
+    // marginTop: -5,
   },
   aboutResearchHubWrapper: {
     marginTop: 50,
@@ -180,6 +195,8 @@ const styles = StyleSheet.create({
   },
   reasonIconFlask: {
     padding: "8px 15px",
+    color: "rgb(70,123,255)",
+    fontSize: 26,
   },
   reasonText: {
     fontWeight: 500,
@@ -252,13 +269,17 @@ const styles = StyleSheet.create({
     // "@media only screen and (min-width: 1440px)": {
     //   width: 1050,
     // },
-  },
-  componentWrapperBanner: {
-    display: "flex",
+    [`@media only screen and (max-width: ${breakpoints.xlarge.str})`]: {
+      width: "90%",
+    },
+
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       width: "auto",
     },
+  },
+  componentWrapperBanner: {
+    display: "flex",
   },
   mainImg: {
     height: 320,

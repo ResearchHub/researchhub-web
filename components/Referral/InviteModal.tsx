@@ -138,7 +138,7 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
         </p>
       ) : (
         <p className={css(styles.details)}>
-          Get rewarded for referring scientists and researchers to our platform.
+          Just share this link, or enter your friend’s email address and name below.
         </p>
       )}
 
