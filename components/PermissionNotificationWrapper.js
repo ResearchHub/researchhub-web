@@ -38,6 +38,7 @@ const PermissionNotificationWrapper = (props) => {
   }
 
   function executeIfLoggedIn(e) {
+    e.preventDefault();
     const userIsLoggedIn = store.getState().auth.isLoggedIn;
 
     if (userIsLoggedIn) {
