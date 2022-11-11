@@ -36,7 +36,7 @@
     "@researchhub/ckeditor5-custom-build": "^0.0.35",
     "@sentry/browser": "^5.9.1",
     "@sentry/cli": "^1.58.0",
-    "@sentry/nextjs": "^6.13.3",
+    "@sentry/nextjs": "^7.19.0",
     "@thomasvu/ckeditor5-custom-build": "^0.0.23",
     "@types/react-sidebar": "^3.0.0",
     "@zeit/next-css": "^1.0.1",
