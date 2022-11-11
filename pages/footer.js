@@ -46,7 +46,7 @@ class Footer extends Component {
       }
 
       return (
-        <Link href={tab.route} key={`navbar_tab_${index}`}>
+        <Link href={tab.route} key={`navbar_tab_${index}`} legacyBehavior>
           <div className={css(styles.tab, index === 0 && styles.firstTab)}>
             {tab.label}
           </div>
@@ -123,15 +123,19 @@ class Footer extends Component {
             </a>
           </div>
           <div className={css(styles.legalFooter)}>
-            <Link href={"/about/tos"} as={"/about/tos"}>
-              <a className={css(styles.link)}>
-                <div className={css(styles.tab)}>Terms of Service</div>
-              </a>
+            <Link
+              href={"/about/tos"}
+              as={"/about/tos"}
+              className={css(styles.link)}
+            >
+              <div className={css(styles.tab)}>Terms of Service</div>
             </Link>
-            <Link href={"/about/privacy"} as={"/about/privacy"}>
-              <a className={css(styles.link)}>
-                <div className={css(styles.tab)}>Privacy Policy</div>
-              </a>
+            <Link
+              href={"/about/privacy"}
+              as={"/about/privacy"}
+              className={css(styles.link)}
+            >
+              <div className={css(styles.tab)}>Privacy Policy</div>
             </Link>
           </div>
         </div>

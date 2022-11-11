@@ -125,19 +125,16 @@ class SubscribedHubList extends Component {
               },
             }}
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            className={css(styles.hubLink)}
           >
-            <a className={css(styles.hubLink)}>
-              <img
-                className={css(styles.hubImage)}
-                src={
-                  hub_image
-                    ? hub_image
-                    : "/static/background/hub-placeholder.svg"
-                }
-                alt={hub.name}
-              />
-              <span className={"clamp1"}>{name}</span>
-            </a>
+            <img
+              className={css(styles.hubImage)}
+              src={
+                hub_image ? hub_image : "/static/background/hub-placeholder.svg"
+              }
+              alt={hub.name}
+            />
+            <span className={"clamp1"}>{name}</span>
           </Link>
         </Ripples>
       );
@@ -154,8 +151,12 @@ class SubscribedHubList extends Component {
         className={css(styles.viewMoreButton, viewMore && styles.spaceBetween)}
       >
         {viewMore && <div onClick={this.nextPage}>View more</div>}
-        <Link href={"/settings"} as={"/settings"}>
-          <a className={css(styles.link, styles.cogButton)}>{icons.cog}</a>
+        <Link
+          href={"/settings"}
+          as={"/settings"}
+          className={css(styles.link, styles.cogButton)}
+        >
+          {icons.cog}
         </Link>
       </div>
     );

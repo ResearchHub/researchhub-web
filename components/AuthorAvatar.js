@@ -123,31 +123,27 @@ const AuthorAvatar = (props) => {
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${authorId}/overview`}
+          className={css(styles.atag)}
+          rel="noreferrer noopener"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
-          <a
-            href={`/user/${authorId}/overview`}
-            className={css(styles.atag)}
-            rel="noreferrer noopener"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            {avatarComponent}
-            {Boolean(withAuthorName) ? (
-              <span
-                style={{
-                  color: fontColor ?? colors.BLACK(),
-                  fontSize: fontSize ?? size,
-                  fontWeight: boldName ? 500 : 400,
-                  marginLeft: spacing ?? 8,
-                  whiteSpace: "nowrap",
-                }}
-                className={css(styles.name)}
-              >
-                {fullName}
-              </span>
-            ) : null}
-          </a>
+          {avatarComponent}
+          {Boolean(withAuthorName) ? (
+            <span
+              style={{
+                color: fontColor ?? colors.BLACK(),
+                fontSize: fontSize ?? size,
+                fontWeight: boldName ? 500 : 400,
+                marginLeft: spacing ?? 8,
+                whiteSpace: "nowrap",
+              }}
+              className={css(styles.name)}
+            >
+              {fullName}
+            </span>
+          ) : null}
         </Link>
       )}
     </div>

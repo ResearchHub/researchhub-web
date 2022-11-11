@@ -13,14 +13,13 @@ const HyperLink = (props) => {
   const { text, link, dataTip, onClick, style } = props;
   // link = { href, as }
   return (
-    <Link {...link}>
-      <a
-        onClick={onClick && onClick}
-        className={css(style && style)}
-        data-tip={dataTip ? dataTip : null}
-      >
-        {text}
-      </a>
+    <Link
+      {...link}
+      onClick={onClick && onClick}
+      className={css(style && style)}
+      data-tip={dataTip ? dataTip : null}
+    >
+      {text}
     </Link>
   );
 };

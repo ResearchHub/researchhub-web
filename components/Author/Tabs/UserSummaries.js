@@ -39,10 +39,13 @@ const UserSummaries = ({
       let summaryPath = `${path}`;
       return (
         <div className={css(classNames)}>
-          <Link href={DYNAMIC_HREF} as={summaryPath}>
-            <a id={"goTo"} className={css(classNames)}>
-              {icons.chevronRight}
-            </a>
+          <Link
+            href={DYNAMIC_HREF}
+            as={summaryPath}
+            id={"goTo"}
+            className={css(classNames)}
+          >
+            {icons.chevronRight}
           </Link>
         </div>
       );

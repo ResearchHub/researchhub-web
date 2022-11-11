@@ -30,42 +30,44 @@ const HubTag = (props) => {
     return (
       <Fragment>
         <Ripples>
-          <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(slug)}`}>
-            <a className={css(styles.atag)}>
-              <div
-                className={css(
-                  styles.tag,
-                  gray && styles.grayTag,
-                  overrideStyle && overrideStyle
-                )}
-              >
-                {noHubName ? <ReactTooltip /> : null}
-                <LazyLoad offset={100} once>
-                  <img
-                    className={css(styles.hubImage) + " hubImage"}
-                    src={hubImage}
-                    onError={() => {
-                      setHubImage("/static/background/hub-placeholder.svg");
-                    }}
-                    alt={name}
-                    data-tip={noHubName ? name : null}
-                  />
-                </LazyLoad>
-                {noHubName ? null : (
-                  <span
-                    className={
-                      css(
-                        styles.label,
-                        gray && styles.grayLabel,
-                        labelStyle && labelStyle
-                      ) + " hubLabel"
-                    }
-                  >
-                    {name && name}
-                  </span>
-                )}
-              </div>
-            </a>
+          <Link
+            href={"/hubs/[slug]"}
+            as={`/hubs/${nameToUrl(slug)}`}
+            className={css(styles.atag)}
+          >
+            <div
+              className={css(
+                styles.tag,
+                gray && styles.grayTag,
+                overrideStyle && overrideStyle
+              )}
+            >
+              {noHubName ? <ReactTooltip /> : null}
+              <LazyLoad offset={100} once>
+                <img
+                  className={css(styles.hubImage) + " hubImage"}
+                  src={hubImage}
+                  onError={() => {
+                    setHubImage("/static/background/hub-placeholder.svg");
+                  }}
+                  alt={name}
+                  data-tip={noHubName ? name : null}
+                />
+              </LazyLoad>
+              {noHubName ? null : (
+                <span
+                  className={
+                    css(
+                      styles.label,
+                      gray && styles.grayLabel,
+                      labelStyle && labelStyle
+                    ) + " hubLabel"
+                  }
+                >
+                  {name && name}
+                </span>
+              )}
+            </div>
           </Link>
         </Ripples>
         {!last && <div className={css(styles.space)} />}

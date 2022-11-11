@@ -42,46 +42,46 @@ const FeedMenuTab = ({
         isSelected && styles.tabSelected
       )} typeFilter`}
     >
-      <Link href={url}>
-        <a
-          className={css(styles.labelContainer)}
-          onClick={(event) => {
-            const thisTabIsSelected = isSelected;
-            const thisTabHasTags = nestedOptions.length > 0;
+      <Link
+        href={url}
+        className={css(styles.labelContainer)}
+        onClick={(event) => {
+          const thisTabIsSelected = isSelected;
+          const thisTabHasTags = nestedOptions.length > 0;
 
-            if (thisTabIsSelected && thisTabHasTags) {
-              event.preventDefault();
-              if (isTagsMenuOpen) {
-                handleOpenTagsMenu(null);
-              } else {
-                handleOpenTagsMenu(tabObj.value);
-              }
+          if (thisTabIsSelected && thisTabHasTags) {
+            event.preventDefault();
+            if (isTagsMenuOpen) {
+              handleOpenTagsMenu(null);
+            } else {
+              handleOpenTagsMenu(tabObj.value);
             }
-          }}          
-        >
-          <span className={css(styles.tabText)}>{tabObj.label}</span>
-          {nestedOptions.length > 0 && (
-            <>
-              {isTagsMenuOpen
-                ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
-                : isSelected
-                ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
-                : null
-              }
-              {isTagsMenuOpen && (
-                <FeedMenuTagDropdown
-                  options={nestedOptions}
-                  forTab={tabObj}
-                  selectedTags={selectedFilters.tags}
-                  handleSelect={(selected) => {
-                    handleFilterSelect({ router, tags: [selected] })
-                    setTagsMenuOpenFor(null);
-                  }}
-                />
-              )}
-            </>
-          )}
-        </a>
+          }
+        }}>
+
+        <span className={css(styles.tabText)}>{tabObj.label}</span>
+        {nestedOptions.length > 0 && (
+          <>
+            {isTagsMenuOpen
+              ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
+              : isSelected
+              ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
+              : null
+            }
+            {isTagsMenuOpen && (
+              <FeedMenuTagDropdown
+                options={nestedOptions}
+                forTab={tabObj}
+                selectedTags={selectedFilters.tags}
+                handleSelect={(selected) => {
+                  handleFilterSelect({ router, tags: [selected] })
+                  setTagsMenuOpenFor(null);
+                }}
+              />
+            )}
+          </>
+        )}
+
       </Link>
     </div>
   );

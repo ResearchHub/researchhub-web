@@ -289,7 +289,7 @@ function NewPostModal({
                       href={
                         modalOptionItems[modalSelectedItemIndex]?.route ?? ""
                       }
-                    >
+                      legacyBehavior>
                       <div className={css(styles.buttonLabel)}>Continue</div>
                     </Link>
                   )

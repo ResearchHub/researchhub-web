@@ -722,17 +722,9 @@ class PaperTransactionModal extends Component {
                 <Link
                   href={`/user/${user.author_profile.id}/overview`}
                   as={`/user/${user.author_profile.id}/overview`}
+                  className={css(styles.transactionHashLink, styles.marginLeft)}
                 >
-                  <a
-                    href={`/user/${user.author_profile.id}/overview`}
-                    as={`/user/${user.author_profile.id}/overview`}
-                    className={css(
-                      styles.transactionHashLink,
-                      styles.marginLeft
-                    )}
-                  >
-                    profile page.
-                  </a>
+                  profile page.
                 </Link>
               </div>
             </div>

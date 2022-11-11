@@ -571,11 +571,10 @@ class Index extends Component {
                     this.state.by.slug
                   }/${this.convertToSlug(this.state.filterBy.value)}`
             }
+            className={css(styles.sidebarLink)}
           >
-            <a className={css(styles.sidebarLink)}>
-              <span className={css(styles.icon)}>{icon}</span>
-              {name}
-            </a>
+            <span className={css(styles.icon)}>{icon}</span>
+            {name}
           </Link>
         </Ripples>
       );

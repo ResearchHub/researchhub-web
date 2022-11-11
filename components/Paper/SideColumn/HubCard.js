@@ -23,17 +23,14 @@ const HubCard = (props) => {
           },
         }}
         as={`/hubs/${encodeURIComponent(hub.slug)}`}
+        className={css(styles.hubLink)}
       >
-        <a className={css(styles.hubLink)}>
-          <img
-            className={css(styles.hubImage)}
-            src={
-              hub_image ? hub_image : "/static/background/hub-placeholder.svg"
-            }
-            alt={hub.name}
-          />
-          <span className={"clamp1"}>{name}</span>
-        </a>
+        <img
+          className={css(styles.hubImage)}
+          src={hub_image ? hub_image : "/static/background/hub-placeholder.svg"}
+          alt={hub.name}
+        />
+        <span className={"clamp1"}>{name}</span>
       </Link>
     </Ripples>
   );

@@ -94,8 +94,9 @@ const ActivityDescription = (props) => {
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${authorId}/overview`}
+          className={css(styles.link, styles.text)}
         >
-          <a className={css(styles.link, styles.text)}>{username}</a>
+          {username}
         </Link>
         <span>{renderActionString()}</span>
         <span className={css(styles.text)}>{postTitle}</span>

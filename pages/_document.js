@@ -14,11 +14,11 @@ process.on("uncaughtException", (err) => {
 export default class MyDocument extends Document {
   static async getInitialProps({ renderPage, res, req }) {
     const { html, css } = StyleSheetServer.renderStatic(() => renderPage());
+    const _html = await html;
     const ids = css.renderedClassNames;
 
     redirectWithoutSlash(res, req);
-
-    return { ...html, css, ids };
+    return { ..._html, css, ids };
   }
 
   constructor(props) {

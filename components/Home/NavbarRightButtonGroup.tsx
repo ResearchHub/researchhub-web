@@ -84,15 +84,15 @@ function NavbarRightButtonGroup({
           />
           {(isUserModerator || isUserHubEditor) && (
             <div className={css(styles.modBtnContainer)}>
-              <Link href={"/moderators/audit/flagged"}>
-                <a className={css(styles.modBtn)}>
-                  {icons.shield}
-                  {openCaseCounts > 0 && (
-                    <div className={css(styles.notifCount)}>
-                      {openCaseCounts}
-                    </div>
-                  )}
-                </a>
+              <Link href={"/moderators/audit/flagged"} className={css(styles.modBtn)}>
+
+                {icons.shield}
+                {openCaseCounts > 0 && (
+                  <div className={css(styles.notifCount)}>
+                    {openCaseCounts}
+                  </div>
+                )}
+
               </Link>
             </div>
           )}
@@ -122,7 +122,7 @@ function NavbarRightButtonGroup({
           <Link
             href={"/user/[authorId]/[tabName]"}
             as={`/user/${user?.author_profile.id}/overview`}
-          >
+            legacyBehavior>
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
                 {icons.portrait}
@@ -130,23 +130,23 @@ function NavbarRightButtonGroup({
               {"Profile"}
             </div>
           </Link>
-          <Link href={`/${user?.organization_slug}/notebook`}>
+          <Link href={`/${user?.organization_slug}/notebook`} legacyBehavior>
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon)}>{icons.bookOpen}</span>
               {"Notebook"}
             </div>
           </Link>
-          <Link href={"/settings"} as={`/settings`}>
+          <Link href={"/settings"} as={`/settings`} legacyBehavior>
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon)}>{icons.cog}</span>
               {"Settings"}
             </div>
           </Link>
           <Link
-              href={{
-                pathname: "/referral",
-              }}
-            >
+            href={{
+              pathname: "/referral",
+            }}
+            legacyBehavior>
               <div className={css(styles.option)}>
                 <span className={css(styles.profileIcon)}>
                   {icons.asterisk}

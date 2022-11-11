@@ -245,21 +245,23 @@ const User = (props) => {
   }
 
   return (
-    <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/overview`}>
-      <a href={`/user/${authorId}/overview`} className={css(styles.atag)}>
-        <div className={css(styles.userContainer)}>
-          <div
-            className={css(
-              styles.topLineText,
-              styles.name,
-              isAuthor && styles.authorName
-            )}
-          >
-            {username}
-          </div>
-          {isAuthor && <div className={css(styles.status)}>Author</div>}
+    <Link
+      href={"/user/[authorId]/[tabName]"}
+      as={`/user/${authorId}/overview`}
+      className={css(styles.atag)}
+    >
+      <div className={css(styles.userContainer)}>
+        <div
+          className={css(
+            styles.topLineText,
+            styles.name,
+            isAuthor && styles.authorName
+          )}
+        >
+          {username}
         </div>
-      </a>
+        {isAuthor && <div className={css(styles.status)}>Author</div>}
+      </div>
     </Link>
   );
 };

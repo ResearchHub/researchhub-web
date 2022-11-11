@@ -40,17 +40,19 @@ class CategoryList extends Component {
           }}
           data-test={isDevEnv() ? `category-list` : undefined}
         >
-          <Link href={"/hubs"} as={`/hubs#${slug}`}>
-            <a className={css(styles.categoryLink)}>
-              {category_name === "Trending" ? (
-                <span>
-                  {category_name}
-                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
-                </span>
-              ) : (
-                category_name
-              )}
-            </a>
+          <Link
+            href={"/hubs"}
+            as={`/hubs#${slug}`}
+            className={css(styles.categoryLink)}
+          >
+            {category_name === "Trending" ? (
+              <span>
+                {category_name}
+                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+              </span>
+            ) : (
+              category_name
+            )}
           </Link>
         </Ripples>
       );

@@ -114,27 +114,24 @@ const NotebookSidebar = ({
                         pathname: `/${org.slug}/notebook/`,
                       }}
                       key={org.id.toString()}
+                      className={css(styles.popoverBodyItem)}
+                      onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                     >
-                      <a
-                        className={css(styles.popoverBodyItem)}
-                        onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                      >
-                        <div className={css(styles.avatarWrapper)}>
-                          <OrgAvatar org={org} />
+                      <div className={css(styles.avatarWrapper)}>
+                        <OrgAvatar org={org} />
+                      </div>
+                      <div className={css(styles.popoverBodyItemText)}>
+                        <div className={css(styles.popoverBodyItemTitle)}>
+                          {org.name}
                         </div>
-                        <div className={css(styles.popoverBodyItemText)}>
-                          <div className={css(styles.popoverBodyItemTitle)}>
-                            {org.name}
-                          </div>
-                          <div className={css(styles.popoverBodyItemSubtitle)}>
-                            {!org.member_count
-                              ? ""
-                              : org.member_count === 1
-                              ? "1 member"
-                              : `${org.member_count} members`}
-                          </div>
+                        <div className={css(styles.popoverBodyItemSubtitle)}>
+                          {!org.member_count
+                            ? ""
+                            : org.member_count === 1
+                            ? "1 member"
+                            : `${org.member_count} members`}
                         </div>
-                      </a>
+                      </div>
                     </Link>
                   ))}
                 </div>

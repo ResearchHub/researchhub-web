@@ -645,14 +645,9 @@ class WithdrawalModal extends Component {
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+          className={css(styles.transactionHashLink)}
         >
-          <a
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-            className={css(styles.transactionHashLink)}
-          >
-            profile page.
-          </a>
+          profile page.
         </Link>
       </Fragment>
     ) : (
@@ -673,14 +668,9 @@ class WithdrawalModal extends Component {
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+          className={css(styles.transactionHashLink)}
         >
-          <a
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-            className={css(styles.transactionHashLink)}
-          >
-            profile page.
-          </a>
+          profile page.
         </Link>
       </Fragment>
     );

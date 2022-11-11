@@ -174,6 +174,7 @@ const BackButton = () => {
         href={"/paper/[paperId]/[paperName]"}
         as={url}
         className={css(styles.backButton)}
+        legacyBehavior
       >
         {icons.longArrowLeft}
         <span className={css(styles.backButtonLabel)}>{message}</span>

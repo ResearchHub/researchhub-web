@@ -32,49 +32,46 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
   return (
     <Link
       key={`person-${authorProfile.id}`}
-      href={`/user/${authorProfile.id}/overview`}
       // onClick={() => goToProfile(authorProfile.id)}
+      href={`/user/${authorProfile.id}/overview`}
+      className={css(styles.card, styleVariation && styles[styleVariation])}
     >
-      <a className={css(styles.card, styleVariation && styles[styleVariation])}>
-        <div className={css(styles.detailsWrapper)}>
-          <AuthorAvatar
-            author={authorProfile}
-            name={name}
-            disableLink={true}
-            size={35}
-          />
-          <div className={css(styles.details)}>
-            <div
-              className={css(
-                styles.name,
-                isEmpty(userSummary) && styles.withoutSummary
-              )}
-            >
-              {getName(authorProfile)}
-            </div>
-            {userSummary && (
-              <div className={css(styles.summary)}>
-                <span className={css(styles.eduIcon)}>
-                  {icons.graduationCap}
-                </span>
-                {userSummary}
-              </div>
+      <div className={css(styles.detailsWrapper)}>
+        <AuthorAvatar
+          author={authorProfile}
+          name={name}
+          disableLink={true}
+          size={35}
+        />
+        <div className={css(styles.details)}>
+          <div
+            className={css(
+              styles.name,
+              isEmpty(userSummary) && styles.withoutSummary
             )}
+          >
+            {getName(authorProfile)}
           </div>
+          {userSummary && (
+            <div className={css(styles.summary)}>
+              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
+              {userSummary}
+            </div>
+          )}
         </div>
-        {reputation > 0 && (
-          <div className={css(styles.reputation)}>
-            <img
-              className={css(styles.logoIcon)}
-              src="/static/ResearchHubIcon.png"
-            />
-            <span className={css(styles.lifetimeText)}>
-              Lifetime reputation:{" "}
-            </span>
-            {numeral(reputation).format("0,0")}
-          </div>
-        )}
-      </a>
+      </div>
+      {reputation > 0 && (
+        <div className={css(styles.reputation)}>
+          <img
+            className={css(styles.logoIcon)}
+            src="/static/ResearchHubIcon.png"
+          />
+          <span className={css(styles.lifetimeText)}>
+            Lifetime reputation:{" "}
+          </span>
+          {numeral(reputation).format("0,0")}
+        </div>
+      )}
     </Link>
   );
 };

@@ -83,8 +83,12 @@ const LeaderboardContainer = (props) => {
         <div className={css(styles.leaderboardUsers)}>
           {renderLeaderboardUsers(users)}
           <div className={css(styles.linkContainer)}>
-            <Link href={"/leaderboard/[type]"} as={"/leaderboard/users"}>
-              <a className={css(styles.link)}>View Leaderboard</a>
+            <Link
+              href={"/leaderboard/[type]"}
+              as={"/leaderboard/users"}
+              className={css(styles.link)}
+            >
+              View Leaderboard
             </Link>
           </div>
         </div>

@@ -66,38 +66,41 @@ class PaperPromotionBanner extends Component {
     const { showBanner, transition } = this.state;
 
     return (
-      <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/819434/summary`}>
-        <a className={css(styles.removeFormat)} onClick={this.sendGAEvent}>
-          <div
-            className={css(
-              styles.bannerContainer,
-              transition && styles.transition,
-              !showBanner && styles.closeBanner
-            )}
-          >
-            <img
-              className={css(styles.backgroundImage)}
-              src={"/static/background/background-modal.png"}
-              draggable={false}
-              alt="ResearchHub Modal Backgroundd"
-            />
-            <div className={css(styles.contentContainer)}>
-              <h3 className={css(styles.content)}>
-                <div>Dr. Tori Howes is hosting an AMA on her paper</div>
-                <div className={css(styles.paragraph, styles.title)}>
-                  When and Why Narcissists Exhibit Greater Hindsight Bias and
-                  Less Perceived Learning.
-                </div>
-                <span
-                  id={"promotionLink"}
-                  className={css(styles.paragraph, styles.link)}
-                >
-                  Click here to ask a question!
-                </span>
-              </h3>
-            </div>
+      <Link
+        href={"/paper/[paperId]/[tabName]"}
+        as={`/paper/819434/summary`}
+        className={css(styles.removeFormat)}
+        onClick={this.sendGAEvent}
+      >
+        <div
+          className={css(
+            styles.bannerContainer,
+            transition && styles.transition,
+            !showBanner && styles.closeBanner
+          )}
+        >
+          <img
+            className={css(styles.backgroundImage)}
+            src={"/static/background/background-modal.png"}
+            draggable={false}
+            alt="ResearchHub Modal Backgroundd"
+          />
+          <div className={css(styles.contentContainer)}>
+            <h3 className={css(styles.content)}>
+              <div>Dr. Tori Howes is hosting an AMA on her paper</div>
+              <div className={css(styles.paragraph, styles.title)}>
+                When and Why Narcissists Exhibit Greater Hindsight Bias and Less
+                Perceived Learning.
+              </div>
+              <span
+                id={"promotionLink"}
+                className={css(styles.paragraph, styles.link)}
+              >
+                Click here to ask a question!
+              </span>
+            </h3>
           </div>
-        </a>
+        </div>
       </Link>
     );
   }

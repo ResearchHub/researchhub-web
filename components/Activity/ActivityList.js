@@ -124,8 +124,11 @@ const ActivityList = (props) => {
           overrideStyles={styles.title}
           overrideTitle={styles.title}
         >
-          <Link href={"/live"}>
-            <a className={css(styles.viewMoreButton, styles.link)}>View All</a>
+          <Link
+            href={"/live"}
+            className={css(styles.viewMoreButton, styles.link)}
+          >
+            View All
           </Link>
         </SideColumnTitle>
         <RenderActiviyList data={data} />

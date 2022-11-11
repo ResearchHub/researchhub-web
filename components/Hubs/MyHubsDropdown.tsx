@@ -15,22 +15,22 @@ type Args = {
 const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   const renderDropdownOpt = (hub) => {
     return (
-      <Link href={`/hubs/${hub.slug}`} key={hub.id}>
-        <a className={css(styles.hubOpt)}>
-          <img
-            className={css(styles.hubImage)}
-            src={
-              hub.hub_image
-                ? hub.hub_image
-                : "/static/background/hub-placeholder.svg"
-            }
-            alt={hub.name}
-          />
-          <div className={css(styles.hubDetails)}>
-            <div className={css(styles.hubName)}>{hub.name}</div>
-          </div>
-        </a>
-      </Link>
+      (<Link href={`/hubs/${hub.slug}`} key={hub.id} className={css(styles.hubOpt)}>
+
+        <img
+          className={css(styles.hubImage)}
+          src={
+            hub.hub_image
+              ? hub.hub_image
+              : "/static/background/hub-placeholder.svg"
+          }
+          alt={hub.name}
+        />
+        <div className={css(styles.hubDetails)}>
+          <div className={css(styles.hubName)}>{hub.name}</div>
+        </div>
+
+      </Link>)
     );
   };
 
@@ -44,10 +44,10 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   return (
     <div className={`${css(styles.myHubsDropdown)} myHubsDropdown`}>
       <div className={css(styles.hubsList)}>{hubOpts}</div>
-      <Link href="/settings">
-        <a className={css(styles.configure)}>
-          <span className={css(styles.configureBtn)}>Edit Hubs</span>
-        </a>
+      <Link href="/settings" className={css(styles.configure)}>
+
+        <span className={css(styles.configureBtn)}>Edit Hubs</span>
+
       </Link>
     </div>
   );

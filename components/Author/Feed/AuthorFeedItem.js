@@ -123,10 +123,9 @@ const AuthorFeedItem = ({
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${author.id}/overview`}
+          className={css(styles.link)}
         >
-          <a className={css(styles.link)}>
-            {`${author?.first_name} ${author?.last_name} `}
-          </a>
+          {`${author?.first_name} ${author?.last_name} `}
         </Link>
         <span>{actionText}</span>
       </div>
@@ -166,10 +165,8 @@ const AuthorFeedItem = ({
         <div>
           {actionLineHTML}
           <div>
-            <Link href={url}>
-              <a className={css(styles.link, styles.title)}>
-                {truncateText(doc.title, 70)}
-              </a>
+            <Link href={url} className={css(styles.link, styles.title)}>
+              {truncateText(doc.title, 70)}
             </Link>
           </div>
           <div>

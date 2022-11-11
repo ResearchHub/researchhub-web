@@ -31,10 +31,8 @@ export const ClientLinkWrapper = (props) => {
   }
 
   return (
-    <Link href={dynamicHref} as={path}>
-      <a id={id} className={css(...classNames)}>
-        {props.children}
-      </a>
+    <Link href={dynamicHref} as={path} id={id} className={css(...classNames)}>
+      {props.children}
     </Link>
   );
 };

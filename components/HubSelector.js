@@ -13,21 +13,19 @@ const HubSelector = ({ hubState }) => {
   const renderDropdownOpt = (hub) => {
     return {
       html: (
-        <Link href={`/hubs/${hub.slug}`}>
-          <a className={css(styles.hubLink)}>
-            <img
-              className={css(styles.hubImage)}
-              src={
-                hub.hub_image
-                  ? hub.hub_image
-                  : "/static/background/hub-placeholder.svg"
-              }
-              alt={hub.name}
-            />
-            <div className={css(styles.hubDetails)}>
-              <div className={css(styles.hubName)}>{hub.name}</div>
-            </div>
-          </a>
+        <Link href={`/hubs/${hub.slug}`} className={css(styles.hubLink)}>
+          <img
+            className={css(styles.hubImage)}
+            src={
+              hub.hub_image
+                ? hub.hub_image
+                : "/static/background/hub-placeholder.svg"
+            }
+            alt={hub.name}
+          />
+          <div className={css(styles.hubDetails)}>
+            <div className={css(styles.hubName)}>{hub.name}</div>
+          </div>
         </Link>
       ),
       value: hub,
@@ -37,11 +35,9 @@ const HubSelector = ({ hubState }) => {
   const hubOpts = useMemo(() => {
     const myHubsHeaderOpt = {
       html: (
-        <Link href={`/my-hubs`}>
-          <a className={css(styles.primaryButton)}>
-            <RHLogo withText={false} iconStyle={styles.rhIcon} />
-            My Hubs
-          </a>
+        <Link href={`/my-hubs`} className={css(styles.primaryButton)}>
+          <RHLogo withText={false} iconStyle={styles.rhIcon} />
+          My Hubs
         </Link>
       ),
       value: "my-hubs",
@@ -49,11 +45,9 @@ const HubSelector = ({ hubState }) => {
 
     const allHubsHeaderOpt = {
       html: (
-        <Link href={`/hubs`}>
-          <a className={css(styles.primaryButton)}>
-            <span className={css(styles.squaresIcon)}>{icons.squares}</span>
-            All Hubs
-          </a>
+        <Link href={`/hubs`} className={css(styles.primaryButton)}>
+          <span className={css(styles.squaresIcon)}>{icons.squares}</span>All
+          Hubs
         </Link>
       ),
       value: "all-hubs",

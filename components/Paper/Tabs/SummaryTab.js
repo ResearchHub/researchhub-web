@@ -359,6 +359,7 @@ class SummaryTab extends Component {
       <Link
         href={"/paper/[paperId]/[paperName]/edits"}
         as={`/paper/${paper.id}/${paper.slug}/edits`}
+        legacyBehavior
       >
         <div className={css(styles.action, styles.editHistory)}>
           <span className={css(styles.pencilIcon)}>{icons.manage}</span>

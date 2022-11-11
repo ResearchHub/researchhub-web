@@ -8,10 +8,11 @@ const ColumnDOI = ({ paper }) => {
     <>
       <SideColumnTitle title={"DOI"} overrideStyles={styles.title} />
       <div className={css(styles.padding)}>
-        <Link href={`https://www.doi.org/${paper.doi}`}>
-          <a
-            className={css(styles.link)}
-          >{`https://www.doi.org/${paper.doi}`}</a>
+        <Link
+          href={`https://www.doi.org/${paper.doi}`}
+          className={css(styles.link)}
+        >
+          {`https://www.doi.org/${paper.doi}`}
         </Link>
       </div>
     </>

@@ -133,44 +133,44 @@ const ContributionEntry = ({
 
   const primaryUrl = _getPrimaryUrl(entry);
   return (
-    <Link href={primaryUrl}>
-      <a className={css(styles.linkWrapper)}>
-        <div className={css(styles.entryContent)}>
-          <ContributionHeader entry={entry} />
-          <div className={css(styles.highlightedContentContainer)}>
-            <div className={css(styles.highlightedContent)}>
-              {title && (
-                <div className={`${css(styles.title)} highlightedContentTitle`}>
-                  {title}
-                </div>
-              )}
-              {body && (
-                <div className={`${css(styles.body)} highlightedContentBody`}>
-                  <div className={css(styles.textContainer)}>{body}</div>
-                </div>
-              )}
-            </div>
-            {showActions && (
-              <div className={css(styles.actions)}>
-                {actions.map(
-                  (action, idx) =>
-                    action.isActive && (
-                      <span
-                        key={`action-${idx}`}
-                        onClick={(event) => {
-                          event.preventDefault();
-                        }}
-                      >
-                        {action.html}
-                      </span>
-                    )
-                )}
+    (<Link href={primaryUrl} className={css(styles.linkWrapper)}>
+
+      <div className={css(styles.entryContent)}>
+        <ContributionHeader entry={entry} />
+        <div className={css(styles.highlightedContentContainer)}>
+          <div className={css(styles.highlightedContent)}>
+            {title && (
+              <div className={`${css(styles.title)} highlightedContentTitle`}>
+                {title}
+              </div>
+            )}
+            {body && (
+              <div className={`${css(styles.body)} highlightedContentBody`}>
+                <div className={css(styles.textContainer)}>{body}</div>
               </div>
             )}
           </div>
+          {showActions && (
+            <div className={css(styles.actions)}>
+              {actions.map(
+                (action, idx) =>
+                  action.isActive && (
+                    <span
+                      key={`action-${idx}`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                      }}
+                    >
+                      {action.html}
+                    </span>
+                  )
+              )}
+            </div>
+          )}
         </div>
-      </a>
-    </Link>
+      </div>
+
+    </Link>)
   );
 };
 

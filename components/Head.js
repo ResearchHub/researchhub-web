@@ -1,15 +1,17 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 
 import { COMPANY_NAME, METATAG_DEFAULT_IMAGE_URL } from "../config/constants";
 
 const HeadComponent = (props) => {
-  const router = useRouter();
+  // const router = useRouter();
   const { noindex } = props;
   const title = props.title || `${COMPANY_NAME} | Open Science Community`;
+
   // TODO: What url can we use when rendered server side?
-  const url =
-    props.url || `https://www.researchhub.com${router && router.asPath}`;
+  // const url =
+  //   props.url || `https://www.researchhub.com${router && router.asPath}`;
+  const url = "";
   const description =
     props.description ||
     `We're a community seeking to improve prioritization, collaboration, reproducibility, and funding of scientific research. Discuss and discover academic research on ${COMPANY_NAME}`;

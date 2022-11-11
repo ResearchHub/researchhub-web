@@ -44,8 +44,11 @@ const NotebookHeader = ({
           userOrgs={userOrgs}
         />
         {!isNullOrUndefined(currentNote.post) && (
-          <Link href={`/post/${currentNote.post.id}/${currentNote.post.slug}`}>
-            <a className={css(styles.publishedLink)}>View post</a>
+          <Link
+            href={`/post/${currentNote.post.id}/${currentNote.post.slug}`}
+            className={css(styles.publishedLink)}
+          >
+            View post
           </Link>
         )}
         <Button
