@@ -60,13 +60,13 @@ const ReferredUserList = () => {
           </span>
           {didExpire ? (
             <span className={css(styles.didExpire)}>
-              Referral earnings expired on{" "}
-              {formatDateStandard(referredUser.benefits_expire_on)}
+              {"Joined on "}
+              {formatDateStandard(referredUser.created_date)}
             </span>
           ) : (
             <span className={css(styles.willExpire)}>
-              Referral earnings expire on{" "}
-              {formatDateStandard(referredUser.benefits_expire_on)}
+              {"Joined on "}
+              {formatDateStandard(referredUser.created_date)}
             </span>
           )}
         </div>

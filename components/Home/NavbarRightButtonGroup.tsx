@@ -142,6 +142,18 @@ function NavbarRightButtonGroup({
               {"Settings"}
             </div>
           </Link>
+          <Link
+              href={{
+                pathname: "/referral",
+              }}
+            >
+              <div className={css(styles.option)}>
+                <span className={css(styles.profileIcon)}>
+                  {icons.asterisk}
+                </span>
+                {"Referral Program"}
+              </div>
+            </Link>          
           <div
             className={css(styles.option, styles.lastOption)}
             onClick={() => {
