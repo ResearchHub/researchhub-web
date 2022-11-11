@@ -108,7 +108,7 @@
     "react-spring": "^8.0.27",
     "react-step-progress-bar": "^1.0.3",
     "react-tagsinput": "^3.19.0",
-    "react-tiny-popover": "^6.0.5",
+    "react-tiny-popover": "^7.2.0",
     "react-toastify": "^8.2.0",
     "react-toggle": "^4.1.1",
     "react-tooltip": "^3.11.1",

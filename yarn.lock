@@ -7321,10 +7321,10 @@ react-timeout@^1.1.2:
     hoist-non-react-statics "^2.3.1"
     object-assign "^4.0.1"
 
-react-tiny-popover@^6.0.5:
-  version "6.0.10"
-  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-6.0.10.tgz#6167a1b4a1ae6cf847d2909057defd00d95d726c"
-  integrity sha512-ECMucd701SxWHGa+2YuVvccCxxTjmhomcD0ZYTF+Qmi5qNAj8pdlExFN+k+p1G78QTYIGPGNLocxRb9f6cZ0Mw==
+react-tiny-popover@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-7.2.0.tgz#e6277620efea6acea9c47efbfe5dcb473a552e99"
+  integrity sha512-AIliRDqTFB1+qy4GvWn+8B8JPKA13xtESWYdFkrdCeI8hEnPKufBvcF9a3dO/0SmD21mV6721xxhAnUm8TRXJw==
 
 react-toastify@^8.2.0:
   version "8.2.0"

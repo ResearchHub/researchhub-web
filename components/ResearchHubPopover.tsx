@@ -1,6 +1,7 @@
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Fragment, ReactElement } from "react";
-import { isNullOrUndefined } from "../config/utils/nullchecks";
+
+
 
 type Props = {
   align?: "start" | "center" | "end";
@@ -28,9 +29,8 @@ export default function ResearchHubPopover({
   onClickOutside,
   containerStyle,
 }: Props): ReactElement<typeof Fragment | typeof Popover> {
-  if (isNullOrUndefined(typeof window)) {
-    return <Fragment />;
-  }
+
+
   return (
     <Popover
       align={align}
