@@ -7141,10 +7141,10 @@ react-google-recaptcha@^2.1.0:
     prop-types "^15.5.0"
     react-async-script "^1.1.1"
 
-react-horizontal-scrolling-menu@^0.7.8:
-  version "0.7.10"
-  resolved "https://registry.yarnpkg.com/react-horizontal-scrolling-menu/-/react-horizontal-scrolling-menu-0.7.10.tgz#d5b941ddda459d5d7090f6aab53364e4e4884ba4"
-  integrity sha512-QwoTMIbKwO+K3byB9zr6culXE1lhXZ7hIJJmBt5bHMM7Okl7mCFyZvD5/GkQ8Txp5C4pqRI5Lq/zlWxxyy59nA==
+react-horizontal-scrolling-menu@0.7.8:
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/react-horizontal-scrolling-menu/-/react-horizontal-scrolling-menu-0.7.8.tgz#9b209cb7620209fc1ae5e3fae25a0fe4d83b014e"
+  integrity sha512-81UkisL7BNdG0zboDLsNta8PZ4zrw6m5XpdOlzyxls38BSVqCkm1hsDjvAyL32XUb0UiPtpIBZDA8gI/neBEVA==
 
 react-html-parser@^2.0.2:
   version "2.0.2"
