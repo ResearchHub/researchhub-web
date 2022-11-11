@@ -7,20 +7,29 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "isolatedModules": true,
     "jsx": "preserve" /* Specify JSX code generation: 'preserve', 'react-native', 'react', 'react-jsx' or 'react-jsxdev'. */,
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "moduleResolution": "node",
     "noEmit": true,
     "noEmitOnError": true,
     "noImplicitAny": false /* implicit any ignored while building */,
     "paths": {
-      "~/*": ["*"]
+      "~/*": [
+        "*"
+      ]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "strict": true /* Enable all strict type-checking options. */,
     "target": "es6",
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "incremental": true
   },
   "include": [
     ".eslintrc.json",
@@ -30,5 +39,7 @@
     "**/*.tsx",
     "next-env.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
