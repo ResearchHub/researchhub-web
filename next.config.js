@@ -86,17 +86,9 @@ const nextConfig = {
       },
     ];
   },
-  experimental: {
-    swcPlugins: [
-      [
-        "next-superjson-plugin",
-        {
-          excluded: [],
-        },
-      ],
-    ],
-  },
 };
+
+// module.exports = withTM({ ...nextConfig })
 
 const SentryWebpackPluginOptions = {
   silent: true,
