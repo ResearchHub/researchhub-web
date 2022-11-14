@@ -8,6 +8,9 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  experimental: {
+    forceSwcTransforms: true,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
