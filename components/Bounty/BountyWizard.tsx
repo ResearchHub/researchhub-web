@@ -66,7 +66,6 @@ const choiceStyles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     cursor: "pointer",
-
     ":hover": {
       borderColor: colors.BLUE(1),
     },
@@ -76,6 +75,10 @@ const choiceStyles = StyleSheet.create({
   },
   icon: {
     width: 32,
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      width: 24,
+      marginTop: 8,
+    },
   },
   iconImage: {
     width: "100%",
@@ -222,7 +225,7 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
   }
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.bountyWizardContainer)}>
       <div className={css(styles.titleContainer)}>
         <h1 className={css(styles.title)}>Create a new Bounty</h1>
         <span className={css(styles.numStepsContainer)}>
@@ -252,7 +255,7 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  bountyWizardContainer: {
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
@@ -264,6 +267,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1209px)": {
       paddingLeft: "5vw",
       paddingRight: "5vw",
+    },
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      padding: "40px 8px",
     },
   },
   progressBar: { width: "100%" },

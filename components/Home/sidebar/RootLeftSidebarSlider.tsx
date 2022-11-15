@@ -17,6 +17,7 @@ import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
 } from "./sidebar_items/RootLeftSidebarSliderItem";
 import InviteButton from "~/components/Referral/InviteButton";
+import NewPostButton from "~/components/NewPostButton";
 
 type Props = {
   isLoggedIn: boolean;
@@ -61,14 +62,15 @@ function RootLeftSidebarSlider({
       </div>
       {sliderMainItems}
       <div className={css(styles.leftSidebarSliderFooter)}>
+            <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
         <div className={css(styles.leftSidebarSliderFooterItemsTop)}>
           <span className={css(styles.leftSidebarSliderFooterTxtItem)}>
-            <InviteButton>
+            <InviteButton context="referral">
               <span className={css(styles.referralProgramItem)}>
                 {"Invite"}
               </span>
             </InviteButton>
-          </span>          
+          </span>
           <ALink
             href="about"
             overrideStyle={styles.leftSidebarSliderFooterTxtItem}
@@ -223,6 +225,12 @@ const styles = StyleSheet.create({
     display: "block",
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
+  newPostButtonCustom: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      height: 40,
+      width: "100%",
+    },
+  },
   loginButtonWrap: { width: "100%", display: "flex" },
   loginButton: {
     height: "unset",
@@ -250,7 +258,7 @@ const styles = StyleSheet.create({
   },
   referralProgramItem: {
     color: colors.ORANGE_DARK2(),
-  },  
+  },
   rhLogoSlider: { width: 148 },
 });
 

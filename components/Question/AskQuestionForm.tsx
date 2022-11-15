@@ -211,6 +211,9 @@ const styles = StyleSheet.create({
       paddingLeft: "5vw",
       paddingRight: "5vw",
     },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: "100%",
+    }
   },
   close: {
     cursor: "pointer",
@@ -222,6 +225,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 20,
       top: -32,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      right: 0,
     },
   },
   header: {
