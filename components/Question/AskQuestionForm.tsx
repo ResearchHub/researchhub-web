@@ -211,9 +211,9 @@ const styles = StyleSheet.create({
       paddingLeft: "5vw",
       paddingRight: "5vw",
     },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "100%",
-    }
+    },
   },
   close: {
     cursor: "pointer",
@@ -225,9 +225,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 20,
       top: -32,
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      right: 0,
+      right: -14,
     },
   },
   header: {
@@ -294,8 +292,11 @@ const styles = StyleSheet.create({
   },
   editor: {
     width: "721px",
-    "@media only screen and (max-width: 900px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "80vw",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      width: "86vw",
     },
   },
   supportText: {
