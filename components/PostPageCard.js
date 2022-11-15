@@ -186,9 +186,14 @@ class PostPageCard extends Component {
               )}
               {post.isReady && (
                 <div>
-                  <div style={{ fontWeight: 500, marginTop: 36, fontSize: 20 }}>
-                    Bounty Details
-                  </div>
+                  {post?.unifiedDocument?.documentType === "question" ||
+                    (post?.unifiedDocument?.documentType === "bounty" && (
+                      <div
+                        style={{ fontWeight: 500, marginTop: 36, fontSize: 20 }}
+                      >
+                        Bounty Details
+                      </div>
+                    ))}
                   {isEditMode ? (
                     <>
                       <DynamicCKEditor
