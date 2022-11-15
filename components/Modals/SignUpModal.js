@@ -51,7 +51,7 @@ const SignUpModal = (props) => {
     >
       <div className={css(styles.modalBody)}>
         <div className={css(styles.subtitle)}>
-          Join today and earn 50 RSC
+          Join today
           <img
             className={css(styles.coinIcon)}
             src={"/static/icons/coin-filled.png"}
