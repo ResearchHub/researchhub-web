@@ -312,6 +312,10 @@ const styles = StyleSheet.create({
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr",
     gap: 16,
+
+    "@media only screen and (max-width: 767px)": {
+      gridTemplateColumns: "1fr",
+    },
   },
   buttonRow: {
     marginLeft: "auto",
