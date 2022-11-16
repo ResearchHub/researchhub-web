@@ -263,7 +263,7 @@ function NewPostModal({
             <div className={css(styles.postOptionslist)}>
               {modalOptionCards}
             </div>
-            <div>
+            <div style={{ margin: "0 auto" }}>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
@@ -337,10 +337,11 @@ const styles = StyleSheet.create({
   modalStyle: {
     maxHeight: "95vh",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      maxHeight: "95vh",
+      maxHeight: "100vh",
       top: "none",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxHeight: "100vh",
       top: "none",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
