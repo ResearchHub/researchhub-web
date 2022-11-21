@@ -37,6 +37,7 @@ function useEffectFetchPost({ setPost, setPostV2, query }) {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {
+        console.warn("data: ", data);
         const rawPost = data.results[0];
         setPost(rawPost);
         const postV2 = new PostDoc(rawPost);

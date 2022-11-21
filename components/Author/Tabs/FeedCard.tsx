@@ -256,11 +256,11 @@ function FeedCard({
                   <div className={css(styles.rowContainer)}>
                     <div className={css(styles.cardBody)}>
                       <h2 className={css(styles.title)}>{cardTitle}</h2>
-                      {cardBody && (
+                      {/* {cardBody && (
                         <div className={css(styles.abstract) + " clamp2"}>
                           {cardBody}
                         </div>
-                      )}
+                      )} */}
                     </div>
                     {previews.length > 0 && (
                       <div
