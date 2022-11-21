@@ -12,7 +12,7 @@ import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import PaperPageAbstractSection from "~/components/Paper/Tabs/PaperPageAbstractSection";
+import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { Paper as PaperDoc } from "~/config/types/paper";
 
@@ -314,7 +314,7 @@ const Paper = ({
             </div>
             <div className={css(styles.bodyContainer, styles.section)}>
               <a name="abstract" />
-              <PaperPageAbstractSection />
+              <PaperPageAbstractSection paper={paper} />
             </div>
             {isFetchComplete /* Performance Optimization */ && (
               <div className={css(styles.discussionContainer, styles.section)}>
