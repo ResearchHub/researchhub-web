@@ -96,8 +96,6 @@ function DocumentHeader({
 
   const router = useRouter();
 
-  console.log(router);
-
   useEffect(() => {
     setVoteState({
       ...voteState,

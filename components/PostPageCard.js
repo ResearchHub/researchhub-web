@@ -114,12 +114,10 @@ class PostPageCard extends Component {
     const isEditMode = this.state.showPostEditor;
 
     let initialData = postBody;
-    console.warn("initialData1: ", initialData);
 
     if (!isEditMode && typeof initialData === "string") {
       initialData = trimEmptyParagraphs({ htmlStr: postBody });
     }
-    console.warn("initialData2: ", initialData);
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>

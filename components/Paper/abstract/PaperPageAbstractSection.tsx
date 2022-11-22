@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
+import dynamic from "next/dynamic";
 import { ReactElement, useEffect, useState } from "react";
-import SimpleEditor from "~/components/CKEditor/SimpleEditor";
 import Button from "~/components/Form/Button";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
@@ -13,6 +13,13 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { postUpdatePaperAbstract } from "./api/postUpdatePaperAbstract";
+
+const SimpleEditor = dynamic(
+  () => import("~/components/CKEditor/SimpleEditor")
+);
+const DynamicCKEditor = dynamic(
+  () => import("~/components/CKEditor/SimpleEditor")
+);
 
 type Props = {
   paper: any;
@@ -44,38 +51,44 @@ const useEffectParseAbstract = ({
 export default function PaperPageAbstractSection({ paper }): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(true);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(true);
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
-  
   useEffectParseAbstract({ paper, setAbstractSrc, setHasNoAbstract });
 
   return (
     <div className={css(styles.paperPageAbstractSection)}>
-      <h2>{"Abstract"}</h2>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <h2 style={{ margin: 0 }}>{"Abstract"}</h2>
+        {(!isEditMode || hasNoAbstract) && (
+          <PermissionNotificationWrapper
+            modalMessage="propose abstract edit"
+            onClick={(): void => setIsEditMode(true)}
+            loginRequired
+          >
+            <span className={css(styles.pencilIcon)}>{icons.pencil}</span>
+          </PermissionNotificationWrapper>
+        )}
+      </div>
       {isEditMode ? (
         <div className={css(styles.editorWrap)}>
           <SimpleEditor
             editing
-            disabled={isUpdatingAbstract}
             initialData={abstractSrc}
-            isBalloonEditor
-            noTitle
             onChange={(_, editorSrcValue: string): void => {
               setAbstractSrc(editorSrcValue);
             }}
           />
           <div className={css(styles.editButtonRow)}>
             <Button
-              disabled={isUpdatingAbstract}
               isWhite
               label={"Cancel"}
               onClick={(): void => setIsEditMode(false)}
               size={"small"}
             />
             <Button
-              disabled={isUpdatingAbstract}
               label={"Save"}
-              onClick={(): void => {
+              onClick={(event): void => {
+                event.preventDefault();
                 setIsUpdatingAbstract(true);
                 postUpdatePaperAbstract({
                   onError: (error: Error): void => {
@@ -136,9 +149,10 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
         </div>
       ) : (
         <div className={css(styles.editorWrapReadOnly)}>
-          <SimpleEditor
+          <DynamicCKEditor
             initialData={abstractSrc}
-            isBalloonEditor
+            isBalloonEditor /* removes toolbar */
+            noBorder
             noTitle
             onChange={silentEmptyFnc}
             readOnly
@@ -199,7 +213,7 @@ const styles = StyleSheet.create({
     },
   },
 
-  editorWrap: {},
+  editorWrap: { marginTop: 12 },
   editorWrapReadOnly: { marginLeft: -12 /* matching ck editor padding */ },
   editButtonRow: {
     display: "flex",
@@ -217,22 +231,25 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   },
-
-  tab: {
-    padding: "4px 12px",
-    fontSize: 14,
-    fontWeight: 500,
+  pencilIcon: {
+    alignSelf: "center",
+    color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
-    marginRight: 8,
-    color: "rgba(36, 31, 58, 0.6)",
-    borderRadius: 4,
+    display: "flex",
+    fontSize: 14,
+    marginLeft: 8,
+    padding: "3px 5px",
+    paddingRight: 0,
+    transition: "all ease-out 0.1s",
     ":hover": {
-      color: colors.NEW_BLUE(),
+      color: colors.NEW_BLUE(1),
+      opacity: 1,
+      textDecoration: "underline",
     },
-    "@media only screen and (max-width: 967px)": {
-      marginRight: 0,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: 0,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 12,
     },
   },
