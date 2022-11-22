@@ -18,7 +18,7 @@ export function postUpdatePaperAbstract({
     buildApiUri({
       apiPath: `paper/${nullthrows(paperPayload?.id, "paperID not present")}`,
     }),
-    API.PATCH_FILE_CONFIG(paperPayload)
+    API.PATCH_CONFIG(paperPayload)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

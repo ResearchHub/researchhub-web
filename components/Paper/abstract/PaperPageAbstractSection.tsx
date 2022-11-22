@@ -51,8 +51,9 @@ const useEffectParseAbstract = ({
 export default function PaperPageAbstractSection({ paper }): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(true);
-  const [isEditMode, setIsEditMode] = useState<boolean>(true);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
+
   useEffectParseAbstract({ paper, setAbstractSrc, setHasNoAbstract });
 
   return (
@@ -104,7 +105,9 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                     /* NOTE: we no longer update abstract in attempt to depreciate this legacy field.
                     All proceeding updates make changes to abstract_src */
                     ...paper,
-                    abstractSrc,
+                    hubs: paper?.hubs.map((hub) => hub.id),
+                    abstract_src: abstractSrc,
+                    abstract_src_type: "CK_EDITOR",
                   },
                 });
               }}
