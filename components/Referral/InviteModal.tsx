@@ -325,16 +325,16 @@ const InviteModal = ({
                   fontWeight: 500,
                 }}
               >
-                7% bonus
+                7% 
               </span>{" "}
-              every time they earn RSC on ResearchHub for the first six month
+              off user's RSC earnings on ResearchHub for the first six month
               period
               <div className={css(styles.example)}>
                 Example: If they earn 100 RSC, you will earn 7 RSC
               </div>
             </li>
           </ol>
-          <div className={css(styles.squaresContainer)}>
+          {/* <div className={css(styles.squaresContainer)}>
             <div className={css(styles.square)}>
               <div className={css(styles.iconContainer)}>
                 {user?.id ? (
@@ -359,7 +359,7 @@ const InviteModal = ({
                 sign up
               </span>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </BaseModal>
@@ -460,6 +460,7 @@ const styles = StyleSheet.create({
     columnGap: "15px",
   },
   highlightedSectionList: {
+    marginBottom: 0,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
       paddingLeft: 20,

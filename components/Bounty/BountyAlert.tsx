@@ -152,7 +152,7 @@ const BountyAlert = ({
               {createdBy?.authorProfile?.lastName}
             </ALink>
           ) : (
-            <span>Deleted User</span>
+            <span>Anonymous</span>
           )}
           {bountyType === "question" && allBounties.length > 1 && (
             <span>
