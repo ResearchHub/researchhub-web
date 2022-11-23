@@ -47,6 +47,7 @@ import {
   useState,
 } from "react";
 import { updateExistingPaper } from "./api/updateExistingPaper";
+import API from "~/config/api";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -168,6 +169,7 @@ function PaperUploadV2Update({
   };
 
   const onFormSubmit = (event: SyntheticEvent): void => {
+
     event.preventDefault();
     const isFormValid = getIsFormValid({
       formState,
@@ -203,10 +205,16 @@ function PaperUploadV2Update({
           modalActions.openFirstVoteModal(isUsersFirstTime);
           messageActions.showMessage({ show: true, load: true });
           paperActions.resetPaperState();
-          router.push(
-            "/paper/[paperId]/[paperName]",
-            `/paper/${paperID}/${paperName}`
-          );
+
+          fetch("/api/revalidate", API.POST_CONFIG({
+            path: `/paper/${paperID}/${paperName}`
+          })).then(() => {
+            console.log('OKKKKKK')
+            router.push(
+              "/paper/[paperId]/[paperName]",
+              `/paper/${paperID}/${paperName}`
+            );
+          })
         },
         paperActions,
         paperID: nullthrows(
