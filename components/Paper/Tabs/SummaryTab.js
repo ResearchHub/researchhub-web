@@ -216,24 +216,30 @@ class SummaryTab extends Component {
     this.props
       .patchPaper(paper.id, { abstract })
       .then((res) => {
-        if (res.payload && res.payload.errorBody) {
-          if (
-            res.payload.errorBody.status &&
-            res.payload.errorBody.status === 429
-          ) {
-            return showMessage({ show: false });
+        fetch(
+          "/api/revalidate",
+          API.POST_CONFIG({
+            path: `/paper/${this.props.paper.id}/${this.props.paper.slug}`,
+          })
+        ).then(() => {
+          if (res.payload && res.payload.errorBody) {
+            if (
+              res.payload.errorBody.status &&
+              res.payload.errorBody.status === 429
+            ) {
+              return showMessage({ show: false });
+            }
           }
-        }
-        const updatedPaper = {
-          ...this.props.paper,
-          abstract,
-        };
-        updatePaperState && updatePaperState(updatedPaper);
-        showMessage({ show: false });
-        setMessage("Abstract successfully edited.");
-        showMessage({ show: true });
+          const updatedPaper = {
+            ...this.props.paper,
+            abstract,
+          };
+          updatePaperState && updatePaperState(updatedPaper);
+          setMessage("Abstract successfully edited.");
+          showMessage({ show: true, error: false });
 
-        this.setState({ editAbstract: false, abstract });
+          this.setState({ editAbstract: false, abstract });
+        });
       })
       .catch((err) => {
         if (err.response.status === 429) {

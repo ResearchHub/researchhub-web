@@ -1,9 +1,8 @@
 // pages/api/revalidate.js
 
-export default async function handler(req, res) {
+import { NextApiRequest, NextApiResponse } from "next"
 
-  console.log('req.body.path', req.body.path)
-
+export default async function handler(req:NextApiRequest, res:NextApiResponse) {
   try {
     // this should be the actual path not a rewritten path
     // e.g. for "/blog/[slug]" this should be "/blog/post-1"
