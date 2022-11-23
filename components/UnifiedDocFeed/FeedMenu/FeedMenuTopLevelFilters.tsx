@@ -84,7 +84,12 @@ const FeedMenuTopLevelFilters = ({
               f.icon
             )}
           </span>
-          <span className={css(styles.filterLabel)}>{f.label}</span>
+          <span className={css(styles.filterLabel)}>
+            {isMyHubs 
+              ? <><span className={css(styles.hiddenXS)}>My </span>Hubs</>
+              : <>{f.label}</>
+            }
+          </span>
           {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
             <span
               className={css(styles.myHubsDown)}
@@ -121,6 +126,12 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 15,
     position: "relative",
+  },
+  hiddenXS: {
+    display: "inline",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
+    }
   },
   dropdown: {
     position: "absolute",
