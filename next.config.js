@@ -95,7 +95,7 @@ module.exports = withTM({ ...nextConfig });
 
 const SentryWebpackPluginOptions = {
   silent: true,
-  disableClientWebpackPlugin: true,
+  disableClientWebpackPlugin: false,
 };
 
 module.exports = withSentryConfig(
