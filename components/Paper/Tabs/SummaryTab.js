@@ -235,9 +235,6 @@ class SummaryTab extends Component {
             abstract,
           };
           updatePaperState && updatePaperState(updatedPaper);
-          setMessage("Abstract successfully edited.");
-          showMessage({ show: true, error: false });
-
           this.setState({ editAbstract: false, abstract });
         });
       })
