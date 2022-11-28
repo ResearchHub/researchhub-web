@@ -10,6 +10,12 @@ const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
+export async function getStaticProps(ctx) {
+  return {
+    props: {},
+  };
+}
+
 // Index.getInitialProps = async (ctx) => {
 //   const { query } = ctx;
 //   const cookies = nookies.get(ctx);
