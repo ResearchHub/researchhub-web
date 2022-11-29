@@ -70,6 +70,12 @@ const BountyAlert = ({
       amount += parseFloat(bounty.amount);
     });
     status = firstBounty.status;
+
+    console.log(firstBounty.timeRemainingInDays);
+
+    if (firstBounty.timeRemainingInDays < 0) {
+      return null;
+    }
   }
 
   if (!bounty && !allBounties.length) {
@@ -85,17 +91,16 @@ const BountyAlert = ({
       // This should be rewritten to ensure bounties referenced here are always proper Bounty objects.
       if (!currentUser) {
         return null;
-      }
-      else if (bounty?.created_by && bounty?.created_by?.author_profile?.id === currentUser.author_profile?.id) { 
+      } else if (
+        bounty?.created_by &&
+        bounty?.created_by?.author_profile?.id ===
+          currentUser.author_profile?.id
+      ) {
         return bounty;
-      }
-      else if (bounty?.createdBy && bounty.createdBy.id === currentUser.id) {
+      } else if (bounty?.createdBy && bounty.createdBy.id === currentUser.id) {
         return bounty;
       }
     });
-
-
-  console.log('userBount', userBounty)
 
   const showPlural = bountyType !== "question" && allBounties.length > 1;
   const showContributeBounty =

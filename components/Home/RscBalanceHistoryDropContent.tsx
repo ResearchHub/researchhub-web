@@ -15,6 +15,7 @@ import colors from "~/config/themes/colors";
 import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import { toTitleCase } from "~/config/utils/string";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 type Props = { closeDropdown: () => void };
 
@@ -54,7 +55,7 @@ function RscBalanceHistoryDropContentCard({
         <div>{displayTitle}</div>
         <div style={{ display: "flex", alignItems: "center" }}>
           {nullthrows(
-            parseFloat(withdrawal?.amount ?? 0)?.toFixed(3),
+            formatBountyAmount({ amount: withdrawal?.amount ?? 0 }),
             "withdrawal amount should not be null"
           ) ?? 0}
           <img
@@ -149,9 +150,10 @@ export default function RscBalanceHistoryDropContent({
 const styles = StyleSheet.create({
   rscBalanceHistoryDropContent: {
     background: "#fff",
-    border: `2px solid ${colors.LIGHT_GREY_BORDER}`,
+    border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
     minWidth: 320,
+    marginTop: 8,
   },
   rscBalanceHistoryDropContentCard: {
     display: "flex",

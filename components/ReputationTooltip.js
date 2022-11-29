@@ -32,9 +32,6 @@ const ReputationTooltip = (props) => {
               "With ResearchCoin, you can support your favorite scientific papers or put them towards funding areas of research."
             }
           </div>
-          <div className={css(styles.settingsInfo)}>
-            {"You can show / hide your balance in the settings page"}
-          </div>
         </ReactTooltip>
       )}
     </Fragment>

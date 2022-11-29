@@ -634,17 +634,12 @@ class DiscussionEntry extends Component {
           bounty?.created_by?.id === currentUser.id
       );
 
-    console.log(userBounty);
-    console.log(postType);
-    console.log(POST_TYPES.ANSWER);
-
     const showBountyAward =
       (documentType === "question" || documentType === "bounty") &&
       post?.created_by?.id === this.props?.auth?.user?.id &&
       userBounty?.status === "OPEN" &&
       (postType === POST_TYPES.ANSWER || documentType === "bounty");
 
-    console.log(post?.created_by?.id === this.props?.auth?.user?.id);
     return (
       <div
         className={css(
