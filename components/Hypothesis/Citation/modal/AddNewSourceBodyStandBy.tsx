@@ -1,6 +1,6 @@
 // import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
-import { breakpoints } from "~/config/themes/screen.js";
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useState } from "react";
 import Button from "~/components/Form/Button";

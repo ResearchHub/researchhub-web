@@ -30,6 +30,9 @@ export async function getExistingPaperForEdit({
     .then(Helpers.parseJSON)
     .then((res: any): void => {
       const {
+        abstract_src,
+        abstract_src_markdown,
+        abstract_src_type,
         abstract,
         authors,
         doi,
@@ -42,12 +45,14 @@ export async function getExistingPaperForEdit({
         title,
       } = res;
       const parsedFormState: FormState = {
+        abstract_src_type,
+        abstract_src: abstract_src_markdown,
+        abstract,
         authors: !isNullOrUndefined(authors) ? authors : [],
         doi,
-        title,
         paper_title,
-        abstract,
         paper_type,
+        title,
         // NOTE: hubs here is same as "selectedHubs" in component level
         hubs: hubs.map((hub: any) => {
           const { id, name } = hub;

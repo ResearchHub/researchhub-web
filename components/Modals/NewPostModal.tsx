@@ -233,7 +233,6 @@ function NewPostModal({
       }}
     />
   ));
-  console.warn("bodyType: ", bodyType);
 
   return (
     <BaseModal

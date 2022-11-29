@@ -30,6 +30,8 @@ export const paper = (paper) => {
 
 // NOTE: calvinhlee - why was this even necessary?
 export const paperPost = ({
+  abstract_src_type,
+  abstract_src,
   abstract,
   authors,
   citation_type,
@@ -61,6 +63,9 @@ export const paperPost = ({
     }
   }
   // NOTE - calvinhlee: formatting data like below results in unexpected update behavior.
+  abstract_src && formData.append("abstract_src", abstract_src);
+  abstract_src_type && formData.append("abstract_src_type", abstract_src_type);
+
   hubs &&
     hubs.forEach((hub) => {
       return formData.append("hubs", hub);

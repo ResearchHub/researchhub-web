@@ -27,6 +27,7 @@ export async function updateExistingPaper({
     ...payload,
     authors: (authors || []).map((author: any): ID => author.id),
     hubs: hubs.map((hub): ID => hub.id),
+    abstract_src_type: "CK_EDITOR" /* manual override */,
   };
 
   if (!isNullOrUndefined(published) && !isNullOrUndefined(published.year)) {

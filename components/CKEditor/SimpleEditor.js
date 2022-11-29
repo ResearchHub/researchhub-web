@@ -4,20 +4,21 @@ import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
-export default function SimpleEditor({
-  containerStyle,
-  editing,
-  id,
-  initialData,
-  isBalloonEditor,
-  label,
-  labelStyle,
-  noTitle,
-  onChange,
-  placeholder,
-  readOnly,
-  required,
-}) {
+export default function SimpleEditor(props) {
+  const {
+    containerStyle,
+    editing,
+    id,
+    initialData,
+    isBalloonEditor,
+    label,
+    labelStyle,
+    noTitle,
+    onChange,
+    placeholder,
+    readOnly,
+    required,
+  } = props;
   const editorRef = useRef();
   const observerRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
