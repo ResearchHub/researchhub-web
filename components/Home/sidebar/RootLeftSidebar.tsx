@@ -29,6 +29,7 @@ import { connect } from "react-redux";
 import { storeToCookie } from "~/config/utils/storeToCookie";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
+import NewPostButton from "~/components/NewPostButton";
 
 type Props = {
   openLoginModal: any;
@@ -301,7 +302,7 @@ function RootLeftSidebar({
         <div className={css(styles.leftSidebarFooter)}>
           <div className={css(styles.leftSidebarFooterItemsTop)}>
             <span className={css(formattedFooterTxtItem)}>
-              <InviteButton>
+              <InviteButton context={"referral"}>
                 <span className={css(styles.referralProgramItem)}>
                   {isMinimized ? (
                     "Invite"

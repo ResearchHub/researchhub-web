@@ -870,10 +870,6 @@ var styles = StyleSheet.create({
     color: colors.BLACK(0.8),
     margin: "0 0 20px",
     textAlign: "center",
-    "@media only screen and (max-width: 415px)": {
-      // fontSize: 12,
-      // width: 300,
-    },
   },
   summaryActions: {
     width: "max-content",

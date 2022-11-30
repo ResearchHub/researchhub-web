@@ -24,6 +24,7 @@ import { getExistingPaperForEdit } from "./api/getExistingPaperForEdit";
 import { getIsFormValid } from "./util/getIsFormValid";
 import {
   emptyFncWithMsg,
+  isEmpty,
   isNullOrUndefined,
   nullthrows,
 } from "../../../config/utils/nullchecks";
@@ -52,7 +53,11 @@ import API from "~/config/api";
 // Dynamic modules
 import dynamic from "next/dynamic";
 import { captureEvent } from "~/config/utils/events";
+
 const AddAuthorModal = dynamic(() => import("../../Modals/AddAuthorModal"));
+const SimpleEditor = dynamic(
+  () => import("~/components/CKEditor/SimpleEditor")
+);
 
 type ComponentProps = {
   authRedux: any;
@@ -99,7 +104,9 @@ const useEffectInitAndParseToState = ({
       },
       onSuccess: ({ parsedFormState }): void => {
         // logical ordering
-        setFormState(parsedFormState);
+        setFormState({
+          ...parsedFormState,
+        });
         messageActions.showMessage({
           load: false,
           show: false,
@@ -236,6 +243,8 @@ function PaperUploadV2Update({
   });
 
   const {
+    abstract_src_type,
+    abstract_src,
     abstract,
     author: formAuthor,
     authors: selectedAuthors = [],
@@ -253,7 +262,7 @@ function PaperUploadV2Update({
     suggestedAuthors,
     shouldShowAuthorList,
   } = componentState;
-
+  console.warn("abstract_src_type1: ", abstract_src_type);
   return (
     <Fragment>
       <AddAuthorModal
@@ -343,6 +352,7 @@ function PaperUploadV2Update({
             >
               <CheckBox
                 active={markedSelfAsAuthor}
+                // @ts-ignore id supplied for legacy reason
                 id="author.self_author"
                 isSquare
                 label="I am an author of this paper"
@@ -434,18 +444,30 @@ function PaperUploadV2Update({
             />
           </span>
           <span className={css(formGenericStyles.tagline)}>
-            <FormTextArea
-              containerStyle={[
+            <div
+              className={css([
                 formGenericStyles.taglineContainer,
                 formGenericStyles.textArea,
-              ]}
+              ])}
               id="abstract"
-              label="Abstract"
-              labelStyle={formGenericStyles.labelStyle}
-              onChange={handleInputChange}
-              placeholder="Enter the abstract of the paper"
-              value={abstract}
-            />
+            >
+              <div
+                className={css(formGenericStyles.labelStyle)}
+                style={{ fontWeight: 500, marginBottom: 12, marginTop: 20 }}
+              >
+                Abstract
+              </div>
+              <SimpleEditor
+                editing
+                placeholder="Enter abstract"
+                initialData={
+                  !isEmpty(abstract_src) ? abstract_src : abstract ?? ""
+                }
+                onChange={(_: ID, editorSrcValue: string) => {
+                  handleInputChange("abstract_src", editorSrcValue ?? "");
+                }}
+              />
+            </div>
           </span>
         </div>
         <div

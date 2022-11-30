@@ -57,7 +57,7 @@ export default function UnifiedDocFeedCardPlaceholder({
             />
           </div>
           <div className={css(styles.row, styles.marginBottom)}>
-            <div className={css(styles.row)}>
+            <div className={css(styles.row, styles.noMarginBottom)}>
               <RoundShape color={color} style={{ width: 30, height: 30 }} />
               <RoundShape
                 color={color}
@@ -82,10 +82,9 @@ export default function UnifiedDocFeedCardPlaceholder({
 const styles = StyleSheet.create({
   docFeedCardPlaceholder: {
     backgroundColor: "#FFF",
-    border: "1px solid #EDEDED",
+    borderTop: "1px solid #EDEDED",
     boxSizing: "border-box",
     display: "flex",
-    height: "100%",
     justifyContent: "space-between",
     marginBottom: 12,
     maxWidth: "100%",
@@ -120,6 +119,9 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     marginBottom: 15,
+  },
+  noMarginBottom: {
+    marginBottom: 0,
   },
   cardMain: {
     display: "flex",

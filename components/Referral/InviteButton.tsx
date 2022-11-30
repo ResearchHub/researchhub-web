@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import InviteModal from "./InviteModal";
 import { useSelector, connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { UnifiedDocument } from "~/config/types/root_types";
 
 type Args = {
-  children: any;
+  children: ReactNode;
   openLoginModal: Function;
   unifiedDocument?: UnifiedDocument;
   context: "bounty" | "referral";

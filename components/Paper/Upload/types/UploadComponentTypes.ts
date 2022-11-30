@@ -35,6 +35,8 @@ export type FormPublishedDate = {
 
 // Intentional snake_casing to be used as a BE payload
 export type FormState = {
+  abstract_src_type?: "TEXT_FIELD" | "CK_EDITOR";
+  abstract_src?: any;
   abstract: any;
   author: any;
   authors?: any[]; // only used for update. Often referred to as selectedAuthors in FE

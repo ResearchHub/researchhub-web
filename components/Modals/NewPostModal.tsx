@@ -37,10 +37,10 @@ import Link from "next/link";
 import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
-import killswitch from "~/config/killswitch/killswitch";
 import AskQuestionForm from "~/components/Question/AskQuestionForm";
 import colors from "~/config/themes/colors";
 import BountyWizard from "../Bounty/BountyWizard";
+import { breakpoints } from "~/config/themes/screen";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -70,7 +70,6 @@ export const getModalOptionItems = ({
       />
     ),
   },
-
   {
     key: "bounty",
     header: (
@@ -212,13 +211,8 @@ function NewPostModal({
         wizardBodyType: "url_or_doi_upload",
       });
       setBodyType("paperWizard");
-    } else if (modalSelectedItemIndex === 3) {
-      setButtonValues({
-        ...DEFAULT_POST_BUTTON_VALUES,
-        isOpen: true,
-        isQuestionType: true,
-      });
-      setBodyType("question");
+    } else if ([1, 2].includes(modalSelectedItemIndex)) {
+      return;
     } else {
       closeModal(event);
     }
@@ -265,8 +259,10 @@ function NewPostModal({
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>{"Select your post type"}</div>
             </div>
-            <div className={css(styles.list)}>{modalOptionCards}</div>
-            <div>
+            <div className={css(styles.postOptionslist)}>
+              {modalOptionCards}
+            </div>
+            <div style={{ margin: "0 auto" }}>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
@@ -304,6 +300,7 @@ function NewPostModal({
       closeModal={closeModal}
       isOpen={shouldModalStayOpen}
       modalStyle={styles.modalStyle}
+      modalContentStyle={styles.modalContentStyle}
       removeDefault={true}
     />
   );
@@ -323,16 +320,32 @@ const styles = StyleSheet.create({
   fireIcon: {
     marginRight: 4,
   },
-  list: {
-    margin: "31px",
+  postOptionslist: {
     display: "flex",
+    flex: "0 0 auto",
     flexDirection: "column",
     justifyContent: "flex-start",
-    flex: "0 0 auto",
+    margin: 32,
+    maxHeight: "100%",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      maxHeight: "600px",
+      overflowX: "scroll",
+      margin: "12px 0px",
+    },
   },
   modalStyle: {
     maxHeight: "95vh",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      maxHeight: "100vh",
+      top: "none",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxHeight: "100vh",
+      top: "none",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      minHeight: "100vh",
+      top: -68,
       width: "100%",
     },
   },
@@ -354,12 +367,13 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       overflowY: "auto",
-      padding: "40px 10px",
     },
-    "@media only screen and (max-width: 415px)": {
-      padding: "40px 0px",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      alignItems: "flex-start",
+      overflowY: "hidden",
+      padding: "40px 8px",
     },
   },
   form: {
@@ -369,6 +383,7 @@ const styles = StyleSheet.create({
   buttonCustomStyle: {
     width: "160px",
     height: "50px",
+    marginLeft: "unset",
     "@media only screen and (max-width: 415px)": {
       width: "160px",
       height: "50px",
@@ -387,12 +402,13 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   titleContainer: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    marginLeft: "unset",
     textAlign: "center",
-    boxSizing: "border-box",
   },
   title: {
     fontWeight: 500,
@@ -404,11 +420,12 @@ const styles = StyleSheet.create({
       fontSize: "24px",
     },
   },
-  modalContentStyles: {
-    padding: "25px",
-    overflowX: "hidden",
-    "@media only screen and (max-width: 415px)": {
-      padding: "25px",
+  modalContentStyle: {
+    position: "static",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      // position: "fixed",
+      // top: 0,
+      width: "100%",
     },
   },
 });

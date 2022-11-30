@@ -153,7 +153,11 @@ const DiscussionPostMetadata = (props) => {
         </span>
       </span>
     );
-  } else if (commentBounties && commentBounties.length > 0) {
+  } else if (
+    commentBounties &&
+    commentBounties.length > 0 &&
+    commentBounties[0].status === "OPEN"
+  ) {
     text = (
       <span>
         is offering{" "}

@@ -24,16 +24,13 @@ const ReputationTooltip = (props) => {
           </div>
           <div className={css(styles.paragraph, styles.description)}>
             {
-              "Earn Research Coin by participating in discussion, uploading papers, upvoting papers, and updating summaries / adding notes to papers."
+              "Earn ResearchCoin by participating in discussion, uploading papers, upvoting papers, and updating summaries / adding notes to papers."
             }
           </div>
           <div className={css(styles.description)}>
             {
-              "With Research Coin, you can support your favorite scientific papers or put them towards funding areas of research."
+              "With ResearchCoin, you can support your favorite scientific papers or put them towards funding areas of research."
             }
-          </div>
-          <div className={css(styles.settingsInfo)}>
-            {"You can show / hide your balance in the settings page"}
           </div>
         </ReactTooltip>
       )}

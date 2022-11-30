@@ -25,6 +25,7 @@ import VoteWidget from "../VoteWidget";
 import BountyAlert from "../Bounty/BountyAlert";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import ContentBadge from "../ContentBadge";
+import { useRouter } from "next/router";
 
 type Args = {
   document: TopLevelDocument;
@@ -92,6 +93,8 @@ function DocumentHeader({
     userVote: userVote,
     voteScore: score,
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     setVoteState({
@@ -246,6 +249,8 @@ function DocumentHeader({
     );
   });
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
+  const showClaimableAuthors =
+    claimableAuthors.length > 0 && router?.query?.route?.includes("/paper");
   let bountyAmount = 0;
   allBounties?.forEach((bounty) => {
     bountyAmount += bounty.amount;
@@ -277,7 +282,7 @@ function DocumentHeader({
             </div>
           )}
           <ReactTooltip />
-          {claimableAuthors.length > 0 && (
+          {showClaimableAuthors && (
             <AuthorClaimModal
               auth={auth}
               authors={claimableAuthors}
@@ -314,12 +319,12 @@ function DocumentHeader({
                 <div className={css(styles.metaKey)}>Authors</div>
                 <div className={css(styles.metaVal)}>
                   {authorElems}
-                  {claimableAuthors.length > 0 && (
+                  {showClaimableAuthors && (
                     <span
                       className={css(styles.claimProfile)}
                       onClick={() => setIsAuthorClaimModalOpen(true)}
                     >
-                      Claim your profile to earn Research Coin
+                      Claim your profile to earn ResearchCoin
                       <img
                         src={"/static/icons/coin-filled.png"}
                         draggable={false}
@@ -442,7 +447,7 @@ function DocumentHeader({
               {document.boostAmount > 0 && (
                 <div
                   className={css(styles.boostAmount, styles.additionalDetail)}
-                  data-tip={"Research Coin tipped"}
+                  data-tip={"ResearchCoin tipped"}
                 >
                   <span className={css(styles.coinDetailIcon)}>
                     <img

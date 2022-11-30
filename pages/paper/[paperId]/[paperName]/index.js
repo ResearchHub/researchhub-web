@@ -12,7 +12,7 @@ import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
+import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { Paper as PaperDoc } from "~/config/types/paper";
 
@@ -89,8 +89,6 @@ const Paper = ({
   // in future tech-deb sprint.
   const [paperV2, setPaperV2] = useState(new PaperDoc({}));
 
-  const [summary, setSummary] = useState((paper && paper.summary) || {});
-  const [loadingSummary, setLoadingSummary] = useState(true);
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
 
@@ -106,6 +104,7 @@ const Paper = ({
 
   const commentsRef = useRef(null);
 
+  const formattedDescription = paper?.abstract ?? paper?.tagline ?? "";
   const structuredDataForSEO = useMemo(
     () => buildStructuredDataForSEO(),
     [paper]
@@ -208,42 +207,12 @@ const Paper = ({
     return discussionCount;
   }
 
-  function formatDescription() {
-    const { abstract, tagline } = paper;
-
-    if (!paper) return "";
-
-    if (paper.summary) {
-      const { summary, summary_plain_text } = paper.summary;
-
-      if (summary_plain_text) {
-        return summary_plain_text;
-      }
-
-      if (summary) {
-        return isQuillDelta(summary)
-          ? convertDeltaToText(summary)
-          : convertToEditorValue(summary).document.text;
-      }
-    }
-
-    if (abstract) {
-      return abstract;
-    }
-
-    if (tagline) {
-      return tagline;
-    }
-
-    return "";
-  }
-
   function buildStructuredDataForSEO() {
     let data = {
       "@context": "https://schema.org/",
       name: paper.title,
       keywords: paper.title + "researchhub" + "research hub",
-      description: formatDescription(),
+      description: formattedDescription,
     };
 
     let image = [];
@@ -294,8 +263,8 @@ const Paper = ({
     activeTab !== index && setActiveTab(index);
   }
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
-  const shouldShowInlineComments =
-    inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+  // const shouldShowInlineComments =
+  //   inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
 
   return (
     <div>
@@ -308,15 +277,11 @@ const Paper = ({
         paper={paper}
         updatePaperState={updatePaperState}
       />
-      <PaperFeatureModal
-        paper={paper}
-        updatePaperState={updatePaperState}
-        updateSummary={setSummary}
-      />
+      <PaperFeatureModal paper={paper} updatePaperState={updatePaperState} />
       <PaperPDFModal paperId={paper.id} paper={paper} />
       <Head
         title={paper.title}
-        description={formatDescription()}
+        description={formattedDescription}
         socialImageUrl={socialImageUrl}
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`${process.env.HOST}/paper/${paper.id}/${paper.slug}`}
@@ -330,13 +295,7 @@ const Paper = ({
         ></script>
       </Head>
       <div className={css(styles.root)}>
-        <Waypoint
-          onEnter={() => onSectionEnter(0)}
-          topOffset={40}
-          bottomOffset={"95%"}
-        >
-          <a name="main" />
-        </Waypoint>
+        <a name="main" />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.top)}>
@@ -354,69 +313,40 @@ const Paper = ({
               </div>
             </div>
             <div className={css(styles.bodyContainer, styles.section)}>
-              <Waypoint
-                onEnter={() => onSectionEnter(1)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <div>
-                  <a name="abstract" />
-                  <SummaryTab
-                    paperId={paper.id}
-                    paper={paper}
-                    summary={summary}
-                    updatePaperState={updatePaperState}
-                    updateSummary={setSummary}
-                    loadingSummary={loadingSummary}
-                  />
-                </div>
-              </Waypoint>
+              <a name="abstract" />
+              <PaperPageAbstractSection paper={paper} />
             </div>
             {isFetchComplete /* Performance Optimization */ && (
-              <Waypoint
-                onEnter={() => onSectionEnter(2)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <div
-                  className={css(styles.discussionContainer, styles.section)}
-                >
-                  <a name="comments" id="comments" ref={commentsRef} />
-                  {
-                    <DiscussionTab
-                      hostname={process.env.HOST}
-                      documentType={"paper"}
-                      paperId={paper.id}
-                      paperState={paper}
-                      setHasBounties={setHasBounties}
-                      setAllBounties={setAllBounties}
-                      showBountyBtn={true}
-                      calculatedCount={discussionCount}
-                      setCount={setCount}
-                      isCollapsible={false}
-                    />
-                  }
-                </div>
-              </Waypoint>
+              <div className={css(styles.discussionContainer, styles.section)}>
+                <a name="comments" id="comments" ref={commentsRef} />
+                {
+                  <DiscussionTab
+                    hostname={process.env.HOST}
+                    documentType={"paper"}
+                    paperId={paper.id}
+                    paperState={paper}
+                    setHasBounties={setHasBounties}
+                    setAllBounties={setAllBounties}
+                    showBountyBtn={true}
+                    calculatedCount={discussionCount}
+                    setCount={setCount}
+                    isCollapsible={false}
+                  />
+                }
+              </div>
             )}
             {isFetchComplete /* Performance Optimization */ && (
-              <Waypoint
-                onEnter={() => onSectionEnter(4)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <div className={css(styles.section)}>
-                  <a name="paper pdf" />
-                  <div className={css(styles.paperTabContainer)}>
-                    <PaperTab
-                      isEditorOfHubs={isEditorOfHubs}
-                      isModerator={isModerator}
-                      paper={paper}
-                      paperId={paper.id}
-                    />
-                  </div>
+              <div className={css(styles.section)}>
+                <a name="paper pdf" />
+                <div className={css(styles.paperTabContainer)}>
+                  <PaperTab
+                    isEditorOfHubs={isEditorOfHubs}
+                    isModerator={isModerator}
+                    paper={paper}
+                    paperId={paper.id}
+                  />
                 </div>
-              </Waypoint>
+              </div>
             )}
           </div>
         </div>

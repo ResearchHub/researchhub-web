@@ -86,7 +86,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
             });
           }}
         >
-          {!isPopoverOpen && <ReputationTooltip />}
+          {/* {!isPopoverOpen && <ReputationTooltip />} */}
           <img
             src={"/static/icons/coin-filled.png"}
             draggable={false}
@@ -120,9 +120,6 @@ const styles = StyleSheet.create({
     margin: "-1px 6px 0 0",
     padding: 8,
     position: "relative",
-    ":hover": {
-      background: colors.GREY(0.14),
-    },
   },
   balanceText: { fontSize: 14, fontWeight: 400, marginLeft: 6 },
   blur: {

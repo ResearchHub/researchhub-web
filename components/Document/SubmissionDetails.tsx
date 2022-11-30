@@ -49,14 +49,18 @@ function SubmissionDetails({
         <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
       </div>
       <div className={css(styles.submittedByDetails)}>
-        <ALink
-          href={`/user/${authorProfile?.id}/overview`}
-          key={`/user/${authorProfile?.id}/overview-key`}
-          overrideStyle={styles.link}
-        >
-          {authorProfile?.firstName || "Deleted"}{" "}
-          {authorProfile?.lastName || "User"}
-        </ALink>
+        {authorProfile?.firstName || authorProfile?.lastName ? (
+          <ALink
+            href={`/user/${authorProfile?.id}/overview`}
+            key={`/user/${authorProfile?.id}/overview-key`}
+            overrideStyle={styles.link}
+          >
+            {authorProfile?.firstName} {authorProfile?.lastName}
+          </ALink>
+        ) : (
+          <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
+        )}
+
         <div className={css(styles.hubsContainer)}>
           <>
             <span className={css(styles.textSecondary, styles.postedText)}>

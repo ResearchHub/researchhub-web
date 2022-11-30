@@ -184,7 +184,11 @@ function PaperTab(props) {
                 alt="Empty State"
               />
               <div className={css(styles.emptyPlaceholderText)}>
-                This academic paper hasn't been uploaded yet
+                This academic paper hasn't been uploaded yet. If it's open
+                access, upload the pdf!
+              </div>
+              <div style={{ opacity: 0.5, fontSize: 14 }}>
+                Do not upload any copyrighted content to the site
               </div>
               <div className={css(styles.emptyPlaceholderSubtitle)}>
                 {!paperUrl && "Click the button below to add the paper"}

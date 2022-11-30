@@ -26,7 +26,7 @@ import { createNewNote } from "~/config/fetch";
 import { NOTE_GROUPS } from "./Notebook/config/notebookConstants";
 
 export type NewPostButtonProps = {
-  customButtonStyle?: StyleSheet;
+  customButtonStyle?: object;
   onClick?: (e: SyntheticEvent) => void;
 };
 

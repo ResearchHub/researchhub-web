@@ -27,14 +27,20 @@ type Args = {
 };
 
 type sendInviteApiArgs = {
-  email: String,
-  firstName: NullableString,
-  lastName: NullableString,
-  inviteType: "BOUNTY" | "JOIN_RH",
-  unifiedDocumentId?: ID,
-}
+  email: String;
+  firstName: NullableString;
+  lastName: NullableString;
+  inviteType: "BOUNTY" | "JOIN_RH";
+  unifiedDocumentId?: ID;
+};
 
-const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Args) => {
+const InviteModal = ({
+  isOpen,
+  handleClose,
+  user,
+  context,
+  unifiedDocument,
+}: Args) => {
   const alert = useAlert();
   const dispatch = useDispatch();
   const formInputRef = useRef<HTMLInputElement>();
@@ -43,16 +49,20 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
   const [copySuccessMessage, setCopySuccessMessage] =
     useState<NullableString>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<"LINK"|"EMAIL">("LINK");
+  const [selectedTab, setSelectedTab] = useState<"LINK" | "EMAIL">("LINK");
   const [email, setEmail] = useState<String>("");
   const [firstName, setFirstName] = useState<NullableString>("");
   const [lastName, setLastName] = useState<NullableString>("");
   const [isLoading, setIsLoading] = useState(false);
-  
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
-      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email, firstName, lastName });
+      sendInviteApi({
+        inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH",
+        email,
+        firstName,
+        lastName,
+      });
     }
   };
 
@@ -60,51 +70,62 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
     e?.preventDefault();
 
     if (email.length > 0) {
-      sendInviteApi({ inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH", email, firstName, lastName });
+      sendInviteApi({
+        inviteType: context == "bounty" ? "BOUNTY" : "JOIN_RH",
+        email,
+        firstName,
+        lastName,
+      });
     }
-  }
+  };
 
-  const sendInviteApi = async ({ email, inviteType, firstName, lastName }: sendInviteApiArgs) => {
+  const sendInviteApi = async ({
+    email,
+    inviteType,
+    firstName,
+    lastName,
+  }: sendInviteApiArgs) => {
     setIsLoading(true);
     try {
-      const response = await fetch(API.SEND_REFERRAL_INVITE(), API.POST_CONFIG({
-        recipient_email: email,
-        invite_type: inviteType,
-        ...(firstName && { referral_first_name: firstName }),
-        ...(lastName &&  { referral_last_name: lastName }),
-        ...(unifiedDocument && { unified_document: unifiedDocument.id }),
-      }));
+      const response = await fetch(
+        API.SEND_REFERRAL_INVITE(),
+        API.POST_CONFIG({
+          recipient_email: email,
+          invite_type: inviteType,
+          ...(firstName && { referral_first_name: firstName }),
+          ...(lastName && { referral_last_name: lastName }),
+          ...(unifiedDocument && { unified_document: unifiedDocument.id }),
+        })
+      );
 
       const body = await response.json();
       if (!body.id) {
-        dispatch(MessageActions.setMessage( body.message || "Failed to send invite" ));  
+        dispatch(
+          MessageActions.setMessage(body.message || "Failed to send invite")
+        );
         // @ts-ignore
         dispatch(MessageActions.showMessage({ show: true, error: true }));
-      }
-      else {
-        dispatch(MessageActions.setMessage( "Invite sent" ));
+      } else {
+        dispatch(MessageActions.setMessage("Invite sent"));
         // @ts-ignore
-        dispatch(MessageActions.showMessage({ show: true, error: false }));      
+        dispatch(MessageActions.showMessage({ show: true, error: false }));
         setEmail("");
         setFirstName("");
         setLastName("");
       }
-    }
-    catch(error) {
-      dispatch(MessageActions.setMessage( "Failed to send invite" ));
+    } catch (error) {
+      dispatch(MessageActions.setMessage("Failed to send invite"));
       // @ts-ignore
-      dispatch(MessageActions.showMessage({ show: true, error: true }));      
+      dispatch(MessageActions.showMessage({ show: true, error: true }));
 
       captureEvent({
         error,
         msg: "Failed to invite user",
-      });      
+      });
+    } finally {
+      setIsLoading(false);
     }
-    finally {
-      setIsLoading(false);      
-    }
-  }
-
+  };
 
   function copyToClipboard() {
     setShowSuccessMessage(true);
@@ -133,51 +154,62 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
       <div className={css(styles.divider)}></div>
       {context === "bounty" ? (
         <p className={css(styles.details, styles.detailsBounty)}>
-          <strong>Know someone who can complete this bounty?</strong> You will earn a 7%
-          bonus for every contribution they make for six months.
+          <strong>Know someone who can complete this bounty?</strong> You will
+          earn a 7% bonus for every contribution they make for six months.
         </p>
       ) : (
         <p className={css(styles.details)}>
-          Just share this link, or enter your friend’s email address and name below.
+          Just share this link, or enter your friend’s email address and name
+          below.
         </p>
       )}
 
       <div className={css(styles.referralLinkSection)}>
         <div className={css(styles.tabs)}>
           <div
-            className={css(styles.tab, selectedTab === "LINK" && styles.tabSelected)}
+            className={css(
+              styles.tab,
+              selectedTab === "LINK" && styles.tabSelected
+            )}
             onClick={() => setSelectedTab("LINK")}
           >
-            <span className={css(styles.tabIcon)}>{icons.link}</span> Invite by link
+            <span className={css(styles.tabIcon)}>{icons.link}</span> Invite by
+            link
           </div>
           <div
             onClick={() => setSelectedTab("EMAIL")}
-            className={css(styles.tab, selectedTab === "EMAIL" && styles.tabSelected)}
+            className={css(
+              styles.tab,
+              selectedTab === "EMAIL" && styles.tabSelected
+            )}
           >
-            <span className={css(styles.tabIcon)}>{icons.paperPlane}</span> Invite by email
+            <span className={css(styles.tabIcon)}>{icons.paperPlane}</span>{" "}
+            Invite by email
           </div>
           <div className={css(styles.invitesSent)}>
-            <ALink
-              href="/referral"
-              overrideStyle={styles.link}
-            >
+            <ALink href="/referral" overrideStyle={styles.link}>
               View invites sent
             </ALink>
-          </div> 
+          </div>
         </div>
-        {selectedTab === "LINK" &&
+        {selectedTab === "LINK" && (
           <div className={css(styles.howItWorksSection)}>
-            {user?.id ?
+            {user?.id ? (
               <div className={css(styles.form)}>
                 <FormInput
                   getRef={formInputRef}
                   onClick={copyToClipboard}
                   inlineNodeRight={
-                    <a className={css(styles.copyLink)} onClick={copyToClipboard}>
+                    <a
+                      className={css(styles.copyLink)}
+                      onClick={copyToClipboard}
+                    >
                       {showSuccessMessage ? (
                         "Copied"
                       ) : (
-                        <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                        <span className={css(styles.copyIcon)}>
+                          {icons.copy}
+                        </span>
                       )}
                     </a>
                   }
@@ -195,13 +227,12 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
                   inputStyle={[styles.inputStyle, styles.referralInputStyle]}
                 />
               </div>
-              : (
-                <div>Login first to view your personalized link</div>
-              )
-            }
+            ) : (
+              <div>Login first to view your personalized link</div>
+            )}
           </div>
-        }
-        {selectedTab === "EMAIL" &&
+        )}
+        {selectedTab === "EMAIL" && (
           <div className={css(styles.howItWorksSection)}>
             {user?.id ? (
               <div>
@@ -246,7 +277,7 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
                         onKeyDown={handleKeyDown}
                         onChange={(id, value) => setLastName(value)}
                       />
-                    </div>                  
+                    </div>
                   </div>
                   <div className={css(styles.referralBtnWrapper)}>
                     {isLoading ? (
@@ -254,7 +285,7 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
                         onClick={handleSubmit}
                         children={<Loader color="white" size={24} />}
                         customButtonStyle={styles.inviteBtn}
-                      />                    
+                      />
                     ) : (
                       <Button
                         onClick={handleSubmit}
@@ -263,13 +294,13 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
                       />
                     )}
                   </div>
-                </form>   
+                </form>
               </div>
             ) : (
               <div>Login first in order to invite others</div>
             )}
           </div>
-        }
+        )}
       </div>
 
       <div className={css(styles.howItWorksSection)}>
@@ -294,23 +325,23 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
                   fontWeight: 500,
                 }}
               >
-                7% bonus
+                7% 
               </span>{" "}
-              every time they earn RSC on ResearchHub for the first six month
+              off user's RSC earnings on ResearchHub for the first six month
               period
               <div className={css(styles.example)}>
                 Example: If they earn 100 RSC, you will earn 7 RSC
               </div>
             </li>
           </ol>
-          <div className={css(styles.squaresContainer)}>
+          {/* <div className={css(styles.squaresContainer)}>
             <div className={css(styles.square)}>
               <div className={css(styles.iconContainer)}>
-                {user?.id
-                  ? <AuthorAvatar author={user?.author_profile} />
-                  : <div className={css(styles.userIcon)}>{icons.user}</div>
-                }
-                
+                {user?.id ? (
+                  <AuthorAvatar author={user?.author_profile} />
+                ) : (
+                  <div className={css(styles.userIcon)}>{icons.user}</div>
+                )}
               </div>
               <span className={css(styles.personTitle)}>You</span>
               <span className={css(styles.subtitle)}>
@@ -324,11 +355,11 @@ const InviteModal = ({ isOpen, handleClose, user, context, unifiedDocument }: Ar
               </div>
               <span className={css(styles.personTitle)}>Referral</span>
               <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+50 RSC</span> on
+                <span className={css(styles.emphasizedEarn)}>+0 RSC</span> on
                 sign up
               </span>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </BaseModal>
@@ -340,8 +371,8 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     alignSelf: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   referralEmailInput: {
     display: "flex",
@@ -373,12 +404,11 @@ const styles = StyleSheet.create({
     width: "50%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "46%",
-    }
-  },  
+    },
+  },
   inviteBtn: {
     height: "100%",
     borderRadius: "0px",
-
   },
   emailForm: {
     display: "flex",
@@ -415,7 +445,7 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(),
     zIndex: 2,
     border: `1px solid ${colors.NEW_BLUE()}`,
-  },  
+  },
   example: {
     color: colors.MEDIUM_GREY2(),
     fontSize: 14,
@@ -430,6 +460,7 @@ const styles = StyleSheet.create({
     columnGap: "15px",
   },
   highlightedSectionList: {
+    marginBottom: 0,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
       paddingLeft: 20,

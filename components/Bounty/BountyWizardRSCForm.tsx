@@ -116,6 +116,14 @@ const progressStyles = StyleSheet.create({
     fontWeight: 500,
     whiteSpace: "nowrap",
     letterSpacing: "1.2px",
+
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+      letterSpacing: ".5px",
+      maxWidth: 60,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   },
 });
 
@@ -745,6 +753,10 @@ const styles = StyleSheet.create({
     padding: "30px 40px",
     paddingRight: 50,
     marginTop: 44,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: "30px",
+    },
   },
   rscIcon: {
     marginLeft: 5,
