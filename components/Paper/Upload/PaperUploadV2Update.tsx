@@ -205,6 +205,10 @@ function PaperUploadV2Update({
           }
         },
         onSuccess: ({ paperID, paperName }): void => {
+
+
+
+
           messageActions.setMessage("Paper successfully updated");
           messageActions.showMessage({ show: true });
           const isUsersFirstTime = !authRedux.user.has_seen_first_coin_modal;
@@ -212,10 +216,23 @@ function PaperUploadV2Update({
           modalActions.openFirstVoteModal(isUsersFirstTime);
           messageActions.showMessage({ show: true, load: true });
           paperActions.resetPaperState();
-          router.push(
-            "/paper/[paperId]/[paperName]",
-            `/paper/${paperID}/${paperName}`
-          );
+
+          fetch(
+            "/api/revalidate",
+            API.POST_CONFIG({
+              path: `/paper/${paperID}/${paperName}`,
+            }))
+          .finally(() => {
+            // next.js will serve a stale file while revalidating.
+            // The timeout will help mitigate user needing to refresh the
+            // page to view their changes.
+            setTimeout(() => {
+              router.push(
+                "/paper/[paperId]/[paperName]",
+                `/paper/${paperID}/${paperName}`
+              );
+            }, 500);
+          })
         },
         paperActions,
         paperID: nullthrows(
