@@ -216,27 +216,24 @@ class SummaryTab extends Component {
     this.props
       .patchPaper(paper.id, { abstract })
       .then((res) => {
-        fetch(
-          "/api/revalidate",
-          API.POST_CONFIG({
-            path: `/paper/${this.props.paper.id}/${this.props.paper.slug}`,
-          })
-        ).then(() => {
-          if (res.payload && res.payload.errorBody) {
-            if (
-              res.payload.errorBody.status &&
-              res.payload.errorBody.status === 429
-            ) {
-              return showMessage({ show: false });
-            }
+        if (res.payload && res.payload.errorBody) {
+          if (
+            res.payload.errorBody.status &&
+            res.payload.errorBody.status === 429
+          ) {
+            return showMessage({ show: false });
           }
-          const updatedPaper = {
-            ...this.props.paper,
-            abstract,
-          };
-          updatePaperState && updatePaperState(updatedPaper);
-          this.setState({ editAbstract: false, abstract });
-        });
+        }
+        const updatedPaper = {
+          ...this.props.paper,
+          abstract,
+        };
+        updatePaperState && updatePaperState(updatedPaper);
+        showMessage({ show: false });
+        setMessage("Abstract successfully edited.");
+        showMessage({ show: true });
+
+        this.setState({ editAbstract: false, abstract });
       })
       .catch((err) => {
         if (err.response.status === 429) {
@@ -362,7 +359,6 @@ class SummaryTab extends Component {
       <Link
         href={"/paper/[paperId]/[paperName]/edits"}
         as={`/paper/${paper.id}/${paper.slug}/edits`}
-        legacyBehavior
       >
         <div className={css(styles.action, styles.editHistory)}>
           <span className={css(styles.pencilIcon)}>{icons.manage}</span>

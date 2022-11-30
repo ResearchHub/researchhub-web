@@ -420,7 +420,7 @@ export async function getStaticProps(ctx) {
     return {
       props,
       // Static page will be regenerated after specified seconds.
-      revalidate: 60,
+      revalidate: 86400,
     };
   }
 }

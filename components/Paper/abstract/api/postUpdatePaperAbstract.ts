@@ -23,5 +23,12 @@ export function postUpdatePaperAbstract({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then(({ results }: any): void => onSuccess())
+    .then(() => {
+      return fetch(
+        "/api/revalidate",
+        API.POST_CONFIG({
+          path: `/paper/${paperPayload.id}/${paperPayload.slug}`,
+        })
+    )})
     .catch((error: any): void => onError(error));
 }

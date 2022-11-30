@@ -243,9 +243,6 @@ function PaperUploadV2Update({
   });
 
   const {
-    abstract_src_type,
-    abstract_src,
-    abstract,
     author: formAuthor,
     authors: selectedAuthors = [],
     doi,
@@ -262,7 +259,6 @@ function PaperUploadV2Update({
     suggestedAuthors,
     shouldShowAuthorList,
   } = componentState;
-  console.warn("abstract_src_type1: ", abstract_src_type);
   return (
     <Fragment>
       <AddAuthorModal
@@ -442,32 +438,6 @@ function PaperUploadV2Update({
               placeholder="Enter DOI of paper"
               value={doi}
             />
-          </span>
-          <span className={css(formGenericStyles.tagline)}>
-            <div
-              className={css([
-                formGenericStyles.taglineContainer,
-                formGenericStyles.textArea,
-              ])}
-              id="abstract"
-            >
-              <div
-                className={css(formGenericStyles.labelStyle)}
-                style={{ fontWeight: 500, marginBottom: 12, marginTop: 20 }}
-              >
-                Abstract
-              </div>
-              <SimpleEditor
-                editing
-                placeholder="Enter abstract"
-                initialData={
-                  !isEmpty(abstract_src) ? abstract_src : abstract ?? ""
-                }
-                onChange={(_: ID, editorSrcValue: string) => {
-                  handleInputChange("abstract_src", editorSrcValue ?? "");
-                }}
-              />
-            </div>
           </span>
         </div>
         <div
