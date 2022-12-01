@@ -98,9 +98,9 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
               {getNumberWithCommas(Math.floor(balance ?? 0))}
             </span>
           )}
-          {true && (
+          {shouldDisplayRscDelta && (
             <div className={css(styles.rscDelta)}>{`+ ${getNumberWithCommas(
-             100
+              Math.floor(rscDeltaSinceSeen)
             )}`}</div>
           )}
           <div className={css(styles.caretDown)}>{icons.caretDown}</div>
