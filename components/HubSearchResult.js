@@ -39,16 +39,19 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
   return (
     <Fragment>
       {index === 0 && renderHeader()}
-      <Link href={"/hubs/[slug]"} as={`/hubs/${formatSlug(name)}`}>
-        <a className={css(styles.card)} onClick={() => clearSearch()}>
-          <div className={css(styles.hubIcon)}>{icons.hub}</div>
-          <div className={css(styles.column)}>
-            <div className={css(styles.mainText)}>
-              {highlight ? parseHighlightText(meta.highlight, "name") : name}
-            </div>
-            <div className={css(styles.paperCount)}>{formatCount()}</div>
+      <Link
+        href={"/hubs/[slug]"}
+        as={`/hubs/${formatSlug(name)}`}
+        className={css(styles.card)}
+        onClick={() => clearSearch()}
+      >
+        <div className={css(styles.hubIcon)}>{icons.hub}</div>
+        <div className={css(styles.column)}>
+          <div className={css(styles.mainText)}>
+            {highlight ? parseHighlightText(meta.highlight, "name") : name}
           </div>
-        </a>
+          <div className={css(styles.paperCount)}>{formatCount()}</div>
+        </div>
       </Link>
     </Fragment>
   );

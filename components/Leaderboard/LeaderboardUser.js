@@ -15,24 +15,23 @@ const LeaderboardUser = (props) => {
       <Link
         href={"/user/[authorId]/[tabName]"}
         as={`/user/${authorId}/overview`}
+        className={css(styles.link)}
       >
-        <a className={css(styles.link)}>
-          <div className={css(styles.nameRow, userClass)}>
-            <AuthorAvatar
-              author={authorProfile}
-              name={name}
-              disableLink={true}
-              size={35}
-            />
-            <div className={css(styles.name) + " clamp1"}>{name}</div>
-            {props.extraInfo}
-            {reputation ? (
-              <div className={css(styles.rep, repClass)}>
-                {numeral(reputation).format("0,0")}
-              </div>
-            ) : null}
-          </div>
-        </a>
+        <div className={css(styles.nameRow, userClass)}>
+          <AuthorAvatar
+            author={authorProfile}
+            name={name}
+            disableLink={true}
+            size={35}
+          />
+          <div className={css(styles.name) + " clamp1"}>{name}</div>
+          {props.extraInfo}
+          {reputation ? (
+            <div className={css(styles.rep, repClass)}>
+              {numeral(reputation).format("0,0")}
+            </div>
+          ) : null}
+        </div>
       </Link>
     </div>
   );

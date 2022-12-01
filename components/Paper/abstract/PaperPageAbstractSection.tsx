@@ -14,6 +14,7 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { postUpdatePaperAbstract } from "./api/postUpdatePaperAbstract";
+import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 
 const SimpleEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -49,49 +50,60 @@ const useEffectParseAbstract = ({
   );
 };
 
+const useEffectPaperFetching = ({ paper, setIsFetching }: { paper: any, setIsFetching: Function }) => {
+  useEffect(() => {
+    paper?.id && setIsFetching(false);
+  }, [paper])
+}
+
 export default function PaperPageAbstractSection({ paper }): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
-  const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(true);
+  const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
   useEffectParseAbstract({ paper, setAbstractSrc, setHasNoAbstract });
+  useEffectPaperFetching({ paper, setIsFetching });
 
   return (
     <div className={css(styles.paperPageAbstractSection)}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <h2 style={{ margin: 0 }}>{"Abstract"}</h2>
-        {(!isEditMode || hasNoAbstract) && (
-          <PermissionNotificationWrapper
-            modalMessage="propose abstract edit"
-            onClick={(): void => setIsEditMode(true)}
-            loginRequired
-          >
-            <span className={css(styles.pencilIcon)}>{icons.pencil}</span>
-          </PermissionNotificationWrapper>
-        )}
-      </div>
-      {isEditMode ? (
-        <div className={css(styles.editorWrap)}>
-          <SimpleEditor
-            editing
-            initialData={abstractSrc}
-            onChange={(_, editorSrcValue: string): void => {
-              setAbstractSrc(editorSrcValue);
-            }}
-          />
-          <div className={css(styles.editButtonRow)}>
-            <Button
-              disabled={isUpdatingAbstract}
-              isWhite
-              label="Cancel"
-              onClick={(): void => setIsEditMode(false)}
-              size="small"
+      {isFetching &&
+        <AbstractPlaceholder color="#EFEFEF" />
+      }
+      <div style={{ visibility: isFetching ? "hidden" : "visible" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <h2 style={{ margin: 0 }}>{"Abstract"}</h2>
+          {(!isEditMode || hasNoAbstract) && (
+            <PermissionNotificationWrapper
+              modalMessage="propose abstract edit"
+              onClick={(): void => setIsEditMode(true)}
+              loginRequired
+            >
+              <span className={css(styles.pencilIcon)}>{icons.pencil}</span>
+            </PermissionNotificationWrapper>
+          )}
+        </div>
+
+
+        {isEditMode ? (
+          <div className={css(styles.editorWrap)}>
+            <DynamicCKEditor
+              editing
+              initialData={abstractSrc}
+              onChange={(_, editorSrcValue: string): void => {
+                setAbstractSrc(editorSrcValue);
+              }}
             />
-            <Button
-              disabled={isUpdatingAbstract}
-              label={
-                isUpdatingAbstract ? (
+            <div className={css(styles.editButtonRow)}>
+              <Button
+                isWhite
+                label={"Cancel"}
+                onClick={(): void => setIsEditMode(false)}
+                size={"small"}
+              />
+              <Button
+                label={isUpdatingAbstract ? (
                   <Loader
                     color={colors.LIGHT_GREY()}
                     key="abstract-submit-loader"
@@ -100,82 +112,82 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                   />
                 ) : (
                   "Save"
-                )
-              }
-              onClick={(event): void => {
-                event.preventDefault();
-                setIsUpdatingAbstract(true);
-                postUpdatePaperAbstract({
-                  onError: (error: Error): void => {
-                    emptyFncWithMsg(error);
-                    setIsEditMode(false);
-                    setIsUpdatingAbstract(false);
-                  },
-                  onSuccess: (): void => {
-                    setIsEditMode(false);
-                    setIsUpdatingAbstract(false);
-                  },
-                  paperPayload: {
-                    /* NOTE: we no longer update abstract in attempt to depreciate this legacy field.
-                    All proceeding updates make changes to abstract_src */
-                    ...paper,
-                    hubs: paper?.hubs.map((hub) => hub.id),
-                    abstract_src: abstractSrc,
-                    abstract_src_type: "CK_EDITOR",
-                  },
-                });
+                )}
+                onClick={(event): void => {
+                  event.preventDefault();
+                  setIsUpdatingAbstract(true);
+                  postUpdatePaperAbstract({
+                    onError: (error: Error): void => {
+                      emptyFncWithMsg(error);
+                      setIsEditMode(false);
+                      setIsUpdatingAbstract(false);
+                    },
+                    onSuccess: (): void => {
+                      setIsEditMode(false);
+                      setIsUpdatingAbstract(false);
+                    },
+                    paperPayload: {
+                      /* NOTE: we no longer update abstract in attempt to depreciate this legacy field.
+                      All proceeding updates make changes to abstract_src */
+                      ...paper,
+                      hubs: paper?.hubs.map((hub) => hub.id),
+                      abstract_src: abstractSrc,
+                      abstract_src_type: "CK_EDITOR",
+                    },
+                  });
+                }}
+                size={"small"}
+              />
+            </div>
+          </div>
+        ) : hasNoAbstract ? (
+          <div className={css(styles.emptyStateSummary)}>
+            <div
+              style={{
+                color: colors.NEW_BLUE(1),
+                fontSize: 50,
+                height: 50,
               }}
-              size={"small"}
+            >
+              {icons.file}
+            </div>
+            <h2 className={css(styles.noSummaryTitle)}>
+              {"Add an abstract to this paper"}
+            </h2>
+            <div
+              style={{
+                alignItems: "center",
+                color: colors.BLACK(0.8),
+                display: "flex",
+                fontSize: 16,
+                margin: "0 0 20px",
+                textAlign: "center",
+              }}
+            >
+              {"Be the first person to add an abstract to this paper."}
+            </div>
+            <PermissionNotificationWrapper
+              loginRequired
+              modalMessage="propose a summary"
+              onClick={(): void => setIsEditMode(true)}
+              permissionKey="ProposeSummaryEdit"
+            >
+              <button className={css(styles.button)}>{"Add Abstract"}</button>
+            </PermissionNotificationWrapper>
+          </div>
+        ) : (
+          <div className={css(styles.editorWrapReadOnly)}>
+            <SimpleEditor
+              initialData={abstractSrc}
+              isBalloonEditor /* removes toolbar */
+              noBorder
+              noTitle
+              onChange={silentEmptyFnc}
+              readOnly
             />
           </div>
-        </div>
-      ) : hasNoAbstract ? (
-        <div className={css(styles.emptyStateSummary)}>
-          <div
-            style={{
-              color: colors.NEW_BLUE(1),
-              fontSize: 50,
-              height: 50,
-            }}
-          >
-            {icons.file}
-          </div>
-          <h2 className={css(styles.noSummaryTitle)}>
-            {"Add an abstract to this paper"}
-          </h2>
-          <div
-            style={{
-              alignItems: "center",
-              color: colors.BLACK(0.8),
-              display: "flex",
-              fontSize: 16,
-              margin: "0 0 20px",
-              textAlign: "center",
-            }}
-          >
-            {"Be the first person to add an abstract to this paper."}
-          </div>
-          <PermissionNotificationWrapper
-            loginRequired
-            modalMessage="propose a summary"
-            onClick={(): void => setIsEditMode(true)}
-            permissionKey="ProposeSummaryEdit"
-          >
-            <button className={css(styles.button)}>{"Add Abstract"}</button>
-          </PermissionNotificationWrapper>
-        </div>
-      ) : (
-        <div className={css(styles.editorWrapReadOnly)}>
-          <DynamicCKEditor
-            initialData={abstractSrc}
-            isBalloonEditor /* removes toolbar */
-            noBorder
-            noTitle
-            onChange={silentEmptyFnc}
-            readOnly
-          />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -231,7 +243,9 @@ const styles = StyleSheet.create({
   },
 
   editorWrap: { marginTop: 12 },
-  editorWrapReadOnly: { marginLeft: -12 /* matching ck editor padding */ },
+  editorWrapReadOnly: {
+    marginLeft: -12, /* matching ck editor padding */
+  },
   editButtonRow: {
     display: "flex",
     justifyContent: "space-between",

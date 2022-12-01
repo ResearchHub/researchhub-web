@@ -124,8 +124,8 @@ export default function HomeSidebarBountiesSection({
             }}
           >
             <div>{"Open Bounties"}</div>
-            <Link href="/?type=bounty">
-              <a className={css(styles.viewAll)}>{"View All"}</a>
+            <Link href="/?type=bounty" className={css(styles.viewAll)}>
+              {"View All"}
             </Link>
           </div>
         }

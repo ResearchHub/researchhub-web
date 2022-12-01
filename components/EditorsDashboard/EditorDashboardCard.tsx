@@ -102,107 +102,110 @@ export default function EditorDashboardUserCard({
       />
     ));
   return (
-    <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorID}/overview`}>
-      <a className={css(styles.link)}>
-        <div className={css(styles.container, index === 0 && styles.borderTop)}>
-          <div className={css(styles.row)}>
-            <div className={css(styles.nameSection)}>
-              <AuthorAvatar
-                author={authorProfile}
-                disableLink={true}
-                size={35}
-              />
-              <div>
-                <div className={css(styles.name) + " clamp1"}>
-                  {`${first_name ?? ""} ${last_name ?? ""}`}
-                </div>
-                <div className={css(styles.added)}>
-                  <span className={css(styles.countResponse)}>
-                    added {timeAgo.format(new Date(editorAddedDate ?? null))}
-                  </span>
-                </div>
-                {activeHubContributorCount !== null && (
-                  <div className={css(styles.contributorCountWrapper)}>
-                    <span className={css(styles.contributorCount)}>
-                      active hub contributors: {activeHubContributorCount}
-                    </span>
-                    {hubActiveContributorsHTML}
-                  </div>
-                )}
-                <DesktopOnly
-                  children={
-                    <div className={css(styles.hubName) + " clamp1"}>
-                      {hubNameTags}
-                    </div>
-                  }
-                />
+    (<Link
+      href={"/user/[authorId]/[tabName]"}
+      as={`/user/${authorID}/overview`}
+      className={css(styles.link)}>
+
+      <div className={css(styles.container, index === 0 && styles.borderTop)}>
+        <div className={css(styles.row)}>
+          <div className={css(styles.nameSection)}>
+            <AuthorAvatar
+              author={authorProfile}
+              disableLink={true}
+              size={35}
+            />
+            <div>
+              <div className={css(styles.name) + " clamp1"}>
+                {`${first_name ?? ""} ${last_name ?? ""}`}
               </div>
-            </div>
-            <div className={css(styles.contributionSection)}>
+              <div className={css(styles.added)}>
+                <span className={css(styles.countResponse)}>
+                  added {timeAgo.format(new Date(editorAddedDate ?? null))}
+                </span>
+              </div>
               {activeHubContributorCount !== null && (
-                <div
-                  className={css(
-                    styles.countLabel,
-                    styles.contributorCountLabel
-                  )}
-                >
-                  <span className={css(styles.mobileLabel)}>
-                    Hub Active Contributors
+                <div className={css(styles.contributorCountWrapper)}>
+                  <span className={css(styles.contributorCount)}>
+                    active hub contributors: {activeHubContributorCount}
                   </span>
-                  <span className={css(styles.countResponse)}>
-                    <span className={css(styles.contributorCount)}>
-                      {activeHubContributorCount}
-                    </span>
-                    {hubActiveContributorsHTML}
-                  </span>
+                  {hubActiveContributorsHTML}
                 </div>
               )}
-              <div className={css(styles.countLabel, styles.submissionLabel)}>
-                <span className={css(styles.mobileLabel)}>Last Submission</span>
-                <span className={css(styles.countResponse)}>
-                  {lastSubmissionDate
-                    ? timeAgo.format(new Date(lastSubmissionDate))
-                    : "never"}
-                </span>
-              </div>
-              <div className={css(styles.countLabel, styles.submissionLabel)}>
-                <span className={css(styles.mobileLabel)}>Last Comment</span>
-                <span className={css(styles.countResponse)}>
-                  {lastCommentDate
-                    ? timeAgo.format(new Date(lastCommentDate))
-                    : "never"}
-                </span>
-              </div>
-              <div className={css(styles.countLabel)}>
-                <span className={css(styles.mobileLabel)}>Submissions</span>
-                <span className={css(styles.countResponse)}>
-                  {submissionCount}
-                </span>
-              </div>
-              <div className={css(styles.countLabel, styles.supportLabel)}>
-                <span className={css(styles.mobileLabel)}>Supports</span>
-                <span className={css(styles.countResponse)}>
-                  {supportCount}
-                </span>
-              </div>
-              <div className={css(styles.countLabel)}>
-                <span className={css(styles.mobileLabel)}>Comments</span>
-                <span className={css(styles.countResponse)}>
-                  {commentCount}
-                </span>
-              </div>
+              <DesktopOnly
+                children={
+                  <div className={css(styles.hubName) + " clamp1"}>
+                    {hubNameTags}
+                  </div>
+                }
+              />
             </div>
           </div>
-          <MobileOnly
-            children={
-              <div className={css(styles.hubName) + " clamp1"}>
-                {hubNameTags}
+          <div className={css(styles.contributionSection)}>
+            {activeHubContributorCount !== null && (
+              <div
+                className={css(
+                  styles.countLabel,
+                  styles.contributorCountLabel
+                )}
+              >
+                <span className={css(styles.mobileLabel)}>
+                  Hub Active Contributors
+                </span>
+                <span className={css(styles.countResponse)}>
+                  <span className={css(styles.contributorCount)}>
+                    {activeHubContributorCount}
+                  </span>
+                  {hubActiveContributorsHTML}
+                </span>
               </div>
-            }
-          />
+            )}
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.mobileLabel)}>Last Submission</span>
+              <span className={css(styles.countResponse)}>
+                {lastSubmissionDate
+                  ? timeAgo.format(new Date(lastSubmissionDate))
+                  : "never"}
+              </span>
+            </div>
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.mobileLabel)}>Last Comment</span>
+              <span className={css(styles.countResponse)}>
+                {lastCommentDate
+                  ? timeAgo.format(new Date(lastCommentDate))
+                  : "never"}
+              </span>
+            </div>
+            <div className={css(styles.countLabel)}>
+              <span className={css(styles.mobileLabel)}>Submissions</span>
+              <span className={css(styles.countResponse)}>
+                {submissionCount}
+              </span>
+            </div>
+            <div className={css(styles.countLabel, styles.supportLabel)}>
+              <span className={css(styles.mobileLabel)}>Supports</span>
+              <span className={css(styles.countResponse)}>
+                {supportCount}
+              </span>
+            </div>
+            <div className={css(styles.countLabel)}>
+              <span className={css(styles.mobileLabel)}>Comments</span>
+              <span className={css(styles.countResponse)}>
+                {commentCount}
+              </span>
+            </div>
+          </div>
         </div>
-      </a>
-    </Link>
+        <MobileOnly
+          children={
+            <div className={css(styles.hubName) + " clamp1"}>
+              {hubNameTags}
+            </div>
+          }
+        />
+      </div>
+
+    </Link>)
   );
 }
 

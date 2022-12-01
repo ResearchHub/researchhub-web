@@ -153,10 +153,8 @@ class PromotionCard extends Component {
             />
           </div>
           <div className={css(styles.column)}>
-            <Link href={href} as={as}>
-              <a className={css(styles.link)}>
-                <div className={css(styles.title)}>{source.title}</div>
-              </a>
+            <Link href={href} as={as} className={css(styles.link)}>
+              <div className={css(styles.title)}>{source.title}</div>
             </Link>
             <div className={css(styles.metatext)}>
               Start Date:{" "}

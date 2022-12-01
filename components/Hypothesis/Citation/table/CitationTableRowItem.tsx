@@ -83,118 +83,119 @@ export default function CitationTableRowItem({
   const isSupportSource = citationType === "SUPPORT";
 
   return (
-    <Link
+    (<Link
       href={"/paper/[paperId]/[paperName]"}
       as={citationTitleLinkUri}
       passHref
-    >
-      <a className={css(styles.link)} target="_blank">
-        <Ripples className={css(styles.ripples)}>
-          <div className={css(styles.tableRowItem)}>
-            <ItemColumn
-              maxWidth={tableMaxWidths.SOURCE}
-              value={
-                <div className={css(styles.sourceWrap)}>
-                  <div className={css(styles.voteItemWrap)}>
-                    <CitationVoteItem
-                      citationID={citationID}
-                      updateLastFetchTime={updateLastFetchTime}
-                      voteMeta={{
-                        ...consensusMeta,
-                        totalCount:
-                          consensusMeta.totalCount ??
-                          consensusMeta.upCount + consensusMeta.downCount,
-                      }}
-                    />
-                  </div>
-                  <div className={css(styles.sourceTitle)}>{displayTitle}</div>
-                </div>
-              }
-              width={tableWidths.SOURCE}
-            />
-            <ItemColumn
-              maxWidth={tableMaxWidths.DOI}
-              value={
-                <Fragment>
-                  <span
-                    data-tip
-                    data-for={`consensus-doi-text-${doi}`}
-                    className={css(styles.DOI)}
-                    onClick={(event: SyntheticEvent) => {
-                      event.stopPropagation();
-                      event.preventDefault();
+      className={css(styles.link)}
+      target="_blank">
+
+      <Ripples className={css(styles.ripples)}>
+        <div className={css(styles.tableRowItem)}>
+          <ItemColumn
+            maxWidth={tableMaxWidths.SOURCE}
+            value={
+              <div className={css(styles.sourceWrap)}>
+                <div className={css(styles.voteItemWrap)}>
+                  <CitationVoteItem
+                    citationID={citationID}
+                    updateLastFetchTime={updateLastFetchTime}
+                    voteMeta={{
+                      ...consensusMeta,
+                      totalCount:
+                        consensusMeta.totalCount ??
+                        consensusMeta.upCount + consensusMeta.downCount,
                     }}
-                  >
-                    {doi}
-                  </span>
-                  <ReactTooltip
-                    backgroundColor={colors.TOOLTIP_BACKGROUND_BLACK}
-                    effect="solid"
-                    id={`consensus-doi-text-${doi}`}
-                    place="top"
-                    textColor={colors.TOOLTIP_TEXT_COLOR_WHITE}
-                    type="dark"
-                    children={doi}
                   />
-                </Fragment>
-              }
-              width={tableWidths.DOI}
-            />
-            <ItemColumn
-              maxWidth={tableMaxWidths.CITED_BY}
-              className={[styles.itemCenterAlign]}
-              value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
-              width={tableWidths.CITED_BY}
-            />
-            <ItemColumn
-              maxWidth={tableMaxWidths.COMMENTS}
-              className={[styles.itemCenterAlign]}
-              value={
-                <div
-                  className={css(styles.commentsIcon, styles.paddingBottom4)}
-                  onClick={(event: SyntheticEvent): void => {
+                </div>
+                <div className={css(styles.sourceTitle)}>{displayTitle}</div>
+              </div>
+            }
+            width={tableWidths.SOURCE}
+          />
+          <ItemColumn
+            maxWidth={tableMaxWidths.DOI}
+            value={
+              <Fragment>
+                <span
+                  data-tip
+                  data-for={`consensus-doi-text-${doi}`}
+                  className={css(styles.DOI)}
+                  onClick={(event: SyntheticEvent) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    hypothesisUnduxStore.set("targetCitationComment")({
-                      citationID,
-                      citationUnidocID,
-                      citationTitle: displayTitle,
-                    });
                   }}
-                  role="button"
                 >
-                  {icons.comments}
+                  {doi}
+                </span>
+                <ReactTooltip
+                  backgroundColor={colors.TOOLTIP_BACKGROUND_BLACK}
+                  effect="solid"
+                  id={`consensus-doi-text-${doi}`}
+                  place="top"
+                  textColor={colors.TOOLTIP_TEXT_COLOR_WHITE}
+                  type="dark"
+                  children={doi}
+                />
+              </Fragment>
+            }
+            width={tableWidths.DOI}
+          />
+          <ItemColumn
+            maxWidth={tableMaxWidths.CITED_BY}
+            className={[styles.itemCenterAlign]}
+            value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
+            width={tableWidths.CITED_BY}
+          />
+          <ItemColumn
+            maxWidth={tableMaxWidths.COMMENTS}
+            className={[styles.itemCenterAlign]}
+            value={
+              <div
+                className={css(styles.commentsIcon, styles.paddingBottom4)}
+                onClick={(event: SyntheticEvent): void => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  hypothesisUnduxStore.set("targetCitationComment")({
+                    citationID,
+                    citationUnidocID,
+                    citationTitle: displayTitle,
+                  });
+                }}
+                role="button"
+              >
+                {icons.comments}
+              </div>
+            }
+            width={tableWidths.COMMENTS}
+          />
+          <ItemColumn
+            maxWidth={tableMaxWidths.TYPE}
+            className={[styles.itemCenterAlign]}
+            value={
+              <div
+                className={css(
+                  styles.typeIcon,
+                  isSupportSource ? styles.green : styles.red
+                )}
+                role="none"
+              >
+                <div className={css(styles.typeContent)}>
+                  <span className={css(styles.iconWrap)}>
+                    {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                  </span>
+                  <span className={css(styles.typeText)}>
+                    {isSupportSource ? "Support" : "Reject"}
+                  </span>
                 </div>
-              }
-              width={tableWidths.COMMENTS}
-            />
-            <ItemColumn
-              maxWidth={tableMaxWidths.TYPE}
-              className={[styles.itemCenterAlign]}
-              value={
-                <div
-                  className={css(
-                    styles.typeIcon,
-                    isSupportSource ? styles.green : styles.red
-                  )}
-                  role="none"
-                >
-                  <div className={css(styles.typeContent)}>
-                    <span className={css(styles.iconWrap)}>
-                      {isSupportSource ? icons.checkCircle : icons.timesCircle}
-                    </span>
-                    <span className={css(styles.typeText)}>
-                      {isSupportSource ? "Support" : "Reject"}
-                    </span>
-                  </div>
-                </div>
-              }
-              width={tableWidths.TYPE}
-            />
-          </div>
-        </Ripples>
-      </a>
-    </Link>
+              </div>
+            }
+            width={tableWidths.TYPE}
+          />
+        </div>
+      </Ripples>
+
+    </Link>)
   );
 }
 

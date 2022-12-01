@@ -16,6 +16,7 @@ export type SelectedUrlFilters = {
   sort: NullableString;
   time: NullableString;
   tags: string[];
+  isReady: boolean;
 };
 
 
@@ -35,6 +36,11 @@ const _getDefaults = ({ typeFilter }) => {
 export const getSelectedUrlFilters = ({
   query,
   pathname,
+  router,
+}: {
+  query: any,
+  pathname: string,
+  router?: any
 }): SelectedUrlFilters => {
   const lastPathPart = "/" + pathname.split("/").slice(-1)[0];
   const selectedTopLevelFilter = topLevelFilters[lastPathPart]?.value;
@@ -57,6 +63,7 @@ export const getSelectedUrlFilters = ({
     ...(query.tags && {
       tags: isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [],
     }),
+    ...(router && {isReady: router.isReady}),
   };
 
   return selected;

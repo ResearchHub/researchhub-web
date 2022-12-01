@@ -179,23 +179,24 @@ class CitationCard extends Component {
         onMouseEnter={this.setHover}
         onMouseLeave={this.unsetHover}
       >
-        <Link href={"/paper/[paperId]/[paperName]"} as={this.getHref()}>
-          <a className={css(styles.link)}>
-            {figureUrls.length > 0 && (
-              <span onClick={(e) => e.stopPropagation()}>
-                <FsLightbox
-                  toggler={toggleLightbox}
-                  type="image"
-                  sources={[...figureUrls]}
-                />
-              </span>
-            )}
-            {this.renderPreview()}
-
-            <div className={css(styles.title) + " clamp1"}>
-              {citation.title && citation.title}
-            </div>
-          </a>
+        <Link
+          href={"/paper/[paperId]/[paperName]"}
+          as={this.getHref()}
+          className={css(styles.link)}
+        >
+          {figureUrls.length > 0 && (
+            <span onClick={(e) => e.stopPropagation()}>
+              <FsLightbox
+                toggler={toggleLightbox}
+                type="image"
+                sources={[...figureUrls]}
+              />
+            </span>
+          )}
+          {this.renderPreview()}
+          <div className={css(styles.title) + " clamp1"}>
+            {citation.title && citation.title}
+          </div>
         </Link>
         <div className={css(styles.hubs)}>{this.renderHubs()}</div>
       </div>

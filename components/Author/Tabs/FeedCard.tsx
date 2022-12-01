@@ -219,197 +219,197 @@ function FeedCard({
       key={`${formattedDocType}-${id}`}
       onClick={handleClick}
     >
-      <Link href={feDocUrl}>
-        <a
-          className={css(styles.feedCard, featured && styles.featuredContainer)}
-        >
-          {!hideVotes && (
-            <DesktopOnly>
-              <div className={css(styles.leftSection)}>
-                {/* TODO: migrate to VoteWidgetV2 */}
-                <ResponsivePostVoteWidget
-                  onDesktop
-                  onDownvote={onDownvote}
-                  onUpvote={onUpvote}
-                  score={score}
-                  voteState={voteState}
-                />
-              </div>
-            </DesktopOnly>
-          )}
-          <div className={css(styles.container)}>
-            <div>
-              {featured && (
-                <div className={css(styles.featuredBadge)}>Featured</div>
-              )}
-              <div className={css(styles.rowContainer)}>
-                <SubmissionDetails
-                  createdDate={createdDate}
-                  hubs={hubs}
-                  createdBy={createdBy}
-                  avatarSize={20}
-                  bounties={bounties}
-                />
-              </div>
-              <div className={css(styles.rowContainer)}>
-                <div className={css(styles.column, styles.metaData)}>
-                  <div className={css(styles.rowContainer)}>
-                    <div className={css(styles.cardBody)}>
-                      <h2 className={css(styles.title)}>{cardTitle}</h2>
-                      {cardBody && (
-                        <div className={css(styles.abstract) + " clamp2"}>
-                          {cardBody}
-                        </div>
-                      )}
-                    </div>
-                    {previews.length > 0 && (
-                      <div
-                        className={css(styles.column, styles.previewSide)}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {isPreviewing && (
-                          <PaperPDFModal
-                            paper={paper}
-                            onClose={() => setIsPreviewing(false)}
-                          />
-                        )}
-                        <div
-                          className={css(styles.preview, styles.paperPreview)}
-                        >
-                          <img
-                            src={previews[0].file}
-                            className={css(styles.image)}
-                            key={`preview_${previews[0].file}`}
-                            alt={`Paper Preview Page 1`}
-                            onClick={(e) => {
-                              e && e.preventDefault();
-                              e && e.stopPropagation();
-                              setIsPreviewing(true);
-                              openPaperPDFModal(true);
-                            }}
-                          />
-                        </div>
+      <Link
+        href={feDocUrl}
+        className={css(styles.feedCard, featured && styles.featuredContainer)}>
+
+        {!hideVotes && (
+          <DesktopOnly>
+            <div className={css(styles.leftSection)}>
+              {/* TODO: migrate to VoteWidgetV2 */}
+              <ResponsivePostVoteWidget
+                onDesktop
+                onDownvote={onDownvote}
+                onUpvote={onUpvote}
+                score={score}
+                voteState={voteState}
+              />
+            </div>
+          </DesktopOnly>
+        )}
+        <div className={css(styles.container)}>
+          <div>
+            {featured && (
+              <div className={css(styles.featuredBadge)}>Featured</div>
+            )}
+            <div className={css(styles.rowContainer)}>
+              <SubmissionDetails
+                createdDate={createdDate}
+                hubs={hubs}
+                createdBy={createdBy}
+                avatarSize={20}
+                bounties={bounties}
+              />
+            </div>
+            <div className={css(styles.rowContainer)}>
+              <div className={css(styles.column, styles.metaData)}>
+                <div className={css(styles.rowContainer)}>
+                  <div className={css(styles.cardBody)}>
+                    <h2 className={css(styles.title)}>{cardTitle}</h2>
+                    {cardBody && (
+                      <div className={css(styles.abstract) + " clamp2"}>
+                        {cardBody}
                       </div>
                     )}
                   </div>
-                  <div
-                    className={css(
-                      styles.metadataContainer,
-                      styles.publishContainer
-                    )}
-                  >
-                    {!hideVotes && (
+                  {previews.length > 0 && (
+                    <div
+                      className={css(styles.column, styles.previewSide)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      {isPreviewing && (
+                        <PaperPDFModal
+                          paper={paper}
+                          onClose={() => setIsPreviewing(false)}
+                        />
+                      )}
                       <div
-                        className={css(
-                          styles.metaItem,
-                          styles.mobileVoteWidget
-                        )}
+                        className={css(styles.preview, styles.paperPreview)}
                       >
-                        {/* TODO: migrate to VoteWidgetV2 */}
-                        <VoteWidget
-                          horizontalView={true}
-                          onDownvote={onDownvote}
-                          onUpvote={onUpvote}
-                          score={score}
-                          styles={styles.voteWidget}
-                          upvoteStyleClass={styles.mobileVote}
-                          downvoteStyleClass={styles.mobileVote}
-                          type="Discussion"
-                          selected={voteState}
+                        <img
+                          src={previews[0].file}
+                          className={css(styles.image)}
+                          key={`preview_${previews[0].file}`}
+                          alt={`Paper Preview Page 1`}
+                          onClick={(e) => {
+                            e && e.preventDefault();
+                            e && e.stopPropagation();
+                            setIsPreviewing(true);
+                            openPaperPDFModal(true);
+                          }}
                         />
                       </div>
-                    )}
-                    {bountyAmount > 0 ? (
-                      <div className={css(styles.metaItem)}>
-                        <ContentBadge
-                          contentType="bounty"
-                          label={
-                            formatBountyAmount({ amount: bountyAmount }) +
-                            " Bounty"
-                          }
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className={css(styles.metaItem, styles.metaItemAsBadge)}
-                      >
-                        <ContentBadge contentType={formattedDocType} />
-                      </div>
-                    )}
-                    {formattedDocType === "question" ? (
-                      <div
+                    </div>
+                  )}
+                </div>
+                <div
+                  className={css(
+                    styles.metadataContainer,
+                    styles.publishContainer
+                  )}
+                >
+                  {!hideVotes && (
+                    <div
+                      className={css(
+                        styles.metaItem,
+                        styles.mobileVoteWidget
+                      )}
+                    >
+                      {/* TODO: migrate to VoteWidgetV2 */}
+                      <VoteWidget
+                        horizontalView={true}
+                        onDownvote={onDownvote}
+                        onUpvote={onUpvote}
+                        score={score}
+                        styles={styles.voteWidget}
+                        upvoteStyleClass={styles.mobileVote}
+                        downvoteStyleClass={styles.mobileVote}
+                        type="Discussion"
+                        selected={voteState}
+                      />
+                    </div>
+                  )}
+                  {bountyAmount > 0 ? (
+                    <div className={css(styles.metaItem)}>
+                      <ContentBadge
+                        contentType="bounty"
+                        label={
+                          formatBountyAmount({ amount: bountyAmount }) +
+                          " Bounty"
+                        }
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className={css(styles.metaItem, styles.metaItemAsBadge)}
+                    >
+                      <ContentBadge contentType={formattedDocType} />
+                    </div>
+                  )}
+                  {formattedDocType === "question" ? (
+                    <div
+                      className={css(
+                        styles.metaItem,
+                        hasAcceptedAnswer && styles.acceptedAnswer
+                      )}
+                    >
+                      <span
                         className={css(
-                          styles.metaItem,
+                          styles.metadataIcon,
                           hasAcceptedAnswer && styles.acceptedAnswer
                         )}
                       >
-                        <span
-                          className={css(
-                            styles.metadataIcon,
-                            hasAcceptedAnswer && styles.acceptedAnswer
-                          )}
-                        >
-                          {hasAcceptedAnswer
-                            ? icons.check
-                            : icons.commentAltLineSolid}
+                        {hasAcceptedAnswer
+                          ? icons.check
+                          : icons.commentAltLineSolid}
+                      </span>
+                      <span className={css(styles.metadataText)}>
+                        <span>{discussion_count}</span>
+                        <span className={css(styles.hideTextMobile)}>
+                          {` Answer${discussion_count === 1 ? "" : "s"}`}
                         </span>
-                        <span className={css(styles.metadataText)}>
-                          <span>{discussion_count}</span>
-                          <span className={css(styles.hideTextMobile)}>
-                            {` Answer${discussion_count === 1 ? "" : "s"}`}
-                          </span>
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={css(styles.metaItem)}>
+                      <span className={css(styles.metadataIcon)}>
+                        {icons.commentRegular}
+                      </span>
+                      <span className={css(styles.metadataText)}>
+                        <span>{discussion_count}</span>
+                        <span className={css(styles.hideTextMobile)}>
+                          {` Comment${discussion_count === 1 ? "" : "s"}`}
                         </span>
-                      </div>
-                    ) : (
-                      <div className={css(styles.metaItem)}>
-                        <span className={css(styles.metadataIcon)}>
-                          {icons.commentRegular}
-                        </span>
-                        <span className={css(styles.metadataText)}>
-                          <span>{discussion_count}</span>
-                          <span className={css(styles.hideTextMobile)}>
-                            {` Comment${discussion_count === 1 ? "" : "s"}`}
-                          </span>
-                        </span>
-                      </div>
-                    )}
+                      </span>
+                    </div>
+                  )}
 
-                    {reviews?.count > 0 && (
-                      <div
-                        className={css(
-                          styles.reviewSummaryContainer,
-                          styles.metaItem
-                        )}
-                      >
-                        <PeerReviewScoreSummary
-                          summary={reviews}
-                          feDocUrl={feDocUrl}
+                  {reviews?.count > 0 && (
+                    <div
+                      className={css(
+                        styles.reviewSummaryContainer,
+                        styles.metaItem
+                      )}
+                    >
+                      <PeerReviewScoreSummary
+                        summary={reviews}
+                        feDocUrl={feDocUrl}
+                      />
+                    </div>
+                  )}
+                  {boostAmount > 0 && (
+                    <div className={css(styles.metaItem)}>
+                      <span className={css(styles.metadataIcon)}>
+                        <ResearchCoinIcon
+                          width={14}
+                          height={14}
+                          version={4}
+                          overrideStyle={styles.rscIcon}
                         />
-                      </div>
-                    )}
-                    {boostAmount > 0 && (
-                      <div className={css(styles.metaItem)}>
-                        <span className={css(styles.metadataIcon)}>
-                          <ResearchCoinIcon
-                            width={14}
-                            height={14}
-                            version={4}
-                            overrideStyle={styles.rscIcon}
-                          />
-                        </span>
-                        <span className={css(styles.metadataText)}>
-                          +{boostAmount}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                      </span>
+                      <span className={css(styles.metadataText)}>
+                        +{boostAmount}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </a>
+        </div>
+
       </Link>
     </Ripples>
   );

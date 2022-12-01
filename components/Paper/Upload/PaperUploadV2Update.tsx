@@ -48,6 +48,7 @@ import {
   useState,
 } from "react";
 import { updateExistingPaper } from "./api/updateExistingPaper";
+import API from "~/config/api";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -129,6 +130,7 @@ function PaperUploadV2Update({
   modalsRedux,
   paperActions,
 }: ComponentProps): ReactElement<typeof Fragment> {
+  const allowedToEditAuthors = authRedux?.user?.moderator || authRedux?.user?.author_profile;
   const router = useRouter();
   const [authorSearchDebncRef, setAuthorSearchDebncRef] =
     useState<NodeJS.Timeout | null>(null);
@@ -203,6 +205,10 @@ function PaperUploadV2Update({
           }
         },
         onSuccess: ({ paperID, paperName }): void => {
+
+
+
+
           messageActions.setMessage("Paper successfully updated");
           messageActions.showMessage({ show: true });
           const isUsersFirstTime = !authRedux.user.has_seen_first_coin_modal;
@@ -210,10 +216,23 @@ function PaperUploadV2Update({
           modalActions.openFirstVoteModal(isUsersFirstTime);
           messageActions.showMessage({ show: true, load: true });
           paperActions.resetPaperState();
-          router.push(
-            "/paper/[paperId]/[paperName]",
-            `/paper/${paperID}/${paperName}`
-          );
+
+          fetch(
+            "/api/revalidate",
+            API.POST_CONFIG({
+              path: `/paper/${paperID}/${paperName}`,
+            }))
+          .finally(() => {
+            // next.js will serve a stale file while revalidating.
+            // The timeout will help mitigate user needing to refresh the
+            // page to view their changes.
+            setTimeout(() => {
+              router.push(
+                "/paper/[paperId]/[paperName]",
+                `/paper/${paperID}/${paperName}`
+              );
+            }, 500);
+          })
         },
         paperActions,
         paperID: nullthrows(
@@ -242,9 +261,6 @@ function PaperUploadV2Update({
   });
 
   const {
-    abstract_src_type,
-    abstract_src,
-    abstract,
     author: formAuthor,
     authors: selectedAuthors = [],
     doi,
@@ -261,7 +277,6 @@ function PaperUploadV2Update({
     suggestedAuthors,
     shouldShowAuthorList,
   } = componentState;
-  console.warn("abstract_src_type1: ", abstract_src_type);
   return (
     <Fragment>
       <AddAuthorModal
@@ -300,75 +315,79 @@ function PaperUploadV2Update({
               id="title"
               onChange={handleInputChange}
             />
-            <span className={css(formGenericStyles.container)}>
-              <AuthorInput
-                error={formErrors.author}
-                inputValue={authorSearchText}
-                label="Authors"
-                labelStyle={formGenericStyles.labelStyle}
-                onChange={getHandleAuthorChange({
-                  currComponentState: componentState,
-                  currFormState: formState,
-                  currUserAuthorID,
-                  setComponentState,
-                  setFormState,
-                })}
-                onChangeInput={getHandleAuthorInputChange({
-                  currComponentState: componentState,
-                  currFormState: formState,
-                  debounceRef: authorSearchDebncRef,
-                  debounceTime: 500,
-                  setComponentState,
-                  setDebounceRef: setAuthorSearchDebncRef,
-                })}
-                tags={selectedAuthors}
-              />
-            </span>
-            <span className={css(formGenericStyles.container)}>
-              <AuthorCardList
-                addAuthor={async (): Promise<void> => {
-                  await modalActions.openAddAuthorModal(true);
-                }}
-                authors={suggestedAuthors}
-                loading={isFetchingAuthors}
-                onAuthorClick={getHandleAuthorSelect({
-                  currComponentState: componentState,
-                  currFormErrors: formErrors,
-                  currFormState: formState,
-                  currUserAuthorID,
-                  setComponentState,
-                  setFormErrors,
-                  setFormState,
-                })}
-                show={shouldShowAuthorList}
-              />
-            </span>
-            <div
-              className={css(
-                formGenericStyles.row,
-                formGenericStyles.authorCheckboxContainer
-              )}
-            >
-              <CheckBox
-                active={markedSelfAsAuthor}
-                // @ts-ignore id supplied for legacy reason
-                id="author.self_author"
-                isSquare
-                label="I am an author of this paper"
-                labelStyle={formGenericStyles.labelStyle}
-                onChange={(_id: ID, value: boolean): void => {
-                  setComponentState({ ...componentState, isFormEdited: true });
-                  setFormErrors({
-                    ...formErrors,
-                    author: value ? false : selectedAuthors.length < 1,
-                  });
-                  setFormState({
-                    ...formState,
-                    author: { self_author: value },
-                  });
-                }}
-              />
-            </div>
+            {allowedToEditAuthors &&
+              <>
+                <span className={css(formGenericStyles.container)}>
+                  <AuthorInput
+                    error={formErrors.author}
+                    inputValue={authorSearchText}
+                    label="Authors"
+                    labelStyle={formGenericStyles.labelStyle}
+                    onChange={getHandleAuthorChange({
+                      currComponentState: componentState,
+                      currFormState: formState,
+                      currUserAuthorID,
+                      setComponentState,
+                      setFormState,
+                    })}
+                    onChangeInput={getHandleAuthorInputChange({
+                      currComponentState: componentState,
+                      currFormState: formState,
+                      debounceRef: authorSearchDebncRef,
+                      debounceTime: 500,
+                      setComponentState,
+                      setDebounceRef: setAuthorSearchDebncRef,
+                    })}
+                    tags={selectedAuthors}
+                  />
+                </span>
+                <span className={css(formGenericStyles.container)}>
+                  <AuthorCardList
+                    addAuthor={async (): Promise<void> => {
+                      await modalActions.openAddAuthorModal(true);
+                    }}
+                    authors={suggestedAuthors}
+                    loading={isFetchingAuthors}
+                    onAuthorClick={getHandleAuthorSelect({
+                      currComponentState: componentState,
+                      currFormErrors: formErrors,
+                      currFormState: formState,
+                      currUserAuthorID,
+                      setComponentState,
+                      setFormErrors,
+                      setFormState,
+                    })}
+                    show={shouldShowAuthorList}
+                  />
+                </span>
+                <div
+                  className={css(
+                    formGenericStyles.row,
+                    formGenericStyles.authorCheckboxContainer
+                  )}
+                >
+                  <CheckBox
+                    active={markedSelfAsAuthor}
+                    // @ts-ignore id supplied for legacy reason
+                    id="author.self_author"
+                    isSquare
+                    label="I am an author of this paper"
+                    labelStyle={formGenericStyles.labelStyle}
+                    onChange={(_id: ID, value: boolean): void => {
+                      setComponentState({ ...componentState, isFormEdited: true });
+                      setFormErrors({
+                        ...formErrors,
+                        author: value ? false : selectedAuthors.length < 1,
+                      });
+                      setFormState({
+                        ...formState,
+                        author: { self_author: value },
+                      });
+                    }}
+                  />
+                </div>
+              </>
+            }
             <div className={css(formGenericStyles.row)}>
               <FormSelect
                 containerStyle={formGenericStyles.smallContainer}
@@ -421,7 +440,7 @@ function PaperUploadV2Update({
             label="Hubs"
             inputStyle={
               (customStyles.input,
-              selectedHubs.length > 0 && customStyles.capitalize)
+                selectedHubs.length > 0 && customStyles.capitalize)
             }
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleHubSelection}
@@ -441,32 +460,6 @@ function PaperUploadV2Update({
               placeholder="Enter DOI of paper"
               value={doi}
             />
-          </span>
-          <span className={css(formGenericStyles.tagline)}>
-            <div
-              className={css([
-                formGenericStyles.taglineContainer,
-                formGenericStyles.textArea,
-              ])}
-              id="abstract"
-            >
-              <div
-                className={css(formGenericStyles.labelStyle)}
-                style={{ fontWeight: 500, marginBottom: 12, marginTop: 20 }}
-              >
-                Abstract
-              </div>
-              <SimpleEditor
-                editing
-                placeholder="Enter abstract"
-                initialData={
-                  !isEmpty(abstract_src) ? abstract_src : abstract ?? ""
-                }
-                onChange={(_: ID, editorSrcValue: string) => {
-                  handleInputChange("abstract_src", editorSrcValue ?? "");
-                }}
-              />
-            </div>
           </span>
         </div>
         <div

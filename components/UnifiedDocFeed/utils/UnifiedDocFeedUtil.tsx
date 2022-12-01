@@ -68,7 +68,11 @@ export const useEffectFetchDocs = ({
   firstLoad: any;
 }): void => {
   useEffect((): void => {
-    if (firstLoad?.current) {
+    if (!fetchParams.selectedFilters.isReady) {
+      setUnifiedDocsLoading && setUnifiedDocsLoading(true);
+      return;
+    }
+    else if (firstLoad?.current) {
       setUnifiedDocsLoading && setUnifiedDocsLoading(true);
       fetchUnifiedDocs(fetchParams);
     } else if (firstLoad) {

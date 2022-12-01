@@ -264,32 +264,32 @@ class LiveFeedNotification extends Component {
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${authorId}/overview`}
+          className={css(styles.username)}
+          onClick={(e) => e.stopPropagation()}
         >
-          <a
-            className={css(styles.username)}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {username}
-          </a>
+          {username}
         </Link>
         {` ${verb} `}
-        <Link href={href ?? ""} as={hrefAs ?? ""}>
-          <a className={css(styles.link)} onClick={(e) => e.stopPropagation()}>
-            {subject.linkText}
-          </a>
+        <Link
+          href={href ?? ""}
+          as={hrefAs ?? ""}
+          className={css(styles.link)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {subject.linkText}
         </Link>
         <em>{subject.plainText}</em>
         {preposition ? (
           <Fragment>
             {" in "}
-            <Link href={href ?? ""} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={postTitle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {preposition.linkText}
-              </a>
+            <Link
+              href={href ?? ""}
+              as={hrefAs}
+              className={css(styles.paper)}
+              data-tip={postTitle}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {preposition.linkText}
             </Link>
             <em>{preposition.plainText}</em>
           </Fragment>
@@ -367,13 +367,10 @@ class LiveFeedNotification extends Component {
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/overview`}
+              className={css(styles.username)}
+              onClick={(e) => e.stopPropagation()}
             >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {username}
-              </a>
+              {username}
             </Link>
             {` awarded ${notification.item.amount} RSC `}
             <img
@@ -385,13 +382,10 @@ class LiveFeedNotification extends Component {
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${recipientAuthorId}/overview`}
+              className={css(styles.username)}
+              onClick={(e) => e.stopPropagation()}
             >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {recipientName}
-              </a>
+              {recipientName}
             </Link>
             {` for their ${formattedSupportType} `}
             {formattedSupportType === "comment" ? (
@@ -400,14 +394,14 @@ class LiveFeedNotification extends Component {
                 {" in "}
               </>
             ) : null}
-            <Link href={href} as={as}>
-              <a
-                className={css(styles.paper)}
-                data-tip={title}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {title && this.truncatePaperTitle(title)}
-              </a>
+            <Link
+              href={href}
+              as={as}
+              className={css(styles.paper)}
+              data-tip={title}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {title && this.truncatePaperTitle(title)}
             </Link>
             <span className={css(styles.timestamp)}>
               <span className={css(styles.timestampDivider)}>•</span>

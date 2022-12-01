@@ -32,60 +32,63 @@ export default function HubLeaderDashboardCard({
   supportCount,
 }: Props) {
   return (
-    <Link href={"/hubs/[slug]"} as={`/hubs/${buildSlug(name)}`}>
-      <a className={css(styles.link)}>
-        <div className={css(styles.container, index === 0 && styles.borderTop)}>
-          <div className={css(styles.row)}>
-            <div className={css(styles.nameSection)}>
-              <Image
-                width={28}
-                height={28}
-                src={hubImage ?? "/static/beaker.svg"}
-              />
-              <div className={css(styles.name) + " clamp1"}>
-                {`${toTitleCase(name)}`}
-              </div>
+    (<Link
+      href={"/hubs/[slug]"}
+      as={`/hubs/${buildSlug(name)}`}
+      className={css(styles.link)}>
+
+      <div className={css(styles.container, index === 0 && styles.borderTop)}>
+        <div className={css(styles.row)}>
+          <div className={css(styles.nameSection)}>
+            <Image
+              width={28}
+              height={28}
+              src={hubImage ?? "/static/beaker.svg"}
+            />
+            <div className={css(styles.name) + " clamp1"}>
+              {`${toTitleCase(name)}`}
             </div>
-            <div className={css(styles.contributionSection)}>
-              <div className={css(styles.countLabel, styles.submissionLabel)}>
-                <span className={css(styles.mobileLabel)}>Last Submission</span>
-                <span className={css(styles.countResponse)}>
-                  {lastSubmissionDate
-                    ? timeAgo.format(new Date(lastSubmissionDate))
-                    : "never"}
-                </span>
-              </div>
-              <div className={css(styles.countLabel, styles.submissionLabel)}>
-                <span className={css(styles.mobileLabel)}>Last Comment</span>
-                <span className={css(styles.countResponse)}>
-                  {lastCommentDate
-                    ? timeAgo.format(new Date(lastCommentDate))
-                    : "never"}
-                </span>
-              </div>
-              <div className={css(styles.countLabel)}>
-                <span className={css(styles.mobileLabel)}>Submissions</span>
-                <span className={css(styles.countResponse)}>
-                  {submissionCount}
-                </span>
-              </div>
-              <div className={css(styles.countLabel, styles.supportLabel)}>
-                <span className={css(styles.mobileLabel)}>Supports</span>
-                <span className={css(styles.countResponse)}>
-                  {supportCount}
-                </span>
-              </div>
-              <div className={css(styles.countLabel)}>
-                <span className={css(styles.mobileLabel)}>Comments</span>
-                <span className={css(styles.countResponse)}>
-                  {commentCount}
-                </span>
-              </div>
+          </div>
+          <div className={css(styles.contributionSection)}>
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.mobileLabel)}>Last Submission</span>
+              <span className={css(styles.countResponse)}>
+                {lastSubmissionDate
+                  ? timeAgo.format(new Date(lastSubmissionDate))
+                  : "never"}
+              </span>
+            </div>
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.mobileLabel)}>Last Comment</span>
+              <span className={css(styles.countResponse)}>
+                {lastCommentDate
+                  ? timeAgo.format(new Date(lastCommentDate))
+                  : "never"}
+              </span>
+            </div>
+            <div className={css(styles.countLabel)}>
+              <span className={css(styles.mobileLabel)}>Submissions</span>
+              <span className={css(styles.countResponse)}>
+                {submissionCount}
+              </span>
+            </div>
+            <div className={css(styles.countLabel, styles.supportLabel)}>
+              <span className={css(styles.mobileLabel)}>Supports</span>
+              <span className={css(styles.countResponse)}>
+                {supportCount}
+              </span>
+            </div>
+            <div className={css(styles.countLabel)}>
+              <span className={css(styles.mobileLabel)}>Comments</span>
+              <span className={css(styles.countResponse)}>
+                {commentCount}
+              </span>
             </div>
           </div>
         </div>
-      </a>
-    </Link>
+      </div>
+
+    </Link>)
   );
 }
 

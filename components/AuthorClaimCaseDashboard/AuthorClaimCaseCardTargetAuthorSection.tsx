@@ -27,10 +27,12 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
       </div>
       <div className={css(styles.marginBottom)}>
         <span className={css(styles.fontGrey)}>{"Paper - "}</span>
-        <Link href={`/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`}>
-          <a className={css(styles.link)}>
-            <span>{caseData?.paper?.title}</span>
-          </a>
+        <Link
+          href={`/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`}
+          className={css(styles.link)}>
+
+          <span>{caseData?.paper?.title}</span>
+
         </Link>
       </div>      
     </div>

@@ -44,6 +44,7 @@ function UnifiedDocFeedContainer({
     return getSelectedUrlFilters({
       query: router.query,
       pathname: router.pathname,
+      router,
     });
   }, [router.pathname, router.query]);
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
@@ -66,11 +67,12 @@ function UnifiedDocFeedContainer({
     setUnifiedDocsLoading(false);
   }, []);
 
-  useEffectUpdateStatesOnServerChanges({
-    routePath: routerPathName,
-    serverLoadedData,
-    setPaginationInfo,
-  });
+  // useEffectUpdateStatesOnServerChanges({
+  //   routePath: routerPathName,
+  //   serverLoadedData,
+  //   setPaginationInfo,
+  // });
+
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
   useEffectFetchDocs({
@@ -147,7 +149,7 @@ function UnifiedDocFeedContainer({
   };
 
   const showLoadMoreButton = hasMore;
-  const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
+  // const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     setUnifiedDocuments,
     unifiedDocumentData: unifiedDocuments,

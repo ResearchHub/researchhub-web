@@ -855,11 +855,13 @@ function AuthorPage(props) {
     const { name, slug } = hub;
     const sluggedName = buildSlug(hub.slug ?? "");
     return (
-      <Link href={"/hubs/[slug]"} as={`/hubs/${slug}`}>
-        <a className={css(styles.hubLinkTag)}>
-          {i > 0 && ", "}
-          {name}
-        </a>
+      <Link
+        href={"/hubs/[slug]"}
+        as={`/hubs/${slug}`}
+        className={css(styles.hubLinkTag)}
+      >
+        {i > 0 && ", "}
+        {name}
       </Link>
     );
   });

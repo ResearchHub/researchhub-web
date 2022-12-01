@@ -50,22 +50,19 @@ const HubDropDown = (props) => {
         href={"/hubs/[slug]"}
         as={`/hubs/${nameToUrl(slug)}`}
         key={`dropdown-${id}`}
+        className={css(styles.atag)}
       >
-        <a className={css(styles.atag)}>
-          <img
-            className={css(styles.hubImage) + " hubImage"}
-            src={
-              hub_image ? hub_image : "/static/background/hub-placeholder.svg"
-            }
-            alt={name}
-          />
-          <span
-            key={`hub_dropdown${id}`}
-            className={css(styles.listItem) + " clamp1"}
-          >
-            {name}
-          </span>
-        </a>
+        <img
+          className={css(styles.hubImage) + " hubImage"}
+          src={hub_image ? hub_image : "/static/background/hub-placeholder.svg"}
+          alt={name}
+        />
+        <span
+          key={`hub_dropdown${id}`}
+          className={css(styles.listItem) + " clamp1"}
+        >
+          {name}
+        </span>
       </Link>
     );
   });

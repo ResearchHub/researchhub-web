@@ -34,11 +34,10 @@ class SideColumn extends Component {
             query,
           }}
           as={linkAs}
+          className={css(styles.link)}
         >
-          <a className={css(styles.link)}>
-            <span className={css(styles.icon)}>{icon}</span>
-            <span className={"clamp1"}>{name}</span>
-          </a>
+          <span className={css(styles.icon)}>{icon}</span>
+          <span className={"clamp1"}>{name}</span>
         </Link>
       ) : (
         <div className={css(styles.link)}>

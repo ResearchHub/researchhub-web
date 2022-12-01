@@ -96,6 +96,7 @@ const PaperEntry = ({
       <Link
         href={"/paper/[paperId]/[paperName]"}
         as={`/paper/${paperId}/${buildSlug(title)}`}
+        legacyBehavior
       >
         <div
           className={css(

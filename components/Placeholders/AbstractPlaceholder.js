@@ -6,7 +6,7 @@ const AbstractPlaceholder = ({ color }) => (
   <div className={"show-loading-animation"}>
     <TextBlock
       className={css(styles.textRow)}
-      rows={5}
+      rows={15}
       color={color}
       style={{ width: "100%" }}
     />

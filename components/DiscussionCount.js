@@ -10,20 +10,19 @@ const DiscussionCount = ({ docType, count, id, slug }) => {
   }
 
   return (
-    <Link href={`/${docType}/${id}/${slug}#comments`}>
-      <a
-        className={css(styles.link)}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <div className={css(styles.discussion)}>
-          <div className={css(styles.discussionIcon)}>
-            {PaperDiscussionIcon({})}
-          </div>
-          <div className={css(styles.discussionCount)}>{count}</div>
+    <Link
+      href={`/${docType}/${id}/${slug}#comments`}
+      className={css(styles.link)}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      <div className={css(styles.discussion)}>
+        <div className={css(styles.discussionIcon)}>
+          {PaperDiscussionIcon({})}
         </div>
-      </a>
+        <div className={css(styles.discussionCount)}>{count}</div>
+      </div>
     </Link>
   );
 };

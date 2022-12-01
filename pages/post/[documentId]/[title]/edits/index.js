@@ -172,6 +172,7 @@ class PaperEditHistory extends Component {
           <Link
             href={"/paper/[paperId]/[paperName]"}
             as={`/paper/${router.query.paperId}/${router.query.paperName}#summary`}
+            legacyBehavior
           >
             <div className={css(styles.back)}>
               <span className={css(styles.arrow)}>{icons.longArrowLeft}</span>

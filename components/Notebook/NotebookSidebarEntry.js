@@ -19,25 +19,24 @@ const NotebookSidebarEntry = ({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Link href={getNotePathname({ noteId: note.id, org: currentOrg })}>
-      <a
-        className={css(styles.entry, noteId === currentNoteId && styles.active)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div className={css(styles.noteIcon)}>{icons.paper}</div>
-        {unescapeHtmlString(title)}
-        {isOrgMember && (
-          <NoteOptionsMenuButton
-            currentOrg={currentOrg}
-            key={note.id}
-            note={note}
-            redirectToNote={redirectToNote}
-            show={isHovered}
-            title={title}
-          />
-        )}
-      </a>
+    <Link
+      href={getNotePathname({ noteId: note.id, org: currentOrg })}
+      className={css(styles.entry, noteId === currentNoteId && styles.active)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className={css(styles.noteIcon)}>{icons.paper}</div>
+      {unescapeHtmlString(title)}
+      {isOrgMember && (
+        <NoteOptionsMenuButton
+          currentOrg={currentOrg}
+          key={note.id}
+          note={note}
+          redirectToNote={redirectToNote}
+          show={isHovered}
+          title={title}
+        />
+      )}
     </Link>
   );
 };

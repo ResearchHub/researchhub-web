@@ -42,19 +42,18 @@ const AuthorCard = (props) => {
           is_claimed ? claimed_by_user_author_id : authorID
         }/overview`}
         data-test={`author-${author.id}`}
+        className={css(styles.container, styles.hover)}
       >
-        <a className={css(styles.container, styles.hover)}>
-          {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userImage)} />
-          ) : (
-            <span className={css(styles.userIcon)}>{icons.user}</span>
-          )}
-          {authorUserID ? (
-            <div className={css(styles.name) + " clamp1"}>{name}</div>
-          ) : (
-            <AccruedRSC name={name} accruedRSC={accruedRSC} />
-          )}
-        </a>
+        {author.profile_image ? (
+          <img src={author.profile_image} className={css(styles.userImage)} />
+        ) : (
+          <span className={css(styles.userIcon)}>{icons.user}</span>
+        )}
+        {authorUserID ? (
+          <div className={css(styles.name) + " clamp1"}>{name}</div>
+        ) : (
+          <AccruedRSC name={name} accruedRSC={accruedRSC} />
+        )}
       </Link>
     );
   } else if (orcid_id) {

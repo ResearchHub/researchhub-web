@@ -10,7 +10,11 @@ import icons from "~/config/themes/icons";
 const Tab = ({ text, index, activeCategory }) => {
   const isActive = index === activeCategory;
   return (
-    <Link href={`#${text.toLowerCase().replace(/\s/g, "-")}`} scroll={false}>
+    <Link
+      href={`#${text.toLowerCase().replace(/\s/g, "-")}`}
+      scroll={false}
+      legacyBehavior
+    >
       <div
         className={
           css([styles.tab, isActive ? styles.active : null]) +

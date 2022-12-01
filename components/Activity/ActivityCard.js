@@ -167,23 +167,19 @@ const ActivityCard = (props) => {
   }
 
   return (
-    <Link href={href} as={hrefAs}>
-      <a className={css(styles.link)}>
-        <Ripples className={css(styles.root)}>
-          <ActivityHeader {...props} user={user} />
-          <ActivityBody {...props} />
-          <div className={css(styles.row, last && styles.noBorderBottom)}>
-            {shouldRenderTimeStamp() ? (
-              <TimeStamp {...formatProps("timestamp")} />
-            ) : null}
-            <div className={css(styles.hubTag)}>
-              {hubs ? (
-                <HubTag {...formatProps("hub")} noHubName={true} />
-              ) : null}
-            </div>
+    <Link href={href} as={hrefAs} className={css(styles.link)}>
+      <Ripples className={css(styles.root)}>
+        <ActivityHeader {...props} user={user} />
+        <ActivityBody {...props} />
+        <div className={css(styles.row, last && styles.noBorderBottom)}>
+          {shouldRenderTimeStamp() ? (
+            <TimeStamp {...formatProps("timestamp")} />
+          ) : null}
+          <div className={css(styles.hubTag)}>
+            {hubs ? <HubTag {...formatProps("hub")} noHubName={true} /> : null}
           </div>
-        </Ripples>
-      </a>
+        </div>
+      </Ripples>
     </Link>
   );
 };

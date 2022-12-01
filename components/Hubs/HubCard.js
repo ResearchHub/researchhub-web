@@ -366,9 +366,8 @@ class HubCard extends Component {
             href="/hubs/[slug]"
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
             key={`hub_${hub.id}`}
-          >
-            <a ref={this.linkRef}></a>
-          </Link>
+            ref={this.linkRef}
+          ></Link>
         </div>
       </div>
     );

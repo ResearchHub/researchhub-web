@@ -30,6 +30,7 @@ function Button(props) {
       <Link
         href={href ? (query ? { pathname: href, query } : href) : null}
         as={linkAs && linkAs}
+        legacyBehavior
       >
         <div
           className={css(

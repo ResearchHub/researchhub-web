@@ -170,11 +170,14 @@ const BackButton = () => {
 
   return (
     <div className={css(styles.backButtonContainer)}>
-      <Link href={"/paper/[paperId]/[paperName]"} as={url}>
-        <a className={css(styles.backButton)}>
-          {icons.longArrowLeft}
-          <span className={css(styles.backButtonLabel)}>{message}</span>
-        </a>
+      <Link
+        href={"/paper/[paperId]/[paperName]"}
+        as={url}
+        className={css(styles.backButton)}
+        legacyBehavior
+      >
+        {icons.longArrowLeft}
+        <span className={css(styles.backButtonLabel)}>{message}</span>
       </Link>
     </div>
   );

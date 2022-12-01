@@ -22,10 +22,12 @@ const HorizontalTabBar = ({
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
   );
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const _setPageWidth = () => setPageWidth(window.innerWidth);
 
+    setIsReady(true);
     window.addEventListener("resize", _setPageWidth, true);
 
     return () => {
@@ -66,7 +68,7 @@ const HorizontalTabBar = ({
       )}
       id={id}
     >
-      {pageWidth > 0 && (
+      {isReady && (
         <ScrollMenu
           arrowLeft={
             pageWidth <= showArrowsOnWidth && showArrows ? (
