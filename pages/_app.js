@@ -169,7 +169,6 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
 // to getInitialProps removed, this can be removed safely.
 MyApp.getInitialProps = async (appContext) => {
   const staticOrServerSidePropsPaths = [
-    // "/",
     "/paper/[paperId]/[paperName]",
     "/hubs",
     "/user/[authorId]/[tabName]",
