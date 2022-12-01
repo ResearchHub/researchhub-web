@@ -65,7 +65,7 @@ const createdOptions = [
 ];
 
 const createdByOptions = createdOptions[0];
-const defaultFilterBy = filterOptions[4];
+const defaultFilterBy = filterOptions[2];
 
 class Index extends Component {
   constructor(props) {
@@ -471,7 +471,11 @@ class Index extends Component {
             }
             authorProfile={user.author_profile}
             reputation={
-              this.state.by.value !== 0 ? user.hub_rep : user.reputation
+              this.state.by.value !== 0
+                ? user.hub_rep
+                : this.state.filterBy.value !== "all_time"
+                ? user.time_rep
+                : user.reputation
             }
             repClass={styles.repClass}
             authorId={user.author_profile.id}
@@ -493,11 +497,20 @@ class Index extends Component {
   renderItems = () => {
     switch (this.state.type) {
       case "users":
+        const showTime = this.state.filterBy.value !== "all_time";
         return (
           <Fragment>
             <div className={css(styles.leaderboardNav)}>
               <div className={css(styles.navItem, styles.userNav)}>User</div>
-              <div className={css(styles.navItem, styles.rep)}>Reputation</div>
+              <div
+                className={css(
+                  styles.navItem,
+                  styles.rep,
+                  showTime && styles.timeRep
+                )}
+              >
+                {showTime && this.state.filterBy.label} Reputation
+              </div>
             </div>
             <div className={css(styles.leaderboardSection)}>
               {this.renderLeaderboardUsers()}
@@ -832,6 +845,11 @@ export const styles = StyleSheet.create({
   navItem: {
     color: "#241F3A",
     opacity: 0.5,
+  },
+  timeRep: {
+    "@media only screen and (min-width: 1024px)": {
+      paddingRight: 50,
+    },
   },
   rep: {
     marginLeft: "auto",
