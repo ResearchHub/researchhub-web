@@ -71,8 +71,6 @@ const BountyAlert = ({
     });
     status = firstBounty.status;
 
-    console.log(firstBounty.timeRemainingInDays);
-
     if (firstBounty.timeRemainingInDays < 0) {
       return null;
     }

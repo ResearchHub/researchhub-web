@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import dynamic from "next/dynamic";
 import { ReactElement, useEffect, useState } from "react";
 import Button from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -102,7 +103,16 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 size={"small"}
               />
               <Button
-                label={"Save"}
+                label={isUpdatingAbstract ? (
+                  <Loader
+                    color={colors.LIGHT_GREY()}
+                    key="abstract-submit-loader"
+                    loading
+                    size={14}
+                  />
+                ) : (
+                  "Save"
+                )}
                 onClick={(event): void => {
                   event.preventDefault();
                   setIsUpdatingAbstract(true);

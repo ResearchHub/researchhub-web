@@ -18,7 +18,9 @@ export default function FeaturedDocSidebarItem({
       <a
         style={{ textDecoration: "none" }}
         href={`/${
-          documentType === "question" ? "post" : documentType
+          documentType === "question" || documentType === "bounty"
+            ? "post"
+            : documentType
         }/${relatedDocID}/${slug ?? ""}`}
       >
         <div className={css(styles.featuredDocSidebarItem)}>
