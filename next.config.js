@@ -14,9 +14,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    runtime: "experimental-edge", // 'node.js' (default) | 'experimental-edge'
-  },
+  // experimental: {
+  //   runtime: "experimental-edge", // 'node.js' (default) | 'experimental-edge'
+  // },
   eslint: {
     ignoreDuringBuilds: true,
   },
