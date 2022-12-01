@@ -107,6 +107,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     overflowX: "scroll",
     whiteSpace: "nowrap",
+    "-webkit-scrollbar-track": {
+      background: "transparent",
+    },
+    "-webkit-scrollbar": {
+      background: "transparent",
+    },
   },
   bountiesSidebarItemContent: {
     color: colors.BLACK(1),
