@@ -250,7 +250,7 @@ function DocumentHeader({
   });
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
   const showClaimableAuthors =
-    claimableAuthors.length > 0 && router?.query?.route?.includes("/paper");
+    claimableAuthors.length > 0 && router?.pathname?.includes("/paper");
   let bountyAmount = 0;
   allBounties?.forEach((bounty) => {
     bountyAmount += bounty.amount;
