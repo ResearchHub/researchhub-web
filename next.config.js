@@ -96,12 +96,12 @@ const nextConfig = {
 
 module.exports = withTM({ ...nextConfig });
 
-const SentryWebpackPluginOptions = {
-  silent: true,
-  disableClientWebpackPlugin: false,
-};
+// const SentryWebpackPluginOptions = {
+//   silent: true,
+//   disableClientWebpackPlugin: false,
+// };
 
-module.exports = withSentryConfig(
-  withTM({ ...nextConfig }),
-  SentryWebpackPluginOptions
-);
+// module.exports = withSentryConfig(
+//   withTM({ ...nextConfig }),
+//   SentryWebpackPluginOptions
+// );
