@@ -1,16 +1,11 @@
-import { timeTo, timeAgoStamp } from "~/config/utils/dates";
-import { buildSlug } from "~/config/utils/buildSlug";
-import { connect, useDispatch, useStore } from "react-redux";
-import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
-import { Fragment, useState } from "react";
-import { getEtherscanLink } from "~/config/utils/crypto";
+import { connect, useDispatch } from "react-redux";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { useState } from "react";
 import { HyperLink, TimeStamp } from "./NotificationHelpers";
 import { NotificationActions } from "~/redux/notification";
 import { StyleSheet, css } from "aphrodite";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
-import Link from "next/link";
 import Ripples from "react-ripples";
 import Router from "next/router";
 

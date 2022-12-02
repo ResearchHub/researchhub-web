@@ -75,6 +75,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/bounty/:id/:title",
+        destination: "/post/:id/:title",
+        permanent: true,
+      },
+      {
         source: "/scicon2022",
         destination: "https://researchhubevents.wixsite.com/scicon2022",
         permanent: true,
