@@ -130,7 +130,7 @@ function PaperUploadV2Update({
   modalsRedux,
   paperActions,
 }: ComponentProps): ReactElement<typeof Fragment> {
-  const allowedToEditAuthors = authRedux?.user?.moderator || authRedux?.user?.author_profile;
+  const allowedToEditAuthors = authRedux?.user?.moderator;
   const router = useRouter();
   const [authorSearchDebncRef, setAuthorSearchDebncRef] =
     useState<NodeJS.Timeout | null>(null);
@@ -205,10 +205,6 @@ function PaperUploadV2Update({
           }
         },
         onSuccess: ({ paperID, paperName }): void => {
-
-
-
-
           messageActions.setMessage("Paper successfully updated");
           messageActions.showMessage({ show: true });
           const isUsersFirstTime = !authRedux.user.has_seen_first_coin_modal;
@@ -221,8 +217,8 @@ function PaperUploadV2Update({
             "/api/revalidate",
             API.POST_CONFIG({
               path: `/paper/${paperID}/${paperName}`,
-            }))
-          .finally(() => {
+            })
+          ).finally(() => {
             // next.js will serve a stale file while revalidating.
             // The timeout will help mitigate user needing to refresh the
             // page to view their changes.
@@ -232,7 +228,7 @@ function PaperUploadV2Update({
                 `/paper/${paperID}/${paperName}`
               );
             }, 500);
-          })
+          });
         },
         paperActions,
         paperID: nullthrows(
@@ -315,7 +311,7 @@ function PaperUploadV2Update({
               id="title"
               onChange={handleInputChange}
             />
-            {allowedToEditAuthors &&
+            {allowedToEditAuthors && (
               <>
                 <span className={css(formGenericStyles.container)}>
                   <AuthorInput
@@ -374,7 +370,10 @@ function PaperUploadV2Update({
                     label="I am an author of this paper"
                     labelStyle={formGenericStyles.labelStyle}
                     onChange={(_id: ID, value: boolean): void => {
-                      setComponentState({ ...componentState, isFormEdited: true });
+                      setComponentState({
+                        ...componentState,
+                        isFormEdited: true,
+                      });
                       setFormErrors({
                         ...formErrors,
                         author: value ? false : selectedAuthors.length < 1,
@@ -387,7 +386,7 @@ function PaperUploadV2Update({
                   />
                 </div>
               </>
-            }
+            )}
             <div className={css(formGenericStyles.row)}>
               <FormSelect
                 containerStyle={formGenericStyles.smallContainer}
@@ -440,7 +439,7 @@ function PaperUploadV2Update({
             label="Hubs"
             inputStyle={
               (customStyles.input,
-                selectedHubs.length > 0 && customStyles.capitalize)
+              selectedHubs.length > 0 && customStyles.capitalize)
             }
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleHubSelection}
