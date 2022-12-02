@@ -457,6 +457,8 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
+    paddingLeft: 16,
+    paddingRight: 16,
     [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
       paddingLeft: 28,
       paddingRight: 28,

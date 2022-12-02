@@ -54,10 +54,7 @@ const ContributionHeader = ({ entry }: Args) => {
     if (item.source.contentType.name === "comment") {
       actionLabel = (
         <>
-          supported{" "}
-          <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          {` `}
-          &nbsp;
+          received &nbsp;
           <ResearchCoinIcon
             overrideStyle={styles.rscIcon}
             version={4}
@@ -67,8 +64,10 @@ const ContributionHeader = ({ entry }: Args) => {
           <span className={css(styles.rsc)}>
             {` `}
             {item.amount} RSC
-          </span>
-          &nbsp; for their{" "}
+          </span>{" "}
+          from{" "}
+          <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
+          &nbsp;for their{" "}
           <ALink
             overrideStyle={styles.link}
             href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}
