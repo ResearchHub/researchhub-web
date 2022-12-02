@@ -51,6 +51,7 @@ function DocumentActions({
     canEdit = true;
   } else if (
     (unifiedDocument?.documentType === "post" ||
+      unifiedDocument?.documentType === "bounty" ||
       unifiedDocument?.documentType === "question" ||
       unifiedDocument?.documentType === "hypothesis") &&
     isSubmitter
