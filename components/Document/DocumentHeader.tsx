@@ -408,14 +408,16 @@ function DocumentHeader({
                   styles={[styles.smallScreenVoteWidget]}
                 />
               </div>
-              <div className={css(styles.type, styles.additionalDetail)}>
-                <ContentBadge
-                  contentType={documentType}
-                  label={
-                    documentType === "bounty" && bountyAmount + " RSC Bounty"
-                  }
-                />
-              </div>
+              {documentType === "bounty" && bountyAmount === 0 ? null : (
+                <div className={css(styles.type, styles.additionalDetail)}>
+                  <ContentBadge
+                    contentType={documentType}
+                    label={
+                      documentType === "bounty" && bountyAmount + " RSC Bounty"
+                    }
+                  />
+                </div>
+              )}
               <ALink
                 overrideStyle={[styles.comments, styles.additionalDetail]}
                 href={"#comments"}

@@ -221,8 +221,8 @@ function FeedCard({
     >
       <Link
         href={feDocUrl}
-        className={css(styles.feedCard, featured && styles.featuredContainer)}>
-
+        className={css(styles.feedCard, featured && styles.featuredContainer)}
+      >
         {!hideVotes && (
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
@@ -275,9 +275,7 @@ function FeedCard({
                           onClose={() => setIsPreviewing(false)}
                         />
                       )}
-                      <div
-                        className={css(styles.preview, styles.paperPreview)}
-                      >
+                      <div className={css(styles.preview, styles.paperPreview)}>
                         <img
                           src={previews[0].file}
                           className={css(styles.image)}
@@ -302,10 +300,7 @@ function FeedCard({
                 >
                   {!hideVotes && (
                     <div
-                      className={css(
-                        styles.metaItem,
-                        styles.mobileVoteWidget
-                      )}
+                      className={css(styles.metaItem, styles.mobileVoteWidget)}
                     >
                       {/* TODO: migrate to VoteWidgetV2 */}
                       <VoteWidget
@@ -409,7 +404,6 @@ function FeedCard({
             </div>
           </div>
         </div>
-
       </Link>
     </Ripples>
   );
