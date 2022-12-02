@@ -112,9 +112,9 @@ const ContributionEntry = ({
     default:
       showActions = true;
       item =
-        entry.contentType.name === "hypothesis"
+        contentType.name === "hypothesis"
           ? (item as HypothesisContributionItem)
-          : entry.contentType.name === "post"
+          : contentType.name === "post"
           ? (item as PostContributionItem)
           : (item as PaperContributionItem);
 
@@ -123,9 +123,14 @@ const ContributionEntry = ({
         item?.unifiedDocument?.document?.body || item?.abstract,
         300
       );
+      if (contentType.name === "hypothesis") {
+        /* below is a hack (need to address in the future) */
+        item.unifiedDocument.documentType = "hypothesis";
+        item.unifiedDocument.document = { id: item.id, slug: item.slug };
+      }
       title = (
         <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
-          {item?.unifiedDocument?.document?.title}
+          {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
         </ALink>
       );
       break;
@@ -133,8 +138,7 @@ const ContributionEntry = ({
 
   const primaryUrl = _getPrimaryUrl(entry);
   return (
-    (<Link href={primaryUrl} className={css(styles.linkWrapper)}>
-
+    <Link href={primaryUrl} className={css(styles.linkWrapper)}>
       <div className={css(styles.entryContent)}>
         <ContributionHeader entry={entry} />
         <div className={css(styles.highlightedContentContainer)}>
@@ -169,8 +173,7 @@ const ContributionEntry = ({
           )}
         </div>
       </div>
-
-    </Link>)
+    </Link>
   );
 };
 
