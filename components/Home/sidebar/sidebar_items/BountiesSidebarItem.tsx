@@ -41,6 +41,7 @@ export default function BountiesSidebarItem({
             <AuthorFacePile
               authorProfiles={[createdByAuthor]}
               withAuthorName
+              horizontal
               fontSize={14}
               imgSize={12.3}
             />
@@ -102,11 +103,18 @@ const styles = StyleSheet.create({
     marginTop: 1, // arbitrary to match AuthorFacePile
   },
   bountiesSidebarItemHeader: {
-    alignItems: "flex-start",
+    alignItems: "center",
+    marginBottom: 8,
     display: "flex",
     fontSize: 14,
-    overflowX: "scroll",
+    overflowX: "auto",
     whiteSpace: "nowrap",
+    "-ms-overflow-style": "none" /* IE and Edge */,
+    "scrollbar-width": "none" /* Firefox */,
+
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
   },
   bountiesSidebarItemContent: {
     color: colors.BLACK(1),
