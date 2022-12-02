@@ -28,7 +28,8 @@ export default function fetchContributionsAPI({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((response) => onSuccess(response))
+    .then((response) => {
+      onSuccess(response)})
     .catch((error) => {
       captureEvent({
         error,

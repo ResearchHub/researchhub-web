@@ -95,27 +95,24 @@ export function getUrlToUniDoc(uniDoc) {
     doc = uniDoc.documents;
   }
 
-  const docType = uniDoc.document_type ?? uniDoc.documentType;
-  let url = "";
+  const docType = (
+    uniDoc.document_type ??
+    uniDoc.documentType ??
+    ""
+  ).toLowerCase();
 
   switch (docType) {
     case "paper":
-    case "PAPER":
-      url = `/paper/${doc.id}/${doc.slug}`;
-      break;
+      return `/paper/${doc.id}/${doc.slug}`;
     case "hypothesis":
-    case "HYPOTHESIS":
-      url = `/hypothesis/${doc.id}/${doc.slug}`;
-      break;
+      return `/hypothesis/${doc.id}/${doc.slug}`;
+    case "bounty": /* case type 'bounty' is an assumption & is flaky. Consider handling in BE */
     case "discussion":
-    case "DISCUSSION":
     case "post":
     case "question":
-    case "QUESTION":
     case "researchhubpost":
-      url = `/post/${doc?.id}/${doc?.slug}`;
-      break;
+      return `/post/${doc?.id}/${doc?.slug}`;
+    default:
+      return "";
   }
-
-  return url;
 }
