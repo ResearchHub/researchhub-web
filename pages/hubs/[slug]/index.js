@@ -14,185 +14,255 @@ import nookies from "nookies";
 import Router from "next/router";
 import { getSelectedUrlFilters } from "~/components/UnifiedDocFeed/utils/getSelectedUrlFilters";
 
-class Index extends Component {
-  static async getInitialProps(ctx) {
-    const { query } = ctx;
-    const { res, slug, name, type } = query;
-    const cookies = nookies.get(ctx);
-    const authToken = cookies[AUTH_TOKEN];
-    const currentHub = await fetchHubFromSlug({ slug });
-    const isLiveFeed = ctx.pathname.indexOf("/live") >= 0;
-    if (isLiveFeed) {
-      return {
-        isLiveFeed: true,
-      };
-    }
+// class Index extends Component {
+//   // static async getInitialProps(ctx) {
+//   //   const { query } = ctx;
+//   //   const { res, slug, name, type } = query;
+//   //   const cookies = nookies.get(ctx);
+//   //   const authToken = cookies[AUTH_TOKEN];
+//   //   const currentHub = await fetchHubFromSlug({ slug });
+//   //   const isLiveFeed = ctx.pathname.indexOf("/live") >= 0;
+//   //   if (isLiveFeed) {
+//   //     return {
+//   //       isLiveFeed: true,
+//   //     };
+//   //   }
 
-    if (!isServer()) {
-      return {
-        slug,
-        name,
-        loggedIn: authToken !== undefined,
-        initialProps: {},
-        currentHub,
-      };
-    }
+//   //   if (!isServer()) {
+//   //     return {
+//   //       slug,
+//   //       name,
+//   //       loggedIn: authToken !== undefined,
+//   //       initialProps: {},
+//   //       currentHub,
+//   //     };
+//   //   }
 
-    if (!currentHub) {
-      if (res) {
-        res.statusCode = 404;
-      }
+//   //   if (!currentHub) {
+//   //     if (res) {
+//   //       res.statusCode = 404;
+//   //     }
 
-      return { error: true };
-    }
+//   //     return { error: true };
+//   //   }
 
-    try {
-      const fetchFeedWithVotes = !isNullOrUndefined(authToken);
-      const selectedFilters = getSelectedUrlFilters({ query, pathname: "/" });
-      const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetchUnifiedDocFeed(
-          {
-            selectedFilters,
-            // Initial Feed
-            hubId: currentHub?.id,
-            page: 1,
-          },
-          authToken,
-          fetchFeedWithVotes /* withVotes */
-        ),
-        fetch(
-          API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
-          API.GET_CONFIG()
-        ).then((res) => res.json()),
-        fetch(API.SORTED_HUB({}), API.GET_CONFIG()).then((res) => res.json()),
-      ]);
+//   //   try {
+//   //     const fetchFeedWithVotes = !isNullOrUndefined(authToken);
+//   //     const selectedFilters = getSelectedUrlFilters({ query, pathname: "/" });
+//   //     const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
+//   //       fetchUnifiedDocFeed(
+//   //         {
+//   //           selectedFilters,
+//   //           // Initial Feed
+//   //           hubId: currentHub?.id,
+//   //           page: 1,
+//   //         },
+//   //         authToken,
+//   //         fetchFeedWithVotes /* withVotes */
+//   //       ),
+//   //       fetch(
+//   //         API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
+//   //         API.GET_CONFIG()
+//   //       ).then((res) => res.json()),
+//   //       fetch(API.SORTED_HUB({}), API.GET_CONFIG()).then((res) => res.json()),
+//   //     ]);
 
-      return {
-        slug,
-        name,
-        currentHub,
-        initialProps: {
-          initialFeed,
-          leaderboardFeed,
-          initialHubList,
-        },
-      };
-    } catch (e) {
-      if (res) {
-        res.statusCode = 404;
-      }
-      return {
-        slug: null,
-        name: null,
-        currentHub,
-        initialProps: {
-          initialFeed: null,
-          leaderboardFeed: null,
-          initialHubList: null,
-        },
-        error: true,
-      };
-    }
+//   //     return {
+//   //       slug,
+//   //       name,
+//   //       currentHub,
+//   //       initialProps: {
+//   //         initialFeed,
+//   //         leaderboardFeed,
+//   //         initialHubList,
+//   //       },
+//   //     };
+//   //   } catch (e) {
+//   //     if (res) {
+//   //       res.statusCode = 404;
+//   //     }
+//   //     return {
+//   //       slug: null,
+//   //       name: null,
+//   //       currentHub,
+//   //       initialProps: {
+//   //         initialFeed: null,
+//   //         leaderboardFeed: null,
+//   //         initialHubList: null,
+//   //       },
+//   //       error: true,
+//   //     };
+//   //   }
+//   // }
+
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
+//       currentHub: this.props.currentHub
+//         ? this.props.currentHub
+//         : {
+//             name: this.props.name
+//               ? this.props.name
+//                 ? decodeURIComponent(this.props.name)
+//                 : "ResearchHub"
+//               : "",
+//             slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
+//           },
+//       hubDescription: this.props.currentHub
+//         ? "Discuss and Discover " + toTitleCase(this.props.currentHub.name)
+//         : "Discuss and Discover " + toTitleCase(this.props.slug),
+//     };
+//   }
+
+//   // componentDidMount() {
+//   //   if (!this.props.initialProps?.initialFeed) {
+//   //     this.fetchHubInfo(this.state.slug);
+//   //   }
+//   // }
+
+//   // componentDidUpdate(prevProps, prevState) {
+//   //   if (prevProps.slug !== this.props.slug) {
+//   //     this.setState(
+//   //       {
+//   //         slug: Router.router.query.slug,
+//   //       },
+//   //       () => {
+//   //         this.fetchHubInfo(Router.router.query.slug);
+//   //       }
+//   //     );
+//   //   }
+//   // }
+
+//   fetchHubInfo = async (name) => {
+//     const currentHub = await fetchHubFromSlug({ slug: name });
+//     if (currentHub) {
+//       this.setState({
+//         currentHub,
+//         hubDescription: this.props.hub && this.props.hub.name,
+//       });
+//     }
+//   };
+
+//   renderHub = () => {
+//     const { currentHub, slug } = this.state;
+
+//     return (
+//       <HubPage
+//         hub={currentHub}
+//         slug={this.props.slug}
+//         {...this.props.initialProps}
+//       />
+//     );
+//   };
+
+//   render() {
+//     const { currentHub, slug } = this.state;
+//     if (this.props.error) {
+//       return <Error statusCode={404} />;
+//     }
+
+//     return (
+//       <div>
+//         {process.browser ? (
+//           <Head
+//             title={toTitleCase(this.state.currentHub.name) + " on ResearchHub"}
+//             description={this.state.hubDescription}
+//           />
+//         ) : (
+//           <Head
+//             title={
+//               this.props.currentHub
+//                 ? toTitleCase(this.props.currentHub.name) + " on ResearchHub"
+//                 : toTitleCase(this.props.slug) + " on ResearchHub"
+//             }
+//             description={
+//               this.props.currentHub
+//                 ? "Discuss and Discover " +
+//                   toTitleCase(this.props.currentHub.name)
+//                 : "Discuss and Discover " + toTitleCase(this.props.slug)
+//             }
+//           />
+//         )}
+//         <HubPage
+//           hub={currentHub}
+//           slug={slug}
+//           isLiveFeed={this.props.isLiveFeed}
+//           {...this.props.initialProps}
+//         />
+//       </div>
+//     );
+//   }
+// }
+
+function Page({ slug, hub, error }) {
+  if (error) {
+    return <Error statusCode={error.code} />;
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
-      currentHub: this.props.currentHub
-        ? this.props.currentHub
-        : {
-            name: this.props.name
-              ? this.props.name
-                ? decodeURIComponent(this.props.name)
-                : "ResearchHub"
-              : "",
-            slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
-          },
-      hubDescription: this.props.currentHub
-        ? "Discuss and Discover " + toTitleCase(this.props.currentHub.name)
-        : "Discuss and Discover " + toTitleCase(this.props.slug),
+  return (
+    <div>
+      <Head
+        title={
+          hub
+            ? toTitleCase(hub.name) + " on ResearchHub"
+            : toTitleCase(slug) + " on ResearchHub"
+        }
+        description={
+          hub
+            ? "Discuss and Discover " + toTitleCase(hub.name)
+            : "Discuss and Discover " + toTitleCase(slug)
+        }
+      />
+      <HubPage hub={hub} slug={slug} isLiveFeed={false} isHomePage={false} />
+    </div>
+  );
+}
+
+export async function getStaticPaths(ctx) {
+  console.log("111111");
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps(ctx) {
+  let hub;
+  try {
+    hub = await fetchHubFromSlug({ slug: ctx.params.slug });
+  } catch (err) {
+    console.log("err", err);
+    return {
+      props: {
+        error: {
+          code: 500,
+        },
+      },
+      revalidate: 5,
     };
   }
 
-  componentDidMount() {
-    if (!this.props.initialProps?.initialFeed) {
-      this.fetchHubInfo(this.state.slug);
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.slug !== this.props.slug) {
-      this.setState(
-        {
-          slug: Router.router.query.slug,
+  if (!hub) {
+    return {
+      props: {
+        error: {
+          code: 404,
         },
-        () => {
-          this.fetchHubInfo(Router.router.query.slug);
-        }
-      );
-    }
+      },
+      revalidate: 10,
+    };
   }
 
-  fetchHubInfo = async (name) => {
-    const currentHub = await fetchHubFromSlug({ slug: name });
-    if (currentHub) {
-      this.setState({
-        currentHub,
-        hubDescription: this.props.hub && this.props.hub.name,
-      });
-    }
+  console.log("hub", hub);
+
+  return {
+    props: {
+      hub,
+      slug: ctx.params.slug,
+    },
+    revalidate: 500,
   };
-
-  renderHub = () => {
-    const { currentHub, slug } = this.state;
-
-    return (
-      <HubPage
-        hub={currentHub}
-        slug={this.props.slug}
-        {...this.props.initialProps}
-      />
-    );
-  };
-
-  render() {
-    const { currentHub, slug } = this.state;
-    if (this.props.error) {
-      return <Error statusCode={404} />;
-    }
-
-    return (
-      <div>
-        {process.browser ? (
-          <Head
-            title={toTitleCase(this.state.currentHub.name) + " on ResearchHub"}
-            description={this.state.hubDescription}
-          />
-        ) : (
-          <Head
-            title={
-              this.props.currentHub
-                ? toTitleCase(this.props.currentHub.name) + " on ResearchHub"
-                : toTitleCase(this.props.slug) + " on ResearchHub"
-            }
-            description={
-              this.props.currentHub
-                ? "Discuss and Discover " +
-                  toTitleCase(this.props.currentHub.name)
-                : "Discuss and Discover " + toTitleCase(this.props.slug)
-            }
-          />
-        )}
-        <HubPage
-          hub={currentHub}
-          slug={slug}
-          isLiveFeed={this.props.isLiveFeed}
-          {...this.props.initialProps}
-        />
-      </div>
-    );
-  }
 }
 
-export default Index;
+export default Page;

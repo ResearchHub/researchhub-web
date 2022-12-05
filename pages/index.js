@@ -10,35 +10,37 @@ const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
-Index.getInitialProps = async (ctx) => {
-  const { query } = ctx;
-  const cookies = nookies.get(ctx);
-  const authToken = cookies[AUTH_TOKEN];
-  const defaultProps = getFetchDefaults({ query, authToken });
-
-  if (process.browser) {
-    return defaultProps;
-  }
-
-  try {
-    const selectedFilters = getSelectedUrlFilters({ query, pathname: "/" });
-    const initialFeed = await fetchUnifiedDocFeed(
-      {
-        selectedFilters,
-        hubId: null,
-        page: 1,
-      },
-      authToken,
-      !isNullOrUndefined(authToken) /* withVotes */
-    );
-
-    return {
-      ...defaultProps,
-      initialFeed,
-    };
-  } catch (error) {
-    return defaultProps;
-  }
-};
-
 export default Index;
+
+// Index.getInitialProps = async (ctx) => {
+//   const { query } = ctx;
+//   const cookies = nookies.get(ctx);
+//   const authToken = cookies[AUTH_TOKEN];
+//   const defaultProps = getFetchDefaults({ query, authToken });
+
+//   if (process.browser) {
+//     return defaultProps;
+//   }
+
+//   try {
+//     const selectedFilters = getSelectedUrlFilters({ query, pathname: "/" });
+//     const initialFeed = await fetchUnifiedDocFeed(
+//       {
+//         selectedFilters,
+//         hubId: null,
+//         page: 1,
+//       },
+//       authToken,
+//       !isNullOrUndefined(authToken) /* withVotes */
+//     );
+
+//     return {
+//       ...defaultProps,
+//       initialFeed,
+//     };
+//   } catch (error) {
+//     return defaultProps;
+//   }
+// };
+
+// export default Index;
