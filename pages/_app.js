@@ -170,12 +170,14 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
 MyApp.getInitialProps = async (appContext) => {
   const staticOrServerSidePropsPaths = [
     "/",
+    "/live",
     "/paper/[paperId]/[paperName]",
     "/hubs",
     "/user/[authorId]/[tabName]",
     "/[orgSlug]/notebook/[noteId]",
     "/[orgSlug]/notebook",
     "/hubs/[slug]",
+    "/hubs/[slug]/live",
   ];
 
   const cookies = nookies.get(appContext.ctx);
@@ -187,6 +189,7 @@ MyApp.getInitialProps = async (appContext) => {
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)
   ) {
+    console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     const appProps = await App.getInitialProps(appContext);
     return { ...appProps, rootLeftSidebarForceMin };
   } else {
