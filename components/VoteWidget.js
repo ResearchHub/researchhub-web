@@ -139,59 +139,57 @@ const VoteWidget = (props) => {
   const displayableScore = getScore(props);
 
   return (
-    <Fragment>
-      <div
-        className={css(
-          styles.container,
-          horizontalView && styles.horizontalView,
-          props.styles
-        )}
-        style={{ fontSize: fontSize, width: width }}
+    <div
+      className={css(
+        styles.container,
+        horizontalView && styles.horizontalView,
+        props.styles
+      )}
+      style={{ fontSize: fontSize, width: width }}
+    >
+      <PermissionNotificationWrapper
+        loginRequired={true}
+        onClick={onUpvoteClick}
+        modalMessage={"vote"}
       >
-        <PermissionNotificationWrapper
-          loginRequired={true}
-          onClick={onUpvoteClick}
-          modalMessage={"vote"}
-        >
-          <UpvoteButton
-            selected={upvoteSelected}
-            disabled={upvoteDisabled || searchResult}
-            horizontalView={horizontalView && horizontalView}
-            styleClass={upvoteStyleClass}
-            small={small}
-          />
-        </PermissionNotificationWrapper>
-        <ReactTooltip
-          id="reputationTooltip"
-          className={css(styles.tooltip)}
-          place="bottom"
-          effect="solid"
-        />
-        <ScorePill
-          score={displayableScore}
-          promoted={promoted}
-          paper={paper}
-          showPromotion={showPromotion}
-          type={type}
-          small={small}
-          pillClass={pillClass}
+        <UpvoteButton
+          selected={upvoteSelected}
+          disabled={upvoteDisabled || searchResult}
           horizontalView={horizontalView && horizontalView}
+          styleClass={upvoteStyleClass}
+          small={small}
         />
-        <PermissionNotificationWrapper
-          loginRequired={true}
-          onClick={onDownvoteClick}
-          modalMessage={"vote"}
-        >
-          <DownvoteButton
-            selected={downvoteSelected}
-            disabled={downvoteDisabled || searchResult}
-            horizontalView={horizontalView && horizontalView}
-            styleClass={downvoteStyleClass}
-            small={small}
-          />
-        </PermissionNotificationWrapper>
-      </div>
-    </Fragment>
+      </PermissionNotificationWrapper>
+      <ReactTooltip
+        id="reputationTooltip"
+        className={css(styles.tooltip)}
+        place="bottom"
+        effect="solid"
+      />
+      <ScorePill
+        score={displayableScore}
+        promoted={promoted}
+        paper={paper}
+        showPromotion={showPromotion}
+        type={type}
+        small={small}
+        pillClass={pillClass}
+        horizontalView={horizontalView && horizontalView}
+      />
+      <PermissionNotificationWrapper
+        loginRequired={true}
+        onClick={onDownvoteClick}
+        modalMessage={"vote"}
+      >
+        <DownvoteButton
+          selected={downvoteSelected}
+          disabled={downvoteDisabled || searchResult}
+          horizontalView={horizontalView && horizontalView}
+          styleClass={downvoteStyleClass}
+          small={small}
+        />
+      </PermissionNotificationWrapper>
+    </div>
   );
 };
 

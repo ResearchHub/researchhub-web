@@ -25,8 +25,7 @@ import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCatego
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import Bounty from "~/config/types/bounty";
-import { timeToRoundUp } from "~/config/utils/dates";
+import { postDownvote, postUpvote } from "./api/fetchDiscussion";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -466,14 +465,7 @@ class DiscussionEntry extends Component {
   };
 
   upvote = async () => {
-    let {
-      data,
-      postUpvote,
-      postUpvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
@@ -487,21 +479,27 @@ class DiscussionEntry extends Component {
       documentId = hypothesis.id;
     }
 
-    postUpvotePending();
+    const upvoteRes = await postUpvote({
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      dispatch,
+    });
 
-    await postUpvote(documentType, paperId, documentId, discussionThreadId);
-
-    this.updateWidgetUI(this.props.voteResult);
+    if (upvoteRes) {
+      this.updateWidgetUI(upvoteRes);
+    }
   };
 
   downvote = async () => {
     let {
       data,
-      postDownvote,
       postDownvotePending,
       post,
       hypothesis,
       documentType,
+      dispatch,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
@@ -518,9 +516,16 @@ class DiscussionEntry extends Component {
 
     postDownvotePending();
 
-    await postDownvote(documentType, paperId, documentId, discussionThreadId);
-
-    this.updateWidgetUI();
+    const voteRes = await postDownvote({
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      dispatch,
+    });
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
   getDocumentID = () => {
@@ -528,44 +533,38 @@ class DiscussionEntry extends Component {
     return data?.paper ?? hypothesis?.id ?? post?.id;
   };
 
-  updateWidgetUI = () => {
-    let voteResult = this.props.vote;
-    const success = voteResult.success;
-    const vote = getNestedValue(voteResult, ["vote"], false);
-
-    if (success) {
-      const voteType = vote.voteType;
-      let score = this.state.score;
-      if (voteType === UPVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            // this is how we determine if it's the user's first vote
-            score += 1;
-          } else {
-            score += 2;
-          }
-        } else {
+  updateWidgetUI = (vote) => {
+    const voteType = vote.voteType;
+    let score = this.state.score;
+    if (voteType === UPVOTE) {
+      if (voteType) {
+        if (this.state.selectedVoteType === null) {
+          // this is how we determine if it's the user's first vote
           score += 1;
-        }
-        this.setState({
-          selectedVoteType: UPVOTE,
-          score,
-        });
-      } else if (voteType === DOWNVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            score -= 1;
-          } else {
-            score -= 2;
-          }
         } else {
-          score -= 1;
+          score += 2;
         }
-        this.setState({
-          selectedVoteType: DOWNVOTE,
-          score,
-        });
+      } else {
+        score += 1;
       }
+      this.setState({
+        selectedVoteType: UPVOTE,
+        score,
+      });
+    } else if (voteType === DOWNVOTE) {
+      if (voteType) {
+        if (this.state.selectedVoteType === null) {
+          score -= 1;
+        } else {
+          score -= 2;
+        }
+      } else {
+        score -= 1;
+      }
+      this.setState({
+        selectedVoteType: DOWNVOTE,
+        score,
+      });
     }
   };
 
@@ -585,9 +584,7 @@ class DiscussionEntry extends Component {
       },
       documentType,
       hostname,
-      hypothesis,
       mediaOnly,
-      mobileView,
       noRespond,
       noVote,
       noVoteLine,
@@ -599,7 +596,6 @@ class DiscussionEntry extends Component {
       isAcceptedAnswer,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
-      currentAuthor,
       bountyType,
     } = this.props;
 
@@ -737,6 +733,7 @@ class DiscussionEntry extends Component {
                   />
                 ) : null}
                 <div
+                  key={`thread_${data.id}`}
                   className={css(
                     styles.content,
                     isSolution && !this.state.editing && styles.acceptedAnswer,
@@ -749,6 +746,7 @@ class DiscussionEntry extends Component {
                     focusEditor={true}
                     body={true}
                     textStyles={styles.contentText}
+                    textEditorId={`thread_${data.id}`}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
@@ -1048,14 +1046,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  discussion: state.discussion,
-  // paper: state.paper,
-  vote: state.vote,
-  auth: state.auth,
-});
+const mapStateToProps = (state) => {
+  return {
+    discussion: state.discussion,
+    vote: state.vote,
+    auth: state.auth,
+  };
+};
 
 const mapDispatchToProps = {
+  dispatch: (dispatch) => {
+    return dispatch;
+  },
   postComment: DiscussionActions.postComment,
   postCommentPending: DiscussionActions.postCommentPending,
   postUpvotePending: DiscussionActions.postUpvotePending,

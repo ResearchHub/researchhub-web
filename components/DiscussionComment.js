@@ -66,7 +66,7 @@ class DiscussionComment extends Component {
     this.setState({ readOnly });
   };
 
-  upvote = async () => {
+  upvote = () => {
     const { paperId, discussionThreadId } = this.state;
 
     this.props.dispatch(DiscussionActions.postUpvotePending());
@@ -77,7 +77,7 @@ class DiscussionComment extends Component {
     }
     ids.push(this.state.id);
 
-    await this.props.dispatch(
+    this.props.dispatch(
       DiscussionActions.postUpvote(paperId, discussionThreadId, ...ids)
     );
 

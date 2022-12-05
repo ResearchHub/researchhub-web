@@ -56,7 +56,7 @@ function AuthorClaimModal({
       if (actionType == AUTHOR_CLAIM_STATUS.CLOSED) {
         shouldNotifyUser = false;
         updateStatus = AUTHOR_CLAIM_STATUS.DENIED;
-      } 
+      }
       updateCaseStatus({
         payload: { caseID, updateStatus, shouldNotifyUser },
         onSuccess: () => {
@@ -69,7 +69,7 @@ function AuthorClaimModal({
           showMessage({ load: false, show: true, error: true });
           setMessage(responseMsg);
           setIsSubmitting(false);
-        }
+        },
       });
     };
   };
@@ -280,15 +280,11 @@ const acceptRejectStyles = StyleSheet.create({
   modalContentStyles: {},
 });
 
-const mapStateToProps = (state) => ({
-});
+const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthorClaimModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorClaimModal);
