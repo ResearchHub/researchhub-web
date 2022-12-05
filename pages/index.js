@@ -6,11 +6,17 @@ import nookies from "nookies";
 import { getSelectedUrlFilters } from "~/components/UnifiedDocFeed/utils/getSelectedUrlFilters";
 import { getFetchDefaults } from "~/components/UnifiedDocFeed/utils/getFetchDefaults";
 
-const Index = (props) => {
+function Page(props) {
   return <HubPage home={true} {...props} />;
-};
+}
 
-export default Index;
+export async function getStaticProps(ctx) {
+  return {
+    props: {},
+  };
+}
+
+export default Page;
 
 // Index.getInitialProps = async (ctx) => {
 //   const { query } = ctx;

@@ -161,15 +161,17 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <FeedInfoCard
-        hub={hub}
-        hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
-        isHomePage={isHomePage}
-        mainHeaderText={formatMainHeader({
-          label: hubName ?? "",
-          isHomePage,
-        })}
-      />
+      {isHomePage || isEmpty(hub) ? null : (
+        <FeedInfoCard
+          hub={hub}
+          hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+          isHomePage={isHomePage}
+          mainHeaderText={formatMainHeader({
+            label: hubName ?? "",
+            isHomePage,
+          })}
+        />
+       )}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>

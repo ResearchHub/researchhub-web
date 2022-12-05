@@ -220,7 +220,6 @@ function Page({ slug, hub, error }) {
 }
 
 export async function getStaticPaths(ctx) {
-  console.log("111111");
   return {
     paths: [],
     fallback: "blocking",
