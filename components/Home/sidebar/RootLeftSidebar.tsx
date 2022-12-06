@@ -384,7 +384,7 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
-          {isMinimized ? (
+          {/* {isMinimized ? (
             <div
               className={css(styles.arrowRight)}
               onClick={() => {
@@ -392,7 +392,7 @@ function RootLeftSidebar({
                 setIsMinimized(false);
                 storeToCookie({
                   key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "false" /* intentional string literal */,
+                  value: "false",
                 });
               }}
             >
@@ -406,13 +406,13 @@ function RootLeftSidebar({
                 setIsMinimized(true);
                 storeToCookie({
                   key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "true" /* intentional string literal */,
+                  value: "true",
                 });
               }}
             >
               {icons.arrowLeftToLine}
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </motion.div>

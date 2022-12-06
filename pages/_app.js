@@ -181,9 +181,10 @@ MyApp.getInitialProps = async (appContext) => {
   ];
 
   const cookies = nookies.get(appContext.ctx);
-  const rootLeftSidebarForceMin =
-    cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
-    "true"; /* intentional string literal */
+  const rootLeftSidebarForceMin = false;
+
+  // cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
+  // "true"; /* intentional string literal */
 
   if (
     process.browser ||
