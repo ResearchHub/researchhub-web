@@ -368,7 +368,7 @@ const PaperIndexWithUndux = (props) => {
 export async function getStaticPaths(ctx) {
   return {
     paths: [],
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -377,8 +377,11 @@ export async function getStaticProps(ctx) {
   const { paperId } = ctx.params;
 
   try {
+    console.log("API.PAPER({ paperId })", API.PAPER({ paperId }));
+    console.log("paperId", paperId);
     paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
+    console.log("err", err);
     return {
       props: {
         error: {
@@ -390,6 +393,7 @@ export async function getStaticProps(ctx) {
   }
 
   if (!paper) {
+    console.log("no pap0er", paper);
     return {
       props: {
         error: {
