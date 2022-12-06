@@ -15,6 +15,7 @@ import {
 } from "~/config/utils/nullchecks";
 import { postUpdatePaperAbstract } from "./api/postUpdatePaperAbstract";
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
+import { htmlStringToPlainString } from "~/config/utils/htmlStringToPlainString";
 
 const SimpleEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -50,11 +51,17 @@ const useEffectParseAbstract = ({
   );
 };
 
-const useEffectPaperFetching = ({ paper, setIsFetching }: { paper: any, setIsFetching: Function }) => {
+const useEffectPaperFetching = ({
+  paper,
+  setIsFetching,
+}: {
+  paper: any;
+  setIsFetching: Function;
+}) => {
   useEffect(() => {
     paper?.id && setIsFetching(false);
-  }, [paper])
-}
+  }, [paper]);
+};
 
 export default function PaperPageAbstractSection({ paper }): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
@@ -68,9 +75,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
 
   return (
     <div className={css(styles.paperPageAbstractSection)}>
-      {isFetching &&
-        <AbstractPlaceholder color="#EFEFEF" />
-      }
+      {isFetching && <AbstractPlaceholder color="#EFEFEF" />}
       <div style={{ visibility: isFetching ? "hidden" : "visible" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2 style={{ margin: 0 }}>{"Abstract"}</h2>
@@ -84,7 +89,6 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
             </PermissionNotificationWrapper>
           )}
         </div>
-
 
         {isEditMode ? (
           <div className={css(styles.editorWrap)}>
@@ -103,16 +107,18 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 size={"small"}
               />
               <Button
-                label={isUpdatingAbstract ? (
-                  <Loader
-                    color={colors.LIGHT_GREY()}
-                    key="abstract-submit-loader"
-                    loading
-                    size={14}
-                  />
-                ) : (
-                  "Save"
-                )}
+                label={
+                  isUpdatingAbstract ? (
+                    <Loader
+                      color={colors.LIGHT_GREY()}
+                      key="abstract-submit-loader"
+                      loading
+                      size={14}
+                    />
+                  ) : (
+                    "Save"
+                  )
+                }
                 onClick={(event): void => {
                   event.preventDefault();
                   setIsUpdatingAbstract(true);
@@ -125,13 +131,16 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                     onSuccess: (): void => {
                       setIsEditMode(false);
                       setIsUpdatingAbstract(false);
+                      setAbstractSrc(abstractSrc);
+                      setHasNoAbstract(isEmpty(abstractSrc));
                     },
                     paperPayload: {
-                      /* NOTE: we no longer update abstract in attempt to depreciate this legacy field.
+                      /* NOTE: Manually overriding legacy "abstract" field since it's being used as a preview text in home feed
                       All proceeding updates make changes to abstract_src */
                       ...paper,
                       hubs: paper?.hubs.map((hub) => hub.id),
                       abstract_src: abstractSrc,
+                      abstract: htmlStringToPlainString(abstractSrc, 500),
                       abstract_src_type: "CK_EDITOR",
                     },
                   });
@@ -244,7 +253,7 @@ const styles = StyleSheet.create({
 
   editorWrap: { marginTop: 12 },
   editorWrapReadOnly: {
-    marginLeft: -12, /* matching ck editor padding */
+    marginLeft: -12 /* matching ck editor padding */,
   },
   editButtonRow: {
     display: "flex",
