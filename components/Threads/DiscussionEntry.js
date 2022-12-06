@@ -14,7 +14,7 @@ import InlineCommentContextTitle from "../InlineCommentDisplay/InlineCommentCont
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
 import { saveReview } from "~/config/fetch";
@@ -25,7 +25,7 @@ import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCatego
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import { postDownvote, postUpvote } from "./api/fetchDiscussion";
+import { neutralVote, postDownvote, postUpvote } from "./api/fetchDiscussion";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -466,8 +466,8 @@ class DiscussionEntry extends Component {
 
   upvote = async () => {
     let { data, post, hypothesis, documentType, dispatch } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    const threadId = data.id;
+    const paperId = data.paper;
     let documentId;
     if (
       documentType === "post" ||
@@ -479,30 +479,23 @@ class DiscussionEntry extends Component {
       documentId = hypothesis.id;
     }
 
-    const upvoteRes = await postUpvote({
+    const voteRes = await postUpvote({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       dispatch,
     });
 
-    if (upvoteRes) {
-      this.updateWidgetUI(upvoteRes);
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
     }
   };
 
   downvote = async () => {
-    let {
-      data,
-      postDownvotePending,
-      post,
-      hypothesis,
-      documentType,
-      dispatch,
-    } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
     let documentId;
     if (
       documentType === "post" ||
@@ -513,17 +506,45 @@ class DiscussionEntry extends Component {
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
-
-    postDownvotePending();
 
     const voteRes = await postDownvote({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       dispatch,
     });
+
     if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
+  };
+
+  neutralVote = async () => {
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
+    let documentId;
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
+
+    const voteRes = await neutralVote({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      dispatch,
+    });
+
+    if (voteRes) {
+      debugger;
       this.updateWidgetUI(voteRes);
     }
   };
@@ -538,7 +559,7 @@ class DiscussionEntry extends Component {
     let score = this.state.score;
     if (voteType === UPVOTE) {
       if (voteType) {
-        if (this.state.selectedVoteType === null) {
+        if (!this.state.selectedVoteType) {
           // this is how we determine if it's the user's first vote
           score += 1;
         } else {
@@ -553,7 +574,7 @@ class DiscussionEntry extends Component {
       });
     } else if (voteType === DOWNVOTE) {
       if (voteType) {
-        if (this.state.selectedVoteType === null) {
+        if (!this.state.selectedVoteType) {
           score -= 1;
         } else {
           score -= 2;
@@ -563,6 +584,18 @@ class DiscussionEntry extends Component {
       }
       this.setState({
         selectedVoteType: DOWNVOTE,
+        score,
+      });
+    } else if (!voteType) {
+      debugger;
+      if (this.state.selectedVoteType === UPVOTE) {
+        score -= 1;
+      } else if (this.state.selectedVoteType === DOWNVOTE) {
+        score += 1;
+      }
+
+      this.setState({
+        selectedVoteType: null,
         score,
       });
     }
@@ -651,6 +684,7 @@ class DiscussionEntry extends Component {
                 score={this.state.score}
                 styles={styles.voteWidget}
                 onUpvote={this.upvote}
+                onNeutralVote={this.neutralVote}
                 onDownvote={this.downvote}
                 selected={this.state.selectedVoteType}
                 type={"Discussion"}

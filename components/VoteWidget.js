@@ -53,6 +53,7 @@ const VoteWidget = (props) => {
     upvoteStyleClass,
     pillClass,
     small,
+    onNeutralVote,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -87,6 +88,9 @@ const VoteWidget = (props) => {
     if (upvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "upvote"));
     } else if (upvoteSelected) {
+      onNeutralVote && onNeutralVote();
+      setUpvoteSelected(false);
+      setDownvoteSelected(false);
       // TODO: show a user state here?
     } else {
       if (isPaper || type === "Discussion") {
@@ -119,6 +123,10 @@ const VoteWidget = (props) => {
     if (downvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "downvote"));
     } else if (downvoteSelected) {
+      onNeutralVote && onNeutralVote();
+      setUpvoteSelected(false);
+      setDownvoteSelected(false);
+
       // TODO: show a user state here?
     } else {
       if (isPaper || type === "Discussion") {
