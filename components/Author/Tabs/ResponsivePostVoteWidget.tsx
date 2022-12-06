@@ -4,8 +4,9 @@ import { css, StyleSheet } from "aphrodite";
 
 export type ResponsivePostVoteWidgetProps = {
   onDesktop: boolean;
-  onDownvote: Function;
-  onUpvote: Function;
+  onDownvote: () => void;
+  onUpvote: () => void;
+  onNeutralVote: () => void;
   score: number;
   voteState: string | null;
 };
@@ -16,6 +17,7 @@ export default function ResponsivePostVoteWidget({
   onUpvote,
   score,
   voteState,
+  onNeutralVote,
 }: ResponsivePostVoteWidgetProps) {
   return (
     <Responsive onDesktop={onDesktop}>
@@ -28,6 +30,7 @@ export default function ResponsivePostVoteWidget({
             horizontalView={!onDesktop}
             onDownvote={onDownvote}
             onUpvote={onUpvote}
+            onNeutralVote={onNeutralVote}
             promoted={false}
             score={score}
             styles={styles.voteWidget}

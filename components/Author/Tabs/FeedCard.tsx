@@ -1,7 +1,12 @@
 import { breakpoints } from "~/config/themes/screen";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
+import {
+  DOWNVOTE,
+  NEUTRALVOTE,
+  UPVOTE,
+  userVoteToConstant,
+} from "~/config/constants";
 import {
   emptyFncWithMsg,
   isEmpty,
@@ -12,12 +17,8 @@ import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { parseCreatedBy } from "~/config/types/contribution";
-import {
-  VoteType,
-  RhDocumentType,
-  NullableString,
-} from "~/config/types/root_types";
-import { SyntheticEvent, useState, useEffect } from "react";
+import { VoteType, RhDocumentType } from "~/config/types/root_types";
+import { useState, useEffect } from "react";
 import colors, {
   genericCardColors,
   voteWidgetColors,
@@ -35,7 +36,6 @@ import { createVoteHandler } from "~/components/Vote/utils/createVoteHandler";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
-import { truncateText } from "~/config/utils/string";
 import ContentBadge from "~/components/ContentBadge";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
@@ -147,6 +147,8 @@ function FeedCard({
       : formattedDocType
   }/${id}/${slug ?? "new"}`;
 
+  const dispatch = useDispatch();
+
   useEffect((): void => {
     if (!isEmpty(userVote)) {
       setVoteState(userVoteToConstant(userVote));
@@ -171,7 +173,9 @@ function FeedCard({
       setScore(score + increment);
     },
     voteType: DOWNVOTE,
+    dispatch,
   });
+
   const onUpvote = createVoteHandler({
     currentAuthor: currentUser?.author_profile,
     currentVote: voteState,
@@ -184,6 +188,30 @@ function FeedCard({
       setScore(score + increment);
     },
     voteType: UPVOTE,
+    dispatch,
+  });
+
+  const onNeutralVote = createVoteHandler({
+    dispatch,
+    currentAuthor: currentUser?.author_profile,
+    currentVote: voteState,
+    documentCreatedBy: created_by ?? uploaded_by,
+    documentID: id,
+    documentType: nullthrows(formattedDocType, "Cannot vote without doctype"),
+    onError: emptyFncWithMsg,
+    onSuccess: ({ increment, voteType }): void => {
+      if (voteType === NEUTRALVOTE) {
+        if (voteState === UPVOTE) {
+          setScore(score - 1);
+        } else if (voteState === DOWNVOTE) {
+          setScore(score + 1);
+        }
+      } else {
+        setScore(score + increment);
+      }
+      setVoteState(voteType);
+    },
+    voteType: NEUTRALVOTE,
   });
 
   const getTitle = () => {
@@ -229,6 +257,7 @@ function FeedCard({
               {/* TODO: migrate to VoteWidgetV2 */}
               <ResponsivePostVoteWidget
                 onDesktop
+                onNeutralVote={onNeutralVote}
                 onDownvote={onDownvote}
                 onUpvote={onUpvote}
                 score={score}
@@ -307,6 +336,7 @@ function FeedCard({
                         horizontalView={true}
                         onDownvote={onDownvote}
                         onUpvote={onUpvote}
+                        onNeutralVote={onNeutralVote}
                         score={score}
                         styles={styles.voteWidget}
                         upvoteStyleClass={styles.mobileVote}

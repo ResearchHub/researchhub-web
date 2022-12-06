@@ -1,4 +1,4 @@
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import API from "~/config/api";
 import {
   AuthorProfile,
@@ -15,6 +15,8 @@ import {
 } from "~/config/utils/nullchecks";
 import { buildGrmVoteApiUri } from "~/config/utils/buildGrmVoteApiUri";
 import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocType";
+import { Helpers } from "@quantfive/js-web-config";
+import { handleCatch } from "~/redux/utils";
 
 type Args = {
   currentAuthor: AuthorProfile;
@@ -37,6 +39,7 @@ type Args = {
     voteType: VoteType;
   }) => void;
   voteType: VoteType;
+  dispatch: any;
 };
 
 export const createVoteHandler = ({
@@ -49,6 +52,7 @@ export const createVoteHandler = ({
   onError,
   onSuccess,
   voteType,
+  dispatch,
 }: Args) => {
   const formattedDocumentType = RESEARCHHUB_POST_DOCUMENT_TYPES.includes(
     documentType
@@ -60,8 +64,10 @@ export const createVoteHandler = ({
     documentCreatedBy?.author_profile?.id;
 
   return async (event: SyntheticEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     if (
       !isNullOrUndefined(currentAuthor) &&
       currentAuthor?.id === resolvedDocumentAuthorID
@@ -73,19 +79,9 @@ export const createVoteHandler = ({
     }
 
     const increment =
-      voteType === "upvote" ? 1 : voteType === "neutralvote" ? 0 : -1;
+      voteType === UPVOTE ? 1 : voteType === NEUTRALVOTE ? 0 : -1;
 
-    if (currentVote === voteType) {
-      return;
-    } else {
-      // optimistic update
-      onSuccess({
-        increment: Boolean(currentVote) ? increment * 2 : increment,
-        voteType,
-      });
-    }
-
-    fetch(
+    return fetch(
       buildGrmVoteApiUri({
         commentPayload,
         documentType: nullthrows(
@@ -96,8 +92,24 @@ export const createVoteHandler = ({
         voteType,
       }),
       API.POST_CONFIG()
-    ).catch((error: Error): void => {
-      onError(error);
-    });
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        // optimistic update
+        onSuccess({
+          increment:
+            Boolean(currentVote) && currentVote !== NEUTRALVOTE
+              ? increment * 2
+              : increment,
+          voteType,
+        });
+      })
+      .catch((error: Error): void => {
+        if (error?.response?.status === 429) {
+          handleCatch(error, dispatch);
+        }
+        onError(error);
+      });
   };
 };
