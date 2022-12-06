@@ -21,6 +21,7 @@ import { createUsername } from "~/config/utils/user";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
+import { postDownvote, postUpvote, neutralVote } from "./api/fetchDiscussion";
 
 class CommentEntry extends Component {
   constructor(props) {
@@ -47,11 +48,17 @@ class CommentEntry extends Component {
   }
 
   componentDidMount() {
-    const selectedVoteType = getNestedValue(this.props, [
+    let selectedVoteType = getNestedValue(this.props, [
       "comment",
       "user_vote",
       "vote_type",
     ]);
+
+    if (selectedVoteType === 1) {
+      selectedVoteType = UPVOTE;
+    } else if (selectedVoteType === 2) {
+      selectedVoteType = DOWNVOTE;
+    }
     // const revealReply =
     //   this.props.comment.replies.length > 0 &&
     //   this.props.comment.replies.length < 5;
@@ -218,111 +225,108 @@ class CommentEntry extends Component {
   };
 
   upvote = async () => {
-    let {
-      data,
-      comment,
-      postUpvote,
-      postUpvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
-    let discussionThreadId = data.id;
+    let { data, comment, post, hypothesis, documentType } = this.props;
+    let threadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
     let commentId = comment.id;
 
-    postUpvotePending();
-
-    await postUpvote(
+    const voteRes = await postUpvote({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
-      commentId
-    );
+      threadId,
+      commentId,
+    });
 
-    this.updateWidgetUI();
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
   downvote = async () => {
-    let {
-      data,
-      comment,
-      postDownvote,
-      postDownvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
-    let discussionThreadId = data.id;
+    let { data, comment, post, hypothesis, documentType } = this.props;
+    let threadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
     let commentId = comment.id;
 
-    postDownvotePending();
-
-    await postDownvote(
+    const voteRes = await postDownvote({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
-      commentId
-    );
+      threadId,
+      commentId,
+    });
 
-    this.updateWidgetUI();
-  };
-
-  updateWidgetUI = () => {
-    let voteResult = this.props.vote;
-    const success = voteResult.success;
-    const vote = getNestedValue(voteResult, ["vote"], false);
-
-    if (success) {
-      const voteType = vote.voteType;
-      let score = this.state.score;
-      if (voteType === UPVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            score += 1;
-          } else {
-            score += 2;
-          }
-        } else {
-          score += 1;
-        }
-        this.setState({
-          selectedVoteType: UPVOTE,
-          score,
-        });
-      } else if (voteType === DOWNVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            score -= 1;
-          } else {
-            score -= 2;
-          }
-        } else {
-          score -= 1;
-        }
-        this.setState({
-          selectedVoteType: DOWNVOTE,
-          score,
-        });
-      }
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
     }
   };
 
+  updateWidgetUI = (vote) => {
+    const voteType = vote.voteType;
+    let score = this.state.score;
+    if (voteType === UPVOTE) {
+      if (voteType) {
+        if (!this.state.selectedVoteType) {
+          // this is how we determine if it's the user's first vote
+          score += 1;
+        } else {
+          score += 2;
+        }
+      } else {
+        score += 1;
+      }
+      this.setState({
+        selectedVoteType: UPVOTE,
+        score,
+      });
+    } else if (voteType === DOWNVOTE) {
+      if (voteType) {
+        if (!this.state.selectedVoteType) {
+          score -= 1;
+        } else {
+          score -= 2;
+        }
+      } else {
+        score -= 1;
+      }
+      this.setState({
+        selectedVoteType: DOWNVOTE,
+        score,
+      });
+    } else if (!voteType) {
+      if (this.state.selectedVoteType === UPVOTE) {
+        score -= 1;
+      } else if (this.state.selectedVoteType === DOWNVOTE) {
+        score += 1;
+      }
+
+      this.setState({
+        selectedVoteType: null,
+        score,
+      });
+    }
+  };
   onBountyAward = ({ bountyAmount }) => {
     this.setState({
       isAcceptedAnswer: true,
@@ -344,7 +348,11 @@ class CommentEntry extends Component {
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -392,7 +400,11 @@ class CommentEntry extends Component {
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -422,7 +434,11 @@ class CommentEntry extends Component {
   formatMetaData = () => {
     let { data, comment, post, hypothesis, documentType } = this.props;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -437,6 +453,38 @@ class CommentEntry extends Component {
       objectId: comment.id,
       documentId: documentId,
     };
+  };
+
+  neutralVote = async () => {
+    let { data, post, hypothesis, documentType, dispatch, comment } =
+      this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
+    let documentId;
+    const commentId = comment.id;
+
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
+
+    const voteRes = await neutralVote({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      dispatch,
+      commentId,
+    });
+
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
   getDocumentID = () => {
@@ -593,6 +641,7 @@ class CommentEntry extends Component {
               <VoteWidget
                 styles={styles.voteWidget}
                 score={this.state.score}
+                onNeutralVote={this.neutralVote}
                 onUpvote={this.upvote}
                 onDownvote={this.downvote}
                 selected={this.state.selectedVoteType}
@@ -661,6 +710,7 @@ class CommentEntry extends Component {
                     readOnly={true}
                     initialValue={body}
                     body={true}
+                    textEditorId={`comment_${data.id}`}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsComments}

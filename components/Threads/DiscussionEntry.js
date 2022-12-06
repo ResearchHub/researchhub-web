@@ -234,7 +234,7 @@ class DiscussionEntry extends Component {
     }
 
     postCommentPending();
-    await postComment(
+    const comment = await postComment(
       documentType,
       paperId,
       documentId,
@@ -242,8 +242,9 @@ class DiscussionEntry extends Component {
       content,
       plainText
     );
-    if (this.props.discussion.donePosting && this.props.discussion.success) {
-      let newComment = { ...this.props.discussion.postedComment };
+
+    if (comment.payload.donePosting && comment.payload.success) {
+      let newComment = { ...comment.payload.postedComment };
       newComment.highlight = true;
       let comments = [...this.state.comments, newComment];
       data.comments = comments;
@@ -416,6 +417,8 @@ class DiscussionEntry extends Component {
       context,
     } = this.props;
     let comments = this.state.comments;
+
+    console.log(comments);
 
     if (comments.length > 0) {
       return comments.map((comment, i) => {

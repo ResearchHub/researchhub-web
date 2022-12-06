@@ -17,6 +17,7 @@ import { getNestedValue } from "~/config/utils/misc";
 import DiscussionActions from "~/redux/discussion";
 import { createUsername } from "~/config/utils/user";
 import { MessageActions } from "~/redux/message";
+import { postUpvote, postDownvote, neutralVote } from "./api/fetchDiscussion";
 
 class ReplyEntry extends Component {
   constructor(props) {
@@ -38,11 +39,16 @@ class ReplyEntry extends Component {
   }
 
   componentDidMount() {
-    const selectedVoteType = getNestedValue(this.props, [
+    let selectedVoteType = getNestedValue(this.props, [
       "reply",
       "user_vote",
       "vote_type",
     ]);
+    if (selectedVoteType === 1) {
+      selectedVoteType = UPVOTE;
+    } else if (selectedVoteType === 2) {
+      selectedVoteType = DOWNVOTE;
+    }
     const score = this.props.reply.score;
     this.setState(
       {
@@ -93,7 +99,11 @@ class ReplyEntry extends Component {
   formatMetaData = () => {
     let { data, comment, reply, post, hypothesis, documentType } = this.props;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -141,21 +151,55 @@ class ReplyEntry extends Component {
     return data?.paper ?? hypothesis?.id ?? post?.id;
   };
 
+  neutralVote = async () => {
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
+    const replyId = reply.id;
+
+    let documentId;
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
+
+    const voteRes = await this.neutralVote({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      dispatch,
+      replyId,
+    });
+
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
+  };
+
   upvote = async () => {
     const {
       data,
       comment,
       reply,
-      postUpvote,
       postUpvotePending,
       post,
       hypothesis,
       documentType,
     } = this.props;
-    const discussionThreadId = data.id;
+    const threadId = data.id;
     const paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -163,35 +207,30 @@ class ReplyEntry extends Component {
     const commentId = comment.id;
     const replyId = reply.id;
 
-    postUpvotePending();
-
-    await postUpvote(
+    const voteRes = await postUpvote({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       commentId,
-      replyId
-    );
+      replyId,
+    });
 
-    this.updateWidgetUI();
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
   downvote = async () => {
-    const {
-      data,
-      comment,
-      reply,
-      postDownvote,
-      postDownvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
-    const discussionThreadId = data.id;
+    const { data, comment, reply, post, hypothesis, documentType } = this.props;
+    const threadId = data.id;
     const paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
@@ -199,57 +238,63 @@ class ReplyEntry extends Component {
     const commentId = comment.id;
     const replyId = reply.id;
 
-    postDownvotePending();
-
-    await postDownvote(
+    const voteRes = await postDownvote({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       commentId,
-      replyId
-    );
+      replyId,
+    });
 
-    this.updateWidgetUI();
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
-  updateWidgetUI = () => {
-    let voteResult = this.props.vote;
-    const success = voteResult.success;
-    const vote = getNestedValue(voteResult, ["vote"], false);
-
-    if (success) {
-      const voteType = vote.voteType;
-      let score = this.state.score;
-      if (voteType === UPVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            score += 1;
-          } else {
-            score += 2;
-          }
-        } else {
+  updateWidgetUI = (vote) => {
+    const voteType = vote.voteType;
+    let score = this.state.score;
+    if (voteType === UPVOTE) {
+      if (voteType) {
+        if (!this.state.selectedVoteType) {
+          // this is how we determine if it's the user's first vote
           score += 1;
-        }
-        this.setState({
-          selectedVoteType: UPVOTE,
-          score,
-        });
-      } else if (voteType === DOWNVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            score -= 1;
-          } else {
-            score -= 2;
-          }
         } else {
-          score -= 1;
+          score += 2;
         }
-        this.setState({
-          selectedVoteType: DOWNVOTE,
-          score,
-        });
+      } else {
+        score += 1;
       }
+      this.setState({
+        selectedVoteType: UPVOTE,
+        score,
+      });
+    } else if (voteType === DOWNVOTE) {
+      if (voteType) {
+        if (!this.state.selectedVoteType) {
+          score -= 1;
+        } else {
+          score -= 2;
+        }
+      } else {
+        score -= 1;
+      }
+      this.setState({
+        selectedVoteType: DOWNVOTE,
+        score,
+      });
+    } else if (!voteType) {
+      if (this.state.selectedVoteType === UPVOTE) {
+        score -= 1;
+      } else if (this.state.selectedVoteType === DOWNVOTE) {
+        score += 1;
+      }
+
+      this.setState({
+        selectedVoteType: null,
+        score,
+      });
     }
   };
 
@@ -500,6 +545,7 @@ class ReplyEntry extends Component {
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
+                    textEditorId={`reply_${data.id}`}
                     body={true}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
