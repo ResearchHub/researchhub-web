@@ -53,6 +53,7 @@ const VoteWidget = (props) => {
     upvoteStyleClass,
     pillClass,
     small,
+    onNeutralVote,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -87,6 +88,9 @@ const VoteWidget = (props) => {
     if (upvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "upvote"));
     } else if (upvoteSelected) {
+      onNeutralVote && onNeutralVote();
+      setUpvoteSelected(false);
+      setDownvoteSelected(false);
       // TODO: show a user state here?
     } else {
       if (isPaper || type === "Discussion") {
@@ -119,6 +123,10 @@ const VoteWidget = (props) => {
     if (downvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "downvote"));
     } else if (downvoteSelected) {
+      onNeutralVote && onNeutralVote();
+      setUpvoteSelected(false);
+      setDownvoteSelected(false);
+
       // TODO: show a user state here?
     } else {
       if (isPaper || type === "Discussion") {
@@ -139,59 +147,57 @@ const VoteWidget = (props) => {
   const displayableScore = getScore(props);
 
   return (
-    <Fragment>
-      <div
-        className={css(
-          styles.container,
-          horizontalView && styles.horizontalView,
-          props.styles
-        )}
-        style={{ fontSize: fontSize, width: width }}
+    <div
+      className={css(
+        styles.container,
+        horizontalView && styles.horizontalView,
+        props.styles
+      )}
+      style={{ fontSize: fontSize, width: width }}
+    >
+      <PermissionNotificationWrapper
+        loginRequired={true}
+        onClick={onUpvoteClick}
+        modalMessage={"vote"}
       >
-        <PermissionNotificationWrapper
-          loginRequired={true}
-          onClick={onUpvoteClick}
-          modalMessage={"vote"}
-        >
-          <UpvoteButton
-            selected={upvoteSelected}
-            disabled={upvoteDisabled || searchResult}
-            horizontalView={horizontalView && horizontalView}
-            styleClass={upvoteStyleClass}
-            small={small}
-          />
-        </PermissionNotificationWrapper>
-        <ReactTooltip
-          id="reputationTooltip"
-          className={css(styles.tooltip)}
-          place="bottom"
-          effect="solid"
-        />
-        <ScorePill
-          score={displayableScore}
-          promoted={promoted}
-          paper={paper}
-          showPromotion={showPromotion}
-          type={type}
-          small={small}
-          pillClass={pillClass}
+        <UpvoteButton
+          selected={upvoteSelected}
+          disabled={upvoteDisabled || searchResult}
           horizontalView={horizontalView && horizontalView}
+          styleClass={upvoteStyleClass}
+          small={small}
         />
-        <PermissionNotificationWrapper
-          loginRequired={true}
-          onClick={onDownvoteClick}
-          modalMessage={"vote"}
-        >
-          <DownvoteButton
-            selected={downvoteSelected}
-            disabled={downvoteDisabled || searchResult}
-            horizontalView={horizontalView && horizontalView}
-            styleClass={downvoteStyleClass}
-            small={small}
-          />
-        </PermissionNotificationWrapper>
-      </div>
-    </Fragment>
+      </PermissionNotificationWrapper>
+      <ReactTooltip
+        id="reputationTooltip"
+        className={css(styles.tooltip)}
+        place="bottom"
+        effect="solid"
+      />
+      <ScorePill
+        score={displayableScore}
+        promoted={promoted}
+        paper={paper}
+        showPromotion={showPromotion}
+        type={type}
+        small={small}
+        pillClass={pillClass}
+        horizontalView={horizontalView && horizontalView}
+      />
+      <PermissionNotificationWrapper
+        loginRequired={true}
+        onClick={onDownvoteClick}
+        modalMessage={"vote"}
+      >
+        <DownvoteButton
+          selected={downvoteSelected}
+          disabled={downvoteDisabled || searchResult}
+          horizontalView={horizontalView && horizontalView}
+          styleClass={downvoteStyleClass}
+          small={small}
+        />
+      </PermissionNotificationWrapper>
+    </div>
   );
 };
 

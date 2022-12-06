@@ -849,6 +849,26 @@ const routes = (BASE_URL) => {
       return url + "upvote/";
     },
 
+    NEUTRAL_VOTE: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
+      let url = buildPaperChainUrl(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
+
+      return url + "neutralvote/";
+    },
+
     DOWNVOTE: (
       documentType,
       paperId,

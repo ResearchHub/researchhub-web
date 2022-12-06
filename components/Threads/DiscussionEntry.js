@@ -14,7 +14,7 @@ import InlineCommentContextTitle from "../InlineCommentDisplay/InlineCommentCont
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
 import { saveReview } from "~/config/fetch";
@@ -25,8 +25,7 @@ import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCatego
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import Bounty from "~/config/types/bounty";
-import { timeToRoundUp } from "~/config/utils/dates";
+import { neutralVote, postDownvote, postUpvote } from "./api/fetchDiscussion";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -60,7 +59,12 @@ class DiscussionEntry extends Component {
     const { data, newCard } = this.props;
 
     const comments = data.comments || [];
-    const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
+    let selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
+    if (selectedVoteType === 1) {
+      selectedVoteType = UPVOTE;
+    } else if (selectedVoteType === 2) {
+      selectedVoteType = DOWNVOTE;
+    }
     this.setState(
       {
         comments,
@@ -466,16 +470,9 @@ class DiscussionEntry extends Component {
   };
 
   upvote = async () => {
-    let {
-      data,
-      postUpvote,
-      postUpvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
     let documentId;
     if (
       documentType === "post" ||
@@ -487,24 +484,23 @@ class DiscussionEntry extends Component {
       documentId = hypothesis.id;
     }
 
-    postUpvotePending();
+    const voteRes = await postUpvote({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      dispatch,
+    });
 
-    await postUpvote(documentType, paperId, documentId, discussionThreadId);
-
-    this.updateWidgetUI(this.props.voteResult);
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
   downvote = async () => {
-    let {
-      data,
-      postDownvote,
-      postDownvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
     let documentId;
     if (
       documentType === "post" ||
@@ -516,11 +512,45 @@ class DiscussionEntry extends Component {
       documentId = hypothesis.id;
     }
 
-    postDownvotePending();
+    const voteRes = await postDownvote({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      dispatch,
+    });
 
-    await postDownvote(documentType, paperId, documentId, discussionThreadId);
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
+  };
 
-    this.updateWidgetUI();
+  neutralVote = async () => {
+    let { data, post, hypothesis, documentType, dispatch } = this.props;
+    const threadId = data.id;
+    const paperId = data.paper;
+    let documentId;
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
+
+    const voteRes = await neutralVote({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      dispatch,
+    });
+
+    if (voteRes) {
+      this.updateWidgetUI(voteRes);
+    }
   };
 
   getDocumentID = () => {
@@ -528,44 +558,49 @@ class DiscussionEntry extends Component {
     return data?.paper ?? hypothesis?.id ?? post?.id;
   };
 
-  updateWidgetUI = () => {
-    let voteResult = this.props.vote;
-    const success = voteResult.success;
-    const vote = getNestedValue(voteResult, ["vote"], false);
-
-    if (success) {
-      const voteType = vote.voteType;
-      let score = this.state.score;
-      if (voteType === UPVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            // this is how we determine if it's the user's first vote
-            score += 1;
-          } else {
-            score += 2;
-          }
-        } else {
+  updateWidgetUI = (vote) => {
+    const voteType = vote.voteType;
+    let score = this.state.score;
+    if (voteType === UPVOTE) {
+      if (voteType) {
+        if (!this.state.selectedVoteType) {
+          // this is how we determine if it's the user's first vote
           score += 1;
-        }
-        this.setState({
-          selectedVoteType: UPVOTE,
-          score,
-        });
-      } else if (voteType === DOWNVOTE) {
-        if (voteType) {
-          if (this.state.selectedVoteType === null) {
-            score -= 1;
-          } else {
-            score -= 2;
-          }
         } else {
-          score -= 1;
+          score += 2;
         }
-        this.setState({
-          selectedVoteType: DOWNVOTE,
-          score,
-        });
+      } else {
+        score += 1;
       }
+      this.setState({
+        selectedVoteType: UPVOTE,
+        score,
+      });
+    } else if (voteType === DOWNVOTE) {
+      if (voteType) {
+        if (!this.state.selectedVoteType) {
+          score -= 1;
+        } else {
+          score -= 2;
+        }
+      } else {
+        score -= 1;
+      }
+      this.setState({
+        selectedVoteType: DOWNVOTE,
+        score,
+      });
+    } else if (!voteType) {
+      if (this.state.selectedVoteType === UPVOTE) {
+        score -= 1;
+      } else if (this.state.selectedVoteType === DOWNVOTE) {
+        score += 1;
+      }
+
+      this.setState({
+        selectedVoteType: null,
+        score,
+      });
     }
   };
 
@@ -585,9 +620,7 @@ class DiscussionEntry extends Component {
       },
       documentType,
       hostname,
-      hypothesis,
       mediaOnly,
-      mobileView,
       noRespond,
       noVote,
       noVoteLine,
@@ -599,7 +632,6 @@ class DiscussionEntry extends Component {
       isAcceptedAnswer,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
-      currentAuthor,
       bountyType,
     } = this.props;
 
@@ -655,6 +687,7 @@ class DiscussionEntry extends Component {
                 score={this.state.score}
                 styles={styles.voteWidget}
                 onUpvote={this.upvote}
+                onNeutralVote={this.neutralVote}
                 onDownvote={this.downvote}
                 selected={this.state.selectedVoteType}
                 type={"Discussion"}
@@ -737,6 +770,7 @@ class DiscussionEntry extends Component {
                   />
                 ) : null}
                 <div
+                  key={`thread_${data.id}`}
                   className={css(
                     styles.content,
                     isSolution && !this.state.editing && styles.acceptedAnswer,
@@ -749,6 +783,7 @@ class DiscussionEntry extends Component {
                     focusEditor={true}
                     body={true}
                     textStyles={styles.contentText}
+                    textEditorId={`thread_${data.id}`}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
@@ -1048,14 +1083,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  discussion: state.discussion,
-  // paper: state.paper,
-  vote: state.vote,
-  auth: state.auth,
-});
+const mapStateToProps = (state) => {
+  return {
+    discussion: state.discussion,
+    vote: state.vote,
+    auth: state.auth,
+  };
+};
 
 const mapDispatchToProps = {
+  dispatch: (dispatch) => {
+    return dispatch;
+  },
   postComment: DiscussionActions.postComment,
   postCommentPending: DiscussionActions.postCommentPending,
   postUpvotePending: DiscussionActions.postUpvotePending,

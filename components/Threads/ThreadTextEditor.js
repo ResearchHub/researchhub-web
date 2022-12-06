@@ -90,7 +90,7 @@ class ThreadTextEditor extends Component {
   };
 
   render() {
-    let { mediaOnly, placeholder } = this.props;
+    let { mediaOnly, placeholder, textEditorId } = this.props;
 
     if (!this.props.body) {
       return (
@@ -106,6 +106,7 @@ class ThreadTextEditor extends Component {
             onSubmit={this.onSubmit}
             clearOnSubmit={true}
             hideCancelButton={false}
+            uid={textEditorId}
             commentEditor={true}
             smallToolBar={true}
             onCancel={this.onCancel}
@@ -131,6 +132,7 @@ class ThreadTextEditor extends Component {
           onSubmit={this.onEditSubmit}
           onCancel={this.onEditCancel}
           onChange={this.onChange}
+          uid={textEditorId}
           smallToolBar={true}
           commentEditor={true}
           isBounty={this.props.isBounty}
