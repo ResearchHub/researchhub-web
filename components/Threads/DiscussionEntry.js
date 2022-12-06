@@ -59,7 +59,12 @@ class DiscussionEntry extends Component {
     const { data, newCard } = this.props;
 
     const comments = data.comments || [];
-    const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
+    let selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
+    if (selectedVoteType === 1) {
+      selectedVoteType = UPVOTE;
+    } else if (selectedVoteType === 2) {
+      selectedVoteType = DOWNVOTE;
+    }
     this.setState(
       {
         comments,
@@ -544,7 +549,6 @@ class DiscussionEntry extends Component {
     });
 
     if (voteRes) {
-      debugger;
       this.updateWidgetUI(voteRes);
     }
   };
@@ -587,7 +591,6 @@ class DiscussionEntry extends Component {
         score,
       });
     } else if (!voteType) {
-      debugger;
       if (this.state.selectedVoteType === UPVOTE) {
         score -= 1;
       } else if (this.state.selectedVoteType === DOWNVOTE) {
