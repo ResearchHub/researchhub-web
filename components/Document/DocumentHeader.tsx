@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nullthrows } from "~/config/utils/nullchecks";
@@ -10,7 +10,7 @@ import {
   VoteType,
 } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import ALink from "../ALink";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import Button from "../Form/Button";
@@ -95,6 +95,7 @@ function DocumentHeader({
   });
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setVoteState({
@@ -105,15 +106,30 @@ function DocumentHeader({
   }, [document]);
 
   const handleVoteSuccess = ({ increment, voteType }) => {
-    setVoteState({
-      userVote: voteType,
-      voteScore: voteState.voteScore + increment,
-    });
+    let score = voteState.voteScore;
+    if (voteType === NEUTRALVOTE) {
+      if (voteState.userVote === UPVOTE) {
+        score -= 1;
+      } else if (voteState.userVote === DOWNVOTE) {
+        score += 1;
+      }
+
+      setVoteState({
+        userVote: voteType,
+        voteScore: score,
+      });
+    } else {
+      setVoteState({
+        userVote: voteType,
+        voteScore: voteState.voteScore + increment,
+      });
+    }
   };
 
-  let onUpvote, onDownvote;
+  let onUpvote, onDownvote, onNeutralVote;
   if (document.isReady) {
     onUpvote = createVoteHandler({
+      dispatch,
       currentAuthor,
       currentVote: voteState?.userVote,
       documentCreatedBy: nullthrows(createdBy),
@@ -124,6 +140,7 @@ function DocumentHeader({
       voteType: UPVOTE,
     });
     onDownvote = createVoteHandler({
+      dispatch,
       currentAuthor,
       currentVote: voteState?.userVote,
       documentCreatedBy: nullthrows(createdBy),
@@ -132,6 +149,18 @@ function DocumentHeader({
       onError: () => null,
       onSuccess: handleVoteSuccess,
       voteType: DOWNVOTE,
+    });
+
+    onNeutralVote = createVoteHandler({
+      dispatch,
+      currentAuthor: currentUser?.author_profile,
+      currentVote: voteState?.userVote,
+      documentCreatedBy: nullthrows(createdBy),
+      documentID,
+      documentType,
+      onError: () => null,
+      onSuccess: handleVoteSuccess,
+      voteType: NEUTRALVOTE,
     });
   }
 
@@ -294,6 +323,7 @@ function DocumentHeader({
             <VoteWidget
               score={voteState.voteScore}
               onUpvote={onUpvote}
+              onNeutralVote={onNeutralVote}
               onDownvote={onDownvote}
               // @ts-ignore
               selected={voteState.userVote}
