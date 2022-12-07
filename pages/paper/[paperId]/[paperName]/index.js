@@ -379,6 +379,7 @@ export async function getStaticProps(ctx) {
   try {
     paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
+    console.log("err", err);
     return {
       props: {
         error: {
@@ -390,6 +391,7 @@ export async function getStaticProps(ctx) {
   }
 
   if (!paper) {
+    console.log("no pap0er", paper);
     return {
       props: {
         error: {
@@ -420,7 +422,7 @@ export async function getStaticProps(ctx) {
     return {
       props,
       // Static page will be regenerated after specified seconds.
-      revalidate: 600,
+      revalidate: 60 * 10,
     };
   }
 }

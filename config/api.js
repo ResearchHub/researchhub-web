@@ -412,7 +412,6 @@ const routes = (BASE_URL) => {
       hidePublic,
     }) => {
       let url = BASE_URL + `paper/`;
-
       let params = {
         filters,
         querystring: {

@@ -171,7 +171,7 @@ function UnifiedDocFeedContainer({
             isHomePage,
           })}
         />
-      )}
+       )}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>

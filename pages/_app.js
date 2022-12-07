@@ -169,17 +169,25 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
 // to getInitialProps removed, this can be removed safely.
 MyApp.getInitialProps = async (appContext) => {
   const staticOrServerSidePropsPaths = [
-    "/paper/[paperId]/[paperName]",
+    "/",
+    "/live",
     "/hubs",
     "/user/[authorId]/[tabName]",
     "/[orgSlug]/notebook/[noteId]",
     "/[orgSlug]/notebook",
+    "/hubs/[slug]",
+    "/hubs/[slug]/live",
+    "/paper/[paperId]/[paperName]",
   ];
 
   const cookies = nookies.get(appContext.ctx);
-  const rootLeftSidebarForceMin =
-    cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
-    "true"; /* intentional string literal */
+  const rootLeftSidebarForceMin = false;
+
+  // Kobe 12-07-22: Removing this cookie setting because it causes performance issues.
+  // Leaving this code intact until we are fully ready to remove it
+  // and the other part of it in RootLeftSidebar.tsx
+  // cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
+  // "true"; /* intentional string literal */
 
   if (
     process.browser ||
