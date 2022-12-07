@@ -81,6 +81,15 @@ export const createVoteHandler = ({
     const increment =
       voteType === UPVOTE ? 1 : voteType === NEUTRALVOTE ? 0 : -1;
 
+    // optimistic update
+    onSuccess({
+      increment:
+        Boolean(currentVote) && currentVote !== NEUTRALVOTE
+          ? increment * 2
+          : increment,
+      voteType,
+    });
+
     return fetch(
       buildGrmVoteApiUri({
         commentPayload,
@@ -95,16 +104,6 @@ export const createVoteHandler = ({
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((res) => {
-        // optimistic update
-        onSuccess({
-          increment:
-            Boolean(currentVote) && currentVote !== NEUTRALVOTE
-              ? increment * 2
-              : increment,
-          voteType,
-        });
-      })
       .catch((error: Error): void => {
         if (error?.response?.status === 429) {
           handleCatch(error, dispatch);
