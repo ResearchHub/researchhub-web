@@ -183,6 +183,9 @@ MyApp.getInitialProps = async (appContext) => {
   const cookies = nookies.get(appContext.ctx);
   const rootLeftSidebarForceMin = false;
 
+  // Kobe 12-07-22: Removing this cookie setting because it causes performance issues.
+  // Leaving this code intact until we are fully ready to remove it
+  // and the other part of it in RootLeftSidebar.tsx
   // cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
   // "true"; /* intentional string literal */
 

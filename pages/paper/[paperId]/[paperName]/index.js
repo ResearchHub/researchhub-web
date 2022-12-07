@@ -377,8 +377,6 @@ export async function getStaticProps(ctx) {
   const { paperId } = ctx.params;
 
   try {
-    console.log("API.PAPER({ paperId })", API.PAPER({ paperId }));
-    console.log("paperId", paperId);
     paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
     console.log("err", err);
@@ -424,7 +422,7 @@ export async function getStaticProps(ctx) {
     return {
       props,
       // Static page will be regenerated after specified seconds.
-      revalidate: 600,
+      revalidate: 60 * 10,
     };
   }
 }

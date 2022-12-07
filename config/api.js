@@ -77,9 +77,6 @@ export const prepURL = (url, params, arrayParamSeparator = ",") => {
 };
 
 const routes = (BASE_URL) => {
-  console.log("-------------------------");
-  console.log("BASE_URL", BASE_URL);
-  console.log("-------------------------");
   return {
     ASYNC_PAPER_UPDATOR: BASE_URL + `paper/async_paper_updator/`,
     BASE_URL,
@@ -415,9 +412,6 @@ const routes = (BASE_URL) => {
       hidePublic,
     }) => {
       let url = BASE_URL + `paper/`;
-      console.log("*************");
-      console.log("url", url);
-      console.log("*************");
       let params = {
         filters,
         querystring: {

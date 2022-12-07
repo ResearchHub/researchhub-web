@@ -384,6 +384,7 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
+          {/* Kobe 12-07-22: Commenting this out in order to prevent layout shift */}
           {/* {isMinimized ? (
             <div
               className={css(styles.arrowRight)}
