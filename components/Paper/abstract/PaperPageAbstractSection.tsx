@@ -140,7 +140,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                       ...paper,
                       hubs: paper?.hubs.map((hub) => hub.id),
                       abstract_src: abstractSrc,
-                      abstract: htmlStringToPlainString(abstractSrc, 500),
+                      abstract: htmlStringToPlainString(abstractSrc, 2000),
                       abstract_src_type: "CK_EDITOR",
                     },
                   });
