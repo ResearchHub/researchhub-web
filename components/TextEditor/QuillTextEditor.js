@@ -196,6 +196,7 @@ class Editor extends Component {
   }
 
   onEditorChange = (value, delta, source, editor) => {
+    this.attachQuillRefs();
     const editorContents = editor.getContents();
     const editorWithoutPeerReviewBlocks = editorContents.ops.filter(
       (op) => !op.insert["peer-review-rating"]
@@ -324,13 +325,15 @@ class Editor extends Component {
   };
 
   onSubmit = () => {
-    let content = this.quillRef.getContents();
-    let plainText = this.quillRef.getText();
+    const editor = this.reactQuillRef.current.getEditor();
+    const content = editor.getContents();
+    const plainText = editor.getText();
     this.setState({
       value: content,
       plainText,
       editValue: content,
     });
+
     this.props.submit({
       interimBounty: this.state.interimBounty,
       content,

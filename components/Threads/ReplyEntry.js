@@ -17,7 +17,13 @@ import { getNestedValue } from "~/config/utils/misc";
 import DiscussionActions from "~/redux/discussion";
 import { createUsername } from "~/config/utils/user";
 import { MessageActions } from "~/redux/message";
-import { postUpvote, postDownvote, neutralVote } from "./api/fetchDiscussion";
+import {
+  postUpvote,
+  postDownvote,
+  neutralVote,
+  postReply,
+  updateDiscussion,
+} from "./api/fetchDiscussion";
 
 class ReplyEntry extends Component {
   constructor(props) {
@@ -29,6 +35,7 @@ class ReplyEntry extends Component {
       selectedVoteType: "",
       // Removed
       removed: false,
+      comment: this.props.reply,
       // Edit
       canEdit: false,
       editing: false,
@@ -183,15 +190,7 @@ class ReplyEntry extends Component {
   };
 
   upvote = async () => {
-    const {
-      data,
-      comment,
-      reply,
-      postUpvotePending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
+    const { data, comment, reply, post, hypothesis, documentType } = this.props;
     const threadId = data.id;
     const paperId = data.paper;
     let documentId;
@@ -299,15 +298,7 @@ class ReplyEntry extends Component {
   };
 
   submitReply = async ({ content, plainText, callback }) => {
-    let {
-      data,
-      comment,
-      postReply,
-      postReplyPending,
-      documentType,
-      post,
-      hypothesis,
-    } = this.props;
+    let { data, comment, documentType, post, hypothesis } = this.props;
     let paperId = data.paper;
     let documentId;
     if (documentType === "post" || documentType === "question") {
@@ -315,67 +306,69 @@ class ReplyEntry extends Component {
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
-    let discussionThreadId = data.id;
+    let threadId = data.id;
     let commentId = comment.id;
 
-    postReplyPending();
-    await postReply(
+    const reply = await postReply({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       commentId,
-      content,
-      plainText
-    );
-    if (this.props.discussion.donePosting && this.props.discussion.success) {
+      text: content,
+      plainText,
+    });
+    if (reply) {
       callback && callback();
-      this.props.onReplySubmitCallback();
+      this.props.onReplySubmitCallback(reply);
     } else {
       callback && callback();
     }
   };
 
   saveEditsReply = async ({ content, plainText, callback }) => {
-    let {
+    const {
       data,
       comment,
       reply,
-      updateReply,
-      updateReplyPending,
       showMessage,
       setMessage,
       post,
       hypothesis,
       documentType,
     } = this.props;
-    let paperId = data.paper;
+    const paperId = data.paper;
     let documentId;
     if (documentType === "post" || documentType === "question") {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
-    let discussionThreadId = data.id;
-    let commentId = comment.id;
-    let replyId = reply.id;
+    const threadId = data.id;
+    const commentId = comment.id;
+    const replyId = reply.id;
 
-    updateReplyPending();
-    await updateReply(
+    const body = {
+      text: content,
+      plain_text: plainText,
+      paper: paperId,
+    };
+
+    const discussion = await updateDiscussion({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       commentId,
       replyId,
+      body,
       content,
-      plainText
-    );
-    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
-      setMessage("Comment successfully updated!");
-      showMessage({ show: true });
+      plainText,
+    });
+
+    if (discussion) {
       callback();
-      this.setState({ editing: false });
+      this.setState({ editing: false, comment: discussion });
     } else {
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
@@ -383,7 +376,7 @@ class ReplyEntry extends Component {
   };
 
   formatBody = () => {
-    return this.props.reply.text;
+    return this.state.comment.text;
   };
 
   checkForExistingQuote = (delta) => {
@@ -422,7 +415,7 @@ class ReplyEntry extends Component {
 
   formatQuoteBlock = () => {
     let delta = JSON.parse(JSON.stringify(this.props.reply.text));
-    if (delta.ops) {
+    if (delta?.ops) {
       if (this.checkForExistingQuote(delta)) {
         delta.ops = delta.ops.slice(2); // remove existing quote (for extra nested replies)
       }
@@ -449,7 +442,6 @@ class ReplyEntry extends Component {
 
   render() {
     const {
-      comment,
       data,
       documentType,
       hostname,
@@ -459,8 +451,9 @@ class ReplyEntry extends Component {
       paper,
       reply,
     } = this.props;
+    const { comment } = this.state;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
-    let date = reply.created_date;
+    let date = comment.created_date;
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();

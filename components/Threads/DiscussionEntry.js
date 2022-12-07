@@ -25,7 +25,13 @@ import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCatego
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import { neutralVote, postDownvote, postUpvote } from "./api/fetchDiscussion";
+import {
+  neutralVote,
+  postDownvote,
+  postUpvote,
+  updateDiscussion,
+  updateThread,
+} from "./api/fetchDiscussion";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -42,6 +48,7 @@ class DiscussionEntry extends Component {
       fetching: false, // when true, we show loading state,
       // Removed
       removed: false,
+      comment: this.props.data,
       // Edit
       canEdit: false,
       editing: false,
@@ -276,19 +283,13 @@ class DiscussionEntry extends Component {
     discussionType,
     callback,
   }) => {
-    let {
-      data,
-      updateThread,
-      updateThreadPending,
-      post,
-      hypothesis,
-      documentType,
-    } = this.props;
+    let { data, post, hypothesis, documentType } = this.props;
 
-    let discussionThreadId = data.id;
+    let threadId = data.id;
     let paperId = data.paper;
     let unifiedDocumentId = data.unified_document.id;
     let documentId;
+
     if (
       documentType === "post" ||
       documentType === "question" ||
@@ -347,22 +348,17 @@ class DiscussionEntry extends Component {
 
     // }
 
-    updateThreadPending();
-    try {
-      await updateThread(
-        documentType,
-        paperId,
-        documentId,
-        discussionThreadId,
-        body
-      );
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    const thread = await updateDiscussion({
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      body,
+    });
 
-    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
+    if (thread) {
       callback();
-      this.setState({ editing: false });
+      this.setState({ editing: false, comment: thread });
     } else {
       return Promise.reject();
     }
@@ -417,8 +413,6 @@ class DiscussionEntry extends Component {
       context,
     } = this.props;
     let comments = this.state.comments;
-
-    console.log(comments);
 
     if (comments.length > 0) {
       return comments.map((comment, i) => {
@@ -645,7 +639,10 @@ class DiscussionEntry extends Component {
           .reduce((a, b) => a + b, 0) || 0;
     const date = data.created_date;
     const title = data.title;
-    const body = data.source === "twitter" ? data.plain_text : data.text;
+    const body =
+      this.state.comment.source === "twitter"
+        ? this.state.comment.plain_text
+        : this.state.comment.text;
     const username = createUsername(data);
     const documentId = this.getDocumentID();
     const metaData = {

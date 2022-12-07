@@ -7,10 +7,10 @@ import { getNestedValue } from "~/config/utils/misc";
 import { ModalActions } from "~/redux/modals";
 
 export function handleCatch(err, dispatch) {
+  console.log(err);
   if (err.response && err.response.status === 429) {
     dispatch(ModalActions.openRecaptchaPrompt(true));
   } else {
-    console.log(err);
     Sentry.captureException(err);
   }
   return err;

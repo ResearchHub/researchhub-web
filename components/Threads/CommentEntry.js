@@ -21,7 +21,13 @@ import { createUsername } from "~/config/utils/user";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { postDownvote, postUpvote, neutralVote } from "./api/fetchDiscussion";
+import {
+  postDownvote,
+  postUpvote,
+  neutralVote,
+  updateDiscussion,
+  postReply,
+} from "./api/fetchDiscussion";
 
 class CommentEntry extends Component {
   constructor(props) {
@@ -32,6 +38,7 @@ class CommentEntry extends Component {
       collapsed: false,
       score: 0,
       selectedVoteType: "",
+      comment: this.props.comment,
       // Pagination
       page: 2, // we assume page 1 is already present
       fetching: false, // when true, we show loading state,
@@ -338,8 +345,6 @@ class CommentEntry extends Component {
     let {
       data,
       comment,
-      postReply,
-      postReplyPending,
       discussionCount,
       setCount,
       documentType,
@@ -357,48 +362,44 @@ class CommentEntry extends Component {
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
-    let discussionThreadId = data.id;
+    let threadId = data.id;
     let commentId = comment.id;
 
-    postReplyPending();
-    await postReply(
+    const reply = await postReply({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       commentId,
-      content,
-      plainText
-    );
-    if (this.props.discussion.donePosting && this.props.discussion.success) {
+      text: content,
+      plainText,
+    });
+    if (reply) {
       callback && callback();
-      let newReply = { ...this.props.discussion.postedReply };
-      newReply.highlight = true;
-      let replies = [...this.state.replies, newReply];
-      comment.replies = replies;
-      setCount && setCount(discussionCount + 1);
+      reply.shouldHighlight = true;
+      comment.replies = [reply, ...comment.replies];
       this.setState({
         revealReply: true,
-        replies,
+        highlight: true,
+        comment,
       });
+      setCount && setCount(discussionCount + 1);
     } else {
       callback && callback();
     }
   };
 
   saveEditsComments = async ({ content, plainText, callback }) => {
-    let {
+    const {
       data,
       comment,
-      updateComment,
-      updateCommentPending,
       showMessage,
       setMessage,
       post,
       hypothesis,
       documentType,
     } = this.props;
-    let paperId = data.paper;
+    const paperId = data.paper;
     let documentId;
     if (
       documentType === "post" ||
@@ -409,22 +410,27 @@ class CommentEntry extends Component {
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
     }
-    let discussionThreadId = data.id;
-    let commentId = comment.id;
+    const threadId = data.id;
+    const commentId = comment.id;
 
-    updateCommentPending();
-    await updateComment(
+    const body = {
+      text: content,
+      plain_text: plainText,
+      paper: paperId,
+    };
+
+    const thread = await updateDiscussion({
       documentType,
       paperId,
       documentId,
-      discussionThreadId,
+      threadId,
       commentId,
-      content,
-      plainText
-    );
-    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
+      body,
+    });
+
+    if (thread) {
       callback();
-      this.setState({ editing: false });
+      this.setState({ editing: false, comment: thread });
     } else {
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
@@ -533,16 +539,17 @@ class CommentEntry extends Component {
     );
   };
 
-  onReplySubmitCallback = () => {
-    let { comment, setCount, discussion, discussionCount } = this.props;
-    let newReply = { ...discussion.postedReply };
+  onReplySubmitCallback = (reply) => {
+    let { setCount, discussionCount } = this.props;
+    const { comment } = this.state;
+    let newReply = { ...reply };
     newReply.highlight = true;
-    let replies = [...this.state.replies, newReply];
+    let replies = [...comment.replies, newReply];
     comment.replies = replies;
     setCount && setCount(discussionCount + 1);
     this.setState({
       revealReply: true,
-      replies,
+      comment,
     });
   };
 
@@ -560,10 +567,7 @@ class CommentEntry extends Component {
       currentAuthor,
       noVote,
     } = this.props;
-    let replies =
-      this.state.replies.length < 1
-        ? this.props.comment.replies
-        : this.state.replies;
+    let replies = this.state.comment.replies;
     replies = replies.sort(
       (a, b) => new Date(a.created_date) - new Date(b.created_date)
     );
@@ -576,7 +580,7 @@ class CommentEntry extends Component {
           currentAuthor={currentAuthor}
           hostname={hostname}
           path={path}
-          key={`disc${reply.id}`}
+          key={`reply_${reply.id}`}
           comment={comment}
           reply={reply}
           paper={paper}
@@ -595,7 +599,6 @@ class CommentEntry extends Component {
     const {
       data,
       hostname,
-      comment,
       mobileView,
       paper,
       mediaOnly,
@@ -604,6 +607,8 @@ class CommentEntry extends Component {
       openBounties,
       auth,
     } = this.props;
+
+    const { comment } = this.state;
     let threadId = comment.id;
     let commentCount =
       this.state.replies.length > comment.reply_count

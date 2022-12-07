@@ -87,8 +87,6 @@ export function timeSince(date) {
     timeSince += timeSince === 1 ? " year ago" : " years ago";
   }
 
-  if (timeSince === "16 hours ago") debugger;
-
   return timeSince;
 }
 

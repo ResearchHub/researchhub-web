@@ -5,6 +5,90 @@ import { handleCatch } from "~/redux/utils";
 import { sendAmpEvent } from "~/config/fetch";
 import { logFetchError } from "~/config/utils/misc";
 
+export async function postReply({
+  documentType,
+  paperId,
+  documentId,
+  threadId,
+  commentId,
+  text,
+  plainText,
+}) {
+  const response = await fetch(
+    api.THREAD_COMMENT_REPLY(
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId
+    ),
+    api.POST_CONFIG({
+      text,
+      parent: commentId,
+      plain_text: plainText,
+    })
+  ).catch(handleCatch);
+
+  if (response.status === 429) {
+    let err = { response: {} };
+    err.response.status = 429;
+    handleCatch(err, dispatch);
+    return dispatch(action);
+  }
+
+  if (response.ok) {
+    const body = await response.json();
+    const reply = body;
+    let payload = {
+      event_type: "create_reply",
+      time: +new Date(),
+      user_id: body.created_by.id,
+      insert_id: `reply_${reply.id}`,
+      is_removed: reply.is_removed,
+      event_properties: {
+        interaction: "Post Reply",
+        paper: paperId,
+        thread: threadId,
+        comment: commentId,
+      },
+    };
+    sendAmpEvent(payload);
+    return reply;
+  } else {
+    logFetchError(response);
+  }
+}
+
+export async function updateDiscussion({
+  documentType,
+  paperId,
+  documentId,
+  threadId,
+  body,
+  commentId,
+  replyId,
+}) {
+  const response = await fetch(
+    api.PAPER_CHAIN(
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ),
+    api.PATCH_CONFIG(body)
+  ).catch(handleCatch);
+
+  if (response.ok) {
+    const body = await response.json();
+    const thread = replyId || commentId ? body : shims.thread(body);
+    return thread;
+  } else {
+    logFetchError(response);
+  }
+}
+
 export async function postDownvote({
   documentType,
   paperId,
