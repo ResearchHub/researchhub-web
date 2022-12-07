@@ -25,6 +25,7 @@ export default function CitationAddNewButton({
   noText,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
+
   return (
     <Button
       customButtonStyle={
