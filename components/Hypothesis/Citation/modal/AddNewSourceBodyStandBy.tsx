@@ -15,9 +15,8 @@ type Props = {
 export default function AddNewSourceBodyStandBy({
   setBodyType,
 }: Props): ReactElement<"div"> {
-  const [activeBodyType, setActiveBodyType] = useState<BodyTypeVals>(
-    NEW_PAPER_UPLOAD
-  );
+  const [activeBodyType, setActiveBodyType] =
+    useState<BodyTypeVals>(NEW_PAPER_UPLOAD);
 
   useEffect(() => {
     setBodyType(activeBodyType);
