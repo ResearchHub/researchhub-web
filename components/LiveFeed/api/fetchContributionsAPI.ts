@@ -4,15 +4,15 @@ import { captureEvent } from "~/config/utils/events";
 import { ID } from "~/config/types/root_types";
 
 export type ApiFilters = {
-  hubId?: ID,
-}
+  hubId?: ID;
+};
 
 type Args = {
-  pageUrl: string|null;
+  pageUrl: string | null;
   onError?: Function;
   onSuccess: Function;
   filters: ApiFilters;
-}
+};
 
 export default function fetchContributionsAPI({
   pageUrl,
@@ -20,22 +20,20 @@ export default function fetchContributionsAPI({
   onSuccess,
   filters,
 }: Args) {
-  const url = pageUrl ||  API.CONTRIBUTIONS({ ...filters })
+  const url = pageUrl || API.CONTRIBUTIONS({ ...filters });
 
-  return fetch(
-    url,
-    API.GET_CONFIG()
-  )
+  return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response) => {
-      onSuccess(response)})
+      onSuccess(response);
+    })
     .catch((error) => {
       captureEvent({
         error,
         msg: "Failed to fetch contributions",
         data: { filters, pageUrl },
       });
-      onError && onError(error)
-    })
+      onError && onError(error);
+    });
 }

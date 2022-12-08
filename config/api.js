@@ -104,7 +104,7 @@ const routes = (BASE_URL) => {
     CONTRIBUTIONS: ({ hubId }) => {
       return (
         BASE_URL +
-        "contribution/latest_contributions?" +
+        "contribution/latest_contributions/?" +
         (hubId ? `hubs=${hubId}` : "")
       );
     },

@@ -35,7 +35,9 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   const {
     URL,
     number,
+    paper_title,
     title,
+    doi,
     issued,
     author,
     page,
@@ -143,13 +145,13 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
           {title && (
             <div className={css(styles.text)}>
               <b>Title: </b>
-              <em>{title}</em>
+              <em>{title + (paper_title ? ` (${paper_title})` : "")}</em>
             </div>
           )}
-          {author && (
+          {author && author.length > 1 && (
             <div className={css(styles.text)}>
-              <b>{`Author${authors.length > 1 ? "s" : ""}:`} </b>
-              {authors}
+              <b>{`Author${author.length > 1 ? "s" : ""}:`} </b>
+              {author}
             </div>
           )}
           {publishedDate && (
@@ -158,6 +160,13 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
               {publishedDate}
             </div>
           )}
+          {doi && (
+            <div className={css(styles.text)}>
+              <b>DOI: </b>
+              {doi}
+            </div>
+          )}
+
           {type && (
             <div className={css(styles.text, styles.type)}>
               <b>Type: </b>
@@ -170,7 +179,11 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
       return (
         <div className={css(styles.text)}>
           {author && <span>{`${authors}. `}</span>}
-          {title && <span className={css(styles.title)}>{`"${title}" `}</span>}
+          {title && (
+            <span className={css(styles.title)}>
+              {`"${title}" ` + (paper_title ? `(${paper_title})` : "")}
+            </span>
+          )}
           {containerTitle && (
             <Fragment>
               <span className={css(styles.italics)}>{containerTitle}</span>

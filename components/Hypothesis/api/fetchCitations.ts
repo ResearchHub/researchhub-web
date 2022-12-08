@@ -55,7 +55,7 @@ export function fetchCitationsOnHypothesis({
               citedBy: [author_profile],
               citationType: citation_type,
               source: {
-                displayTitle: title || paper_title,
+                displayTitle: title ? `${title} (${paper_title})` : paper_title,
                 docType: document_type,
                 documentID: documentID ?? null,
                 doi,

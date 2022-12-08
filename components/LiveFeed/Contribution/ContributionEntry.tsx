@@ -120,13 +120,16 @@ const ContributionEntry = ({
 
       // @ts-ignore
       body = truncateText(
-        item?.unifiedDocument?.document?.body || item?.abstract,
+        item?.unifiedDocument?.document?.body ||
+          item?.abstract ||
+          item?.renderable_text,
         300
       );
       if (contentType.name === "hypothesis") {
         /* below is a hack (need to address in the future) */
         item.unifiedDocument.documentType = "hypothesis";
         item.unifiedDocument.document = { id: item.id, slug: item.slug };
+        body = item.renderable_text;
       }
       title = (
         <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>

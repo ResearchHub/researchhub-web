@@ -124,7 +124,13 @@ export default function SourceSearchInput({
             .map((item: any, index: number) => (
               <SourceSearchInputItem
                 key={`source-search-input-item-${(item ?? {}).id ?? index}`}
-                label={item.title ?? item.paper_title ?? "N/A"}
+                label={`${
+                  item.title
+                    ? item.title + ` (${item.paper_title})`
+                    : item.paper_title
+                    ? item.paper_title
+                    : ""
+                } - ${item.doi}`}
                 onSelect={(): void => handleItemSelect(item)}
               />
             ))
@@ -204,7 +210,7 @@ const styles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       maxHeight: 200,
-    }
+    },
   },
   selectedItemCard: { marginBottom: 8 },
   uploadAPaper: {

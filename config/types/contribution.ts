@@ -164,6 +164,7 @@ export const parseFlaggedBy = (raw: any): FlaggedBy | null => {
 
 export const parseContribution = (raw: any): Contribution => {
   const mapped = {
+    raw: raw,
     createdDate: raw.created_date,
     contentType: parseContentType(raw.content_type),
     id: raw.id,
@@ -283,6 +284,7 @@ export const parseHypothesisContributionItem = (
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
+    ...raw.item,
   };
 
   return mapped;

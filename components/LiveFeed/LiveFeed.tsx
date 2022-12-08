@@ -49,6 +49,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
         const incomingResults = response.results.map((r) => {
           return parseContribution(r);
         });
+
         if (url) {
           setResults([...results, ...incomingResults]);
         } else {
@@ -76,7 +77,6 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
               primaryButtonLabel="Flag"
               subHeaderText="I am flagging this content because of:"
               onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-                
                 let args: any = {
                   flagReason,
                   onError: renderErrorMsg,
@@ -109,7 +109,6 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                     unifiedDocument.documentType
                   )
                 ) {
-
                   args = {
                     contentType: unifiedDocument.documentType,
                     // @ts-ignore
@@ -147,10 +146,12 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
     <div>
       {isLoadingPage ? (
         <div>
-          {Array(10).fill(null).map(() =>
-            <LiveFeedCardPlaceholder color="#efefef" />          
-          )}
-        </div>        
+          {Array(10)
+            .fill(null)
+            .map(() => (
+              <LiveFeedCardPlaceholder color="#efefef" />
+            ))}
+        </div>
       ) : (
         <>
           <div className={css(styles.resultsContainer)}>
