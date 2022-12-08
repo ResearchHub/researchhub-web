@@ -59,8 +59,14 @@ export default function AddNewSourceBodySearch({
     setValues: setPaperUploadButtonValues,
   } = useContext<NewPostButtonContextType>(NewPostButtonContext);
 
+  const isReadyToSubmit =
+    Boolean(selectedItem) && Boolean(selectedCitationType);
+  const citationTypeInputValue = !isNullOrUndefined(selectedCitationType)
+    ? citationTypeOptions.find((el) => el.value === selectedCitationType)
+    : null;
+
   const onSelectPaperUpload = (event: SyntheticEvent): void => {
-    onCancel(event);
+    onCancel(event); /* this closes citation upload modal */
     setTimeout(
       // timing out makes the ui feel smoother during modal transition
       (): void =>
@@ -68,21 +74,31 @@ export default function AddNewSourceBodySearch({
           ...paperUploadButtonValues,
           isOpen: true,
           hypothesis: {
-            citationType: selectedCitationType,
-            hypothesisID,
             isUploadForHypothesis: true,
+            onPaperUpdateComplete: ({
+              postedPaperUniDocID,
+              exitPaperUploadModal,
+            }) => {
+              debugger;
+              postCitationFromSearch({
+                onError: emptyFncWithMsg,
+                onSuccess: () => {
+                  onSubmitComplete(event); /* forces the page to refetch */
+                  exitPaperUploadModal();
+                },
+                payload: {
+                  citation_type: selectedCitationType,
+                  hypothesis_id: hypothesisID,
+                  source_id: postedPaperUniDocID,
+                },
+              });
+            },
           },
           wizardBodyType: "url_or_doi_upload",
         }),
       300
     );
   };
-  const isReadyToSubmit =
-    Boolean(selectedItem) && Boolean(selectedCitationType);
-  const citationTypeInputValue = !isNullOrUndefined(selectedCitationType)
-    ? citationTypeOptions.find((el) => el.value === selectedCitationType)
-    : null;
-
   return (
     <div
       className={css(

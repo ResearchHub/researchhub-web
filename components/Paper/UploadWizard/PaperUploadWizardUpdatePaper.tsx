@@ -6,7 +6,11 @@ import {
 } from "../Upload/styles/formGenericStyles";
 import { connect } from "react-redux";
 import { ID, NullableString } from "~/config/types/root_types";
-import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  isEmpty,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
@@ -157,17 +161,28 @@ function PaperUploadWizardUpdatePaper({
       const { payload: resPayload } = response;
       if (resPayload.success) {
         const { postedPaper } = resPayload;
-        const { id: paperID, paper_title, slug, title } = postedPaper || {};
+        const {
+          id: paperID,
+          paper_title,
+          slug,
+          title,
+          unified_document_id: postedPaperUniDocID,
+        } = postedPaper || {};
+        debugger;
         setIsSubmitting(false);
         const paperSlug = !isEmpty(slug)
           ? slug
           : buildSlug(paper_title ? paper_title : title);
-        if (
-          // If ths paper was uploaded for hypothesis citation purposes, we do not push path
-          !Boolean(uploaderContextValues?.hypothesis?.isUploadForHypothesis)
-        ) {
-          router.push(`/paper/${paperID}/${paperSlug}`);
+        if (Boolean(uploaderContextValues?.hypothesis?.isUploadForHypothesis)) {
+          const { onPaperUpdateComplete } =
+            uploaderContextValues?.hypothesis ?? {};
+          nullthrows(onPaperUpdateComplete)({
+            postedPaperUniDocID,
+            exitPaperUploadModal: onExit,
+          });
+          return;
         }
+        router.push(`/paper/${paperID}/${paperSlug}`);
         onExit();
       } else {
         setIsSubmitting(false);
