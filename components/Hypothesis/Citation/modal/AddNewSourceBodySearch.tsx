@@ -83,8 +83,6 @@ export default function AddNewSourceBodySearch({
     ? citationTypeOptions.find((el) => el.value === selectedCitationType)
     : null;
 
-  console.warn("selectedCitationType: ", selectedCitationType);
-
   return (
     <div
       className={css(
