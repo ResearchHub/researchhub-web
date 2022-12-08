@@ -1,11 +1,7 @@
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { ID } from "~/config/types/root_types";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
-import { ReactElement, SyntheticEvent, useContext, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { StyleSheet } from "aphrodite";
 import AddNewSourceBodySearch, {
   ValidCitationType,
@@ -66,7 +62,6 @@ function getModalBody({
             onCloseModal(event);
           }}
           selectedCitationType={selectedCitationType}
-          setBodyType={setBodyType}
           setSelectedCitationType={setSelectedCitationType}
         />
       );
@@ -87,8 +82,6 @@ export default function AddNewSourceModal({
   const [bodyType, setBodyType] = useState<BodyTypeVals>(SEARCH);
   const [selectedCitationType, setSelectedCitationType] =
     useState<ValidCitationType>(citationType);
-  const { values: paperUploadValues, setValues: setPaperUploadValues } =
-    useContext<NewPostButtonContextType>(NewPostButtonContext);
 
   const onHandleCancel = (event: SyntheticEvent): void => {
     // logical ordering

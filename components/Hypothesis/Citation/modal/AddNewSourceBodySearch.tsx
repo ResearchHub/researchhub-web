@@ -4,7 +4,11 @@ import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
+import { ReactElement, SyntheticEvent, useContext, useState } from "react";
 import {
   SearchFilterDocType,
   SearchFilterDocTypeLabel,
@@ -38,7 +42,6 @@ type Props = {
   onCancel: (event: SyntheticEvent) => void;
   onSubmitComplete: (event: SyntheticEvent) => void;
   selectedCitationType: ValidCitationType;
-  setBodyType: (bodyType: BodyTypeVals) => void;
   setSelectedCitationType: (citationType: ValidCitationType) => void;
 };
 
@@ -46,17 +49,41 @@ export default function AddNewSourceBodySearch({
   hypothesisID,
   onCancel,
   onSubmitComplete,
-  setBodyType,
   selectedCitationType,
   setSelectedCitationType,
 }: Props): ReactElement<"div"> {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const {
+    values: paperUploadButtonValues,
+    setValues: setPaperUploadButtonValues,
+  } = useContext<NewPostButtonContextType>(NewPostButtonContext);
+
+  const onSelectPaperUpload = (event: SyntheticEvent): void => {
+    onCancel(event);
+    setTimeout(
+      // timing out makes the ui feel smoother during modal transition
+      (): void =>
+        setPaperUploadButtonValues({
+          ...paperUploadButtonValues,
+          isOpen: true,
+          hypothesis: {
+            citationType: selectedCitationType,
+            hypothesisID,
+            isUploadForHypothesis: true,
+          },
+          wizardBodyType: "url_or_doi_upload",
+        }),
+      300
+    );
+  };
   const isReadyToSubmit =
     Boolean(selectedItem) && Boolean(selectedCitationType);
   const citationTypeInputValue = !isNullOrUndefined(selectedCitationType)
     ? citationTypeOptions.find((el) => el.value === selectedCitationType)
     : null;
+
+  console.warn("selectedCitationType: ", selectedCitationType);
 
   return (
     <div
@@ -95,22 +122,25 @@ export default function AddNewSourceBodySearch({
         inputPlaceholder="Search for a paper or upload"
         label="Source"
         onClearSelect={(): void => setSelectedItem(null)}
-        onPaperUpload={(): void => setBodyType(NEW_PAPER_UPLOAD)}
+        onSelectPaperUpload={onSelectPaperUpload}
         onSelect={(item: any): void => setSelectedItem(item)}
         optionalResultItem={
-          <div
-            key="optionalResultItem-Search-PaperUpload"
-            className={css(styles.uploadNewPaperButton)}
-            onClick={(): void => setBodyType(NEW_PAPER_UPLOAD)}
-          >
-            <FontAwesomeIcon
-              icon={"plus-circle"}
-              className={css(styles.plusCircle)}
-            />
-            <span>{"Upload a paper"}</span>
-          </div>
+          Boolean(selectedCitationType) && (
+            <div
+              key="optionalResultItem-Search-PaperUpload"
+              className={css(styles.uploadNewPaperButton)}
+              onClick={onSelectPaperUpload}
+            >
+              <FontAwesomeIcon
+                icon={"plus-circle"}
+                className={css(styles.plusCircle)}
+              />
+              <span>{"Upload a paper"}</span>
+            </div>
+          )
         }
         required
+        shouldAllowNewUpload={Boolean(selectedCitationType)}
       />
       <div
         className={css(

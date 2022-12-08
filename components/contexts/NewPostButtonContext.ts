@@ -6,7 +6,7 @@ import { WizardBodyTypes } from "../Paper/UploadWizard/types/PaperUploadWizardTy
 // TODO: calvinhlee - reorganize these context values to better represent currently available post-types
 export type NewPostButtonContextValues = {
   doi?: NullableString;
-  hypothesis: {
+  hypothesis?: {
     citationType: ValidCitationType;
     hypothesisID: ID;
     isUploadForHypothesis: boolean;
