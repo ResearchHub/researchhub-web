@@ -31,10 +31,11 @@ export type Props = {
   label: string;
   onClearSelect?: () => void;
   onInputTextChange?: (text: string) => void;
-  onPaperUpload: () => void;
+  onSelectPaperUpload: (event: SyntheticEvent) => void;
   onSelect: (sourceData: any) => void;
   optionalResultItem?: ReactNode;
   required?: boolean;
+  shouldAllowNewUpload?: boolean;
 };
 
 export default function SourceSearchInput({
@@ -43,10 +44,11 @@ export default function SourceSearchInput({
   label,
   onClearSelect,
   onInputTextChange,
-  onPaperUpload,
+  onSelectPaperUpload,
   onSelect,
   optionalResultItem,
   required,
+  shouldAllowNewUpload,
 }: Props): ReactElement<"div"> {
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [isResultLoading, setIsResultLoading] = useState<boolean>(false);
@@ -154,9 +156,14 @@ export default function SourceSearchInput({
             required={Boolean(required)}
             value={query ?? ""}
           />
-          <span className={css(styles.uploadAPaper)} onClick={onPaperUpload}>
-            {"Upload a paper"}
-          </span>
+          {shouldAllowNewUpload && (
+            <span
+              className={css(styles.uploadAPaper)}
+              onClick={onSelectPaperUpload}
+            >
+              {"Upload a paper"}
+            </span>
+          )}
         </div>
       ) : (
         <div className={css(styles.selectedItemCard)}>

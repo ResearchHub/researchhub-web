@@ -62,7 +62,6 @@ function getModalBody({
             onCloseModal(event);
           }}
           selectedCitationType={selectedCitationType}
-          setBodyType={setBodyType}
           setSelectedCitationType={setSelectedCitationType}
         />
       );
