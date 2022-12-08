@@ -168,7 +168,6 @@ function PaperUploadWizardUpdatePaper({
           title,
           unified_document_id: postedPaperUniDocID,
         } = postedPaper || {};
-        debugger;
         setIsSubmitting(false);
         const paperSlug = !isEmpty(slug)
           ? slug
