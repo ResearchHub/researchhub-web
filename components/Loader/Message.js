@@ -43,7 +43,7 @@ class Message extends Component {
       } else if (!nextProps.message.load) {
         this.popupMessageTimeout = setTimeout(() => {
           messageActions.showMessage({ show: false });
-        }, message.timeout);
+        }, message.timeout || 2000);
       }
     }
   }

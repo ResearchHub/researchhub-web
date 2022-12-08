@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import Router from "next/router";
 
 // Components
 import BaseModal from "./BaseModal";
@@ -97,10 +98,18 @@ class AddHubModal extends Component {
         .then((res) => {
           let newHub = res;
           this.props.addHub && this.props.addHub(newHub);
-          this.props.showMessage({ show: false });
           this.props.setMessage("Hub successfully added!");
-          this.props.showMessage({ show: true });
+          this.props.showMessage({
+            show: true,
+            error: false,
+            load: false,
+            clickoff: false,
+          });
+          setTimeout(() => {
+            this.props.showMessage({ show: false });
+          }, 2000);
           this.closeModal();
+          Router.push(`/hubs/${newHub.slug}`);
         })
         .catch((err) => {
           if (err.response.status === 429) {
@@ -108,14 +117,18 @@ class AddHubModal extends Component {
             this.closeModal();
             return this.props.openRecaptchaPrompt(true);
           }
-          this.props.showMessage({ show: false });
           this.props.setMessage("Hmm something went wrong.");
           this.props.showMessage({ show: true, error: true });
+          setTimeout(() => {
+            this.props.showMessage({ show: false });
+          }, 2000);
         });
     } else {
-      this.props.showMessage({ show: false });
       this.props.setMessage("This hub name is already taken.");
       this.props.showMessage({ show: true, error: true });
+      setTimeout(() => {
+        this.props.showMessage({ show: false });
+      }, 2000);
       const error = { ...this.state.error };
       error.upload = true;
       this.setState({ error: error });
