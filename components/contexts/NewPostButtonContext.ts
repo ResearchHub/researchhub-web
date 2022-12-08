@@ -7,9 +7,14 @@ import { WizardBodyTypes } from "../Paper/UploadWizard/types/PaperUploadWizardTy
 export type NewPostButtonContextValues = {
   doi?: NullableString;
   hypothesis?: {
-    citationType: ValidCitationType;
-    hypothesisID: ID;
     isUploadForHypothesis: boolean;
+    onPaperUpdateComplete?: ({
+      exitPaperUploadModal,
+      postedPaperUniDocID,
+    }: {
+      exitPaperUploadModal: () => void;
+      postedPaperUniDocID: ID;
+    }) => void;
   };
   isOpen: boolean;
   isQuestionType?: boolean;
@@ -28,9 +33,8 @@ export type NewPostButtonContextType = {
 export const DEFAULT_POST_BUTTON_VALUES: NewPostButtonContextValues = {
   doi: undefined,
   hypothesis: {
-    citationType: null,
-    hypothesisID: null,
     isUploadForHypothesis: false,
+    onPaperUpdateComplete: undefined,
   },
   isOpen: false,
   isQuestionType: false,

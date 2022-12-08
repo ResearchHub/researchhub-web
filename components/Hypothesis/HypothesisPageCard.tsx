@@ -314,7 +314,6 @@ function HypothesisPageCard({
     onUpdates,
     setShowHypothesisEditor,
   });
-  const formattedMetaData = getMetaData({ authors, hypothesis });
   const voteWidgetProps = getVoteWidgetProps({
     hypothesis,
     localVoteMeta,
