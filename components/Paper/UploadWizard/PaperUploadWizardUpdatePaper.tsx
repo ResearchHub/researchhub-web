@@ -162,7 +162,12 @@ function PaperUploadWizardUpdatePaper({
         const paperSlug = !isEmpty(slug)
           ? slug
           : buildSlug(paper_title ? paper_title : title);
-        router.push(`/paper/${paperID}/${paperSlug}`);
+        if (
+          // If ths paper was uploaded for hypothesis citation purposes, we do not push path
+          !Boolean(uploaderContextValues?.hypothesis?.isUploadForHypothesis)
+        ) {
+          router.push(`/paper/${paperID}/${paperSlug}`);
+        }
         onExit();
       } else {
         setIsSubmitting(false);
