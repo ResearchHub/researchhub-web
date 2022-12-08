@@ -191,7 +191,6 @@ export default function SourceSearchInput({
               </div>
             }
             onClickOutside={(): void => {
-              alert("hi");
               setShouldOpenPopover(false);
             }}
             positions={["top", "bottom"]}
