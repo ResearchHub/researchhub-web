@@ -79,7 +79,6 @@ export default function AddNewSourceBodySearch({
               postedPaperUniDocID,
               exitPaperUploadModal,
             }) => {
-              debugger;
               postCitationFromSearch({
                 onError: emptyFncWithMsg,
                 onSuccess: () => {
