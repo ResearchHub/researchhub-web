@@ -127,7 +127,7 @@ export default function AddNewSourceBodySearch({
           setSelectedCitationType(inputVal.value)
         }
         options={citationTypeOptions}
-        placeholder="Select search type"
+        placeholder="Supports / Rejects"
         required
         value={citationTypeInputValue}
       />

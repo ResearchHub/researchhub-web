@@ -16,6 +16,7 @@ import {
   ReactElement,
   ReactNode,
   SyntheticEvent,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -24,6 +25,8 @@ import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
 import SourceSearchInputItem from "./SourceSearchInputItem";
+import ResearchHubPopover from "~/components/ResearchHubPopover";
+import icons from "~/config/themes/icons";
 
 export type Props = {
   emptyResultDisplay?: ReactNode;
@@ -56,11 +59,17 @@ export default function SourceSearchInput({
   const [searchState, setSearchState] =
     useState<SearchState>(DEFAULT_SEARCH_STATE);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-
+  const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
   const {
     filters,
     filters: { query = "" },
   } = searchState;
+
+  useEffect((): void => {
+    if (shouldAllowNewUpload && shouldOpenPopover) {
+      setShouldOpenPopover(false);
+    }
+  }, [shouldAllowNewUpload, shouldOpenPopover]);
 
   const apiSearchHandler = useMemo((): ((searchState: SearchState) => void) => {
     return getHandleSourceSearchInputChange({
@@ -156,14 +165,37 @@ export default function SourceSearchInput({
             required={Boolean(required)}
             value={query ?? ""}
           />
-          {shouldAllowNewUpload && (
-            <span
-              className={css(styles.uploadAPaper)}
-              onClick={onSelectPaperUpload}
-            >
-              {"Upload a paper"}
-            </span>
-          )}
+          <ResearchHubPopover
+            containerStyle={{ zIndex: 11 }}
+            targetContent={
+              <span
+                className={css(styles.uploadAPaper)}
+                onClick={(event: SyntheticEvent): void => {
+                  shouldAllowNewUpload
+                    ? onSelectPaperUpload(event)
+                    : setShouldOpenPopover(true);
+                }}
+              >
+                {"Upload a paper"}
+              </span>
+            }
+            isOpen={shouldOpenPopover}
+            popoverContent={
+              <div className={css(styles.uploaderPopoverContent)}>
+                <div className={css(styles.uploadPopoverText)}>
+                  {"Choose supports / rejects"}
+                </div>
+                <div style={{ color: colors.LIGHT_GREY_BACKGROUND }}>
+                  {icons.caretDown}
+                </div>
+              </div>
+            }
+            onClickOutside={(): void => {
+              alert("hi");
+              setShouldOpenPopover(false);
+            }}
+            positions={["top", "bottom"]}
+          />
         </div>
       ) : (
         <div className={css(styles.selectedItemCard)}>
@@ -228,5 +260,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 24,
+  },
+  uploaderPopoverContent: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  uploadPopoverText: {
+    background: colors.LIGHT_GREY_BACKGROUND,
+    borderRadius: 4,
+    fontSize: 12,
+    marginBottom: -8,
+    padding: "8px 12px",
   },
 });
