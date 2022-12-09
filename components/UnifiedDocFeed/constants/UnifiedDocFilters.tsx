@@ -16,7 +16,7 @@ export const topLevelFilters = {
     label: "Live",
     value: "/live",
     icon: icons.pulse,
-  },  
+  },
 };
 
 export const UnifiedDocFilters = {
@@ -76,25 +76,28 @@ export const sortOpts = {
       feedTypeOpts["meta-study"].value,
     ],
   },
-  "most_rsc": {
+  most_rsc: {
     value: "most_rsc",
     label: "RSC Offered",
     selectedLabel: "RSC Offered",
-    icon: <ResearchCoinIcon version={4} height={16} width={16} overrideStyle={undefined} />,
+    icon: (
+      <ResearchCoinIcon
+        version={4}
+        height={16}
+        width={16}
+        overrideStyle={undefined}
+      />
+    ),
     disableScope: true,
-    availableFor: [
-      feedTypeOpts["bounty"].value,
-    ],
+    availableFor: [feedTypeOpts["bounty"].value],
   },
-  "expiring_soon": {
+  expiring_soon: {
     value: "expiring_soon",
     label: "Expiring Soon",
     selectedLabel: "Expiring Soon",
     icon: icons.clock,
     disableScope: true,
-    availableFor: [
-      feedTypeOpts["bounty"].value,
-    ],
+    availableFor: [feedTypeOpts["bounty"].value],
   },
   new: {
     value: "new",
@@ -167,7 +170,7 @@ export const tagFilters = {
   //   value: "open,closed,expired",
   //   label: "Closed bounties",
   //   availableFor: [feedTypeOpts["bounty"].value],
-  // },  
+  // },
   answered: {
     value: "answered",
     label: "Answered",

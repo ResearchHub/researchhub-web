@@ -46,9 +46,11 @@ const FeedMenuTopLevelFilters = ({
   }, []);
 
   const filterElems = useMemo(() => {
-    return Object.values(topLevelFilters).map((f, idx) => {
+    const filterValues = Object.values(topLevelFilters);
+    return filterValues.map((f, idx) => {
       const isSelected = f.value === selectedFilters.topLevel;
       const isMyHubs = f.value === "/my-hubs";
+      const isLive = f.value === "/live";
 
       if (isMyHubs && !shouldShowMyHubs) {
         return null;
@@ -60,7 +62,8 @@ const FeedMenuTopLevelFilters = ({
             styles.filter,
             isSelected && styles.filterSelected,
             renderAsDropdown && styles.filterAsDropdownOpt,
-            isMyHubs && styles.filterForMyHubs
+            isMyHubs && styles.filterForMyHubs,
+            idx === filterValues.length - 1 && styles.lastFilter
           )} filterSelected`}
           ref={filterEl}
           key={`filter-${idx}`}
@@ -72,6 +75,8 @@ const FeedMenuTopLevelFilters = ({
             }
           }}
         >
+          {isLive && <span className={css(styles.divider)}></span>}
+
           <span className={css(styles.filterIcon)}>
             {isMyHubs ? (
               <AuthorAvatar
@@ -85,10 +90,7 @@ const FeedMenuTopLevelFilters = ({
             )}
           </span>
           <span className={css(styles.filterLabel)}>
-            {isMyHubs 
-              ? <><span className={css(styles.hiddenXS)}>My </span>Hubs</>
-              : <>{f.label}</>
-            }
+            {isMyHubs ? <>My Hubs</> : <>{f.label}</>}
           </span>
           {isMyHubs && isSubscribedToHubs && !renderAsDropdown && (
             <span
@@ -104,7 +106,6 @@ const FeedMenuTopLevelFilters = ({
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
-          {isMyHubs && <span className={css(styles.divider)}></span>}
         </div>
       );
     });
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     display: "inline",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
-    }
+    },
   },
   dropdown: {
     position: "absolute",
@@ -146,12 +147,25 @@ const styles = StyleSheet.create({
   divider: {
     borderRight: `1px solid ${colors.GREY_LINE(1)}`,
     height: "80%",
+    marginLeft: "auto",
     position: "absolute",
-    right: -20,
+    left: -16,
+
+    "@media only screen and (max-width: 767px)": {
+      left: -20,
+    },
+    // right: -8,
+    // right: -20,
   },
   filterAsDropdownOpt: {
     borderBottom: 0,
     padding: "10px 14px",
+  },
+  lastFilter: {
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: "auto",
+      marginRight: "0px",
+    },
   },
   filter: {
     padding: "0px 2px 10px 2px",
