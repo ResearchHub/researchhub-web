@@ -14,22 +14,9 @@ const ReputationTooltip = (props) => {
           effect="solid"
           delayShow={500}
         >
-          <div className={css(styles.comingSoon)}>
-            {"Withdraw RSC"}
-            <img
-              className={css(styles.icon)}
-              src={"/static/icons/coin-filled.png"}
-              alt="RSC Coin"
-            />
-          </div>
           <div className={css(styles.paragraph, styles.description)}>
             {
-              "Earn ResearchCoin by participating in discussion, uploading papers, upvoting papers, and updating summaries / adding notes to papers."
-            }
-          </div>
-          <div className={css(styles.description)}>
-            {
-              "With ResearchCoin, you can support your favorite scientific papers or put them towards funding areas of research."
+              "Earn ResearchCoin by discussing papers, answering bounties or referring contributors to our platform."
             }
           </div>
         </ReactTooltip>
@@ -40,7 +27,7 @@ const ReputationTooltip = (props) => {
 
 const styles = StyleSheet.create({
   tooltip: {
-    width: 345,
+    width: 250,
     padding: 15,
     fontSize: 14,
     // background: colors.BLUE(1),
@@ -63,12 +50,11 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginBottom: 10,
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-start",
   },
   icon: {
-    marginLeft: 5,
-    height: 20,
+    marginRight: 5,
+    height: 18,
   },
   settingsInfo: {
     alignItems: "center",
