@@ -27,7 +27,7 @@ const PreviewPlaceholder = ({
 const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
-    border: "1px solid rgb(237, 237, 237)",
+    // border: "1px solid rgb(237, 237, 237)",
     background: "#fff",
     height: "100%",
     width: "100%",

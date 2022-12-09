@@ -16,7 +16,10 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import { toTitleCase } from "~/config/utils/string";
 import { formatBountyAmount } from "~/config/types/bounty";
-
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import icons from "~/config/themes/icons";
+import ReputationTooltip from "~/components/ReputationTooltip";
+import ReactTooltip from "react-tooltip";
 type Props = { closeDropdown: () => void };
 
 function RscBalanceHistoryDropContentCard({
@@ -87,6 +90,10 @@ export default function RscBalanceHistoryDropContent({
     }
   }, [isDataFetched]);
 
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
+
   const transactionCards = transactionWidthdrawls.map(
     (
       transWithdrawal,
@@ -101,7 +108,34 @@ export default function RscBalanceHistoryDropContent({
 
   return (
     <div className={css(styles.rscBalanceHistoryDropContent)}>
+      
       <div className={css(styles.historyHeader)}>
+        <ReputationTooltip />
+        <div className={css(styles.header)}>
+          <ResearchCoinIcon overrideStyle={styles.rscIconLarge} height={18} width={18} />
+          <span>ResearchCoin</span>
+          <span style={{ color: colors.LIGHT_GREY_TEXT, position: "relative", padding: "8px 8px 8px 0", fontSize: 14, cursor: "initial" }} data-for={"reputation-tool-tip"} data-tip="">{icons.question}</span>
+        </div>
+        <ALink href={`/user/${currentUser?.author_profile?.id}/rsc`} theme="solidPrimary">
+          <span onClick={closeDropdown}>{"View all"}</span>
+        </ALink>
+      </div>
+      <div className={css(styles.transactionCardWrap)}>
+      <ReactPlaceholder
+          ready={isDataFetched}
+          customPlaceholder={Array.from(new Array(8)).map((_, idx) => (
+            <PreviewPlaceholder
+              color="#efefef"
+              hideAnimation={false}
+              key={`placeholder-${idx}`}
+              previewStyles={styles.previewPlaceholder}
+            />
+          ))}
+        >
+          {transactionCards}
+        </ReactPlaceholder>
+      </div>
+      <div className={css(styles.ctaWrapper)}>
         <div
           className={css(styles.withdrawButton)}
           onClick={(event: SyntheticEvent): void => {
@@ -112,36 +146,17 @@ export default function RscBalanceHistoryDropContent({
         >
           {"Withdraw RSC"}
         </div>
-        <ALink href={`/user/${currentUser?.author_profile?.id}/rsc`}>
-          <span onClick={closeDropdown}>{"View all"}</span>
-        </ALink>
-      </div>
-      <div className={css(styles.transactionCardWrap)}>
-        <ReactPlaceholder
-          ready={isDataFetched}
-          customPlaceholder={[
-            <PreviewPlaceholder
-              color="#efefef"
-              hideAnimation={false}
-              key="placeholder-1"
-              previewStyles={styles.previewPlaceholder}
-            />,
-            <PreviewPlaceholder
-              color="#efefef"
-              hideAnimation={false}
-              key="placeholder-2"
-              previewStyles={styles.previewPlaceholder}
-            />,
-            <PreviewPlaceholder
-              color="#efefef"
-              hideAnimation={false}
-              key="placeholder-3"
-              previewStyles={styles.previewPlaceholder}
-            />,
-          ]}
+
+        {/* <div
+          className={css(styles.depositButton)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            closeDropdown();
+            dispatch(ModalActions.openWithdrawalModal(true));
+          }}
         >
-          {transactionCards}
-        </ReactPlaceholder>
+          {"Deposit RSC"}
+        </div>         */}
       </div>
     </div>
   );
@@ -153,16 +168,33 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
     minWidth: 320,
-    marginTop: 8,
+    marginTop: 8, 
+    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)"   
+  },
+  header: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: "7px",
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  ctaWrapper: {
+    padding: "8px 15px",
+    borderTop: `2px solid ${colors.LIGHT_GREY_BORDER}`,
   },
   rscBalanceHistoryDropContentCard: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
-    paddingBottom: 8,
+    paddingBottom: 12,
+    paddingTop: 12,
+    ":last-child": {
+      borderBottom: `none`,
+    }
   },
   rscIcon: { width: 14, margin: "0 0 0 4px" },
+  rscIconLarge: { height: 18, },
   historyHeader: {
     alignItems: "center",
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
@@ -175,6 +207,7 @@ const styles = StyleSheet.create({
   transactionCardWrap: {
     maxHeight: 320,
     overflowY: "scroll",
+    padding: "0px 15px",
   },
   withdrawButton: {
     alignItems: "center",
@@ -183,21 +216,32 @@ const styles = StyleSheet.create({
     color: "#fff",
     cursor: "pointer",
     display: "flex",
-    fontSize: 12,
-    height: 20,
+    fontSize: 16,
     justifyContent: "center",
-    padding: "4px 8px",
+    padding: "10px 15px",
+    borderTop: `1px solid ${colors.LIGHT_GREY_BORDER}`,
   },
+  depositButton: {
+    alignItems: "center",
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    borderRadius: 4,
+    color: colors.NEW_BLUE(),
+    cursor: "pointer",
+    display: "flex",
+    fontSize: 16,
+    justifyContent: "center",
+    padding: "10px 15px",
+    marginTop: 7,
+  },  
   dropContentContent: {
     alignItems: "center",
     display: "flex",
     fontSize: 14,
     fontWeight: 500,
     justifyContent: "space-between",
-    padding: "8px 12px",
+    padding: "0px 0px 5px 0px",
   },
   dropContentDate: {
-    padding: "0 12px",
     fontSize: 12,
     color: colors.LIGHT_GREY_TEXT,
   },
