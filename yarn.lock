@@ -1491,6 +1491,11 @@
     "@typescript-eslint/types" "4.30.0"
     eslint-visitor-keys "^2.0.0"
 
+"@vercel/analytics@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-0.1.6.tgz#a1ce184168d8f5ec02e35ec954d84ee68ea01f4b"
+  integrity sha512-zNd5pj3iDvq8IMBQHa1YRcIteiw6ZiPB8AsONHd8ieFXlNpLqhXfIYnf4WvTfZ7S1NSJ++mIM14aJnNac/VMXQ==
+
 "@visao/ckeditor5-video@^29.1.0":
   version "29.1.0"
   resolved "https://registry.yarnpkg.com/@visao/ckeditor5-video/-/ckeditor5-video-29.1.0.tgz#e7df9c02f7abab965435c792ee9d7b6b4f58c7a2"
