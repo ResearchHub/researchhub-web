@@ -190,9 +190,6 @@ function PaperTab(props) {
               <div style={{ opacity: 0.5, fontSize: 14 }}>
                 Do not upload any copyrighted content to the site
               </div>
-              <div className={css(styles.emptyPlaceholderSubtitle)}>
-                {!paperUrl && "Click the button below to add the paper"}
-              </div>
               <div className={css(styles.emptyStateButtonContainer)}>
                 {paperUrl && renderExternalLink()}
                 <PermissionNotificationWrapper
