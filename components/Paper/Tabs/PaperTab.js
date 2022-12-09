@@ -187,7 +187,7 @@ function PaperTab(props) {
                 This academic paper hasn't been uploaded yet. If it's open
                 access, upload the pdf!
               </div>
-              <div style={{ opacity: 0.5, fontSize: 14 }}>
+              <div style={{ opacity: 0.5, fontSize: 14, marginBottom: 16 }}>
                 Do not upload any copyrighted content to the site
               </div>
               <div className={css(styles.emptyStateButtonContainer)}>
