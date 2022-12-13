@@ -26,7 +26,6 @@ import { useEffect, useState } from "react";
 import App from "next/app";
 import Base from "./Base";
 import nookies from "nookies";
-import ReactGA from "react-ga";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 
@@ -73,14 +72,6 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
   useEffect(() => {
     connectSift();
 
-    if (process.env.GA_TRACKING_ID) {
-      console.log("initializing", process.env.GA_TRACKING_ID);
-      ReactGA.initialize(process.env.GA_TRACKING_ID, {
-        testMode: process.env.NODE_ENV !== "production",
-      });
-    }
-
-    ReactGA.pageview(router.asPath);
     router.events.on("routeChangeStart", (url) => {
       store.dispatch(MessageActions.setMessage(""));
       store.dispatch(MessageActions.showMessage({ show: true, load: true }));
@@ -88,7 +79,6 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
 
     router.events.on("routeChangeComplete", (url) => {
       connectSift();
-      ReactGA.pageview(router.asPath);
       store.dispatch(MessageActions.showMessage({ show: false }));
     });
 

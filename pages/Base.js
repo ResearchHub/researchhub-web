@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import PermissionActions from "../redux/permission";
 import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
+import Script from "next/script";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -79,6 +80,20 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
+      {process.env.GA_TRACKING_ID && (
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', '${process.env.GA_TRACKING_ID}', 'auto');
+            ga('send', 'pageview');
+          `}
+        </Script>
+      )}
+
       <NavbarContext.Provider
         value={{ numNavInteractions, setNumNavInteractions }}
       >
