@@ -80,21 +80,21 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
-      {process.env.TAG_MANAGER_ID && (
+      {true && (
         <>
           <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.TAG_MANAGER_ID}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=G-QWCEK6DGHW`}
             strategy="afterInteractive"
           />
-          {/* <Script id="google-analytics" strategy="afterInteractive">
-          {`
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){window.dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', '${process.env.TAG_MANAGER_ID}');
+            gtag('config', 'G-QWCEK6DGHW');
           `}
-        </Script> */}
+          </Script>
         </>
       )}
 
