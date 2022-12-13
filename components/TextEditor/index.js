@@ -104,7 +104,6 @@ function TextEditor(props) {
   function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
   }
-
   return (
     <QuillTextEditor
       value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
