@@ -1,7 +1,6 @@
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-
 import Link from "next/link";
 
 // Component
@@ -49,8 +48,8 @@ class WithdrawalModal extends Component {
       networkVersion: null,
       connectedMetaMask: false,
       connectedWalletLink: false,
-      ethAccount: "",
-      ethAccountIsValid: false,
+      ethAccount: this.props.address,
+      ethAccountIsValid: true,
       transition: false,
       listenerNetwork: null,
       listenerAccount: null,
@@ -82,6 +81,12 @@ class WithdrawalModal extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
+      if (this.props.address !== prevProps.address) {
+        this.setState({
+          ethAccount: this.props.address,
+          ethAccountIsValid: true,
+        });
+      }
       if (!this.state.buttonEnabled && this.state.userBalance) {
         this.setState({
           buttonEnabled: true,
@@ -346,9 +351,7 @@ class WithdrawalModal extends Component {
           this.state.metaMaskVisible && styles.activeToggle
         )}
         onClick={async () => {
-          if (!this.state.connectedMetaMask) {
-            await this.connectMetaMask();
-          }
+          await this.props.openWeb3ReactModal();
           this.transitionScreen(() =>
             this.setState({
               metaMaskVisible: true,
@@ -357,7 +360,7 @@ class WithdrawalModal extends Component {
           );
         }}
       >
-        MetaMask
+        Connect Wallet
       </div>
     );
   };
@@ -768,15 +771,17 @@ class WithdrawalModal extends Component {
   render() {
     const { modals } = this.props;
     return (
-      <BaseModal
-        isOpen={modals.openWithdrawalModal}
-        closeModal={this.closeModal}
-        removeDefault={true}
-        modalStyle={styles.modal}
-        modalContentStyle={styles.root}
-      >
-        {this.renderContent()}
-      </BaseModal>
+      <>
+        <BaseModal
+          isOpen={modals.openWithdrawalModal}
+          closeModal={this.closeModal}
+          removeDefault={true}
+          modalStyle={styles.modal}
+          modalContentStyle={styles.root}
+        >
+          {this.renderContent()}
+        </BaseModal>
+      </>
     );
   }
 }
