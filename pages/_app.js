@@ -74,6 +74,7 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
     connectSift();
 
     if (process.env.GA_TRACKING_ID) {
+      console.log("initializing", process.env.GA_TRACKING_ID);
       ReactGA.initialize(process.env.GA_TRACKING_ID, {
         testMode: process.env.NODE_ENV !== "production",
       });
