@@ -31,7 +31,6 @@ const nextConfig = {
     SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     REACT_APP_ENV: process.env.REACT_APP_ENV,
     HOST: process.env.HOST,
-    TAG_MANAGER_ID: process.env.TAG_MANAGER_ID,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID,
     ORCID_KID: process.env.ORCID_KID,
