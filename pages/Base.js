@@ -80,10 +80,10 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
-      {true && (
+      {process.env.GA_TRACKING_ID && (
         <>
           <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=G-QWCEK6DGHW`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA_TRACKING_ID}`}
             strategy="afterInteractive"
           />
           <Script id="google-analytics" strategy="afterInteractive">
@@ -92,7 +92,7 @@ function Base({
             function gtag(){window.dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-QWCEK6DGHW');
+            gtag('config', '${process.env.GA_TRACKING_ID}');
           `}
           </Script>
         </>
