@@ -8,6 +8,7 @@ import {
   useSigner,
   useSwitchNetwork,
   useNetwork,
+  useContractRead,
   // eslint-disable-next-line
 } from "wagmi";
 import { goerli, mainnet } from "wagmi/chains";
@@ -58,25 +59,24 @@ export function DepositScreen(props) {
   const { data, write } = useContractWrite(config);
 
   const [balance, setBalance] = useState(0);
-  const [fetchingBalance, setFetchingBalance] = useState(false);
-  const [RSCContract, setRSCContract] = useState(null);
+
+  const {
+    data: RSCBalance,
+    isError,
+    isLoading: isLoadingBalance,
+  } = useContractRead({
+    address: RSCContractAddress,
+    abi: CONTRACT_ABI,
+    functionName: "balanceOf",
+    args: [ethAccount],
+    watch: true,
+  });
 
   useEffect(() => {
-    const createContract = () => {
-      const address = RSCContractAddress;
-      const provider = new ethers.providers.JsonRpcProvider(INFURA_ENDPOINT);
-      console.log(address);
-      console.log(provider);
-      console.log(CONTRACT_ABI);
-      const contract = new ethers.Contract(address, CONTRACT_ABI, provider);
-      setRSCContract(contract);
-    };
-    createContract();
-  }, []);
-
-  useEffect(() => {
-    checkRSCBalance();
-  }, [RSCContract, ethAccount]);
+    if (RSCBalance) {
+      setBalance(ethers.utils.formatUnits(RSCBalance, 18));
+    }
+  }, [RSCBalance]);
 
   const onChange = (e) => {
     setAmount(e.target.value);
@@ -108,16 +108,6 @@ export function DepositScreen(props) {
         });
     }
   }, [data]);
-
-  const checkRSCBalance = async () => {
-    setFetchingBalance(true);
-    if (RSCContract) {
-      const bigNumberBalance = await RSCContract.balanceOf(props.ethAccount);
-      const balance = ethers.utils.formatUnits(bigNumberBalance, 18);
-      setBalance(balance);
-    }
-    setFetchingBalance(false);
-  };
 
   const signTransaction = async (e) => {
     e && e.preventDefault();
@@ -158,7 +148,7 @@ export function DepositScreen(props) {
         minValue={0}
         maxValue={balance}
         balance={
-          fetchingBalance ? <Loader loading={true} size={10} /> : balance
+          isLoadingBalance ? <Loader loading={true} size={10} /> : balance
         }
         value={amount}
         onChange={onChange}
@@ -171,7 +161,13 @@ export function DepositScreen(props) {
       <div className={css(styles.buttonContainer)}>
         <Button
           disabled={!buttonEnabled || !ethAccount}
-          label={!RSCContract ? <Loader loading={true} size={10} /> : "Confirm"}
+          label={
+            !RSCBalance ? (
+              <Loader loading={true} size={10} color={"#fff"} />
+            ) : (
+              "Confirm"
+            )
+          }
           type="submit"
           customButtonStyle={styles.button}
           rippleClass={styles.button}
