@@ -230,23 +230,28 @@ const DiscussionTab = (props) => {
             customPlaceholder={<PaperPlaceholder color="#efefef" />}
           >
             {threads.length > 0
-              ? threads.map((t, i) => {
+              ? threads.map((thread, i) => {
+                  const { path, data } = thread;
+                  const formattedThreadData =
+                    data?.source === "citation_comment"
+                      ? { ...data, text: data.text?.content ?? null }
+                      : data;
                   return (
                     <DiscussionEntry
-                      key={`thread-${t.data.id}`}
-                      {...t.data}
+                      key={`thread-${formattedThreadData.id}`}
+                      {...formattedThreadData}
                       bounties={props.bounties}
                       commentBounties={
-                        t.data.bounties.length
-                          ? t.data.bounties
-                          : bountyMap[t.data.id]
-                          ? [bountyMap[t.data.id]]
+                        formattedThreadData.bounties.length
+                          ? formattedThreadData.bounties
+                          : bountyMap[formattedThreadData.id]
+                          ? [bountyMap[formattedThreadData.id]]
                           : []
                       }
-                      data={t.data}
+                      data={formattedThreadData}
                       hostname={hostname}
-                      hoverEvents={true}
-                      path={t.path}
+                      hoverEvents
+                      path={path}
                       newCard={transition && i === 0} //conditions when a new card is made
                       mobileView={mobileView}
                       discussionCount={calculatedCount}
@@ -257,8 +262,8 @@ const DiscussionTab = (props) => {
                       bountyType={props.bountyType}
                       currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
-                      context="DOCUMENT"
-                      isAcceptedAnswer={t.data.is_accepted_answer}
+                      // context="DOCUMENT"
+                      isAcceptedAnswer={formattedThreadData.is_accepted_answer}
                       handleAwardBounty={handleAwardBounty}
                     />
                   );

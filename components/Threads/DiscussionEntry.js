@@ -645,7 +645,6 @@ class DiscussionEntry extends Component {
         ? this.state.comment.plain_text
         : this.state.comment.text;
 
-    console.info("body: ", body);
     const username = createUsername(data);
     const documentId = this.getDocumentID();
     const metaData = {
