@@ -43,17 +43,17 @@ function Base({
     paperID: null,
   });
 
-  useEffect(async () => {
-    getUniversities();
-    await getUser();
-    getTopHubs(auth);
-    if (auth.isLoggedIn) {
-      getWithdrawals();
-      getNotifications();
-    }
-    fetchPermissions();
-  }, []);
-
+  // useEffect(async () => {
+  //   getUniversities();
+  //   await getUser();
+  //   getTopHubs(auth);
+  //   if (auth.isLoggedIn) {
+  //     getWithdrawals();
+  //     getNotifications();
+  //   }
+  //   fetchPermissions();
+  // }, []);
+  console.log(2);
   /*
     This component is used in situations where we fetch data through
     getInitialProps. In these cases, we cannot intercept the data and replace
@@ -77,7 +77,7 @@ function Base({
     position: positions.MIDDLE,
     transition: transitions.SCALE,
   };
-  console.log(process.env.GA_TRACKING_ID);
+
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
       {process.env.GA_TRACKING_ID && (

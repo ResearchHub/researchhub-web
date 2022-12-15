@@ -80,6 +80,9 @@ const routes = (BASE_URL) => {
   return {
     ASYNC_PAPER_UPDATOR: BASE_URL + `paper/async_paper_updator/`,
     BASE_URL,
+    CHECK_ACCOUNT: () => {
+      return BASE_URL + `user/check_account/`;
+    },
     CITATIONS: ({ citationID, citationType, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)
