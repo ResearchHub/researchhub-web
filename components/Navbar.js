@@ -431,7 +431,6 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
-  openWithdrawalModal: ModalActions.openWithdrawalModal,
   openSignUpModal: ModalActions.openSignUpModal,
   updateUser: AuthActions.updateUser,
 };

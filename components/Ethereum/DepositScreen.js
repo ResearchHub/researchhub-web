@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { contractABI } from "./contractAbi";
+import { contractABI, stagingContractABI } from "./contractAbi";
 import { ethers } from "ethers";
-
-// Dynamic modules
-import dynamic from "next/dynamic";
-const contractAbi = dynamic(() =>
-  import("~/components/Modals/Artifacts/contract-abi")
-);
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useProvider,
+  useSigner,
+  useSwitchNetwork,
+  useNetwork,
+  // eslint-disable-next-line
+} from "wagmi";
+import { goerli, mainnet } from "wagmi/chains";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -20,18 +24,20 @@ import { Helpers } from "@quantfive/js-web-config";
 import { INFURA_ENDPOINT } from "~/config/constants";
 import { captureEvent } from "~/config/utils/events";
 
-// Constants
-const RSCContractAddress =
-  process.env.REACT_APP_ENV === "staging" ||
-  process.env.NODE_ENV !== "production"
-    ? "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be"
-    : "0xd101dcc414f310268c37eeb4cd376ccfa507f571";
+const isProduction = process.env.REACT_APP_ENV === "production";
 
-const HOTWALLET =
-  process.env.REACT_APP_ENV === "staging" ||
-  process.env.NODE_ENV !== "production"
-    ? "0xc49b1eC975b687259750D9da7BfCC82eEaA2eF19"
-    : "0x76835CA5Ebc7935CedBB1e0AA3d322e704b1b7B1";
+const CHAIN_ID = isProduction ? mainnet.id : goerli.id;
+
+// Constants
+const RSCContractAddress = isProduction
+  ? "0xd101dcc414f310268c37eeb4cd376ccfa507f571"
+  : "0x7D7b31439eFe004eDC1c5632222f818369aADdEE";
+
+const HOTWALLET = isProduction
+  ? "0x76835CA5Ebc7935CedBB1e0AA3d322e704b1b7B1"
+  : "0xc49b1eC975b687259750D9da7BfCC82eEaA2eF19";
+
+const CONTRACT_ABI = isProduction ? contractABI : stagingContractABI;
 export function DepositScreen(props) {
   const {
     ethAccount,
@@ -40,9 +46,37 @@ export function DepositScreen(props) {
     ethAddressOnChange,
     setMessage,
     showMessage,
+    openWeb3ReactModal,
   } = props;
 
+  const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
+
   const [amount, setAmount] = useState(0);
+
+  const {
+    data: signer,
+    isError,
+    isLoading,
+    getSigner,
+  } = useSigner({ chainId: CHAIN_ID });
+
+  const provider = useProvider();
+  const { config } = usePrepareContractWrite({
+    address: RSCContractAddress,
+    abi: CONTRACT_ABI,
+    functionName: "transfer",
+    args: [HOTWALLET, amount ? ethers.utils.parseEther(amount)._hex : 0],
+  });
+
+  const {
+    data,
+    isLoading: isContractLoading,
+    isSuccess,
+    status,
+    write,
+  } = useContractWrite(config);
+
   const [balance, setBalance] = useState(0);
   const [fetchingBalance, setFetchingBalance] = useState(false);
   const [RSCContract, setRSCContract] = useState(null);
@@ -51,7 +85,7 @@ export function DepositScreen(props) {
     const createContract = () => {
       const address = RSCContractAddress;
       const provider = new ethers.providers.JsonRpcProvider(INFURA_ENDPOINT);
-      const contract = new ethers.Contract(address, contractABI, provider);
+      const contract = new ethers.Contract(address, CONTRACT_ABI, provider);
       setRSCContract(contract);
     };
     createContract();
@@ -69,6 +103,33 @@ export function DepositScreen(props) {
     checkRSCBalance();
   };
 
+  useEffect(() => {
+    if (data?.hash) {
+      const PAYLOAD = {
+        amount,
+        transaction_hash: data.hash,
+        from_address: ethAccount,
+      };
+
+      fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          props.onSuccess && props.onSuccess(data.hash);
+        })
+        .catch((error) => {
+          captureEvent({
+            error,
+            msg: "Deposit backend error",
+            data: {
+              ...PAYLOAD,
+            },
+          });
+          props.onSuccess && props.onSuccess(data.hash);
+        });
+    }
+  }, [data]);
+
   const checkRSCBalance = async () => {
     setFetchingBalance(true);
     if (RSCContract) {
@@ -82,44 +143,16 @@ export function DepositScreen(props) {
   const signTransaction = async (e) => {
     e && e.preventDefault();
 
-    if (!props.provider) {
-      setMessage("Please refresh the page and try again!");
-      showMessage({ show: true, error: true });
+    if (!signer) {
+      openWeb3ReactModal();
       return;
     }
 
-    const address = RSCContractAddress;
-
-    const convertedAmount = ethers.utils.parseEther(amount);
-    const signer = props.provider.getSigner(0);
-    const contract = new ethers.Contract(address, contractABI, signer);
-    const tx = await contract.transfer(HOTWALLET, convertedAmount);
-
-    if (tx) {
-      const PAYLOAD = {
-        ...tx,
-        amount,
-        transaction_hash: tx.hash,
-        from_address: tx.from,
-      };
-
-      return fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          props.onSuccess && props.onSuccess(tx.hash);
-        })
-        .catch((error) => {
-          captureEvent({
-            error,
-            msg: "Deposit backend error",
-            data: {
-              ...PAYLOAD,
-            },
-          });
-          props.onSuccess && props.onSuccess(tx.hash);
-        });
+    if (chain.id !== CHAIN_ID) {
+      switchNetwork(CHAIN_ID);
     }
+
+    write?.(); //await contract.transfer(HOTWALLET, convertedAmount);
   };
 
   return (
@@ -130,14 +163,16 @@ export function DepositScreen(props) {
         value={ethAccount}
         onChange={ethAddressOnChange}
         containerStyles={styles.ethAddressStyles}
-        placeholder={"         Connect MetaMask Wallet"}
+        placeholder={"         Connect your Wallet"}
         icon={
           <img
-            src={"/static/icons/metamask.svg"}
+            src={"/static/eth-diamond-black.png"}
             className={css(styles.metaMaskIcon)}
           />
         }
-        onClick={connectMetaMask}
+        onClick={() => {
+          openWeb3ReactModal();
+        }}
         {...props}
       />
       <AmountInput

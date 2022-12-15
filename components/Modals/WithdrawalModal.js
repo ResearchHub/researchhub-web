@@ -31,13 +31,13 @@ import {
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-const RINKEBY_CHAIN_ID = "4";
+const GOERLY_CHAIN_ID = "5";
 const MAINNET_CHAIN_ID = "1";
 
 const CURRENT_CHAIN_ID =
   process.env.REACT_APP_ENV === "staging" ||
   process.env.NODE_ENV !== "production"
-    ? RINKEBY_CHAIN_ID
+    ? GOERLY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
 class WithdrawalModal extends Component {
@@ -99,6 +99,9 @@ class WithdrawalModal extends Component {
       ) {
         this.getBalance();
         !this.state.transactionFee && this.getTransactionFee();
+        this.setState({
+          depositScreen: this.props.modals.depositScreen,
+        });
       }
       if (
         prevProps.auth.user.balance !== this.props.auth.user.balance ||
@@ -340,10 +343,10 @@ class WithdrawalModal extends Component {
   };
 
   renderToggleContainer = (className) => {
-    return <div className={className}>{this.renderMetaMaskButton()}</div>;
+    return <div className={className}>{this.renderConnectWallet()}</div>;
   };
 
-  renderMetaMaskButton = () => {
+  renderConnectWallet = () => {
     return (
       <div
         className={css(
@@ -539,6 +542,7 @@ class WithdrawalModal extends Component {
             connectMetaMask={this.connectMetaMask}
             setMessage={this.props.setMessage}
             showMessage={this.props.showMessage}
+            openWeb3ReactModal={this.props.openWeb3ReactModal}
             {...this.state}
           />
         </div>
@@ -729,14 +733,14 @@ class WithdrawalModal extends Component {
         >
           Withdraw
         </div>
-        {/* <div
+        <div
           className={css(styles.tab, depositScreen && styles.tabActive)}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: true }))
           }
         >
           Deposit
-        </div> */}
+        </div>
       </div>
     );
   };

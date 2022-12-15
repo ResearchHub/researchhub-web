@@ -21,7 +21,7 @@ import {
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { mainnet, goerli } from "wagmi/chains";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -33,7 +33,9 @@ const DynamicAlertTemplate = dynamic(() =>
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
 
-const chains = [mainnet];
+const isProduction = process.env.REACT_APP_ENV === "production";
+
+const chains = [isProduction ? mainnet : goerli];
 
 // Wagmi client
 const { provider } = configureChains(chains, [
