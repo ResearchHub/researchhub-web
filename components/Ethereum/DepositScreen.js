@@ -9,6 +9,7 @@ import {
   useSwitchNetwork,
   useNetwork,
   useContractRead,
+  useAccount,
   // eslint-disable-next-line
 } from "wagmi";
 import { goerli, mainnet } from "wagmi/chains";
@@ -42,6 +43,8 @@ export function DepositScreen(props) {
   const { ethAccount, buttonEnabled, ethAddressOnChange, openWeb3ReactModal } =
     props;
 
+  const { address, isConnected } = useAccount();
+
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
 
@@ -68,7 +71,7 @@ export function DepositScreen(props) {
     address: RSCContractAddress,
     abi: CONTRACT_ABI,
     functionName: "balanceOf",
-    args: [ethAccount],
+    args: [address],
     watch: true,
   });
 
@@ -87,7 +90,7 @@ export function DepositScreen(props) {
       const PAYLOAD = {
         amount,
         transaction_hash: data.hash,
-        from_address: ethAccount,
+        from_address: address,
       };
 
       fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
@@ -126,24 +129,28 @@ export function DepositScreen(props) {
 
   return (
     <form className={css(styles.form)} onSubmit={signTransaction}>
-      <ETHAddressInput
-        label="From"
-        tooltip="The address of your ETH Account (ex. 0x0000...)"
-        value={ethAccount}
-        onChange={ethAddressOnChange}
-        containerStyles={styles.ethAddressStyles}
-        placeholder={"         Connect your Wallet"}
-        icon={
-          <img
-            src={"/static/eth-diamond-black.png"}
-            className={css(styles.metaMaskIcon)}
-          />
-        }
-        onClick={() => {
-          openWeb3ReactModal();
-        }}
-        {...props}
-      />
+      <div key="deposit-eth-address">
+        <ETHAddressInput
+          label="From"
+          tooltip="The address of your ETH Account (ex. 0x0000...)"
+          value={address}
+          onChange={ethAddressOnChange}
+          ethAccount={address}
+          ethAccountIsValid={isConnected}
+          containerStyles={styles.ethAddressStyles}
+          placeholder={"         Connect your Wallet"}
+          icon={
+            <img
+              src={"/static/eth-diamond-black.png"}
+              className={css(styles.metaMaskIcon)}
+            />
+          }
+          onClick={() => {
+            openWeb3ReactModal();
+          }}
+          {...props}
+        />
+      </div>
       <AmountInput
         minValue={0}
         maxValue={balance}
@@ -160,14 +167,8 @@ export function DepositScreen(props) {
       />
       <div className={css(styles.buttonContainer)}>
         <Button
-          disabled={!buttonEnabled || !ethAccount}
-          label={
-            !RSCBalance ? (
-              <Loader loading={true} size={10} color={"#fff"} />
-            ) : (
-              "Confirm"
-            )
-          }
+          disabled={!buttonEnabled}
+          label={!RSCBalance ? "Connect Your Wallet" : "Confirm"}
           type="submit"
           customButtonStyle={styles.button}
           rippleClass={styles.button}
