@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import {
   useContractWrite,
   usePrepareContractWrite,
-  useProvider,
   useSigner,
   useSwitchNetwork,
   useNetwork,
@@ -39,29 +38,16 @@ const HOTWALLET = isProduction
 
 const CONTRACT_ABI = isProduction ? contractABI : stagingContractABI;
 export function DepositScreen(props) {
-  const {
-    ethAccount,
-    buttonEnabled,
-    connectMetaMask,
-    ethAddressOnChange,
-    setMessage,
-    showMessage,
-    openWeb3ReactModal,
-  } = props;
+  const { ethAccount, buttonEnabled, ethAddressOnChange, openWeb3ReactModal } =
+    props;
 
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
 
   const [amount, setAmount] = useState(0);
 
-  const {
-    data: signer,
-    isError,
-    isLoading,
-    getSigner,
-  } = useSigner({ chainId: CHAIN_ID });
+  const { data: signer } = useSigner({ chainId: CHAIN_ID });
 
-  const provider = useProvider();
   const { config } = usePrepareContractWrite({
     address: RSCContractAddress,
     abi: CONTRACT_ABI,
@@ -69,13 +55,7 @@ export function DepositScreen(props) {
     args: [HOTWALLET, amount ? ethers.utils.parseEther(amount)._hex : 0],
   });
 
-  const {
-    data,
-    isLoading: isContractLoading,
-    isSuccess,
-    status,
-    write,
-  } = useContractWrite(config);
+  const { data, write } = useContractWrite(config);
 
   const [balance, setBalance] = useState(0);
   const [fetchingBalance, setFetchingBalance] = useState(false);
@@ -85,6 +65,9 @@ export function DepositScreen(props) {
     const createContract = () => {
       const address = RSCContractAddress;
       const provider = new ethers.providers.JsonRpcProvider(INFURA_ENDPOINT);
+      console.log(address);
+      console.log(provider);
+      console.log(CONTRACT_ABI);
       const contract = new ethers.Contract(address, CONTRACT_ABI, provider);
       setRSCContract(contract);
     };
@@ -97,10 +80,6 @@ export function DepositScreen(props) {
 
   const onChange = (e) => {
     setAmount(e.target.value);
-  };
-
-  const onClick = () => {
-    checkRSCBalance();
   };
 
   useEffect(() => {
@@ -152,7 +131,7 @@ export function DepositScreen(props) {
       switchNetwork(CHAIN_ID);
     }
 
-    write?.(); //await contract.transfer(HOTWALLET, convertedAmount);
+    write?.();
   };
 
   return (
