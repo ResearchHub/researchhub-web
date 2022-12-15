@@ -21,6 +21,7 @@ import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlid
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
 import RHLogo from "./Home/RHLogo";
+import Login from "./Login/Login";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -134,7 +135,8 @@ const Navbar = (props) => {
           <div className={css(styles.buttonRight)}>
             {!isLoggedIn ? (
               <div className={css(styles.oauthContainer)}>
-                <GoogleLoginButton
+                <Login />
+                {/* <GoogleLoginButton
                   styles={[
                     styles.button,
                     styles.googleLoginButton,
@@ -144,7 +146,7 @@ const Navbar = (props) => {
                   customLabelStyle={[styles.googleLabel]}
                   isLoggedIn={isLoggedIn}
                   disabled={!authChecked}
-                />
+                /> */}
                 <div className={css(styles.divider)}></div>
               </div>
             ) : (
