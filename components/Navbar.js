@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     position: "initial",
   },
   buttonRight: {
-    marginRight: 8,
+    marginRight: 16,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
     },
@@ -361,7 +361,6 @@ const styles = StyleSheet.create({
     position: "relative",
     alignItems: "center",
     minWidth: 160,
-    marginRight: 16,
   },
   xsmallDownTitle: {
     display: "none",
