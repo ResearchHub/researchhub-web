@@ -155,7 +155,7 @@ const Navbar = (props) => {
                   iconStyle={styles.googleIcon}
                   customLabelStyle={[styles.googleLabel]}
                   isLoggedIn={isLoggedIn}
-                  disabled={!authChecked}
+                  // disabled={!authChecked}
                 />
                 <div className={css(styles.divider)}></div>
               </div>
