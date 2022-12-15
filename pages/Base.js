@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import PermissionActions from "../redux/permission";
 import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
+import Script from "next/script";
 
 import {
   EthereumClient,
@@ -105,6 +106,23 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
+    {process.env.GA_TRACKING_ID && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA_TRACKING_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${process.env.GA_TRACKING_ID}');
+          `}
+          </Script>
+        </>
+      )}
       <WagmiConfig client={wagmiClient}>
         <NavbarContext.Provider
           value={{ numNavInteractions, setNumNavInteractions }}
