@@ -27,6 +27,7 @@ import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
 import SourceSearchInputItem from "./SourceSearchInputItem";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 export type Props = {
   emptyResultDisplay?: ReactNode;
@@ -131,7 +132,7 @@ export default function SourceSearchInput({
             <CitationTableRowItemPlaceholder key="1" />,
             <CitationTableRowItemPlaceholder key="2" />,
           ]
-        : [...searchResults, ...searchResults,...searchResults,...searchResults,...searchResults,]
+        : searchResults
             .map((item: any, index: number) => (
               <SourceSearchInputItem
                 key={`source-search-input-item-${(item ?? {}).id ?? index}`}
@@ -242,8 +243,12 @@ const styles = StyleSheet.create({
     minHeight: 40,
     overflowY: "scroll",
     position: "fixed",
+    width: "84.5%",
     zIndex: 12, // modal overlay position is 11
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "82.4%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str}`]: {
       maxHeight: 200,
     },
   },

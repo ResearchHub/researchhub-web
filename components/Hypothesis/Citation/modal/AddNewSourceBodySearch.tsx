@@ -24,6 +24,7 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
+import SourceSearchInputItem from "../search/SourceSearchInputItem";
 
 const { NEW_PAPER_UPLOAD } = NEW_SOURCE_BODY_TYPES;
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
@@ -141,17 +142,18 @@ export default function AddNewSourceBodySearch({
         onSelect={(item: any): void => setSelectedItem(item)}
         optionalResultItem={
           Boolean(selectedCitationType) && (
-            <div
+            <SourceSearchInputItem
               key="optionalResultItem-Search-PaperUpload"
-              className={css(styles.uploadNewPaperButton)}
-              onClick={onSelectPaperUpload}
-            >
-              <FontAwesomeIcon
-                icon={"plus-circle"}
-                className={css(styles.plusCircle)}
-              />
-              <span>{"Upload a paper"}</span>
-            </div>
+              onSelect={onSelectPaperUpload}
+              label={
+                <div style={{display: "flex", alignItems: "center"}}>                  <FontAwesomeIcon
+                    icon={"plus-circle"}
+                    className={css(styles.plusCircle)}
+                  />
+                  <span>{"Upload a paper"}</span>
+                </div>
+              }
+            ></SourceSearchInputItem>
           )
         }
         required
