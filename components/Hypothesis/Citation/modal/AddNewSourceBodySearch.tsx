@@ -23,6 +23,7 @@ import {
   emptyFncWithMsg,
   isNullOrUndefined,
   nullthrows,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import SourceSearchInputItem from "../search/SourceSearchInputItem";
 
@@ -141,20 +142,27 @@ export default function AddNewSourceBodySearch({
         onSelectPaperUpload={onSelectPaperUpload}
         onSelect={(item: any): void => setSelectedItem(item)}
         optionalResultItem={
-          Boolean(selectedCitationType) && (
-            <SourceSearchInputItem
-              key="optionalResultItem-Search-PaperUpload"
-              onSelect={onSelectPaperUpload}
-              label={
-                <div style={{display: "flex", alignItems: "center"}}>                  <FontAwesomeIcon
-                    icon={"plus-circle"}
-                    className={css(styles.plusCircle)}
-                  />
-                  <span>{"Upload a paper"}</span>
-                </div>
-              }
-            ></SourceSearchInputItem>
-          )
+          <SourceSearchInputItem
+            key="optionalResultItem-Search-PaperUpload"
+            onSelect={
+              Boolean(selectedCitationType)
+                ? onSelectPaperUpload
+                : silentEmptyFnc
+            }
+            label={
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <FontAwesomeIcon
+                  icon={"plus-circle"}
+                  className={css(styles.plusCircle)}
+                />
+                <span>{`Upload a paper ${
+                  !Boolean(selectedCitationType)
+                    ? "( Support / Reject to continue )"
+                    : ""
+                }`}</span>
+              </div>
+            }
+          />
         }
         required
         shouldAllowNewUpload={Boolean(selectedCitationType)}

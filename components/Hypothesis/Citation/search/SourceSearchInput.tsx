@@ -28,6 +28,7 @@ import SourceSearchInputItem from "./SourceSearchInputItem";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 export type Props = {
   emptyResultDisplay?: ReactNode;
@@ -134,16 +135,13 @@ export default function SourceSearchInput({
           ]
         : searchResults
             .map((item: any, index: number) => (
-              <SourceSearchInputItem
+              <FeedCard
+                {...item}
+                formattedDocType={"paper"}
+                handleClick={(): void => handleItemSelect(item)}
+                hideVotes
                 key={`source-search-input-item-${(item ?? {}).id ?? index}`}
-                label={`${
-                  item.title
-                    ? item.title + ` (${item.paper_title})`
-                    : item.paper_title
-                    ? item.paper_title
-                    : ""
-                } - ${item.doi}`}
-                onSelect={(): void => handleItemSelect(item)}
+                withSidePadding
               />
             ))
             .concat(filterNull([optionalResultItem, emptyResultDisplay]))}
@@ -243,10 +241,10 @@ const styles = StyleSheet.create({
     minHeight: 40,
     overflowY: "scroll",
     position: "fixed",
-    width: "84.5%",
+    width: "84.5%", // arbitrary to match modal input sizes
     zIndex: 12, // modal overlay position is 11
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: "82.4%",
+      width: "82.4%", // arbitrary to match modal input sizes
     },
     [`@media only screen and (max-width: ${breakpoints.small.str}`]: {
       maxHeight: 200,

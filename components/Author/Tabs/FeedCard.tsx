@@ -82,6 +82,7 @@ export type FeedCardProps = {
   user_vote: any;
   user: any;
   voteCallback: any;
+  withSidePadding?: boolean;
 };
 
 const documentIcons = {
@@ -122,6 +123,7 @@ function FeedCard({
   uploaded_date,
   user_vote: userVote,
   user: currentUser,
+  withSidePadding,
 }: FeedCardProps) {
   /**
    * Whether or not THIS PaperPDFModal is open.
@@ -249,7 +251,11 @@ function FeedCard({
     >
       <Link
         href={feDocUrl}
-        className={css(styles.feedCard, featured && styles.featuredContainer)}
+        className={css(
+          styles.feedCard,
+          featured && styles.featuredContainer,
+          withSidePadding && styles.padding16
+        )}
       >
         {!hideVotes && (
           <DesktopOnly>
@@ -470,7 +476,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     cursor: "pointer",
     display: "flex",
-    padding: "15px 0px",
+    padding: "16px 0px",
     textDecoration: "none",
     width: "100%",
     ":hover": {
@@ -717,6 +723,7 @@ const styles = StyleSheet.create({
     display: "inline-flex",
     verticalAlign: "middle",
   },
+  padding16: { padding: 16 },
 });
 
 const mapStateToProps = (state) => ({
