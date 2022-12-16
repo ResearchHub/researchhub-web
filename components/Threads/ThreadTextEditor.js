@@ -91,7 +91,6 @@ class ThreadTextEditor extends Component {
 
   render() {
     let { mediaOnly, placeholder, textEditorId } = this.props;
-
     if (!this.props.body) {
       return (
         <PermissionNotificationWrapper
@@ -102,42 +101,34 @@ class ThreadTextEditor extends Component {
           hideRipples={true}
         >
           <TextEditor
-            readOnly={false}
-            onSubmit={this.onSubmit}
             clearOnSubmit={true}
-            hideCancelButton={false}
-            uid={textEditorId}
             commentEditor={true}
-            smallToolBar={true}
-            onCancel={this.onCancel}
-            onChange={this.onChange}
-            mediaOnly={mediaOnly}
-            isBounty={this.props.isBounty}
-            placeholder={placeholder || "What are your thoughts?"}
-            loading={this.state.loading}
             editing={this.props.editing}
             focusEditor={this.props.focusEditor}
-            initialValue={this.state.editorState}
             hasHeader={this.props.hasHeader}
-            postType={this.props.postType}
+            hideCancelButton={false}
+            initialValue={this.state.editorState}
             isAcceptedAnswer={this.props.isAcceptedAnswer}
+            isBounty={this.props.isBounty}
+            loading={this.state.loading}
+            mediaOnly={mediaOnly}
+            onCancel={this.onCancel}
+            onChange={this.onChange}
+            onSubmit={this.onSubmit}
+            placeholder={placeholder || "What are your thoughts?"}
+            postType={this.props.postType}
+            readOnly={false}
+            smallToolBar={true}
+            uid={textEditorId}
           />
         </PermissionNotificationWrapper>
       );
     } else {
+      window.editorState = this.state.editorState;
+
       return (
         <TextEditor
-          readOnly={!this.props.editing}
-          initialValue={this.state.editorState}
-          onSubmit={this.onEditSubmit}
-          onCancel={this.onEditCancel}
-          onChange={this.onChange}
-          uid={textEditorId}
-          smallToolBar={true}
           commentEditor={true}
-          isBounty={this.props.isBounty}
-          mediaOnly={mediaOnly}
-          loading={this.state.loading}
           commentStyles={[
             styles.comment,
             this.props.textStyles && this.props.textStyles,
@@ -147,12 +138,22 @@ class ThreadTextEditor extends Component {
             styles.textContainer,
             this.props.editing && styles.editTextContainer,
           ]}
-          placeholder={placeholder || "What are your thoughts?"}
-          passedValue={this.state.editorState}
           editing={this.props.editing}
           focusEditor={this.props.focusEditor}
-          postType={this.props.postType}
+          initialValue={this.state.editorState}
           isAcceptedAnswer={this.props.isAcceptedAnswer}
+          isBounty={this.props.isBounty}
+          loading={this.state.loading}
+          mediaOnly={mediaOnly}
+          onCancel={this.onEditCancel}
+          onChange={this.onChange}
+          onSubmit={this.onEditSubmit}
+          passedValue={this.state.editorState}
+          placeholder={placeholder || "What are your thoughts?"}
+          postType={this.props.postType}
+          readOnly={!this.props.editing}
+          smallToolBar={true}
+          uid={textEditorId}
         />
       );
     }
