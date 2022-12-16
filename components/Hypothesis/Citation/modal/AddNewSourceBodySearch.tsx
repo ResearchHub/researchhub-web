@@ -31,8 +31,9 @@ const docTypeOptions = [
   { label: SearchFilterDocTypeLabel[PAPER_KEY], value: PAPER_KEY },
 ];
 const citationTypeOptions = [
-  { label: "Rejects", value: "REJECT" },
+  // logical ordering
   { label: "Supports", value: "SUPPORT" },
+  { label: "Rejects", value: "REJECT" },
 ];
 
 export type ValidCitationType = null | "REJECT" | "SUPPORT";
@@ -107,17 +108,18 @@ export default function AddNewSourceBodySearch({
       )}
     >
       <div className={css(styles.title)}>{"Add a new Source"}</div>
-      <FormSelect
+      {/* NOTE: calvinhlee may update searchState later */}
+      {/* <FormSelect
         id="doc-search-type"
         inputStyle={formGenericStyles.inputMax}
         label="Type"
         labelStyle={formGenericStyles.labelStyle}
-        // onChange={handleInputChange} NOTE: calvinhlee may update searchState later
+        // onChange={handleInputChange} 
         options={docTypeOptions}
         placeholder="Select search type"
         required
         value={docTypeOptions[0]}
-      />
+      /> */}
       <FormSelect
         id="citation-type"
         inputStyle={formGenericStyles.inputMax}

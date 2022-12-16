@@ -131,7 +131,7 @@ export default function SourceSearchInput({
             <CitationTableRowItemPlaceholder key="1" />,
             <CitationTableRowItemPlaceholder key="2" />,
           ]
-        : searchResults
+        : [...searchResults, ...searchResults,...searchResults,...searchResults,...searchResults,]
             .map((item: any, index: number) => (
               <SourceSearchInputItem
                 key={`source-search-input-item-${(item ?? {}).id ?? index}`}
@@ -236,16 +236,13 @@ const styles = StyleSheet.create({
     background: "#fff",
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
-    top: 104,
     display: "flex",
     flexDirection: "column",
-    maxHeight: 300,
+    maxHeight: 252,
     minHeight: 40,
     overflowY: "scroll",
-    position: "absolute",
-    width: "inherit",
-    zIndex: 2,
-
+    position: "fixed",
+    zIndex: 12, // modal overlay position is 11
     "@media only screen and (max-width: 767px)": {
       maxHeight: 200,
     },
