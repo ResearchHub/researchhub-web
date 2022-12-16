@@ -1,10 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
-import { SyntheticEvent } from "react";
+import { ReactNode, SyntheticEvent } from "react";
 import colors from "~/config/themes/colors";
 
 type Props = {
   icon?: string;
-  label: string;
+  label: ReactNode;
   onSelect: Function;
 };
 
