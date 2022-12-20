@@ -19,7 +19,7 @@ export const toCheckSumAddress = (address) => {
 export const getEtherscanLink = (transactionHash) => {
   return process.env.REACT_APP_ENV === "production"
     ? `https://etherscan.io/tx/${transactionHash}`
-    : `https://rinkeby.etherscan.io/tx/${transactionHash}`;
+    : `https://goerli.etherscan.io/tx/${transactionHash}`;
 };
 
 /**

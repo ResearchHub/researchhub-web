@@ -1,4 +1,7 @@
 import "react-sliding-pane/dist/react-sliding-pane.css";
+import { useWeb3Modal } from "@web3modal/react";
+import { useAccount, useConnect, useEnsName } from "wagmi";
+
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -47,10 +50,14 @@ const WithdrawalModal = dynamic(() =>
 export const NAVBAR_HEIGHT = 68;
 
 const Navbar = (props) => {
+  const { address, isConnected } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+
   const router = useRouter();
   const navbarRef = useRef(null);
   const { isLoggedIn, user, authChecked, auth, updateUser } = props;
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
+  const { isOpen, open, close } = useWeb3Modal();
 
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook")
@@ -101,7 +108,12 @@ const Navbar = (props) => {
       <PromotionInfoModal />
       <ReCaptchaPrompt />
       <UploadPaperModal />
-      <WithdrawalModal />
+      <WithdrawalModal
+        openWeb3ReactModal={open}
+        closeWeb3ReactModal={close}
+        address={address}
+        isConnected={isConnected}
+      />
       <div
         ref={navbarRef}
         className={`${css(
@@ -143,7 +155,7 @@ const Navbar = (props) => {
                   iconStyle={styles.googleIcon}
                   customLabelStyle={[styles.googleLabel]}
                   isLoggedIn={isLoggedIn}
-                  disabled={!authChecked}
+                  // disabled={!authChecked}
                 />
                 <div className={css(styles.divider)}></div>
               </div>
@@ -192,7 +204,7 @@ const styles = StyleSheet.create({
     position: "initial",
   },
   buttonRight: {
-    marginRight: 8,
+    marginRight: 16,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
     },
@@ -348,7 +360,6 @@ const styles = StyleSheet.create({
   oauthContainer: {
     position: "relative",
     alignItems: "center",
-    width: "100%",
     minWidth: 160,
   },
   xsmallDownTitle: {
@@ -419,7 +430,6 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
-  openWithdrawalModal: ModalActions.openWithdrawalModal,
   openSignUpModal: ModalActions.openSignUpModal,
   updateUser: AuthActions.updateUser,
 };

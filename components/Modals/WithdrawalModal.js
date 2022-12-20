@@ -1,7 +1,6 @@
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-
 import Link from "next/link";
 
 // Component
@@ -32,13 +31,13 @@ import {
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-const RINKEBY_CHAIN_ID = "4";
+const GOERLY_CHAIN_ID = "5";
 const MAINNET_CHAIN_ID = "1";
 
 const CURRENT_CHAIN_ID =
   process.env.REACT_APP_ENV === "staging" ||
   process.env.NODE_ENV !== "production"
-    ? RINKEBY_CHAIN_ID
+    ? GOERLY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
 class WithdrawalModal extends Component {
@@ -49,8 +48,8 @@ class WithdrawalModal extends Component {
       networkVersion: null,
       connectedMetaMask: false,
       connectedWalletLink: false,
-      ethAccount: "",
-      ethAccountIsValid: false,
+      ethAccount: this.props.address,
+      ethAccountIsValid: true,
       transition: false,
       listenerNetwork: null,
       listenerAccount: null,
@@ -82,6 +81,12 @@ class WithdrawalModal extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
+      if (this.props.address !== prevProps.address) {
+        this.setState({
+          ethAccount: this.props.address,
+          ethAccountIsValid: true,
+        });
+      }
       if (!this.state.buttonEnabled && this.state.userBalance) {
         this.setState({
           buttonEnabled: true,
@@ -94,6 +99,9 @@ class WithdrawalModal extends Component {
       ) {
         this.getBalance();
         !this.state.transactionFee && this.getTransactionFee();
+        this.setState({
+          depositScreen: this.props.modals.depositScreen,
+        });
       }
       if (
         prevProps.auth.user.balance !== this.props.auth.user.balance ||
@@ -335,10 +343,10 @@ class WithdrawalModal extends Component {
   };
 
   renderToggleContainer = (className) => {
-    return <div className={className}>{this.renderMetaMaskButton()}</div>;
+    return <div className={className}>{this.renderConnectWallet()}</div>;
   };
 
-  renderMetaMaskButton = () => {
+  renderConnectWallet = () => {
     return (
       <div
         className={css(
@@ -346,9 +354,7 @@ class WithdrawalModal extends Component {
           this.state.metaMaskVisible && styles.activeToggle
         )}
         onClick={async () => {
-          if (!this.state.connectedMetaMask) {
-            await this.connectMetaMask();
-          }
+          await this.props.openWeb3ReactModal();
           this.transitionScreen(() =>
             this.setState({
               metaMaskVisible: true,
@@ -357,7 +363,7 @@ class WithdrawalModal extends Component {
           );
         }}
       >
-        MetaMask
+        Connect Wallet
       </div>
     );
   };
@@ -536,6 +542,7 @@ class WithdrawalModal extends Component {
             connectMetaMask={this.connectMetaMask}
             setMessage={this.props.setMessage}
             showMessage={this.props.showMessage}
+            openWeb3ReactModal={this.props.openWeb3ReactModal}
             {...this.state}
           />
         </div>
@@ -726,14 +733,14 @@ class WithdrawalModal extends Component {
         >
           Withdraw
         </div>
-        {/* <div
+        <div
           className={css(styles.tab, depositScreen && styles.tabActive)}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: true }))
           }
         >
           Deposit
-        </div> */}
+        </div>
       </div>
     );
   };
@@ -768,15 +775,17 @@ class WithdrawalModal extends Component {
   render() {
     const { modals } = this.props;
     return (
-      <BaseModal
-        isOpen={modals.openWithdrawalModal}
-        closeModal={this.closeModal}
-        removeDefault={true}
-        modalStyle={styles.modal}
-        modalContentStyle={styles.root}
-      >
-        {this.renderContent()}
-      </BaseModal>
+      <>
+        <BaseModal
+          isOpen={modals.openWithdrawalModal}
+          closeModal={this.closeModal}
+          removeDefault={true}
+          modalStyle={styles.modal}
+          modalContentStyle={styles.root}
+        >
+          {this.renderContent()}
+        </BaseModal>
+      </>
     );
   }
 }

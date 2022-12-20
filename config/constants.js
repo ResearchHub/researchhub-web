@@ -69,7 +69,7 @@ export const RINKEBY_CHAIN_ID = "4";
 export const INFURA_ENDPOINT =
   process.env.REACT_APP_ENV === "staging" ||
   process.env.NODE_ENV !== "production"
-    ? `https://rinkeby.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`
+    ? `https://goerli.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`
     : `https://mainnet.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`;
 export const RECAPTCHA_CLIENT_KEY = process.env.RECAPTCHA_CLIENT_KEY;
 

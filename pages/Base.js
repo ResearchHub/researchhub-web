@@ -15,6 +15,15 @@ import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 import Script from "next/script";
 
+import {
+  EthereumClient,
+  modalConnectors,
+  walletConnectProvider,
+} from "@web3modal/ethereum";
+import { Web3Modal } from "@web3modal/react";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { mainnet, goerli } from "wagmi/chains";
+
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
 );
@@ -24,6 +33,23 @@ const DynamicAlertTemplate = dynamic(() =>
 );
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
+
+const isProduction = process.env.REACT_APP_ENV === "production";
+
+const chains = [isProduction ? mainnet : goerli];
+
+// Wagmi client
+const { provider } = configureChains(chains, [
+  walletConnectProvider({ projectId: "a3e8904e258fe256bf772b764d3acfab" }),
+]);
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: modalConnectors({ appName: "web3Modal", chains }),
+  provider,
+});
+
+// Web3Modal Ethereum Client
+const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 function Base({
   auth,
@@ -80,7 +106,7 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
-      {process.env.GA_TRACKING_ID && (
+    {process.env.GA_TRACKING_ID && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA_TRACKING_ID}`}
@@ -97,30 +123,35 @@ function Base({
           </Script>
         </>
       )}
-
-      <NavbarContext.Provider
-        value={{ numNavInteractions, setNumNavInteractions }}
-      >
-        <NewPostButtonContext.Provider
-          value={{
-            values: newPostButtonValues,
-            setValues: setNewPostButtonValues,
-          }}
+      <WagmiConfig client={wagmiClient}>
+        <NavbarContext.Provider
+          value={{ numNavInteractions, setNumNavInteractions }}
         >
-          {isDevEnv() && SPEC__reloadClientSideData()}
-          <div className={css(styles.pageWrapper)}>
-            <DynamicPermissionNotification />
-            <DynamicMessage />
-            <RootLeftSidebar
-              rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-            />
-            <div className={css(styles.main)}>
-              <DynamicNavbar />
-              <Component {...pageProps} />
+          <NewPostButtonContext.Provider
+            value={{
+              values: newPostButtonValues,
+              setValues: setNewPostButtonValues,
+            }}
+          >
+            {isDevEnv() && SPEC__reloadClientSideData()}
+            <div className={css(styles.pageWrapper)}>
+              <DynamicPermissionNotification />
+              <DynamicMessage />
+              <RootLeftSidebar
+                rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+              />
+              <Web3Modal
+                projectId="a3e8904e258fe256bf772b764d3acfab"
+                ethereumClient={ethereumClient}
+              />
+              <div className={css(styles.main)}>
+                <DynamicNavbar />
+                <Component {...pageProps} />
+              </div>
             </div>
-          </div>
-        </NewPostButtonContext.Provider>
-      </NavbarContext.Provider>
+          </NewPostButtonContext.Provider>
+        </NavbarContext.Provider>
+      </WagmiConfig>
     </AlertProvider>
   );
 }

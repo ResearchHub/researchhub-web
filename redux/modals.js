@@ -153,12 +153,13 @@ export const ModalActions = {
       });
     };
   },
-  openWithdrawalModal: (openModal) => {
+  openWithdrawalModal: (openModal, depositScreen) => {
     return (dispatch) => {
       return dispatch({
         type: ModalConstants.WITHDRAWAL_MODAL_TOGGLE,
         payload: {
           openWithdrawalModal: openModal,
+          depositScreen,
         },
       });
     };
