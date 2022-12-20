@@ -131,19 +131,24 @@ export default function SourceSearchInput({
     <div className={css(styles.itemsList)}>
       {isResultLoading
         ? [
-            <CitationTableRowItemPlaceholder key="1" />,
-            <CitationTableRowItemPlaceholder key="2" />,
+            <CitationTableRowItemPlaceholder key="CitationTableRowItemPlaceholder-1" />,
+            <CitationTableRowItemPlaceholder key="CitationTableRowItemPlaceholder-2" />,
           ]
         : searchResults
             .map((item: any, index: number) => (
-              <FeedCard
-                {...item}
-                formattedDocType={"paper"}
-                handleClick={(): void => handleItemSelect(item)}
-                hideVotes
-                key={`source-search-input-item-${(item ?? {}).id ?? index}`}
-                withSidePadding
-              />
+              <div
+                key={`source-search-input-item-${
+                  (item ?? {}).id ?? index
+                }-${index}`}
+              >
+                <FeedCard
+                  {...item}
+                  formattedDocType={"paper"}
+                  handleClick={(): void => handleItemSelect(item)}
+                  hideVotes
+                  withSidePadding
+                />
+              </div>
             ))
             .concat(filterNull([optionalResultItem, emptyResultDisplay]))}
     </div>
