@@ -94,18 +94,19 @@ const documentIcons = {
 
 function FeedCard({
   abstract,
-  bounties,
   boost_amount: boostAmount,
+  bounties,
   created_by,
   created_date,
+  disableClick,
   discussion_count,
   featured,
   first_figure,
   first_preview,
   formattedDocLabel,
   formattedDocType,
-  hasAcceptedAnswer,
   handleClick,
+  hasAcceptedAnswer,
   hideVotes,
   hubs,
   id,
@@ -247,7 +248,7 @@ function FeedCard({
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
-      onClick={handleClick}
+      onClick={!disableClick ? handleClick : undefined}
     >
       <Link
         href={feDocUrl}
