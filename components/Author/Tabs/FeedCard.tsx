@@ -18,7 +18,7 @@ import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { parseCreatedBy } from "~/config/types/contribution";
 import { VoteType, RhDocumentType } from "~/config/types/root_types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,
   voteWidgetColors,
@@ -38,6 +38,7 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import { Router, useRouter } from "next/router";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -94,8 +95,8 @@ const documentIcons = {
 
 function FeedCard({
   abstract,
-  bounties,
   boost_amount: boostAmount,
+  bounties,
   created_by,
   created_date,
   discussion_count,
@@ -104,8 +105,8 @@ function FeedCard({
   first_preview,
   formattedDocLabel,
   formattedDocType,
-  hasAcceptedAnswer,
   handleClick,
+  hasAcceptedAnswer,
   hideVotes,
   hubs,
   id,
@@ -231,7 +232,7 @@ function FeedCard({
   const cardBody = getBody();
   const createdDate = created_date || uploaded_date;
   const createdBy = parseCreatedBy(uploaded_by || created_by);
-
+  const nextRouter = useRouter();
   let bountyAmount = 0;
   bounties &&
     bounties.forEach((bounty) => {
@@ -247,10 +248,12 @@ function FeedCard({
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
-      onClick={handleClick}
+      onClick={(event: SyntheticEvent) => {
+        handleClick && handleClick(event);
+        nextRouter.push(feDocUrl);
+      }}
     >
-      <Link
-        href={feDocUrl}
+      <div
         className={css(
           styles.feedCard,
           featured && styles.featuredContainer,
@@ -440,7 +443,7 @@ function FeedCard({
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </Ripples>
   );
 }

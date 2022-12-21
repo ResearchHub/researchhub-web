@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import {
@@ -24,10 +25,8 @@ import CitationTableRowItemPlaceholder from "../table/CitationTableRowItemPlaceh
 import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
-import SourceSearchInputItem from "./SourceSearchInputItem";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import icons from "~/config/themes/icons";
-import { breakpoints } from "~/config/themes/screen";
 import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 export type Props = {
@@ -90,6 +89,7 @@ export default function SourceSearchInput({
       ...searchState,
       filters: {
         ...filters,
+
         query: text,
       },
     };
@@ -130,19 +130,31 @@ export default function SourceSearchInput({
     <div className={css(styles.itemsList)}>
       {isResultLoading
         ? [
-            <CitationTableRowItemPlaceholder key="1" />,
-            <CitationTableRowItemPlaceholder key="2" />,
+            <CitationTableRowItemPlaceholder key="CitationTableRowItemPlaceholder-1" />,
+            <CitationTableRowItemPlaceholder key="CitationTableRowItemPlaceholder-2" />,
           ]
         : searchResults
             .map((item: any, index: number) => (
-              <FeedCard
-                {...item}
-                formattedDocType={"paper"}
-                handleClick={(): void => handleItemSelect(item)}
-                hideVotes
-                key={`source-search-input-item-${(item ?? {}).id ?? index}`}
-                withSidePadding
-              />
+              <div
+                key={`source-search-input-item-${
+                  (item ?? {}).id ?? index
+                }-${index}`}
+                onClick={(e: SyntheticEvent): void => {
+                  e.stopPropagation(); // prevents FeedCard Redirect
+                }}
+                onClickCapture={(e: SyntheticEvent): void => {
+                  handleItemSelect(item);
+                  e.stopPropagation(); // prevents FeedCard Redirect
+                }}
+              >
+                <FeedCard
+                  {...item}
+                  formattedDocType={"paper"}
+                  handleClick={silentEmptyFnc}
+                  hideVotes
+                  withSidePadding
+                />
+              </div>
             ))
             .concat(filterNull([optionalResultItem, emptyResultDisplay]))}
     </div>
@@ -191,6 +203,7 @@ export default function SourceSearchInput({
             }
             onClickOutside={(): void => {
               setShouldOpenPopover(false);
+              setIsInputFocused(false);
             }}
             positions={["top", "bottom"]}
           />
@@ -237,7 +250,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     display: "flex",
     flexDirection: "column",
-    maxHeight: 252,
+    maxHeight: 320,
     minHeight: 40,
     overflowY: "scroll",
     position: "fixed",
