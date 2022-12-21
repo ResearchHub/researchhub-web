@@ -45,6 +45,7 @@ type Args = {
   onBountyRemove?: Function;
   post?: any; // TODO: add post type
   bountyText?: string;
+  threads: any;
 };
 
 function DocumentHeader({
@@ -63,6 +64,7 @@ function DocumentHeader({
   post,
   bountyText,
   onBountyRemove,
+  threads,
 }: Args): ReactElement<"div"> {
   const {
     title,
@@ -285,6 +287,8 @@ function DocumentHeader({
     bountyAmount += bounty.amount;
   });
 
+  console.log(threads);
+
   return (
     // @ts-ignore
     <ReactPlaceholder
@@ -304,6 +308,7 @@ function DocumentHeader({
                 bountyText={bountyText}
                 onBountyAdd={onBountyAdd}
                 post={post}
+                threads={threads}
                 isOriginalPoster={isOriginalPoster}
                 onBountyRemove={onBountyRemove}
                 unifiedDocument={unifiedDocument}

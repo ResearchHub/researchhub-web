@@ -13,7 +13,6 @@ import colors from "~/config/themes/colors";
 import CreateBountyBtn from "./Bounty/CreateBountyBtn";
 import DocumentHeader from "./Document/DocumentHeader";
 import dynamic from "next/dynamic";
-import killswitch from "~/config/killswitch/killswitch";
 import ReactHtmlParser from "react-html-parser";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
@@ -130,6 +129,7 @@ class PostPageCard extends Component {
             allBounties={this.props.bounties}
             bountyText={this.toPlaintext(postBody)}
             bountyType="question"
+            threads={this.props.threads}
             isOriginalPoster={post?.unifiedDocument?.createdBy?.id === user.id}
             currentUser={user}
             post={post}

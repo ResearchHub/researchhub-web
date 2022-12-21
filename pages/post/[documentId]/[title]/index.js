@@ -67,6 +67,7 @@ const Post = (props) => {
   const [bounties, setBounties] = useState(null);
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
+  const [threads, setThreads] = useState([]);
 
   useEffectFetchPost({ setPost, setPostV2, query: props.query });
 
@@ -217,6 +218,7 @@ const Post = (props) => {
               removePost={removePost}
               restorePost={restorePost}
               setBounties={setBounties}
+              threads={threads}
               hasBounties={hasBounties}
               bounties={bounties}
               allBounties={allBounties}
@@ -232,6 +234,9 @@ const Post = (props) => {
                   post={post}
                   bountyType={postV2.unifiedDocument.documentType}
                   setHasBounties={setHasBounties}
+                  setThreadProp={(_threads) => {
+                    setThreads(_threads);
+                  }}
                   setAllBounties={setAllBounties}
                   postId={post.id}
                   showBountyBtn={

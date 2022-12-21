@@ -69,6 +69,7 @@ const DiscussionTab = (props) => {
     showBountyBtn,
     setHasBounties,
     setAllBounties,
+    setThreadProp,
   } = props;
 
   const router = useRouter();
@@ -556,6 +557,7 @@ const DiscussionTab = (props) => {
     setLoading(false);
     setThreads(threads);
     setFormattedThreads(formatThreads(threads, basePath));
+    setThreadProp && setThreadProp(formatThreads(threads, basePath));
   };
 
   const editor = (
