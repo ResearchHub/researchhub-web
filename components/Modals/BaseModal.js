@@ -148,13 +148,15 @@ class BaseModal extends Component {
           )}
           {!this.props.removeDefault && (
             <Fragment>
-              <div className={css(styles.closeButtonWrapper)}>
-                <CloseIcon
-                  overrideStyle={styles.close}
-                  color={colors.MEDIUM_GREY()}
-                  onClick={this.closeModal}
-                />
-              </div>
+              {!this.props.hideClose && (
+                <div className={css(styles.closeButtonWrapper)}>
+                  <CloseIcon
+                    overrideStyle={styles.close}
+                    color={colors.MEDIUM_GREY()}
+                    onClick={this.closeModal}
+                  />
+                </div>
+              )}
               <div
                 className={css(
                   styles.titleContainer,

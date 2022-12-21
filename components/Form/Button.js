@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.NEW_BLUE(1),
-    borderRadius: 5,
+    borderRadius: "4px",
     cursor: "pointer",
     highlight: "none",
     outline: "none",
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   xxsmall: {
-    borderRadius: 4,
+    borderRadius: "4px",
     maxHeight: 48,
     maxWidth: 180,
     padding: "0 10px",

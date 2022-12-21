@@ -10,12 +10,15 @@ import { AuthActions } from "~/redux/auth";
 import { connect, useDispatch, useSelector } from "react-redux";
 import icons from "~/config/themes/icons";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { StyleSheet, css } from "aphrodite";
+import Loader from "~/components/Loader/Loader";
+import IconButton from "../Icons/IconButton";
+
 
 type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM";
 
 const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   const currentUser = getCurrentUser();
-  console.log(currentUser)
   const dispatch = useDispatch();
   // @ts-ignore
   const auth = useSelector((state) => state.auth)
@@ -29,6 +32,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   const [passwordError, setPasswordError] = useState(false);
   const [accountExistsError, setAccountExistsError] = useState(false);
   const [miscError, setMiscError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -39,7 +43,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
 
   useEffect(() => {
     if (!isOpen) {
-      setStep("SELECT_PROVIDER")
+      setStep("SELECT_PROVIDER");
     }
   }, [isOpen])
 
@@ -62,6 +66,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
 
   const checkIfAccountExistsApi = async (e) => {
     e?.preventDefault();
+    setIsLoading(true);
 
     if (email.length > 0) {
       return fetch(API.CHECK_ACCOUNT(), API.POST_CONFIG({ email }))
@@ -80,15 +85,18 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
           setMessage("Unexpected error");
           showMessage({ show: true, error: true });
         })
+        .finally(() => {
+          setIsLoading(false);
+        })
     }
   };
 
   const loginApi = async (e) => {
     e?.preventDefault();
 
-    const res = await dispatch(AuthActions.loginWithEmail({ email, password: "meowwoof" }))
-    console.log('res', res)
-
+    setIsLoading(true);
+    await dispatch(AuthActions.loginWithEmail({ email, password: "meowwoof" }))
+    setIsLoading(false);
     // return fetch(API.LOGIN_WITH_EMAIL(), API.POST_CONFIG({ email, password }))
     //   .then(Helpers.checkStatus)
     //   .then(Helpers.parseJSON)
@@ -143,9 +151,28 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
     <BaseModal
       closeModal={handleClose}
       isOpen={isOpen}
-      // modalStyle={styles.modalStyle}
+      hideClose={true}
+      modalContentStyle={styles.modalContentStyle}
       // modalContentStyle={styles.modalContentStyle}
-      title="Login to ResearchHub"
+      title={
+        <div style={{ justifyContent: "center", position: "relative", flexDirection: "row", display: "flex", borderBottom: "1px solid", fontSize: 22}}>
+          <div style={{ padding: 12, }}>
+            {step !== "SELECT_PROVIDER" &&
+              <IconButton overrideStyle={styles.leftBtn} onClick={() => setStep("SELECT_PROVIDER")}>{icons.chevronLeft}</IconButton>
+            }
+            <IconButton overrideStyle={styles.closeBtn} size={20} onClick={() => handleClose()}>{icons.times}</IconButton>
+            {step === "SELECT_PROVIDER"
+              ? `Login or sign up`
+              : step === "LOGIN_WITH_EMAIL_FORM"
+              ? `Login`
+              : step === "SIGNUP_FORM"
+              ? `Finish sign up`
+              : ""
+            }
+            
+          </div>
+        </div>
+      }
     >
 
       {miscError &&
@@ -174,11 +201,17 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
             // onKeyDown={handleKeyDown}
             onChange={(id, value) => setEmail(value)}
           />
-          <Button onClick={checkIfAccountExistsApi} label="Continue" />
+          <Button
+            customButtonStyle={styles.button}
+            hideRipples={true}
+            onClick={checkIfAccountExistsApi}
+            label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Continue"}
+          />
 
           <div>Or</div>
           <GoogleLoginButton
             styles={[
+              styles.button
             ]}
 
             // iconStyle={}
@@ -202,7 +235,12 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
               setPassword(value)
             }}
           />
-          <Button onClick={loginApi} label="Login in" />
+          <Button
+            customButtonStyle={styles.button}
+            hideRipples={true}
+            onClick={loginApi}
+            label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Login"}
+          />
         </div>
       ) : step === "SIGNUP_FORM" ? (
         <>
@@ -254,7 +292,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
             }}
           />
 
-          <Button onClick={confirmEmailApi} label="Continue" />
+          <Button className={css(styles.button)} onClick={confirmEmailApi} label="Continue" />
 
         </>
       ) : null}
@@ -280,6 +318,27 @@ const Login = ({ setMessage, showMessage }) => {
     </div>
   )
 }
+
+const styles = StyleSheet.create({
+  button: {
+    width: "100%",
+    display: "block",
+  },
+  modalContentStyle: {
+    padding: 0,
+    width: 400,
+  },
+  leftBtn: {
+    position: "absolute",
+    left: 10,
+    top: 6,
+  },
+  closeBtn: {
+    position: "absolute",
+    right: 10,
+    top: 6,
+  }  
+});
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
