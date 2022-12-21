@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FormInput from "../Form/FormInput";
 import GoogleLoginButton from "../GoogleLoginButton";
 import BaseModal from "../Modals/BaseModal";
@@ -7,7 +7,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import icons from "~/config/themes/icons";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
@@ -17,6 +17,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   const currentUser = getCurrentUser();
   console.log(currentUser)
   const dispatch = useDispatch();
+  // @ts-ignore
+  const auth = useSelector((state) => state.auth)
   const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
   const [email, setEmail] = useState("contact@notesalong.com");
   const [firstName, setFirstName] = useState("");
@@ -28,6 +30,18 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   const [accountExistsError, setAccountExistsError] = useState(false);
   const [miscError, setMiscError] = useState(false);
   const emailRef = useRef<HTMLInputElement>();
+
+  useEffect(() => {
+    if (auth.loginFailed) {
+      setMiscError(auth.loginErrorMsg)
+    }
+  }, [auth.loginFailed]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setStep("SELECT_PROVIDER")
+    }
+  }, [isOpen])
 
   // const confirmEmailApi = async (e) => {
   //   e?.preventDefault();

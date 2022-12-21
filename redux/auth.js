@@ -206,16 +206,24 @@ export const AuthActions = {
             isLoggedIn: true,
             isFetchingLogin: false,
             loginFailed: false,
+            loginErrorMsg: false,
           });
         })
-        .catch((error) => {
-          console.log("error", error);
+        .catch(async (error) => {
+          let errorMsg;
+          try {
+            errorMsg = Object.values(error?.message)[0][0];
+          } catch (error) {
+            errorMsg = "Could not login at the moment.";
+          }
+
           Sentry.captureException(error);
           return dispatch({
             type: AuthConstants.LOGIN_FAILURE,
             isLoggedIn: false,
             isFetchingLogin: false,
             loginFailed: true,
+            loginErrorMsg: errorMsg,
           });
         });
     };

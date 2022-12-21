@@ -80,7 +80,7 @@ function Base({
       fetchPermissions();
     });
   }, []);
-  console.log(10);
+
   /*
     This component is used in situations where we fetch data through
     getInitialProps. In these cases, we cannot intercept the data and replace
