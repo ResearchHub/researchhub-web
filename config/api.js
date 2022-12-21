@@ -83,6 +83,12 @@ const routes = (BASE_URL) => {
     CHECK_ACCOUNT: () => {
       return BASE_URL + `user/check_account/`;
     },
+    CREATE_ACCOUNT: () => {
+      return BASE_URL + `auth/register/`;
+    },
+    LOGIN_WITH_EMAIL: () => {
+      return BASE_URL + `auth/login/`;
+    },
     CITATIONS: ({ citationID, citationType, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)

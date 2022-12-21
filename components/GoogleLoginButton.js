@@ -80,6 +80,7 @@ const GoogleLoginButton = (props) => {
 
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
+
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
@@ -131,6 +132,7 @@ const GoogleLoginButton = (props) => {
     <GoogleButton
       login={responseGoogle}
       render={(renderProps) => {
+        console.log(renderProps.onClick);
         if (hideButton) {
           return (
             <div

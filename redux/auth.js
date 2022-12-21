@@ -187,11 +187,46 @@ export const AuthActions = {
     };
   },
 
+  loginWithEmail: (params) => {
+    return (dispatch, getState) => {
+      let referralCode = window.localStorage.getItem("referralCode");
+      if (referralCode) {
+        params.referral_code = referralCode;
+      }
+      let postConfig = API.POST_CONFIG(params);
+      delete postConfig["headers"]["Authorization"];
+      return fetch(API.LOGIN_WITH_EMAIL(), postConfig)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((json) => {
+          console.log("json", json);
+          saveToLocalStorage(AUTH_TOKEN, json.key);
+          return dispatch({
+            type: AuthConstants.LOGIN,
+            isLoggedIn: true,
+            isFetchingLogin: false,
+            loginFailed: false,
+          });
+        })
+        .catch((error) => {
+          console.log("error", error);
+          Sentry.captureException(error);
+          return dispatch({
+            type: AuthConstants.LOGIN_FAILURE,
+            isLoggedIn: false,
+            isFetchingLogin: false,
+            loginFailed: true,
+          });
+        });
+    };
+  },
+
   /**
    * Login with Google
    * @params { params } --
    */
   googleLogin: (params) => {
+    console.log("params", params);
     return (dispatch, getState) => {
       params.uuid = getState().auth.user.uuid;
       let referralCode = window.localStorage.getItem("referralCode");

@@ -101,6 +101,7 @@ class FormInput extends Component {
             styles.text,
             search && styles.search,
             icon && styles.search,
+            error && styles.errorInput,
             onClick && styles.inputClick
           )}
           id={id && id}
@@ -158,6 +159,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     position: "relative",
     width: "100%",
+  },
+  errorInput: {
+    borderColor: colors.RED(),
+    ":hover": {
+      borderColor: colors.RED(),
+    },
+    ":focus": {
+      borderColor: colors.RED(),
+      ":hover": {
+        cursor: "text",
+      },
+    },
   },
   inputLabel: {
     fontWeight: 500,
