@@ -69,17 +69,18 @@ function Base({
     paperID: null,
   });
 
-  // useEffect(async () => {
-  //   getUniversities();
-  //   await getUser();
-  //   getTopHubs(auth);
-  //   if (auth.isLoggedIn) {
-  //     getWithdrawals();
-  //     getNotifications();
-  //   }
-  //   fetchPermissions();
-  // }, []);
-  console.log(2);
+  useEffect(() => {
+    getUniversities();
+    getUser().then(() => {
+      getTopHubs(auth);
+      if (auth.isLoggedIn) {
+        getWithdrawals();
+        getNotifications();
+      }
+      fetchPermissions();
+    });
+  }, []);
+  console.log(10);
   /*
     This component is used in situations where we fetch data through
     getInitialProps. In these cases, we cannot intercept the data and replace

@@ -147,18 +147,7 @@ const Navbar = (props) => {
           <div className={css(styles.buttonRight)}>
             {!isLoggedIn ? (
               <div className={css(styles.oauthContainer)}>
-                {/* <Login /> */}
-                <GoogleLoginButton
-                  styles={[
-                    styles.button,
-                    styles.googleLoginButton,
-                    styles.login,
-                  ]}
-                  iconStyle={styles.googleIcon}
-                  customLabelStyle={[styles.googleLabel]}
-                  isLoggedIn={isLoggedIn}
-                  disabled={!authChecked}
-                />
+                <Login />
                 <div className={css(styles.divider)}></div>
               </div>
             ) : (
