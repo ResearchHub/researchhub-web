@@ -284,7 +284,8 @@ export function convertToEditorValue(text) {
   }
 
   if (typeof text === "string") {
-    return Plain.deserialize(text);
+    const waht = Plain.deserialize(text);
+    return waht;
   }
 
   // if (text.hasOwnProperty("object")) {

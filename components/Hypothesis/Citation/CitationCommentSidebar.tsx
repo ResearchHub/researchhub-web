@@ -77,18 +77,24 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
   const citationCommentSidebarProps: CitationCommentSidebarProps = {
     citationID,
     citationThreadEntries: citationThreads.map(
-      (citationThread: any, index: number) => (
-        <DiscussionEntry
-          data={citationThread}
-          discussionCount={(citationThread.comments ?? []).length}
-          key={`citation-thread-entry-id-${citationThread.id}-${index}`}
-          mediaOnly
-          noRespond
-          noVote
-          shouldShowContextTitle={false}
-          withPadding
-        />
-      )
+      (citationThread: any, index: number) => {
+        return (
+          <DiscussionEntry
+            data={{
+              ...citationThread,
+              // this is a hack. needs to be fixed when comment modules get updated.
+              text: citationThread.text.content,
+            }}
+            discussionCount={(citationThread.comments ?? []).length}
+            key={`citation-thread-entry-id-${citationThread.id}-${index}`}
+            mediaOnly
+            noRespond
+            noVote
+            shouldShowContextTitle={false}
+            withPadding
+          />
+        );
+      }
     ),
     citationTitle,
     hypothesisUnduxStore,

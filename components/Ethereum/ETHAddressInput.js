@@ -96,6 +96,7 @@ const ETHAddressInput = (props) => {
       <FormInput
         required={true}
         value={props.value}
+        inputStyle={styles.inputStyles}
         containerStyle={onClick ? styles.formInputClick : styles.formInput}
         onChange={props.onChange && props.onChange}
         placeholder={
@@ -227,6 +228,17 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     minHeight: "unset",
+  },
+  inputStyle: {
+    ":hover": {
+      borderColor: "#E8E8F2",
+    },
+    ":focus": {
+      borderColor: "#3f85f7",
+      ":hover": {
+        cursor: "text",
+      },
+    },
   },
 });
 

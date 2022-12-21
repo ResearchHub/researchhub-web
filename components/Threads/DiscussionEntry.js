@@ -639,10 +639,12 @@ class DiscussionEntry extends Component {
           .reduce((a, b) => a + b, 0) || 0;
     const date = data.created_date;
     const title = data.title;
+    // Below needs to be cleaned up (Need to rewrite the entire module)
     const body =
       this.state.comment.source === "twitter"
         ? this.state.comment.plain_text
         : this.state.comment.text;
+
     const username = createUsername(data);
     const documentId = this.getDocumentID();
     const metaData = {

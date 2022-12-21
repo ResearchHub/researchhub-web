@@ -102,7 +102,7 @@ function getDetailedText({
       {isNeutral ? (
         <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
       ) : doesMajoritySupport ? (
-        <Image width={10} height={10} src="/static/icons/check.svg" />
+        <Image width={10} height={10} src="/static/icons/check.svg" alt={""} />
       ) : (
         <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
       )}

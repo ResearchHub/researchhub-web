@@ -108,20 +108,38 @@ export default function RscBalanceHistoryDropContent({
 
   return (
     <div className={css(styles.rscBalanceHistoryDropContent)}>
-      
       <div className={css(styles.historyHeader)}>
         <ReputationTooltip />
         <div className={css(styles.header)}>
-          <ResearchCoinIcon overrideStyle={styles.rscIconLarge} height={18} width={18} />
+          <ResearchCoinIcon
+            overrideStyle={styles.rscIconLarge}
+            height={18}
+            width={18}
+          />
           <span>ResearchCoin</span>
-          <span style={{ color: colors.LIGHT_GREY_TEXT, position: "relative", padding: "8px 8px 8px 0", fontSize: 14, cursor: "initial" }} data-for={"reputation-tool-tip"} data-tip="">{icons.question}</span>
+          <span
+            style={{
+              color: colors.LIGHT_GREY_TEXT,
+              position: "relative",
+              padding: "8px 8px 8px 0",
+              fontSize: 14,
+              cursor: "initial",
+            }}
+            data-for={"reputation-tool-tip"}
+            data-tip=""
+          >
+            {icons.question}
+          </span>
         </div>
-        <ALink href={`/user/${currentUser?.author_profile?.id}/rsc`} theme="solidPrimary">
+        <ALink
+          href={`/user/${currentUser?.author_profile?.id}/rsc`}
+          theme="solidPrimary"
+        >
           <span onClick={closeDropdown}>{"View all"}</span>
         </ALink>
       </div>
       <div className={css(styles.transactionCardWrap)}>
-      <ReactPlaceholder
+        <ReactPlaceholder
           ready={isDataFetched}
           customPlaceholder={Array.from(new Array(8)).map((_, idx) => (
             <PreviewPlaceholder
@@ -147,16 +165,16 @@ export default function RscBalanceHistoryDropContent({
           {"Withdraw RSC"}
         </div>
 
-        {/* <div
+        <div
           className={css(styles.depositButton)}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
             closeDropdown();
-            dispatch(ModalActions.openWithdrawalModal(true));
+            dispatch(ModalActions.openWithdrawalModal(true, true));
           }}
         >
           {"Deposit RSC"}
-        </div>         */}
+        </div>
       </div>
     </div>
   );
@@ -168,8 +186,8 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
     minWidth: 320,
-    marginTop: 8, 
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)"   
+    marginTop: 8,
+    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
   },
   header: {
     display: "flex",
@@ -191,10 +209,10 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     ":last-child": {
       borderBottom: `none`,
-    }
+    },
   },
   rscIcon: { width: 14, margin: "0 0 0 4px" },
-  rscIconLarge: { height: 18, },
+  rscIconLarge: { height: 18 },
   historyHeader: {
     alignItems: "center",
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
@@ -232,7 +250,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: "10px 15px",
     marginTop: 7,
-  },  
+  },
   dropContentContent: {
     alignItems: "center",
     display: "flex",

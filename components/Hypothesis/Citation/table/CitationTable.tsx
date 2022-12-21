@@ -72,8 +72,6 @@ export default function CitationTable({
     onSuccess: () => setIsLoading(false),
   });
 
-  console.log(citationItems);
-
   const rowItems = isLoading ? (
     [
       <CitationTableRowItemPlaceholder key="citation-table-item-1" />,
