@@ -99,7 +99,6 @@ function FeedCard({
   bounties,
   created_by,
   created_date,
-  disableClick,
   discussion_count,
   featured,
   first_figure,
