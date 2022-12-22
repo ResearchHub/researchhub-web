@@ -38,7 +38,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   const emailRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    if (auth.loginFailed && !miscError) {
+    if (auth.loginFailed) {
       setMiscError(auth.loginErrorMsg)
     }
   }, [auth]);
@@ -76,21 +76,28 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((data:any) => {
-          if (data.exists && data.auth === "email") {
-            setStep("LOGIN_WITH_EMAIL_FORM");
-          }
-          else if (data.exists && data.auth === "google") {
-            setMiscError("Account already exists. Please login with Google.")
-          }
-          else if (data.exists === false) {
-            setStep("SIGNUP_FORM");
+
+          if (data.exists) {
+            if (data.auth === "google") {
+              setMiscError("Account already exists. Please login with Google.");
+            }
+            else if (data.auth === "email") {
+              if (data.is_verified) {
+                setStep("LOGIN_WITH_EMAIL_FORM");        
+              }
+              else {
+                setMiscError("Account not yet verified. Click on the verification link sent to your email.");
+              }
+            }
+            else {
+              setMiscError("Something went wrong. Please try again later.");
+            }
           }
           else {
-            setMiscError("Something went wrong. Please try again later.")
+            setStep("SIGNUP_FORM");
           }
         })
         .catch((error) => {
-          console.log(error)
           setMessage("Unexpected error");
           showMessage({ show: true, error: true });
         })
@@ -105,22 +112,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
 
   const loginApi = async (e) => {
     e?.preventDefault();
-
-    // setMiscError(false);
     setIsLoading(true);
-    await dispatch(AuthActions.loginWithEmail({ email, password: "meowwoof" }))
+    await dispatch(AuthActions.loginWithEmail({ email, password }))
     setIsLoading(false);
-    // return fetch(API.LOGIN_WITH_EMAIL(), API.POST_CONFIG({ email, password }))
-    //   .then(Helpers.checkStatus)
-    //   .then(Helpers.parseJSON)
-    //   .then((data:any) => {
-    //     console.log('data', data)
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //     setMessage("Unexpected error");
-    //     showMessage({ show: true, error: true });
-    //   })
   };
 
   const resetErrors = () => {
@@ -159,6 +153,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
     }
 
     if (!hasErrors) {
+      setIsLoading(true);
       fetch(API.CREATE_ACCOUNT(), API.POST_CONFIG({ email, password1: password, password2: password, first_name: firstName, last_name: lastName }))
         .then(async (response) => {
           const data = await response.json();
@@ -177,6 +172,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
         })
         .catch((error) => {
           setMiscError("Something went wrong. Please try again later.")
+        })
+        .finally(() => {
+          setIsLoading(false);          
         })
     }    
   }
@@ -238,7 +236,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
           <div>
             <div style={{ textAlign: "left", marginBottom: 15, }}>
               <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Welcome to ResearchHub 👋</div>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>We are an open-science platform that enables discussions, peer-reviews and publications.</p>
+              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>We are an open-science platform that enables discussions, peer-reviews, publications and more.</p>
             </div>
             <FormInput
               required
@@ -278,13 +276,17 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
               ]}
               customLabelStyle={styles.googleButtonLabel}
 
-              customLabel={`Login with Google`}
+              customLabel={`Continue with Google`}
               isLoggedIn={false}
               disabled={false}
             />
           </div>
         ) : step === "LOGIN_WITH_EMAIL_FORM" ? (
           <div>
+            <div style={{ textAlign: "left", marginBottom: 15, }}>
+              {/* <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Welcome back.</div> */}
+              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Enter your password to login.</p>
+            </div>            
             <FormInput
               required
               error={passwordError}
@@ -293,8 +295,11 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
               // inputStyle={styles.inputStyle}
               placeholder="Password"
               type="password"
-              // onKeyDown={handleKeyDown}
-              onChange={(id, value) => {           
+              onKeyDown={(e) => {
+                e.keyCode === 13 && loginApi(e)
+              }}
+              onChange={(id, value) => {
+                console.log('value', value)
                 setPassword(value)
               }}
             />
@@ -307,6 +312,10 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
           </div>
         ) : step === "SIGNUP_FORM" ? (
           <>
+            <div style={{ textAlign: "left", marginBottom: 15, }}>
+              {/* <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Welcome to ResearchHub 👋</div> */}
+              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Fill in the following to join our platform.</p>
+            </div>                  
             <FormInput
               required
               error={firstNameError}
@@ -427,7 +436,8 @@ const styles = StyleSheet.create({
   },
   modalContentStyle: {
     padding: 0,
-    width: 400,
+    width: 460,
+    display: "block",
   },
   titleWrapper: {
     padding: 15,
