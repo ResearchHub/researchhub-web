@@ -2,10 +2,14 @@ import { keccak256, sha3_256 } from "js-sha3";
 import { getNestedValue } from "./misc";
 import { getCurrentUserReputation } from "./reputation";
 
-export function isValidEmail(email) {
-  const re = /\S+@\S+\.edu/;
-  return re.test(email);
-}
+export const isValidEmail = (email) => {
+  // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
 
 export function currentUserHasMinimumReputation(stateObject, minimum) {
   let reputation = getCurrentUserReputation(stateObject);

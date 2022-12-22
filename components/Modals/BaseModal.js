@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     borderRadius: 5,
     boxSizing: "border-box",
-    boxShadow: " 0px 2px 4px rgba(185, 185, 185, 0.25)",
+    boxShadow: "rgb(0 0 0 / 28%) 0px 8px 28px",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
       borderRadius: 0,

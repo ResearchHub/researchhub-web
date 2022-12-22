@@ -164,6 +164,7 @@ import {
   faFlag as faFlagOutline,
   faLightbulb,
   faMedal,
+  faMailbox,
   faEnvelope,
   faPlus as faPlusReg,
   faStar as faStarOutline,
@@ -355,7 +356,8 @@ library.add(
   opaqueThumbsUp,
   solidThumbsDown,
   solidThumbsUp,
-  faFileLines
+  faFileLines,
+  faMailbox
 );
 
 const icons = {
@@ -459,6 +461,7 @@ const icons = {
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
   longArrowUp: <FontAwesomeIcon icon={faLongArrowAltUp} />,
   manage: <FontAwesomeIcon icon={faTasksAlt} />,
+  mailbox: <FontAwesomeIcon icon={faMailbox} />,
   medal: <FontAwesomeIcon icon={faMedal} />,
   medium: <FontAwesomeIcon icon={faMedium} />,
   minus: <FontAwesomeIcon icon={faMinus} />,

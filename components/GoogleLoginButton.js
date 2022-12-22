@@ -153,6 +153,7 @@ const GoogleLoginButton = (props) => {
                 onClick={renderProps.onClick}
                 customButtonStyle={[styles.button, props.styles]}
                 icon={"/static/icons/google.png"}
+                hideRipples={true}
                 rippleClass={props.rippleClass}
                 customLabelStyle={props.customLabelStyle}
                 customIconStyle={[styles.iconStyle, props.iconStyle]}
@@ -179,6 +180,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       height: 50,
       width: 200,
+    },
+    ":hover": {
+      background: colors.NEW_BLUE(0.05),
     },
   },
   buttonLabel: {

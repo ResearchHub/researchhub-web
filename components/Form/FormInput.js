@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontWeight: 500,
     marginBottom: 10,
+    minHeight: 70,
     color: "#232038",
     display: "flex",
     justifyContent: "flex-start",
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     marginTop: 4,
-    marginBottom: 4,
+    marginBottom: 10,
     color: colors.RED(1),
     fontSize: 12,
   },
