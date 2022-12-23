@@ -30,6 +30,7 @@ type BountyAlertParams = {
   onBountyRemove?: Function;
   unifiedDocument: UnifiedDocument;
   threads: [any];
+  documentType: string;
   setHasBounties: (boolean) => void;
 };
 
@@ -46,6 +47,7 @@ const BountyAlert = ({
   onBountyRemove,
   unifiedDocument,
   threads,
+  documentType,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -147,6 +149,7 @@ const BountyAlert = ({
         bountyAmount={amount}
         setHasBounties={setHasBounties}
         allBounties={allBounties}
+        documentType={documentType}
         closeModal={() => setIsAwardBountyModalOpen(false)}
       />
       <div className={css(styles.wrapper)}>

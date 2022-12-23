@@ -99,7 +99,7 @@ const DiscussionTab = (props) => {
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   function handleAcceptedAnswer(e) {
-    const newAnswerId = e.detail.threadId;
+    const newAnswerId = parseInt(e.detail.threadId, 10);
 
     const updatedThreads = threads.map((t) => {
       if (t.id === newAnswerId) {

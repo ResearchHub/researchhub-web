@@ -27,6 +27,8 @@ import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import { getNestedValue } from "~/config/utils/misc";
 import ThreadTextEditor from "../Threads/ThreadTextEditor";
 import api, { generateApiUrl } from "~/config/api";
+import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
+import { useRouter } from "next/router";
 
 function AwardUserRow({
   author,
@@ -191,12 +193,13 @@ const awardUserStyles = StyleSheet.create({
 type Props = {
   isOpen: boolean;
   closeModal: () => void;
-  threads: [];
-  allBounties: [];
+  threads: [any];
+  allBounties: [Bounty];
   bountyAmount: number;
   setMessage: (string) => void;
   showMessage: ({}) => void;
   setHasBounties: (boolean) => void;
+  documentType: string;
 };
 
 function AwardBountyModal({
@@ -208,11 +211,14 @@ function AwardBountyModal({
   setMessage,
   showMessage,
   setHasBounties,
+  documentType,
 }: Props): ReactElement {
   const [userAwardMap, setUserAwardMap] = useState({});
   const [bountyAwardLoading, setBountyAwardLoading] = useState(false);
   const [remainingAwardAmount, setRemainingAwardAmount] =
     useState(bountyAmount);
+
+  const router = useRouter();
 
   const handleClose = () => {
     closeModal && closeModal();
@@ -238,6 +244,29 @@ function AwardBountyModal({
           content_type: "thread",
           amount: userAwardMap[key],
           object_id: key.split("-")[1],
+        });
+
+        acceptAnswerAPI({
+          documentType: documentType,
+          threadId: key.split("-")[1],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          documentId: router.query.documentId,
+          onSuccess: (response) => {
+            const event = new CustomEvent("answer-accepted", {
+              detail: {
+                threadId: key.split("-")[1],
+              },
+            });
+            document.dispatchEvent(event);
+          },
+          onError: (error) => {
+            setMessage("Failed to set accepted answer");
+            showMessage({
+              show: true,
+              error: true,
+            });
+          },
         });
       });
 

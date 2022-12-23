@@ -328,7 +328,7 @@ const Paper = ({
                     paperState={paper}
                     setHasBounties={setHasBounties}
                     setAllBounties={setAllBounties}
-                    showBountyBtn={true}
+                    showBountyBtn={false}
                     calculatedCount={discussionCount}
                     setCount={setCount}
                     isCollapsible={false}
@@ -392,7 +392,6 @@ export async function getStaticProps(ctx) {
   }
 
   if (!paper) {
-    console.log("no pap0er", paper);
     return {
       props: {
         error: {

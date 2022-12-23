@@ -313,6 +313,7 @@ function DocumentHeader({
                 isOriginalPoster={isOriginalPoster}
                 onBountyRemove={onBountyRemove}
                 unifiedDocument={unifiedDocument}
+                documentType={documentType}
               />
             </div>
           )}
