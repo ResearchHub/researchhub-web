@@ -366,11 +366,13 @@ function FeedCard({
                       />
                     </div>
                   ) : (
-                    <div
-                      className={css(styles.metaItem, styles.metaItemAsBadge)}
-                    >
-                      <ContentBadge contentType={formattedDocType} />
-                    </div>
+                    formattedDocType !== "bounty" && (
+                      <div
+                        className={css(styles.metaItem, styles.metaItemAsBadge)}
+                      >
+                        <ContentBadge contentType={formattedDocType} />
+                      </div>
+                    )
                   )}
                   {formattedDocType === "question" ? (
                     <div
