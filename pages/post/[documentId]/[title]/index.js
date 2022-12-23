@@ -80,6 +80,15 @@ const Post = (props) => {
   useEffect(() => {
     if (post?.id) {
       setCount(post.discussion_count);
+      let hasBounties = post.bounties.length;
+
+      hasBounties &&
+        post.bounties.forEach((bounty) => {
+          if (bounty.status !== "OPEN") {
+            hasBounties = false;
+          }
+        });
+      setHasBounties(hasBounties);
     }
   }, [post]);
 

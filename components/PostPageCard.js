@@ -117,6 +117,7 @@ class PostPageCard extends Component {
     if (!isEditMode && typeof initialData === "string") {
       initialData = trimEmptyParagraphs({ htmlStr: postBody });
     }
+
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
@@ -126,7 +127,7 @@ class PostPageCard extends Component {
             setHasBounties={this.props.setHasBounties}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
-            hasBounties={this.props.hasBounties || this.props.bounties}
+            hasBounties={this.props.hasBounties}
             allBounties={this.props.bounties}
             bountyText={this.toPlaintext(postBody)}
             bountyType="question"
