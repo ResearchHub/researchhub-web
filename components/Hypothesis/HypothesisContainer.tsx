@@ -133,7 +133,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
             setHasBounties={setHasBounties}
             setAllBounties={setAllBounties}
             hypothesisId={id}
-            showBountyBtn={true}
+            showBountyBtn={false}
             isCollapsible={false}
             setCount={setDiscussionCount}
           />

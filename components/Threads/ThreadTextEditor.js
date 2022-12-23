@@ -111,6 +111,7 @@ class ThreadTextEditor extends Component {
             isAcceptedAnswer={this.props.isAcceptedAnswer}
             isBounty={this.props.isBounty}
             loading={this.state.loading}
+            quillContainerStyle={this.props.quillContainerStyle}
             mediaOnly={mediaOnly}
             onCancel={this.onCancel}
             onChange={this.onChange}
@@ -138,6 +139,7 @@ class ThreadTextEditor extends Component {
             styles.textContainer,
             this.props.editing && styles.editTextContainer,
           ]}
+          quillContainerStyle={this.props.quillContainerStyle}
           editing={this.props.editing}
           focusEditor={this.props.focusEditor}
           initialValue={this.state.editorState}

@@ -69,6 +69,7 @@ const DiscussionTab = (props) => {
     showBountyBtn,
     setHasBounties,
     setAllBounties,
+    setThreadProp,
   } = props;
 
   const router = useRouter();
@@ -98,7 +99,7 @@ const DiscussionTab = (props) => {
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   function handleAcceptedAnswer(e) {
-    const newAnswerId = e.detail.threadId;
+    const newAnswerId = parseInt(e.detail.threadId, 10);
 
     const updatedThreads = threads.map((t) => {
       if (t.id === newAnswerId) {
@@ -556,6 +557,7 @@ const DiscussionTab = (props) => {
     setLoading(false);
     setThreads(threads);
     setFormattedThreads(formatThreads(threads, basePath));
+    setThreadProp && setThreadProp(formatThreads(threads, basePath));
   };
 
   const editor = (

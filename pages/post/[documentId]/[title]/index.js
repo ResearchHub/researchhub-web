@@ -67,6 +67,7 @@ const Post = (props) => {
   const [bounties, setBounties] = useState(null);
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
+  const [threads, setThreads] = useState([]);
 
   useEffectFetchPost({ setPost, setPostV2, query: props.query });
 
@@ -79,6 +80,15 @@ const Post = (props) => {
   useEffect(() => {
     if (post?.id) {
       setCount(post.discussion_count);
+      let hasBounties = post.bounties.length;
+
+      hasBounties &&
+        post.bounties.forEach((bounty) => {
+          if (bounty.status !== "OPEN") {
+            hasBounties = false;
+          }
+        });
+      setHasBounties(hasBounties);
     }
   }, [post]);
 
@@ -214,9 +224,11 @@ const Post = (props) => {
               isModerator={isModerator}
               isSubmitter={isSubmitter}
               post={postV2}
+              setHasBounties={setHasBounties}
               removePost={removePost}
               restorePost={restorePost}
               setBounties={setBounties}
+              threads={threads}
               hasBounties={hasBounties}
               bounties={bounties}
               allBounties={allBounties}
@@ -232,10 +244,14 @@ const Post = (props) => {
                   post={post}
                   bountyType={postV2.unifiedDocument.documentType}
                   setHasBounties={setHasBounties}
+                  setThreadProp={(_threads) => {
+                    setThreads(_threads);
+                  }}
                   setAllBounties={setAllBounties}
                   postId={post.id}
                   showBountyBtn={
-                    postV2.unifiedDocument.documentType !== "question"
+                    false
+                    // postV2.unifiedDocument.documentType !== "question"
                   }
                   calculatedCount={discussionCount}
                   setCount={setCount}

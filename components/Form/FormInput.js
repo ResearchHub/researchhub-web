@@ -11,7 +11,7 @@ class FormInput extends Component {
 
   focusOnClick = (e) => {
     e.stopPropagation();
-    this.props.onClick && this.props.onClick();
+    this.props.onClick && this.props.onClick(e);
     return this.props.getRef
       ? this.props.getRef.current.focus()
       : this.formInputRef.current && this.formInputRef.current.focus();
@@ -134,9 +134,11 @@ class FormInput extends Component {
             alt="Form Input Icon"
           />
         ) : (
-          <div className={css(styles.searchIcon, iconStyles && iconStyles)}>
-            {icon}
-          </div>
+          icon && (
+            <div className={css(styles.searchIcon, iconStyles && iconStyles)}>
+              {icon}
+            </div>
+          )
         )}
         {inlineNodeRight && (
           <span className={css(styles.inlineNodeRight, inlineNodeStyles)}>
@@ -221,6 +223,7 @@ const styles = StyleSheet.create({
     left: 15,
     bottom: 10,
     color: "#c5c4cc",
+    pointerEvents: "none",
   },
   inlineNodeRight: {
     position: "absolute",

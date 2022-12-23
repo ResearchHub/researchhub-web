@@ -16,6 +16,7 @@ import InviteButton from "~/components/Referral/InviteButton";
 import icons from "~/config/themes/icons";
 import CoinStackIcon from "../Icons/CoinStackIcon";
 import { UnifiedDocument } from "~/config/types/root_types";
+import AwardBountyModal from "./AwardBountyModal";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -28,6 +29,9 @@ type BountyAlertParams = {
   currentUser?: any; //TODO: make an any type
   onBountyRemove?: Function;
   unifiedDocument: UnifiedDocument;
+  threads: [any];
+  documentType: string;
+  setHasBounties: (boolean) => void;
 };
 
 const BountyAlert = ({
@@ -39,11 +43,15 @@ const BountyAlert = ({
   bountyText,
   post,
   currentUser,
+  setHasBounties,
   onBountyRemove,
   unifiedDocument,
+  threads,
+  documentType,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
   const router = useRouter();
 
   let timeRemaining, createdBy, status;
@@ -135,6 +143,15 @@ const BountyAlert = ({
         unifiedDocId={post?.unifiedDocument?.id}
         postSlug={post?.unifiedDocument?.document?.slug}
       />
+      <AwardBountyModal
+        isOpen={isAwardBountyModalOpen}
+        threads={threads}
+        bountyAmount={amount}
+        setHasBounties={setHasBounties}
+        allBounties={allBounties}
+        documentType={documentType}
+        closeModal={() => setIsAwardBountyModalOpen(false)}
+      />
       <div className={css(styles.wrapper)}>
         <div className={css(styles.avatars)}>
           <AuthorFacePile
@@ -220,17 +237,14 @@ const BountyAlert = ({
           <div
             className={css(styles.action, styles.closeBounty)}
             onClick={() => {
-              if (window.confirm("Close bounty?")) {
-                Bounty.closeBountyAPI({ bounty: userBounty }).then(
-                  (bounties) => {
-                    onBountyRemove && onBountyRemove(userBounty.id);
-                  }
-                );
-              }
+              setIsAwardBountyModalOpen(true);
             }}
           >
-            <span className={css(styles.actionIcon)}>{icons.times}</span>
-            Close your bounty
+            <img
+              className={css(styles.actionIcon)}
+              src="/static/icons/award-rsc-bounty.png"
+            ></img>
+            Award Bounty
           </div>
         ) : (
           <>
@@ -312,7 +326,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     whiteSpace: "nowrap",
     ":hover": {
-      color: colors.NEW_BLUE(0.8),
+      opacity: 0.8,
     },
   },
   shareAction: {},
