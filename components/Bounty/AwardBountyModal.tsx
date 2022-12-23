@@ -359,7 +359,7 @@ function AwardBountyModal({
         <div className={css(styles.awardContainer)}>
           <div className={css(styles.row, styles.rowHeader)}></div>
           <div className={css(styles.userRows)}>
-            {threads.map((thread) => {
+            {threads?.map((thread) => {
               return (
                 <div className={css(styles.awardUserRow)}>
                   <AwardUserRow
