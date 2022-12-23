@@ -53,6 +53,7 @@ function TextEditor(props) {
     isTopLevelComment = false,
     callback,
     showBountyBtn,
+    quillContainerStyle,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -116,6 +117,7 @@ function TextEditor(props) {
       onChange={handleChange}
       clearOnSubmit={clearOnSubmit}
       containerStyles={containerStyles}
+      quillContainerStyle={quillContainerStyle}
       cancel={cancel}
       submit={submit}
       isBounty={isBounty}

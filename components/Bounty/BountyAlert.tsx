@@ -30,6 +30,7 @@ type BountyAlertParams = {
   onBountyRemove?: Function;
   unifiedDocument: UnifiedDocument;
   threads: [any];
+  setHasBounties: (boolean) => void;
 };
 
 const BountyAlert = ({
@@ -41,6 +42,7 @@ const BountyAlert = ({
   bountyText,
   post,
   currentUser,
+  setHasBounties,
   onBountyRemove,
   unifiedDocument,
   threads,
@@ -143,6 +145,8 @@ const BountyAlert = ({
         isOpen={isAwardBountyModalOpen}
         threads={threads}
         bountyAmount={amount}
+        setHasBounties={setHasBounties}
+        allBounties={allBounties}
         closeModal={() => setIsAwardBountyModalOpen(false)}
       />
       <div className={css(styles.wrapper)}>

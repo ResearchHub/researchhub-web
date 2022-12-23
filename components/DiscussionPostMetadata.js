@@ -53,6 +53,7 @@ const DiscussionPostMetadata = (props) => {
     isAcceptedAnswer,
     bountyType,
     commentBounties,
+    noShowSupport,
   } = props;
 
   const alert = useAlert();
@@ -205,13 +206,17 @@ const DiscussionPostMetadata = (props) => {
               </span>
             }
             {noTimeStamp ? null : <Timestamp {...props} />}
-            <span className={css(styles.divider)}>•</span>
-            <WidgetContentSupport
-              data={data}
-              metaData={metaData}
-              fetching={fetching}
-              awardedBountyAmount={awardedBountyAmount}
-            />
+            {!noShowSupport && (
+              <>
+                <span className={css(styles.divider)}>•</span>
+                <WidgetContentSupport
+                  data={data}
+                  metaData={metaData}
+                  fetching={fetching}
+                  awardedBountyAmount={awardedBountyAmount}
+                />
+              </>
+            )}
           </div>
           {/* {renderHeadline()} */}
         </div>
@@ -253,6 +258,9 @@ const User = (props) => {
       href={"/user/[authorId]/[tabName]"}
       as={`/user/${authorId}/overview`}
       className={css(styles.atag)}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
       <div className={css(styles.userContainer)}>
         <div

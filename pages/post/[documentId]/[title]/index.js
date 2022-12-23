@@ -215,6 +215,7 @@ const Post = (props) => {
               isModerator={isModerator}
               isSubmitter={isSubmitter}
               post={postV2}
+              setHasBounties={setHasBounties}
               removePost={removePost}
               restorePost={restorePost}
               setBounties={setBounties}

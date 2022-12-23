@@ -17,18 +17,36 @@ import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { WarningIcon } from "~/config/themes/icons";
+import icons, { DownIcon, UpIcon, WarningIcon } from "~/config/themes/icons";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import AuthorAvatar from "../AuthorAvatar";
 import FormInput from "../Form/FormInput";
+import DiscussionPostMetadata from "../DiscussionPostMetadata";
+import { getNestedValue } from "~/config/utils/misc";
+import ThreadTextEditor from "../Threads/ThreadTextEditor";
+import api, { generateApiUrl } from "~/config/api";
 
-function AwardUserRow({ author, comment, remainingAmount }) {
+function AwardUserRow({
+  author,
+  comment,
+  remainingAmount,
+  decreaseRemainingAmount,
+}) {
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  const fullName = `${author?.first_name ?? author?.firstName ?? ""} ${
+    author?.last_name ?? author.lastName ?? ""
+  }`;
+
   return (
-    <div className={css(awardUserStyles.container)}>
+    <div
+      className={css(awardUserStyles.container)}
+      onClick={() => setIsMaximized(!isMaximized)}
+    >
       <div className={css(awardUserStyles.recipientColumn)}>
-        <AuthorAvatar
+        {/* <AuthorAvatar
           author={author}
           boldName={true}
           border={`2px solid ${colors.LIGHT_GREY(1)}`}
@@ -40,12 +58,58 @@ function AwardUserRow({ author, comment, remainingAmount }) {
           size={36}
           fontSize={16}
           withAuthorName={true}
+        /> */}
+        <DiscussionPostMetadata
+          authorProfile={author}
+          isCreatedByEditor={comment?.data?.is_created_by_editor}
+          data={comment?.data}
+          noShowSupport={true}
+          date={comment?.data?.created_date}
+          username={fullName}
+          dropDownEnabled={true}
         />
+        <div className={css(awardUserStyles.arrow)}>
+          {isMaximized ? (
+            <UpIcon
+              withAnimation={false}
+              overrideStyle={awardUserStyles.chevron}
+            />
+          ) : (
+            <DownIcon
+              withAnimation={false}
+              overrideStyle={awardUserStyles.chevron}
+            />
+          )}
+        </div>
+        <div className={css(awardUserStyles.comment)}>
+          {isMaximized ? (
+            <ThreadTextEditor
+              readOnly={true}
+              initialValue={comment?.data?.text}
+              focusEditor={true}
+              body={true}
+              textStyles={styles.contentText}
+              quillContainerStyle={awardUserStyles.quillContainerStyle}
+              textEditorId={`thread_${comment?.data.id}`}
+              postType={comment?.data?.discussion_post_type}
+            />
+          ) : (
+            <div className={"clamp2"} style={{ wordBreak: "break-word" }}>
+              {comment?.data?.plain_text}
+            </div>
+          )}
+        </div>
       </div>
       <div className={css(awardUserStyles.awardColumn)}>
         <FormInput
           placeholder={remainingAmount}
+          id={`${author.user}-${comment?.data.id}-award`}
           type="number"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          icon={null}
+          onChange={decreaseRemainingAmount}
           inputStyle={awardUserStyles.inputStyle}
           containerStyle={awardUserStyles.inputContainer}
         />
@@ -63,8 +127,20 @@ function AwardUserRow({ author, comment, remainingAmount }) {
 const awardUserStyles = StyleSheet.create({
   container: {
     width: "100%",
-    display: "flex",
+    // display: "flex",
     alignItems: "center",
+    position: "relative",
+    marginTop: 16,
+  },
+  arrow: {
+    color: "#7c7989",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    cursor: "pointer",
+  },
+  chevron: {
+    marginLeft: 0,
   },
   rscIcon: {
     marginRight: 7,
@@ -74,14 +150,30 @@ const awardUserStyles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 18,
   },
+  comment: {
+    marginTop: 8,
+    marginLeft: 38,
+    marginBottom: 16,
+    lineHeight: "1.6em",
+    overflowWrap: "break-word",
+    cursor: "pointer",
+  },
+  quillContainerStyle: {
+    padding: 0,
+    border: 0,
+  },
   recipientColumn: {
-    width: "60%",
-    display: "flex",
-    justifyContent: "flex-start",
+    // width: "60%",
+    // display: "flex",
+    // justifyContent: "flex-start",
   },
   inputStyle: {
     height: 40,
     boxSizing: "border-box",
+
+    "::placeholder": {
+      color: colors.BLACK(0.4),
+    },
   },
   inputContainer: {
     maxWidth: 95,
@@ -92,7 +184,7 @@ const awardUserStyles = StyleSheet.create({
   awardColumn: {
     display: "flex",
     alignItems: "center",
-    marginLeft: "auto",
+    marginLeft: 38,
   },
 });
 
@@ -100,7 +192,11 @@ type Props = {
   isOpen: boolean;
   closeModal: () => void;
   threads: [];
+  allBounties: [];
   bountyAmount: number;
+  setMessage: (string) => void;
+  showMessage: ({}) => void;
+  setHasBounties: (boolean) => void;
 };
 
 function AwardBountyModal({
@@ -108,14 +204,108 @@ function AwardBountyModal({
   closeModal,
   threads,
   bountyAmount,
+  allBounties,
+  setMessage,
+  showMessage,
+  setHasBounties,
 }: Props): ReactElement {
+  const [userAwardMap, setUserAwardMap] = useState({});
+  const [bountyAwardLoading, setBountyAwardLoading] = useState(false);
+  const [remainingAwardAmount, setRemainingAwardAmount] =
+    useState(bountyAmount);
+
   const handleClose = () => {
     closeModal && closeModal();
+    setUserAwardMap({});
+    setRemainingAwardAmount(bountyAmount);
   };
 
-  const awardBounty = () => {};
+  const awardBounty = async () => {
+    if (remainingAwardAmount !== 0) {
+      setMessage("Award your entire bounty to continue.");
+      showMessage({ show: true, error: true });
+      return;
+    }
 
-  console.log(threads);
+    setBountyAwardLoading(true);
+    const allFetches: Promise<Response>[] = []; // todo: make this a promise array
+    allBounties.forEach((bounty) => {
+      const keys = Object.keys(userAwardMap);
+      const metadataArray: any[] = [];
+      keys.forEach((key) => {
+        metadataArray.push({
+          recipient_id: key.split("-")[0],
+          content_type: "thread",
+          amount: userAwardMap[key],
+          object_id: key.split("-")[1],
+        });
+      });
+
+      const data = {
+        multi_bounty_approval_metadata: metadataArray,
+        amount: bountyAmount,
+        recipient: true,
+        object_id: true,
+        multi_approve: true,
+        content_type: "thread",
+      };
+
+      const url = generateApiUrl("bounty") + bounty?.id + "/approve_bounty/";
+      const curFetch = fetch(url, api.POST_CONFIG(data));
+      allFetches.push(curFetch);
+    });
+
+    const promises = await Promise.all(allFetches);
+    let succeeded = true;
+    if (promises.length) {
+      promises.forEach(async (promise) => {
+        if (promise.status !== 200) {
+          succeeded = false;
+          setBountyAwardLoading(false);
+          const json = await promise.json();
+          const detail = json.detail;
+          setMessage(
+            detail ? detail : "Something went wrong, please try again"
+          );
+          showMessage({ show: true, error: true });
+        }
+      });
+
+      if (succeeded) {
+        setHasBounties && setHasBounties(false);
+        setBountyAwardLoading(false);
+        setMessage("Bounty awarded!");
+        showMessage({ show: true });
+        handleClose();
+      }
+    }
+  };
+
+  const decreaseRemainingAmount = (id, value) => {
+    // const amount =
+    //   parseInt(remainingAwardAmount, 10) - (value ? parseInt(value, 10) : 0);
+    // setRemainingAwardAmount(amount);
+
+    const userMap = { ...userAwardMap };
+
+    userMap[id] = value ? parseInt(value, 10) : 0;
+    setUserAwardMap(userMap);
+  };
+
+  useEffect(() => {
+    const userIds = Object.keys(userAwardMap);
+    let remainingAmount = bountyAmount;
+
+    if (!userIds.length) {
+      return;
+    }
+
+    userIds.forEach((id) => {
+      remainingAmount -= userAwardMap[id];
+    });
+
+    setRemainingAwardAmount(remainingAmount);
+  }, [userAwardMap]);
 
   return (
     <BaseModal
@@ -138,17 +328,18 @@ function AwardBountyModal({
           </a>
         </div>
         <div className={css(styles.awardContainer)}>
-          <div className={css(styles.row, styles.rowHeader)}>
-            <div className={css(styles.recipientColumn)}>Recipient</div>
-            <div>Award</div>
-          </div>
+          <div className={css(styles.row, styles.rowHeader)}></div>
           <div className={css(styles.userRows)}>
             {threads.map((thread) => {
               return (
-                <AwardUserRow
-                  author={thread.data.created_by.author_profile}
-                  remainingAmount={bountyAmount}
-                />
+                <div className={css(styles.awardUserRow)}>
+                  <AwardUserRow
+                    author={thread.data.created_by.author_profile}
+                    remainingAmount={bountyAmount}
+                    comment={thread}
+                    decreaseRemainingAmount={decreaseRemainingAmount}
+                  />
+                </div>
               );
             })}
           </div>
@@ -159,7 +350,7 @@ function AwardBountyModal({
           <div className={css(styles.remainingReward)}>Remaining Award</div>
 
           <div className={css(awardUserStyles.awardColumn)}>
-            <div className={css(styles.rscLeft)}>{bountyAmount}</div>
+            <div className={css(styles.rscLeft)}>{remainingAwardAmount}</div>
             <ResearchCoinIcon
               width={20}
               height={20}
@@ -181,7 +372,9 @@ function AwardBountyModal({
           customButtonStyle={[styles.awardButton, styles.cancelButton]}
           rippleClass={[styles.awardRipple, styles.cancelRipple]}
           customLabelStyle={styles.labelStyle}
-          onClick={awardBounty}
+          onClick={() => {
+            handleClose();
+          }}
         />
       </div>
       <div className={css(styles.warningLabel)}>
@@ -203,6 +396,7 @@ const styles = StyleSheet.create({
   },
   inner: {
     padding: 35,
+    paddingBottom: 0,
   },
   link: {
     color: colors.NEW_BLUE(1),
@@ -233,9 +427,12 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontsize: 18,
   },
+  awardUserRow: {
+    borderBottom: "1px solid rgb(233, 234, 239)",
+    paddingBottom: 16,
+  },
   awardAction: {
     width: "100%",
-    marginTop: 20,
     boxShadow: "0px 4px 20px rgba(36, 31, 58, 0.1)",
     padding: 35,
     boxSizing: "border-box",
@@ -251,14 +448,14 @@ const styles = StyleSheet.create({
   rowHeader: {
     opacity: 0.6,
     borderBottom: "1px solid #E9EAEF",
-    paddingBottom: 16,
+    // paddingBottom: 16,
     fontWeight: 500,
     fontSize: 18,
   },
   userRows: {
-    marginTop: 16,
     maxHeight: 300,
     overflow: "auto",
+    paddingBottom: 16,
   },
   awardButton: {
     width: "100%",

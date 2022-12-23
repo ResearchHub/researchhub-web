@@ -303,6 +303,7 @@ const Paper = ({
                 <DocumentHeader
                   document={paperV2}
                   hasBounties={hasBounties}
+                  setHasBounties={setHasBounties}
                   allBounties={allBounties}
                   bountyText={paperV2.title}
                   onDocumentRemove={removePaper}

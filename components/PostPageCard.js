@@ -123,6 +123,7 @@ class PostPageCard extends Component {
           <DocumentHeader
             handleEdit={this.toggleShowPostEditor}
             document={post}
+            setHasBounties={this.props.setHasBounties}
             onDocumentRemove={removePost}
             onDocumentRestore={restorePost}
             hasBounties={this.props.hasBounties || this.props.bounties}

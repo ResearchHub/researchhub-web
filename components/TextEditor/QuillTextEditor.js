@@ -693,7 +693,8 @@ class Editor extends Component {
           className={css(
             styles.readOnly,
             this.props.isAcceptedAnswer && styles.isAcceptedAnswer,
-            this.props.isBounty && styles.isBounty
+            this.props.isBounty && styles.isBounty,
+            this.props.quillContainerStyle && this.props.quillContainerStyle
           )}
         >
           <ReactQuill

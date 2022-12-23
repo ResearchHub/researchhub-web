@@ -46,6 +46,7 @@ type Args = {
   post?: any; // TODO: add post type
   bountyText?: string;
   threads: any;
+  setHasBounties: (boolean) => void;
 };
 
 function DocumentHeader({
@@ -58,6 +59,7 @@ function DocumentHeader({
   currentUser,
   hasBounties,
   allBounties,
+  setHasBounties,
   bountyType,
   onBountyAdd,
   isOriginalPoster,
@@ -287,8 +289,6 @@ function DocumentHeader({
     bountyAmount += bounty.amount;
   });
 
-  console.log(threads);
-
   return (
     // @ts-ignore
     <ReactPlaceholder
@@ -307,6 +307,7 @@ function DocumentHeader({
                 currentUser={currentUser}
                 bountyText={bountyText}
                 onBountyAdd={onBountyAdd}
+                setHasBounties={setHasBounties}
                 post={post}
                 threads={threads}
                 isOriginalPoster={isOriginalPoster}

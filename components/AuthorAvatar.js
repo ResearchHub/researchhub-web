@@ -139,6 +139,9 @@ const AuthorAvatar = (props) => {
                 marginLeft: spacing ?? 8,
                 whiteSpace: "nowrap",
               }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
               className={css(styles.name)}
             >
               {fullName}
