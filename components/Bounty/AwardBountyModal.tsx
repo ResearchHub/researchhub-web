@@ -457,6 +457,7 @@ const styles = StyleSheet.create({
   remainingAwardRow: {
     fontWeight: 500,
     fontsize: 18,
+    marginBottom: 16,
   },
   awardUserRow: {
     borderBottom: "1px solid rgb(233, 234, 239)",

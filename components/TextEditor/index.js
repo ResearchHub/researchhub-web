@@ -56,8 +56,6 @@ function TextEditor(props) {
     quillContainerStyle,
   } = props;
 
-  console.log(postType);
-
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [selectedPostTypeStruct, setSelectedPostTypeStruct] = useState(
     postType
