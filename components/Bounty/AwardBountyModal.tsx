@@ -239,35 +239,36 @@ function AwardBountyModal({
       const keys = Object.keys(userAwardMap);
       const metadataArray: any[] = [];
       keys.forEach((key) => {
-        metadataArray.push({
-          recipient_id: key.split("-")[0],
-          content_type: "thread",
-          amount: userAwardMap[key],
-          object_id: key.split("-")[1],
-        });
-
-        acceptAnswerAPI({
-          documentType: documentType,
-          threadId: key.split("-")[1],
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          documentId: router.query.documentId,
-          onSuccess: (response) => {
-            const event = new CustomEvent("answer-accepted", {
-              detail: {
-                threadId: key.split("-")[1],
-              },
-            });
-            document.dispatchEvent(event);
-          },
-          onError: (error) => {
-            setMessage("Failed to set accepted answer");
-            showMessage({
-              show: true,
-              error: true,
-            });
-          },
-        });
+        if (userAwardMap[key]) {
+          metadataArray.push({
+            recipient_id: key.split("-")[0],
+            content_type: "thread",
+            amount: userAwardMap[key],
+            object_id: key.split("-")[1],
+          });
+          acceptAnswerAPI({
+            documentType: documentType,
+            threadId: key.split("-")[1],
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            documentId: router.query.documentId,
+            onSuccess: (response) => {
+              const event = new CustomEvent("answer-accepted", {
+                detail: {
+                  threadId: key.split("-")[1],
+                },
+              });
+              document.dispatchEvent(event);
+            },
+            onError: (error) => {
+              setMessage("Failed to set accepted answer");
+              showMessage({
+                show: true,
+                error: true,
+              });
+            },
+          });
+        }
       });
 
       const data = {

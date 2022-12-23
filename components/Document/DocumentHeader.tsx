@@ -298,7 +298,7 @@ function DocumentHeader({
     >
       {document.isReady && (
         <div className={css(styles.documentHeader)}>
-          {hasBounties && (
+          {hasBounties ? (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}
               <BountyAlert
@@ -316,7 +316,7 @@ function DocumentHeader({
                 documentType={documentType}
               />
             </div>
-          )}
+          ) : null}
           <ReactTooltip />
           {showClaimableAuthors && (
             <AuthorClaimModal
