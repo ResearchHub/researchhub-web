@@ -127,7 +127,7 @@ function PostTypeSelector({
     );
   };
 
-  if (documentType === "question") {
+  if (documentType === "question" || documentType === "bounty") {
     const toggle = renderQuestionToggle();
 
     return <div className={css(styles.postTypeSelector)}>{toggle}</div>;

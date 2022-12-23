@@ -108,9 +108,14 @@ class PostPageCard extends Component {
   };
 
   render() {
-    const { post, removePost, restorePost, user } = this.props;
+    const { post, removePost, restorePost, user, bounties } = this.props;
     const { postBody } = this.state;
     const isEditMode = this.state.showPostEditor;
+
+    const userBounty =
+      bounties && bounties.find((bounty) => bounty?.createdBy?.id === user?.id);
+
+    const userHasBounty = Boolean(userBounty);
 
     let initialData = postBody;
 
@@ -240,26 +245,27 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post?.unifiedDocument?.documentType === "question" && (
-                    <div className={css(styles.createBountyContainer)}>
-                      <CreateBountyBtn
-                        onBountyAdd={(bounty) => {
-                          this.props.setBounties([
-                            ...this.props.bounties,
-                            bounty,
-                          ]);
-                        }}
-                        isOriginalPoster={
-                          post.unifiedDocument.createdBy.id === user.id
-                        }
-                        currentUser={user}
-                        bountyText={this.toPlaintext(postBody)}
-                        post={post}
-                        bounties={this.props.bounties}
-                        onBountyCancelled={this.props.onBountyCancelled}
-                      />
-                    </div>
-                  )}
+                  {post?.unifiedDocument?.documentType === "question" &&
+                    !userHasBounty && (
+                      <div className={css(styles.createBountyContainer)}>
+                        <CreateBountyBtn
+                          onBountyAdd={(bounty) => {
+                            this.props.setBounties([
+                              ...this.props.bounties,
+                              bounty,
+                            ]);
+                          }}
+                          isOriginalPoster={
+                            post.unifiedDocument.createdBy.id === user.id
+                          }
+                          currentUser={user}
+                          bountyText={this.toPlaintext(postBody)}
+                          post={post}
+                          bounties={this.props.bounties}
+                          onBountyCancelled={this.props.onBountyCancelled}
+                        />
+                      </div>
+                    )}
                   {post?.unifiedDocument?.documentType === "bounty" &&
                     post?.bountyType === "metastudy" && (
                       <div className={css(styles.buttonRow)}>
@@ -350,7 +356,6 @@ const styles = StyleSheet.create({
   main: {
     display: "flex",
     flexDirection: "column",
-    marginRight: 16,
     width: "100%",
   },
   container: {

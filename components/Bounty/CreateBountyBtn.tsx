@@ -20,7 +20,6 @@ function CreateBountyBtn({
   isOriginalPoster,
   currentUser,
 }): ReactElement {
-
   const alert = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -48,6 +47,10 @@ function CreateBountyBtn({
       },
     });
   };
+
+  if (userHasBounty) {
+    return null;
+  }
 
   return (
     <div className={css(styles.createBountyBtn)}>
@@ -93,7 +96,9 @@ function CreateBountyBtn({
         }}
         hubs={post?.hubs}
         isOriginalPoster={isOriginalPoster}
-        addBtnLabel={bounties?.length > 0 ? "Contribute to Bounty" : "Add Bounty" }
+        addBtnLabel={
+          bounties?.length > 0 ? "Contribute to Bounty" : "Add Bounty"
+        }
         withPreview={withPreview}
         bountyText={bountyText}
         postId={post?.id}

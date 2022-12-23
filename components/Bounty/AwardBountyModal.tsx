@@ -70,7 +70,7 @@ function AwardUserRow({
           username={fullName}
           dropDownEnabled={true}
         />
-        <div className={css(awardUserStyles.arrow)}>
+        {/* <div className={css(awardUserStyles.arrow)}>
           {isMaximized ? (
             <UpIcon
               withAnimation={false}
@@ -82,7 +82,7 @@ function AwardUserRow({
               overrideStyle={awardUserStyles.chevron}
             />
           )}
-        </div>
+        </div> */}
         <div className={css(awardUserStyles.comment)}>
           {isMaximized ? (
             <ThreadTextEditor
@@ -395,6 +395,7 @@ function AwardBountyModal({
           rippleClass={styles.awardRipple}
           customLabelStyle={styles.labelStyle}
           onClick={awardBounty}
+          disabled={bountyAwardLoading}
         />
         <Button
           label={"Cancel"}

@@ -1,7 +1,11 @@
 import icons from "~/config/themes/icons";
 
 export const getPostTypeStruct = ({ postType, documentType }) => {
-  if (documentType === "question" || postType === POST_TYPES.ANSWER) {
+  if (
+    documentType === "question" ||
+    postType === POST_TYPES.ANSWER ||
+    documentType === "bounty"
+  ) {
     return questionPostTypes.find((t) => t.value === postType);
   } else {
     return postTypes.find((t) => t.value === postType);
