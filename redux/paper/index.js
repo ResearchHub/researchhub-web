@@ -9,6 +9,7 @@ import { handleCatch } from "../utils";
 import { logFetchError } from "~/config/utils/misc";
 import { captureEvent } from "~/config/utils/events";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { postUpdatePaperAbstract } from "~/components/Paper/abstract/api/postUpdatePaperAbstract";
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
@@ -333,7 +334,7 @@ export const PaperActions = {
       return dispatch(action);
     };
   },
-  patchPaper: (paperId, body, progress, onError) => {
+  patchPaper: (paperId, body, progress, onError, slug) => {
     return async (dispatch) => {
       const response = await fetch(
         API.PAPER({ paperId, progress }),
@@ -362,6 +363,12 @@ export const PaperActions = {
       } else {
         logFetchError(response);
       }
+      postUpdatePaperAbstract({
+        paperPayload: {
+          id: paperId,
+          slug: slug,
+        },
+      });
       return dispatch(action);
     };
   },

@@ -2,7 +2,6 @@ import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules
 import { connect, useDispatch } from "react-redux";
-import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useAlert } from "react-alert";
 import Ripples from "react-ripples";
@@ -24,6 +23,8 @@ import colors from "../../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
+import { postUpdatePaperAbstract } from "../abstract/api/postUpdatePaperAbstract";
+import { useRouter } from "next/router";
 
 function PaperTab(props) {
   const {
@@ -36,6 +37,7 @@ function PaperTab(props) {
   } = props;
   const alert = useAlert();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [file, setFile] = useState(
     (paper && (paper.file || paper.pdf_url)) || null
@@ -112,7 +114,9 @@ function PaperTab(props) {
     let body = {
       file: paperInReduxState.url ? paperInReduxState.url : paperInReduxState,
     };
-    let paperState = await dispatch(PaperActions.patchPaper(paperId, body));
+    let paperState = await dispatch(
+      PaperActions.patchPaper(paperId, body, null, null, router.query.paperName)
+    );
 
     dispatch(MessageActions.showMessage({ show: false }));
     dispatch(MessageActions.setMessage("PDF successfully uploaded!"));
@@ -215,6 +219,12 @@ function PaperTab(props) {
     updatedPaper.file = null;
     updatePaperState && updatePaperState(updatedPaper);
     setFile(null);
+    postUpdatePaperAbstract({
+      paperPayload: {
+        id: router.query.paperId,
+        slug: router.query.paperName,
+      },
+    });
   }
 
   function renderExternalLink() {
@@ -525,4 +535,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default withRouter(connect(mapStateToProps)(PaperTab));
+export default connect(mapStateToProps)(PaperTab);
