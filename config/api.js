@@ -89,6 +89,9 @@ const routes = (BASE_URL) => {
     LOGIN_WITH_EMAIL: () => {
       return BASE_URL + `auth/login/`;
     },
+    VERIFY_EMAIL: () => {
+      return BASE_URL + `auth/register/verify-email/`;
+    },
     CITATIONS: ({ citationID, citationType, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)

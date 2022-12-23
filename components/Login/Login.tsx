@@ -13,13 +13,16 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { StyleSheet, css } from "aphrodite";
 import Loader from "~/components/Loader/Loader";
 import IconButton from "../Icons/IconButton";
-import colors from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import { isValidEmail } from "~/config/utils/validation";
-
+import AuthorAvatar from "../AuthorAvatar";
+import { sendAmpEvent } from "~/config/fetch";
+import { useRouter } from "next/router";
 
 type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM" | "VERIFY_EMAIL";
 
-const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
+const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
+  const router = useRouter();
   const currentUser = getCurrentUser();
   const dispatch = useDispatch();
   // @ts-ignore
@@ -38,33 +41,10 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   const emailRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    if (auth.loginFailed) {
-      setMiscError(auth.loginErrorMsg)
-    }
-  }, [auth]);
-
-  useEffect(() => {
     if (!isOpen) {
       reset();
     }
   }, [isOpen])
-
-  // const confirmEmailApi = async (e) => {
-  //   e?.preventDefault();
-
-  //   if (email.length > 0) {
-  //     fetch(API.SEND_CONFIRM_EMAIL(), API.POST_CONFIG({ key: "655d40e40b8ea13a3fa5897c311a93f0125876e3" }))
-  //       .then(Helpers.checkStatus)
-  //       .then(Helpers.parseJSON)
-  //       .then((res) => {
-  //         console.log('res', res)
-  //       })
-  //       .catch(() => {
-  //         setMessage("Unexpected error");
-  //         showMessage({ show: true, error: true });
-  //       })
-  //   }
-  // };
 
   const checkIfAccountExistsApi = async (e) => {
     e?.preventDefault();
@@ -112,8 +92,44 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
 
   const loginApi = async (e) => {
     e?.preventDefault();
+
+    if (password.length === 0) {
+      setPasswordError("Enter a password");
+      return;
+    }
+    else {
+      setPasswordError(false);
+    }
+
     setIsLoading(true);
-    await dispatch(AuthActions.loginWithEmail({ email, password }))
+    const response:any = await dispatch(AuthActions.loginWithEmail({ email, password }));
+
+    if (response.loginFailed) {
+      setMiscError(response.loginErrorMsg);
+    }
+    else {
+      // @ts-ignore
+      dispatch(AuthActions.getUser()).then((userAction) => {
+        if (!userAction?.user?.has_seen_orcid_connect_modal) {
+          let payload = {
+            event_type: "user_signup",
+            time: +new Date(),
+            user_id: userAction.user.id,
+            insert_id: `user_${userAction.user.id}`,
+            event_properties: {
+              interaction: "User Signup",
+            },
+          };
+          sendAmpEvent(payload);
+
+          router.push(
+            "/user/[authorId]/onboard?internal=true",
+            `/user/${userAction.user.author_profile.id}/onboard`
+          );
+        }
+      })
+    }
+
     setIsLoading(false);
   };
 
@@ -186,7 +202,6 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
       hideClose={true}
       titleStyle={styles.modalTitleStyleOverride}
       modalContentStyle={styles.modalContentStyle}
-      // modalContentStyle={styles.modalContentStyle}
       title={
         <div className={css(styles.titleWrapper, step !== "VERIFY_EMAIL" && styles.titleWrapperWithBorder)}>
           <div style={{  }}>
@@ -231,7 +246,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
         </div>
       }
 
-      <div style={{ padding: 15, width: "100%", boxSizing: "border-box" }}>
+      <div style={{ padding: "0px 25px 25px 25px", width: "100%", boxSizing: "border-box" }}>
         {step === "SELECT_PROVIDER" ? (
           <div>
             <div style={{ textAlign: "left", marginBottom: 15, }}>
@@ -241,8 +256,6 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
             <FormInput
               required
               containerStyle={styles.inputContainer}
-              // containerStyle={styles.containerStyle}
-              // inputStyle={styles.inputStyle}
               placeholder="Email"
               error={emailError}
               getRef={emailRef}
@@ -261,6 +274,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
             <Button
               customButtonStyle={styles.button}
               hideRipples={true}
+              disabled={isLoading ? true : false}
               onClick={checkIfAccountExistsApi}
               label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Continue"}
             />
@@ -284,28 +298,30 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
         ) : step === "LOGIN_WITH_EMAIL_FORM" ? (
           <div>
             <div style={{ textAlign: "left", marginBottom: 15, }}>
-              {/* <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Welcome back.</div> */}
               <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Enter your password to login.</p>
             </div>            
             <FormInput
               required
               error={passwordError}
+              value={password}
               containerStyle={styles.inputContainer}
-              // containerStyle={styles.containerStyle}
-              // inputStyle={styles.inputStyle}
               placeholder="Password"
               type="password"
               onKeyDown={(e) => {
                 e.keyCode === 13 && loginApi(e)
               }}
               onChange={(id, value) => {
-                console.log('value', value)
+                if (value.length === 0) {
+                  setPasswordError(true);
+                }
+
                 setPassword(value)
               }}
             />
             <Button
               customButtonStyle={styles.button}
               hideRipples={true}
+              disabled={isLoading ? true : false}
               onClick={loginApi}
               label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Login"}
             />
@@ -313,14 +329,12 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
         ) : step === "SIGNUP_FORM" ? (
           <>
             <div style={{ textAlign: "left", marginBottom: 15, }}>
-              {/* <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Welcome to ResearchHub 👋</div> */}
               <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Fill in the following to join our platform.</p>
             </div>                  
             <FormInput
               required
               error={firstNameError}
               containerStyle={styles.inputContainer}
-              // inputStyle={styles.inputStyle}
               placeholder="First name"
               type="text"
               onChange={(id, value) => {
@@ -335,7 +349,6 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
               required
               error={lastNameError}
               containerStyle={styles.inputContainer}
-              // inputStyle={styles.inputStyle}
               placeholder="Last name"
               type="text"
               onChange={(id, value) => {
@@ -349,7 +362,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
               required
               error={passwordError}
               containerStyle={styles.inputContainer}
-              // inputStyle={styles.inputStyle}
+              value={password}
               placeholder="Password"
               type="password"
               onKeyDown={(e) => {
@@ -365,6 +378,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
             <Button
               customButtonStyle={styles.button}
               hideRipples={true}
+              disabled={isLoading ? true : false}
               onClick={createAccountApi}
               label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Sign up"}
             />
@@ -394,13 +408,19 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, }) => {
   )  
 }
 
-const Login = ({ setMessage, showMessage }) => {
+const Login = ({ setMessage, showMessage, children }) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div onClick={() => setIsOpen(true)}>
-      Login
+    <div>
+      <div onClick={(e) => {
+        e.stopPropagation();
+        setIsOpen(true);
+      }}>
+        {children}
+      </div>
+
       <LoginModal
         isOpen={isOpen}
         setMessage={setMessage}
@@ -473,5 +493,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };
+
+console.log('AuthActions.getUser', AuthActions.getUser)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

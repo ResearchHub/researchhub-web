@@ -1,7 +1,6 @@
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
 import { useAccount, useConnect, useEnsName } from "wagmi";
-
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -12,7 +11,7 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
-import colors from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
@@ -25,6 +24,7 @@ import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
 import RHLogo from "./Home/RHLogo";
 import Login from "./Login/Login";
+import Button from "./Form/Button";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -145,16 +145,45 @@ const Navbar = (props) => {
           className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
         >
           <div className={css(styles.buttonRight)}>
-            {!isLoggedIn ? (
+            {isLoggedIn ? (
+              <NavbarRightButtonGroup />
+            ) : (
               <div className={css(styles.oauthContainer)}>
-                <Login />
+                <Login>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      columnGap: "10px",
+                    }}
+                  >
+                    <span className={css(styles.loginBtn)}>Log in</span>
+                    <Button
+                      size="small"
+                      customButtonStyle={styles.signUpBtn}
+                      customLabelStyle={styles.signUpLabel}
+                      label="Sign up"
+                    />
+                  </div>
+                </Login>
                 <div className={css(styles.divider)}></div>
               </div>
-            ) : (
-              <NavbarRightButtonGroup />
             )}
           </div>
-          <NewPostButton />
+          {isLoggedIn && <NewPostButton />}
+
+          {/* {isLoggedIn
+            ?  <NewPostButton />
+            : (
+              <Login>
+                Login
+              </Login>
+              // <div className={css(styles.login)}>
+              // <span style={{}}>Log in</span>
+              // <Button label="Sign up" />
+            // </div>              
+            )
+          } */}
           {Boolean(user.id) && (
             <PaperUploadStateNotifier
               wsAuth
@@ -169,6 +198,29 @@ const Navbar = (props) => {
 };
 
 const styles = StyleSheet.create({
+  signUpBtn: {
+    width: 90,
+    height: 30,
+    fontSize: 16,
+  },
+  signUpLabel: {
+    fontSize: 16,
+  },
+  loginBtn: {
+    color: colors.BLACK(),
+    cursor: "pointer",
+    fontSize: 16,
+    padding: "5px 10px",
+    width: 60,
+    textAlign: "center",
+    fontWeight: 400,
+    ":hover": {
+      background: iconColors.BACKGROUND,
+      borderRadius: 3,
+      transition: "0.3s",
+    },
+  },
+
   navbarContainer: {
     alignItems: "center",
     background: "#fff",
