@@ -19,7 +19,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import { sendAmpEvent } from "~/config/fetch";
 import { useRouter } from "next/router";
 
-type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM" | "VERIFY_EMAIL";
+type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM" | "VERIFY_EMAIL" | "FORGOT_PASSWORD";
 
 const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
   const router = useRouter();
@@ -27,7 +27,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
   const dispatch = useDispatch();
   // @ts-ignore
   const auth = useSelector((state) => state.auth)
-  const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
+  const [step, setStep] = useState<SCREEN>("LOGIN_WITH_EMAIL_FORM");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -82,6 +82,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           showMessage({ show: true, error: true });
         })
         .finally(() => {
+          // resetErrors();
           setIsLoading(false);
         })
     }
@@ -132,6 +133,31 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
 
     setIsLoading(false);
   };
+
+  const resetPasswordApi = async (e) => {
+    e?.preventDefault();
+
+    if (!isValidEmail(email)) {
+      setEmailError("Enter a valid email");
+      return;
+    }
+
+    setIsLoading(true);
+
+    return fetch(API.CHECK_ACCOUNT(), API.POST_CONFIG({ email }))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data:any) => {
+        
+      })
+      .catch((error) => {
+        setMiscError("Something went wrong. Try again later.");
+      })
+      .finally(() => {
+        resetErrors();
+        setIsLoading(false);
+      })
+  }
 
   const resetErrors = () => {
     setMiscError(false);
@@ -190,7 +216,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           setMiscError("Something went wrong. Please try again later.")
         })
         .finally(() => {
-          setIsLoading(false);          
+          resetErrors();
+          setIsLoading(false);
         })
     }    
   }
@@ -205,7 +232,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
       title={
         <div className={css(styles.titleWrapper, step !== "VERIFY_EMAIL" && styles.titleWrapperWithBorder)}>
           <div style={{  }}>
-            {(step == "LOGIN_WITH_EMAIL_FORM" || step == "SIGNUP_FORM")  &&
+            {(step == "LOGIN_WITH_EMAIL_FORM" || step == "SIGNUP_FORM" || step == "FORGOT_PASSWORD")  &&
               <IconButton
                 overrideStyle={styles.leftBtn}
                 size={20}
@@ -232,6 +259,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
               ? `Login`
               : step === "SIGNUP_FORM"
               ? `Finish sign up`
+              : step === "FORGOT_PASSWORD" 
+              ? `Reset password`
               : ""
             }
           </div>
@@ -304,7 +333,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
               required
               error={passwordError}
               value={password}
-              containerStyle={styles.inputContainer}
+              containerStyle={styles.inputContainerShort}
               placeholder="Password"
               type="password"
               onKeyDown={(e) => {
@@ -314,10 +343,14 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
                 if (value.length === 0) {
                   setPasswordError(true);
                 }
+                else {
+                  setPasswordError(false);
+                }
 
                 setPassword(value)
               }}
             />
+            <span className={css(styles.forgotPassword)} onClick={() => setStep("FORGOT_PASSWORD")}>Forgot password?</span>
             <Button
               customButtonStyle={styles.button}
               hideRipples={true}
@@ -400,9 +433,41 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
               label={"Close"}
             />            
           </div>
+        ) : step === "FORGOT_PASSWORD" ? (
+          <div>
+            <div style={{ textAlign: "left", marginBottom: 15, }}>
+              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>
+                Enter the email address associated with your account, and we’ll email you a link to reset your password.
+              </p>
+            </div>
+            <FormInput
+              required
+              containerStyle={styles.inputContainer}
+              placeholder="Email"
+              error={emailError}
+              getRef={emailRef}
+              type="email"
+              value={email}
+              onKeyDown={(e) => {
+                e.keyCode === 13 && resetPasswordApi(e)
+              }}
+              onChange={(id, value) => {
+                if (value.length > 0) {
+                  setEmailError(false);
+                }
+                setEmail(value);
+              }}
+            />               
+            <Button
+              customButtonStyle={styles.button}
+              hideRipples={true}
+              onClick={resetPasswordApi}
+              disabled={isLoading ? true : false}
+              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Send reset email"}
+            />                  
+          </div>
         ) : null}
       </div>
-
 
     </BaseModal>  
   )  
@@ -435,6 +500,19 @@ const styles = StyleSheet.create({
   inputContainer: {
     margin: 0,
     marginBottom: 0,
+  },
+  inputContainerShort: {
+    margin: 0,
+    marginBottom: 0,    
+    minHeight: 60,
+  },
+  forgotPassword: {
+    fontWeight: 500,
+    textDecoration: "underline",
+    cursor: "pointer",
+    marginBottom: 25,
+    display: "block",
+    fontSize: 14,
   },
   modalTitleStyleOverride: {
     height: "auto",
