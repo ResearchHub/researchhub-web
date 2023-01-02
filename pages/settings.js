@@ -245,8 +245,16 @@ class UserSettings extends Component {
         this.togglePasswordVisibility();
       })
       .catch((error) => {
-        this.props.dispatch(MessageActions.setMessage("Unexpected error"));
+        let errorMsg;
+        try {
+          // @ts-ignore
+          errorMsg = Object.values(error?.message)[0][0];
+        } catch (error) {
+          errorMsg = "Unexpected error.";
+        }
+        this.props.dispatch(MessageActions.setMessage(errorMsg));
         this.props.dispatch(
+          // @ts-ignore
           MessageActions.showMessage({ show: true, error: true })
         );
       });
@@ -309,15 +317,6 @@ class UserSettings extends Component {
                 >
                   Save
                 </Button>
-                {/* <Ripples
-                  className={css(styles.saveIcon)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    this.savePassword();
-                  }}
-                >
-                  {icons.paperPlane}
-                </Ripples> */}
               </form>
             </div>
           ) : (

@@ -19,7 +19,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import { sendAmpEvent } from "~/config/fetch";
 import { useRouter } from "next/router";
 
-type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM" | "VERIFY_EMAIL" | "FORGOT_PASSWORD";
+type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM" | "VERIFY_EMAIL" | "FORGOT_PASSWORD" | "FORGOT_PASSWORD_EMAIL_SENT";
 
 const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
   const router = useRouter();
@@ -27,7 +27,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
   const dispatch = useDispatch();
   // @ts-ignore
   const auth = useSelector((state) => state.auth)
-  const [step, setStep] = useState<SCREEN>("LOGIN_WITH_EMAIL_FORM");
+  const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -144,11 +144,11 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
 
     setIsLoading(true);
 
-    return fetch(API.CHECK_ACCOUNT(), API.POST_CONFIG({ email }))
+    return fetch(API.RESET_PASSWORD(), API.POST_CONFIG({ email }))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data:any) => {
-        
+        setStep("FORGOT_PASSWORD_EMAIL_SENT");
       })
       .catch((error) => {
         setMiscError("Something went wrong. Try again later.");
@@ -230,7 +230,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
       titleStyle={styles.modalTitleStyleOverride}
       modalContentStyle={styles.modalContentStyle}
       title={
-        <div className={css(styles.titleWrapper, step !== "VERIFY_EMAIL" && styles.titleWrapperWithBorder)}>
+        <div className={css(styles.titleWrapper, ["VERIFY_EMAIL", "FORGOT_PASSWORD_EMAIL_SENT"].includes(step) === false && styles.titleWrapperWithBorder)}>
           <div style={{  }}>
             {(step == "LOGIN_WITH_EMAIL_FORM" || step == "SIGNUP_FORM" || step == "FORGOT_PASSWORD")  &&
               <IconButton
@@ -422,7 +422,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
               <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Check you email.</div>
               <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>An activation link was sent to your email.</p>
             </div>
-            <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.mailbox}</div>
+            <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
             <Button
               customButtonStyle={styles.button}
               hideRipples={true}
@@ -465,6 +465,23 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
               disabled={isLoading ? true : false}
               label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Send reset email"}
             />                  
+          </div>
+        ) : step === "FORGOT_PASSWORD_EMAIL_SENT" ? (
+          <div>
+            <div style={{ textAlign: "left", padding: "0 20px", marginBottom: 10, }}>
+              <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Check you email.</div>
+              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Password Reset link was sent to your email.</p>
+            </div>
+            <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
+            <Button
+              customButtonStyle={styles.button}
+              hideRipples={true}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+              }}
+              label={"Close"}
+            />            
           </div>
         ) : null}
       </div>

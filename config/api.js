@@ -92,6 +92,12 @@ const routes = (BASE_URL) => {
     CHANGE_PASSWORD: () => {
       return BASE_URL + `auth/password-change/`;
     },
+    RESET_PASSWORD: () => {
+      return BASE_URL + `auth/password-reset/`;
+    },
+    RESET_PASSWORD_CHANGE_PASSWORD: () => {
+      return BASE_URL + `auth/confirm/`;
+    },
     VERIFY_EMAIL: () => {
       return BASE_URL + `auth/register/verify-email/`;
     },
