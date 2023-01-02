@@ -89,6 +89,9 @@ const routes = (BASE_URL) => {
     LOGIN_WITH_EMAIL: () => {
       return BASE_URL + `auth/login/`;
     },
+    CHANGE_PASSWORD: () => {
+      return BASE_URL + `auth/password-change/`;
+    },
     VERIFY_EMAIL: () => {
       return BASE_URL + `auth/register/verify-email/`;
     },
