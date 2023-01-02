@@ -722,7 +722,7 @@ class UserSettings extends Component {
         <div className={css(styles.settingsPage)}>
           <div className={css(defaultStyles.title, styles.title)}>Settings</div>
           {this.renderPrimaryEmail()}
-          {this.renderChangePassword()}
+          {this.props.user.auth_provider && this.renderChangePassword()}
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
