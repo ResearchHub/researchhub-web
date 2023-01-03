@@ -18,6 +18,9 @@ import RootLeftSidebarSliderItem, {
 } from "./sidebar_items/RootLeftSidebarSliderItem";
 import InviteButton from "~/components/Referral/InviteButton";
 import NewPostButton from "~/components/NewPostButton";
+import Login from "~/components/Login/Login";
+import Button from "~/components/Form/Button";
+
 
 type Props = {
   isLoggedIn: boolean;
@@ -60,10 +63,39 @@ function RootLeftSidebarSlider({
       <div className={css(styles.leftSidebarSliderHeader)}>
         <RHLogo withText iconStyle={styles.rhLogoSlider} />
       </div>
+      {isLoggedIn ? (
+          <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
+        ) : (
+          <div className={css(styles.loginButtonWrap)}>
+            <Login>
+              <Button
+                size="med"
+                label="Log in"
+                fullWidth
+                hideRipples={true}
+              />
+            </Login>
+          </div>
+        )}
       {sliderMainItems}
       <div className={css(styles.leftSidebarSliderFooter)}>
-            <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
+
+
+            
+        
+        
         <div className={css(styles.leftSidebarSliderFooterItemsTop)}>
+          {isLoggedIn &&
+            <span
+              className={css(styles.leftSidebarSliderFooterTxtItem)}
+              onClick={(event: SyntheticEvent): void => {
+                event.preventDefault();
+                signout({ walletLink });
+              }}            
+            >
+              {"Sign out"}
+            </span>
+          }
           <span className={css(styles.leftSidebarSliderFooterTxtItem)}>
             <InviteButton context="referral">
               <span className={css(styles.referralProgramItem)}>
@@ -83,27 +115,8 @@ function RootLeftSidebarSlider({
           >
             {"Jobs"}
           </ALink>
-          {isLoggedIn ? (
-            <div
-              className={css(styles.leftSidebarSliderFooterTxtItem)}
-              onClick={(event: SyntheticEvent): void => {
-                event.preventDefault();
-                signout({ walletLink });
-              }}
-            >
-              {"Sign out"}
-            </div>
-          ) : (
-            <div className={css(styles.loginButtonWrap)}>
-              <GoogleLoginButton
-                styles={[styles.loginButton]}
-                iconStyle={styles.googleIcon}
-                customLabel="Sign In"
-                customLabelStyle={[styles.googleLabelMobile]}
-                isLoggedIn
-              />
-            </div>
-          )}
+
+
         </div>
         <div className={css(styles.leftSidebarSliderFooterBottom)}>
           <div
@@ -226,12 +239,17 @@ const styles = StyleSheet.create({
   },
   mediumIconOverride: { fontSize: 18, marginTop: "-4px" },
   newPostButtonCustom: {
+    marginBottom: 25,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       height: 40,
       width: "100%",
     },
   },
-  loginButtonWrap: { width: "100%", display: "flex" },
+  loginButtonWrap: {
+    width: "100%",
+    display: "flex",
+    marginBottom: 25,
+  },
   loginButton: {
     height: "unset",
     justifyContent: "center",

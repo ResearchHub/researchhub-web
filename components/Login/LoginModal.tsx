@@ -269,9 +269,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
                 {icons.times}
             </IconButton>
             {step === "SELECT_PROVIDER"
-              ? `Login or sign up`
+              ? `Log in or sign up`
               : step === "LOGIN_WITH_EMAIL_FORM"
-              ? `Login`
+              ? `Log in`
               : step === "SIGNUP_FORM"
               ? `Finish sign up`
               : step === "FORGOT_PASSWORD" 
@@ -371,7 +371,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               hideRipples={true}
               disabled={isLoading ? true : false}
               onClick={loginApi}
-              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Login"}
+              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Log in"}
             />
           </div>
         ) : step === "SIGNUP_FORM" ? (

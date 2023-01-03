@@ -84,13 +84,6 @@ class ResearchHubBanner extends Component {
           </div>
           <span style={{ marginTop: 25 }}>
             {!auth.isLoggedIn && process.browser && (
-              // <GoogleLoginButton
-              //   styles={styles.googleLoginButton}
-              //   googleLogin={this.props.googleLogin}
-              //   getUser={this.props.getUser}
-              //   customLabel={"Sign in with Google"}
-              // />
-
               <Login>
                 <Button hideRipples={true} size="large" variant="outlined">
                   <span>Join ResearchHub</span>

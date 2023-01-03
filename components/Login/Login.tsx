@@ -3,12 +3,17 @@ import { AuthActions } from "~/redux/auth";
 import { connect } from "react-redux";
 import LoginModal from "./LoginModal";
 
-const Login = ({ children, loginCallback }) => {
+type Props = {
+  loginCallback?: Function,
+  children?: any,
+}
+
+const Login = ({ children, loginCallback }: Props) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <div onClick={(e) => {
         e.stopPropagation();
         setIsOpen(true);
