@@ -4,20 +4,21 @@ import { connect } from "react-redux";
 import LoginModal from "./LoginModal";
 
 type Props = {
-  loginCallback?: Function,
-  children?: any,
-}
+  loginCallback?: Function;
+  children?: any;
+};
 
 const Login = ({ children, loginCallback }: Props) => {
-
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div style={{ width: "100%" }}>
-      <div onClick={(e) => {
-        e.stopPropagation();
-        setIsOpen(true);
-      }}>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(true);
+        }}
+      >
         {children}
       </div>
 
@@ -27,8 +28,8 @@ const Login = ({ children, loginCallback }: Props) => {
         loginCallback={loginCallback}
       />
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state) => ({
   auth: state.auth,

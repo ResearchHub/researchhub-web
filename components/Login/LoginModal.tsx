@@ -20,39 +20,53 @@ import { breakpoints } from "~/config/themes/screen";
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
+import Image from "next/image";
 
-type SCREEN = "SELECT_PROVIDER" | "LOGIN_WITH_EMAIL_FORM" | "SIGNUP_FORM" | "VERIFY_EMAIL" | "FORGOT_PASSWORD" | "FORGOT_PASSWORD_EMAIL_SENT";
+type SCREEN =
+  | "SELECT_PROVIDER"
+  | "LOGIN_WITH_EMAIL_FORM"
+  | "SIGNUP_FORM"
+  | "VERIFY_EMAIL"
+  | "FORGOT_PASSWORD"
+  | "FORGOT_PASSWORD_EMAIL_SENT";
 
-const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallback, modals }) => {
+const LoginModal = ({
+  isOpen,
+  handleClose,
+  setMessage,
+  showMessage,
+  loginCallback,
+  modals,
+}) => {
   const router = useRouter();
   const currentUser = getCurrentUser();
   const dispatch = useDispatch();
   // @ts-ignore
-  const auth = useSelector((state) => state.auth)
-  const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
+  const auth = useSelector((state) => state.auth);
+  const [step, setStep] = useState<SCREEN>("VERIFY_EMAIL");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<Boolean|String>(false);
+  const [emailError, setEmailError] = useState<Boolean | String>(false);
   const [firstName, setFirstName] = useState("");
-  const [firstNameError, setFirstNameError] = useState<Boolean|String>(false);
+  const [firstNameError, setFirstNameError] = useState<Boolean | String>(false);
   const [lastName, setLastName] = useState("");
-  const [lastNameError, setLastNameError] = useState<Boolean|String>(false);
+  const [lastNameError, setLastNameError] = useState<Boolean | String>(false);
   const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState<Boolean|String>(false);
-  const [miscError, setMiscError] = useState<Boolean|String>(false);
+  const [passwordError, setPasswordError] = useState<Boolean | String>(false);
+  const [miscError, setMiscError] = useState<Boolean | String>(false);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>();
 
   const _handleClose = () => {
     handleClose && handleClose();
     reset();
-    dispatch(ModalActions.openLoginModal(false))
-  }
+    dispatch(ModalActions.openLoginModal(false));
+  };
 
   useEffect(() => {
     if (!isOpen) {
       reset();
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   const checkIfAccountExistsApi = async (e) => {
     e?.preventDefault();
@@ -63,25 +77,22 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
       return fetch(API.CHECK_ACCOUNT(), API.POST_CONFIG({ email }))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
-        .then((data:any) => {
-
+        .then((data: any) => {
           if (data.exists) {
             if (data.auth === "google") {
               setMiscError("Account already exists. Please login with Google.");
-            }
-            else if (data.auth === "email") {
+            } else if (data.auth === "email") {
               if (data.is_verified) {
-                setStep("LOGIN_WITH_EMAIL_FORM");        
+                setStep("LOGIN_WITH_EMAIL_FORM");
+              } else {
+                setMiscError(
+                  "Account not yet verified. Click on the verification link sent to your email."
+                );
               }
-              else {
-                setMiscError("Account not yet verified. Click on the verification link sent to your email.");
-              }
-            }
-            else {
+            } else {
               setMiscError("Something went wrong. Please try again later.");
             }
-          }
-          else {
+          } else {
             setStep("SIGNUP_FORM");
           }
         })
@@ -92,10 +103,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
         .finally(() => {
           // resetErrors();
           setIsLoading(false);
-        })
-    }
-    else {
-      setEmailError("Enter a valid email")
+        });
+    } else {
+      setEmailError("Enter a valid email");
     }
   };
 
@@ -105,21 +115,20 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
     if (password.length === 0) {
       setPasswordError("Enter a password");
       return;
-    }
-    else {
+    } else {
       setPasswordError(false);
     }
 
     setIsLoading(true);
-    const response:any = await dispatch(AuthActions.loginWithEmail({ email, password }));
+    const response: any = await dispatch(
+      AuthActions.loginWithEmail({ email, password })
+    );
 
     if (response.loginFailed) {
       setMiscError(response.loginErrorMsg);
-    }
-    else {
+    } else {
       // @ts-ignore
       dispatch(AuthActions.getUser()).then((userAction) => {
-
         if (loginCallback) {
           return loginCallback();
         }
@@ -143,7 +152,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
         }
 
         _handleClose();
-      })
+      });
     }
 
     setIsLoading(false);
@@ -162,7 +171,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
     return fetch(API.RESET_PASSWORD(), API.POST_CONFIG({ email }))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((data:any) => {
+      .then((data: any) => {
         setStep("FORGOT_PASSWORD_EMAIL_SENT");
       })
       .catch((error) => {
@@ -171,8 +180,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
       .finally(() => {
         resetErrors();
         setIsLoading(false);
-      })
-  }
+      });
+  };
 
   const resetErrors = () => {
     setMiscError(false);
@@ -180,7 +189,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
     setFirstNameError(false);
     setLastNameError(false);
     setPasswordError(false);
-  }
+  };
 
   const reset = () => {
     resetErrors();
@@ -190,9 +199,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
     setPassword("");
     setIsLoading(false);
     setStep("SELECT_PROVIDER");
-  }
+  };
 
-  const createAccountApi = async(e) => {
+  const createAccountApi = async (e) => {
     e?.preventDefault();
 
     let hasErrors = false;
@@ -211,31 +220,38 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
 
     if (!hasErrors) {
       setIsLoading(true);
-      fetch(API.CREATE_ACCOUNT(), API.POST_CONFIG({ email, password1: password, password2: password, first_name: firstName, last_name: lastName }))
+      fetch(
+        API.CREATE_ACCOUNT(),
+        API.POST_CONFIG({
+          email,
+          password1: password,
+          password2: password,
+          first_name: firstName,
+          last_name: lastName,
+        })
+      )
         .then(async (response) => {
           const data = await response.json();
           if (response.ok) {
             setStep("VERIFY_EMAIL");
-          }
-          else {
+          } else {
             const errorMsg = Object.values(data)?.[0]?.[0];
             if (errorMsg) {
               setMiscError(errorMsg);
-            }
-            else {
+            } else {
               setMiscError("Something went wrong. Please try again later.");
             }
           }
         })
         .catch((error) => {
-          setMiscError("Something went wrong. Please try again later.")
+          setMiscError("Something went wrong. Please try again later.");
         })
         .finally(() => {
           resetErrors();
           setIsLoading(false);
-        })
-    }    
-  }
+        });
+    }
+  };
 
   return (
     <BaseModal
@@ -246,19 +262,28 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
       titleStyle={styles.modalTitleStyleOverride}
       modalContentStyle={styles.modalContentStyle}
       title={
-        <div className={css(styles.titleWrapper, ["VERIFY_EMAIL", "FORGOT_PASSWORD_EMAIL_SENT"].includes(step) === false && styles.titleWrapperWithBorder)}>
-          <div style={{  }}>
-            {(step == "LOGIN_WITH_EMAIL_FORM" || step == "SIGNUP_FORM" || step == "FORGOT_PASSWORD")  &&
+        <div
+          className={css(
+            styles.titleWrapper,
+            ["VERIFY_EMAIL", "FORGOT_PASSWORD_EMAIL_SENT"].includes(step) ===
+              false && styles.titleWrapperWithBorder
+          )}
+        >
+          <div style={{}}>
+            {(step == "LOGIN_WITH_EMAIL_FORM" ||
+              step == "SIGNUP_FORM" ||
+              step == "FORGOT_PASSWORD") && (
               <IconButton
                 overrideStyle={styles.leftBtn}
                 size={20}
                 onClick={() => {
                   resetErrors();
                   setStep("SELECT_PROVIDER");
-                }}>
-                  {icons.chevronLeft}
+                }}
+              >
+                {icons.chevronLeft}
               </IconButton>
-            }
+            )}
             <IconButton
               overrideStyle={styles.closeBtn}
               size={20}
@@ -266,8 +291,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
                 e.stopPropagation();
                 resetErrors();
                 _handleClose();
-              }}>
-                {icons.times}
+              }}
+            >
+              {icons.times}
             </IconButton>
             {step === "SELECT_PROVIDER"
               ? `Log in or sign up`
@@ -275,28 +301,29 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               ? `Log in`
               : step === "SIGNUP_FORM"
               ? `Finish sign up`
-              : step === "FORGOT_PASSWORD" 
+              : step === "FORGOT_PASSWORD"
               ? `Reset password`
-              : ""
-            }
+              : ""}
           </div>
         </div>
       }
     >
-
-      {miscError &&
+      {miscError && (
         <div className={css(styles.miscError)}>
-          <div style={{fontSize: 18}}>{icons.exclamationCircle}</div>
+          <div style={{ fontSize: 18 }}>{icons.exclamationCircle}</div>
           {miscError}
         </div>
-      }
+      )}
 
       <div className={css(styles.contentContainer)}>
         {step === "SELECT_PROVIDER" ? (
           <div>
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>Welcome to ResearchHub 👋</div>
-              <p className={css(styles.subtitle)}>We are an open-science platform that enables discussions, peer-reviews, publications and more.</p>
+              <p className={css(styles.subtitle)}>
+                We are an open-science platform that enables discussions,
+                peer-reviews, publications and more.
+              </p>
             </div>
             <FormInput
               required
@@ -307,7 +334,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               type="email"
               value={email}
               onKeyDown={(e) => {
-                e.keyCode === 13 && checkIfAccountExistsApi(e)
+                e.keyCode === 13 && checkIfAccountExistsApi(e);
               }}
               onChange={(id, value) => {
                 if (value.length > 0) {
@@ -322,18 +349,40 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               fullWidth
               disabled={isLoading ? true : false}
               onClick={checkIfAccountExistsApi}
-              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Continue"}
+              label={
+                isLoading ? (
+                  <Loader loading={true} size={16} color={"white"} />
+                ) : (
+                  "Continue"
+                )
+              }
             />
 
-            <div style={{ borderTop: `1px solid ${colors.LIGHT_GREY()}`, position: "relative", marginBottom: 25, marginTop: 25, }}>
-              <span style={{ background: "white", padding: "5px 15px", position: "absolute", left: "50%", transform: "translateX(-50%)", top: -15, fontSize: 14 }}>or</span>
+            <div
+              style={{
+                borderTop: `1px solid ${colors.LIGHT_GREY()}`,
+                position: "relative",
+                marginBottom: 25,
+                marginTop: 25,
+              }}
+            >
+              <span
+                style={{
+                  background: "white",
+                  padding: "5px 15px",
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  top: -15,
+                  fontSize: 14,
+                }}
+              >
+                or
+              </span>
             </div>
 
             <GoogleLoginButton
-              styles={[
-                styles.button,
-                styles.googleButton,
-              ]}
+              styles={[styles.button, styles.googleButton]}
               customLabel={`Continue with Google`}
               isLoggedIn={false}
               disabled={false}
@@ -342,8 +391,10 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
         ) : step === "LOGIN_WITH_EMAIL_FORM" ? (
           <div>
             <div className={css(styles.titleContainer)}>
-              <p className={css(styles.subtitle)}>Enter your password to login.</p>
-            </div>            
+              <p className={css(styles.subtitle)}>
+                Enter your password to login.
+              </p>
+            </div>
             <FormInput
               required
               error={passwordError}
@@ -352,34 +403,46 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               placeholder="Password"
               type="password"
               onKeyDown={(e) => {
-                e.keyCode === 13 && loginApi(e)
+                e.keyCode === 13 && loginApi(e);
               }}
               onChange={(id, value) => {
                 if (value.length === 0) {
                   setPasswordError(true);
-                }
-                else {
+                } else {
                   setPasswordError(false);
                 }
 
-                setPassword(value)
+                setPassword(value);
               }}
             />
-            <span className={css(styles.forgotPassword)} onClick={() => setStep("FORGOT_PASSWORD")}>Forgot password?</span>
+            <span
+              className={css(styles.forgotPassword)}
+              onClick={() => setStep("FORGOT_PASSWORD")}
+            >
+              Forgot password?
+            </span>
             <Button
               fullWidth
               customButtonStyle={styles.button}
               hideRipples={true}
               disabled={isLoading ? true : false}
               onClick={loginApi}
-              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Log in"}
+              label={
+                isLoading ? (
+                  <Loader loading={true} size={16} color={"white"} />
+                ) : (
+                  "Log in"
+                )
+              }
             />
           </div>
         ) : step === "SIGNUP_FORM" ? (
           <>
             <div className={css(styles.titleContainer)}>
-              <p className={css(styles.subtitle)}>Fill in the following to join our platform.</p>
-            </div>                  
+              <p className={css(styles.subtitle)}>
+                Fill in the following to join our platform.
+              </p>
+            </div>
             <FormInput
               required
               error={firstNameError}
@@ -390,7 +453,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
                 if (value.length > 0) {
                   setFirstNameError(false);
                 }
-                setFirstName(value)
+                setFirstName(value);
               }}
             />
 
@@ -403,8 +466,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               onChange={(id, value) => {
                 if (value.length > 0) {
                   setLastNameError(false);
-                }              
-                setLastName(value)
+                }
+                setLastName(value);
               }}
             />
             <FormInput
@@ -415,13 +478,13 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               placeholder="Password"
               type="password"
               onKeyDown={(e) => {
-                e.keyCode === 13 && createAccountApi(e)
+                e.keyCode === 13 && createAccountApi(e);
               }}
               onChange={(id, value) => {
                 if (value.length > 8) {
                   setPasswordError(false);
-                }              
-                setPassword(value)
+                }
+                setPassword(value);
               }}
             />
             <Button
@@ -430,16 +493,39 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               disabled={isLoading ? true : false}
               onClick={createAccountApi}
               fullWidth
-              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Sign up"}
+              label={
+                isLoading ? (
+                  <Loader loading={true} size={16} color={"white"} />
+                ) : (
+                  "Sign up"
+                )
+              }
             />
           </>
         ) : step === "VERIFY_EMAIL" ? (
           <div>
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>Check you email.</div>
-              <p className={css(styles.subtitle)}>An activation link was sent to your email.</p>
+              <div className={css(styles.title)}>Check Your Email</div>
+              <p className={css(styles.subtitle)}>
+                An activation link was sent to your email.
+              </p>
             </div>
-            <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: 25,
+                marginRight: 40,
+                marginBottom: 25,
+              }}
+            >
+              <Image
+                alt="Email Icon"
+                src={"/static/email_icon_large.png"}
+                height={86.04}
+                width={125.63}
+                quality={100}
+              />
+            </div>
             <Button
               fullWidth
               customButtonStyle={styles.button}
@@ -449,13 +535,14 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
                 _handleClose();
               }}
               label={"Close"}
-            />            
+            />
           </div>
         ) : step === "FORGOT_PASSWORD" ? (
           <div>
             <div className={css(styles.titleContainer)}>
               <p className={css(styles.subtitle)}>
-                Enter the email address associated with your account, and we’ll email you a link to reset your password.
+                Enter the email address associated with your account, and we’ll
+                email you a link to reset your password.
               </p>
             </div>
             <FormInput
@@ -467,7 +554,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               type="email"
               value={email}
               onKeyDown={(e) => {
-                e.keyCode === 13 && resetPasswordApi(e)
+                e.keyCode === 13 && resetPasswordApi(e);
               }}
               onChange={(id, value) => {
                 if (value.length > 0) {
@@ -475,23 +562,46 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
                 }
                 setEmail(value);
               }}
-            />               
+            />
             <Button
               fullWidth
               customButtonStyle={styles.button}
               hideRipples={true}
               onClick={resetPasswordApi}
               disabled={isLoading ? true : false}
-              label={isLoading ? <Loader loading={true} size={16} color={"white"} /> : "Send reset email"}
-            />                  
+              label={
+                isLoading ? (
+                  <Loader loading={true} size={16} color={"white"} />
+                ) : (
+                  "Send reset email"
+                )
+              }
+            />
           </div>
         ) : step === "FORGOT_PASSWORD_EMAIL_SENT" ? (
           <div>
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>Check you email.</div>
-              <p className={css(styles.subtitle)}>Password Reset link was sent to your email.</p>
+              <div className={css(styles.title)}>Check Your Email</div>
+              <p className={css(styles.subtitle)}>
+                Password Reset link was sent to your email.
+              </p>
             </div>
-            <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: 25,
+                marginRight: 40,
+                marginBottom: 25,
+              }}
+            >
+              <Image
+                alt="Email Icon"
+                src={"/static/email_icon_large.png"}
+                height={86.04}
+                width={125.63}
+                quality={100}
+              />
+            </div>
             <Button
               fullWidth
               customButtonStyle={styles.button}
@@ -501,14 +611,13 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
                 _handleClose();
               }}
               label={"Close"}
-            />            
+            />
           </div>
         ) : null}
       </div>
-
-    </BaseModal>  
-  )  
-}
+    </BaseModal>
+  );
+};
 
 const styles = StyleSheet.create({
   miscError: {
@@ -535,20 +644,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 500,
-    marginBottom: 8
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     margin: 0,
     lineHeight: "1.5em",
-  },  
+  },
   inputContainer: {
     margin: 0,
     marginBottom: 0,
   },
   inputContainerShort: {
     margin: 0,
-    marginBottom: 0,    
+    marginBottom: 0,
     minHeight: 60,
   },
   forgotPassword: {
@@ -563,8 +672,8 @@ const styles = StyleSheet.create({
     height: "auto",
 
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%"
-    }
+      width: "100%",
+    },
   },
   button: {
     display: "block",
@@ -587,7 +696,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       padding: 0,
-    }
+    },
   },
   titleWrapper: {
     padding: 15,
@@ -610,7 +719,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 10,
     top: 10,
-  }  
+  },
 });
 
 const mapStateToProps = (state) => ({

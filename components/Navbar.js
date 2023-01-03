@@ -102,7 +102,7 @@ const Navbar = (props) => {
     <Fragment>
       <DndModal />
       <FirstVoteModal auth={auth} updateUser={updateUser} />
-      {props.modals.openLoginModal && <LoginModal isOpen={true} />}
+      {true && <LoginModal isOpen={true} />}
       <NewPostModal />
       <OrcidConnectModal />
       <PromotionInfoModal />
