@@ -27,16 +27,16 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
   const dispatch = useDispatch();
   // @ts-ignore
   const auth = useSelector((state) => state.auth)
-  const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
+  const [step, setStep] = useState<SCREEN>("FORGOT_PASSWORD");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
+  const [emailError, setEmailError] = useState<Boolean|String>(false);
   const [firstName, setFirstName] = useState("");
-  const [firstNameError, setFirstNameError] = useState(false);
+  const [firstNameError, setFirstNameError] = useState<Boolean|String>(false);
   const [lastName, setLastName] = useState("");
-  const [lastNameError, setLastNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState<Boolean|String>(false);
   const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [miscError, setMiscError] = useState(false);
+  const [passwordError, setPasswordError] = useState<Boolean|String>(false);
+  const [miscError, setMiscError] = useState<Boolean|String>(false);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>();
 
@@ -269,18 +269,18 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
     >
 
       {miscError &&
-        <div style={{ margin: "0 20px 10px 20px", background: "rgb(255, 244, 229)", color: "rgb(237, 108, 2)", padding: "10px 20px", borderRadius: "4px", columnGap: "10px", display: "flex", boxSizing: "border-box" }}>
+        <div className={css(styles.miscError)}>
           <div style={{fontSize: 18}}>{icons.exclamationCircle}</div>
           {miscError}
         </div>
       }
 
-      <div style={{ padding: "0px 25px 25px 25px", width: "100%", boxSizing: "border-box" }}>
+      <div className={css(styles.contentContainer)}>
         {step === "SELECT_PROVIDER" ? (
           <div>
-            <div style={{ textAlign: "left", marginBottom: 15, }}>
-              <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Welcome to ResearchHub 👋</div>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>We are an open-science platform that enables discussions, peer-reviews, publications and more.</p>
+            <div className={css(styles.titleContainer)}>
+              <div className={css(styles.title)}>Welcome to ResearchHub 👋</div>
+              <p className={css(styles.subtitle)}>We are an open-science platform that enables discussions, peer-reviews, publications and more.</p>
             </div>
             <FormInput
               required
@@ -326,8 +326,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           </div>
         ) : step === "LOGIN_WITH_EMAIL_FORM" ? (
           <div>
-            <div style={{ textAlign: "left", marginBottom: 15, }}>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Enter your password to login.</p>
+            <div className={css(styles.titleContainer)}>
+              <p className={css(styles.subtitle)}>Enter your password to login.</p>
             </div>            
             <FormInput
               required
@@ -361,8 +361,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           </div>
         ) : step === "SIGNUP_FORM" ? (
           <>
-            <div style={{ textAlign: "left", marginBottom: 15, }}>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Fill in the following to join our platform.</p>
+            <div className={css(styles.titleContainer)}>
+              <p className={css(styles.subtitle)}>Fill in the following to join our platform.</p>
             </div>                  
             <FormInput
               required
@@ -418,9 +418,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           </>
         ) : step === "VERIFY_EMAIL" ? (
           <div>
-            <div style={{ textAlign: "left", padding: "0 20px", marginBottom: 10, }}>
-              <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Check you email.</div>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>An activation link was sent to your email.</p>
+            <div className={css(styles.titleContainer)}>
+              <div className={css(styles.title)}>Check you email.</div>
+              <p className={css(styles.subtitle)}>An activation link was sent to your email.</p>
             </div>
             <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
             <Button
@@ -435,8 +435,8 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           </div>
         ) : step === "FORGOT_PASSWORD" ? (
           <div>
-            <div style={{ textAlign: "left", marginBottom: 15, }}>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>
+            <div className={css(styles.titleContainer)}>
+              <p className={css(styles.subtitle)}>
                 Enter the email address associated with your account, and we’ll email you a link to reset your password.
               </p>
             </div>
@@ -468,9 +468,9 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage }) => {
           </div>
         ) : step === "FORGOT_PASSWORD_EMAIL_SENT" ? (
           <div>
-            <div style={{ textAlign: "left", padding: "0 20px", marginBottom: 10, }}>
-              <div style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Check you email.</div>
-              <p style={{ fontSize: 16, margin: 0, lineHeight: "1.5em" }}>Password Reset link was sent to your email.</p>
+            <div className={css(styles.titleContainer)}>
+              <div className={css(styles.title)}>Check you email.</div>
+              <p className={css(styles.subtitle)}>Password Reset link was sent to your email.</p>
             </div>
             <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
             <Button
@@ -514,6 +514,37 @@ const Login = ({ setMessage, showMessage, children }) => {
 }
 
 const styles = StyleSheet.create({
+  miscError: {
+    margin: "0 20px 10px 20px",
+    background: "rgb(255, 244, 229)",
+    color: "rgb(237, 108, 2)",
+    padding: "10px 20px",
+    borderRadius: "4px",
+    columnGap: "10px",
+    display: "flex",
+    boxSizing: "border-box",
+  },
+  contentContainer: {
+    padding: "0px 25px 25px 25px",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  titleContainer: {
+    textAlign: "left",
+    padding: "0 0px",
+    marginBottom: 20,
+    marginTop: 0,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 500,
+    marginBottom: 8
+  },
+  subtitle: {
+    fontSize: 16,
+    margin: 0,
+    lineHeight: "1.5em",
+  },  
   inputContainer: {
     margin: 0,
     marginBottom: 0,
