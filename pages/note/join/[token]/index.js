@@ -8,9 +8,9 @@ import Loader from "~/components/Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
 import { captureEvent } from "~/config/utils/events";
+import Login from "~/components/Login/Login";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();
@@ -101,13 +101,11 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
               hideRipples={true}
             />
           ) : (
-            <GoogleLoginButton
-              styles={styles.googleLoginButton}
-              googleLogin={googleLogin}
-              getUser={getUser}
-              loginCallback={handleJoin}
-              customLabel={"Sign in with Google to join"}
-            />
+            <Login loginCallback={handleJoin}>
+              <Button hideRipples={true} fullWidth size="large">
+                <span>Sign in to join</span>
+              </Button>
+            </Login>
           )}
         </div>
       )}
