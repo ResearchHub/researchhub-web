@@ -20,7 +20,6 @@ function Page() {
   const [password2, setPassword2] = useState("");
 
   const changePasswordApi = async () => {
-
     if (password1.length < 9) {
       dispatch(
         MessageActions.setMessage("Password must be at least 9 characters long")
@@ -39,28 +38,28 @@ function Page() {
       return;
     }
 
-
-    return fetch(API.RESET_PASSWORD_CHANGE_PASSWORD(), API.POST_CONFIG({
-      uid: router.query.uid,
-      token: router.query.token,
-      new_password1: password1,
-      new_password2: password2,
-    }))
+    return fetch(
+      API.RESET_PASSWORD_CHANGE_PASSWORD(),
+      API.POST_CONFIG({
+        uid: router.query.uid,
+        token: router.query.token,
+        new_password1: password1,
+        new_password2: password2,
+      })
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((data:any) => {
-        dispatch(
-          MessageActions.setMessage("Password changed successfully")
-        );
+      .then((data: any) => {
+        dispatch(MessageActions.setMessage("Password changed successfully"));
         dispatch(
           // @ts-ignore
           MessageActions.showMessage({ show: true, error: false })
         );
         setTimeout(() => {
-          router.push('/');
-        }, 1000)
+          router.push("/");
+        }, 1000);
       })
-      .catch((error:any) => {
+      .catch((error: any) => {
         let errorMsg;
         try {
           // @ts-ignore
@@ -68,16 +67,13 @@ function Page() {
         } catch (error) {
           errorMsg = "Unexpected error.";
         }
-        dispatch(
-          MessageActions.setMessage(errorMsg)
-        );
+        dispatch(MessageActions.setMessage(errorMsg));
         dispatch(
           // @ts-ignore
           MessageActions.showMessage({ show: true, error: true })
-        );        
-      })
+        );
+      });
   };
-
 
   return (
     <div className={css(styles.wrapper)}>
@@ -109,6 +105,7 @@ function Page() {
             }}
           />
           <Button
+            hideRipples={true}
             onClick={(e) => {
               e.preventDefault();
               changePasswordApi();
@@ -116,10 +113,10 @@ function Page() {
           >
             Update
           </Button>
-        </form>      
-      </div>    
+        </form>
+      </div>
     </div>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -129,7 +126,7 @@ const styles = StyleSheet.create({
     marginTop: 80,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       marginTop: 50,
-    }
+    },
   },
   main: {
     borderRadius: "5px",
@@ -144,7 +141,7 @@ const styles = StyleSheet.create({
     rowGap: "25px",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       width: "100%",
-    }
+    },
   },
   passwordContainer: {
     display: "flex",
@@ -160,7 +157,8 @@ const styles = StyleSheet.create({
     margin: 0,
     minHeight: "unset",
     width: "100%",
-  },  
+    marginBottom: 16,
+  },
 });
 
 export default Page;
