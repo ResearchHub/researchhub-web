@@ -13,7 +13,7 @@ type status = "FETCHING" | "VERIFIED" | "ERROR";
 
 function Page(props) {
   const router = useRouter();
-  const [status, setStatus] = useState("FETCHING");
+  const [status, setStatus] = useState<status>("FETCHING");
 
   const verifyEmailApi = async () => {
     return fetch(API.VERIFY_EMAIL(), API.POST_CONFIG({ key: router.query.id }))
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     width: 460,
     height: 400,
     padding: 25,
+    textAlign: "center",
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
