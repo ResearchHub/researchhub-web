@@ -239,6 +239,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
 
   return (
     <BaseModal
+      offset={"0px"}
       closeModal={_handleClose}
       isOpen={isOpen}
       hideClose={true}
