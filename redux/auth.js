@@ -234,7 +234,6 @@ export const AuthActions = {
    * @params { params } --
    */
   googleLogin: (params) => {
-    console.log("params", params);
     return (dispatch, getState) => {
       params.uuid = getState().auth.user.uuid;
       let referralCode = window.localStorage.getItem("referralCode");

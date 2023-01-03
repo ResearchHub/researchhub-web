@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
 import colors, { iconColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
@@ -23,6 +22,7 @@ import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlid
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
 import RHLogo from "./Home/RHLogo";
+import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";
 import Button from "./Form/Button";
 
@@ -30,7 +30,6 @@ const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
   import("~/components/Modals/FirstVoteModal")
 );
-const LoginModal = dynamic(() => import("~/components/Modals/LoginModal"));
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 const OrcidConnectModal = dynamic(() =>
   import("~/components/Modals/OrcidConnectModal")
@@ -103,7 +102,7 @@ const Navbar = (props) => {
     <Fragment>
       <DndModal />
       <FirstVoteModal auth={auth} updateUser={updateUser} />
-      <LoginModal />
+      {props.modals.openLoginModal && <LoginModal isOpen={true} />}
       <NewPostModal />
       <OrcidConnectModal />
       <PromotionInfoModal />
@@ -157,12 +156,21 @@ const Navbar = (props) => {
                       columnGap: "10px",
                     }}
                   >
-                    <span className={css(styles.loginBtn)}>Log in</span>
+                    <Button
+                      size="small"
+                      variant="text"
+                      customButtonStyle={styles.signUpBtn}
+                      // customLabelStyle={styles.signUpLabel}
+                      label="Log in"
+                      hideRipples={true}
+                    />
+                    {/* <span className={css(styles.loginBtn)}>Log in</span> */}
                     <Button
                       size="small"
                       customButtonStyle={styles.signUpBtn}
-                      customLabelStyle={styles.signUpLabel}
+                      // customLabelStyle={styles.signUpLabel}
                       label="Sign up"
+                      hideRipples={true}
                     />
                   </div>
                 </Login>
@@ -172,18 +180,6 @@ const Navbar = (props) => {
           </div>
           {isLoggedIn && <NewPostButton />}
 
-          {/* {isLoggedIn
-            ?  <NewPostButton />
-            : (
-              <Login>
-                Login
-              </Login>
-              // <div className={css(styles.login)}>
-              // <span style={{}}>Log in</span>
-              // <Button label="Sign up" />
-            // </div>              
-            )
-          } */}
           {Boolean(user.id) && (
             <PaperUploadStateNotifier
               wsAuth
@@ -200,27 +196,8 @@ const Navbar = (props) => {
 const styles = StyleSheet.create({
   signUpBtn: {
     width: 90,
-    height: 30,
     fontSize: 16,
   },
-  signUpLabel: {
-    fontSize: 16,
-  },
-  loginBtn: {
-    color: colors.BLACK(),
-    cursor: "pointer",
-    fontSize: 16,
-    padding: "5px 10px",
-    width: 60,
-    textAlign: "center",
-    fontWeight: 400,
-    ":hover": {
-      background: iconColors.BACKGROUND,
-      borderRadius: 3,
-      transition: "0.3s",
-    },
-  },
-
   navbarContainer: {
     alignItems: "center",
     background: "#fff",
@@ -252,37 +229,11 @@ const styles = StyleSheet.create({
       marginLeft: 20,
     },
   },
-  googleLoginButton: {
-    margin: 0,
-    marginLeft: 16,
-    width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  googleIcon: {
-    width: 25,
-    height: 25,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-    borderRadius: "50%",
-  },
   banner: {
     textDecoration: "none",
   },
   divider: {
     width: 5,
-  },
-  googleLabel: {
-    color: colors.PURPLE(),
-  },
-  googleLabelMobile: {
-    color: colors.PURPLE(),
-    fontVariant: "small-caps",
-    fontSize: 20,
-    letterSpacing: 0.7,
-    "@media only screen and (max-width: 767px)": {
-      color: "#fff",
-    },
   },
   searchWrapper: {
     alignItems: "center",
@@ -469,7 +420,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openLoginModal: ModalActions.openLoginModal,
   getUser: AuthActions.getUser,
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,

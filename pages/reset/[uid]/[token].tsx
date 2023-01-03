@@ -21,23 +21,23 @@ function Page() {
 
   const changePasswordApi = async () => {
 
-    // if (password1.length < 9) {
-    //   dispatch(
-    //     MessageActions.setMessage("Password must be at least 9 characters long")
-    //   );
-    //   dispatch(
-    //     // @ts-ignore
-    //     MessageActions.showMessage({ show: true, error: true })
-    //   );
-    //   return;
-    // } else if (password1 !== password2) {
-    //   dispatch(MessageActions.setMessage("Passwords do not match"));
-    //   dispatch(
-    //     // @ts-ignore
-    //     MessageActions.showMessage({ show: true, error: true })
-    //   );
-    //   return;
-    // }
+    if (password1.length < 9) {
+      dispatch(
+        MessageActions.setMessage("Password must be at least 9 characters long")
+      );
+      dispatch(
+        // @ts-ignore
+        MessageActions.showMessage({ show: true, error: true })
+      );
+      return;
+    } else if (password1 !== password2) {
+      dispatch(MessageActions.setMessage("Passwords do not match"));
+      dispatch(
+        // @ts-ignore
+        MessageActions.showMessage({ show: true, error: true })
+      );
+      return;
+    }
 
 
     return fetch(API.RESET_PASSWORD_CHANGE_PASSWORD(), API.POST_CONFIG({

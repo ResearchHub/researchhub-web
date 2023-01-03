@@ -11,6 +11,8 @@ import { AuthActions } from "~/redux/auth";
 
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import Login from "./Login/Login";
+import Button from "./Form/Button";
 
 class ResearchHubBanner extends Component {
   constructor(props) {
@@ -80,14 +82,20 @@ class ResearchHubBanner extends Component {
               Read more
             </Link>
           </div>
-          <span className={css(styles.googleLogin)}>
+          <span style={{ marginTop: 25 }}>
             {!auth.isLoggedIn && process.browser && (
-              <GoogleLoginButton
-                styles={styles.googleLoginButton}
-                googleLogin={this.props.googleLogin}
-                getUser={this.props.getUser}
-                customLabel={"Sign in with Google"}
-              />
+              // <GoogleLoginButton
+              //   styles={styles.googleLoginButton}
+              //   googleLogin={this.props.googleLogin}
+              //   getUser={this.props.getUser}
+              //   customLabel={"Sign in with Google"}
+              // />
+
+              <Login>
+                <Button hideRipples={true} size="large" variant="outlined">
+                  <span>Join ResearchHub</span>
+                </Button>
+              </Login>
             )}
           </span>
         </div>
@@ -221,16 +229,6 @@ var styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 15,
       width: "100%",
-    },
-  },
-  googleLoginButton: {
-    border: "1px solid #fff",
-    width: "auto",
-    height: "auto",
-    marginTop: 20,
-    padding: "8px 19px",
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      padding: "5px 15px",
     },
   },
   promo: {

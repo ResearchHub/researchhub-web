@@ -85,6 +85,7 @@ const GoogleLoginButton = (props) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
       } else {
+        props.openLoginModal(false);
         getUser().then((userAction) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
@@ -132,7 +133,6 @@ const GoogleLoginButton = (props) => {
     <GoogleButton
       login={responseGoogle}
       render={(renderProps) => {
-        console.log(renderProps.onClick);
         if (hideButton) {
           return (
             <div
@@ -150,6 +150,8 @@ const GoogleLoginButton = (props) => {
             >
               <Button
                 disabled={disabled}
+                fullWidth
+                variant="outlined"
                 onClick={renderProps.onClick}
                 customButtonStyle={[styles.button, props.styles]}
                 icon={"/static/icons/google.png"}
@@ -209,6 +211,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   removeBanner: BannerActions.removeBanner,
+  openLoginModal: ModalActions.openLoginModal,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoogleLoginButton);
