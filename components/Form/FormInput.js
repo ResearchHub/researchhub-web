@@ -175,7 +175,6 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontWeight: 500,
     marginBottom: 10,
-    minHeight: 70,
     color: "#232038",
     display: "flex",
     justifyContent: "flex-start",

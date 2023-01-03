@@ -366,6 +366,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
             />
             <span className={css(styles.forgotPassword)} onClick={() => setStep("FORGOT_PASSWORD")}>Forgot password?</span>
             <Button
+              fullWidth
               customButtonStyle={styles.button}
               hideRipples={true}
               disabled={isLoading ? true : false}
@@ -439,6 +440,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
             </div>
             <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
             <Button
+              fullWidth
               customButtonStyle={styles.button}
               hideRipples={true}
               onClick={(e) => {
@@ -474,6 +476,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
               }}
             />               
             <Button
+              fullWidth
               customButtonStyle={styles.button}
               hideRipples={true}
               onClick={resetPasswordApi}
@@ -489,6 +492,7 @@ const LoginModal = ({ isOpen, handleClose, setMessage, showMessage, loginCallbac
             </div>
             <div style={{fontSize: 64, textAlign: "center", marginTop: 25, marginBottom: 25 }}>{icons.envelope}</div>
             <Button
+              fullWidth
               customButtonStyle={styles.button}
               hideRipples={true}
               onClick={(e) => {
