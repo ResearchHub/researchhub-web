@@ -21,6 +21,7 @@ import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Image from "next/image";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 
 type SCREEN =
   | "SELECT_PROVIDER"
@@ -253,6 +254,8 @@ const LoginModal = ({
     }
   };
 
+  const isMobileScreen = getIsOnMobileScreenSize();
+
   return (
     <BaseModal
       offset={"0px"}
@@ -329,6 +332,7 @@ const LoginModal = ({
               required
               containerStyle={styles.inputContainer}
               placeholder="Email"
+              autoFocus={!isMobileScreen}
               error={emailError}
               getRef={emailRef}
               type="email"

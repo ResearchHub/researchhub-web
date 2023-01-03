@@ -33,6 +33,7 @@ class FormInput extends Component {
       type,
       autoComplete,
       containerStyle,
+      autoFocus,
       disabled,
       error,
       icon,
@@ -105,6 +106,7 @@ class FormInput extends Component {
             onClick && styles.inputClick
           )}
           id={id && id}
+          autoFocus={autoFocus}
           onBlur={onBlur && onBlur}
           onBlurCapture={onBlurCapture && onBlurCapture}
           onChange={this.handleChange}
