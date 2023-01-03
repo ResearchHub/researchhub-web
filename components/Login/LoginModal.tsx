@@ -43,7 +43,7 @@ const LoginModal = ({
   const dispatch = useDispatch();
   // @ts-ignore
   const auth = useSelector((state) => state.auth);
-  const [step, setStep] = useState<SCREEN>("VERIFY_EMAIL");
+  const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<Boolean | String>(false);
   const [firstName, setFirstName] = useState("");
@@ -677,6 +677,7 @@ const styles = StyleSheet.create({
   },
   button: {
     display: "block",
+    minHeight: 40,
   },
   googleButton: {
     background: "white",
