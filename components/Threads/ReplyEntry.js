@@ -301,7 +301,11 @@ class ReplyEntry extends Component {
     let { data, comment, documentType, post, hypothesis } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (documentType === "post" || documentType === "question") {
+    if (
+      documentType === "post" ||
+      documentType === "question" ||
+      documentType === "bounty"
+    ) {
       documentId = post.id;
     } else if (documentType === "hypothesis") {
       documentId = hypothesis.id;
