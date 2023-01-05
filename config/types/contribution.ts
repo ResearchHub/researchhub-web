@@ -26,6 +26,7 @@ export type RscSupportSourceItem = {
 };
 
 export type CommentContributionItem = {
+  text: any;
   unifiedDocument: UnifiedDocument;
   plainText: string;
   createdBy: CreatedBy | null;
@@ -92,6 +93,7 @@ export type Verdict = {
 };
 
 export type Contribution = {
+  raw: any;
   item:
     | PaperContributionItem
     | PostContributionItem
