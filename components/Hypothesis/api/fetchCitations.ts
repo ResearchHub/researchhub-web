@@ -30,6 +30,7 @@ export function fetchCitationsOnHypothesis({
             publish_date,
             source: { document_type, documents },
             citation_type,
+            inline_comment_count,
           } = item;
           if (document_type === "PAPER") {
             const {
@@ -52,6 +53,7 @@ export function fetchCitationsOnHypothesis({
                 upCount: consensus_meta?.up_count ?? 0,
                 userVote: consensus_meta?.user_vote ?? null,
               }, // need to get voting info
+              commentCount: inline_comment_count,
               citedBy: [author_profile],
               citationType: citation_type,
               source: {
