@@ -25,6 +25,7 @@ export type CitationTableRowItemProps = {
   citationType: ValidCitationType;
   citedBy: Object[];
   consensusMeta: ConsensusMeta;
+  commentCount: number;
   source: {
     displayTitle: string;
     docType: string;
@@ -71,6 +72,7 @@ export default function CitationTableRowItem({
   citationType,
   citedBy,
   consensusMeta,
+  commentCount,
   source: { displayTitle, docType, documentID, doi, slug },
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
@@ -83,13 +85,13 @@ export default function CitationTableRowItem({
   const isSupportSource = citationType === "SUPPORT";
 
   return (
-    (<Link
+    <Link
       href={"/paper/[paperId]/[paperName]"}
       as={citationTitleLinkUri}
       passHref
       className={css(styles.link)}
-      target="_blank">
-
+      target="_blank"
+    >
       <Ripples className={css(styles.ripples)}>
         <div className={css(styles.tableRowItem)}>
           <ItemColumn
@@ -165,6 +167,11 @@ export default function CitationTableRowItem({
                 role="button"
               >
                 {icons.comments}
+                {commentCount > 0 && (
+                  <div className={css(styles.commentCountSign)}>
+                    {commentCount}
+                  </div>
+                )}
               </div>
             }
             width={tableWidths.COMMENTS}
@@ -194,8 +201,7 @@ export default function CitationTableRowItem({
           />
         </div>
       </Ripples>
-
-    </Link>)
+    </Link>
   );
 }
 
@@ -216,6 +222,22 @@ const styles = StyleSheet.create({
     size: 16,
     fontStyle: "normal",
     fontWeight: 500,
+  },
+  commentCountSign: {
+    alignContent: "center",
+    backgroundColor: colors.NEW_BLUE(),
+    borderRadius: 50,
+    color: "#fff",
+    display: "flex",
+    fontSize: 13,
+    fontWeight: 500,
+    height: 16,
+    justifyContent: "center",
+    position: "absolute",
+    right: -7,
+    textAlign: "center",
+    top: -7,
+    width: 16,
   },
   typeContent: {
     display: "block",
@@ -313,6 +335,7 @@ const styles = StyleSheet.create({
   commentsIcon: {
     cursor: "pointer",
     fontSize: 20,
+    position: "relative",
   },
   paddingRight16: {
     paddingRight: 16,

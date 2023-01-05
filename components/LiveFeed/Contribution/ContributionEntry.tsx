@@ -16,6 +16,7 @@ import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 type Args = {
   entry: Contribution;
@@ -66,9 +67,12 @@ const ContributionEntry = ({
     case "comment":
       showActions = true;
       item = item as CommentContributionItem;
+      const formattedText = !isEmpty(item.plainText)
+        ? item.plainText
+        : entry?.raw?.item?.text?.plainText ?? "";
       body = (
         <span className={css(styles.commentBody)}>
-          {truncateText(item.plainText, 300)}
+          {truncateText(formattedText, 300)}
         </span>
       );
       break;

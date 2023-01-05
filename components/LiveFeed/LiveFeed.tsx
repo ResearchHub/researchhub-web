@@ -63,84 +63,87 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
     });
   };
 
-  const resultCards = () => {
-    return results.map((r, idx) => {
-      const cardActions = [
-        {
-          html: (
-            <FlagButtonV2
-              modalHeaderText="Flag Content"
-              flagIconOverride={styles.flagIcon}
-              iconOverride={icons.flag}
-              errorMsgText="Failed to flag"
-              successMsgText="Content flagged"
-              primaryButtonLabel="Flag"
-              subHeaderText="I am flagging this content because of:"
-              onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-                let args: any = {
-                  flagReason,
-                  onError: renderErrorMsg,
-                  onSuccess: renderSuccessMsg,
-                };
+  const resultCards = results.map((result, idx) => {
+    return (
+      <div className={css(styles.result)} key={`result-${idx}`}>
+        <div className={css(styles.entry)}>
+          <ContributionEntry
+            entry={result}
+            actions={[
+              {
+                html: (
+                  <FlagButtonV2
+                    modalHeaderText="Flag Content"
+                    flagIconOverride={styles.flagIcon}
+                    iconOverride={icons.flag}
+                    errorMsgText="Failed to flag"
+                    successMsgText="Content flagged"
+                    primaryButtonLabel="Flag"
+                    subHeaderText="I am flagging this content because of:"
+                    onSubmit={(
+                      flagReason,
+                      renderErrorMsg,
+                      renderSuccessMsg
+                    ) => {
+                      let args: any = {
+                        flagReason,
+                        onError: renderErrorMsg,
+                        onSuccess: renderSuccessMsg,
+                      };
 
-                let item = r.item;
-                if (r.contentType.name === "comment") {
-                  item = item as CommentContributionItem;
-                  args.commentPayload = {
-                    ...(r._raw.content_type.name === "thread" && {
-                      threadID: item.id,
-                      commentType: "thread",
-                    }),
-                    ...(r._raw.content_type.name === "comment" && {
-                      commentID: item.id,
-                      commentType: "comment",
-                    }),
-                    ...(r._raw.content_type.name === "reply" && {
-                      replyID: item.id,
-                      commentType: "reply",
-                    }),
-                  };
-                }
+                      let item = result.item;
+                      if (result.contentType.name === "comment") {
+                        item = item as CommentContributionItem;
+                        args.commentPayload = {
+                          ...(result._raw.content_type.name === "thread" && {
+                            threadID: item.id,
+                            commentType: "thread",
+                          }),
+                          ...(result._raw.content_type.name === "comment" && {
+                            commentID: item.id,
+                            commentType: "comment",
+                          }),
+                          ...(result._raw.content_type.name === "reply" && {
+                            replyID: item.id,
+                            commentType: "reply",
+                          }),
+                        };
+                      }
 
-                // @ts-ignore
-                const unifiedDocument: UnifiedDocument = item.unifiedDocument;
-                if (
-                  ["paper", "post", "hypothesis", "question"].includes(
-                    unifiedDocument.documentType
-                  )
-                ) {
-                  args = {
-                    contentType: unifiedDocument.documentType,
-                    // @ts-ignore
-                    contentID: unifiedDocument.document.id,
-                    ...args,
-                  };
-                } else {
-                  console.error(
-                    `${r.contentType.name} Not supported for flagging`
-                  );
-                  return false;
-                }
+                      const unifiedDocument: UnifiedDocument =
+                        // @ts-ignore
+                        item.unifiedDocument;
+                      if (
+                        ["paper", "post", "hypothesis", "question"].includes(
+                          unifiedDocument.documentType
+                        )
+                      ) {
+                        args = {
+                          contentType: unifiedDocument.documentType,
+                          // @ts-ignore
+                          contentID: unifiedDocument.document.id,
+                          ...args,
+                        };
+                      } else {
+                        console.error(
+                          `${result.contentType.name} Not supported for flagging`
+                        );
+                        return false;
+                      }
 
-                flagGrmContent(args);
-              }}
-            />
-          ),
-          label: "Flag",
-          isActive: true,
-        },
-      ];
-
-      return (
-        // @ts-ignore
-        <div className={css(styles.result)} key={`result-${idx}`}>
-          <div className={css(styles.entry)}>
-            <ContributionEntry entry={r} actions={cardActions} />
-          </div>
+                      flagGrmContent(args);
+                    }}
+                  />
+                ),
+                label: "Flag",
+                isActive: true,
+              },
+            ]}
+          />
         </div>
-      );
-    });
-  };
+      </div>
+    );
+  });
 
   return (
     <div>
@@ -156,7 +159,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
         <>
           <div className={css(styles.resultsContainer)}>
             {results.length > 0 ? (
-              resultCards()
+              resultCards
             ) : (
               <div className={css(styles.noResults)}>No results.</div>
             )}
