@@ -45,7 +45,6 @@ export default function CitationContainer({
             hypothesisID={hypothesisID}
             lastFetchTime={lastFetchTime}
             updateLastFetchTime={onCitationUpdate}
-            noText
           />
         </div>
         <CitationTable

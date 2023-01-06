@@ -52,7 +52,7 @@ export default function CitationAddNewButton({
             className={css(noText ? null : styles.plusCircle)}
             icon={faPlus}
           />
-          {noText ? "" : <span>{"Add New Source"}</span>}
+          {noText ? "" : <span>{"Add Source"}</span>}
         </div>
       }
     />
