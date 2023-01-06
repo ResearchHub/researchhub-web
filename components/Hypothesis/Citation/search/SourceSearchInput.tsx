@@ -89,8 +89,7 @@ export default function SourceSearchInput({
       ...searchState,
       filters: {
         ...filters,
-
-        query: text,
+        query: (text ?? "").trim(),
       },
     };
     setSearchState(updatedSearchState);
