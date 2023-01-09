@@ -470,6 +470,7 @@ const LoginModal = ({
             <FormInput
               required
               error={firstNameError}
+              autoFocus={!isMobileScreen}
               containerStyle={styles.inputContainer}
               placeholder="First name"
               autoComplete="given-name"
@@ -501,7 +502,6 @@ const LoginModal = ({
               containerStyle={styles.inputContainer}
               placeholder="Email"
               autoComplete="email"
-              autoFocus={!isMobileScreen}
               error={emailError}
               getRef={emailRef}
               type="email"
