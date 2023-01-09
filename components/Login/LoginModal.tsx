@@ -238,7 +238,7 @@ const LoginModal = ({
           } else {
             const errorMsg = Object.values(data)?.[0]?.[0];
             if (errorMsg) {
-              setMiscError(errorMsg);
+              setPasswordError(errorMsg);
             } else {
               setMiscError("Something went wrong. Please try again later.");
             }
@@ -248,7 +248,6 @@ const LoginModal = ({
           setMiscError("Something went wrong. Please try again later.");
         })
         .finally(() => {
-          resetErrors();
           setIsLoading(false);
         });
     }
