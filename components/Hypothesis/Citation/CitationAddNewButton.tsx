@@ -66,8 +66,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     fontSize: 16,
-    height: 50,
-    width: 180,
+    height: 45,
+    padding: 16,
+    width: "unset",
     userSelect: "none",
   },
   buttonNoText: {
