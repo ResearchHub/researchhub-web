@@ -238,7 +238,7 @@ const LoginModal = ({
           } else {
             const errorMsg = Object.values(data)?.[0]?.[0];
 
-            if (errorMsg.includes("email")) {
+            if (errorMsg.includes("email") || errorMsg.includes("e-mail")) {
               setEmailError(errorMsg);
             } else if (errorMsg) {
               setPasswordError(errorMsg);
