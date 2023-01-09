@@ -237,7 +237,10 @@ const LoginModal = ({
             setStep("VERIFY_EMAIL");
           } else {
             const errorMsg = Object.values(data)?.[0]?.[0];
-            if (errorMsg) {
+
+            if (errorMsg.includes("email")) {
+              setEmailError(errorMsg);
+            } else if (errorMsg) {
               setPasswordError(errorMsg);
             } else {
               setMiscError("Something went wrong. Please try again later.");
@@ -334,6 +337,7 @@ const LoginModal = ({
               autoComplete="email"
               autoFocus={!isMobileScreen}
               error={emailError}
+              errorClassName={styles.errorClassName}
               getRef={emailRef}
               type="email"
               value={email}
@@ -504,6 +508,7 @@ const LoginModal = ({
               autoComplete="email"
               error={emailError}
               getRef={emailRef}
+              errorClassName={styles.errorClassName}
               type="email"
               value={email}
               onChange={(id, value) => {
@@ -592,6 +597,7 @@ const LoginModal = ({
               placeholder="Email"
               error={emailError}
               getRef={emailRef}
+              errorClassName={styles.errorClassName}
               type="email"
               value={email}
               onKeyDown={(e) => {
@@ -696,6 +702,10 @@ const styles = StyleSheet.create({
     margin: 0,
     minHeight: "unset",
     marginBottom: 16,
+  },
+  errorClassName: {
+    marginBottom: 0,
+    marginLeft: 4,
   },
   emailNoShow: {
     marginBottom: 0,

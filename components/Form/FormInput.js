@@ -45,6 +45,7 @@ class FormInput extends Component {
       label,
       labelStyle,
       message,
+      errorClassName,
       messageStyle,
       onBlur,
       onBlurCapture,
@@ -119,7 +120,11 @@ class FormInput extends Component {
           value={this.props.value}
           onKeyDown={onKeyDown}
         />
-        {error && <p className={css(styles.text, styles.error)}>{error}</p>}
+        {error && (
+          <p className={css(styles.text, styles.error, errorClassName)}>
+            {error}
+          </p>
+        )}
         {message && (
           <p className={css(styles.message, messageStyle)}>{message}</p>
         )}
