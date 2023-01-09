@@ -7,7 +7,7 @@ type Args = {
   onSuccess: ({ withdrawals }) => void;
 };
 
-export function fetchRscBalanceHistory({ onError, onSuccess }: Args): void {
+export function fetchRscBalanceHistory({ onError, onSuccess }: Args): boolean {
   fetch(
     buildApiUri({
       apiPath: `transactions`,
@@ -16,6 +16,12 @@ export function fetchRscBalanceHistory({ onError, onSuccess }: Args): void {
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then(({ results }: any): void => onSuccess({ withdrawals: results }))
-    .catch((error: any): void => onError(error));
+    .then(({ results }: any): boolean => {
+      onSuccess({ withdrawals: results });
+      return true;
+    })
+    .catch((error: any): boolean => {
+      onError(error);
+      return true;
+    });
 }

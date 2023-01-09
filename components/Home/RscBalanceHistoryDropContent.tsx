@@ -79,15 +79,23 @@ export default function RscBalanceHistoryDropContent({
   const dispatch = useDispatch();
   const currentUser = getCurrentUser();
   const [transactionWidthdrawls, setTransWithdrawals] = useState<any[]>([]);
-  const isDataFetched = !isEmpty(transactionWidthdrawls);
+  const [isDataFetched, setIsDataFetched] = useState(
+    !isEmpty(transactionWidthdrawls)
+  );
 
   useEffect((): void => {
-    if (!isDataFetched) {
-      fetchRscBalanceHistory({
-        onError: emptyFncWithMsg,
-        onSuccess: ({ withdrawals }) => setTransWithdrawals(withdrawals),
-      });
-    }
+    const fetchRSCBalance = async () => {
+      if (!isDataFetched) {
+        const dataFetched = await fetchRscBalanceHistory({
+          onError: emptyFncWithMsg,
+          onSuccess: ({ withdrawals }) => setTransWithdrawals(withdrawals),
+        });
+
+        setIsDataFetched(true);
+      }
+    };
+
+    fetchRSCBalance();
   }, [isDataFetched]);
 
   useEffect(() => {
