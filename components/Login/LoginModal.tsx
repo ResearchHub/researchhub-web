@@ -499,7 +499,7 @@ const LoginModal = ({
             />
             <FormInput
               required
-              containerStyle={styles.inputContainer}
+              containerStyle={[styles.inputContainer]}
               placeholder="Email"
               autoComplete="email"
               error={emailError}
@@ -694,9 +694,12 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     margin: 0,
-    marginBottom: 0,
     minHeight: "unset",
     marginBottom: 16,
+  },
+  emailNoShow: {
+    marginBottom: 0,
+    display: "none",
   },
   inputContainerShort: {
     margin: 0,
