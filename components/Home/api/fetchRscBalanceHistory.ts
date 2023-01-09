@@ -7,8 +7,11 @@ type Args = {
   onSuccess: ({ withdrawals }) => void;
 };
 
-export function fetchRscBalanceHistory({ onError, onSuccess }: Args): boolean {
-  fetch(
+export function fetchRscBalanceHistory({
+  onError,
+  onSuccess,
+}: Args): Promise<boolean> {
+  return fetch(
     buildApiUri({
       apiPath: `transactions`,
     }),

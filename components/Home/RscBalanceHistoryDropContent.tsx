@@ -91,7 +91,9 @@ export default function RscBalanceHistoryDropContent({
           onSuccess: ({ withdrawals }) => setTransWithdrawals(withdrawals),
         });
 
-        setIsDataFetched(true);
+        if (dataFetched) {
+          setIsDataFetched(true);
+        }
       }
     };
 
