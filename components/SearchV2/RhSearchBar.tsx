@@ -140,6 +140,7 @@ function RhSearchBarInput({
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
         onKeyDown={handleKeyPress}
+        autoComplete="off"
         onChange={(event: ChangeEvent<HTMLInputElement>): void =>
           setSearchString(event?.target?.value ?? null)
         }

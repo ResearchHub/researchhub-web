@@ -331,6 +331,7 @@ const LoginModal = ({
               required
               containerStyle={styles.inputContainer}
               placeholder="Email"
+              autoComplete="email"
               autoFocus={!isMobileScreen}
               error={emailError}
               getRef={emailRef}
@@ -400,6 +401,26 @@ const LoginModal = ({
             </div>
             <FormInput
               required
+              containerStyle={styles.inputContainer}
+              placeholder="Email"
+              autoComplete="email"
+              autoFocus={!isMobileScreen}
+              error={emailError}
+              getRef={emailRef}
+              type="email"
+              value={email}
+              onKeyDown={(e) => {
+                e.keyCode === 13 && checkIfAccountExistsApi(e);
+              }}
+              onChange={(id, value) => {
+                if (value.length > 0) {
+                  setEmailError(false);
+                }
+                setEmail(value);
+              }}
+            />
+            <FormInput
+              required
               error={passwordError}
               value={password}
               containerStyle={styles.inputContainerShort}
@@ -451,6 +472,7 @@ const LoginModal = ({
               error={firstNameError}
               containerStyle={styles.inputContainer}
               placeholder="First name"
+              autoComplete="given-name"
               type="text"
               onChange={(id, value) => {
                 if (value.length > 0) {
@@ -465,6 +487,7 @@ const LoginModal = ({
               error={lastNameError}
               containerStyle={styles.inputContainer}
               placeholder="Last name"
+              autoComplete="family-name"
               type="text"
               onChange={(id, value) => {
                 if (value.length > 0) {
@@ -475,14 +498,29 @@ const LoginModal = ({
             />
             <FormInput
               required
+              containerStyle={styles.inputContainer}
+              placeholder="Email"
+              autoComplete="email"
+              autoFocus={!isMobileScreen}
+              error={emailError}
+              getRef={emailRef}
+              type="email"
+              value={email}
+              onChange={(id, value) => {
+                if (value.length > 0) {
+                  setEmailError(false);
+                }
+                setEmail(value);
+              }}
+            />
+            <FormInput
+              required
               error={passwordError}
               containerStyle={styles.inputContainer}
               value={password}
               placeholder="Password"
+              autoComplete="new-password"
               type="password"
-              onKeyDown={(e) => {
-                e.keyCode === 13 && createAccountApi(e);
-              }}
               onChange={(id, value) => {
                 if (value.length > 8) {
                   setPasswordError(false);
@@ -657,6 +695,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     margin: 0,
     marginBottom: 0,
+    minHeight: "unset",
+    marginBottom: 16,
   },
   inputContainerShort: {
     margin: 0,
