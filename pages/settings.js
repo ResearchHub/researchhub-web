@@ -34,6 +34,9 @@ import Toggle from "react-toggle";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
+import API from "~/config/api";
+import Button from "~/components/Form/Button";
+import { Helpers } from "@quantfive/js-web-config";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -71,6 +74,9 @@ class UserSettings extends Component {
 
     this.state = {
       frequency: null,
+      isPasswordInputVisible: false,
+      password1: "",
+      password2: "",
       emailRecipientId: null,
       isOptedOut: null,
       // Email Input
@@ -197,6 +203,134 @@ class UserSettings extends Component {
 
   handleEmailChange = (id, value) => {
     this.setState({ email: value });
+  };
+
+  savePassword = () => {
+    if (this.state.password1.length < 9) {
+      this.props.dispatch(
+        MessageActions.setMessage("Password must be at least 9 characters long")
+      );
+      this.props.dispatch(
+        MessageActions.showMessage({ show: true, error: true })
+      );
+      return;
+    } else if (this.state.password1 !== this.state.password2) {
+      this.props.dispatch(MessageActions.setMessage("Passwords do not match"));
+      this.props.dispatch(
+        MessageActions.showMessage({ show: true, error: true })
+      );
+      return;
+    }
+
+    return fetch(
+      API.CHANGE_PASSWORD(),
+      API.POST_CONFIG({
+        new_password1: this.state.password1,
+        new_password2: this.state.password2,
+      })
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data) => {
+        this.props.dispatch(
+          MessageActions.setMessage("Successfully change password")
+        );
+        this.props.dispatch(
+          MessageActions.showMessage({ show: true, error: false })
+        );
+        this.setState({
+          password1: "",
+          password2: "",
+        });
+        this.togglePasswordVisibility();
+      })
+      .catch((error) => {
+        let errorMsg;
+        try {
+          // @ts-ignore
+          errorMsg = Object.values(error?.message)[0][0];
+        } catch (error) {
+          errorMsg = "Unexpected error.";
+        }
+        this.props.dispatch(MessageActions.setMessage(errorMsg));
+        this.props.dispatch(
+          // @ts-ignore
+          MessageActions.showMessage({ show: true, error: true })
+        );
+      });
+  };
+
+  renderChangePassword = () => {
+    return (
+      <div className={css(styles.container)}>
+        <div className={css(styles.labelContainer)}>
+          <div className={css(styles.listLabel)} id={"passwordTitle"}>
+            {"Password"}
+          </div>
+          <Ripples
+            className={css(styles.editIcon)}
+            onClick={this.togglePasswordVisibility}
+          >
+            {this.state.isPasswordInputVisible ? icons.times : icons.pencil}
+          </Ripples>
+        </div>
+        <div
+          className={css(
+            styles.primaryEmail
+            // transition && styles.blurTransition
+          )}
+        >
+          {this.state.isPasswordInputVisible ? (
+            <div>
+              <form
+                className={css(styles.passwordContainer)}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  this.savePassword();
+                }}
+              >
+                <FormInput
+                  placeholder={"Enter new password"}
+                  containerStyle={styles.emailInputStyles}
+                  inputStyle={styles.emailInput}
+                  value={this.state.password1}
+                  type="password"
+                  onChange={(id, value) => {
+                    this.setState({ password1: value });
+                  }}
+                />
+                <FormInput
+                  placeholder={"Verify new password"}
+                  containerStyle={styles.emailInputStyles}
+                  inputStyle={styles.emailInput}
+                  value={this.state.password2}
+                  type="password"
+                  onChange={(id, value) => {
+                    this.setState({ password2: value });
+                  }}
+                />
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.savePassword();
+                  }}
+                >
+                  Save
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <div>•••••••••••••••</div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  togglePasswordVisibility = () => {
+    this.setState({
+      isPasswordInputVisible: !this.state.isPasswordInputVisible,
+    });
   };
 
   renderPrimaryEmail = () => {
@@ -587,6 +721,8 @@ class UserSettings extends Component {
         <div className={css(styles.settingsPage)}>
           <div className={css(defaultStyles.title, styles.title)}>Settings</div>
           {this.renderPrimaryEmail()}
+          {this.props.user.auth_provider === "email" &&
+            this.renderChangePassword()}
           <UserApiTokenInputField />
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
@@ -767,6 +903,14 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     position: "relative",
+    marginTop: 5,
+  },
+  passwordContainer: {
+    display: "flex",
+    flexDirection: "column",
+    // alignItems: "center",
+    position: "relative",
+    rowGap: 15,
     marginTop: 5,
   },
   emailInputStyles: {

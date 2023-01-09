@@ -1,7 +1,6 @@
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
 import { useAccount, useConnect, useEnsName } from "wagmi";
-
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -12,9 +11,8 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
-import colors from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import GoogleLoginButton from "../components/GoogleLoginButton";
 import icons from "~/config/themes/icons";
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
@@ -24,12 +22,14 @@ import RootLeftSidebarSlider from "~/components/Home/sidebar/RootLeftSidebarSlid
 import SlidingPane from "react-sliding-pane";
 import UserStateBanner from "./Banner/UserStateBanner";
 import RHLogo from "./Home/RHLogo";
+import LoginModal from "./Login/LoginModal";
+import Login from "./Login/Login";
+import Button from "./Form/Button";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
   import("~/components/Modals/FirstVoteModal")
 );
-const LoginModal = dynamic(() => import("~/components/Modals/LoginModal"));
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 const OrcidConnectModal = dynamic(() =>
   import("~/components/Modals/OrcidConnectModal")
@@ -102,7 +102,7 @@ const Navbar = (props) => {
     <Fragment>
       <DndModal />
       <FirstVoteModal auth={auth} updateUser={updateUser} />
-      <LoginModal />
+      {props.modals.openLoginModal && <LoginModal isOpen={true} />}
       <NewPostModal />
       <OrcidConnectModal />
       <PromotionInfoModal />
@@ -144,26 +144,39 @@ const Navbar = (props) => {
           className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
         >
           <div className={css(styles.buttonRight)}>
-            {!isLoggedIn ? (
+            {isLoggedIn ? (
+              <NavbarRightButtonGroup />
+            ) : (
               <div className={css(styles.oauthContainer)}>
-                <GoogleLoginButton
-                  styles={[
-                    styles.button,
-                    styles.googleLoginButton,
-                    styles.login,
-                  ]}
-                  iconStyle={styles.googleIcon}
-                  customLabelStyle={[styles.googleLabel]}
-                  isLoggedIn={isLoggedIn}
-                  // disabled={!authChecked}
-                />
+                <Login>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      columnGap: "10px",
+                    }}
+                  >
+                    <Button
+                      size="small"
+                      variant="text"
+                      customButtonStyle={styles.signUpBtn}
+                      label="Log in"
+                      hideRipples={true}
+                    />
+                    <Button
+                      size="small"
+                      customButtonStyle={styles.signUpBtn}
+                      label="Sign up"
+                      hideRipples={true}
+                    />
+                  </div>
+                </Login>
                 <div className={css(styles.divider)}></div>
               </div>
-            ) : (
-              <NavbarRightButtonGroup />
             )}
           </div>
-          <NewPostButton />
+          {isLoggedIn && <NewPostButton />}
+
           {Boolean(user.id) && (
             <PaperUploadStateNotifier
               wsAuth
@@ -178,6 +191,10 @@ const Navbar = (props) => {
 };
 
 const styles = StyleSheet.create({
+  signUpBtn: {
+    width: 90,
+    fontSize: 16,
+  },
   navbarContainer: {
     alignItems: "center",
     background: "#fff",
@@ -209,37 +226,11 @@ const styles = StyleSheet.create({
       marginLeft: 20,
     },
   },
-  googleLoginButton: {
-    margin: 0,
-    marginLeft: 16,
-    width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  googleIcon: {
-    width: 25,
-    height: 25,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-    borderRadius: "50%",
-  },
   banner: {
     textDecoration: "none",
   },
   divider: {
     width: 5,
-  },
-  googleLabel: {
-    color: colors.PURPLE(),
-  },
-  googleLabelMobile: {
-    color: colors.PURPLE(),
-    fontVariant: "small-caps",
-    fontSize: 20,
-    letterSpacing: 0.7,
-    "@media only screen and (max-width: 767px)": {
-      color: "#fff",
-    },
   },
   searchWrapper: {
     alignItems: "center",
@@ -426,7 +417,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openLoginModal: ModalActions.openLoginModal,
   getUser: AuthActions.getUser,
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,

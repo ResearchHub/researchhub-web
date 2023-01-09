@@ -80,10 +80,12 @@ const GoogleLoginButton = (props) => {
 
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
+
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
       } else {
+        props.openLoginModal(false);
         getUser().then((userAction) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
@@ -148,9 +150,12 @@ const GoogleLoginButton = (props) => {
             >
               <Button
                 disabled={disabled}
+                fullWidth
+                variant="outlined"
                 onClick={renderProps.onClick}
                 customButtonStyle={[styles.button, props.styles]}
                 icon={"/static/icons/google.png"}
+                hideRipples={true}
                 rippleClass={props.rippleClass}
                 customLabelStyle={props.customLabelStyle}
                 customIconStyle={[styles.iconStyle, props.iconStyle]}
@@ -174,10 +179,6 @@ const styles = StyleSheet.create({
     width: 230,
     marginTop: 10,
     marginBottom: 0,
-    "@media only screen and (max-width: 415px)": {
-      height: 50,
-      width: 200,
-    },
   },
   buttonLabel: {
     fontWeight: 600,
@@ -203,6 +204,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   removeBanner: BannerActions.removeBanner,
+  openLoginModal: ModalActions.openLoginModal,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoogleLoginButton);

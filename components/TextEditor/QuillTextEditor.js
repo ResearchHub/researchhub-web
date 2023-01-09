@@ -975,6 +975,7 @@ const toolbarStyles = StyleSheet.create({
   },
   requestButton: {
     background: colors.PURPLE_LIGHT(),
+    border: 0,
     ":hover": {
       opacity: 0.9,
       background: colors.PURPLE_LIGHT(),
@@ -982,6 +983,7 @@ const toolbarStyles = StyleSheet.create({
   },
   answerButton: {
     background: colors.NEW_GREEN(),
+    border: 0,
     ":hover": {
       opacity: 0.9,
       background: colors.NEW_GREEN(),

@@ -7,7 +7,6 @@ import {
   useEffectOnScreenResize,
 } from "~/config/utils/useEffectOnScreenResize";
 import { filterNull, isEmpty } from "~/config/utils/nullchecks";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { NextRouter, useRouter } from "next/router";
 import {
   ReactElement,
@@ -26,13 +25,12 @@ import RootLeftSidebarItem, {
 } from "./sidebar_items/RootLeftSidebarItem";
 import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
-import { storeToCookie } from "~/config/utils/storeToCookie";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
-import NewPostButton from "~/components/NewPostButton";
 
 type Props = {
   openLoginModal: any;
+  currentUser: any;
   rootLeftSidebarForceMin: boolean;
 };
 
@@ -56,6 +54,9 @@ export const getLeftSidebarItemAttrs = ({
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
   const isLoggedIn = !isEmpty(id);
+
+  console.log('currentUser', currentUser)
+
 
   return filterNull([
     {
@@ -108,10 +109,10 @@ export const getLeftSidebarItemAttrs = ({
 function RootLeftSidebar({
   openLoginModal,
   rootLeftSidebarForceMin: isForceMinimized,
+  currentUser,
 }: Props): ReactElement {
   const router = useRouter();
   const { pathname = "" } = router ?? {};
-  const currentUser = getCurrentUser();
   const { organization_slug = "", id } = currentUser ?? {};
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     getCurrMediaWidth() >= breakpoints.large.int
@@ -577,4 +578,8 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(null, mapDispatchToProps)(RootLeftSidebar);
+const mapStateToProps = (state) => ({
+  currentUser: state.auth.user,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RootLeftSidebar);

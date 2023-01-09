@@ -80,6 +80,27 @@ const routes = (BASE_URL) => {
   return {
     ASYNC_PAPER_UPDATOR: BASE_URL + `paper/async_paper_updator/`,
     BASE_URL,
+    CHECK_ACCOUNT: () => {
+      return BASE_URL + `user/check_account/`;
+    },
+    CREATE_ACCOUNT: () => {
+      return BASE_URL + `auth/register/`;
+    },
+    LOGIN_WITH_EMAIL: () => {
+      return BASE_URL + `auth/login/`;
+    },
+    CHANGE_PASSWORD: () => {
+      return BASE_URL + `auth/password-change/`;
+    },
+    RESET_PASSWORD: () => {
+      return BASE_URL + `auth/password-reset/`;
+    },
+    RESET_PASSWORD_CHANGE_PASSWORD: () => {
+      return BASE_URL + `auth/confirm/`;
+    },
+    VERIFY_EMAIL: () => {
+      return BASE_URL + `auth/register/verify-email/`;
+    },
     CITATIONS: ({ citationID, citationType, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)

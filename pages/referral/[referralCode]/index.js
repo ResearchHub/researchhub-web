@@ -9,12 +9,15 @@ import { Helpers } from "@quantfive/js-web-config";
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
-import GoogleLoginButton from "../../../components/GoogleLoginButton";
+
 import Router from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors from "~/config/themes/colors";
 import icons, { MedalIcon } from "~/config/themes/icons";
+import Login from "~/components/Login/Login";
+import Button from "~/components/Form/Button";
+import ResearchHubIcon from "~/static/ResearchHubIcon";
 
 const Index = ({ code, user }) => {
   useEffect(() => {
@@ -53,13 +56,11 @@ const Index = ({ code, user }) => {
               Sign up below to become a part of our growing community dedicated
               to accelerating the pace of scientific research 🚀
             </p>
-            <GoogleLoginButton
-              customLabel={"Sign up with Google to join ResearchHub"}
-              rippleClass={styles.buttonClass}
-              styles={[styles.buttonClass, styles.buttonContainer]}
-              customLabelStyle={styles.customLabelStyle}
-              loginCallback={loginCallback}
-            />
+            <Login>
+              <Button hideRipples={true} fullWidth size="large">
+                <span>Sign in to ResearchHub</span>
+              </Button>
+            </Login>
           </div>
         </ComponentWrapper>
       </div>

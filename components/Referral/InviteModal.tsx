@@ -327,7 +327,7 @@ const InviteModal = ({
               >
                 7% 
               </span>{" "}
-              off user's RSC earnings on ResearchHub for the first six month
+              of user's RSC earnings on ResearchHub for the first six month
               period
               <div className={css(styles.example)}>
                 Example: If they earn 100 RSC, you will earn 7 RSC

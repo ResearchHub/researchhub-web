@@ -69,15 +69,16 @@ function Base({
     paperID: null,
   });
 
-  useEffect(async () => {
+  useEffect(() => {
     getUniversities();
-    await getUser();
-    getTopHubs(auth);
-    if (auth.isLoggedIn) {
-      getWithdrawals();
-      getNotifications();
-    }
-    fetchPermissions();
+    getUser().then(() => {
+      getTopHubs(auth);
+      if (auth.isLoggedIn) {
+        getWithdrawals();
+        getNotifications();
+      }
+      fetchPermissions();
+    });
   }, []);
 
   /*
@@ -106,7 +107,7 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
-    {process.env.GA_TRACKING_ID && (
+      {process.env.GA_TRACKING_ID && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA_TRACKING_ID}`}

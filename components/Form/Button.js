@@ -1,16 +1,17 @@
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Ripples from "react-ripples";
-
-// Config
-import colors from "../../config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
+import colors, { iconColors } from "../../config/themes/colors";
 
 function Button(props) {
   const {
     type,
     label,
     isWhite,
-    size, // size is a enum; type string: ['xxsmall', 'xsmall', 'small', 'med', 'big']
+    fullWidth,
+    size = "med", // small, med, large
+    variant = "contained",
     disabled,
     isLink,
     customButtonStyle,
@@ -37,8 +38,12 @@ function Button(props) {
             styles.button,
             isWhite && styles.isWhite,
             size && styles[size],
+            variant === "contained" && styles.variantContained,
+            variant === "outlined" && styles.variantOutlined,
+            variant === "text" && styles.variantText,
             customButtonStyle && customButtonStyle,
-            disabled && styles.disabled
+            disabled && styles.disabled,
+            fullWidth && styles.fullWidth
           )}
         >
           {icon && (
@@ -67,8 +72,12 @@ function Button(props) {
           styles.button,
           isWhite && styles.isWhite,
           size && styles[size],
+          variant === "contained" && styles.variantContained,
+          variant === "outlined" && styles.variantOutlined,
+          variant === "text" && styles.variantText,
           customButtonStyle && customButtonStyle,
-          disabled && styles.disabled
+          disabled && styles.disabled,
+          fullWidth && styles.fullWidth
         )}
         type={type ? type : "button"}
         onSubmit={onSubmit ? onSubmit : null}
@@ -110,27 +119,54 @@ function Button(props) {
 
 const styles = StyleSheet.create({
   button: {
-    width: 126,
-    height: 45,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.NEW_BLUE(1),
-    borderRadius: 5,
+    borderRadius: "4px",
     cursor: "pointer",
     highlight: "none",
     outline: "none",
-    border: "none",
     userSelect: "none",
+    fontWeight: 500,
+    lineHeight: 1.75,
     ":hover": {
       opacity: 0.9,
     },
-    "@media only screen and (max-width: 415px)": {
-      width: "unset",
-      height: "unset",
-      minHeight: 45,
-      minWidth: 126,
+  },
+  fullWidth: {
+    width: "100%",
+  },
+  variantContained: {
+    backgroundColor: colors.NEW_BLUE(1),
+    color: "white",
+    border: `1px solid ${colors.NEW_BLUE(1)}`,
+  },
+  variantOutlined: {
+    backgroundColor: "white",
+    color: colors.NEW_BLUE(1),
+    border: `1px solid ${colors.NEW_BLUE(1)}`,
+  },
+  variantText: {
+    backgroundColor: "unset",
+    color: colors.BLACK(),
+    border: `1px solid transparent`,
+    ":hover": {
+      background: iconColors.BACKGROUND,
+      borderRadius: 3,
+      transition: "0.3s",
     },
+  },
+  small: {
+    padding: "5px 10px",
+    fontSize: 15,
+  },
+  med: {
+    fontSize: 16,
+    padding: "6px 16px",
+  },
+  large: {
+    padding: "8px 22px",
+    fontSize: 18,
   },
   ripples: {},
   isWhite: {
@@ -145,46 +181,13 @@ const styles = StyleSheet.create({
     },
   },
   label: {
-    color: "#FFF",
-    fontFamily: "Roboto",
-    fontWeight: 400,
-    fontSize: 15,
     margin: 0,
     padding: 0,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 12,
-    },
   },
   isWhiteLabel: {
     color: "inherit",
   },
-  xsmall: {
-    height: 30,
-    width: "auto",
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  xxsmall: {
-    borderRadius: 4,
-    maxHeight: 48,
-    maxWidth: 180,
-    padding: "0 10px",
-  },
-  small: {
-    width: 126,
-    height: 37,
-  },
-  med: {
-    width: 126,
-    height: 45,
-  },
-  big: {
-    width: 160,
-    height: 55,
-  },
+
   newPost: {
     width: 90,
     height: 45,

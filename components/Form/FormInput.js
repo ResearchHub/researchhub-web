@@ -33,6 +33,7 @@ class FormInput extends Component {
       type,
       autoComplete,
       containerStyle,
+      autoFocus,
       disabled,
       error,
       icon,
@@ -44,6 +45,7 @@ class FormInput extends Component {
       label,
       labelStyle,
       message,
+      errorClassName,
       messageStyle,
       onBlur,
       onBlurCapture,
@@ -101,9 +103,11 @@ class FormInput extends Component {
             styles.text,
             search && styles.search,
             icon && styles.search,
+            error && styles.errorInput,
             onClick && styles.inputClick
           )}
           id={id && id}
+          autoFocus={autoFocus}
           onBlur={onBlur && onBlur}
           onBlurCapture={onBlurCapture && onBlurCapture}
           onChange={this.handleChange}
@@ -116,7 +120,11 @@ class FormInput extends Component {
           value={this.props.value}
           onKeyDown={onKeyDown}
         />
-        {error && <p className={css(styles.text, styles.error)}>{error}</p>}
+        {error && (
+          <p className={css(styles.text, styles.error, errorClassName)}>
+            {error}
+          </p>
+        )}
         {message && (
           <p className={css(styles.message, messageStyle)}>{message}</p>
         )}
@@ -160,6 +168,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     position: "relative",
     width: "100%",
+  },
+  errorInput: {
+    borderColor: colors.RED(),
+    ":hover": {
+      borderColor: colors.RED(),
+    },
+    ":focus": {
+      borderColor: colors.RED(),
+      ":hover": {
+        cursor: "text",
+      },
+    },
   },
   inputLabel: {
     fontWeight: 500,
@@ -236,7 +256,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     marginTop: 4,
-    marginBottom: 4,
+    marginBottom: 10,
     color: colors.RED(1),
     fontSize: 12,
   },

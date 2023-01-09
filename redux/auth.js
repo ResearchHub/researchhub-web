@@ -187,6 +187,48 @@ export const AuthActions = {
     };
   },
 
+  loginWithEmail: (params) => {
+    return (dispatch, getState) => {
+      let referralCode = window.localStorage.getItem("referralCode");
+      if (referralCode) {
+        params.referral_code = referralCode;
+      }
+      let postConfig = API.POST_CONFIG(params);
+      delete postConfig["headers"]["Authorization"];
+      return fetch(API.LOGIN_WITH_EMAIL(), postConfig)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((json) => {
+          console.log("json", json);
+          saveToLocalStorage(AUTH_TOKEN, json.key);
+          return dispatch({
+            type: AuthConstants.LOGIN,
+            isLoggedIn: true,
+            isFetchingLogin: false,
+            loginFailed: false,
+            loginErrorMsg: false,
+          });
+        })
+        .catch(async (error) => {
+          let errorMsg;
+          try {
+            errorMsg = Object.values(error?.message)[0][0];
+          } catch (error) {
+            errorMsg = "Could not login at the moment.";
+          }
+
+          Sentry.captureException(error);
+          return dispatch({
+            type: AuthConstants.LOGIN_FAILURE,
+            isLoggedIn: false,
+            isFetchingLogin: false,
+            loginFailed: true,
+            loginErrorMsg: errorMsg,
+          });
+        });
+    };
+  },
+
   /**
    * Login with Google
    * @params { params } --
