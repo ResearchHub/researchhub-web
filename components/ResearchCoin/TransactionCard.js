@@ -99,7 +99,9 @@ const TransactionCard = (props) => {
                 e.stopPropagation();
               }}
             >
-              <div className={css(styles.metatext)}>{etherscanLink}</div>
+              <div className={css(styles.metatext, styles.etherscanLink)}>
+                {etherscanLink}
+              </div>
             </a>
           ) : null}
           {paper && (
@@ -271,6 +273,11 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+  etherscanLink: {
+    "@media only screen and (max-width: 767px)": {
+      maxWidth: 300,
+    },
+  },
   colorBlack: {
     color: colors.BLACK(),
   },
@@ -278,9 +285,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: 40,
-    maxWidth: 40,
     padding: "7px 20px",
+    maxWidth: 80,
     fontSize: 12,
     textTransform: "uppercase",
     letterSpacing: 1.1,
@@ -330,7 +336,6 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     justifyContent: "flex-start",
-    maxWidth: 300,
 
     ":hover": {
       textDecoration: "underline",
@@ -342,6 +347,7 @@ const styles = StyleSheet.create({
       textOverflow: "ellipsis",
       margin: 0,
       marginTop: 5,
+      maxWidth: 300,
     },
   },
   addressContainer: {
