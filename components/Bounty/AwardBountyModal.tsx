@@ -239,6 +239,17 @@ const awardUserStyles = StyleSheet.create({
     alignItems: "center",
     // marginLeft: 38,
   },
+  distributeColumn: {
+    marginRight: "auto",
+  },
+  distribute: {
+    fontWeight: 400,
+    color: colors.BLUE(1),
+    fontSize: 14,
+    padding: 4,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
 });
 
 type Props = {
@@ -438,7 +449,9 @@ function AwardBountyModal({
       </div>
       <div className={css(styles.awardAction)}>
         <div className={css(styles.row, styles.remainingAwardRow)}>
-          <div className={css(styles.remainingReward)}>Remaining Award</div>
+          <div className={css(awardUserStyles.distributeColumn)}>
+            <div className={css(styles.remainingReward)}>Remaining Award</div>
+          </div>
 
           <div className={css(awardUserStyles.awardColumn)}>
             <div className={css(styles.rscLeft)}>{remainingAwardAmount}</div>
@@ -575,7 +588,7 @@ const styles = StyleSheet.create({
   },
   awardRipple: {
     width: "100%",
-    marginTop: 32,
+    marginTop: 16,
 
     "@media only screen and (max-width: 767px)": {
       marginTop: 16,
