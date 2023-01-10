@@ -1,40 +1,29 @@
-import {
-  BOUNTY_DEFAULT_AMOUNT,
-  BOUNTY_RH_PERCENTAGE,
-  MAX_RSC_REQUIRED,
-  MIN_RSC_REQUIRED,
-} from "./config/constants";
-import { captureEvent } from "@sentry/browser";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { Hub } from "~/config/types/hub";
 import { MessageActions } from "~/redux/message";
-import { ReactElement, useState, useEffect, SyntheticEvent } from "react";
-import { trackEvent } from "~/config/utils/analytics";
+import { ReactElement, useState, useEffect } from "react";
 import BaseModal from "../Modals/BaseModal";
 import Bounty from "~/config/types/bounty";
-import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { DownIcon, UpIcon, WarningIcon } from "~/config/themes/icons";
-import numeral from "numeral";
-import ReactTooltip from "react-tooltip";
+import { WarningIcon } from "~/config/themes/icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import AuthorAvatar from "../AuthorAvatar";
 import FormInput from "../Form/FormInput";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
-import { getNestedValue } from "~/config/utils/misc";
 import ThreadTextEditor from "../Threads/ThreadTextEditor";
 import api, { generateApiUrl } from "~/config/api";
 import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { useRouter } from "next/router";
+import VoteWidget from "../VoteWidget";
+import { DOWNVOTE, UPVOTE } from "~/config/constants";
 
 function AwardUserRow({
   author,
   comment,
   remainingAmount,
   decreaseRemainingAmount,
+  awardFullBounty,
+  awardedAmount,
 }) {
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -42,35 +31,47 @@ function AwardUserRow({
     author?.last_name ?? author.lastName ?? ""
   }`;
 
+  console.log(comment);
+
+  let selectedVoteType =
+    comment.data.user_vote && comment.data.user_vote.vote_type;
+  if (selectedVoteType === 1) {
+    selectedVoteType = UPVOTE;
+  } else if (selectedVoteType === 2) {
+    selectedVoteType = DOWNVOTE;
+  }
+
+  console.log(selectedVoteType);
+
   return (
-    <div
-      className={css(awardUserStyles.container)}
-      onClick={() => setIsMaximized(!isMaximized)}
-    >
-      <div className={css(awardUserStyles.recipientColumn)}>
-        {/* <AuthorAvatar
-          author={author}
-          boldName={true}
-          border={`2px solid ${colors.LIGHT_GREY(1)}`}
-          onClick={(event: SyntheticEvent) => {
-            event.stopPropagation();
-            event.preventDefault();
-          }}
-          margin
-          size={36}
-          fontSize={16}
-          withAuthorName={true}
-        /> */}
-        <DiscussionPostMetadata
-          authorProfile={author}
-          isCreatedByEditor={comment?.data?.is_created_by_editor}
-          data={comment?.data}
-          noShowSupport={true}
-          date={comment?.data?.created_date}
-          username={fullName}
-          dropDownEnabled={true}
+    <div className={css(awardUserStyles.voteContainer)}>
+      <div className={css(awardUserStyles.votingWidget)}>
+        <VoteWidget
+          score={comment.data.score}
+          disableUpvote
+          disableDownvote
+          selected={selectedVoteType}
+          type={"Discussion"}
+          onUpvote={() => {}}
+          onDownVote={() => {}}
+          small={true}
         />
-        {/* <div className={css(awardUserStyles.arrow)}>
+      </div>
+      <div
+        className={css(awardUserStyles.container)}
+        onClick={() => setIsMaximized(!isMaximized)}
+      >
+        <div className={css(awardUserStyles.recipientColumn)}>
+          <DiscussionPostMetadata
+            authorProfile={author}
+            isCreatedByEditor={comment?.data?.is_created_by_editor}
+            data={comment?.data}
+            noShowSupport={true}
+            date={comment?.data?.created_date}
+            username={fullName}
+            dropDownEnabled={true}
+          />
+          {/* <div className={css(awardUserStyles.arrow)}>
           {isMaximized ? (
             <UpIcon
               withAnimation={false}
@@ -83,56 +84,78 @@ function AwardUserRow({
             />
           )}
         </div> */}
-        <div className={css(awardUserStyles.comment)}>
-          {isMaximized ? (
-            <ThreadTextEditor
-              readOnly={true}
-              initialValue={comment?.data?.text}
-              focusEditor={true}
-              body={true}
-              textStyles={styles.contentText}
-              quillContainerStyle={awardUserStyles.quillContainerStyle}
-              textEditorId={`thread_${comment?.data.id}`}
-              postType={comment?.data?.discussion_post_type}
-            />
-          ) : (
-            <div className={"clamp2"} style={{ wordBreak: "break-word" }}>
-              {comment?.data?.plain_text}
-            </div>
-          )}
+          <div className={css(awardUserStyles.comment)}>
+            {isMaximized ? (
+              <ThreadTextEditor
+                readOnly={true}
+                initialValue={comment?.data?.text}
+                focusEditor={true}
+                body={true}
+                textStyles={styles.contentText}
+                // quillContainerStyle={awardUserStyles.quillContainerStyle}
+                textEditorId={`thread_${comment?.data.id}`}
+                postType={comment?.data?.discussion_post_type}
+              />
+            ) : (
+              <div
+                className={"clamp2"}
+                style={{
+                  wordBreak: "break-word",
+                  padding: "12px 15px",
+                  borderRadius: 4,
+                  border: "1px solid rgb(235, 235, 235)",
+                }}
+              >
+                {comment?.data?.plain_text}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <div className={css(awardUserStyles.awardColumn)}>
-        <FormInput
-          placeholder={remainingAmount}
-          id={`${author.user}-${comment?.data.id}-award`}
-          type="number"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          icon={null}
-          onChange={decreaseRemainingAmount}
-          inputStyle={awardUserStyles.inputStyle}
-          containerStyle={awardUserStyles.inputContainer}
-        />
-        <ResearchCoinIcon
-          width={20}
-          height={20}
-          overrideStyle={awardUserStyles.rscIcon}
-        />
-        <div className={css(awardUserStyles.rscText)}>{" RSC"}</div>
+        <div className={css(awardUserStyles.awardUserRow)}>
+          <div
+            className={css(awardUserStyles.awardUser)}
+            onClick={awardFullBounty}
+          >
+            Award Bounty to {fullName}
+          </div>
+
+          <div className={css(awardUserStyles.awardColumn)}>
+            <FormInput
+              placeholder={remainingAmount}
+              id={`${author.user}-${comment?.data.id}-award`}
+              type="text"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              icon={null}
+              value={awardedAmount || 0}
+              onChange={decreaseRemainingAmount}
+              inputStyle={awardUserStyles.inputStyle}
+              containerStyle={awardUserStyles.inputContainer}
+            />
+            <ResearchCoinIcon
+              width={20}
+              height={20}
+              overrideStyle={awardUserStyles.rscIcon}
+            />
+            <div className={css(awardUserStyles.rscText)}>{" RSC"}</div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 const awardUserStyles = StyleSheet.create({
+  voteContainer: {
+    display: "flex",
+    paddingTop: 16,
+  },
   container: {
     width: "100%",
     // display: "flex",
     alignItems: "center",
     position: "relative",
-    marginTop: 16,
   },
   arrow: {
     color: "#7c7989",
@@ -154,7 +177,7 @@ const awardUserStyles = StyleSheet.create({
   },
   comment: {
     marginTop: 8,
-    marginLeft: 38,
+    // marginLeft: 38,
     marginBottom: 16,
     lineHeight: "1.6em",
     overflowWrap: "break-word",
@@ -163,6 +186,28 @@ const awardUserStyles = StyleSheet.create({
   quillContainerStyle: {
     padding: 0,
     border: 0,
+  },
+  awardUserRow: {
+    display: "flex",
+    alignItems: "center",
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column-reverse",
+      alignItems: "flex-end",
+    },
+  },
+  awardUser: {
+    marginRight: "auto",
+    cursor: "pointer",
+    padding: 8,
+    paddingRight: 0,
+    paddingLeft: 0,
+    color: colors.BLUE(1),
+
+    "@media only screen and (max-width: 767px)": {
+      marginRight: 0,
+      marginTop: 4,
+    },
   },
   recipientColumn: {
     // width: "60%",
@@ -176,6 +221,12 @@ const awardUserStyles = StyleSheet.create({
     "::placeholder": {
       color: colors.BLACK(0.4),
     },
+
+    "@media only screen and (max-width: 767px)": {
+      width: 70,
+      padding: 8,
+      height: "unset",
+    },
   },
   inputContainer: {
     maxWidth: 95,
@@ -186,7 +237,7 @@ const awardUserStyles = StyleSheet.create({
   awardColumn: {
     display: "flex",
     alignItems: "center",
-    marginLeft: 38,
+    // marginLeft: 38,
   },
 });
 
@@ -361,13 +412,23 @@ function AwardBountyModal({
           <div className={css(styles.row, styles.rowHeader)}></div>
           <div className={css(styles.userRows)}>
             {threads?.map((thread) => {
+              const author = thread.data.created_by.author_profile;
+              const mapKey = `${author.user}-${thread?.data.id}-award`;
+
               return (
                 <div className={css(styles.awardUserRow)}>
                   <AwardUserRow
                     author={thread.data.created_by.author_profile}
                     remainingAmount={bountyAmount}
                     comment={thread}
+                    awardedAmount={userAwardMap[mapKey]}
                     decreaseRemainingAmount={decreaseRemainingAmount}
+                    awardFullBounty={() => {
+                      const userMap = {};
+
+                      userMap[mapKey] = bountyAmount;
+                      setUserAwardMap(userMap);
+                    }}
                   />
                 </div>
               );
@@ -424,10 +485,17 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 0,
+    },
   },
   inner: {
     padding: 35,
     paddingBottom: 0,
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 0,
+    },
   },
   link: {
     color: colors.NEW_BLUE(1),
@@ -437,12 +505,17 @@ const styles = StyleSheet.create({
   },
   modalContentStyle: {
     padding: 0,
+    height: "100%",
   },
   description: {
     marginTop: 20,
     color: "#7C7989",
     lineHeight: "26px",
     textAlign: "center",
+
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 0,
+    },
   },
   rscLeft: {
     marginRight: 16,
@@ -468,6 +541,7 @@ const styles = StyleSheet.create({
     boxShadow: "0px 4px 20px rgba(36, 31, 58, 0.1)",
     padding: 35,
     boxSizing: "border-box",
+    marginTop: "auto",
   },
   awardContainer: {
     width: "100%",
@@ -488,6 +562,10 @@ const styles = StyleSheet.create({
     maxHeight: 300,
     overflow: "auto",
     paddingBottom: 16,
+
+    "@media only screen and (max-width: 767px)": {
+      maxHeight: "calc(100vh - 370px)",
+    },
   },
   awardButton: {
     width: "100%",
@@ -498,6 +576,10 @@ const styles = StyleSheet.create({
   awardRipple: {
     width: "100%",
     marginTop: 32,
+
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 16,
+    },
   },
   cancelRipple: {
     marginTop: 16,

@@ -55,9 +55,6 @@ export const getLeftSidebarItemAttrs = ({
   const { organization_slug = "", id } = currentUser ?? {};
   const isLoggedIn = !isEmpty(id);
 
-  console.log('currentUser', currentUser)
-
-
   return filterNull([
     {
       icon: icons.home,
@@ -320,7 +317,11 @@ function RootLeftSidebar({
                 </span>
               </InviteButton>
             </span>
-            <ALink href="https://docs.researchhub.com" target="_blank" overrideStyle={formattedFooterTxtItem}>
+            <ALink
+              href="https://docs.researchhub.com"
+              target="_blank"
+              overrideStyle={formattedFooterTxtItem}
+            >
               {"About"}
             </ALink>
             <ALink
