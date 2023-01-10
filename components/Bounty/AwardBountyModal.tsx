@@ -434,7 +434,8 @@ function AwardBountyModal({
                     comment={thread}
                     awardedAmount={userAwardMap[mapKey]}
                     decreaseRemainingAmount={decreaseRemainingAmount}
-                    awardFullBounty={() => {
+                    awardFullBounty={(e) => {
+                      e.stopPropagation();
                       const userMap = {};
 
                       userMap[mapKey] = bountyAmount;
