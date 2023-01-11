@@ -85,7 +85,6 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
     Router.events.on("routeChangeError", () => {
       store.dispatch(MessageActions.showMessage({ show: false }));
     });
-    console.log("123");
     return () => {
       window.removeEventListener("load", loadSift);
     };

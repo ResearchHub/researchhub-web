@@ -632,6 +632,8 @@ class DiscussionEntry extends Component {
       bountyType,
     } = this.props;
 
+    console.log(data);
+
     const commentCount =
       data.comment_count +
         data.comments

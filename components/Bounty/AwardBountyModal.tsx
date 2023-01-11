@@ -31,8 +31,6 @@ function AwardUserRow({
     author?.last_name ?? author.lastName ?? ""
   }`;
 
-  console.log(comment);
-
   let selectedVoteType =
     comment.data.user_vote && comment.data.user_vote.vote_type;
   if (selectedVoteType === 1) {
@@ -40,8 +38,6 @@ function AwardUserRow({
   } else if (selectedVoteType === 2) {
     selectedVoteType = DOWNVOTE;
   }
-
-  console.log(selectedVoteType);
 
   return (
     <div className={css(awardUserStyles.voteContainer)}>
@@ -297,9 +293,9 @@ function AwardBountyModal({
 
     setBountyAwardLoading(true);
     const allFetches: Promise<Response>[] = []; // todo: make this a promise array
+    const metadataArray: any[] = [];
     allBounties.forEach((bounty) => {
       const keys = Object.keys(userAwardMap);
-      const metadataArray: any[] = [];
       keys.forEach((key) => {
         if (userAwardMap[key]) {
           metadataArray.push({
@@ -320,6 +316,7 @@ function AwardBountyModal({
                   threadId: key.split("-")[1],
                 },
               });
+
               document.dispatchEvent(event);
             },
             onError: (error) => {
@@ -364,6 +361,21 @@ function AwardBountyModal({
       });
 
       if (succeeded) {
+        const multiAward = [];
+        metadataArray.forEach((data) => {
+          multiAward.push({
+            objectId: parseInt(data.object_id, 10),
+            amount: data.amount,
+          });
+        });
+
+        const bountyAward = new CustomEvent("bounty-awarded", {
+          detail: {
+            multiAward,
+          },
+        });
+        document.dispatchEvent(bountyAward);
+
         setHasBounties && setHasBounties(false);
         setBountyAwardLoading(false);
         setMessage("Bounty awarded!");

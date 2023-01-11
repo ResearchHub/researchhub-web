@@ -116,24 +116,43 @@ const DiscussionTab = (props) => {
   }
 
   function handleAwardedBounty(e) {
-    const awardedThreadId = e.detail.objectId;
-    const awardedAmount = e.detail.amount;
+    let updatedThreads = [...threads];
+    if (e.detail.multiAward) {
+      e.detail.multiAward.forEach((award) => {
+        const awardedThreadId = award.objectId;
+        const awardedAmount = award.amount;
+        updatedThreads = updatedThreads.map((t) => {
+          if (t.id === awardedThreadId) {
+            if (t.awarded_bounty_amount) {
+              t.awarded_bounty_amount =
+                parseFloat(t.awarded_bounty_amount) +
+                parseFloat(awardedAmount + "" || "0");
+            } else {
+              t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+            }
+          }
 
-    const updatedThreads = threads.map((t) => {
-      if (t.id === awardedThreadId) {
-        if (t.awarded_bounty_amount) {
-          t.awarded_bounty_amount =
-            parseFloat(t.awarded_bounty_amount) +
-            parseFloat(awardedAmount + "" || "0");
-        } else {
-          t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+          return t;
+        });
+      });
+    } else {
+      const awardedThreadId = e.detail.objectId;
+      const awardedAmount = e.detail.amount;
+
+      updatedThreads = updatedThreads.map((t) => {
+        if (t.id === awardedThreadId) {
+          if (t.awarded_bounty_amount) {
+            t.awarded_bounty_amount =
+              parseFloat(t.awarded_bounty_amount) +
+              parseFloat(awardedAmount + "" || "0");
+          } else {
+            t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+          }
         }
 
         return t;
-      }
-
-      return t;
-    });
+      });
+    }
 
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));
@@ -237,6 +256,7 @@ const DiscussionTab = (props) => {
                     data?.source === "citation_comment"
                       ? { ...data, text: data.text?.content ?? null }
                       : data;
+
                   return (
                     <DiscussionEntry
                       key={`thread-${formattedThreadData.id}`}
