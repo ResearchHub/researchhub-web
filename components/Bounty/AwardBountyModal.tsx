@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
+import ReactTooltip from "react-tooltip";
 import BaseModal from "../Modals/BaseModal";
 import Bounty from "~/config/types/bounty";
 import Button from "../Form/Button";
@@ -16,6 +17,8 @@ import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { useRouter } from "next/router";
 import VoteWidget from "../VoteWidget";
 import { DOWNVOTE, UPVOTE } from "~/config/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 function AwardUserRow({
   author,
@@ -112,7 +115,7 @@ function AwardUserRow({
             className={css(awardUserStyles.awardUser)}
             onClick={awardFullBounty}
           >
-            Award Bounty to {fullName}
+            Award Full Bounty
           </div>
 
           <div className={css(awardUserStyles.awardColumn)}>
@@ -199,6 +202,7 @@ const awardUserStyles = StyleSheet.create({
     paddingRight: 0,
     paddingLeft: 0,
     color: colors.BLUE(1),
+    fontSize: 14,
 
     "@media only screen and (max-width: 767px)": {
       marginRight: 0,
@@ -419,6 +423,16 @@ function AwardBountyModal({
       modalContentStyle={styles.modalContentStyle}
       title={<span className={css(styles.modalTitle)}>Award Bounty</span>}
     >
+      <ReactTooltip className={css(styles.tooltip)} id="distribute">
+        <div>
+          <div>Distribute the bounty by a proportion of the total upvotes.</div>
+          <br />
+          <div>
+            If one user has 7 upvotes, another has 3, the first user gets 70% of
+            the bounty and the other user gets 30%.
+          </div>
+        </div>
+      </ReactTooltip>
       <div className={css(styles.inner)}>
         <div className={css(styles.description)}>
           Award the bounty to a contributor, by giving them ResearchCoin, or
@@ -432,7 +446,25 @@ function AwardBountyModal({
           </a>
         </div>
         <div className={css(styles.awardContainer)}>
-          <div className={css(styles.row, styles.rowHeader)}></div>
+          <div className={css(styles.row, styles.rowHeader)}>
+            <div>Recipient</div>
+            <div className={css(styles.distribute)}>
+              <Image
+                src="/shooting-star.png"
+                alt="Distribute based on Upvote"
+                className={css(styles.shootingStar)}
+                width={15}
+                height={14.93}
+              />{" "}
+              <span>Distribute based on Upvote</span>
+              <FontAwesomeIcon
+                className={css(styles.info)}
+                icon={["fal", "info-circle"]}
+                data-for={"distribute"}
+                data-tip
+              />
+            </div>
+          </div>
           <div className={css(styles.userRows)}>
             {threads?.map((thread) => {
               const author = thread.data.created_by.author_profile;
@@ -476,7 +508,6 @@ function AwardBountyModal({
             <div className={css(awardUserStyles.rscText)}>{" RSC"}</div>
           </div>
         </div>
-        <div className={css(styles.distribute)}>Distribute based on Upvote</div>
         <Button
           label={"Award Bounty"}
           customButtonStyle={styles.awardButton}
@@ -570,6 +601,10 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     marginTop: "auto",
   },
+  tooltip: {
+    minWidth: 200,
+    textAlign: "center",
+  },
   awardContainer: {
     width: "100%",
     marginTop: 30,
@@ -579,9 +614,8 @@ const styles = StyleSheet.create({
     // marginRight: "auto",
   },
   rowHeader: {
-    opacity: 0.6,
     borderBottom: "1px solid #E9EAEF",
-    // paddingBottom: 16,
+    paddingBottom: 16,
     fontWeight: 500,
     fontSize: 18,
   },
@@ -599,11 +633,6 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontWeight: 500,
-  },
-  distribute: {
-    color: colors.NEW_BLUE(),
-    fontSize: 14,
-    textDecoration: "underline",
   },
   awardRipple: {
     width: "100%",
@@ -636,6 +665,24 @@ const styles = StyleSheet.create({
 
       opacity: 0.6,
     },
+  },
+  distribute: {
+    color: colors.NEW_BLUE(),
+    fontSize: 14,
+    fontWeight: 400,
+    marginLeft: "auto",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    lineHeight: "18px",
+  },
+  shootingStar: {
+    marginRight: 6,
+  },
+  info: {
+    padding: 6,
+    color: "#7C7989",
+    whiteSpace: "pre-wrap",
   },
 });
 

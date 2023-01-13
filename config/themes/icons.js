@@ -147,6 +147,7 @@ import {
   faBookOpen as faBookOpenAlt,
   faInfoCircle as faInfoCircleLight,
   faCommentAltCheck as faCommentLightAltCheck,
+  faStarShooting as faStarShootingLight,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -251,6 +252,7 @@ library.add(
   faCoinsSolid,
   faCopy,
   faComment,
+  faStarShootingLight,
   faCommentAltDots,
   faCommentAltEdit,
   faCommentAltLines,
