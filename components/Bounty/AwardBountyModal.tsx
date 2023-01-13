@@ -400,6 +400,22 @@ function AwardBountyModal({
     setUserAwardMap(userMap);
   };
 
+  const distributeOnUpvote = () => {
+    const awardMap = {};
+    let totalUpvotes = 0;
+    threads.forEach((thread) => {
+      totalUpvotes += thread.data.score;
+    });
+    threads.forEach((thread) => {
+      const author = thread.data.created_by.author_profile;
+
+      const mapKey = `${author.user}-${thread?.data.id}-award`;
+
+      awardMap[mapKey] = (thread.data.score / totalUpvotes) * bountyAmount;
+    });
+    setUserAwardMap(awardMap);
+  };
+
   useEffect(() => {
     const userIds = Object.keys(userAwardMap);
     let remainingAmount = bountyAmount;
@@ -448,7 +464,10 @@ function AwardBountyModal({
         <div className={css(styles.awardContainer)}>
           <div className={css(styles.row, styles.rowHeader)}>
             <div>Recipient</div>
-            <div className={css(styles.distribute)}>
+            <div
+              className={css(styles.distribute)}
+              onClick={distributeOnUpvote}
+            >
               <Image
                 src="/shooting-star.png"
                 alt="Distribute based on Upvote"
@@ -600,6 +619,7 @@ const styles = StyleSheet.create({
     padding: 35,
     boxSizing: "border-box",
     marginTop: "auto",
+    paddingBottom: 0,
   },
   tooltip: {
     minWidth: 200,
