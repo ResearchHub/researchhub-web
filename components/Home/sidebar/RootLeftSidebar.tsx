@@ -55,8 +55,7 @@ export const getLeftSidebarItemAttrs = ({
   const { organization_slug = "", id } = currentUser ?? {};
   const isLoggedIn = !isEmpty(id);
 
-  console.log('currentUser', currentUser)
-
+  console.log("currentUser", currentUser);
 
   return filterNull([
     {
@@ -320,7 +319,11 @@ function RootLeftSidebar({
                 </span>
               </InviteButton>
             </span>
-            <ALink href="https://docs.researchhub.com" target="_blank" overrideStyle={formattedFooterTxtItem}>
+            <ALink
+              href="https://docs.researchhub.com"
+              target="_blank"
+              overrideStyle={formattedFooterTxtItem}
+            >
               {"About"}
             </ALink>
             <ALink
@@ -550,8 +553,8 @@ const styles = StyleSheet.create({
     padding: "0 26px",
     userSelect: "none",
     justifyContent: "flex-start",
-    // margin: "0 auto",
     width: "100%",
+    paddingLeft: 18,
   },
   logoContainerMin: {
     padding: 0,
@@ -563,7 +566,8 @@ const styles = StyleSheet.create({
   },
   researchHubLogoText: {
     height: 14.05,
-    marginLeft: 11.5,
+    marginLeft: 4,
+    marginTop: 6,
     objectFit: "contain",
     transform: "translateY(20%)",
     // marginTop: 10,

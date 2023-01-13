@@ -1,8 +1,8 @@
 import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import Lottie from "react-lottie";
-import FlaskAnimation from "../../public/rh_animated_flask_new_color.json";
-import { useRef } from "react";
+import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
+import { useRef, useState } from "react";
 
 type Props = {
   iconStyle: StyleDeclarationValue;
@@ -11,11 +11,13 @@ type Props = {
 };
 
 export default function RHLogo({ iconStyle, white, withText }: Props) {
+  const [animationPlaying, setAnimationPlaying] = useState(false);
   const lottieRef = useRef();
+  const lottieTimeout = useRef();
   const defaultOptions = {
-    loop: true,
-    autoplay: false,
+    loop: false,
     animationData: FlaskAnimation,
+    autoplay: false,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
@@ -34,11 +36,24 @@ export default function RHLogo({ iconStyle, white, withText }: Props) {
     return (
       <div
         onMouseEnter={() => {
-          lottieRef?.current?.play();
+          setAnimationPlaying(true);
         }}
-        onMouseLeave={() => lottieRef?.current?.stop()}
       >
-        <Lottie options={defaultOptions} ref={lottieRef} />
+        <Lottie
+          options={defaultOptions}
+          isStopped={!animationPlaying}
+          ref={lottieRef}
+          height={40}
+          width={40}
+          eventListeners={[
+            {
+              eventName: "complete",
+              callback: () => {
+                setAnimationPlaying(false);
+              },
+            },
+          ]}
+        />
       </div>
     );
     // <img
