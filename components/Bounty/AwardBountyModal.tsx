@@ -400,19 +400,38 @@ function AwardBountyModal({
     setUserAwardMap(userMap);
   };
 
+  function round(value, decimals) {
+    return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+  }
+
   const distributeOnUpvote = () => {
     const awardMap = {};
     let totalUpvotes = 0;
     threads.forEach((thread) => {
       totalUpvotes += thread.data.score;
     });
+    let total = 0;
+    let firstKey = "";
     threads.forEach((thread) => {
       const author = thread.data.created_by.author_profile;
 
       const mapKey = `${author.user}-${thread?.data.id}-award`;
 
-      awardMap[mapKey] = (thread.data.score / totalUpvotes) * bountyAmount;
+      if (!firstKey) {
+        firstKey = mapKey;
+      }
+      const amount = round(
+        (thread.data.score / totalUpvotes) * bountyAmount,
+        2
+      );
+      awardMap[mapKey] = amount;
+      total += amount;
     });
+
+    const remaining = bountyAmount - total;
+
+    awardMap[firstKey] = round(awardMap[firstKey] + remaining, 2);
+
     setUserAwardMap(awardMap);
   };
 
