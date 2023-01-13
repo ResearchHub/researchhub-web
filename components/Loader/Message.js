@@ -51,7 +51,13 @@ class Message extends Component {
   render() {
     let { message } = this.props;
     return (
-      <div className={css(styles.popupMessage, !message.show && styles.hide)}>
+      <div
+        className={css(
+          styles.popupMessage,
+          !message.show && styles.hide,
+          message.load && styles.load
+        )}
+      >
         {message.load ? (
           <Loader loading={true} />
         ) : (
@@ -88,6 +94,9 @@ var styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 999999,
     whiteSpace: "pre-wrap",
+  },
+  load: {
+    // background: "",
   },
   hide: {
     display: "none",
