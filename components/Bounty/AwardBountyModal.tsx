@@ -476,6 +476,7 @@ function AwardBountyModal({
             <div className={css(awardUserStyles.rscText)}>{" RSC"}</div>
           </div>
         </div>
+        <div className={css(styles.distribute)}>Distribute based on Upvote</div>
         <Button
           label={"Award Bounty"}
           customButtonStyle={styles.awardButton}
@@ -599,6 +600,11 @@ const styles = StyleSheet.create({
   labelStyle: {
     fontWeight: 500,
   },
+  distribute: {
+    color: colors.NEW_BLUE(),
+    fontSize: 14,
+    textDecoration: "underline",
+  },
   awardRipple: {
     width: "100%",
     marginTop: 16,
@@ -619,10 +625,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cancelButton: {
+    color: colors.NEW_BLUE(1),
+    background: "#fff",
+    border: "none",
+
     ":hover": {
-      background: "#fff",
       color: colors.NEW_BLUE(1),
-      borderColor: colors.NEW_BLUE(1),
+      background: "#fff",
+      border: "none",
+
       opacity: 0.6,
     },
   },
