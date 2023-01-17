@@ -50,7 +50,6 @@ const ContributionHeader = ({ entry }: Args) => {
     contentBadgeLabel = item.amount + " Bounty";
   } else if (contentType.name === "rsc_support") {
     item = item as RscSupportContributionItem;
-    // debugger;
     contentBadgeLabel = item.amount + " Supported";
     if (item.source.contentType.name === "comment") {
       actionLabel = (
