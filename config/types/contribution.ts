@@ -307,12 +307,21 @@ export const parseSupportSourceItem = (
 export const parseRscSupportContributionItem = (
   raw: any
 ): RscSupportContributionItem => {
+  let createdBy;
+  let recipient;
+  if (raw.item.content_type.app_label === "discussion") {
+    createdBy = parseCreatedBy(raw.created_by);
+    recipient = parseCreatedBy(raw.item.user);
+  } else {
+    createdBy = parseCreatedBy(raw.item.user);
+    recipient = parseCreatedBy(raw.created_by);
+  }
   const mapped = {
-    createdBy: parseCreatedBy(raw.item.user),
+    createdBy: createdBy,
     createdDate: raw.created_date,
     source: parseSupportSourceItem(raw.item.source, raw.item.content_type),
     amount: parseFloat(raw.item.amount),
-    recipient: parseCreatedBy(raw.created_by),
+    recipient: recipient,
   };
 
   return mapped;
