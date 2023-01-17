@@ -308,11 +308,11 @@ export const parseRscSupportContributionItem = (
   raw: any
 ): RscSupportContributionItem => {
   const mapped = {
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseCreatedBy(raw.item.user),
     createdDate: raw.created_date,
     source: parseSupportSourceItem(raw.item.source, raw.item.content_type),
     amount: parseFloat(raw.item.amount),
-    recipient: parseCreatedBy(raw.item.user),
+    recipient: parseCreatedBy(raw.created_by),
   };
 
   return mapped;
