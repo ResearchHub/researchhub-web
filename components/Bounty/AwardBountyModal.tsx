@@ -288,6 +288,17 @@ function AwardBountyModal({
     setRemainingAwardAmount(bountyAmount);
   };
 
+  useEffect(() => {
+    if (threads[0]) {
+      const author = threads[0]?.data?.created_by?.author_profile;
+      const comment = threads[0];
+      const key = `${author?.user}-${comment?.data?.id}-award`;
+      const awardMapping = {};
+      awardMapping[key] = bountyAmount;
+      setUserAwardMap(awardMapping);
+    }
+  }, [threads]);
+
   const awardBounty = async () => {
     if (remainingAwardAmount !== 0) {
       setMessage("Award your entire bounty to continue.");
