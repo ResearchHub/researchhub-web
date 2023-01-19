@@ -131,6 +131,10 @@ const BountyAlert = ({
     return thread?.data?.discussion_post_type === "ANSWER";
   });
 
+  answerThreads.sort((thread1, thread2) => {
+    return thread2.data.score - thread1.data.score;
+  });
+
   return (
     <div className={css(styles.bountyAlert)}>
       <BountyModal
