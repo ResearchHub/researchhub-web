@@ -413,7 +413,10 @@ function AwardBountyModal({
   };
 
   function round(value, decimals) {
-    return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+    const includeE = value.toString().includes("e");
+    return includeE
+      ? Number(Math.round(value))
+      : Number(Math.round(value + "e" + decimals) + "e-" + decimals);
   }
 
   const distributeOnUpvote = () => {
