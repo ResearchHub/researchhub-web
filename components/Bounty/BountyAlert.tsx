@@ -127,8 +127,6 @@ const BountyAlert = ({
     }
   };
 
-  // console.log(threads[1].discussion_post_type);
-
   const answerThreads = threads?.filter((thread) => {
     return thread?.data?.discussion_post_type === "ANSWER";
   });
