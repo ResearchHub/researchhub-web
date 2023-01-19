@@ -408,7 +408,7 @@ function AwardBountyModal({
 
     const val = parseInt(value, 10);
 
-    if (val < 0) {
+    if (val < 0 || isNaN(value)) {
       return;
     }
 
