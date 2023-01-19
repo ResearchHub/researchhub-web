@@ -301,7 +301,7 @@ function AwardBountyModal({
   }, [threads]);
 
   const awardBounty = async () => {
-    if (remainingAwardAmount !== 0) {
+    if (round(remainingAwardAmount, 2) !== 0) {
       setMessage("Award your entire bounty to continue.");
       showMessage({ show: true, error: true });
       return;
@@ -551,7 +551,9 @@ function AwardBountyModal({
           </div>
 
           <div className={css(awardUserStyles.awardColumn)}>
-            <div className={css(styles.rscLeft)}>{remainingAwardAmount}</div>
+            <div className={css(styles.rscLeft)}>
+              {round(remainingAwardAmount, 2)}
+            </div>
             <ResearchCoinIcon
               width={20}
               height={20}
