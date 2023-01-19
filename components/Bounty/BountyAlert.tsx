@@ -127,6 +127,12 @@ const BountyAlert = ({
     }
   };
 
+  // console.log(threads[1].discussion_post_type);
+
+  const answerThreads = threads?.filter((thread) => {
+    return thread?.data?.discussion_post_type === "ANSWER";
+  });
+
   return (
     <div className={css(styles.bountyAlert)}>
       <BountyModal
@@ -145,7 +151,7 @@ const BountyAlert = ({
       />
       <AwardBountyModal
         isOpen={isAwardBountyModalOpen}
-        threads={threads}
+        threads={answerThreads}
         bountyAmount={amount}
         setHasBounties={setHasBounties}
         allBounties={allBounties}

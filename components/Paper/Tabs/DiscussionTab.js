@@ -576,6 +576,7 @@ const DiscussionTab = (props) => {
     setFetching(false);
     setLoading(false);
     setThreads(threads);
+    console.log(threads);
     setFormattedThreads(formatThreads(threads, basePath));
     setThreadProp && setThreadProp(formatThreads(threads, basePath));
   };
