@@ -36,6 +36,7 @@ function AwardUserRow({
 
   let selectedVoteType =
     comment.data.user_vote && comment.data.user_vote.vote_type;
+
   if (selectedVoteType === 1) {
     selectedVoteType = UPVOTE;
   } else if (selectedVoteType === 2) {
@@ -419,24 +420,26 @@ function AwardBountyModal({
     const awardMap = {};
     let totalUpvotes = 0;
     threads.forEach((thread) => {
-      totalUpvotes += thread.data.score;
+      totalUpvotes += thread.data.score >= 0 ? thread.data.score : 0;
     });
     let total = 0;
     let firstKey = "";
     threads.forEach((thread) => {
-      const author = thread.data.created_by.author_profile;
+      if (thread.data.score > 0) {
+        const author = thread.data.created_by.author_profile;
+        const mapKey = `${author.user}-${thread?.data.id}-award`;
 
-      const mapKey = `${author.user}-${thread?.data.id}-award`;
+        if (!firstKey) {
+          firstKey = mapKey;
+        }
+        const amount = round(
+          (thread.data.score / totalUpvotes) * bountyAmount,
+          2
+        );
 
-      if (!firstKey) {
-        firstKey = mapKey;
+        awardMap[mapKey] = amount;
+        total += amount;
       }
-      const amount = round(
-        (thread.data.score / totalUpvotes) * bountyAmount,
-        2
-      );
-      awardMap[mapKey] = amount;
-      total += amount;
     });
 
     const remaining = bountyAmount - total;

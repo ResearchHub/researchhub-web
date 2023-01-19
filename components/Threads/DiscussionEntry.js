@@ -557,6 +557,8 @@ class DiscussionEntry extends Component {
 
   updateWidgetUI = (vote) => {
     const voteType = vote.voteType;
+    let selectedVoteType = null;
+    const { onVote } = this.props;
     let score = this.state.score;
     if (voteType === UPVOTE) {
       if (voteType) {
@@ -569,6 +571,7 @@ class DiscussionEntry extends Component {
       } else {
         score += 1;
       }
+      selectedVoteType = UPVOTE;
       this.setState({
         selectedVoteType: UPVOTE,
         score,
@@ -583,6 +586,7 @@ class DiscussionEntry extends Component {
       } else {
         score -= 1;
       }
+      selectedVoteType = DOWNVOTE;
       this.setState({
         selectedVoteType: DOWNVOTE,
         score,
@@ -594,11 +598,16 @@ class DiscussionEntry extends Component {
         score += 1;
       }
 
+      selectedVoteType = null;
+
       this.setState({
         selectedVoteType: null,
         score,
       });
     }
+
+    onVote &&
+      onVote({ score, index: this.props.index, voteType: selectedVoteType });
   };
 
   onBountyAward = ({ bountyAmount }) => {

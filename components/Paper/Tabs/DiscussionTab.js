@@ -113,6 +113,7 @@ const DiscussionTab = (props) => {
 
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));
+    setThreadProp && setThreadProp(formatThreads(threads, basePath));
   }
 
   function handleAwardedBounty(e) {
@@ -156,6 +157,7 @@ const DiscussionTab = (props) => {
 
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));
+    setThreadProp && setThreadProp(formatThreads(threads, basePath));
   }
 
   function handleDiscussionDeleted(e) {
@@ -273,6 +275,7 @@ const DiscussionTab = (props) => {
                       hostname={hostname}
                       hoverEvents
                       path={path}
+                      index={i}
                       newCard={transition && i === 0} //conditions when a new card is made
                       mobileView={mobileView}
                       discussionCount={calculatedCount}
@@ -283,7 +286,13 @@ const DiscussionTab = (props) => {
                       bountyType={props.bountyType}
                       currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
-                      // context="DOCUMENT"
+                      onVote={({ score, index, voteType }) => {
+                        const newThreads = [...threads];
+
+                        newThreads[index].data.score = score;
+                        newThreads[index].data.user_vote.vote_type = voteType;
+                        setThreadProp && setThreadProp(newThreads);
+                      }}
                       isAcceptedAnswer={formattedThreadData.is_accepted_answer}
                       handleAwardBounty={handleAwardBounty}
                     />
@@ -438,6 +447,8 @@ const DiscussionTab = (props) => {
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+        setThreadProp &&
+          setThreadProp([formattedDiscussion, ...formattedThreads]);
         cancel();
 
         // amp events
@@ -576,7 +587,6 @@ const DiscussionTab = (props) => {
     setFetching(false);
     setLoading(false);
     setThreads(threads);
-    console.log(threads);
     setFormattedThreads(formatThreads(threads, basePath));
     setThreadProp && setThreadProp(formatThreads(threads, basePath));
   };
