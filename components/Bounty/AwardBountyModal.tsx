@@ -406,6 +406,12 @@ function AwardBountyModal({
     //   parseInt(remainingAwardAmount, 10) - (value ? parseInt(value, 10) : 0);
     // setRemainingAwardAmount(amount);
 
+    const val = parseInt(value, 10);
+
+    if (val < 0) {
+      return;
+    }
+
     const userMap = { ...userAwardMap };
 
     userMap[id] = value ? parseInt(value, 10) : 0;
