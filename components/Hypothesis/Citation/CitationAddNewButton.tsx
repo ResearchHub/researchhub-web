@@ -99,5 +99,6 @@ const styles = StyleSheet.create({
   buttonInner: {
     display: "flex",
     alignItems: "center",
+    color: "#fff",
   },
 });
