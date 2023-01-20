@@ -92,7 +92,7 @@ const ContentSupport = (props) => {
     if (fetching) {
       return (
         <span className={css(styles.count)}>
-          <Loader loading={true} size={5} />
+          <Loader loading={true} size={5} type="clip" />
         </span>
       );
     }
