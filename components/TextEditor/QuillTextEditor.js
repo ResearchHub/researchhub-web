@@ -495,7 +495,9 @@ class Editor extends Component {
               onClick={null}
               hideRipples
               disabled={this.state.submitDisabled}
-              label={<Loader loading={true} color={"#FFF"} size={20} />}
+              label={
+                <Loader loading={true} color={"#FFF"} size={20} type="clip" />
+              }
               customButtonStyle={[
                 toolbarStyles.postButtonStyle,
                 isRequestMode && toolbarStyles.requestButton,
