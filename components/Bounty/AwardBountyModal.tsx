@@ -333,7 +333,6 @@ function AwardBountyModal({
             // @ts-ignore
             documentId: router.query.documentId,
             onSuccess: (response) => {
-              debugger;
               const event = new CustomEvent("answer-accepted", {
                 detail: {
                   threadId: key.split("-")[1],

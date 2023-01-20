@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AUTH_TOKEN as TOKEN_NAME } from "../config/constants";
 
 const ALLOWED_ORIGINS = [
@@ -37,6 +37,7 @@ export default function withWebSocket(
 ) {
   return (props) => {
     const url = props.wsUrl || _url;
+    const urlRef = useRef(null);
     const connectAttemptLimit = props.wsConnectAttemptLimit || 5;
 
     const [ws, setWs] = useState(null);
@@ -50,23 +51,22 @@ export default function withWebSocket(
     useEffect(stopConnectAttempts, [connectAttempts]);
 
     function configureWebSocket() {
-      if (!connected) {
-        let token = null;
-        if (props.wsAuth) {
-          try {
-            token = window.localStorage[TOKEN_NAME];
-          } catch (err) {
-            console.error("Did not find auth token");
-            return err;
-          }
-          const webSocket = new WebSocket(url, ["Token", token]);
-          setWs(webSocket);
-        } else {
-          const webSocket = new WebSocket(url);
-          setWs(webSocket);
+      let token = null;
+      if (props.wsAuth) {
+        try {
+          token = window.localStorage[TOKEN_NAME];
+        } catch (err) {
+          console.error("Did not find auth token");
+          return err;
         }
-        setConnectAttempts(connectAttempts + 1);
+        const webSocket = new WebSocket(url, ["Token", token]);
+        setWs(webSocket);
+      } else {
+        const webSocket = new WebSocket(url);
+        setWs(webSocket);
       }
+      urlRef.current = url;
+      setConnectAttempts(connectAttempts + 1);
     }
 
     function stopConnectAttempts() {
