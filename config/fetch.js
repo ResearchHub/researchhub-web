@@ -166,10 +166,12 @@ export const createNoteTemplate = (params) => {
     .then(Helpers.parseJSON);
 };
 
-export const deleteNote = (noteId) => {
+export const deleteNote = ({ noteId, onSuccess, onError }) => {
   return fetch(API.NOTE_DELETE({ noteId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    .then(Helpers.parseJSON)
+    .then(onSuccess)
+    .catch(onError);
 };
 
 export const fetchOrgNotes = ({ orgId, slug, orgSlug }, authToken) => {

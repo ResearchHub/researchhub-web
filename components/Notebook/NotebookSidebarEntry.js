@@ -14,6 +14,7 @@ const NotebookSidebarEntry = ({
   note,
   redirectToNote,
   title,
+  nextNoteID,
 }) => {
   const noteId = String(note.id);
   const [isHovered, setIsHovered] = useState(false);
@@ -35,6 +36,10 @@ const NotebookSidebarEntry = ({
           redirectToNote={redirectToNote}
           show={isHovered}
           title={title}
+          nextNotePath={getNotePathname({
+            noteId: nextNoteID,
+            org: currentOrg,
+          })}
         />
       )}
     </Link>

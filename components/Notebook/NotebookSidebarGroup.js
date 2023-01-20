@@ -90,7 +90,7 @@ const NotebookSidebarGroup = ({
         </div>
       )}
       {!isHidden &&
-        notes.map((note) => {
+        notes.map((note, i) => {
           return (
             <NotebookSidebarEntry
               currentNoteId={currentNoteId}
@@ -102,6 +102,7 @@ const NotebookSidebarGroup = ({
               redirectToNote={redirectToNote}
               title={titles[note.id]}
               titles={titles}
+              nextNoteID={notes[i + 1]?.id ?? null}
             />
           );
         })}

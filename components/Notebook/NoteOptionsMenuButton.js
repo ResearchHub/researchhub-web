@@ -20,10 +20,13 @@ import {
 } from "~/config/fetch";
 import { useAlert } from "react-alert";
 import { useState } from "react";
+import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
 
 const NoteOptionsMenuButton = ({
   currentOrg,
   customButtonStyles,
+  nextNotePath,
   note,
   redirectToNote,
   setMessage,
@@ -35,7 +38,7 @@ const NoteOptionsMenuButton = ({
   const alert = useAlert();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [menuLoading, setMenuLoading] = useState(false);
-
+  const router = useRouter();
   const noteId = String(note.id);
   const menuItems = [
     {
@@ -172,7 +175,13 @@ const NoteOptionsMenuButton = ({
           onClick: async () => {
             setMenuLoading(true);
             try {
-              const deletedNote = await deleteNote(noteId);
+              const deletedNote = await deleteNote({
+                noteId,
+                onSuccess: () => {
+                  router.replace("/[orgSlug]/notebook/[id]", nextNotePath);
+                },
+                onError: emptyFncWithMsg,
+              });
             } catch (error) {
               setMessage("Failed to delete note");
               showMessage({ show: true, error: true });
