@@ -271,7 +271,7 @@ const ELNEditor = ({
       <div ref={sidebarElementRef} className="sidebar" />
       {ELNLoading && (
         <div className={css(styles.loader)}>
-          <Loader type="clip" size={50} />
+          <Loader size={50} />
         </div>
       )}
     </div>

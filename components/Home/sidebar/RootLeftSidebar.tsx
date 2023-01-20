@@ -551,8 +551,8 @@ const styles = StyleSheet.create({
     padding: "0 26px",
     userSelect: "none",
     justifyContent: "flex-start",
-    // margin: "0 auto",
     width: "100%",
+    paddingLeft: 18,
   },
   logoContainerMin: {
     padding: 0,
@@ -564,7 +564,8 @@ const styles = StyleSheet.create({
   },
   researchHubLogoText: {
     height: 14.05,
-    marginLeft: 11.5,
+    marginLeft: 4,
+    marginTop: 6,
     objectFit: "contain",
     transform: "translateY(20%)",
     // marginTop: 10,

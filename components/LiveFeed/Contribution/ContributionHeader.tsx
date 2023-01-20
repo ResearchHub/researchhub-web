@@ -79,7 +79,8 @@ const ContributionHeader = ({ entry }: Args) => {
     } else {
       actionLabel = (
         <>
-          supported authors{` `}
+          supported{` `}
+          <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
           &nbsp;
           <ResearchCoinIcon
             overrideStyle={styles.rscIcon}

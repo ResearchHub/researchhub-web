@@ -1,5 +1,8 @@
 import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
+import Lottie from "react-lottie";
+import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
+import { useRef, useState } from "react";
 
 type Props = {
   iconStyle: StyleDeclarationValue;
@@ -8,6 +11,17 @@ type Props = {
 };
 
 export default function RHLogo({ iconStyle, white, withText }: Props) {
+  const [animationPlaying, setAnimationPlaying] = useState(false);
+  const lottieRef = useRef();
+  const lottieTimeout = useRef();
+  const defaultOptions = {
+    loop: false,
+    animationData: FlaskAnimation,
+    autoplay: false,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
   // intentional strict check
   if (withText === true) {
     return (
@@ -20,13 +34,34 @@ export default function RHLogo({ iconStyle, white, withText }: Props) {
     );
   } else if (withText === false) {
     return (
-      <img
-        src={"/static/ResearchHubIcon.png"}
-        className={css(styles.logoNoText, iconStyle && iconStyle)}
-        draggable={false}
-        alt="RH Logo"
-      />
+      <div
+        onMouseEnter={() => {
+          setAnimationPlaying(true);
+        }}
+      >
+        <Lottie
+          options={defaultOptions}
+          isStopped={!animationPlaying}
+          ref={lottieRef}
+          height={40}
+          width={40}
+          eventListeners={[
+            {
+              eventName: "complete",
+              callback: () => {
+                setAnimationPlaying(false);
+              },
+            },
+          ]}
+        />
+      </div>
     );
+    // <img
+    //   src={"/static/ResearchHubIcon.png"}
+    //   className={css(styles.logoNoText, iconStyle && iconStyle)}
+    //   draggable={false}
+    //   alt="RH Logo"
+    // />
   } else {
     return (
       <div className={css(styles.RhLogoContainer)}>
