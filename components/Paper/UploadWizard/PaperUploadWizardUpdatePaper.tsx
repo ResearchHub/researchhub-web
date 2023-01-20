@@ -236,7 +236,7 @@ function PaperUploadWizardUpdatePaper({
             setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
           }
           placeholder={isEmpty(asyncDOI) ? "" : "DOI"}
-          icon={isEmpty(asyncDOI) && <Loader size={14} />}
+          icon={isEmpty(asyncDOI) && <Loader type="clip" size={14} />}
           value={doi}
           iconStyles={styles.loaderStyle}
         />
