@@ -113,30 +113,51 @@ const DiscussionTab = (props) => {
 
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));
+    setThreadProp && setThreadProp(formatThreads(threads, basePath));
   }
 
   function handleAwardedBounty(e) {
-    const awardedThreadId = e.detail.objectId;
-    const awardedAmount = e.detail.amount;
+    let updatedThreads = [...threads];
+    if (e.detail.multiAward) {
+      e.detail.multiAward.forEach((award) => {
+        const awardedThreadId = award.objectId;
+        const awardedAmount = award.amount;
+        updatedThreads = updatedThreads.map((t) => {
+          if (t.id === awardedThreadId) {
+            if (t.awarded_bounty_amount) {
+              t.awarded_bounty_amount =
+                parseFloat(t.awarded_bounty_amount) +
+                parseFloat(awardedAmount + "" || "0");
+            } else {
+              t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+            }
+          }
 
-    const updatedThreads = threads.map((t) => {
-      if (t.id === awardedThreadId) {
-        if (t.awarded_bounty_amount) {
-          t.awarded_bounty_amount =
-            parseFloat(t.awarded_bounty_amount) +
-            parseFloat(awardedAmount + "" || "0");
-        } else {
-          t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+          return t;
+        });
+      });
+    } else {
+      const awardedThreadId = e.detail.objectId;
+      const awardedAmount = e.detail.amount;
+
+      updatedThreads = updatedThreads.map((t) => {
+        if (t.id === awardedThreadId) {
+          if (t.awarded_bounty_amount) {
+            t.awarded_bounty_amount =
+              parseFloat(t.awarded_bounty_amount) +
+              parseFloat(awardedAmount + "" || "0");
+          } else {
+            t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+          }
         }
 
         return t;
-      }
-
-      return t;
-    });
+      });
+    }
 
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));
+    setThreadProp && setThreadProp(formatThreads(threads, basePath));
   }
 
   function handleDiscussionDeleted(e) {
@@ -237,6 +258,7 @@ const DiscussionTab = (props) => {
                     data?.source === "citation_comment"
                       ? { ...data, text: data.text?.content ?? null }
                       : data;
+
                   return (
                     <DiscussionEntry
                       key={`thread-${formattedThreadData.id}`}
@@ -253,6 +275,7 @@ const DiscussionTab = (props) => {
                       hostname={hostname}
                       hoverEvents
                       path={path}
+                      index={i}
                       newCard={transition && i === 0} //conditions when a new card is made
                       mobileView={mobileView}
                       discussionCount={calculatedCount}
@@ -263,7 +286,13 @@ const DiscussionTab = (props) => {
                       bountyType={props.bountyType}
                       currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
-                      // context="DOCUMENT"
+                      onVote={({ score, index, voteType }) => {
+                        const newThreads = [...threads];
+
+                        newThreads[index].data.score = score;
+                        newThreads[index].data.user_vote.vote_type = voteType;
+                        setThreadProp && setThreadProp(newThreads);
+                      }}
                       isAcceptedAnswer={formattedThreadData.is_accepted_answer}
                       handleAwardBounty={handleAwardBounty}
                     />
@@ -418,6 +447,8 @@ const DiscussionTab = (props) => {
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+        setThreadProp &&
+          setThreadProp([formattedDiscussion, ...formattedThreads]);
         cancel();
 
         // amp events

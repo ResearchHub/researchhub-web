@@ -35,7 +35,7 @@ const ContentSupport = (props) => {
     setCount(
       parseFloat((data?.promoted || 0) + data?.awarded_bounty_amount) || 0
     );
-  }, [data]);
+  }, [data.awarded_bounty_amount]);
 
   useEffect(() => {
     if (awardedBountyAmount) {

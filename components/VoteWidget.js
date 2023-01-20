@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { connect, useDispatch, useStore } from "react-redux";
@@ -54,6 +54,8 @@ const VoteWidget = (props) => {
     pillClass,
     small,
     onNeutralVote,
+    disableUpvote,
+    disableDownvote,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -66,7 +68,6 @@ const VoteWidget = (props) => {
     permission.success &&
       userReputation < permission.data.DownvotePaper.minimumReputation
   );
-
   const [upvoteSelected, setUpvoteSelected] = useState(
     selected === UPVOTE || selected === UPVOTE_ENUM
   );
@@ -145,6 +146,8 @@ const VoteWidget = (props) => {
   }
 
   const displayableScore = getScore(props);
+  const noDownvote = upvoteDisabled || searchResult || disableUpvote;
+  const noUpvote = upvoteDisabled || searchResult || disableUpvote;
 
   return (
     <div
@@ -157,12 +160,13 @@ const VoteWidget = (props) => {
     >
       <PermissionNotificationWrapper
         loginRequired={true}
-        onClick={onUpvoteClick}
+        onClick={!noUpvote && onUpvoteClick}
         modalMessage={"vote"}
+        hideRipples={noUpvote}
       >
         <UpvoteButton
           selected={upvoteSelected}
-          disabled={upvoteDisabled || searchResult}
+          disabled={noUpvote}
           horizontalView={horizontalView && horizontalView}
           styleClass={upvoteStyleClass}
           small={small}
@@ -186,12 +190,13 @@ const VoteWidget = (props) => {
       />
       <PermissionNotificationWrapper
         loginRequired={true}
-        onClick={onDownvoteClick}
+        onClick={!noDownvote && onDownvoteClick}
         modalMessage={"vote"}
+        hideRipples={noDownvote}
       >
         <DownvoteButton
           selected={downvoteSelected}
-          disabled={downvoteDisabled || searchResult}
+          disabled={downvoteDisabled || searchResult || disableDownvote}
           horizontalView={horizontalView && horizontalView}
           styleClass={downvoteStyleClass}
           small={small}
@@ -210,7 +215,7 @@ VoteWidget.propTypes = {
   width: PropTypes.string,
 };
 
-const ScorePill = (props) => {
+export const ScorePill = (props) => {
   const { score, small, pillClass } = props;
 
   const isScoreNumeric = !isNaN(score);
@@ -242,11 +247,12 @@ const VoteButton = (props) => {
 
   let style = [styles.icon];
 
-  if (selected) {
-    style.push(styles.selected);
-  }
   if (disabled) {
     style = [styles.iconDisabled];
+  }
+
+  if (selected) {
+    style.push(styles.selected);
   }
   if (horizontalView) {
     style.push(styles.horizontalViewButton);
@@ -266,7 +272,7 @@ const VoteButton = (props) => {
   }
 
   return (
-    <div className={css(...style)} onClick={onClick}>
+    <div className={css(...style)} onClick={!disabled && onClick}>
       {props.children}
     </div>
   );
@@ -430,7 +436,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export { ScorePill };
 const mapDispatchToProps = {
   postUpvotePending: DiscussionActions.postUpvotePending,
   postUpvote: DiscussionActions.postUpvote,
