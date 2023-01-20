@@ -316,9 +316,10 @@ function AwardBountyModal({
     setBountyAwardLoading(true);
     const allFetches: Promise<Response>[] = []; // todo: make this a promise array
     const metadataArray: any[] = [];
-    allBounties.forEach((bounty) => {
+    allBounties.forEach(async (bounty) => {
       const keys = Object.keys(userAwardMap);
-      keys.forEach((key) => {
+      const acceptedAnswers = [];
+      keys.forEach(async (key) => {
         if (userAwardMap[key]) {
           metadataArray.push({
             recipient_id: key.split("-")[0],
@@ -326,6 +327,10 @@ function AwardBountyModal({
             amount: userAwardMap[key],
             object_id: key.split("-")[1],
           });
+          acceptedAnswers.push({
+            detail: { threadId: key.split("-")[1] },
+          });
+
           acceptAnswerAPI({
             documentType: documentType,
             threadId: key.split("-")[1],
@@ -333,13 +338,7 @@ function AwardBountyModal({
             // @ts-ignore
             documentId: router.query.documentId,
             onSuccess: (response) => {
-              const event = new CustomEvent("answer-accepted", {
-                detail: {
-                  threadId: key.split("-")[1],
-                },
-              });
-
-              document.dispatchEvent(event);
+              return { detail: { threadId: key.split("-")[1] } };
             },
             onError: (error) => {
               setMessage("Failed to set accepted answer");
@@ -351,6 +350,13 @@ function AwardBountyModal({
           });
         }
       });
+
+      const event = new CustomEvent("answer-accepted", {
+        detail: {
+          multiAward: acceptedAnswers,
+        },
+      });
+      document.dispatchEvent(event);
 
       const data = {
         multi_bounty_approval_metadata: metadataArray,

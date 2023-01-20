@@ -99,17 +99,32 @@ const DiscussionTab = (props) => {
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   function handleAcceptedAnswer(e) {
-    const newAnswerId = parseInt(e.detail.threadId, 10);
+    let updatedThreads = [...threads];
+    if (e.detail.multiAward) {
+      e.detail.multiAward.forEach((award) => {
+        const curThreadId = parseInt(award.detail.threadId, 10);
 
-    const updatedThreads = threads.map((t) => {
-      if (t.id === newAnswerId) {
-        t.is_accepted_answer = true;
-      } else if (t.id !== newAnswerId && t.is_accepted_answer === true) {
-        t.is_accepted_answer = false;
-      }
+        updatedThreads = updatedThreads.map((t) => {
+          if (t.id === curThreadId) {
+            t.is_accepted_answer = true;
+          }
 
-      return t;
-    });
+          return t;
+        });
+      });
+    } else {
+      const newAnswerId = parseInt(e.detail.threadId, 10);
+
+      updatedThreads = threads.map((t) => {
+        if (t.id === newAnswerId) {
+          t.is_accepted_answer = true;
+        } else if (t.id !== newAnswerId && t.is_accepted_answer === true) {
+          t.is_accepted_answer = false;
+        }
+
+        return t;
+      });
+    }
 
     setThreads(updatedThreads);
     setFormattedThreads(formatThreads(threads, basePath));

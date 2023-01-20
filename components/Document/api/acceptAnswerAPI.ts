@@ -19,7 +19,7 @@ export default function acceptAnswerAPI({
   onSuccess,
   onError,
   commentId,
-}: Args): void {
+}: Args): Promise<any> {
   const url =
     API.buildPaperChainUrl(
       documentType,
@@ -28,7 +28,7 @@ export default function acceptAnswerAPI({
       threadId,
       commentId
     ) + "mark_as_accepted_answer/";
-  fetch(url, API.POST_CONFIG({}))
+  return fetch(url, API.POST_CONFIG({}))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((_res) => onSuccess())
