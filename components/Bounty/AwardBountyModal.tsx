@@ -301,6 +301,12 @@ function AwardBountyModal({
   }, [threads]);
 
   const awardBounty = async () => {
+    if (round(remainingAwardAmount, 2) > 0) {
+      setMessage("Award cannot exceed bounty amount.");
+      showMessage({ show: true, error: true });
+      return;
+    }
+
     if (round(remainingAwardAmount, 2) !== 0) {
       setMessage("Award your entire bounty to continue.");
       showMessage({ show: true, error: true });
@@ -327,6 +333,7 @@ function AwardBountyModal({
             // @ts-ignore
             documentId: router.query.documentId,
             onSuccess: (response) => {
+              debugger;
               const event = new CustomEvent("answer-accepted", {
                 detail: {
                   threadId: key.split("-")[1],
