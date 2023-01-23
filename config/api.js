@@ -812,7 +812,7 @@ const routes = (BASE_URL) => {
       };
 
       if (backendFilters.type === "bounty") {
-        params.querystring.status = "OPEN";
+        params.querystring.tags = "open";
       }
 
       const finalUrl = prepURL(url, params);
