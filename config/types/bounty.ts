@@ -24,7 +24,7 @@ export enum BOUNTY_STATUS {
 export const fetchBounty = ({ unifiedDocId }) => {
   const url = generateApiUrl(
     `bounty`,
-    `?item_object_id=${unifiedDocId}&status=OPEN`
+    `?item_object_id=${unifiedDocId}&tags=open`
   );
   return fetch(url, api.GET_CONFIG())
     .then(Helpers.checkStatus)
