@@ -23,7 +23,7 @@ export const fetchOpenBounties = ({ onError, onSuccess, page }: Args): void => {
   fetch(
     buildApiUri({
       apiPath: "bounty/get_bounties",
-      queryString: "?status=OPEN",
+      queryString: "?tags=open",
     }),
     API.GET_CONFIG()
   )
