@@ -330,6 +330,36 @@ const LoginModal = ({
                 peer-reviews, publications and more.
               </p>
             </div>
+
+            <GoogleLoginButton
+              styles={[styles.button, styles.googleButton]}
+              customLabel={`Continue with Google`}
+              isLoggedIn={false}
+              disabled={false}
+            />
+
+            <div
+              style={{
+                borderTop: `1px solid ${colors.LIGHT_GREY()}`,
+                position: "relative",
+                marginBottom: 25,
+                marginTop: 25,
+              }}
+            >
+              <span
+                style={{
+                  background: "white",
+                  padding: "5px 15px",
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  top: -15,
+                  fontSize: 14,
+                }}
+              >
+                or
+              </span>
+            </div>
             <FormInput
               required
               containerStyle={styles.inputContainer}
@@ -361,39 +391,9 @@ const LoginModal = ({
                 isLoading ? (
                   <Loader loading={true} size={16} color={"white"} />
                 ) : (
-                  "Continue"
+                  "Continue with Email"
                 )
               }
-            />
-
-            <div
-              style={{
-                borderTop: `1px solid ${colors.LIGHT_GREY()}`,
-                position: "relative",
-                marginBottom: 25,
-                marginTop: 25,
-              }}
-            >
-              <span
-                style={{
-                  background: "white",
-                  padding: "5px 15px",
-                  position: "absolute",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  top: -15,
-                  fontSize: 14,
-                }}
-              >
-                or
-              </span>
-            </div>
-
-            <GoogleLoginButton
-              styles={[styles.button, styles.googleButton]}
-              customLabel={`Continue with Google`}
-              isLoggedIn={false}
-              disabled={false}
             />
           </div>
         ) : step === "LOGIN_WITH_EMAIL_FORM" ? (
