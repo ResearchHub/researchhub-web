@@ -10,6 +10,7 @@ type Args = {
   onSuccess: Function;
   onError: Function;
   commentId?: ID;
+  paperId?: ID;
 };
 
 export default function acceptAnswerAPI({
@@ -19,11 +20,12 @@ export default function acceptAnswerAPI({
   onSuccess,
   onError,
   commentId,
+  paperId,
 }: Args): Promise<any> {
   const url =
     API.buildPaperChainUrl(
       documentType,
-      null,
+      paperId,
       documentId,
       threadId,
       commentId

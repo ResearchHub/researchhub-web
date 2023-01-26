@@ -134,23 +134,59 @@ const DiscussionTab = (props) => {
   function handleAwardedBounty(e) {
     let updatedThreads = [...threads];
     if (e.detail.multiAward) {
-      e.detail.multiAward.forEach((award) => {
-        const awardedThreadId = award.objectId;
-        const awardedAmount = award.amount;
-        updatedThreads = updatedThreads.map((t) => {
-          if (t.id === awardedThreadId) {
-            if (t.awarded_bounty_amount) {
-              t.awarded_bounty_amount =
-                parseFloat(t.awarded_bounty_amount) +
-                parseFloat(awardedAmount + "" || "0");
-            } else {
-              t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
-            }
+      let threadIndex = null;
+      if (e.detail.commentBountyAward) {
+        const commentAwardMap = {};
+        e.detail.multiAward.forEach((award) => {
+          commentAwardMap[award.objectId] = award.amount;
+        });
+
+        updatedThreads = updatedThreads.map((t, index) => {
+          if (t.id === e.detail.bountyThreadId) {
+            t.bounties[0].status = "CLOSED";
+            threadIndex = index;
           }
 
           return t;
         });
-      });
+
+        updatedThreads[threadIndex].comments = updatedThreads[
+          threadIndex
+        ].comments.map((comment) => {
+          const awardedAmount = commentAwardMap[comment.id];
+          if (awardedAmount) {
+            if (comment.awarded_bounty_amount) {
+              comment.awarded_bounty_amount =
+                parseFloat(comment.awarded_bounty_amount) +
+                parseFloat(awardedAmount + "" || "0");
+            } else {
+              comment.awarded_bounty_amount = parseFloat(
+                awardedAmount + "" || "0"
+              );
+            }
+          }
+        });
+      } else {
+        e.detail.multiAward.forEach((award) => {
+          const awardedObjectId = award.objectId;
+          const awardedAmount = award.amount;
+          updatedThreads = updatedThreads.map((t) => {
+            if (t.id === awardedObjectId) {
+              if (t.awarded_bounty_amount) {
+                t.awarded_bounty_amount =
+                  parseFloat(t.awarded_bounty_amount) +
+                  parseFloat(awardedAmount + "" || "0");
+              } else {
+                t.awarded_bounty_amount = parseFloat(awardedAmount + "" || "0");
+              }
+            }
+
+            return t;
+          });
+        });
+      }
+
+      debugger;
     } else {
       const awardedThreadId = e.detail.objectId;
       const awardedAmount = e.detail.amount;
@@ -591,6 +627,7 @@ const DiscussionTab = (props) => {
     threads.forEach((thread) => {
       if (thread.bounties.length) {
         hasBounties = true;
+        thread.bounties[0].threadId = thread.id;
         allBounties.push(thread.bounties[0]);
       }
     });

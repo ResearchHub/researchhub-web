@@ -3,7 +3,6 @@ import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorU
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/router";
-import { Waypoint } from "react-waypoint";
 import * as Sentry from "@sentry/browser";
 import Error from "next/error";
 
@@ -84,6 +83,7 @@ const Paper = ({
   const [fetchFreshDataStatus, setFetchFreshDataStatus] =
     useState("NOT_FETCHED");
   const [paper, setPaper] = useState({});
+  const [threads, setThreads] = useState([]);
   // TODO: paperV2 is a strongly typed object meant to deprecate
   // the old JSON respnose from API. We should aim to use only this object
   // in future tech-deb sprint.
@@ -259,12 +259,21 @@ const Paper = ({
     setPaper(newState);
   }
 
-  function onSectionEnter(index) {
-    activeTab !== index && setActiveTab(index);
-  }
-  const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
-  // const shouldShowInlineComments =
-  //   inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+  let bountyComments = [];
+
+  threads.forEach((thread) => {
+    if (
+      thread?.data?.created_by?.author_profile?.id ===
+      auth?.user?.author_profile?.id
+    ) {
+      bountyComments = thread.data.comments;
+      bountyComments = bountyComments.map((comment) => {
+        return {
+          data: comment,
+        };
+      });
+    }
+  });
 
   return (
     <div>
@@ -310,6 +319,7 @@ const Paper = ({
                   onDocumentRestore={restorePaper}
                   openPaperPDFModal={openPaperPDFModal}
                   handleEdit={navigateToEditPaperInfo}
+                  threads={bountyComments}
                 />
               </div>
             </div>
@@ -328,10 +338,13 @@ const Paper = ({
                     paperState={paper}
                     setHasBounties={setHasBounties}
                     setAllBounties={setAllBounties}
-                    showBountyBtn={false}
+                    showBountyBtn={true}
                     calculatedCount={discussionCount}
                     setCount={setCount}
                     isCollapsible={false}
+                    setThreadProp={(_threads) => {
+                      setThreads(_threads);
+                    }}
                   />
                 }
               </div>

@@ -35,7 +35,7 @@ class ThreadActionBar extends Component {
         <ThreadTextEditor
           onCancel={this.toggleReplyBox}
           onSubmit={this.props.onSubmit && this.props.onSubmit}
-          editing={this.state.showReplyBox}
+          editing={false}
           initialValue={this.props.initialValue}
           hasHeader={this.props.hasHeader}
           mediaOnly={this.props.mediaOnly}
