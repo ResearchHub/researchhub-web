@@ -707,7 +707,7 @@ class Editor extends Component {
               modules={modules}
               placeholder={selectedPostTypeStruct.placeholder}
             />
-            {this.props.isBounty && (
+            {this.props.isBounty === true && (
               <div className={css(styles.bountyAlert)}>
                 <span style={{ fontSize: 18 }}>
                   {icons["info-circle-light"]}
