@@ -699,13 +699,26 @@ class Editor extends Component {
             this.props.quillContainerStyle && this.props.quillContainerStyle
           )}
         >
-          <ReactQuill
-            ref={this.reactQuillRef}
-            readOnly={true}
-            defaultValue={editorValue}
-            modules={modules}
-            placeholder={selectedPostTypeStruct.placeholder}
-          />
+          <>
+            <ReactQuill
+              ref={this.reactQuillRef}
+              readOnly={true}
+              defaultValue={editorValue}
+              modules={modules}
+              placeholder={selectedPostTypeStruct.placeholder}
+            />
+            {this.props.isBounty && (
+              <div className={css(styles.bountyAlert)}>
+                <span style={{ fontSize: 18 }}>
+                  {icons["info-circle-light"]}
+                </span>
+                <span style={{ marginLeft: 5 }}>
+                  Reply to this thread with an answer to be eligible for bounty
+                  reward.
+                </span>
+              </div>
+            )}
+          </>
         </div>
       );
     }
@@ -752,6 +765,12 @@ const styles = StyleSheet.create({
   },
   isAcceptedAnswer: {
     border: `1px solid ${colors.NEW_GREEN()}`,
+  },
+  bountyAlert: {
+    color: `${colors.ORANGE_DARK2()}`,
+    fontSize: 14,
+    borderRadius: 4,
+    marginTop: 10,
   },
   isBounty: {
     border: `1px solid ${colors.ORANGE()}`,

@@ -51,6 +51,7 @@ const BountyAlert = ({
   documentType,
   auth,
 }: BountyAlertParams) => {
+
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
@@ -74,6 +75,7 @@ const BountyAlert = ({
       return null;
     }
   } else if (allBounties.length) {
+
     const firstBounty =
       bountyType === "question" ? allBounties[0] : new Bounty(allBounties[0]);
     timeRemaining = firstBounty.timeRemaining;
@@ -90,10 +92,6 @@ const BountyAlert = ({
       amount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
     });
     status = firstBounty.status;
-
-    if (firstBounty.timeRemainingInDays < 0) {
-      return null;
-    }
   }
 
   if (!bounty && !allBounties.length) {
