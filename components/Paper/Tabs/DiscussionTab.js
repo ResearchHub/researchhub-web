@@ -243,7 +243,9 @@ const DiscussionTab = (props) => {
 
     // Forces refresh of discussion section
     setFetching(true);
-    setFetching(false);
+    setTimeout(() => {
+      setFetching(false);
+    }, 1);
   }
 
   useEffect(() => {
