@@ -263,6 +263,7 @@ type Props = {
   showMessage: ({}) => void;
   setHasBounties: (boolean) => void;
   documentType: string;
+  auth?: {};
 };
 
 function AwardBountyModal({
@@ -275,6 +276,7 @@ function AwardBountyModal({
   showMessage,
   setHasBounties,
   documentType,
+  auth,
 }: Props): ReactElement {
   const [userAwardMap, setUserAwardMap] = useState({});
   const [bountyAwardLoading, setBountyAwardLoading] = useState(false);
@@ -282,6 +284,7 @@ function AwardBountyModal({
     useState(bountyAmount);
 
   const router = useRouter();
+  const isPaperBounty = router.pathname.includes("/paper/");
 
   const handleClose = () => {
     closeModal && closeModal();
@@ -290,7 +293,7 @@ function AwardBountyModal({
   };
 
   useEffect(() => {
-    if (threads[0]) {
+    if (threads && threads[0]) {
       const author = threads[0]?.data?.created_by?.author_profile;
       const comment = threads[0];
       const key = `${author?.user}-${comment?.data?.id}-award`;
@@ -316,24 +319,36 @@ function AwardBountyModal({
     setBountyAwardLoading(true);
     const allFetches: Promise<Response>[] = []; // todo: make this a promise array
     const metadataArray: any[] = [];
-    allBounties.forEach(async (bounty) => {
+    const bountiesToAward = router.pathname.includes("/paper/")
+      ? allBounties.filter((bounty) => {
+          return (
+            bounty?.created_by?.author_profile?.id ===
+              auth?.user?.author_profile?.id && bounty?.status === "OPEN"
+          );
+        })
+      : allBounties;
+
+    bountiesToAward.forEach(async (bounty) => {
       const keys = Object.keys(userAwardMap);
       const acceptedAnswers = [];
       keys.forEach(async (key) => {
         if (userAwardMap[key]) {
           metadataArray.push({
             recipient_id: key.split("-")[0],
-            content_type: "thread",
+            content_type: isPaperBounty ? "comment" : "thread",
             amount: userAwardMap[key],
             object_id: key.split("-")[1],
           });
           acceptedAnswers.push({
             detail: { threadId: key.split("-")[1] },
           });
-
           acceptAnswerAPI({
             documentType: documentType,
-            threadId: key.split("-")[1],
+            threadId: isPaperBounty
+              ? threads[0]?.data?.parent
+              : key.split("-")[1],
+            commentId: isPaperBounty && key.split("-")[1],
+            paperId: router.query.paperId,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             documentId: router.query.documentId,
@@ -364,7 +379,7 @@ function AwardBountyModal({
         recipient: true,
         object_id: true,
         multi_approve: true,
-        content_type: "thread",
+        content_type: isPaperBounty ? "comment" : "thread",
       };
 
       const url = generateApiUrl("bounty") + bounty?.id + "/approve_bounty/";
@@ -397,9 +412,15 @@ function AwardBountyModal({
           });
         });
 
+        debugger;
+
         const bountyAward = new CustomEvent("bounty-awarded", {
           detail: {
             multiAward,
+            commentBountyAward: isPaperBounty,
+            bountyThreadId: isPaperBounty
+              ? bountiesToAward[0].item_object_id
+              : null,
           },
         });
         document.dispatchEvent(bountyAward);
@@ -447,7 +468,7 @@ function AwardBountyModal({
     let firstKey = "";
     threads.forEach((thread) => {
       if (thread.data.score > 0) {
-        const author = thread.data.created_by.author_profile;
+        const author = thread?.data?.created_by?.author_profile;
         const mapKey = `${author.user}-${thread?.data.id}-award`;
 
         if (!firstKey) {
@@ -540,13 +561,13 @@ function AwardBountyModal({
           </div>
           <div className={css(styles.userRows)}>
             {threads?.map((thread) => {
-              const author = thread.data.created_by.author_profile;
+              const author = thread?.data?.created_by?.author_profile;
               const mapKey = `${author.user}-${thread?.data.id}-award`;
 
               return (
                 <div className={css(styles.awardUserRow)}>
                   <AwardUserRow
-                    author={thread.data.created_by.author_profile}
+                    author={author}
                     remainingAmount={bountyAmount}
                     comment={thread}
                     awardedAmount={userAwardMap[mapKey]}
@@ -762,9 +783,13 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(null, mapDispatchToProps)(AwardBountyModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AwardBountyModal);

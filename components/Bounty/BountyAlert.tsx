@@ -17,6 +17,7 @@ import icons from "~/config/themes/icons";
 import CoinStackIcon from "../Icons/CoinStackIcon";
 import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";
+import { connect } from "react-redux";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -48,6 +49,7 @@ const BountyAlert = ({
   unifiedDocument,
   threads,
   documentType,
+  auth,
 }: BountyAlertParams) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,6 +62,8 @@ const BountyAlert = ({
   });
 
   let amount = 0;
+  let awardAmount = amount;
+
   if (bounty) {
     timeRemaining = bounty.timeRemaining;
     createdBy = bounty.createdBy;
@@ -75,7 +79,15 @@ const BountyAlert = ({
     timeRemaining = firstBounty.timeRemaining;
     createdBy = firstBounty.createdBy;
     allBounties.forEach((bounty) => {
-      amount += parseFloat(bounty.amount);
+      if (router.pathname.includes("/paper/") && auth.isLoggedIn) {
+        if (
+          bounty?.created_by?.author_profile?.id ===
+          auth?.user?.author_profile?.id
+        ) {
+          awardAmount = parseFloat(bounty.amount);
+        }
+      }
+      amount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
     });
     status = firstBounty.status;
 
@@ -128,7 +140,9 @@ const BountyAlert = ({
   };
 
   const answerThreads = threads?.filter((thread) => {
-    return thread?.data?.discussion_post_type === "ANSWER";
+    return router.pathname.includes("paper")
+      ? thread
+      : thread?.data?.discussion_post_type === "ANSWER";
   });
 
   answerThreads?.sort((thread1, thread2) => {
@@ -154,7 +168,7 @@ const BountyAlert = ({
       <AwardBountyModal
         isOpen={isAwardBountyModalOpen}
         threads={answerThreads}
-        bountyAmount={amount}
+        bountyAmount={awardAmount}
         setHasBounties={setHasBounties}
         allBounties={allBounties}
         documentType={documentType}
@@ -422,4 +436,8 @@ const styles = StyleSheet.create({
   submitText: {},
 });
 
-export default BountyAlert;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(BountyAlert);

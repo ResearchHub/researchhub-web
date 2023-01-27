@@ -198,9 +198,9 @@ function InlineCommentThreadCard({
                 noTimeStamp
                 smaller
                 username={
-                  auth.user.author_profile.first_name +
+                  auth?.user?.author_profile.first_name +
                   " " +
-                  auth.user.author_profile.last_name
+                  auth?.user?.author_profile.last_name
                 }
               />
               <div className={css(styles.threadComposerContainer)}>
