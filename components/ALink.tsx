@@ -32,8 +32,9 @@ const ALink: FunctionComponent<Props> = ({
       href={href}
       as={as}
       className={css(styles.ALink, styles[themes[theme]], overrideStyle)}
-      target={target || undefined}>
-
+      target={target || undefined}
+      onClick={(e) => e.stopPropagation()}
+      >
       {children}
 
     </Link>)
