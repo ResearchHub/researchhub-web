@@ -141,6 +141,7 @@ function RootLeftSidebar({
       "my-hubs",
       "live",
       "referral",
+      "user",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {

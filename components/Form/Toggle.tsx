@@ -5,7 +5,6 @@ import colors from "~/config/themes/colors";
 type ToggleOption = {
   label: string;
   value: any;
-  selected: any;
 }
 
 type Props = {

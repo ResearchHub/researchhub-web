@@ -11,6 +11,8 @@ import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import dayjs from "dayjs";
 import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
+import BountyToggle from "~/components/Activity/BountyToggle";
+import ContentBadge from "~/components/ContentBadge";
 
 const AuthorActivityFeed = ({
   author,
@@ -24,6 +26,8 @@ const AuthorActivityFeed = ({
   const [isLoading, setIsLoading] = useState(true);
   const [needsInitialFetch, setNeedsInitialFetch] = useState(false);
   const [currentAuthorId, setCurrentAuthorId] = useState(null);
+  const [totalBountyAmount, setTotalBountyAmount] = useState(0);
+  const [count, setCount] = useState(0);
 
   // Reset state when author changes
   useEffect(() => {
@@ -61,6 +65,11 @@ const AuthorActivityFeed = ({
           setFeedResults(sortResults(res.results));
           setNeedsInitialFetch(false);
           setIsLoading(false);
+
+          if (contributionType === "bounty_offered") {
+            setTotalBountyAmount(res.total_bounty_amount);
+            setCount(res.count);
+          }
         })
         .catch((e) => {
           setFeedResults([]);
@@ -84,6 +93,7 @@ const AuthorActivityFeed = ({
         setIsLoading(false);
         setNextResultsUrl(res.next);
         setFeedResults([...feedResults, ...sortResults(res.results)]);
+        setCount(res.count);
       })
       .catch(() => {
         setFeedResults([]);
@@ -117,6 +127,7 @@ const AuthorActivityFeed = ({
   return (
     <ReactPlaceholder
       ready={!needsInitialFetch && !isFetchingAuthor}
+      ready={true}
       showLoadingAnimation
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
@@ -124,6 +135,25 @@ const AuthorActivityFeed = ({
         <SearchEmpty title={"No activity found for this user"} />
       ) : (
         <div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                fontWeight: 500,
+                fontSize: 18,
+                marginBottom: 30,
+                columnGap: 10,
+              }}
+            >
+              Offered {count} bounties for a total of{" "}
+              <ContentBadge label={`500 RSC`} contentType="bounty" />
+            </div>
+            <div style={{ marginLeft: "auto" }}>
+              <BountyToggle />
+            </div>
+          </div>
+
           {feedResults.map((item, index) => {
             const itemType =
               contributionType === "authored-papers"

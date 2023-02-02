@@ -82,7 +82,7 @@ function AuthorPage(props) {
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
-
+  console.log("tabName", tabName);
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
@@ -143,6 +143,11 @@ function AuthorPage(props) {
           href: "overview",
           label: "Overview",
           name: "Overview",
+        },
+        {
+          href: "bounties",
+          label: "Bounties",
+          name: "Bounties",
         },
         {
           href: "discussions",
@@ -342,6 +347,16 @@ function AuthorPage(props) {
           isVisible={tabName === "discussions"}
           author={author}
           contributionType="comment"
+          isFetchingAuthor={fetching}
+        />
+      </div>
+      <div
+        className={css(tabName === "bounties" ? styles.reveal : styles.hidden)}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "bounties"}
+          author={author}
+          contributionType="bounty_offered"
           isFetchingAuthor={fetching}
         />
       </div>

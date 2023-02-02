@@ -14,6 +14,7 @@ import {
   getCardType,
 } from "./utils/AuthorFeedUtils";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import ContentBadge from "~/components/ContentBadge";
 
 const AuthorFeedItem = ({
   author,
@@ -51,7 +52,10 @@ const AuthorFeedItem = ({
         const data =
           item.contribution_type === "SUPPORTER"
             ? item.source.source
+            : item.contribution_type === "BOUNTY_CREATED"
+            ? item.source.item
             : item.source;
+
         const uniDoc = item.unified_document;
         const docType = getFEUnifiedDocType(uniDoc?.document_type);
 
@@ -60,6 +64,15 @@ const AuthorFeedItem = ({
         if (data?.paper?.id) {
           data.paper = data?.paper?.id;
         }
+
+        console.log("--------------------------------");
+        console.log("data", data);
+        console.log("doc", doc);
+        console.log(`thread-${doc.id}-${item.id}`);
+        console.log(`author`, author);
+        console.log(`docType`, docType);
+        console.log(`uniDoc`, uniDoc);
+        console.log("--------------------------------");
 
         html = (
           <div className={css(styles.discussionEntryCard)}>
@@ -88,6 +101,7 @@ const AuthorFeedItem = ({
 
   const buildActionLineHTML = ({ item, itemType, author }) => {
     const cardType = getCardType({ item, itemType });
+    console.log("itemType", itemType);
     let actionText = null;
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
       if (item.source?.review?.id) {
@@ -100,6 +114,21 @@ const AuthorFeedItem = ({
       item.contribution_type === "SUBMITTER"
     ) {
       actionText = `submitted ${cardType}`;
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "BOUNTY_CREATED"
+    ) {
+      actionText = (
+        <span
+          style={{ display: "inline-flex", columnGap: 8, alignItems: "center" }}
+        >
+          created bounty for{" "}
+          <ContentBadge
+            contentType="bounty"
+            label={`${parseFloat(item?.source?.amount).toFixed(0)} RSC`}
+          />
+        </span>
+      );
     } else if (
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUPPORTER"
@@ -127,7 +156,7 @@ const AuthorFeedItem = ({
         >
           {`${author?.first_name} ${author?.last_name} `}
         </Link>
-        <span>{actionText}</span>
+        <span style={{ lineHeight: "28px" }}>{actionText}</span>
       </div>
     );
   };
