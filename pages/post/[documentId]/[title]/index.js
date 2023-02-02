@@ -180,9 +180,9 @@ const Post = (props) => {
   };
 
   function formatDescription() {
-    const { title } = post;
-    if (title) {
-      return title;
+    const { plain_text } = post;
+    if (plain_text) {
+      return plain_text;
     }
     return "";
   }
