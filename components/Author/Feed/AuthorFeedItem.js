@@ -34,6 +34,7 @@ const AuthorFeedItem = ({
       case "hypothesis":
       case "paper":
       case "post":
+      case "bounty":
       case "question":
         html = (
           <FeedCard
@@ -54,6 +55,8 @@ const AuthorFeedItem = ({
             ? item.source.source
             : item.contribution_type === "BOUNTY_CREATED"
             ? item.source.item
+            : item.contribution_type === "BOUNTY_SOLUTION"
+            ? item.source.item
             : item.source;
 
         const uniDoc = item.unified_document;
@@ -64,15 +67,6 @@ const AuthorFeedItem = ({
         if (data?.paper?.id) {
           data.paper = data?.paper?.id;
         }
-
-        console.log("--------------------------------");
-        console.log("data", data);
-        console.log("doc", doc);
-        console.log(`thread-${doc.id}-${item.id}`);
-        console.log(`author`, author);
-        console.log(`docType`, docType);
-        console.log(`uniDoc`, uniDoc);
-        console.log("--------------------------------");
 
         html = (
           <div className={css(styles.discussionEntryCard)}>
@@ -129,6 +123,11 @@ const AuthorFeedItem = ({
           />
         </span>
       );
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "BOUNTY_SOLUTION"
+    ) {
+      actionText = `answered bounty`;
     } else if (
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUPPORTER"

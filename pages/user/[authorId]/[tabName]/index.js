@@ -190,10 +190,16 @@ function AuthorPage(props) {
   };
 
   const handleTabClick = (tab) => {
+    const query = { ...router.query };
+
     const updatedQuery = {
       ...router.query,
       tabName: tab.href,
     };
+
+    if (tab.href !== "bounties") {
+      delete updatedQuery.sort;
+    }
 
     if (tab.href.charAt(0) === "/") {
       router.push({
@@ -356,7 +362,7 @@ function AuthorPage(props) {
         <AuthorActivityFeed
           isVisible={tabName === "bounties"}
           author={author}
-          contributionType="bounty_offered"
+          contributionType={router.query?.sort || "bounty_offered"}
           isFetchingAuthor={fetching}
         />
       </div>

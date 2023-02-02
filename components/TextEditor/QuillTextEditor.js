@@ -52,18 +52,6 @@ class Editor extends Component {
     this.quillRef = null;
   }
 
-  _handleClick(e) {
-    console.log("1");
-
-    if (e.target.closest(".show-full-editor")) {
-      console.log("has closest");
-      return;
-    } else if (!e.target.closest(".ql-full-editor")) {
-      console.log("inside editor");
-      this.setState({ showFullEditor: false });
-    }
-  }
-
   componentDidMount = async () => {
     import("react-quill").then(async (val) => {
       const MagicUrl = (await import("quill-magic-url")).default;
@@ -87,14 +75,7 @@ class Editor extends Component {
         }
       );
     });
-
-    document.addEventListener("click", this._handleClick.bind(this));
   };
-
-  componentWillUnmount() {
-    console.log("removing");
-    document.removeEventListener("click", this._handleClick.bind(this));
-  }
 
   componentDidUpdate(prevProps, prevState) {
     this.attachQuillRefs();
