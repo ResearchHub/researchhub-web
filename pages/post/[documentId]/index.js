@@ -32,6 +32,7 @@ Post.getInitialProps = async (ctx) => {
   ).then(helpers.parseJSON);
   const post = posts.results[0];
   const redirectPath = `/post/${post.id}/${post.slug}`;
+  console.log("HERE");
 
   return { post, redirectPath };
 };
