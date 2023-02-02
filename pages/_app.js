@@ -52,7 +52,13 @@ if (process.env.ELASTIC_APM_URL) {
   });
 }
 
-const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
+const MyApp = ({
+  Component,
+  pageProps,
+  rootLeftSidebarForceMin,
+  store,
+  appProps,
+}) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState(router.asPath);
 
@@ -148,6 +154,7 @@ const MyApp = ({ Component, pageProps, rootLeftSidebarForceMin, store }) => {
       <Base
         Component={Component}
         pageProps={pageProps}
+        appProps={appProps}
         rootLeftSidebarForceMin={rootLeftSidebarForceMin}
       />
       <Analytics />
@@ -169,6 +176,7 @@ MyApp.getInitialProps = async (appContext) => {
     "/hubs/[slug]",
     "/hubs/[slug]/live",
     "/paper/[paperId]/[paperName]",
+    "/post/[documentId]/[title]",
   ];
 
   const cookies = nookies.get(appContext.ctx);

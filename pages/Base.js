@@ -61,6 +61,7 @@ function Base({
   getUser,
   getWithdrawals,
   pageProps,
+  appProps,
   rootLeftSidebarForceMin,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
@@ -105,6 +106,8 @@ function Base({
     transition: transitions.SCALE,
   };
 
+  console.log(pageProps);
+
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
       {process.env.GA_TRACKING_ID && (
@@ -147,7 +150,7 @@ function Base({
               />
               <div className={css(styles.main)}>
                 <DynamicNavbar />
-                <Component {...pageProps} />
+                <Component {...pageProps} {...appProps} />
               </div>
             </div>
           </NewPostButtonContext.Provider>

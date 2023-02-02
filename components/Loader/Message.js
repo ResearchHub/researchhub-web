@@ -96,7 +96,8 @@ var styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
   },
   load: {
-    // background: "",
+    background: "rgb(249, 249, 252)",
+    // boxShadow:
   },
   hide: {
     display: "none",

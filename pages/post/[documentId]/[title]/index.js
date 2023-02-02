@@ -31,19 +31,11 @@ const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
 );
 
-function useEffectFetchPost({ setPost, setPostV2, query }) {
-  useEffect(() => {
-    fetch(API.RESEARCHHUB_POST({ post_id: query.documentId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        const rawPost = data.results[0];
-        setPost(rawPost);
-        const postV2 = new PostDoc(rawPost);
-        setPostV2(postV2);
-      });
-  }, [query]);
-}
+const fetchPost = ({ postId }) => {
+  return fetch(API.RESEARCHHUB_POST({ post_id: postId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
 
 const Post = (props) => {
   const router = useRouter();
@@ -59,17 +51,25 @@ const Post = (props) => {
   }
 
   const store = useStore();
+  const initialPost = props?.initialPost || {};
 
   const currentUser = getCurrentUser();
-  const [post, setPost] = useState({});
-  const [postV2, setPostV2] = useState(new PostDoc({}));
+  const [post, setPost] = useState(initialPost);
+  const [postV2, setPostV2] = useState(new PostDoc(initialPost));
   const [discussionCount, setCount] = useState(0);
   const [bounties, setBounties] = useState(null);
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
   const [threads, setThreads] = useState([]);
 
-  useEffectFetchPost({ setPost, setPostV2, query: props.query });
+  useEffect(() => {
+    const _initialPost = props?.initialPost;
+    if (_initialPost) {
+      setPost(_initialPost);
+      const formattedPost = new PostDoc(_initialPost);
+      setPostV2(formattedPost);
+    }
+  }, [props]);
 
   useEffect(() => {
     if (postV2.isReady) {
@@ -219,27 +219,29 @@ const Post = (props) => {
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
           <div className={css(styles.postPageMain)}>
-            <PostPageCard
-              isEditorOfHubs={isEditorOfHubs}
-              isModerator={isModerator}
-              isSubmitter={isSubmitter}
-              post={postV2}
-              setHasBounties={setHasBounties}
-              removePost={removePost}
-              restorePost={restorePost}
-              setBounties={setBounties}
-              threads={threads}
-              hasBounties={hasBounties}
-              bounties={bounties}
-              allBounties={allBounties}
-              onBountyCancelled={onBountyCancelled}
-              shareUrl={process.browser && window.location.href}
-            />
+            {process.browser && (
+              <PostPageCard
+                isEditorOfHubs={isEditorOfHubs}
+                isModerator={isModerator}
+                isSubmitter={isSubmitter}
+                post={postV2}
+                setHasBounties={setHasBounties}
+                removePost={removePost}
+                restorePost={restorePost}
+                setBounties={setBounties}
+                threads={threads}
+                hasBounties={hasBounties}
+                bounties={bounties}
+                allBounties={allBounties}
+                onBountyCancelled={onBountyCancelled}
+                shareUrl={process.browser && window.location.href}
+              />
+            )}
             <div className={css(styles.postPageSection)}>
               <a name="comments" id="comments" />
               {postV2.isReady && (
                 <DiscussionTab
-                  hostname={props.hostname}
+                  hostname={process.env.HOST}
                   documentType={postV2.unifiedDocument.documentType}
                   post={post}
                   bountyType={postV2.unifiedDocument.documentType}
@@ -273,13 +275,67 @@ const Post = (props) => {
   ) : null;
 };
 
-Post.getInitialProps = async (ctx) => {
-  const { req, store, query, res } = ctx;
-  const { host } = absoluteUrl(req);
-  const hostname = host;
-  const props = { hostname, query };
-  return props;
-};
+export async function getStaticPaths(ctx) {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps(ctx) {
+  let post;
+  const { documentId } = ctx.params;
+
+  try {
+    const resp = await fetchPost({ postId: documentId });
+    post = resp.results[0];
+  } catch (err) {
+    console.log("err", err);
+    return {
+      props: {
+        error: {
+          code: 500,
+        },
+      },
+      revalidate: 5,
+    };
+  }
+
+  if (!post) {
+    return {
+      props: {
+        error: {
+          code: 404,
+        },
+      },
+      revalidate: 1,
+    };
+  } else {
+    const slugFromQuery = ctx.params.title;
+
+    // DANGER ZONE: Be careful when updating this. Could result
+    // in an infinite loop that could bring server down.
+    if (post.slug && post.slug !== slugFromQuery) {
+      return {
+        redirect: {
+          destination: `/post/${documentId}/${post.slug}`,
+          permanent: true,
+        },
+      };
+    }
+
+    const props = {
+      initialPost: post,
+      isFetchComplete: true,
+    };
+
+    return {
+      props,
+      // Static page will be regenerated after specified seconds.
+      revalidate: 60 * 10,
+    };
+  }
+}
 
 const styles = StyleSheet.create({
   postPageRoot: {
