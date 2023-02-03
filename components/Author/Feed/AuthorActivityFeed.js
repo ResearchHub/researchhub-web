@@ -29,7 +29,7 @@ const AuthorActivityFeed = ({
   const [currentAuthorId, setCurrentAuthorId] = useState(null);
   const [totalBountyAmount, setTotalBountyAmount] = useState(0);
   const [count, setCount] = useState(0);
-  const [_contributionType, _setContributionType] = useState(contributionType);
+  const [bountySortType, setBountySortType] = useState(null);
 
   // Reset state when author changes
   useEffect(() => {
@@ -44,18 +44,31 @@ const AuthorActivityFeed = ({
   }, [router.query.authorId, isVisible]);
 
   useEffect(() => {
+    if (router.isReady && router?.query?.sort) {
+      setBountySortType(router?.query?.sort);
+      setIsLoading(true);
+      setNeedsFetch(true);
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
     const _fetchAuthorActivity = () => {
       let url;
 
-      if (_contributionType === "authored-papers") {
+      if (contributionType === "authored-papers") {
         url = API.AUTHORED_PAPER({
           authorId: router.query.authorId,
           page: 1,
         });
+      } else if (contributionType === "bounty") {
+        url = API.AUTHOR_ACTIVITY({
+          authorId: router.query.authorId,
+          type: bountySortType,
+        });
       } else {
         url = API.AUTHOR_ACTIVITY({
           authorId: router.query.authorId,
-          type: _contributionType,
+          type: contributionType,
         });
       }
 
@@ -69,7 +82,7 @@ const AuthorActivityFeed = ({
           setIsLoading(false);
           setCount(res.count);
 
-          if (_contributionType === "bounty_offered") {
+          if (contributionType === "bounty") {
             setTotalBountyAmount(res.total_bounty_amount);
           }
         })
@@ -80,10 +93,14 @@ const AuthorActivityFeed = ({
     };
 
     if (needsFetch) {
-      setCurrentAuthorId(router.query.authorId);
-      _fetchAuthorActivity();
+      if (contributionType === "bounty" && !bountySortType) {
+        return;
+      } else {
+        setCurrentAuthorId(router.query.authorId);
+        _fetchAuthorActivity();
+      }
     }
-  }, [needsFetch, _contributionType, router.query.authorId]);
+  }, [needsFetch, bountySortType, contributionType, router.query.authorId]);
 
   const loadNextResults = () => {
     setIsLoading(true);
@@ -128,7 +145,7 @@ const AuthorActivityFeed = ({
 
   return (
     <>
-      {["bounty_offered", "bounty_earned"].includes(_contributionType) && (
+      {contributionType === "bounty" && (
         <div
           style={{ display: "flex", alignItems: "center", marginBottom: 50 }}
         >
@@ -144,7 +161,7 @@ const AuthorActivityFeed = ({
           >
             {!needsFetch &&
             !isFetchingAuthor &&
-            _contributionType === "bounty_offered" ? (
+            bountySortType === "bounty_offered" ? (
               <>
                 Offered {count} bounties for a total of{" "}
                 <ContentBadge
@@ -158,12 +175,12 @@ const AuthorActivityFeed = ({
           </div>
           <div style={{ marginLeft: "auto" }}>
             <BountyToggle
-              selectedValue={_contributionType}
+              selectedValue={bountySortType}
               handleSelect={(opt) => {
-                if (opt.value !== _contributionType) {
+                if (opt.value !== bountySortType) {
                   router.push({ query: { ...router.query, sort: opt.value } });
                   setNeedsFetch(true);
-                  _setContributionType(opt.value);
+                  setBountySortType(opt.value);
                 }
               }}
             />
@@ -182,7 +199,7 @@ const AuthorActivityFeed = ({
           <div>
             {feedResults.map((item, index) => {
               const itemType =
-                _contributionType === "authored-papers"
+                contributionType === "authored-papers"
                   ? "AUTHORED_PAPER"
                   : "CONTRIBUTION";
 

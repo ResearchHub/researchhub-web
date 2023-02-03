@@ -493,7 +493,7 @@ function AwardBountyModal({
 
   useEffect(() => {
     const userIds = Object.keys(userAwardMap);
-    let remainingAmount = bountyAmount;
+    let remainingAmount = 100;
 
     if (!userIds.length) {
       return;
@@ -568,7 +568,7 @@ function AwardBountyModal({
                 <div className={css(styles.awardUserRow)}>
                   <AwardUserRow
                     author={author}
-                    remainingAmount={bountyAmount}
+                    remainingAmount={100}
                     comment={thread}
                     awardedAmount={userAwardMap[mapKey]}
                     decreaseRemainingAmount={decreaseRemainingAmount}
