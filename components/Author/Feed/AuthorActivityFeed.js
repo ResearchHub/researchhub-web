@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
 import BountyToggle from "~/components/Activity/BountyToggle";
 import ContentBadge from "~/components/ContentBadge";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 const AuthorActivityFeed = ({
   author,
@@ -139,6 +140,10 @@ const AuthorActivityFeed = ({
     }
   };
 
+  const formattedTotalBountyAmount = formatBountyAmount({
+    amount: totalBountyAmount,
+    withPrecision: false,
+  });
   return (
     <>
       {contributionType === "bounty" && (
@@ -161,9 +166,7 @@ const AuthorActivityFeed = ({
                   <>
                     Offered {count} bounties for a total of{" "}
                     <ContentBadge
-                      label={`${`${parseFloat(totalBountyAmount).toFixed(
-                        0
-                      )} RSC`}`}
+                      label={`${`${formattedTotalBountyAmount} RSC`}`}
                       contentType="bounty"
                     />
                   </>

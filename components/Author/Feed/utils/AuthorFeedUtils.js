@@ -78,7 +78,10 @@ export const getCardType = ({ item, itemType }) => {
         cardType = getFEUnifiedDocType(uniDoc?.document_type);
       }
     } else if (item.contribution_type === "BOUNTY_SOLUTION") {
-      if (item.source?.content_type?.name === "thread") {
+      if (
+        item.source?.content_type?.name === "thread" ||
+        item.source?.content_type?.name === "comment"
+      ) {
         cardType = "comment";
       } else {
         cardType = getFEUnifiedDocType(uniDoc?.document_type);

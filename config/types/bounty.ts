@@ -11,8 +11,13 @@ import numeral from "numeral";
 import { captureEvent } from "../utils/events";
 import { ContentType, parseContentType } from "./contentType";
 
-export function formatBountyAmount({ amount }) {
-  return numeral(amount).format("0,0.[0000000000]");
+export function formatBountyAmount({ amount, withPrecision = true }) {
+  if (withPrecision) {
+    return numeral(amount).format("0,0.[0000000000]");
+  }
+  else {
+    return Number(parseFloat(amount).toFixed(0)).toLocaleString()
+  }
 }
 
 export enum BOUNTY_STATUS {

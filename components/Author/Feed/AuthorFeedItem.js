@@ -15,6 +15,7 @@ import {
 } from "./utils/AuthorFeedUtils";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import ContentBadge from "~/components/ContentBadge";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 const AuthorFeedItem = ({
   author,
@@ -112,6 +113,10 @@ const AuthorFeedItem = ({
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "BOUNTY_CREATED"
     ) {
+      const formattedBountyAmount = formatBountyAmount({
+        amount: item?.source?.amount,
+        withPrecision: false,
+      });
       actionText = (
         <span
           style={{ display: "inline-flex", columnGap: 8, alignItems: "center" }}
@@ -119,7 +124,7 @@ const AuthorFeedItem = ({
           created bounty for{" "}
           <ContentBadge
             contentType="bounty"
-            label={`${parseFloat(item?.source?.amount).toFixed(0)} RSC`}
+            label={`${formattedBountyAmount} RSC`}
           />
         </span>
       );
