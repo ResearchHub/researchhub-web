@@ -97,7 +97,7 @@ var styles = StyleSheet.create({
   },
   load: {
     background: "rgb(249, 249, 252)",
-    // boxShadow:
+    boxShadow: "0px 0px 10px 0px #00000026",
   },
   hide: {
     display: "none",
