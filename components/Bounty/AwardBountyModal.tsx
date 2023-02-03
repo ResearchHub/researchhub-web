@@ -292,9 +292,6 @@ function AwardBountyModal({
     setRemainingAwardAmount(bountyAmount);
   };
 
-  console.log(bountyAmount);
-  console.log(remainingAwardAmount);
-
   useEffect(() => {
     if (threads && threads[0]) {
       const author = threads[0]?.data?.created_by?.author_profile;
