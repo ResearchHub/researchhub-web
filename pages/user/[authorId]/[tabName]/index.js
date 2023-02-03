@@ -82,7 +82,7 @@ function AuthorPage(props) {
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
-  console.log("tabName", tabName);
+
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
@@ -875,6 +875,7 @@ function AuthorPage(props) {
     const sluggedName = buildSlug(hub.slug ?? "");
     return (
       <Link
+        key={`hub-${i}`}
         href={"/hubs/[slug]"}
         as={`/hubs/${slug}`}
         className={css(styles.hubLinkTag)}

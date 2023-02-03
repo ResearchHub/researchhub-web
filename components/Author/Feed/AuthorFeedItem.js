@@ -95,7 +95,7 @@ const AuthorFeedItem = ({
 
   const buildActionLineHTML = ({ item, itemType, author }) => {
     const cardType = getCardType({ item, itemType });
-    console.log("itemType", itemType);
+
     let actionText = null;
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
       if (item.source?.review?.id) {

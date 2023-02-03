@@ -6,14 +6,12 @@ import { useEffect, useState } from "react";
 import FeedItemPlaceholder from "~/components/Placeholders/FeedItemPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorFeedItem from "./AuthorFeedItem";
-import { isEmpty } from "~/config/utils/nullchecks";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import dayjs from "dayjs";
 import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
 import BountyToggle from "~/components/Activity/BountyToggle";
 import ContentBadge from "~/components/ContentBadge";
-import { RectShape } from "react-placeholder/lib/placeholders";
 
 const AuthorActivityFeed = ({
   author,
@@ -44,10 +42,8 @@ const AuthorActivityFeed = ({
   }, [router.query.authorId, isVisible]);
 
   useEffect(() => {
-    if (router.isReady && router?.query?.sort) {
-      setBountySortType(router?.query?.sort);
-      setIsLoading(true);
-      setNeedsFetch(true);
+    if (router.isReady && contributionType === "bounty") {
+      setBountySortType(router?.query?.sort || "bounty_offered");
     }
   }, [router.isReady]);
 

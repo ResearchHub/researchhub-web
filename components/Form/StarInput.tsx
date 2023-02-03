@@ -51,6 +51,7 @@ export default function StarInput({
 
           return (
             <div
+              key={`star-${index}`}
               className={css(
                 styles.star,
                 styles.readOnly,
@@ -74,6 +75,7 @@ export default function StarInput({
             starNumber <= selectedValue || starNumber <= hoveredValue;
           return (
             <div
+              key={`star-${index}`}
               className={`starRating ${css(
                 styles.star,
                 styles[`${size}SizeOfStar`],

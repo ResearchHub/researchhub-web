@@ -19,8 +19,9 @@ export default function Toggle({
   selected,
 }: Props): ReactElement {
 
-  const optionElems = options.map((opt) => (
+  const optionElems = options.map((opt, index) => (
     <div
+      key={`toggle-opt-${index}`}
       className={css(styles.option, selected === opt.value && styles.optionSelected)}
       onClick={() => onSelect(opt)}
     >
