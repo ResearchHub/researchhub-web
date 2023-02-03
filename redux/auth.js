@@ -199,7 +199,6 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          console.log("json", json);
           saveToLocalStorage(AUTH_TOKEN, json.key);
           return dispatch({
             type: AuthConstants.LOGIN,

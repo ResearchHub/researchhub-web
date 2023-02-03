@@ -11,6 +11,7 @@ const HeadComponent = (props) => {
   // TODO: What url can we use when rendered server side?
   // const url =
   //   props.url || `https://www.researchhub.com${router && router.asPath}`;
+
   const url = "";
   const description =
     props.description ||
@@ -54,8 +55,8 @@ const HeadComponent = (props) => {
       <meta property="og:image:alt" content={title} />
       <meta property="og:image:secure_url" content={socialImageUrl} />
       <meta property="og:image:type" content={"image/png"} />
-      <meta property="og:title" name="og:title" content={title} />
-      <meta property="og:type" name="og:type" content={"article"} />
+      <meta property="og:title" content={title} />
+      <meta property="og:type" content={"article"} />
       <meta property="og:site_name" content={COMPANY_NAME} />
       <meta property="og:url" content={url} />
       {/* Facebook */}

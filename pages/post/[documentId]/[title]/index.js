@@ -180,9 +180,10 @@ const Post = (props) => {
   };
 
   function formatDescription() {
-    const { plain_text } = post;
-    if (plain_text) {
-      return plain_text;
+    const { renderable_text } = post;
+
+    if (renderable_text) {
+      return renderable_text;
     }
     return "";
   }

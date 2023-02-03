@@ -17,8 +17,6 @@ export default function HomeRightSidebar(): ReactElement {
   const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
   const carouselElements = getEducationalCarouselElements();
 
-  console.log(carouselElements);
-
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
