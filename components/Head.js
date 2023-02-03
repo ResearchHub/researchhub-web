@@ -48,32 +48,16 @@ const HeadComponent = (props) => {
       <meta key="description" name="description" content={description} />
       {props.canonical && <link rel="canonical" href={props.canonical} />}
       {/* Social meta tags */}
-      <meta
-        property="og:description"
-        name="og:description"
-        content={description}
-      />
+      <meta property="og:description" content={description} />
       {/* Image dimensions: minimum 200x200; recommended 1500x1500 */}
-      <meta property="og:image" name="og:image" content={socialImageUrl} />
-      <meta property="og:image:alt" name="og:image:alt" content={title} />
-      <meta
-        property="og:image:secure_url"
-        name="og:image:secure_url"
-        content={socialImageUrl}
-      />
-      <meta
-        property="og:image:type"
-        name="og:image:type"
-        content={"image/png"}
-      />
+      <meta property="og:image" content={socialImageUrl} />
+      <meta property="og:image:alt" content={title} />
+      <meta property="og:image:secure_url" content={socialImageUrl} />
+      <meta property="og:image:type" content={"image/png"} />
       <meta property="og:title" name="og:title" content={title} />
       <meta property="og:type" name="og:type" content={"article"} />
-      <meta
-        property="og:site_name"
-        name="og:site_name"
-        content={COMPANY_NAME}
-      />
-      <meta property="og:url" name="og:url" content={url} />
+      <meta property="og:site_name" content={COMPANY_NAME} />
+      <meta property="og:url" content={url} />
       {/* Facebook */}
       <meta property="fb:app_id" content={"id"} />
       {(process.env.REACT_APP_ENV === "staging" || noindex) && (
