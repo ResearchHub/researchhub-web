@@ -153,24 +153,28 @@ const AuthorActivityFeed = ({
             style={{
               display: "inline-flex",
               alignItems: "center",
-              fontWeight: 500,
-              fontSize: 16,
+              fontWeight: 400,
+              fontSize: 18,
               columnGap: 10,
               width: "80%",
             }}
           >
-            {!needsFetch &&
-            !isFetchingAuthor &&
-            bountySortType === "bounty_offered" ? (
+            {!isLoading && (
               <>
-                Offered {count} bounties for a total of{" "}
-                <ContentBadge
-                  label={`${`${parseFloat(totalBountyAmount).toFixed(0)} RSC`}`}
-                  contentType="bounty"
-                />
+                {bountySortType === "bounty_offered" ? (
+                  <>
+                    Offered {count} bounties for a total of{" "}
+                    <ContentBadge
+                      label={`${`${parseFloat(totalBountyAmount).toFixed(
+                        0
+                      )} RSC`}`}
+                      contentType="bounty"
+                    />
+                  </>
+                ) : (
+                  <>Answered and earned {count} bounties</>
+                )}
               </>
-            ) : (
-              <>Earned {count} bounties</>
             )}
           </div>
           <div style={{ marginLeft: "auto" }}>
@@ -179,6 +183,7 @@ const AuthorActivityFeed = ({
               handleSelect={(opt) => {
                 if (opt.value !== bountySortType) {
                   router.push({ query: { ...router.query, sort: opt.value } });
+                  setIsLoading(true);
                   setNeedsFetch(true);
                   setBountySortType(opt.value);
                 }
