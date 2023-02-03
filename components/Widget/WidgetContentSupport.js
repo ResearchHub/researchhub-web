@@ -32,7 +32,6 @@ const ContentSupport = (props) => {
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
-    console.log(data);
     setCount(
       parseFloat((data?.promoted || 0) + data?.awarded_bounty_amount) || 0
     );

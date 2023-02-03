@@ -106,8 +106,6 @@ function Base({
     transition: transitions.SCALE,
   };
 
-  console.log(pageProps);
-
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
       {process.env.GA_TRACKING_ID && (
