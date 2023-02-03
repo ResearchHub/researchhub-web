@@ -22,7 +22,7 @@ import { LEFT_SIDEBAR_FORCE_MIN_KEY } from "~/components/Home/sidebar/RootLeftSi
 import { MessageActions } from "~/redux/message";
 import { Provider } from "react-redux";
 import { SIFT_BEACON_KEY } from "~/config/constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import App from "next/app";
 import Base from "./Base";
 import nookies from "nookies";
@@ -62,6 +62,8 @@ const MyApp = ({
   const router = useRouter();
   const [prevPath, setPrevPath] = useState(router.asPath);
 
+  const showLoader = useRef();
+
   // Scroll to top on page change
   useEffect(() => {
     if (prevPath !== router.pathname) {
@@ -79,12 +81,15 @@ const MyApp = ({
     connectSift();
 
     router.events.on("routeChangeStart", (url) => {
-      store.dispatch(MessageActions.setMessage(""));
-      store.dispatch(MessageActions.showMessage({ show: true, load: true }));
+      showLoader.current = setTimeout(() => {
+        store.dispatch(MessageActions.setMessage(""));
+        store.dispatch(MessageActions.showMessage({ show: true, load: true }));
+      }, 200);
     });
 
     router.events.on("routeChangeComplete", (url) => {
       connectSift();
+      clearTimeout(showLoader.current);
       store.dispatch(MessageActions.showMessage({ show: false }));
     });
 

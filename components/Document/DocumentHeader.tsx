@@ -286,8 +286,11 @@ function DocumentHeader({
     claimableAuthors.length > 0 && router?.pathname?.includes("/paper");
   let bountyAmount = 0;
   allBounties?.forEach((bounty) => {
+    console.log(bounty.amount);
     bountyAmount += bounty.amount;
   });
+
+  console.log(bountyAmount);
 
   return (
     // @ts-ignore
