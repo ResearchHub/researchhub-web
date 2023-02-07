@@ -469,11 +469,6 @@ class DiscussionEntry extends Component {
   upvote = async () => {
     let { data, post, hypothesis, documentType, dispatch } = this.props;
 
-    console.log("--------------------");
-    console.log("data", data);
-    console.log("documentType", documentType);
-    console.log("--------------------");
-
     const threadId = data.id;
     const paperId = data.paper;
     let documentId;
