@@ -111,8 +111,8 @@ export default class Bounty {
     // TODO: Change hard coded value
 
     const today = new Date();
-    const sevenDaysFromNow = new Date(
-      today.getTime() + 7 * 24 * 60 * 60 * 1000
+    const thirtyDaysFromNow = new Date(
+      today.getTime() + 30 * 24 * 60 * 60 * 1000
     );
 
     const data = {
@@ -120,7 +120,7 @@ export default class Bounty {
       item_content_type: itemContentType,
       item_object_id: itemObjectId,
       effort_level: effortLevel,
-      expiration_date: sevenDaysFromNow,
+      expiration_date: thirtyDaysFromNow,
     };
 
     return new Promise((resolve, reject) => {
