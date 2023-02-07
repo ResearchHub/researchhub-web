@@ -13,6 +13,7 @@ import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
 import BountyToggle from "~/components/Activity/BountyToggle";
 import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { StyleSheet, css } from "aphrodite";
 
 const AuthorActivityFeed = ({
   author,
@@ -141,7 +142,7 @@ const AuthorActivityFeed = ({
   };
 
   const formattedTotalBountyAmount = formatBountyAmount({
-    amount: totalBountyAmount,
+    amount: totalBountyAmount || 0,
     withPrecision: false,
   });
   return (
@@ -150,25 +151,18 @@ const AuthorActivityFeed = ({
         <div
           style={{ display: "flex", alignItems: "center", marginBottom: 50 }}
         >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              fontWeight: 400,
-              fontSize: 18,
-              columnGap: 10,
-              width: "80%",
-            }}
-          >
+          <div className={css(styles.bountyTitle)}>
             {!isLoading && (
               <>
                 {bountySortType === "bounty_offered" ? (
                   <>
                     Offered {count} bounties for a total of{" "}
-                    <ContentBadge
-                      label={`${`${formattedTotalBountyAmount} RSC`}`}
-                      contentType="bounty"
-                    />
+                    <span className={css(styles.contentBadgeWrapper)}>
+                      <ContentBadge
+                        label={`${`${formattedTotalBountyAmount} RSC`}`}
+                        contentType="bounty"
+                      />
+                    </span>
                   </>
                 ) : (
                   <>Answered and earned {count} bounties</>
@@ -227,5 +221,25 @@ const AuthorActivityFeed = ({
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  bountyTitle: {
+    display: "inline-flex",
+    alignItems: "center",
+    fontWeight: 400,
+    fontSize: 18,
+    columnGap: 10,
+    width: "80%",
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "inline",
+      lineHeight: "28px",
+    },
+  },
+  contentBadgeWrapper: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "inline-flex",
+    },
+  },
+});
 
 export default AuthorActivityFeed;
