@@ -14,6 +14,8 @@ import {
   getCardType,
 } from "./utils/AuthorFeedUtils";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import ContentBadge from "~/components/ContentBadge";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 const AuthorFeedItem = ({
   author,
@@ -33,6 +35,7 @@ const AuthorFeedItem = ({
       case "hypothesis":
       case "paper":
       case "post":
+      case "bounty":
       case "question":
         html = (
           <FeedCard
@@ -51,7 +54,12 @@ const AuthorFeedItem = ({
         const data =
           item.contribution_type === "SUPPORTER"
             ? item.source.source
+            : item.contribution_type === "BOUNTY_CREATED"
+            ? item.source.item
+            : item.contribution_type === "BOUNTY_SOLUTION"
+            ? item.source.item
             : item.source;
+
         const uniDoc = item.unified_document;
         const docType = getFEUnifiedDocType(uniDoc?.document_type);
 
@@ -88,6 +96,7 @@ const AuthorFeedItem = ({
 
   const buildActionLineHTML = ({ item, itemType, author }) => {
     const cardType = getCardType({ item, itemType });
+
     let actionText = null;
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
       if (item.source?.review?.id) {
@@ -100,6 +109,30 @@ const AuthorFeedItem = ({
       item.contribution_type === "SUBMITTER"
     ) {
       actionText = `submitted ${cardType}`;
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "BOUNTY_CREATED"
+    ) {
+      const formattedBountyAmount = formatBountyAmount({
+        amount: item?.source?.amount,
+        withPrecision: false,
+      });
+      actionText = (
+        <span
+          style={{ display: "inline-flex", columnGap: 8, alignItems: "center" }}
+        >
+          created bounty for{" "}
+          <ContentBadge
+            contentType="bounty"
+            label={`${formattedBountyAmount} RSC`}
+          />
+        </span>
+      );
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "BOUNTY_SOLUTION"
+    ) {
+      actionText = `answered bounty`;
     } else if (
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUPPORTER"
@@ -127,7 +160,7 @@ const AuthorFeedItem = ({
         >
           {`${author?.first_name} ${author?.last_name} `}
         </Link>
-        <span>{actionText}</span>
+        <span style={{ lineHeight: "28px" }}>{actionText}</span>
       </div>
     );
   };

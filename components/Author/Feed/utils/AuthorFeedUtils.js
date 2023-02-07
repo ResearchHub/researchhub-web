@@ -71,6 +71,21 @@ export const getCardType = ({ item, itemType }) => {
       cardType = "comment";
     } else if (item.contribution_type === "SUBMITTER") {
       cardType = getFEUnifiedDocType(uniDoc?.document_type);
+    } else if (item.contribution_type === "BOUNTY_CREATED") {
+      if (item.source?.content_type?.name === "thread") {
+        cardType = "comment";
+      } else {
+        cardType = getFEUnifiedDocType(uniDoc?.document_type);
+      }
+    } else if (item.contribution_type === "BOUNTY_SOLUTION") {
+      if (
+        item.source?.content_type?.name === "thread" ||
+        item.source?.content_type?.name === "comment"
+      ) {
+        cardType = "comment";
+      } else {
+        cardType = getFEUnifiedDocType(uniDoc?.document_type);
+      }
     } else if (item.contribution_type === "SUPPORTER") {
       if (item.source?.content_type?.app_label === "discussion") {
         cardType = "comment";

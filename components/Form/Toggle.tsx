@@ -5,7 +5,6 @@ import colors from "~/config/themes/colors";
 type ToggleOption = {
   label: string;
   value: any;
-  selected: any;
 }
 
 type Props = {
@@ -20,8 +19,9 @@ export default function Toggle({
   selected,
 }: Props): ReactElement {
 
-  const optionElems = options.map((opt) => (
+  const optionElems = options.map((opt, index) => (
     <div
+      key={`toggle-opt-${index}`}
       className={css(styles.option, selected === opt.value && styles.optionSelected)}
       onClick={() => onSelect(opt)}
     >

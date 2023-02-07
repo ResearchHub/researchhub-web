@@ -145,6 +145,11 @@ function AuthorPage(props) {
           name: "Overview",
         },
         {
+          href: "bounties",
+          label: "Bounties",
+          name: "Bounties",
+        },
+        {
           href: "discussions",
           label: "Comments",
           name: "Comments",
@@ -189,6 +194,10 @@ function AuthorPage(props) {
       ...router.query,
       tabName: tab.href,
     };
+
+    if (tab.href !== "bounties") {
+      delete updatedQuery.sort;
+    }
 
     if (tab.href.charAt(0) === "/") {
       router.push({
@@ -342,6 +351,16 @@ function AuthorPage(props) {
           isVisible={tabName === "discussions"}
           author={author}
           contributionType="comment"
+          isFetchingAuthor={fetching}
+        />
+      </div>
+      <div
+        className={css(tabName === "bounties" ? styles.reveal : styles.hidden)}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "bounties"}
+          author={author}
+          contributionType={"bounty"}
           isFetchingAuthor={fetching}
         />
       </div>
@@ -856,6 +875,7 @@ function AuthorPage(props) {
     const sluggedName = buildSlug(hub.slug ?? "");
     return (
       <Link
+        key={`hub-${i}`}
         href={"/hubs/[slug]"}
         as={`/hubs/${slug}`}
         className={css(styles.hubLinkTag)}
