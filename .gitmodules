@@ -1,0 +1,3 @@
+[submodule "researchhub-citation-manager"]
+	path = researchhub-citation-manager
+	url = https://github.com/ResearchHub/researchhub-citation-manager
