@@ -15,7 +15,7 @@ type Props = {
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
-  noText?: Boolean;
+  noText?: boolean;
 };
 
 export default function CitationAddNewButton({

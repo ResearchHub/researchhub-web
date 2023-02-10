@@ -7,7 +7,6 @@ import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSid
 export default function ReviewsIndex(): ReactElement<
   typeof PermissionsDashboard
 > | null {
-
   return (
     <ContentPage
       mainFeed={<PermissionsDashboard />}

@@ -79,9 +79,7 @@ function FeedMenuSortDropdown({
               key={"sort-" + opt.value}
             >
               <div className={css(styles.optLineItem)}>
-                <div className={css(styles.optIcon)}>
-                  {opt.icon}
-                </div>
+                <div className={css(styles.optIcon)}>{opt.icon}</div>
                 <div className={css(styles.optLabel)}>{opt.label}</div>
               </div>
               {selectedOrderingObj?.value === opt.value &&

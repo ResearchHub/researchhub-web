@@ -1,14 +1,17 @@
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
-import { PeerReviewRequest, parsePeerReviewRequest } from "~/config/types/peerReview";
+import {
+  PeerReviewRequest,
+  parsePeerReviewRequest,
+} from "~/config/types/peerReview";
 import { captureEvent } from "~/config/utils/events";
 
 type Args = {
-  peerReviewRequest: PeerReviewRequest,
-  email: string,
+  peerReviewRequest: PeerReviewRequest;
+  email: string;
   onError: Function;
   onSuccess: Function;
-}
+};
 
 export function inviteReviewer({
   peerReviewRequest,
@@ -34,6 +37,6 @@ export function inviteReviewer({
         msg: "Failed to invite",
         data: { peerReviewRequest, email },
       });
-      onError(error)
+      onError(error);
     });
 }

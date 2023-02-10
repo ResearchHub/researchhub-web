@@ -28,16 +28,15 @@ const ALink: FunctionComponent<Props> = ({
   target = null,
 }): ReactElement => {
   return (
-    (<Link
+    <Link
       href={href}
       as={as}
       className={css(styles.ALink, styles[themes[theme]], overrideStyle)}
       target={target || undefined}
       onClick={(e) => e.stopPropagation()}
-      >
+    >
       {children}
-
-    </Link>)
+    </Link>
   );
 };
 

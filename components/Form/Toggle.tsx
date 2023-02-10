@@ -5,7 +5,7 @@ import colors from "~/config/themes/colors";
 type ToggleOption = {
   label: string;
   value: any;
-}
+};
 
 type Props = {
   options: Array<ToggleOption>;
@@ -18,32 +18,30 @@ export default function Toggle({
   onSelect,
   selected,
 }: Props): ReactElement {
-
   const optionElems = options.map((opt, index) => (
     <div
       key={`toggle-opt-${index}`}
-      className={css(styles.option, selected === opt.value && styles.optionSelected)}
+      className={css(
+        styles.option,
+        selected === opt.value && styles.optionSelected
+      )}
       onClick={() => onSelect(opt)}
     >
       {opt.label}
     </div>
   ));
 
-  return (
-    <div className={css(styles.toggle)}>
-      {optionElems}
-    </div>
-  )
+  return <div className={css(styles.toggle)}>{optionElems}</div>;
 }
 
 const styles = StyleSheet.create({
-  "toggle": {
+  toggle: {
     display: "flex",
     background: "#3971FF1A",
     borderRadius: 50,
     padding: 5,
   },
-  "option": {
+  option: {
     color: colors.NEW_BLUE(),
     fontWeight: 500,
     borderRadius: 50,
@@ -51,12 +49,12 @@ const styles = StyleSheet.create({
     padding: "6px 12px",
     cursor: "pointer",
     ":hover": {
-      opacity: 0.9
-    }
+      opacity: 0.9,
+    },
   },
-  "optionSelected": {
+  optionSelected: {
     background: colors.NEW_BLUE(),
     color: "white",
     transition: "0.1s",
-  }
+  },
 });

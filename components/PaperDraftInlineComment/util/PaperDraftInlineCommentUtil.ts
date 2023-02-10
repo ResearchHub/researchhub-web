@@ -30,7 +30,7 @@ function getBlockTypesInSet(block: ContentBlock): Set<any> {
 function getModifiedContentState({ blockData, editorState, newBlockTypes }) {
   const currentContentState = editorState.getCurrentContent();
   const selectionState = editorState.getSelection();
-  let modifiedContentState = Modifier.setBlockData(
+  const modifiedContentState = Modifier.setBlockData(
     currentContentState,
     selectionState,
     blockData
@@ -176,7 +176,7 @@ export function removeSavedInlineComment({
   );
   const currContentState = currEditorState.getCurrentContent();
   const currBlocks = currContentState.getBlocksAsArray();
-  let shouldBreakFromLoop: boolean = false,
+  let shouldBreakFromLoop = false,
     targetBlock: ContentBlock | null = null;
   for (const block of currBlocks) {
     block.findEntityRanges(

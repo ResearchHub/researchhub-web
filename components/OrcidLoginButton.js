@@ -86,7 +86,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrcidLoginButton);
+export default connect(mapStateToProps, mapDispatchToProps)(OrcidLoginButton);

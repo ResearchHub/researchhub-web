@@ -21,7 +21,6 @@ import NewPostButton from "~/components/NewPostButton";
 import Login from "~/components/Login/Login";
 import Button from "~/components/Form/Button";
 
-
 type Props = {
   isLoggedIn: boolean;
   openLoginModal: any /* redux */;
@@ -64,38 +63,28 @@ function RootLeftSidebarSlider({
         <RHLogo withText iconStyle={styles.rhLogoSlider} />
       </div>
       {isLoggedIn ? (
-          <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
-        ) : (
-          <div className={css(styles.loginButtonWrap)}>
-            <Login>
-              <Button
-                size="med"
-                label="Log in"
-                fullWidth
-                hideRipples={true}
-              />
-            </Login>
-          </div>
-        )}
+        <NewPostButton customButtonStyle={styles.newPostButtonCustom} />
+      ) : (
+        <div className={css(styles.loginButtonWrap)}>
+          <Login>
+            <Button size="med" label="Log in" fullWidth hideRipples={true} />
+          </Login>
+        </div>
+      )}
       {sliderMainItems}
       <div className={css(styles.leftSidebarSliderFooter)}>
-
-
-            
-        
-        
         <div className={css(styles.leftSidebarSliderFooterItemsTop)}>
-          {isLoggedIn &&
+          {isLoggedIn && (
             <span
               className={css(styles.leftSidebarSliderFooterTxtItem)}
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
                 signout({ walletLink });
-              }}            
+              }}
             >
               {"Sign out"}
             </span>
-          }
+          )}
           <span className={css(styles.leftSidebarSliderFooterTxtItem)}>
             <InviteButton context="referral">
               <span className={css(styles.referralProgramItem)}>
@@ -115,8 +104,6 @@ function RootLeftSidebarSlider({
           >
             {"Jobs"}
           </ALink>
-
-
         </div>
         <div className={css(styles.leftSidebarSliderFooterBottom)}>
           <div

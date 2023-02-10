@@ -6,12 +6,17 @@ const IconButton = ({ onClick, children, overrideStyle, size = 18 }) => {
     <div
       className={css(styles.root, styles.withAnimation, overrideStyle)}
       onClick={onClick}
-      style={{ width: size, height: size, fontSize: size, lineHeight: `${size}px` }}
+      style={{
+        width: size,
+        height: size,
+        fontSize: size,
+        lineHeight: `${size}px`,
+      }}
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   root: {

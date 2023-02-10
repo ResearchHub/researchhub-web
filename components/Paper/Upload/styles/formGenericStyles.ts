@@ -97,14 +97,14 @@ export const formGenericStyles = StyleSheet.create({
     [`@media only screen and (max-width: 767px)`]: {
       width: "calc(100% - 16px)",
       padding: 16,
-      boxSizing: 'border-box',
+      boxSizing: "border-box",
       border: 0,
     },
   },
   textArea: {
     "@media only screen and (max-width: 767px)": {
       marginTop: 16,
-    }
+    },
   },
   header: {
     fontSize: 22,
@@ -195,7 +195,7 @@ export const formGenericStyles = StyleSheet.create({
     marginBottom: 10,
     width: 600,
     "@media only screen and (max-width: 767px)": {
-      width: '100%',
+      width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
@@ -210,7 +210,7 @@ export const formGenericStyles = StyleSheet.create({
     marginBottom: 20,
     width: 600,
     "@media only screen and (max-width: 767px)": {
-      width: '100%',
+      width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 1399px)": {
       fontSize: 15,
-    }
+    },
   },
   imgWrap: {
     display: "unset",

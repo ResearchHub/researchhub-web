@@ -35,14 +35,14 @@ type HandleVoteArgs = {
   localVoteMeta: VoteMeta;
   onUpdateSuccess?: Function;
   setLocalVoteMeta: (VoteMeta: VoteMeta) => void;
-  shouldAllowVote: Boolean;
+  shouldAllowVote: boolean;
   voteAPI: string;
 };
 
 type ComponentProp = {
   downVoteAPI: string;
   onUpdateSuccess?: Function;
-  shouldAllowVote: Boolean;
+  shouldAllowVote: boolean;
   upVoteAPI: string;
   voteMeta: VoteMeta;
 };

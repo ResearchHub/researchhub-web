@@ -16,7 +16,7 @@
     "build:staging": "docker buildx build --platform=linux/amd64 --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
     "sitemap": "node scripts/createSitemap.js",
     "sitemap-index": "node scripts/createSitemapIndex.js",
-    "lint": "./node_modules/.bin/eslint",
+    "lint": "eslint . --quiet --fix",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -150,6 +150,7 @@
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": ">=6",
     "lint-staged": ">=10",
     "prettier": "^2.3.2",

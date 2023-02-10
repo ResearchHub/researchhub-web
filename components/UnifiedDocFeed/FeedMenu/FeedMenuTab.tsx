@@ -19,7 +19,6 @@ type Args = {
   isSelected: boolean;
 };
 
-
 const FeedMenuTab = ({
   selectedFilters,
   tabObj,
@@ -57,31 +56,29 @@ const FeedMenuTab = ({
               handleOpenTagsMenu(tabObj.value);
             }
           }
-        }}>
-
+        }}
+      >
         <span className={css(styles.tabText)}>{tabObj.label}</span>
         {nestedOptions.length > 0 && (
           <>
-            {isTagsMenuOpen
-              ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
-              : isSelected
-              ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
-              : null
-            }
+            {isTagsMenuOpen ? (
+              <span className={css(styles.icon)}>{icons.chevronUp}</span>
+            ) : isSelected ? (
+              <span className={css(styles.icon)}>{icons.chevronDown}</span>
+            ) : null}
             {isTagsMenuOpen && (
               <FeedMenuTagDropdown
                 options={nestedOptions}
                 forTab={tabObj}
                 selectedTags={selectedFilters.tags}
                 handleSelect={(selected) => {
-                  handleFilterSelect({ router, tags: [selected] })
+                  handleFilterSelect({ router, tags: [selected] });
                   setTagsMenuOpenFor(null);
                 }}
               />
             )}
           </>
         )}
-
       </Link>
     </div>
   );

@@ -4,16 +4,16 @@ import { captureEvent } from "~/config/utils/events";
 import { ID } from "~/config/types/root_types";
 
 type Params = {
-  excludeFromHomepage: Boolean;
-  excludeFromHubs: Boolean;
-}
+  excludeFromHomepage: boolean;
+  excludeFromHubs: boolean;
+};
 
 type Args = {
   unifiedDocumentId: ID;
   params: Params;
   onError?: Function;
   onSuccess: Function;
-}
+};
 
 export default function excludeFromFeed({
   unifiedDocumentId,
@@ -21,7 +21,6 @@ export default function excludeFromFeed({
   onError,
   onSuccess,
 }: Args) {
-
   return fetch(
     API.EXCLUDE_FROM_FEED({ unifiedDocumentId }),
     API.POST_CONFIG({
@@ -37,6 +36,6 @@ export default function excludeFromFeed({
         msg: "Failed to exclude from feed",
         data: { unifiedDocumentId, params },
       });
-      onError && onError(error)
-    })
+      onError && onError(error);
+    });
 }

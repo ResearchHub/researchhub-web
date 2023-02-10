@@ -28,7 +28,7 @@ type FormError = {
 };
 
 function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
+  const result = true;
   switch (fieldID) {
     case "authors":
     case "hubs":
@@ -190,7 +190,7 @@ function NotePublishModal({
           /* @ts-ignore */
           const { id, slug } = response;
           if (checkBoxDOI) {
-            let param = {
+            const param = {
               balance: currentUser.balance - CROSSREF_DOI_RSC_FEE,
             };
             updateUser(param);

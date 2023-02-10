@@ -1,13 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Fragment, SyntheticEvent, useState } from "react";
+import { Fragment, SyntheticEvent, useState, useContext } from "react";
 import {
   DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
-import { useContext } from "react";
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import ResearchHubPopover from "./ResearchHubPopover";

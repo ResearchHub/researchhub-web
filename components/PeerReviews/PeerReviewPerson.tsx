@@ -1,34 +1,27 @@
 import AuthorAvatar from "~/components/AuthorAvatar";
-import { AuthorProfile } from "~/config/types/root_types";
+import { AuthorProfile, ID } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
-import { ID } from "~/config/types/root_types";
 
 type Props = {
-  id: ID,
-  status?: "ACCEPTED" | "DECLINED" | "INVITED",
-  authorProfile?: AuthorProfile,
+  id: ID;
+  status?: "ACCEPTED" | "DECLINED" | "INVITED";
+  authorProfile?: AuthorProfile;
 };
 
-function PeerReviewPerson({
-  id,
-  status,
-  authorProfile,
-}: Props): ReactElement {
-
+function PeerReviewPerson({ id, status, authorProfile }: Props): ReactElement {
   const authorName = `${authorProfile?.firstName} ${authorProfile?.lastName}`;
-  const tooltipMessage = (
-    (status === "INVITED") ?
-      `${authorName} has been invited`
-    : (status === "ACCEPTED") ?
-      `${authorName} accepted invite`
-    : (status === "DECLINED") ?
-      `${authorName} declined invite`
-    : null
-  );
+  const tooltipMessage =
+    status === "INVITED"
+      ? `${authorName} has been invited`
+      : status === "ACCEPTED"
+      ? `${authorName} accepted invite`
+      : status === "DECLINED"
+      ? `${authorName} declined invite`
+      : null;
 
   return (
     <span
@@ -36,50 +29,52 @@ function PeerReviewPerson({
       data-for={`person-${id}-${authorProfile?.id}`}
       data-tip
     >
-        <ReactTooltip
-          place="top"
-          effect="solid"
-          delayShow={250}
-          id={`person-${id}-${authorProfile?.id}`}
-        >
-          {tooltipMessage}
-        </ReactTooltip>
+      <ReactTooltip
+        place="top"
+        effect="solid"
+        delayShow={250}
+        id={`person-${id}-${authorProfile?.id}`}
+      >
+        {tooltipMessage}
+      </ReactTooltip>
 
-        
-        {status == "INVITED" ? 
-            <span className={css(styles.statusIcon, styles.questionIcon)}>{icons.question}</span>
-          : status == "ACCEPTED" ?
-            <span className={css(styles.statusIcon, styles.checkIcon)}>{icons.checkCircleSolid}</span>
-          : status == "DECLINED" ?
-            <span className={css(styles.statusIcon, styles.timesIcon)}>{icons.timesCircleSolid}</span>
-          : null
-        }
-        <div
-          className={css(styles.avatarContainer)}
-        >
-          <AuthorAvatar
-            author={authorProfile}
-            fontSize={15}
-            size={30}
-            spacing={5}
-          />
+      {status == "INVITED" ? (
+        <span className={css(styles.statusIcon, styles.questionIcon)}>
+          {icons.question}
+        </span>
+      ) : status == "ACCEPTED" ? (
+        <span className={css(styles.statusIcon, styles.checkIcon)}>
+          {icons.checkCircleSolid}
+        </span>
+      ) : status == "DECLINED" ? (
+        <span className={css(styles.statusIcon, styles.timesIcon)}>
+          {icons.timesCircleSolid}
+        </span>
+      ) : null}
+      <div className={css(styles.avatarContainer)}>
+        <AuthorAvatar
+          author={authorProfile}
+          fontSize={15}
+          size={30}
+          spacing={5}
+        />
       </div>
     </span>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "PeerReviewPerson": {
+  PeerReviewPerson: {
     position: "relative",
     marginLeft: 10,
     ":first-child": {
       marginLeft: 0,
-    }
+    },
   },
-  "avatarContainer": {
+  avatarContainer: {
     display: "inline-block",
   },
-  "statusIcon": {
+  statusIcon: {
     position: "absolute",
     background: "white",
     borderRadius: 50,
@@ -89,15 +84,15 @@ const styles = StyleSheet.create({
     right: -6,
     zIndex: 1,
   },
-  "questionIcon": {
-    color: colors.ORANGE(),  
+  questionIcon: {
+    color: colors.ORANGE(),
   },
-  "checkIcon": {
+  checkIcon: {
     color: colors.GREEN(),
   },
-  "timesIcon": {
+  timesIcon: {
     color: colors.RED(),
-  }
+  },
 });
 
 export default PeerReviewPerson;

@@ -70,9 +70,8 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-  const [shouldPrepSlideButton, setShouldPrepSlideButton] = useState<boolean>(
-    true
-  );
+  const [shouldPrepSlideButton, setShouldPrepSlideButton] =
+    useState<boolean>(true);
   const textRef = useRef<HTMLSpanElement>(null);
 
   const { commentThreadID } = contentState.getEntity(entityKey).getData();

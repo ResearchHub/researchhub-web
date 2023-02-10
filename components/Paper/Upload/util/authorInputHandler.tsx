@@ -63,57 +63,57 @@ type GetHandleAuthorInputChangeArgs = {
   setDebounceRef: (ref: NodeJS.Timeout | null) => void;
 };
 
-export const getHandleAuthorInputChange = ({
-  currComponentState,
-  currFormState,
-  debounceRef,
-  debounceTime = 500,
-  setComponentState,
-  setDebounceRef,
-}: GetHandleAuthorInputChangeArgs): Function => (
-  searchText: string | null
-): void => {
-  if (!isNullOrUndefined(debounceRef)) {
-    clearTimeout(nullthrows(debounceRef));
-  }
+export const getHandleAuthorInputChange =
+  ({
+    currComponentState,
+    currFormState,
+    debounceRef,
+    debounceTime = 500,
+    setComponentState,
+    setDebounceRef,
+  }: GetHandleAuthorInputChangeArgs): Function =>
+  (searchText: string | null): void => {
+    if (!isNullOrUndefined(debounceRef)) {
+      clearTimeout(nullthrows(debounceRef));
+    }
 
-  const shouldShowAuthorList = Boolean(searchText);
-  /* updating input state */
-  setComponentState({
-    ...currComponentState,
-    authorSearchText: searchText,
-    isFetchingAuthors: shouldShowAuthorList,
-    shouldShowAuthorList: Boolean(searchText),
-  });
+    const shouldShowAuthorList = Boolean(searchText);
+    /* updating input state */
+    setComponentState({
+      ...currComponentState,
+      authorSearchText: searchText,
+      isFetchingAuthors: shouldShowAuthorList,
+      shouldShowAuthorList: Boolean(searchText),
+    });
 
-  const { authors: currSelectedAuthors } = currFormState;
+    const { authors: currSelectedAuthors } = currFormState;
 
-  setDebounceRef(
-    setTimeout(async () => {
-      return fetch(
-        API.AUTHOR({
-          search: searchText,
-          excludeIds: nullthrows(currSelectedAuthors, "Must be an array").map(
-            (author: any): ID => author.id
-          ),
-        }),
-        API.GET_CONFIG()
-      )
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((resp: any): void => {
-          setComponentState({
-            ...currComponentState,
-            authorSearchText: searchText,
-            isFetchingAuthors: false,
-            shouldShowAuthorList,
-            suggestedAuthors: resp.results,
+    setDebounceRef(
+      setTimeout(async () => {
+        return fetch(
+          API.AUTHOR({
+            search: searchText,
+            excludeIds: nullthrows(currSelectedAuthors, "Must be an array").map(
+              (author: any): ID => author.id
+            ),
+          }),
+          API.GET_CONFIG()
+        )
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((resp: any): void => {
+            setComponentState({
+              ...currComponentState,
+              authorSearchText: searchText,
+              isFetchingAuthors: false,
+              shouldShowAuthorList,
+              suggestedAuthors: resp.results,
+            });
+            setDebounceRef(null);
           });
-          setDebounceRef(null);
-        });
-    }, debounceTime || 500)
-  );
-};
+      }, debounceTime || 500)
+    );
+  };
 
 type GetHandleAuthorSelectArgs = {
   currComponentState: ComponentState;
@@ -168,40 +168,40 @@ type CreateNewProfileAndUpdateState = {
   setFormState: SetFormState;
 };
 
-export const getCreateNewProfileAndUpdateState = ({
-  currComponentState,
-  currFormErrors,
-  currFormState,
-  modalActions,
-  setComponentState,
-  setFormErrors,
-  setFormState,
-}: CreateNewProfileAndUpdateState): Function => (
-  params: any /* refer to AddAuthorModal */
-): void => {
-  fetch(API.AUTHOR({}), API.POST_CONFIG(params))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((createdProfile) => {
-      const { authors: currSelectedAuthors } = currFormState;
-      setComponentState({
-        ...currComponentState,
-        authorSearchText: "",
-        isFormEdited: true,
-        shouldShowAuthorList: false,
+export const getCreateNewProfileAndUpdateState =
+  ({
+    currComponentState,
+    currFormErrors,
+    currFormState,
+    modalActions,
+    setComponentState,
+    setFormErrors,
+    setFormState,
+  }: CreateNewProfileAndUpdateState): Function =>
+  (params: any /* refer to AddAuthorModal */): void => {
+    fetch(API.AUTHOR({}), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((createdProfile) => {
+        const { authors: currSelectedAuthors } = currFormState;
+        setComponentState({
+          ...currComponentState,
+          authorSearchText: "",
+          isFormEdited: true,
+          shouldShowAuthorList: false,
+        });
+        setFormState({
+          ...currFormState,
+          authors: [
+            ...nullthrows(currSelectedAuthors, "Must an array"),
+            createdProfile,
+          ],
+        });
+        setFormErrors({ ...currFormErrors, author: false });
+      })
+      .catch((err) => {
+        if (err.response.status === 429) {
+          modalActions.openRecaptchaPrompt(true);
+        }
       });
-      setFormState({
-        ...currFormState,
-        authors: [
-          ...nullthrows(currSelectedAuthors, "Must an array"),
-          createdProfile,
-        ],
-      });
-      setFormErrors({ ...currFormErrors, author: false });
-    })
-    .catch((err) => {
-      if (err.response.status === 429) {
-        modalActions.openRecaptchaPrompt(true);
-      }
-    });
-};
+  };

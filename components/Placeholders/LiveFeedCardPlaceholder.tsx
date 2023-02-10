@@ -13,23 +13,19 @@ export default function UnifiedDocFeedCardPlaceholder({
   return (
     <div
       className={css(styles.docFeedCardPlaceholder) + " show-loading-animation"}
-    >    
+    >
       <div className={css(styles.cardMain)}>
         <div className={css(styles.column)}>
           <div className={css(styles.header)}>
-
             <div className={css(styles.topLine)}>
-              <RoundShape
-                color={color}
-                style={{ width: 28, height: 28 }}
-              />
+              <RoundShape color={color} style={{ width: 28, height: 28 }} />
               <TextBlock
                 className={css(styles.textRow)}
                 rows={1}
                 color={color}
                 style={{ width: "100%", marginLeft: 15 }}
               />
-            </div>  
+            </div>
             <TextBlock
               className={css(styles.textRow, styles.paddingTop)}
               rows={1}

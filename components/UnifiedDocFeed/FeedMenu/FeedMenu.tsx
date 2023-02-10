@@ -151,8 +151,7 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       width: "calc(100vw - 38px)",
-    }
-
+    },
   },
 
   tabsContainer: {

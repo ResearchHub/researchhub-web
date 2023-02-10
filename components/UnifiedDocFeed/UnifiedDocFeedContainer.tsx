@@ -73,7 +73,6 @@ function UnifiedDocFeedContainer({
   //   setPaginationInfo,
   // });
 
-
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
   useEffectFetchDocs({
     fetchParams: {
@@ -171,7 +170,7 @@ function UnifiedDocFeedContainer({
             isHomePage,
           })}
         />
-       )}
+      )}
       <FeedMenu />
       {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>

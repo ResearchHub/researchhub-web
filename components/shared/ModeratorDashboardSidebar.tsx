@@ -97,11 +97,13 @@ export default function ModeratorDashboardSidebar({}: Props) {
         )}
         key={`listItem-${id}`}
       >
-        <Link href={{ pathname }} as={pathname} className={css(styles.sidebarLink)}>
-
+        <Link
+          href={{ pathname }}
+          as={pathname}
+          className={css(styles.sidebarLink)}
+        >
           <span className={css(styles.icon)}>{icon}</span>
           {name} {extraHTML}
-
         </Link>
       </Ripples>
     )

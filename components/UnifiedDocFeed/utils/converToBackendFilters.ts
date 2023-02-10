@@ -13,6 +13,8 @@ export const convertToBackendFilters = ({
   return {
     ...frontendFilters,
     type: getBEUnifiedDocType(frontendFilters.type),
-    ...(frontendFilters.time && { time: scopeOptions[frontendFilters.time].valueForApi }),
-  }
+    ...(frontendFilters.time && {
+      time: scopeOptions[frontendFilters.time].valueForApi,
+    }),
+  };
 };

@@ -39,16 +39,6 @@ const fetchPost = ({ postId }) => {
 
 const Post = (props) => {
   const router = useRouter();
-  if (props.error) {
-    return <Error statusCode={404} />;
-  }
-
-  if (props.redirectPath && typeof window !== "undefined") {
-    // updates the [documentId] without refetching data
-    router.replace("/post/[documentId]/[title]", props.redirectPath, {
-      shallow: true,
-    });
-  }
 
   const store = useStore();
   const initialPost = props?.initialPost || {};
@@ -91,6 +81,17 @@ const Post = (props) => {
       setHasBounties(hasBounties);
     }
   }, [post]);
+
+  if (props.error) {
+    return <Error statusCode={404} />;
+  }
+
+  if (props.redirectPath && typeof window !== "undefined") {
+    // updates the [documentId] without refetching data
+    router.replace("/post/[documentId]/[title]", props.redirectPath, {
+      shallow: true,
+    });
+  }
 
   const onBountyCancelled = (bountiesCancelled) => {
     const bountyMap = {};

@@ -5,8 +5,10 @@ import { PeerReviewRequest } from "~/config/types/peerReview";
 import PeerReviewRequestCard from "./PeerReviewRequestCard";
 import { captureEvent } from "~/config/utils/events";
 
-function PeerReviewRequestDashboard() : ReactElement<"div"> {
-  const [peerReviewRequests, setPeerReviewRequests] = useState<Array<PeerReviewRequest>>([])
+function PeerReviewRequestDashboard(): ReactElement<"div"> {
+  const [peerReviewRequests, setPeerReviewRequests] = useState<
+    Array<PeerReviewRequest>
+  >([]);
 
   const handleFetchReviewRequests = useCallback(() => {
     fetchPeerReviewRequests({
@@ -17,42 +19,46 @@ function PeerReviewRequestDashboard() : ReactElement<"div"> {
         captureEvent({
           error,
           msg: "Failed to fetch review requests",
-          data: { },
+          data: {},
         });
-      }
-    })
-  }, [peerReviewRequests])
+      },
+    });
+  }, [peerReviewRequests]);
 
   useEffect(() => {
     handleFetchReviewRequests();
-  }, [])
+  }, []);
 
   return (
     <div className={css(styles.dashboardContainer)}>
       <h1 className={css(styles.header)}>Peer Review Requests</h1>
       <div className="cardsContainer">
-        {peerReviewRequests.map((req: PeerReviewRequest): ReactElement<typeof PeerReviewRequestCard> => {
-          return (
-            <PeerReviewRequestCard
-              peerReviewRequest={req}
-              key={req.id}
-              fetchReviewRequests={handleFetchReviewRequests}
-            />
-          )
-        })}
+        {peerReviewRequests.map(
+          (
+            req: PeerReviewRequest
+          ): ReactElement<typeof PeerReviewRequestCard> => {
+            return (
+              <PeerReviewRequestCard
+                peerReviewRequest={req}
+                key={req.id}
+                fetchReviewRequests={handleFetchReviewRequests}
+              />
+            );
+          }
+        )}
       </div>
     </div>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "header": {
+  header: {
     fontSize: 30,
     fontWeight: 500,
   },
-  "dashboardContainer": {
+  dashboardContainer: {
     padding: "0 32px",
-  }
-})
+  },
+});
 
 export default PeerReviewRequestDashboard;

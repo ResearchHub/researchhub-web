@@ -13,7 +13,7 @@ import colors from "~/config/themes/colors";
 type Props = {
   peerReviewRequest: PeerReviewRequest;
   fetchReviewRequests: Function;
-  isOpen: Boolean;
+  isOpen: boolean;
   closeModal: Function;
   setMessage: Function;
   showMessage: Function;
@@ -34,7 +34,7 @@ function PeerReviewRequestModal({
   const handleClose = () => {
     setEmail("");
     closeModal();
-  }
+  };
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
@@ -48,7 +48,7 @@ function PeerReviewRequestModal({
     if (email.length > 0) {
       invite();
     }
-  }
+  };
 
   const invite = () => {
     setIsLoading(true);
@@ -66,8 +66,8 @@ function PeerReviewRequestModal({
         setIsLoading(false);
         fetchReviewRequests();
       },
-    })
-  }
+    });
+  };
 
   return (
     <BaseModal
@@ -80,12 +80,12 @@ function PeerReviewRequestModal({
         <div className={css(styles.reviewDetails)}>
           <div className={css(styles.attrRow)}>
             <div className={css(styles.attrName)}>Paper</div>
-            <div className={css(styles.attrValue)}>{peerReviewRequest?.unifiedDocument?.document?.title}</div>
+            <div className={css(styles.attrValue)}>
+              {peerReviewRequest?.unifiedDocument?.document?.title}
+            </div>
           </div>
         </div>
-        <form
-          onSubmit={(e) => handleSubmit(e)}
-        >
+        <form onSubmit={(e) => handleSubmit(e)}>
           <FormInput
             value={email}
             getRef={formInputRef}
@@ -98,47 +98,42 @@ function PeerReviewRequestModal({
           {isLoading ? (
             <Loader size={24} />
           ) : (
-            <Button
-              onClick={handleSubmit}
-              label="Invite"
-            />
+            <Button onClick={handleSubmit} label="Invite" />
           )}
         </form>
       </div>
     </BaseModal>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "rootContainer": {
+  rootContainer: {
     width: "100%",
     textAlign: "center",
   },
-  "modalStyle": {
+  modalStyle: {
     minWidth: 600,
   },
-  "reviewDetails": {
+  reviewDetails: {
     borderRadius: "4px",
     border: `1px solid ${colors.GREY(0.5)}`,
     textAlign: "left",
     marginTop: 30,
   },
-  "attrRow": {
+  attrRow: {
     padding: 15,
     display: "flex",
   },
-  "attrName": {
+  attrName: {
     fontWeight: 500,
     width: "25%",
   },
-  "attrValue": {
-
-  }
+  attrValue: {},
 });
 
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
-  showMessage: MessageActions.showMessage,  
-}
+  showMessage: MessageActions.showMessage,
+};
 
 export default connect(null, mapDispatchToProps)(PeerReviewRequestModal);

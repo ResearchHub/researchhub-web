@@ -33,7 +33,7 @@ const MIN_TITLE_LENGTH = 10;
 const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
+  const result = true;
   switch (fieldID) {
     case "title":
       return (

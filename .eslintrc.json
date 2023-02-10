@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "browser": true,
     "node": true,
@@ -9,7 +10,8 @@
     "plugin:import/errors",
     "plugin:import/typescript",
     "plugin:import/warnings",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -23,8 +25,8 @@
   "plugins": ["import", "react", "@typescript-eslint"],
   "rules": {
     "import/no-unresolved": "error",
-    "no-console": "warn",
-    "no-unused-vars": "warn",
+    "no-console": "off",
+    "no-unused-vars": "off",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-var-requires": 0 // this is specifically used for ck editor
   },

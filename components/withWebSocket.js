@@ -96,7 +96,7 @@ export default function withWebSocket(
 
       ws.onmessage = (e) => {
         const origin = new URL(e.origin);
-        const isAllowed = ALLOWED_ORIGINS.some((value, i) => {
+        const isAllowed = ALLOWED_ORIGINS.some((value) => {
           return value === origin.hostname;
         });
         if (isAllowed) {

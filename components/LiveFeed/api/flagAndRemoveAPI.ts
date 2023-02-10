@@ -1,8 +1,7 @@
 import { captureEvent } from "~/config/utils/events";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { Helpers } from "@quantfive/js-web-config";
-import { ID } from "~/config/types/root_types";
-import { KeyOf } from "~/config/types/root_types";
+import { ID, KeyOf } from "~/config/types/root_types";
 import API from "~/config/api";
 
 type ContentItem = {
@@ -12,7 +11,7 @@ type ContentItem = {
 
 type Verdict = {
   verdict_choice: KeyOf<typeof FLAG_REASON>;
-  is_content_removed: Boolean;
+  is_content_removed: boolean;
 };
 
 type APIParams = {

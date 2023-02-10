@@ -4,7 +4,7 @@ import { TargetAuthor } from "./api/AuthorClaimCaseGetCases";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import { ReactElement, SyntheticEvent, useMemo } from "react";
-import Link from 'next/link';
+import Link from "next/link";
 
 type Props = {
   caseCreatedDate: string;
@@ -29,12 +29,11 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
         <span className={css(styles.fontGrey)}>{"Paper - "}</span>
         <Link
           href={`/paper/${caseData?.paper?.id}/${caseData?.paper?.slug}`}
-          className={css(styles.link)}>
-
+          className={css(styles.link)}
+        >
           <span>{caseData?.paper?.title}</span>
-
         </Link>
-      </div>      
+      </div>
     </div>
   );
 }

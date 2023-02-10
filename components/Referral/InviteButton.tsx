@@ -11,7 +11,12 @@ type Args = {
   context: "bounty" | "referral";
 };
 
-const InviteButton = ({ children, openLoginModal, context, unifiedDocument }: Args) => {
+const InviteButton = ({
+  children,
+  openLoginModal,
+  context,
+  unifiedDocument,
+}: Args) => {
   const [isOpen, setIsOpen] = useState(false);
   // @ts-ignore
   const auth = useSelector((state) => state.auth);

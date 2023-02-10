@@ -11,16 +11,20 @@ import { ID } from "~/config/types/root_types";
 import PeerReviewRequestModal from "./PeerReviewInviteModal";
 import PeerReviewPerson from "./PeerReviewPerson";
 
-const opts = [{
-  label: "Invite",
-  value: "invite"
-}, {
-  label: "Decline",
-  value: "decline"
-}, {
-  label: "Close",
-  value: "close"    
-}];
+const opts = [
+  {
+    label: "Invite",
+    value: "invite",
+  },
+  {
+    label: "Decline",
+    value: "decline",
+  },
+  {
+    label: "Close",
+    value: "close",
+  },
+];
 
 type Props = {
   peerReviewRequest: PeerReviewRequest;
@@ -31,10 +35,9 @@ function PeerReviewRequestCard({
   peerReviewRequest,
   fetchReviewRequests,
 }: Props): ReactElement {
-
-  const [manageDropdownOpenFor, setManageDropdownOpenFor] = useState<ID>(null)
-  const [isInviteModalOpen, setsIsInviteModalOpen] = useState<Boolean>(false);
-  const author = peerReviewRequest?.requestedByUser?.authorProfile
+  const [manageDropdownOpenFor, setManageDropdownOpenFor] = useState<ID>(null);
+  const [isInviteModalOpen, setsIsInviteModalOpen] = useState<boolean>(false);
+  const author = peerReviewRequest?.requestedByUser?.authorProfile;
   const invites = peerReviewRequest?.invites ?? [];
   const invitedPeople = invites.map((invite) => (
     <PeerReviewPerson
@@ -42,7 +45,7 @@ function PeerReviewRequestCard({
       status={invite?.status}
       authorProfile={invite?.recipient?.authorProfile}
     />
-  ))
+  ));
 
   return (
     <div className={css(styles.PeerReviewRequestCard)}>
@@ -74,11 +77,9 @@ function PeerReviewRequestCard({
           <div className={css(styles.dateRow)}>
             {timeSince(peerReviewRequest.createdDate)}
           </div>
-          {invites.length > 0 &&
-            <div className={css(styles.invitedRow)}>
-              {invitedPeople}
-            </div>
-          }
+          {invites.length > 0 && (
+            <div className={css(styles.invitedRow)}>{invitedPeople}</div>
+          )}
         </div>
       </div>
       <div className={css(styles.manageButtonContainer)}>
@@ -96,17 +97,17 @@ function PeerReviewRequestCard({
               setsIsInviteModalOpen(true);
             }
             setManageDropdownOpenFor(null);
-          } }
+          }}
           onClose={() => setManageDropdownOpenFor(null)}
           onClickOutside={() => setManageDropdownOpenFor(null)}
-        />        
+        />
       </div>
     </div>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "PeerReviewRequestCard": {
+  PeerReviewRequestCard: {
     backgroundColor: "white",
     padding: "30px 30px",
     border: `1px solid ${colors.GREY(0.5)}`,
@@ -119,38 +120,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
-  "manageButtonContainer": {
+  manageButtonContainer: {
     alignSelf: "flex-start",
   },
-  "detailsContainer": {
+  detailsContainer: {
     display: "flex",
     alignItems: "center",
   },
-  "manageButton": {
+  manageButton: {
     background: colors.BLUE(),
     color: "white",
     borderRadius: "4px",
     ":hover": {
       background: colors.BLUE(),
-      opacity: 0.9,  
-    }
+      opacity: 0.9,
+    },
   },
-  "mainTextRow": {
+  mainTextRow: {
     lineHeight: "20px",
   },
-  "dateRow": {
+  dateRow: {
     color: colors.BLACK(0.5),
     fontWeight: 400,
     fontSize: 14,
   },
-  "invitedRow": {
+  invitedRow: {
     marginTop: 15,
   },
-  "avatarContainer": {
+  avatarContainer: {
     display: "inline-block",
     alignSelf: "flex-start",
     marginRight: 10,
-  }
-})
+  },
+});
 
 export default PeerReviewRequestCard;

@@ -49,7 +49,7 @@ function validateEmail(email: string): boolean {
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
+  const result = true;
   switch (fieldID) {
     // case "eduEmail":
     //   return typeof value === "string" && validateEmail(value);

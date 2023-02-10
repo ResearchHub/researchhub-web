@@ -27,7 +27,7 @@ type Args = {
 };
 
 type sendInviteApiArgs = {
-  email: String;
+  email: string;
   firstName: NullableString;
   lastName: NullableString;
   inviteType: "BOUNTY" | "JOIN_RH";
@@ -50,7 +50,7 @@ const InviteModal = ({
     useState<NullableString>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [selectedTab, setSelectedTab] = useState<"LINK" | "EMAIL">("LINK");
-  const [email, setEmail] = useState<String>("");
+  const [email, setEmail] = useState<string>("");
   const [firstName, setFirstName] = useState<NullableString>("");
   const [lastName, setLastName] = useState<NullableString>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -325,7 +325,7 @@ const InviteModal = ({
                   fontWeight: 500,
                 }}
               >
-                7% 
+                7%
               </span>{" "}
               of user's RSC earnings on ResearchHub for the first six month
               period

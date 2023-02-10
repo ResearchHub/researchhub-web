@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent } from "react";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
@@ -14,7 +14,6 @@ interface GoogleButtonParams {
   login: (data: any) => void;
   render: (render: any) => void;
 }
-
 
 const GoogleLogin: FunctionComponent<GoogleButtonParams> = ({
   onCredentialResponse,

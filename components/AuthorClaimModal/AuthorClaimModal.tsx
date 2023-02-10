@@ -29,14 +29,12 @@ const getPrompt = ({
     case "enterEmail":
       return (
         <AuthorClaimPromptEmail
-          authorData={authors.map(
-            (author: any): AuthorDatum => {
-              return {
-                name: `${author.firstName} ${author.lastName}`,
-                id: author.id,
-              };
-            }
-          )}
+          authorData={authors.map((author: any): AuthorDatum => {
+            return {
+              name: `${author.firstName} ${author.lastName}`,
+              id: author.id,
+            };
+          })}
           onSuccess={() => setOpenModalType("success")}
           userID={auth.user.id}
         />

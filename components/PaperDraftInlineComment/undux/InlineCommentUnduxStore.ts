@@ -25,9 +25,7 @@ export type PreparingInlineComment = {
   offsetTop?: number | null;
 };
 export type State = {
-  displayableInlineComments: Array<
-    InlineComment
-  > /* used to render InlineCommentThreadsDisplayBar */;
+  displayableInlineComments: Array<InlineComment> /* used to render InlineCommentThreadsDisplayBar */;
   lastPromptRemovedTime: number | null;
   paperID: ID;
   preparingInlineComment: PreparingInlineComment /* used PaperDraftInlineCommentTextWrap */;
@@ -115,9 +113,8 @@ export function getSavedInlineCommentsGivenBlockKeyAndThreadID({
           detectableEntity != null &&
           detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
         ) {
-          const {
-            commentThreadID: entityCommentThreadID,
-          } = detectableEntity.getData();
+          const { commentThreadID: entityCommentThreadID } =
+            detectableEntity.getData();
           if (entityCommentThreadID === commentThreadID) {
             result.push({
               blockKey,

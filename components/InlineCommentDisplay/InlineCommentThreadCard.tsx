@@ -102,9 +102,9 @@ function InlineCommentThreadCard({
     }
   }, [commentThreadID, fetchedThreadData, isCommentDataFetched, paperID]);
 
-  const onSubmitThread = (text: String, plainText: String): void => {
+  const onSubmitThread = (text: string, plainText: string): void => {
     showMessage({ load: true, show: true });
-    let { paperId } = router.query;
+    const { paperId } = router.query;
     saveThreadToBackend({
       auth,
       onSuccess: ({ threadID }: { threadID: ID }): void => {

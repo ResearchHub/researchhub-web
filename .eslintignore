@@ -1,2 +1,9 @@
 node_modules
 .next
+static
+public
+tests
+scripts
+config
+.husky
+.idea

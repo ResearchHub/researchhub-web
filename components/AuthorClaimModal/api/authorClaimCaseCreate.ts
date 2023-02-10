@@ -1,8 +1,7 @@
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
+import { emptyFncWithMsg, nullthrows } from "../../../config/utils/nullchecks";
 import { ID } from "../../../config/types/root_types";
-import { nullthrows } from "../../../config/utils/nullchecks";
 
 type Args = {
   eduEmail: string | null;
@@ -32,7 +31,7 @@ export function createAuthorClaimCase({
   targetPaperId,
   targetAuthorName,
 }: Args) {
-  let params: Params = {
+  const params: Params = {
     case_type: "PAPER_CLAIM",
     creator: nullthrows(
       userID,
@@ -47,7 +46,7 @@ export function createAuthorClaimCase({
       "EduEmail must be present to create AuthorClaimCase"
     ),
     target_paper_id: targetPaperId,
-    target_author_name: targetAuthorName
+    target_author_name: targetAuthorName,
   };
 
   fetch(API.AUTHOR_CLAIM_CASE(), API.POST_CONFIG(params))
@@ -59,9 +58,13 @@ export function createAuthorClaimCase({
     .catch((err) => {
       const message = err.message ?? "Something went wrong!";
       if (message.includes("duplicate")) {
-        onError("You already made a request to claim this author. If you believe this is a mistake, reach out via our community Discord.");
+        onError(
+          "You already made a request to claim this author. If you believe this is a mistake, reach out via our community Discord."
+        );
       } else if (message.includes("already claimed")) {
-        onError("This author was already claimed by someone else. Your request is being reviewed.");
+        onError(
+          "This author was already claimed by someone else. Your request is being reviewed."
+        );
       } else {
         onError(message);
       }

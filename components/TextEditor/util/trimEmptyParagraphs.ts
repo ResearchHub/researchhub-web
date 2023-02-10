@@ -4,7 +4,7 @@ export default function trimEmptyParagraphs({ htmlStr }) {
   if (lastParIndex > -1) {
     const substringToTest = htmlStr.substring(lastParIndex);
     if (substringToTest.match(/<p><br>(&nbsp;)<\/p>/g)) {
-      updatedStr = htmlStr.substring(0, lastParIndex)
+      updatedStr = htmlStr.substring(0, lastParIndex);
     }
   }
 

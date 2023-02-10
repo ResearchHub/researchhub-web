@@ -7,9 +7,9 @@ import {
   defaultPaginationInfo,
   formattedResult,
   PaginationInfo,
+  getCases,
 } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
-import { getCases } from "./api/AuthorClaimCaseGetCases";
 import { useEffect, ReactElement, useState, Fragment } from "react";
 import { useRouter, NextRouter } from "next/router";
 import AuthorClaimCaseCard from "./AuthorClaimCaseCard";

@@ -4,18 +4,17 @@ import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
-  isOpen: Boolean;
+  isOpen: boolean;
   closeModal: Function;
 };
-  
+
 export default function PostingGuidelinesModal({
   isOpen,
   closeModal,
 }: Props): ReactElement {
-
   const handleClose = () => {
     closeModal();
-  }
+  };
 
   return (
     <BaseModal
@@ -38,15 +37,15 @@ export default function PostingGuidelinesModal({
         </ul>
       </div>
     </BaseModal>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  "rootContainer": {
+  rootContainer: {
     width: "100%",
     textAlign: "left",
   },
-  "modalStyle": {
+  modalStyle: {
     minWidth: 600,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       minWidth: "unset",

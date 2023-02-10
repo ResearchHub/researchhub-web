@@ -102,19 +102,15 @@ export default function EditorDashboardUserCard({
       />
     ));
   return (
-    (<Link
+    <Link
       href={"/user/[authorId]/[tabName]"}
       as={`/user/${authorID}/overview`}
-      className={css(styles.link)}>
-
+      className={css(styles.link)}
+    >
       <div className={css(styles.container, index === 0 && styles.borderTop)}>
         <div className={css(styles.row)}>
           <div className={css(styles.nameSection)}>
-            <AuthorAvatar
-              author={authorProfile}
-              disableLink={true}
-              size={35}
-            />
+            <AuthorAvatar author={authorProfile} disableLink={true} size={35} />
             <div>
               <div className={css(styles.name) + " clamp1"}>
                 {`${first_name ?? ""} ${last_name ?? ""}`}
@@ -144,10 +140,7 @@ export default function EditorDashboardUserCard({
           <div className={css(styles.contributionSection)}>
             {activeHubContributorCount !== null && (
               <div
-                className={css(
-                  styles.countLabel,
-                  styles.contributorCountLabel
-                )}
+                className={css(styles.countLabel, styles.contributorCountLabel)}
               >
                 <span className={css(styles.mobileLabel)}>
                   Hub Active Contributors
@@ -184,28 +177,21 @@ export default function EditorDashboardUserCard({
             </div>
             <div className={css(styles.countLabel, styles.supportLabel)}>
               <span className={css(styles.mobileLabel)}>Supports</span>
-              <span className={css(styles.countResponse)}>
-                {supportCount}
-              </span>
+              <span className={css(styles.countResponse)}>{supportCount}</span>
             </div>
             <div className={css(styles.countLabel)}>
               <span className={css(styles.mobileLabel)}>Comments</span>
-              <span className={css(styles.countResponse)}>
-                {commentCount}
-              </span>
+              <span className={css(styles.countResponse)}>{commentCount}</span>
             </div>
           </div>
         </div>
         <MobileOnly
           children={
-            <div className={css(styles.hubName) + " clamp1"}>
-              {hubNameTags}
-            </div>
+            <div className={css(styles.hubName) + " clamp1"}>{hubNameTags}</div>
           }
         />
       </div>
-
-    </Link>)
+    </Link>
   );
 }
 
@@ -359,8 +345,8 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     "@media only screen and (max-width: 767px)": {
       marginLeft: 0,
-      marginTop: 8
-    }
+      marginTop: 8,
+    },
   },
   rep: {
     marginLeft: "auto",

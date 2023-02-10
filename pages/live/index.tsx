@@ -8,10 +8,9 @@ import { getFetchDefaults } from "~/components/UnifiedDocFeed/utils/getFetchDefa
 import { GetServerSideProps, NextPage } from "next";
 import FeedMenu from "~/components/UnifiedDocFeed/FeedMenu/FeedMenu";
 
-const Index:NextPage = (props) => {
+const Index: NextPage = (props) => {
   return <HubPage isLiveFeed={true} {...props} />;
-}
-
+};
 
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;

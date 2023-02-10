@@ -84,15 +84,14 @@ function NavbarRightButtonGroup({
           />
           {(isUserModerator || isUserHubEditor) && (
             <div className={css(styles.modBtnContainer)}>
-              <Link href={"/moderators/audit/flagged"} className={css(styles.modBtn)}>
-
+              <Link
+                href={"/moderators/audit/flagged"}
+                className={css(styles.modBtn)}
+              >
                 {icons.shield}
                 {openCaseCounts > 0 && (
-                  <div className={css(styles.notifCount)}>
-                    {openCaseCounts}
-                  </div>
+                  <div className={css(styles.notifCount)}>{openCaseCounts}</div>
                 )}
-
               </Link>
             </div>
           )}
@@ -122,7 +121,8 @@ function NavbarRightButtonGroup({
           <Link
             href={"/user/[authorId]/[tabName]"}
             as={`/user/${user?.author_profile.id}/overview`}
-            legacyBehavior>
+            legacyBehavior
+          >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
                 {icons.portrait}
@@ -146,14 +146,13 @@ function NavbarRightButtonGroup({
             href={{
               pathname: "/referral",
             }}
-            legacyBehavior>
-              <div className={css(styles.option)}>
-                <span className={css(styles.profileIcon)}>
-                  {icons.asterisk}
-                </span>
-                {"Referral Program"}
-              </div>
-            </Link>          
+            legacyBehavior
+          >
+            <div className={css(styles.option)}>
+              <span className={css(styles.profileIcon)}>{icons.asterisk}</span>
+              {"Referral Program"}
+            </div>
+          </Link>
           <div
             className={css(styles.option, styles.lastOption)}
             onClick={() => {

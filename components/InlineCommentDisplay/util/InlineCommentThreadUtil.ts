@@ -13,7 +13,7 @@ type ScrollToTargetElFncArgs = {
 type ScrollToTargetElFncReturn = (event: SyntheticEvent) => void;
 
 function isElemntWithinViewPort(element: HTMLElement): boolean {
-  var rect = element.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
@@ -32,19 +32,19 @@ export function getTargetInlineDraftEntityEl({
   return entityEl;
 }
 
-export const getScrollToTargetElFnc = ({
-  onSuccess,
-  targetElement,
-}: ScrollToTargetElFncArgs): ScrollToTargetElFncReturn => (
-  event: SyntheticEvent
-): void => {
-  event.stopPropagation();
-  if (targetElement != null && !isElemntWithinViewPort(targetElement)) {
-    targetElement.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "center",
-    });
-    onSuccess();
-  }
-};
+export const getScrollToTargetElFnc =
+  ({
+    onSuccess,
+    targetElement,
+  }: ScrollToTargetElFncArgs): ScrollToTargetElFncReturn =>
+  (event: SyntheticEvent): void => {
+    event.stopPropagation();
+    if (targetElement != null && !isElemntWithinViewPort(targetElement)) {
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+      onSuccess();
+    }
+  };

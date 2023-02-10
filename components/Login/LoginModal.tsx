@@ -6,7 +6,7 @@ import Button from "../Form/Button";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AuthActions } from "~/redux/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, connect } from "react-redux";
 import icons from "~/config/themes/icons";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { StyleSheet, css } from "aphrodite";
@@ -18,7 +18,6 @@ import { sendAmpEvent } from "~/config/fetch";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import { ModalActions } from "~/redux/modals";
-import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Image from "next/image";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
@@ -46,14 +45,14 @@ const LoginModal = ({
   const auth = useSelector((state) => state.auth);
   const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<Boolean | String>(false);
+  const [emailError, setEmailError] = useState<boolean | string>(false);
   const [firstName, setFirstName] = useState("");
-  const [firstNameError, setFirstNameError] = useState<Boolean | String>(false);
+  const [firstNameError, setFirstNameError] = useState<boolean | string>(false);
   const [lastName, setLastName] = useState("");
-  const [lastNameError, setLastNameError] = useState<Boolean | String>(false);
+  const [lastNameError, setLastNameError] = useState<boolean | string>(false);
   const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState<Boolean | String>(false);
-  const [miscError, setMiscError] = useState<Boolean | String>(false);
+  const [passwordError, setPasswordError] = useState<boolean | string>(false);
+  const [miscError, setMiscError] = useState<boolean | string>(false);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>();
 
@@ -135,7 +134,7 @@ const LoginModal = ({
         }
 
         if (!userAction?.user?.has_seen_orcid_connect_modal) {
-          let payload = {
+          const payload = {
             event_type: "user_signup",
             time: +new Date(),
             user_id: userAction.user.id,

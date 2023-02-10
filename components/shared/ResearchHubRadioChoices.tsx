@@ -45,9 +45,13 @@ export default function ResearchHubRadioChoices({
         </div>
         <div className={css(styles.contentWrap)}>
           <label htmlFor={id}>{label}</label>
-          {description &&
-            <div className={css(labelDescriptionStyle, styles.labelDescription)}>{description}</div>
-          }
+          {description && (
+            <div
+              className={css(labelDescriptionStyle, styles.labelDescription)}
+            >
+              {description}
+            </div>
+          )}
         </div>
       </div>
     )
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
   },
   contentWrap: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   labelDescription: {
     marginTop: 4,

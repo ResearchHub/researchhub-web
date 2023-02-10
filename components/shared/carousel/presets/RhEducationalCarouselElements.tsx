@@ -6,6 +6,7 @@ import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles"
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export const getEducationalCarouselElements = () => [
   {
@@ -49,8 +50,10 @@ export const getEducationalCarouselElements = () => [
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
         <span style={{ marginRight: 8, fontSize: "20px" }}>
-          {/* @ts-ignore FontAwesome faulty ts error */}
-          <FontAwesomeIcon icon={faPeopleGroup} color={colors.BLUE()} />
+          <FontAwesomeIcon
+            icon={faPeopleGroup as IconProp}
+            color={colors.BLUE()}
+          />
         </span>
         {" Community"}
       </div>

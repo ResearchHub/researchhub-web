@@ -78,8 +78,7 @@ const styles = StyleSheet.create({
     background: "white",
     width: 150,
   },
-  trigger: {
-  },
+  trigger: {},
   opt: {
     background: "white",
     display: "flex",

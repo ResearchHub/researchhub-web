@@ -9,8 +9,11 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { createNewNote, createNoteContent } from "~/config/fetch";
-import { fetchOrgTemplates } from "~/config/fetch";
+import {
+  createNewNote,
+  createNoteContent,
+  fetchOrgTemplates,
+} from "~/config/fetch";
 import { useAlert } from "react-alert";
 import {
   ReactElement,
