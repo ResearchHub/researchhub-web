@@ -122,7 +122,6 @@ class PostPageCard extends Component {
     if (!isEditMode && typeof initialData === "string") {
       initialData = trimEmptyParagraphs({ htmlStr: postBody });
     }
-
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>

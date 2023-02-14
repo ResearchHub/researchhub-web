@@ -252,10 +252,7 @@ const Post = (props) => {
                   }}
                   setAllBounties={setAllBounties}
                   postId={post.id}
-                  showBountyBtn={
-                    false
-                    // postV2.unifiedDocument.documentType !== "question"
-                  }
+                  showBountyBtn={true}
                   calculatedCount={discussionCount}
                   setCount={setCount}
                   isCollapsible={false}
