@@ -61,7 +61,7 @@ export default function RhCarouselItem({
 
 const styles = StyleSheet.create({
   title: {
-    height: 32,
+    height: 30,
     display: "flex",
     alignItems: "flex-end",
   },
