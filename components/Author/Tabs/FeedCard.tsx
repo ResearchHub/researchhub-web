@@ -355,25 +355,22 @@ function FeedCard({
                       />
                     </div>
                   )}
-                  {bountyAmount > 0 ? (
-                    <div className={css(styles.metaItem)}>
-                      <ContentBadge
-                        contentType="bounty"
-                        label={
-                          formatBountyAmount({ amount: bountyAmount }) +
-                          " Bounty"
-                        }
-                      />
-                    </div>
-                  ) : (
-                    formattedDocType !== "bounty" && (
-                      <div
-                        className={css(styles.metaItem, styles.metaItemAsBadge)}
+                    <div
+                      className={css(styles.metaItem, styles.metaItemAsBadge)}
                       >
-                        <ContentBadge contentType={formattedDocType} />
+                      <ContentBadge contentType={formattedDocType === "bounty" ? "post" : formattedDocType} />
+                    </div>
+                    {bountyAmount > 0 && (
+                      <div className={css(styles.metaItem)}>
+                        <ContentBadge
+                          contentType="bounty"
+                          label={
+                            formatBountyAmount({ amount: bountyAmount }) +
+                            " Bounty"
+                          }
+                        />
                       </div>
-                    )
-                  )}
+                    )}
                   {formattedDocType === "question" ? (
                     <div
                       className={css(
