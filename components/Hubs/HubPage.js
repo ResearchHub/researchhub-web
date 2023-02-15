@@ -384,7 +384,7 @@ class HubPage extends Component {
           Kobe 02-01-23: This is a static banner that temporarily replaces
           the RH slider
         */}
-            <div
+            {/* <div
               style={{
                 background: "rgb(78,83,255)",
                 background:
@@ -418,8 +418,8 @@ class HubPage extends Component {
                   </Link>
                 </div>
               </span>
-            </div>
-            {/* <ExitableBanner
+            </div> */}
+            <ExitableBanner
               bannerKey={INFO_TAB_EXIT_KEY}
               content={<RhCarousel rhCarouselItems={carouselElements} />}
               contentStyleOverride={{
@@ -437,7 +437,7 @@ class HubPage extends Component {
                 right: "24px !important",
               }}
               onExit={silentEmptyFnc}
-            /> */}
+            />
           </div>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}

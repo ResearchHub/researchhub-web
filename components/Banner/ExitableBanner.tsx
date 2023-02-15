@@ -6,6 +6,7 @@ import {
 import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import { iconColors } from "~/config/themes/colors";
 
 type Props = {
   bannerKey: string;
@@ -96,5 +97,11 @@ const styles = StyleSheet.create({
     right: 22,
     top: 22,
     width: 28,
+    zIndex: 4,
+    ":hover": {
+      background: iconColors.BACKGROUND,
+      borderRadius: 3,
+      transition: "0.3s",
+    },    
   },
 });

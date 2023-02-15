@@ -24,7 +24,7 @@ export default function HomeRightSidebar(): ReactElement {
           Kobe 02-01-23: This is a static banner that temporarily replaces
           the RH slider
         */}
-        <div
+        {/* <div
           style={{
             background: "rgb(78,83,255)",
             background:
@@ -58,8 +58,8 @@ export default function HomeRightSidebar(): ReactElement {
               </Link>
             </div>
           </span>
-        </div>
-        {/* <ExitableBanner
+        </div> */}
+        <ExitableBanner
           bannerKey={INFO_TAB_EXIT_KEY}
           content={<RhCarousel rhCarouselItems={carouselElements} />}
           contentStyleOverride={{
@@ -67,7 +67,7 @@ export default function HomeRightSidebar(): ReactElement {
             borderRadius: 6,
             height: 240,
             margin: 16,
-            padding: "24px 16px 14px",
+            padding: "14px 16px 14px",
           }}
           exitButton={<div style={{ fontSize: 16 }}>{icons.times}</div>}
           exitButtonPositionOverride={{
@@ -75,7 +75,7 @@ export default function HomeRightSidebar(): ReactElement {
             right: "16px !important",
           }}
           onExit={(): void => setShouldLimitNumCards(false)}
-        /> */}
+        />
         <HomeSidebarBountiesSection shouldLimitNumCards={shouldLimitNumCards} />
         <HomeSidebarFeaturedDocsSection
           shouldLimitNumCards={shouldLimitNumCards}

@@ -79,10 +79,10 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   rhCarouselItemTitle: {
     alignItems: "center",
     display: "flex",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 500,
     height: "100%",
-    marginBottom: 10,
+    marginBottom: 8,
     textOverflow: "ellipsis",
     width: "100%",
   },
@@ -97,13 +97,16 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   clickableBody: {
     cursor: "pointer",
   },
+  link: {
+    fontWeight: 400,
+  },
   rhCarouselItemBody: {
     display: "block",
     width: "100%",
     height: "100%",
     fontSize: 14,
     color: colors.BLACK(),
-    lineHeight: "20px",
     textOverflow: "ellipsis",
+    lineHeight: "19px",
   },
 });

@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import colors from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import RhCarouselItem from "./RhCarouselItem";
 import { breakpoints } from "~/config/themes/screen";
@@ -112,18 +112,18 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    minHeight: 210,
+    minHeight: 220,
     minWidth: "100%",
     width: "100%",
     position: "relative",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      minHeight: 160,
+      minHeight: 185,
     },
   },
   rhCarouselControl: {
     alignItems: "center",
     display: "flex",
-    height: 24,
+    height: 13,
     justifyContent: "space-between",
     marginTop: "auto",
     width: "100%",
@@ -149,6 +149,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
+    },
+    ":hover": {
+      background: iconColors.BACKGROUND,
+      borderRadius: 3,
+      transition: "0.3s",
     },
   },
 });

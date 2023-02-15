@@ -11,11 +11,34 @@ export const getEducationalCarouselElements = () => [
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
+        <span style={{ marginRight: 8, marginTop: 3 }}>
+          {icons.RSC({
+            style: styles.RSC,
+          })}
+        </span>
+        {" About ResearchCoin (RSC)"}
+      </div>
+    ),
+    body: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+        {
+          "ResearchCoin empowers the ResearchHub community. With ResearchCoin, users have the ability to create bounties, tip authors, and gain voting rights for community decision making."
+        }
+        <ul style={{ marginTop: 6, fontSize: 14, paddingLeft: 20, }}>
+          <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="https://docs.researchhub.com/researchcoin/token-overview" target="_blank">Learn more about ResearchCoin</ALink></li>
+          <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="" target="_blank">ResearchCoin available on Uniswap</ALink></li>
+        </ul>
+      </div>
+    ),
+  },  
+  {
+    title: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
         <img
           src="/static/beaker.svg"
           style={{ marginRight: 6, marginTop: -3, height: 20 }}
         />
-        {" What is ResearchHub?"}
+        {" What is ResearchHub?"}       
       </div>
     ),
     body: (
@@ -23,25 +46,9 @@ export const getEducationalCarouselElements = () => [
         {
           "A tool for the open publication and discussion of scientific research. ResearchHub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
         }
-      </div>
-    ),
-  },
-  {
-    title: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
-        <span style={{ marginRight: 8, marginTop: 3 }}>
-          {icons.RSC({
-            style: styles.RSC,
-          })}
-        </span>
-        {" What is ResearchCoin (RSC)?"}
-      </div>
-    ),
-    body: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-        {
-          "ResearchCoin (RSC) is a token that empowers the scientific community of ResearchHub. Once earned, RSC gives users the ability to create bounties, tip other users, and gain voting rights within community decision making."
-        }
+        <ul style={{ marginTop: 6, fontSize: 14, paddingLeft: 20, }}>
+          <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="https://docs.researchhub.com/welcome/what-is-researchhub" target="_blank">Learn more about ResearchHub</ALink></li>
+        </ul>        
       </div>
     ),
   },
