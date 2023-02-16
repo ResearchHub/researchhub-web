@@ -26,6 +26,7 @@ import BountyAlert from "../Bounty/BountyAlert";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import ContentBadge from "../ContentBadge";
 import { useRouter } from "next/router";
+import UniswapButton from "../UniswapButton";
 
 type Args = {
   document: TopLevelDocument;
@@ -298,6 +299,9 @@ function DocumentHeader({
     >
       {document.isReady && (
         <div className={css(styles.documentHeader)}>
+          <div style={{ marginBottom: hasBounties ? 15 : 25 }}>
+            <UniswapButton variant="shadow" label="ResearchCoin is available on" />
+          </div>
           {hasBounties ? (
             <div className={css(styles.bountyAlertContainer)}>
               {/*@ts-ignore*/}

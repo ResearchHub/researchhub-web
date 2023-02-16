@@ -10,8 +10,6 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import icons from "~/config/themes/icons";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
-import Button from "~/components/Form/Button";
-import Link from "next/link";
 import UniswapButton from "~/components/UniswapButton";
 
 export default function HomeRightSidebar(): ReactElement {
