@@ -6,7 +6,7 @@ import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
-import colors from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ResearchHubPopover from "../ResearchHubPopover";
@@ -103,7 +103,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
               Math.floor(rscDeltaSinceSeen)
             )}`}</div>
           )}
-          <div className={css(styles.caretDown)}>{icons.caretDown}</div>
+          <div className={css(styles.caretDown)}>{icons.chevronDown}</div>
         </div>
       }
     />
@@ -119,9 +119,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: "-1px 6px 0 0",
     padding: 8,
+    userSelect: "none",
     position: "relative",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+      borderRadius: 3,
+      transition: "0.3s",
+    },    
   },
-  balanceText: { fontSize: 14, fontWeight: 400, marginLeft: 6 },
+  balanceText: {
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 6,
+    color: colors.ORANGE_DARK2(),
+  },
   blur: {
     filter: "blur(2px)",
   },
@@ -147,7 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: "50px",
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
   },
-  caretDown: { marginLeft: 4, opacity: 0.5 },
+  caretDown: { marginLeft: 4, fontSize: 12, color: colors.ORANGE_DARK2() },
 });
 
 const mapStateToProps = (state) => ({
