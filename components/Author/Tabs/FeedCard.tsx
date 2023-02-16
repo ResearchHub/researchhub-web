@@ -234,10 +234,16 @@ function FeedCard({
   const createdBy = parseCreatedBy(uploaded_by || created_by);
   const nextRouter = useRouter();
   let bountyAmount = 0;
+  let hasActiveBounty = false;
   bounties &&
     bounties.forEach((bounty) => {
       bountyAmount += bounty.amount;
+      if (!bounty.isExpiredOrClosed) {
+        hasActiveBounty = true;  
+      }
     });
+
+  
 
   return (
     <Ripples
@@ -360,7 +366,7 @@ function FeedCard({
                       >
                       <ContentBadge contentType={formattedDocType === "bounty" ? "post" : formattedDocType} />
                     </div>
-                    {bountyAmount > 0 && (
+                    {hasActiveBounty && (
                       <div className={css(styles.metaItem)}>
                         <ContentBadge
                           contentType="bounty"
@@ -448,24 +454,6 @@ function FeedCard({
 }
 
 const styles = StyleSheet.create({
-  bountyBadge: {
-    display: "flex",
-    // One-off color, need not be constantenized
-    background: "rgb(252 242 220)",
-    color: colors.ORANGE_DARK2(),
-    padding: "5px 8px 5px 8px",
-    borderRadius: "4px",
-    fontWeight: 500,
-    fontSize: 13,
-    alignItems: "center",
-  },
-  badgeRscIcon: {
-    marginRight: 5,
-    height: 16,
-  },
-  bountyAmount: {
-    marginTop: -1,
-  },
   ripples: {
     display: "flex",
     width: "100%",

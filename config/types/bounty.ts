@@ -168,6 +168,10 @@ export default class Bounty {
     return this._createdDate;
   }
 
+  get isExpiredOrClosed(): boolean {
+    return this._timeRemainingInMinutes < 0 || this._status !== "OPEN";
+  }
+
   get timeRemaining(): string {
     return this._timeRemaining;
   }
