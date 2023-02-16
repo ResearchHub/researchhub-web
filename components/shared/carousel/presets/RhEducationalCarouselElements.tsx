@@ -6,6 +6,7 @@ import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles"
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import UniswapButton from "~/components/UniswapButton";
 
 export const getEducationalCarouselElements = () => [
   {
@@ -24,10 +25,7 @@ export const getEducationalCarouselElements = () => [
         {
           "ResearchCoin empowers the ResearchHub community. With ResearchCoin, users have the ability to create bounties, tip authors, and gain voting rights for community decision making."
         }
-        <ul style={{ marginTop: 6, fontSize: 14, paddingLeft: 20, }}>
-          <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="https://docs.researchhub.com/researchcoin/token-overview" target="_blank">Learn more about ResearchCoin</ALink></li>
-          <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="" target="_blank">ResearchCoin available on Uniswap</ALink></li>
-        </ul>
+        <UniswapButton />
       </div>
     ),
   },  
@@ -48,7 +46,7 @@ export const getEducationalCarouselElements = () => [
         }
         <ul style={{ marginTop: 6, fontSize: 14, paddingLeft: 20, }}>
           <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="https://docs.researchhub.com/welcome/what-is-researchhub" target="_blank">Learn more about ResearchHub</ALink></li>
-        </ul>        
+        </ul>
       </div>
     ),
   },

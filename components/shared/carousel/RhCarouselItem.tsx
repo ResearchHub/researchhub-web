@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { motion } from "framer-motion";
 import { ReactElement, ReactNode } from "react";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 export type RhCarouselItemProps = {
   title?: ReactNode;
   body: ReactNode;
@@ -109,4 +110,9 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
     textOverflow: "ellipsis",
     lineHeight: "19px",
   },
+  uniswapWrapper: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none"
+    }
+  }
 });
