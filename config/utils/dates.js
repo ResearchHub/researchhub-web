@@ -116,14 +116,9 @@ export function timeTo(date) {
 
 export function timeToInUnits({ date, unit }) {
   let timeTo = 0;
-  if (unit === "day") {
-    const inputDate = moment(date);
-    const now = moment();
-
-    timeTo = inputDate.diff(now, "day");
-  }
-  // FIXME: Implement other units
-
+  const inputDate = moment(date);
+  const now = moment();
+  timeTo = inputDate.diff(now, unit);
   return timeTo;
 }
 
@@ -143,12 +138,11 @@ export function timeToRoundUp(date) {
   } else {
     const flooredDays = Math.floor(deltaInMins / 60 / 24);
     const remainingMinutes = deltaInMins - flooredDays * 24 * 60;
-    return (
+    const finalDays =
       flooredDays +
       // if the remaining hours is more than 13 hrs. we round up day integer
-      (remainingMinutes / THIRTEEN_HOURS_IN_MINUTES >= 1 ? 1 : 0) +
-      ` day${flooredDays > 1 ? "s" : ""}`
-    );
+      (remainingMinutes / THIRTEEN_HOURS_IN_MINUTES >= 1 ? 1 : 0);
+    return `${finalDays} day${finalDays > 1 ? "s" : ""}`;
   }
 }
 

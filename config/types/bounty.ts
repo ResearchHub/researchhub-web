@@ -43,7 +43,7 @@ export default class Bounty {
   _id: ID;
   _createdDate: string;
   _timeRemaining: string;
-  _timeRemainingInDays: number;
+  _timeRemainingInMinutes: number;
   _createdBy: CreatedBy | null;
   _amount: number;
   _formattedAmount: string;
@@ -58,10 +58,12 @@ export default class Bounty {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
-    this._timeRemainingInDays = timeToInUnits({
+    
+    this._timeRemainingInMinutes = timeToInUnits({
       date: raw.expiration_date,
-      unit: "day",
+      unit: "minute",
     });
+
     this._createdBy = parseCreatedBy(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._formattedAmount = this._amount.toLocaleString();
@@ -170,8 +172,8 @@ export default class Bounty {
     return this._timeRemaining;
   }
 
-  get timeRemainingInDays(): number {
-    return this._timeRemainingInDays;
+  get timeRemainingInMinutes(): number {
+    return this._timeRemainingInMinutes;
   }
 
   get createdBy(): CreatedBy | null {
