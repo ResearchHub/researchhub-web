@@ -311,6 +311,8 @@ function RootLeftSidebar({
                       <ResearchCoinIcon
                         width={20}
                         height={20}
+                        version={4}
+                        color={"#AAA8B4"}
                         overrideStyle={styles.rscIcon}
                       />
                     </>
@@ -494,7 +496,7 @@ const styles = StyleSheet.create({
   },
   leftSidebarFooterItemsBottomRowMin: { display: "none" },
   referralProgramItem: {
-    color: colors.ORANGE_DARK2(),
+    // color: colors.ORANGE_DARK2(),
     display: "flex",
     alignItems: "center",
     columnGap: "10px",

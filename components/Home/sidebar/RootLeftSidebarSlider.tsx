@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   referralProgramItem: {
-    color: colors.ORANGE_DARK2(),
+    // color: colors.ORANGE_DARK2(),
   },
   rhLogoSlider: { width: 148 },
 });
