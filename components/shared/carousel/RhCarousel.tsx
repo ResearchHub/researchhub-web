@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    minHeight: 220,
+    minHeight: 200,
     minWidth: "100%",
     width: "100%",
     position: "relative",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      minHeight: 185,
+      minHeight: 165,
     },
   },
   rhCarouselControl: {

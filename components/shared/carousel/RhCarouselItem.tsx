@@ -80,7 +80,7 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   rhCarouselItemTitle: {
     alignItems: "center",
     display: "flex",
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 500,
     height: "100%",
     marginBottom: 8,
