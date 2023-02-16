@@ -6,29 +6,8 @@ import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles"
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import UniswapButton from "~/components/UniswapButton";
 
 export const getEducationalCarouselElements = () => [
-  {
-    title: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
-        <span style={{ marginRight: 8, marginTop: 3 }}>
-          {icons.RSC({
-            style: styles.RSC,
-          })}
-        </span>
-        {" About ResearchCoin (RSC)"}
-      </div>
-    ),
-    body: (
-      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-        {
-          "ResearchCoin empowers the ResearchHub community. With ResearchCoin, users have the ability to create bounties, tip authors, and gain voting rights for community decision making."
-        }
-        <UniswapButton />
-      </div>
-    ),
-  },  
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
@@ -50,6 +29,25 @@ export const getEducationalCarouselElements = () => [
       </div>
     ),
   },
+  {
+    title: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
+        <span style={{ marginRight: 8, marginTop: 3 }}>
+          {icons.RSC({
+            style: styles.RSC,
+          })}
+        </span>
+        {" About ResearchCoin (RSC)"}
+      </div>
+    ),
+    body: (
+      <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
+        {
+          "ResearchCoin empowers the ResearchHub community. With ResearchCoin, users have the ability to create bounties, tip authors, and gain voting rights for community decision making."
+        }
+      </div>
+    ),
+  },  
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>

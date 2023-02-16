@@ -20,6 +20,8 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import icons from "~/config/themes/icons";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
+import UniswapButton from "../UniswapButton";
+
 type Props = { closeDropdown: () => void };
 
 function RscBalanceHistoryDropContentCard({
@@ -185,6 +187,14 @@ export default function RscBalanceHistoryDropContent({
         >
           {"Deposit RSC"}
         </div>
+        <div
+          style={{
+            marginBottom: 5,
+            marginTop: 10,
+          }}
+          >        
+            <UniswapButton variant="text" />
+          </div>
       </div>
     </div>
   );
