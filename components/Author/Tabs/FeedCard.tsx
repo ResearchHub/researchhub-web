@@ -428,7 +428,7 @@ function FeedCard({
                       />
                     </div>
                   )}
-                  {boostAmount > 0 && (
+                  {/* {boostAmount > 0 && (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
                         <ResearchCoinIcon
@@ -442,7 +442,7 @@ function FeedCard({
                         +{boostAmount}
                       </span>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
