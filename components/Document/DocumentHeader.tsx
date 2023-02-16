@@ -27,6 +27,8 @@ import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import ContentBadge from "../ContentBadge";
 import { useRouter } from "next/router";
 import UniswapButton from "../UniswapButton";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 type Args = {
   document: TopLevelDocument;
@@ -290,6 +292,8 @@ function DocumentHeader({
     bountyAmount += bounty.amount;
   });
 
+  const boostAmount = formatBountyAmount({ amount: document.boostAmount});
+
   return (
     // @ts-ignore
     <ReactPlaceholder
@@ -478,30 +482,25 @@ function DocumentHeader({
                   </span>
                   {unifiedDocument?.reviewSummary?.avg}
                   <span className={css(styles.reviewDetails)}>
-                    &nbsp;{`based on`}&nbsp;
+                    {/* &nbsp;{`based on`}&nbsp;
                     <ALink overrideStyle={[styles.comments]} href={"#comments"}>
                       {(unifiedDocument?.reviewSummary?.count || 0) > 1
                         ? `${unifiedDocument?.reviewSummary?.count} reviews`
                         : `${unifiedDocument?.reviewSummary?.count} review`}
-                    </ALink>
+                    </ALink> */}
                   </span>
                 </div>
               )}
               {document.boostAmount > 0 && (
                 <div
                   className={css(styles.boostAmount, styles.additionalDetail)}
-                  data-tip={"ResearchCoin tipped"}
+                  data-tip="ResearchCoin tipped by community members"
                 >
                   <span className={css(styles.coinDetailIcon)}>
-                    <img
-                      src={"/static/icons/coin-filled.png"}
-                      draggable={false}
-                      alt="RSC Coin"
-                      height={20}
-                    />
+                    <ResearchCoinIcon height={20} width={20} version={4} color={"rgb(119 220 130)"} />
                   </span>
                   <span className={css(styles.boostAmountText)}>
-                    +{document.boostAmount}
+                    +{boostAmount} tipped
                   </span>
                 </div>
               )}
@@ -602,7 +601,7 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY(),
   },
   coinDetailIcon: {
-    marginTop: 3,
+    marginTop: 4,
   },
   detailIcon: {
     marginRight: 7,

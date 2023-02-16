@@ -4,6 +4,8 @@ import { ID, NullableString } from "~/config/types/root_types";
 import { ReactElement } from "react";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
+import ContentBadge from "~/components/ContentBadge";
+
 
 type Props = {
   bountyAmount: number;
@@ -47,16 +49,21 @@ export default function BountiesSidebarItem({
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
-              <span className={css(styles.bountiesAmount)}>
+              <ContentBadge
+                label={`${`${roundedOfferAmount} RSC`}`}
+                contentType="bounty"
+                size="small"
+              />
+              {/* <span className={css(styles.bountiesAmount)}>
                 {roundedOfferAmount}
                 {" RSC"}
-              </span>
-              <img
+              </span> */}
+              {/* <img
                 style={{ width: 12, marginLeft: 5 }}
                 src={"/static/icons/coin-filled.png"}
                 draggable={false}
                 alt="RSC Coin"
-              />
+              /> */}
             </span>
           </div>
           <div className={css(styles.bountiesSidebarItemContent)}>
@@ -94,6 +101,7 @@ const styles = StyleSheet.create({
   },
   bountiesSidebarTitle: {
     alignItems: "center",
+    columnGap: "5px",
     color: colors.TEXT_GREY(1),
     display: "flex",
     fontSize: 12,
