@@ -63,6 +63,7 @@ const BountyAlert = ({
 
   let amount = 0;
   let awardAmount = amount;
+  let hasActiveBounty = false;
 
   if (bounty) {
     timeRemaining = bounty.timeRemaining;
@@ -90,11 +91,15 @@ const BountyAlert = ({
         awardAmount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
       }
       amount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
+
+      if (!bounty.isExpiredOrClosed) {
+        hasActiveBounty = true;  
+      }
     });
     status = firstBounty.status;
   }
 
-  if (!bounty && !allBounties.length) {
+  if ((!bounty && !allBounties.length) || !hasActiveBounty) {
     return null;
   }
 

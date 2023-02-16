@@ -168,6 +168,8 @@ export default class Bounty {
     return this._createdDate;
   }
 
+  // Since the BE bounties expire via a cron, they may be deliverd to the FE as
+  // open when in reality, they have expired.
   get isExpiredOrClosed(): boolean {
     return this._timeRemainingInMinutes < 0 || this._status !== "OPEN";
   }
