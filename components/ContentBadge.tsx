@@ -12,11 +12,23 @@ import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "./TextEditor/config/postTypes";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
-const ContentBadge = ({ contentType, label = null, onClick = null }) => {
+type Args = {
+  contentType: string,
+  size?: "small"|"medium",
+  label: string,
+  onClick?: null|Function,  
+}
+
+const ContentBadge = ({
+  contentType,
+  size = "medium",
+  label = "",
+  onClick = null
+}: Args) => {
   const router = useRouter();
 
   return (
-    <Badge badgeClassName={[styles.badge, styles["badgeFor_" + contentType]]}>
+    <Badge badgeClassName={[styles.badge, styles["badgeFor_" + contentType], styles[size] ]}>
       {contentType === "paper" ? (
         <>
           <span className={css(styles.icon)}>
@@ -75,8 +87,8 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
         </>
       ) : contentType === "bounty" ? (
         <>
-          <span className={css(styles.icon)}>
-            <ResearchCoinIcon version={4} height={16} width={16} />
+          <span className={css(styles.icon, size === "small" && styles.iconSmall)}>
+            <ResearchCoinIcon version={4} height={size === "small" ? 14 : 16} width={size === "small" ? 14 : 16} />
             {` `}
           </span>
           <span className={css(styles.rscContent)}>{label}</span>
@@ -89,10 +101,20 @@ const ContentBadge = ({ contentType, label = null, onClick = null }) => {
 };
 
 const styles = StyleSheet.create({
+  small: {
+    fontSize: 12,
+    padding: "3px 6px 1px",
+  },
+  medium: {
+
+  },
   icon: {
     marginRight: 6,
     fontSize: 16,
     height: 21,
+  },
+  iconSmall: {
+    height: 18,
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,
