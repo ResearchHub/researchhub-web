@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { motion } from "framer-motion";
 import { ReactElement, ReactNode } from "react";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 export type RhCarouselItemProps = {
   title?: ReactNode;
   body: ReactNode;
@@ -61,7 +62,7 @@ export default function RhCarouselItem({
 
 const styles = StyleSheet.create({
   title: {
-    height: 32,
+    height: 30,
     display: "flex",
     alignItems: "flex-end",
   },
@@ -82,7 +83,7 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     height: "100%",
-    marginBottom: 10,
+    marginBottom: 8,
     textOverflow: "ellipsis",
     width: "100%",
   },
@@ -97,13 +98,21 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   clickableBody: {
     cursor: "pointer",
   },
+  link: {
+    fontWeight: 400,
+  },
   rhCarouselItemBody: {
     display: "block",
     width: "100%",
     height: "100%",
     fontSize: 14,
     color: colors.BLACK(),
-    lineHeight: "20px",
     textOverflow: "ellipsis",
+    lineHeight: "19px",
   },
+  uniswapWrapper: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none"
+    }
+  }
 });

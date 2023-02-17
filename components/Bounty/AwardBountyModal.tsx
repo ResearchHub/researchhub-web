@@ -284,7 +284,7 @@ function AwardBountyModal({
     useState(bountyAmount);
 
   const router = useRouter();
-  const isPaperBounty = router.pathname.includes("/paper/");
+  const isCommentBounty = (documentType === "paper" || documentType === "post");
 
   const handleClose = () => {
     closeModal && closeModal();
@@ -293,6 +293,7 @@ function AwardBountyModal({
   };
 
   useEffect(() => {
+    
     if (threads && threads[0]) {
       const author = threads[0]?.data?.created_by?.author_profile;
       const comment = threads[0];
@@ -335,19 +336,21 @@ function AwardBountyModal({
         if (userAwardMap[key]) {
           metadataArray.push({
             recipient_id: key.split("-")[0],
-            content_type: isPaperBounty ? "comment" : "thread",
+            content_type: isCommentBounty ? "comment" : "thread",
             amount: userAwardMap[key],
             object_id: key.split("-")[1],
           });
           acceptedAnswers.push({
             detail: { threadId: key.split("-")[1] },
           });
+
           acceptAnswerAPI({
             documentType: documentType,
-            threadId: isPaperBounty
+            ...(isCommentBounty && {commentId: key.split("-")[1]}),
+            threadId: 
+            isCommentBounty
               ? threads[0]?.data?.parent
               : key.split("-")[1],
-            commentId: isPaperBounty && key.split("-")[1],
             paperId: router.query.paperId,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -365,7 +368,6 @@ function AwardBountyModal({
           });
         }
       });
-
       const event = new CustomEvent("answer-accepted", {
         detail: {
           multiAward: acceptedAnswers,
@@ -379,7 +381,7 @@ function AwardBountyModal({
         recipient: true,
         object_id: true,
         multi_approve: true,
-        content_type: isPaperBounty ? "comment" : "thread",
+        content_type: isCommentBounty ? "comment" : "thread",
       };
 
       const url = generateApiUrl("bounty") + bounty?.id + "/approve_bounty/";
@@ -412,13 +414,11 @@ function AwardBountyModal({
           });
         });
 
-        debugger;
-
         const bountyAward = new CustomEvent("bounty-awarded", {
           detail: {
             multiAward,
-            commentBountyAward: isPaperBounty,
-            bountyThreadId: isPaperBounty
+            commentBountyAward: isCommentBounty,
+            bountyThreadId: isCommentBounty
               ? bountiesToAward[0].item_object_id
               : null,
           },
@@ -526,66 +526,76 @@ function AwardBountyModal({
       </ReactTooltip>
       <div className={css(styles.inner)}>
         <div className={css(styles.description)}>
-          Award the bounty to a contributor, by giving them ResearchCoin, or
-          RSC.{" "}
+          Award bounty to a contributor by giving them ResearchCoin (RSC).{" "}
           <a
             target="_blank"
             className={css(styles.link)}
-            href="https://researchhub.notion.site/ResearchCoin-RSC-1e8e25b771ec4b92b9095e060c4095f6"
+            href="https://docs.researchhub.com/researchcoin/token-overview"
           >
             Learn more about RSC and how it can be used.
           </a>
         </div>
+
         <div className={css(styles.awardContainer)}>
           <div className={css(styles.row, styles.rowHeader)}>
             <div>Recipient</div>
-            <div
-              className={css(styles.distribute)}
-              onClick={distributeOnUpvote}
-            >
-              <Image
-                src="/shooting-star.png"
-                alt="Distribute based on Upvote"
-                className={css(styles.shootingStar)}
-                width={15}
-                height={14.93}
-              />{" "}
-              <span>Distribute based on Upvote</span>
-              <FontAwesomeIcon
-                className={css(styles.info)}
-                icon={["fal", "info-circle"]}
-                data-for={"distribute"}
-                data-tip
-              />
+            {threads?.length >= 1 && (
+              <div
+                className={css(styles.distribute)}
+                onClick={distributeOnUpvote}
+              >
+                <Image
+                  src="/shooting-star.png"
+                  alt="Distribute based on Upvote"
+                  className={css(styles.shootingStar)}
+                  width={15}
+                  height={14.93}
+                />{" "}
+                <span>Distribute based on Upvote</span>
+                <FontAwesomeIcon
+                  className={css(styles.info)}
+                  icon={["fal", "info-circle"]}
+                  data-for={"distribute"}
+                  data-tip
+                />
+              </div>
+            )}
+          </div>
+
+          {threads?.length < 1 ? (
+            <div className={css(styles.noThreads)}>
+              No recipients to award yet.
             </div>
-          </div>
-          <div className={css(styles.userRows)}>
-            {threads?.map((thread) => {
-              const author = thread?.data?.created_by?.author_profile;
-              const mapKey = `${author.user}-${thread?.data.id}-award`;
+          ) : (
+            <div className={css(styles.userRows)}>
+              {threads?.map((thread) => {
+                const author = thread?.data?.created_by?.author_profile;
+                const mapKey = `${author.user}-${thread?.data.id}-award`;
 
-              return (
-                <div className={css(styles.awardUserRow)}>
-                  <AwardUserRow
-                    author={author}
-                    remainingAmount={bountyAmount}
-                    comment={thread}
-                    awardedAmount={userAwardMap[mapKey]}
-                    decreaseRemainingAmount={decreaseRemainingAmount}
-                    awardFullBounty={(e) => {
-                      e.stopPropagation();
-                      const userMap = {};
+                return (
+                  <div className={css(styles.awardUserRow)}>
+                    <AwardUserRow
+                      author={author}
+                      remainingAmount={bountyAmount}
+                      comment={thread}
+                      awardedAmount={userAwardMap[mapKey]}
+                      decreaseRemainingAmount={decreaseRemainingAmount}
+                      awardFullBounty={(e) => {
+                        e.stopPropagation();
+                        const userMap = {};
 
-                      userMap[mapKey] = bountyAmount;
-                      setUserAwardMap(userMap);
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
+                        userMap[mapKey] = bountyAmount;
+                        setUserAwardMap(userMap);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
+
       <div className={css(styles.awardAction)}>
         <div className={css(styles.row, styles.remainingAwardRow)}>
           <div className={css(awardUserStyles.distributeColumn)}>
@@ -610,7 +620,7 @@ function AwardBountyModal({
           rippleClass={styles.awardRipple}
           customLabelStyle={styles.labelStyle}
           onClick={awardBounty}
-          disabled={bountyAwardLoading}
+          disabled={bountyAwardLoading || threads?.length < 1}
         />
         <Button
           label={"Cancel"}
@@ -656,6 +666,10 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     maxWidth: 570,
+  },
+  noThreads: {
+    padding: 35,
+    textAlign: "center",
   },
   modalContentStyle: {
     padding: 0,
@@ -745,7 +759,7 @@ const styles = StyleSheet.create({
   warningLabel: {
     padding: 12,
     background: "#FAFAFC",
-    color: colors.BLACK(0.6),
+    color: "#FF5353",
     width: "100%",
     boxSizing: "border-box",
     textAlign: "center",

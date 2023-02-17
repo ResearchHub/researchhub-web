@@ -42,7 +42,7 @@ function SubmissionDetails({
 
   const bounty = bounties?.[0];
   const authorProfile = createdBy?.authorProfile;
-
+  const _twoDaysInMinutes = 2*24*60;
   return (
     <div className={css(styles.submittedBy)}>
       <div className={css(styles.createdByContainer)}>
@@ -94,7 +94,7 @@ function SubmissionDetails({
         <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
           {timeSince(createdDate)}
-          {bounty && bounty.timeRemainingInDays <= 2 && (
+          {bounty && bounty.timeRemainingInMinutes <= _twoDaysInMinutes && bounty.timeRemainingInMinutes > 0 && (
             <span className={css(styles.expiringSoon)}>
               <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
               bounty ending in {bounty.timeRemaining}

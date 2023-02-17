@@ -108,7 +108,7 @@ class PostPageCard extends Component {
   };
 
   render() {
-    const { post, removePost, restorePost, user, bounties } = this.props;
+    const { post, removePost, restorePost, user, bounties, auth } = this.props;
     const { postBody } = this.state;
     const isEditMode = this.state.showPostEditor;
 
@@ -123,6 +123,29 @@ class PostPageCard extends Component {
       initialData = trimEmptyParagraphs({ htmlStr: postBody });
     }
 
+    // This logic should happen inside award bounty modal
+    // Copied/pasted from paper index page. not good.
+    let bountyComments = [];
+    this.props.threads.forEach((thread) => {
+      if (post?.unifiedDocument?.documentType === "question") {
+        bountyComments.push({
+          data: thread.data,
+        });
+      } else {
+        // This clause should check for bounty in case user opened multiple
+        if (
+          thread?.data?.created_by?.author_profile?.id ===
+          auth?.user?.author_profile?.id
+        ) {
+          (thread.data.comments || []).forEach((comment) => {
+            bountyComments.push({
+              data: comment,
+            });
+          });
+        }
+      }
+    });
+
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
@@ -135,8 +158,8 @@ class PostPageCard extends Component {
             hasBounties={this.props.hasBounties}
             allBounties={this.props.bounties}
             bountyText={this.toPlaintext(postBody)}
-            bountyType="question"
-            threads={this.props.threads}
+            bountyType={post?.unifiedDocument?.documentType}
+            threads={bountyComments}
             isOriginalPoster={post?.unifiedDocument?.createdBy?.id === user.id}
             currentUser={user}
             post={post}
@@ -254,6 +277,7 @@ class PostPageCard extends Component {
                               ...this.props.bounties,
                               bounty,
                             ]);
+                            this.props.setHasBounties(true);
                           }}
                           isOriginalPoster={
                             post.unifiedDocument.createdBy.id === user.id
@@ -387,6 +411,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {

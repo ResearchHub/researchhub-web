@@ -69,6 +69,7 @@ const DiscussionTab = (props) => {
     showBountyBtn,
     setHasBounties,
     setAllBounties,
+    setBounties,
     setThreadProp,
   } = props;
 
@@ -185,8 +186,6 @@ const DiscussionTab = (props) => {
           });
         });
       }
-
-      debugger;
     } else {
       const awardedThreadId = e.detail.objectId;
       const awardedAmount = e.detail.amount;
@@ -549,7 +548,9 @@ const DiscussionTab = (props) => {
   };
 
   const onBountyCreate = (newBountyMap) => {
-    setBountyMap(newBountyMap);
+    const newBounty = Object.values(newBountyMap)[0];
+    setHasBounties(true);
+    setAllBounties([newBounty]);
   };
 
   const createFormattedDiscussion = (newDiscussion) => {
@@ -635,8 +636,10 @@ const DiscussionTab = (props) => {
     });
 
     if (hasBounties) {
+      console.log("111111", allBounties);
       setHasBounties && setHasBounties(hasBounties);
       setAllBounties && setAllBounties(allBounties);
+      setBounties && setBounties(allBounties);
     }
     setFetching(false);
     setLoading(false);

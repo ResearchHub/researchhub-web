@@ -51,6 +51,7 @@ const BountyAlert = ({
   documentType,
   auth,
 }: BountyAlertParams) => {
+
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
@@ -63,6 +64,7 @@ const BountyAlert = ({
 
   let amount = 0;
   let awardAmount = amount;
+  let hasActiveBounty = false;
 
   if (bounty) {
     timeRemaining = bounty.timeRemaining;
@@ -90,11 +92,21 @@ const BountyAlert = ({
         awardAmount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
       }
       amount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
+
+      // Lack of typescript usage makes us do ugly things.
+      // This needs to be rewritten.
+      let _bounty = bounty;
+      if (bounty.created_by) {
+        _bounty = new Bounty(_bounty);
+      }
+      if (!_bounty.isExpiredOrClosed) {
+        hasActiveBounty = true;  
+      }
     });
     status = firstBounty.status;
   }
 
-  if (!bounty && !allBounties.length) {
+  if ((!bounty && !allBounties.length) || !hasActiveBounty) {
     return null;
   }
 
@@ -138,7 +150,7 @@ const BountyAlert = ({
   };
 
   const answerThreads = threads?.filter((thread) => {
-    return router.pathname.includes("paper")
+    return router.pathname.includes("paper") || router.pathname.includes("post")
       ? thread
       : thread?.data?.discussion_post_type === "ANSWER";
   });

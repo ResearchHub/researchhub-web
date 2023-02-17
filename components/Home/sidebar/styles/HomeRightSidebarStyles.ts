@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     color: colors.GREY_LIST_LABEL,
     padding: "0 0 16px 0",
     position: "sticky",
-    top: NAVBAR_HEIGHT,
+    top: NAVBAR_HEIGHT + 15,
     boxShadow: "none",
   },
   RightSidebarTitle: {

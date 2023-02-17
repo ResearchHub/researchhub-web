@@ -57,7 +57,7 @@ const Post = (props) => {
   const [post, setPost] = useState(initialPost);
   const [postV2, setPostV2] = useState(new PostDoc(initialPost));
   const [discussionCount, setCount] = useState(0);
-  const [bounties, setBounties] = useState(null);
+  const [bounties, setBounties] = useState([]);
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
   const [threads, setThreads] = useState([]);
@@ -72,16 +72,10 @@ const Post = (props) => {
   }, [props]);
 
   useEffect(() => {
-    if (postV2.isReady) {
+    if (postV2.isReady && postV2.unifiedDocument.documentType === "question") {
       setBounties(postV2.bounties);
-    }
-  }, [postV2]);
 
-  useEffect(() => {
-    if (post?.id) {
-      setCount(post.discussion_count);
-      let hasBounties = post.bounties.length;
-
+      let hasBounties = postV2.bounties.length;
       hasBounties &&
         post.bounties.forEach((bounty) => {
           if (bounty.status !== "OPEN") {
@@ -89,6 +83,12 @@ const Post = (props) => {
           }
         });
       setHasBounties(hasBounties);
+    }
+  }, [postV2]);
+
+  useEffect(() => {
+    if (post?.id) {
+      setCount(post.discussion_count);
     }
   }, [post]);
 
@@ -227,9 +227,9 @@ const Post = (props) => {
                 isSubmitter={isSubmitter}
                 post={postV2}
                 setHasBounties={setHasBounties}
+                setBounties={setBounties}
                 removePost={removePost}
                 restorePost={restorePost}
-                setBounties={setBounties}
                 threads={threads}
                 hasBounties={hasBounties}
                 bounties={bounties}
@@ -251,10 +251,10 @@ const Post = (props) => {
                     setThreads(_threads);
                   }}
                   setAllBounties={setAllBounties}
+                  setBounties={setBounties}
                   postId={post.id}
                   showBountyBtn={
-                    false
-                    // postV2.unifiedDocument.documentType !== "question"
+                    post?.document_type && post.document_type !== "QUESTION"
                   }
                   calculatedCount={discussionCount}
                   setCount={setCount}
