@@ -122,6 +122,17 @@ class PostPageCard extends Component {
     if (!isEditMode && typeof initialData === "string") {
       initialData = trimEmptyParagraphs({ htmlStr: postBody });
     }
+
+    let bountyComments = [];
+    this.props.threads.forEach((thread) => {
+      bountyComments = thread.data.comments;
+      bountyComments = bountyComments.map((comment) => {
+        return {
+          data: comment,
+        };
+      });
+    });
+
     return (
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
@@ -135,7 +146,7 @@ class PostPageCard extends Component {
             allBounties={this.props.bounties}
             bountyText={this.toPlaintext(postBody)}
             bountyType="question"
-            threads={this.props.threads}
+            threads={bountyComments}
             isOriginalPoster={post?.unifiedDocument?.createdBy?.id === user.id}
             currentUser={user}
             post={post}

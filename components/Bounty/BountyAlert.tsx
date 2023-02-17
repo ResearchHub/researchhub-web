@@ -143,7 +143,7 @@ const BountyAlert = ({
   };
 
   const answerThreads = threads?.filter((thread) => {
-    return router.pathname.includes("paper")
+    return router.pathname.includes("paper") || router.pathname.includes("post")
       ? thread
       : thread?.data?.discussion_post_type === "ANSWER";
   });
