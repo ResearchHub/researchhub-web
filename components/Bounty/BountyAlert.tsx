@@ -51,6 +51,7 @@ const BountyAlert = ({
   documentType,
   auth,
 }: BountyAlertParams) => {
+
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
@@ -92,7 +93,13 @@ const BountyAlert = ({
       }
       amount += bounty.status === "OPEN" ? parseFloat(bounty.amount) : 0;
 
-      if (!bounty.isExpiredOrClosed) {
+      // Lack of typescript usage makes us do ugly things.
+      // This needs to be rewritten.
+      let _bounty = bounty;
+      if (bounty.created_by) {
+        _bounty = new Bounty(_bounty);
+      }
+      if (!_bounty.isExpiredOrClosed) {
         hasActiveBounty = true;  
       }
     });

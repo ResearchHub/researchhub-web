@@ -229,7 +229,6 @@ const Post = (props) => {
                 setHasBounties={setHasBounties}
                 removePost={removePost}
                 restorePost={restorePost}
-                setBounties={setBounties}
                 threads={threads}
                 hasBounties={hasBounties}
                 bounties={bounties}

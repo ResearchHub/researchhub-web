@@ -185,8 +185,6 @@ const DiscussionTab = (props) => {
           });
         });
       }
-
-      debugger;
     } else {
       const awardedThreadId = e.detail.objectId;
       const awardedAmount = e.detail.amount;
@@ -549,7 +547,9 @@ const DiscussionTab = (props) => {
   };
 
   const onBountyCreate = (newBountyMap) => {
-    setBountyMap(newBountyMap);
+    const newBounty = Object.values(newBountyMap)[0];
+    setHasBounties(true);
+    setAllBounties([newBounty]);
   };
 
   const createFormattedDiscussion = (newDiscussion) => {

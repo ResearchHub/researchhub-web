@@ -284,7 +284,7 @@ function AwardBountyModal({
     useState(bountyAmount);
 
   const router = useRouter();
-  const isPaperBounty = router.pathname.includes("/paper/");
+  const isCommentBounty = (documentType === "paper" || documentType === "post");
 
   const handleClose = () => {
     closeModal && closeModal();
@@ -293,6 +293,7 @@ function AwardBountyModal({
   };
 
   useEffect(() => {
+    
     if (threads && threads[0]) {
       const author = threads[0]?.data?.created_by?.author_profile;
       const comment = threads[0];
@@ -335,19 +336,21 @@ function AwardBountyModal({
         if (userAwardMap[key]) {
           metadataArray.push({
             recipient_id: key.split("-")[0],
-            content_type: isPaperBounty ? "comment" : "thread",
+            content_type: isCommentBounty ? "comment" : "thread",
             amount: userAwardMap[key],
             object_id: key.split("-")[1],
           });
           acceptedAnswers.push({
             detail: { threadId: key.split("-")[1] },
           });
+
           acceptAnswerAPI({
             documentType: documentType,
-            threadId: isPaperBounty
+            ...(isCommentBounty && {commentId: key.split("-")[1]}),
+            threadId: 
+            isCommentBounty
               ? threads[0]?.data?.parent
               : key.split("-")[1],
-            commentId: isPaperBounty && key.split("-")[1],
             paperId: router.query.paperId,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -365,7 +368,6 @@ function AwardBountyModal({
           });
         }
       });
-
       const event = new CustomEvent("answer-accepted", {
         detail: {
           multiAward: acceptedAnswers,
@@ -379,7 +381,7 @@ function AwardBountyModal({
         recipient: true,
         object_id: true,
         multi_approve: true,
-        content_type: isPaperBounty ? "comment" : "thread",
+        content_type: isCommentBounty ? "comment" : "thread",
       };
 
       const url = generateApiUrl("bounty") + bounty?.id + "/approve_bounty/";
@@ -412,13 +414,11 @@ function AwardBountyModal({
           });
         });
 
-        debugger;
-
         const bountyAward = new CustomEvent("bounty-awarded", {
           detail: {
             multiAward,
-            commentBountyAward: isPaperBounty,
-            bountyThreadId: isPaperBounty
+            commentBountyAward: isCommentBounty,
+            bountyThreadId: isCommentBounty
               ? bountiesToAward[0].item_object_id
               : null,
           },
