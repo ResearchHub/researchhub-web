@@ -8,12 +8,14 @@ import {
   useState,
 } from "react";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 export type Props = {
   icon: ReactNode;
   isActive?: boolean;
   isMinimized: boolean;
   label: string;
+  isNew?: boolean; 
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
 };
@@ -24,6 +26,7 @@ export default function RootLeftSidebarItem({
   icon,
   isActive = false,
   isMinimized,
+  isNew,
   label,
   onClick,
   subItems,
@@ -91,6 +94,13 @@ export default function RootLeftSidebarItem({
             }}
           >
             {label}
+
+            {isNew && 
+              <span className={css(styles.new)}>
+                <span className={css(styles.fireIcon)}>{icons.fire}</span>
+                <span className={css(styles.newText)}>New</span>
+              </span>            
+            }
           </motion.div>
         )}
       </AnimatePresence>
@@ -107,6 +117,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 48,
     minHeight: 48,
+    position: "relative",
     justifyContent: "flex-start",
     marginBottom: 16,
     padding: "0 26px",
@@ -126,6 +137,17 @@ const styles = StyleSheet.create({
       background: colors.LIGHTER_GREY(1),
     },
   },
+  new: {
+    fontSize: 15,
+    color: colors.ORANGE_DARK2(),
+    position: "absolute",
+    right: 13,
+    top: 15,
+  },
+  newText: {},
+  fireIcon: {
+    marginRight: 4,
+  },  
   iconWrap: {
     alignItems: "center",
     boxSizing: "border-box",

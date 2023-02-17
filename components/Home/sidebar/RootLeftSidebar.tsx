@@ -27,6 +27,7 @@ import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
+import ReferenceManagerIcon from "~/components/Icons/ReferenceManagerIcon";
 
 type Props = {
   openLoginModal: any;
@@ -90,6 +91,21 @@ export const getLeftSidebarItemAttrs = ({
         }
       },
     },
+    {
+      icon: <ReferenceManagerIcon color={pathname.includes("references") ? colors.NEW_BLUE() : colors.GREY(1) } />,
+      label: "References",
+      isMinimized,
+      isNew: true,
+      isActive: pathname.includes("references"),
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        if (!isLoggedIn) {
+          openLoginModal(true, "Please Sign in with Google to continue.");
+        } else {
+          router.push(`/references`);
+        }
+      },
+    },    
     {
       icon: icons.chartSimple,
       label: "Leaderboard",

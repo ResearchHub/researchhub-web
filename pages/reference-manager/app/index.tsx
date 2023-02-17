@@ -1,9 +1,10 @@
-import { Inter } from "@next/font/google";
-import HomeContainer from "../components/home/HomeContainer";
+import BasicPageLayout from "../components/shared/basic_page_layout/BasicPageLayout";
+import ReferencesContainer from "../components/references/ReferencesContainer";
 
-
-const inter = Inter({ subsets: ["latin"] });
-
-export default function HomePage() {
-  return <HomeContainer />;
+export default function ReferencePage() {
+  return (
+    <BasicPageLayout>
+      <ReferencesContainer />
+    </BasicPageLayout>
+  );
 }
