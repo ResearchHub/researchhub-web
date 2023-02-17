@@ -243,8 +243,6 @@ function FeedCard({
       }
     });
 
-  
-
   return (
     <Ripples
       className={css(

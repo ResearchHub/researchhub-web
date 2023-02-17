@@ -52,6 +52,7 @@ const BountyAlert = ({
   auth,
 }: BountyAlertParams) => {
 
+  
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
@@ -73,6 +74,7 @@ const BountyAlert = ({
     status = bounty.status;
 
     if (status !== BOUNTY_STATUS.OPEN && !allBounties.length) {
+      debugger;
       return null;
     }
   } else if (allBounties.length) {
@@ -107,6 +109,7 @@ const BountyAlert = ({
   }
 
   if ((!bounty && !allBounties.length) || !hasActiveBounty) {
+    debugger;
     return null;
   }
 
