@@ -71,11 +71,11 @@ const Post = (props) => {
     }
   }, [props]);
 
-  useEffect(() => {
-    if (postV2.isReady) {
-      setBounties(postV2.bounties);
-    }
-  }, [postV2]);
+  // useEffect(() => {
+  //   if (postV2.isReady) {
+  //     setBounties(postV2.bounties);
+  //   }
+  // }, [postV2]);
 
   useEffect(() => {
     if (post?.id) {
@@ -250,6 +250,7 @@ const Post = (props) => {
                     setThreads(_threads);
                   }}
                   setAllBounties={setAllBounties}
+                  setBounties={setBounties}
                   postId={post.id}
                   showBountyBtn={
                     post?.document_type && post.document_type !== "QUESTION"

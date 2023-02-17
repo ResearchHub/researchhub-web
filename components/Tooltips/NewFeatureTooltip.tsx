@@ -36,6 +36,11 @@ function NewFeatureTooltip({
       ? position[0]
       : position[1];
 
+
+  // Kobe: Turning this feature off temporarily because something broke with it.
+  // It glitches out on page load
+  return null;
+
   let html: ReactElement = <></>;
   if (normalizedFeatureName === "discussiontypes") {
     html = (

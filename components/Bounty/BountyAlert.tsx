@@ -52,8 +52,6 @@ const BountyAlert = ({
   auth,
 }: BountyAlertParams) => {
 
-  debugger;
-  
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);

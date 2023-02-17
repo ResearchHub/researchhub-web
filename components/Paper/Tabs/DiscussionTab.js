@@ -69,6 +69,7 @@ const DiscussionTab = (props) => {
     showBountyBtn,
     setHasBounties,
     setAllBounties,
+    setBounties,
     setThreadProp,
   } = props;
 
@@ -635,8 +636,10 @@ const DiscussionTab = (props) => {
     });
 
     if (hasBounties) {
+      console.log("111111", allBounties);
       setHasBounties && setHasBounties(hasBounties);
       setAllBounties && setAllBounties(allBounties);
+      setBounties && setBounties(allBounties);
     }
     setFetching(false);
     setLoading(false);

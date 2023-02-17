@@ -158,7 +158,7 @@ class PostPageCard extends Component {
             hasBounties={this.props.hasBounties}
             allBounties={this.props.bounties}
             bountyText={this.toPlaintext(postBody)}
-            bountyType="question"
+            bountyType={post?.unifiedDocument?.documentType}
             threads={bountyComments}
             isOriginalPoster={post?.unifiedDocument?.createdBy?.id === user.id}
             currentUser={user}
