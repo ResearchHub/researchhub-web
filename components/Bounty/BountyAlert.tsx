@@ -118,6 +118,13 @@ const BountyAlert = ({
       // This should be rewritten to ensure bounties referenced here are always proper Bounty objects.
       if (!currentUser) {
         return null;
+      } else if (bounty?.contentType?.name === "document") {
+        // If this is a question bounty, only allow the creator to award
+        if (currentUser.id === post?.createdBy?.id) {
+          return bounty;
+        } else {
+          return null;
+        }
       } else if (
         bounty?.created_by &&
         bounty?.created_by?.author_profile?.id ===
