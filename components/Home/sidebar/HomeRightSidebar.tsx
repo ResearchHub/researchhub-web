@@ -10,7 +10,6 @@ import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
 import icons from "~/config/themes/icons";
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
-import UniswapButton from "~/components/UniswapButton";
 
 export default function HomeRightSidebar(): ReactElement {
   const [shouldLimitNumCards, setShouldLimitNumCards] = useState<boolean>(true);
@@ -19,9 +18,6 @@ export default function HomeRightSidebar(): ReactElement {
   return (
     <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
-        <div style={{ margin: "16px 16px 0px 16px" }}>
-          <UniswapButton variant="shadow" />
-        </div>
         {/*
           Kobe 02-01-23: This is a static banner that temporarily replaces
           the RH slider
