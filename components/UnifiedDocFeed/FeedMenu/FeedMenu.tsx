@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
   filtersAsTabs: {
     width: "100%",
     display: "flex",
-    marginBottom: 15,
+    marginBottom: 16,
+    marginTop: 16,
   },
   typeFiltersContainer: {
     width: "100%",
@@ -151,8 +152,7 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       width: "calc(100vw - 38px)",
-    }
-
+    },
   },
 
   tabsContainer: {
@@ -187,7 +187,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 16,
-    marginBottom: 10,
     overflow: "visible",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",

@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
     display: "flex",
     borderBottom: `1px solid ${colors.GREY_LINE(1)}`,
     width: "100%",
-    marginBottom: 15,
     position: "relative",
   },
   hiddenXS: {

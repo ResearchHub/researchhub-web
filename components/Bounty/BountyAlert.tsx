@@ -51,7 +51,6 @@ const BountyAlert = ({
   documentType,
   auth,
 }: BountyAlertParams) => {
-
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
@@ -100,7 +99,7 @@ const BountyAlert = ({
         _bounty = new Bounty(_bounty);
       }
       if (!_bounty.isExpiredOrClosed) {
-        hasActiveBounty = true;  
+        hasActiveBounty = true;
       }
     });
     status = firstBounty.status;
