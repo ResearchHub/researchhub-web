@@ -242,6 +242,7 @@ function RootLeftSidebar({
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
         ["hubs", "user"].includes(pathname.split("/")[1]) ||
+        ["references"].includes(pathname.split("/")[1]) ||
         pathname === "/hypothesis/create"
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,

@@ -81,7 +81,7 @@ export default function ReferencesContainer({}: Props): ReactElement {
                   // TODO: calvinhlee - create a MUI convenience function for handling target values
                   setSearchText(event.target.value);
                 }}
-                placeholder="Search..."
+                placeholder="Search references"
                 size="small"
                 sx={{
                   borderColor: "#E9EAEF",

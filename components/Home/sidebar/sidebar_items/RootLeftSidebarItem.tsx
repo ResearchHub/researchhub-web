@@ -138,11 +138,11 @@ const styles = StyleSheet.create({
     },
   },
   new: {
-    fontSize: 15,
+    fontSize: 13,
     color: colors.ORANGE_DARK2(),
     position: "absolute",
     right: 13,
-    top: 15,
+    top: 17,
   },
   newText: {},
   fireIcon: {
