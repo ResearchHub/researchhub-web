@@ -10,13 +10,13 @@ import { Helpers } from "@quantfive/js-web-config";
 import numeral from "numeral";
 import { captureEvent } from "../utils/events";
 import { ContentType, parseContentType } from "./contentType";
+import Router from "next/router";
 
 export function formatBountyAmount({ amount, withPrecision = true }) {
   if (withPrecision) {
     return numeral(amount).format("0,0.[0000000000]");
-  }
-  else {
-    return Number(parseFloat(amount).toFixed(0)).toLocaleString()
+  } else {
+    return Number(parseFloat(amount).toFixed(0)).toLocaleString();
   }
 }
 
@@ -58,7 +58,7 @@ export default class Bounty {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
-    
+
     this._timeRemainingInMinutes = timeToInUnits({
       date: raw.expiration_date,
       unit: "minute",
@@ -130,6 +130,15 @@ export default class Bounty {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          if (itemContentType !== "thread") {
+            const r = Router;
+            fetch(
+              "/api/revalidate",
+              api.POST_CONFIG({
+                path: `/post/${r.router?.query.documentId}/${r.router?.query.title}`,
+              })
+            );
+          }
           return resolve(new Bounty(res));
         })
         .catch((error) => {
