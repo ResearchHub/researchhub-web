@@ -214,7 +214,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.BLACK(0.5),
   },
-  resultsContainer: {},
+  resultsContainer: {
+    marginTop: 16,
+  },
   numSelected: {
     marginRight: 10,
   },
