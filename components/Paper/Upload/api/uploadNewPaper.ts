@@ -24,7 +24,7 @@ export async function uploadNewPaper({
   const formattedPayload = {
     ...payload,
     file: uploadedPaper.url ? uploadedPaper.url : uploadedPaper,
-    hubs: payload.hubs.map((hub): ID => hub.id),
+    hubs: payload.selectedHubs.map((hub): ID => hub.id),
     title:
       !isNullOrUndefined(payloadTitle) && payloadTitle.length > 0
         ? payloadTitle
