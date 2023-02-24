@@ -19,6 +19,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
+import Script from "next/script";
 
 const saveData = async ({
   editor,
@@ -137,8 +138,38 @@ const ELNEditor = ({
     };
   };
 
+  if (!process.browser) {
+    return null;
+  }
+
   return (
     <div className={css(styles.container)}>
+      <div className="thebe-activate"></div>
+      <div className="thebe-status"></div>
+
+      <Script src="https://unpkg.com/thebe@latest/lib/index.js"></Script>
+      <link
+        rel="stylesheet"
+        href="https://unpkg.com/thebe@latest/lib/thebe.css"
+      />
+      <Script
+        type="text/x-thebe-config"
+        dangerouslySetInnerHTML={{
+          __html: `{
+            requestKernel: true,
+            mountStatusWidget: true,
+            mountActivateWidget: true,
+            bootstrap: false,
+            binderOptions: {
+              repo: "binder-examples/requirements",
+            },
+            codeMirrorConfig: {
+              theme: "eclipse",
+              lineNumbers: true,
+            },
+          }`,
+        }}
+      ></Script>
       <NotebookHeader
         currentNote={currentNote}
         currentOrganization={currentOrganization}
@@ -159,7 +190,8 @@ const ELNEditor = ({
               tokenUrl: () => {
                 return new Promise((resolve, reject) => {
                   const xhr = new XMLHttpRequest();
-                  xhr.open("GET", API.CKEDITOR_TOKEN());
+                  const url = API.CKEDITOR_TOKEN();
+                  xhr.open("GET", url);
 
                   xhr.addEventListener("load", () => {
                     const statusCode = xhr.status;
@@ -215,6 +247,60 @@ const ELNEditor = ({
           <div className={"eln"}>
             <CKEditor
               config={{
+                presenceList: {
+                  container: presenceListElement,
+                  onClick: (user) => {
+                    const e = window.event;
+                    const url = `/user/${user.id}/overview`;
+                    if (e.metaKey || e.shiftKey) {
+                      window.open(url);
+                    } else {
+                      router.push(url);
+                    }
+                  },
+                },
+                cloudServices: {
+                  bundleVersion: BUNDLE_VERSION,
+                  tokenUrl: () => {
+                    return new Promise((resolve, reject) => {
+                      const xhr = new XMLHttpRequest();
+                      const url = API.CKEDITOR_TOKEN();
+                      xhr.open("GET", url);
+
+                      xhr.addEventListener("load", () => {
+                        const statusCode = xhr.status;
+                        const xhrResponse = xhr.response;
+
+                        if (statusCode < 200 || statusCode > 299) {
+                          return reject(
+                            new Error("Cannot download a new token!")
+                          );
+                        }
+
+                        return resolve(xhrResponse);
+                      });
+
+                      xhr.addEventListener("error", () =>
+                        reject(new Error("Network error"))
+                      );
+                      xhr.addEventListener("abort", () =>
+                        reject(new Error("Abort"))
+                      );
+                      xhr.setRequestHeader(
+                        "Authorization",
+                        "Token " +
+                          (typeof window !== "undefined"
+                            ? window.localStorage[AUTH_TOKEN]
+                            : "")
+                      );
+                      xhr.send();
+                    });
+                  },
+                  webSocketUrl: "wss://83764.cke-cs.com/ws",
+                },
+                collaboration: {
+                  channelId,
+                },
                 title: {
                   placeholder: "Untitled",
                 },
@@ -233,9 +319,6 @@ const ELNEditor = ({
                         ? window.localStorage[AUTH_TOKEN]
                         : ""),
                   },
-                },
-                collaboration: {
-                  channelId,
                 },
                 autosave: {
                   save(editor) {
