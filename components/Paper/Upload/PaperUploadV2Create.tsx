@@ -131,6 +131,7 @@ const useEffectParseReduxToState = ({
       citation_type: citationType,
       doi: formattedDOI,
       hubs: formHubs,
+      selectedHubs: formHubs,
       hypothesis_id: hypothesisID,
       paper_title: resolvedPaperTitle,
       paper_type: formType,
