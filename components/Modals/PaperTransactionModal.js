@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
 import { withAlert } from "react-alert";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
 import miniToken from "./Artifacts/mini-me-token";
 import contractAbi from "./Artifacts/contract-abi";

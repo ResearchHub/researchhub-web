@@ -15,7 +15,7 @@ import DocumentHeader from "./Document/DocumentHeader";
 import dynamic from "next/dynamic";
 import ReactHtmlParser from "react-html-parser";
 import ReactPlaceholder from "react-placeholder/lib";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import removeMd from "remove-markdown";
 import router from "next/router";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";

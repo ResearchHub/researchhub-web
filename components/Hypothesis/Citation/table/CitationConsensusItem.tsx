@@ -30,7 +30,7 @@ import {
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import Image from "next/image";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 export type ConsensusMeta = {
   downCount: number;

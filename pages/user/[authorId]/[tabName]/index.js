@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import get from "lodash/get";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import SafeURL from "safe-url";
 
 // Redux

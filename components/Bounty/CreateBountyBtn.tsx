@@ -6,7 +6,7 @@ import BountyModal from "./BountyModal";
 import colors from "~/config/themes/colors";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import numeral from "numeral";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 

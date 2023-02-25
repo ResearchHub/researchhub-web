@@ -15,7 +15,7 @@ import CitationVoteItem from "./CitationVoteItem";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import Ripples from "react-ripples";
 import Link from "next/link";
 

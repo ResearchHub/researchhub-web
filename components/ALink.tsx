@@ -44,7 +44,7 @@ const ALink: FunctionComponent<Props> = ({
 const styles = StyleSheet.create({
   ALink: {
     color: colors.BLACK(),
-    fontWeight: 500,
+    fontWeight: 400,
     textDecoration: "none",
     ":hover": {
       color: colors.NEW_BLUE(),

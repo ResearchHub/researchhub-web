@@ -19,7 +19,7 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons, { WarningIcon } from "~/config/themes/icons";
 import numeral from "numeral";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
 type Props = {

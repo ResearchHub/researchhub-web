@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { ID } from "~/config/types/root_types";
 
 type Props = {

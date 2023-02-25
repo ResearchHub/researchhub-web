@@ -244,7 +244,7 @@ function FeedCard({
     });
 
   return (
-    <Ripples
+    <div
       className={css(
         styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder,
@@ -447,7 +447,7 @@ function FeedCard({
           </div>
         </div>
       </div>
-    </Ripples>
+    </div>
   );
 }
 

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Router from "next/router";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import { withAlert } from "react-alert";
 
 // Component

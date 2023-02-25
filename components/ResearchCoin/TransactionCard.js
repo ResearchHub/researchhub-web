@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import Link from "next/link";
 import numeral from "numeral";
 

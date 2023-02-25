@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import BaseModal from "../Modals/BaseModal";
 import Bounty from "~/config/types/bounty";
 import Button from "../Form/Button";

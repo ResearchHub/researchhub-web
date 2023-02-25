@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import numeral from "numeral";
 
 // Redux

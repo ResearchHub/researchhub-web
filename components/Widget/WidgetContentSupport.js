@@ -10,7 +10,7 @@ import { ModalActions } from "~/redux/modals";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils/form";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const DEFAULT_SHIMMER_TIME = 1150;
 

@@ -10,6 +10,8 @@ import "~/components/SearchSuggestion/authorinput.css";
 import "~/components/TextEditor/stylesheets/QuillTextEditor.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
+import "react-tooltip/dist/react-tooltip.css";
+
 import "isomorphic-unfetch";
 import "katex/dist/katex.min.css";
 import "react-placeholder/lib/reactPlaceholder.css";

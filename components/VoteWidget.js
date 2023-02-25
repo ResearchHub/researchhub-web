@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { connect, useDispatch, useStore } from "react-redux";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";

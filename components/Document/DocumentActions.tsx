@@ -14,7 +14,7 @@ import icons from "~/config/themes/icons";
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 type Args = {
