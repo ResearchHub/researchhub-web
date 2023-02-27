@@ -97,8 +97,8 @@ const ContentBadge = ({
           clickable={true}
           delayShow={350}
           style={{
-            zIndex: 2, width: 350, fontSize: 14, padding: 15, background: "white", color: "black", opacity: "1", border: `1px solid ${colors.ORANGE_DARK2()}`, boxShadow: "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px", textTransform: "none",
-            boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)"            
+            zIndex: 2, width: 350, fontSize: 14, padding: 15, background: "white", color: "black", opacity: "1", border: "1px solid rgb(232, 232, 239)", boxShadow: "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px", textTransform: "none",
+                        
           }}
         />
         <span
