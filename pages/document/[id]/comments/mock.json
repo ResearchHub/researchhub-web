@@ -1,0 +1,46 @@
+[
+  {
+    "id": 10660,
+    "score": 6,
+    "createdDate": "2023-02-08T06:15:49.486097Z",
+    "updatedDate": "2023-02-08T06:15:49.486113Z",
+    "postType": "DISCUSSION",
+    "userVote": null,
+    "isEdited": false,    
+    "createdBy": {
+      "id": 1377,
+      "authorProfile": {
+        "id": 432209,
+        "firstName": "Nassim",
+        "lastName": "Dehouche",
+        "createdDate": "2020-10-30T11:21:53.735952Z",
+        "updatedDate": "2023-02-08T07:03:44.508361Z",
+        "profileImage": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/02/08/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=yMLcoEBbNrvaeeL9S9JbnaQhG7E%3D&Expires=1678144805",
+        "editorOfHubs": [
+          {
+            "id": 200,
+            "name": "immunology",
+            "slug": "immunology"
+          }
+        ]
+      }
+    },
+    "content": {
+      "ops": [
+        {
+          "insert": "This is a great point and suggestions, thank you very much. That idea (both in Juan Benet's interview and our citation of it) was meant to be hypothetical (transcript of interview here\n"
+        },
+        {
+          "insert": "https://twitter.com/DeSciLabs/status/1551540428301893633",
+          "attributes": {
+            "link": "https://twitter.com/DeSciLabs/status/1551540428301893633"
+          }
+        },
+        {
+          "insert": "). I agree we should avoid sensationalizing it, and we'll revise the note to be more realistic/conservative.\n"
+        }
+      ]
+    },
+    "children": []
+  }
+]
