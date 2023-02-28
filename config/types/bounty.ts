@@ -58,7 +58,6 @@ export default class Bounty {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
-
     this._timeRemainingInMinutes = timeToInUnits({
       date: raw.expiration_date,
       unit: "minute",
@@ -72,7 +71,7 @@ export default class Bounty {
     this._contentType =
       typeof raw.content_type === "object"
         ? parseContentType(raw.content_type)
-        : undefined;
+        : raw.content_type;
     this._relatedItem = raw.item;
     this._effortLevel = raw.effort_level;
   }

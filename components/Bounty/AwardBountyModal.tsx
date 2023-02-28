@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, useRef } from "react";
 import ReactTooltip from "react-tooltip";
 import BaseModal from "../Modals/BaseModal";
 import Bounty from "~/config/types/bounty";
@@ -284,7 +284,8 @@ function AwardBountyModal({
     useState(bountyAmount);
 
   const router = useRouter();
-  const isCommentBounty = (documentType === "paper" || documentType === "post");
+  const isCommentBounty = documentType === "paper" || documentType === "post";
+  const bountySet = useRef(false);
 
   const handleClose = () => {
     closeModal && closeModal();
@@ -293,14 +294,14 @@ function AwardBountyModal({
   };
 
   useEffect(() => {
-    
-    if (threads && threads[0]) {
+    if (threads && threads[0] && !bountySet.current) {
       const author = threads[0]?.data?.created_by?.author_profile;
       const comment = threads[0];
       const key = `${author?.user}-${comment?.data?.id}-award`;
       const awardMapping = {};
       awardMapping[key] = bountyAmount;
       setUserAwardMap(awardMapping);
+      bountySet.current = true;
     }
   }, [threads]);
 
@@ -319,7 +320,6 @@ function AwardBountyModal({
 
     setBountyAwardLoading(true);
     const allFetches: Promise<Response>[] = []; // todo: make this a promise array
-    const metadataArray: any[] = [];
     const bountiesToAward = router.pathname.includes("/paper/")
       ? allBounties.filter((bounty) => {
           return (
@@ -329,26 +329,46 @@ function AwardBountyModal({
         })
       : allBounties;
 
+    const localAwardMap = { ...userAwardMap };
+
+    const allAwards: any[] = [];
+
     bountiesToAward.forEach(async (bounty) => {
-      const keys = Object.keys(userAwardMap);
+      const keys = Object.keys(localAwardMap);
       const acceptedAnswers = [];
+      const metadataArray: any[] = [];
+
+      let amountLeft = bounty.amount;
       keys.forEach(async (key) => {
-        if (userAwardMap[key]) {
+        if (localAwardMap[key] && amountLeft > 0) {
+          const toAward =
+            localAwardMap[key] > amountLeft ? amountLeft : localAwardMap[key];
+          amountLeft -= toAward;
+
           metadataArray.push({
             recipient_id: key.split("-")[0],
             content_type: isCommentBounty ? "comment" : "thread",
-            amount: userAwardMap[key],
+            amount: toAward,
             object_id: key.split("-")[1],
           });
+
+          allAwards.push({
+            recipient_id: key.split("-")[0],
+            content_type: isCommentBounty ? "comment" : "thread",
+            amount: toAward,
+            object_id: key.split("-")[1],
+          });
+
+          localAwardMap[key] -= toAward;
+
           acceptedAnswers.push({
             detail: { threadId: key.split("-")[1] },
           });
 
           acceptAnswerAPI({
             documentType: documentType,
-            ...(isCommentBounty && {commentId: key.split("-")[1]}),
-            threadId: 
-            isCommentBounty
+            ...(isCommentBounty && { commentId: key.split("-")[1] }),
+            threadId: isCommentBounty
               ? threads[0]?.data?.parent
               : key.split("-")[1],
             paperId: router.query.paperId,
@@ -407,7 +427,7 @@ function AwardBountyModal({
 
       if (succeeded) {
         const multiAward = [];
-        metadataArray.forEach((data) => {
+        allAwards.forEach((data) => {
           multiAward.push({
             objectId: parseInt(data.object_id, 10),
             amount: data.amount,
@@ -423,6 +443,7 @@ function AwardBountyModal({
               : null,
           },
         });
+
         document.dispatchEvent(bountyAward);
 
         setHasBounties && setHasBounties(false);
