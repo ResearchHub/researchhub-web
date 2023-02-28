@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, useRef } from "react";
 import ReactTooltip from "react-tooltip";
 import BaseModal from "../Modals/BaseModal";
 import Bounty from "~/config/types/bounty";
@@ -285,6 +285,7 @@ function AwardBountyModal({
 
   const router = useRouter();
   const isCommentBounty = documentType === "paper" || documentType === "post";
+  const bountySet = useRef(false);
 
   const handleClose = () => {
     closeModal && closeModal();
@@ -293,13 +294,14 @@ function AwardBountyModal({
   };
 
   useEffect(() => {
-    if (threads && threads[0]) {
+    if (threads && threads[0] && !bountySet.current) {
       const author = threads[0]?.data?.created_by?.author_profile;
       const comment = threads[0];
       const key = `${author?.user}-${comment?.data?.id}-award`;
       const awardMapping = {};
       awardMapping[key] = bountyAmount;
       setUserAwardMap(awardMapping);
+      bountySet.current = true;
     }
   }, [threads]);
 
@@ -441,6 +443,7 @@ function AwardBountyModal({
               : null,
           },
         });
+
         document.dispatchEvent(bountyAward);
 
         setHasBounties && setHasBounties(false);
