@@ -63,7 +63,7 @@ function CreateBountyBtn({
       >
         <div className={css(bountyTooltip.bodyContainer)}>
           <div className={css(bountyTooltip.title)}>
-            {userHasBounty ? "Close your Bounty" : "Add ResearchCoin Bounty"}
+            {userHasBounty ? "Close your Bounty" : "Add RSC Bounty"}
           </div>
           <div className={css(bountyTooltip.desc)}>
             {userHasBounty ? (
