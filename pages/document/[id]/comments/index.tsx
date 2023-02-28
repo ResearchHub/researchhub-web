@@ -53,7 +53,12 @@ const CommentEditor = ({
         </div>
       ) : (
         <div>
-          <ReactQuill placeholder={placeholder} theme="snow" value={value} onChange={setValue} />
+          <ReactQuill
+            placeholder={placeholder}
+            theme="snow"
+            value={value}
+            onChange={setValue}
+          />
         </div>
       )}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -119,6 +124,19 @@ const DocumentActivityFeed = ({}) => {
 
 
 const CommentsIndex: NextPage = () => {
+
+  const handleCreate = () => {
+    alert('creating comment')
+  }
+
+  const handleUpdate = () => {
+    alert('updating comment')
+  }
+
+  const handleRemove = () => {
+    alert('removing comment')
+  }
+
   return (
     <div style={{
       padding: "24px 32px",
