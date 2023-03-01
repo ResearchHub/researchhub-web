@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import Button from "~/components/Form/Button";
+import { css, StyleSheet } from "aphrodite";
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -48,16 +49,7 @@ const CommentEditor = ({
   return (
     <div
       ref={editorRef}
-      style={{
-        display: "flex",
-        padding: "16px 24px",
-        minHeight: 105,
-        boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
-        borderRadius: 16,
-        flex: "none",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
+      className={css(styles.commentEditor)}
       onClick={() => {
         _setIsPreviewMode(false);
         _isPreviewModeRef.current = false;
@@ -87,5 +79,18 @@ const CommentEditor = ({
     </div>
   )
 }
+
+const styles = StyleSheet.create({
+  commentEditor: {
+    display: "flex",
+    padding: "16px 24px",
+    minHeight: 105,
+    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
+    borderRadius: 16,
+    flex: "none",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  }
+});
 
 export default CommentEditor;
