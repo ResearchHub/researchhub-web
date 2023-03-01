@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
 import Button from "~/components/Form/Button";
 import { css, StyleSheet } from "aphrodite";
+import isQuillEmpty from "./lib/isQuillEmpty";
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -21,6 +22,17 @@ const CommentEditor = ({
   const [_isPreviewMode, _setIsPreviewMode] = useState(isPreviewMode);
   const _isPreviewModeRef = useRef(_isPreviewMode);
   const editorRef = useRef<any>(null);
+
+  const handleEditorChange = (value, delta, source, editor) => {
+    const editorContents = editor.getContents();
+    if (isQuillEmpty(editorContents)) {
+      setIsSubmitDisabled(true);
+    } else {
+      setIsSubmitDisabled(false);
+    }
+
+    setValue(value);
+  }
 
   useEffect(() => {
     const _handleClick = (e) => {
@@ -66,7 +78,7 @@ const CommentEditor = ({
               placeholder={placeholder}
               theme="snow"
               value={value}
-              onChange={setValue}
+              onChange={handleEditorChange}
             />
           }
         </div>
