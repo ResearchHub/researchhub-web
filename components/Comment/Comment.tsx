@@ -1,33 +1,11 @@
 import CommentHeader from "./CommentHeader";
 import CommentModel from "./lib/CommentModel";
 import CommentReadOnly from "./CommentReadOnly";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faReply } from '@fortawesome/free-solid-svg-icons'
 import { css, StyleSheet } from "aphrodite";
-import { useState } from "react";
-import CommentEditor from "./CommentEditor";
-
+import CommentActions from "./CommentActions";
 
 type CommentArgs = {
   comment: CommentModel;
-}
-
-const CommentActions = ({}) =>  {
-
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", columnGap: "5px", alignItems: "center", cursor: "pointer" }} className={`reply-btn`}>
-        {/* TODO: This requires updating font awesome common types */}
-        <FontAwesomeIcon icon={faReply} />
-        <span onClick={() => setIsEditorOpen(!isEditorOpen)}>Reply</span>
-      </div>
-      {isEditorOpen &&
-        <CommentEditor isPreviewMode={false} />
-      }
-    </div>
-  )
 }
 
 const Comment = ({ comment }: CommentArgs) => {

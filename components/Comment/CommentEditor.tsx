@@ -39,7 +39,6 @@ const CommentEditor = ({
       const isOutsideClick = !_isPreviewModeRef.current && !editorRef.current?.contains(e.target)
       const excludedElems  = [".reply-btn"]
       const clickOnExcluded =  excludedElems.reduce((prev, curr) =>  Boolean(prev || e.target.closest('.reply-btn')), false);
-      console.log('clickOnExcluded',clickOnExcluded)
       if (isOutsideClick && !clickOnExcluded) {
         _setIsPreviewMode(true);
       }
