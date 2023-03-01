@@ -73,14 +73,12 @@ const CommentEditor = ({
         </div>
       ) : (
         <div>
-          {typeof(document) !== "undefined" &&
-            <ReactQuill
-              placeholder={placeholder}
-              theme="snow"
-              value={value}
-              onChange={handleEditorChange}
-            />
-          }
+          <ReactQuill
+            placeholder={placeholder}
+            theme="snow"
+            value={value}
+            onChange={handleEditorChange}
+          />
         </div>
       )}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
