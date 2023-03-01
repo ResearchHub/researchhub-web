@@ -2,21 +2,21 @@
   {
     "id": 10660,
     "score": 6,
-    "createdDate": "2023-02-08T06:15:49.486097Z",
-    "updatedDate": "2023-02-08T06:15:49.486113Z",
-    "postType": "DISCUSSION",
-    "userVote": null,
-    "isEdited": false,    
-    "createdBy": {
+    "created_date": "2023-02-08T06:15:49.486097Z",
+    "updated_date": "2023-02-08T06:15:49.486113Z",
+    "post_type": "DISCUSSION",
+    "user_vote": null,
+    "is_edited": false,
+    "created_by": {
       "id": 1377,
-      "authorProfile": {
+      "author_profile": {
         "id": 432209,
-        "firstName": "Nassim",
-        "lastName": "Dehouche",
-        "createdDate": "2020-10-30T11:21:53.735952Z",
-        "updatedDate": "2023-02-08T07:03:44.508361Z",
-        "profileImage": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/02/08/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=yMLcoEBbNrvaeeL9S9JbnaQhG7E%3D&Expires=1678144805",
-        "editorOfHubs": [
+        "first_name": "Nassim",
+        "last_name": "Dehouche",
+        "created_date": "2020-10-30T11:21:53.735952Z",
+        "updated_date": "2023-02-08T07:03:44.508361Z",
+        "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/02/08/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=yMLcoEBbNrvaeeL9S9JbnaQhG7E%3D&Expires=1678144805",
+        "editor_of_hubs": [
           {
             "id": 200,
             "name": "immunology",

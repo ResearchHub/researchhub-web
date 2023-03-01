@@ -1,0 +1,6 @@
+export enum POST_TYPES {
+  DISCUSSION = "DISCUSSION",
+  SUMMARY = "SUMMARY",
+  REVIEW = "REVIEW",
+  ANSWER = "ANSWER",
+}
