@@ -31,7 +31,7 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
 
   return (
     <div>
-      {comments.map(c => <Comment comment={c} />)}
+      {comments.map(c => <Comment key={c.id} comment={c} />)}
     </div>
   )
 }

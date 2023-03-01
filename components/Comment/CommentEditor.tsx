@@ -37,7 +37,10 @@ const CommentEditor = ({
   useEffect(() => {
     const _handleClick = (e) => {
       const isOutsideClick = !_isPreviewModeRef.current && !editorRef.current?.contains(e.target)
-      if (isOutsideClick) {
+      const excludedElems  = [".reply-btn"]
+      const clickOnExcluded =  excludedElems.reduce((prev, curr) =>  Boolean(prev || e.target.closest('.reply-btn')), false);
+      console.log('clickOnExcluded',clickOnExcluded)
+      if (isOutsideClick && !clickOnExcluded) {
         _setIsPreviewMode(true);
       }
       else if (!isOutsideClick && !_isFocused) {
