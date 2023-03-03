@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import CommentEditor from "~/components/Comment/CommentEditor";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import { css, StyleSheet } from "aphrodite";
 
@@ -9,8 +8,9 @@ const CommentsIndex: NextPage = () => {
 
   return (
     <div className={css(styles.wrapper)}>
-      <CommentEditor isPreviewMode={true} />
-      <CommentFeed unifiedDocumentId={router.query.id} />
+      <CommentFeed
+        unifiedDocumentId={router.query.id}
+      />
     </div>
   )
 }

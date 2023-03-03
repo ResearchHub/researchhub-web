@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
 type Args = {
   content: any
 }

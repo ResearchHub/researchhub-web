@@ -8,20 +8,25 @@ import isQuillEmpty from "./lib/isQuillEmpty";
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 type CommentEditorArgs = {
-  isPreviewMode?: boolean;
+  previewWhenInactive?: boolean;
   placeholder?: string;
+  handleSubmit: Function;
+  content?: string;
 }
 
 const CommentEditor = ({
-  isPreviewMode = true,
-  placeholder = "Add comment or start a bounty"
+  previewWhenInactive = false,
+  placeholder = "Add comment or start a bounty",
+  handleSubmit,
+  content = "",
 }: CommentEditorArgs) => {
-  const [value, setValue] = useState<string>('');
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-  const [_isFocused, _setIsFocused] = useState(false);
-  const [_isPreviewMode, _setIsPreviewMode] = useState(isPreviewMode);
-  const _isPreviewModeRef = useRef(_isPreviewMode);
   const editorRef = useRef<any>(null);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+  const [_previewWhenInactive, _setPreviewWhenInactive] = useState(previewWhenInactive);
+  const [_isPreview, _setIsPreview] = useState(previewWhenInactive);
+  const _isPreviewRef = useRef(_isPreview);
+  const [_content, _setContent] = useState<string>(content);
+  const [_isFocused, _setIsFocused] = useState(false);
 
   const handleEditorChange = (value, delta, source, editor) => {
     const editorContents = editor.getContents();
@@ -31,18 +36,19 @@ const CommentEditor = ({
       setIsSubmitDisabled(false);
     }
 
-    setValue(value);
+    _setContent(value);
   }
 
   useEffect(() => {
     const _handleClick = (e) => {
-      const isOutsideClick = !_isPreviewModeRef.current && !editorRef.current?.contains(e.target)
-      const excludedElems  = [".reply-btn"]
-      const clickOnExcluded =  excludedElems.reduce((prev, curr) =>  Boolean(prev || e.target.closest('.reply-btn')), false);
-      if (isOutsideClick && !clickOnExcluded) {
-        _setIsPreviewMode(true);
+      const isOutsideClick = !_isPreviewRef.current && !editorRef.current?.contains(e.target)
+      const excludedElems  = [".reply-btn", ".edit-btn"]
+      const clickOnExcluded = excludedElems.reduce((prev, selector) => Boolean(prev || e.target.closest(selector)), false);
+
+      if (previewWhenInactive && isOutsideClick && !clickOnExcluded) {
+        _setIsPreview(true);
       }
-      else if (!isOutsideClick && !_isFocused) {
+      if (!isOutsideClick && !_isFocused) {
         _setIsFocused(true);
       }
     };
@@ -65,11 +71,11 @@ const CommentEditor = ({
       ref={editorRef}
       className={css(styles.commentEditor)}
       onClick={() => {
-        _setIsPreviewMode(false);
-        _isPreviewModeRef.current = false;
+        _setIsPreview(false);
+        _isPreviewRef.current = false;
       }}
     >
-      {_isPreviewMode ? (
+      {_isPreview ? (
         <div>
           <div>{placeholder}</div>
         </div>
@@ -78,7 +84,7 @@ const CommentEditor = ({
           <ReactQuill
             placeholder={placeholder}
             theme="snow"
-            value={value}
+            value={_content}
             onChange={handleEditorChange}
           />
         </div>
@@ -86,7 +92,11 @@ const CommentEditor = ({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         {/* @ts-ignore */}
         <CreateBountyBtn />
-        <Button label={"Post"} disabled={isSubmitDisabled} />
+        <Button
+          label={"Post"}
+          onClick={() => handleSubmit({ content: _content })}
+          disabled={isSubmitDisabled}
+        />
       </div>
     </div>
   )
