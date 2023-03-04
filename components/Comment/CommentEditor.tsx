@@ -12,6 +12,7 @@ type CommentEditorArgs = {
   placeholder?: string;
   handleSubmit: Function;
   content?: string;
+  allowBounty?: boolean;
 }
 
 const CommentEditor = ({
@@ -19,7 +20,9 @@ const CommentEditor = ({
   placeholder = "Add comment or start a bounty",
   handleSubmit,
   content = "",
+  allowBounty = false,
 }: CommentEditorArgs) => {
+
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [_previewWhenInactive, _setPreviewWhenInactive] = useState(previewWhenInactive);
@@ -89,9 +92,11 @@ const CommentEditor = ({
           />
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        {/* @ts-ignore */}
-        <CreateBountyBtn />
+      <div className={css(styles.actions)}>
+        {allowBounty &&
+          // @ts-ignore
+          <CreateBountyBtn />
+        }
         <Button
           label={"Post"}
           onClick={() => handleSubmit({ content: _content })}
@@ -112,6 +117,12 @@ const styles = StyleSheet.create({
     flex: "none",
     flexDirection: "column",
     justifyContent: "space-between",
+  },
+  actions: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row-reverse",
   }
 });
 

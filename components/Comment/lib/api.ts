@@ -4,28 +4,21 @@ import createMockData from "../mock/create.json";
 import { Comment, parseComment, POST_TYPES } from "./types";
 
 export const fetchCommentsAPI = ({ unifiedDocumentId }: { unifiedDocumentId: ID }): Promise<Comment[]> => {
-  console.log('Fetching comment via API');
   const rawComments = listMockData;
-  const comments = rawComments.map((raw) => parseComment(raw));
+  const comments = rawComments.map((raw) => parseComment({ raw }));
 
   return Promise.resolve(comments);
 }
 
 export const createCommentAPI = ({ content, postType }: { content: any, postType: POST_TYPES }): Promise<Comment> => {
-  console.log('Creating comment via API');
-  console.log('content', content);
-  const comment = parseComment(createMockData);
+  const comment = parseComment({raw: createMockData});
 
   return Promise.resolve(comment);
 }
 
 export const updateCommentAPI = ({ id, content }: { id: ID, content: any }) => {
-  console.log('Updating comment via API');
-  console.log('content', content);
-  console.log('id', id);
-
   // TODO: Replace with actual BE update
-  const comment = parseComment(createMockData);
+  const comment = parseComment({raw: createMockData});
   comment.id = id;
   comment.content = content;
 

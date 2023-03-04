@@ -4,6 +4,8 @@ import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
 import colors from "~/config/themes/colors";
 import { Comment as CommentType } from "./lib/types";
+import { useState } from "react";
+import CommentEditor from "./CommentEditor";
 
 type CommentArgs = {
   comment: CommentType;
@@ -12,13 +14,30 @@ type CommentArgs = {
 }
 
 const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
+
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
   return (
     <div>
       <div>
         <CommentHeader createdBy={comment.createdBy} timeAgo={comment.timeAgo} bounties={[]} />
-        <CommentReadOnly content={comment.content} />
-        <CommentActions comment={comment} handleUpdate={handleUpdate} handleCreate={handleCreate} />
+        {isEditMode
+        ? (
+          <CommentEditor
+            handleSubmit={({ content }) => handleUpdate({ comment, content })}
+            content={comment.content}
+          />
+        ) : (
+          <CommentReadOnly content={comment.content} />
+        )}
+        <CommentActions handleEdit={() => setIsEditMode(!isEditMode)} handleReply={() => setIsReplyOpen(!isReplyOpen)} />
       </div>
+      {isReplyOpen &&
+        <CommentEditor
+          handleSubmit={({ content }) => handleUpdate({ content })}
+        />      
+      }
       <div className={css(styles.children)}>
         {comment.children.map(c => <Comment handleUpdate={handleUpdate} handleCreate={handleCreate} key={c.id} comment={c} />)}
       </div>

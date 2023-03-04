@@ -4,13 +4,15 @@ import { Comment as CommentType } from "./lib/types";
 import CommentEditor from "~/components/Comment/CommentEditor";
 import { createCommentAPI, updateCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { ID } from "~/config/types/root_types";
+import replaceComment from "./lib/replaceComment";
+import findComment from "./lib/findComment";
 
 type Args = {
   unifiedDocumentId: ID;
 }
 
 const CommentFeed = ({ unifiedDocumentId }: Args) => {
-  
+
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState(true);
 
@@ -18,10 +20,10 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     const _fetchComments = () => {
       setIsFetching(true);
       fetchCommentsAPI({ unifiedDocumentId })
-      .then((comments: CommentType[]) => {
-        setComments(comments);
-        setIsFetching(false);
-      });
+        .then((comments: CommentType[]) => {
+          setComments(comments);
+          setIsFetching(false);
+        });
     }
 
     _fetchComments();
@@ -29,18 +31,21 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
 
   const handleCommentCreate = ({ content, postType }) => {
     createCommentAPI({ content, postType })
-      .then((comment:CommentType) => {
+      .then((comment: CommentType) => {
         setComments([comment, ...comments])
       })
   }
 
   const handleCommentUpdate = ({ comment, content }: { comment: CommentType, content: any }) => {
     updateCommentAPI({ id: comment.id, content })
-      .then((comment:CommentType) => {
-        const updatedIdx = comments.findIndex((c, idx) => c.id === comment.id);
-        const updatedComments = [...comments];
-        updatedComments[updatedIdx] = comment;
-        setComments(updatedComments);
+      .then((comment: CommentType) => {
+
+        const found = findComment({ id: comment.id, comments });
+        if (found) {
+          replaceComment({ prev: found.comment, next: comment, list: comments });
+          const updatedComments = [...comments];
+          setComments(updatedComments);
+        }
       });
   }
 

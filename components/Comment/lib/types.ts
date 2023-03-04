@@ -20,10 +20,16 @@ export type Comment = {
   userVote: any,
   isEdited: boolean,
   postType: POST_TYPES,
+  parent?: Comment,
   children: Comment[]
 }
 
-export const parseComment = (raw:any): Comment => {
+type parseCommentArgs = {
+  raw: any,
+  parent?: Comment, 
+}
+
+export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
   const parsed = {
     id: raw.id,
     createdDate: formatDateStandard(raw.created_date),
@@ -35,8 +41,11 @@ export const parseComment = (raw:any): Comment => {
     userVote: raw.user_vote,
     isEdited: raw.is_edited,
     postType: raw.post_type,
-    children: (raw.children ?? []).map(child => parseComment(child)),
+    children: [] as Comment[],
+    ...(parent && { parent })
   }
+
+  parsed.children = (raw.children ?? []).map((child:any) => parseComment({ raw: child, parent: parsed }))
 
   return parsed;
 }
