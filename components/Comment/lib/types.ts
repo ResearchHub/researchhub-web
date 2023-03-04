@@ -10,24 +10,24 @@ export enum POST_TYPES {
 }
 
 export type Comment = {
-  id: ID,
-  createdDate: string,
-  updatedDate: string,
-  timeAgo: string,
-  createdBy: CreatedBy | null,
-  content: any,
-  score: number,
-  userVote: any,
-  isEdited: boolean,
-  postType: POST_TYPES,
-  parent?: Comment,
-  children: Comment[]
-}
+  id: ID;
+  createdDate: string;
+  updatedDate: string;
+  timeAgo: string;
+  createdBy: CreatedBy | null;
+  content: any;
+  score: number;
+  userVote: any;
+  isEdited: boolean;
+  postType: POST_TYPES;
+  parent?: Comment;
+  children: Comment[];
+};
 
 type parseCommentArgs = {
-  raw: any,
-  parent?: Comment, 
-}
+  raw: any;
+  parent?: Comment;
+};
 
 export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
   const parsed = {
@@ -42,10 +42,12 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     isEdited: raw.is_edited,
     postType: raw.post_type,
     children: [] as Comment[],
-    ...(parent && { parent })
-  }
+    ...(parent && { parent }),
+  };
 
-  parsed.children = (raw.children ?? []).map((child:any) => parseComment({ raw: child, parent: parsed }))
+  parsed.children = (raw.children ?? []).map((child: any) =>
+    parseComment({ raw: child, parent: parsed })
+  );
 
   return parsed;
-}
+};

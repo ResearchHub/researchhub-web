@@ -1,13 +1,13 @@
-import Bounty from "~/config/types/bounty"
-import { CreatedBy } from "~/config/types/root_types"
-import AuthorAvatar from "../AuthorAvatar"
+import Bounty from "~/config/types/bounty";
+import { CreatedBy } from "~/config/types/root_types";
+import AuthorAvatar from "../AuthorAvatar";
 import { css, StyleSheet } from "aphrodite";
 
 type CommentHeaderArgs = {
-  createdBy: CreatedBy | null,
-  timeAgo: string,
-  bounties: Bounty[],
-}
+  createdBy: CreatedBy | null;
+  timeAgo: string;
+  bounties: Bounty[];
+};
 
 const CommentHeader = ({ createdBy, timeAgo, bounties }: CommentHeaderArgs) => {
   return (
@@ -18,15 +18,15 @@ const CommentHeader = ({ createdBy, timeAgo, bounties }: CommentHeaderArgs) => {
       <span> • </span>
       {timeAgo}
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   commentHeader: {
     display: "flex",
     alignItems: "center",
     columnGap: "5px",
-  }
+  },
 });
 
 export default CommentHeader;

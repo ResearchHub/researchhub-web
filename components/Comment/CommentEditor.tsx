@@ -5,7 +5,7 @@ import Button from "~/components/Form/Button";
 import { css, StyleSheet } from "aphrodite";
 import isQuillEmpty from "./lib/isQuillEmpty";
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 type CommentEditorArgs = {
   previewWhenInactive?: boolean;
@@ -13,7 +13,7 @@ type CommentEditorArgs = {
   handleSubmit: Function;
   content?: string;
   allowBounty?: boolean;
-}
+};
 
 const CommentEditor = ({
   previewWhenInactive = false,
@@ -22,10 +22,10 @@ const CommentEditor = ({
   content = "",
   allowBounty = false,
 }: CommentEditorArgs) => {
-
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-  const [_previewWhenInactive, _setPreviewWhenInactive] = useState(previewWhenInactive);
+  const [_previewWhenInactive, _setPreviewWhenInactive] =
+    useState(previewWhenInactive);
   const [_isPreview, _setIsPreview] = useState(previewWhenInactive);
   const _isPreviewRef = useRef(_isPreview);
   const [_content, _setContent] = useState<string>(content);
@@ -40,13 +40,17 @@ const CommentEditor = ({
     }
 
     _setContent(value);
-  }
+  };
 
   useEffect(() => {
     const _handleClick = (e) => {
-      const isOutsideClick = !_isPreviewRef.current && !editorRef.current?.contains(e.target)
-      const excludedElems  = [".reply-btn", ".edit-btn"]
-      const clickOnExcluded = excludedElems.reduce((prev, selector) => Boolean(prev || e.target.closest(selector)), false);
+      const isOutsideClick =
+        !_isPreviewRef.current && !editorRef.current?.contains(e.target);
+      const excludedElems = [".reply-btn", ".edit-btn"];
+      const clickOnExcluded = excludedElems.reduce(
+        (prev, selector) => Boolean(prev || e.target.closest(selector)),
+        false
+      );
 
       if (previewWhenInactive && isOutsideClick && !clickOnExcluded) {
         _setIsPreview(true);
@@ -60,7 +64,7 @@ const CommentEditor = ({
 
     return () => {
       document.removeEventListener("click", _handleClick);
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -93,10 +97,10 @@ const CommentEditor = ({
         </div>
       )}
       <div className={css(styles.actions)}>
-        {allowBounty &&
+        {allowBounty && (
           // @ts-ignore
           <CreateBountyBtn />
-        }
+        )}
         <Button
           label={"Post"}
           onClick={() => handleSubmit({ content: _content })}
@@ -104,8 +108,8 @@ const CommentEditor = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   commentEditor: {
@@ -123,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row-reverse",
-  }
+  },
 });
 
 export default CommentEditor;

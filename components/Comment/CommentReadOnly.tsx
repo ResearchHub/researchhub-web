@@ -1,9 +1,9 @@
 import dynamic from "next/dynamic";
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 type Args = {
-  content: any
-}
+  content: any;
+};
 
 const CommentReadOnly = ({ content }: Args) => {
   return (
@@ -11,10 +11,10 @@ const CommentReadOnly = ({ content }: Args) => {
       <ReactQuill
         value={content}
         readOnly={true}
-        modules={{toolbar: false}}
+        modules={{ toolbar: false }}
       />
     </div>
-  )
-}
+  );
+};
 
 export default CommentReadOnly;

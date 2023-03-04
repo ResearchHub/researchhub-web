@@ -11,19 +11,21 @@ type CommentArgs = {
   comment: CommentType;
   handleUpdate: Function;
   handleCreate: Function;
-}
+};
 
 const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
-
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   return (
     <div>
       <div>
-        <CommentHeader createdBy={comment.createdBy} timeAgo={comment.timeAgo} bounties={[]} />
-        {isEditMode
-        ? (
+        <CommentHeader
+          createdBy={comment.createdBy}
+          timeAgo={comment.timeAgo}
+          bounties={[]}
+        />
+        {isEditMode ? (
           <CommentEditor
             handleSubmit={({ content }) => handleUpdate({ comment, content })}
             content={comment.content}
@@ -31,26 +33,36 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
         ) : (
           <CommentReadOnly content={comment.content} />
         )}
-        <CommentActions handleEdit={() => setIsEditMode(!isEditMode)} handleReply={() => setIsReplyOpen(!isReplyOpen)} />
+        <CommentActions
+          handleEdit={() => setIsEditMode(!isEditMode)}
+          handleReply={() => setIsReplyOpen(!isReplyOpen)}
+        />
       </div>
-      {isReplyOpen &&
+      {isReplyOpen && (
         <CommentEditor
           handleSubmit={({ content }) => handleUpdate({ content })}
-        />      
-      }
+        />
+      )}
       <div className={css(styles.children)}>
-        {comment.children.map(c => <Comment handleUpdate={handleUpdate} handleCreate={handleCreate} key={c.id} comment={c} />)}
+        {comment.children.map((c) => (
+          <Comment
+            handleUpdate={handleUpdate}
+            handleCreate={handleCreate}
+            key={c.id}
+            comment={c}
+          />
+        ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   children: {
     marginLeft: 15,
     paddingLeft: 15,
     borderLeft: `2px solid ${colors.GREY(1.0)}`,
-  }
+  },
 });
 
 export default Comment;

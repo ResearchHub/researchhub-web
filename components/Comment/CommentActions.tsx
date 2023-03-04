@@ -1,11 +1,11 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReply, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 
 type Args = {
-  handleEdit: Function,
-  handleReply: Function,
-}
+  handleEdit: Function;
+  handleReply: Function;
+};
 
 const CommentActions = ({ handleEdit, handleReply }: Args) => {
   return (
@@ -23,8 +23,8 @@ const CommentActions = ({ handleEdit, handleReply }: Args) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   actionsWrapper: {
     columnGap: "10px",
     display: "flex",
-  }
+  },
 });
 
 export default CommentActions;
