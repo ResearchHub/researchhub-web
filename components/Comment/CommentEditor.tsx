@@ -3,6 +3,7 @@ import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
+import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 
 const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
   const modules = {
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    flexDirection: "row-reverse",
+    flexDirection: "row",
   },
   toolbarContainer: {
     position: "relative",

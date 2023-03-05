@@ -68,6 +68,7 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
         editorId="new-thread"
         previewWhenInactive={true}
         handleSubmit={handleCommentCreate}
+        allowBounty={true}
       />
       {comments.map((c) => (
         <Comment
