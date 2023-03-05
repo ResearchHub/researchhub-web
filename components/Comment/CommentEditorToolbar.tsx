@@ -3,8 +3,13 @@ import { faFontCase } from "@fortawesome/pro-solid-svg-icons";
 import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { useState } from "react";
 
-const CommentEditorToolbar = ({ editorId }) => {
-  const [isFullToolbarOpen, setIsFullToolbarOpen] = useState(false);
+type Args = {
+  editorId: string,
+  isFullToolbarOpen: boolean,
+  setIsFullToolbarOpen: Function,
+}
+
+const CommentEditorToolbar = ({ editorId, setIsFullToolbarOpen, isFullToolbarOpen }: Args) => {
 
   return (
     <div id={editorId} className="ql-toolbar">

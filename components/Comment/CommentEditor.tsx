@@ -1,36 +1,8 @@
-import { useEffect, useRef, useState, createRef } from "react";
-import dynamic from "next/dynamic";
-import CreateBountyBtn from "~/components/Bounty/CreateBountyBtn";
-import Button from "~/components/Form/Button";
-import { css, StyleSheet } from "aphrodite";
-import isQuillEmpty from "./lib/isQuillEmpty";
+import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
-import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
-const ReactQuill = dynamic(async() => {
-  const quillPkg = await import("react-quill");
-  const MagicUrl = (await import("quill-magic-url")).default;
-  const ReactQuill = quillPkg.default;
-  const Quill = ReactQuill.Quill;
-
-  Quill.register("modules/magicUrl", MagicUrl);
-
-  return ({ forwardedRef, ...props }) => <ReactQuill ref={forwardedRef} {...props} />;
-  
-
-  return ReactQuill;
-  
-  // return function forwardRef({ forwardedRef, ...props }) {
-  //   return <ReactQuill ref={forwardedRef} {...props} />;
-  // };
-}, {
-  ssr: false
-});
-
-console.log('React', ReactQuill)
-
-// const QuillMagicUrl = dynamic(() => import("quill-magic-url"), { ssr: false });
-// const Quilll = Quill.import('core/module');
-
+import { css, StyleSheet } from "aphrodite";
+import { useEffect, useRef, useState } from "react";
+import Button from "../Form/Button";
 
 const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
   const modules = {
@@ -88,45 +60,38 @@ type CommentEditorArgs = {
   allowBounty?: boolean;
 };
 
-const CommentEditor = ({
+const CommentEditor = ({ 
   editorId,
   previewWhenInactive = false,
   placeholder = "Add comment or start a bounty",
   handleSubmit,
   content = "",
   allowBounty = false,
-}: CommentEditorArgs) => {
+ }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+  const [_content, _setContent] = useState<string>(content);
   const [_previewWhenInactive, _setPreviewWhenInactive] =
     useState(previewWhenInactive);
   const [_isPreview, _setIsPreview] = useState(previewWhenInactive);
+  const [isFullToolbarOpen, setIsFullToolbarOpen] = useState(false);
   const _isPreviewRef = useRef(_isPreview);
-  const [_content, _setContent] = useState<string>(content);
   const [_isFocused, _setIsFocused] = useState(false);
-  const [editorModules, setEditorModules] = useState(buildQuillModules({
-    editorId,
-    handleImageUpload: () => null,
-    handleSubmit: () => handleSubmit({ content: _content })
-  }));
-  const ref = createRef(null)
-
-
-  const handleEditorChange = (value, delta, source, editor) => {
-    const editorContents = editor.getContents();
-    if (isQuillEmpty(editorContents)) {
-      setIsSubmitDisabled(true);
-    } else {
-      setIsSubmitDisabled(false);
-    }
-
-    _setContent(value);
-  };
+  const { quill, quillRef, Quill } = useQuill({
+    modules: buildQuillModules({
+      editorId,
+      handleImageUpload: () => null,
+      handleSubmit: () => handleSubmit({ content: _content })
+    }),
+    formats: QuillFormats
+  });
 
   useEffect(() => {
     const _handleClick = (e) => {
       const isOutsideClick =
         !_isPreviewRef.current && !editorRef.current?.contains(e.target);
+      const isFullToolbarTriggerClick = e.target.closest(".show-full-editor");
+      const isFullToolbarClick = e.target.closest(".ql-full-editor");
       const excludedElems = [".reply-btn", ".edit-btn"];
       const clickOnExcluded = excludedElems.reduce(
         (prev, selector) => Boolean(prev || e.target.closest(selector)),
@@ -139,6 +104,9 @@ const CommentEditor = ({
       if (!isOutsideClick && !_isFocused) {
         _setIsFocused(true);
       }
+      if (!isFullToolbarTriggerClick && !isFullToolbarClick) {
+        setIsFullToolbarOpen(false);
+      }
     };
 
     document.addEventListener("click", _handleClick);
@@ -148,13 +116,18 @@ const CommentEditor = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (_isFocused) {
-  //     editorRef.current.focus();
-  //   }
-  // }, [_isFocused]);
+  useEffect(() => {
+    if (quill) {
+      quill.on('text-change', (delta, oldDelta, source) => {
+        console.log(quill.getContents()); // Get delta contents
+      });
+    }
+  }, [quill]);
 
-
+  if (Quill && !quill) {
+    const MagicUrl = require('quill-magic-url').default;
+    Quill.register('modules/magicUrl', MagicUrl);
+  }
 
   return (
     <div
@@ -171,21 +144,16 @@ const CommentEditor = ({
         </div>
       ) : (
         <div>
-          <ReactQuill
-            ref={ref}
-            preserveWhitespace
-            placeholder={placeholder}
-            theme="snow"
-            modules={editorModules}
-            value={_content}
-            formats={QuillFormats}
-            onChange={handleEditorChange}
-          />
+          <div ref={quillRef} />
+          <div className={css(styles.toolbarContainer)}>
+            <CommentEditorToolbar
+              editorId={editorId}
+              isFullToolbarOpen={isFullToolbarOpen}
+              setIsFullToolbarOpen={setIsFullToolbarOpen}
+            />
+          </div>
         </div>
       )}
-      <div className={css(styles.toolbarContainer)}>
-        <CommentEditorToolbar editorId={editorId} />
-      </div>
       <div className={css(styles.actions)}>
         {allowBounty && (
           // @ts-ignore
@@ -219,7 +187,7 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
   },
   toolbarContainer: {
-    
+    position: "relative",
   }
 });
 
