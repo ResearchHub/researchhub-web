@@ -65,6 +65,7 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
   return (
     <div>
       <CommentEditor
+        editorId="new-thread"
         previewWhenInactive={true}
         handleSubmit={handleCommentCreate}
       />
