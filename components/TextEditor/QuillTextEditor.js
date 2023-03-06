@@ -646,9 +646,9 @@ class Editor extends Component {
               theme={this.state.theme}
               readOnly={this.props.readOnly}
               onChange={this.onEditorChange}
-              // onChangeSelection={this.onEditorChangeSelection}
-              // onFocus={this.onEditorFocus}
-              // onBlur={this.onEditorBlur}
+              onChangeSelection={this.onEditorChangeSelection}
+              onFocus={this.onEditorFocus}
+              onBlur={this.onEditorBlur}
               defaultValue={
                 this.props.editing ? this.state.editValue : this.state.value
               }
