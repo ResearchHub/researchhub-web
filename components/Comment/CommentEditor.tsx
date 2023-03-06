@@ -16,7 +16,7 @@ type CommentEditorArgs = {
   editorId: string,
   placeholder?: string;
   handleSubmit: Function;
-  content?: string;
+  content?: object;
   allowBounty?: boolean;
   author?: AuthorProfile | null;
 };
@@ -25,16 +25,16 @@ const CommentEditor = ({
   editorId,
   placeholder = "Add comment or start a bounty",
   handleSubmit,
-  content = "",
+  content = {},
   allowBounty = false,
   author = null,
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-  const [_content, _setContent] = useState<any>(content);
-  const contentRef = useRef<any>(content);
-  const [isFullToolbarOpen, setIsFullToolbarOpen] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
+  const [_content, _setContent] = useState<object>(content);
+  const contentRef = useRef<object>(content);
+  const [isFullToolbarOpen, setIsFullToolbarOpen] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
   const { quill, quillRef, Quill } = useQuill({
     modules: buildQuillModules({
       editorId,
@@ -82,13 +82,13 @@ const CommentEditor = ({
     }
   }, [quill]);
 
-
   if (Quill && !quill) {
     const MagicUrl = require('quill-magic-url').default;
     Quill.register('modules/magicUrl', MagicUrl);
     const icons = Quill.import("ui/icons");
     icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);
   }
+
 
   return (
     <div

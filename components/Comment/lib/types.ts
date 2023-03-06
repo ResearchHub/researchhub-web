@@ -14,7 +14,7 @@ export type Comment = {
   updatedDate: string;
   timeAgo: string;
   createdBy: RHUser | null;
-  content: any;
+  content: object;
   score: number;
   userVote: any;
   isEdited: boolean;
@@ -35,7 +35,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     updatedDate: formatDateStandard(raw.created_date),
     timeAgo: timeSince(raw.created_date),
     createdBy: parseUser(raw.created_by),
-    content: raw.content,
+    content: raw.content || {},
     score: raw.score,
     userVote: raw.user_vote,
     isEdited: raw.is_edited,
