@@ -4,6 +4,9 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
+import ReactDOMServer from "react-dom/server";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVideo } from "@fortawesome/free-solid-svg-icons";
 
 const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
   const modules = {
@@ -128,6 +131,9 @@ const CommentEditor = ({
   if (Quill && !quill) {
     const MagicUrl = require('quill-magic-url').default;
     Quill.register('modules/magicUrl', MagicUrl);
+    const icons = Quill.import("ui/icons");
+    console.log('icons')
+    icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);    
   }
 
   return (
