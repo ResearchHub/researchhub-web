@@ -1,14 +1,15 @@
 import { userVoteToConstant } from "../constants";
 import { formatDateStandard } from "../utils/dates";
-import { parseCreatedBy } from "./contribution";
 import { Hub, parseHub } from "./hub";
 import {
   AuthorProfile,
-  CreatedBy,
+  RHUser,
   parseAuthorProfile,
   parseUnifiedDocument,
+  parseUser,
   TopLevelDocument,
   UnifiedDocument,
+  ID,
 } from "./root_types";
 
 export type CitationConsensus = {
@@ -28,6 +29,7 @@ export const parseConsensus = (raw: any): CitationConsensus => {
 };
 
 export class Hypothesis implements TopLevelDocument {
+  _id: ID;
   _authors: AuthorProfile[];
   _unifiedDocument: UnifiedDocument;
   _hubs: Hub[];
@@ -37,11 +39,12 @@ export class Hypothesis implements TopLevelDocument {
   _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null;
   _doi?: string;
   _title: string;
-  _createdBy: CreatedBy | null;
+  _createdBy: RHUser | null;
   _datePublished?: string;
   _note?: any;
   _markdown?: string;
   _isReady: boolean;
+  _boostAmount: number;
   _consensus: CitationConsensus | undefined;
 
   constructor(raw: any) {
@@ -51,10 +54,12 @@ export class Hypothesis implements TopLevelDocument {
     this._discussionCount = raw.discussion_count || 0;
     this._createdDate = formatDateStandard(raw.created_date);
     this._datePublished = formatDateStandard(raw.created_date);
-    this._createdBy = parseCreatedBy(raw.created_by);
+    this._createdBy = parseUser(raw.created_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
     this._title = raw.title;
     this._note = raw.note;
+    this._boostAmount = raw.boost_amount || 0;
+    this._id = raw.id;
     this._markdown = raw.full_markdown;
     this._isReady = raw.id ? true : false;
 
@@ -69,6 +74,10 @@ export class Hypothesis implements TopLevelDocument {
     }
   }
 
+  get id(): ID {
+    return this._id;
+  }
+
   get unifiedDocument(): UnifiedDocument {
     return this._unifiedDocument;
   }
@@ -76,6 +85,10 @@ export class Hypothesis implements TopLevelDocument {
   get authors(): Array<AuthorProfile> {
     return this._authors;
   }
+
+  get boostAmount(): number {
+    return this._boostAmount;
+  }  
 
   get score(): number {
     return this._score;
@@ -117,7 +130,7 @@ export class Hypothesis implements TopLevelDocument {
     return this._note;
   }
 
-  get createdBy(): CreatedBy | null {
+  get createdBy(): RHUser | null {
     return this._createdBy;
   }
 

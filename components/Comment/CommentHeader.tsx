@@ -1,10 +1,10 @@
 import Bounty from "~/config/types/bounty";
-import { CreatedBy } from "~/config/types/root_types";
+import { RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
 import { css, StyleSheet } from "aphrodite";
 
 type CommentHeaderArgs = {
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   timeAgo: string;
   bounties: Bounty[];
 };

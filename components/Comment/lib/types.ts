@@ -1,5 +1,4 @@
-import { parseCreatedBy } from "~/config/types/contribution";
-import { CreatedBy, ID } from "~/config/types/root_types";
+import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 
 export enum POST_TYPES {
@@ -14,7 +13,7 @@ export type Comment = {
   createdDate: string;
   updatedDate: string;
   timeAgo: string;
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   content: any;
   score: number;
   userVote: any;
@@ -35,7 +34,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     createdDate: formatDateStandard(raw.created_date),
     updatedDate: formatDateStandard(raw.created_date),
     timeAgo: timeSince(raw.created_date),
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseUser(raw.created_by),
     content: raw.content,
     score: raw.score,
     userVote: raw.user_vote,

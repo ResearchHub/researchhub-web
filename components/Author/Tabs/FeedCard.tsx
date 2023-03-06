@@ -16,8 +16,7 @@ import {
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
-import { parseCreatedBy } from "~/config/types/contribution";
-import { VoteType, RhDocumentType } from "~/config/types/root_types";
+import { VoteType, RhDocumentType, parseUser } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,
@@ -231,7 +230,7 @@ function FeedCard({
   const cardTitle = getTitle();
   const cardBody = getBody();
   const createdDate = created_date || uploaded_date;
-  const createdBy = parseCreatedBy(uploaded_by || created_by);
+  const createdBy = parseUser(uploaded_by || created_by);
   const nextRouter = useRouter();
   let bountyAmount = 0;
   let hasActiveBounty = false;

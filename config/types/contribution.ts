@@ -1,10 +1,11 @@
 import {
   AuthorProfile,
-  CreatedBy,
   ID,
   KeyOf,
   parseAuthorProfile,
   parseUnifiedDocument,
+  parseUser,
+  RHUser,
   UnifiedDocument,
 } from "./root_types";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
@@ -26,10 +27,10 @@ export type RscSupportSourceItem = {
 };
 
 export type CommentContributionItem = {
-  text: any;
+  text?: any;
   unifiedDocument: UnifiedDocument;
   plainText: string;
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   createdDate: string;
   id: ID;
   postType: POST_TYPES;
@@ -39,7 +40,7 @@ export type PaperContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
   slug: string;
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   createdDate: string;
   id: ID;
   abstract?: string;
@@ -49,22 +50,22 @@ export type HypothesisContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
   slug: string;
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   createdDate: string;
   id: ID;
 };
 
 export type RscSupportContributionItem = {
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   createdDate: string;
-  recipient: CreatedBy | null;
+  recipient: RHUser | null;
   amount: number;
   source: RscSupportSourceItem;
 };
 
 export type BountyContributionItem = {
   unifiedDocument: UnifiedDocument;
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   createdDate: string;
   amount: number;
   id: ID;
@@ -74,7 +75,7 @@ export type PostContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
   slug: string;
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   createdDate: string;
   id: ID;
 };
@@ -87,7 +88,7 @@ export type FlaggedBy = {
 };
 
 export type Verdict = {
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   verdictChoice: string;
   createdDate: string;
 };
@@ -122,38 +123,10 @@ export const parseBountyRelatedItem = (raw: any): RelatedBountyItem => {
   };
 };
 
-export const parseCreatedBy = (raw: any): CreatedBy | null => {
-  if (!raw || !raw?.author_profile) {
-    return null;
-  }
-
-  if (raw.first_name && !raw.author_profile.first_name) {
-    raw.author_profile.first_name = raw.first_name;
-  }
-  if (raw.last_name && !raw.author_profile.last_name) {
-    raw.author_profile.last_name = raw.last_name;
-  }
-  if (!raw.first_name && raw.author_profile.first_name) {
-    raw.first_name = raw.author_profile.first_name;
-  }
-  if (!raw.last_name && raw.author_profile.last_name) {
-    raw.last_name = raw.author_profile.last_name;
-  }
-
-  const mapped = {
-    id: raw.id,
-    firstName: raw.first_name,
-    lastName: raw.last_name,
-    authorProfile: parseAuthorProfile(raw.author_profile),
-  };
-
-  return mapped;
-};
-
 export const parseVerdict = (raw: any): Verdict => {
   const mapped = {
     verdictChoice: raw.verdict_choice,
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseUser(raw.created_by),
     createdDate: raw.created_date,
   };
 
@@ -161,7 +134,7 @@ export const parseVerdict = (raw: any): Verdict => {
 };
 
 export const parseFlaggedBy = (raw: any): FlaggedBy | null => {
-  return parseCreatedBy(raw);
+  return parseUser(raw);
 };
 
 export const parseContribution = (raw: any): Contribution => {
@@ -231,7 +204,7 @@ export const parseCommentContributionItem = (
 ): CommentContributionItem => {
   const mapped = {
     plainText: raw.item.plain_text,
-    createdBy: parseCreatedBy(raw.created_by || raw.item.created_by),
+    createdBy: parseUser(raw.created_by || raw.item.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
@@ -247,7 +220,7 @@ export const parseBountyContributionItem = (
   raw.item.item.content_type = raw.item.content_type;
 
   const mapped = {
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseUser(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
@@ -262,7 +235,7 @@ export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
     id: raw.item.id,
     title: raw.item.title,
     slug: raw.item.slug,
-    createdBy: parseCreatedBy(
+    createdBy: parseUser(
       raw.created_by ||
         raw.uploaded_by ||
         raw.item.created_by ||
@@ -282,7 +255,7 @@ export const parseHypothesisContributionItem = (
   const mapped = {
     title: raw.item.title,
     slug: raw.item.slug,
-    createdBy: parseCreatedBy(raw.created_by),
+    createdBy: parseUser(raw.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
@@ -310,11 +283,11 @@ export const parseRscSupportContributionItem = (
   let createdBy;
   let recipient;
   if (raw.item.content_type.app_label === "discussion") {
-    createdBy = parseCreatedBy(raw.created_by);
-    recipient = parseCreatedBy(raw.item.user);
+    createdBy = parseUser(raw.created_by);
+    recipient = parseUser(raw.item.user);
   } else {
-    createdBy = parseCreatedBy(raw.item.user);
-    recipient = parseCreatedBy(raw.created_by);
+    createdBy = parseUser(raw.item.user);
+    recipient = parseUser(raw.created_by);
   }
   const mapped = {
     createdBy: createdBy,
@@ -331,7 +304,7 @@ export const parsePostContributionItem = (raw: any): PostContributionItem => {
   const mapped = {
     title: raw.item.title,
     slug: raw.item.slug,
-    createdBy: parseCreatedBy(raw.created_by || raw.item.created_by),
+    createdBy: parseUser(raw.created_by || raw.item.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,

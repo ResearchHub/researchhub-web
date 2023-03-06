@@ -1,6 +1,6 @@
 import { ReactElement, useState } from "react";
 import { Hub } from "~/config/types/hub";
-import { CreatedBy } from "~/config/types/root_types";
+import { RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
 import HubDropDown from "../Hubs/HubDropDown";
 import { timeSince } from "~/config/utils/dates";
@@ -12,7 +12,7 @@ import { breakpoints } from "~/config/themes/screen";
 import Bounty from "~/config/types/bounty";
 
 type Args = {
-  createdBy: CreatedBy | null;
+  createdBy: RHUser | null;
   hubs: Array<Hub>;
   createdDate: string;
   avatarSize?: number;
