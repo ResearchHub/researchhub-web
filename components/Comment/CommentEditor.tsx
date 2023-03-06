@@ -46,11 +46,11 @@ const CommentEditor = ({
 
   useEffect(() => {
     const _handleClick = (e) => {
-      const isOutsideClick = !editorRef.current?.contains(e.target);
       const isFullToolbarTriggerClick = e.target.closest(".show-full-editor");
       const isFullToolbarClick = e.target.closest(".ql-full-editor");
+      const isInsideClick = e.target === editorRef.current || editorRef.current.contains(e.target);
 
-      if (!isOutsideClick && !isFocused) {
+      if (isInsideClick && !isFocused) {
         setIsFocused(true);
       }
       if (!isFullToolbarTriggerClick && !isFullToolbarClick) {
