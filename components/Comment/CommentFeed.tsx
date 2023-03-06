@@ -66,7 +66,6 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     <div>
       <CommentEditor
         editorId="new-thread"
-        previewWhenInactive={true}
         handleSubmit={handleCommentCreate}
         allowBounty={true}
       />

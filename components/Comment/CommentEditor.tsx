@@ -14,7 +14,6 @@ import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 
 type CommentEditorArgs = {
   editorId: string,
-  previewWhenInactive?: boolean;
   placeholder?: string;
   handleSubmit: Function;
   content?: string;
@@ -23,7 +22,6 @@ type CommentEditorArgs = {
 
 const CommentEditor = ({
   editorId,
-  previewWhenInactive = false,
   placeholder = "Add comment or start a bounty",
   handleSubmit,
   content = "",
@@ -33,8 +31,6 @@ const CommentEditor = ({
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [_content, _setContent] = useState<any>(content);
   const contentRef = useRef<any>(content);
-  const [isPreview, setIsPreview] = useState(previewWhenInactive);
-  const isPreviewRef = useRef(isPreview);
   const [isFullToolbarOpen, setIsFullToolbarOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const { quill, quillRef, Quill } = useQuill({
@@ -48,8 +44,7 @@ const CommentEditor = ({
 
   useEffect(() => {
     const _handleClick = (e) => {
-      const isOutsideClick =
-        !isPreviewRef.current && !editorRef.current?.contains(e.target);
+      const isOutsideClick = !editorRef.current?.contains(e.target);
       const isFullToolbarTriggerClick = e.target.closest(".show-full-editor");
       const isFullToolbarClick = e.target.closest(".ql-full-editor");
       const excludedElems = [".reply-btn", ".edit-btn"];
@@ -58,10 +53,6 @@ const CommentEditor = ({
         false
       );
 
-      if (previewWhenInactive && isQuillEmpty(contentRef.current) && isOutsideClick && !clickOnExcluded) {
-        isPreviewRef.current = true;
-        setIsPreview(true);
-      }
       if (!isOutsideClick && !isFocused) {
         setIsFocused(true);
       }
@@ -107,14 +98,9 @@ const CommentEditor = ({
     <div
       ref={editorRef}
       className={css(styles.commentEditor)}
-      onClick={() => {
-        setIsPreview(false);
-        isPreviewRef.current = false;
-      }}
     >
       <div>
-        <div className={css(styles.placeholder, isPreviewRef.current && styles.previewMode)}>{placeholder}</div>
-        <div className={css(styles.editor, !isPreviewRef.current && styles.editMode)}>
+        <div className={css(styles.editor)}>
           <div ref={quillRef} />
           <div className={css(styles.toolbarContainer)}>
             <CommentEditorToolbar
@@ -161,16 +147,6 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   editor: {
-    display: "none",
-  },
-  placeholder: {
-    display: "none",
-  },
-  previewMode: {
-    display: "block",
-  },
-  editMode: {
-    display: "block",
   },
 });
 
