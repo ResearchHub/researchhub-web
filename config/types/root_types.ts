@@ -14,7 +14,7 @@ export interface TopLevelDocument {
   discussionCount: number;
   unifiedDocument: UnifiedDocument;
   hubs: Array<Hub>;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   userVote?: VoteType | null;
   title?: string;
   externalUrl?: string;
@@ -231,11 +231,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
   return parsed;
 };
 
-export const parseUser = (raw: any): RHUser | null => {
-  if (!raw || !raw?.author_profile) {
-    return null;
-  }
-
+export const parseUser = (raw: any): RHUser => {
   if (raw.first_name && !raw.author_profile.first_name) {
     raw.author_profile.first_name = raw.first_name;
   }

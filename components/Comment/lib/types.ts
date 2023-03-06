@@ -13,7 +13,7 @@ export type Comment = {
   createdDate: string;
   updatedDate: string;
   timeAgo: string;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   content: object;
   score: number;
   userVote: any;

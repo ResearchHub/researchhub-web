@@ -30,7 +30,7 @@ export type CommentContributionItem = {
   text?: any;
   unifiedDocument: UnifiedDocument;
   plainText: string;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   createdDate: string;
   id: ID;
   postType: POST_TYPES;
@@ -40,7 +40,7 @@ export type PaperContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
   slug: string;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   createdDate: string;
   id: ID;
   abstract?: string;
@@ -50,22 +50,22 @@ export type HypothesisContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
   slug: string;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   createdDate: string;
   id: ID;
 };
 
 export type RscSupportContributionItem = {
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   createdDate: string;
-  recipient: RHUser | null;
+  recipient: RHUser;
   amount: number;
   source: RscSupportSourceItem;
 };
 
 export type BountyContributionItem = {
   unifiedDocument: UnifiedDocument;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   createdDate: string;
   amount: number;
   id: ID;
@@ -75,7 +75,7 @@ export type PostContributionItem = {
   unifiedDocument: UnifiedDocument;
   title: string;
   slug: string;
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   createdDate: string;
   id: ID;
 };
@@ -88,7 +88,7 @@ export type FlaggedBy = {
 };
 
 export type Verdict = {
-  createdBy: RHUser | null;
+  createdBy: RHUser;
   verdictChoice: string;
   createdDate: string;
 };

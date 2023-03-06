@@ -39,7 +39,7 @@ export class Hypothesis implements TopLevelDocument {
   _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null;
   _doi?: string;
   _title: string;
-  _createdBy: RHUser | null;
+  _createdBy: RHUser;
   _datePublished?: string;
   _note?: any;
   _markdown?: string;
@@ -130,7 +130,7 @@ export class Hypothesis implements TopLevelDocument {
     return this._note;
   }
 
-  get createdBy(): RHUser | null {
+  get createdBy(): RHUser{
     return this._createdBy;
   }
 

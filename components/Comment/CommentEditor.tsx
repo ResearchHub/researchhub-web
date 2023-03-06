@@ -11,6 +11,8 @@ import buildQuillModules from "./lib/buildQuillModules";
 import QuillFormats from "./lib/quillFormats";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile } from "~/config/types/root_types";
+import CommentAuthors from "./CommentAuthors";
+
 
 type CommentEditorArgs = {
   editorId: string,
@@ -27,7 +29,7 @@ const CommentEditor = ({
   handleSubmit,
   content = {},
   allowBounty = false,
-  author = null,
+  author,
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
@@ -96,6 +98,9 @@ const CommentEditor = ({
       className={css(styles.commentEditor)}
     >
       <div>
+        {author &&
+          <CommentAuthors authors={[author]} />
+        }
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
           <div className={css(styles.toolbarContainer)}>

@@ -1,19 +1,19 @@
 import Bounty from "~/config/types/bounty";
-import { RHUser } from "~/config/types/root_types";
+import { AuthorProfile, RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
 import { css, StyleSheet } from "aphrodite";
+import CommentAuthors from "./CommentAuthors";
 
 type CommentHeaderArgs = {
-  createdBy: RHUser | null;
+  authorProfile: AuthorProfile;
   timeAgo: string;
   bounties: Bounty[];
 };
 
-const CommentHeader = ({ createdBy, timeAgo, bounties }: CommentHeaderArgs) => {
+const CommentHeader = ({ authorProfile, timeAgo, bounties }: CommentHeaderArgs) => {
   return (
     <div className={css(styles.commentHeader)}>
-      <AuthorAvatar author={createdBy?.authorProfile} />
-      {`${createdBy?.authorProfile.firstName} ${createdBy?.authorProfile.lastName}`}
+      <CommentAuthors authors={[authorProfile]} />
       {` commented `}
       <span> • </span>
       {timeAgo}

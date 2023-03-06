@@ -21,7 +21,7 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
     <div>
       <div>
         <CommentHeader
-          createdBy={comment.createdBy}
+          authorProfile={comment.createdBy.authorProfile}
           timeAgo={comment.timeAgo}
           bounties={[]}
         />

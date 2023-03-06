@@ -43,7 +43,7 @@ export default class Bounty {
   _createdDate: string;
   _timeRemaining: string;
   _timeRemainingInMinutes: number;
-  _createdBy: RHUser | null;
+  _createdBy: RHUser;
   _amount: number;
   _formattedAmount: string;
   _status: BOUNTY_STATUS;
@@ -190,7 +190,7 @@ export default class Bounty {
     return this._timeRemainingInMinutes;
   }
 
-  get createdBy(): RHUser | null {
+  get createdBy(): RHUser {
     return this._createdBy;
   }
 

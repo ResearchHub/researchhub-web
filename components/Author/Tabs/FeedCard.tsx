@@ -227,10 +227,11 @@ function FeedCard({
     return abstract || renderableText;
   };
 
+  const user = uploaded_by || created_by
   const cardTitle = getTitle();
   const cardBody = getBody();
   const createdDate = created_date || uploaded_date;
-  const createdBy = parseUser(uploaded_by || created_by);
+  const createdBy = user ? parseUser(user) : null;
   const nextRouter = useRouter();
   let bountyAmount = 0;
   let hasActiveBounty = false;

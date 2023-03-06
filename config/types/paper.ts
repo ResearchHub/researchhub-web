@@ -66,7 +66,7 @@ export class Paper implements TopLevelDocument {
   _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null;
   _doi?: string;
   _title: string;
-  _createdBy: RHUser | null;
+  _createdBy: RHUser;
   _datePublished?: string;
   _externalUrl?: string | undefined;
   _journal?: string;
@@ -179,7 +179,7 @@ export class Paper implements TopLevelDocument {
     return this._externalUrl;
   }
 
-  get createdBy(): RHUser | null {
+  get createdBy(): RHUser {
     return this._createdBy;
   }
 
