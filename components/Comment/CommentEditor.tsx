@@ -7,53 +7,10 @@ import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import ReactDOMServer from "react-dom/server";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideo } from "@fortawesome/free-solid-svg-icons";
+import buildQuillModules from "./lib/buildQuillModules";
+import QuillFormats from "./lib/quillFormats";
+import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 
-const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
-  const modules = {
-    magicUrl: true,
-    keyboard: {
-      bindings: {
-        commandEnter: {
-          key: 13,
-          shortKey: true,
-          metaKey: true,
-          handler: handleSubmit,
-        },
-      },
-    },
-    toolbar: {
-      magicUrl: true,
-      container: `#${editorId}`,
-      handlers: {
-        image: handleImageUpload,
-      },
-    },
-  };
-
-  return modules;
-}
-
-const QuillFormats = [
-  "image",
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "video",
-  "clean",
-  "background",
-  "code-block",
-  "direction",
-  "peer-review-rating",
-];
 
 type CommentEditorArgs = {
   editorId: string,
@@ -64,28 +21,27 @@ type CommentEditorArgs = {
   allowBounty?: boolean;
 };
 
-const CommentEditor = ({ 
+const CommentEditor = ({
   editorId,
   previewWhenInactive = false,
   placeholder = "Add comment or start a bounty",
   handleSubmit,
   content = "",
   allowBounty = false,
- }: CommentEditorArgs) => {
+}: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-  const [_content, _setContent] = useState<string>(content);
-  const [_previewWhenInactive, _setPreviewWhenInactive] =
-    useState(previewWhenInactive);
-  const [_isPreview, _setIsPreview] = useState(previewWhenInactive);
+  const [_content, _setContent] = useState<any>(content);
+  const contentRef = useRef<any>(content);
+  const [isPreview, setIsPreview] = useState(previewWhenInactive);
+  const isPreviewRef = useRef(isPreview);
   const [isFullToolbarOpen, setIsFullToolbarOpen] = useState(false);
-  const _isPreviewRef = useRef(_isPreview);
-  const [_isFocused, _setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const { quill, quillRef, Quill } = useQuill({
     modules: buildQuillModules({
       editorId,
       handleImageUpload: () => null,
-      handleSubmit: () => handleSubmit({ content: _content })
+      handleSubmit: () => handleSubmit({ content: contentRef })
     }),
     formats: QuillFormats
   });
@@ -93,7 +49,7 @@ const CommentEditor = ({
   useEffect(() => {
     const _handleClick = (e) => {
       const isOutsideClick =
-        !_isPreviewRef.current && !editorRef.current?.contains(e.target);
+        !isPreviewRef.current && !editorRef.current?.contains(e.target);
       const isFullToolbarTriggerClick = e.target.closest(".show-full-editor");
       const isFullToolbarClick = e.target.closest(".ql-full-editor");
       const excludedElems = [".reply-btn", ".edit-btn"];
@@ -102,11 +58,12 @@ const CommentEditor = ({
         false
       );
 
-      if (previewWhenInactive && isOutsideClick && !clickOnExcluded) {
-        _setIsPreview(true);
+      if (previewWhenInactive && isQuillEmpty(contentRef.current) && isOutsideClick && !clickOnExcluded) {
+        isPreviewRef.current = true;
+        setIsPreview(true);
       }
-      if (!isOutsideClick && !_isFocused) {
-        _setIsFocused(true);
+      if (!isOutsideClick && !isFocused) {
+        setIsFocused(true);
       }
       if (!isFullToolbarTriggerClick && !isFullToolbarClick) {
         setIsFullToolbarOpen(false);
@@ -123,17 +80,27 @@ const CommentEditor = ({
   useEffect(() => {
     if (quill) {
       quill.on('text-change', (delta, oldDelta, source) => {
-        console.log(quill.getContents()); // Get delta contents
+        const nextContent = quill.getContents();
+        _setContent(nextContent);
+        contentRef.current = nextContent;
+
+        if (isQuillEmpty(nextContent)) {
+          setIsSubmitDisabled(true);
+        }
+        else {
+          setIsSubmitDisabled(false);
+        }
+        
       });
     }
   }, [quill]);
+
 
   if (Quill && !quill) {
     const MagicUrl = require('quill-magic-url').default;
     Quill.register('modules/magicUrl', MagicUrl);
     const icons = Quill.import("ui/icons");
-    console.log('icons')
-    icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);    
+    icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);
   }
 
   return (
@@ -141,16 +108,13 @@ const CommentEditor = ({
       ref={editorRef}
       className={css(styles.commentEditor)}
       onClick={() => {
-        _setIsPreview(false);
-        _isPreviewRef.current = false;
+        setIsPreview(false);
+        isPreviewRef.current = false;
       }}
     >
-      {_isPreview ? (
-        <div>
-          <div>{placeholder}</div>
-        </div>
-      ) : (
-        <div>
+      <div>
+        <div className={css(styles.placeholder, isPreviewRef.current && styles.previewMode)}>{placeholder}</div>
+        <div className={css(styles.editor, !isPreviewRef.current && styles.editMode)}>
           <div ref={quillRef} />
           <div className={css(styles.toolbarContainer)}>
             <CommentEditorToolbar
@@ -160,7 +124,7 @@ const CommentEditor = ({
             />
           </div>
         </div>
-      )}
+      </div>
       <div className={css(styles.actions)}>
         {allowBounty && (
           // @ts-ignore
@@ -195,7 +159,19 @@ const styles = StyleSheet.create({
   },
   toolbarContainer: {
     position: "relative",
-  }
+  },
+  editor: {
+    display: "none",
+  },
+  placeholder: {
+    display: "none",
+  },
+  previewMode: {
+    display: "block",
+  },
+  editMode: {
+    display: "block",
+  },
 });
 
 export default CommentEditor;
