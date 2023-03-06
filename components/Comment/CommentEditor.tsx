@@ -10,7 +10,7 @@ import { faVideo } from "@fortawesome/free-solid-svg-icons";
 import buildQuillModules from "./lib/buildQuillModules";
 import QuillFormats from "./lib/quillFormats";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
-
+import { AuthorProfile } from "~/config/types/root_types";
 
 type CommentEditorArgs = {
   editorId: string,
@@ -18,6 +18,7 @@ type CommentEditorArgs = {
   handleSubmit: Function;
   content?: string;
   allowBounty?: boolean;
+  author?: AuthorProfile | null;
 };
 
 const CommentEditor = ({
@@ -26,6 +27,7 @@ const CommentEditor = ({
   handleSubmit,
   content = "",
   allowBounty = false,
+  author = null,
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
@@ -47,11 +49,6 @@ const CommentEditor = ({
       const isOutsideClick = !editorRef.current?.contains(e.target);
       const isFullToolbarTriggerClick = e.target.closest(".show-full-editor");
       const isFullToolbarClick = e.target.closest(".ql-full-editor");
-      const excludedElems = [".reply-btn", ".edit-btn"];
-      const clickOnExcluded = excludedElems.reduce(
-        (prev, selector) => Boolean(prev || e.target.closest(selector)),
-        false
-      );
 
       if (!isOutsideClick && !isFocused) {
         setIsFocused(true);
@@ -81,7 +78,6 @@ const CommentEditor = ({
         else {
           setIsSubmitDisabled(false);
         }
-        
       });
     }
   }, [quill]);
