@@ -29,6 +29,7 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
           <CommentEditor
             handleSubmit={({ content }) => handleUpdate({ comment, content })}
             content={comment.content}
+            editorId={`edit-${comment.id}`}
           />
         ) : (
           <CommentReadOnly content={comment.content} />
@@ -41,6 +42,7 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
       {isReplyOpen && (
         <CommentEditor
           handleSubmit={({ content }) => handleUpdate({ content })}
+          editorId={`reply-to-${comment.id}`}
         />
       )}
       <div className={css(styles.children)}>
