@@ -1,7 +1,7 @@
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 
-export enum POST_TYPES {
+export enum COMMENT_TYPES {
   DISCUSSION = "DISCUSSION",
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
@@ -18,7 +18,7 @@ export type Comment = {
   score: number;
   userVote: any;
   isEdited: boolean;
-  postType: POST_TYPES;
+  postType: COMMENT_TYPES;
   parent?: Comment;
   children: Comment[];
 };

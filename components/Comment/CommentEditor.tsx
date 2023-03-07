@@ -12,7 +12,9 @@ import QuillFormats from "./lib/quillFormats";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile } from "~/config/types/root_types";
 import CommentAuthors from "./CommentAuthors";
-
+import CommentTypeSelector from "./CommentTypeSelector";
+import commentTypes from "./lib/commentTypes";
+import { COMMENT_TYPES } from "./lib/types";
 
 type CommentEditorArgs = {
   editorId: string,
@@ -20,6 +22,7 @@ type CommentEditorArgs = {
   handleSubmit: Function;
   content?: object;
   allowBounty?: boolean;
+  commentType?: COMMENT_TYPES;
   author?: AuthorProfile | null;
 };
 
@@ -29,6 +32,7 @@ const CommentEditor = ({
   handleSubmit,
   content = {},
   allowBounty = false,
+  commentType,
   author,
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
@@ -37,6 +41,7 @@ const CommentEditor = ({
   const contentRef = useRef<object>(content);
   const [isFullToolbarOpen, setIsFullToolbarOpen] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(commentType || commentTypes.find(t => t.isDefault)!.value);
   const { quill, quillRef, Quill } = useQuill({
     modules: buildQuillModules({
       editorId,
@@ -99,7 +104,10 @@ const CommentEditor = ({
     >
       <div>
         {author &&
-          <CommentAuthors authors={[author]} />
+          <div className={css(styles.authorRow)}>
+            <CommentAuthors authors={[author]} />
+            <CommentTypeSelector handleSelect={_setCommentType} selectedType={_commentType} />
+          </div>
         }
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
@@ -149,6 +157,9 @@ const styles = StyleSheet.create({
   },
   editor: {
   },
+  authorRow: {
+    display: "flex"
+  }
 });
 
 export default CommentEditor;

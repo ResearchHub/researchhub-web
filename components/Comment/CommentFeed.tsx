@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Comment from "./Comment";
-import { Comment as CommentType, POST_TYPES } from "./lib/types";
+import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
 import CommentEditor from "~/components/Comment/CommentEditor";
 import {
   createCommentAPI,
@@ -39,7 +39,7 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     postType
   }:{
     content: object;
-    postType: POST_TYPES;
+    postType: COMMENT_TYPES;
   }) => {
     const comment:CommentType = await createCommentAPI({ content, postType });
     setComments([comment, ...comments]);
