@@ -1,8 +1,6 @@
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Fragment, ReactElement } from "react";
 
-
-
 type Props = {
   align?: "start" | "center" | "end";
   className?: string;
@@ -29,8 +27,6 @@ export default function ResearchHubPopover({
   onClickOutside,
   containerStyle,
 }: Props): ReactElement<typeof Fragment | typeof Popover> {
-
-
   return (
     <Popover
       align={align}
@@ -49,7 +45,18 @@ export default function ResearchHubPopover({
             {popoverContent}
           </ArrowContainer>
         ) : (
-          popoverContent
+          <div
+            style={{
+              background: "#fff",
+              boxShadow: "0px 0px 10px 0px #00000026",
+              borderRadius: 4,
+            }}
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            {popoverContent}
+          </div>
         )
       }
       isOpen={isOpen}
