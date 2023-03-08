@@ -1,18 +1,40 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFontCase } from "@fortawesome/pro-solid-svg-icons";
 import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import isOutsideClick from "~/config/utils/isOutsideClick";
 
 type Args = {
   editorId: string,
-  isFullToolbarOpen: boolean,
-  setIsFullToolbarOpen: Function,
 }
 
-const CommentEditorToolbar = ({ editorId, setIsFullToolbarOpen, isFullToolbarOpen }: Args) => {
+const CommentEditorToolbar = ({ editorId }: Args) => {
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const toolbarRef = useRef(null);
+
+  useEffect(() => {
+    const _handleClick = (e) => {
+      const _isOutsideClick = isOutsideClick({
+        el: toolbarRef.current,
+        clickedEl: e.target,
+        exclude: [".ql-full-editor-visible"]
+      });
+
+      if (_isOutsideClick) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("click", _handleClick);
+
+    return () => {
+      document.removeEventListener("click", _handleClick);
+    };
+  }, []);
 
   return (
-    <div id={editorId} className="ql-toolbar">
+    <div id={editorId} className="ql-toolbar" ref={toolbarRef}>
       <span className="ql-formats">
         <button className="ql-blockquote"></button>
         <button className="ql-link" />
@@ -20,10 +42,9 @@ const CommentEditorToolbar = ({ editorId, setIsFullToolbarOpen, isFullToolbarOpe
         <button className="ql-video"></button>
         <button
           id="show-editor"
-          className={`show-full-editor ${isFullToolbarOpen ? "ql-active" : ""}`}
-          onClick={() => setIsFullToolbarOpen(!isFullToolbarOpen)}
+          className={`show-full-editor ${isOpen ? "ql-active" : ""}`}
+          onClick={() => setIsOpen(!isOpen)}
         >
-          {/* TODO: This requires updating font awesome common types */}
           <FontAwesomeIcon icon={faFontCase} />
           <span className="ql-up">
             <FontAwesomeIcon icon={faChevronUp} />
@@ -33,7 +54,7 @@ const CommentEditorToolbar = ({ editorId, setIsFullToolbarOpen, isFullToolbarOpe
 
       <div
         className={`ql-full-editor ${
-          isFullToolbarOpen && "ql-full-editor-visible"
+          isOpen && "ql-full-editor-visible"
         }`}
       >
         <span className="ql-formats">

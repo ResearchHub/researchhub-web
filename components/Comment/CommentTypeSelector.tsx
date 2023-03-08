@@ -22,15 +22,13 @@ const CommentTypeSelector = ({ selectedType, handleSelect, displayVerb }: Args) 
 
   useEffect(() => {
     const _handleClick = (e) => {
-      if (dropdownRef.current) {
-        const _isOutsideClick = isOutsideClick({
-          el: dropdownRef.current,
-          clickedEl: e.target,
-          exclude: [".comment-type-dropdown"]
-        })
-        if (_isOutsideClick) {
-          setIsOpen(false);
-        }
+      const _isOutsideClick = isOutsideClick({
+        el: dropdownRef.current,
+        clickedEl: e.target,
+        exclude: [".comment-type-dropdown"]
+      })
+      if (_isOutsideClick) {
+        setIsOpen(false);
       }
     };
 

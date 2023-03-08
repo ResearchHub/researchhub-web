@@ -14,7 +14,6 @@ import commentTypes from "./lib/commentTypes";
 import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 
-
 type CommentEditorArgs = {
   editorId: string,
   placeholder?: string;
@@ -36,10 +35,8 @@ const CommentEditor = ({
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
-  const [isFullToolbarOpen, setIsFullToolbarOpen] = useState<boolean>(false);
-  const [isFocused, setIsFocused] = useState<boolean>(false);
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(commentType || commentTypes.find(t => t.isDefault)!.value);
-  const { quill, quillRef, Quill } = useQuill({
+  const { quill, quillRef } = useQuill({
     modules: buildQuillModules({
       editorId,
       handleImageUpload: () => null,
@@ -56,29 +53,6 @@ const CommentEditor = ({
     const isDisabled = isQuillEmpty(_content) ? true : false;
     setIsSubmitDisabled(isDisabled);
   }, [_content]);
-
-  useEffect(() => {
-    const _handleClick = (e) => {
-      const isFullToolbarTriggerClick = e.target.closest(".show-full-editor");
-      const isFullToolbarClick = e.target.closest(".ql-full-editor");
-      const isInsideClick = e.target === editorRef.current || editorRef.current.contains(e.target);
-
-      if (isInsideClick && !isFocused) {
-        setIsFocused(true);
-      }
-      if (!isFullToolbarTriggerClick && !isFullToolbarClick) {
-        setIsFullToolbarOpen(false);
-      }
-    };
-
-    document.addEventListener("click", _handleClick);
-
-    return () => {
-      document.removeEventListener("click", _handleClick);
-    };
-  }, []);
-
-
 
   return (
     <div
@@ -98,11 +72,7 @@ const CommentEditor = ({
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
           <div className={css(styles.toolbarContainer)}>
-            <CommentEditorToolbar
-              editorId={editorId}
-              isFullToolbarOpen={isFullToolbarOpen}
-              setIsFullToolbarOpen={setIsFullToolbarOpen}
-            />
+            <CommentEditorToolbar editorId={editorId} />
           </div>
         </div>
       </div>
