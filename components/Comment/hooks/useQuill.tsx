@@ -2,8 +2,10 @@
 // A lightweight alternative to react-quill
 
 import { useRef, useState, useEffect, RefObject } from 'react';
-
 import Quill, { QuillOptionsStatic } from 'quill';
+import ReactDOMServer from "react-dom/server";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVideo } from "@fortawesome/free-solid-svg-icons";
 
 const theme = 'snow';
 
@@ -96,8 +98,12 @@ export const useQuill = (options: QuillOptionsStatic | undefined = { theme, modu
         theme: options.theme || theme,
       });
 
-      const quill = new obj.Quill(quillRef.current, opts);
+      const MagicUrl = require('quill-magic-url').default;
+      obj.Quill.register('modules/magicUrl', MagicUrl);
+      const icons = obj.Quill.import("ui/icons");
+      icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);
 
+      const quill = new obj.Quill(quillRef.current, opts);
       setObj(assign(assign({}, obj), { quill, editor: quill }));
     }
     setIsLoaded(true);

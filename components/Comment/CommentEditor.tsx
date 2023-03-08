@@ -4,9 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import ReactDOMServer from "react-dom/server";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVideo } from "@fortawesome/free-solid-svg-icons";
 import buildQuillModules from "./lib/buildQuillModules";
 import QuillFormats from "./lib/quillFormats";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
@@ -15,6 +12,8 @@ import CommentAuthors from "./CommentAuthors";
 import CommentTypeSelector from "./CommentTypeSelector";
 import commentTypes from "./lib/commentTypes";
 import { COMMENT_TYPES } from "./lib/types";
+import useQuillContent from "./hooks/useQuillContent";
+
 
 type CommentEditorArgs = {
   editorId: string,
@@ -37,8 +36,6 @@ const CommentEditor = ({
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
-  const [_content, _setContent] = useState<object>(content);
-  const contentRef = useRef<object>(content);
   const [isFullToolbarOpen, setIsFullToolbarOpen] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(commentType || commentTypes.find(t => t.isDefault)!.value);
@@ -46,10 +43,19 @@ const CommentEditor = ({
     modules: buildQuillModules({
       editorId,
       handleImageUpload: () => null,
-      handleSubmit: () => handleSubmit({ content: contentRef })
+      handleSubmit: () => handleSubmit({ content: _content })
     }),
     formats: QuillFormats
   });
+  const { content:_content } = useQuillContent({
+    quill,
+    content,
+  })
+
+  useEffect(() => {
+    const isDisabled = isQuillEmpty(_content) ? true : false;
+    setIsSubmitDisabled(isDisabled);
+  }, [_content]);
 
   useEffect(() => {
     const _handleClick = (e) => {
@@ -72,29 +78,6 @@ const CommentEditor = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (quill) {
-      quill.on('text-change', (delta, oldDelta, source) => {
-        const nextContent = quill.getContents();
-        _setContent(nextContent);
-        contentRef.current = nextContent;
-
-        if (isQuillEmpty(nextContent)) {
-          setIsSubmitDisabled(true);
-        }
-        else {
-          setIsSubmitDisabled(false);
-        }
-      });
-    }
-  }, [quill]);
-
-  if (Quill && !quill) {
-    const MagicUrl = require('quill-magic-url').default;
-    Quill.register('modules/magicUrl', MagicUrl);
-    const icons = Quill.import("ui/icons");
-    icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);
-  }
 
 
   return (
