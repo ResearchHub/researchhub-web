@@ -231,7 +231,7 @@ function FeedCard({
   const cardTitle = getTitle();
   const cardBody = getBody();
   const createdDate = created_date || uploaded_date;
-  const createdBy = user ? parseUser(user) : null;
+  const createdBy = isEmpty(user) ? null : parseUser(user);
   const nextRouter = useRouter();
   let bountyAmount = 0;
   let hasActiveBounty = false;

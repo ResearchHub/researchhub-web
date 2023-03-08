@@ -14,7 +14,7 @@ export interface TopLevelDocument {
   discussionCount: number;
   unifiedDocument: UnifiedDocument;
   hubs: Array<Hub>;
-  createdBy: RHUser;
+  createdBy?: RHUser;
   userVote?: VoteType | null;
   title?: string;
   externalUrl?: string;

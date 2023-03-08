@@ -1,6 +1,6 @@
 import { userVoteToConstant } from "../constants";
 import { formatDateStandard } from "../utils/dates";
-import { emptyFncWithMsg } from "../utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "../utils/nullchecks";
 import { Hub, parseHub } from "./hub";
 import {
   AuthorProfile,
@@ -66,7 +66,7 @@ export class Paper implements TopLevelDocument {
   _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null;
   _doi?: string;
   _title: string;
-  _createdBy: RHUser;
+  _createdBy: RHUser | undefined;
   _datePublished?: string;
   _externalUrl?: string | undefined;
   _journal?: string;
@@ -81,7 +81,7 @@ export class Paper implements TopLevelDocument {
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
     this._createdDate = raw.created_date;
-    this._createdBy = parseUser(raw.uploaded_by);
+    this._createdBy = isEmpty(raw.uploaded_by) ? undefined : parseUser(raw.uploaded_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
     this._title = raw.title;
     this._formats = [];
@@ -179,7 +179,7 @@ export class Paper implements TopLevelDocument {
     return this._externalUrl;
   }
 
-  get createdBy(): RHUser {
+  get createdBy(): RHUser | undefined {
     return this._createdBy;
   }
 
