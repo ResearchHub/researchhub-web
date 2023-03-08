@@ -239,7 +239,7 @@ function FeedCard({
     bounties.forEach((bounty) => {
       bountyAmount += bounty.amount;
       if (!bounty.isExpiredOrClosed) {
-        hasActiveBounty = true;
+        hasActiveBounty = true;  
       }
     });
 
@@ -359,26 +359,22 @@ function FeedCard({
                       />
                     </div>
                   )}
-                  <div className={css(styles.metaItem, styles.metaItemAsBadge)}>
-                    <ContentBadge
-                      contentType={
-                        formattedDocType === "bounty"
-                          ? "post"
-                          : formattedDocType
-                      }
-                    />
-                  </div>
-                  {hasActiveBounty && (
-                    <div className={css(styles.metaItem)}>
-                      <ContentBadge
-                        contentType="bounty"
-                        label={
-                          formatBountyAmount({ amount: bountyAmount }) +
-                          " Bounty"
-                        }
-                      />
+                    <div
+                      className={css(styles.metaItem, styles.metaItemAsBadge)}
+                      >
+                      <ContentBadge contentType={formattedDocType === "bounty" ? "post" : formattedDocType} />
                     </div>
-                  )}
+                    {hasActiveBounty && (
+                      <div className={css(styles.metaItem)}>
+                        <ContentBadge
+                          contentType="bounty"
+                          label={
+                            formatBountyAmount({ amount: bountyAmount }) +
+                            " Bounty"
+                          }
+                        />
+                      </div>
+                    )}
                   {formattedDocType === "question" ? (
                     <div
                       className={css(

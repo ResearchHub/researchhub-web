@@ -10,8 +10,6 @@ import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Bounty from "~/config/types/bounty";
-import ResearchHubPopover from "../ResearchHubPopover";
-import UserPopover from "../Tooltips/UserPopover";
 
 type Args = {
   createdBy: CreatedBy | null;
@@ -34,7 +32,6 @@ function SubmissionDetails({
     process.browser && window.innerWidth > breakpoints.medium.int;
 
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
-  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
   let sliceIndex = 1;
   if (showAllHubs) {
@@ -45,86 +42,66 @@ function SubmissionDetails({
 
   const bounty = bounties?.[0];
   const authorProfile = createdBy?.authorProfile;
-  const _twoDaysInMinutes = 2 * 24 * 60;
+  const _twoDaysInMinutes = 2*24*60;
   return (
     <div className={css(styles.submittedBy)}>
-      <ResearchHubPopover
-        containerStyle={{ zIndex: 100 }}
-        positions={["bottom", "right"]}
-        onClickOutside={(): void => {
-          setUserPopoverOpen(false);
-        }}
-        popoverContent={<UserPopover userId={createdBy?.id} />}
-        isOpen={userPopoverOpen}
-        targetContent={
-          <div
-            onMouseEnter={() => setUserPopoverOpen(true)}
-            onMouseLeave={() => setUserPopoverOpen(false)}
-            style={{ display: "flex" }}
-          >
-            <div className={css(styles.createdByContainer)}>
-              <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
-            </div>
-            <div className={css(styles.submittedByDetails)}>
-              {authorProfile?.firstName || authorProfile?.lastName ? (
-                <ALink
-                  href={`/user/${authorProfile?.id}/overview`}
-                  key={`/user/${authorProfile?.id}/overview-key`}
-                  overrideStyle={styles.link}
-                >
-                  {authorProfile?.firstName} {authorProfile?.lastName}
-                </ALink>
-              ) : (
-                <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
-              )}
-              {` `}
-            </div>
-          </div>
-        }
-      />
-
-      <div className={css(styles.hubsContainer)}>
-        <>
-          <span className={css(styles.textSecondary, styles.postedText)}>
-            {` `}
-            {actionLabel}
-          </span>
-          {visibleHubs.map((h, index) => (
-            <span key={index}>
-              <ALink
-                key={`/hubs/${h.slug ?? ""}-index`}
-                theme="blankAndBlue"
-                href={`/hubs/${h.slug}`}
-                overrideStyle={styles.hubLink}
-              >
-                {toTitleCase(h.name)}
-              </ALink>
-              {index < visibleHubs?.length - 1 ? "," : ""}
-            </span>
-          ))}
-          {hiddenHubs.length > 0 && (
-            <HubDropDown
-              hubs={hiddenHubs}
-              labelStyle={styles.hubLink}
-              containerStyle={styles.hubDropdownContainer}
-              isOpen={isHubsDropdownOpen}
-              setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
-            />
-          )}
-        </>
+      <div className={css(styles.createdByContainer)}>
+        <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
       </div>
-      <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
-      <span className={css(styles.textSecondary, styles.timestamp)}>
-        {timeSince(createdDate)}
-        {bounty &&
-          bounty.timeRemainingInMinutes <= _twoDaysInMinutes &&
-          bounty.timeRemainingInMinutes > 0 && (
+      <div className={css(styles.submittedByDetails)}>
+        {authorProfile?.firstName || authorProfile?.lastName ? (
+          <ALink
+            href={`/user/${authorProfile?.id}/overview`}
+            key={`/user/${authorProfile?.id}/overview-key`}
+            overrideStyle={styles.link}
+          >
+            {authorProfile?.firstName} {authorProfile?.lastName}
+          </ALink>
+        ) : (
+          <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
+        )}
+
+        <div className={css(styles.hubsContainer)}>
+          <>
+            <span className={css(styles.textSecondary, styles.postedText)}>
+              {` `}
+              {actionLabel}
+            </span>
+            {visibleHubs.map((h, index) => (
+              <span key={index}>
+                <ALink
+                  key={`/hubs/${h.slug ?? ""}-index`}
+                  theme="blankAndBlue"
+                  href={`/hubs/${h.slug}`}
+                  overrideStyle={styles.hubLink}
+                >
+                  {toTitleCase(h.name)}
+                </ALink>
+                {index < visibleHubs?.length - 1 ? "," : ""}
+              </span>
+            ))}
+            {hiddenHubs.length > 0 && (
+              <HubDropDown
+                hubs={hiddenHubs}
+                labelStyle={styles.hubLink}
+                containerStyle={styles.hubDropdownContainer}
+                isOpen={isHubsDropdownOpen}
+                setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
+              />
+            )}
+          </>
+        </div>
+        <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
+        <span className={css(styles.textSecondary, styles.timestamp)}>
+          {timeSince(createdDate)}
+          {bounty && bounty.timeRemainingInMinutes <= _twoDaysInMinutes && bounty.timeRemainingInMinutes > 0 && (
             <span className={css(styles.expiringSoon)}>
               <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
               bounty ending in {bounty.timeRemaining}
             </span>
           )}
-      </span>
+        </span>
+      </div>
     </div>
   );
 }
@@ -137,7 +114,7 @@ const styles = StyleSheet.create({
     lineHeight: "21px",
   },
   submittedByDetails: {
-    display: "flex",
+    display: "block",
   },
   postedText: {},
   createdByContainer: {
@@ -160,7 +137,6 @@ const styles = StyleSheet.create({
   },
   textSecondary: {
     color: colors.MEDIUM_GREY2(),
-    whiteSpace: "pre-wrap",
   },
   hubsContainer: {
     display: "inline",
