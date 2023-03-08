@@ -95,9 +95,7 @@ export const useQuill = (options: QuillOptionsStatic | undefined = { theme, modu
         formats: options.formats || formats,
         theme: options.theme || theme,
       });
-      console.log('instantiating');
-      console.log('quillRef.current', quillRef.current)
-      console.log('opts', opts)
+
       const quill = new obj.Quill(quillRef.current, opts);
 
       setObj(assign(assign({}, obj), { quill, editor: quill }));

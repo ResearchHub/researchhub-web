@@ -5,6 +5,7 @@ import { COMMENT_TYPES } from "./types";
 const commentTypes = [
   {
     label: "Discuss",
+    verb: "discussing",
     value: COMMENT_TYPES.DISCUSSION,
     isDefault: true,
     group: "contribute",
@@ -13,6 +14,7 @@ const commentTypes = [
   },
   {
     label: "Peer review",
+    verb: "peer reviewing",
     value: COMMENT_TYPES.REVIEW,
     isDefault: false,
     group: "contribute",
@@ -21,6 +23,7 @@ const commentTypes = [
   },
   {
     label: "Summary",
+    verb: "summarizing",
     value: COMMENT_TYPES.SUMMARY,
     isDefault: false,
     group: "contribute",

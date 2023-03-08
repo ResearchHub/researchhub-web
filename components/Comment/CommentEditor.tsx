@@ -106,7 +106,10 @@ const CommentEditor = ({
         {author &&
           <div className={css(styles.authorRow)}>
             <CommentAuthors authors={[author]} />
-            <CommentTypeSelector handleSelect={_setCommentType} selectedType={_commentType} />
+            <span>{`is`}</span>
+            <span style={{ marginTop: -5}}>
+              <CommentTypeSelector handleSelect={_setCommentType} selectedType={_commentType} displayVerb />
+            </span>
           </div>
         }
         <div className={css(styles.editor)}>
@@ -158,7 +161,9 @@ const styles = StyleSheet.create({
   editor: {
   },
   authorRow: {
-    display: "flex"
+    display: "flex",
+    alignItems: "center",
+    columnGap: "5px",
   }
 });
 
