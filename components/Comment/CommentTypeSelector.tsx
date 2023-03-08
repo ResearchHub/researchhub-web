@@ -42,13 +42,14 @@ const CommentTypeSelector = ({
     };
   }, []);
 
+  const displayContent = displayVerb ? _selectedType!.verb : _selectedType!.label;
   return (
     <div className={css(styles.commentTypeSelector)}>
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`${css(styles.trigger)} comment-type-dropdown`}
       >
-        <span>{displayVerb ? _selectedType!.verb : _selectedType!.label}</span>
+        <span>{displayContent}</span>
         <FontAwesomeIcon icon={faAngleDown} style={{ fontSize: 20 }} />
       </div>
       <div
