@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFontCase } from "@fortawesome/pro-solid-svg-icons";
 import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { useEffect, useRef, useState } from "react";
-import isOutsideClick from "~/config/utils/isOutsideClick";
+import { useRef, useState } from "react";
+import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
 
 type Args = {
   editorId: string;
@@ -12,27 +12,15 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toolbarRef = useRef(null);
 
-  useEffect(() => {
-    const _handleClick = (e) => {
-      const _isOutsideClick = isOutsideClick({
-        el: toolbarRef.current,
-        clickedEl: e.target,
-        exclude: [".ql-full-editor-visible"],
-      });
-
-      if (_isOutsideClick) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("click", _handleClick);
-
-    return () => {
-      document.removeEventListener("click", _handleClick);
-    };
-  }, []);
+  useEffectHandleOutsideClick({
+    el: toolbarRef.current,
+    exclude: [".ql-full-editor-visible"],
+    onOutsideClick: () => setIsOpen(false),
+  });
 
   return (
+    // Please note that the `ql-*` classnames are reserved names in Quill
+    // and needed for proper operation.
     <div id={editorId} className="ql-toolbar" ref={toolbarRef}>
       <span className="ql-formats">
         <button className="ql-blockquote"></button>

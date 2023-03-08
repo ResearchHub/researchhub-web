@@ -1,10 +1,18 @@
+import { useEffect } from "react";
+
 type IsOutsideClickArgs = {
   el: Element | null | undefined,
   clickedEl: Element,
   exclude?: Array<String>,
 }
 
-const isOutsideClick = ({ el, clickedEl, exclude = [] }: IsOutsideClickArgs) => {
+type useEffectHandleOutsideClickArgs = {
+  el: Element | null | undefined,
+  exclude?: Array<String>,
+  onOutsideClick: Function,
+}
+
+export function isOutsideClick({ el, clickedEl, exclude = [] }: IsOutsideClickArgs){
   if (!el) {
     return false;
   }
@@ -18,4 +26,26 @@ const isOutsideClick = ({ el, clickedEl, exclude = [] }: IsOutsideClickArgs) => 
   return !(isWithin || clickOnExcluded);
 }
 
-export default isOutsideClick;
+export function useEffectHandleOutsideClick({ el, exclude = [], onOutsideClick }: useEffectHandleOutsideClickArgs) {
+
+  useEffect(() => {
+    const _handleClick = (e) => {
+      const _isOutsideClick = isOutsideClick({
+        el,
+        clickedEl: e.target,
+        exclude,
+      });
+
+      if (_isOutsideClick) {
+        onOutsideClick();
+      }
+    };
+
+    document.addEventListener("click", _handleClick);
+
+    return () => {
+      document.removeEventListener("click", _handleClick);
+    };
+  }, [el]);  
+}
+

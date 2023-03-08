@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import commentTypes from "./lib/commentTypes";
-import isOutsideClick from "~/config/utils/isOutsideClick";
+import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
 
 type Args = {
   selectedType: COMMENT_TYPES;
@@ -23,24 +23,11 @@ const CommentTypeSelector = ({
   const _selectedType = commentTypes.find((t) => t.value === selectedType);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    const _handleClick = (e) => {
-      const _isOutsideClick = isOutsideClick({
-        el: dropdownRef.current,
-        clickedEl: e.target,
-        exclude: [".comment-type-dropdown"],
-      });
-      if (_isOutsideClick) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("click", _handleClick);
-
-    return () => {
-      document.removeEventListener("click", _handleClick);
-    };
-  }, []);
+  useEffectHandleOutsideClick({
+    el: dropdownRef.current,
+    exclude: [".comment-type-dropdown"],
+    onOutsideClick: () => setIsOpen(false),
+  });
 
   const displayContent = displayVerb ? _selectedType!.verb : _selectedType!.label;
   return (
