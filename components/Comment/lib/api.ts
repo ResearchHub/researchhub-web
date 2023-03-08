@@ -1,7 +1,7 @@
 import { ID } from "~/config/types/root_types";
 import listMockData from "../mock/list.json";
 import createMockData from "../mock/create.json";
-import { Comment, parseComment, COMMENT_POST_TYPES } from "./types";
+import { Comment, parseComment, COMMENT_TYPES } from "./types";
 
 export const fetchCommentsAPI = ({
   unifiedDocumentId,
@@ -19,7 +19,7 @@ export const createCommentAPI = ({
   postType,
 }: {
   content: any;
-  postType: COMMENT_POST_TYPES;
+  postType: COMMENT_TYPES;
 }): Promise<Comment> => {
   const comment = parseComment({ raw: createMockData });
 

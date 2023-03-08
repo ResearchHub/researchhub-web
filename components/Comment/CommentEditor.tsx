@@ -15,7 +15,7 @@ import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 
 type CommentEditorArgs = {
-  editorId: string,
+  editorId: string;
   placeholder?: string;
   handleSubmit: Function;
   content?: object;
@@ -35,19 +35,21 @@ const CommentEditor = ({
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
-  const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(commentType || commentTypes.find(t => t.isDefault)!.value);
+  const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
+    commentType || commentTypes.find((t) => t.isDefault)!.value
+  );
   const { quill, quillRef } = useQuill({
     modules: buildQuillModules({
       editorId,
       handleImageUpload: () => null,
-      handleSubmit: () => handleSubmit({ content: _content })
+      handleSubmit: () => handleSubmit({ content: _content }),
     }),
-    formats: QuillFormats
+    formats: QuillFormats,
   });
-  const { content:_content } = useQuillContent({
+  const { content: _content } = useQuillContent({
     quill,
     content,
-  })
+  });
 
   useEffect(() => {
     const isDisabled = isQuillEmpty(_content) ? true : false;
@@ -55,20 +57,21 @@ const CommentEditor = ({
   }, [_content]);
 
   return (
-    <div
-      ref={editorRef}
-      className={css(styles.commentEditor)}
-    >
+    <div ref={editorRef} className={css(styles.commentEditor)}>
       <div>
-        {author &&
+        {author && (
           <div className={css(styles.authorRow)}>
             <CommentAuthors authors={[author]} />
             <span>{`is`}</span>
-            <span style={{ marginTop: -5}}>
-              <CommentTypeSelector handleSelect={_setCommentType} selectedType={_commentType} displayVerb />
+            <span style={{ marginTop: -5 }}>
+              <CommentTypeSelector
+                handleSelect={_setCommentType}
+                selectedType={_commentType}
+                displayVerb
+              />
             </span>
           </div>
-        }
+        )}
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
           <div className={css(styles.toolbarContainer)}>
@@ -111,13 +114,12 @@ const styles = StyleSheet.create({
   toolbarContainer: {
     position: "relative",
   },
-  editor: {
-  },
+  editor: {},
   authorRow: {
     display: "flex",
     alignItems: "center",
     columnGap: "5px",
-  }
+  },
 });
 
 export default CommentEditor;

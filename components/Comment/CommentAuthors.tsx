@@ -8,8 +8,9 @@ type CommentAuthorArgs = {
 };
 
 const CommentAuthors = ({ authors, primaryAuthorId }: CommentAuthorArgs) => {
-
-  const primaryAuthor = primaryAuthorId ? authors.find((a) => a.id === primaryAuthorId) : authors[0];
+  const primaryAuthor = primaryAuthorId
+    ? authors.find((a) => a.id === primaryAuthorId)
+    : authors[0];
   const avatarMargin = authors.length > 1 ? -10 : 0;
 
   return (
@@ -21,13 +22,10 @@ const CommentAuthors = ({ authors, primaryAuthorId }: CommentAuthorArgs) => {
         imgSize={25}
       />
       {primaryAuthor?.firstName} {primaryAuthor?.lastName}
-      {authors.length > 1 &&
-        <span>+ {authors.length}</span>
-      }
+      {authors.length > 1 && <span>+ {authors.length}</span>}
     </div>
   );
 };
-
 
 const styles = StyleSheet.create({
   commentHeader: {

@@ -5,11 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import isOutsideClick from "~/config/utils/isOutsideClick";
 
 type Args = {
-  editorId: string,
-}
+  editorId: string;
+};
 
 const CommentEditorToolbar = ({ editorId }: Args) => {
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toolbarRef = useRef(null);
 
@@ -18,7 +17,7 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
       const _isOutsideClick = isOutsideClick({
         el: toolbarRef.current,
         clickedEl: e.target,
-        exclude: [".ql-full-editor-visible"]
+        exclude: [".ql-full-editor-visible"],
       });
 
       if (_isOutsideClick) {
@@ -52,11 +51,7 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
         </button>
       </span>
 
-      <div
-        className={`ql-full-editor ${
-          isOpen && "ql-full-editor-visible"
-        }`}
-      >
+      <div className={`ql-full-editor ${isOpen && "ql-full-editor-visible"}`}>
         <span className="ql-formats">
           <button className="ql-bold" />
           <button className="ql-italic" />

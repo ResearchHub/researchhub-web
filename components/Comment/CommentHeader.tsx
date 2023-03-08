@@ -10,7 +10,11 @@ type CommentHeaderArgs = {
   bounties: Bounty[];
 };
 
-const CommentHeader = ({ authorProfile, timeAgo, bounties }: CommentHeaderArgs) => {
+const CommentHeader = ({
+  authorProfile,
+  timeAgo,
+  bounties,
+}: CommentHeaderArgs) => {
   return (
     <div className={css(styles.commentHeader)}>
       <CommentAuthors authors={[authorProfile]} />

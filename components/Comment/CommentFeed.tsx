@@ -21,12 +21,16 @@ type Args = {
 const CommentFeed = ({ unifiedDocumentId }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState(true);
-  const user = useSelector((state:RootState) => isEmpty(state.auth?.user) ? null : parseUser(state.auth.user));
+  const user = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
 
   useEffect(() => {
     const _fetchComments = async () => {
       setIsFetching(true);
-      const comments:CommentType[] = await fetchCommentsAPI({ unifiedDocumentId });
+      const comments: CommentType[] = await fetchCommentsAPI({
+        unifiedDocumentId,
+      });
       setComments(comments);
       setIsFetching(false);
     };
@@ -36,23 +40,26 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
 
   const handleCommentCreate = async ({
     content,
-    postType
-  }:{
+    postType,
+  }: {
     content: object;
     postType: COMMENT_TYPES;
   }) => {
-    const comment:CommentType = await createCommentAPI({ content, postType });
+    const comment: CommentType = await createCommentAPI({ content, postType });
     setComments([comment, ...comments]);
   };
 
   const handleCommentUpdate = async ({
     comment,
     content,
-  }:{
+  }: {
     comment: CommentType;
     content: any;
   }) => {
-    const _comment:CommentType = await updateCommentAPI({ id: comment.id, content });
+    const _comment: CommentType = await updateCommentAPI({
+      id: comment.id,
+      content,
+    });
     const found = findComment({ id: comment.id, comments });
     if (found) {
       replaceComment({

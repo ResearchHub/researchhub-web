@@ -9,13 +9,16 @@ import commentTypes from "./lib/commentTypes";
 import isOutsideClick from "~/config/utils/isOutsideClick";
 
 type Args = {
-  selectedType: COMMENT_TYPES,
-  handleSelect: Function,
-  displayVerb?: Boolean,
-}
+  selectedType: COMMENT_TYPES;
+  handleSelect: Function;
+  displayVerb?: boolean;
+};
 
-const CommentTypeSelector = ({ selectedType, handleSelect, displayVerb }: Args) => {
-
+const CommentTypeSelector = ({
+  selectedType,
+  handleSelect,
+  displayVerb,
+}: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const _selectedType = commentTypes.find((t) => t.value === selectedType);
   const dropdownRef = useRef(null);
@@ -25,8 +28,8 @@ const CommentTypeSelector = ({ selectedType, handleSelect, displayVerb }: Args) 
       const _isOutsideClick = isOutsideClick({
         el: dropdownRef.current,
         clickedEl: e.target,
-        exclude: [".comment-type-dropdown"]
-      })
+        exclude: [".comment-type-dropdown"],
+      });
       if (_isOutsideClick) {
         setIsOpen(false);
       }
@@ -38,26 +41,26 @@ const CommentTypeSelector = ({ selectedType, handleSelect, displayVerb }: Args) 
       document.removeEventListener("click", _handleClick);
     };
   }, []);
-  
+
   return (
     <div className={css(styles.commentTypeSelector)}>
-      <div onClick={() => setIsOpen(!isOpen)} className={`${css(styles.trigger)} comment-type-dropdown`}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className={`${css(styles.trigger)} comment-type-dropdown`}
+      >
         <span>{displayVerb ? _selectedType!.verb : _selectedType!.label}</span>
-        <FontAwesomeIcon icon={faAngleDown} style={{fontSize: 20}} />
+        <FontAwesomeIcon icon={faAngleDown} style={{ fontSize: 20 }} />
       </div>
-      <div ref={dropdownRef} className={css(styles.dropdown, isOpen && styles.dropdownOpen)}>
+      <div
+        ref={dropdownRef}
+        className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
+      >
         {commentTypes.map((t) => (
           <div
             className={css(styles.dropdownOpt)}
             onClick={() => handleSelect(t)}
           >
-            <div
-              className={css(
-                styles.dropdownOptIcon,
-              )}
-            >
-              {t.icon}
-            </div>
+            <div className={css(styles.dropdownOptIcon)}>{t.icon}</div>
             <div className={css(styles.dropdownOptLabel)}>
               {displayVerb ? t.verb : t.label}
             </div>
@@ -70,9 +73,8 @@ const CommentTypeSelector = ({ selectedType, handleSelect, displayVerb }: Args) 
         ))}
       </div>
     </div>
-  )
-
-}
+  );
+};
 
 const styles = StyleSheet.create({
   commentTypeSelector: {
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: 220,
     boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",    
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   dropdownOpen: {
     display: "block",
@@ -120,18 +122,17 @@ const styles = StyleSheet.create({
     },
     alignItems: "center",
   },
-  dropdownOptIcon: {
-  },
+  dropdownOptIcon: {},
   check: {
     position: "absolute",
     right: 15,
     top: 8,
     fontSize: 12,
-  },  
+  },
   dropdownOptLabel: {
     fontSize: 14,
     fontWeight: 500,
   },
-})
+});
 
 export default CommentTypeSelector;
