@@ -1,11 +1,11 @@
 import { userVoteToConstant } from "../constants";
 import { formatDateStandard } from "../utils/dates";
 import Bounty, { BOUNTY_STATUS } from "./bounty";
-import { parseCreatedBy } from "./contribution";
 import { Hub, parseHub } from "./hub";
 import {
   AuthorProfile,
-  CreatedBy,
+  RHUser,
+  parseUser,
   ID,
   parseAuthorProfile,
   parseUnifiedDocument,
@@ -24,7 +24,7 @@ export class Post implements TopLevelDocument {
   _userVote?: "downvote" | "upvote" | "neutralvote" | undefined | null;
   _doi?: string;
   _title: string;
-  _createdBy: CreatedBy | null;
+  _createdBy: RHUser;
   _datePublished?: string;
   _note?: any;
   _markdown?: string;
@@ -41,7 +41,7 @@ export class Post implements TopLevelDocument {
     this._discussionCount = raw.discussion_count || 0;
     this._createdDate = raw.created_date;
     this._datePublished = formatDateStandard(raw.created_date);
-    this._createdBy = parseCreatedBy(raw.created_by);
+    this._createdBy = parseUser(raw.created_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
     this._title = raw.title;
     this._note = raw.note;
@@ -120,7 +120,7 @@ export class Post implements TopLevelDocument {
     return this._note;
   }
 
-  get createdBy(): CreatedBy | null {
+  get createdBy(): RHUser {
     return this._createdBy;
   }
 

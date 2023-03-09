@@ -1,10 +1,5 @@
 import { CitationConsensus } from "./hypothesis";
 import { Hub } from "./hub";
-import { parseCreatedBy } from "./contribution";
-import {
-  parsePeerReviewScoreSummary,
-  PeerReviewScoreSummary,
-} from "./peerReview";
 import Bounty from "./bounty";
 
 export type ID = string | number | null | undefined;
@@ -19,7 +14,7 @@ export interface TopLevelDocument {
   discussionCount: number;
   unifiedDocument: UnifiedDocument;
   hubs: Array<Hub>;
-  createdBy: CreatedBy | null;
+  createdBy?: RHUser;
   userVote?: VoteType | null;
   title?: string;
   externalUrl?: string;
@@ -69,12 +64,11 @@ export type VoteEnumType = 0 /* nuetral */ | 1 /* upvote */ | 2; /* downvote */
 export type CommentType = "comment" | "reply" | "thread";
 
 export type UnifiedDocument = {
-  createdBy?: CreatedBy;
+  createdBy?: RHUser;
   document?: UrlDocument;
   documentType: RhDocumentType;
   id: ID;
   isRemoved: boolean;
-  reviewSummary?: PeerReviewScoreSummary;
 };
 
 export type AuthorProfile = {
@@ -85,11 +79,6 @@ export type AuthorProfile = {
   profileImage?: string;
   sequence?: "first" | "additional";
   url: string;
-};
-
-export type RHUser = {
-  authorProfile?: AuthorProfile;
-  id: ID;
 };
 
 // TODO: Deprecate this in favor of RHUser
@@ -172,7 +161,7 @@ export type AuthStore = {
   walletLink: any; // TODO
 };
 
-export type CreatedBy = {
+export type RHUser = {
   author_profile?: AuthorProfile; // occasional insertion slip-ins from legacy code.
   authorProfile: AuthorProfile;
   firstName: string;
@@ -192,7 +181,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   };
 
   if (raw.created_by) {
-    parsed["createdBy"] = parseCreatedBy(raw.created_by);
+    parsed["createdBy"] = parseUser(raw.created_by);
   }
 
   const unparsedInnerDoc = Array.isArray(raw.documents)
@@ -212,10 +201,6 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   } else if (parsed.documentType === "paper") {
     parsed.documentType = "paper";
     parsed.document["paperTitle"] = unparsedInnerDoc.paper_title;
-  }
-
-  if (raw.reviews) {
-    parsed["reviewSummary"] = parsePeerReviewScoreSummary(raw.reviews);
   }
 
   if (unparsedInnerDoc.renderable_text) {
@@ -247,10 +232,25 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
-  const parsed = {
+  if (raw.first_name && !raw.author_profile.first_name) {
+    raw.author_profile.first_name = raw.first_name;
+  }
+  if (raw.last_name && !raw.author_profile.last_name) {
+    raw.author_profile.last_name = raw.last_name;
+  }
+  if (!raw.first_name && raw.author_profile.first_name) {
+    raw.first_name = raw.author_profile.first_name;
+  }
+  if (!raw.last_name && raw.author_profile.last_name) {
+    raw.last_name = raw.author_profile.last_name;
+  }
+
+  const mapped = {
     id: raw.id,
+    firstName: raw.first_name,
+    lastName: raw.last_name,
     authorProfile: parseAuthorProfile(raw.author_profile),
   };
 
-  return parsed;
+  return mapped;
 };

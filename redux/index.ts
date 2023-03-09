@@ -17,7 +17,7 @@ import bulletReducer from "./bullets";
 import bannerReducer from "./banner";
 import limitationsReducer from "./limitations";
 
-export default combineReducers({
+const rootReducer = combineReducers({
   modals: modalReducer,
   discussion: discussionReducer,
   message: messageReducer,
@@ -35,3 +35,7 @@ export default combineReducers({
   banners: bannerReducer,
   limitations: limitationsReducer,
 });
+export default rootReducer;
+export type RootState = ReturnType<typeof rootReducer>
+
+

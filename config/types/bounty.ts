@@ -3,8 +3,7 @@ import {
   timeToInUnits,
   timeToRoundUp,
 } from "../utils/dates";
-import { CreatedBy, ID } from "./root_types";
-import { parseCreatedBy } from "./contribution";
+import { parseUser, RHUser, ID } from "./root_types";
 import api, { generateApiUrl } from "../api";
 import { Helpers } from "@quantfive/js-web-config";
 import numeral from "numeral";
@@ -44,7 +43,7 @@ export default class Bounty {
   _createdDate: string;
   _timeRemaining: string;
   _timeRemainingInMinutes: number;
-  _createdBy: CreatedBy | null;
+  _createdBy: RHUser;
   _amount: number;
   _formattedAmount: string;
   _status: BOUNTY_STATUS;
@@ -63,7 +62,7 @@ export default class Bounty {
       unit: "minute",
     });
 
-    this._createdBy = parseCreatedBy(raw.created_by);
+    this._createdBy = parseUser(raw.created_by);
     this._amount = parseFloat(raw.amount);
     this._formattedAmount = this._amount.toLocaleString();
     this._status = raw.status;
@@ -190,7 +189,7 @@ export default class Bounty {
     return this._timeRemainingInMinutes;
   }
 
-  get createdBy(): CreatedBy | null {
+  get createdBy(): RHUser {
     return this._createdBy;
   }
 

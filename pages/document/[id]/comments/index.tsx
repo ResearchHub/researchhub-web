@@ -17,6 +17,7 @@ const CommentsIndex: NextPage = () => {
 
 const styles = StyleSheet.create({
   wrapper: {
+    maxWidth: 500,
     padding: "24px 32px",
   }
 });

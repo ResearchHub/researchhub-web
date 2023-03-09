@@ -2,7 +2,7 @@ import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import API from "~/config/api";
 import {
   AuthorProfile,
-  CreatedBy,
+  RHUser,
   VoteType,
   ID,
   RhDocumentType,
@@ -27,7 +27,7 @@ type Args = {
     replyID?: string;
     threadID?: string;
   };
-  documentCreatedBy: CreatedBy;
+  documentCreatedBy: RHUser;
   documentID: ID;
   documentType: RhDocumentType;
   onError: Function;
@@ -105,6 +105,7 @@ export const createVoteHandler = ({
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .catch((error: Error): void => {
+        // @ts-ignore
         if (error?.response?.status === 429) {
           handleCatch(error, dispatch);
         }
