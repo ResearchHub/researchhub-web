@@ -1,6 +1,5 @@
 import Bounty from "~/config/types/bounty";
-import { AuthorProfile, RHUser } from "~/config/types/root_types";
-import AuthorAvatar from "../AuthorAvatar";
+import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAuthors from "./CommentAuthors";
 
