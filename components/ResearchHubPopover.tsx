@@ -49,7 +49,15 @@ export default function ResearchHubPopover({
             {popoverContent}
           </ArrowContainer>
         ) : (
-          popoverContent
+          <div
+            style={{
+              background: "#fff",
+              boxShadow: "0px 0px 10px 0px #00000026",
+              borderRadius: 4,
+            }}
+          >
+            {popoverContent}
+          </div>
         )
       }
       isOpen={isOpen}

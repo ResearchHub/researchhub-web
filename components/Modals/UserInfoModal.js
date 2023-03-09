@@ -215,6 +215,9 @@ class UserInfoModal extends Component {
           showMessage({ show: false });
           setMessage("Updates made successfully");
           showMessage({ show: true });
+          setTimeout(() => {
+            showMessage({ show: false });
+          }, 2000);
         }
         const { updateUser, updateAuthor, user } = this.props;
         const updatedAuthorProfile = { ...res };
