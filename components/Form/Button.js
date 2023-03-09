@@ -27,13 +27,14 @@ function Button(props) {
 
   if (isLink) {
     let { href, linkAs, query } = isLink;
+
     return (
       <Link
         href={href ? (query ? { pathname: href, query } : href) : null}
         as={linkAs && linkAs}
         legacyBehavior
       >
-        <div
+        <a
           className={css(
             styles.button,
             isWhite && styles.isWhite,
@@ -60,9 +61,13 @@ function Button(props) {
               customLabelStyle && customLabelStyle
             )}
           >
-            {label && typeof label === "function" ? label() : label}
+            {children
+              ? children
+              : label && typeof label === "function"
+              ? label()
+              : label}
           </div>
-        </div>
+        </a>
       </Link>
     );
   } else {
@@ -127,6 +132,7 @@ const styles = StyleSheet.create({
     highlight: "none",
     outline: "none",
     userSelect: "none",
+    textDecoration: "none",
     fontWeight: 500,
     lineHeight: 1.75,
     ":hover": {

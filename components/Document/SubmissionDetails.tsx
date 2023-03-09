@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 import { Hub } from "~/config/types/hub";
 import { RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
@@ -10,6 +10,9 @@ import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Bounty from "~/config/types/bounty";
+import ResearchHubPopover from "../ResearchHubPopover";
+import UserPopover from "../Tooltips/UserPopover";
+import { genClientId } from "~/config/utils/id";
 
 type Args = {
   createdBy: RHUser | null;
@@ -33,6 +36,8 @@ function SubmissionDetails({
 
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
 
+  const inPopoverRef = useRef(false);
+
   let sliceIndex = 1;
   if (showAllHubs) {
     sliceIndex = 3;
@@ -45,8 +50,97 @@ function SubmissionDetails({
   const _twoDaysInMinutes = 2*24*60;
   return (
     <div className={css(styles.submittedBy)}>
-      <div className={css(styles.createdByContainer)}>
-        <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
+      <ResearchHubPopover
+        containerStyle={{ zIndex: 100 }}
+        positions={["bottom", "right", "top"]}
+        onClickOutside={(): void => {
+          setUserPopoverOpen(false);
+        }}
+        popoverContent={
+          <div
+            style={{ marginTop: -4 }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onMouseEnter={(e) => {
+              inPopoverRef.current = true;
+            }}
+            onMouseLeave={(e) => {
+              inPopoverRef.current = false;
+              setUserPopoverOpen(false);
+            }}
+            id={`user-popover-${genClientId()}`}
+          >
+            <UserPopover userId={createdBy?.id} />
+          </div>
+        }
+        isOpen={userPopoverOpen}
+        targetContent={
+          <div
+            onMouseEnter={() => {
+              setTimeout(() => {
+                setUserPopoverOpen(true);
+              }, 50);
+            }}
+            onMouseLeave={(e) => {
+              setTimeout(() => {
+                if (!inPopoverRef.current) {
+                  setUserPopoverOpen(false);
+                }
+              }, 50);
+            }}
+            style={{ display: "flex", padding: 4, alignItems: "center" }}
+          >
+            <div className={css(styles.createdByContainer)}>
+              <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
+            </div>
+            <div className={css(styles.submittedByDetails)}>
+              {authorProfile?.firstName || authorProfile?.lastName ? (
+                <ALink
+                  href={`/user/${authorProfile?.id}/overview`}
+                  key={`/user/${authorProfile?.id}/overview-key`}
+                  overrideStyle={styles.link}
+                >
+                  {authorProfile?.firstName} {authorProfile?.lastName}
+                </ALink>
+              ) : (
+                <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
+              )}
+              {` `}
+            </div>
+          </div>
+        }
+      />
+
+      <div className={css(styles.hubsContainer)}>
+        <>
+          <span className={css(styles.textSecondary, styles.postedText)}>
+            {` `}
+            {actionLabel}
+          </span>
+          {visibleHubs.map((h, index) => (
+            <span key={index}>
+              <ALink
+                key={`/hubs/${h.slug ?? ""}-index`}
+                theme="blankAndBlue"
+                href={`/hubs/${h.slug}`}
+                overrideStyle={styles.hubLink}
+              >
+                {toTitleCase(h.name)}
+              </ALink>
+              {index < visibleHubs?.length - 1 ? "," : ""}
+            </span>
+          ))}
+          {hiddenHubs.length > 0 && (
+            <HubDropDown
+              hubs={hiddenHubs}
+              labelStyle={styles.hubLink}
+              containerStyle={styles.hubDropdownContainer}
+              isOpen={isHubsDropdownOpen}
+              setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
+            />
+          )}
+        </>
       </div>
       <div className={css(styles.submittedByDetails)}>
         {authorProfile?.firstName || authorProfile?.lastName ? (

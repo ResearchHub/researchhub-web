@@ -291,7 +291,7 @@ function DocumentHeader({
     bountyAmount += bounty.amount;
   });
 
-  const boostAmount = formatBountyAmount({ amount: document.boostAmount});
+  const boostAmount = formatBountyAmount({ amount: document.boostAmount });
 
   return (
     // @ts-ignore
@@ -493,7 +493,12 @@ function DocumentHeader({
                   data-tip="ResearchCoin tipped by community members"
                 >
                   <span className={css(styles.coinDetailIcon)}>
-                    <ResearchCoinIcon height={20} width={20} version={4} color={"rgb(119 220 130)"} />
+                    <ResearchCoinIcon
+                      height={20}
+                      width={20}
+                      version={4}
+                      color={"rgb(119 220 130)"}
+                    />
                   </span>
                   <span className={css(styles.boostAmountText)}>
                     +{boostAmount} tipped

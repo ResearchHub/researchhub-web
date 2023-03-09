@@ -1,3 +1,6 @@
+import { css, StyleSheet } from "aphrodite";
+import Link from "next/link";
+import colors from "../themes/colors";
 import { getNestedValue } from "./misc";
 
 export function getCurrentUserLegacy(storeState) {
@@ -26,6 +29,39 @@ export function createUserSummary(author = {}) {
 
   return userSummary;
 }
+
+export function createEditorSummary(hubs) {
+  return (hubs ?? []).map((hub, i) => {
+    const { name, slug } = hub.source;
+    return (
+      <Link
+        key={`hub-${i}`}
+        href={"/hubs/[slug]"}
+        as={`/hubs/${slug}`}
+        className={css(styles.hubLinkTag)}
+      >
+        {i > 0 && ", "}
+        {name}
+      </Link>
+    );
+  });
+}
+
+const styles = StyleSheet.create({
+  hubLinkTag: {
+    textDecoration: "unset",
+    cursor: "pointer",
+    color: "unset",
+    textDecoration: "underline",
+    fontWeight: 500,
+    fontSize: 14,
+    textTransform: "capitalize",
+    color: colors.BLACK(0.8),
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+});
 
 export function createEduSummary(author = {}) {
   const { education } = author;

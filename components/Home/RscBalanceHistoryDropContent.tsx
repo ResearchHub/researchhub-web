@@ -192,9 +192,9 @@ export default function RscBalanceHistoryDropContent({
             marginBottom: 5,
             marginTop: 10,
           }}
-          >        
-            <UniswapButton variant="text" />
-          </div>
+        >
+          <UniswapButton variant="text" />
+        </div>
       </div>
     </div>
   );
