@@ -359,7 +359,6 @@ class Editor extends Component {
             onClick={() => this.setState({ showFullEditor: !showFullEditor })}
           >
             {faIcons.fontCase}
-            <span className="ql-up">{faIcons.chevronUp}</span>
           </button>
         </span>
 
