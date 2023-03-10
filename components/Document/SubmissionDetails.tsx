@@ -13,6 +13,7 @@ import Bounty from "~/config/types/bounty";
 import ResearchHubPopover from "../ResearchHubPopover";
 import UserPopover from "../Tooltips/UserPopover";
 import { genClientId } from "~/config/utils/id";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 
 type Args = {
   createdBy: RHUser | null;
@@ -35,6 +36,7 @@ function SubmissionDetails({
     process.browser && window.innerWidth > breakpoints.medium.int;
 
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
+  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
   const inPopoverRef = useRef(false);
 
@@ -47,7 +49,10 @@ function SubmissionDetails({
 
   const bounty = bounties?.[0];
   const authorProfile = createdBy?.authorProfile;
-  const _twoDaysInMinutes = 2*24*60;
+  const _twoDaysInMinutes = 2 * 24 * 60;
+
+  const isMobileScreen = getIsOnMobileScreenSize();
+
   return (
     <div className={css(styles.submittedBy)}>
       <ResearchHubPopover
@@ -78,9 +83,11 @@ function SubmissionDetails({
         targetContent={
           <div
             onMouseEnter={() => {
-              setTimeout(() => {
-                setUserPopoverOpen(true);
-              }, 50);
+              if (!isMobileScreen) {
+                setTimeout(() => {
+                  setUserPopoverOpen(true);
+                }, 50);
+              }
             }}
             onMouseLeave={(e) => {
               setTimeout(() => {
@@ -143,57 +150,20 @@ function SubmissionDetails({
         </>
       </div>
       <div className={css(styles.submittedByDetails)}>
-        {authorProfile?.firstName || authorProfile?.lastName ? (
-          <ALink
-            href={`/user/${authorProfile?.id}/overview`}
-            key={`/user/${authorProfile?.id}/overview-key`}
-            overrideStyle={styles.link}
-          >
-            {authorProfile?.firstName} {authorProfile?.lastName}
-          </ALink>
-        ) : (
-          <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
-        )}
-
-        <div className={css(styles.hubsContainer)}>
-          <>
-            <span className={css(styles.textSecondary, styles.postedText)}>
-              {` `}
-              {actionLabel}
-            </span>
-            {visibleHubs.map((h, index) => (
-              <span key={index}>
-                <ALink
-                  key={`/hubs/${h.slug ?? ""}-index`}
-                  theme="blankAndBlue"
-                  href={`/hubs/${h.slug}`}
-                  overrideStyle={styles.hubLink}
-                >
-                  {toTitleCase(h.name)}
-                </ALink>
-                {index < visibleHubs?.length - 1 ? "," : ""}
-              </span>
-            ))}
-            {hiddenHubs.length > 0 && (
-              <HubDropDown
-                hubs={hiddenHubs}
-                labelStyle={styles.hubLink}
-                containerStyle={styles.hubDropdownContainer}
-                isOpen={isHubsDropdownOpen}
-                setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
-              />
-            )}
-          </>
-        </div>
         <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
         <span className={css(styles.textSecondary, styles.timestamp)}>
           {timeSince(createdDate)}
-          {bounty && bounty.timeRemainingInMinutes <= _twoDaysInMinutes && bounty.timeRemainingInMinutes > 0 && (
-            <span className={css(styles.expiringSoon)}>
-              <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
-              bounty ending in {bounty.timeRemaining}
-            </span>
-          )}
+          {bounty &&
+            bounty.timeRemainingInMinutes <= _twoDaysInMinutes &&
+            bounty.timeRemainingInMinutes > 0 && (
+              <span className={css(styles.expiringSoon)}>
+                <span className={css(styles.dot, styles.dotWithMargin)}>
+                  {" "}
+                  •{" "}
+                </span>
+                bounty ending in {bounty.timeRemaining}
+              </span>
+            )}
         </span>
       </div>
     </div>
@@ -206,6 +176,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 14,
     lineHeight: "21px",
+    flexWrap: "wrap",
   },
   submittedByDetails: {
     display: "block",
