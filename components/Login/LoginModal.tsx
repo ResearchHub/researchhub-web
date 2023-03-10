@@ -82,7 +82,7 @@ const LoginModal = ({
           if (data.exists) {
             if (data.auth === "google") {
               setMiscError("Account already exists. Please login with Google.");
-            } else if (data.auth === "email") {
+            } else if (data.auth === "email" || data.auth === "orcid") {
               if (data.is_verified) {
                 setStep("LOGIN_WITH_EMAIL_FORM");
               } else {
@@ -98,6 +98,7 @@ const LoginModal = ({
           }
         })
         .catch((error) => {
+          console.log(error);
           setMessage("Unexpected error");
           showMessage({ show: true, error: true });
         })
@@ -248,6 +249,7 @@ const LoginModal = ({
           }
         })
         .catch((error) => {
+          console.log(error);
           setMiscError("Something went wrong. Please try again later.");
         })
         .finally(() => {
