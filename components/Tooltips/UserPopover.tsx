@@ -49,6 +49,8 @@ const UserPopover = ({ userId }) => {
     return null;
   }
 
+  const educationSummary = createEduSummary(fetchedUser.author_profile);
+
   return (
     <div className={css(styles.container)}>
       <div
@@ -88,12 +90,14 @@ const UserPopover = ({ userId }) => {
           </div>
         )}
 
-        <div className={css(styles.row)}>
-          <div style={{ color: "#BCBAC2", marginRight: 4 }}>
-            <FontAwesomeIcon icon={faGraduationCap} />
+        {!!educationSummary && (
+          <div className={css(styles.row)}>
+            <div style={{ color: "#BCBAC2", marginRight: 4 }}>
+              <FontAwesomeIcon icon={faGraduationCap} />
+            </div>
+            {educationSummary}
           </div>
-          {createEduSummary(fetchedUser.author_profile)}
-        </div>
+        )}
 
         <div className={css(styles.row)}>
           <img
