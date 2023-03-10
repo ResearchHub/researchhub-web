@@ -1,36 +1,15 @@
 import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { generateApiUrl } from "~/config/api";
-import ALink from "../ALink";
 import Button from "../Form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import { createEditorSummary, createEduSummary } from "~/config/utils/user";
+import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import Image from "next/image";
 
-interface UserPopoverType {
-  id?: number;
-  first_name?: string;
-  last_name?: string;
-  reputation?: number;
-
-  author_profile?: {
-    id: number;
-    profile_image: string;
-    description: string;
-  };
-  editor_of?: [
-    {
-      source: {
-        id: number;
-        name: string;
-        slug: string;
-      };
-    }
-  ];
-}
-
-const UserPopover = ({ userId }) => {
-  const [fetchedUser, setUser] = useState<UserPopoverType>({});
+const UserPopover = ({ userId }: { userId: ID }) => {
+  const [fetchedUser, setUser] = useState<RHUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +17,7 @@ const UserPopover = ({ userId }) => {
       const url = generateApiUrl(`popover/${userId}/get_user`);
       const resp = await fetch(url);
       const json = await resp.json();
-      setUser(json);
+      setUser(parseUser(json));
       setLoading(false);
     };
 
@@ -49,9 +28,7 @@ const UserPopover = ({ userId }) => {
     return null;
   }
 
-  const educationSummary = createEduSummary(fetchedUser.author_profile);
-
-  console.log(educationSummary);
+  const educationSummary = createEduSummary(fetchedUser?.author_profile);
 
   return (
     <div className={css(styles.container)}>
@@ -63,24 +40,25 @@ const UserPopover = ({ userId }) => {
           flexDirection: "column",
         }}
       >
-        <img
+        <Image
           height={90}
           width={90}
           className={css(styles.avatar)}
-          src={fetchedUser.author_profile?.profile_image}
+          src={fetchedUser?.author_profile?.profileImage}
         />
       </div>
       <div className={css(styles.name)}>
-        {fetchedUser.first_name} {fetchedUser.last_name}
+        {fetchedUser?.firstName} {fetchedUser?.lastName}
       </div>
       <div className={css(styles.desc)}>
-        {fetchedUser.author_profile?.description}
+        {fetchedUser?.author_profile?.description}
       </div>
 
       <div style={{ marginTop: "auto" }}>
-        {!!fetchedUser?.editor_of && !!fetchedUser?.editor_of?.length && (
+        {!!fetchedUser?.editorOf && !!fetchedUser?.editorOf?.length && (
           <div className={css(styles.row)}>
-            <img
+            <Image
+              alt="editor-star"
               height={20}
               src="/static/icons/editor-star.png"
               width={20}
@@ -88,7 +66,7 @@ const UserPopover = ({ userId }) => {
             />
             <div>Editor of</div>
 
-            {createEditorSummary(fetchedUser?.editor_of)}
+            {createEditorSummary(fetchedUser?.editorOf)}
           </div>
         )}
 
@@ -118,7 +96,7 @@ const UserPopover = ({ userId }) => {
           hideRipples={true}
           isLink={{
             href: "/user/[authorId]/[tabName]",
-            linkAs: `/user/${fetchedUser?.author_profile?.id}/overview`,
+            linkAs: fetchedUser?.authorProfile.url,
           }}
         >
           View Profile

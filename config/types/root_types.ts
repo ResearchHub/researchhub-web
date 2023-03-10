@@ -79,6 +79,7 @@ export type AuthorProfile = {
   profileImage?: string;
   sequence?: "first" | "additional";
   url: string;
+  description: string;
 };
 
 // TODO: Deprecate this in favor of RHUser
@@ -167,6 +168,8 @@ export type RHUser = {
   firstName: string;
   id: ID;
   lastName: string;
+  editorOf?: Array<Hub>;
+  reputation: number;
 };
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
@@ -221,6 +224,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     firstName: raw.first_name,
     lastName: raw.last_name,
     url: `/user/${raw.id}/overview`,
+    description: raw.description,
     ...(raw.sequence && { sequence: raw.sequence }),
   };
 
@@ -250,6 +254,8 @@ export const parseUser = (raw: any): RHUser => {
     firstName: raw.first_name,
     lastName: raw.last_name,
     authorProfile: parseAuthorProfile(raw.author_profile),
+    editorOf: raw.editor_of,
+    reputation: raw.reputation,
   };
 
   return mapped;
