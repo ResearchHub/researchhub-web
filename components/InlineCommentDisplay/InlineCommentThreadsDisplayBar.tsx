@@ -8,6 +8,8 @@ import InlineCommentUnduxStore, {
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
+import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type Props = {
   shouldShowContextTitle?: boolean;
@@ -79,7 +81,7 @@ function InlineCommentThreadsDisplayBar({
             cleanupStoreAndCloseDisplay({ inlineCommentStore })
           }
         >
-          {icons.arrowRight}
+          <FontAwesomeIcon icon={faArrowRight} />
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>

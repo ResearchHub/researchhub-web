@@ -25,6 +25,8 @@ import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 import { postUpdatePaperAbstract } from "../abstract/api/postUpdatePaperAbstract";
 import { useRouter } from "next/router";
+import { faArrowToBottom } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function PaperTab(props) {
   const {
@@ -252,7 +254,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                {icons.arrowToBottom}
+                <FontAwesomeIcon icon={faArrowToBottom} />
               </span>
               Download
             </Fragment>

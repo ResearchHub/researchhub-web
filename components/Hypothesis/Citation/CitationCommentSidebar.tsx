@@ -17,6 +17,8 @@ import HypothesisUnduxStore, {
   HypothesisStore,
 } from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
+import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
@@ -138,7 +140,7 @@ function CitationCommentSidebar({
             hypothesisUnduxStore.set("targetCitationComment")(null)
           }
         >
-          {icons.arrowRight}
+          <FontAwesomeIcon icon={faArrowRight} />
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>

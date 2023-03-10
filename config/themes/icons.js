@@ -367,17 +367,6 @@ library.add(
 );
 
 const icons = {
-  activtyFeed: <FontAwesomeIcon icon={faRss} />,
-  angleDown: <FontAwesomeIcon icon={faAngleDown} />,
-  angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,
-  angleRight: <FontAwesomeIcon icon={faAngleRight} />,
-  angleUp: <FontAwesomeIcon icon={faAngleUp} />,
-  arrowRight: <FontAwesomeIcon icon={faArrowRight} />,
-  arrowUpRight: <FontAwesomeIcon icon={faArrowUpRight} />,
-  arrowRightToLine: <FontAwesomeIcon icon={faArrowRightToLine} />,
-  arrowLeftToLine: <FontAwesomeIcon icon={faArrowLeftToLine} />,
-  arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
-  asterisk: <FontAwesomeIcon icon={faAsterisk} />,
   ban: <FontAwesomeIcon icon={faBan} />,
   bat: <FontAwesomeIcon icon={faBat} />,
   bell: <FontAwesomeIcon icon={faBell} />,

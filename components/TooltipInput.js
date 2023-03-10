@@ -4,6 +4,8 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export class TooltipInput extends Component {
   detectEnter = (e) => {
@@ -47,7 +49,7 @@ export class TooltipInput extends Component {
             autoFocus={true}
           />
           <div className={css(styles.submitTooltipButton)} onClick={save}>
-            {icons.arrowRight}
+            <FontAwesomeIcon icon={faArrowRight} />
           </div>
         </div>
         <span className={css(styles.close)} onClick={close}>

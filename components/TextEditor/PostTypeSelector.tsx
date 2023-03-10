@@ -4,6 +4,8 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
+import {faAngleDown} from "@fortawesome/pro-light-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function PostTypeSelector({
   selectedType,
@@ -95,7 +97,7 @@ function PostTypeSelector({
           {selectedType?.icon}
         </span>
         {selectedType?.label}{" "}
-        <span className={css(styles.downIcon)}>{icons.angleDown}</span>
+        <span className={css(styles.downIcon)}><FontAwesomeIcon icon={faAngleDown} /></span>
       </div>
     );
   };

@@ -52,6 +52,8 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -530,7 +532,7 @@ function AuthorPage(props) {
             className={css(styles.submitSocialButton)}
             onClick={() => saveSocial(social)}
           >
-            {icons.arrowRight}
+            <FontAwesomeIcon icon={faArrowRight} />
           </div>
         </div>
       </div>

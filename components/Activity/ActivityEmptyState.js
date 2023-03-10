@@ -3,6 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 // Components
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { faRss } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ActivityEmptyState = ({ myHubs }) => {
   const authorPlaceholder = {
@@ -11,7 +13,9 @@ const ActivityEmptyState = ({ myHubs }) => {
 
   return (
     <div className={css(styles.emptystate)}>
-      <span className={css(styles.activityFeedIcon)}>{icons.activtyFeed}</span>
+      <span className={css(styles.activityFeedIcon)}>
+        <FontAwesomeIcon icon={faRss} />
+      </span>
       <span style={{ fontWeight: 500, marginBottom: 10 }}>No Activity.</span>
       {myHubs ? "Follow an author to get started!" : ""}
     </div>

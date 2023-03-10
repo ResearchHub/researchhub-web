@@ -21,6 +21,8 @@ import icons from "~/config/themes/icons";
 import Link from "next/link";
 import Notification from "~/components/Notifications/Notification";
 import RscBalanceButton from "./RscBalanceButton";
+import {faAsterisk} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type Props = {
   // intentionally accessing redux directly because functional call to redux is problematic at server level
@@ -149,7 +151,7 @@ function NavbarRightButtonGroup({
             legacyBehavior>
               <div className={css(styles.option)}>
                 <span className={css(styles.profileIcon)}>
-                  {icons.asterisk}
+                  <FontAwesomeIcon icon={faAsterisk} />
                 </span>
                 {"Referral Program"}
               </div>

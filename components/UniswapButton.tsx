@@ -2,6 +2,8 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
 import ResearchCoinIcon from "./Icons/ResearchCoinIcon";
+import {faArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 type Args = {
@@ -19,7 +21,7 @@ const UniswapButton = ({ variant, label = "RSC is available on" }: Args) => {
           height={25}
         />
         <div className={css(styles.externalIcon)}>
-          {icons.arrowUpRight}
+          <FontAwesomeIcon icon={faArrowUpRight} />
         </div>
       </Link>
     </div>
