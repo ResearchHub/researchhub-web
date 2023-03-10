@@ -29,6 +29,7 @@ yarn-debug.log*
 yarn-error.log*
 *.patch
 .vscode/
+.idea/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

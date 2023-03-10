@@ -29,6 +29,8 @@ import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import icons from "~/config/themes/icons";
 import { getCurrentUserLegacy } from "~/config/utils/user";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
 
 class Editor extends Component {
   constructor(props) {
@@ -709,7 +711,7 @@ class Editor extends Component {
             {this.props.isBounty === true && (
               <div className={css(styles.bountyAlert)}>
                 <span style={{ fontSize: 18 }}>
-                  {icons["info-circle-light"]}
+                  <FontAwesomeIcon icon={faInfoCircleLight} />
                 </span>
                 <span style={{ marginLeft: 5 }}>
                   Reply to this thread with an answer to be eligible for bounty

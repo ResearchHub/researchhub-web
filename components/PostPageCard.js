@@ -22,6 +22,8 @@ import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
 import { EFFORT_LEVEL_DESCRIPTIONS } from "./Bounty/BountyWizardRSCForm";
 import icons from "~/config/themes/icons";
 import EffortLevel from "./shared/EffortLevel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle as faInfoCircleLight } from "@fortawesome/pro-light-svg-icons";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -199,7 +201,7 @@ class PostPageCard extends Component {
                           }
                         >
                           {" "}
-                          {icons["info-circle-light"]}
+                          <FontAwesomeIcon icon={faInfoCircleLight} />
                         </span>
                       </div>
                       <span style={{ marginLeft: 16 }}>

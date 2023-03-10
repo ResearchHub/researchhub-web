@@ -22,6 +22,8 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { Hub } from "~/config/types/hub";
 
 import "react-step-progress-bar/styles.css";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faInfoCircle as faInfoCircleLight} from "@fortawesome/pro-light-svg-icons";
 
 type ProgressBarCircleProps = {
   accomplished: boolean;
@@ -519,7 +521,7 @@ function BountyWizardRSCForm({
                       data-tip={""}
                       data-for="commission"
                     >
-                      {icons["info-circle-light"]}
+                       <FontAwesomeIcon icon={faInfoCircleLight} />
                     </span>
                   </div>
                   <div className={css(styles.lineItemValue)}>
@@ -539,7 +541,7 @@ function BountyWizardRSCForm({
                       data-tip={""}
                       data-for="net"
                     >
-                      {icons["info-circle-light"]}
+                       <FontAwesomeIcon icon={faInfoCircleLight} />
                     </span>
                   </div>
                   <div

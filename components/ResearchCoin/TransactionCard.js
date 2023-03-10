@@ -9,6 +9,8 @@ import icons from "~/config/themes/icons";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { getEtherscanLink } from "~/config/utils/crypto";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
 
 const TransactionCard = (props) => {
   let { transaction, style } = props;
@@ -195,7 +197,7 @@ const TransactionCard = (props) => {
                     className={css(styles.infoIcon)}
                     data-tip="User's wallet address"
                   >
-                    {icons["info-circle"]}
+                    <FontAwesomeIcon icon={faInfoCircle} />
                     <ReactTooltip />
                   </span>
                 </span>

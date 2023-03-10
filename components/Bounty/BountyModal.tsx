@@ -21,6 +21,8 @@ import icons, { WarningIcon } from "~/config/themes/icons";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faInfoCircle as faInfoCircleLight} from "@fortawesome/pro-light-svg-icons";
 
 type Props = {
   isOpen: boolean;
@@ -258,7 +260,7 @@ function BountyModal({
                         data-tip={""}
                         data-for="commission"
                       >
-                        {icons["info-circle-light"]}
+                         <FontAwesomeIcon icon={faInfoCircleLight} />
                       </span>
                     </div>
                     <div className={css(styles.lineItemValue)}>
@@ -278,7 +280,7 @@ function BountyModal({
                         data-tip={""}
                         data-for="net"
                       >
-                        {icons["info-circle-light"]}
+                         <FontAwesomeIcon icon={faInfoCircleLight} />
                       </span>
                     </div>
                     <div

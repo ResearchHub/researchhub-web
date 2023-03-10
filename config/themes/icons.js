@@ -367,8 +367,6 @@ library.add(
 );
 
 const icons = {
-  "info-circle": <FontAwesomeIcon icon={faInfoCircle} />,
-  "info-circle-light": <FontAwesomeIcon icon={faInfoCircleLight} />,
   activtyFeed: <FontAwesomeIcon icon={faRss} />,
   angleDown: <FontAwesomeIcon icon={faAngleDown} />,
   angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,
