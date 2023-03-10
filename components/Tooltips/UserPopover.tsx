@@ -51,6 +51,8 @@ const UserPopover = ({ userId }) => {
 
   const educationSummary = createEduSummary(fetchedUser.author_profile);
 
+  console.log(educationSummary);
+
   return (
     <div className={css(styles.container)}>
       <div
@@ -132,7 +134,6 @@ const styles = StyleSheet.create({
     padding: 16,
     width: 300,
     maxWidth: 300,
-    minHeight: 300,
     borderRadius: 4,
     lineHeight: 1.4,
     display: "flex",
