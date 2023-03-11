@@ -451,6 +451,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
+    // This property is needed for comments sidebar to close gracefully without overflow.
+    overflowX: "clip",
   },
   container: {
     marginTop: 30,
