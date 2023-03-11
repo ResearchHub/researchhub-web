@@ -1,6 +1,6 @@
 const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
   const modules = {
-    magicUrl: true,
+    // magicUrl: true,
     keyboard: {
       bindings: {
         commandEnter: {
@@ -12,7 +12,7 @@ const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
       },
     },
     toolbar: {
-      magicUrl: true,
+      // magicUrl: true,
       container: `#${editorId}`,
       handlers: {
         image: handleImageUpload,

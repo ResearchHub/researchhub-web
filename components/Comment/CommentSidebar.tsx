@@ -1,18 +1,28 @@
 import moduleColors from "~/components/Comment/lib/colors";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import { css, StyleSheet } from "aphrodite";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import IconButton from "../Icons/IconButton";
 
 type Args = {
   isOpen: boolean;
+  setIsOpen: Function;
 }
 
-const WIDTH = 450;
+const WIDTH = 500;
 
-const CommentSidebar = ({ isOpen }: Args) => {
+const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
 
   return (
     <div className={css(styles.sidebar, isOpen ? styles.sidebarOpen : styles.sidebarClosed)}>
       <div className={css(styles.feedWrapper)}>
+        <div className={css(styles.sidebarHeader)}>
+          Activity
+          <IconButton onClick={() => setIsOpen(false)}>
+            <FontAwesomeIcon icon={faTimes} />
+          </IconButton>
+        </div>
         <CommentFeed unifiedDocumentId={5555} />
       </div>
     </div>
@@ -46,12 +56,18 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",
     top: 0,
-    paddingRight: 32,
-    paddingLeft: 32,
     width: WIDTH,
     boxSizing: "border-box",
   },
+  sidebarHeader: {
+    fontWeight: 500,
+    fontSize: 18,
+    marginBottom: 25,
+    display: "flex",
+    justifyContent: "space-between",
+  },
   feedWrapper: {
+    padding: "20px 32px",
     overflowY: "scroll",
     height: "100vh",
   },
