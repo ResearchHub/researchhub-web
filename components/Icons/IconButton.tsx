@@ -1,11 +1,18 @@
 import { StyleSheet, css } from "aphrodite";
 import colors, { iconColors } from "~/config/themes/colors";
 
-const IconButton = ({ onClick, children, overrideStyle, size = 18 }) => {
+type Args = {
+  onClick: Function;
+  children?: any;
+  overrideStyle?: any;
+  size?: number;
+}
+
+const IconButton = ({ onClick, children, overrideStyle, size = 18 }: Args) => {
   return (
     <div
       className={css(styles.root, styles.withAnimation, overrideStyle)}
-      onClick={onClick}
+      onClick={() => onClick()}
       style={{ width: size, height: size, fontSize: size, lineHeight: `${size}px` }}
     >
       {children}
@@ -18,6 +25,8 @@ const styles = StyleSheet.create({
     padding: "5px",
     color: colors.BLACK(0.5),
     cursor: "pointer",
+    justifyContent: "center",
+    display: "inline-flex",
   },
   withAnimation: {
     ":hover": {

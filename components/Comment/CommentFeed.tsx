@@ -74,12 +74,12 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
 
   return (
     <div>
-      {/* <CommentEditor
+      <CommentEditor
         editorId="new-thread"
         handleSubmit={handleCommentCreate}
         allowBounty={true}
         author={user?.authorProfile}
-      /> */}
+      />
       {comments.map((c) => (
         <Comment
           handleCreate={handleCommentCreate}

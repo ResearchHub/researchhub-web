@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     padding: "16px 24px",
     minHeight: 105,
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
+    backgroundColor: "white",
     borderRadius: 16,
     flex: "none",
     flexDirection: "column",
