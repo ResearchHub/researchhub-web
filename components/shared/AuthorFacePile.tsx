@@ -11,6 +11,7 @@ type Props = {
   margin?: number;
   overrideStyle?: any;
   withAuthorName?: boolean;
+  border?: string;
 };
 
 export default function AuthorFacePile({
@@ -22,6 +23,7 @@ export default function AuthorFacePile({
   withAuthorName,
   fontSize,
   overrideStyle,
+  border = `2px solid ${colors.LIGHT_GREY(1)}`
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
     () =>
@@ -35,6 +37,10 @@ export default function AuthorFacePile({
           >
             <AuthorAvatar
               author={author}
+<<<<<<< HEAD
+=======
+              border={border}
+>>>>>>> e834440d6 ([Comments] Styling of authorRow within CommentEditor)
               key={index}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();

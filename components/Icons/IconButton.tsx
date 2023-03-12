@@ -5,15 +5,13 @@ type Args = {
   onClick: Function;
   children?: any;
   overrideStyle?: any;
-  size?: number;
 }
 
-const IconButton = ({ onClick, children, overrideStyle, size = 18 }: Args) => {
+const IconButton = ({ onClick, children, overrideStyle }: Args) => {
   return (
     <div
       className={css(styles.root, styles.withAnimation, overrideStyle)}
       onClick={() => onClick()}
-      style={{ width: size, height: size, fontSize: size, lineHeight: `${size}px` }}
     >
       {children}
     </div>

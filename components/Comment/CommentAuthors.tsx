@@ -19,7 +19,8 @@ const CommentAuthors = ({ authors, primaryAuthorId }: CommentAuthorArgs) => {
         margin={avatarMargin}
         horizontal={true}
         authorProfiles={authors}
-        imgSize={25}
+        imgSize={24}
+        border={``}
       />
       {primaryAuthor?.firstName} {primaryAuthor?.lastName}
       {authors.length > 1 && <span>+ {authors.length}</span>}
@@ -32,6 +33,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     columnGap: "5px",
+    fontWeight: 500,
+    fontSize: 16,
   },
 });
 
