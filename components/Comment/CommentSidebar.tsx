@@ -8,14 +8,18 @@ import IconButton from "../Icons/IconButton";
 type Args = {
   isOpen: boolean;
   setIsOpen: Function;
-}
+};
 
 const WIDTH = 500;
 
 const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
-
   return (
-    <div className={css(styles.sidebar, isOpen ? styles.sidebarOpen : styles.sidebarClosed)}>
+    <div
+      className={css(
+        styles.sidebar,
+        isOpen ? styles.sidebarOpen : styles.sidebarClosed
+      )}
+    >
       <div className={css(styles.feedWrapper)}>
         <div className={css(styles.sidebarHeader)}>
           Activity
@@ -26,28 +30,28 @@ const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
         <CommentFeed unifiedDocumentId={5555} />
       </div>
     </div>
-  )
-}
+  );
+};
 
 const slideOpenKeyframe = {
-  '0%': {
+  "0%": {
     marginRight: -WIDTH,
   },
 
-  '100%': {
+  "100%": {
     marginRight: 0,
   },
-}
+};
 
 const slideCloseKeyframe = {
-  '0%': {
+  "0%": {
     marginRight: 0,
   },
 
-  '100%': {
+  "100%": {
     marginRight: -WIDTH,
   },
-}
+};
 
 const styles = StyleSheet.create({
   sidebar: {
@@ -74,18 +78,18 @@ const styles = StyleSheet.create({
   },
   sidebarOpen: {
     animationName: [slideOpenKeyframe],
-    animationDuration: '0.5s',
+    animationDuration: "0.5s",
     animationDirection: "normal",
     animationFillMode: "forwards",
     animationTiming: "ease-in",
   },
   sidebarClosed: {
     animationName: [slideCloseKeyframe],
-    animationDuration: '0.5s',
+    animationDuration: "0.5s",
     animationDirection: "normal",
     animationFillMode: "forwards",
     animationTiming: "ease-out",
-  }
+  },
 });
 
 export default CommentSidebar;

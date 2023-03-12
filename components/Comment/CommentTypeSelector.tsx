@@ -13,12 +13,10 @@ type Args = {
   handleSelect: Function;
 };
 
-const CommentTypeSelector = ({
-  selectedType,
-  handleSelect,
-}: Args) => {
+const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const _selectedType = commentTypes.find((t) => t.value === selectedType) || commentTypes[0];
+  const _selectedType =
+    commentTypes.find((t) => t.value === selectedType) || commentTypes[0];
   const dropdownRef = useRef(null);
 
   useEffectHandleOutsideClick({
@@ -30,10 +28,16 @@ const CommentTypeSelector = ({
   return (
     <div className={css(styles.commentTypeSelector)}>
       <div className={`${css(styles.trigger)} comment-type-dropdown`}>
-        <IconButton overrideStyle={styles.labelWrapper} onClick={() => setIsOpen(!isOpen)}>
+        <IconButton
+          overrideStyle={styles.labelWrapper}
+          onClick={() => setIsOpen(!isOpen)}
+        >
           <span style={{ fontSize: 12 }}>{_selectedType.icon}</span>
           {_selectedType!.label}
-          <FontAwesomeIcon icon={faAngleDown} style={{ marginLeft: 3, fontSize: 16 }} />
+          <FontAwesomeIcon
+            icon={faAngleDown}
+            style={{ marginLeft: 3, fontSize: 16 }}
+          />
         </IconButton>
       </div>
       <div
@@ -46,9 +50,7 @@ const CommentTypeSelector = ({
             onClick={() => handleSelect(t)}
           >
             <div className={css(styles.dropdownOptIcon)}>{t.icon}</div>
-            <div className={css(styles.dropdownOptLabel)}>
-              {t.label}
-            </div>
+            <div className={css(styles.dropdownOptLabel)}>{t.label}</div>
             {selectedType === t.value && (
               <div className={css(styles.check)}>
                 <FontAwesomeIcon style={{ fontSize: 12 }} icon={faCheck} />
@@ -78,7 +80,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     fontSize: 14,
-    
   },
   dropdown: {
     position: "absolute",
@@ -123,7 +124,6 @@ const styles = StyleSheet.create({
   dropdownOptLabel: {
     fontSize: 14,
   },
-
 });
 
 export default CommentTypeSelector;

@@ -3,15 +3,15 @@ import { css, StyleSheet } from "aphrodite";
 type Args = {
   setIsOpen: Function;
   isOpen: boolean;
-}
+};
 
 const CommentSidebarToggle = ({ isOpen, setIsOpen }: Args) => {
   return (
     <div className={css(styles.toggle)} onClick={() => setIsOpen(!isOpen)}>
       Toggle
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   toggle: {
@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       background: "gray",
-    }
-  }
+    },
+  },
 });
 
 export default CommentSidebarToggle;
