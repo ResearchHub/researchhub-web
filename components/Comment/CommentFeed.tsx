@@ -100,7 +100,7 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
 const styles = StyleSheet.create({
   filtersWrapper: {
     margin: "25px 0",
-  }
+  },
 });
 
 export default CommentFeed;

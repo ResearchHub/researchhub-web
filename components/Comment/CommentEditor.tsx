@@ -15,7 +15,6 @@ import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 
-
 type CommentEditorArgs = {
   editorId: string;
   placeholder?: string;
@@ -117,8 +116,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.border}`,
     marginBottom: 15,
   },
-  editor: {
-  },
+  editor: {},
   authorRow: {
     display: "flex",
     alignItems: "center",

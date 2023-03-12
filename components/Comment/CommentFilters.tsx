@@ -4,25 +4,35 @@ import colors from "./lib/colors";
 import { filterOpts } from "./lib/options";
 
 const CommentFilters = ({}) => {
-
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
 
   return (
     <div className={css(styles.filtersWrapper)}>
-      {filterOpts.map(f => {
+      {filterOpts.map((f) => {
         return (
           <div>
             {f.value === selectedFilter.value ? (
-              <div className={css([styles.filter, styles.filterSelected])} key={`filter-${f.value}`}>{f.label}</div>
+              <div
+                className={css([styles.filter, styles.filterSelected])}
+                key={`filter-${f.value}`}
+              >
+                {f.label}
+              </div>
             ) : (
-                <div onClick={() => setSelectedFilter(f)} className={css([styles.filter, styles.filterUnselected])} key={`filter-${f.value}`}>{f.label}</div>
+              <div
+                onClick={() => setSelectedFilter(f)}
+                className={css([styles.filter, styles.filterUnselected])}
+                key={`filter-${f.value}`}
+              >
+                {f.label}
+              </div>
             )}
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   filtersWrapper: {
@@ -36,16 +46,16 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: colors.filters.unselected.text,
   },
-  filterUnselected: {    
+  filterUnselected: {
     ":hover": {
       background: colors.filters.hover.background,
       transition: "0.3s",
-    },    
+    },
   },
   filterSelected: {
     color: colors.filters.selected.text,
     background: colors.filters.selected.background,
-  }
+  },
 });
 
 export default CommentFilters;
