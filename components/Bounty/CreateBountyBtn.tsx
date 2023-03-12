@@ -9,6 +9,7 @@ import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import IconButton from "../Icons/IconButton";
 
 function CreateBountyBtn({
   withPreview = false,
@@ -105,48 +106,49 @@ function CreateBountyBtn({
         unifiedDocId={post?.unifiedDocument?.id}
         postSlug={post?.unifiedDocument?.document?.slug}
       />
-      <button
-        disabled={!currentUser?.id}
-        className={css(styles.addBounty)}
+      <IconButton
         onClick={() => {
           userHasBounty ? closeBounty() : setIsModalOpen(true);
         }}
       >
-        <NewFeatureTooltip featureName={`bounty`} color={"orange"} />
-        <div>
-          <span className={css(styles.bountyTextContainer)}>
-            {!userHasBounty && (
-              <span className={css(styles.bountyIcon)}>
-                {/* @ts-ignore */}
-                <ResearchCoinIcon width={22} height={22} version={3} />
-              </span>
-            )}
-            <span
-              data-tip={""}
-              data-for="bountyTooltip"
-              className={css(styles.addBountyLabel)}
-            >
-              {userHasBounty ? (
-                `Close your ${numeral(
-                  isOriginalPoster ? totalBountyAmount : userBounty.amount
-                ).format("0,0.[0000000000]")} RSC Bounty`
-              ) : !isOriginalPoster && bounties && bounties.length ? (
-                <span>
-                  Contribute{" "}
-                  <span className={css(styles.desktop)}>ResearchCoin </span>
-                  <span className={css(styles.mobile)}>RSC </span> to the Bounty
-                </span>
-              ) : (
-                <span>
-                  Add <span className={css(styles.desktop)}>ResearchCoin </span>
-                  <span className={css(styles.mobile)}>RSC </span>
-                  Bounty
+        <button
+          disabled={!currentUser?.id}
+          className={css(styles.addBounty)}
+
+        >
+          <div>
+            <span className={css(styles.bountyTextContainer)}>
+              {!userHasBounty && (
+                <span className={css(styles.bountyIcon)}>
+                  {/* @ts-ignore */}
+                  <ResearchCoinIcon width={24} height={24} version={3} />
                 </span>
               )}
+              <span
+                data-tip={""}
+                data-for="bountyTooltip"
+                className={css(styles.addBountyLabel)}
+              >
+                {userHasBounty ? (
+                  `Close your ${numeral(
+                    isOriginalPoster ? totalBountyAmount : userBounty.amount
+                  ).format("0,0.[0000000000]")} RSC Bounty`
+                ) : !isOriginalPoster && bounties && bounties.length ? (
+                  <span>
+                    Contribute{" "}
+                    <span className={css(styles.desktop)}>ResearchCoin </span>
+                    <span className={css(styles.mobile)}>RSC </span> to the Bounty
+                  </span>
+                ) : (
+                  <span>
+                    Add Bounty
+                  </span>
+                )}
+              </span>
             </span>
-          </span>
-        </div>
-      </button>
+          </div>
+        </button>
+      </IconButton>
       {/* )} */}
     </div>
   );
@@ -194,6 +196,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginRight: 5,
+    columnGap: "3px"
   },
   desktop: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {

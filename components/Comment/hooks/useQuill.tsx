@@ -5,7 +5,8 @@ import { useRef, useState, useEffect, RefObject } from 'react';
 import Quill, { QuillOptionsStatic } from 'quill';
 import ReactDOMServer from "react-dom/server";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVideo } from "@fortawesome/free-solid-svg-icons";
+import { faVideo, faImagePolaroid, faLinkSimple } from "@fortawesome/pro-regular-svg-icons";
+import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
 
 const theme = 'snow';
 
@@ -92,6 +93,8 @@ export const useQuill = (options: QuillOptionsStatic | undefined = { theme, modu
     }
     if (obj.Quill && !obj.quill && quillRef && quillRef.current && isLoaded) {
 
+
+
       const opts = assign(options, {
         modules: assign(modules, options.modules),
         formats: options.formats || formats,
@@ -102,6 +105,9 @@ export const useQuill = (options: QuillOptionsStatic | undefined = { theme, modu
       obj.Quill.register('modules/magicUrl', MagicUrl);
       const icons = obj.Quill.import("ui/icons");
       icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);
+      icons.image = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faImagePolaroid} />);
+      icons.link = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faLinkSimple} />);
+      icons.blockquote = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faQuoteLeft} />);
 
       const quill = new obj.Quill(quillRef.current, opts);
       setObj(assign(assign({}, obj), { quill, editor: quill }));

@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import colors, { iconColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 
 type Args = {
   onClick: Function;
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   withAnimation: {
     ":hover": {
-      background: iconColors.BACKGROUND,
+      background: colors.LIGHTER_GREY(),
       borderRadius: 3,
       transition: "0.3s",
     },
