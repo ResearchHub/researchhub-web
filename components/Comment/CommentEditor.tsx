@@ -13,6 +13,7 @@ import CommentTypeSelector from "./CommentTypeSelector";
 import commentTypes from "./lib/commentTypes";
 import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
+import colors from "./lib/colors";
 
 type CommentEditorArgs = {
   editorId: string;
@@ -45,6 +46,7 @@ const CommentEditor = ({
       handleSubmit: () => handleSubmit({ content: _content }),
     }),
     formats: QuillFormats,
+    placeholder,
   });
   const { content: _content } = useQuillContent({
     quill,
@@ -96,7 +98,6 @@ const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
     padding: "16px 24px",
-    minHeight: 105,
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
     backgroundColor: "white",
     borderRadius: 16,
@@ -112,12 +113,16 @@ const styles = StyleSheet.create({
   },
   toolbarContainer: {
     position: "relative",
+    borderBottom: `1px solid ${colors.border}`,
+    marginBottom: 15,
   },
-  editor: {},
+  editor: {
+  },
   authorRow: {
     display: "flex",
     alignItems: "center",
     columnGap: "7px",
+    marginBottom: 10,
   },
 });
 
