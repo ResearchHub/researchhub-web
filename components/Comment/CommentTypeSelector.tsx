@@ -4,7 +4,7 @@ import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
 import colors from "~/config/themes/colors";
-import commentTypes from "./lib/commentTypes";
+import { commentTypes } from "./lib/options";
 import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
 import IconButton from "../Icons/IconButton";
 

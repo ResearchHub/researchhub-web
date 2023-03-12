@@ -13,6 +13,8 @@ import findComment from "./lib/findComment";
 import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
+import CommentFilters from "./CommentFilters";
+import { css, StyleSheet } from "aphrodite";
 
 type Args = {
   unifiedDocumentId: ID;
@@ -80,6 +82,9 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
         allowBounty={true}
         author={user?.authorProfile}
       />
+      <div className={css(styles.filtersWrapper)}>
+        <CommentFilters />
+      </div>
       {comments.map((c) => (
         <Comment
           handleCreate={handleCommentCreate}
@@ -91,5 +96,11 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  filtersWrapper: {
+    margin: "25px 0",
+  }
+});
 
 export default CommentFeed;

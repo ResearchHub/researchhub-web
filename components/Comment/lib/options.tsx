@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments, faStar, faLayerGroup, faCaretDown, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faComments, faStar, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { COMMENT_TYPES } from "./types";
 
-const commentTypes = [
+export const commentTypes = [
   {
     label: "Discuss",
     value: COMMENT_TYPES.DISCUSSION,
@@ -27,4 +27,25 @@ const commentTypes = [
   },
 ];
 
-export default commentTypes;
+
+export const filterOpts = [{
+  label: "All",
+  value: null,
+},{
+  label: "Bounties",
+  value: "bounty",  
+},{
+  label: "Peer reviews",
+  value: "peer_review",
+}];
+
+export const sortOpts = [{
+  label: "Best",
+  value: "best"
+},{
+  label: "Recently added",
+  value: "best"
+}, {
+  label: "Upvoted",
+  value: "top"
+}];
