@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
+import { faAngleDown, faCheck } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
@@ -32,7 +31,7 @@ const CommentTypeSelector = ({
     <div className={css(styles.commentTypeSelector)}>
       <div className={`${css(styles.trigger)} comment-type-dropdown`}>
         <IconButton overrideStyle={styles.labelWrapper} onClick={() => setIsOpen(!isOpen)}>
-          <span style={{fontSize: 12}}>{_selectedType.icon}</span>
+          <span style={{ fontSize: 12 }}>{_selectedType.icon}</span>
           {_selectedType!.label}
           <FontAwesomeIcon icon={faAngleDown} style={{ marginLeft: 3, fontSize: 16 }} />
         </IconButton>
@@ -52,7 +51,7 @@ const CommentTypeSelector = ({
             </div>
             {selectedType === t.value && (
               <div className={css(styles.check)}>
-                <FontAwesomeIcon icon={faCheck} />
+                <FontAwesomeIcon style={{ fontSize: 12 }} icon={faCheck} />
               </div>
             )}
           </div>
@@ -65,6 +64,7 @@ const CommentTypeSelector = ({
 const styles = StyleSheet.create({
   commentTypeSelector: {
     position: "relative",
+    // color: colors.NEW_BLUE(),
   },
   trigger: {
     cursor: "pointer",
@@ -87,11 +87,11 @@ const styles = StyleSheet.create({
     background: "white",
     userSelect: "none",
     textTransform: "capitalize",
-    padding: "15px 0 10px 0",
-    borderRadius: 4,
+    padding: 0,
+    borderRadius: 10,
     marginTop: 5,
     marginLeft: 5,
-    width: 220,
+    width: 150,
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
@@ -100,10 +100,12 @@ const styles = StyleSheet.create({
   },
   dropdownOpt: {
     display: "flex",
-    padding: "7px 25px",
+    columnGap: "7px",
+    padding: "7px 12px",
     cursor: "pointer",
     position: "relative",
     boxSizing: "border-box",
+    fontSize: 12,
     width: "100%",
     ":hover": {
       background: colors.LIGHTER_GREY(),
@@ -121,6 +123,7 @@ const styles = StyleSheet.create({
   dropdownOptLabel: {
     fontSize: 14,
   },
+
 });
 
 export default CommentTypeSelector;
