@@ -10,10 +10,11 @@ import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile } from "~/config/types/root_types";
 import CommentAuthors from "./CommentAuthors";
 import CommentTypeSelector from "./CommentTypeSelector";
-import commentTypes from "./lib/commentTypes";
 import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
+import { commentTypes } from "./lib/options";
+
 
 type CommentEditorArgs = {
   editorId: string;
