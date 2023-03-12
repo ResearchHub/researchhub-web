@@ -3,24 +3,23 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import commentTypes from "./lib/commentTypes";
 import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
+import IconButton from "../Icons/IconButton";
 
 type Args = {
   selectedType: COMMENT_TYPES;
   handleSelect: Function;
-  displayVerb?: boolean;
 };
 
 const CommentTypeSelector = ({
   selectedType,
   handleSelect,
-  displayVerb,
 }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const _selectedType = commentTypes.find((t) => t.value === selectedType);
+  const _selectedType = commentTypes.find((t) => t.value === selectedType) || commentTypes[0];
   const dropdownRef = useRef(null);
 
   useEffectHandleOutsideClick({
@@ -29,15 +28,14 @@ const CommentTypeSelector = ({
     onOutsideClick: () => setIsOpen(false),
   });
 
-  const displayContent = displayVerb ? _selectedType!.verb : _selectedType!.label;
   return (
     <div className={css(styles.commentTypeSelector)}>
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className={`${css(styles.trigger)} comment-type-dropdown`}
-      >
-        <span>{displayContent}</span>
-        <FontAwesomeIcon icon={faAngleDown} style={{ fontSize: 20 }} />
+      <div className={`${css(styles.trigger)} comment-type-dropdown`}>
+        <IconButton overrideStyle={styles.labelWrapper} onClick={() => setIsOpen(!isOpen)}>
+          <span style={{fontSize: 12}}>{_selectedType.icon}</span>
+          {_selectedType!.label}
+          <FontAwesomeIcon icon={faAngleDown} style={{ marginLeft: 3, fontSize: 16 }} />
+        </IconButton>
       </div>
       <div
         ref={dropdownRef}
@@ -50,7 +48,7 @@ const CommentTypeSelector = ({
           >
             <div className={css(styles.dropdownOptIcon)}>{t.icon}</div>
             <div className={css(styles.dropdownOptLabel)}>
-              {displayVerb ? t.verb : t.label}
+              {t.label}
             </div>
             {selectedType === t.value && (
               <div className={css(styles.check)}>
@@ -69,16 +67,18 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   trigger: {
-    padding: 8,
-    columnGap: "8px",
-    display: "flex",
     cursor: "pointer",
-    color: colors.NEW_BLUE(),
-    paddingBottom: 2,
-    paddingLeft: 0,
-    paddingRight: 0,
     userSelect: "none",
-    borderBottom: `1px solid ${colors.NEW_BLUE()}`,
+  },
+  labelWrapper: {
+    marginTop: 5,
+    display: "flex",
+    columnGap: "4px",
+    color: colors.NEW_BLUE(),
+    alignItems: "center",
+    fontWeight: 500,
+    fontSize: 14,
+    
   },
   dropdown: {
     position: "absolute",
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     padding: "15px 0 10px 0",
     borderRadius: 4,
     marginTop: 5,
+    marginLeft: 5,
     width: 220,
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
@@ -119,7 +120,6 @@ const styles = StyleSheet.create({
   },
   dropdownOptLabel: {
     fontSize: 14,
-    fontWeight: 500,
   },
 });
 

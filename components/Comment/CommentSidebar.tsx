@@ -65,9 +65,10 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   feedWrapper: {
-    padding: "20px 32px",
+    padding: "15px 32px",
     overflowY: "scroll",
     height: "100vh",
   },
