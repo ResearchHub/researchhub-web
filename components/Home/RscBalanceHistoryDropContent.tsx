@@ -129,19 +129,21 @@ export default function RscBalanceHistoryDropContent({
             width={18}
           />
           <span>ResearchCoin</span>
-          <span
+          <a
+            href="https://docs.researchhub.com/researchcoin/token-overview"
+            target="_blank"
             style={{
               color: colors.LIGHT_GREY_TEXT,
               position: "relative",
               padding: "8px 8px 8px 0",
               fontSize: 14,
-              cursor: "initial",
+              cursor: "pointer",
             }}
             data-for={"reputation-tool-tip"}
             data-tip=""
           >
             {icons.question}
-          </span>
+          </a>
         </div>
         <ALink
           href={`/user/${currentUser?.author_profile?.id}/rsc`}
@@ -192,9 +194,9 @@ export default function RscBalanceHistoryDropContent({
             marginBottom: 5,
             marginTop: 10,
           }}
-          >        
-            <UniswapButton variant="text" />
-          </div>
+        >
+          <UniswapButton variant="text" />
+        </div>
       </div>
     </div>
   );
