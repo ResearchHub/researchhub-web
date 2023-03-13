@@ -1,14 +1,18 @@
 import globalColors from "~/config/themes/colors";
 
 const colors = {
-  border: globalColors.GREY_LINE(),
+  border: globalColors.GREY_LINE(1.0),
+  primary: {
+    btn: globalColors.NEW_BLUE(1.0),
+    text: globalColors.BLACK(1.0),
+  },
+  hover: {
+    background: globalColors.LIGHTER_GREY(1.0),
+  },
   sidebar: {
     background: globalColors.GREY_ICY_BLUE_HUE,
   },
   filters: {
-    hover: {
-      background: globalColors.LIGHTER_GREY(),
-    },
     unselected: {
       text: globalColors.BLACK(0.6),
     },

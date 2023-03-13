@@ -15,6 +15,9 @@ import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import CommentFilters from "./CommentFilters";
 import { css, StyleSheet } from "aphrodite";
+import { filterOpts, sortOpts } from "./lib/options";
+import CommentSort from "./CommentSort";
+
 
 type Args = {
   unifiedDocumentId: ID;
@@ -22,7 +25,9 @@ type Args = {
 
 const CommentFeed = ({ unifiedDocumentId }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
+  const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const user = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -83,7 +88,10 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
         author={user?.authorProfile}
       />
       <div className={css(styles.filtersWrapper)}>
-        <CommentFilters />
+        <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />
+        <div className={css(styles.sortWrapper)}>
+          <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
+        </div>
       </div>
       {comments.map((c) => (
         <Comment
@@ -100,7 +108,11 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
 const styles = StyleSheet.create({
   filtersWrapper: {
     margin: "25px 0",
+    display: "flex",
   },
+  sortWrapper: {
+    marginLeft: "auto",
+  }
 });
 
 export default CommentFeed;
