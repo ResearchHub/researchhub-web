@@ -1,10 +1,13 @@
 import { css, StyleSheet } from "aphrodite";
-import { useState } from "react";
 import colors from "./lib/colors";
 import { filterOpts } from "./lib/options";
 
-const CommentFilters = ({}) => {
-  const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
+type Args = {
+  selectedFilter: any,
+  handleSelect: Function,
+}
+
+const CommentFilters = ({ selectedFilter, handleSelect }: Args) => {
 
   return (
     <div className={css(styles.filtersWrapper)}>
@@ -20,7 +23,7 @@ const CommentFilters = ({}) => {
               </div>
             ) : (
               <div
-                onClick={() => setSelectedFilter(f)}
+                onClick={() => handleSelect(f)}
                 className={css([styles.filter, styles.filterUnselected])}
                 key={`filter-${f.value}`}
               >
@@ -48,7 +51,7 @@ const styles = StyleSheet.create({
   },
   filterUnselected: {
     ":hover": {
-      background: colors.filters.hover.background,
+      background: colors.hover.background,
       transition: "0.3s",
     },
   },

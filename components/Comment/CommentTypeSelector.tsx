@@ -3,10 +3,10 @@ import { faAngleDown, faCheck } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
-import colors from "~/config/themes/colors";
 import { commentTypes } from "./lib/options";
 import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
 import IconButton from "../Icons/IconButton";
+import colors from "./lib/colors";
 
 type Args = {
   selectedType: COMMENT_TYPES;
@@ -66,7 +66,6 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
 const styles = StyleSheet.create({
   commentTypeSelector: {
     position: "relative",
-    // color: colors.NEW_BLUE(),
   },
   trigger: {
     cursor: "pointer",
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     display: "flex",
     columnGap: "4px",
-    color: colors.NEW_BLUE(),
+    color: colors.primary.btn,
     alignItems: "center",
     fontWeight: 500,
     fontSize: 14,
@@ -108,11 +107,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     fontSize: 12,
     width: "100%",
+    alignItems: "center",
     ":hover": {
-      background: colors.LIGHTER_GREY(),
+      background: colors.hover.background,
       transition: "0.2s",
     },
-    alignItems: "center",
   },
   dropdownOptIcon: {},
   check: {

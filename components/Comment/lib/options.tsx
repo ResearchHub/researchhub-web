@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments, faStar, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import { faStar as faStarIcon, faBolt, faArrowAltUp } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./types";
 
 export const commentTypes = [
@@ -27,7 +28,6 @@ export const commentTypes = [
   },
 ];
 
-
 export const filterOpts = [{
   label: "All",
   value: null,
@@ -41,11 +41,14 @@ export const filterOpts = [{
 
 export const sortOpts = [{
   label: "Best",
-  value: "best"
+  value: "best",
+  icon: <FontAwesomeIcon icon={faStarIcon} />,
 },{
-  label: "Recently added",
-  value: "best"
+  label: "Newest",
+  value: "new",
+  icon: <FontAwesomeIcon icon={faBolt} />,
 }, {
   label: "Upvoted",
-  value: "top"
+  value: "top",
+  icon: <FontAwesomeIcon icon={faArrowAltUp} />,
 }];
