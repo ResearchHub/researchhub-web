@@ -13,22 +13,28 @@ import { POST_TYPES } from "./TextEditor/config/postTypes";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 type Args = {
-  contentType: string,
-  size?: "small"|"medium",
-  label: string,
-  onClick?: null|Function,  
-}
+  contentType: string;
+  size?: "small" | "medium";
+  label: string;
+  onClick?: null | Function;
+};
 
 const ContentBadge = ({
   contentType,
   size = "medium",
   label = "",
-  onClick = null
+  onClick = null,
 }: Args) => {
   const router = useRouter();
 
   return (
-    <Badge badgeClassName={[styles.badge, styles["badgeFor_" + contentType], styles[size] ]}>
+    <Badge
+      badgeClassName={[
+        styles.badge,
+        styles["badgeFor_" + contentType],
+        styles[size],
+      ]}
+    >
       {contentType === "paper" ? (
         <>
           <span className={css(styles.icon)}>
@@ -87,8 +93,14 @@ const ContentBadge = ({
         </>
       ) : contentType === "bounty" ? (
         <>
-          <span className={css(styles.icon, size === "small" && styles.iconSmall)}>
-            <ResearchCoinIcon version={4} height={size === "small" ? 14 : 16} width={size === "small" ? 14 : 16} />
+          <span
+            className={css(styles.icon, size === "small" && styles.iconSmall)}
+          >
+            <ResearchCoinIcon
+              version={4}
+              height={size === "small" ? 14 : 16}
+              width={size === "small" ? 14 : 16}
+            />
             {` `}
           </span>
           <span className={css(styles.rscContent)}>{label}</span>
@@ -105,9 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
-  medium: {
-
-  },
+  medium: {},
   icon: {
     marginRight: 6,
     fontSize: 16,
