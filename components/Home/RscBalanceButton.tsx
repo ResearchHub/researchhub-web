@@ -95,7 +95,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           />
           {shouldDisplayBalanceHome && (
             <span className={css(styles.balanceText)}>
-              {getNumberWithCommas(Math.floor(balance ?? 0))}
+              {getNumberWithCommas(Math.floor(balance ?? 0))} RSC
             </span>
           )}
           {shouldDisplayRscDelta && (
@@ -125,12 +125,13 @@ const styles = StyleSheet.create({
       backgroundColor: "#FAFAFA",
       borderRadius: 3,
       transition: "0.3s",
-    },    
+    },
   },
   balanceText: {
     fontSize: 14,
     fontWeight: 500,
     marginLeft: 6,
+    whiteSpace: "nowrap",
     color: colors.ORANGE_DARK2(),
   },
   blur: {
