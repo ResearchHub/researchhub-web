@@ -13,6 +13,7 @@ import { createEditorSummary, createEduSummary } from "~/config/utils/user";
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { timeSince } from "~/config/utils/dates";
 import colors from "~/config/themes/colors";
+import { truncateText } from "~/config/utils/string";
 
 const TRUNCATE_SIZE = 100;
 
@@ -70,14 +71,10 @@ const UserPopover = ({ userId }: { userId: ID }) => {
           >
             {fetchedUser?.authorProfile?.description
               ? !showMore
-                ? fetchedUser?.authorProfile?.description.slice(
-                    0,
+                ? truncateText(
+                    fetchedUser?.authorProfile?.description,
                     TRUNCATE_SIZE
-                  ) +
-                  (fetchedUser?.authorProfile?.description.length >
-                  TRUNCATE_SIZE
-                    ? "..."
-                    : "")
+                  )
                 : fetchedUser?.authorProfile?.description
               : `${fetchedUser?.firstName} joined ResearchHub ${timeSince(
                   fetchedUser?.createdAt
