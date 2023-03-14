@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useRef, useState } from "react";
 
 // Components
 import ResearchHubPopover from "~/components/ResearchHubPopover";
@@ -7,26 +7,29 @@ import UserPopover from "./UserPopover";
 // Utils
 import { RHUser } from "~/config/types/root_types";
 import { genClientId } from "~/config/utils/id";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 
 interface UserTooltipProps {
-  setUserPopoverOpen: (isOpen: boolean) => void;
-  isOpen: boolean;
   createdBy: RHUser | null;
   targetContent: ReactElement;
-  inPopoverRef: React.MutableRefObject<boolean>;
+  positions?: ("left" | "right" | "top" | "bottom")[];
 }
 
 export default function UserTooltip({
-  setUserPopoverOpen,
-  isOpen,
   createdBy,
   targetContent,
-  inPopoverRef,
+  positions,
 }: UserTooltipProps): ReactElement {
+  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
+
+  const inPopoverRef = useRef(false);
+
+  const isMobileScreen = getIsOnMobileScreenSize();
+
   return (
     <ResearchHubPopover
       containerStyle={{ zIndex: 100 }}
-      positions={["bottom", "right", "top"]}
+      positions={positions || ["bottom", "top", "right", "left"]}
       onClickOutside={(): void => {
         setUserPopoverOpen(false);
       }}
@@ -40,16 +43,42 @@ export default function UserTooltip({
             inPopoverRef.current = true;
           }}
           onMouseLeave={(e) => {
-            inPopoverRef.current = false;
-            setUserPopoverOpen(false);
+            setTimeout(() => {
+              inPopoverRef.current = false;
+
+              setUserPopoverOpen(false);
+            }, 50);
           }}
           id={`user-popover-${genClientId()}`}
         >
           <UserPopover userId={createdBy?.id} />
         </div>
       }
-      isOpen={isOpen}
-      targetContent={targetContent}
+      isOpen={userPopoverOpen}
+      targetContent={
+        <div
+          style={{
+            padding: 4,
+            margin: -4,
+          }}
+          onMouseEnter={() => {
+            if (!isMobileScreen) {
+              setTimeout(() => {
+                setUserPopoverOpen(true);
+              }, 50);
+            }
+          }}
+          onMouseLeave={(e) => {
+            setTimeout(() => {
+              if (!inPopoverRef.current) {
+                setUserPopoverOpen(false);
+              }
+            }, 50);
+          }}
+        >
+          {targetContent}
+        </div>
+      }
     />
   );
 }

@@ -237,16 +237,16 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
-  if (raw.first_name && !raw.author_profile.first_name) {
+  if (raw.first_name && !raw.author_profile?.first_name) {
     raw.author_profile.first_name = raw.first_name;
   }
-  if (raw.last_name && !raw.author_profile.last_name) {
+  if (raw.last_name && !raw.author_profile?.last_name) {
     raw.author_profile.last_name = raw.last_name;
   }
-  if (!raw.first_name && raw.author_profile.first_name) {
+  if (!raw.first_name && raw.author_profile?.first_name) {
     raw.first_name = raw.author_profile.first_name;
   }
-  if (!raw.last_name && raw.author_profile.last_name) {
+  if (!raw.last_name && raw.author_profile?.last_name) {
     raw.last_name = raw.author_profile.last_name;
   }
 

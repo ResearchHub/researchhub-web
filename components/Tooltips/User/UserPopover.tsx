@@ -21,8 +21,10 @@ const UserPopover = ({ userId }: { userId: ID }) => {
       const url = generateApiUrl(`popover/${userId}/get_user`);
       const resp = await fetch(url);
       const json = await resp.json();
-      setUser(parseUser(json));
-      setLoading(false);
+      if (resp.ok) {
+        setUser(parseUser(json));
+        setLoading(false);
+      }
     };
 
     fetchPopover();
@@ -110,7 +112,7 @@ const UserPopover = ({ userId }: { userId: ID }) => {
           hideRipples={true}
           isLink={{
             href: "/user/[authorId]/[tabName]",
-            linkAs: fetchedUser?.authorProfile.url,
+            linkAs: fetchedUser?.authorProfile?.url,
           }}
         >
           View Profile

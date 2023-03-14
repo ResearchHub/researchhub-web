@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, useState } from "react";
 import { Hub } from "~/config/types/hub";
 import { RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
@@ -10,10 +10,6 @@ import ALink from "../ALink";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Bounty from "~/config/types/bounty";
-import ResearchHubPopover from "../ResearchHubPopover";
-import UserPopover from "../Tooltips/UserPopover";
-import { genClientId } from "~/config/utils/id";
-import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 
 type Args = {
@@ -37,9 +33,6 @@ function SubmissionDetails({
     process.browser && window.innerWidth > breakpoints.medium.int;
 
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
-  const [userPopoverOpen, setUserPopoverOpen] = useState(false);
-
-  const inPopoverRef = useRef(false);
 
   let sliceIndex = 1;
   if (showAllHubs) {
@@ -52,31 +45,12 @@ function SubmissionDetails({
   const authorProfile = createdBy?.authorProfile;
   const _twoDaysInMinutes = 2 * 24 * 60;
 
-  const isMobileScreen = getIsOnMobileScreenSize();
-
   return (
     <div className={css(styles.submittedBy)}>
       <UserTooltip
-        inPopoverRef={inPopoverRef}
-        isOpen={userPopoverOpen}
         createdBy={createdBy}
-        setUserPopoverOpen={setUserPopoverOpen}
         targetContent={
           <div
-            onMouseEnter={() => {
-              if (!isMobileScreen) {
-                setTimeout(() => {
-                  setUserPopoverOpen(true);
-                }, 50);
-              }
-            }}
-            onMouseLeave={(e) => {
-              setTimeout(() => {
-                if (!inPopoverRef.current) {
-                  setUserPopoverOpen(false);
-                }
-              }, 50);
-            }}
             style={{
               display: "flex",
               padding: 4,
