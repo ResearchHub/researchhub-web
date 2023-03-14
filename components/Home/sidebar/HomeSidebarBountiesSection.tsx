@@ -14,6 +14,7 @@ import colors from "~/config/themes/colors";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
+import { parseUser } from "~/config/types/root_types";
 
 const TEMP_BOUNTY_DISPLAY_CUT_OFF = 4;
 
@@ -100,6 +101,7 @@ export default function HomeSidebarBountiesSection({
         <BountiesSidebarItem
           bountyAmount={formatBountyAmount({ amount })}
           bountyContentSnippet={title || item?.plain_text}
+          createdBy={parseUser(created_by)}
           createdByAuthor={created_by?.author_profile}
           documentType={documentType}
           expirationDate={expiration_date}

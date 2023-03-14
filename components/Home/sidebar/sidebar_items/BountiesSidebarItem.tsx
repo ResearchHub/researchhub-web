@@ -1,11 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
 import { FEDocType } from "~/config/utils/getUnifiedDocType";
-import { ID, NullableString } from "~/config/types/root_types";
+import { ID, NullableString, RHUser } from "~/config/types/root_types";
 import { ReactElement } from "react";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
-
+import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 
 type Props = {
   bountyAmount: number;
@@ -16,6 +16,7 @@ type Props = {
   isCommentBounty: boolean;
   relatedDocID: ID;
   slug: NullableString;
+  createdBy: RHUser | null;
 };
 
 export default function BountiesSidebarItem({
@@ -26,6 +27,7 @@ export default function BountiesSidebarItem({
   isCommentBounty,
   relatedDocID,
   slug,
+  createdBy,
 }: Props): ReactElement {
   const roundedOfferAmount = bountyAmount;
 
@@ -40,12 +42,18 @@ export default function BountiesSidebarItem({
       >
         <div className={css(styles.bountiesSidebarItem)}>
           <div className={css(styles.bountiesSidebarItemHeader)}>
-            <AuthorFacePile
-              authorProfiles={[createdByAuthor]}
-              withAuthorName
-              horizontal
-              fontSize={14}
-              imgSize={12.3}
+            <UserTooltip
+              createdBy={createdBy}
+              positions={["top", "left", "bottom"]}
+              targetContent={
+                <AuthorFacePile
+                  authorProfiles={[createdByAuthor]}
+                  withAuthorName
+                  horizontal
+                  fontSize={14}
+                  imgSize={17}
+                />
+              }
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
@@ -54,16 +62,6 @@ export default function BountiesSidebarItem({
                 contentType="bounty"
                 size="small"
               />
-              {/* <span className={css(styles.bountiesAmount)}>
-                {roundedOfferAmount}
-                {" RSC"}
-              </span> */}
-              {/* <img
-                style={{ width: 12, marginLeft: 5 }}
-                src={"/static/icons/coin-filled.png"}
-                draggable={false}
-                alt="RSC Coin"
-              /> */}
             </span>
           </div>
           <div className={css(styles.bountiesSidebarItemContent)}>
