@@ -14,6 +14,8 @@ import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { timeSince } from "~/config/utils/dates";
 import colors from "~/config/themes/colors";
 
+const TRUNCATE_SIZE = 100;
+
 const UserPopover = ({ userId }: { userId: ID }) => {
   const [fetchedUser, setUser] = useState<RHUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,8 +70,12 @@ const UserPopover = ({ userId }: { userId: ID }) => {
           >
             {fetchedUser?.authorProfile?.description
               ? !showMore
-                ? fetchedUser?.authorProfile?.description.slice(0, 100) +
-                  (fetchedUser?.authorProfile?.description.length > 155
+                ? fetchedUser?.authorProfile?.description.slice(
+                    0,
+                    TRUNCATE_SIZE
+                  ) +
+                  (fetchedUser?.authorProfile?.description.length >
+                  TRUNCATE_SIZE
                     ? "..."
                     : "")
                 : fetchedUser?.authorProfile?.description
@@ -77,7 +83,8 @@ const UserPopover = ({ userId }: { userId: ID }) => {
                   fetchedUser?.createdAt
                 )}`}
 
-            {fetchedUser?.authorProfile?.description.length > 155 && (
+            {fetchedUser?.authorProfile?.description?.length >
+              TRUNCATE_SIZE && (
               <div
                 className={css(styles.showMore)}
                 onClick={() => setShowMore(!showMore)}
