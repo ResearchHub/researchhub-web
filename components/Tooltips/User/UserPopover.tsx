@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { generateApiUrl } from "~/config/api";
-import Button from "../Form/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
+import Image from "next/image";
+
+// Components
+import Button from "../../Form/Button";
+
+// Utils
 import { createEditorSummary, createEduSummary } from "~/config/utils/user";
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
-import Image from "next/image";
 
 const UserPopover = ({ userId }: { userId: ID }) => {
   const [fetchedUser, setUser] = useState<RHUser | null>(null);
