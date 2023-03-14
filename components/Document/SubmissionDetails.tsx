@@ -53,9 +53,8 @@ function SubmissionDetails({
           <div
             style={{
               display: "flex",
-              padding: 4,
               alignItems: "center",
-              marginLeft: -4,
+              marginRight: 4,
             }}
           >
             <div className={css(styles.createdByContainer)}>
