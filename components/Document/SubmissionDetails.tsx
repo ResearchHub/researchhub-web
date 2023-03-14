@@ -57,23 +57,29 @@ function SubmissionDetails({
               marginRight: 4,
             }}
           >
-            <div className={css(styles.createdByContainer)}>
-              <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
-            </div>
-            <div className={css(styles.submittedByDetails)}>
-              {authorProfile?.firstName || authorProfile?.lastName ? (
-                <ALink
-                  href={`/user/${authorProfile?.id}/overview`}
-                  key={`/user/${authorProfile?.id}/overview-key`}
-                  overrideStyle={styles.link}
-                >
-                  {authorProfile?.firstName} {authorProfile?.lastName}
-                </ALink>
-              ) : (
-                <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
-              )}
-              {` `}
-            </div>
+            <ALink
+              href={`/user/${authorProfile?.id}/overview`}
+              key={`/user/${authorProfile?.id}/overview-key`}
+              overrideStyle={styles.link}
+            >
+              <>
+                <div className={css(styles.createdByContainer)}>
+                  <AuthorAvatar
+                    author={authorProfile}
+                    size={avatarSize}
+                    trueSize
+                  />
+                </div>
+                <div className={css(styles.submittedByDetails)}>
+                  {authorProfile?.firstName || authorProfile?.lastName ? (
+                    `${authorProfile?.firstName} ${authorProfile?.lastName}`
+                  ) : (
+                    <span style={{ color: colors.BLACK(1.0) }}>Anonymous</span>
+                  )}
+                  {` `}
+                </div>
+              </>
+            </ALink>
           </div>
         }
       />
@@ -146,6 +152,8 @@ const styles = StyleSheet.create({
   },
   link: {
     cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
     fontWeight: 400,
     ":hover": {
       color: colors.NEW_BLUE(),
