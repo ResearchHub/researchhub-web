@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { generateApiUrl } from "~/config/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +18,7 @@ import { breakpoints } from "~/config/themes/screen";
 
 const TRUNCATE_SIZE = 100;
 
-const UserPopover = ({ userId }: { userId: ID }) => {
+const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
   const [fetchedUser, setUser] = useState<RHUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(false);
