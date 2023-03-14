@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     justifyContent: "center",
     display: "inline-flex",
+    userSelect: "none",
   },
   withAnimation: {
     ":hover": {

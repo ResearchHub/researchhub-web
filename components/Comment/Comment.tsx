@@ -36,10 +36,12 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
         ) : (
           <CommentReadOnly content={comment.content} />
         )}
-        <CommentActions
-          handleEdit={() => setIsEditMode(!isEditMode)}
-          handleReply={() => setIsReplyOpen(!isReplyOpen)}
-        />
+        
+          <CommentActions
+            handleEdit={() => setIsEditMode(!isEditMode)}
+            handleReply={() => setIsReplyOpen(!isReplyOpen)}
+          />
+
       </div>
       {isReplyOpen && (
         <CommentEditor
@@ -49,12 +51,13 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
       )}
       <div className={css(styles.children)}>
         {comment.children.map((c) => (
-          <Comment
-            handleUpdate={handleUpdate}
-            handleCreate={handleCreate}
-            key={c.id}
-            comment={c}
-          />
+          <div key={c.id} className={css(styles.commentWrapper)}>
+            <Comment
+              handleUpdate={handleUpdate}
+              handleCreate={handleCreate}
+              comment={c}
+            />
+          </div>
         ))}
       </div>
     </div>
@@ -69,6 +72,9 @@ const styles = StyleSheet.create({
   },
   headerWrapper: {
     marginBottom: 10,
+  },
+  commentWrapper: {
+    marginTop: 30,
   }
 });
 

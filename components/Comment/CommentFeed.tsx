@@ -94,12 +94,13 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
         </div>
       </div>
       {comments.map((c) => (
-        <Comment
-          handleCreate={handleCommentCreate}
-          handleUpdate={handleCommentUpdate}
-          key={c.id}
-          comment={c}
-        />
+        <div key={c.id} className={css(styles.commentWrapper)}>
+          <Comment
+            handleCreate={handleCommentCreate}
+            handleUpdate={handleCommentUpdate}
+            comment={c}
+          />
+        </div>
       ))}
     </div>
   );
@@ -112,7 +113,10 @@ const styles = StyleSheet.create({
   },
   sortWrapper: {
     marginLeft: "auto",
-  }
+  },
+  commentWrapper: {
+    marginTop: 30,
+  }  
 });
 
 export default CommentFeed;
