@@ -28,42 +28,47 @@ const UserPopover = ({ userId }: { userId: ID }) => {
     return null;
   }
 
-  const educationSummary = createEduSummary(fetchedUser?.author_profile);
+  const educationSummary = createEduSummary(fetchedUser?.authorProfile);
 
   return (
     <div className={css(styles.container)}>
       <div
         style={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
         }}
       >
         <Image
-          height={90}
-          width={90}
+          height={56}
+          width={56}
           className={css(styles.avatar)}
-          src={fetchedUser?.author_profile?.profileImage}
+          alt={`${fetchedUser?.firstName} ${fetchedUser?.lastName}`}
+          src={fetchedUser?.authorProfile?.profileImage || ""}
         />
-      </div>
-      <div className={css(styles.name)}>
-        {fetchedUser?.firstName} {fetchedUser?.lastName}
-      </div>
-      <div className={css(styles.desc)}>
-        {fetchedUser?.author_profile?.description}
+        <div className={css(styles.descSection)}>
+          <div className={css(styles.name)}>
+            {fetchedUser?.firstName} {fetchedUser?.lastName}
+          </div>
+
+          <div className={css(styles.desc)}>
+            {fetchedUser?.authorProfile?.description}
+          </div>
+        </div>
       </div>
 
-      <div style={{ marginTop: "auto" }}>
+      <div style={{ marginTop: "16px", color: "#7C7989" }}>
         {!!fetchedUser?.editorOf && !!fetchedUser?.editorOf?.length && (
           <div className={css(styles.row)}>
-            <Image
-              alt="editor-star"
-              height={20}
-              src="/static/icons/editor-star.png"
-              width={20}
-              className={css(styles.editorImg)}
-            />
+            <div className={css(styles.iconColumn)}>
+              <Image
+                alt="editor-star"
+                height={17}
+                src="/static/user/editor-star.png"
+                width={17}
+                className={css(styles.editorImg)}
+              />
+            </div>
             <div>Editor of</div>
 
             {createEditorSummary(fetchedUser?.editorOf)}
@@ -72,21 +77,26 @@ const UserPopover = ({ userId }: { userId: ID }) => {
 
         {!!educationSummary && (
           <div className={css(styles.row)}>
-            <div style={{ color: "#BCBAC2", marginRight: 4 }}>
+            <div
+              className={css(styles.iconColumn)}
+              style={{ color: "rgba(36, 31, 58, 0.25)", marginRight: 4 }}
+            >
               <FontAwesomeIcon icon={faGraduationCap} />
             </div>
             {educationSummary}
           </div>
         )}
 
-        <div className={css(styles.row)}>
-          <img
-            src="/static/ResearchHubIcon.png"
-            className={css(styles.rhIcon)}
-            height={20}
-            style={{ marginRight: 5, marginLeft: 3 }}
-            alt="reserachhub-icon"
-          />
+        <div className={css(styles.row, styles.reputationRow)}>
+          <div className={css(styles.iconColumn)}>
+            <img
+              src="/static/user/user-desc-rsc.png"
+              className={css(styles.rhIcon)}
+              height={18}
+              style={{ marginRight: 5, marginLeft: 3 }}
+              alt="reserachhub-icon"
+            />
+          </div>
           <div>Lifetime Reputation: {fetchedUser?.reputation}</div>
         </div>
       </div>
@@ -121,16 +131,24 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
+  iconColumn: {
+    width: 22,
+  },
+  reputationRow: {
+    alignItems: "center",
+  },
+  descSection: {
+    textAlign: "left",
+    marginLeft: 12,
+  },
   name: {
-    marginTop: 15,
     marginBottom: 5,
     fontSize: 18,
     fontWeight: 500,
-    textAlign: "center",
   },
   desc: {
-    textAlign: "center",
-    marginBottom: 8,
+    marginTop: 6,
+    fontSize: 14,
   },
   avatar: {
     borderRadius: "50%",
@@ -143,7 +161,7 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     columnGap: "5px",
-    alignItems: "center",
+    alignItems: "flex-start",
     fontSize: 14,
     marginBottom: 8,
   },

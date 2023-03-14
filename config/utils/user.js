@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 14,
     textTransform: "capitalize",
-    color: colors.BLACK(0.8),
+    // color: colors.BLACK(0.8),
     ":hover": {
       color: colors.BLUE(),
     },

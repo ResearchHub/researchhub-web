@@ -225,6 +225,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     lastName: raw.last_name,
     url: `/user/${raw.id}/overview`,
     description: raw.description,
+    education: raw.education,
     ...(raw.sequence && { sequence: raw.sequence }),
   };
 
