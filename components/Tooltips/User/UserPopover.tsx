@@ -14,6 +14,7 @@ import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { timeSince } from "~/config/utils/dates";
 import colors from "~/config/themes/colors";
 import { truncateText } from "~/config/utils/string";
+import { breakpoints } from "~/config/themes/screen";
 
 const TRUNCATE_SIZE = 100;
 
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     // textAlign: "center",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
   },
