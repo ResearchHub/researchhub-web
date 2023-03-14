@@ -20,11 +20,13 @@ const Comment = ({ comment, handleUpdate, handleCreate }: CommentArgs) => {
   return (
     <div>
       <div>
-        <CommentHeader
-          authorProfile={comment.createdBy.authorProfile}
-          timeAgo={comment.timeAgo}
-          bounties={[]}
-        />
+        <div className={css(styles.headerWrapper)}>
+          <CommentHeader
+            authorProfile={comment.createdBy.authorProfile}
+            timeAgo={comment.timeAgo}
+            bounties={[]}
+          />
+        </div>
         {isEditMode ? (
           <CommentEditor
             handleSubmit={({ content }) => handleUpdate({ comment, content })}
@@ -65,6 +67,9 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     borderLeft: `2px solid ${colors.GREY(1.0)}`,
   },
+  headerWrapper: {
+    marginBottom: 10,
+  }
 });
 
 export default Comment;

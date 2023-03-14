@@ -76,7 +76,7 @@ const Paper = ({
     return <Error statusCode={error.code} />;
   }
 
-  // const [isCommentSidebarOpen, setIsCommentSidebarOpen] = useState(true);
+  const [isCommentSidebarOpen, setIsCommentSidebarOpen] = useState(true);
 
   // ENUM: NOT_FETCHED, FETCHING, COMPLETED
   const [fetchFreshDataStatus, setFetchFreshDataStatus] =
@@ -364,14 +364,14 @@ const Paper = ({
           </div>
         </div>
 
-        {/* <CommentSidebarToggle
+        <CommentSidebarToggle
           isOpen={isCommentSidebarOpen}
           setIsOpen={setIsCommentSidebarOpen}
         />
         <CommentSidebar
           isOpen={isCommentSidebarOpen}
           setIsOpen={setIsCommentSidebarOpen}
-        /> */}
+        />
       </div>
     </div>
   );
@@ -451,8 +451,7 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    // justifyContent: "space-between",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
     // This property is needed for comments sidebar to close gracefully without overflow.
