@@ -20,6 +20,11 @@ const colors = {
       background: globalColors.NEW_BLUE(0.1),
       text: globalColors.NEW_BLUE(1.0),
     }
+  },
+  toggle: {
+    commentIcon: globalColors.MEDIUM_GREY(1.0),
+    commentText: globalColors.BLACK(0.6),
+    bountyText: globalColors.ORANGE_DARK2(1.0),
   }
 }
 

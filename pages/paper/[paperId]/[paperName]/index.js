@@ -460,6 +460,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 30,
     marginBottom: 30,
+    position: "relative",
   },
   main: {
     boxSizing: "border-box",
