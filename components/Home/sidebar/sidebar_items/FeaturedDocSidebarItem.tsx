@@ -28,7 +28,7 @@ export default function FeaturedDocSidebarItem({
           <div className={css(styles.featuredDocSidebarItemHeader)}>
             <UserTooltip
               createdBy={createdBy}
-              positions={["top", "left", "bottom"]}
+              positions={["left"]}
               targetContent={
                 <AuthorFacePile
                   authorProfiles={[

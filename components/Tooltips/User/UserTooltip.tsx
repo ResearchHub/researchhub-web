@@ -1,4 +1,5 @@
 import { ReactElement, useRef, useState } from "react";
+import { StyleSheet, css } from "aphrodite";
 
 // Components
 import ResearchHubPopover from "~/components/ResearchHubPopover";
@@ -15,6 +16,8 @@ interface UserTooltipProps {
   positions?: ("left" | "right" | "top" | "bottom")[];
 }
 
+const TOOLTIP_DELAY = 600;
+
 export default function UserTooltip({
   createdBy,
   targetContent,
@@ -23,6 +26,7 @@ export default function UserTooltip({
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
   const inPopoverRef = useRef(false);
+  const popoverRefTimeout = useRef(null);
 
   const isMobileScreen = getIsOnMobileScreenSize();
 
@@ -35,7 +39,11 @@ export default function UserTooltip({
       }}
       popoverContent={
         <div
-          style={{ marginTop: -4 }}
+          className={css(
+            positions?.length === 1 && positions[0] === "left"
+              ? styles.userPopoverLeft
+              : styles.userPopover
+          )}
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -45,9 +53,8 @@ export default function UserTooltip({
           onMouseLeave={(e) => {
             setTimeout(() => {
               inPopoverRef.current = false;
-
               setUserPopoverOpen(false);
-            }, 50);
+            }, TOOLTIP_DELAY / 2);
           }}
           id={`user-popover-${genClientId()}`}
         >
@@ -63,17 +70,24 @@ export default function UserTooltip({
           }}
           onMouseEnter={() => {
             if (!isMobileScreen) {
-              setTimeout(() => {
+              popoverRefTimeout.current = setTimeout(() => {
                 setUserPopoverOpen(true);
-              }, 50);
+              }, TOOLTIP_DELAY);
             }
           }}
           onMouseLeave={(e) => {
-            setTimeout(() => {
+            if (userPopoverOpen) {
+              setTimeout(() => {
+                if (!inPopoverRef.current) {
+                  setUserPopoverOpen(false);
+                }
+              }, TOOLTIP_DELAY / 2);
+            } else {
               if (!inPopoverRef.current) {
+                clearTimeout(popoverRefTimeout.current);
                 setUserPopoverOpen(false);
               }
-            }, 50);
+            }
           }}
         >
           {targetContent}
@@ -82,3 +96,12 @@ export default function UserTooltip({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  userPopover: {
+    marginTop: -4,
+  },
+  userPopoverLeft: {
+    marginRight: -4,
+  },
+});

@@ -12,10 +12,12 @@ import Button from "../../Form/Button";
 import { createEditorSummary, createEduSummary } from "~/config/utils/user";
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { timeSince } from "~/config/utils/dates";
+import colors from "~/config/themes/colors";
 
 const UserPopover = ({ userId }: { userId: ID }) => {
   const [fetchedUser, setUser] = useState<RHUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const fetchPopover = async () => {
@@ -65,10 +67,24 @@ const UserPopover = ({ userId }: { userId: ID }) => {
             )}
           >
             {fetchedUser?.authorProfile?.description
-              ? fetchedUser?.authorProfile?.description
+              ? !showMore
+                ? fetchedUser?.authorProfile?.description.slice(0, 100) +
+                  (fetchedUser?.authorProfile?.description.length > 155
+                    ? "..."
+                    : "")
+                : fetchedUser?.authorProfile?.description
               : `${fetchedUser?.firstName} joined ResearchHub ${timeSince(
                   fetchedUser?.createdAt
                 )}`}
+
+            {fetchedUser?.authorProfile?.description.length > 155 && (
+              <div
+                className={css(styles.showMore)}
+                onClick={() => setShowMore(!showMore)}
+              >
+                {showMore ? "Show Less" : "Show More"}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -152,6 +168,11 @@ const styles = StyleSheet.create({
   },
   reputationRow: {
     alignItems: "center",
+  },
+  showMore: {
+    color: colors.BLUE(),
+    marginTop: 4,
+    cursor: "pointer",
   },
   descSection: {
     textAlign: "left",

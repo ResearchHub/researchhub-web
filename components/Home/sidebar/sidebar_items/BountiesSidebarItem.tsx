@@ -44,7 +44,7 @@ export default function BountiesSidebarItem({
           <div className={css(styles.bountiesSidebarItemHeader)}>
             <UserTooltip
               createdBy={createdBy}
-              positions={["top", "left", "bottom"]}
+              positions={["left"]}
               targetContent={
                 <AuthorFacePile
                   authorProfiles={[createdByAuthor]}
