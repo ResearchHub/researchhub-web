@@ -4,13 +4,13 @@ import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
+import config from "./lib/config";
+
 
 type Args = {
   isOpen: boolean;
   setIsOpen: Function;
 };
-
-const WIDTH = 500;
 
 const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
   return (
@@ -35,7 +35,7 @@ const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
 
 const slideOpenKeyframe = {
   "0%": {
-    marginRight: -WIDTH,
+    marginRight: -config.sidebar.width,
   },
 
   "100%": {
@@ -49,7 +49,7 @@ const slideCloseKeyframe = {
   },
 
   "100%": {
-    marginRight: -WIDTH,
+    marginRight: -config.sidebar.width,
   },
 };
 
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",
     top: 0,
-    width: WIDTH,
+    width: config.sidebar.width,
     boxSizing: "border-box",
   },
   sidebarHeader: {

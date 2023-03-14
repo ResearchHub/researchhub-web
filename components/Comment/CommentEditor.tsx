@@ -15,6 +15,7 @@ import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 
+
 type CommentEditorArgs = {
   editorId: string;
   placeholder?: string;
