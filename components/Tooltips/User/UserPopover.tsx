@@ -11,6 +11,7 @@ import Button from "../../Form/Button";
 // Utils
 import { createEditorSummary, createEduSummary } from "~/config/utils/user";
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import { timeSince } from "~/config/utils/dates";
 
 const UserPopover = ({ userId }: { userId: ID }) => {
   const [fetchedUser, setUser] = useState<RHUser | null>(null);
@@ -57,8 +58,17 @@ const UserPopover = ({ userId }: { userId: ID }) => {
             {fetchedUser?.firstName} {fetchedUser?.lastName}
           </div>
 
-          <div className={css(styles.desc)}>
-            {fetchedUser?.authorProfile?.description}
+          <div
+            className={css(
+              styles.desc,
+              !fetchedUser?.authorProfile?.description && styles.autoDesc
+            )}
+          >
+            {fetchedUser?.authorProfile?.description
+              ? fetchedUser?.authorProfile?.description
+              : `${fetchedUser?.firstName} joined ResearchHub ${timeSince(
+                  fetchedUser?.createdAt
+                )}`}
           </div>
         </div>
       </div>
@@ -170,6 +180,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     fontSize: 14,
     marginBottom: 8,
+  },
+  autoDesc: {
+    fontStyle: "italic",
+    fontSize: 14,
+    opacity: 0.5,
   },
 });
 

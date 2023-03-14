@@ -166,6 +166,7 @@ export type RHUser = {
   author_profile?: AuthorProfile; // occasional insertion slip-ins from legacy code.
   authorProfile: AuthorProfile;
   firstName: string;
+  createdAt: string;
   id: ID;
   lastName: string;
   editorOf?: Array<Hub>;
@@ -257,6 +258,7 @@ export const parseUser = (raw: any): RHUser => {
     authorProfile: parseAuthorProfile(raw.author_profile),
     editorOf: raw.editor_of,
     reputation: raw.reputation,
+    createdAt: raw.created_date,
   };
 
   return mapped;
