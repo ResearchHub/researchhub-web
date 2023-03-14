@@ -1,8 +1,12 @@
 import { ReactElement } from "react";
+
+// Components
 import ResearchHubPopover from "~/components/ResearchHubPopover";
+import UserPopover from "./UserPopover";
+
+// Utils
 import { RHUser } from "~/config/types/root_types";
 import { genClientId } from "~/config/utils/id";
-import UserPopover from "../UserPopover";
 
 interface UserTooltipProps {
   setUserPopoverOpen: (isOpen: boolean) => void;
