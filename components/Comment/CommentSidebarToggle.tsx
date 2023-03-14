@@ -16,9 +16,9 @@ const CommentSidebarToggle = ({ isOpen, setIsOpen, isReady, bountyAmount = 0, co
   const hasActiveBounties = bountyAmount > 0;
   const bountyDisplayVal = (bountyAmount > 1000 ? bountyAmount / 1000 : bountyAmount).toFixed(0);
 
-  if (!isReady) {
-    return null;
-  }
+  // if (!isReady) {
+  //   return null;
+  // }
 
   return (
     <div className={css(styles.toggle)} onClick={() => setIsOpen(!isOpen)}>

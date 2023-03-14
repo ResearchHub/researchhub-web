@@ -20,6 +20,7 @@ const CommentAuthors = ({ authors, primaryAuthorId }: CommentAuthorArgs) => {
         horizontal={true}
         authorProfiles={authors}
         imgSize={24}
+        fontSize={24}
         border={``}
       />
       {primaryAuthor?.firstName} {primaryAuthor?.lastName}
@@ -32,9 +33,9 @@ const styles = StyleSheet.create({
   commentHeader: {
     display: "flex",
     alignItems: "center",
-    columnGap: "5px",
+    columnGap: "7px",
     fontWeight: 500,
-    fontSize: 16,
+    fontSize: 15,
   },
 });
 
