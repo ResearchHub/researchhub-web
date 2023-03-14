@@ -25,6 +25,7 @@ const nextConfig = {
       "researchhub-paper-dev1.s3.amazonaws.com",
       "researchhub-paper-prod.s3.amazonaws.com",
       "researchhub.com",
+      "lh3.googleusercontent.com",
     ],
   },
   env: {

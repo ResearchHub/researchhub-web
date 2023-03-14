@@ -14,6 +14,7 @@ import ResearchHubPopover from "../ResearchHubPopover";
 import UserPopover from "../Tooltips/UserPopover";
 import { genClientId } from "~/config/utils/id";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import UserTooltip from "../Tooltips/User/UserTooltip";
 
 type Args = {
   createdBy: RHUser | null;
@@ -55,31 +56,11 @@ function SubmissionDetails({
 
   return (
     <div className={css(styles.submittedBy)}>
-      <ResearchHubPopover
-        containerStyle={{ zIndex: 100 }}
-        positions={["bottom", "right", "top"]}
-        onClickOutside={(): void => {
-          setUserPopoverOpen(false);
-        }}
-        popoverContent={
-          <div
-            style={{ marginTop: -4 }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            onMouseEnter={(e) => {
-              inPopoverRef.current = true;
-            }}
-            onMouseLeave={(e) => {
-              inPopoverRef.current = false;
-              setUserPopoverOpen(false);
-            }}
-            id={`user-popover-${genClientId()}`}
-          >
-            <UserPopover userId={createdBy?.id} />
-          </div>
-        }
+      <UserTooltip
+        inPopoverRef={inPopoverRef}
         isOpen={userPopoverOpen}
+        createdBy={createdBy}
+        setUserPopoverOpen={setUserPopoverOpen}
         targetContent={
           <div
             onMouseEnter={() => {
@@ -96,7 +77,12 @@ function SubmissionDetails({
                 }
               }, 50);
             }}
-            style={{ display: "flex", padding: 4, alignItems: "center" }}
+            style={{
+              display: "flex",
+              padding: 4,
+              alignItems: "center",
+              marginLeft: -4,
+            }}
           >
             <div className={css(styles.createdByContainer)}>
               <AuthorAvatar author={authorProfile} size={avatarSize} trueSize />
