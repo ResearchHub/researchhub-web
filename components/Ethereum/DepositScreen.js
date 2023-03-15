@@ -167,7 +167,7 @@ export function DepositScreen(props) {
       />
       <div className={css(styles.buttonContainer)}>
         <Button
-          disabled={!buttonEnabled}
+          disabled={!ethAccount}
           label={!RSCBalance ? "Connect Your Wallet" : "Confirm"}
           type="submit"
           customButtonStyle={styles.button}
