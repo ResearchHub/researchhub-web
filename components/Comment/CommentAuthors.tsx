@@ -11,7 +11,7 @@ const CommentAuthors = ({ authors, primaryAuthorId }: CommentAuthorArgs) => {
   const primaryAuthor = primaryAuthorId
     ? authors.find((a) => a.id === primaryAuthorId)
     : authors[0];
-  const avatarMargin = authors.length > 1 ? -10 : 0;
+  const avatarMargin = authors.length > 1 ? -14 : 0;
 
   return (
     <div className={css(styles.commentHeader)}>
@@ -21,7 +21,6 @@ const CommentAuthors = ({ authors, primaryAuthorId }: CommentAuthorArgs) => {
         authorProfiles={authors}
         imgSize={24}
         fontSize={24}
-        border={``}
       />
       {primaryAuthor?.firstName} {primaryAuthor?.lastName}
       {authors.length > 1 && <span>+ {authors.length}</span>}

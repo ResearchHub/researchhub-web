@@ -24,7 +24,7 @@ export default function AuthorFacePile({
   withAuthorName,
   fontSize,
   overrideStyle,
-  border = `2px solid ${colors.LIGHT_GREY(1)}`
+  border = `2px solid white`
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
     () =>
@@ -39,7 +39,7 @@ export default function AuthorFacePile({
             <AuthorAvatar
               author={author}
               border={border}
-              key={index}
+              key={`avatar-${index}`}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();
                 event.preventDefault();

@@ -7,10 +7,10 @@ export const getBountyAmount = ({ comment, formatted = false }: { comment: Comme
   return formatted ? formatBountyAmount({ amount, withPrecision: false }) : amount;
 }
 
-export const hasOpenBounties = ({ comment }: { comment: Comment }) => {
+export const hasOpenBounties = ({ comment }: { comment: Comment }):boolean => {
   return comment.bounties.reduce((hasOpenBounties: boolean, curr: Bounty) => hasOpenBounties || curr.isOpen, false);
 }
 
-export const getOpenBounties = ({ comment }: { comment: Comment }) => {
-  return comment.bounties.map(b => b.isOpen);
+export const getOpenBounties = ({ comment }: { comment: Comment }):Bounty[] => {
+  return comment.bounties.filter(b => b.isOpen);
 }
