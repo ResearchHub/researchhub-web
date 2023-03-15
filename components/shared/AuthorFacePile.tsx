@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useMemo } from "react";
 import AuthorAvatar from "../AuthorAvatar";
-import colors from "../../config/themes/colors";
 
 type Props = {
   authorProfiles: Object[];
@@ -36,7 +35,6 @@ export default function AuthorFacePile({
           >
             <AuthorAvatar
               author={author}
-              border={`2px solid ${colors.LIGHT_GREY(1)}`}
               key={index}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();

@@ -79,6 +79,7 @@ export type AuthorProfile = {
   profileImage?: string;
   sequence?: "first" | "additional";
   url: string;
+  description: string;
 };
 
 // TODO: Deprecate this in favor of RHUser
@@ -165,8 +166,11 @@ export type RHUser = {
   author_profile?: AuthorProfile; // occasional insertion slip-ins from legacy code.
   authorProfile: AuthorProfile;
   firstName: string;
+  createdAt: string;
   id: ID;
   lastName: string;
+  editorOf?: Array<Hub>;
+  reputation: number;
 };
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
@@ -221,6 +225,8 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     firstName: raw.first_name,
     lastName: raw.last_name,
     url: `/user/${raw.id}/overview`,
+    description: raw.description,
+    education: raw.education,
     ...(raw.sequence && { sequence: raw.sequence }),
   };
 
@@ -232,16 +238,16 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
-  if (raw.first_name && !raw.author_profile.first_name) {
+  if (raw.first_name && !raw.author_profile?.first_name) {
     raw.author_profile.first_name = raw.first_name;
   }
-  if (raw.last_name && !raw.author_profile.last_name) {
+  if (raw.last_name && !raw.author_profile?.last_name) {
     raw.author_profile.last_name = raw.last_name;
   }
-  if (!raw.first_name && raw.author_profile.first_name) {
+  if (!raw.first_name && raw.author_profile?.first_name) {
     raw.first_name = raw.author_profile.first_name;
   }
-  if (!raw.last_name && raw.author_profile.last_name) {
+  if (!raw.last_name && raw.author_profile?.last_name) {
     raw.last_name = raw.author_profile.last_name;
   }
 
@@ -250,6 +256,9 @@ export const parseUser = (raw: any): RHUser => {
     firstName: raw.first_name,
     lastName: raw.last_name,
     authorProfile: parseAuthorProfile(raw.author_profile),
+    editorOf: raw.editor_of,
+    reputation: raw.reputation,
+    createdAt: raw.created_date,
   };
 
   return mapped;

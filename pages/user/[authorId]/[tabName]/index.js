@@ -956,14 +956,13 @@ function AuthorPage(props) {
                         <div className={css(styles.reputationContainer)}>
                           <div className={css(styles.editorLabelWrap)}>
                             <img
-                              height={20}
-                              src="/static/icons/editor-star.png"
-                              width={20}
+                              height={17}
+                              src="/static/user/editor-star.png"
+                              width={17}
                               className={css(styles.editorImg)}
                             />
                             <span
                               style={{
-                                color: colors.BLACK(0.9),
                                 fontWeight: 400,
                                 marginLeft: 8,
                                 marginRight: 10,
@@ -1073,7 +1072,6 @@ const styles = StyleSheet.create({
     textDecoration: "underline",
     marginLeft: 5,
     cursor: "pointer",
-    color: colors.BLACK(0.9),
     ":hover": {
       color: colors.BLUE(),
     },
@@ -1184,7 +1182,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 14,
     textTransform: "capitalize",
-    color: colors.BLACK(0.8),
     ":hover": {
       color: colors.BLUE(),
     },
@@ -1277,7 +1274,6 @@ const styles = StyleSheet.create({
     },
   },
   educationSummary: {
-    color: colors.BLACK(0.9),
     fontSize: 14,
     display: "flex",
     justifyContent: "center",
@@ -1578,6 +1574,7 @@ const styles = StyleSheet.create({
     display: "block",
     alignItems: "center",
     width: "100%",
+    color: "#7C7989",
     lineHeight: "26px",
     flexWrap: "wrap",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -1593,7 +1590,6 @@ const styles = StyleSheet.create({
   reputation: {
     display: "flex",
     alignItems: "center",
-    color: "#241F3A",
     marginRight: 15,
     fontSize: 14,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -1604,7 +1600,6 @@ const styles = StyleSheet.create({
   reputationTitle: {
     marginRight: 10,
     fontWeight: 400,
-    color: colors.BLACK(0.9),
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {},
   },
@@ -1612,7 +1607,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: 400,
-    color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "initial",
       fontSize: 14,
@@ -1621,7 +1615,6 @@ const styles = StyleSheet.create({
   amount: {
     fontWeight: 400,
     fontSize: 14,
-    color: colors.BLACK(0.9),
     display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -1632,8 +1625,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "block",
     alignItems: "center",
-    // color: "#241F3A",
-    color: "#000",
+    color: "rgba(36, 31, 58, 0.25)",
   },
   rhIcon: {
     width: 13,

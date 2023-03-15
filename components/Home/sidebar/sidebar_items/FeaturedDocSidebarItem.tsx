@@ -4,6 +4,7 @@ import { UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement } from "react";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
+import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 
 export default function FeaturedDocSidebarItem({
   createdBy,
@@ -25,14 +26,20 @@ export default function FeaturedDocSidebarItem({
       >
         <div className={css(styles.featuredDocSidebarItem)}>
           <div className={css(styles.featuredDocSidebarItemHeader)}>
-            <AuthorFacePile
-              authorProfiles={[
-                createdBy?.authorProfile ?? createdBy?.author_profile ?? {},
-              ]}
-              withAuthorName
-              fontSize={14}
-              imgSize={12.3}
-              key={relatedDocID}
+            <UserTooltip
+              createdBy={createdBy}
+              positions={["left"]}
+              targetContent={
+                <AuthorFacePile
+                  authorProfiles={[
+                    createdBy?.authorProfile ?? createdBy?.author_profile ?? {},
+                  ]}
+                  withAuthorName
+                  fontSize={14}
+                  imgSize={17}
+                  key={relatedDocID}
+                />
+              }
             />
           </div>
           <div className={css(styles.featuredDocSidebarItemContent)}>

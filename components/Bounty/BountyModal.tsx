@@ -148,7 +148,7 @@ function BountyModal({
             setSuccess(true);
           })
           .catch((error) => {
-            console.log('error', error)
+            console.log("error", error);
             captureEvent(error);
             setMessage("Failed to create bounty");
             showMessage({ show: true, error: true });
