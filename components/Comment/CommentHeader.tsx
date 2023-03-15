@@ -2,10 +2,9 @@ import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAuthors from "./CommentAuthors";
 import colors from "./lib/colors";
-import hasOpenBounties from "./lib/hasOpenBounties";
+import { getBountyAmount, getOpenBounties } from "./lib/bounty";
 import { Comment } from "./lib/types";
 import ContentBadge from "../ContentBadge";
-import getBountyAmount from "./lib/getBountyAmount";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -18,14 +17,15 @@ const CommentHeader = ({
   timeAgo,
   comment,
 }: CommentHeaderArgs) => {
-  const _hasOpenBounties = hasOpenBounties({ comment });
-  const _bountyAmount = getBountyAmount({ comment, formatted: true });
+  const openBounties = getOpenBounties({ comment });
+  const bountyAmount = getBountyAmount({ comment, formatted: true });
+  const bountyContributors = getBountyAmount({ comment, formatted: true });
   
   return (
     <div className={css(styles.commentHeader)}>
-      {_hasOpenBounties &&
+      {openBounties.length > 0 &&
         <div className={css(styles.badgeRow)}>
-          <ContentBadge contentType="bounty" label={`${_bountyAmount} RSC`} />
+          <ContentBadge contentType="bounty" label={`${bountyAmount} RSC`} />
         </div>
       }
       <div className={css(styles.detailsRow)}>

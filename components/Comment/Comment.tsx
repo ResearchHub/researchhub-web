@@ -7,7 +7,7 @@ import { useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
-import hasOpenBounties from "./lib/hasOpenBounties";
+import { hasOpenBounties } from "./lib/bounty";
 
 type CommentArgs = {
   comment: CommentType;
