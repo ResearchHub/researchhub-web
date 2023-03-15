@@ -6,6 +6,7 @@ import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
+import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
 
 type Props = {
   bountyAmount: number;
@@ -30,6 +31,7 @@ export default function BountiesSidebarItem({
   createdBy,
 }: Props): ReactElement {
   const roundedOfferAmount = bountyAmount;
+  const { rscToUSDDisplay } = useExchangeRate();
 
   return (
     <div className={css(styles.bountiesSidebarItemContainer)}>
@@ -59,7 +61,9 @@ export default function BountiesSidebarItem({
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
               <ContentBadge
-                label={`${`${roundedOfferAmount} RSC`}`}
+                label={`${`${roundedOfferAmount} RSC ≈ ${rscToUSDDisplay(
+                  bountyAmount
+                )}`}`}
                 contentType="bounty"
                 size="small"
               />

@@ -23,6 +23,7 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
 import UniswapButton from "../UniswapButton";
+import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 type Props = { closeDropdown: () => void };
 
@@ -31,6 +32,8 @@ function RscBalanceHistoryDropContentCard({
 }: {
   withdrawal: any;
 }): ReactElement {
+  const { rscToUSDDisplay } = useExchangeRate();
+
   const getTitle = () => {
     let title =
       withdrawal.source?.purchase_type === "DOI"
@@ -64,7 +67,7 @@ function RscBalanceHistoryDropContentCard({
           {nullthrows(
             formatBountyAmount({ amount: withdrawal?.amount ?? 0 }),
             "withdrawal amount should not be null"
-          ) ?? 0}
+          ) ?? 0}{" "}
           <img
             src="/static/icons/coin-filled.png"
             className={css(styles.rscIcon)}
@@ -72,7 +75,10 @@ function RscBalanceHistoryDropContentCard({
           />
         </div>
       </div>
-      <div className={css(styles.dropContentDate)}>{displayCreatedDate}</div>
+      <div className={css(styles.dropContentDate)}>
+        {displayCreatedDate}
+        <div>≈ {rscToUSDDisplay(withdrawal?.amount)}</div>
+      </div>
     </div>
   );
 }
@@ -286,6 +292,8 @@ const styles = StyleSheet.create({
   dropContentDate: {
     fontSize: 12,
     color: colors.LIGHT_GREY_TEXT,
+    display: "flex",
+    justifyContent: "space-between",
   },
   previewPlaceholder: {
     width: "calc(100% - 16px)",

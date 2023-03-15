@@ -44,6 +44,7 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
+import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -148,6 +149,9 @@ function FeedCard({
       first_figure && first_figure,
     ])
   );
+
+  const { rscToUSDDisplay } = useExchangeRate();
+
   // const bounty = bounties?.[0];
   const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
@@ -378,9 +382,9 @@ function FeedCard({
                     <div className={css(styles.metaItem)}>
                       <ContentBadge
                         contentType="bounty"
-                        label={
-                          formatBountyAmount({ amount: bountyAmount }) + " RSC"
-                        }
+                        label={`${formatBountyAmount({
+                          amount: bountyAmount,
+                        })} RSC ≈ ${rscToUSDDisplay(bountyAmount)}`}
                       />
                     </div>
                   )}

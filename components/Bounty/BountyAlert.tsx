@@ -21,6 +21,7 @@ import CoinStackIcon from "../Icons/CoinStackIcon";
 import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";
 import { connect } from "react-redux";
+import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -58,6 +59,8 @@ const BountyAlert = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
   const router = useRouter();
+
+  const { rscToUSDDisplay } = useExchangeRate();
 
   let timeRemaining, createdBy, status;
   allBounties.sort((a, b) => {
@@ -258,14 +261,16 @@ const BountyAlert = ({
           {` `}
           {allBounties.length > 1 ? "are" : "is"} offering{" "}
           <span className={css(styles.strong)}>
-            {numeral(amount).format("0,0.[0000000000]")} RSC
             <ResearchCoinIcon
               width={16}
               height={16}
-              overrideStyle={styles.rscIcon}
-            />
-          </span>{" "}
-          for answers {showPlural ? "to their questions" : "to this question"}
+              overrideStyle={styles.rscBannerIcon}
+            />{" "}
+            {numeral(amount).format("0,0.[0000000000]")} RSC ≈{" "}
+            {rscToUSDDisplay(amount)}
+          </span>
+          <span> for answers </span>
+          {showPlural ? "to their questions" : "to this question"}
           <span className={css(styles.divider)}>•</span>
           <span className={css(styles.expireTime)}>
             {showPlural ? "Bounties expire" : "Bounty expires"} in{" "}
@@ -428,12 +433,15 @@ const styles = StyleSheet.create({
   },
   strong: {
     fontWeight: 500,
-    color: colors.BLACK(),
+    color: colors.ORANGE_DARK2(),
   },
   alertIcon: {},
   rscIcon: {
     verticalAlign: "text-top",
     marginLeft: 5,
+  },
+  rscBannerIcon: {
+    verticalAlign: "text-top",
   },
   divider: {
     marginLeft: 7,

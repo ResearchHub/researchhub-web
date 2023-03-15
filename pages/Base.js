@@ -99,29 +99,31 @@ function Base({
           </Script>
         </>
       )}
-      <NavbarContext.Provider
-        value={{ numNavInteractions, setNumNavInteractions }}
-      >
-        <NewPostButtonContext.Provider
-          value={{
-            values: newPostButtonValues,
-            setValues: setNewPostButtonValues,
-          }}
+      <ExchangeRateContextProvider>
+        <NavbarContext.Provider
+          value={{ numNavInteractions, setNumNavInteractions }}
         >
-          {isDevEnv() && SPEC__reloadClientSideData()}
-          <div className={css(styles.pageWrapper)}>
-            <DynamicPermissionNotification />
-            <DynamicMessage />
-            <RootLeftSidebar
-              rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-            />
-            <div className={css(styles.main)}>
-              <DynamicNavbar />
-              <Component {...pageProps} {...appProps} />
+          <NewPostButtonContext.Provider
+            value={{
+              values: newPostButtonValues,
+              setValues: setNewPostButtonValues,
+            }}
+          >
+            {isDevEnv() && SPEC__reloadClientSideData()}
+            <div className={css(styles.pageWrapper)}>
+              <DynamicPermissionNotification />
+              <DynamicMessage />
+              <RootLeftSidebar
+                rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+              />
+              <div className={css(styles.main)}>
+                <DynamicNavbar />
+                <Component {...pageProps} {...appProps} />
+              </div>
             </div>
-          </div>
-        </NewPostButtonContext.Provider>
-      </NavbarContext.Provider>
+          </NewPostButtonContext.Provider>
+        </NavbarContext.Provider>
+      </ExchangeRateContextProvider>
     </AlertProvider>
   );
 }
