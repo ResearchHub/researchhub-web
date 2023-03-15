@@ -19,7 +19,7 @@ const CommentHeader = ({
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const bountyAmount = getBountyAmount({ comment, formatted: true });
-  const bountyContributors = getBountyAmount({ comment, formatted: true });
+  const bountyContributors = openBounties.map((b) => b.createdBy.authorProfile).filter(a => a.id !== comment.createdBy.authorProfile.id);
   
   return (
     <div className={css(styles.commentHeader)}>
@@ -29,7 +29,7 @@ const CommentHeader = ({
         </div>
       }
       <div className={css(styles.detailsRow)}>
-        <CommentAuthors authors={[authorProfile]} />
+        <CommentAuthors authors={[authorProfile, ...bountyContributors]} />
         <span className={css(styles.verb)}>{` commented `}</span>
         <span className={css(styles.dot)}> • </span>
         <span className={css(styles.time)}>{timeAgo}</span>
