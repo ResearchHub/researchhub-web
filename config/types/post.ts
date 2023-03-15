@@ -11,6 +11,7 @@ import {
   parseUnifiedDocument,
   TopLevelDocument,
   UnifiedDocument,
+  RhDocumentType,
 } from "./root_types";
 
 export class Post implements TopLevelDocument {
@@ -33,6 +34,7 @@ export class Post implements TopLevelDocument {
   _bounties: Bounty[];
   _bountyType: string;
   _slug: string;
+  _documentType: RhDocumentType;
 
   constructor(raw: any) {
     this._authors = (raw.authors || []).map((a) => parseAuthorProfile(a));
@@ -52,13 +54,7 @@ export class Post implements TopLevelDocument {
     this._bountyType = raw.bounty_type;
     this._bounties = (raw.bounties ?? []).map((b) => new Bounty(b));
     this._slug = raw.slug;
-    // this._bounties = [new Bounty({
-    //   created_date: "2022-07-11T19:58:16.564810Z",
-    //   expiration_date: "2022-12-07T17:06:00Z",
-    //   created_by: raw.created_by,
-    //   status: "OPEN",
-    //   amount: 15000.000,
-    // })]
+    this._documentType = "post";
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote);
@@ -142,5 +138,9 @@ export class Post implements TopLevelDocument {
 
   get bounties(): Array<Bounty> {
     return (this._bounties || []).filter((b) => b.status == BOUNTY_STATUS.OPEN);
+  }
+
+  get documentType(): RhDocumentType {
+    return this._documentType;
   }
 }

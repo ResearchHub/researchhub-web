@@ -26,6 +26,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     display: "inline-flex",
     userSelect: "none",
+    alignItems: "center",
+    columnGap: "5px",
   },
   withAnimation: {
     ":hover": {
