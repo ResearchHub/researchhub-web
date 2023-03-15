@@ -10,6 +10,7 @@ import {
   TopLevelDocument,
   UnifiedDocument,
   ID,
+  RhDocumentType,
 } from "./root_types";
 
 export type CitationConsensus = {
@@ -46,6 +47,8 @@ export class Hypothesis implements TopLevelDocument {
   _isReady: boolean;
   _boostAmount: number;
   _consensus: CitationConsensus | undefined;
+  _documentType: RhDocumentType;
+  
 
   constructor(raw: any) {
     this._authors = (raw.authors || []).map((a) => parseAuthorProfile(a));
@@ -62,6 +65,7 @@ export class Hypothesis implements TopLevelDocument {
     this._id = raw.id;
     this._markdown = raw.full_markdown;
     this._isReady = raw.id ? true : false;
+    this._documentType = "hypothesis";
 
     if (raw.aggregate_citation_consensus) {
       this._consensus = parseConsensus(raw.aggregate_citation_consensus);
@@ -141,4 +145,8 @@ export class Hypothesis implements TopLevelDocument {
   get hubs(): Array<Hub> {
     return this._hubs;
   }
+
+  get documentType(): RhDocumentType {
+    return this._documentType;
+  }  
 }

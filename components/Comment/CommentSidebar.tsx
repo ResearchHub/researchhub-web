@@ -5,14 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import config from "./lib/config";
-
+import { TopLevelDocument } from "~/config/types/root_types";
 
 type Args = {
   isOpen: boolean;
   setIsOpen: Function;
+  document: TopLevelDocument;
 };
 
-const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
+const CommentSidebar = ({ isOpen, setIsOpen, document }: Args) => {
   return (
     <div
       className={css(
@@ -27,7 +28,7 @@ const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         </div>
-        <CommentFeed unifiedDocumentId={5555} />
+        <CommentFeed document={document} />
       </div>
     </div>
   );

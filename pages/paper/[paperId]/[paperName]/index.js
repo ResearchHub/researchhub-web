@@ -371,6 +371,7 @@ const Paper = ({
         <CommentSidebar
           isOpen={isCommentSidebarOpen}
           setIsOpen={setIsCommentSidebarOpen}
+          document={paperV2}
         />
       </div>
     </div>

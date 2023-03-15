@@ -1,26 +1,50 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
+import CommentVote from "./CommentVote";
+import { TopLevelDocument } from "~/config/types/root_types";
+import { Comment } from "./lib/types";
+import Image from "next/image";
+import IconButton from "../Icons/IconButton";
+import colors from "./lib/colors";
+
 
 type Args = {
   handleEdit: Function;
   handleReply: Function;
+  comment: Comment;
+  document: TopLevelDocument;
 };
 
-const CommentActions = ({ handleEdit, handleReply }: Args) => {
+const CommentActions = ({ comment, document, handleEdit, handleReply }: Args) => {
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
         <div className={`${css(styles.action)} reply-btn`}>
-          {/* TODO: This requires updating font awesome common types */}
-          <FontAwesomeIcon icon={faReply} />
-          <span onClick={() => handleReply()}>Reply</span>
+          <CommentVote
+            comment={comment}
+            score={comment.score}
+            userVote={comment.userVote}
+            documentType={document.documentType}
+            documentID={document.id}
+          />
         </div>
-        <div className={`${css(styles.action)} edit-btn`}>
-          {/* TODO: This requires updating font awesome common types */}
+        <div className={`${css(styles.action, styles.actionTip)} reply-btn`}>
+          <IconButton onClick={() => null}>
+            <Image src="/static/icons/tip.png" height={24} width={25} alt="Reply" />
+            <span className={css(styles.actionText)} onClick={() => handleReply()}>Tip</span>
+          </IconButton>
+        </div>        
+        <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
+          <IconButton onClick={() => null}>
+            <Image src="/static/icons/reply.png" height={16} width={19} alt="Reply" />
+            <span className={css(styles.actionText)} onClick={() => handleReply()}>Reply</span>
+          </IconButton>
+        </div>
+        {/* <div className={`${css(styles.action)} edit-btn`}>
           <FontAwesomeIcon icon={faEdit} />
           <span onClick={() => handleEdit()}>Edit</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -36,6 +60,14 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     alignItems: "center",
     cursor: "pointer",
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  actionReply: {
+    marginLeft: "auto",
+  },
+  actionText: {
+    color: colors.secondary.text,
   },
   actionsWrapper: {
     columnGap: "10px",

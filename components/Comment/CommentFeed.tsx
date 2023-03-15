@@ -7,7 +7,7 @@ import {
   updateCommentAPI,
   fetchCommentsAPI,
 } from "./lib/api";
-import { ID, parseUser } from "~/config/types/root_types";
+import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
 import { useSelector } from "react-redux";
@@ -20,10 +20,10 @@ import CommentSort from "./CommentSort";
 
 
 type Args = {
-  unifiedDocumentId: ID;
+  document: TopLevelDocument;
 };
 
-const CommentFeed = ({ unifiedDocumentId }: Args) => {
+const CommentFeed = ({ document }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
@@ -36,14 +36,15 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     const _fetchComments = async () => {
       setIsFetching(true);
       const comments: CommentType[] = await fetchCommentsAPI({
-        unifiedDocumentId,
+        documentId: document.id,
+        documentType: document.documentType,
       });
       setComments(comments);
       setIsFetching(false);
     };
 
     _fetchComments();
-  }, [unifiedDocumentId]);
+  }, [document]);
 
   const handleCommentCreate = async ({
     content,
@@ -52,7 +53,12 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     content: object;
     postType: COMMENT_TYPES;
   }) => {
-    const comment: CommentType = await createCommentAPI({ content, postType });
+    const comment: CommentType = await createCommentAPI({
+      content,
+      postType,
+      documentId: document.id,
+      documentType: document.documentType,      
+    });
     setComments([comment, ...comments]);
   };
 
@@ -66,6 +72,8 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
     const _comment: CommentType = await updateCommentAPI({
       id: comment.id,
       content,
+      documentId: document.id,
+      documentType: document.documentType,
     });
     const found = findComment({ id: comment.id, comments });
     if (found) {
@@ -99,6 +107,7 @@ const CommentFeed = ({ unifiedDocumentId }: Args) => {
             handleCreate={handleCommentCreate}
             handleUpdate={handleCommentUpdate}
             comment={c}
+            document={document}
           />
         </div>
       ))}
