@@ -132,11 +132,6 @@ const styles = StyleSheet.create({
     padding: 8,
     userSelect: "none",
     position: "relative",
-    // ":hover": {
-    //   backgroundColor: "#FAFAFA",
-    //   borderRadius: 3,
-    //   transition: "0.3s",
-    // },
   },
   balanceText: {
     fontSize: 14,
