@@ -1,5 +1,43 @@
+
+
+
 [
   {
+    "bounties": [
+      {
+        "id": 288,
+        "created_by": {
+          "author_profile": {
+            "id": 22,
+            "first_name": "Patrick",
+            "last_name": "Joyce",
+            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2019/11/19/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=LUnnIoxG19jBe7a5Eqi4NN%2F%2F9Dg%3D&Expires=1679450970"
+          }
+        },
+        "created_date": "2023-02-27T22:31:24.697284Z",
+        "expiration_date": "2023-03-29T22:31:23.719000Z",
+        "item_object_id": 25037,
+        "amount": "2000.0000000000",
+        "status": "OPEN"
+      },
+      {
+        "id": 283,
+        "parent_id": 288,
+        "created_by": {
+          "author_profile": {
+            "id": 22,
+            "first_name": "Nassim",
+            "last_name": "Dehouche",
+            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/02/08/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=yMLcoEBbNrvaeeL9S9JbnaQhG7E%3D&Expires=1678144805"
+          }
+        },
+        "created_date": "2023-02-27T22:31:24.697284Z",
+        "expiration_date": "2023-03-29T22:31:23.719000Z",
+        "item_object_id": 25037,
+        "amount": "5000.0000000000",
+        "status": "OPEN"
+      }
+    ],
     "id": 10660,
     "score": 6,
     "created_date": "2023-02-08T06:15:49.486097Z",

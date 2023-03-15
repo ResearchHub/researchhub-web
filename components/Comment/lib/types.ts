@@ -1,3 +1,4 @@
+import Bounty from "~/config/types/bounty";
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 
@@ -12,6 +13,7 @@ export type Comment = {
   id: ID;
   createdDate: string;
   updatedDate: string;
+  bounties: Bounty[];
   timeAgo: string;
   createdBy: RHUser;
   content: object;
@@ -35,6 +37,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     updatedDate: formatDateStandard(raw.created_date),
     timeAgo: timeSince(raw.created_date),
     createdBy: parseUser(raw.created_by),
+    bounties: (raw.bounties || []).map((b:any) => new Bounty(b)),
     content: raw.content || {},
     score: raw.score,
     userVote: raw.user_vote,
