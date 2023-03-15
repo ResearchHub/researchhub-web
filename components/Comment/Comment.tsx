@@ -7,6 +7,7 @@ import { useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
+import hasOpenBounties from "./lib/hasOpenBounties";
 
 type CommentArgs = {
   comment: CommentType;
@@ -18,28 +19,31 @@ type CommentArgs = {
 const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const _hasOpenBounties = hasOpenBounties({ comment });
 
   return (
     <div>
       <div>
-        <div className={css(styles.headerWrapper)}>
-          <CommentHeader
-            authorProfile={comment.createdBy.authorProfile}
-            timeAgo={comment.timeAgo}
-            bounties={[]}
-          />
-        </div>
-        {isEditMode ? (
-          <CommentEditor
-            handleSubmit={({ content }) => handleUpdate({ comment, content })}
-            content={comment.content}
-            editorId={`edit-${comment.id}`}
-          />
-        ) : (
-          <div className={css(styles.commentReadOnlyWrapper)}>
-            <CommentReadOnly content={comment.content} />
+        <div className={css(styles.mainWrapper, _hasOpenBounties && styles.withBounty)}>
+          <div className={css(styles.headerWrapper)}>
+            <CommentHeader
+              authorProfile={comment.createdBy.authorProfile}
+              timeAgo={comment.timeAgo}
+              comment={comment}
+            />
           </div>
-        )}
+          {isEditMode ? (
+            <CommentEditor
+              handleSubmit={({ content }) => handleUpdate({ comment, content })}
+              content={comment.content}
+              editorId={`edit-${comment.id}`}
+            />
+          ) : (
+            <div className={css(styles.commentReadOnlyWrapper)}>
+              <CommentReadOnly content={comment.content} />
+            </div>
+          )}
+        </div>
         <div className={css(styles.actionsWrapper)}>
           <CommentActions
             handleEdit={() => setIsEditMode(!isEditMode)}
@@ -86,9 +90,17 @@ const styles = StyleSheet.create({
   },
   actionsWrapper: {
   },
+  mainWrapper: {
+  },
+  withBounty: {
+    boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
+    borderRadius: 8,
+    padding: 8,
+    background: "white",
+  },
   commentReadOnlyWrapper: {
     marginBottom: 15,
-  }  
+  }
 });
 
 export default Comment;
