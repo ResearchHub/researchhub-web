@@ -13,9 +13,6 @@ const colors = {
   hover: {
     background: globalColors.LIGHTER_GREY(1.0),
   },
-  sidebar: {
-    background: globalColors.GREY_ICY_BLUE_HUE,
-  },
   filters: {
     unselected: {
       text: globalColors.BLACK(0.6),
