@@ -76,8 +76,6 @@ const Paper = ({
     return <Error statusCode={error.code} />;
   }
 
-  const [isCommentSidebarOpen, setIsCommentSidebarOpen] = useState(true);
-
   // ENUM: NOT_FETCHED, FETCHING, COMPLETED
   const [fetchFreshDataStatus, setFetchFreshDataStatus] =
     useState("NOT_FETCHED");
@@ -302,7 +300,7 @@ const Paper = ({
           }}
         ></script>
       </Head>
-      <div className={css(styles.root)}>
+      <div className={css(styles.root)} id="documentRoot">
         <a name="main" />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
@@ -364,15 +362,7 @@ const Paper = ({
           </div>
         </div>
 
-        <CommentSidebarToggle
-          isOpen={isCommentSidebarOpen}
-          setIsOpen={setIsCommentSidebarOpen}
-        />
-        <CommentSidebar
-          isOpen={isCommentSidebarOpen}
-          setIsOpen={setIsCommentSidebarOpen}
-          document={paperV2}
-        />
+        {/* <CommentFeed document={paperV2} WrapperEl={CommentSidebar} /> */}
       </div>
     </div>
   );

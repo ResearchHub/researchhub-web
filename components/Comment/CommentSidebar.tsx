@@ -1,19 +1,26 @@
 import moduleColors from "~/components/Comment/lib/colors";
-import CommentFeed from "~/components/Comment/CommentFeed";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import config from "./lib/config";
-import { TopLevelDocument } from "~/config/types/root_types";
+import CommentSidebarToggle from "./CommentSidebarToggle";
+import { useMemo, useState } from "react";
+import { Comment } from "./lib/types";
+import { getBountyAmount } from "./lib/bounty";
+import countComments from "./lib/countComments";
 
 type Args = {
-  isOpen: boolean;
-  setIsOpen: Function;
-  document: TopLevelDocument;
+  children: any;
+  comments: Comment[];
+  isReady: boolean;
 };
 
-const CommentSidebar = ({ isOpen, setIsOpen, document }: Args) => {
+const CommentSidebar = ({ children, comments, isReady = false }: Args) => {
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const openBountyAmount = comments.reduce((total, comment) => total + getBountyAmount({ comment }) , 0);
+  const commentCount = useMemo(() => countComments({ comments }), [comments]) ;
+
   return (
     <div
       className={css(
@@ -28,7 +35,15 @@ const CommentSidebar = ({ isOpen, setIsOpen, document }: Args) => {
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         </div>
-        <CommentFeed document={document} />
+        {isReady &&
+          <CommentSidebarToggle
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            bountyAmount={openBountyAmount}
+            commentCount={commentCount}
+          />
+        }
+        {children}
       </div>
     </div>
   );

@@ -19,15 +19,19 @@ import { filterOpts, sortOpts } from "./lib/options";
 import CommentSort from "./CommentSort";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
-
+import CommentSidebar from "./CommentSidebar";
+import React from "react";
 
 type Args = {
   document: TopLevelDocument;
+  WrapperEl: any;
 };
 
-const CommentFeed = ({ document }: Args) => {
+const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
+
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [isReady, setIsReady] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const user = useSelector((state: RootState) =>
@@ -37,16 +41,23 @@ const CommentFeed = ({ document }: Args) => {
   useEffect(() => {
     const _fetchComments = async () => {
       setIsFetching(true);
-      const comments: CommentType[] = await fetchCommentsAPI({
-        documentId: document.id,
-        documentType: document.documentType,
-      });
-      setComments(comments);
-      setIsFetching(false);
+      try {
+        const comments: CommentType[] = await fetchCommentsAPI({
+          documentId: document.id,
+          documentType: document.documentType,
+        });
+        setComments(comments);
+      }
+      finally {
+        setIsReady(true);
+        setIsFetching(false);
+      }
     };
 
     _fetchComments();
   }, [document]);
+
+
 
   const handleCommentCreate = async ({
     content,
@@ -99,33 +110,34 @@ const CommentFeed = ({ document }: Args) => {
     )
   }
 
-
   return (
-    <div>
-      <CommentEditor
-        editorId="new-thread"
-        handleSubmit={handleCommentCreate}
-        allowBounty={true}
-        author={user?.authorProfile}
-        previewWhenInactive={true}
-      />
-      <div className={css(styles.filtersWrapper)}>
-        <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />
-        <div className={css(styles.sortWrapper)}>
-          <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
+    <WrapperEl comments={comments} isReady={isReady}>
+      <div>
+        <CommentEditor
+          editorId="new-thread"
+          handleSubmit={handleCommentCreate}
+          allowBounty={true}
+          author={user?.authorProfile}
+          previewWhenInactive={true}
+        />
+        <div className={css(styles.filtersWrapper)}>
+          <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />
+          <div className={css(styles.sortWrapper)}>
+            <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
+          </div>
         </div>
+        {comments.map((c) => (
+          <div key={c.id} className={css(styles.commentWrapper)}>
+            <Comment
+              handleCreate={handleCommentCreate}
+              handleUpdate={handleCommentUpdate}
+              comment={c}
+              document={document}
+            />
+          </div>
+        ))}
       </div>
-      {comments.map((c) => (
-        <div key={c.id} className={css(styles.commentWrapper)}>
-          <Comment
-            handleCreate={handleCommentCreate}
-            handleUpdate={handleCommentUpdate}
-            comment={c}
-            document={document}
-          />
-        </div>
-      ))}
-    </div>
+    </WrapperEl>
   );
 };
 
