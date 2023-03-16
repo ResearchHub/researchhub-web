@@ -8,6 +8,8 @@ import CommentEditor from "./CommentEditor";
 import { TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { hasOpenBounties } from "./lib/bounty";
+import Button from "../Form/Button";
+import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 
 type CommentArgs = {
   comment: CommentType;
@@ -40,6 +42,12 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
           ) : (
             <div className={css(styles.commentReadOnlyWrapper, _hasOpenBounties && styles.commentReadOnlyWrapperForBounty)}>
               <CommentReadOnly content={comment.content} />
+              {_hasOpenBounties &&
+                <div className={css(styles.contributeWrapper)}>
+                  <div>Contribute RSC to this bounty</div>
+                  <Button label="Contribute" customButtonStyle={styles.contributeBtn} customLabelStyle={styles.contributeBtnLabel} hideRipples={true} size="small" />
+                </div>
+              }
             </div>
           )}
         </div>
@@ -104,6 +112,25 @@ const styles = StyleSheet.create({
   },
   commentReadOnlyWrapperForBounty: {
     marginBottom: 0,
+  },
+  contributeWrapper: {
+    background: colors.bounty.background,
+    padding: "6px 8px",
+    display: "flex",
+    alignItems: "center",
+    fontWeight: 500,
+    fontSize: 14,
+    borderRadius: "4px",
+    marginTop: 5,
+  },
+  contributeBtn: {
+    background: colors.bounty.btn,
+    border: 0,
+    marginLeft: "auto",
+  },
+  contributeBtnLabel: {
+    fontWeight: 500,
+    lineHeight: "22px",
   }
 });
 
