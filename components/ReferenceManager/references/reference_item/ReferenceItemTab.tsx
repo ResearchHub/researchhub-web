@@ -15,9 +15,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
+import { KeyOf } from "~/config/types/root_types";
 
 type Props = {};
-type ReferenceItemDataTypeKey = keyof ReferenceItemDataType;
+type ReferenceItemDataTypeKey = KeyOf<ReferenceItemDataType>;
 
 const TAB_ITEM_FILTER_KEYS = new Set(["id"]);
 const TAB_ITEM_LABELS: {
@@ -54,9 +55,7 @@ export default function ReferenceItemTab({}: Props): ReactElement {
   const { isTabOpen, referenceItemData, setIsTabOpen, setReferenceItemData } =
     useReferenceTabContext();
   const tabInputItems = Object.keys(referenceItemData).map(
-    (
-      field_key: keyof ReferenceItemDataType
-    ): ReactElement<typeof ReferenceItemFieldInput> | null => {
+    (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
       const label = TAB_ITEM_LABELS[field_key];
       return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
         <ReferenceItemFieldInput

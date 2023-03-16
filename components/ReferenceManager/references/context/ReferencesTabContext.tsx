@@ -1,25 +1,27 @@
 import { createContext, useContext, useState } from "react";
 import type { Context } from "react";
+import { ID, NullableString } from "~/config/types/root_types";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export type ReferenceItemDataType = {
   // NOTE: Logical ordering for display reason
   // TODO: calvinhlee update this once BE is setup
-  id: any;
-  title: string;
-  authors: string;
-  hubs: string;
-  last_author: string;
-  published_date: string;
-  published_year: number;
+  id: ID;
+  title: NullableString;
+  authors: NullableString;
+  hubs: NullableString;
+  last_author: NullableString;
+  published_date: NullableString;
+  published_year: NullableString;
 };
 export type ReferencesTabContextValueType = {
   isTabOpen: boolean;
   referenceItemData: ReferenceItemDataType;
-  setIsTabOpen?: (flag: boolean) => void;
-  setReferenceItemData?: (data: ReferenceItemDataType) => void;
+  setIsTabOpen: (flag: boolean) => void;
+  setReferenceItemData: (data: ReferenceItemDataType) => void;
 };
 
-export const DEFAULT_REFERENCE_ITEM_DATA = {
+export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceItemDataType = {
   // NOTE: Logical ordering for display reason
   id: null,
   title: null,
@@ -34,6 +36,8 @@ export const DEFAULT_REFERENCES_TAB_CONTEXT_VALUE: ReferencesTabContextValueType
   {
     isTabOpen: true,
     referenceItemData: DEFAULT_REFERENCE_ITEM_DATA,
+    setIsTabOpen: emptyFncWithMsg,
+    setReferenceItemData: emptyFncWithMsg,
   };
 
 export const ReferencesTabContext: Context<ReferencesTabContextValueType> =

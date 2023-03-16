@@ -37,7 +37,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Optics",
     last_author: "Christian Koos",
     published_date: "Oct 13, 2023",
-    published_year: 2023,
+    published_year: "2023",
     title: "Visual Prompting via Imagie Inpaining",
   },
   {
@@ -46,7 +46,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
   {
@@ -55,7 +55,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Medicine",
     last_author: "Johnathan Whetstine",
     published_date: "July 8, 2022",
-    published_year: 2022,
+    published_year: "2022",
     title: "Histon Lysine Methylation Dynamics Control",
   },
   {
@@ -64,7 +64,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Science",
     last_author: " Bruno Lavigne",
     published_date: "May 7, 2013",
-    published_year: 2013,
+    published_year: "2013",
     title: "Impact of Crosstalk on 800 Gb/s",
   },
   {
@@ -73,7 +73,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Optics",
     last_author: "Christian Koos",
     published_date: "Oct 13, 2023",
-    published_year: 2023,
+    published_year: "2023",
     title: "Visual Prompting via Imagie Inpaining",
   },
   {
@@ -82,7 +82,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
   {
@@ -91,7 +91,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
   {
@@ -100,7 +100,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
   {
@@ -109,7 +109,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
   {
@@ -118,7 +118,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
   {
@@ -127,7 +127,7 @@ export const rows: ReferenceItemDataType[] = [
     hubs: "Computer Engineering",
     last_author: "Ada Cheung",
     published_date: "Jan 11, 2021",
-    published_year: 2021,
+    published_year: "2021",
     title: "Hardware Compairson of Feed-Forward Clock Recovery",
   },
 ];
