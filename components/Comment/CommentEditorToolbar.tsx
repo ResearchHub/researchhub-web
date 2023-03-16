@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFontCase, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { useRef, useState } from "react";
-import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 type Args = {
   editorId: string;
@@ -11,7 +11,7 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toolbarRef = useRef(null);
 
-  useEffectHandleOutsideClick({
+  useEffectHandleClick({
     el: toolbarRef.current,
     exclude: [".ql-full-editor-visible"],
     onOutsideClick: () => setIsOpen(false),

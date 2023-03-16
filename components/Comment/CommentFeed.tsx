@@ -89,7 +89,7 @@ const CommentFeed = ({ document }: Args) => {
     }
   };
 
-  if (true) {
+  if (isFetching) {
     return (
       Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
         <div className={css(styles.placeholderWrapper)}>
@@ -107,6 +107,7 @@ const CommentFeed = ({ document }: Args) => {
         handleSubmit={handleCommentCreate}
         allowBounty={true}
         author={user?.authorProfile}
+        previewWhenInactive={true}
       />
       <div className={css(styles.filtersWrapper)}>
         <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />

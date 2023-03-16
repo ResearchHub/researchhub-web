@@ -7,7 +7,7 @@
 /* Placeholder */
 .ql-editor.ql-blank::before {
   left: 0 !important;
-  color: #aaa8b4;
+  color: rgba(124, 121, 137, 1);
   font-size: 14px;
   font-style: normal;
 }

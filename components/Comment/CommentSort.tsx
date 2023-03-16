@@ -2,7 +2,7 @@ import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
-import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 import { sortOpts } from "./lib/options";
@@ -12,7 +12,7 @@ const CommentSort = ({ selectedSort, handleSelect }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const dropdownRef = useRef(null);
 
-  useEffectHandleOutsideClick({
+  useEffectHandleClick({
     el: dropdownRef.current,
     exclude: [".comment-sort-trigger"],
     onOutsideClick: () => setIsOpen(false),
