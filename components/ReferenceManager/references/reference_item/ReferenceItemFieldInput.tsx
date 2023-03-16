@@ -2,13 +2,14 @@ import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
 import { ChangeEvent, ReactElement } from "react";
+import { NullableString } from "~/config/types/root_types";
 
 type Props = {
   formID: string;
   label: string;
   placeholder?: string;
   required?: boolean;
-  value?: string;
+  value?: any;
   onChange: (value: any) => void;
 };
 
