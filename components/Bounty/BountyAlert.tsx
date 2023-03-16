@@ -22,6 +22,7 @@ import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";
 import { connect } from "react-redux";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
+import RSCTooltip from "../Tooltips/RSC/RSCTooltip";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -207,7 +208,7 @@ const BountyAlert = ({
             )}
           />
         </div>
-        <div>
+        <div style={{ display: "flex", whiteSpace: "pre-wrap" }}>
           {showPlural ? (
             <span>A group of users</span>
           ) : createdBy ? (
@@ -258,17 +259,20 @@ const BountyAlert = ({
               />
             </span>
           )}
-          {` `}
-          {allBounties.length > 1 ? "are" : "is"} offering{" "}
-          <span className={css(styles.strong)}>
-            <ResearchCoinIcon
-              width={16}
-              height={16}
-              overrideStyle={styles.rscBannerIcon}
-            />{" "}
-            {numeral(amount).format("0,0.[0000000000]")} RSC ≈{" "}
-            {rscToUSDDisplay(amount)}
-          </span>
+          {allBounties.length > 1 ? " are" : " is"} offering{" "}
+          <RSCTooltip
+            amount={amount}
+            targetContent={
+              <span className={css(styles.strong, styles.clickable)}>
+                <ResearchCoinIcon
+                  width={16}
+                  height={16}
+                  overrideStyle={styles.rscBannerIcon}
+                />{" "}
+                {numeral(amount).format("0,0.[0000000000]")} RSC
+              </span>
+            }
+          />
           <span> for answers </span>
           {showPlural ? "to their questions" : "to this question"}
           <span className={css(styles.divider)}>•</span>
@@ -435,7 +439,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.ORANGE_DARK2(),
   },
-  alertIcon: {},
+  clickable: {
+    cursor: "pointer",
+  },
   rscIcon: {
     verticalAlign: "text-top",
     marginLeft: 5,
