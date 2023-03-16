@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   feedWrapper: {
-    padding: "15px 32px",
+    padding: "15px 25px",
     overflowY: "scroll",
     height: "100vh",
   },

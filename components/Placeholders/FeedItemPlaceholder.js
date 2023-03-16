@@ -1,6 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
-import colors from "~/config/themes/colors";
 import PaperPlaceholder from "./PaperPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
 

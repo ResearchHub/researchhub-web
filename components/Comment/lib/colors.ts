@@ -36,6 +36,7 @@ const colors = {
     background: globalColors.ORANGE_LIGHTER(1.0),
   },
   dot: "rgb(200 200 202)",
+  placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
 }
 
 export default colors;
