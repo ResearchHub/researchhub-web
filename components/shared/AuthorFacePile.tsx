@@ -62,6 +62,9 @@ export default function AuthorFacePile({
         Boolean(horizontal) && styles.horizontal,
         overrideStyle
       )}
+      // When negative margins are used, the width of this container will be smaller than actually is and result in unintended spacing of adjacent elements.
+      // The following line ensures that the "box" wraps around all of the avatars.
+      style={{ marginRight: margin < 0 ? Math.abs(margin) : 0 }}
     >
       {tags}
     </div>
