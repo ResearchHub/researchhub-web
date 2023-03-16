@@ -22,6 +22,7 @@ const nextConfig = {
   },
   images: {
     domains: [
+      "lh3.googleusercontent.com",
       "researchhub-paper-dev1.s3.amazonaws.com",
       "researchhub-paper-prod.s3.amazonaws.com",
       "researchhub.com",
