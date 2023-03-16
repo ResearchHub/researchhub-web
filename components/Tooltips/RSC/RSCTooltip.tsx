@@ -65,8 +65,8 @@ export default function RSCTooltip({
       targetContent={
         <div
           style={{
-            padding: 10,
-            margin: -10,
+            paddingBottom: 10,
+            marginBottom: -10,
           }}
           onClick={(e) => {
             e.stopPropagation();
