@@ -73,7 +73,7 @@ export default function ReferencesTable() {
         onPageSizeChange={(pageSize) => setPageSize(pageSize)}
         rowsPerPageOptions={[5, 10, 25]}
         autoHeight={true}
-        onCellClick={(params, event, _details) => {
+        onCellClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemData({
             ...rows.find((item) => item.id === params?.row?.id),
