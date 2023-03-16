@@ -24,11 +24,10 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
   return (
     <div>
       <div>
-        <div className={css(styles.mainWrapper, _hasOpenBounties && styles.withBounty)}>
+        <div className={css(styles.mainWrapper, _hasOpenBounties && styles.mainWrapperForBounty)}>
           <div className={css(styles.headerWrapper)}>
             <CommentHeader
               authorProfile={comment.createdBy.authorProfile}
-              timeAgo={comment.timeAgo}
               comment={comment}
             />
           </div>
@@ -39,7 +38,7 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
               editorId={`edit-${comment.id}`}
             />
           ) : (
-            <div className={css(styles.commentReadOnlyWrapper)}>
+            <div className={css(styles.commentReadOnlyWrapper, _hasOpenBounties && styles.commentReadOnlyWrapperForBounty)}>
               <CommentReadOnly content={comment.content} />
             </div>
           )}
@@ -92,14 +91,19 @@ const styles = StyleSheet.create({
   },
   mainWrapper: {
   },
-  withBounty: {
+  mainWrapperForBounty: {
     boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
+    border: `1px solid ${colors.bounty.text}`,
     borderRadius: 8,
     padding: 8,
     background: "white",
+    marginBottom: 5,
   },
   commentReadOnlyWrapper: {
     marginBottom: 15,
+  },
+  commentReadOnlyWrapperForBounty: {
+    marginBottom: 0,
   }
 });
 

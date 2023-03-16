@@ -7,7 +7,7 @@ import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import { QuillFormats, buildQuillModules } from "./lib/quill";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile } from "~/config/types/root_types";
-import CommentAuthors from "./CommentAuthors";
+import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
 import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
@@ -63,7 +63,7 @@ const CommentEditor = ({
       <div>
         {author && (
           <div className={css(styles.authorRow)}>
-            <CommentAuthors authors={[author]} />
+            <CommentAvatars authors={[author]} />
             <span style={{ marginTop: -5 }}>
               <CommentTypeSelector
                 handleSelect={_setCommentType}

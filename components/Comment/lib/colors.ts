@@ -29,6 +29,9 @@ const colors = {
     commentText: globalColors.BLACK(0.6),
     bountyText: globalColors.ORANGE_DARK2(1.0),
   },
+  bounty: {
+    text: globalColors.ORANGE_DARK2(1.0),
+  },
   dot: "rgb(200 200 202)",
 }
 

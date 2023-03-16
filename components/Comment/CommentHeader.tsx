@@ -1,6 +1,6 @@
 import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
-import CommentAuthors from "./CommentAuthors";
+import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
 import { getBountyAmount, getOpenBounties } from "./lib/bounty";
 import { Comment } from "./lib/types";
@@ -8,19 +8,17 @@ import ContentBadge from "../ContentBadge";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
-  timeAgo: string;
   comment: Comment;
 };
 
 const CommentHeader = ({
   authorProfile,
-  timeAgo,
   comment,
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const bountyAmount = getBountyAmount({ comment, formatted: true });
   const bountyContributors = openBounties.map((b) => b.createdBy.authorProfile).filter(a => a.id !== comment.createdBy.authorProfile.id);
-  
+
   return (
     <div className={css(styles.commentHeader)}>
       {openBounties.length > 0 &&
@@ -28,11 +26,25 @@ const CommentHeader = ({
           <ContentBadge contentType="bounty" label={`${bountyAmount} RSC`} />
         </div>
       }
-      <div className={css(styles.detailsRow)}>
-        <CommentAuthors authors={[authorProfile, ...bountyContributors]} />
-        <span className={css(styles.verb)}>{` commented `}</span>
-        <span className={css(styles.dot)}> • </span>
-        <span className={css(styles.time)}>{timeAgo}</span>
+      <div className={css(styles.details)}>
+        <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
+        <div className={css(styles.nameWrapper)}>
+          <div className={css(styles.nameRow)}>
+            <div className={css(styles.name)}>
+              {authorProfile.firstName} {authorProfile.lastName}
+              {openBounties.length > 0 && bountyContributors.length > 1 &&
+                <>{` and others`}</>
+              }
+            </div>
+            {openBounties.length
+              ? <div className={css(styles.verb)}>{` opened a bounty`}</div>
+              : <div className={css(styles.verb)}>{` commented`}</div>
+            }
+          </div>
+          <div className={css(styles.time)}>
+            {comment.timeAgo}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -40,26 +52,31 @@ const CommentHeader = ({
 
 const styles = StyleSheet.create({
   commentHeader: {
-    fontSize: 15,
+    fontSize: 14,
   },
   verb: {
     color: colors.secondary.text,
-  },
-  dot: {
-    color: colors.dot,
-    fontSize: 22,
   },
   time: {
     color: colors.secondary.text,
   },
   badgeRow: {
-    display: "inline-block"
+    display: "inline-block",
+    marginBottom: 8,
   },
-  detailsRow: {
-    marginTop: 8,
+  details: {
     display: "flex",
-    alignItems: "center",
+  },
+  nameWrapper: {
+    marginLeft: 7,
+  },
+  nameRow: {
+    display: "flex",
     columnGap: "5px",
+    fontSize: 15,
+  },
+  name: {
+
   }
 });
 

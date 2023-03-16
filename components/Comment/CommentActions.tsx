@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     alignItems: "center",
     cursor: "pointer",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 500,
   },
   actionReply: {
