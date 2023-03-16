@@ -3,15 +3,15 @@ import { ReferenceItemDataType } from "./context/ReferencesTabContext";
 
 export const columns: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
-  { field: "title", headerName: "Title", width: 380 },
+  { field: "title", headerName: "Title", width: 320 },
   { field: "authors", headerName: "Authors", width: 280 },
-  { field: "last_author", headerName: "Last Author", width: 240 },
+  { field: "last_author", headerName: "Last Author", width: 140 },
   {
     field: "hubs",
     headerName: "Hubs",
     description: "This is Hub Column",
     sortable: false,
-    width: 220,
+    width: 240,
     // TODO: calvinhlee - investigate what this is
     // valueGetter: (params: GridValueGetterParams) =>
     //   `${params.row.firstName || ""} ${params.row.lastName || ""}`,
@@ -20,13 +20,13 @@ export const columns: GridColDef[] = [
     field: "published_date",
     headerName: "Publication Date",
     type: "string",
-    width: 200,
+    width: 180,
   },
   {
     field: "published_year",
     headerName: "Publication Year",
     type: "string",
-    width: 200,
+    width: 120,
   },
 ];
 
