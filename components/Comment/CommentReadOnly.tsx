@@ -12,14 +12,22 @@ type Args = {
 const CommentReadOnly = ({ content }: Args) => {
   const { quill, quillRef } = useQuill();
   const [isPreview, setIsPreview] = useState<boolean>(true);
+  const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
 
+  
   useEffect(() => {
     if (quill) {
+      const length = quill.getLength();
       quill.disable();
       quill.setContents(content);
-      if (isPreview) {
-        quill.deleteText(config.comment.previewMaxChars, quill.getLength());
+
+      if (length > config.comment.previewMaxChars) {
+        setShowLoadMoreBtn(true);
+        if (isPreview) {
+          quill.deleteText(config.comment.previewMaxChars, length);
+        }
       }
+
     }
   }, [quill, isPreview]);
 

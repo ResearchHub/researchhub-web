@@ -7,7 +7,7 @@ import {
   updateCommentAPI,
   fetchCommentsAPI,
 } from "./lib/api";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { parseUser, TopLevelDocument } from "~/config/types/root_types";
 import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
 import { useSelector } from "react-redux";
@@ -17,6 +17,8 @@ import CommentFilters from "./CommentFilters";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
 import CommentSort from "./CommentSort";
+import CommentPlaceholder from "./CommentPlaceholder";
+import config from "./lib/config";
 
 
 type Args = {
@@ -87,6 +89,17 @@ const CommentFeed = ({ document }: Args) => {
     }
   };
 
+  if (true) {
+    return (
+      Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
+        <div className={css(styles.placeholderWrapper)}>
+          <CommentPlaceholder key={`placeholder-${idx}`}/>
+        </div>
+      ))
+    )
+  }
+
+
   return (
     <div>
       <CommentEditor
@@ -125,7 +138,10 @@ const styles = StyleSheet.create({
   },
   commentWrapper: {
     marginTop: 30,
-  }  
+  },
+  placeholderWrapper: {
+    marginBottom: 35,
+  }
 });
 
 export default CommentFeed;

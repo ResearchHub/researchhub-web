@@ -12,9 +12,9 @@ type Args = {
   isReady: boolean;
 };
 
-const CommentSidebarToggle = ({ isOpen, setIsOpen, isReady, bountyAmount = 0, commentCount = 0 }: Args) => {
+const CommentSidebarToggle = ({ isOpen, setIsOpen, isReady, bountyAmount = 7000, commentCount = 5 }: Args) => {
   const hasActiveBounties = bountyAmount > 0;
-  const bountyDisplayVal = (bountyAmount > 1000 ? bountyAmount / 1000 : bountyAmount).toFixed(0);
+  const bountyDisplayVal = (bountyAmount > 1000 ? bountyAmount / 1000 : bountyAmount).toFixed(0) + "k";
 
   // if (!isReady) {
   //   return null;

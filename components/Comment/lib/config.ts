@@ -3,7 +3,8 @@ const config = {
     width: 500
   },
   comment: {
-    previewMaxChars: 300,
+    previewMaxChars: 350,
+    placeholderCount: 8, 
   }
 };
 
