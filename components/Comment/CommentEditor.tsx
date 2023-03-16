@@ -13,6 +13,7 @@ import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 
 type CommentEditorArgs = {
@@ -23,6 +24,7 @@ type CommentEditorArgs = {
   allowBounty?: boolean;
   commentType?: COMMENT_TYPES;
   author?: AuthorProfile | null;
+  previewWhenInactive?: boolean;
 };
 
 const CommentEditor = ({
@@ -33,9 +35,13 @@ const CommentEditor = ({
   allowBounty = false,
   commentType,
   author,
+  previewWhenInactive = true,
 }: CommentEditorArgs) => {
   const editorRef = useRef<any>(null);
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
+  const isEmptyRef = useRef(isEmpty);
+  const [isPreviewMode, setIsPreviewMode] = useState<boolean>(previewWhenInactive);
+  const isPreviewModeRef = useRef(previewWhenInactive);
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
@@ -53,16 +59,32 @@ const CommentEditor = ({
     content,
   });
 
+  if (previewWhenInactive) {
+    useEffectHandleClick({
+      el: editorRef.current,
+      onOutsideClick: () => {
+        setIsPreviewMode(true);
+        isPreviewModeRef.current = true;
+      },
+      onInsideClick: () => {
+        setIsPreviewMode(false);
+        isPreviewModeRef.current = false;
+        quill && !quill.hasFocus() && quill.focus();
+      }
+    });
+  }
+
   useEffect(() => {
-    const isDisabled = isQuillEmpty(_content) ? true : false;
-    setIsSubmitDisabled(isDisabled);
+    const isEmpty = isQuillEmpty(_content) ? true : false;
+    setIsEmpty(isEmpty);
+    isEmptyRef.current = isEmpty;
   }, [_content]);
 
   return (
     <div ref={editorRef} className={css(styles.commentEditor)}>
       <div>
         {author && (
-          <div className={css(styles.authorRow)}>
+          <div className={css(styles.authorRow, isPreviewMode && styles.hidden)}>
             <CommentAvatars authors={[author]} />
             <span style={{ marginTop: -5 }}>
               <CommentTypeSelector
@@ -74,9 +96,9 @@ const CommentEditor = ({
         )}
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
-          <div className={css(styles.toolbarContainer)}>
-            <CommentEditorToolbar editorId={editorId} />
-          </div>
+            <div className={css(styles.toolbarContainer, isPreviewMode && styles.hidden)}>
+              <CommentEditorToolbar editorId={editorId} />
+            </div>
         </div>
       </div>
       <div className={css(styles.actions)}>
@@ -87,7 +109,7 @@ const CommentEditor = ({
         <Button
           label={"Post"}
           onClick={() => handleSubmit({ content: _content })}
-          disabled={isSubmitDisabled}
+          disabled={isEmpty}
         />
       </div>
     </div>
@@ -97,7 +119,7 @@ const CommentEditor = ({
 const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
-    padding: "16px 24px",
+    padding: "15px",
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
     backgroundColor: "white",
     borderRadius: 10,
@@ -117,6 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   editor: {},
+  hidden: { display: "none" },
   authorRow: {
     display: "flex",
     alignItems: "center",
