@@ -38,7 +38,7 @@ const CommentReadOnly = ({ content }: Args) => {
 
 const styles = StyleSheet.create({
   readMore: {
-    color: colors.primary.btn,
+    color: colors.primary.contrast,
     fontWeight: 400,
     fontSize: 14,
   },

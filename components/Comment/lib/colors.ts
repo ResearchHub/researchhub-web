@@ -5,6 +5,7 @@ const colors = {
   primary: {
     btn: globalColors.NEW_BLUE(1.0),
     text: globalColors.BLACK(1.0),
+    contrast: globalColors.GREEN(1.0), 
   },
   secondary: {
     text: globalColors.BLACK(0.6),
@@ -30,7 +31,9 @@ const colors = {
     bountyText: globalColors.ORANGE_DARK2(1.0),
   },
   bounty: {
+    btn: globalColors.ORANGE_DARK2(1.0),
     text: globalColors.ORANGE_DARK2(1.0),
+    background: globalColors.ORANGE_LIGHTER(1.0),
   },
   dot: "rgb(200 200 202)",
 }
