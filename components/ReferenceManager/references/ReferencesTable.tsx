@@ -2,7 +2,7 @@ import { columns, rows } from "./table_mock_data";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useReferenceTabContext } from "./context/ReferencesTabContext";
-import { idID } from "@mui/material/locale";
+import { nullthrows } from "~/config/utils/nullchecks";
 
 export default function ReferencesTable() {
   const [pageSize, setPageSize] = useState(10);
@@ -76,9 +76,9 @@ export default function ReferencesTable() {
         onCellClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemData({
-            ...rows.find((item) => item.id === params?.row?.id),
-          });
-          setIsTabOpen(true);
+            ...nullthrows(rows.find((item) => item.id === params?.row?.id)),
+          })
+          setIsTabOpen(true)
         }}
         // onRowClick={(params, event, details) => {
         //   event.stopPropagation();

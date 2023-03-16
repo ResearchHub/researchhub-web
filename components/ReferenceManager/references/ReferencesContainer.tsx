@@ -28,7 +28,7 @@ export default function ReferencesContainer({}: Props): ReactElement {
   return (
     <ReferencesTabContextProvider>
       <ReferenceItemTab />
-      <Box flexDirection="row">
+      <Box flexDirection="row" display="flex">
         <BasicTogglableNavbarLeft
           isOpen={isLeftNavOpen}
           navWidth={leftNavWidth}
@@ -39,8 +39,8 @@ export default function ReferencesContainer({}: Props): ReactElement {
           sx={{
             display: "flex",
             flexDirection: "column",
-            padding: "16px 32px",
-            background: "blue",
+            padding: "32px 32px",
+            width: "100%",
           }}
         >
           <div style={{ marginBottom: 32 }}>
