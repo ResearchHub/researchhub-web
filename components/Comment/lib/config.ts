@@ -5,6 +5,9 @@ const config = {
   comment: {
     previewMaxChars: 350,
     placeholderCount: 8, 
+  },
+  toggle: {
+    elemToMountAt: "documentRoot",
   }
 };
 
