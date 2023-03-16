@@ -54,6 +54,7 @@ const ReferenceItemTabIconButton = ({
 export default function ReferenceItemTab({}: Props): ReactElement {
   const { isTabOpen, referenceItemData, setIsTabOpen, setReferenceItemData } =
     useReferenceTabContext();
+    
   const tabInputItems = Object.keys(referenceItemData).map(
     (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
       const label = TAB_ITEM_LABELS[field_key];
@@ -86,7 +87,7 @@ export default function ReferenceItemTab({}: Props): ReactElement {
       <Box
         padding="32px"
         sx={{
-          background: "rgb(243 243 246)",
+          background: "rgb(250 250 252)",
           height: "100%",
           width: "472px",
         }}
