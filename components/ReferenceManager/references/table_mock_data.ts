@@ -19,7 +19,7 @@ export const columns: GridColDef[] = [
   {
     field: "published_date",
     headerName: "Publication Date",
-    type: "date",
+    type: "string",
     width: 200,
   },
   {

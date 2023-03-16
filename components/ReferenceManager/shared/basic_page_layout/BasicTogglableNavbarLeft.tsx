@@ -22,16 +22,16 @@ import { Box } from "@mui/system";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Button } from "@mui/material";
-import { useAuthContext } from "../../../contexts/AuthContext";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
 
-type DrawerProps = {
-  isOpen: boolean;
-  navWidth: number;
-  theme: Theme;
-};
+// type DrawerProps = {
+//   isOpen: boolean;
+//   navWidth: number;
+//   theme: Theme;
+// };
 
 const HOME_NAV_BUTTON_CONFIG: {
   icon: ReactNode;
@@ -69,64 +69,64 @@ const HOME_NAV_BUTTON_CONFIG: {
   },
 ];
 
-const openedMixin = (theme: Theme, navWidth: number): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-  width: navWidth,
-});
+// const openedMixin = (theme: Theme, navWidth: number): CSSObject => ({
+//   transition: theme.transitions.create("width", {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.enteringScreen,
+//   }),
+//   overflowX: "hidden",
+//   width: navWidth,
+// });
 
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
+// const closedMixin = (theme: Theme): CSSObject => ({
+//   transition: theme.transitions.create("width", {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   overflowX: "hidden",
+//   width: `calc(${theme.spacing(7)} + 1px)`,
+//   [theme.breakpoints.up("sm")]: {
+//     width: `calc(${theme.spacing(8)} + 1px)`,
+//   },
+// });
 
-const doNotPassProps = new Set(["isOpen", "navWidth"]);
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (propName: string): boolean =>
-    !doNotPassProps.has(propName),
-})(({ theme, isOpen, navWidth }: DrawerProps) => ({
-  background: "#FAFAFC",
-  boxSizing: "border-box",
-  flexShrink: 0,
-  position: "sticky",
-  top: 0,
-  whiteSpace: "nowrap",
-  width: navWidth,
-  ...(isOpen && {
-    ...openedMixin(theme, navWidth),
-    "& .MuiDrawer-paper": openedMixin(theme, navWidth),
-  }),
-  ...(!isOpen && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
+// const doNotPassProps = new Set(["isOpen", "navWidth"]);
+// const Drawer = styled(MuiDrawer, {
+//   shouldForwardProp: (propName: string): boolean =>
+//     !doNotPassProps.has(propName),
+// })(({ theme, isOpen, navWidth }: DrawerProps) => ({
+//   background: "#FAFAFC",
+//   boxSizing: "border-box",
+//   flexShrink: 0,
+//   position: "sticky",
+//   top: 0,
+//   whiteSpace: "nowrap",
+//   width: navWidth,
+//   ...(isOpen && {
+//     ...openedMixin(theme, navWidth),
+//     "& .MuiDrawer-paper": openedMixin(theme, navWidth),
+//   }),
+//   ...(!isOpen && {
+//     ...closedMixin(theme),
+//     "& .MuiDrawer-paper": closedMixin(theme),
+//   }),
+// }));
 
 type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
-  theme: Theme;
+  theme?: Theme;
 };
 
-const DrawerHeader = styled("div")(({ theme }: { theme: Theme }) => ({
-  alignItems: "center",
-  display: "flex",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
+// const DrawerHeader = styled("div")(({ theme }: { theme: Theme }) => ({
+//   alignItems: "center",
+//   display: "flex",
+//   padding: theme.spacing(0, 1),
+//   // necessary for content to be below app bar
+//   ...theme.mixins.toolbar,
+//   justifyContent: "flex-end",
+// }));
 
 export default function BasicTogglableNavbarLeft({
   isOpen,
@@ -134,49 +134,19 @@ export default function BasicTogglableNavbarLeft({
   setIsOpen,
   theme,
 }: Props) {
-  const { user } = useAuthContext();
+  const user = getCurrentUser();
 
   return (
-    <Drawer
-      isOpen={isOpen}
-      navWidth={navWidth}
-      theme={theme}
-      variant="permanent"
-    >
-      <DrawerHeader
+    <Box flexDirection="column" width={navWidth}>
+      {/* <Drawer
+        isOpen={isOpen}
+        navWidth={navWidth}
         theme={theme}
-        sx={{
-          alignItems: "center",
-          background: "#FAFAFC",
-          cursor: "pointer",
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-          paddingLeft: isOpen ? "22px" : "16px",
-          paddingRight: "16px",
-        }}
-      >
-        {isOpen && (
-          <Image
-            src={"/logos/citation-manager-logo.png"}
-            height={32}
-            width={158}
-            alt="ResearchHub Citation Manager"
-          />
-        )}
-        {isOpen ? (
-          <KeyboardDoubleArrowLeftOutlinedIcon
-            onClick={(): void => setIsOpen(!isOpen)}
-          />
-        ) : (
-          <KeyboardDoubleArrowRightOutlinedIcon
-            onClick={(): void => setIsOpen(!isOpen)}
-          />
-        )}
-      </DrawerHeader>
+        variant="permanent"
+      > */}
       <Box
         className="LeftNavbarUserSection"
-        sx={{ background: "#FAFAFC", padding: "0 16px 16px" }}
+        sx={{ background: "#FAFAFC", padding: "16px 16px" }}
       >
         <Box
           sx={{
@@ -336,6 +306,7 @@ export default function BasicTogglableNavbarLeft({
           </Typography>
         </ListItemButton>
       </List>
-    </Drawer>
+      {/* </Drawer> */}
+    </Box>
   );
 }
