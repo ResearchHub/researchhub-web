@@ -53,7 +53,7 @@ export default function ReferenceItemFieldInput({
         size="small"
         value={value}
         sx={{
-          background: "rgb(243 243 246)",
+          background: "#fff",
         }}
       />
     </Box>
