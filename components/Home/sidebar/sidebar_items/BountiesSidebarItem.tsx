@@ -7,6 +7,7 @@ import colors from "~/config/themes/colors";
 import ContentBadge from "~/components/ContentBadge";
 import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
+import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
 
 type Props = {
   bountyAmount: number;
@@ -60,12 +61,15 @@ export default function BountiesSidebarItem({
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
-              <ContentBadge
-                label={`${`${roundedOfferAmount} RSC ≈ ${rscToUSDDisplay(
-                  bountyAmount
-                )}`}`}
-                contentType="bounty"
-                size="small"
+              <RSCTooltip
+                targetContent={
+                  <ContentBadge
+                    label={`${`${roundedOfferAmount} RSC`}`}
+                    contentType="bounty"
+                    size="small"
+                  />
+                }
+                amount={bountyAmount}
               />
             </span>
           </div>

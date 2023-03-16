@@ -14,16 +14,18 @@ import {
   HypothesisIcon,
   QuestionIcon,
 } from "~/config/themes/icons";
-import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { POST_TYPES } from "./TextEditor/config/postTypes";
+import { ReactElement } from "react";
 
 type Args = {
   contentType: string;
   size?: "small" | "medium";
-  label: string;
+  label: string | ReactElement;
   onClick?: null | Function;
+  rscContentOverride?: any;
+  badgeOverride?: any;
 };
 
 const ContentBadge = ({
@@ -31,15 +33,16 @@ const ContentBadge = ({
   size = "medium",
   label = "",
   onClick = null,
+  rscContentOverride,
+  badgeOverride,
 }: Args) => {
-  const router = useRouter();
-
   return (
     <Badge
       badgeClassName={[
         styles.badge,
         styles["badgeFor_" + contentType],
         styles[size],
+        badgeOverride,
       ]}
     >
       {contentType === "paper" ? (
@@ -100,7 +103,7 @@ const ContentBadge = ({
         </>
       ) : contentType === "rsc_support" ? (
         <>
-          <span className={css(styles.icon)}>
+          <span className={css(styles.icon, styles.rscIcon)}>
             <ResearchCoinIcon version={4} height={16} width={16} />
             {` `}
           </span>
@@ -109,7 +112,11 @@ const ContentBadge = ({
       ) : contentType === "bounty" ? (
         <>
           <span
-            className={css(styles.icon, size === "small" && styles.iconSmall)}
+            className={css(
+              styles.icon,
+              size === "small" && styles.iconSmall,
+              styles.rscIcon
+            )}
           >
             <ResearchCoinIcon
               version={4}
@@ -118,7 +125,9 @@ const ContentBadge = ({
             />
             {` `}
           </span>
-          <span className={css(styles.rscContent)}>{label}</span>
+          <span className={css(styles.rscContent, rscContentOverride)}>
+            {label}
+          </span>
         </>
       ) : (
         <></>
@@ -138,16 +147,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 21,
   },
+  rscIcon: {
+    height: "unset",
+    display: "flex",
+  },
   iconSmall: {
     height: 18,
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,
     color: bountyColors.BADGE_TEXT,
+    padding: "3px 6px",
+    paddingTop: 4,
   },
   badgeFor_bounty: {
     background: bountyColors.BADGE_BACKGROUND,
     color: bountyColors.BADGE_TEXT,
+    padding: "3px 6px",
+    paddingTop: 4,
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),

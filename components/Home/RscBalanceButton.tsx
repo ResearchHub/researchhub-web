@@ -112,9 +112,9 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           <div className={css(styles.caretDown)}>
             <FontAwesomeIcon icon={faChevronDown} />
           </div>
-          <div className={css(styles.usdAmount)}>
+          {/* <div className={css(styles.usdAmount)}>
             ≈ {rscToUSDDisplay(balance)}
-          </div>
+          </div> */}
         </div>
       }
     />

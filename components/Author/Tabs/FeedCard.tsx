@@ -45,6 +45,7 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
 import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
+import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -143,14 +144,13 @@ function FeedCard({
   );
   const [score, setScore] = useState<number>(initialScore);
   const [isHubsOpen, setIsHubsOpen] = useState(false);
+  const [rscBadgeHover, setRSCBadgeHover] = useState(false);
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
       first_figure && first_figure,
     ])
   );
-
-  const { rscToUSDDisplay } = useExchangeRate();
 
   // const bounty = bounties?.[0];
   const feDocUrl = `/${
@@ -380,11 +380,25 @@ function FeedCard({
                   </div>
                   {hasActiveBounty && (
                     <div className={css(styles.metaItem)}>
-                      <ContentBadge
-                        contentType="bounty"
-                        label={`${formatBountyAmount({
-                          amount: bountyAmount,
-                        })} RSC ≈ ${rscToUSDDisplay(bountyAmount)}`}
+                      <RSCTooltip
+                        targetContent={
+                          <ContentBadge
+                            contentType="bounty"
+                            label={
+                              <div
+                                style={{ display: "flex", whiteSpace: "pre" }}
+                              >
+                                <div style={{ flex: 1 }}>
+                                  {formatBountyAmount({
+                                    amount: bountyAmount,
+                                  })}{" "}
+                                  RSC
+                                </div>
+                              </div>
+                            }
+                          />
+                        }
+                        amount={bountyAmount}
                       />
                     </div>
                   )}
@@ -585,6 +599,18 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginRight: 20,
     },
+  },
+  rscToUsdAmount: {
+    opacity: 0,
+    width: "0px",
+    height: "0px",
+    overflow: "hidden",
+    transition: "all .3s ease-in-out",
+  },
+  rscToUsdAmountFull: {
+    width: "100%",
+    height: "100%",
+    opacity: 1,
   },
   metaItemAsBadge: {
     marginRight: 10,
