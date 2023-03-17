@@ -222,7 +222,7 @@ console.warn(user?.author_profile?.profile_image);
               variant="h6"
               ml={"6px"}
             >
-              {"Upload paper"}
+              {"Upload reference"}
             </Typography>
           )}
         </Box>
