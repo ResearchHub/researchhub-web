@@ -8,7 +8,7 @@ const config = {
   },
   toggle: {
     elemToMountAt: "documentRoot",
-  }
+  },
 };
 
 export default config;

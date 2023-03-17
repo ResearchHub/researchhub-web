@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Comment from "./Comment";
 import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
 import CommentEditor from "~/components/Comment/CommentEditor";
@@ -34,30 +34,34 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   const [isReady, setIsReady] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
+  const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
   const user = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
+  const handleFetch = useCallback(async({ url }) => {
+    setIsFetching(true);
+    try {
+      const response = await fetchCommentsAPI({
+        documentId: document.id,
+        documentType: document.documentType,
+      });
+      setComments(response.comments);
+      setFetchUrls({ next: response.next, prev: response.prev });
+    }
+    finally {
+      setIsReady(true);
+      setIsFetching(false);
+    }
+  }, [document, isFetching, isReady, fetchUrls]);
+
+  const handleFetchNext = () => handleFetch({ url: fetchUrls.next });
+  const handleFetchPrev = () => handleFetch({ url: fetchUrls.prev });
+
+
   useEffect(() => {
-    const _fetchComments = async () => {
-      setIsFetching(true);
-      try {
-        const comments: CommentType[] = await fetchCommentsAPI({
-          documentId: document.id,
-          documentType: document.documentType,
-        });
-        setComments(comments);
-      }
-      finally {
-        setIsReady(true);
-        setIsFetching(false);
-      }
-    };
-
-    _fetchComments();
+    handleFetch({});
   }, [document]);
-
-
 
   const handleCommentCreate = async ({
     content,
