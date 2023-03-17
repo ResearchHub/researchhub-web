@@ -5,7 +5,6 @@ const colors = {
   primary: {
     btn: globalColors.NEW_BLUE(1.0),
     text: globalColors.BLACK(1.0),
-    contrast: globalColors.GREEN(1.0), 
   },
   secondary: {
     text: globalColors.BLACK(0.6),

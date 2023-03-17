@@ -3,7 +3,7 @@ import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
 import { Comment as CommentType } from "./lib/types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
@@ -22,6 +22,21 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
+
+  const _childCommentsElems = useMemo(() => {
+    return (
+      comment.children.map((c) => (
+        <div key={c.id} className={css(styles.commentWrapper)}>
+          <Comment
+            handleUpdate={handleUpdate}
+            handleCreate={handleCreate}
+            comment={c}
+            document={document}
+          />
+        </div>
+      ))
+    )
+  }, [comment.children])
 
   return (
     <div>
@@ -67,16 +82,7 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
         />
       )}
       <div className={css(styles.children)}>
-        {comment.children.map((c) => (
-          <div key={c.id} className={css(styles.commentWrapper)}>
-            <Comment
-              handleUpdate={handleUpdate}
-              handleCreate={handleCreate}
-              comment={c}
-              document={document}
-            />
-          </div>
-        ))}
+        {_childCommentsElems}
       </div>
     </div>
   );

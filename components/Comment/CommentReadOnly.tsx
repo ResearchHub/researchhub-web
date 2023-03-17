@@ -4,6 +4,8 @@ import config from "./lib/config";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import IconButton from "../Icons/IconButton";
+import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Args = {
   content: any;
@@ -13,7 +15,6 @@ const CommentReadOnly = ({ content }: Args) => {
   const { quill, quillRef } = useQuill();
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
-
   
   useEffect(() => {
     if (quill) {
@@ -39,6 +40,10 @@ const CommentReadOnly = ({ content }: Args) => {
         <span className={css(styles.readMore)}>
           {isPreview ? `Read More` : `Show Less`}
         </span>
+        <FontAwesomeIcon
+          icon={isPreview ? faAngleDown : faAngleUp}
+          style={{ marginLeft: 3, fontSize: 16 }}
+        />        
       </IconButton>
     </div>
   );
@@ -46,11 +51,11 @@ const CommentReadOnly = ({ content }: Args) => {
 
 const styles = StyleSheet.create({
   readMore: {
-    color: colors.primary.contrast,
-    fontWeight: 400,
+    fontWeight: 500,
     fontSize: 14,
   },
   readMoreWrapper: {
+    color: colors.primary.btn,
     marginLeft: -5,
   },
 })

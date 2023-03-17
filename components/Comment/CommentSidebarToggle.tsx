@@ -23,7 +23,6 @@ const CommentSidebarToggle = ({ isOpen, setIsOpen, bountyAmount = 0, commentCoun
   useEffect(() => {
     if (!mountEl) {
       const _mountEl = document.getElementById(config.toggle.elemToMountAt);
-      console.log('_mountEl', _mountEl)
       setMountEl(_mountEl);
     }
   }, [])

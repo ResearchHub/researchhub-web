@@ -14,20 +14,21 @@ export const fetchCommentsAPI = async ({
   documentId: ID;
   url?: string;
 }): Promise<{ comments: Comment[], next: string, prev: string }> => {
-  const _url = url || API.BASE_URL + `${documentType}/${documentId}/comments`;
+  // const rawComments = listMockData;
+  // const comments = rawComments.map((raw) => parseComment({ raw }));
+  // return Promise.resolve({comments, next: "", prev: ""});
+
+
+  const _url = url || API.BASE_URL + `${documentType}/${documentId}/comments/`;
   const response =
     await fetch(_url, API.GET_CONFIG())
       .then((res):any => Helpers.parseJSON(res));
 
   return {
-    comments: response.results.map((raw:any) => parseComment({ raw })),
+    comments: response.results.map((raw:any) => parseComment({ raw })).slice(0),
     next: response.next,
     prev: response.prev,
   };
-
-  // const rawComments = listMockData;
-  // const comments = rawComments.map((raw) => parseComment({ raw }));
-  // return Promise.resolve(comments);
 };
 
 export const createCommentAPI = ({

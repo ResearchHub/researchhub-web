@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import Comment from "./Comment";
 import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
 import CommentEditor from "~/components/Comment/CommentEditor";
@@ -19,7 +19,6 @@ import { filterOpts, sortOpts } from "./lib/options";
 import CommentSort from "./CommentSort";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
-import CommentSidebar from "./CommentSidebar";
 import React from "react";
 
 type Args = {
@@ -30,8 +29,9 @@ type Args = {
 const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
 
   const [comments, setComments] = useState<CommentType[]>([]);
-  const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [isReady, setIsReady] = useState<boolean>(false);
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
+  const [readyForInitialRender, setReadyForInitialRender] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
@@ -39,7 +39,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  const handleFetch = useCallback(async({ url }) => {
+  const handleFetch = useCallback(async ({ url }) => {
     setIsFetching(true);
     try {
       const response = await fetchCommentsAPI({
@@ -49,19 +49,22 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
       setComments(response.comments);
       setFetchUrls({ next: response.next, prev: response.prev });
     }
-    finally {
-      setIsReady(true);
-      setIsFetching(false);
+    catch (error) {
+      // FIXME: Implement error handling
     }
-  }, [document, isFetching, isReady, fetchUrls]);
+    finally {
+      setIsInitialFetchDone(true);
+    }
+  }, [document, isInitialFetchDone, fetchUrls]);
 
   const handleFetchNext = () => handleFetch({ url: fetchUrls.next });
   const handleFetchPrev = () => handleFetch({ url: fetchUrls.prev });
 
-
   useEffect(() => {
-    handleFetch({});
-  }, [document]);
+    if (document.id) {
+      handleFetch({});
+    }
+  }, [document.id]);
 
   const handleCommentCreate = async ({
     content,
@@ -74,7 +77,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
       content,
       postType,
       documentId: document.id,
-      documentType: document.documentType,      
+      documentType: document.documentType,
     });
     setComments([comment, ...comments]);
   };
@@ -104,43 +107,59 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     }
   };
 
-  if (isFetching) {
+  const _commentsElems = useMemo(() => {
     return (
-      Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
-        <div className={css(styles.placeholderWrapper)}>
-          <CommentPlaceholder key={`placeholder-${idx}`}/>
+      comments.map((c) => (
+        <div key={c.id} className={css(styles.commentWrapper)}>
+          <Comment
+            handleCreate={handleCommentCreate}
+            handleUpdate={handleCommentUpdate}
+            comment={c}
+            document={document}
+          />
         </div>
       ))
     )
-  }
+  }, [comments]);
+
 
   return (
-    <WrapperEl comments={comments} isReady={isReady}>
-      <div>
-        <CommentEditor
-          editorId="new-thread"
-          handleSubmit={handleCommentCreate}
-          allowBounty={true}
-          author={user?.authorProfile}
-          previewWhenInactive={true}
-        />
-        <div className={css(styles.filtersWrapper)}>
-          <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />
-          <div className={css(styles.sortWrapper)}>
-            <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
+    <WrapperEl
+      comments={comments}
+      isInitialFetchDone={isInitialFetchDone}
+      setReadyForInitialRender={() => {
+        setIsFetching(true);
+        setTimeout(() => {
+          setIsFetching(false);
+          setReadyForInitialRender(true);
+        }, 1000);
+      }}
+    >
+      {readyForInitialRender &&
+        <>
+          <CommentEditor
+            editorId="new-thread"
+            handleSubmit={handleCommentCreate}
+            allowBounty={true}
+            author={user?.authorProfile}
+            previewWhenInactive={true}
+          />
+          <div className={css(styles.filtersWrapper)}>
+            <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />
+            <div className={css(styles.sortWrapper)}>
+              <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
+            </div>
           </div>
-        </div>
-        {comments.map((c) => (
-          <div key={c.id} className={css(styles.commentWrapper)}>
-            <Comment
-              handleCreate={handleCommentCreate}
-              handleUpdate={handleCommentUpdate}
-              comment={c}
-              document={document}
-            />
+          {_commentsElems}
+        </>
+      }
+      {isFetching &&
+        Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
+          <div className={css(styles.placeholderWrapper)}>
+            <CommentPlaceholder key={`placeholder-${idx}`} />
           </div>
-        ))}
-      </div>
+        ))
+      }
     </WrapperEl>
   );
 };
