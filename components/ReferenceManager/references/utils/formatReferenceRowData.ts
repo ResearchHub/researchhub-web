@@ -30,12 +30,12 @@ function referenceFormatSwitchMap(datum: any): ReferenceItemDataType | null {
       };
     default:
       throw new Error(
-        `formatReferenceItemData: unable to find appropriate citation_type - ${citation_type}`
+        `formatReferenceRowData: unable to find appropriate citation_type - ${citation_type}`
       );
       return null;
   }
 }
 
-export function formatReferenceItemData(data: any): ReferenceItemDataType[] {
+export function formatReferenceRowData(data: any): ReferenceItemDataType[] {
   return filterNull(data.map((datum) => referenceFormatSwitchMap(datum)));
 }
