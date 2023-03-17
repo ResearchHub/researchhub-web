@@ -13,11 +13,12 @@ import countComments from "./lib/countComments";
 type Args = {
   children: any;
   comments: Comment[];
-  isReady: boolean;
+  setReadyForInitialRender: Function;
+  isInitialFetchDone: boolean;
 };
 
-const CommentSidebar = ({ children, comments, isReady = false }: Args) => {
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+const CommentSidebar = ({ children, comments, setReadyForInitialRender, isInitialFetchDone = false }: Args) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const openBountyAmount = comments.reduce((total, comment) => total + getBountyAmount({ comment }) , 0);
   const commentCount = useMemo(() => countComments({ comments }), [comments]) ;
 
@@ -31,14 +32,19 @@ const CommentSidebar = ({ children, comments, isReady = false }: Args) => {
       <div className={css(styles.feedWrapper)}>
         <div className={css(styles.sidebarHeader)}>
           Activity
-          <IconButton onClick={() => setIsOpen(false)}>
+          <IconButton onClick={() => {
+            setIsOpen(false);       
+          }}>
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         </div>
-        {isReady &&
+        {isInitialFetchDone &&
           <CommentSidebarToggle
             isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            setIsOpen={(isOpen) => {
+              setIsOpen(isOpen);
+              setReadyForInitialRender(true);
+            }}
             bountyAmount={openBountyAmount}
             commentCount={commentCount}
           />
