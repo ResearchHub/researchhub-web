@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
@@ -19,10 +17,8 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { toTitleCase } from "~/config/utils/string";
 import { formatBountyAmount } from "~/config/types/bounty";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
-import UniswapButton from "../UniswapButton";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 type Props = { closeDropdown: () => void };
@@ -93,6 +89,10 @@ export default function RscBalanceHistoryDropContent({
     !isEmpty(transactionWidthdrawls)
   );
 
+  const { rscToUSDDisplay } = useExchangeRate();
+
+  const { balance } = currentUser;
+
   useEffect((): void => {
     const fetchRSCBalance = async () => {
       if (!isDataFetched) {
@@ -127,38 +127,35 @@ export default function RscBalanceHistoryDropContent({
   );
 
   return (
-    (<div className={css(styles.rscBalanceHistoryDropContent)}>
+    <div className={css(styles.rscBalanceHistoryDropContent)}>
+      <ReputationTooltip />
       <div className={css(styles.historyHeader)}>
-        <ReputationTooltip />
         <div className={css(styles.header)}>
-          <ResearchCoinIcon
-            overrideStyle={styles.rscIconLarge}
-            height={18}
-            width={18}
-          />
-          <span>ResearchCoin</span>
-          <a
-            href="https://docs.researchhub.com/researchcoin/token-overview"
-            target="_blank"
-            style={{
-              color: colors.LIGHT_GREY_TEXT,
-              position: "relative",
-              padding: "8px 8px 8px 0",
-              fontSize: 14,
-              cursor: "pointer",
-            }}
-            data-for={"reputation-tool-tip"}
-            data-tip=""
-          >
-            {<FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>}
-          </a>
+          <div className={css(styles.top)}>
+            <div
+              data-for={"reputation-tool-tip"}
+              data-tip=""
+              className={css(styles.rscReputation)}
+            >
+              <ResearchCoinIcon
+                overrideStyle={styles.rscIconLarge}
+                height={18}
+                width={18}
+              />
+              <div className={css(styles.balanceText)}>
+                ResearchCoin{" "}
+                <span className={css(styles.dropContentDate)}>(RSC)</span>
+              </div>
+            </div>
+            <ALink
+              href={`/user/${currentUser?.author_profile?.id}/rsc`}
+              theme="solidPrimary"
+              overrideStyle={styles.viewAllButton}
+            >
+              <span onClick={closeDropdown}>{"View all"}</span>
+            </ALink>
+          </div>
         </div>
-        <ALink
-          href={`/user/${currentUser?.author_profile?.id}/rsc`}
-          theme="solidPrimary"
-        >
-          <span onClick={closeDropdown}>{"View all"}</span>
-        </ALink>
       </div>
       <div className={css(styles.transactionCardWrap)}>
         <ReactPlaceholder
@@ -199,11 +196,30 @@ export default function RscBalanceHistoryDropContent({
         </div>
         <div
           style={{
-            marginBottom: 5,
-            marginTop: 10,
+            padding: 16,
+            marginTop: 16,
+            borderTop: "1px solid #eee",
+            textAlign: "center",
           }}
         >
-          <UniswapButton variant="text" />
+          <div style={{ marginBottom: 8 }}>
+            <a
+              className={css(styles.text)}
+              href={"https://docs.researchhub.com/researchcoin/token-overview"}
+              target="_blank"
+            >
+              What is ResearchCoin?
+            </a>
+          </div>
+          <a
+            className={css(styles.text)}
+            href={
+              "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xd101dcc414f310268c37eeb4cd376ccfa507f571"
+            }
+            target="_blank"
+          >
+            ResearchCoin is on Uniswap
+          </a>
         </div>
       </div>
     </div>)
@@ -220,11 +236,41 @@ const styles = StyleSheet.create({
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
   },
   header: {
+    width: "100%",
+  },
+  viewAllButton: {
+    marginLeft: "auto",
+    fontSize: 14,
+  },
+  top: {
     display: "flex",
     alignItems: "center",
     columnGap: "7px",
     fontSize: 16,
+    width: "100%",
     fontWeight: 500,
+  },
+  rscReputation: {
+    display: "flex",
+    alignItems: "center",
+    whiteSpace: "pre-wrap",
+    cursor: "pointer",
+  },
+  rscToDisplay: {},
+  balanceText: {
+    fontSize: 16,
+    fontWeight: 500,
+    whiteSpace: "pre-wrap",
+    display: "flex",
+    alignItems: "center",
+    // opacity: 0.8,
+    // color: colors.ORANGE_DARK2(),
+  },
+  text: {
+    color: "#7C7989",
+    textDecoration: "none",
+    fontSize: 14,
+    letterSpacing: 0.5,
   },
   ctaWrapper: {
     padding: "8px 15px",
@@ -242,15 +288,13 @@ const styles = StyleSheet.create({
     },
   },
   rscIcon: { width: 14, margin: "0 0 0 4px" },
-  rscIconLarge: { height: 18 },
+  rscIconLarge: { height: 18, marginRight: 6 },
   historyHeader: {
     alignItems: "center",
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
-    display: "flex",
     fontSize: 14,
-    height: 44,
     justifyContent: "space-between",
-    padding: "0 12px",
+    padding: "12px 12px",
   },
   transactionCardWrap: {
     maxHeight: 320,

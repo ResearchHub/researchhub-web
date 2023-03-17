@@ -12,7 +12,6 @@ import colors from "~/config/themes/colors";
 
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
-import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
@@ -23,8 +22,6 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   const currentUser = getCurrentUser();
   const rscDeltaSinceSeen = currentUser?.balance_history ?? 0;
   const { balance, should_display_rsc_balance_home } = auth?.user ?? {};
-
-  const { rscToUSDDisplay } = useExchangeRate();
 
   const [_count, setBalance] = useState(balance);
   const [_prevCount, _setPrevCount] = useState(balance);
@@ -98,10 +95,8 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
             alt="RSC Coin"
           />
           {shouldDisplayBalanceHome && (
-            <div>
-              <div className={css(styles.balanceText)}>
-                {getNumberWithCommas(Math.floor(balance ?? 0))} RSC
-              </div>
+            <div className={css(styles.balanceText)}>
+              {getNumberWithCommas(Math.floor(balance ?? 0))} RSC
             </div>
           )}
           {shouldDisplayRscDelta && (
@@ -112,9 +107,6 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
           <div className={css(styles.caretDown)}>
             <FontAwesomeIcon icon={faChevronDown} />
           </div>
-          {/* <div className={css(styles.usdAmount)}>
-            ≈ {rscToUSDDisplay(balance)}
-          </div> */}
         </div>
       }
     />

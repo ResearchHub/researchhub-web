@@ -11,10 +11,13 @@ import {
   onPasteNumInput,
   formatBalance,
 } from "~/config/utils/form";
+import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 const AmountInput = (props) => {
   const { balance, placeholder, required } = props;
   const store = useStore();
+
+  const { rscToUSDDisplay } = useExchangeRate();
 
   return (
     <div
@@ -69,13 +72,6 @@ const AmountInput = (props) => {
         )}
       >
         <span className={css(styles.balanceLabel)}>Available:</span>
-        <span className={css(styles.balance)}>
-          {!doesNotExist(balance)
-            ? typeof balance === "number" || typeof balance == "string"
-              ? formatBalance(balance)
-              : balance
-            : formatBalance(store.getState().auth.user.balance)}
-        </span>
         {props.rightAlignBalance && (
           <img
             className={css(styles.rscIcon, styles.mobileIcon)}
@@ -83,6 +79,17 @@ const AmountInput = (props) => {
             alt="RSC Coin"
           />
         )}
+        <span className={css(styles.balance)}>
+          {!doesNotExist(balance)
+            ? typeof balance === "number" || typeof balance == "string"
+              ? formatBalance(balance)
+              : balance
+            : formatBalance(store.getState().auth.user.balance)}
+          {" RSC "}
+        </span>
+      </div>
+      <div className={css(styles.rscToDisplay)}>
+        ≈ {rscToUSDDisplay(balance || store.getState().auth.user.balance)}
       </div>
     </div>
   );
@@ -162,6 +169,12 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
+  rscToDisplay: {
+    marginLeft: "auto",
+    fontSize: 14,
+    marginTop: 8,
+    color: colors.LIGHT_GREY_TEXT,
+  },
   mobileIcon: {
     marginLeft: 5,
     height: 20,
@@ -187,9 +200,9 @@ const styles = StyleSheet.create({
   },
   balance: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: colors.BLACK(0.9),
-    marginLeft: 8,
+    fontWeight: 500,
+    color: colors.ORANGE_DARK2(1),
+    marginLeft: 4,
   },
   recipientCard: {
     display: "flex",
