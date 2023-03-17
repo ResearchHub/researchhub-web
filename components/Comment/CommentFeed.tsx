@@ -128,11 +128,13 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
       comments={comments}
       isInitialFetchDone={isInitialFetchDone}
       setReadyForInitialRender={() => {
-        setIsFetching(true);
-        setTimeout(() => {
-          setIsFetching(false);
-          setReadyForInitialRender(true);
-        }, 1000);
+        if (!readyForInitialRender) {
+          setIsFetching(true);
+          setTimeout(() => {
+            setIsFetching(false);
+            setReadyForInitialRender(true);
+          }, 1000);
+        }
       }}
     >
       {readyForInitialRender &&
