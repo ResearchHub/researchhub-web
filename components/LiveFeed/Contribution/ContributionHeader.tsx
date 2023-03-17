@@ -53,10 +53,10 @@ const ContributionHeader = ({ entry }: Args) => {
         }
       />
     );
-    contentBadgeLabel = item.amount + " Bounty";
+    contentBadgeLabel = item.amount + " RSC";
   } else if (contentType.name === "rsc_support") {
     item = item as RscSupportContributionItem;
-    contentBadgeLabel = item.amount + " Supported";
+    contentBadgeLabel = item.amount + " RSC";
     if (item.source.contentType.name === "comment") {
       actionLabel = (
         <>
@@ -150,10 +150,22 @@ const ContributionHeader = ({ entry }: Args) => {
       />
       <div className={`${css(styles.contentBadge)}`}>
         {/* @ts-ignore */}
-        <ContentBadge
-          label={contentBadgeLabel}
-          contentType={contentTypeForBadge}
-        />
+        {contentType.name === "rsc_support" || contentType.name === "bounty" ? (
+          <RSCTooltip
+            amount={item.amount}
+            targetContent={
+              <ContentBadge
+                label={contentBadgeLabel}
+                contentType={contentTypeForBadge}
+              />
+            }
+          />
+        ) : (
+          <ContentBadge
+            label={contentBadgeLabel}
+            contentType={contentTypeForBadge}
+          />
+        )}
       </div>
     </div>
   );
