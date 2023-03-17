@@ -52,10 +52,14 @@ const ReferenceItemTabIconButton = ({
 };
 
 export default function ReferenceItemTab({}: Props): ReactElement {
-  const { isTabOpen, referenceItemData, setIsTabOpen, setReferenceItemData } =
-    useReferenceTabContext();
-    
-  const tabInputItems = Object.keys(referenceItemData).map(
+  const {
+    isTabOpen,
+    referenceItemTabData,
+    setIsTabOpen,
+    setReferenceItemTabData,
+  } = useReferenceTabContext();
+
+  const tabInputItems = Object.keys(referenceItemTabData).map(
     (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
       const label = TAB_ITEM_LABELS[field_key];
       return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
@@ -64,9 +68,12 @@ export default function ReferenceItemTab({}: Props): ReactElement {
           key={`reference-item-tab-input-${field_key}`}
           label={label}
           onChange={(value: string): void => {
-            setReferenceItemData({ ...referenceItemData, [field_key]: value });
+            setReferenceItemTabData({
+              ...referenceItemTabData,
+              [field_key]: value,
+            });
           }}
-          value={referenceItemData[field_key]}
+          value={referenceItemTabData[field_key]}
         />
       );
     }

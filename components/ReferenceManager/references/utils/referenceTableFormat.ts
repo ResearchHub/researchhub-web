@@ -1,7 +1,6 @@
 import { GridColDef } from "@mui/x-data-grid";
-import { ReferenceItemDataType } from "./context/ReferencesTabContext";
 
-export const columns: GridColDef[] = [
+export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
   { field: "title", headerName: "Title", width: 320 },
   { field: "authors", headerName: "Authors", width: 280 },
