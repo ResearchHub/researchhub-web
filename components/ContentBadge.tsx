@@ -148,22 +148,22 @@ const styles = StyleSheet.create({
     height: 21,
   },
   rscIcon: {
-    height: "unset",
+    height: "16px",
     display: "flex",
   },
   iconSmall: {
-    height: 18,
+    height: 14,
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,
     color: bountyColors.BADGE_TEXT,
-    padding: "3px 6px",
+    padding: "5px 10px",
     paddingTop: 4,
   },
   badgeFor_bounty: {
     background: bountyColors.BADGE_BACKGROUND,
     color: bountyColors.BADGE_TEXT,
-    padding: "3px 6px",
+    padding: "5px 10px",
     paddingTop: 4,
   },
   rscContent: {
