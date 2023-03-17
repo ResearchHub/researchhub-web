@@ -15,6 +15,7 @@ import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import colors from "~/config/themes/colors";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { breakpoints } from "~/config/themes/screen";
+import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
 
 type Args = {
   entry: Contribution;
@@ -31,21 +32,26 @@ const ContributionHeader = ({ entry }: Args) => {
   if (contentType.name === "bounty") {
     item = item as BountyContributionItem;
     actionLabel = (
-      <>
-        created &nbsp;
-        <ResearchCoinIcon
-          overrideStyle={styles.rscIcon}
-          version={4}
-          width={16}
-          height={16}
-        />
-        <span className={css(styles.rsc)}>
-          {` `}
-          {item.amount} RSC
-        </span>
-        &nbsp; bounty
-        {hubs.length ? <>{` `}in</> : ""}
-      </>
+      <RSCTooltip
+        amount={item.amount}
+        targetContent={
+          <>
+            created &nbsp;
+            <ResearchCoinIcon
+              overrideStyle={styles.rscIcon}
+              version={4}
+              width={16}
+              height={16}
+            />
+            <span className={css(styles.rsc)}>
+              {` `}
+              {item.amount} RSC
+            </span>
+            &nbsp; bounty
+            {hubs.length ? <>{` `}in</> : ""}
+          </>
+        }
+      />
     );
     contentBadgeLabel = item.amount + " Bounty";
   } else if (contentType.name === "rsc_support") {

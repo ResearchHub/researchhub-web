@@ -89,34 +89,32 @@ function SubmissionDetails({
       />
 
       <div className={css(styles.hubsContainer)}>
-        <>
-          <span className={css(styles.textSecondary, styles.postedText)}>
-            {` `}
-            {actionLabel}
-          </span>
-          {visibleHubs.map((h, index) => (
-            <span key={index}>
-              <ALink
-                key={`/hubs/${h.slug ?? ""}-index`}
-                theme="blankAndBlue"
-                href={`/hubs/${h.slug}`}
-                overrideStyle={styles.hubLink}
-              >
-                {toTitleCase(h.name)}
-              </ALink>
-              {index < visibleHubs?.length - 1 ? "," : ""}
-            </span>
-          ))}
-          {hiddenHubs.length > 0 && (
-            <HubDropDown
-              hubs={hiddenHubs}
-              labelStyle={styles.hubLink}
-              containerStyle={styles.hubDropdownContainer}
-              isOpen={isHubsDropdownOpen}
-              setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
-            />
-          )}
-        </>
+        <div className={css(styles.textSecondary, styles.postedText)}>
+          {` `}
+          {actionLabel}
+        </div>
+        {visibleHubs.map((h, index) => (
+          <div key={index}>
+            <ALink
+              key={`/hubs/${h.slug ?? ""}-index`}
+              theme="blankAndBlue"
+              href={`/hubs/${h.slug}`}
+              overrideStyle={styles.hubLink}
+            >
+              {toTitleCase(h.name)}
+            </ALink>
+            {index < visibleHubs?.length - 1 ? "," : ""}
+          </div>
+        ))}
+        {hiddenHubs.length > 0 && (
+          <HubDropDown
+            hubs={hiddenHubs}
+            labelStyle={styles.hubLink}
+            containerStyle={styles.hubDropdownContainer}
+            isOpen={isHubsDropdownOpen}
+            setIsOpen={(isOpen) => setIsHubsDropdownOpen(isOpen)}
+          />
+        )}
       </div>
       <div className={css(styles.submittedByDetails)}>
         <span className={css(styles.dot, styles.dotWithMargin)}> • </span>
@@ -175,7 +173,9 @@ const styles = StyleSheet.create({
     color: colors.MEDIUM_GREY2(),
   },
   hubsContainer: {
-    display: "inline",
+    display: "flex",
+    // display: "inline",
+    // alignItems: "center",
   },
   hubDropdownContainer: {
     display: "inline-block",
