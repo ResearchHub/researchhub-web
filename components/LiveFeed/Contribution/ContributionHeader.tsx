@@ -140,6 +140,7 @@ const ContributionHeader = ({ entry }: Args) => {
         createdDate={createdDate}
         avatarSize={20}
         actionLabel={actionLabel}
+        overrideSubmittedBy={styles.overrideSubmittedBy}
       />
       <div className={`${css(styles.contentBadge)}`}>
         {/* @ts-ignore */}
@@ -165,6 +166,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
+  },
+  overrideSubmittedBy: {
+    lineHeight: 0,
   },
   link: {
     fontWeight: 400,

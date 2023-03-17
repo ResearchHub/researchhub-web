@@ -23,7 +23,12 @@ function Index({ slug, hub, error, isLiveFeed }) {
             : "Discuss and Discover " + toTitleCase(slug)
         }
       />
-      <HubPage hub={hub} slug={slug} isLiveFeed={isLiveFeed} isHomePage={false} />
+      <HubPage
+        hub={hub}
+        slug={slug}
+        isLiveFeed={isLiveFeed}
+        isHomePage={false}
+      />
     </div>
   );
 }

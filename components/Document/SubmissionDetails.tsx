@@ -19,6 +19,7 @@ type Args = {
   avatarSize?: number;
   bounties?: Bounty[];
   actionLabel?: string | ReactElement;
+  overrideSubmittedBy?: any;
 };
 
 function SubmissionDetails({
@@ -26,6 +27,7 @@ function SubmissionDetails({
   hubs,
   createdDate,
   avatarSize = 30,
+  overrideSubmittedBy,
   bounties = [],
   actionLabel = "posted in",
 }: Args): ReactElement<"div"> {
@@ -46,7 +48,7 @@ function SubmissionDetails({
   const _twoDaysInMinutes = 2 * 24 * 60;
 
   return (
-    <div className={css(styles.submittedBy)}>
+    <div className={css(styles.submittedBy, overrideSubmittedBy)}>
       <UserTooltip
         createdBy={createdBy}
         targetContent={
