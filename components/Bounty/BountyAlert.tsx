@@ -208,7 +208,9 @@ const BountyAlert = ({
             )}
           />
         </div>
-        <div style={{ display: "flex", whiteSpace: "pre-wrap" }}>
+        <div
+          style={{ display: "flex", whiteSpace: "pre-wrap", flexWrap: "wrap" }}
+        >
           {showPlural ? (
             <span>A group of users</span>
           ) : createdBy ? (
@@ -447,6 +449,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   rscBannerIcon: {
+    marginLeft: 2,
     verticalAlign: "text-top",
   },
   divider: {
