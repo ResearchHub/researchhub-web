@@ -14,9 +14,9 @@ export const fetchCommentsAPI = async ({
   documentId: ID;
   url?: string;
 }): Promise<{ comments: Comment[], next: string, prev: string }> => {
-  // const rawComments = listMockData;
-  // const comments = rawComments.map((raw) => parseComment({ raw }));
-  // return Promise.resolve({comments, next: "", prev: ""});
+  const rawComments = listMockData;
+  const comments = rawComments.map((raw) => parseComment({ raw }));
+  return Promise.resolve({comments, next: "", prev: ""});
 
 
   const _url = url || API.BASE_URL + `${documentType}/${documentId}/comments/`;

@@ -18,9 +18,9 @@ const CommentReadOnly = ({ content }: Args) => {
   
   useEffect(() => {
     if (quill) {
-      const length = quill.getLength();
       quill.disable();
       quill.setContents(content);
+      const length = quill.getLength();
 
       if (length > config.comment.previewMaxChars) {
         setShowLoadMoreBtn(true);
@@ -35,16 +35,20 @@ const CommentReadOnly = ({ content }: Args) => {
 
   return (
     <div>
-      <div ref={quillRef} />
-      <IconButton overrideStyle={styles.readMoreWrapper} onClick={() => setIsPreview(!isPreview)}>
-        <span className={css(styles.readMore)}>
-          {isPreview ? `Read More` : `Show Less`}
-        </span>
-        <FontAwesomeIcon
-          icon={isPreview ? faAngleDown : faAngleUp}
-          style={{ marginLeft: 3, fontSize: 16 }}
-        />        
-      </IconButton>
+      <div className={showLoadMoreBtn && isPreview ? "quill-preview-mode" : ""}>
+        <div ref={quillRef} />
+      </div>
+      {showLoadMoreBtn &&
+        <IconButton overrideStyle={styles.readMoreWrapper} onClick={() => setIsPreview(!isPreview)}>
+          <span className={css(styles.readMore)}>
+            {isPreview ? `Read More` : `Show Less`}
+          </span>
+          <FontAwesomeIcon
+            icon={isPreview ? faAngleDown : faAngleUp}
+            style={{ marginLeft: 3, fontSize: 16 }}
+          />        
+        </IconButton>
+      }
     </div>
   );
 };

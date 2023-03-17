@@ -42,7 +42,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     createdBy: parseUser(raw.created_by),
     isEdited: raw.is_edited,
     bounties: (raw.bounties || []).map((b:any) => new Bounty(b)),
-    tipped: raw.promoted,
+    tipped: raw.promoted || 0,
     content: raw.comment_content_json || {},
     score: raw.score,
     userVote: raw.user_vote,

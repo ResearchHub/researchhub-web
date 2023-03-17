@@ -20,6 +20,7 @@ import CommentSort from "./CommentSort";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
 import React from "react";
+import colors from "./lib/colors";
 
 type Args = {
   document: TopLevelDocument;
@@ -29,13 +30,13 @@ type Args = {
 const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
 
   const [comments, setComments] = useState<CommentType[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
   const [readyForInitialRender, setReadyForInitialRender] = useState<boolean>(false);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
-  const user = useSelector((state: RootState) =>
+  const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
@@ -61,10 +62,10 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   const handleFetchPrev = () => handleFetch({ url: fetchUrls.prev });
 
   useEffect(() => {
-    if (document.id) {
+    if (document.id && !isInitialFetchDone) {
       handleFetch({});
     }
-  }, [document.id]);
+  }, [document.id, isInitialFetchDone]);
 
   const handleCommentCreate = async ({
     content,
@@ -122,7 +123,6 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     )
   }, [comments]);
 
-
   return (
     <WrapperEl
       comments={comments}
@@ -141,7 +141,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
             editorId="new-thread"
             handleSubmit={handleCommentCreate}
             allowBounty={true}
-            author={user?.authorProfile}
+            author={currentUser?.authorProfile}
             previewWhenInactive={true}
           />
           <div className={css(styles.filtersWrapper)}>
@@ -150,7 +150,9 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
               <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
             </div>
           </div>
-          {_commentsElems}
+          <div>
+            {_commentsElems}
+          </div>
         </>
       }
       {isFetching &&
@@ -173,7 +175,15 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   commentWrapper: {
-    marginTop: 30,
+    borderBottom: `1px solid ${colors.border}`,
+    paddingTop: 30,
+    paddingBottom: 30,
+    ":first-child": {
+      paddingTop: 0,
+    },
+    ":last-child": {
+      borderBottom: 0,
+    }
   },
   placeholderWrapper: {
     marginBottom: 35,
