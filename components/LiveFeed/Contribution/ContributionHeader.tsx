@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     },
   },
   overrideSubmittedBy: {
-    lineHeight: 0,
+    alignItems: "unset",
   },
   link: {
     fontWeight: 400,
