@@ -324,7 +324,7 @@ const Paper = ({
               <a name="abstract" />
               <PaperPageAbstractSection paper={paper} />
             </div>
-            {isFetchComplete /* Performance Optimization */ && (
+            {/* {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
                 {
@@ -345,7 +345,7 @@ const Paper = ({
                   />
                 }
               </div>
-            )}
+            )} */}
             {isFetchComplete /* Performance Optimization */ && (
               <div className={css(styles.section)}>
                 <a name="paper pdf" />

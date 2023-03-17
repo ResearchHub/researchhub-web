@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     background: "white",
     cursor: "pointer",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
+    userSelect: "none",
     border: `1px solid ${colors.border}`,
     ":hover": {
       background: colors.hover.background,
