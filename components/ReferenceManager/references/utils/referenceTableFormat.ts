@@ -3,7 +3,7 @@ import { GridColDef } from "@mui/x-data-grid";
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
   { field: "title", headerName: "Title", width: 320 },
-  { field: "authors", headerName: "Authors", width: 280 },
+  { field: "authors", headerName: "Authors", sortable: false, width: 280 },
   { field: "last_author", headerName: "Last Author", width: 140 },
   {
     field: "hubs",
