@@ -25,6 +25,7 @@ const RSCPopover = ({ amount }: { amount: number }): ReactElement | null => {
                   display: "flex",
                   whiteSpace: "pre",
                   justifyContent: "space-between",
+                  columnGap: "8px",
                 }}
               >
                 <div>
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
   },
   rscContentOverride: {
     width: "100%",
+    whiteSpace: "pre-wrap",
   },
   badgeOverride: {
     padding: "8px 16px",
