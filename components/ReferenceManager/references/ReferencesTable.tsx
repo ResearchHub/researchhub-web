@@ -27,7 +27,6 @@ export default function ReferencesTable() {
 
   useEffectFetchReferenceCitations({
     onSuccess: (payload: any) => {
-      debugger
       setReferenceItemData(payload?.results);
       setIsReady(true);
     },

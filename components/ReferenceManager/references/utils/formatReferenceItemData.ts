@@ -3,7 +3,6 @@ import { ReferenceItemDataType } from "../context/ReferencesTabContext";
 
 function referenceFormatSwitchMap(datum: any): ReferenceItemDataType | null {
   const { citation_type, fields, id } = datum ?? {};
-  console.warn("datum: ", datum);
   switch (citation_type) {
     case "ARTWORK":
       const {
