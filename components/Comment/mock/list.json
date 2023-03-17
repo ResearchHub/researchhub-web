@@ -68,7 +68,7 @@
         ]
       }
     },
-    "content": {
+    "comment_content_json": {
       "ops": [
         {
           "insert": "If anyone is curious "
@@ -148,11 +148,11 @@
           "id": 1377,
           "author_profile": {
             "id": 432209,
-            "first_name": "Ricardo",
+            "first_name": "Riccardo",
             "last_name": "Goldini",
             "created_date": "2020-10-30T11:21:53.735952Z",
             "updated_date": "2023-02-08T07:03:44.508361Z",
-            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/02/08/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=yMLcoEBbNrvaeeL9S9JbnaQhG7E%3D&Expires=1678144805",
+            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GitdRlr6bN-Qj8mGn9y6CBjjDH34qsPZijESKNLdg=s96-c",
             "editor_of_hubs": [
               {
                 "id": 200,
@@ -162,7 +162,7 @@
             ]
           }
         },
-        "content": {
+        "comment_content_json": {
           "ops": [
             {
               "insert": "Very nice questions. The study of \"psychoplastogens\" is extremely new and partially a rebrand of psychedelic research meant to emphasize one observed measure of neural change (dendrite and spine growth/sprouting) resulting from psychedelic treatments.  Because the field is so new and rapidly changing, standards are evolving. \n\nThat being said, sub-anesthetic ketamine is a relatively common and \"standard\" treatment for depression in the clinic and has been shown to increase dendritic activity and growth in mice models. In ketamine, the effects are non-linear, and higher dosages lead to anesthesia and reduce dendritic activity. Here is a review : "
@@ -209,7 +209,7 @@
         ]
       }
     },
-    "content": {
+    "comment_content_json": {
         "ops": [
           {
             "insert": "New information (analytics done on academic-accelerator.com)\n\nJanuary-February Impact Factor for Canadian Journal of Fisheries and Aquatic Sciences\n\n"
@@ -274,7 +274,7 @@
             "last_name": "Dehouche",
             "created_date": "2020-10-30T11:21:53.735952Z",
             "updated_date": "2023-02-08T07:03:44.508361Z",
-            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/02/08/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=yMLcoEBbNrvaeeL9S9JbnaQhG7E%3D&Expires=1678144805",
+            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GifvAKky7h2lXbgMYS14mLAcI6yl3SDVD8Rejv7Sg=s96-c",
             "editor_of_hubs": [
               {
                 "id": 200,
@@ -284,7 +284,7 @@
             ]
           }
         },
-        "content": {
+        "comment_content_json": {
           "ops": [
             {
               "insert": "This is a great point and suggestions, thank you very much. That idea (both in Juan Benet's interview and our citation of it) was meant to be hypothetical (transcript of interview here\n"
@@ -302,6 +302,92 @@
         },
         "children": []
       }          
+    ]
+  },
+
+
+
+
+
+
+
+
+
+
+  {
+    "bounties": [],
+    "id": 32452,
+    "score": 2,
+    "created_date": "2023-02-08T06:15:49.486097Z",
+    "updated_date": "2023-02-08T06:15:49.486113Z",
+    "post_type": "DISCUSSION",
+    "user_vote": null,
+    "parent_id": null,
+    "is_edited": false,
+    "created_by": {
+      "id": 2234,
+      "author_profile": {
+        "id": 56581,
+        "first_name": "Fatma",
+        "last_name": "Guneri",
+        "created_date": "2020-10-30T11:21:53.735952Z",
+        "updated_date": "2023-02-08T07:03:44.508361Z",
+        "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2023/03/09/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=l6CeoTX62yuKVB9kIfDau8fnxiU%3D&Expires=1679681613"
+      }
+    },
+    "comment_content_json": {
+      "ops": [
+        {
+          "insert": "To your opinion, if non-muslim judges were fasting they would be also more lenient?\n\nIf judges have strong religious convictions then their forgiveness might increase during the Ramadan. The correlation between forgiveness and leniency should be measured. There are different factors that you should consider when you measure leniency: "
+        },
+        {
+          "insert": "https://www.frontiersin.org/articles/10.3389/fpsyg.2017.00521/full",
+          "attributes": {
+            "link": "https://www.frontiersin.org/articles/10.3389/fpsyg.2017.00521/full"
+          }
+        },
+        {
+          "insert": "\n\nMy second question is about the personality characteristics of judges. Were they described in the administrative registrations?\n\n\n"
+        }
+      ]
+    },
+    "children": [
+      {
+        "id": 343540,
+        "score": 8,
+        "created_date": "2023-02-08T06:15:49.486097Z",
+        "updated_date": "2023-02-08T06:15:49.486113Z",
+        "post_type": "DISCUSSION",
+        "user_vote": null,
+        "parent_id": 10660,
+        "is_edited": false,
+        "created_by": {
+          "id": 1377,
+          "author_profile": {
+            "id": 432209,
+            "first_name": "Mohamed",
+            "last_name": "Kashkoush",
+            "created_date": "2020-10-30T11:21:53.735952Z",
+            "updated_date": "2023-02-08T07:03:44.508361Z",
+            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GguDqgJzsbhqUrXerYBw-XHA60Umf1XEvxdBeP1wQ=s96-c"
+            ,
+            "editor_of_hubs": [
+              {
+                "id": 200,
+                "name": "immunology",
+                "slug": "immunology"
+              }
+            ]
+          }
+        },
+        "comment_content_json": {
+          "ops": [
+            {
+              "insert": "This isn't really my area of expertise and I haven't looked at the study in detail, so I don't know. However, I would be surprised if personality characteristics were measured given the many thousands of data points required (could be wrong, didn't look). I just thought it was an interesting article that I could relate to on a personal level.\n\nMy suspicion is that leniency has little to do with fasting or religious affiliation, but simply if judges are in a \"good mood\" or not. My personal anecdote is that most Muslims I know are in \"better moods\" (more charitable, kinder, etc.) during Ramadan. But there's nothing \"special\" about Ramadan or Muslims in this regard - there are many factors that can contribute to non-Muslim judges' moods, religious or otherwise.\n\nI know that \"good mood\" is over-simplifying, but combined with Kahneman's text, I think the take-home point is that judges' leniency is affected by their mental state at the time of decision. If true, it should be somewhat concerning to anyone who cares about justice / equal treatment under the law.\n\nPerhaps the better way to think about \"good mood\" is to the degree it affects the judgement of personality characteristics in the article you shared (e.g. conscientiousness, agreeableness, etc.). Thanks for sharing!\n"
+            }
+          ]
+        }
+      }
     ]
   }  
 ]

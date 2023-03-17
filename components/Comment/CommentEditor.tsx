@@ -85,7 +85,12 @@ const CommentEditor = ({
       <div>
         {author && (
           <div className={css(styles.authorRow, isPreviewMode && styles.hidden)}>
-            <CommentAvatars authors={[author]} />
+            <div className={css(styles.nameRow)}>
+              <CommentAvatars authors={[author]} />
+              <div className={css(styles.name)}>
+                {author.firstName} {author.lastName}
+              </div>
+            </div>
             <span style={{ marginTop: -5 }}>
               <CommentTypeSelector
                 handleSelect={_setCommentType}
@@ -146,6 +151,12 @@ const styles = StyleSheet.create({
     columnGap: "7px",
     marginBottom: 10,
   },
+  nameRow: {
+    display: "flex",
+    columnGap: "5px",
+    fontSize: 15,
+    alignItems: "center",    
+  }
 });
 
 export default CommentEditor;

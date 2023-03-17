@@ -12,6 +12,10 @@
   font-style: normal;
 }
 
+.quill-preview-mode .ql-editor :last-child::after {
+  content: "...";
+}
+
 .ql-snow .ql-editor blockquote {
   padding-left: 10px !important;
 }

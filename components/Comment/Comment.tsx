@@ -23,7 +23,7 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
 
-  const _childCommentsElems = useMemo(() => {
+  const _childCommentElems = useMemo(() => {
     return (
       comment.children.map((c) => (
         <div key={c.id} className={css(styles.commentWrapper)}>
@@ -37,6 +37,7 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
       ))
     )
   }, [comment.children])
+
 
   return (
     <div>
@@ -81,25 +82,27 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
           editorId={`reply-to-${comment.id}`}
         />
       )}
-      <div className={css(styles.children)}>
-        {_childCommentsElems}
-      </div>
+      {comment.children.length > 0 && 
+        <div className={css(styles.children)}>
+          {_childCommentElems}
+        </div>
+      }
     </div>
   );
 };
 
 const styles = StyleSheet.create({
-  children: {
-    marginLeft: 10,
-    paddingLeft: 15,
-    borderLeft: `2px solid ${colors.border}`,
-    paddingTop: 15,
+  commentWrapper: {
+    marginTop: 5,
   },
   headerWrapper: {
     marginBottom: 10,
   },
-  commentWrapper: {
-    marginTop: 5,
+  children: {
+    marginLeft: 10,
+    paddingLeft: 15,
+    borderLeft: `3px solid ${colors.border}`,
+    paddingTop: 15,
   },
   actionsWrapper: {
   },
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
   },
   mainWrapperForBounty: {
     boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 10,
     background: "white",
     marginBottom: 5,
