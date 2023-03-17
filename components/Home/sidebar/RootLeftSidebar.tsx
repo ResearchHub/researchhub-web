@@ -100,6 +100,16 @@ export const getLeftSidebarItemAttrs = ({
         router.push("/leaderboard/users");
       },
     },
+    {
+      icon: icons.pencil,
+      label: "References",
+      isActive: ["reference-manager"].includes(pathname),
+      isMinimized,
+      onClick: (event: SyntheticEvent): void => {
+        event.preventDefault();
+        router.push("/reference-manager");
+      },
+    },
   ]);
 };
 
