@@ -12,7 +12,7 @@
   font-style: normal;
 }
 
-.quill-preview-mode .ql-editor :last-child::after {
+.quill-preview-mode .ql-editor > :last-child::after {
   content: "...";
 }
 

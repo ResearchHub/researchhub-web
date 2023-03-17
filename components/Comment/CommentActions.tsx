@@ -38,7 +38,7 @@ const CommentActions = ({ comment, document, handleEdit, handleReply }: Args) =>
         </div>
         <div className={`${css(styles.action)} reply-btn`}>
           <IconButton onClick={() => null}>
-            <Image src="/static/icons/tip.png" height={24} width={25} alt="Reply" />
+            <Image src="/static/icons/tip.png" height={20} width={21} alt="Tip" />
             <span className={css(styles.actionText)} onClick={() => handleReply()}>Tip</span>
           </IconButton>
         </div>
@@ -52,7 +52,7 @@ const CommentActions = ({ comment, document, handleEdit, handleReply }: Args) =>
         }
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => null}>
-            <Image src="/static/icons/reply.png" height={16} width={19} alt="Reply" />
+            <Image src="/static/icons/reply.png" height={14} width={17} alt="Reply" />
             <span className={css(styles.actionText)} onClick={() => handleReply()}>Reply</span>
           </IconButton>
         </div>

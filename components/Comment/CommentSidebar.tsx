@@ -55,25 +55,28 @@ const CommentSidebar = ({ children, comments, setReadyForInitialRender, isInitia
   );
 };
 
-const slideOpenKeyframe = {
-  "0%": {
-    marginRight: -config.sidebar.width,
-  },
+// FIXME: Figure out whether to animate or not
+// const slideOpenKeyframe = {
+//   "0%": {
+//     // marginRight: -config.sidebar.width,
+//     width: 0
+//   },
 
-  "100%": {
-    marginRight: 0,
-  },
-};
+//   "100%": {
+//     // marginRight: 0,
+//     width: config.sidebar.width
+//   },
+// };
 
-const slideCloseKeyframe = {
-  "0%": {
-    marginRight: 0,
-  },
+// const slideCloseKeyframe = {
+//   "0%": {
+//     width: config.sidebar.width
+//   },
 
-  "100%": {
-    marginRight: -config.sidebar.width,
-  },
-};
+//   "100%": {
+//     width: 0
+//   },
+// };
 
 const styles = StyleSheet.create({
   sidebar: {
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",
     top: 0,
-    width: config.sidebar.width,
+    
     boxSizing: "border-box",
   },
   sidebarHeader: {
@@ -99,18 +102,20 @@ const styles = StyleSheet.create({
     height: "100vh",
   },
   sidebarOpen: {
-    animationName: [slideOpenKeyframe],
-    animationDuration: "0.5s",
-    animationDirection: "normal",
-    animationFillMode: "forwards",
-    animationTiming: "ease-in",
+    width: config.sidebar.width,
+    // animationName: [slideOpenKeyframe],
+    // animationDuration: "0.2s",
+    // animationDirection: "normal",
+    // animationFillMode: "forwards",
+    // animationTiming: "ease-in",
   },
   sidebarClosed: {
-    animationName: [slideCloseKeyframe],
-    animationDuration: "0.5s",
-    animationDirection: "normal",
-    animationFillMode: "forwards",
-    animationTiming: "ease-out",
+    width: 0,
+    // animationName: [slideCloseKeyframe],
+    // animationDuration: "0.2s",
+    // animationDirection: "normal",
+    // animationFillMode: "forwards",
+    // animationTiming: "ease-out",
   },
 });
 
