@@ -13,7 +13,9 @@ function referenceFormatSwitchMap(datum: any): ReferenceItemDataType | null {
       } = fields;
       const lastAuthor = artist[artist.length - 1];
       return {
+        // logical ordering - displayed in ReferenceItemTab
         id,
+        citation_type,
         title,
         authors: artist
           .map(

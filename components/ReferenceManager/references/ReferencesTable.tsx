@@ -51,6 +51,7 @@ export default function ReferencesTable() {
           columns: {
             columnVisibilityModel: {
               id: false,
+              citation_type: false,
             },
           },
         }}

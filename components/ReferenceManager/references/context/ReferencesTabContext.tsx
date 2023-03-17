@@ -7,6 +7,7 @@ export type ReferenceItemDataType = {
   // NOTE: Logical ordering for display reason
   // TODO: calvinhlee update this once BE is setup
   id: ID;
+  citation_type: NullableString;
   title: NullableString;
   authors: NullableString;
   hubs: NullableString;
@@ -26,6 +27,7 @@ export type ReferencesTabContextValueType = {
 export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceItemDataType = {
   // NOTE: Logical ordering for display reason
   id: null,
+  citation_type: null,
   title: null,
   hubs: null,
   authors: null,
