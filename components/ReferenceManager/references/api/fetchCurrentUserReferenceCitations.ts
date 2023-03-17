@@ -17,6 +17,6 @@ export const fetchCurrentUserReferenceCitations = ({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((res: any): void => onSuccess({ res }))
+    .then((result: any): void => onSuccess(result))
     .catch(onError);
 };
