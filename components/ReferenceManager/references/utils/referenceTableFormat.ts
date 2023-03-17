@@ -25,6 +25,6 @@ export const columnsFormat: GridColDef[] = [
     field: "published_year",
     headerName: "Publication Year",
     type: "string",
-    width: 120,
+    width: 180,
   },
 ];
