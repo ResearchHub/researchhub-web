@@ -5,9 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactElement, useEffect } from "react";
-import { fetchCurrentUserReferenceCitations } from "./api/fetchCurrentUserReferenceCitations";
-import { useReferenceTabContext } from "./context/ReferencesTabContext";
+import { Fragment, useState, ReactElement } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -17,30 +15,14 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import ReferenceItemTab from "./reference_item/ReferenceItemTab";
 import ReferencesTable from "./ReferencesTable";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 interface Props {}
-
-function useEffectFetchReferenceCitations({ onSuccess, onError }) {
-  // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
-  useEffect(() => {
-    fetchCurrentUserReferenceCitations({ onSuccess, onError });
-  }, [fetchCurrentUserReferenceCitations, onSuccess, onError]);
-}
 
 export default function ReferencesContainer({}: Props): ReactElement {
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
-  const { setReferenceItemData } = useReferenceTabContext();
-  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
 
-  useEffectFetchReferenceCitations({
-    onSuccess: (result) => {
-      debugger;
-      setReferenceItemData({});
-    },
-    onError: emptyFncWithMsg,
-  });
+  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
 
   return (
     <Fragment>
