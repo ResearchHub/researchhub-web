@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   lower: {
-    padding: 12,
+    padding: 16,
   },
   column: {
     flex: 1,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   badgeOverride: {
     padding: "8px 16px",
-    background: "none",
+    background: "#FDF8E6",
     borderRadius: 0,
     borderBottom: "1px solid #eee",
   },
