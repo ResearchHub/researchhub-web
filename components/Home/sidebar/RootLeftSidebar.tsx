@@ -103,7 +103,7 @@ export const getLeftSidebarItemAttrs = ({
     {
       icon: icons.pencil,
       label: "References",
-      isActive: ["reference-manager"].includes(pathname),
+      isActive: pathname.includes("reference-manager"),
       isMinimized,
       onClick: (event: SyntheticEvent): void => {
         event.preventDefault();
