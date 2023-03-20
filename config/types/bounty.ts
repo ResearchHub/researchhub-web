@@ -43,7 +43,7 @@ export default class Bounty {
   _createdDate: string;
   _timeRemaining: string;
   _timeRemainingInMinutes: number;
-  _createdBy: RHUser;
+  _createdBy: RHUser|null;
   _amount: number;
   _formattedAmount: string;
   _status: BOUNTY_STATUS;
@@ -62,7 +62,7 @@ export default class Bounty {
       unit: "minute",
     });
 
-    this._createdBy = parseUser(raw.created_by);
+    this._createdBy = raw.created_by ? parseUser(raw.created_by) : null;
     this._amount = parseFloat(raw.amount);
     this._formattedAmount = this._amount.toLocaleString();
     this._status = raw.status;
@@ -189,7 +189,7 @@ export default class Bounty {
     return this._timeRemainingInMinutes;
   }
 
-  get createdBy(): RHUser {
+  get createdBy(): RHUser|null {
     return this._createdBy;
   }
 
