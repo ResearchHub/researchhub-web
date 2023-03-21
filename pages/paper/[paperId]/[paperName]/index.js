@@ -324,7 +324,7 @@ const Paper = ({
               <a name="abstract" />
               <PaperPageAbstractSection paper={paper} />
             </div>
-            {/* {isFetchComplete && (
+            {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
                 {
@@ -345,7 +345,7 @@ const Paper = ({
                   />
                 }
               </div>
-            )} */}
+            )}
             {isFetchComplete /* Performance Optimization */ && (
               <div className={css(styles.section)}>
                 <a name="paper pdf" />
@@ -442,7 +442,8 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    // justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
     // This property is needed for comments sidebar to close gracefully without overflow.
