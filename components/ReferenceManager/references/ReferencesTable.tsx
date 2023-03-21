@@ -9,42 +9,43 @@ import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "./context/ReferencesTabContext";
 
-function useEffectFetchReferenceCitations({ onSuccess, onError }) {
+function useEffectFetchReferenceCitations({ onSuccess, onError, isLoading }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
   useEffect(() => {
     if (!isNullOrUndefined(user?.id)) {
+      isLoading(true);
       fetchCurrentUserReferenceCitations({ onSuccess, onError });
     }
   }, [fetchCurrentUserReferenceCitations, user?.id]);
 }
 
 export default function ReferencesTable() {
-  const [pageSize, setPageSize] = useState(10);
-  const [isReady, setIsReady] = useState<boolean>(false);
+  const [isLoading, setisLoading] = useState<boolean>(true);
   const {
-    referenceRowData,
+    referenceTableRowData,
     setIsTabOpen,
-    setReferenceRowData,
-    setReferenceItemTabData,
+    setReferenceTableRowData,
+    setReferenceItem,
   } = useReferenceTabContext();
 
   useEffectFetchReferenceCitations({
+    isLoading,
     onSuccess: (payload: any) => {
-      setReferenceRowData(payload?.results);
-      setIsReady(true);
+      setReferenceTableRowData(payload?.results);
+      setisLoading(false);
     },
     onError: emptyFncWithMsg,
   });
 
-  const formattedReferenceRows = isReady
-    ? nullthrows(formatReferenceRowData(referenceRowData))
+  const formattedReferenceRows = isLoading
+    ? nullthrows(formatReferenceRowData(referenceTableRowData))
     : [];
 
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
-        loading={!isReady}
+        loading={!isLoading}
         checkboxSelection
         columns={columnsFormat}
         initialState={{
@@ -57,13 +58,10 @@ export default function ReferencesTable() {
         }}
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
-        pageSize={pageSize}
-        onPageSizeChange={(pageSize) => setPageSize(pageSize)}
-        rowsPerPageOptions={[5, 10, 25]}
         autoHeight={true}
         onCellClick={(params, event, _details): void => {
           event.stopPropagation();
-          setReferenceItemTabData({
+          setReferenceItem({
             ...nullthrows(
               formattedReferenceRows.find((item) => item.id === params?.row?.id)
             ),

@@ -3,7 +3,7 @@ import type { Context } from "react";
 import { ID, NullableString } from "~/config/types/root_types";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-export type ReferenceItemDataType = {
+export type ReferenceTableRowDataType = {
   // NOTE: Logical ordering for display reason
   // TODO: calvinhlee update this once BE is setup
   id: ID;
@@ -15,16 +15,18 @@ export type ReferenceItemDataType = {
   published_date: NullableString;
   published_year: NullableString;
 };
+export type ReferenceItem = any; // schema for ReferenceItem comes from the backend.
+
 export type ReferencesTabContextValueType = {
   isTabOpen: boolean;
-  referenceItemTabData: ReferenceItemDataType;
-  referenceRowData: ReferenceItemDataType[];
+  referenceItem: ReferenceItem;
+  referenceTableRowData: ReferenceTableRowDataType[];
   setIsTabOpen: (flag: boolean) => void;
-  setReferenceItemTabData: (data: ReferenceItemDataType) => void;
-  setReferenceRowData: (data: ReferenceItemDataType[]) => void;
+  setReferenceItem: (data: ReferenceItem) => void;
+  setReferenceTableRowData: (data: ReferenceTableRowDataType[]) => void;
 };
 
-export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceItemDataType = {
+export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceTableRowDataType = {
   // NOTE: Logical ordering for display reason
   id: null,
   citation_type: null,
@@ -39,11 +41,11 @@ export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceItemDataType = {
 export const DEFAULT_REFERENCES_TAB_CONTEXT_VALUE: ReferencesTabContextValueType =
   {
     isTabOpen: true,
-    referenceItemTabData: DEFAULT_REFERENCE_ITEM_DATA,
-    referenceRowData: [],
+    referenceItem: DEFAULT_REFERENCE_ITEM_DATA,
+    referenceTableRowData: [],
     setIsTabOpen: emptyFncWithMsg,
-    setReferenceItemTabData: emptyFncWithMsg,
-    setReferenceRowData: emptyFncWithMsg,
+    setReferenceItem: emptyFncWithMsg,
+    setReferenceTableRowData: emptyFncWithMsg,
   };
 
 export const ReferencesTabContext: Context<ReferencesTabContextValueType> =
@@ -57,21 +59,22 @@ export const useReferenceTabContext = (): ReferencesTabContextValueType => {
 
 export function ReferencesTabContextProvider({ children }) {
   const [isTabOpen, setIsTabOpen] = useState<boolean>(false);
-  const [referenceItemTabData, setReferenceItemTabData] =
-    useState<ReferenceItemDataType>(DEFAULT_REFERENCE_ITEM_DATA);
-  const [referenceRowData, setReferenceRowData] = useState<
-    ReferenceItemDataType[]
+  const [referenceItem, setReferenceItem] = useState<ReferenceItem>(
+    DEFAULT_REFERENCE_ITEM_DATA
+  );
+  const [referenceTableRowData, setReferenceTableRowData] = useState<
+    ReferenceTableRowDataType[]
   >([]);
 
   return (
     <ReferencesTabContext.Provider
       value={{
         isTabOpen,
-        referenceItemTabData,
-        referenceRowData,
+        referenceItem,
+        referenceTableRowData,
         setIsTabOpen,
-        setReferenceItemTabData,
-        setReferenceRowData,
+        setReferenceItem,
+        setReferenceTableRowData,
       }}
     >
       {children}
