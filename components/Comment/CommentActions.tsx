@@ -18,8 +18,12 @@ type Args = {
   document: TopLevelDocument;
 };
 
-const CommentActions = ({ comment, document, handleEdit, handleReply }: Args) => {
-
+const CommentActions = ({
+  comment,
+  document,
+  handleEdit,
+  handleReply,
+}: Args) => {
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -38,22 +42,50 @@ const CommentActions = ({ comment, document, handleEdit, handleReply }: Args) =>
         </div>
         <div className={`${css(styles.action)} reply-btn`}>
           <IconButton onClick={() => null}>
-            <Image src="/static/icons/tip.png" height={20} width={21} alt="Tip" />
-            <span className={css(styles.actionText)} onClick={() => handleReply()}>Tip</span>
+            <Image
+              src="/static/icons/tip.png"
+              height={20}
+              width={21}
+              alt="Tip"
+            />
+            <span
+              className={css(styles.actionText)}
+              onClick={() => handleReply()}
+            >
+              Tip
+            </span>
           </IconButton>
         </div>
-        {currentUser?.id === comment.createdBy.id &&
+        {currentUser?.id === comment.createdBy.id && (
           <div className={`${css(styles.action, styles.editAction)} edit-btn`}>
             <IconButton onClick={() => null}>
-              <FontAwesomeIcon icon={faPencil} style={{ color: colors.secondary.text, fontSize: 18 }} />
-              <span className={css(styles.actionText)} onClick={() => handleEdit()}>Edit</span>
+              <FontAwesomeIcon
+                icon={faPencil}
+                style={{ color: colors.secondary.text, fontSize: 18 }}
+              />
+              <span
+                className={css(styles.actionText)}
+                onClick={() => handleEdit()}
+              >
+                Edit
+              </span>
             </IconButton>
-          </div>                
-        }
+          </div>
+        )}
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => null}>
-            <Image src="/static/icons/reply.png" height={14} width={17} alt="Reply" />
-            <span className={css(styles.actionText)} onClick={() => handleReply()}>Reply</span>
+            <Image
+              src="/static/icons/reply.png"
+              height={14}
+              width={17}
+              alt="Reply"
+            />
+            <span
+              className={css(styles.actionText)}
+              onClick={() => handleReply()}
+            >
+              Reply
+            </span>
           </IconButton>
         </div>
       </div>
@@ -77,9 +109,7 @@ const styles = StyleSheet.create({
   actionReply: {
     marginLeft: "auto",
   },
-  editAction: {
-
-  },
+  editAction: {},
   actionText: {
     color: colors.secondary.text,
   },

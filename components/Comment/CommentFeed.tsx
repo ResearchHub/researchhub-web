@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import Comment from "./Comment";
 import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
 import CommentEditor from "~/components/Comment/CommentEditor";
@@ -19,7 +19,6 @@ import { filterOpts, sortOpts } from "./lib/options";
 import CommentSort from "./CommentSort";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
-import React from "react";
 import colors from "./lib/colors";
 
 type Args = {
@@ -28,11 +27,11 @@ type Args = {
 };
 
 const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
-
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
-  const [readyForInitialRender, setReadyForInitialRender] = useState<boolean>(false);
+  const [readyForInitialRender, setReadyForInitialRender] =
+    useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
@@ -40,23 +39,24 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  const handleFetch = useCallback(async ({ url }) => {
-    setIsFetching(true);
-    try {
-      const response = await fetchCommentsAPI({
-        documentId: document.id,
-        documentType: document.documentType,
-      });
-      setComments(response.comments);
-      setFetchUrls({ next: response.next, prev: response.prev });
-    }
-    catch (error) {
-      // FIXME: Implement error handling
-    }
-    finally {
-      setIsInitialFetchDone(true);
-    }
-  }, [document, isInitialFetchDone, fetchUrls]);
+  const handleFetch = useCallback(
+    async ({ url }) => {
+      setIsFetching(true);
+      try {
+        const response = await fetchCommentsAPI({
+          documentId: document.id,
+          documentType: document.documentType,
+        });
+        setComments(response.comments);
+        setFetchUrls({ next: response.next, prev: response.prev });
+      } catch (error) {
+        // FIXME: Implement error handling
+      } finally {
+        setIsInitialFetchDone(true);
+      }
+    },
+    [document, isInitialFetchDone, fetchUrls]
+  );
 
   const handleFetchNext = () => handleFetch({ url: fetchUrls.next });
   const handleFetchPrev = () => handleFetch({ url: fetchUrls.prev });
@@ -109,18 +109,16 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   };
 
   const _commentsElems = useMemo(() => {
-    return (
-      comments.map((c) => (
-        <div key={c.id} className={css(styles.commentWrapper)}>
-          <Comment
-            handleCreate={handleCommentCreate}
-            handleUpdate={handleCommentUpdate}
-            comment={c}
-            document={document}
-          />
-        </div>
-      ))
-    )
+    return comments.map((c) => (
+      <div key={c.id} className={css(styles.commentWrapper)}>
+        <Comment
+          handleCreate={handleCommentCreate}
+          handleUpdate={handleCommentUpdate}
+          comment={c}
+          document={document}
+        />
+      </div>
+    ));
   }, [comments]);
 
   return (
@@ -137,7 +135,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
         }
       }}
     >
-      {readyForInitialRender &&
+      {readyForInitialRender && (
         <>
           <CommentEditor
             editorId="new-thread"
@@ -147,23 +145,26 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
             previewWhenInactive={true}
           />
           <div className={css(styles.filtersWrapper)}>
-            <CommentFilters selectedFilter={selectedFilter} handleSelect={(f) => setSelectedFilter(f)} />
+            <CommentFilters
+              selectedFilter={selectedFilter}
+              handleSelect={(f) => setSelectedFilter(f)}
+            />
             <div className={css(styles.sortWrapper)}>
-              <CommentSort selectedSort={selectedSort} handleSelect={(s) => setSelectedSort(s)} />
+              <CommentSort
+                selectedSort={selectedSort}
+                handleSelect={(s) => setSelectedSort(s)}
+              />
             </div>
           </div>
-          <div>
-            {_commentsElems}
-          </div>
+          <div>{_commentsElems}</div>
         </>
-      }
+      )}
       {isFetching &&
         Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
           <div className={css(styles.placeholderWrapper)}>
             <CommentPlaceholder key={`placeholder-${idx}`} />
           </div>
-        ))
-      }
+        ))}
     </WrapperEl>
   );
 };
@@ -185,11 +186,11 @@ const styles = StyleSheet.create({
     },
     ":last-child": {
       borderBottom: 0,
-    }
+    },
   },
   placeholderWrapper: {
     marginBottom: 35,
-  }
+  },
 });
 
 export default CommentFeed;

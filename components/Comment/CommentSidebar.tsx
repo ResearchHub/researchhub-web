@@ -17,10 +17,18 @@ type Args = {
   isInitialFetchDone: boolean;
 };
 
-const CommentSidebar = ({ children, comments, setReadyForInitialRender, isInitialFetchDone = false }: Args) => {
+const CommentSidebar = ({
+  children,
+  comments,
+  setReadyForInitialRender,
+  isInitialFetchDone = false,
+}: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const openBountyAmount = comments.reduce((total, comment) => total + getBountyAmount({ comment }) , 0);
-  const commentCount = useMemo(() => countComments({ comments }), [comments]) ;
+  const openBountyAmount = comments.reduce(
+    (total, comment) => total + getBountyAmount({ comment }),
+    0
+  );
+  const commentCount = useMemo(() => countComments({ comments }), [comments]);
 
   return (
     <div
@@ -32,13 +40,15 @@ const CommentSidebar = ({ children, comments, setReadyForInitialRender, isInitia
       <div className={css(styles.feedWrapper)}>
         <div className={css(styles.sidebarHeader)}>
           Activity
-          <IconButton onClick={() => {
-            setIsOpen(false);       
-          }}>
+          <IconButton
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         </div>
-        {isInitialFetchDone &&
+        {isInitialFetchDone && (
           <CommentSidebarToggle
             isOpen={isOpen}
             setIsOpen={(isOpen) => {
@@ -48,7 +58,7 @@ const CommentSidebar = ({ children, comments, setReadyForInitialRender, isInitia
             bountyAmount={openBountyAmount}
             commentCount={commentCount}
           />
-        }
+        )}
         {children}
       </div>
     </div>
@@ -85,7 +95,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",
     top: 0,
-    
+
     boxSizing: "border-box",
   },
   sidebarHeader: {

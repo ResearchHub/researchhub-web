@@ -1,40 +1,46 @@
 import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
-import { VoteType, RhDocumentType, ID, parseUser } from "~/config/types/root_types";
+import {
+  VoteType,
+  RhDocumentType,
+  ID,
+  parseUser,
+} from "~/config/types/root_types";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
-import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import VoteWidget from "../VoteWidget";
 import { Comment } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltUp, faArrowAltDown } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faArrowAltUp,
+  faArrowAltDown,
+} from "@fortawesome/pro-regular-svg-icons";
 import colors from "./lib/colors";
 
 type Args = {
-  score: number,
-  userVote: VoteType | null | undefined,
-  documentType: RhDocumentType,
-  documentID: ID,
-  comment: Comment,
-}
+  score: number;
+  userVote: VoteType | null | undefined;
+  documentType: RhDocumentType;
+  documentID: ID;
+  comment: Comment;
+};
 
 const CommentVote = ({
   comment,
   score,
   userVote,
   documentType,
-  documentID
+  documentID,
 }: Args) => {
-
   const [_score, _setScore] = useState<number>(score);
   const [_userVote, _setUserVote] = useState(userVote);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );  
+  );
 
   const handleVoteSuccess = ({ voteType }) => {
     let newScore = _score;
@@ -47,9 +53,8 @@ const CommentVote = ({
     }
 
     _setScore(newScore);
-    _setUserVote(voteType);    
+    _setUserVote(voteType);
   };
-
 
   const onUpvote = useCallback(() => {
     if (currentUser) {
@@ -62,12 +67,11 @@ const CommentVote = ({
         documentType,
         onError: () => null,
         onSuccess: handleVoteSuccess,
-        voteType: UPVOTE,        
-      })
+        voteType: UPVOTE,
+      });
     }
     return null;
   }, [currentUser, _userVote, comment, documentID, documentType]);
-
 
   const onDownvote = useCallback(() => {
     if (currentUser) {
@@ -80,12 +84,11 @@ const CommentVote = ({
         documentType,
         onError: () => null,
         onSuccess: handleVoteSuccess,
-        voteType: DOWNVOTE,    
-      })
+        voteType: DOWNVOTE,
+      });
     }
     return null;
   }, [currentUser, _userVote, comment, documentID, documentType]);
-
 
   const onNeutralVote = useCallback(() => {
     if (currentUser) {
@@ -99,11 +102,10 @@ const CommentVote = ({
         onError: () => null,
         onSuccess: handleVoteSuccess,
         voteType: NEUTRALVOTE,
-      })
+      });
     }
     return null;
   }, [currentUser, _userVote, comment, documentID, documentType]);
-
 
   return (
     <VoteWidget
@@ -123,8 +125,8 @@ const CommentVote = ({
       downvoteIcon={<FontAwesomeIcon icon={faArrowAltDown} />}
       upvoteIcon={<FontAwesomeIcon icon={faArrowAltUp} />}
     />
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   downvote: {
@@ -137,13 +139,13 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginLeft: -1,
     color: colors.secondary.text,
-  },  
+  },
   pill: {
     background: "unset",
   },
   voteWidgetWrapper: {
     marginRight: 0,
-  }
-})
+  },
+});
 
 export default CommentVote;

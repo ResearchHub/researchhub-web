@@ -18,31 +18,38 @@ type CommentArgs = {
   document: TopLevelDocument;
 };
 
-const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs) => {
+const Comment = ({
+  comment,
+  document,
+  handleUpdate,
+  handleCreate,
+}: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
 
   const _childCommentElems = useMemo(() => {
-    return (
-      comment.children.map((c) => (
-        <div key={c.id} className={css(styles.commentWrapper)}>
-          <Comment
-            handleUpdate={handleUpdate}
-            handleCreate={handleCreate}
-            comment={c}
-            document={document}
-          />
-        </div>
-      ))
-    )
-  }, [comment.children])
-
+    return comment.children.map((c) => (
+      <div key={c.id} className={css(styles.commentWrapper)}>
+        <Comment
+          handleUpdate={handleUpdate}
+          handleCreate={handleCreate}
+          comment={c}
+          document={document}
+        />
+      </div>
+    ));
+  }, [comment.children]);
 
   return (
     <div>
       <div>
-        <div className={css(styles.mainWrapper, _hasOpenBounties && styles.mainWrapperForBounty)}>
+        <div
+          className={css(
+            styles.mainWrapper,
+            _hasOpenBounties && styles.mainWrapperForBounty
+          )}
+        >
           <div className={css(styles.headerWrapper)}>
             <CommentHeader
               authorProfile={comment.createdBy.authorProfile}
@@ -56,14 +63,25 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
               editorId={`edit-${comment.id}`}
             />
           ) : (
-            <div className={css(styles.commentReadOnlyWrapper, _hasOpenBounties && styles.commentReadOnlyWrapperForBounty)}>
+            <div
+              className={css(
+                styles.commentReadOnlyWrapper,
+                _hasOpenBounties && styles.commentReadOnlyWrapperForBounty
+              )}
+            >
               <CommentReadOnly content={comment.content} />
-              {_hasOpenBounties &&
+              {_hasOpenBounties && (
                 <div className={css(styles.contributeWrapper)}>
                   <div>Contribute RSC to this bounty</div>
-                  <Button label="Contribute" customButtonStyle={styles.contributeBtn} customLabelStyle={styles.contributeBtnLabel} hideRipples={true} size="small" />
+                  <Button
+                    label="Contribute"
+                    customButtonStyle={styles.contributeBtn}
+                    customLabelStyle={styles.contributeBtnLabel}
+                    hideRipples={true}
+                    size="small"
+                  />
                 </div>
-              }
+              )}
             </div>
           )}
         </div>
@@ -82,11 +100,9 @@ const Comment = ({ comment, document, handleUpdate, handleCreate }: CommentArgs)
           editorId={`reply-to-${comment.id}`}
         />
       )}
-      {comment.children.length > 0 && 
-        <div className={css(styles.children)}>
-          {_childCommentElems}
-        </div>
-      }
+      {comment.children.length > 0 && (
+        <div className={css(styles.children)}>{_childCommentElems}</div>
+      )}
     </div>
   );
 };
@@ -104,10 +120,8 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid ${colors.border}`,
     paddingTop: 15,
   },
-  actionsWrapper: {
-  },
-  mainWrapper: {
-  },
+  actionsWrapper: {},
+  mainWrapper: {},
   mainWrapperForBounty: {
     boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
     borderRadius: 10,
@@ -139,7 +153,7 @@ const styles = StyleSheet.create({
   contributeBtnLabel: {
     fontWeight: 500,
     lineHeight: "22px",
-  }
+  },
 });
 
 export default Comment;

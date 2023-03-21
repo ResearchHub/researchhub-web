@@ -15,7 +15,6 @@ import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
-
 type CommentEditorArgs = {
   editorId: string;
   placeholder?: string;
@@ -40,7 +39,8 @@ const CommentEditor = ({
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
   const isEmptyRef = useRef(isEmpty);
-  const [isPreviewMode, setIsPreviewMode] = useState<boolean>(previewWhenInactive);
+  const [isPreviewMode, setIsPreviewMode] =
+    useState<boolean>(previewWhenInactive);
   const isPreviewModeRef = useRef(previewWhenInactive);
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
@@ -70,7 +70,7 @@ const CommentEditor = ({
         setIsPreviewMode(false);
         isPreviewModeRef.current = false;
         quill && !quill.hasFocus() && quill.focus();
-      }
+      },
     });
   }
 
@@ -84,7 +84,9 @@ const CommentEditor = ({
     <div ref={editorRef} className={css(styles.commentEditor)}>
       <div>
         {author && (
-          <div className={css(styles.authorRow, isPreviewMode && styles.hidden)}>
+          <div
+            className={css(styles.authorRow, isPreviewMode && styles.hidden)}
+          >
             <div className={css(styles.nameRow)}>
               <CommentAvatars authors={[author]} />
               <div className={css(styles.name)}>
@@ -101,9 +103,14 @@ const CommentEditor = ({
         )}
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
-            <div className={css(styles.toolbarContainer, isPreviewMode && styles.hidden)}>
-              <CommentEditorToolbar editorId={editorId} />
-            </div>
+          <div
+            className={css(
+              styles.toolbarContainer,
+              isPreviewMode && styles.hidden
+            )}
+          >
+            <CommentEditorToolbar editorId={editorId} />
+          </div>
         </div>
       </div>
       <div className={css(styles.actions)}>
@@ -155,8 +162,8 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "5px",
     fontSize: 15,
-    alignItems: "center",    
-  }
+    alignItems: "center",
+  },
 });
 
 export default CommentEditor;

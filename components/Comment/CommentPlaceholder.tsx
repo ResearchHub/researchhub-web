@@ -34,15 +34,15 @@ const CommentPlaceholder = () => {
         <RectShape
           color={colors.placeholder}
           style={{ width: "70%", height: "1em" }}
-        />                        
+        />
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: "100%"
+    width: "100%",
   },
   header: {
     display: "flex",
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     rowGap: 8,
-  }
+  },
 });
 
-export default CommentPlaceholder
+export default CommentPlaceholder;
