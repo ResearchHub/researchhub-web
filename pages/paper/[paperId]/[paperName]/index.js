@@ -46,8 +46,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import * as shims from "~/redux/paper/shims";
 import DocumentHeader from "~/components/Document/DocumentHeader";
-import CommentSidebar from "~/components/Comment/CommentSidebar";
-import CommentSidebarToggle from "~/components/Comment/CommentSidebarToggle";
+// import CommentSidebar from "~/components/Comment/CommentSidebar";
+// import CommentSidebarToggle from "~/components/Comment/CommentSidebarToggle";
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)

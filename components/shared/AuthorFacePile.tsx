@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useMemo } from "react";
+import colors from "~/config/themes/colors";
 import AuthorAvatar from "../AuthorAvatar";
 
 type Props = {
@@ -37,10 +38,7 @@ export default function AuthorFacePile({
           >
             <AuthorAvatar
               author={author}
-<<<<<<< HEAD
-=======
               border={border}
->>>>>>> e834440d6 ([Comments] Styling of authorRow within CommentEditor)
               key={index}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();
