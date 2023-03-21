@@ -1,26 +1,22 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
+import { faAngleDown, faCheck } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
-import { useEffect, useRef, useState } from "react";
-import colors from "~/config/themes/colors";
-import commentTypes from "./lib/commentTypes";
+import { useRef, useState } from "react";
+import { commentTypes } from "./lib/options";
 import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
+import IconButton from "../Icons/IconButton";
+import colors from "./lib/colors";
 
 type Args = {
   selectedType: COMMENT_TYPES;
   handleSelect: Function;
-  displayVerb?: boolean;
 };
 
-const CommentTypeSelector = ({
-  selectedType,
-  handleSelect,
-  displayVerb,
-}: Args) => {
+const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const _selectedType = commentTypes.find((t) => t.value === selectedType);
+  const _selectedType =
+    commentTypes.find((t) => t.value === selectedType) || commentTypes[0];
   const dropdownRef = useRef(null);
 
   useEffectHandleOutsideClick({
@@ -29,15 +25,20 @@ const CommentTypeSelector = ({
     onOutsideClick: () => setIsOpen(false),
   });
 
-  const displayContent = displayVerb ? _selectedType!.verb : _selectedType!.label;
   return (
     <div className={css(styles.commentTypeSelector)}>
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className={`${css(styles.trigger)} comment-type-dropdown`}
-      >
-        <span>{displayContent}</span>
-        <FontAwesomeIcon icon={faAngleDown} style={{ fontSize: 20 }} />
+      <div className={`${css(styles.trigger)} comment-type-dropdown`}>
+        <IconButton
+          overrideStyle={styles.labelWrapper}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span style={{ fontSize: 12 }}>{_selectedType.icon}</span>
+          {_selectedType!.label}
+          <FontAwesomeIcon
+            icon={faAngleDown}
+            style={{ marginLeft: 3, fontSize: 16 }}
+          />
+        </IconButton>
       </div>
       <div
         ref={dropdownRef}
@@ -49,12 +50,10 @@ const CommentTypeSelector = ({
             onClick={() => handleSelect(t)}
           >
             <div className={css(styles.dropdownOptIcon)}>{t.icon}</div>
-            <div className={css(styles.dropdownOptLabel)}>
-              {displayVerb ? t.verb : t.label}
-            </div>
+            <div className={css(styles.dropdownOptLabel)}>{t.label}</div>
             {selectedType === t.value && (
               <div className={css(styles.check)}>
-                <FontAwesomeIcon icon={faCheck} />
+                <FontAwesomeIcon style={{ fontSize: 12 }} icon={faCheck} />
               </div>
             )}
           </div>
@@ -69,16 +68,17 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   trigger: {
-    padding: 8,
-    columnGap: "8px",
-    display: "flex",
     cursor: "pointer",
-    color: colors.NEW_BLUE(),
-    paddingBottom: 2,
-    paddingLeft: 0,
-    paddingRight: 0,
     userSelect: "none",
-    borderBottom: `1px solid ${colors.NEW_BLUE()}`,
+  },
+  labelWrapper: {
+    marginTop: 5,
+    display: "flex",
+    columnGap: "4px",
+    color: colors.primary.btn,
+    alignItems: "center",
+    fontWeight: 500,
+    fontSize: 14,
   },
   dropdown: {
     position: "absolute",
@@ -87,10 +87,11 @@ const styles = StyleSheet.create({
     background: "white",
     userSelect: "none",
     textTransform: "capitalize",
-    padding: "15px 0 10px 0",
-    borderRadius: 4,
+    padding: 0,
+    borderRadius: 10,
     marginTop: 5,
-    width: 220,
+    marginLeft: 5,
+    width: 150,
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
@@ -99,16 +100,18 @@ const styles = StyleSheet.create({
   },
   dropdownOpt: {
     display: "flex",
-    padding: "7px 25px",
+    columnGap: "7px",
+    padding: "7px 12px",
     cursor: "pointer",
     position: "relative",
     boxSizing: "border-box",
+    fontSize: 12,
     width: "100%",
+    alignItems: "center",
     ":hover": {
-      background: colors.LIGHTER_GREY(),
+      background: colors.hover.background,
       transition: "0.2s",
     },
-    alignItems: "center",
   },
   dropdownOptIcon: {},
   check: {
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
   },
   dropdownOptLabel: {
     fontSize: 14,
-    fontWeight: 500,
   },
 });
 

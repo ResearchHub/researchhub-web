@@ -44,13 +44,10 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
-import {
-  convertToEditorValue,
-  convertDeltaToText,
-  isQuillDelta,
-} from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 import DocumentHeader from "~/components/Document/DocumentHeader";
+// import CommentSidebar from "~/components/Comment/CommentSidebar";
+// import CommentSidebarToggle from "~/components/Comment/CommentSidebarToggle";
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)
@@ -78,6 +75,8 @@ const Paper = ({
     Sentry.captureException({ error, initialPaperData, query: router.query });
     return <Error statusCode={error.code} />;
   }
+
+  // const [isCommentSidebarOpen, setIsCommentSidebarOpen] = useState(true);
 
   // ENUM: NOT_FETCHED, FETCHING, COMPLETED
   const [fetchFreshDataStatus, setFetchFreshDataStatus] =
@@ -364,6 +363,15 @@ const Paper = ({
             )}
           </div>
         </div>
+
+        {/* <CommentSidebarToggle
+          isOpen={isCommentSidebarOpen}
+          setIsOpen={setIsCommentSidebarOpen}
+        />
+        <CommentSidebar
+          isOpen={isCommentSidebarOpen}
+          setIsOpen={setIsCommentSidebarOpen}
+        /> */}
       </div>
     </div>
   );
@@ -443,13 +451,17 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
+    // justifyContent: "space-between",
     justifyContent: "center",
     alignItems: "flex-start",
     width: "100%",
+    // This property is needed for comments sidebar to close gracefully without overflow.
+    overflowX: "clip",
   },
   container: {
     marginTop: 30,
     marginBottom: 30,
+    position: "relative",
   },
   main: {
     boxSizing: "border-box",

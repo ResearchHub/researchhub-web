@@ -10,9 +10,10 @@ import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile } from "~/config/types/root_types";
 import CommentAuthors from "./CommentAuthors";
 import CommentTypeSelector from "./CommentTypeSelector";
-import commentTypes from "./lib/commentTypes";
 import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
+import colors from "./lib/colors";
+import { commentTypes } from "./lib/options";
 
 type CommentEditorArgs = {
   editorId: string;
@@ -45,6 +46,7 @@ const CommentEditor = ({
       handleSubmit: () => handleSubmit({ content: _content }),
     }),
     formats: QuillFormats,
+    placeholder,
   });
   const { content: _content } = useQuillContent({
     quill,
@@ -62,12 +64,10 @@ const CommentEditor = ({
         {author && (
           <div className={css(styles.authorRow)}>
             <CommentAuthors authors={[author]} />
-            <span>{`is`}</span>
             <span style={{ marginTop: -5 }}>
               <CommentTypeSelector
                 handleSelect={_setCommentType}
                 selectedType={_commentType}
-                displayVerb
               />
             </span>
           </div>
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
     padding: "16px 24px",
-    minHeight: 105,
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
+    backgroundColor: "white",
     borderRadius: 16,
     flex: "none",
     flexDirection: "column",
@@ -113,12 +113,15 @@ const styles = StyleSheet.create({
   },
   toolbarContainer: {
     position: "relative",
+    borderBottom: `1px solid ${colors.border}`,
+    marginBottom: 15,
   },
   editor: {},
   authorRow: {
     display: "flex",
     alignItems: "center",
-    columnGap: "5px",
+    columnGap: "7px",
+    marginBottom: 10,
   },
 });
 

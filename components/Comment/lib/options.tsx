@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments, faStar, faLayerGroup, faCaretDown, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faComments, faStar, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import { faStar as faStarIcon, faBolt, faArrowAltUp } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./types";
 
-const commentTypes = [
+export const commentTypes = [
   {
     label: "Discuss",
-    verb: "discussing",
     value: COMMENT_TYPES.DISCUSSION,
     isDefault: true,
     group: "contribute",
@@ -14,22 +14,41 @@ const commentTypes = [
   },
   {
     label: "Peer review",
-    verb: "peer reviewing",
     value: COMMENT_TYPES.REVIEW,
     isDefault: false,
-    group: "contribute",
     placeholder: "What are your overall impressions of this paper?",
     icon: <FontAwesomeIcon icon={faStar} />,
   },
   {
     label: "Summary",
-    verb: "summarizing",
     value: COMMENT_TYPES.SUMMARY,
     isDefault: false,
-    group: "contribute",
     placeholder: "Share a summary of this paper with the community",
     icon: <FontAwesomeIcon icon={faLayerGroup} />,
   },
 ];
 
-export default commentTypes;
+export const filterOpts = [{
+  label: "All",
+  value: null,
+},{
+  label: "Bounties",
+  value: "bounty",  
+},{
+  label: "Peer reviews",
+  value: "peer_review",
+}];
+
+export const sortOpts = [{
+  label: "Best",
+  value: "best",
+  icon: <FontAwesomeIcon icon={faStarIcon} />,
+},{
+  label: "Newest",
+  value: "new",
+  icon: <FontAwesomeIcon icon={faBolt} />,
+}, {
+  label: "Upvoted",
+  value: "top",
+  icon: <FontAwesomeIcon icon={faArrowAltUp} />,
+}];
