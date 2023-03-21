@@ -1,6 +1,6 @@
 import { ID, RhDocumentType } from "~/config/types/root_types";
 import listMockData from "../mock/list.json";
-import createMockData from "../mock/create.json";
+// import createMockData from "../mock/create.json";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -14,12 +14,12 @@ export const fetchCommentsAPI = async ({
   documentId: ID;
   url?: string;
 }): Promise<{ comments: Comment[], next: string, prev: string }> => {
-  const rawComments = listMockData;
-  const comments = rawComments.map((raw) => parseComment({ raw }));
-  return Promise.resolve({comments, next: "", prev: ""});
+  // const rawComments = listMockData;
+  // const comments = rawComments.map((raw) => parseComment({ raw }));
+  // return Promise.resolve({comments, next: "", prev: ""});
 
-
-  const _url = url || API.BASE_URL + `${documentType}/${documentId}/comments/`;
+  const baseFetchUrl = API.BASE_URL + `${documentType}/${documentId}/comments/`;
+  const _url = url || baseFetchUrl;
   const response =
     await fetch(_url, API.GET_CONFIG())
       .then((res):any => Helpers.parseJSON(res));
@@ -31,7 +31,7 @@ export const fetchCommentsAPI = async ({
   };
 };
 
-export const createCommentAPI = ({
+export const createCommentAPI = async ({
   content,
   postType,
   documentType,
@@ -42,8 +42,14 @@ export const createCommentAPI = ({
   documentType: RhDocumentType;
   documentId: ID;
 }): Promise<Comment> => {
-  const comment = parseComment({ raw: createMockData });
+  const _url = API.BASE_URL + `${documentType}/${documentId}/comments/create_rh_comment/`;
+  const response =
+    await fetch(_url, API.POST_CONFIG({
+      "comment_content_json": content,
+    }))
+      .then((res):any => Helpers.parseJSON(res));
 
+  const comment = parseComment({ raw: response });
   return Promise.resolve(comment);
 };
 

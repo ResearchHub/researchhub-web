@@ -7,7 +7,6 @@ type Args = {
 }
 
 const useQuillContent = ({ quill, content = {} }: Args) => {
-
   const [_content, _setContent] = useState<object>(content);
   const contentRef = useRef<object>(_content);
 
@@ -23,6 +22,7 @@ const useQuillContent = ({ quill, content = {} }: Args) => {
 
   return {
     content: _content,
+    setContent: _setContent,
   }
 }
 

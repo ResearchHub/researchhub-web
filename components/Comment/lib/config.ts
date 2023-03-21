@@ -4,7 +4,8 @@ const config = {
   },
   comment: {
     previewMaxChars: 350,
-    placeholderCount: 8, 
+    placeholderCount: 8,
+    minLength: 20,
   },
   toggle: {
     elemToMountAt: "documentRoot",

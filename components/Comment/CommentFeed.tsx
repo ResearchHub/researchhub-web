@@ -10,7 +10,7 @@ import {
 import { parseUser, TopLevelDocument } from "~/config/types/root_types";
 import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import CommentFilters from "./CommentFilters";
@@ -20,6 +20,8 @@ import CommentSort from "./CommentSort";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
 import colors from "./lib/colors";
+import { MessageActions } from "~/redux/message";
+const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
@@ -38,6 +40,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const dispatch = useDispatch();
 
   const handleFetch = useCallback(
     async ({ url }) => {
@@ -74,13 +77,21 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     content: object;
     postType: COMMENT_TYPES;
   }) => {
-    const comment: CommentType = await createCommentAPI({
-      content,
-      postType,
-      documentId: document.id,
-      documentType: document.documentType,
-    });
-    setComments([comment, ...comments]);
+    try {
+      const comment: CommentType = await createCommentAPI({
+        content,
+        postType,
+        documentId: document.id,
+        documentType: document.documentType,
+      });
+      setComments([comment, ...comments]);
+    }
+    catch(error) {
+      dispatch(setMessage("Could not create a comment at this time"));
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true })); 
+      throw error;
+    }
   };
 
   const handleCommentUpdate = async ({
