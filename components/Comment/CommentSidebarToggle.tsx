@@ -3,10 +3,9 @@ import colors from "./lib/colors";
 import { faComments } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import { createPortal } from 'react-dom';
+import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import config from "./lib/config";
-
 
 type Args = {
   setIsOpen: Function;
@@ -15,37 +14,64 @@ type Args = {
   commentCount: number;
 };
 
-const CommentSidebarToggle = ({ isOpen, setIsOpen, bountyAmount = 0, commentCount = 0 }: Args) => {
+const CommentSidebarToggle = ({
+  isOpen,
+  setIsOpen,
+  bountyAmount = 0,
+  commentCount = 0,
+}: Args) => {
   const hasActiveBounties = bountyAmount > 0;
-  const bountyDisplayVal = (bountyAmount > 1000 ? (bountyAmount / 1000).toFixed(0) + "k" : bountyAmount.toFixed(0));
+  const bountyDisplayVal =
+    bountyAmount > 1000
+      ? (bountyAmount / 1000).toFixed(0) + "k"
+      : bountyAmount.toFixed(0);
 
-  const [mountEl, setMountEl] = useState<HTMLElement|null>(null);
+  const [mountEl, setMountEl] = useState<HTMLElement | null>(null);
   useEffect(() => {
     if (!mountEl) {
       const _mountEl = document.getElementById(config.toggle.elemToMountAt);
       setMountEl(_mountEl);
     }
-  }, [])
+  }, []);
 
   return (
     <>
-      {mountEl && createPortal(
-        <div className={css(styles.toggle)} onClick={() => setIsOpen(!isOpen)}>
-          <div className={css(styles.item, hasActiveBounties && styles.withBounty)}>
-            <div><FontAwesomeIcon icon={faComments} style={{ color: colors.toggle.commentIcon }} /></div>
-            <div>{commentCount}</div>
-          </div>
-          {hasActiveBounties &&
-            <>
-              <div style={{ border: `1px solid ${colors.border}`, height: 20 }}></div>
-              <div className={css(styles.item, styles.bountyItem)}>
-                <div><ResearchCoinIcon version={2} height={25} width={25} /></div>
-                <div>{bountyDisplayVal}</div>
+      {mountEl &&
+        createPortal(
+          <div
+            className={css(styles.toggle)}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <div
+              className={css(
+                styles.item,
+                hasActiveBounties && styles.withBounty
+              )}
+            >
+              <div>
+                <FontAwesomeIcon
+                  icon={faComments}
+                  style={{ color: colors.toggle.commentIcon }}
+                />
               </div>
-            </>
-          }
-        </div>, mountEl
-      )}
+              <div>{commentCount}</div>
+            </div>
+            {hasActiveBounties && (
+              <>
+                <div
+                  style={{ border: `1px solid ${colors.border}`, height: 20 }}
+                ></div>
+                <div className={css(styles.item, styles.bountyItem)}>
+                  <div>
+                    <ResearchCoinIcon version={2} height={25} width={25} />
+                  </div>
+                  <div>{bountyDisplayVal}</div>
+                </div>
+              </>
+            )}
+          </div>,
+          mountEl
+        )}
     </>
   );
 };

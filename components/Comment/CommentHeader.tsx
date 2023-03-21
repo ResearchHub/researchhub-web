@@ -11,39 +11,37 @@ type CommentHeaderArgs = {
   comment: Comment;
 };
 
-const CommentHeader = ({
-  authorProfile,
-  comment,
-}: CommentHeaderArgs) => {
+const CommentHeader = ({ authorProfile, comment }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const bountyAmount = getBountyAmount({ comment, formatted: true });
-  const bountyContributors = openBounties.map((b) => b.createdBy.authorProfile).filter(a => a.id !== comment.createdBy.authorProfile.id);
+  const bountyContributors = openBounties
+    .map((b) => b.createdBy.authorProfile)
+    .filter((a) => a.id !== comment.createdBy.authorProfile.id);
 
   return (
     <div className={css(styles.commentHeader)}>
-      {openBounties.length > 0 &&
+      {openBounties.length > 0 && (
         <div className={css(styles.badgeRow)}>
           <ContentBadge contentType="bounty" label={`${bountyAmount} RSC`} />
         </div>
-      }
+      )}
       <div className={css(styles.details)}>
         <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
         <div className={css(styles.nameWrapper)}>
           <div className={css(styles.nameRow)}>
             <div className={css(styles.name)}>
               {authorProfile.firstName} {authorProfile.lastName}
-              {openBounties.length > 0 && bountyContributors.length > 1 &&
+              {openBounties.length > 0 && bountyContributors.length > 1 && (
                 <>{` and others`}</>
-              }
+              )}
             </div>
-            {openBounties.length
-              ? <div className={css(styles.verb)}>{` opened a bounty`}</div>
-              : <div className={css(styles.verb)}>{` commented`}</div>
-            }
+            {openBounties.length ? (
+              <div className={css(styles.verb)}>{` opened a bounty`}</div>
+            ) : (
+              <div className={css(styles.verb)}>{` commented`}</div>
+            )}
           </div>
-          <div className={css(styles.time)}>
-            {comment.timeAgo}
-          </div>
+          <div className={css(styles.time)}>{comment.timeAgo}</div>
         </div>
       </div>
     </div>
@@ -75,9 +73,7 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     fontSize: 15,
   },
-  name: {
-
-  }
+  name: {},
 });
 
 export default CommentHeader;
