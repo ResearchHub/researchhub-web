@@ -359,7 +359,7 @@ const Paper = ({
           </div>
         </div>
 
-        {/* <CommentFeed document={paperV2} WrapperEl={CommentSidebar} /> */}
+        <CommentFeed document={paperV2} WrapperEl={CommentSidebar} />
       </div>
     </div>
   );
@@ -439,8 +439,8 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    justifyContent: "center",
-    // justifyContent: "space-between",
+    // justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
     // This property is needed for comments sidebar to close gracefully without overflow.

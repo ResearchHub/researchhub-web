@@ -14,6 +14,11 @@ import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
+import Loader from "../Loader/Loader";
+import config from "./lib/config";
+import { MessageActions } from "~/redux/message";
+import { useDispatch } from "react-redux";
+const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
   editorId: string;
@@ -34,14 +39,16 @@ const CommentEditor = ({
   allowBounty = false,
   commentType,
   author,
-  previewWhenInactive = true,
+  previewWhenInactive = false,
 }: CommentEditorArgs) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
   const isEmptyRef = useRef(isEmpty);
   const [isPreviewMode, setIsPreviewMode] =
     useState<boolean>(previewWhenInactive);
   const isPreviewModeRef = useRef(previewWhenInactive);
+  const dispatch = useDispatch();
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
@@ -54,7 +61,7 @@ const CommentEditor = ({
     formats: QuillFormats,
     placeholder,
   });
-  const { content: _content } = useQuillContent({
+  const { content: _content, setContent } = useQuillContent({
     quill,
     content,
   });
@@ -79,6 +86,29 @@ const CommentEditor = ({
     setIsEmpty(isEmpty);
     isEmptyRef.current = isEmpty;
   }, [_content]);
+
+  const _handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      if (quill!.getLength() <= config.comment.minLength) {
+        dispatch(setMessage(`Comment must be greater than ${config.comment.minLength} characters long.`));
+        // @ts-ignore
+        dispatch(showMessage({ show: true, error: true }));
+        return false;
+      }
+
+      await handleSubmit({ content: "", commentType: _commentType });
+      setContent({});
+      _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
+      if (previewWhenInactive) {
+        setIsPreviewMode(true);
+        isPreviewModeRef.current = true;
+      }
+    }
+    finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     (<div ref={editorRef} className={css(styles.commentEditor)}>
@@ -118,11 +148,17 @@ const CommentEditor = ({
           // @ts-ignore
           (<CreateBountyBtn />)
         )}
-        <Button
-          label={"Post"}
-          onClick={() => handleSubmit({ content: _content })}
-          disabled={isEmpty}
-        />
+        <div style={{ width: 70 }}>
+          <Button
+            fullWidth
+            label={
+              isSubmitting ? <Loader color="white" type="clip" size={22} /> : <>{`Post`}</>
+            }
+            hideRipples={true}
+            onClick={() => _handleSubmit()}
+            disabled={isSubmitting || isEmpty}
+          />
+        </div>
       </div>
     </div>)
   );
