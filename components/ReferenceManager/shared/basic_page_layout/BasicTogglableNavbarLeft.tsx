@@ -135,10 +135,12 @@ export default function BasicTogglableNavbarLeft({
   theme,
 }: Props) {
   const user = getCurrentUser();
-console.warn(user?.author_profile?.profile_image);
-
   return (
-    <Box flexDirection="column" width={navWidth}>
+    <Box
+      flexDirection="column"
+      width={navWidth}
+      sx={{ borderLeft: "1px solid #e8e8ef" }}
+    >
       {/* <Drawer
         isOpen={isOpen}
         navWidth={navWidth}
@@ -171,7 +173,7 @@ console.warn(user?.author_profile?.profile_image);
           >
             {user?.author_profile?.profile_image ? (
               <Image
-                src={user?.author_profile?.profile_image ?? ''}
+                src={user?.author_profile?.profile_image ?? ""}
                 width={24}
                 height={24}
                 style={{ borderRadius: "50%" }}
