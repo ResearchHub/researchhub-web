@@ -1,7 +1,7 @@
 .ql-container {
   border: none !important;
 }
-.ql-container .ql-editor {
+.ql-container .ql-editor[contenteditable="true"] {
   min-height: 40px;
 }
 /* Placeholder */

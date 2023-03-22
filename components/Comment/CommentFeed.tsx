@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
   },
   commentWrapper: {
     borderBottom: `1px solid ${colors.border}`,
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 25,
+    paddingBottom: 25,
     ":first-child": {
       paddingTop: 0,
     },
