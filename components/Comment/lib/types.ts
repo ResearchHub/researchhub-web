@@ -1,6 +1,7 @@
 import Bounty from "~/config/types/bounty";
 import { RHUser, parseUser, ID, VoteType } from "~/config/types/root_types";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 export enum COMMENT_TYPES {
   DISCUSSION = "DISCUSSION",
@@ -33,6 +34,7 @@ type parseCommentArgs = {
 };
 
 export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
+
   const parsed = {
     id: raw.id,
     threadId: raw.thread,
@@ -51,7 +53,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     ...(parent && { parent }),
   };
 
-  parsed.children = (raw.children ?? []).map((child: any) =>
+  parsed.children = (raw.children ?? []).filter((child:any) => !isEmpty(child)).map((child: any) =>
     parseComment({ raw: child, parent: parsed })
   );
 

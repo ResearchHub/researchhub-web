@@ -97,7 +97,7 @@ const CommentEditor = ({
         return false;
       }
 
-      await handleSubmit({ content: "", commentType: _commentType });
+      await handleSubmit({ content: _content, commentType: _commentType });
       setContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
       if (previewWhenInactive) {
