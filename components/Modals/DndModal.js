@@ -16,6 +16,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 
 import colors from "../../config/themes/colors";
+import { plus } from "~/config/themes/icons";
 
 class DndModal extends Component {
   constructor(props) {
@@ -150,7 +151,7 @@ class DndModal extends Component {
           imageContainerClassName={this.calculateStyle()}
           fileAccept={fileAccept}
           addImageText={
-            this.state.files.length < 1 ? this.renderDropContent() : icons.plus
+            this.state.files.length < 1 ? this.renderDropContent() : plus
           }
         />
         {files.length > 0 && (

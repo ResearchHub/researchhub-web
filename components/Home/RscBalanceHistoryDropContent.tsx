@@ -21,6 +21,7 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
 import UniswapButton from "../UniswapButton";
+import { question } from "~/config/themes/icons";
 
 type Props = { closeDropdown: () => void };
 
@@ -142,7 +143,7 @@ export default function RscBalanceHistoryDropContent({
             data-for={"reputation-tool-tip"}
             data-tip=""
           >
-            {icons.question}
+            {question}
           </a>
         </div>
         <ALink

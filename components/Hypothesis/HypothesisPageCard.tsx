@@ -44,6 +44,7 @@ import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "~/components/Document/api/restoreDocAPI";
 import VoteWidget from "~/components/VoteWidget";
+import { minus, pencil, plus } from "~/config/themes/icons";
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
 );
@@ -90,7 +91,7 @@ const getActionButtons = ({
           className={css(styles.actionIcon)}
           data-tip={"Edit Hypothesis"}
         >
-          {icons.pencil}
+          {pencil}
         </div>
       ) : (
         <PermissionNotificationWrapper
@@ -102,7 +103,7 @@ const getActionButtons = ({
           styling={styles.borderRadius}
         >
           <div className={css(styles.actionIcon)} data-tip={"Edit Hypothesis"}>
-            {icons.pencil}
+            {pencil}
           </div>
         </PermissionNotificationWrapper>
       ),
@@ -140,7 +141,7 @@ const getActionButtons = ({
             isModerator={true}
             paperId={hypoID}
             restore={isHypoRemoved}
-            icon={isHypoRemoved ? icons.plus : icons.minus}
+            icon={isHypoRemoved ? plus : minus}
             onAction={() => {
               if (isHypoRemoved) {
                 restoreDocument({

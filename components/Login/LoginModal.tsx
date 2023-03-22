@@ -22,6 +22,7 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Image from "next/image";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import { chevronLeft, exclamationCircle, times } from "~/config/themes/icons";
 
 type SCREEN =
   | "SELECT_PROVIDER"
@@ -288,7 +289,7 @@ const LoginModal = ({
                   setStep("SELECT_PROVIDER");
                 }}
               >
-                {icons.chevronLeft}
+                {chevronLeft}
               </IconButton>
             )}
             <IconButton
@@ -300,7 +301,7 @@ const LoginModal = ({
                 _handleClose();
               }}
             >
-              {icons.times}
+              {times}
             </IconButton>
             {step === "SELECT_PROVIDER"
               ? `Log in or sign up`
@@ -317,7 +318,7 @@ const LoginModal = ({
     >
       {miscError && (
         <div className={css(styles.miscError)}>
-          <div style={{ fontSize: 18 }}>{icons.exclamationCircle}</div>
+          <div style={{ fontSize: 18 }}>{exclamationCircle}</div>
           {miscError}
         </div>
       )}

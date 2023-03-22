@@ -30,6 +30,7 @@ import {
 } from "~/config/utils/crypto";
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { partyPopper } from "~/config/themes/icons";
 
 const GOERLY_CHAIN_ID = "5";
 const MAINNET_CHAIN_ID = "1";
@@ -696,7 +697,7 @@ class WithdrawalModal extends Component {
             <div className={css(styles.title)}>
               {title}
               <span className={css(styles.icon)}>
-                {icons.partyPopper({ style: styles.partyIcon })}
+                {partyPopper({ style: styles.partyIcon })}
               </span>
             </div>
             <div className={css(styles.confirmation)} onClick={this.closeModal}>

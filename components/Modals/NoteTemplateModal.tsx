@@ -19,6 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { chevronDown, chevronUp, trash } from "~/config/themes/icons";
 
 export type TemplateSidebarEntryProps = {
   orgSlug: string;
@@ -94,7 +95,7 @@ function TemplateSidebarEntry({
           {menuLoading ? (
             <Loader size={18} />
           ) : (
-            <div className={css(!isHovered && styles.hide)}>{icons.trash}</div>
+            <div className={css(!isHovered && styles.hide)}>{trash}</div>
           )}
         </div>
       )}
@@ -234,7 +235,7 @@ export default function NoteTemplateModal({
           >
             Templates
             <span className={css(styles.chevronIcon)}>
-              {hideTemplates ? icons.chevronDown : icons.chevronUp}
+              {hideTemplates ? chevronDown : chevronUp}
             </span>
           </div>
           {!hideTemplates && (

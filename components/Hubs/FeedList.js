@@ -8,7 +8,7 @@ import SubscribedHubList from "../Home/SubscribedHubList";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons, { DownIcon, UpIcon } from "~/config/themes/icons";
+import { DownIcon, squares, UpIcon } from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -24,7 +24,7 @@ class FeedList extends Component {
     this.feeds = [
       {
         label: "All",
-        icon: icons.squares,
+        icon: squares,
         href: "/",
         as: "/",
       },

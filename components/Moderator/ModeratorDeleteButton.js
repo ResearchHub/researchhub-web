@@ -9,7 +9,7 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "../../config/themes/icons";
+import icons, { minusCircle } from "../../config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils/nullchecks";
@@ -324,7 +324,7 @@ const ModeratorDeleteButton = (props) => {
     return (
       <Ripples className={css(containerClass)} onClick={performAction}>
         <span className={css(iconClass) + " modIcon"}>
-          {icon ? icon : icons.minusCircle}
+          {icon ? icon : minusCircle}
         </span>
         {label && <span className={css(labelClass)}>{label}</span>}
       </Ripples>

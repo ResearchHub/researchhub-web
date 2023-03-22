@@ -1093,4 +1093,6 @@ const styles = StyleSheet.create({
   },
 });
 
+const icons = {};
+
 export default icons;

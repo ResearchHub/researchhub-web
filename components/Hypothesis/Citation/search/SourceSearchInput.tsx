@@ -28,6 +28,7 @@ import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 
 import FeedCard from "~/components/Author/Tabs/FeedCard";
+import { caretDown } from "~/config/themes/icons";
 
 export type Props = {
   emptyResultDisplay?: ReactNode;
@@ -196,7 +197,7 @@ export default function SourceSearchInput({
                   {"Choose supports / rejects"}
                 </div>
                 <div style={{ color: colors.LIGHT_GREY_BACKGROUND }}>
-                  {icons.caretDown}
+                  {caretDown}
                 </div>
               </div>
             }

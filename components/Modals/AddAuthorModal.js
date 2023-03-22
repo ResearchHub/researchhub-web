@@ -178,59 +178,6 @@ class AddAuthorModal extends Component {
               labelStyle={styles.labelStyle}
             />
 
-            {/* <div className={css(styles.socialMediaContainer)}>
-              <div
-                className={css(styles.inputLabel)}
-                onClick={this.toggleShowLinks}
-              >
-                Social Media Links
-                <div className={css(styles.dropdownIcon)}>
-                  <span style={{ fontSize: "25px" }}>
-                    {showLinks ? icons.angleDown : icons.angleUp}
-                  </span>
-                </div>
-              </div>
-              <span
-                className={css(
-                  styles.linksContainer,
-                  showLinks && styles.reveal
-                )}
-              >
-                <FormInput
-                  value={facebook}
-                  placeholder={"Paste Link Here"}
-                  id={"facebook"}
-                  onChange={this.handleInputChange}
-                  inputStyle={styles.inputStyle}
-                  containerStyle={styles.inputStyle}
-                  iconStyles={styles.fb}
-                  icon={"/static/icons/fb.png"}
-                  labelStyle={styles.labelStyle}
-                />
-                <FormInput
-                  value={linked_in}
-                  placeholder={"Paste Link Here"}
-                  id={"linked_in"}
-                  onChange={this.handleInputChange}
-                  inputStyle={styles.inputStyle}
-                  containerStyle={styles.inputStyle}
-                  iconStyles={styles.icon}
-                  icon={"/static/icons/linked-in.png"}
-                  labelStyle={styles.labelStyle}
-                />
-                <FormInput
-                  value={twitter}
-                  placeholder={"Paste Link Here"}
-                  id={"twitter"}
-                  onChange={this.handleInputChange}
-                  inputStyle={styles.inputStyle}
-                  containerStyle={styles.inputStyle}
-                  iconStyles={styles.icon}
-                  icon={icons.twitter}
-                  labelStyle={styles.labelStyle}
-                />
-              </span>
-            </div> */}
             <div className={css(styles.buttonWrapper)}>
               <Button
                 label={"Add user"}

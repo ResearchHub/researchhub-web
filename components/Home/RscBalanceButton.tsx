@@ -11,6 +11,7 @@ import colors, { iconColors } from "~/config/themes/colors";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
+import { chevronDown } from "~/config/themes/icons";
 
 /* intentionally using legacy redux wrap to ensure it make unintended behavior in server */
 type Props = { auth?: any /* redux */ };
@@ -103,7 +104,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
               Math.floor(rscDeltaSinceSeen)
             )}`}</div>
           )}
-          <div className={css(styles.caretDown)}>{icons.chevronDown}</div>
+          <div className={css(styles.caretDown)}>{chevronDown}</div>
         </div>
       }
     />

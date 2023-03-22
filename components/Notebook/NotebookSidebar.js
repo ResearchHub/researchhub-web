@@ -8,7 +8,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import groupBy from "lodash/groupBy";
-import icons, { DownIcon } from "~/config/themes/icons";
+import icons, { cog, DownIcon, plus, shapes } from "~/config/themes/icons";
 import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
@@ -145,7 +145,7 @@ const NotebookSidebar = ({
                     setIsPopoverOpen(false);
                   }}
                 >
-                  <div className={css(styles.newOrgButton)}>{icons.plus}</div>
+                  <div className={css(styles.newOrgButton)}>{plus}</div>
                   New Organization
                 </div>
               </div>
@@ -181,7 +181,7 @@ const NotebookSidebar = ({
                 setShowManageOrgModal(true);
               }}
             >
-              {icons.cog}
+              {cog}
               <span className={css(styles.sidebarButtonText)}>
                 Settings & Members
               </span>
@@ -190,7 +190,7 @@ const NotebookSidebar = ({
               className={css(styles.sidebarButton)}
               onClick={() => setIsNoteTemplateModalOpen(true)}
             >
-              {icons.shapes}
+              {shapes}
               <span className={css(styles.sidebarButtonText)}>Templates</span>
             </div>
           </div>

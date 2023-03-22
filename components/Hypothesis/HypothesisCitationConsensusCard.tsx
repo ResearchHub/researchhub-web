@@ -6,6 +6,7 @@ import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
 
 import CitationAddNewButton from "./Citation/CitationAddNewButton";
+import { minusCircle, timesCircle } from "~/config/themes/icons";
 
 type Props = {
   aggregateCitationConsensus: {
@@ -56,9 +57,9 @@ export default function HypothesisCitationConsensusCard({
               {sentiment > 0 ? (
                 <img src="/static/icons/check.svg" />
               ) : sentiment < 0 ? (
-                icons.timesCircle
+                timesCircle
               ) : (
-                icons.minusCircle
+                minusCircle
               )}
             </span>
             <span>

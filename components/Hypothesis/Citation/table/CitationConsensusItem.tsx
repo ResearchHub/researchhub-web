@@ -31,6 +31,7 @@ import colors from "~/config/themes/colors";
 
 import Image from "next/image";
 import ReactTooltip from "react-tooltip";
+import { checkCircle, minusCircle, timesCircle } from "~/config/themes/icons";
 
 export type ConsensusMeta = {
   downCount: number;
@@ -100,11 +101,11 @@ function getDetailedText({
       )}
     >
       {isNeutral ? (
-        <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
+        <span className={css(styles.neutralImg)}>{minusCircle}</span>
       ) : doesMajoritySupport ? (
         <Image width={10} height={10} src="/static/icons/check.svg" alt={""} />
       ) : (
-        <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
+        <span className={css(styles.noSupportImg)}>{timesCircle}</span>
       )}
       <div
         className={css(styles.consensusText)}
@@ -398,7 +399,7 @@ function CitationConsensusItem({
               onClick={handleReject}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
+              <div className={css(styles.iconWrap)}>{timesCircle}</div>
               <div className={css(styles.buttonText)}>{"Rejects"}</div>
             </div>
             <div
@@ -406,7 +407,7 @@ function CitationConsensusItem({
               onClick={handleNeutralVote}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.minusCircle}</div>
+              <div className={css(styles.iconWrap)}>{minusCircle}</div>
               <div className={css(styles.buttonText)}>{"Neutral"}</div>
             </div>
             <div
@@ -414,7 +415,7 @@ function CitationConsensusItem({
               onClick={handleSupport}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
+              <div className={css(styles.iconWrap)}>{checkCircle}</div>
               <div className={css(styles.buttonText)}>{"Supports"}</div>
             </div>
           </div>

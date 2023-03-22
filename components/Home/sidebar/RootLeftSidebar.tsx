@@ -27,6 +27,17 @@ import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
+import {
+  arrowLeftToLine,
+  arrowRightToLine,
+  book,
+  chartSimple,
+  discord,
+  home,
+  medium,
+  squares,
+  twitter,
+} from "~/config/themes/icons";
 
 type Props = {
   openLoginModal: any;
@@ -57,7 +68,7 @@ export const getLeftSidebarItemAttrs = ({
 
   return filterNull([
     {
-      icon: icons.home,
+      icon: home,
       label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,
@@ -67,7 +78,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.squares,
+      icon: squares,
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
@@ -77,7 +88,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.book,
+      icon: book,
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
@@ -91,7 +102,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.chartSimple,
+      icon: chartSimple,
       label: "Leaderboard",
       isMinimized,
       isActive: pathname.includes("leaderboard"),
@@ -349,14 +360,14 @@ function RootLeftSidebar({
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {icons.twitter}
+                {twitter}
               </ALink>
               <ALink
                 href="https://discord.com/invite/ZcCYgcnUp5"
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {icons.discord}
+                {discord}
               </ALink>
               <ALink
                 href="https://medium.com/researchhub"
@@ -365,7 +376,7 @@ function RootLeftSidebar({
                 }
                 target="__blank"
               >
-                {icons.medium}
+                {medium}
               </ALink>
             </div>
             <div className={formattedFooterItemsButtonRow}>
@@ -389,20 +400,15 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
-          {/* Kobe 12-07-22: Commenting this out in order to prevent layout shift */}
-          {/* {isMinimized ? (
+          {isMinimized ? (
             <div
               className={css(styles.arrowRight)}
               onClick={() => {
                 setGrowMinimized(false);
                 setIsMinimized(false);
-                storeToCookie({
-                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "false",
-                });
               }}
             >
-              {icons.arrowRightToLine}
+              {arrowRightToLine}
             </div>
           ) : (
             <div
@@ -410,15 +416,11 @@ function RootLeftSidebar({
               onClick={() => {
                 setGrowMinimized(true);
                 setIsMinimized(true);
-                storeToCookie({
-                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "true",
-                });
               }}
             >
-              {icons.arrowLeftToLine}
+              {arrowLeftToLine}
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </motion.div>

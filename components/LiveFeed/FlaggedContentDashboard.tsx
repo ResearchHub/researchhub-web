@@ -26,6 +26,13 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import removeFlaggedContent from "./api/removeFlaggedContentAPI";
 import ContributionEntry from "./Contribution/ContributionEntry";
+import {
+  check,
+  flagOutline,
+  redo,
+  trash,
+  trashSolid,
+} from "~/config/themes/icons";
 
 function FlaggedContentDashboard({
   setMessage,
@@ -205,7 +212,7 @@ function FlaggedContentDashboard({
             <FlagButtonV2
               modalHeaderText="Flag and Remove"
               flagIconOverride={styles.flagIcon}
-              iconOverride={icons.trashSolid}
+              iconOverride={trashSolid}
               defaultReason={r.reasonChoice}
               successMsgText="Flagged Content removed"
               errorMsgText="Failed to remove flagged content"
@@ -266,7 +273,7 @@ function FlaggedContentDashboard({
                 }
               }}
             >
-              {icons.check}
+              {check}
             </span>
           ),
           label: "Dismiss Flag",
@@ -303,15 +310,13 @@ function FlaggedContentDashboard({
                   <span className={css(styles.flagText)}>
                     {appliedFilters.verdict === "APPROVED" ? (
                       <>
-                        <span className={css(styles.icon)}>
-                          &nbsp;{icons.check}
-                        </span>
+                        <span className={css(styles.icon)}>&nbsp;{check}</span>
                         &nbsp;dismissed flag
                       </>
                     ) : (
                       <>
                         <span className={css(styles.icon, styles.trashIcon)}>
-                          &nbsp;{icons.trash}
+                          &nbsp;{trash}
                         </span>
                         &nbsp;removed this content due to{" "}
                         <span className={css(styles.reason)}>
@@ -352,15 +357,13 @@ function FlaggedContentDashboard({
                 {isOneLineAction ? (
                   appliedFilters.verdict === "APPROVED" ? (
                     <>
-                      <span className={css(styles.icon)}>
-                        &nbsp;{icons.check}
-                      </span>
+                      <span className={css(styles.icon)}>&nbsp;{check}</span>
                       &nbsp;dismissed flag
                     </>
                   ) : (
                     <>
                       <span className={css(styles.icon, styles.trashIcon)}>
-                        &nbsp;{icons.trash}
+                        &nbsp;{trash}
                       </span>
                       {/* @ts-ignore */}
                       &nbsp;removed this content due to{" "}
@@ -373,7 +376,7 @@ function FlaggedContentDashboard({
                 ) : (
                   <>
                     <span className={css(styles.icon)}>
-                      &nbsp;{icons.flagOutline}
+                      &nbsp;{flagOutline}
                     </span>
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
@@ -433,7 +436,7 @@ function FlaggedContentDashboard({
             className={css(styles.redo)}
             onClick={() => loadResults(appliedFilters)}
           >
-            {icons.redo}
+            {redo}
           </span>
         </div>
         <div className={css(styles.filters)}>
@@ -513,7 +516,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {icons.trashSolid}
+                {trashSolid}
               </span>
               <span
                 className={css(
@@ -548,7 +551,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {icons.check}
+                {check}
               </span>
             </div>
           </div>

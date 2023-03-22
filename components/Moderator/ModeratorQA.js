@@ -7,6 +7,7 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import colors from "~/config/themes/colors";
+import { coinStack } from "~/config/themes/icons";
 
 const ModeratorQA = ({
   auth,
@@ -53,7 +54,7 @@ const ModeratorQA = ({
 
   const renderIcon = () => {
     const isActive = hover;
-    return icons.coinStack({ styles: styles.coinStackIcon, grey: !isActive });
+    return coinStack({ styles: styles.coinStackIcon, grey: !isActive });
   };
 
   const renderLabel = () => {

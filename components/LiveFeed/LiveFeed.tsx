@@ -15,6 +15,7 @@ import ContributionEntry from "./Contribution/ContributionEntry";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import UnifiedDocFeedCardPlaceholder from "../UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
+import { flag } from "~/config/themes/icons";
 
 export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
   const [appliedFilters, setAppliedFilters] = useState<ApiFilters>({
@@ -75,7 +76,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                   <FlagButtonV2
                     modalHeaderText="Flag Content"
                     flagIconOverride={styles.flagIcon}
-                    iconOverride={icons.flag}
+                    iconOverride={flag}
                     errorMsgText="Failed to flag"
                     successMsgText="Content flagged"
                     primaryButtonLabel="Flag"

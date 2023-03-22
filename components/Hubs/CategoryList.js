@@ -11,6 +11,7 @@ import SideColumn from "~/components/Home/SideColumn";
 import colors from "../../config/themes/colors";
 
 import { isDevEnv } from "~/config/utils/env";
+import { fire } from "~/config/themes/icons";
 
 class CategoryList extends Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class CategoryList extends Component {
             {category_name === "Trending" ? (
               <span>
                 {category_name}
-                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                <span className={css(styles.trendingIcon)}>{fire}</span>
               </span>
             ) : (
               category_name

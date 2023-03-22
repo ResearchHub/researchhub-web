@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { useState } from "react";
+import { plus } from "~/config/themes/icons";
 
 const NotebookSidebarGroup = ({
   currentNoteId,
@@ -74,7 +75,7 @@ const NotebookSidebarGroup = ({
                 className={css(styles.actionButton) + " actionButton"}
                 onClick={() => handleCreateNewNote(groupKey)}
               >
-                {icons.plus}
+                {plus}
               </div>
             )}
           </div>
@@ -85,7 +86,7 @@ const NotebookSidebarGroup = ({
           className={css(styles.newNoteButton)}
           onClick={() => handleCreateNewNote(groupKey)}
         >
-          <span className={css(styles.plusIcon)}>{icons.plus}</span>
+          <span className={css(styles.plusIcon)}>{plus}</span>
           Create new note
         </div>
       )}

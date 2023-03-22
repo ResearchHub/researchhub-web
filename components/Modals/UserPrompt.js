@@ -6,6 +6,13 @@ import colors from "~/config/themes/colors";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import {
+  opaqueThumbsDown,
+  opaqueThumbsUp,
+  solidThumbsDown,
+  solidThumbsUp,
+  times,
+} from "~/config/themes/icons";
 
 const TIMEOUT = 60000; // 1 minute in ms
 
@@ -64,7 +71,7 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverUp(true)}
             onMouseLeave={() => setHoverUp(false)}
           >
-            {hoverUp ? icons.solidThumbsUp : icons.opaqueThumbsUp}
+            {hoverUp ? solidThumbsUp : opaqueThumbsUp}
           </div>
           <div
             className={css(styles.thumbsDown)}
@@ -72,7 +79,7 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverDown(true)}
             onMouseLeave={() => setHoverDown(false)}
           >
-            {hoverDown ? icons.solidThumbsDown : icons.opaqueThumbsDown}
+            {hoverDown ? solidThumbsDown : opaqueThumbsDown}
           </div>
         </div>
       </Fragment>
@@ -85,7 +92,7 @@ const UserPrompt = (props) => {
         className={css(styles.closeButton)}
         onClick={() => displayShowPrompt(false)}
       >
-        {icons.times}
+        {times}
       </div>
       {renderContent()}
     </a.div>

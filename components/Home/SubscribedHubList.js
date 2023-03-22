@@ -13,6 +13,7 @@ import colors from "../../config/themes/colors";
 
 // Redux
 import { HubActions } from "~/redux/hub";
+import { cog } from "~/config/themes/icons";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -155,7 +156,7 @@ class SubscribedHubList extends Component {
           as={"/settings"}
           className={css(styles.link, styles.cogButton)}
         >
-          {icons.cog}
+          {cog}
         </Link>
       </div>
     );

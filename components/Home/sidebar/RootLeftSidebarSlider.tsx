@@ -20,6 +20,7 @@ import InviteButton from "~/components/Referral/InviteButton";
 import NewPostButton from "~/components/NewPostButton";
 import Login from "~/components/Login/Login";
 import Button from "~/components/Form/Button";
+import { discord, medium, twitter } from "~/config/themes/icons";
 
 type Props = {
   isLoggedIn: boolean;
@@ -116,14 +117,14 @@ function RootLeftSidebarSlider({
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {icons.twitter}
+              {twitter}
             </ALink>
             <ALink
               href="https://discord.com/invite/ZcCYgcnUp5"
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {icons.discord}
+              {discord}
             </ALink>
             <ALink
               href="https://medium.com/researchhub"
@@ -132,7 +133,7 @@ function RootLeftSidebarSlider({
               }
               target="__blank"
             >
-              {icons.medium}
+              {medium}
             </ALink>
           </div>
           <div className={css(styles.leftSidebarSliderFooterItemsBottomRow)}>

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 
 import colors from "../../config/themes/colors";
+import { fire } from "~/config/themes/icons";
 
 const Tab = ({ text, index, activeCategory }) => {
   const isActive = index === activeCategory;
@@ -24,7 +25,7 @@ const Tab = ({ text, index, activeCategory }) => {
           {text === "Trending" ? (
             <span>
               {text}
-              <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+              <span className={css(styles.trendingIcon)}>{fire}</span>
             </span>
           ) : (
             text

@@ -20,6 +20,7 @@ import {
 } from "~/config/fetch";
 import { useAlert } from "react-alert";
 import { useState } from "react";
+import { clone, friends, lock, shapes, trash } from "~/config/themes/icons";
 
 const NoteOptionsMenuButton = ({
   currentOrg,
@@ -40,7 +41,7 @@ const NoteOptionsMenuButton = ({
   const menuItems = [
     {
       text: "Make private",
-      icon: icons.lock,
+      icon: lock,
       show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -63,7 +64,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Move to Workspace",
-      icon: icons.friends,
+      icon: friends,
       show: note.access === NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -90,7 +91,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Duplicate",
-      icon: icons.clone,
+      icon: clone,
       show: true,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -124,7 +125,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Save as template",
-      icon: icons.shapes,
+      icon: shapes,
       show: true,
       hoverStyle: styles.blueHover,
       onClick: (e) => {
@@ -156,7 +157,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Delete",
-      icon: icons.trash,
+      icon: trash,
       show: true,
       hoverStyle: styles.redHover,
       onClick: (e) => {

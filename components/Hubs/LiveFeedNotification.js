@@ -24,6 +24,12 @@ import { buildSlug } from "~/config/utils/buildSlug";
 import { doesNotExist } from "~/config/utils/nullchecks";
 import { UNIFIED_DOC_PAGE_URL_PATTERN } from "~/config/utils/url_patterns";
 import { getUrlToUniDoc } from "~/config/utils/routing";
+import {
+  ban,
+  commentAltDots,
+  commentAltLineSolid,
+  file,
+} from "~/config/themes/icons";
 
 const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
@@ -510,16 +516,16 @@ class LiveFeedNotification extends Component {
       case "summary":
       case "vote_paper":
       case "paper":
-        return icons.file;
+        return file;
       case "vote_comment":
       case "comment":
-        return icons.commentAltDots;
+        return commentAltDots;
       case "reply":
       case "vote_reply":
-        return icons.commentAltDots;
+        return commentAltDots;
       case "thread":
       case "vote_thread":
-        return icons.commentAltLines;
+        return commentAltLineSolid;
     }
   };
 
@@ -569,7 +575,7 @@ class LiveFeedNotification extends Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                icon={icons.ban}
+                icon={ban}
                 label={"Ban User"}
                 actionType={"user"}
                 metaData={metaData}

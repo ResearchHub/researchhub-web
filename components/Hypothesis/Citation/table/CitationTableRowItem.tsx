@@ -18,6 +18,7 @@ import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import Link from "next/link";
+import { checkCircle, comments, timesCircle } from "~/config/themes/icons";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
@@ -166,7 +167,7 @@ export default function CitationTableRowItem({
                 }}
                 role="button"
               >
-                {icons.comments}
+                {comments}
                 {commentCount > 0 && (
                   <div className={css(styles.commentCountSign)}>
                     {commentCount}
@@ -189,7 +190,7 @@ export default function CitationTableRowItem({
               >
                 <div className={css(styles.typeContent)}>
                   <span className={css(styles.iconWrap)}>
-                    {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                    {isSupportSource ? checkCircle : timesCircle}
                   </span>
                   <span className={css(styles.typeText)}>
                     {isSupportSource ? "Support" : "Reject"}

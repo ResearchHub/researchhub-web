@@ -14,6 +14,7 @@ import Loader from "./Loader.js";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import { check, times } from "~/config/themes/icons.js";
 
 class Message extends Component {
   constructor(props) {
@@ -61,7 +62,7 @@ class Message extends Component {
           <Loader loading={true} />
         ) : (
           <span style={inlineStyle.check} color="#fff">
-            {message.error ? icons.times : icons.check}
+            {message.error ? times : check}
           </span>
         )}
         {!message.load && (

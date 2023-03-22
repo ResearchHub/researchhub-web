@@ -16,6 +16,7 @@ import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import HypothesisUnduxStore, {
   HypothesisStore,
 } from "../undux/HypothesisUnduxStore";
+import { arrowRight } from "~/config/themes/icons";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
@@ -137,7 +138,7 @@ function CitationCommentSidebar({
             hypothesisUnduxStore.set("targetCitationComment")(null)
           }
         >
-          {icons.arrowRight}
+          {arrowRight}
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>

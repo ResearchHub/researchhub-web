@@ -40,6 +40,7 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 // Constants
 import { ContentTypes, ChainStatus } from "./constants/SupportContent";
 import { getEtherscanLink } from "~/config/utils/crypto";
+import { checkCircle, timesCircle } from "~/config/themes/icons";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -698,7 +699,7 @@ class PaperTransactionModal extends Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>{icons.checkCircle}</span>
+                <span className={css(styles.icon)}>{checkCircle}</span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
@@ -843,9 +844,7 @@ class PaperTransactionModal extends Component {
                           !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {ethAccountIsValid
-                          ? icons.checkCircle
-                          : icons.timesCircle}
+                        {ethAccountIsValid ? checkCircle : timesCircle}
                       </span>
                     )
                   ) : null

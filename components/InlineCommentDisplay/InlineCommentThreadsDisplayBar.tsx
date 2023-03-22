@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
+import icons, { arrowRight } from "../../config/themes/icons";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   InlineComment,
@@ -79,7 +79,7 @@ function InlineCommentThreadsDisplayBar({
             cleanupStoreAndCloseDisplay({ inlineCommentStore })
           }
         >
-          {icons.arrowRight}
+          {arrowRight}
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>
