@@ -49,9 +49,10 @@ export default function ReferencesTable() {
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
-        loading={isLoading}
+        autoHeight={true}
         checkboxSelection
         columns={columnsFormat}
+        hideFooter
         initialState={{
           columns: {
             columnVisibilityModel: {
@@ -60,9 +61,7 @@ export default function ReferencesTable() {
             },
           },
         }}
-        sx={DATA_GRID_STYLE_OVERRIDE}
-        rows={formattedReferenceRows}
-        autoHeight={true}
+        loading={isLoading}
         onCellClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemTabData({
@@ -75,7 +74,10 @@ export default function ReferencesTable() {
         // onRowClick={(params, event, details) => {
         //   event.stopPropagation();
         // }}
+        sx={DATA_GRID_STYLE_OVERRIDE}
+        rows={formattedReferenceRows}
       />
+      <div>Infinite pagination!!!!! </div>
     </div>
   );
 }
