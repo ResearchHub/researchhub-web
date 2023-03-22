@@ -1,19 +1,29 @@
-import { ReactElement } from "react";
-import { Container, Box, Button } from "@mui/material";
-import Image from "next/image";
+import { ReactElement, SyntheticEvent } from "react";
+import { Box, Button } from "@mui/material";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 interface Props {
   children: ReactElement | string;
+  onClick: (event: SyntheticEvent) => void;
+  margin?: string;
+  size?: "small" | "medium" | "large";
 }
 
-export default function PrimaryButton({ children }: Props): ReactElement {
+export default function PrimaryButton({
+  children,
+  margin = undefined,
+  onClick,
+  size,
+}: Props): ReactElement {
   return (
     <Button
+      onClick={onClick}
+      size={size}
       sx={{
         background: "#3971FF",
-        maxWidth: 440,
         width: "100%",
-        height: 50,
+        height: isEmpty(size) ? 50 : undefined,
+        margin: margin,
         "&:hover": {
           background: "#3971FF",
           opacity: 0.8,

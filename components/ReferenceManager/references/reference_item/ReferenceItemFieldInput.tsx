@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import { ChangeEvent, ReactElement } from "react";
 import colors from "~/config/themes/colors";
 import { NullableString } from "~/config/types/root_types";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 type Props = {
   formID: string;
@@ -25,7 +26,7 @@ export default function ReferenceItemFieldInput({
   return (
     <Box
       sx={{
-        background: "inherit",
+        background: "transparent",
         height: "78px",
         marginBottom: "16px",
         width: "100%",
@@ -38,7 +39,7 @@ export default function ReferenceItemFieldInput({
         lineHeight="22px"
         letterSpacing={0}
         mb="4px"
-        sx={{ background: "inherit" }}
+        sx={{ background: "transparent" }}
         width="100%"
       >
         {label}
@@ -46,6 +47,7 @@ export default function ReferenceItemFieldInput({
       </Typography>
       <OutlinedInput
         fullWidth
+        onClick={silentEmptyFnc}
         id={formID}
         onChange={(event: ChangeEvent<HTMLInputElement>): void => {
           onChange(event?.target?.value);

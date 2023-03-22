@@ -6,9 +6,13 @@ import {
   useState,
 } from "react";
 import { useReferenceTabContext } from "../context/ReferencesTabContext";
-import { filterNull } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  filterNull,
+  isEmpty,
+} from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -21,6 +25,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
+import PrimaryButton from "../../form/PrimaryButton";
+import { updateReferenceCitation } from "../api/updateReferenceCitation";
 
 type Props = {};
 
@@ -45,49 +51,56 @@ const ReferenceItemTabIconButton = ({
 };
 
 export default function ReferenceItemTab({}: Props): ReactElement {
-  const {
-    isTabOpen,
-    referenceItemTabData,
-    setIsTabOpen,
-    setReferenceItemTabData,
-  } = useReferenceTabContext();
+  const { isTabOpen, referenceItemTabData, setIsTabOpen } =
+    useReferenceTabContext();
 
-  const requiredFieldsSet = useMemo(
-    () => new Set(referenceItemTabData?.required_fields ?? []),
-    [referenceItemTabData?.id]
-  );
-
-  const [referenceItemTabDataFields, setReferenceItemTabDataFields] = useState(
+  const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemTabData?.fields ?? {}
   );
 
-  useEffect((): void => {}, [referenceItemTabData?.id]);
+  const requiredFieldsSet = useMemo(
+    // NOTE: calvinhlee - this needs to be improved from BE
+    () => new Set(referenceItemTabData?.required_fields ?? []),
+    [referenceItemTabData?.id]
+  );
+  useEffect((): void => {
+    if (isEmpty(referenceItemTabData?.id) || !isTabOpen) {
+      setLocalReferenceFields({});
+    } else {
+      setLocalReferenceFields(referenceItemTabData?.fields ?? {});
+    }
+  }, [referenceItemTabData?.id, isTabOpen]);
+
   const tabInputItems = isTabOpen
     ? filterNull(
-        Object.keys(referenceItemTabDataFields).map(
-          (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
-            const label = field_key,
-              value = referenceItemTabDataFields[field_key],
-              isRequired = requiredFieldsSet.has(field_key);
-            console.warn("value: ", value);
-            return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
-              <ReferenceItemFieldInput
-                formID={field_key}
-                key={`reference-item-tab-input-${field_key}`}
-                label={label}
-                onChange={(newValue: string): void => {
-                  setReferenceItemTabDataFields({
-                    ...referenceItemTabDataFields,
-                    [field_key]: newValue,
-                  });
-                }}
-                placeholder={label}
-                required={isRequired}
-                value={value}
-              />
-            );
-          }
-        )
+        // TODO: calvinhlee - we need better ways to sort these fields
+        Object.keys(localReferenceFields)
+          .sort()
+          .map(
+            (
+              field_key
+            ): ReactElement<typeof ReferenceItemFieldInput> | null => {
+              const label = field_key,
+                value = localReferenceFields[field_key],
+                isRequired = requiredFieldsSet.has(field_key);
+              return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
+                <ReferenceItemFieldInput
+                  formID={field_key}
+                  key={`reference-item-tab-input-${field_key}`}
+                  label={label}
+                  onChange={(newValue: string): void => {
+                    setLocalReferenceFields({
+                      ...localReferenceFields,
+                      [field_key]: newValue,
+                    });
+                  }}
+                  placeholder={label}
+                  required={isRequired}
+                  value={value}
+                />
+              );
+            }
+          )
       )
     : [];
 
@@ -152,7 +165,24 @@ export default function ReferenceItemTab({}: Props): ReactElement {
             {toTitleCase(referenceItemTabData?.citation_type ?? "")}
           </Typography>
         </Stack>
-        <Box>{tabInputItems}</Box>
+
+        {tabInputItems}
+        <Box alignItems="center" display="flex" justifyContent="center">
+          <PrimaryButton
+            margin="0 0 32px 0"
+            onClick={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              updateReferenceCitation({
+                payload: localReferenceFields,
+                onSuccess: emptyFncWithMsg,
+                onError: emptyFncWithMsg,
+              });
+            }}
+            size="large"
+          >
+            {"Update"}
+          </PrimaryButton>
+        </Box>
       </Box>
     </Drawer>
   );
