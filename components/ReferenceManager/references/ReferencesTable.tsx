@@ -77,7 +77,16 @@ export default function ReferencesTable() {
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
       />
-      <div>Infinite pagination!!!!! </div>
+      <div
+        style={{
+          width: "100%",
+          background: "pink",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {"Infinite pagination!!!!!"}
+      </div>
     </div>
   );
 }
