@@ -25,6 +25,11 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
     onOutsideClick: () => setIsOpen(false),
   });
 
+  const _handleSelect = (value) => {
+    setIsOpen(false);
+    handleSelect(value);
+  }
+
   return (
     <div className={css(styles.commentTypeSelector)}>
       <div className={`${css(styles.trigger)} comment-type-dropdown`}>
@@ -47,7 +52,7 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
         {commentTypes.map((t) => (
           <div
             className={css(styles.dropdownOpt)}
-            onClick={() => handleSelect(t)}
+            onClick={() => _handleSelect(t.value)}
           >
             <div className={css(styles.dropdownOptIcon)}>{t.icon}</div>
             <div className={css(styles.dropdownOptLabel)}>{t.label}</div>

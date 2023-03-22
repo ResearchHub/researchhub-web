@@ -61,7 +61,7 @@ const CommentEditor = ({
     formats: QuillFormats,
     placeholder,
   });
-  const { content: _content, setContent } = useQuillContent({
+  const { content: _content, dangerouslySetContent } = useQuillContent({
     quill,
     content,
   });
@@ -70,8 +70,10 @@ const CommentEditor = ({
     useEffectHandleClick({
       el: editorRef.current,
       onOutsideClick: () => {
-        setIsPreviewMode(true);
-        isPreviewModeRef.current = true;
+        if (isEmptyRef.current) {
+          setIsPreviewMode(true);
+          isPreviewModeRef.current = true;
+        }
       },
       onInsideClick: () => {
         setIsPreviewMode(false);
@@ -98,7 +100,7 @@ const CommentEditor = ({
       }
 
       await handleSubmit({ content: _content, commentType: _commentType });
-      setContent({});
+      dangerouslySetContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
       if (previewWhenInactive) {
         setIsPreviewMode(true);
