@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
 import { ChangeEvent, ReactElement } from "react";
+import colors from "~/config/themes/colors";
 import { NullableString } from "~/config/types/root_types";
 
 type Props = {
@@ -41,6 +42,7 @@ export default function ReferenceItemFieldInput({
         width="100%"
       >
         {label}
+        {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
       </Typography>
       <OutlinedInput
         fullWidth

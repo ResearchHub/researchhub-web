@@ -1,10 +1,12 @@
-import { ReactElement, SyntheticEvent } from "react";
 import {
-  ReferenceItemDataType,
-  useReferenceTabContext,
-} from "../context/ReferencesTabContext";
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useReferenceTabContext } from "../context/ReferencesTabContext";
 import { filterNull } from "~/config/utils/nullchecks";
-import { KeyOf } from "~/config/types/root_types";
 import { toTitleCase } from "~/config/utils/string";
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -21,21 +23,8 @@ import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
 
 type Props = {};
-type ReferenceItemDataTypeKey = KeyOf<ReferenceItemDataType>;
 
-const TAB_ITEM_FILTER_KEYS = new Set(["id"]);
-const TAB_ITEM_LABELS: {
-  [K in ReferenceItemDataTypeKey]: string;
-} = {
-  id: "", // columnVisibilityModel: hidden
-  citation_type: "", // columnVisibilityModel: hidden
-  title: "Title",
-  hubs: "Hubs",
-  authors: "Authors",
-  last_author: "Last Author",
-  published_date: "Published Date",
-  published_year: "Published Year",
-};
+const TAB_ITEM_FILTER_KEYS = new Set(["id", "citation_type"]);
 
 const ReferenceItemTabIconButton = ({
   children,
@@ -63,30 +52,44 @@ export default function ReferenceItemTab({}: Props): ReactElement {
     setReferenceItemTabData,
   } = useReferenceTabContext();
 
-  const tabInputItems = filterNull(
-    Object.keys(referenceItemTabData).map(
-      (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
-        if (field_key === "citation_type") {
-          return null;
-        }
-        const label = TAB_ITEM_LABELS[field_key];
-        return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
-          <ReferenceItemFieldInput
-            formID={field_key}
-            key={`reference-item-tab-input-${field_key}`}
-            label={label}
-            onChange={(value: string): void => {
-              setReferenceItemTabData({
-                ...referenceItemTabData,
-                [field_key]: value,
-              });
-            }}
-            value={referenceItemTabData[field_key]}
-          />
-        );
-      }
-    )
+  const requiredFieldsSet = useMemo(
+    () => new Set(referenceItemTabData?.required_fields ?? []),
+    [referenceItemTabData?.id]
   );
+
+  const [referenceItemTabDataFields, setReferenceItemTabDataFields] = useState(
+    referenceItemTabData?.fields ?? {}
+  );
+
+  useEffect((): void => {}, [referenceItemTabData?.id]);
+  const tabInputItems = isTabOpen
+    ? filterNull(
+        Object.keys(referenceItemTabDataFields).map(
+          (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
+            const label = field_key,
+              value = referenceItemTabDataFields[field_key],
+              isRequired = requiredFieldsSet.has(field_key);
+            console.warn("value: ", value);
+            return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
+              <ReferenceItemFieldInput
+                formID={field_key}
+                key={`reference-item-tab-input-${field_key}`}
+                label={label}
+                onChange={(newValue: string): void => {
+                  setReferenceItemTabDataFields({
+                    ...referenceItemTabDataFields,
+                    [field_key]: newValue,
+                  });
+                }}
+                placeholder={label}
+                required={isRequired}
+                value={value}
+              />
+            );
+          }
+        )
+      )
+    : [];
 
   return (
     <Drawer

@@ -15,36 +15,26 @@ export type ReferenceTableRowDataType = {
   published_date: NullableString;
   published_year: NullableString;
 };
-export type ReferenceItem = any; // schema for ReferenceItem comes from the backend.
+export type ReferenceItemTabData = any; // schema for ReferenceItemTabData comes from the backend.
 
 export type ReferencesTabContextValueType = {
   isTabOpen: boolean;
-  referenceItem: ReferenceItem;
+  referenceItemTabData: ReferenceItemTabData;
   referenceTableRowData: ReferenceTableRowDataType[];
   setIsTabOpen: (flag: boolean) => void;
-  setReferenceItem: (data: ReferenceItem) => void;
+  setReferenceItemTabData: (data: ReferenceItemTabData) => void;
   setReferenceTableRowData: (data: ReferenceTableRowDataType[]) => void;
 };
 
-export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceTableRowDataType = {
-  // NOTE: Logical ordering for display reason
-  id: null,
-  citation_type: null,
-  title: null,
-  hubs: null,
-  authors: null,
-  last_author: null,
-  published_date: null,
-  published_year: null,
-};
+export const DEFAULT_REFERENCE_ITEM_TAB_DATA: ReferenceItemTabData = {};
 
 export const DEFAULT_REFERENCES_TAB_CONTEXT_VALUE: ReferencesTabContextValueType =
   {
     isTabOpen: true,
-    referenceItem: DEFAULT_REFERENCE_ITEM_DATA,
+    referenceItemTabData: DEFAULT_REFERENCE_ITEM_TAB_DATA,
     referenceTableRowData: [],
     setIsTabOpen: emptyFncWithMsg,
-    setReferenceItem: emptyFncWithMsg,
+    setReferenceItemTabData: emptyFncWithMsg,
     setReferenceTableRowData: emptyFncWithMsg,
   };
 
@@ -59,9 +49,8 @@ export const useReferenceTabContext = (): ReferencesTabContextValueType => {
 
 export function ReferencesTabContextProvider({ children }) {
   const [isTabOpen, setIsTabOpen] = useState<boolean>(false);
-  const [referenceItem, setReferenceItem] = useState<ReferenceItem>(
-    DEFAULT_REFERENCE_ITEM_DATA
-  );
+  const [referenceItemTabData, setReferenceItemTabData] =
+    useState<ReferenceItemTabData>(DEFAULT_REFERENCE_ITEM_TAB_DATA);
   const [referenceTableRowData, setReferenceTableRowData] = useState<
     ReferenceTableRowDataType[]
   >([]);
@@ -70,10 +59,10 @@ export function ReferencesTabContextProvider({ children }) {
     <ReferencesTabContext.Provider
       value={{
         isTabOpen,
-        referenceItem,
+        referenceItemTabData,
         referenceTableRowData,
         setIsTabOpen,
-        setReferenceItem,
+        setReferenceItemTabData,
         setReferenceTableRowData,
       }}
     >

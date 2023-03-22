@@ -9,43 +9,47 @@ import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "./context/ReferencesTabContext";
 
-function useEffectFetchReferenceCitations({ onSuccess, onError, isLoading }) {
+function useEffectFetchReferenceCitations({
+  onSuccess,
+  onError,
+  setIsLoading,
+}) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
   useEffect(() => {
     if (!isNullOrUndefined(user?.id)) {
-      isLoading(true);
+      setIsLoading(true);
       fetchCurrentUserReferenceCitations({ onSuccess, onError });
     }
   }, [fetchCurrentUserReferenceCitations, user?.id]);
 }
 
 export default function ReferencesTable() {
-  const [isLoading, setisLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const {
     referenceTableRowData,
     setIsTabOpen,
     setReferenceTableRowData,
-    setReferenceItem,
+    setReferenceItemTabData,
   } = useReferenceTabContext();
 
   useEffectFetchReferenceCitations({
-    isLoading,
+    setIsLoading,
     onSuccess: (payload: any) => {
       setReferenceTableRowData(payload?.results);
-      setisLoading(false);
+      setIsLoading(false);
     },
     onError: emptyFncWithMsg,
   });
 
-  const formattedReferenceRows = isLoading
+  const formattedReferenceRows = !isLoading
     ? nullthrows(formatReferenceRowData(referenceTableRowData))
     : [];
 
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
-        loading={!isLoading}
+        loading={isLoading}
         checkboxSelection
         columns={columnsFormat}
         initialState={{
@@ -61,9 +65,9 @@ export default function ReferencesTable() {
         autoHeight={true}
         onCellClick={(params, event, _details): void => {
           event.stopPropagation();
-          setReferenceItem({
+          setReferenceItemTabData({
             ...nullthrows(
-              formattedReferenceRows.find((item) => item.id === params?.row?.id)
+              referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),
           });
           setIsTabOpen(true);
