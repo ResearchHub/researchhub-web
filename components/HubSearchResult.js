@@ -4,7 +4,7 @@ import Link from "next/link";
 
 // Config
 import colors from "../config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { hub } from "~/config/themes/icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 
 const HubSearchResult = ({ result, index, clearSearch }) => {
@@ -45,7 +45,7 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
         className={css(styles.card)}
         onClick={() => clearSearch()}
       >
-        <div className={css(styles.hubIcon)}>{icons.hub}</div>
+        <div className={css(styles.hubIcon)}>{hub}</div>
         <div className={css(styles.column)}>
           <div className={css(styles.mainText)}>
             {highlight ? parseHighlightText(meta.highlight, "name") : name}

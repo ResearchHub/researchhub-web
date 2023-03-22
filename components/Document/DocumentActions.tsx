@@ -10,12 +10,13 @@ import AdminButton from "../Admin/AdminButton";
 import censorDocument from "./api/censorDocAPI";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
 import ReactTooltip from "react-tooltip";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { download, minus, pencil, plus } from "~/config/themes/icons";
 
 type Args = {
   currentUser: any;
@@ -69,7 +70,7 @@ function DocumentActions({
           data-tip={"Download PDF"}
           onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
         >
-          {icons.download}
+          {download}
         </div>
       ),
     },
@@ -85,7 +86,7 @@ function DocumentActions({
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)}>{icons.pencil}</div>
+          <div className={css(styles.actionIcon)}>{pencil}</div>
         </PermissionNotificationWrapper>
       ),
     },
@@ -134,7 +135,7 @@ function DocumentActions({
             isModerator={true}
             paperId={unifiedDocument?.document?.id}
             restore={isRemoved}
-            icon={isRemoved ? icons.plus : icons.minus}
+            icon={isRemoved ? plus : minus}
             onAction={() => {
               if (isRemoved) {
                 restoreDocument({

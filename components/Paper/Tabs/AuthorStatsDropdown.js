@@ -5,7 +5,6 @@ import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const AuthorStatsDropdown = (props) => {
   const { authors, paper, paperId, hubs, isPaper } = props;

@@ -12,7 +12,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -22,6 +22,7 @@ import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import Dropzone from "react-dropzone";
+import { checkCircle, timesCircle } from "~/config/themes/icons";
 
 class FormDND extends Component {
   constructor(props) {
@@ -408,9 +409,7 @@ class FormDND extends Component {
                     )}
                   >
                     <div className={css(styles.icon)}>
-                      {this.state.urlIsValid
-                        ? icons.checkCircle
-                        : icons.timesCircle}
+                      {this.state.urlIsValid ? checkCircle : timesCircle}
                     </div>
                   </span>
                 )

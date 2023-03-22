@@ -19,7 +19,7 @@ import ExitableBanner from "~/components/Banner/ExitableBanner";
 import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
-import icons from "~/config/themes/icons";
+
 import LiveFeed from "~/components/LiveFeed/LiveFeed";
 import RhCarousel from "../shared/carousel/RhCarousel";
 import Router from "next/router";

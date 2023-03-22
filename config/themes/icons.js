@@ -49,8 +49,8 @@ import {
   faStar as faStarFilled,
   faStop,
   faThLarge,
-  faThumbsDown as solidThumbsDown,
-  faThumbsUp as solidThumbsUp,
+  faThumbsDown as faSolidThumbsDown,
+  faThumbsUp as faSolidThumbsUp,
   faThumbtack,
   faUnderline,
   faUpload,
@@ -80,7 +80,7 @@ import {
   faHome,
   faBooks,
   faCommentCheck,
-  faCheckCircle as checkCircleSolid,
+  faCheckCircle as faCheckCircleSolid,
   faFileEdit,
   faH1,
   faH2,
@@ -95,7 +95,7 @@ import {
   faPencil,
   faQuoteRight,
   faRss,
-  faTimesCircle as timesCircleSolid,
+  faTimesCircle as _timesCircleSolid,
   faUserSlash,
   faVideoPlus,
   faShieldAlt,
@@ -107,7 +107,7 @@ import {
   faComments as faCommentRegular,
   faFileLines as faPaperRegular,
   faPenSquare as faPenSquareRegular,
-  faArrowAltToBottom as download,
+  faArrowAltToBottom as faDownload,
   faArrowDownToLine,
   faArrowRightToLine,
   faArrowLeftToLine,
@@ -203,8 +203,8 @@ import {
   faSignOut,
   faSortAmountUpAlt,
   faStarHalf,
-  faThumbsDown as opaqueThumbsDown,
-  faThumbsUp as opaqueThumbsUp,
+  faThumbsDown as faOpaqueThumbsDown,
+  faThumbsUp as faOpaqueThumbsUp,
   faTrophy,
   faUser as faSimpleUser,
   faUserCircle,
@@ -334,6 +334,7 @@ library.add(
   faStarAlt,
   faStarFilled,
   faStarHalf,
+  faDownload,
   faStarOutline,
   faStop,
   faTableCells,
@@ -358,224 +359,228 @@ library.add(
   faVideo,
   faVideoPlus,
   faWallet,
-  opaqueThumbsDown,
-  opaqueThumbsUp,
-  solidThumbsDown,
-  solidThumbsUp,
+  faOpaqueThumbsDown,
+  faOpaqueThumbsUp,
+  faSolidThumbsDown,
   faFileLines,
   faMailbox
 );
 
-const icons = {
-  "info-circle": <FontAwesomeIcon icon={faInfoCircle} />,
-  "info-circle-light": <FontAwesomeIcon icon={faInfoCircleLight} />,
-  activtyFeed: <FontAwesomeIcon icon={faRss} />,
-  angleDown: <FontAwesomeIcon icon={faAngleDown} />,
-  angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,
-  angleRight: <FontAwesomeIcon icon={faAngleRight} />,
-  angleUp: <FontAwesomeIcon icon={faAngleUp} />,
-  arrowRight: <FontAwesomeIcon icon={faArrowRight} />,
-  arrowUpRight: <FontAwesomeIcon icon={faArrowUpRight} />,
-  arrowRightToLine: <FontAwesomeIcon icon={faArrowRightToLine} />,
-  arrowLeftToLine: <FontAwesomeIcon icon={faArrowLeftToLine} />,
-  arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
-  asterisk: <FontAwesomeIcon icon={faAsterisk} />,
-  ban: <FontAwesomeIcon icon={faBan} />,
-  bat: <FontAwesomeIcon icon={faBat} />,
-  bell: <FontAwesomeIcon icon={faBell} />,
-  bolt: <FontAwesomeIcon icon={faBolt} />,
-  book: <FontAwesomeIcon icon={faBook} />,
-  books: <FontAwesomeIcon icon={faBooks} />,
-  bookOpen: <FontAwesomeIcon icon={faBookOpen} />,
-  bookOpenAlt: <FontAwesomeIcon icon={faBookOpenAlt} />,
-  burgerMenu: <FontAwesomeIcon icon={faBars} />,
-  calendar: <FontAwesomeIcon icon={faCalendar} />,
-  caretDown: <FontAwesomeIcon icon={faCaretDown} />,
-  caretUp: <FontAwesomeIcon icon={faCaretUp} />,
-  caretLeft: <FontAwesomeIcon icon={faCaretLeft} />,
-  chat: <FontAwesomeIcon icon={faComment} />,
-  check: <FontAwesomeIcon icon={faCheck} />,
-  chartSimple: <FontAwesomeIcon icon={faChartSimple} />,
-  checkCircle: <FontAwesomeIcon icon={faCheckCircle} />,
-  checkCircleSolid: <FontAwesomeIcon icon={checkCircleSolid} />,
-  chevronDown: <FontAwesomeIcon icon={faChevronDown} />,
-  chevronDownLeft: <FontAwesomeIcon icon={falChevronDown} />,
-  chevronLeft: <FontAwesomeIcon icon={faChevronLeft} />,
-  chevronRight: <FontAwesomeIcon icon={faChevronRight} />,
-  chevronUp: <FontAwesomeIcon icon={faChevronUp} />,
-  copy: <FontAwesomeIcon icon={faCopy} />,
-  clock: <FontAwesomeIcon icon={faClock} />,
-  clone: <FontAwesomeIcon icon={faClone} />,
-  cog: <FontAwesomeIcon icon={faCog} />,
-  coin: <FontAwesomeIcon icon={faCoin} />,
-  coins: <FontAwesomeIcon icon={faCoins} />,
-  coinsSolid: <FontAwesomeIcon icon={faCoinsSolid} />,
-  commentAltDots: <FontAwesomeIcon icon={faCommentAltDots} />,
-  commentAltEdit: <FontAwesomeIcon icon={faCommentAltEdit} />,
-  commentAltLine: <FontAwesomeIcon icon={faCommentAltLines} />,
-  commentAltLineSolid: <FontAwesomeIcon icon={faCommentAltLinesSolid} />,
-  commentCheck: <FontAwesomeIcon icon={faCommentCheck} />,
-  commentLightAltCheck: <FontAwesomeIcon icon={faCommentLightAltCheck} />,
-  commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
-  comments: <FontAwesomeIcon icon={faComments} />,
-  commentsSolid: <FontAwesomeIcon icon={faCommentsSolid} />,
-  commentsAlt: <FontAwesomeIcon icon={faCommentsNoBackground} />,
-  commentDots: <FontAwesomeIcon icon={faCommentDots} />,
-  chevronCircleRight: <FontAwesomeIcon icon={faChevronCircleRight} />,
-  chevronCircleLeft: <FontAwesomeIcon icon={faChevronCircleLeft} />,
-  checkDouble: <FontAwesomeIcon icon={faCheckDouble} />,
-  date: <FontAwesomeIcon icon={faCalendarDay} />,
-  discord: <FontAwesomeIcon icon={faDiscord} />,
-  downSolid: <FontAwesomeIcon icon={faDown} />,
-  editHub: <FontAwesomeIcon icon={faEdit} />,
-  ellipsisH: <FontAwesomeIcon icon={faEllipsisH} />,
-  ellipsisV: <FontAwesomeIcon icon={faEllipsisV} />,
-  error: <FontAwesomeIcon icon={faExclamationTriangle} />,
-  envelope: <FontAwesomeIcon icon={faEnvelope} />,
-  exclamationCircle: <FontAwesomeIcon icon={faExclamationCircle} />,
-  expandArrows: <FontAwesomeIcon icon={faExpandArrows} />,
-  externalLink: <FontAwesomeIcon icon={faExternalLinkAlt} />,
-  eye: <FontAwesomeIcon icon={faEye} />,
-  eyeSlash: <FontAwesomeIcon icon={faEyeSlash} />,
-  facebook: <FontAwesomeIcon icon={faFacebookF} />,
-  file: <FontAwesomeIcon icon={faFileAlt} />,
-  fileEdit: <FontAwesomeIcon icon={faFileEdit} />,
-  fileImport: <FontAwesomeIcon icon={faFileImport} />,
-  fileUpload: <FontAwesomeIcon icon={faFileUpload} />,
-  fire: <FontAwesomeIcon icon={faFireAlt} />,
-  flag: <FontAwesomeIcon icon={faFlag} />,
-  download: <FontAwesomeIcon icon={download} />,
-  shield: <FontAwesomeIcon icon={faShieldAlt} />,
-  flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
-  fontCase: <FontAwesomeIcon icon={faFontCase} />,
-  friends: <FontAwesomeIcon icon={faUsers} />,
-  github: <FontAwesomeIcon icon={faGithub} />,
-  globe: <FontAwesomeIcon icon={faGlobeAmericas} />,
-  globeLight: <FontAwesomeIcon icon={faGlobeLight} />,
-  graduationCap: <FontAwesomeIcon icon={faGraduationCap} />,
-  help: <FontAwesomeIcon icon={faQuestionCircle} />,
-  hub: <FontAwesomeIcon icon={faChartNetwork} />,
-  home: <FontAwesomeIcon icon={faHome} />,
-  image: <FontAwesomeIcon icon={faImage} />,
-  layerGroup: <FontAwesomeIcon icon={faLayerGroup} />,
-  lightbulb: <FontAwesomeIcon icon={faLightbulb} />,
-  link: <FontAwesomeIcon icon={faLink} />,
-  linkedIn: <FontAwesomeIcon icon={faLinkedinIn} />,
-  live: <FontAwesomeIcon icon={faDotCircle} />,
-  lock: <FontAwesomeIcon icon={faLock} />,
-  lockOpen: <FontAwesomeIcon icon={faUnlock} />,
-  longArrowDown: <FontAwesomeIcon icon={faLongArrowAltDown} />,
-  longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
-  longArrowUp: <FontAwesomeIcon icon={faLongArrowAltUp} />,
-  manage: <FontAwesomeIcon icon={faTasksAlt} />,
-  mailbox: <FontAwesomeIcon icon={faMailbox} />,
-  medal: <FontAwesomeIcon icon={faMedal} />,
-  medium: <FontAwesomeIcon icon={faMedium} />,
-  minus: <FontAwesomeIcon icon={faMinus} />,
-  minusCircle: <FontAwesomeIcon icon={faMinusCircle} />,
-  mousePointer: <FontAwesomeIcon icon={faMousePointer} />,
-  opaqueThumbsDown: <FontAwesomeIcon icon={opaqueThumbsDown} />,
-  opaqueThumbsUp: <FontAwesomeIcon icon={opaqueThumbsUp} />,
-  paper: <FontAwesomeIcon icon={faFile} />,
-  paperPlane: <FontAwesomeIcon icon={faPaperPlane} />,
-  paperRegular: <FontAwesomeIcon icon={faPaperRegular} />,
-  paperAlt: <FontAwesomeIcon icon={faFileAltSolid} />,
-  pen: <FontAwesomeIcon icon={faPen} />,
-  penSquare: <FontAwesomeIcon icon={faPenSquareRegular} />,
-  pencil: <FontAwesomeIcon icon={faPencil} />,
-  pin: <FontAwesomeIcon icon={faThumbtack} />,
-  pinOutline: <FontAwesomeIcon icon={faThumbtackOutline} />,
-  play: <FontAwesomeIcon icon={faPlay} />,
-  plus: <FontAwesomeIcon icon={faPlus} />,
-  plusCircle: <FontAwesomeIcon icon={faPlusCircle} />,
-  plusCircleSolid: <FontAwesomeIcon icon={faPlusCircleSolid} />,
-  plusSquare: <FontAwesomeIcon icon={faPlusSquare} />,
-  plusThick: <FontAwesomeIcon icon={faPlusThick} />,
-  portrait: <FontAwesomeIcon icon={faPortrait} />,
-  pulse: <FontAwesomeIcon icon={faHeartRate} />,
-  receipt: <FontAwesomeIcon icon={faReceipt} />,
-  reddit: <FontAwesomeIcon icon={faReddit} />,
-  redo: <FontAwesomeIcon icon={faRedo} />,
-  reply: <FontAwesomeIcon icon={faReply} />,
-  search: <FontAwesomeIcon icon={faSearch} />,
-  shapes: <FontAwesomeIcon icon={faShapes} />,
-  share: <FontAwesomeIcon icon={faShare} />,
-  shareAlt: <FontAwesomeIcon icon={faShareAlt} />,
-  shareRegular: <FontAwesomeIcon icon={faShareRegular} />,
-  shareSquare: <FontAwesomeIcon icon={faShareSquare} />,
-  signOut: <FontAwesomeIcon icon={faSignOut} />,
-  signIn: <FontAwesomeIcon icon={faSignIn} />,
-  simpleUser: <FontAwesomeIcon icon={faSimpleUser} />,
-  slack: <FontAwesomeIcon icon={faSlack} />,
-  solidThumbsDown: <FontAwesomeIcon icon={solidThumbsDown} />,
-  solidThumbsUp: <FontAwesomeIcon icon={solidThumbsUp} />,
-  sort: <FontAwesomeIcon icon={faSort} />,
-  sortAmountUpAlt: <FontAwesomeIcon icon={faSortAmountUpAlt} />,
-  squares: <FontAwesomeIcon icon={faThLarge} />,
-  starAlt: <FontAwesomeIcon icon={faStarAlt} />,
-  starEmpty: <FontAwesomeIcon icon={faStarOutline} />,
-  starFilled: <FontAwesomeIcon icon={faStarFilled} />,
-  starHalf: <FontAwesomeIcon icon={faStarHalf} />,
-  stop: <FontAwesomeIcon icon={faStop} />,
-  subscribers: <FontAwesomeIcon icon={faUser} />,
-  tableCell: <FontAwesomeIcon icon={faTableCells} />,
-  takeaway: <FontAwesomeIcon icon={faList} />,
-  times: <FontAwesomeIcon icon={faTimes} />,
-  timesCircle: <FontAwesomeIcon icon={faTimesCircle} />,
-  timesCircleSolid: <FontAwesomeIcon icon={timesCircleSolid} />,
-  trash: <FontAwesomeIcon icon={faTrashAlt} />,
-  trashSolid: <FontAwesomeIcon icon={faTrashSolid} />,
-  trophy: <FontAwesomeIcon icon={faTrophy} />,
-  twitter: <FontAwesomeIcon icon={faTwitter} />,
-  up: <FontAwesomeIcon icon={faArrowAltUp} />,
-  upSolid: <FontAwesomeIcon icon={faUp} />,
-  upRegular: <FontAwesomeIcon icon={faArrowAltUpRegular} />,
-  upload: <FontAwesomeIcon icon={faUpload} />,
-  question: <FontAwesomeIcon icon={solidQuestion} />,
-  undo: <FontAwesomeIcon icon={faUndo} />,
-  user: <FontAwesomeIcon icon={faUserCircle} />,
-  userEdit: <FontAwesomeIcon icon={faUserEdit} />,
-  userPlus: <FontAwesomeIcon icon={faUserPlus} />,
-  users: <FontAwesomeIcon icon={faUsers} />,
-  userSlash: <FontAwesomeIcon icon={faUserSlash} />,
-  verifiedBadge: <FontAwesomeIcon icon={faBadgeCheck} />,
-  verifiedBadgeAlt: <FontAwesomeIcon icon={faBadgeCheckAlt} />,
-  video: <FontAwesomeIcon icon={faVideo} />,
-  toggleOn: <FontAwesomeIcon icon={faToggleOn} />,
-  toggleOff: <FontAwesomeIcon icon={faToggleOff} />,
-  wallet: <FontAwesomeIcon icon={faWallet} />,
-  // customIcons
-  coinStack: ({ styles, grey }) => (
+export const infoCircle = <FontAwesomeIcon icon={faInfoCircle} />;
+export const infoCircleLight = <FontAwesomeIcon icon={faInfoCircleLight} />;
+export const activtyFeed = <FontAwesomeIcon icon={faRss} />;
+export const angleDown = <FontAwesomeIcon icon={faAngleDown} />;
+export const angleLeft = <FontAwesomeIcon icon={faAngleLeft} />;
+export const angleRight = <FontAwesomeIcon icon={faAngleRight} />;
+export const angleUp = <FontAwesomeIcon icon={faAngleUp} />;
+export const arrowRight = <FontAwesomeIcon icon={faArrowRight} />;
+export const arrowUpRight = <FontAwesomeIcon icon={faArrowUpRight} />;
+export const arrowRightToLine = <FontAwesomeIcon icon={faArrowRightToLine} />;
+export const arrowLeftToLine = <FontAwesomeIcon icon={faArrowLeftToLine} />;
+export const arrowToBottom = <FontAwesomeIcon icon={faArrowToBottom} />;
+export const asterisk = <FontAwesomeIcon icon={faAsterisk} />;
+export const ban = <FontAwesomeIcon icon={faBan} />;
+export const bat = <FontAwesomeIcon icon={faBat} />;
+export const bell = <FontAwesomeIcon icon={faBell} />;
+export const bolt = <FontAwesomeIcon icon={faBolt} />;
+export const book = <FontAwesomeIcon icon={faBook} />;
+export const books = <FontAwesomeIcon icon={faBooks} />;
+export const bookOpen = <FontAwesomeIcon icon={faBookOpen} />;
+export const bookOpenAlt = <FontAwesomeIcon icon={faBookOpenAlt} />;
+export const burgerMenu = <FontAwesomeIcon icon={faBars} />;
+export const calendar = <FontAwesomeIcon icon={faCalendar} />;
+export const caretDown = <FontAwesomeIcon icon={faCaretDown} />;
+export const caretUp = <FontAwesomeIcon icon={faCaretUp} />;
+export const caretLeft = <FontAwesomeIcon icon={faCaretLeft} />;
+export const chat = <FontAwesomeIcon icon={faComment} />;
+export const check = <FontAwesomeIcon icon={faCheck} />;
+export const chartSimple = <FontAwesomeIcon icon={faChartSimple} />;
+export const checkCircle = <FontAwesomeIcon icon={faCheckCircle} />;
+export const checkCircleSolid = <FontAwesomeIcon icon={faCheckCircleSolid} />;
+export const chevronDown = <FontAwesomeIcon icon={faChevronDown} />;
+export const chevronDownLeft = <FontAwesomeIcon icon={falChevronDown} />;
+export const chevronLeft = <FontAwesomeIcon icon={faChevronLeft} />;
+export const chevronRight = <FontAwesomeIcon icon={faChevronRight} />;
+export const chevronUp = <FontAwesomeIcon icon={faChevronUp} />;
+export const copy = <FontAwesomeIcon icon={faCopy} />;
+export const clock = <FontAwesomeIcon icon={faClock} />;
+export const clone = <FontAwesomeIcon icon={faClone} />;
+export const cog = <FontAwesomeIcon icon={faCog} />;
+export const coin = <FontAwesomeIcon icon={faCoin} />;
+export const coins = <FontAwesomeIcon icon={faCoins} />;
+export const coinsSolid = <FontAwesomeIcon icon={faCoinsSolid} />;
+export const commentAltDots = <FontAwesomeIcon icon={faCommentAltDots} />;
+export const commentAltEdit = <FontAwesomeIcon icon={faCommentAltEdit} />;
+export const commentAltLine = <FontAwesomeIcon icon={faCommentAltLines} />;
+export const commentAltLineSolid = (
+  <FontAwesomeIcon icon={faCommentAltLinesSolid} />
+);
+export const commentCheck = <FontAwesomeIcon icon={faCommentCheck} />;
+export const commentLightAltCheck = (
+  <FontAwesomeIcon icon={faCommentLightAltCheck} />
+);
+export const commentRegular = <FontAwesomeIcon icon={faCommentRegular} />;
+export const comments = <FontAwesomeIcon icon={faComments} />;
+export const commentsSolid = <FontAwesomeIcon icon={faCommentsSolid} />;
+export const commentsAlt = <FontAwesomeIcon icon={faCommentsNoBackground} />;
+export const commentDots = <FontAwesomeIcon icon={faCommentDots} />;
+export const chevronCircleRight = (
+  <FontAwesomeIcon icon={faChevronCircleRight} />
+);
+export const chevronCircleLeft = <FontAwesomeIcon icon={faChevronCircleLeft} />;
+export const checkDouble = <FontAwesomeIcon icon={faCheckDouble} />;
+export const date = <FontAwesomeIcon icon={faCalendarDay} />;
+export const discord = <FontAwesomeIcon icon={faDiscord} />;
+export const downSolid = <FontAwesomeIcon icon={faDown} />;
+export const editHub = <FontAwesomeIcon icon={faEdit} />;
+export const ellipsisH = <FontAwesomeIcon icon={faEllipsisH} />;
+export const ellipsisV = <FontAwesomeIcon icon={faEllipsisV} />;
+export const error = <FontAwesomeIcon icon={faExclamationTriangle} />;
+export const envelope = <FontAwesomeIcon icon={faEnvelope} />;
+export const exclamationCircle = <FontAwesomeIcon icon={faExclamationCircle} />;
+export const expandArrows = <FontAwesomeIcon icon={faExpandArrows} />;
+export const externalLink = <FontAwesomeIcon icon={faExternalLinkAlt} />;
+export const eye = <FontAwesomeIcon icon={faEye} />;
+export const eyeSlash = <FontAwesomeIcon icon={faEyeSlash} />;
+export const facebook = <FontAwesomeIcon icon={faFacebookF} />;
+export const file = <FontAwesomeIcon icon={faFileAlt} />;
+export const fileEdit = <FontAwesomeIcon icon={faFileEdit} />;
+export const fileImport = <FontAwesomeIcon icon={faFileImport} />;
+export const fileUpload = <FontAwesomeIcon icon={faFileUpload} />;
+export const fire = <FontAwesomeIcon icon={faFireAlt} />;
+export const flag = <FontAwesomeIcon icon={faFlag} />;
+export const download = <FontAwesomeIcon icon={faDownload} />;
+export const shield = <FontAwesomeIcon icon={faShieldAlt} />;
+export const flagOutline = <FontAwesomeIcon icon={faFlagOutline} />;
+export const fontCase = <FontAwesomeIcon icon={faFontCase} />;
+export const friends = <FontAwesomeIcon icon={faUsers} />;
+export const github = <FontAwesomeIcon icon={faGithub} />;
+export const globe = <FontAwesomeIcon icon={faGlobeAmericas} />;
+export const globeLight = <FontAwesomeIcon icon={faGlobeLight} />;
+export const graduationCap = <FontAwesomeIcon icon={faGraduationCap} />;
+export const help = <FontAwesomeIcon icon={faQuestionCircle} />;
+export const hub = <FontAwesomeIcon icon={faChartNetwork} />;
+export const home = <FontAwesomeIcon icon={faHome} />;
+export const image = <FontAwesomeIcon icon={faImage} />;
+export const layerGroup = <FontAwesomeIcon icon={faLayerGroup} />;
+export const lightbulb = <FontAwesomeIcon icon={faLightbulb} />;
+export const link = <FontAwesomeIcon icon={faLink} />;
+export const linkedIn = <FontAwesomeIcon icon={faLinkedinIn} />;
+export const live = <FontAwesomeIcon icon={faDotCircle} />;
+export const lock = <FontAwesomeIcon icon={faLock} />;
+export const lockOpen = <FontAwesomeIcon icon={faUnlock} />;
+export const longArrowDown = <FontAwesomeIcon icon={faLongArrowAltDown} />;
+export const longArrowLeft = <FontAwesomeIcon icon={faLongArrowLeft} />;
+export const longArrowUp = <FontAwesomeIcon icon={faLongArrowAltUp} />;
+export const manage = <FontAwesomeIcon icon={faTasksAlt} />;
+export const mailbox = <FontAwesomeIcon icon={faMailbox} />;
+export const medal = <FontAwesomeIcon icon={faMedal} />;
+export const medium = <FontAwesomeIcon icon={faMedium} />;
+export const minus = <FontAwesomeIcon icon={faMinus} />;
+export const minusCircle = <FontAwesomeIcon icon={faMinusCircle} />;
+export const mousePointer = <FontAwesomeIcon icon={faMousePointer} />;
+export const opaqueThumbsDown = <FontAwesomeIcon icon={faOpaqueThumbsDown} />;
+export const opaqueThumbsUp = <FontAwesomeIcon icon={faOpaqueThumbsUp} />;
+export const paper = <FontAwesomeIcon icon={faFile} />;
+export const paperPlane = <FontAwesomeIcon icon={faPaperPlane} />;
+export const paperRegular = <FontAwesomeIcon icon={faPaperRegular} />;
+export const paperAlt = <FontAwesomeIcon icon={faFileAltSolid} />;
+export const pen = <FontAwesomeIcon icon={faPen} />;
+export const penSquare = <FontAwesomeIcon icon={faPenSquareRegular} />;
+export const pencil = <FontAwesomeIcon icon={faPencil} />;
+export const pin = <FontAwesomeIcon icon={faThumbtack} />;
+export const pinOutline = <FontAwesomeIcon icon={faThumbtackOutline} />;
+export const play = <FontAwesomeIcon icon={faPlay} />;
+export const plus = <FontAwesomeIcon icon={faPlus} />;
+export const plusCircle = <FontAwesomeIcon icon={faPlusCircle} />;
+export const plusCircleSolid = <FontAwesomeIcon icon={faPlusCircleSolid} />;
+export const plusSquare = <FontAwesomeIcon icon={faPlusSquare} />;
+export const plusThick = <FontAwesomeIcon icon={faPlusThick} />;
+export const portrait = <FontAwesomeIcon icon={faPortrait} />;
+export const pulse = <FontAwesomeIcon icon={faHeartRate} />;
+export const receipt = <FontAwesomeIcon icon={faReceipt} />;
+export const reddit = <FontAwesomeIcon icon={faReddit} />;
+export const redo = <FontAwesomeIcon icon={faRedo} />;
+export const reply = <FontAwesomeIcon icon={faReply} />;
+export const search = <FontAwesomeIcon icon={faSearch} />;
+export const shapes = <FontAwesomeIcon icon={faShapes} />;
+export const share = <FontAwesomeIcon icon={faShare} />;
+export const shareAlt = <FontAwesomeIcon icon={faShareAlt} />;
+export const shareRegular = <FontAwesomeIcon icon={faShareRegular} />;
+export const shareSquare = <FontAwesomeIcon icon={faShareSquare} />;
+export const signOut = <FontAwesomeIcon icon={faSignOut} />;
+export const signIn = <FontAwesomeIcon icon={faSignIn} />;
+export const simpleUser = <FontAwesomeIcon icon={faSimpleUser} />;
+export const slack = <FontAwesomeIcon icon={faSlack} />;
+export const solidThumbsDown = <FontAwesomeIcon icon={faSolidThumbsDown} />;
+export const solidThumbsUp = <FontAwesomeIcon icon={faSolidThumbsDown} />;
+export const sort = <FontAwesomeIcon icon={faSort} />;
+export const sortAmountUpAlt = <FontAwesomeIcon icon={faSortAmountUpAlt} />;
+export const squares = <FontAwesomeIcon icon={faThLarge} />;
+export const starAlt = <FontAwesomeIcon icon={faStarAlt} />;
+export const starEmpty = <FontAwesomeIcon icon={faStarOutline} />;
+export const starFilled = <FontAwesomeIcon icon={faStarFilled} />;
+export const starHalf = <FontAwesomeIcon icon={faStarHalf} />;
+export const stop = <FontAwesomeIcon icon={faStop} />;
+export const subscribers = <FontAwesomeIcon icon={faUser} />;
+export const tableCell = <FontAwesomeIcon icon={faTableCells} />;
+export const takeaway = <FontAwesomeIcon icon={faList} />;
+export const times = <FontAwesomeIcon icon={faTimes} />;
+export const timesCircle = <FontAwesomeIcon icon={faTimesCircle} />;
+export const timesCircleSolid = <FontAwesomeIcon icon={_timesCircleSolid} />;
+export const trash = <FontAwesomeIcon icon={faTrashAlt} />;
+export const trashSolid = <FontAwesomeIcon icon={faTrashSolid} />;
+export const trophy = <FontAwesomeIcon icon={faTrophy} />;
+export const twitter = <FontAwesomeIcon icon={faTwitter} />;
+export const up = <FontAwesomeIcon icon={faArrowAltUp} />;
+export const upSolid = <FontAwesomeIcon icon={faUp} />;
+export const upRegular = <FontAwesomeIcon icon={faArrowAltUpRegular} />;
+export const upload = <FontAwesomeIcon icon={faUpload} />;
+export const question = <FontAwesomeIcon icon={solidQuestion} />;
+export const undo = <FontAwesomeIcon icon={faUndo} />;
+export const user = <FontAwesomeIcon icon={faUserCircle} />;
+export const userEdit = <FontAwesomeIcon icon={faUserEdit} />;
+export const userPlus = <FontAwesomeIcon icon={faUserPlus} />;
+export const users = <FontAwesomeIcon icon={faUsers} />;
+export const userSlash = <FontAwesomeIcon icon={faUserSlash} />;
+export const verifiedBadge = <FontAwesomeIcon icon={faBadgeCheck} />;
+export const verifiedBadgeAlt = <FontAwesomeIcon icon={faBadgeCheckAlt} />;
+export const video = <FontAwesomeIcon icon={faVideo} />;
+export const toggleOn = <FontAwesomeIcon icon={faToggleOn} />;
+export const toggleOff = <FontAwesomeIcon icon={faToggleOff} />;
+export const wallet = <FontAwesomeIcon icon={faWallet} />;
+export const coinStack = ({ styles, grey }) => (
+  <img
+    src={
+      grey
+        ? "/static/icons/coin-stack-grey.png"
+        : "/static/icons/coin-stack.png"
+    }
+    className={css(styles)}
+    alt="Coin Stack Icon"
+  />
+);
+
+export const partyPopper = (props = {}) => {
+  const { style } = props;
+  return (
     <img
-      src={
-        grey
-          ? "/static/icons/coin-stack-grey.png"
-          : "/static/icons/coin-stack.png"
-      }
-      className={css(styles)}
-      alt="Coin Stack Icon"
+      className={css(styles.iconPartyPopper, style && style)}
+      src={"/static/icons/party-popper.png"}
+      alt="Party Popper Icon"
     />
-  ),
-  partyPopper: (props = {}) => {
-    const { style } = props;
-    return (
-      <img
-        className={css(styles.iconPartyPopper, style && style)}
-        src={"/static/icons/party-popper.png"}
-        alt="Party Popper Icon"
-      />
-    );
-  },
-  RSC: (props = {}) => {
-    const { style } = props;
-    return (
-      <img
-        className={css(styles.iconRSC, style && style)}
-        src={"/static/icons/coin-filled.png"}
-        alt="RSC Coin"
-      />
-    );
-  },
+  );
+};
+
+export const RSC = (props = {}) => {
+  const { style } = props;
+  return (
+    <img
+      className={css(styles.iconRSC, style && style)}
+      src={"/static/icons/coin-filled.png"}
+      alt="RSC Coin"
+    />
+  );
 };
 
 export const voteWidgetIcons = {
@@ -637,7 +642,7 @@ export const PaperDiscussionIcon = ({
         overrideStyle && overrideStyle
       )}
     >
-      {icons.chat}
+      {chat}
     </span>
   );
 };
@@ -990,7 +995,7 @@ export const DownIcon = ({
         overrideStyle && overrideStyle
       )}
     >
-      {icons.chevronDown}
+      {chevronDown}
     </span>
   );
 };
@@ -1009,7 +1014,7 @@ export const UpIcon = ({
         overrideStyle && overrideStyle
       )}
     >
-      {icons.chevronUp}
+      {chevronUp}
     </span>
   );
 };

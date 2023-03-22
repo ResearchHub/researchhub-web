@@ -3,7 +3,6 @@ import { Component } from "react";
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
 
 class Footer extends Component {
   tabData = [

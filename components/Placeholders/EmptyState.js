@@ -1,5 +1,4 @@
 import { StyleSheet, css } from "aphrodite";
-import icons from "~/config/themes/icons";
 
 const EmptyState = (props) => {
   let { text, subtext, icon } = props;

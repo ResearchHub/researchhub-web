@@ -5,7 +5,7 @@ import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
 import { useStore } from "react-redux";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import icons from "~/config/themes/icons";
+
 import killswitch from "~/config/killswitch/killswitch";
 import Link from "next/link";
 import Ripples from "react-ripples";
@@ -97,11 +97,13 @@ export default function ModeratorDashboardSidebar({}: Props) {
         )}
         key={`listItem-${id}`}
       >
-        <Link href={{ pathname }} as={pathname} className={css(styles.sidebarLink)}>
-
+        <Link
+          href={{ pathname }}
+          as={pathname}
+          className={css(styles.sidebarLink)}
+        >
           <span className={css(styles.icon)}>{icon}</span>
           {name} {extraHTML}
-
         </Link>
       </Ripples>
     )

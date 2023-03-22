@@ -14,7 +14,7 @@ import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { chevronRight } from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
@@ -257,7 +257,7 @@ const ReadButton = (props) => {
       id={"readLabel"}
     >
       <span className={css(styles.readLabel)}>Read</span>{" "}
-      <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+      <span className={css(styles.readArrow)}>{chevronRight}</span>
     </ClientLinkWrapper>
   );
 };

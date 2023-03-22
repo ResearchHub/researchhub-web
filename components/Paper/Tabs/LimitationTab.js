@@ -17,7 +17,6 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const LIMITATIONS_COUNT = 5;
 

@@ -10,7 +10,6 @@ import FormInput from "../../components/Form/FormInput";
 import Button from "../../components/Form/Button";
 import Loader from "../../components/Loader/Loader";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";

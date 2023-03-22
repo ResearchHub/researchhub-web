@@ -17,7 +17,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { toTitleCase } from "~/config/utils/string";
 import { formatBountyAmount } from "~/config/types/bounty";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import icons from "~/config/themes/icons";
+
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
 import UniswapButton from "../UniswapButton";

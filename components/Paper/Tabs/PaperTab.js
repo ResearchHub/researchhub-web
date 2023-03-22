@@ -20,7 +20,7 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "../../../config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 import { postUpdatePaperAbstract } from "../abstract/api/postUpdatePaperAbstract";

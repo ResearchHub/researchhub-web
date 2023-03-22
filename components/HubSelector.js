@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+import icons, { squares } from "~/config/themes/icons";
 import RHLogo from "~/components/Home/RHLogo";
 
 const HubSelector = ({ hubState }) => {
@@ -46,8 +46,7 @@ const HubSelector = ({ hubState }) => {
     const allHubsHeaderOpt = {
       html: (
         <Link href={`/hubs`} className={css(styles.primaryButton)}>
-          <span className={css(styles.squaresIcon)}>{icons.squares}</span>All
-          Hubs
+          <span className={css(styles.squaresIcon)}>{squares}</span>All Hubs
         </Link>
       ),
       value: "all-hubs",

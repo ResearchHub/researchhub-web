@@ -3,7 +3,7 @@ import Router from "next/router";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { squares } from "~/config/themes/icons";
 
 const MobileFeedTabs = (props) => {
   const { activeLeft, activeRight, onFeedSelect } = props;
@@ -20,7 +20,7 @@ const MobileFeedTabs = (props) => {
         className={css(styles.tab, styles.tabLeft, activeLeft && styles.active)}
         onClick={() => onClick(true)}
       >
-        <span className={css(styles.icon)}>{icons.squares}</span>
+        <span className={css(styles.icon)}>{squares}</span>
         All
       </div>
       <div

@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { arrowRight, times } from "~/config/themes/icons";
 
 export class TooltipInput extends Component {
   detectEnter = (e) => {
@@ -47,11 +47,11 @@ export class TooltipInput extends Component {
             autoFocus={true}
           />
           <div className={css(styles.submitTooltipButton)} onClick={save}>
-            {icons.arrowRight}
+            {arrowRight}
           </div>
         </div>
         <span className={css(styles.close)} onClick={close}>
-          {icons.times}
+          {times}
         </span>
       </div>
     );

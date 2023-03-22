@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { chat } from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils/nullchecks";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
@@ -31,7 +31,7 @@ const CommentCount = (props) => {
           path={threadPath}
         >
           <span className={css(styles.iconChat)} id={"chatIcon"}>
-            {icons.chat}
+            {chat}
           </span>
           <span className={css(styles.text)} id={"text"}>
             {formatCommentCount(props.count, props.comment)}
@@ -57,19 +57,6 @@ function formatCommentCount(count, isComment) {
   }
   return count + " " + suffix + s;
 }
-
-const Share = () => {
-  return (
-    <div className={css(styles.shareContainer)}>
-      <span className={css(styles.iconChat)} id={"shareIcon"}>
-        {icons.share}
-      </span>
-      <span className={css(styles.text)} id={"text"}>
-        Share
-      </span>
-    </div>
-  );
-};
 
 const styles = StyleSheet.create({
   commentCountContainer: {

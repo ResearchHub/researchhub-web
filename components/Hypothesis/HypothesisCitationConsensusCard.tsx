@@ -4,7 +4,7 @@ import { ReactElement } from "react";
 import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
 import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import CitationAddNewButton from "./Citation/CitationAddNewButton";
 
 type Props = {

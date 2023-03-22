@@ -1,7 +1,8 @@
 import { StyleSheet, css } from "aphrodite";
+import { check } from "~/config/themes/icons";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 
 const CheckBox = ({
@@ -49,7 +50,7 @@ const CheckBox = ({
             style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
             className={css(checkStyleOverride)}
           >
-            {icons.check}
+            {check}
           </span>
         ) : (
           <div

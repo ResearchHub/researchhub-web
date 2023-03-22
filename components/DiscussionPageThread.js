@@ -18,7 +18,7 @@ import DiscussionActions from "~/redux/discussion";
 // Utils
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { longArrowLeft } from "~/config/themes/icons";
 import { createUsername, getCurrentUserLegacy } from "~/config/utils/user";
 import { getNestedValue } from "~/config/utils/misc";
 
@@ -176,7 +176,7 @@ const BackButton = () => {
         className={css(styles.backButton)}
         legacyBehavior
       >
-        {icons.longArrowLeft}
+        {longArrowLeft}
         <span className={css(styles.backButtonLabel)}>{message}</span>
       </Link>
     </div>

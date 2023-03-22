@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useSpring, animated as a } from "react-spring";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 import API from "~/config/api";

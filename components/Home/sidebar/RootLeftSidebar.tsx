@@ -17,7 +17,7 @@ import {
 } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
   ITEM_FADE_DURATION,

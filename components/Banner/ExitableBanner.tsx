@@ -4,9 +4,10 @@ import {
   storeToCookieOrLocalStorage,
 } from "~/config/utils/storeToCookieOrLocalStorage";
 import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { iconColors } from "~/config/themes/colors";
+import { times } from "~/config/themes/icons";
 
 type Props = {
   bannerKey: string;
@@ -52,7 +53,7 @@ export default function ExitableBanner({
         style={exitButtonPositionOverride}
       >
         {exitButton ?? (
-          <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
+          <div className={css(styles.exitButtonDefault)}>{times}</div>
         )}
       </div>
     </div>
@@ -102,6 +103,6 @@ const styles = StyleSheet.create({
       background: iconColors.BACKGROUND,
       borderRadius: 3,
       transition: "0.3s",
-    },    
+    },
   },
 });

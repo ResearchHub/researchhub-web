@@ -10,7 +10,7 @@ import { createUserSummary } from "~/config/utils/user";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import icons from "~/config/themes/icons";
+import icons, { graduationCap } from "~/config/themes/icons";
 import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {
@@ -54,7 +54,7 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
           </div>
           {userSummary && (
             <div className={css(styles.summary)}>
-              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
+              <span className={css(styles.eduIcon)}>{graduationCap}</span>
               {userSummary}
             </div>
           )}

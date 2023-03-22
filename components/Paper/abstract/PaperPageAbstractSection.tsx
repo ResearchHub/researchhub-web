@@ -5,7 +5,7 @@ import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { NullableString } from "~/config/types/root_types";
 import {

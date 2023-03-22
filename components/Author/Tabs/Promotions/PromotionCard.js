@@ -8,10 +8,11 @@ import * as moment from "dayjs";
 import { ScorePill } from "~/components/VoteWidget";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
+import { eye, mousePointer } from "~/config/themes/icons";
 
 class PromotionCard extends Component {
   constructor(props) {
@@ -91,7 +92,7 @@ class PromotionCard extends Component {
             className={css(styles.icon, this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            {icons.eye}
+            {eye}
           </span>
           <div
             className={css(styles.stats, this.state.showViews && styles.active)}
@@ -112,7 +113,7 @@ class PromotionCard extends Component {
             className={css(styles.icon, !this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            {icons.mousePointer}
+            {mousePointer}
           </span>
           <div
             className={css(

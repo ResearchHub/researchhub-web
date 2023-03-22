@@ -6,7 +6,7 @@ import FormInput from "~/components/Form/FormInput";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { wallet } from "~/config/themes/icons";
 
 const ETHAddressInput = (props) => {
   const {
@@ -90,7 +90,7 @@ const ETHAddressInput = (props) => {
       </div>
       {!props.value && (
         <span className={css(styles.placeholderIcon)}>
-          {icon ? icon : icons.wallet}
+          {icon ? icon : wallet}
         </span>
       )}
       <FormInput

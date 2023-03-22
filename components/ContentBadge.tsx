@@ -6,6 +6,10 @@ import icons, {
   PaperIcon,
   HypothesisIcon,
   QuestionIcon,
+  commentsSolid,
+  commentAltLineSolid,
+  layerGroup,
+  starFilled,
 } from "~/config/themes/icons";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
@@ -65,22 +69,22 @@ const ContentBadge = ({
         </>
       ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
         <>
-          <span className={css(styles.icon)}>{icons.commentsSolid}</span>
+          <span className={css(styles.icon)}>{commentsSolid}</span>
           <span>Comment</span>
         </>
       ) : contentType === POST_TYPES.ANSWER ? (
         <>
-          <span className={css(styles.icon)}>{icons.commentAltLineSolid}</span>
+          <span className={css(styles.icon)}>{commentAltLineSolid}</span>
           <span>Answer</span>
         </>
       ) : contentType === POST_TYPES.SUMMARY ? (
         <>
-          <span className={css(styles.icon)}>{icons.layerGroup}</span>
+          <span className={css(styles.icon)}>{layerGroup}</span>
           <span>Summary</span>
         </>
       ) : contentType === POST_TYPES.REVIEW ? (
         <>
-          <span className={css(styles.icon)}>{icons.starFilled}</span>
+          <span className={css(styles.icon)}>{starFilled}</span>
           <span>Review</span>
         </>
       ) : contentType === "rsc_support" ? (

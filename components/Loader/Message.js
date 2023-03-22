@@ -14,7 +14,6 @@ import Loader from "./Loader.js";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import icons from "~/config/themes/icons";
 
 class Message extends Component {
   constructor(props) {

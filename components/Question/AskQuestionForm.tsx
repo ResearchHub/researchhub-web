@@ -13,7 +13,6 @@ import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import icons from "~/config/themes/icons";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 

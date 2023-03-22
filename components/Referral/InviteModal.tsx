@@ -6,7 +6,7 @@ import colors from "~/config/themes/colors";
 import ALink from "../ALink";
 import AuthorAvatar from "../AuthorAvatar";
 import InviteIcon from "../Icons/InviteIcon";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { ID, NullableString, UnifiedDocument } from "~/config/types/root_types";
 import API from "~/config/api";
@@ -325,7 +325,7 @@ const InviteModal = ({
                   fontWeight: 500,
                 }}
               >
-                7% 
+                7%
               </span>{" "}
               of user's RSC earnings on ResearchHub for the first six month
               period

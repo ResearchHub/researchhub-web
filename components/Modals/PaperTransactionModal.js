@@ -23,7 +23,7 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 // import { useMetaMask } from "../connectEthereum";

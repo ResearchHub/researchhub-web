@@ -32,7 +32,7 @@ import Head from "~/components/Head";
 import Ripples from "react-ripples";
 import Toggle from "react-toggle";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";

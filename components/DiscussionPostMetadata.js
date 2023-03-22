@@ -17,7 +17,7 @@ import ShareModal from "~/components/ShareModal";
 import { createUserSummary } from "~/config/utils/user";
 import { timeSince } from "~/config/utils/dates";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { check, twitter } from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -119,7 +119,7 @@ const DiscussionPostMetadata = (props) => {
             )}
           >
             <span className={css(badge.icon)}>
-              {isAcceptedAnswer ? icons.check : postType.icon}
+              {isAcceptedAnswer ? check : postType.icon}
             </span>
             <span className={css(badge.label)}>ANSWER</span>
           </span>
@@ -292,7 +292,7 @@ const Timestamp = (props) => {
         >
           <span className={css(styles.divider)}>•</span>
           {timestamp} from Twitter
-          <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
+          <div className={css(styles.twitterIcon)}>{twitter}</div>
         </a>
       </div>
     );

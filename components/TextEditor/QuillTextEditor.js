@@ -27,7 +27,7 @@ import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import icons from "~/config/themes/icons";
+
 import { getCurrentUserLegacy } from "~/config/utils/user";
 
 class Editor extends Component {

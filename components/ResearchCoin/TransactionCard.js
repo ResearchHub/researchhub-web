@@ -5,7 +5,7 @@ import numeral from "numeral";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { getEtherscanLink } from "~/config/utils/crypto";

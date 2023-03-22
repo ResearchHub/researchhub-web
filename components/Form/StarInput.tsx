@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { starAlt, starFilled } from "~/config/themes/icons";
 
 type Props = {
   value?: number;
@@ -60,12 +60,10 @@ export default function StarInput({
               )}
             >
               {isStarSelected ? (
-                <span className={css(styles.starIconFilled)}>
-                  {icons.starFilled}
-                </span>
+                <span className={css(styles.starIconFilled)}>{starFilled}</span>
               ) : (
                 <span className={css(styles.starIconDisabled)}>
-                  {icons.starFilled}
+                  {starFilled}
                 </span>
               )}
             </div>
@@ -87,13 +85,9 @@ export default function StarInput({
               onMouseLeave={() => setHoveredValue(0)}
             >
               {isStarSelected ? (
-                <span className={css(styles.starIconFilled)}>
-                  {icons.starFilled}
-                </span>
+                <span className={css(styles.starIconFilled)}>{starFilled}</span>
               ) : (
-                <span className={css(styles.starIconUnfilled)}>
-                  {icons.starAlt}
-                </span>
+                <span className={css(styles.starIconUnfilled)}>{starAlt}</span>
               )}
             </div>
           );

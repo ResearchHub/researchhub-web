@@ -11,7 +11,7 @@ import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetA
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
-import icons from "~/config/themes/icons";
+import { chevronDown, chevronUp } from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -75,7 +75,7 @@ export default function AuthorClaimCaseCard({
         setLastFetchTime={setLastFetchTime}
       />
       <div className={css(styles.chevronWrap)}>
-        {isCollapsed ? icons.chevronDown : icons.chevronUp}
+        {isCollapsed ? chevronDown : chevronUp}
       </div>
       <div className={css(styles.cardMain)}>
         <div

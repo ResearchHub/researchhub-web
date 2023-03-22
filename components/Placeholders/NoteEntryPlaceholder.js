@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 const NoteEntryPlaceholder = ({ color, rows = 2 }) => {

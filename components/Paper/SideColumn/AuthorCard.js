@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import PropTypes from "prop-types";
 import React from "react";

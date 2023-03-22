@@ -9,7 +9,7 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { getSummaryText } from "~/config/utils/editor";
 

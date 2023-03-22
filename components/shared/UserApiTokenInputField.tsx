@@ -9,7 +9,7 @@ import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import API from "~/config/api";
 import colors from "~/config/themes/colors";
 import FormInput from "../Form/FormInput";
-import icons from "~/config/themes/icons";
+
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 

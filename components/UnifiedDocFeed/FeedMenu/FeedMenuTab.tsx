@@ -2,7 +2,7 @@ import { tagFilters } from "../constants/UnifiedDocFilters";
 import FeedMenuTagDropdown from "./FeedMenuTagDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
 import { css, StyleSheet } from "aphrodite";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
@@ -18,7 +18,6 @@ type Args = {
   isTagsMenuOpen: boolean;
   isSelected: boolean;
 };
-
 
 const FeedMenuTab = ({
   selectedFilters,
@@ -57,31 +56,29 @@ const FeedMenuTab = ({
               handleOpenTagsMenu(tabObj.value);
             }
           }
-        }}>
-
+        }}
+      >
         <span className={css(styles.tabText)}>{tabObj.label}</span>
         {nestedOptions.length > 0 && (
           <>
-            {isTagsMenuOpen
-              ? <span className={css(styles.icon)}>{icons.chevronUp}</span>
-              : isSelected
-              ? <span className={css(styles.icon)}>{icons.chevronDown}</span>
-              : null
-            }
+            {isTagsMenuOpen ? (
+              <span className={css(styles.icon)}>{icons.chevronUp}</span>
+            ) : isSelected ? (
+              <span className={css(styles.icon)}>{icons.chevronDown}</span>
+            ) : null}
             {isTagsMenuOpen && (
               <FeedMenuTagDropdown
                 options={nestedOptions}
                 forTab={tabObj}
                 selectedTags={selectedFilters.tags}
                 handleSelect={(selected) => {
-                  handleFilterSelect({ router, tags: [selected] })
+                  handleFilterSelect({ router, tags: [selected] });
                   setTagsMenuOpenFor(null);
                 }}
               />
             )}
           </>
         )}
-
       </Link>
     </div>
   );

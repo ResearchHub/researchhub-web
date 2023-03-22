@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import handleFilterSelect from "../utils/handleFilterSelect";
 import { useRouter } from "next/router";
 import AuthorAvatar from "../../AuthorAvatar";
-import icons from "~/config/themes/icons";
+
 import { connect } from "react-redux";
 import MyHubsDropdown from "../../Hubs/MyHubsDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";

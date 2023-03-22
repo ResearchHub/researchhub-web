@@ -17,7 +17,7 @@ import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { WarningIcon } from "~/config/themes/icons";
+import icons, { clock, undo, WarningIcon } from "~/config/themes/icons";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
@@ -324,7 +324,7 @@ function BountyModal({
 
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
-                    {icons.clock}
+                    {clock}
                   </span>{" "}
                   <span className={css(infoSectionStyles.infoText)}>
                     The Bounty will end in 30 days or as soon as you award a
@@ -333,7 +333,7 @@ function BountyModal({
                 </div>
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
-                    {icons.undo}
+                    {undo}
                   </span>{" "}
                   If no solution satisfies your request, the full bounty amount
                   (excluding platform fee) will be refunded to you

@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment, ReactElement, useCallback, useState } from "react";
 import ResearchHubPopover from "./ResearchHubPopover";
-import icons from "../config/themes/icons";
+import icons, { exclamationCircle } from "../config/themes/icons";
 import AuthorClaimModal from "./AuthorClaimModal/AuthorClaimModal";
 import colors from "../config/themes/colors";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
@@ -88,7 +88,7 @@ export default function ClaimAuthorPopoverLabel({
                 {`Are you ${author.first_name}? Claim your profile`}
               </span>
               <span className={css(styles.popoverIcon)}>
-                {icons.exclamationCircle}
+                {exclamationCircle}
               </span>
             </div>
           }

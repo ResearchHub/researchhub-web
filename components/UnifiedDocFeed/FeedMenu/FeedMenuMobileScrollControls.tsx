@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import useEffectShowHorizontalMobileScroll from "../utils/useEffectShowHorizontalMobileScroll";
 import { css, StyleSheet } from "aphrodite";
-import icons from "~/config/themes/icons";
 
 const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   const [showMobileLeftScroll, setShowMobileLeftScroll] = useState(false);

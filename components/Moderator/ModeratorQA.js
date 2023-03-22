@@ -7,7 +7,6 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const ModeratorQA = ({
   auth,

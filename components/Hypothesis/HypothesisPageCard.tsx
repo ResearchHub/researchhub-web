@@ -39,7 +39,7 @@ import dayjs from "dayjs";
 import DiscussionCount from "~/components/DiscussionCount";
 import dynamic from "next/dynamic";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "~/components/Document/api/restoreDocAPI";

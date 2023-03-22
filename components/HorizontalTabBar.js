@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 import colors, { pillNavColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import icons from "~/config/themes/icons";
+import icons, { chevronLeft, chevronRight } from "~/config/themes/icons";
 
 const HorizontalTabBar = ({
   tabs,
@@ -72,12 +72,12 @@ const HorizontalTabBar = ({
         <ScrollMenu
           arrowLeft={
             pageWidth <= showArrowsOnWidth && showArrows ? (
-              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+              <NavigationArrow icon={chevronLeft} direction={"left"} />
             ) : null
           }
           arrowRight={
             pageWidth <= showArrowsOnWidth && showArrows ? (
-              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+              <NavigationArrow icon={chevronRight} direction={"right"} />
             ) : null
           }
           data={tabsHtml}

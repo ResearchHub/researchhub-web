@@ -10,7 +10,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { timeAgo } from "~/config/utils/dates";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 // Components

@@ -11,7 +11,7 @@ import ResearchHubRadioChoices, {
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { flag } from "~/config/themes/icons";
 
 type Props = {
   buttonText?: string;
@@ -93,7 +93,7 @@ function FlagButtonV2({
         }}
         className={css(styles.flagIcon, flagIconOverride)}
       >
-        {iconOverride || icons.flag}
+        {iconOverride || flag}
         {buttonText && (
           <span className={css(buttonTextStyle)}>{buttonText}</span>
         )}

@@ -7,7 +7,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
 import colors, { iconColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";

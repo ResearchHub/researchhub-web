@@ -20,7 +20,7 @@ import colors from "~/config/themes/colors";
 import dismissFlaggedContent from "./api/dismissFlaggedContentAPI";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import FormSelect from "~/components/Form/FormSelect";
-import icons from "~/config/themes/icons";
+
 import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import Loader from "../Loader/Loader";
 import LoadMoreButton from "../LoadMoreButton";

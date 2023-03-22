@@ -2,10 +2,11 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
-import icons from "~/config/themes/icons";
+
 import Image from "next/image";
 import buildTwitterUrl from "./utils/buildTwitterUrl";
 import { Hub } from "~/config/types/hub";
+import { twitter } from "~/config/themes/icons";
 
 type Props = {
   bountyAmount: number;
@@ -63,7 +64,7 @@ function SuccessScreen({
           className={css(styles.link)}
         >
           <div className={css(styles.twitter)}>
-            {icons.twitter}
+            {twitter}
             <span className={css(styles.twitterText)}>Share on Twitter</span>
           </div>
         </a>

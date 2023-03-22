@@ -9,7 +9,7 @@ import SideColumn from "~/components/Home/SideColumn";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { isDevEnv } from "~/config/utils/env";
 
 class CategoryList extends Component {

@@ -4,7 +4,7 @@ import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { AUTH_TOKEN } from "~/config/constants";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { StyleSheet, css } from "aphrodite";

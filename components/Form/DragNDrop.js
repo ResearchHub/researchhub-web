@@ -3,7 +3,7 @@ import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -12,6 +12,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
+import { checkCircle, timesCircle } from "~/config/themes/icons";
 
 class DragNDrop extends Component {
   constructor(props) {
@@ -270,9 +271,7 @@ class DragNDrop extends Component {
                       !this.state.validUrl && styles.errorIcon
                     )}
                   >
-                    {this.state.validUrl
-                      ? icons.checkCircle
-                      : icons.timesCircle}
+                    {this.state.validUrl ? checkCircle : timesCircle}
                   </span>
                 )
               ) : null

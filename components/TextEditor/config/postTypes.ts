@@ -1,5 +1,3 @@
-import icons from "~/config/themes/icons";
-
 export const getPostTypeStruct = ({ postType, documentType }) => {
   if (
     documentType === "question" ||

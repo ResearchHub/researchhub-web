@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { linkedIn, twitter } from "~/config/themes/icons";
 
 type Args = {
   handleClick: Function;
@@ -10,8 +10,8 @@ type Args = {
 
 const ShareDropdown = ({ handleClick, children }: Args) => {
   const options = [
-    { label: "Twitter", value: "twitter", icon: icons.twitter },
-    { label: "LinkedIn", value: "linkedin", icon: icons.linkedIn },
+    { label: "Twitter", value: "twitter", icon: twitter },
+    { label: "LinkedIn", value: "linkedin", icon: linkedIn },
   ];
   const [isOpen, setIsOpen] = useState(false);
   const triggerEl = useRef(null);
@@ -78,8 +78,7 @@ const styles = StyleSheet.create({
     background: "white",
     width: 150,
   },
-  trigger: {
-  },
+  trigger: {},
   opt: {
     background: "white",
     display: "flex",

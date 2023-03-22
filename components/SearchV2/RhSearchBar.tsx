@@ -19,7 +19,6 @@ import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;

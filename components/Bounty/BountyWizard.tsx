@@ -15,9 +15,10 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Button from "../Form/Button";
 import SimplePostEditor from "../Form/SimplePostEditor";
-import icons from "~/config/themes/icons";
+
 import BountyWizardRSCForm from "./BountyWizardRSCForm";
 import { useRouter } from "next/router";
+import { chevronLeft } from "~/config/themes/icons";
 
 type BountyChoiceProps = {
   icon: string;
@@ -184,7 +185,7 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
                     setStep(step - 1);
                   }}
                 >
-                  {icons.chevronLeft} <span>Previous Step</span>
+                  {chevronLeft} <span>Previous Step</span>
                 </div>
               }
               label={"Bounty Title"}
@@ -207,16 +208,6 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
               onSuccess && onSuccess();
               router.push(route);
             }}
-            // otherButtons={
-            //   <div
-            //     className={css(styles.previousStep)}
-            //     onClick={() => {
-            //       setStep(step - 1);
-            //     }}
-            //   >
-            //     {icons.chevronLeft} <span>Previous Step</span>
-            //   </div>
-            // }
           />
         );
       default:

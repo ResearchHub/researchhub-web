@@ -24,7 +24,7 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
@@ -36,6 +36,15 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
+import {
+  check,
+  commentAltLineSolid,
+  commentRegular,
+  lightbulb,
+  paperRegular,
+  penSquare,
+  question,
+} from "~/config/themes/icons";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -84,10 +93,10 @@ export type FeedCardProps = {
 };
 
 const documentIcons = {
-  paper: icons.paperRegular,
-  post: icons.penSquare,
-  hypothesis: icons.lightbulb,
-  question: icons.question,
+  paper: paperRegular,
+  post: penSquare,
+  hypothesis: lightbulb,
+  question: question,
 };
 
 function FeedCard({
@@ -389,9 +398,7 @@ function FeedCard({
                           hasAcceptedAnswer && styles.acceptedAnswer
                         )}
                       >
-                        {hasAcceptedAnswer
-                          ? icons.check
-                          : icons.commentAltLineSolid}
+                        {hasAcceptedAnswer ? check : commentAltLineSolid}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>
@@ -403,7 +410,7 @@ function FeedCard({
                   ) : (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
-                        {icons.commentRegular}
+                        {commentRegular}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>

@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
 

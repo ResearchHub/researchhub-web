@@ -8,9 +8,17 @@ import colors from "~/config/themes/colors";
 import DropdownButton from "../Form/DropdownButton";
 import excludeFromFeed from "./api/excludeDocFromFeedAPI";
 import featureDoc from "./api/featureDocAPI";
-import icons from "~/config/themes/icons";
+
 import includeInFeed from "./api/includeDocInFeedAPI";
 import removeDocFromFeatured from "./api/removeDocFromFeaturedAPI";
+import {
+  cog,
+  downSolid,
+  eye,
+  eyeSlash,
+  shield,
+  upSolid,
+} from "~/config/themes/icons";
 
 type Args = {
   unifiedDocumentId: ID;
@@ -101,7 +109,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
 
   const dropdownOpts = [
     {
-      icon: icons.eyeSlash,
+      icon: eyeSlash,
       label: "Exclude from Trending",
       value: "exclude",
       isVisible: true,
@@ -110,7 +118,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.eye,
+      icon: eye,
       label: "Include in Trending",
       value: "include",
       isVisible: true,
@@ -119,7 +127,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.upSolid,
+      icon: upSolid,
       label: "Make Featured",
       value: "feature",
       isVisible: true,
@@ -128,7 +136,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.downSolid,
+      icon: downSolid,
       iconStyle: styles.removeFromFeatureIcon,
       label: "Remove from Featured",
       value: "remove-feature",
@@ -191,7 +199,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
                 setIsFeaturedSubmenuOpen(!isFeaturedSubmenuOpen);
               }}
             >
-              {icons.cog}
+              {cog}
             </span>
           </div>
           <div
@@ -254,7 +262,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     <DropdownButton
       opts={optsAsHTML}
       // @ts-ignore
-      labelAsHtml={icons.shield}
+      labelAsHtml={shield}
       isOpen={isOpen}
       onClick={() => setIsOpen(true)}
       onClickOutside={() => {

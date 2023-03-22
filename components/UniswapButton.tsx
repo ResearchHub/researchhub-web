@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+import icons, { arrowUpRight } from "~/config/themes/icons";
 import ResearchCoinIcon from "./Icons/ResearchCoinIcon";
 
 type Args = {
@@ -24,7 +24,7 @@ const UniswapButton = ({ variant, label = "RSC is available on" }: Args) => {
       >
         <div className={css(styles.rscText)}>{label}</div>
         <img src={"/static/icons/uniswap-with-text.png"} height={25} />
-        <div className={css(styles.externalIcon)}>{icons.arrowUpRight}</div>
+        <div className={css(styles.externalIcon)}>{arrowUpRight}</div>
       </Link>
     </div>
   );

@@ -12,10 +12,10 @@ import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { bolt } from "~/config/themes/icons";
 
 const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ const UserPromotions = (props) => {
         ) : (
           <EmptyState
             message={"User has not supported any content"}
-            icon={icons.bolt}
+            icon={bolt}
           />
         )}
       </ReactPlaceholder>

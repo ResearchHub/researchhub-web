@@ -17,7 +17,11 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import DocumentActions from "./DocumentActions";
 import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
-import icons, { HypothesisIcon } from "~/config/themes/icons";
+import icons, {
+  commentsSolid,
+  HypothesisIcon,
+  starFilled,
+} from "~/config/themes/icons";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
 import SubmissionDetails from "./SubmissionDetails";
@@ -461,9 +465,7 @@ function DocumentHeader({
                 overrideStyle={[styles.comments, styles.additionalDetail]}
                 href={"#comments"}
               >
-                <span className={css(styles.detailIcon)}>
-                  {icons.commentsSolid}
-                </span>
+                <span className={css(styles.detailIcon)}>{commentsSolid}</span>
                 {discussionCount}{" "}
                 <span className={css(styles.commentsText)}>
                   &nbsp;{`comments`}
@@ -472,7 +474,7 @@ function DocumentHeader({
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon, styles.starIcon)}>
-                    {icons.starFilled}
+                    {starFilled}
                   </span>
                   {unifiedDocument?.reviewSummary?.avg}
                   <span className={css(styles.reviewDetails)}>

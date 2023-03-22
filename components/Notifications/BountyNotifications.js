@@ -12,7 +12,7 @@ import {
 } from "./NotificationHelpers";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils/nullchecks";
 import { truncateText } from "~/config/utils/string";

@@ -17,7 +17,7 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import SectionBounty from "./Tabs/SectionBounty";
 
 const BULLET_COUNT = 5;

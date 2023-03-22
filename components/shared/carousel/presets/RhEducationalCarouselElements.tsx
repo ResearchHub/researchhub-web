@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 export const getEducationalCarouselElements = () => [
   {
@@ -15,7 +14,7 @@ export const getEducationalCarouselElements = () => [
           src="/static/beaker.svg"
           style={{ marginRight: 6, marginTop: -3, height: 20 }}
         />
-        {" What is ResearchHub?"}       
+        {" What is ResearchHub?"}
       </div>
     ),
     body: (
@@ -23,9 +22,25 @@ export const getEducationalCarouselElements = () => [
         {
           "A tool for the open publication and discussion of scientific research. ResearchHub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
         }
-        
-        <ul style={{ marginTop: 6, fontSize: 14, paddingLeft: 0, listStyle: "none" }}>
-          <li><ALink theme="solidPrimary" overrideStyle={DEFAULT_ITEM_STYLE.link} href="https://docs.researchhub.com/welcome/what-is-researchhub" target="_blank">Learn more about ResearchHub</ALink></li>
+
+        <ul
+          style={{
+            marginTop: 6,
+            fontSize: 14,
+            paddingLeft: 0,
+            listStyle: "none",
+          }}
+        >
+          <li>
+            <ALink
+              theme="solidPrimary"
+              overrideStyle={DEFAULT_ITEM_STYLE.link}
+              href="https://docs.researchhub.com/welcome/what-is-researchhub"
+              target="_blank"
+            >
+              Learn more about ResearchHub
+            </ALink>
+          </li>
         </ul>
       </div>
     ),
@@ -48,7 +63,7 @@ export const getEducationalCarouselElements = () => [
         }
       </div>
     ),
-  },  
+  },
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>

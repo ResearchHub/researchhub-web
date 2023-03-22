@@ -5,7 +5,7 @@ import FormInput from "~/components/Form/FormInput";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import { check, trash } from "~/config/themes/icons";
 
 const EducationSummaryCard = (props) => {
   const { index, label, value, onClick, onRemove, onActive } = props;
@@ -32,7 +32,7 @@ const EducationSummaryCard = (props) => {
           )}
           onClick={onRemove}
         >
-          {icons.trash}
+          {trash}
         </div>
       )}
 
@@ -44,7 +44,7 @@ const EducationSummaryCard = (props) => {
         onClick={() => onActive && onActive(index)}
       >
         {value.is_public && (
-          <span className={css(styles.checkIcon)}>{icons.check}</span>
+          <span className={css(styles.checkIcon)}>{check}</span>
         )}
       </div>
     </div>

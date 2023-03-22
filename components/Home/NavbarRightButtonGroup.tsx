@@ -17,10 +17,18 @@ import api from "~/config/api";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import Notification from "~/components/Notifications/Notification";
 import RscBalanceButton from "./RscBalanceButton";
+import {
+  asterisk,
+  bookOpen,
+  cog,
+  portrait,
+  shield,
+  signOut,
+} from "~/config/themes/icons";
 
 type Props = {
   // intentionally accessing redux directly because functional call to redux is problematic at server level
@@ -88,7 +96,7 @@ function NavbarRightButtonGroup({
                 href={"/moderators/audit/flagged"}
                 className={css(styles.modBtn)}
               >
-                {icons.shield}
+                {shield}
                 {openCaseCounts > 0 && (
                   <div className={css(styles.notifCount)}>{openCaseCounts}</div>
                 )}
@@ -131,20 +139,20 @@ function NavbarRightButtonGroup({
           >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
-                {icons.portrait}
+                {portrait}
               </span>
               {"Profile"}
             </div>
           </Link>
           <Link href={`/${user?.organization_slug}/notebook`} legacyBehavior>
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.bookOpen}</span>
+              <span className={css(styles.profileIcon)}>{bookOpen}</span>
               {"Notebook"}
             </div>
           </Link>
           <Link href={"/settings"} as={`/settings`} legacyBehavior>
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.cog}</span>
+              <span className={css(styles.profileIcon)}>{cog}</span>
               {"Settings"}
             </div>
           </Link>
@@ -155,7 +163,7 @@ function NavbarRightButtonGroup({
             legacyBehavior
           >
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.asterisk}</span>
+              <span className={css(styles.profileIcon)}>{asterisk}</span>
               {"Referral Program"}
             </div>
           </Link>
@@ -165,7 +173,7 @@ function NavbarRightButtonGroup({
               signout({ walletLink });
             }}
           >
-            <span className={css(styles.profileIcon)}>{icons.signOut}</span>
+            <span className={css(styles.profileIcon)}>{signOut}</span>
             <span>{"Logout"}</span>
           </div>
         </div>

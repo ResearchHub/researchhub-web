@@ -5,7 +5,7 @@ import ScrollMenu from "react-horizontal-scrolling-menu";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
+import icons, { chevronLeft, chevronRight } from "~/config/themes/icons";
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
@@ -73,12 +73,8 @@ const PaperTabBar = (props) => {
       <ScrollMenu
         ref={menuRef}
         data={menu}
-        arrowLeft={
-          <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
-        }
-        arrowRight={
-          <NavigationArrow icon={icons.chevronRight} direction={"right"} />
-        }
+        arrowLeft={<NavigationArrow icon={chevronLeft} direction={"left"} />}
+        arrowRight={<NavigationArrow icon={chevronRight} direction={"right"} />}
         menuStyle={styles.tabContainer}
         itemStyle={{ border: "none", highlight: "none", outline: "none" }}
         hideSingleArrow={true}

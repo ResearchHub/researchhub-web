@@ -15,7 +15,7 @@ import OrgCoverImgModal from "./OrgCoverImgModal";
 import { Helpers } from "@quantfive/js-web-config";
 import colors, { formColors } from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import icons from "~/config/themes/icons";
+
 import { captureEvent } from "~/config/utils/events";
 
 const STEPS = {

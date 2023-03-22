@@ -10,8 +10,9 @@ import { MessageActions } from "~/redux/message";
 import { FlagActions } from "~/redux/flags";
 
 // Utility
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
+import { flag, flagOutline } from "~/config/themes/icons";
 
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
   const alert = useAlert();
@@ -71,9 +72,7 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       styling={[styles.borderRadius, flagged && styles.flagged]}
       hideRipples={true}
     >
-      <div className={css(style && style)}>
-        {flagged ? icons.flag : icons.flagOutline}
-      </div>
+      <div className={css(style && style)}>{flagged ? flag : flagOutline}</div>
     </PermissionNotificationWrapper>
   );
 };

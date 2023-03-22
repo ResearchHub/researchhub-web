@@ -9,9 +9,10 @@ import Ripples from "react-ripples";
 import EmptyState from "./EmptyState";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import SummaryBulletPoint from "../../Paper/SummaryBulletPoint";
+import { file } from "~/config/themes/icons";
 
 const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
   const [fetchingMore, setFetchingMore] = useState(false);
@@ -80,7 +81,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
       ) : (
         <EmptyState
           message={"User has not created any summaries"}
-          icon={icons.file}
+          icon={file}
         />
       )}
     </ReactPlaceholder>

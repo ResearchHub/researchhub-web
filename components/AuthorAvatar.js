@@ -2,7 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
 import Link from "next/link";
 
-import icons from "~/config/themes/icons";
+import icons, { user } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useHasMounted } from "~/config/utils/hooks";
 
@@ -82,7 +82,7 @@ const AuthorAvatar = (props) => {
               // border: "3px solid transparent",
             }}
           >
-            {icons.user}
+            {user}
           </span>
         )}
         {showModeratorBadge && (
