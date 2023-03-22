@@ -50,9 +50,12 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
           documentId: document.id,
           documentType: document.documentType,
         });
+
+
         setComments(response.comments);
         setFetchUrls({ next: response.next, prev: response.prev });
       } catch (error) {
+        console.log('error', error)
         // FIXME: Implement error handling
       } finally {
         setIsInitialFetchDone(true);
