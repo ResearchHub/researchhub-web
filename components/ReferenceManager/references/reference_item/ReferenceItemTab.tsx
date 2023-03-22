@@ -120,7 +120,6 @@ export default function ReferenceItemTab({}: Props): ReactElement {
         padding="32px"
         sx={{
           background: "rgb(250 250 252)",
-          height: "100%",
           width: "472px",
         }}
       >
