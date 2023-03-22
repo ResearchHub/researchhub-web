@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Quill from 'quill';
 
 type Args = {
@@ -8,21 +8,24 @@ type Args = {
 
 const useQuillContent = ({ quill, content = {} }: Args) => {
   const [_content, _setContent] = useState<object>(content);
-  const contentRef = useRef<object>(_content);
 
   useEffect(() => {
     if (quill) {
       quill.on('text-change', (delta, oldDelta, source) => {
-        const nextContent = quill.getContents();
-        _setContent(nextContent);
-        contentRef.current = nextContent;
+        if (source === "user") {
+          const nextContent = quill.getContents();
+          _setContent(nextContent);
+        }
       });
     }
   }, [quill]);
-
+  
   return {
     content: _content,
-    setContent: _setContent,
+    dangerouslySetContent: (content) => {
+      quill!.setContents(content)
+      _setContent(content);
+    },
   }
 }
 
