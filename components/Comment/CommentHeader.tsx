@@ -5,13 +5,15 @@ import colors from "./lib/colors";
 import { getBountyAmount, getOpenBounties } from "./lib/bounty";
 import { Comment } from "./lib/types";
 import ContentBadge from "../ContentBadge";
+import CommentMenu from "./CommentMenu";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
+  handleEdit: Function;
 };
 
-const CommentHeader = ({ authorProfile, comment }: CommentHeaderArgs) => {
+const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const bountyAmount = getBountyAmount({ comment, formatted: true });
   const bountyContributors = openBounties
@@ -40,6 +42,9 @@ const CommentHeader = ({ authorProfile, comment }: CommentHeaderArgs) => {
             ) : (
               <div className={css(styles.verb)}>{` commented`}</div>
             )}
+            <div className={css(styles.menuWrapper)}>
+              <CommentMenu handleEdit={handleEdit} comment={comment} />
+            </div>
           </div>
           <div className={css(styles.time)}>{comment.timeAgo}</div>
         </div>
@@ -67,13 +72,18 @@ const styles = StyleSheet.create({
   },
   nameWrapper: {
     marginLeft: 7,
+    width: "100%",
   },
   nameRow: {
     display: "flex",
     columnGap: "5px",
     fontSize: 15,
+    alignItems: "center",
   },
-  name: {},
+  name: { },
+  menuWrapper: {
+    marginLeft: "auto",
+  },  
 });
 
 export default CommentHeader;

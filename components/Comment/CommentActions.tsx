@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 
 type Args = {
-  handleEdit: Function;
   handleReply: Function;
   comment: Comment;
   document: TopLevelDocument;
@@ -21,12 +20,9 @@ type Args = {
 const CommentActions = ({
   comment,
   document,
-  handleEdit,
   handleReply,
 }: Args) => {
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
+
 
   return (
     <div className={css(styles.wrapper)}>
@@ -56,22 +52,6 @@ const CommentActions = ({
             </span>
           </IconButton>
         </div>
-        {currentUser?.id === comment.createdBy.id && (
-          <div className={`${css(styles.action, styles.editAction)} edit-btn`}>
-            <IconButton onClick={() => null}>
-              <FontAwesomeIcon
-                icon={faPencil}
-                style={{ color: colors.secondary.text, fontSize: 18 }}
-              />
-              <span
-                className={css(styles.actionText)}
-                onClick={() => handleEdit()}
-              >
-                Edit
-              </span>
-            </IconButton>
-          </div>
-        )}
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => null}>
             <Image
