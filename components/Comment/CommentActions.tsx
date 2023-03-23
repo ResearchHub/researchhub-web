@@ -38,8 +38,8 @@ const CommentActions = ({
           <IconButton onClick={() => null}>
             <Image
               src="/static/icons/tip.png"
-              height={20}
-              width={21}
+              height={18}
+              width={19}
               alt="Tip"
             />
             <span
@@ -65,8 +65,8 @@ const CommentActions = ({
             <IconButton onClick={() => null}>
               <Image
                 src="/static/icons/reply.png"
-                height={14}
-                width={17}
+                height={13}
+                width={15}
                 alt="Reply"
               />
               <span
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     alignItems: "center",
     cursor: "pointer",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 500,
   },
   actionReply: {

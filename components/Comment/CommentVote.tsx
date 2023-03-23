@@ -130,12 +130,12 @@ const CommentVote = ({
 
 const styles = StyleSheet.create({
   downvote: {
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 0,
     color: colors.secondary.text,
   },
   upvote: {
-    fontSize: 18,
+    fontSize: 16,
     marginRight: 0,
     marginLeft: -1,
     color: colors.secondary.text,
