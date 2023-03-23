@@ -26,7 +26,7 @@ import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
-import icons from "~/config/themes/icons";
+
 import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 export type Props = {

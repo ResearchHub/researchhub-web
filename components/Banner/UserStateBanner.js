@@ -6,7 +6,6 @@ import { MessageActions } from "~/redux/message";
 import { BannerActions } from "~/redux/banner";
 
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const UserStateBanner = (props) => {
   const [showBanner, setShowBanner] = useState(false);

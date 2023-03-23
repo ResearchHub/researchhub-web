@@ -4,7 +4,7 @@ import Link from "next/link";
 
 // Config
 import colors from "../config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { buildSlug } from "~/config/utils/buildSlug";
 
 const HubSearchResult = ({ result, index, clearSearch }) => {

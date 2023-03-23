@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { doesNotExist } from "~/config/utils/nullchecks";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";

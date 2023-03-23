@@ -7,7 +7,6 @@ import Sparkle from "react-sparkle";
 
 import { ModalActions } from "~/redux/modals";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils/form";
 import ReactTooltip from "react-tooltip";

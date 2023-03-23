@@ -17,7 +17,6 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import DocumentActions from "./DocumentActions";
 import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
-import icons, { HypothesisIcon } from "~/config/themes/icons";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
 import SubmissionDetails from "./SubmissionDetails";

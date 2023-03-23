@@ -5,7 +5,7 @@ import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
 import { useStore } from "react-redux";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import icons from "~/config/themes/icons";
+
 import killswitch from "~/config/killswitch/killswitch";
 import Link from "next/link";
 import Ripples from "react-ripples";

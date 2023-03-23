@@ -8,7 +8,7 @@ import * as moment from "dayjs";
 import { ScorePill } from "~/components/VoteWidget";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";

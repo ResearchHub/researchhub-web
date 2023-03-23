@@ -9,7 +9,7 @@ import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";

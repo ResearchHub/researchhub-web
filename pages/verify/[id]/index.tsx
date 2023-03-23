@@ -4,7 +4,7 @@ import Loader from "~/components/Loader/Loader";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import Login from "~/components/Login/Login";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";

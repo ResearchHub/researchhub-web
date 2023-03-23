@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Props = {
   value?: number;

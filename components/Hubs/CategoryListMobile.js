@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const Tab = ({ text, index, activeCategory }) => {
   const isActive = index === activeCategory;

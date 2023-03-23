@@ -10,7 +10,6 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";

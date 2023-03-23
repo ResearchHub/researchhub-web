@@ -16,7 +16,6 @@ import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import HypothesisUnduxStore, {
   HypothesisStore,
 } from "../undux/HypothesisUnduxStore";
-import icons from "~/config/themes/icons";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 

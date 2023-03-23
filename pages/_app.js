@@ -29,6 +29,8 @@ import Base from "./Base";
 import nookies from "nookies";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
+import Head from "next/head";
+import Script from "next/script";
 
 if (process.env.ELASTIC_APM_URL) {
   initApm({
@@ -157,6 +159,11 @@ const MyApp = ({
 
   return (
     <Provider store={store}>
+      <Script
+        src="https://kit.fontawesome.com/f57f706c59.js"
+        crossorigin="anonymous"
+      />
+
       <Base
         Component={Component}
         pageProps={pageProps}

@@ -9,7 +9,6 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 // Redux
 import { AuthActions } from "~/redux/auth";
 
-import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import Login from "./Login/Login";
 import Button from "./Form/Button";

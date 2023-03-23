@@ -1,7 +1,7 @@
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
-import icons, {
+import {
   PostIcon,
   PaperIcon,
   HypothesisIcon,

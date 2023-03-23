@@ -15,7 +15,7 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { WarningIcon } from "~/config/themes/icons";
+import { WarningIcon } from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
@@ -519,7 +519,7 @@ function BountyWizardRSCForm({
                       data-tip={""}
                       data-for="commission"
                     >
-                      {icons["info-circle-light"]}
+                      {<i className="fa-light fa-info-circle"></i>}
                     </span>
                   </div>
                   <div className={css(styles.lineItemValue)}>
@@ -539,7 +539,7 @@ function BountyWizardRSCForm({
                       data-tip={""}
                       data-for="net"
                     >
-                      {icons["info-circle-light"]}
+                      {<i className="fa-light fa-info-circle"></i>}
                     </span>
                   </div>
                   <div

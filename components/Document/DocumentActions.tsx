@@ -10,7 +10,7 @@ import AdminButton from "../Admin/AdminButton";
 import censorDocument from "./api/censorDocAPI";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";

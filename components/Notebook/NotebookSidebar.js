@@ -8,7 +8,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import groupBy from "lodash/groupBy";
-import icons, { DownIcon } from "~/config/themes/icons";
+import { DownIcon } from "~/config/themes/icons";
 import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";

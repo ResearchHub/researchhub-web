@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Args = {
   handleClick: Function;

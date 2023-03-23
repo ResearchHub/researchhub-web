@@ -2,7 +2,7 @@ import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { NavigationArrow } from "~/components/HorizontalTabBar";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";

@@ -10,7 +10,7 @@ import { createUserSummary } from "~/config/utils/user";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {

@@ -17,7 +17,6 @@ import ShareModal from "~/components/ShareModal";
 import { createUserSummary } from "~/config/utils/user";
 import { timeSince } from "~/config/utils/dates";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";

@@ -10,7 +10,7 @@ import { ReactElement, SyntheticEvent, useContext } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 
 type Props = {

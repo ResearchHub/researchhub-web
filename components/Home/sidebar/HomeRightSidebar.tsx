@@ -8,7 +8,7 @@ import ColumnContainer from "../../Paper/SideColumn/ColumnContainer";
 import ExitableBanner from "~/components/Banner/ExitableBanner";
 import HomeSidebarBountiesSection from "./HomeSidebarBountiesSection";
 import HomeSidebarFeaturedDocsSection from "./HomeSidebarFeaturedDocsSection";
-import icons from "~/config/themes/icons";
+
 import RhCarousel from "~/components/shared/carousel/RhCarousel";
 
 export default function HomeRightSidebar(): ReactElement {

@@ -5,7 +5,6 @@ import { ModalActions } from "../../redux/modals";
 import { StyleSheet, css } from "aphrodite";
 import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 import colors, { bannerColor } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const PaperBanner = (props) => {
   const { document, documentType } = props;

@@ -28,7 +28,7 @@ import {
   UPVOTE_ENUM,
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import Image from "next/image";
 import ReactTooltip from "react-tooltip";
 

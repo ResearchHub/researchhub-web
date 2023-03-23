@@ -7,7 +7,6 @@ import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton"
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const ActionButton = (props) => {
   let {

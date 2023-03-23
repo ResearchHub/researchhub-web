@@ -1,7 +1,7 @@
 import Loader from "~/components/Loader/Loader";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "./config/notebookConstants";

@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import icons, { PaperDiscussionIcon } from "~/config/themes/icons";
+import { PaperDiscussionIcon } from "~/config/themes/icons";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 

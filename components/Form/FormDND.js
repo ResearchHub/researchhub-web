@@ -12,7 +12,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";

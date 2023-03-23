@@ -20,7 +20,7 @@ import removeMd from "remove-markdown";
 import router from "next/router";
 import trimEmptyParagraphs from "./TextEditor/util/trimEmptyParagraphs";
 import { EFFORT_LEVEL_DESCRIPTIONS } from "./Bounty/BountyWizardRSCForm";
-import icons from "~/config/themes/icons";
+
 import EffortLevel from "./shared/EffortLevel";
 
 const DynamicCKEditor = dynamic(() =>
@@ -199,7 +199,7 @@ class PostPageCard extends Component {
                           }
                         >
                           {" "}
-                          {icons["info-circle-light"]}
+                          {<i className="fa-light fa-info-circle"></i>}
                         </span>
                       </div>
                       <span style={{ marginLeft: 16 }}>

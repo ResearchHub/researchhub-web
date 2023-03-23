@@ -18,7 +18,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { capitalize } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
 

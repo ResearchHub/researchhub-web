@@ -23,7 +23,7 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 // import { useMetaMask } from "../connectEthereum";
@@ -823,7 +823,7 @@ class PaperTransactionModal extends Component {
                   className={css(styles.infoIcon)}
                   data-tip={"The address of your ETH Account (ex. 0x0000...)"}
                 >
-                  {icons["info-circle"]}
+                  {<i className="fa-duotone fa-info-circle"></i>}
                   <ReactTooltip />
                 </span>
               </div>

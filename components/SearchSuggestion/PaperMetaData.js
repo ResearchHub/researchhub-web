@@ -6,7 +6,6 @@ import Ripples from "react-ripples";
 // Config
 import { cslFields } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Redux
 import { ModalActions } from "~/redux/modals";

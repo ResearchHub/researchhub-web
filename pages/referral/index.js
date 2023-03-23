@@ -14,7 +14,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
 import { AUTH_TOKEN } from "~/config/constants";
 import ReferredUserList from "~/components/Referral/ReferredUserList";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 
 const Index = ({ auth }) => {

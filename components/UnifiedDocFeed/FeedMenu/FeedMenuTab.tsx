@@ -2,7 +2,7 @@ import { tagFilters } from "../constants/UnifiedDocFilters";
 import FeedMenuTagDropdown from "./FeedMenuTagDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
 import { css, StyleSheet } from "aphrodite";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";

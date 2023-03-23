@@ -24,7 +24,7 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
@@ -405,7 +405,7 @@ function FeedCard({
                   ) : (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
-                        {<i className="fa-regular fa-comment"></i>}
+                        {<i className="fa-solid fa-comments"></i>}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>

@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
@@ -15,8 +15,11 @@ type Args = {
 const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
   const renderDropdownOpt = (hub) => {
     return (
-      (<Link href={`/hubs/${hub.slug}`} key={hub.id} className={css(styles.hubOpt)}>
-
+      <Link
+        href={`/hubs/${hub.slug}`}
+        key={hub.id}
+        className={css(styles.hubOpt)}
+      >
         <img
           className={css(styles.hubImage)}
           src={
@@ -29,8 +32,7 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
         <div className={css(styles.hubDetails)}>
           <div className={css(styles.hubName)}>{hub.name}</div>
         </div>
-
-      </Link>)
+      </Link>
     );
   };
 
@@ -45,9 +47,7 @@ const MyHubsDropdown = ({ hubState, isOpen = false }: Args) => {
     <div className={`${css(styles.myHubsDropdown)} myHubsDropdown`}>
       <div className={css(styles.hubsList)}>{hubOpts}</div>
       <Link href="/settings" className={css(styles.configure)}>
-
         <span className={css(styles.configureBtn)}>Edit Hubs</span>
-
       </Link>
     </div>
   );

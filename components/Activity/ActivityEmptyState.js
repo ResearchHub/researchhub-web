@@ -2,7 +2,6 @@ import { StyleSheet, css } from "aphrodite";
 
 // Components
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const ActivityEmptyState = ({ myHubs }) => {
   const authorPlaceholder = {

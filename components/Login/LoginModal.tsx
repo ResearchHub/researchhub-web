@@ -7,7 +7,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AuthActions } from "~/redux/auth";
 import { useDispatch, useSelector } from "react-redux";
-import icons from "~/config/themes/icons";
+
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { StyleSheet, css } from "aphrodite";
 import Loader from "~/components/Loader/Loader";

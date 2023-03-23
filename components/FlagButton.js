@@ -10,7 +10,7 @@ import { MessageActions } from "~/redux/message";
 import { FlagActions } from "~/redux/flags";
 
 // Utility
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {

@@ -20,7 +20,6 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const BULLET_COUNT = 5;
 

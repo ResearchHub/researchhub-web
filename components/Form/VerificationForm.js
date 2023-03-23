@@ -8,7 +8,7 @@ import {
 import { StyleSheet, css } from "aphrodite";
 import DragNDrop from "./DragNDrop";
 import Loader from "../Loader/Loader";
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 import api from "../../config/api";
 import helpers from "@quantfive/js-web-config/helpers";

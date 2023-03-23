@@ -11,7 +11,6 @@ import ResearchHubRadioChoices, {
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Props = {
   buttonText?: string;

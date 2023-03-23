@@ -17,7 +17,7 @@ import {
 } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
   ITEM_FADE_DURATION,
@@ -57,7 +57,7 @@ export const getLeftSidebarItemAttrs = ({
 
   return filterNull([
     {
-      icon: <i className="fa-solid fa-home"></i>,
+      icon: <i className="fa-solid fa-house"></i>,
       label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,

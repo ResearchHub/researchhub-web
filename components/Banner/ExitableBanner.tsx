@@ -4,7 +4,7 @@ import {
   storeToCookieOrLocalStorage,
 } from "~/config/utils/storeToCookieOrLocalStorage";
 import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { iconColors } from "~/config/themes/colors";
 

@@ -9,9 +9,10 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { getSummaryText } from "~/config/utils/editor";
+import { coinStack } from "~/config/themes/icons";
 
 const SectionBounty = (props) => {
   const { section, paper, bullets, updatePaperState, loading, auth } = props;
@@ -44,7 +45,7 @@ const SectionBounty = (props) => {
     return (
       <Fragment>
         Earn{" " + amount + " "}
-        {icons.coinStack({ styles: styles.coinStackIcon })}
+        {coinStack({ styles: styles.coinStackIcon })}
       </Fragment>
     );
   };

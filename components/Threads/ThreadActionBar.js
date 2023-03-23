@@ -4,7 +4,7 @@ import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import { nullthrows } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons, { MedalIcon } from "~/config/themes/icons";
+import { MedalIcon } from "~/config/themes/icons";
 import ThreadTextEditor from "./ThreadTextEditor";
 import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { connect } from "react-redux";

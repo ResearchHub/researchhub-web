@@ -5,7 +5,7 @@ import ScrollMenu from "react-horizontal-scrolling-menu";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
+
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 

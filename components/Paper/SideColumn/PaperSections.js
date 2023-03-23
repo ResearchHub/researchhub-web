@@ -5,7 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import ColumnContainer from "./ColumnContainer";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 const PaperSections = (props) => {

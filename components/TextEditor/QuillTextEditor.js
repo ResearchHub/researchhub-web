@@ -27,7 +27,7 @@ import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import icons from "~/config/themes/icons";
+
 import { getCurrentUserLegacy } from "~/config/utils/user";
 
 class Editor extends Component {
@@ -360,7 +360,7 @@ class Editor extends Component {
             className={`show-full-editor ${showFullEditor ? "ql-active" : ""}`}
             onClick={() => this.setState({ showFullEditor: !showFullEditor })}
           >
-            {faIcons.fontCase}
+            {<i className="fa-solid fa-font-case"></i>}
           </button>
         </span>
 
@@ -711,7 +711,7 @@ class Editor extends Component {
             {this.props.isBounty === true && (
               <div className={css(styles.bountyAlert)}>
                 <span style={{ fontSize: 18 }}>
-                  {icons["info-circle-light"]}
+                  {<i className="fa-light fa-info-circle"></i>}
                 </span>
                 <span style={{ marginLeft: 5 }}>
                   Reply to this thread with an answer to be eligible for bounty

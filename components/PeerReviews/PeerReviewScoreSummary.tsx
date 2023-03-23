@@ -5,7 +5,6 @@ import { breakpoints } from "~/config/themes/screen";
 import ScoreInput from "~/components/Form/ScoreInput";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Props = {
   summary: PeerReviewScoreSummary;

@@ -8,7 +8,7 @@ import colors from "~/config/themes/colors";
 import DropdownButton from "../Form/DropdownButton";
 import excludeFromFeed from "./api/excludeDocFromFeedAPI";
 import featureDoc from "./api/featureDocAPI";
-import icons from "~/config/themes/icons";
+
 import includeInFeed from "./api/includeDocInFeedAPI";
 import removeDocFromFeatured from "./api/removeDocFromFeaturedAPI";
 

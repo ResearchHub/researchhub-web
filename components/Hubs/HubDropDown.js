@@ -5,7 +5,7 @@ import Link from "next/link";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { nameToUrl } from "~/config/constants";
 
 const HubDropDown = (props) => {

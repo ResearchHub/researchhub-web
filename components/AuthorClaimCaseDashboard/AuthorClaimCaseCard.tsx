@@ -11,7 +11,6 @@ import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetA
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
-import icons from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;

@@ -17,7 +17,7 @@ import api from "~/config/api";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import Notification from "~/components/Notifications/Notification";
 import RscBalanceButton from "./RscBalanceButton";

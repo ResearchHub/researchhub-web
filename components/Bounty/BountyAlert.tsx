@@ -13,7 +13,7 @@ import { breakpoints } from "~/config/themes/screen";
 import ShareDropdown from "../ShareDropdown";
 import buildTwitterUrl from "./utils/buildTwitterUrl";
 import InviteButton from "~/components/Referral/InviteButton";
-import icons from "~/config/themes/icons";
+
 import CoinStackIcon from "../Icons/CoinStackIcon";
 import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";

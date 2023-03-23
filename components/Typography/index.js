@@ -1,6 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 export const SideColumnTitle = (props) => {
   const { title, count, overrideStyles, onClick, state, children } = props;

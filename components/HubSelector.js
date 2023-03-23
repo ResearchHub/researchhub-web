@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "~/components/Home/RHLogo";
 
 const HubSelector = ({ hubState }) => {

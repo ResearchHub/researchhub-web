@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "../RHLogo";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,

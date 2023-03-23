@@ -9,7 +9,7 @@ import Ripples from "react-ripples";
 import EmptyState from "./EmptyState";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import SummaryBulletPoint from "../../Paper/SummaryBulletPoint";
 

@@ -8,7 +8,7 @@ import SubscribedHubList from "../Home/SubscribedHubList";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons, { DownIcon, UpIcon } from "~/config/themes/icons";
+import { DownIcon, UpIcon } from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";

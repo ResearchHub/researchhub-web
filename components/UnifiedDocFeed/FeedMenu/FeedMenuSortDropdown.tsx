@@ -2,7 +2,7 @@ import { scopeOptions, sortOpts } from "../constants/UnifiedDocFilters";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 
 function FeedMenuSortDropdown({

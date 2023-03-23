@@ -8,7 +8,7 @@ import {
 import { NullableString, User } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import icons, {
+import {
   PostIcon,
   PaperIcon,
   HypothesisIcon,

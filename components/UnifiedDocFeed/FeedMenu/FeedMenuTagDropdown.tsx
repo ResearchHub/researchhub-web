@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { useMemo } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { feedTypeOpts } from "../constants/UnifiedDocFilters";
 
 type Args = {

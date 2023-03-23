@@ -16,7 +16,7 @@ import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
-import icons from "../../config/themes/icons";
+
 import PaperDraftUnduxStore, {
   clearSelection,
   PaperDraftStore,

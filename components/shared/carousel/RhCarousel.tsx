@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import colors, { iconColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import RhCarouselItem from "./RhCarouselItem";
 import { breakpoints } from "~/config/themes/screen";
 

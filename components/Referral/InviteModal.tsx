@@ -6,7 +6,7 @@ import colors from "~/config/themes/colors";
 import ALink from "../ALink";
 import AuthorAvatar from "../AuthorAvatar";
 import InviteIcon from "../Icons/InviteIcon";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { ID, NullableString, UnifiedDocument } from "~/config/types/root_types";
 import API from "~/config/api";
@@ -336,32 +336,7 @@ const InviteModal = ({
               </div>
             </li>
           </ol>
-          {/* <div className={css(styles.squaresContainer)}>
-            <div className={css(styles.square)}>
-              <div className={css(styles.iconContainer)}>
-                {user?.id ? (
-                  <AuthorAvatar author={user?.author_profile} />
-                ) : (
-                  <div className={css(styles.userIcon)}>{icons.user}</div>
-                )}
-              </div>
-              <span className={css(styles.personTitle)}>You</span>
-              <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+7% RSC</span>{" "}
-                bonus for first six months
-              </span>
-            </div>
-            <div className={css(styles.square)}>
-              <div className={css(styles.iconContainer)}>
-                <InviteIcon />
-              </div>
-              <span className={css(styles.personTitle)}>Referral</span>
-              <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+0 RSC</span> on
-                sign up
-              </span>
-            </div>
-          </div> */}
+          ={" "}
         </div>
       </div>
     </BaseModal>

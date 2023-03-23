@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
 import colors, { iconColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";

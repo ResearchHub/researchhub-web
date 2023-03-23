@@ -1,5 +1,4 @@
 import { css, StyleSheet } from "aphrodite";
-import icons from "~/config/themes/icons";
 
 const University = (props) => {
   const { university } = props || {};

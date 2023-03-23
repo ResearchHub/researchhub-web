@@ -6,7 +6,7 @@ import { toTitleCase } from "~/config/utils/string";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import DesktopOnly from "../DesktopOnly";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import MobileOnly from "../MobileOnly";
 import UserRoleTag from "../shared/UserRoleTag";

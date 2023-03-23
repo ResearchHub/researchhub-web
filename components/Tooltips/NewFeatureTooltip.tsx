@@ -2,7 +2,7 @@ import { ReactElement, useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import { connect } from "react-redux";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";

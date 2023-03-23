@@ -14,10 +14,8 @@ import Router from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors from "~/config/themes/colors";
-import icons, { MedalIcon } from "~/config/themes/icons";
 import Login from "~/components/Login/Login";
 import Button from "~/components/Form/Button";
-import ResearchHubIcon from "~/static/ResearchHubIcon";
 
 const Index = ({ code, user }) => {
   useEffect(() => {

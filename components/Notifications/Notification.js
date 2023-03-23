@@ -15,7 +15,6 @@ import { NotificationActions } from "~/redux/notification";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 class Notification extends Component {
   constructor(props) {

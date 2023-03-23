@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 
 import colors, { pillNavColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import icons from "~/config/themes/icons";
 
 const HorizontalTabBar = ({
   tabs,

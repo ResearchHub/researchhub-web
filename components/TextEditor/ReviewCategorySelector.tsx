@@ -2,7 +2,6 @@ import colors from "~/config/themes/colors";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import reviewCategories from "./config/reviewCategories";
-import icons from "~/config/themes/icons";
 
 function ReviewCategorySelector({ handleSelect }): ReactElement {
   const [isOpen, setIsOpen] = useState(false);

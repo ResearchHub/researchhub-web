@@ -17,7 +17,7 @@ import Bounty from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons, { WarningIcon } from "~/config/themes/icons";
+import { WarningIcon } from "~/config/themes/icons";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
@@ -258,7 +258,7 @@ function BountyModal({
                         data-tip={""}
                         data-for="commission"
                       >
-                        {icons["info-circle-light"]}
+                        {<i className="fa-light fa-info-circle"></i>}
                       </span>
                     </div>
                     <div className={css(styles.lineItemValue)}>
@@ -278,7 +278,7 @@ function BountyModal({
                         data-tip={""}
                         data-for="net"
                       >
-                        {icons["info-circle-light"]}
+                        {<i className="fa-light fa-info-circle"></i>}
                       </span>
                     </div>
                     <div

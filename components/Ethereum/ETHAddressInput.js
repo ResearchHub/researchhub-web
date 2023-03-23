@@ -6,7 +6,6 @@ import FormInput from "~/components/Form/FormInput";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const ETHAddressInput = (props) => {
   const {
@@ -83,7 +82,7 @@ const ETHAddressInput = (props) => {
         >
           {props.label}
           <span className={css(styles.infoIcon)} data-tip={props.tooltip}>
-            {icons["info-circle"]}
+            {<i className="fa-duotone fa-info-circle"></i>}
             <ReactTooltip />
           </span>
         </div>

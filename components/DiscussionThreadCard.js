@@ -14,7 +14,7 @@ import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,

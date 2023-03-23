@@ -15,7 +15,7 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Button from "../Form/Button";
 import SimplePostEditor from "../Form/SimplePostEditor";
-import icons from "~/config/themes/icons";
+
 import BountyWizardRSCForm from "./BountyWizardRSCForm";
 import { useRouter } from "next/router";
 

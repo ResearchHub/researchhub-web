@@ -18,7 +18,7 @@ const AddHubModal = dynamic(() => import("~/components/Modals/AddHubModal"));
 const EditHubModal = dynamic(() => import("~/components/Modals/EditHubModal"));
 
 // Config
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { getHubs, getCategories } from "~/components/Hubs/api/fetchHubs";
 

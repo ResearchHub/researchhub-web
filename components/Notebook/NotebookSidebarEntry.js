@@ -1,7 +1,7 @@
 import Link from "next/link";
 import NoteOptionsMenuButton from "./NoteOptionsMenuButton";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { css, StyleSheet } from "aphrodite";
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import { useState } from "react";

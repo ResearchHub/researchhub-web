@@ -5,7 +5,6 @@ import FormInput from "~/components/Form/FormInput";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const EducationSummaryCard = (props) => {
   const { index, label, value, onClick, onRemove, onActive } = props;

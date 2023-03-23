@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+
 import ResearchCoinIcon from "./Icons/ResearchCoinIcon";
 
 type Args = {

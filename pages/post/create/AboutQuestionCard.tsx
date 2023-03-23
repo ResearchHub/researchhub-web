@@ -1,5 +1,5 @@
 import Collapsible from "~/components/Form/Collapsible";
-import icons from "~/config/themes/icons";
+
 import { css, StyleSheet } from "aphrodite";
 
 export type AboutQuestionCardProps = {

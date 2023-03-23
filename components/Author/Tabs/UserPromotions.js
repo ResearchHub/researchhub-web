@@ -12,7 +12,6 @@ import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";

@@ -3,7 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 export class TooltipInput extends Component {
   detectEnter = (e) => {

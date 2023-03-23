@@ -38,7 +38,7 @@ const UserInfoModal = dynamic(() =>
 );
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { createUserSummary, createEduSummary } from "~/config/utils/user";
 import {

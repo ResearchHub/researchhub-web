@@ -3,7 +3,6 @@ import Router from "next/router";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const MobileFeedTabs = (props) => {
   const { activeLeft, activeRight, onFeedSelect } = props;
