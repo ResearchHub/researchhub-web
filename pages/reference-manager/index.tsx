@@ -1,11 +1,12 @@
+import HeadComponent from "~/components/Head";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
-import { ReferencesTabContextProvider } from "~/components/ReferenceManager/references/context/ReferenceItemDrawerContext";
+import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/context/ReferenceItemDrawerContext";
 
 export default function Index(props) {
   return (
-    <ReferencesTabContextProvider>
+    <ReferenceItemDrawerContextProvider>
       <HeadComponent title={"ResearchHub Reference Manager"}></HeadComponent>
       <ReferencesContainer {...props} />
-    </ReferencesTabContextProvider>
+    </ReferenceItemDrawerContextProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -19,6 +19,10 @@ import ListItemText from "@mui/material/ListItemText";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
+import { isEmpty } from "~/config/utils/nullchecks";
+import Loader from "~/components/Loader/Loader";
+import { TextBlock, TextRow } from "react-placeholder/lib/placeholders";
+import colors from "~/config/themes/colors";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -131,6 +135,8 @@ export default function BasicTogglableNavbarLeft({
   theme,
 }: Props) {
   const user = getCurrentUser();
+  const isLoadingUser = isEmpty(user?.id);
+
   return (
     <Box
       flexDirection="column"
@@ -160,40 +166,58 @@ export default function BasicTogglableNavbarLeft({
             justifyContent: "space-between",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              color: "rgba(36, 31, 58, 1)",
-              flexDirection: "row",
-            }}
-          >
-            {user?.author_profile?.profile_image ? (
-              <Image
-                src={user?.author_profile?.profile_image ?? ""}
-                width={24}
-                height={24}
-                style={{ borderRadius: "50%" }}
-                alt={""}
+          {isLoadingUser ? (
+            <Box sx={{ width: "100%", boxSizing: "border-box" }}>
+              <TextRow
+                color={colors.LIGHT_GREY_BORDER}
+                style={{
+                  borderRadius: 4,
+                  height: 28,
+                  margin: "0 auto",
+                  width: "95%",
+                }}
               />
-            ) : (
-              <AccountCircleOutlinedIcon fontSize="medium" />
-            )}
-            {isOpen && (
-              <Typography
-                component="div"
-                fontSize={16}
-                fontWeight={500}
-                color="#7C7989"
-                noWrap
-                variant="h6"
-                letterSpacing={"1.1px"}
-                ml="12px"
+            </Box>
+          ) : (
+            <Fragment>
+              <Box
+                sx={{
+                  display: "flex",
+                  color: "rgba(36, 31, 58, 1)",
+                  flexDirection: "row",
+                }}
               >
-                {`${user?.first_name} ${user?.last_name}`}
-              </Typography>
-            )}
-          </Box>
-          {isOpen && <ExpandMore fontSize="medium" sx={{ color: "#7C7989" }} />}
+                {user?.authorProfile?.profileImage ? (
+                  <Image
+                    src={user?.authorProfile?.profileImage ?? ""}
+                    width={24}
+                    height={24}
+                    style={{ borderRadius: "50%" }}
+                    alt={""}
+                  />
+                ) : (
+                  <AccountCircleOutlinedIcon fontSize="medium" />
+                )}
+                {isOpen && (
+                  <Typography
+                    component="div"
+                    fontSize={16}
+                    fontWeight={500}
+                    color="#7C7989"
+                    noWrap
+                    variant="h6"
+                    letterSpacing={"1.1px"}
+                    ml="12px"
+                  >
+                    {`${user?.firstName} ${user?.lastName}`}
+                  </Typography>
+                )}
+              </Box>
+              {isOpen && (
+                <ExpandMore fontSize="medium" sx={{ color: "#7C7989" }} />
+              )}
+            </Fragment>
+          )}
         </Box>
         <Box
           sx={{

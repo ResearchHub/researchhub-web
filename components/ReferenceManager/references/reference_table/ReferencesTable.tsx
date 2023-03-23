@@ -19,6 +19,7 @@ function useEffectFetchReferenceCitations({
 }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
+
   useEffect(() => {
     if (!isNullOrUndefined(user?.id)) {
       setIsLoading(true);

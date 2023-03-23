@@ -1,10 +1,9 @@
+import { ChangeEvent, ReactElement } from "react";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import Box from "@mui/material/Box";
+import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, ReactElement } from "react";
-import colors from "~/config/themes/colors";
-import { NullableString } from "~/config/types/root_types";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 type Props = {
   formID: string;
