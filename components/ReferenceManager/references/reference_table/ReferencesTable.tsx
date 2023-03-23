@@ -1,13 +1,16 @@
-import { columnsFormat } from "./utils/referenceTableFormat";
-import { DATA_GRID_STYLE_OVERRIDE } from "./styles/ReferencesTableStyles";
+import { columnsFormat } from "../utils/referenceTableFormat";
+import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { DataGrid } from "@mui/x-data-grid";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { fetchCurrentUserReferenceCitations } from "./api/fetchCurrentUserReferenceCitations";
-import { formatReferenceRowData } from "./utils/formatReferenceRowData";
+import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
+import {
+  formatReferenceRowData,
+  ReferenceTableRowDataType,
+} from "../utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
-import { useReferenceTabContext } from "./context/ReferencesTabContext";
+import { useReferenceTabContext } from "../context/ReferenceItemDrawerContext";
 
 function useEffectFetchReferenceCitations({
   onSuccess,
@@ -25,13 +28,12 @@ function useEffectFetchReferenceCitations({
 }
 
 export default function ReferencesTable() {
+  const { setIsDrawerOpen, setReferenceItemDrawerData } =
+    useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const {
-    referenceTableRowData,
-    setIsTabOpen,
-    setReferenceTableRowData,
-    setReferenceItemTabData,
-  } = useReferenceTabContext();
+  const [referenceTableRowData, setReferenceTableRowData] = useState<
+    ReferenceTableRowDataType[]
+  >([]);
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -64,12 +66,12 @@ export default function ReferencesTable() {
         loading={isLoading}
         onCellClick={(params, event, _details): void => {
           event.stopPropagation();
-          setReferenceItemTabData({
+          setReferenceItemDrawerData({
             ...nullthrows(
               referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),
           });
-          setIsTabOpen(true);
+          setIsDrawerOpen(true);
         }}
         // onRowClick={(params, event, details) => {
         //   event.stopPropagation();

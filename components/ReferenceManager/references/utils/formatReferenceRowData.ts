@@ -1,5 +1,18 @@
 import { filterNull } from "~/config/utils/nullchecks";
-import { ReferenceTableRowDataType } from "../context/ReferencesTabContext";
+import { ID, NullableString } from "~/config/types/root_types";
+
+export type ReferenceTableRowDataType = {
+  // NOTE: Logical ordering for display reason
+  // TODO: calvinhlee update this once BE is setup
+  id: ID;
+  citation_type: NullableString;
+  title: NullableString;
+  authors: NullableString;
+  hubs: NullableString;
+  last_author: NullableString;
+  published_date: NullableString;
+  published_year: NullableString;
+};
 
 function formatAuthors(
   authors: { first_name: string; last_name: string }[]

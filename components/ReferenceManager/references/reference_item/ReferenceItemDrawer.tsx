@@ -1,18 +1,19 @@
 import {
+  emptyFncWithMsg,
+  filterNull,
+  isEmpty,
+} from "~/config/utils/nullchecks";
+import {
   ReactElement,
   SyntheticEvent,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { useReferenceTabContext } from "../context/ReferencesTabContext";
-import {
-  emptyFncWithMsg,
-  filterNull,
-  isEmpty,
-} from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import { updateReferenceCitation } from "../api/updateReferenceCitation";
+import { useReferenceTabContext } from "../context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -23,16 +24,15 @@ import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
+import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
-import PrimaryButton from "../../form/PrimaryButton";
-import { updateReferenceCitation } from "../api/updateReferenceCitation";
 
 type Props = {};
 
 const TAB_ITEM_FILTER_KEYS = new Set(["id", "citation_type"]);
 
-const ReferenceItemTabIconButton = ({
+const ReferenceItemDrawerButton = ({
   children,
   onClick,
 }: {
@@ -50,28 +50,28 @@ const ReferenceItemTabIconButton = ({
   );
 };
 
-export default function ReferenceItemTab({}: Props): ReactElement {
-  const { isTabOpen, referenceItemTabData, setIsTabOpen } =
+export default function ReferenceItemDrawer({}: Props): ReactElement {
+  const { isDrawerOpen, referenceItemDrawerData, setIsDrawerOpen } =
     useReferenceTabContext();
 
   const [localReferenceFields, setLocalReferenceFields] = useState(
-    referenceItemTabData?.fields ?? {}
+    referenceItemDrawerData?.fields ?? {}
   );
 
   const requiredFieldsSet = useMemo(
     // NOTE: calvinhlee - this needs to be improved from BE
-    () => new Set(referenceItemTabData?.required_fields ?? []),
-    [referenceItemTabData?.id]
+    () => new Set(referenceItemDrawerData?.required_fields ?? []),
+    [referenceItemDrawerData?.id]
   );
   useEffect((): void => {
-    if (isEmpty(referenceItemTabData?.id) || !isTabOpen) {
+    if (isEmpty(referenceItemDrawerData?.id) || !isDrawerOpen) {
       setLocalReferenceFields({});
     } else {
-      setLocalReferenceFields(referenceItemTabData?.fields ?? {});
+      setLocalReferenceFields(referenceItemDrawerData?.fields ?? {});
     }
-  }, [referenceItemTabData?.id, isTabOpen]);
+  }, [referenceItemDrawerData?.id, isDrawerOpen]);
 
-  const tabInputItems = isTabOpen
+  const tabInputItems = isDrawerOpen
     ? filterNull(
         // TODO: calvinhlee - we need better ways to sort these fields
         Object.keys(localReferenceFields)
@@ -108,9 +108,9 @@ export default function ReferenceItemTab({}: Props): ReactElement {
     <Drawer
       anchor="right"
       BackdropProps={{ invisible: true }}
-      onBackdropClick={() => setIsTabOpen(false)}
-      open={isTabOpen}
-      // onClose={(event: SyntheticEvent): void => setIsTabOpen(false)}
+      onBackdropClick={() => setIsDrawerOpen(false)}
+      open={isDrawerOpen}
+      // onClose={(event: SyntheticEvent): void => setIsDrawerOpen(false)}
       sx={{
         width: "0",
         zIndex: 4 /* AppTopBar zIndex is 3 */,
@@ -125,24 +125,24 @@ export default function ReferenceItemTab({}: Props): ReactElement {
       >
         <Stack direction="row" alignItems="center" spacing={1} mb="24px">
           <Stack direction="row" alignItems="center" spacing={1}>
-            <ReferenceItemTabIconButton>
+            <ReferenceItemDrawerButton>
               <InfoOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
-            <ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
+            <ReferenceItemDrawerButton>
               <ChatOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
-            <ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
+            <ReferenceItemDrawerButton>
               <HistoryOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
-            <ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
+            <ReferenceItemDrawerButton>
               <LockOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
-            <ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
+            <ReferenceItemDrawerButton>
               <FileUploadOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
-            <ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
+            <ReferenceItemDrawerButton>
               <MoreHorizOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
           </Stack>
           <Stack
             alignItems="center"
@@ -150,18 +150,18 @@ export default function ReferenceItemTab({}: Props): ReactElement {
             justifyContent="flex-end"
             width="100%"
           >
-            <ReferenceItemTabIconButton
+            <ReferenceItemDrawerButton
               onClick={() => {
-                setIsTabOpen(false);
+                setIsDrawerOpen(false);
               }}
             >
               <CloseOutlinedIcon fontSize="inherit" />
-            </ReferenceItemTabIconButton>
+            </ReferenceItemDrawerButton>
           </Stack>
         </Stack>
         <Stack direction="row" alignItems="center" spacing={1} mb="24px">
           <Typography variant="h5" fontWeight="bold">
-            {toTitleCase(referenceItemTabData?.citation_type ?? "")}
+            {toTitleCase(referenceItemDrawerData?.citation_type ?? "")}
           </Typography>
         </Stack>
 
