@@ -25,7 +25,7 @@ export const fetchCommentsAPI = async ({
       .then((res):any => Helpers.parseJSON(res));
 
   return {
-    comments: response.results.map((raw:any) => parseComment({ raw })).slice(0),
+    comments: response.results.map((raw:any) => parseComment({ raw })),
     next: response.next,
     prev: response.prev,
     count: response.count,
