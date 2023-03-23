@@ -157,13 +157,6 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     >
       {readyForInitialRender && (
         <>
-          <CommentEditor
-            editorId="new-thread"
-            handleSubmit={handleCommentCreate}
-            allowBounty={true}
-            author={currentUser?.authorProfile}
-            previewWhenInactive={true}
-          />
           <div className={css(styles.filtersWrapper)}>
             <CommentFilters
               selectedFilter={selectedFilter}
@@ -175,6 +168,15 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
                 handleSelect={(s) => setSelectedSort(s)}
               />
             </div>
+          </div>
+          <div className={css(styles.editorWrapper)}>
+            <CommentEditor
+              editorId="new-thread"
+              handleSubmit={handleCommentCreate}
+              allowBounty={true}
+              author={currentUser?.authorProfile}
+              previewWhenInactive={true}
+            />
           </div>
           <div>{_commentsElems}</div>
         </>
@@ -196,11 +198,14 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
 
 const styles = StyleSheet.create({
   filtersWrapper: {
-    margin: "25px 0",
+    margin: "15px 0 30px 0",
     display: "flex",
   },
   sortWrapper: {
     marginLeft: "auto",
+  },
+  editorWrapper: {
+    marginBottom: 25,
   },
   commentWrapper: {
     borderBottom: `1px solid ${colors.border}`,

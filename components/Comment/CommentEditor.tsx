@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
     padding: "15px",
-    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.1)",
+    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
     backgroundColor: "white",
     borderRadius: 10,
     flex: "none",

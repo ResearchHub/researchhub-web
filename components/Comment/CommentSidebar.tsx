@@ -39,7 +39,7 @@ const CommentSidebar = ({
     >
       <div className={css(styles.feedWrapper)}>
         <div className={css(styles.sidebarHeader)}>
-          Activity
+          Discussion
           <IconButton
             onClick={() => {
               setIsOpen(false);
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
   sidebarHeader: {
     fontWeight: 500,
     fontSize: 18,
-    marginBottom: 25,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
