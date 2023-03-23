@@ -54,6 +54,7 @@ const Comment = ({
             <CommentHeader
               authorProfile={comment.createdBy.authorProfile}
               comment={comment}
+              handleEdit={() => setIsEditMode(!isEditMode)}
             />
           </div>
           {isEditMode ? (
@@ -87,7 +88,6 @@ const Comment = ({
         </div>
         <div className={css(styles.actionsWrapper)}>
           <CommentActions
-            handleEdit={() => setIsEditMode(!isEditMode)}
             handleReply={() => setIsReplyOpen(!isReplyOpen)}
             document={document}
             comment={comment}

@@ -1,20 +1,28 @@
+import { faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
+import { faPencil, faFlag } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
-import { sortOpts } from "./lib/options";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { parseUser } from "~/config/types/root_types";
+import { Comment } from "./lib/types";
 
 type Args = {
-  selectedSort: Function;
-  handleSelect: Function;
+  comment: Comment;
+  handleEdit: Function;
 }
 
-const CommentSort = ({ selectedSort, handleSelect }: Args) => {
+const CommentMenu = ({ comment, handleEdit }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
 
   useEffectHandleClick({
     el: dropdownRef.current,
@@ -29,10 +37,8 @@ const CommentSort = ({ selectedSort, handleSelect }: Args) => {
           overrideStyle={styles.labelWrapper}
           onClick={() => setIsOpen(!isOpen)}
         >
-          <div className={css(styles.dropdownIcon)}>{selectedSort.icon}</div>
-          <div className={css(styles.dropdownLabel)}>{selectedSort.label}</div>
           <FontAwesomeIcon
-            icon={faAngleDown}
+            icon={faEllipsisH}
             style={{ marginLeft: 3, fontSize: 16 }}
           />
         </IconButton>
@@ -41,12 +47,24 @@ const CommentSort = ({ selectedSort, handleSelect }: Args) => {
         ref={dropdownRef}
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
       >
-        {sortOpts.map((s) => (
-          <div className={css(styles.option)}>
-            <div className={css(styles.dropdownIcon)}>{s.icon}</div>
-            <div className={css(styles.dropdownLabel)}>{s.label}</div>
+        {currentUser?.id === comment.createdBy.id && (
+          <div className={css(styles.option)} onClick={() => handleEdit()}>
+            <FontAwesomeIcon
+              icon={faPencil}
+              style={{ color: colors.secondary.text, fontSize: 18 }}
+            />
+
+            <div className={css(styles.dropdownLabel)}>Edit</div>
           </div>
-        ))}
+        )}
+
+        <div className={css(styles.option)} onClick={() => alert('flag')}>
+          <FontAwesomeIcon
+            icon={faFlag}
+            style={{ color: colors.secondary.text, fontSize: 18 }}
+          />
+          <div className={css(styles.dropdownLabel)}>Flag</div>
+        </div>
       </div>
     </div>
   );
@@ -74,7 +92,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     right: 0,
     height: "auto",
-    width: 150,
+    width: 100,
     background: "white",
     padding: 0,
     borderRadius: 10,
@@ -107,4 +125,4 @@ const styles = StyleSheet.create({
   dropdownLabel: {},
 });
 
-export default CommentSort;
+export default CommentMenu;
