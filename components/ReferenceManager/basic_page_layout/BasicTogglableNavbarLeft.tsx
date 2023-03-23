@@ -1,12 +1,14 @@
-import { CSSObject, Theme, styled } from "@mui/material/styles";
-import { ReactNode } from "react";
+import { Box } from "@mui/system";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { Fragment, ReactNode } from "react";
+import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
-import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Divider from "@mui/material/Divider";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import Image from "next/image";
 import List from "@mui/material/List";
@@ -14,15 +16,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MuiDrawer from "@mui/material/Drawer";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import { Box } from "@mui/system";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { Button } from "@mui/material";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { isEmpty } from "~/config/utils/nullchecks";
+import Loader from "~/components/Loader/Loader";
+import { TextBlock, TextRow } from "react-placeholder/lib/placeholders";
+import colors from "~/config/themes/colors";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -135,10 +135,14 @@ export default function BasicTogglableNavbarLeft({
   theme,
 }: Props) {
   const user = getCurrentUser();
-console.warn(user?.author_profile?.profile_image);
+  const isLoadingUser = isEmpty(user?.id);
 
   return (
-    <Box flexDirection="column" width={navWidth}>
+    <Box
+      flexDirection="column"
+      width={navWidth}
+      sx={{ borderLeft: "1px solid #e8e8ef" }}
+    >
       {/* <Drawer
         isOpen={isOpen}
         navWidth={navWidth}
@@ -162,40 +166,58 @@ console.warn(user?.author_profile?.profile_image);
             justifyContent: "space-between",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              color: "rgba(36, 31, 58, 1)",
-              flexDirection: "row",
-            }}
-          >
-            {user?.author_profile?.profile_image ? (
-              <Image
-                src={user?.author_profile?.profile_image ?? ''}
-                width={24}
-                height={24}
-                style={{ borderRadius: "50%" }}
-                alt={""}
+          {isLoadingUser ? (
+            <Box sx={{ width: "100%", boxSizing: "border-box" }}>
+              <TextRow
+                color={colors.LIGHT_GREY_BORDER}
+                style={{
+                  borderRadius: 4,
+                  height: 28,
+                  margin: "0 auto",
+                  width: "95%",
+                }}
               />
-            ) : (
-              <AccountCircleOutlinedIcon fontSize="medium" />
-            )}
-            {isOpen && (
-              <Typography
-                component="div"
-                fontSize={16}
-                fontWeight={500}
-                color="#7C7989"
-                noWrap
-                variant="h6"
-                letterSpacing={"1.1px"}
-                ml="12px"
+            </Box>
+          ) : (
+            <Fragment>
+              <Box
+                sx={{
+                  display: "flex",
+                  color: "rgba(36, 31, 58, 1)",
+                  flexDirection: "row",
+                }}
               >
-                {`${user?.first_name} ${user?.last_name}`}
-              </Typography>
-            )}
-          </Box>
-          {isOpen && <ExpandMore fontSize="medium" sx={{ color: "#7C7989" }} />}
+                {user?.authorProfile?.profileImage ? (
+                  <Image
+                    src={user?.authorProfile?.profileImage ?? ""}
+                    width={24}
+                    height={24}
+                    style={{ borderRadius: "50%" }}
+                    alt={""}
+                  />
+                ) : (
+                  <AccountCircleOutlinedIcon fontSize="medium" />
+                )}
+                {isOpen && (
+                  <Typography
+                    component="div"
+                    fontSize={16}
+                    fontWeight={500}
+                    color="#7C7989"
+                    noWrap
+                    variant="h6"
+                    letterSpacing={"1.1px"}
+                    ml="12px"
+                  >
+                    {`${user?.firstName} ${user?.lastName}`}
+                  </Typography>
+                )}
+              </Box>
+              {isOpen && (
+                <ExpandMore fontSize="medium" sx={{ color: "#7C7989" }} />
+              )}
+            </Fragment>
+          )}
         </Box>
         <Box
           sx={{

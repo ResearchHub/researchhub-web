@@ -9,12 +9,12 @@ import { Fragment, useState, ReactElement } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
-} from "../shared/basic_page_layout/BasicTogglableNavbarLeft";
-import DropdownMenu from "../shared/menu/DropdownMenu";
+} from "../basic_page_layout/BasicTogglableNavbarLeft";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import ReferenceItemTab from "./reference_item/ReferenceItemTab";
-import ReferencesTable from "./ReferencesTable";
+import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
+import ReferencesTable from "./reference_table/ReferencesTable";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
+import DropdownMenu from "../menu/DropdownMenu";
 
 interface Props {}
 
@@ -26,7 +26,7 @@ export default function ReferencesContainer({}: Props): ReactElement {
 
   return (
     <Fragment>
-      <ReferenceItemTab />
+      <ReferenceItemDrawer />
       <Box flexDirection="row" display="flex">
         <BasicTogglableNavbarLeft
           isOpen={isLeftNavOpen}

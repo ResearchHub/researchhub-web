@@ -1,8 +1,9 @@
+import { ChangeEvent, ReactElement } from "react";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import Box from "@mui/material/Box";
+import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, ReactElement } from "react";
-import { NullableString } from "~/config/types/root_types";
 
 type Props = {
   formID: string;
@@ -24,7 +25,7 @@ export default function ReferenceItemFieldInput({
   return (
     <Box
       sx={{
-        background: "inherit",
+        background: "transparent",
         height: "78px",
         marginBottom: "16px",
         width: "100%",
@@ -37,13 +38,15 @@ export default function ReferenceItemFieldInput({
         lineHeight="22px"
         letterSpacing={0}
         mb="4px"
-        sx={{ background: "inherit" }}
+        sx={{ background: "transparent" }}
         width="100%"
       >
         {label}
+        {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
       </Typography>
       <OutlinedInput
         fullWidth
+        onClick={silentEmptyFnc}
         id={formID}
         onChange={(event: ChangeEvent<HTMLInputElement>): void => {
           onChange(event?.target?.value);
