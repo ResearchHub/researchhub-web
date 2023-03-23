@@ -1,5 +1,18 @@
 import { filterNull } from "~/config/utils/nullchecks";
-import { ReferenceItemDataType } from "../context/ReferencesTabContext";
+import { ID, NullableString } from "~/config/types/root_types";
+
+export type ReferenceTableRowDataType = {
+  // NOTE: Logical ordering for display reason
+  // TODO: calvinhlee update this once BE is setup
+  id: ID;
+  citation_type: NullableString;
+  title: NullableString;
+  authors: NullableString;
+  hubs: NullableString;
+  last_author: NullableString;
+  published_date: NullableString;
+  published_year: NullableString;
+};
 
 function formatAuthors(
   authors: { first_name: string; last_name: string }[]
@@ -11,55 +24,75 @@ function formatAuthors(
     .join(", ");
 }
 
-function referenceFormatSwitchMap(datum: any): ReferenceItemDataType | null {
-  const { citation_type, fields, id } = datum ?? {};
-  const { title, date, access_date } = fields;
-  let lastAuthor;
+function referenceFormatSwitchMap(datum: any): ReferenceTableRowDataType {
+  const { citation_type } = datum ?? {};
   switch (citation_type) {
     case "ARTWORK":
-      const {
-        creators: { artist },
-      } = fields;
-      lastAuthor = artist[artist.length - 1];
-      return {
-        // logical ordering - displayed in ReferenceItemTab
-        id,
-        citation_type,
-        title,
-        authors: formatAuthors(artist),
-        last_author: `${lastAuthor?.first_name ?? ""} ${
-          lastAuthor?.last_name ?? ""
-        }`,
-        hubs: "",
-        published_date: date ?? access_date,
-        published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
-      };
+      return formatArtwork(datum);
     case "MANUSCRIPT":
-      const {
-        creators: { author },
-      } = fields;
-      lastAuthor = author[author.length - 1];
-
-      return {
-        id,
-        citation_type,
-        title,
-        authors: formatAuthors(author),
-        last_author: `${lastAuthor?.first_name ?? ""} ${
-          lastAuthor?.last_name ?? ""
-        }`,
-        hubs: "",
-        published_date: date ?? access_date,
-        published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
-      };
+      return formatManuscript(datum);
     default:
       throw new Error(
         `formatReferenceRowData: unable to find appropriate citation_type - ${citation_type}`
       );
-      return null;
   }
 }
 
-export function formatReferenceRowData(data: any): ReferenceItemDataType[] {
-  return filterNull(data.map((datum) => referenceFormatSwitchMap(datum)));
+function formatArtwork(datum: any): ReferenceTableRowDataType {
+  const {
+    citation_type,
+    fields: {
+      access_date,
+      creators: { artist },
+      date,
+      title,
+    },
+    id,
+  } = datum ?? { fields: {}, creators: {} };
+  const lastAuthor = artist[artist.length - 1];
+  return {
+    id,
+    citation_type,
+    title,
+    authors: formatAuthors(artist),
+    last_author: `${lastAuthor?.first_name ?? ""} ${
+      lastAuthor?.last_name ?? ""
+    }`,
+    hubs: "",
+    published_date: date ?? access_date,
+    published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
+  };
+}
+
+function formatManuscript(datum: any): ReferenceTableRowDataType {
+  const {
+    citation_type,
+    fields: {
+      access_date,
+      creators: { author },
+      date,
+      title,
+    },
+    id,
+  } = datum ?? { fields: {}, creators: {} };
+  const lastAuthor = author[author.length - 1];
+  return {
+    id,
+    citation_type,
+    title,
+    authors: formatAuthors(author),
+    last_author: `${lastAuthor?.first_name ?? ""} ${
+      lastAuthor?.last_name ?? ""
+    }`,
+    hubs: "",
+    published_date: date ?? access_date,
+    published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
+  };
+}
+
+export function formatReferenceRowData(
+  data: any[]
+): ReferenceTableRowDataType[] {
+  // NOTE: each returned-object is logically ordered. Displayed in ReferenceItemTab
+  return filterNull(data.map((datum: any) => referenceFormatSwitchMap(datum)));
 }
