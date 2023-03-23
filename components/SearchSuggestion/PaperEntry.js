@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
+import { file as fileIcon } from "../../config/themes/icons";
 import * as moment from "dayjs";
 import { buildSlug } from "~/config/utils/buildSlug";
 
@@ -109,7 +109,7 @@ const PaperEntry = ({
           <div className={css(styles.title, styles.text)}>
             {title && (
               <Fragment>
-                <span className={css(styles.icon)}>{icons.file}</span>
+                <span className={css(styles.icon)}>{fileIcon}</span>
                 {title}
               </Fragment>
             )}

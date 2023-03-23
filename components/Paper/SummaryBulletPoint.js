@@ -20,6 +20,7 @@ import { Helpers } from "@quantfive/js-web-config";
 
 import colors from "~/config/themes/colors";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
+import { chevronRight, pencil, trash } from "~/config/themes/icons";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperSlug]";
 
@@ -180,7 +181,7 @@ const SummaryBulletPoint = (props) => {
         <Fragment>
           {editable && hovered && (
             <div className={css(styles.editButton)} onClick={toggleEditView}>
-              {icons.pencil}
+              {pencil}
             </div>
           )}
           <div className={css(styles.topRow)}>
@@ -220,7 +221,7 @@ const SummaryBulletPoint = (props) => {
 
       return (
         <div className={css(classNames)} onClick={removalConfirmation}>
-          {icons.trash}
+          {trash}
         </div>
       );
     }
@@ -242,7 +243,7 @@ const SummaryBulletPoint = (props) => {
             id={"goTo"}
             className={css(classNames)}
           >
-            {icons.chevronRight}
+            {chevronRight}
           </Link>
         </div>
       );

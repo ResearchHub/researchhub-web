@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import MyHubsDropdown from "../../Hubs/MyHubsDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
 import { breakpoints } from "~/config/themes/screen";
+import { chevronDown, chevronUp } from "~/config/themes/icons";
 
 type Args = {
   selectedFilters: SelectedUrlFilters;
@@ -100,7 +101,7 @@ const FeedMenuTopLevelFilters = ({
                 setIsMyHubsDropdownOpen(!isMyHubsDropdownOpen);
               }}
             >
-              {isMyHubsDropdownOpen ? icons.chevronUp : icons.chevronDown}
+              {isMyHubsDropdownOpen ? chevronUp : chevronDown}
             </span>
           )}
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (

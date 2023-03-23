@@ -4,6 +4,7 @@ import colors from "~/config/themes/colors";
 import Link from "next/link";
 import PropTypes from "prop-types";
 import React from "react";
+import { user } from "~/config/themes/icons";
 
 const AccruedRSC = ({ name, accruedRSC }) => {
   return (
@@ -47,7 +48,7 @@ const AuthorCard = (props) => {
         {author.profile_image ? (
           <img src={author.profile_image} className={css(styles.userImage)} />
         ) : (
-          <span className={css(styles.userIcon)}>{icons.user}</span>
+          <span className={css(styles.userIcon)}>{user}</span>
         )}
         {authorUserID ? (
           <div className={css(styles.name) + " clamp1"}>{name}</div>
@@ -65,14 +66,14 @@ const AuthorCard = (props) => {
         rel="noreferrer noopener"
         data-test={`author-${author.id}`}
       >
-        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <span className={css(styles.userIcon)}>{user}</span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </a>
     );
   } else {
     return (
       <div className={css(styles.container)} data-test={`author-${author.id}`}>
-        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <span className={css(styles.userIcon)}>{user}</span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </div>
     );

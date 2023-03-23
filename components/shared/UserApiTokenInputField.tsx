@@ -12,6 +12,12 @@ import FormInput from "../Form/FormInput";
 
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
+import {
+  checkCircle,
+  file,
+  plusCircleSolid,
+  times,
+} from "~/config/themes/icons";
 
 type ApiToken = { token?: ID; prefix?: ID };
 
@@ -144,13 +150,13 @@ function UserApiTokenInputField({
             {isLoading ? (
               <Loader size={12} color={colors.TOOLTIP_TEXT_COLOR_WHITE} />
             ) : copyButtonStatus === "ready" ? (
-              icons.file
+              file
             ) : copyButtonStatus === "copied" ? (
-              icons.checkCircle
+              checkCircle
             ) : userHasApiToken ? (
-              icons.times
+              times
             ) : (
-              icons.plusCircleSolid
+              plusCircleSolid
             )}
           </Ripples>
         </form>

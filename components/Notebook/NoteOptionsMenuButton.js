@@ -20,7 +20,14 @@ import {
 } from "~/config/fetch";
 import { useAlert } from "react-alert";
 import { useState } from "react";
-import { clone, friends, lock, shapes, trash } from "~/config/themes/icons";
+import {
+  clone,
+  ellipsisH,
+  friends,
+  lock,
+  shapes,
+  trash,
+} from "~/config/themes/icons";
 
 const NoteOptionsMenuButton = ({
   currentOrg,
@@ -224,7 +231,7 @@ const NoteOptionsMenuButton = ({
               setIsPopoverOpen(!isPopoverOpen);
             }}
           >
-            {menuLoading ? <Loader size={18} /> : icons.ellipsisH}
+            {menuLoading ? <Loader size={18} /> : ellipsisH}
           </div>
         }
       />

@@ -9,6 +9,7 @@ import Loader from "~/components/Loader/Loader";
 
 import colors from "~/config/themes/colors";
 import SummaryContributor from "../../SummaryContributor";
+import { starEmpty, starFilled } from "~/config/themes/icons";
 
 const SummaryEditCard = (props) => {
   const alert = useAlert();
@@ -55,17 +56,15 @@ const SummaryEditCard = (props) => {
                 color={colors.BLUE()}
               />
             ) : active || hovered ? (
-              icons.starFilled
+              starFilled
             ) : (
-              icons.starEmpty
+              starEmpty
             )}
           </span>
         );
       }
     } else {
-      return (
-        <span className={css(styles.icon)}>{active && icons.starFilled}</span>
-      );
+      return <span className={css(styles.icon)}>{active && starFilled}</span>;
     }
   };
 

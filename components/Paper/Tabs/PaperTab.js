@@ -25,6 +25,7 @@ import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 import { postUpdatePaperAbstract } from "../abstract/api/postUpdatePaperAbstract";
 import { useRouter } from "next/router";
+import { arrowToBottom, externalLink, upload } from "~/config/themes/icons";
 
 function PaperTab(props) {
   const {
@@ -203,7 +204,7 @@ function PaperTab(props) {
                   permissionKey="CreatePaper"
                 >
                   <button className={css(defaultStyles.button)}>
-                    Upload the Paper PDF {icons.upload}
+                    Upload the Paper PDF {upload}
                   </button>
                 </PermissionNotificationWrapper>
               </div>
@@ -236,7 +237,7 @@ function PaperTab(props) {
             openExternalLink(paperUrl);
           }}
         >
-          View on External Site {icons.externalLink}
+          View on External Site {externalLink}
         </button>
         <div className={css(styles.emptyPlaceholderFont, styles.orText)}>
           {" or "}
@@ -251,9 +252,7 @@ function PaperTab(props) {
         label={() => {
           return (
             <Fragment>
-              <span className={css(styles.downloadIcon)}>
-                {icons.arrowToBottom}
-              </span>
+              <span className={css(styles.downloadIcon)}>{arrowToBottom}</span>
               Download
             </Fragment>
           );

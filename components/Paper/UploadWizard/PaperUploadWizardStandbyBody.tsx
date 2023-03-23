@@ -11,6 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
 import withWebSocket from "~/components/withWebSocket";
+import { exclamationCircle } from "~/config/themes/icons";
 
 type Props = {
   modalActions: any /* redux */;
@@ -154,7 +155,7 @@ function PaperUploadWizardStandbyBody({
                 color: colors.RED(1),
               }}
             >
-              {icons.exclamationCircle}
+              {exclamationCircle}
             </span>
             {"We weren't able to import your paper"}
           </div>

@@ -13,6 +13,7 @@ import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
+import { times } from "~/config/themes/icons";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -132,7 +133,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           {"Submission Guidelines"}
         </a>
         <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
+          {times}
         </span>
       </div>
       <FormInput

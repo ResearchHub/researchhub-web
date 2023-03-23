@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
+import { angleDown, check } from "~/config/themes/icons";
 
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
@@ -71,7 +72,7 @@ function PostTypeSelector({
                 {t.label}
               </div>
               {selectedType?.value === t.value && (
-                <div className={css(dropdownStyles.check)}>{icons.check}</div>
+                <div className={css(dropdownStyles.check)}>{check}</div>
               )}
             </div>
           ))}
@@ -95,7 +96,7 @@ function PostTypeSelector({
           {selectedType?.icon}
         </span>
         {selectedType?.label}{" "}
-        <span className={css(styles.downIcon)}>{icons.angleDown}</span>
+        <span className={css(styles.downIcon)}>{angleDown}</span>
       </div>
     );
   };

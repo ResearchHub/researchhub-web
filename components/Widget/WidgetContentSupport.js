@@ -10,6 +10,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils/form";
 import ReactTooltip from "react-tooltip";
+import { plusCircleSolid } from "~/config/themes/icons";
 
 const DEFAULT_SHIMMER_TIME = 1150;
 
@@ -123,7 +124,7 @@ const ContentSupport = (props) => {
       {renderCount()}
       {!isUserContent() && (
         <span className={css(styles.plusButton)} id={"plusIcon"}>
-          {icons.plusCircleSolid}
+          {plusCircleSolid}
         </span>
       )}
       <img

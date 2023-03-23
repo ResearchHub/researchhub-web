@@ -19,6 +19,7 @@ import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors from "~/config/themes/colors";
+import { longArrowLeft, search } from "~/config/themes/icons";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -151,7 +152,7 @@ function RhSearchBarInput({
         className={css(styles.searchIcon)}
         onClick={pushSearchToUrlAndTrack}
       >
-        {icons.search}
+        {search}
       </span>
     </div>
   );
@@ -185,7 +186,7 @@ function RhSearchBarExpandableInput({
           className={css(styles.searchIcon, styles.searchIconSmallScreen)}
           onClick={(): void => setIsExpanded(true)}
         >
-          {icons.search}
+          {search}
         </span>
       )}
       {isExpanded && (
@@ -197,7 +198,7 @@ function RhSearchBarExpandableInput({
               setIsExpanded(false);
             }}
           >
-            {icons.longArrowLeft}
+            {longArrowLeft}
           </span>
           <input
             autoFocus
@@ -226,7 +227,7 @@ function RhSearchBarExpandableInput({
               event.stopPropagation()
             }
           >
-            {icons.search}
+            {search}
           </span>
         </Fragment>
       )}

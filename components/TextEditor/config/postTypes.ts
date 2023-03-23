@@ -1,3 +1,10 @@
+import {
+  commentAltLineSolid,
+  commentRegular,
+  layerGroup,
+  starFilled,
+} from "~/config/themes/icons";
+
 export const getPostTypeStruct = ({ postType, documentType }) => {
   if (
     documentType === "question" ||
@@ -23,7 +30,7 @@ const postTypes = [
     value: POST_TYPES.DISCUSSION,
     isDefault: true,
     group: "contribute",
-    icon: icons.commentRegular,
+    icon: commentRegular,
     placeholder: "What are your thoughts about this paper?",
   },
   {
@@ -31,14 +38,14 @@ const postTypes = [
     value: POST_TYPES.REVIEW,
     group: "contribute",
     placeholder: "What are your overall impressions of this paper?",
-    icon: icons.starFilled,
+    icon: starFilled,
   },
   {
     label: "Summary",
     value: POST_TYPES.SUMMARY,
     group: "contribute",
     placeholder: "Share a summary of this paper with the community",
-    icon: icons.layerGroup,
+    icon: layerGroup,
   },
 ];
 
@@ -47,13 +54,13 @@ export const questionPostTypes = [
     label: "Answer",
     value: POST_TYPES.ANSWER,
     isDefault: true,
-    icon: icons.commentAltLineSolid,
+    icon: commentAltLineSolid,
     placeholder: "Submit your answer to this question.",
   },
   {
     label: "Discuss",
     value: POST_TYPES.DISCUSSION,
-    icon: icons.commentRegular,
+    icon: commentRegular,
     placeholder:
       "Use discussion to ask for clarification or suggest improvement to the question.",
   },

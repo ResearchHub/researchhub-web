@@ -4,13 +4,19 @@ import {
   nullToEmptyString,
 } from "../../config/utils/nullchecks";
 import { connect } from "react-redux";
-import { ReactElement, RefObject, SyntheticEvent, useEffect, useRef } from "react";
+import {
+  ReactElement,
+  RefObject,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+} from "react";
 import colors from "../../config/themes/colors";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
-import icons from "../../config/themes/icons";
+import icons, { plusThick } from "../../config/themes/icons";
 import PaperDraftUnduxStore, {
   clearSelection,
   PaperDraftStore,
@@ -111,7 +117,7 @@ function PaperDraftInlineCommentSlideButton({
       ref={buttonRef}
       style={{ top: displayableOffsetTop }}
     >
-      {icons.plusThick}
+      {plusThick}
     </div>
   );
 }

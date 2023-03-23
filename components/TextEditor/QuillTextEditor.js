@@ -17,7 +17,7 @@ import ReviewCategorySelector from "~/components/TextEditor/ReviewCategorySelect
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import faIcons from "~/config/themes/icons";
+import faIcons, { fontCase, times, video } from "~/config/themes/icons";
 import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
 import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
 import reviewCategories from "~/components/TextEditor/config/reviewCategories";
@@ -58,7 +58,7 @@ class Editor extends Component {
 
       const Quill = val.default.Quill;
       var icons = val.default.Quill.import("ui/icons");
-      icons.video = ReactDOMServer.renderToString(faIcons.video);
+      icons.video = ReactDOMServer.renderToString(video);
 
       Quill.register(QuillPeerReviewRatingBlock);
       Quill.register("modules/magicUrl", MagicUrl);
@@ -358,7 +358,7 @@ class Editor extends Component {
             className={`show-full-editor ${showFullEditor ? "ql-active" : ""}`}
             onClick={() => this.setState({ showFullEditor: !showFullEditor })}
           >
-            {faIcons.fontCase}
+            {fontCase}
           </button>
         </span>
 
@@ -537,9 +537,7 @@ class Editor extends Component {
                       <span className={css(styles.desktop)}>ResearchCoin </span>
                       Bounty Added{" "}
                     </span>
-                    <span className={css(styles.closeBounty)}>
-                      {icons.times}
-                    </span>
+                    <span className={css(styles.closeBounty)}>{times}</span>
                   </button>
                 ) : (
                   this.props.showBountyBtn && (

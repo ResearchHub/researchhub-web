@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { useMemo } from "react";
 import colors from "~/config/themes/colors";
+import { toggleOff, toggleOn } from "~/config/themes/icons";
 
 import { feedTypeOpts } from "../constants/UnifiedDocFilters";
 
@@ -46,11 +47,11 @@ const FeedMenuTagDropdown = ({
           <span className={css(styles.tagLabel)}>{opt.label}</span>
           {selectedTags.includes(opt.value) ? (
             <span className={css(styles.tagIcon, styles.toggleOn)}>
-              {icons.toggleOn}
+              {toggleOn}
             </span>
           ) : (
             <span className={css(styles.tagIcon, styles.toggleOff)}>
-              {icons.toggleOff}
+              {toggleOff}
             </span>
           )}
         </div>

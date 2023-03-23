@@ -13,6 +13,7 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 // Redux
 import { MessageActions } from "~/redux/message";
 import { buildSlug } from "~/config/utils/buildSlug";
+import { angleLeft, angleRight } from "~/config/themes/icons";
 
 class CitationCard extends Component {
   constructor(props) {
@@ -99,7 +100,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleLeft}
+                    {angleLeft}
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
@@ -110,7 +111,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleRight}
+                    {angleRight}
                   </span>
                 </div>
               );

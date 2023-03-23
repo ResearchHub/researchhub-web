@@ -5,6 +5,7 @@ import colors, { iconColors } from "~/config/themes/colors";
 
 import RhCarouselItem from "./RhCarouselItem";
 import { breakpoints } from "~/config/themes/screen";
+import { chevronLeft, chevronRight } from "~/config/themes/icons";
 
 type RhCarouselItem = {
   onBodyClick?: (event?: SyntheticEvent) => void;
@@ -57,7 +58,7 @@ const RhCarouselControl = ({
           }}
           role="button"
         >
-          {icons.chevronLeft}
+          {chevronLeft}
         </div>
         <div
           className={css(styles.rhCarouselControlIcon)}
@@ -68,7 +69,7 @@ const RhCarouselControl = ({
           }}
           role="button"
         >
-          {icons.chevronRight}
+          {chevronRight}
         </div>
       </div>
       <div className={css(styles.rhCarouselControlPillsContainer)}>{pills}</div>

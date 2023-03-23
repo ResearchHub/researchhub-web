@@ -22,6 +22,7 @@ import { useState } from "react";
 import colors from "~/config/themes/colors";
 
 import withWebSocket from "../withWebSocket";
+import { checkCircle, exclamationCircle } from "~/config/themes/icons";
 
 type Props = {
   isNewPostModalOpen: boolean;
@@ -59,7 +60,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"PAPER UPLOADED"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
-              {icons.checkCircle}
+              {checkCircle}
             </span>
             {"Click here to complete next steps"}
           </div>
@@ -85,7 +86,7 @@ const getToastBody = ({
           </div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {icons.exclamationCircle}
+              {exclamationCircle}
             </span>
             {
               "We weren't able to get DOI from the source. Click here to try again by providing DOI"
@@ -100,7 +101,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"DUPLICATE PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {icons.exclamationCircle}
+              {exclamationCircle}
             </span>
             {"We've found a duplicate paper"}
           </div>
@@ -114,7 +115,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"UPLOADING PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
-              {icons.checkCircle}
+              {checkCircle}
             </span>
             {"Fetching Paper Metadata..."}
           </div>

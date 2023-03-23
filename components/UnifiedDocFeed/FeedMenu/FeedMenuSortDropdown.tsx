@@ -4,6 +4,7 @@ import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
 
 import { breakpoints } from "~/config/themes/screen";
+import { arrowRight, chevronDown } from "~/config/themes/icons";
 
 function FeedMenuSortDropdown({
   selectedOrderingValue,
@@ -58,14 +59,14 @@ function FeedMenuSortDropdown({
           {selectedOrderingObj?.selectedLabel}
           {!selectedOrderingObj.disableScope && (
             <span className={css(styles.displayTimeScope)}>
-              <span className={css(styles.rightIcon)}>{icons.arrowRight}</span>
+              <span className={css(styles.rightIcon)}>{arrowRight}</span>
               <span className={css(styles.selectedTimeScopeLabel)}>
                 {timeScopeObj.label}
               </span>
             </span>
           )}
         </div>
-        <div className={css(styles.displayDown)}>{icons.chevronDown}</div>
+        <div className={css(styles.displayDown)}>{chevronDown}</div>
       </div>
       {isOpen && (
         <div className={css(styles.dropdownBody)}>

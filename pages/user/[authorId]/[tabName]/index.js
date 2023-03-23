@@ -52,6 +52,16 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { captureEvent } from "~/config/utils/events";
+import {
+  arrowRight,
+  editHub,
+  facebook,
+  graduationCap,
+  linkedIn,
+  twitter,
+  userPlus,
+  userSlash,
+} from "~/config/themes/icons";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -530,7 +540,7 @@ function AuthorPage(props) {
             className={css(styles.submitSocialButton)}
             onClick={() => saveSocial(social)}
           >
-            {icons.arrowRight}
+            {arrowRight}
           </div>
         </div>
       </div>
@@ -639,7 +649,7 @@ function AuthorPage(props) {
   const socialMediaLinkButtons = [
     {
       link: safeGuardURL(author.linkedin),
-      icon: icons.linkedIn,
+      icon: linkedIn,
       nodeRef: linkedinRef,
       dataTip: "Set LinkedIn Profile",
       onClick: () => setEditLinkedin(true),
@@ -649,7 +659,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.twitter),
-      icon: icons.twitter,
+      icon: twitter,
       nodeRef: twitterRef,
       dataTip: "Set Twitter Profile",
       onClick: () => setEditTwitter(true),
@@ -659,7 +669,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.facebook),
-      icon: icons.facebook,
+      icon: facebook,
       nodeRef: facebookRef,
       dataTip: "Set Facebook Profile",
       onClick: () => setEditFacebook(true),
@@ -736,8 +746,8 @@ function AuthorPage(props) {
                 !fetchedUser
                   ? " "
                   : isAuthorUserSuspended
-                  ? icons.userPlus
-                  : icons.userSlash
+                  ? userPlus
+                  : userSlash
               }
               iconStyle={styles.moderatorIcon}
               key="user"
@@ -766,8 +776,8 @@ function AuthorPage(props) {
                   !fetchedUser
                     ? " "
                     : isAuthorUserSuspended
-                    ? icons.userPlus
-                    : icons.userSlash
+                    ? userPlus
+                    : userSlash
                 }
                 iconStyle={styles.moderatorIcon}
                 key="user"
@@ -800,7 +810,7 @@ function AuthorPage(props) {
               label={() => (
                 <Fragment>
                   <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.user}
+                    {user}
                   </span>
                   Sift Profile
                 </Fragment>
@@ -818,7 +828,7 @@ function AuthorPage(props) {
     <div>
       {allowEdit ? (
         <div className={css(styles.editProfileButton)} key="editButton">
-          <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
+          <span onClick={onOpenUserInfoModal}>{editHub}</span>
         </div>
       ) : null}
     </div>
@@ -836,7 +846,7 @@ function AuthorPage(props) {
       author?.education?.length ? (
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
           <div className={css(styles.educationSummary) + " clamp2"}>
-            <span className={css(styles.icon)}>{icons.graduationCap}</span>
+            <span className={css(styles.icon)}>{graduationCap}</span>
             {createEduSummary(author)}
           </div>
         </div>

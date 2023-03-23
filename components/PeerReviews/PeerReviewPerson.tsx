@@ -6,6 +6,11 @@ import { ReactElement } from "react";
 import colors from "~/config/themes/colors";
 import ReactTooltip from "react-tooltip";
 import { ID } from "~/config/types/root_types";
+import {
+  checkCircleSolid,
+  question,
+  timesCircleSolid,
+} from "~/config/themes/icons";
 
 type Props = {
   id: ID;
@@ -41,15 +46,15 @@ function PeerReviewPerson({ id, status, authorProfile }: Props): ReactElement {
 
       {status == "INVITED" ? (
         <span className={css(styles.statusIcon, styles.questionIcon)}>
-          {icons.question}
+          {question}
         </span>
       ) : status == "ACCEPTED" ? (
         <span className={css(styles.statusIcon, styles.checkIcon)}>
-          {icons.checkCircleSolid}
+          {checkCircleSolid}
         </span>
       ) : status == "DECLINED" ? (
         <span className={css(styles.statusIcon, styles.timesIcon)}>
-          {icons.timesCircleSolid}
+          {timesCircleSolid}
         </span>
       ) : null}
       <div className={css(styles.avatarContainer)}>

@@ -16,6 +16,7 @@ import {
 import { postUpdatePaperAbstract } from "./api/postUpdatePaperAbstract";
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 import { htmlStringToPlainString } from "~/config/utils/htmlStringToPlainString";
+import { file, pencil } from "~/config/themes/icons";
 
 const SimpleEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -85,7 +86,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
               onClick={(): void => setIsEditMode(true)}
               loginRequired
             >
-              <span className={css(styles.pencilIcon)}>{icons.pencil}</span>
+              <span className={css(styles.pencilIcon)}>{pencil}</span>
             </PermissionNotificationWrapper>
           )}
         </div>
@@ -158,7 +159,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 height: 50,
               }}
             >
-              {icons.file}
+              {file}
             </div>
             <h2 className={css(styles.noSummaryTitle)}>
               {"Add an abstract to this paper"}

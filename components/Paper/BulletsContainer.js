@@ -19,6 +19,7 @@ import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 
 import SectionBounty from "./Tabs/SectionBounty";
+import { manage, plusCircle } from "~/config/themes/icons";
 
 const BULLET_COUNT = 5;
 
@@ -243,8 +244,7 @@ class BulletsContainer extends Component {
   };
 
   renderDropdown = () => {
-    let { showDropdown } = this.state;
-    const { openManageBulletPointsModal, paper, updatePaperState } = this.props;
+    const { openManageBulletPointsModal } = this.props;
     return (
       <div
         className={css(dropdownStyles.row)}
@@ -254,9 +254,7 @@ class BulletsContainer extends Component {
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
         >
-          <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.manage}
-          </span>
+          <span className={css(dropdownStyles.dropdownItemIcon)}>{manage}</span>
           Manage
         </Ripples>
         <Ripples
@@ -264,7 +262,7 @@ class BulletsContainer extends Component {
           onClick={() => this.transitionWrapper(this.toggleForm)}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.plusCircle}
+            {plusCircle}
           </span>
           Add Takeaway
         </Ripples>

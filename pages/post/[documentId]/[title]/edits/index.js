@@ -21,6 +21,7 @@ import colors from "~/config/themes/colors";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { longArrowLeft } from "~/config/themes/icons";
 
 class PaperEditHistory extends Component {
   static async getInitialProps({ store, isServer, query }) {
@@ -175,7 +176,7 @@ class PaperEditHistory extends Component {
             legacyBehavior
           >
             <div className={css(styles.back)}>
-              <span className={css(styles.arrow)}>{icons.longArrowLeft}</span>
+              <span className={css(styles.arrow)}>{longArrowLeft}</span>
               Summary
             </div>
           </Link>

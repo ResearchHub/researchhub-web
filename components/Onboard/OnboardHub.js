@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
+import { check, plus } from "~/config/themes/icons";
 
 const OnboardHub = (props) => {
   const { userHubIds, hub } = props;
@@ -18,7 +19,7 @@ const OnboardHub = (props) => {
   const renderButton = () => {
     return (
       <div className={css(styles.button, subscribed && styles.active)}>
-        {subscribed ? icons.check : icons.plus}
+        {subscribed ? check : plus}
       </div>
     );
   };

@@ -22,6 +22,7 @@ import {
   convertDeltaToText,
   isQuillDelta,
 } from "~/config/utils/editor";
+import { checkCircle, plusCircle } from "~/config/themes/icons";
 
 class PaperProgress extends Component {
   constructor(props) {
@@ -365,9 +366,7 @@ class PaperProgress extends Component {
               )}
               id="icon"
             >
-              {section.active && !loading
-                ? icons.checkCircle
-                : icons.plusCircle}
+              {section.active && !loading ? checkCircle : plusCircle}
             </div>
             {section.label}
             {!!section.count && ":"}

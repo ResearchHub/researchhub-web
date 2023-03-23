@@ -14,6 +14,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { modalStyles } from "~/config/themes/styles";
+import { error } from "~/config/themes/icons";
 
 class OrcidLoginPage extends Component {
   constructor(props) {
@@ -116,7 +117,7 @@ class OrcidLoginPage extends Component {
               />
               {this.state.error && (
                 <div className={css(styles.error)}>
-                  <span className={css(styles.errorIcon)}>{icons.error}</span>
+                  <span className={css(styles.errorIcon)}>{error}</span>
                   Something went wrong. Please try again.
                 </div>
               )}

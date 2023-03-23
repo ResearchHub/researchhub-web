@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import { chevronDown, chevronUp } from "~/config/themes/icons";
 
 export const SideColumnTitle = (props) => {
   const { title, count, overrideStyles, onClick, state, children } = props;
@@ -14,7 +15,7 @@ export const SideColumnTitle = (props) => {
       {children}
       {onClick && (
         <div className={css(styles.toggleButton)} onClick={onClick}>
-          {state ? icons.chevronUp : icons.chevronDown}
+          {state ? chevronUp : chevronDown}
         </div>
       )}
     </h5>

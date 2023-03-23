@@ -1,7 +1,7 @@
 import { ClipLoader, DotLoader, BeatLoader } from "react-spinners";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
-import { Lottie } from "@crello/react-lottie";
+import Lottie from "react-lottie";
 import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
 
 const Loader = (props) => {

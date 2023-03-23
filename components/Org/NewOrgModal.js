@@ -17,6 +17,7 @@ import colors, { formColors } from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 
 import { captureEvent } from "~/config/utils/events";
+import { chevronLeft } from "~/config/themes/icons";
 
 const STEPS = {
   ORG_NAME: 1,
@@ -178,7 +179,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {icons.chevronLeft}{" "}
+              {chevronLeft}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>
@@ -238,7 +239,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {icons.chevronLeft}{" "}
+              {chevronLeft}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>

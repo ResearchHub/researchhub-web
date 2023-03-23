@@ -25,6 +25,7 @@ import { getHubs, getCategories } from "~/components/Hubs/api/fetchHubs";
 // Redux
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
+import { fire } from "~/config/themes/icons";
 
 class Index extends Component {
   constructor(props) {
@@ -118,7 +119,7 @@ class Index extends Component {
               {categoryName === "Trending" ? (
                 <span>
                   {categoryName}
-                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                  <span className={css(styles.trendingIcon)}>{fire}</span>
                 </span>
               ) : (
                 categoryName

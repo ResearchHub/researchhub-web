@@ -2,6 +2,7 @@ import colors from "~/config/themes/colors";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import reviewCategories from "./config/reviewCategories";
+import { plus } from "~/config/themes/icons";
 
 function ReviewCategorySelector({ handleSelect }): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +46,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
             >
               <div className={css(styles.dropdownOptLabel)}>
                 <span className={css(styles.plusIcon)}>
-                  {icons.plus}
+                  {plus}
                   {` `}
                 </span>
                 <span className={css(styles.catText)}>{cat.label}</span>
@@ -66,7 +67,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
       >
-        <span className={css(styles.plusIcon)}>{icons.plus}</span>
+        <span className={css(styles.plusIcon)}>{plus}</span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
       </div>
     );

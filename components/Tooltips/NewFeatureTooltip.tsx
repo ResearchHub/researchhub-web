@@ -7,6 +7,7 @@ import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffec
 import { connect } from "react-redux";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
 import { breakpoints } from "~/config/themes/screen";
+import { caretLeft, fire } from "~/config/themes/icons";
 
 function NewFeatureTooltip({
   featureName,
@@ -47,7 +48,7 @@ function NewFeatureTooltip({
         <div className={css(styles.title)}>
           Contribution Types
           <span className={css(styles.new)}>
-            <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>{fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
@@ -74,7 +75,7 @@ function NewFeatureTooltip({
         <div className={css(styles.title)}>
           Bounties
           <span className={css(styles.new)}>
-            <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>{fire}</span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
@@ -110,7 +111,7 @@ function NewFeatureTooltip({
             colorStyles["caret_" + color]
           )}
         >
-          {icons.caretLeft}
+          {caretLeft}
         </span>
         <div className={css(styles.body, colorStyles["body_" + color])}>
           {html}

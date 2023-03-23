@@ -8,6 +8,7 @@ import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { buildTypeFilterUrl } from "../utils/buildTypeFilterUrl";
+import { chevronDown, chevronUp } from "~/config/themes/icons";
 
 type Args = {
   selectedFilters: SelectedUrlFilters;
@@ -62,9 +63,9 @@ const FeedMenuTab = ({
         {nestedOptions.length > 0 && (
           <>
             {isTagsMenuOpen ? (
-              <span className={css(styles.icon)}>{icons.chevronUp}</span>
+              <span className={css(styles.icon)}>{chevronUp}</span>
             ) : isSelected ? (
-              <span className={css(styles.icon)}>{icons.chevronDown}</span>
+              <span className={css(styles.icon)}>{chevronDown}</span>
             ) : null}
             {isTagsMenuOpen && (
               <FeedMenuTagDropdown

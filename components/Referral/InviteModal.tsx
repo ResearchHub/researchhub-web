@@ -17,6 +17,7 @@ import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { useDispatch } from "react-redux";
 import { captureEvent } from "~/config/utils/events";
+import { copy, link, paperPlane } from "~/config/themes/icons";
 
 type Args = {
   isOpen: boolean;
@@ -173,8 +174,7 @@ const InviteModal = ({
             )}
             onClick={() => setSelectedTab("LINK")}
           >
-            <span className={css(styles.tabIcon)}>{icons.link}</span> Invite by
-            link
+            <span className={css(styles.tabIcon)}>{link}</span> Invite by link
           </div>
           <div
             onClick={() => setSelectedTab("EMAIL")}
@@ -183,8 +183,8 @@ const InviteModal = ({
               selectedTab === "EMAIL" && styles.tabSelected
             )}
           >
-            <span className={css(styles.tabIcon)}>{icons.paperPlane}</span>{" "}
-            Invite by email
+            <span className={css(styles.tabIcon)}>{paperPlane}</span> Invite by
+            email
           </div>
           <div className={css(styles.invitesSent)}>
             <ALink href="/referral" overrideStyle={styles.link}>
@@ -207,9 +207,7 @@ const InviteModal = ({
                       {showSuccessMessage ? (
                         "Copied"
                       ) : (
-                        <span className={css(styles.copyIcon)}>
-                          {icons.copy}
-                        </span>
+                        <span className={css(styles.copyIcon)}>{copy}</span>
                       )}
                     </a>
                   }
@@ -334,32 +332,6 @@ const InviteModal = ({
               </div>
             </li>
           </ol>
-          {/* <div className={css(styles.squaresContainer)}>
-            <div className={css(styles.square)}>
-              <div className={css(styles.iconContainer)}>
-                {user?.id ? (
-                  <AuthorAvatar author={user?.author_profile} />
-                ) : (
-                  <div className={css(styles.userIcon)}>{icons.user}</div>
-                )}
-              </div>
-              <span className={css(styles.personTitle)}>You</span>
-              <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+7% RSC</span>{" "}
-                bonus for first six months
-              </span>
-            </div>
-            <div className={css(styles.square)}>
-              <div className={css(styles.iconContainer)}>
-                <InviteIcon />
-              </div>
-              <span className={css(styles.personTitle)}>Referral</span>
-              <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+0 RSC</span> on
-                sign up
-              </span>
-            </div>
-          </div> */}
         </div>
       </div>
     </BaseModal>

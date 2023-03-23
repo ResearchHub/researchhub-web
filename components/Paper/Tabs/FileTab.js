@@ -25,6 +25,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 import { openExternalLink } from "~/config/utils/routing";
+import { plusCircle } from "~/config/themes/icons";
 
 class FileTab extends Component {
   constructor(props) {
@@ -139,9 +140,7 @@ class FileTab extends Component {
               </span>
             </div>
             <Ripples className={css(styles.item)} onClick={this.openDndModal}>
-              <span className={css(styles.dropdownItemIcon)}>
-                {icons.plusCircle}
-              </span>
+              <span className={css(styles.dropdownItemIcon)}>{plusCircle}</span>
               Add Files
             </Ripples>
           </div>

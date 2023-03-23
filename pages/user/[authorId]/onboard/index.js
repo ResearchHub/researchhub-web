@@ -23,6 +23,7 @@ import VerificationForm from "../../../../components/Form/VerificationForm";
 import ComponentWrapper from "../../../../components/ComponentWrapper";
 import { MessageActions } from "../../../../redux/message";
 import { captureException } from "@sentry/browser";
+import { search } from "~/config/themes/icons";
 
 const SEARCH_TIMEOUT = 400;
 
@@ -266,7 +267,7 @@ const Index = (props) => {
                 value={searchValue}
                 placeholder={"Search Hubs"}
               />
-              <span className={css(styles.searchIcon)}>{icons.search}</span>
+              <span className={css(styles.searchIcon)}>{search}</span>
               <div
                 onClick={resetSearch}
                 className={css(

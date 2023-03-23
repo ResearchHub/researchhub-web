@@ -1,6 +1,7 @@
 import Collapsible from "~/components/Form/Collapsible";
 
 import { css, StyleSheet } from "aphrodite";
+import { chevronDownLeft } from "~/config/themes/icons";
 
 export type AboutQuestionCardProps = {
   customStyle: any;
@@ -28,9 +29,7 @@ export default function AboutQuestionCard({
         trigger={
           <div className={css(styles.trigger)}>
             What can you post here?
-            <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
-            </span>
+            <span className={css(styles.chevronDown)}>{chevronDownLeft}</span>
           </div>
         }
       >
@@ -48,9 +47,7 @@ export default function AboutQuestionCard({
         trigger={
           <div className={css(styles.trigger)}>
             What counts as research output?
-            <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
-            </span>
+            <span className={css(styles.chevronDown)}>{chevronDownLeft}</span>
           </div>
         }
       >
@@ -70,9 +67,7 @@ export default function AboutQuestionCard({
         trigger={
           <div className={css(styles.trigger)}>
             Guidelines
-            <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
-            </span>
+            <span className={css(styles.chevronDown)}>{chevronDownLeft}</span>
           </div>
         }
       >

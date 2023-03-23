@@ -12,6 +12,7 @@ import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
 
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
+import { longArrowLeft, times } from "~/config/themes/icons";
 
 type Props = {
   currentStep?: WizardBodyTypes;
@@ -59,7 +60,7 @@ export default function PaperUploadWizardHeader({
     return (
       <div className={css(formGenericStyles.text, styles.header)}>
         <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
+          {times}
         </span>
         {currentStep === "pdf_upload" ? (
           <div
@@ -78,7 +79,7 @@ export default function PaperUploadWizardHeader({
                 });
               }}
             >
-              {icons.longArrowLeft}
+              {longArrowLeft}
             </span>
             {"Upload PDF"}
           </div>

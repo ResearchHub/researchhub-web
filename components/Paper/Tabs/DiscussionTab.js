@@ -43,6 +43,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
 import Bounty from "~/config/types/bounty";
+import { twitter } from "~/config/themes/icons";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -353,7 +354,7 @@ const DiscussionTab = (props) => {
               : showTwitterComments && (
                   <span className={css(styles.box, styles.emptyStateBox)}>
                     <span className={css(styles.icon, styles.twitterIcon)}>
-                      {icons.twitter}
+                      {twitter}
                     </span>
                     <h3 className={css(styles.noSummaryTitle)}>
                       There are no tweets {mobileView && "\n"}for this paper

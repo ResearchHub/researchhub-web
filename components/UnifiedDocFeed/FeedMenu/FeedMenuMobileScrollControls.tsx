@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useEffectShowHorizontalMobileScroll from "../utils/useEffectShowHorizontalMobileScroll";
 import { css, StyleSheet } from "aphrodite";
+import { chevronLeft, chevronRight } from "~/config/themes/icons";
 
 const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   const [showMobileLeftScroll, setShowMobileLeftScroll] = useState(false);
@@ -49,7 +50,7 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
             tabsContainerRef.current.scrollBy({ left: -60, behavior: "smooth" })
           }
         >
-          {icons.chevronLeft}
+          {chevronLeft}
         </span>
         <span
           className={css(
@@ -62,7 +63,7 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
             tabsContainerRef.current.scrollBy({ left: 60, behavior: "smooth" });
           }}
         >
-          {icons.chevronRight}
+          {chevronRight}
         </span>
       </div>
     </div>

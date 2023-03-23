@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
 
 import colors from "~/config/themes/colors";
+import { paper } from "~/config/themes/icons";
 
 const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
   const html = [];
@@ -12,7 +13,7 @@ const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
         key={`noteplacholder-${i}`}
         className={css(styles.placeholderContainer) + " show-loading-animation"}
       >
-        <div className={css(styles.noteIcon)}>{icons.paper}</div>
+        <div className={css(styles.noteIcon)}>{paper}</div>
         <RectShape
           className={css(styles.textRow)}
           color={color}

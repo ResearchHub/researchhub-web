@@ -14,7 +14,7 @@ import Router from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors from "~/config/themes/colors";
-import icons, { MedalIcon } from "~/config/themes/icons";
+import icons, { coinsSolid, MedalIcon } from "~/config/themes/icons";
 import Login from "~/components/Login/Login";
 import Button from "~/components/Form/Button";
 import ResearchHubIcon from "~/static/ResearchHubIcon";
@@ -114,7 +114,7 @@ const Index = ({ code, user }) => {
               </div>
               <div className={css(styles.reason)}>
                 <div className={css(styles.reasonIcon, styles.reasonIconFlask)}>
-                  {icons.coinsSolid}
+                  {coinsSolid}
                 </div>
                 <div className={css(styles.reasonText)}>
                   Create bounties to reward other scientists for completing

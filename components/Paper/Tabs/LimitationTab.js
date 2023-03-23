@@ -17,6 +17,7 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
+import { manage, plusCircle } from "~/config/themes/icons";
 
 const LIMITATIONS_COUNT = 5;
 
@@ -238,9 +239,7 @@ class LimitationTab extends Component {
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "limitations")}
         >
-          <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.manage}
-          </span>
+          <span className={css(dropdownStyles.dropdownItemIcon)}>{manage}</span>
           Manage
         </Ripples>
         <Ripples
@@ -248,7 +247,7 @@ class LimitationTab extends Component {
           onClick={() => this.transitionWrapper(this.toggleForm)}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.plusCircle}
+            {plusCircle}
           </span>
           Add Limitation
         </Ripples>

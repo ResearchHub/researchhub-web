@@ -5,6 +5,7 @@ import { breakpoints } from "~/config/themes/screen";
 import ScoreInput from "~/components/Form/ScoreInput";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import { starFilled } from "~/config/themes/icons";
 
 type Props = {
   summary: PeerReviewScoreSummary;
@@ -17,7 +18,7 @@ export default function PeerReviewSummary({
 }: Props): ReactElement {
   return (
     <div className={css(styles.reviewContainer)}>
-      <div className={css(styles.starContainer)}>{icons.starFilled}</div>
+      <div className={css(styles.starContainer)}>{starFilled}</div>
 
       <span className={css(styles.reviewScoreContainer)}>
         <span className={css(styles.reviewScore)}>

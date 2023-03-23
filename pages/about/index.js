@@ -8,6 +8,13 @@ import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { createRef, Component, Fragment, useState } from "react";
 import { useTransition, animated } from "react-spring";
+import {
+  chevronLeft,
+  chevronRight,
+  globe,
+  sortAmountUpAlt,
+  starHalf,
+} from "~/config/themes/icons";
 
 const points = [
   {
@@ -16,7 +23,7 @@ const points = [
     text: "The scientific record is too important to be hidden behind paywalls and in ivory towers. \n ResearchHub is accessible to everybody, everywhere, with no content residing behind paywalls \n and no costs to participate. Summaries are written in plain English to improve accessibility.",
     icon: (
       <span draggable={false} style={{ color: "#4b5bf6" }}>
-        {icons.globe}
+        {globe}
       </span>
     ),
   },
@@ -26,7 +33,7 @@ const points = [
     text: "Academic research is too siloed today. ResearchHub encourages academics and \n non-academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
     icon: (
       <span draggable={false} style={{ color: colors.YELLOW(1) }}>
-        {icons.starHalf}
+        {starHalf}
       </span>
     ),
   },
@@ -36,7 +43,7 @@ const points = [
     text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
     icon: (
       <span draggable={false} style={{ color: colors.GREEN(1) }}>
-        {icons.sortAmountUpAlt}
+        {sortAmountUpAlt}
       </span>
     ),
   },
@@ -346,14 +353,14 @@ class Index extends Component {
                 data={this.points}
                 arrowLeft={
                   <NavigationArrow
-                    icon={icons.chevronLeft}
+                    icon={chevronLeft}
                     direction={"left"}
                     customStyles={styles.navArrow}
                   />
                 }
                 arrowRight={
                   <NavigationArrow
-                    icon={icons.chevronRight}
+                    icon={chevronRight}
                     direction={"right"}
                     customStyles={styles.navArrow}
                   />

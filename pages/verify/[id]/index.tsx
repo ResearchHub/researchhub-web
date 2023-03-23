@@ -9,6 +9,7 @@ import Login from "~/components/Login/Login";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import Button from "~/components/Form/Button";
+import { checkCircleSolid, exclamationCircle } from "~/config/themes/icons";
 
 type status = "FETCHING" | "VERIFIED" | "ERROR";
 
@@ -43,7 +44,7 @@ function Page(props) {
         ) : status === "VERIFIED" ? (
           <>
             <span style={{ color: colors.GREEN(), fontSize: 48 }}>
-              {icons.checkCircleSolid}
+              {checkCircleSolid}
             </span>
             <span
               className={css(styles.stepTitle)}
@@ -64,7 +65,7 @@ function Page(props) {
         ) : status === "ERROR" ? (
           <>
             <span style={{ color: colors.ORANGE_DARK(), fontSize: 48 }}>
-              {icons.exclamationCircle}
+              {exclamationCircle}
             </span>
             <span
               className={css(styles.stepTitle)}

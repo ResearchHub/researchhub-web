@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
+import { RSC } from "~/config/themes/icons";
 
 export const getEducationalCarouselElements = () => [
   {
@@ -49,7 +50,7 @@ export const getEducationalCarouselElements = () => [
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
         <span style={{ marginRight: 8, marginTop: 3 }}>
-          {icons.RSC({
+          {RSC({
             style: styles.RSC,
           })}
         </span>

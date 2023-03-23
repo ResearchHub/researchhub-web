@@ -9,6 +9,7 @@ import colors from "~/config/themes/colors";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
+import { book, pencil } from "~/config/themes/icons";
 
 const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   if (Object.keys(metaData).length < 1) {
@@ -104,7 +105,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         />
       );
     } else {
-      return <div className={css(styles.bookIcon)}>{icons.book}</div>;
+      return <div className={css(styles.bookIcon)}>{book}</div>;
     }
   };
 
@@ -244,7 +245,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
             onClick={onRemove ? onRemove : null}
             // onClick={toggleEditState}
           >
-            {icons.pencil}
+            {pencil}
           </div>
         </Ripples>
       );

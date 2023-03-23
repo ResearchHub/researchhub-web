@@ -16,6 +16,7 @@ import PaperDraftEventCaptureWrap from "./PaperDraftEventCaptureWrap";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import { pencil } from "~/config/themes/icons";
 
 class PaperDraft extends Component {
   constructor(props) {
@@ -153,7 +154,7 @@ class PaperDraft extends Component {
             Paper
             {isViewerAllowedToEdit && (
               <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
-                {icons.pencil}
+                {pencil}
               </div>
             )}
           </h3>

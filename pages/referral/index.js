@@ -16,6 +16,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import ReferredUserList from "~/components/Referral/ReferredUserList";
 
 import { breakpoints } from "~/config/themes/screen";
+import { copy } from "~/config/themes/icons";
 
 const Index = ({ auth }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -56,7 +57,7 @@ const Index = ({ auth }) => {
                   {showSuccessMessage ? (
                     "Copied!"
                   ) : (
-                    <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                    <span className={css(styles.copyIcon)}>{copy}</span>
                   )}
                 </a>
               }

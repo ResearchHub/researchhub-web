@@ -5,6 +5,7 @@ import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 
 // Config
 import colors from "~/config/themes/colors";
+import { chevronDown, chevronUp } from "~/config/themes/icons";
 
 const AuthorStatsDropdown = (props) => {
   const { authors, paper, paperId, hubs, isPaper } = props;
@@ -18,7 +19,7 @@ const AuthorStatsDropdown = (props) => {
       >
         <div>{"Authors & Stats"}</div>
         <div className={css(styles.icon)}>
-          {showDropdown ? icons.chevronDown : icons.chevronUp}
+          {showDropdown ? chevronDown : chevronUp}
         </div>
       </div>
       <div

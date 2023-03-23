@@ -5,6 +5,7 @@ import colors from "../../config/themes/colors";
 
 // Component
 import Loader from "../Loader/Loader";
+import { plus } from "~/config/themes/icons";
 
 const DEFAULT_TRANSITION_TIME = 0.4;
 
@@ -117,7 +118,7 @@ class AuthorCardList extends Component {
         >
           <div className={css(styles.addButtonWrapper)}>
             <span style={{ color: colors.BLUE(1), height: 12, width: 12 }}>
-              {icons.plus}
+              {plus}
             </span>
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>

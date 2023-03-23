@@ -15,6 +15,7 @@ import { NotificationActions } from "~/redux/notification";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
+import { bell } from "~/config/themes/icons";
 
 class Notification extends Component {
   constructor(props) {
@@ -164,7 +165,7 @@ class Notification extends Component {
           onClick={this.toggleMenu}
           ref={(ref) => (this.notifIcon = ref)}
         >
-          {icons.bell}
+          {bell}
           {this.state.count > 0 && (
             <div className={css(styles.notifCount)}>{this.state.count}</div>
           )}

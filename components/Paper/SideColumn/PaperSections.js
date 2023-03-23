@@ -7,6 +7,7 @@ import ColumnContainer from "./ColumnContainer";
 // Config
 
 import colors from "~/config/themes/colors";
+import { chevronDown, chevronUp } from "~/config/themes/icons";
 
 const PaperSections = (props) => {
   const {
@@ -96,7 +97,7 @@ const PaperSections = (props) => {
                   toggleHidePaperSections(!hidePaperSections);
                 }}
               >
-                {hidePaperSections ? icons.chevronUp : icons.chevronDown}
+                {hidePaperSections ? chevronUp : chevronDown}
               </div>
             )}
           </a>

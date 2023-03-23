@@ -12,6 +12,7 @@ import { ModalActions } from "~/redux/modals";
 
 import colors from "~/config/themes/colors";
 import { getSummaryText } from "~/config/utils/editor";
+import { coinStack } from "~/config/themes/icons";
 
 const SectionBounty = (props) => {
   const { section, paper, bullets, updatePaperState, loading, auth } = props;
@@ -44,18 +45,9 @@ const SectionBounty = (props) => {
     return (
       <Fragment>
         Earn{" " + amount + " "}
-        {icons.coinStack({ styles: styles.coinStackIcon })}
+        {coinStack({ styles: styles.coinStackIcon })}
       </Fragment>
     );
-  };
-
-  const formatToolTip = () => {
-    const sectionName = { takeaways: "Key Takeaways", summary: "Summary" };
-
-    if (isModerator) {
-      return `Set bounty for ${sectionName[section]}`;
-    }
-    return `Earn ${amount} RSC for contributing to the ${sectionName[section]}`;
   };
 
   return (

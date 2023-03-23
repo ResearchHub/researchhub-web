@@ -27,6 +27,13 @@ import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
 import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 import HubLeaderDashboard from "~/components/HubLeaderDashboard/HubLeaderDashboard";
+import {
+  bookOpen,
+  hub,
+  starFilled,
+  subscribers,
+  userEdit,
+} from "~/config/themes/icons";
 
 const filterOptions = [
   {
@@ -103,20 +110,20 @@ class Index extends Component {
     });
 
     this.items = [
-      { name: "Users", id: "users", type: "users", icon: icons.subscribers },
-      { name: "Authors", id: "authors", type: "authors", icon: icons.userEdit },
-      { name: "Papers", id: "papers", type: "papers", icon: icons.bookOpen },
+      { name: "Users", id: "users", type: "users", icon: subscribers },
+      { name: "Authors", id: "authors", type: "authors", icon: userEdit },
+      { name: "Papers", id: "papers", type: "papers", icon: bookOpen },
       {
         name: "Editors",
         id: "editors",
         type: "editors",
-        icon: icons.starFilled,
+        icon: starFilled,
       },
       {
         name: "Hubs",
         id: "hubs",
         type: "hubs",
-        icon: icons.hub,
+        icon: hub,
       },
     ];
   }

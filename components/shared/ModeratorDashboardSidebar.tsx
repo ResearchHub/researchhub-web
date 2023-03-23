@@ -12,6 +12,13 @@ import Ripples from "react-ripples";
 import { NavbarContext } from "~/pages/Base";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import {
+  bookOpen,
+  coin,
+  flag,
+  subscribers,
+  userEdit,
+} from "~/config/themes/icons";
 
 type Props = {};
 
@@ -34,7 +41,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const SIDE_BAR_ITEMS = filterNull([
     isUserModerator
       ? {
-          icon: icons.bookOpen,
+          icon: bookOpen,
           id: "author-claim-case-dashboard",
           name: "Author Claim",
           pathname: "/moderators/author-claim-case-dashboard",
@@ -42,7 +49,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserModerator
       ? {
-          icon: icons.subscribers,
+          icon: subscribers,
           id: "editors",
           name: "Editors",
           pathname: "/moderators/editors",
@@ -50,24 +57,15 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     userAllowedOnPermissionsDash
       ? {
-          icon: icons.userEdit,
+          icon: userEdit,
           id: "permissions",
           name: "Update Editors",
           pathname: "/moderators/permissions",
         }
       : null,
-    // TODO: kobe - take care of this
-    // userAllowedToManagePeerReviews
-    //   ? {
-    //       icon: icons.commentCheck,
-    //       id: "review",
-    //       name: "Peer Reviews",
-    //       pathname: "/moderators/reviews",
-    //     }
-    //   : null,
     userAllowedSendRSC
       ? {
-          icon: icons.coin,
+          icon: coin,
           id: "rsc",
           name: "Manage RSC",
           pathname: "/moderators/rsc",
@@ -75,7 +73,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserHubEditor || isUserModerator
       ? {
-          icon: icons.flag,
+          icon: flag,
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",

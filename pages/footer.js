@@ -3,6 +3,13 @@ import { Component } from "react";
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import {
+  discord,
+  github,
+  medium,
+  reddit,
+  twitter,
+} from "~/config/themes/icons";
 
 class Footer extends Component {
   tabData = [
@@ -79,7 +86,7 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.medium}</span>
+                <span className={css(styles.logo)}>{medium}</span>
               </div>
             </a>
             <a
@@ -89,7 +96,7 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.discord}</span>
+                <span className={css(styles.logo)}>{discord}</span>
               </div>
             </a>
             <a
@@ -99,7 +106,7 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.twitter}</span>
+                <span className={css(styles.logo)}>{twitter}</span>
               </div>
             </a>
             <a
@@ -108,7 +115,7 @@ class Footer extends Component {
               href="https://www.reddit.com/r/ResearchHub/"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.reddit}</span>
+                <span className={css(styles.logo)}>{reddit}</span>
               </div>
             </a>
             <a
@@ -117,7 +124,7 @@ class Footer extends Component {
               href="https://github.com/ResearchHub"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.github}</span>
+                <span className={css(styles.logo)}>{github}</span>
               </div>
             </a>
           </div>

@@ -4,7 +4,14 @@ import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import { nullthrows } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons, { MedalIcon } from "~/config/themes/icons";
+import icons, {
+  flagOutline,
+  medal,
+  MedalIcon,
+  pen,
+  reply,
+  trash,
+} from "~/config/themes/icons";
 import ThreadTextEditor from "./ThreadTextEditor";
 import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { connect } from "react-redux";
@@ -63,7 +70,7 @@ class ThreadActionBar extends Component {
           )}
           id={"editIcon"}
         >
-          {icons.pen}
+          {pen}
         </span>
         <span className={css(editing && styles.active)} id={"text"}>
           Edit
@@ -128,7 +135,7 @@ class ThreadActionBar extends Component {
     return (
       <div className={css(classNames)} onClick={_handleDelete}>
         <span className={css(styles.icon)} id={"deleteIcon"}>
-          {icons.trash}
+          {trash}
         </span>
         <span id={"delete"}>Delete</span>
       </div>
@@ -207,7 +214,7 @@ class ThreadActionBar extends Component {
                 )}
                 id={"replyIcon"}
               >
-                {icons.reply}
+                {reply}
               </span>
               Reply
             </div>
@@ -296,7 +303,7 @@ class ThreadActionBar extends Component {
                 className={css(styles.icon, styles.awardBountyIcon)}
                 id={"awardBountyIcon"}
               >
-                {icons.medal}
+                {medal}
               </span>
               <span className={css(styles.smallAwardText)}>Award Bounty</span>
               <span className={css(styles.awardText)}>
@@ -309,7 +316,7 @@ class ThreadActionBar extends Component {
           {this.props.toggleEdit && deleteButton}
           <FlagButtonV2
             buttonText=""
-            iconOverride={icons.flagOutline}
+            iconOverride={flagOutline}
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"

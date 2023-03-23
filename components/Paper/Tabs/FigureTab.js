@@ -20,6 +20,7 @@ import { PaperActions } from "~/redux/paper";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import { image, minusCircle, plusCircle } from "~/config/themes/icons";
 
 class FigureTab extends Component {
   constructor(props) {
@@ -233,7 +234,7 @@ class FigureTab extends Component {
       return (
         <EmptyState
           text={"No Figures Found"}
-          icon={icons.image}
+          icon={image}
           subtext={"No figures have been found in this paper's PDF"}
         />
       );
@@ -298,7 +299,7 @@ class FigureTab extends Component {
                 }
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  {icons.minusCircle}
+                  {minusCircle}
                 </span>
                 Remove Figure
               </Ripples>
@@ -307,7 +308,7 @@ class FigureTab extends Component {
                 onClick={this.openDndModal}
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  {icons.plusCircle}
+                  {plusCircle}
                 </span>
                 Add Figure
               </Ripples>

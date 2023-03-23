@@ -37,6 +37,7 @@ import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";
 import { Helpers } from "@quantfive/js-web-config";
+import { paperPlane, pencil, times } from "~/config/themes/icons";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -271,7 +272,7 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.togglePasswordVisibility}
           >
-            {this.state.isPasswordInputVisible ? icons.times : icons.pencil}
+            {this.state.isPasswordInputVisible ? times : pencil}
           </Ripples>
         </div>
         <div
@@ -345,7 +346,7 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.toggleEmailInput}
           >
-            {activeEmailInput ? icons.times : icons.pencil}
+            {activeEmailInput ? times : pencil}
           </Ripples>
         </div>
         <div
@@ -377,7 +378,7 @@ class UserSettings extends Component {
                   this.saveEmail();
                 }}
               >
-                {icons.paperPlane}
+                {paperPlane}
               </Ripples>
             </form>
           ) : (
@@ -494,7 +495,7 @@ class UserSettings extends Component {
         className={css(hubStyles.entry, styles.hubEntry)}
       >
         {hub.name}
-        <div className={css(styles.closeIcon)}>{icons.times}</div>
+        <div className={css(styles.closeIcon)}>{times}</div>
       </Ripples>
     );
   };
