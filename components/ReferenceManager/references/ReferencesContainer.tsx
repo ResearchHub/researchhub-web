@@ -5,28 +5,27 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { useState } from "react";
-import { ReferencesTabContextProvider } from "./context/ReferencesTabContext";
+import { Fragment, useState, ReactElement } from "react";
+import BasicTogglableNavbarLeft, {
+  LEFT_MAX_NAV_WIDTH,
+  LEFT_MIN_NAV_WIDTH,
+} from "../shared/basic_page_layout/BasicTogglableNavbarLeft";
 import DropdownMenu from "../shared/menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ReferenceItemTab from "./reference_item/ReferenceItemTab";
 import ReferencesTable from "./ReferencesTable";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
-import type { ReactElement } from "react";
-import BasicTogglableNavbarLeft, {
-  LEFT_MAX_NAV_WIDTH,
-  LEFT_MIN_NAV_WIDTH,
-} from "../shared/basic_page_layout/BasicTogglableNavbarLeft";
 
 interface Props {}
 
 export default function ReferencesContainer({}: Props): ReactElement {
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
+
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
 
   return (
-    <ReferencesTabContextProvider>
+    <Fragment>
       <ReferenceItemTab />
       <Box flexDirection="row" display="flex">
         <BasicTogglableNavbarLeft
@@ -137,6 +136,6 @@ export default function ReferencesContainer({}: Props): ReactElement {
           </Box>
         </Box>
       </Box>
-    </ReferencesTabContextProvider>
+    </Fragment>
   );
 }

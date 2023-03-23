@@ -7,6 +7,7 @@ export type ReferenceItemDataType = {
   // NOTE: Logical ordering for display reason
   // TODO: calvinhlee update this once BE is setup
   id: ID;
+  citation_type: NullableString;
   title: NullableString;
   authors: NullableString;
   hubs: NullableString;
@@ -16,14 +17,17 @@ export type ReferenceItemDataType = {
 };
 export type ReferencesTabContextValueType = {
   isTabOpen: boolean;
-  referenceItemData: ReferenceItemDataType;
+  referenceItemTabData: ReferenceItemDataType;
+  referenceRowData: ReferenceItemDataType[];
   setIsTabOpen: (flag: boolean) => void;
-  setReferenceItemData: (data: ReferenceItemDataType) => void;
+  setReferenceItemTabData: (data: ReferenceItemDataType) => void;
+  setReferenceRowData: (data: ReferenceItemDataType[]) => void;
 };
 
 export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceItemDataType = {
   // NOTE: Logical ordering for display reason
   id: null,
+  citation_type: null,
   title: null,
   hubs: null,
   authors: null,
@@ -35,9 +39,11 @@ export const DEFAULT_REFERENCE_ITEM_DATA: ReferenceItemDataType = {
 export const DEFAULT_REFERENCES_TAB_CONTEXT_VALUE: ReferencesTabContextValueType =
   {
     isTabOpen: true,
-    referenceItemData: DEFAULT_REFERENCE_ITEM_DATA,
+    referenceItemTabData: DEFAULT_REFERENCE_ITEM_DATA,
+    referenceRowData: [],
     setIsTabOpen: emptyFncWithMsg,
-    setReferenceItemData: emptyFncWithMsg,
+    setReferenceItemTabData: emptyFncWithMsg,
+    setReferenceRowData: emptyFncWithMsg,
   };
 
 export const ReferencesTabContext: Context<ReferencesTabContextValueType> =
@@ -51,16 +57,21 @@ export const useReferenceTabContext = (): ReferencesTabContextValueType => {
 
 export function ReferencesTabContextProvider({ children }) {
   const [isTabOpen, setIsTabOpen] = useState<boolean>(false);
-  const [referenceItemData, setReferenceItemData] =
+  const [referenceItemTabData, setReferenceItemTabData] =
     useState<ReferenceItemDataType>(DEFAULT_REFERENCE_ITEM_DATA);
+  const [referenceRowData, setReferenceRowData] = useState<
+    ReferenceItemDataType[]
+  >([]);
 
   return (
     <ReferencesTabContext.Provider
       value={{
         isTabOpen,
-        referenceItemData,
+        referenceItemTabData,
+        referenceRowData,
         setIsTabOpen,
-        setReferenceItemData,
+        setReferenceItemTabData,
+        setReferenceRowData,
       }}
     >
       {children}
