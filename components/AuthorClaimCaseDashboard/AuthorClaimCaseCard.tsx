@@ -75,7 +75,11 @@ export default function AuthorClaimCaseCard({
         setLastFetchTime={setLastFetchTime}
       />
       <div className={css(styles.chevronWrap)}>
-        {isCollapsed ? icons.chevronDown : icons.chevronUp}
+        {isCollapsed ? (
+          <i className="fa-regular fa-chevron-down"></i>
+        ) : (
+          <i className="fa-regular fa-chevron-up"></i>
+        )}
       </div>
       <div className={css(styles.cardMain)}>
         <div

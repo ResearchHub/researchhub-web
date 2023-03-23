@@ -298,7 +298,7 @@ const BountyAlert = ({
               }}
             >
               <span className={css(styles.actionIcon)}>
-                {icons.commentDots}
+                {<i className="fa-regular fa-comment-dots"></i>}
               </span>
               Answer
             </div>
@@ -317,7 +317,9 @@ const BountyAlert = ({
         )}
         <div className={css(styles.action, styles.shareAction)}>
           <ShareDropdown handleClick={_handleShareClick}>
-            <span className={css(styles.actionIcon)}>{icons.shareRegular}</span>
+            <span className={css(styles.actionIcon)}>
+              {<i className="fa-regular fa-share"></i>}
+            </span>
             Share
           </ShareDropdown>
         </div>

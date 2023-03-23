@@ -32,10 +32,9 @@ const EducationSummaryCard = (props) => {
           )}
           onClick={onRemove}
         >
-          {icons.trash}
+          {<i className="fa-solid fa-trash"></i>}
         </div>
       )}
-
       <div
         className={css(
           styles.checkboxContainer,
@@ -44,7 +43,9 @@ const EducationSummaryCard = (props) => {
         onClick={() => onActive && onActive(index)}
       >
         {value.is_public && (
-          <span className={css(styles.checkIcon)}>{icons.check}</span>
+          <span className={css(styles.checkIcon)}>
+            {<i className="fa-solid fa-check"></i>}
+          </span>
         )}
       </div>
     </div>

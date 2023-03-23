@@ -93,7 +93,7 @@ function FlagButtonV2({
         }}
         className={css(styles.flagIcon, flagIconOverride)}
       >
-        {iconOverride || icons.flag}
+        {iconOverride || <i className="fa-solid fa-flag"></i>}
         {buttonText && (
           <span className={css(buttonTextStyle)}>{buttonText}</span>
         )}

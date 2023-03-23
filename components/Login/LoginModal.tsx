@@ -288,7 +288,7 @@ const LoginModal = ({
                   setStep("SELECT_PROVIDER");
                 }}
               >
-                {icons.chevronLeft}
+                {<i className="fa-regular fa-chevron-left"></i>}
               </IconButton>
             )}
             <IconButton
@@ -300,7 +300,7 @@ const LoginModal = ({
                 _handleClose();
               }}
             >
-              {icons.times}
+              {<i className="fa-light fa-times"></i>}
             </IconButton>
             {step === "SELECT_PROVIDER"
               ? `Log in or sign up`
@@ -317,11 +317,12 @@ const LoginModal = ({
     >
       {miscError && (
         <div className={css(styles.miscError)}>
-          <div style={{ fontSize: 18 }}>{icons.exclamationCircle}</div>
+          <div style={{ fontSize: 18 }}>
+            {<i className="fa-solid fa-exclamation-circle"></i>}
+          </div>
           {miscError}
         </div>
       )}
-
       <div className={css(styles.contentContainer)}>
         {step === "SELECT_PROVIDER" ? (
           <div>

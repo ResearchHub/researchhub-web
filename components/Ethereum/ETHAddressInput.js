@@ -90,7 +90,7 @@ const ETHAddressInput = (props) => {
       </div>
       {!props.value && (
         <span className={css(styles.placeholderIcon)}>
-          {icon ? icon : icons.wallet}
+          {icon ? icon : <i className="fa-regular fa-wallet"></i>}
         </span>
       )}
       <FormInput

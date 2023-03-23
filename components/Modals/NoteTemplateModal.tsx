@@ -94,7 +94,9 @@ function TemplateSidebarEntry({
           {menuLoading ? (
             <Loader size={18} />
           ) : (
-            <div className={css(!isHovered && styles.hide)}>{icons.trash}</div>
+            <div className={css(!isHovered && styles.hide)}>
+              {<i className="fa-solid fa-trash"></i>}
+            </div>
           )}
         </div>
       )}
@@ -234,7 +236,11 @@ export default function NoteTemplateModal({
           >
             Templates
             <span className={css(styles.chevronIcon)}>
-              {hideTemplates ? icons.chevronDown : icons.chevronUp}
+              {hideTemplates ? (
+                <i className="fa-regular fa-chevron-down"></i>
+              ) : (
+                <i className="fa-regular fa-chevron-up"></i>
+              )}
             </span>
           </div>
           {!hideTemplates && (

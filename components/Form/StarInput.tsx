@@ -61,11 +61,11 @@ export default function StarInput({
             >
               {isStarSelected ? (
                 <span className={css(styles.starIconFilled)}>
-                  {icons.starFilled}
+                  {<i className="fa-solid fa-star"></i>}
                 </span>
               ) : (
                 <span className={css(styles.starIconDisabled)}>
-                  {icons.starFilled}
+                  {<i className="fa-solid fa-star"></i>}
                 </span>
               )}
             </div>
@@ -88,11 +88,11 @@ export default function StarInput({
             >
               {isStarSelected ? (
                 <span className={css(styles.starIconFilled)}>
-                  {icons.starFilled}
+                  {<i className="fa-solid fa-star"></i>}
                 </span>
               ) : (
                 <span className={css(styles.starIconUnfilled)}>
-                  {icons.starAlt}
+                  {<i className="fa-light fa-star"></i>}
                 </span>
               )}
             </div>

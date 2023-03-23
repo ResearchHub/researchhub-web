@@ -154,7 +154,7 @@ class PaperDraft extends Component {
             Paper
             {isViewerAllowedToEdit && (
               <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
-                {icons.pencil}
+                {<i className="fa-solid fa-pencil"></i>}
               </div>
             )}
           </h3>

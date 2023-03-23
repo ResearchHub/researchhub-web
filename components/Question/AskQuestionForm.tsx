@@ -133,7 +133,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           {"Submission Guidelines"}
         </a>
         <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
+          {<i className="fa-light fa-times"></i>}
         </span>
       </div>
       <FormInput

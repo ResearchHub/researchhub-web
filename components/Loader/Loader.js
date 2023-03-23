@@ -63,11 +63,6 @@ const Loader = (props) => {
 
       default:
         return (
-          <Lottie
-            config={defaultOptions}
-            height={size ? size : 50}
-            width={size ? size : 50}
-          />
           // <ClipLoader
           //   css={loaderStyle && loaderStyle}
           //   sizeUnit={sizeUnit ? sizeUnit : "px"}
@@ -76,6 +71,11 @@ const Loader = (props) => {
           //   loading={loading}
           //   style={style}
           // />
+          <Lottie
+            config={defaultOptions}
+            height={size ? size : 50}
+            width={size ? size : 50}
+          />
         );
     }
   };

@@ -82,7 +82,7 @@ const AuthorAvatar = (props) => {
               // border: "3px solid transparent",
             }}
           >
-            {icons.user}
+            {<i className="fa-solid fa-user"></i>}
           </span>
         )}
         {showModeratorBadge && (

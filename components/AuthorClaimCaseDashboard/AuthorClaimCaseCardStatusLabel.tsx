@@ -15,12 +15,12 @@ type Props = {
 const getIcon = (status: ValueOf<typeof AUTHOR_CLAIM_STATUS>) => {
   switch (status) {
     case AUTHOR_CLAIM_STATUS.APPROVED:
-      return icons.checkCircle;
+      return <i className="fa-solid fa-check-circle"></i>;
     case AUTHOR_CLAIM_STATUS.DENIED:
     case AUTHOR_CLAIM_STATUS.INVALIDATED:
     case AUTHOR_CLAIM_STATUS.NULLIFIED:
     default:
-      return icons.timesCircle;
+      return <i className="fa-solid fa-times-circle"></i>;
   }
 };
 

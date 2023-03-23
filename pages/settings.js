@@ -271,7 +271,11 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.togglePasswordVisibility}
           >
-            {this.state.isPasswordInputVisible ? icons.times : icons.pencil}
+            {this.state.isPasswordInputVisible ? (
+              <i className="fa-light fa-times"></i>
+            ) : (
+              <i className="fa-solid fa-pencil"></i>
+            )}
           </Ripples>
         </div>
         <div
@@ -345,7 +349,11 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.toggleEmailInput}
           >
-            {activeEmailInput ? icons.times : icons.pencil}
+            {activeEmailInput ? (
+              <i className="fa-light fa-times"></i>
+            ) : (
+              <i className="fa-solid fa-pencil"></i>
+            )}
           </Ripples>
         </div>
         <div
@@ -377,7 +385,7 @@ class UserSettings extends Component {
                   this.saveEmail();
                 }}
               >
-                {icons.paperPlane}
+                {<i className="fa-duotone fa-paper-plane"></i>}
               </Ripples>
             </form>
           ) : (
@@ -494,7 +502,9 @@ class UserSettings extends Component {
         className={css(hubStyles.entry, styles.hubEntry)}
       >
         {hub.name}
-        <div className={css(styles.closeIcon)}>{icons.times}</div>
+        <div className={css(styles.closeIcon)}>
+          {<i className="fa-light fa-times"></i>}
+        </div>
       </Ripples>
     );
   };

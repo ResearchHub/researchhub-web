@@ -240,7 +240,7 @@ class LimitationTab extends Component {
           onClick={() => openManageBulletPointsModal(true, "limitations")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.manage}
+            {<i className="fa-light fa-tasks"></i>}
           </span>
           Manage
         </Ripples>
@@ -249,7 +249,7 @@ class LimitationTab extends Component {
           onClick={() => this.transitionWrapper(this.toggleForm)}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.plusCircle}
+            {<i className="fa-solid fa-plus-circle"></i>}
           </span>
           Add Limitation
         </Ripples>

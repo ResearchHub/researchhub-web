@@ -116,14 +116,14 @@ function RootLeftSidebarSlider({
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {icons.twitter}
+              {<i className="fa-brands fa-twitter"></i>}
             </ALink>
             <ALink
               href="https://discord.com/invite/ZcCYgcnUp5"
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {icons.discord}
+              {<i className="fa-brands fa-discord"></i>}
             </ALink>
             <ALink
               href="https://medium.com/researchhub"
@@ -132,7 +132,7 @@ function RootLeftSidebarSlider({
               }
               target="__blank"
             >
-              {icons.medium}
+              {<i className="fa-brands fa-medium"></i>}
             </ALink>
           </div>
           <div className={css(styles.leftSidebarSliderFooterItemsBottomRow)}>

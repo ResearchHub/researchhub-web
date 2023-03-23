@@ -72,7 +72,11 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       hideRipples={true}
     >
       <div className={css(style && style)}>
-        {flagged ? icons.flag : icons.flagOutline}
+        {flagged ? (
+          <i className="fa-solid fa-flag"></i>
+        ) : (
+          <i className="fa-regular fa-flag"></i>
+        )}
       </div>
     </PermissionNotificationWrapper>
   );

@@ -25,7 +25,7 @@ const postTypes = [
     value: POST_TYPES.DISCUSSION,
     isDefault: true,
     group: "contribute",
-    icon: icons.commentRegular,
+    icon: <i className="fa-regular fa-comment"></i>,
     placeholder: "What are your thoughts about this paper?",
   },
   {
@@ -33,14 +33,14 @@ const postTypes = [
     value: POST_TYPES.REVIEW,
     group: "contribute",
     placeholder: "What are your overall impressions of this paper?",
-    icon: icons.starFilled,
+    icon: <i className="fa-solid fa-star"></i>,
   },
   {
     label: "Summary",
     value: POST_TYPES.SUMMARY,
     group: "contribute",
     placeholder: "Share a summary of this paper with the community",
-    icon: icons.layerGroup,
+    icon: <i className="fa-solid fa-layer-group"></i>,
   },
 ];
 
@@ -49,13 +49,13 @@ export const questionPostTypes = [
     label: "Answer",
     value: POST_TYPES.ANSWER,
     isDefault: true,
-    icon: icons.commentAltLineSolid,
+    icon: <i className="fa-solid fa-comment-alt-lines"></i>,
     placeholder: "Submit your answer to this question.",
   },
   {
     label: "Discuss",
     value: POST_TYPES.DISCUSSION,
-    icon: icons.commentRegular,
+    icon: <i className="fa-regular fa-comment"></i>,
     placeholder:
       "Use discussion to ask for clarification or suggest improvement to the question.",
   },

@@ -118,7 +118,7 @@ class AuthorCardList extends Component {
         >
           <div className={css(styles.addButtonWrapper)}>
             <span style={{ color: colors.BLUE(1), height: 12, width: 12 }}>
-              {icons.plus}
+              {<i className="fa-solid fa-plus"></i>}
             </span>
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>

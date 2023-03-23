@@ -12,7 +12,9 @@ const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
         key={`noteplacholder-${i}`}
         className={css(styles.placeholderContainer) + " show-loading-animation"}
       >
-        <div className={css(styles.noteIcon)}>{icons.paper}</div>
+        <div className={css(styles.noteIcon)}>
+          {<i className="fa-solid fa-file"></i>}
+        </div>
         <RectShape
           className={css(styles.textRow)}
           color={color}

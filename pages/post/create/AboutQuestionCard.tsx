@@ -29,7 +29,7 @@ export default function AboutQuestionCard({
           <div className={css(styles.trigger)}>
             What can you post here?
             <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
+              {<i className="fa-light fa-chevron-down"></i>}
             </span>
           </div>
         }
@@ -49,7 +49,7 @@ export default function AboutQuestionCard({
           <div className={css(styles.trigger)}>
             What counts as research output?
             <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
+              {<i className="fa-light fa-chevron-down"></i>}
             </span>
           </div>
         }
@@ -71,7 +71,7 @@ export default function AboutQuestionCard({
           <div className={css(styles.trigger)}>
             Guidelines
             <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
+              {<i className="fa-light fa-chevron-down"></i>}
             </span>
           </div>
         }

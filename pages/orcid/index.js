@@ -117,7 +117,9 @@ class OrcidLoginPage extends Component {
               />
               {this.state.error && (
                 <div className={css(styles.error)}>
-                  <span className={css(styles.errorIcon)}>{icons.error}</span>
+                  <span className={css(styles.errorIcon)}>
+                    {<i className="fa-solid fa-exclamation-triangle"></i>}
+                  </span>
                   Something went wrong. Please try again.
                 </div>
               )}

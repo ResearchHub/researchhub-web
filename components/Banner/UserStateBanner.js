@@ -57,14 +57,18 @@ const UserStateBanner = (props) => {
     if (user.is_suspended) {
       return (
         <Fragment>
-          <span className={css(styles.icon)}>{icons.error}</span>
+          <span className={css(styles.icon)}>
+            {<i className="fa-solid fa-exclamation-triangle"></i>}
+          </span>
           Your account has been suspended.
         </Fragment>
       );
     } else if (user.probable_spammer) {
       return (
         <Fragment>
-          <span className={css(styles.icon)}>{icons.error}</span>
+          <span className={css(styles.icon)}>
+            {<i className="fa-solid fa-exclamation-triangle"></i>}
+          </span>
           Your account is under review.
         </Fragment>
       );

@@ -266,7 +266,9 @@ const Index = (props) => {
                 value={searchValue}
                 placeholder={"Search Hubs"}
               />
-              <span className={css(styles.searchIcon)}>{icons.search}</span>
+              <span className={css(styles.searchIcon)}>
+                {<i className="fa-light fa-search"></i>}
+              </span>
               <div
                 onClick={resetSearch}
                 className={css(
@@ -277,7 +279,6 @@ const Index = (props) => {
                 Clear
               </div>
             </div>
-
             <ReactPlaceholder
               ready={props.hubs.topHubs.length}
               showLoadingAnimation

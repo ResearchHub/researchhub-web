@@ -36,7 +36,6 @@ function NewFeatureTooltip({
       ? position[0]
       : position[1];
 
-
   // Kobe: Turning this feature off temporarily because something broke with it.
   // It glitches out on page load
   return null;
@@ -48,7 +47,9 @@ function NewFeatureTooltip({
         <div className={css(styles.title)}>
           Contribution Types
           <span className={css(styles.new)}>
-            <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>
+              {<i className="fa-duotone fa-fire-alt"></i>}
+            </span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
@@ -75,7 +76,9 @@ function NewFeatureTooltip({
         <div className={css(styles.title)}>
           Bounties
           <span className={css(styles.new)}>
-            <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>
+              {<i className="fa-duotone fa-fire-alt"></i>}
+            </span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
@@ -111,7 +114,7 @@ function NewFeatureTooltip({
             colorStyles["caret_" + color]
           )}
         >
-          {icons.caretLeft}
+          {<i className="fa-solid fa-caret-left"></i>}
         </span>
         <div className={css(styles.body, colorStyles["body_" + color])}>
           {html}

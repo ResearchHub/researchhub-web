@@ -50,7 +50,7 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
             tabsContainerRef.current.scrollBy({ left: -60, behavior: "smooth" })
           }
         >
-          {icons.chevronLeft}
+          {<i className="fa-regular fa-chevron-left"></i>}
         </span>
         <span
           className={css(
@@ -63,7 +63,7 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
             tabsContainerRef.current.scrollBy({ left: 60, behavior: "smooth" });
           }}
         >
-          {icons.chevronRight}
+          {<i className="fa-regular fa-chevron-right"></i>}
         </span>
       </div>
     </div>

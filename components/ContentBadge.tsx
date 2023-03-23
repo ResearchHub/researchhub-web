@@ -65,22 +65,30 @@ const ContentBadge = ({
         </>
       ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
         <>
-          <span className={css(styles.icon)}>{icons.commentsSolid}</span>
+          <span className={css(styles.icon)}>
+            {<i className="fa-solid fa-comments"></i>}
+          </span>
           <span>Comment</span>
         </>
       ) : contentType === POST_TYPES.ANSWER ? (
         <>
-          <span className={css(styles.icon)}>{icons.commentAltLineSolid}</span>
+          <span className={css(styles.icon)}>
+            {<i className="fa-solid fa-comment-alt-lines"></i>}
+          </span>
           <span>Answer</span>
         </>
       ) : contentType === POST_TYPES.SUMMARY ? (
         <>
-          <span className={css(styles.icon)}>{icons.layerGroup}</span>
+          <span className={css(styles.icon)}>
+            {<i className="fa-solid fa-layer-group"></i>}
+          </span>
           <span>Summary</span>
         </>
       ) : contentType === POST_TYPES.REVIEW ? (
         <>
-          <span className={css(styles.icon)}>{icons.starFilled}</span>
+          <span className={css(styles.icon)}>
+            {<i className="fa-solid fa-star"></i>}
+          </span>
           <span>Review</span>
         </>
       ) : contentType === "rsc_support" ? (

@@ -698,7 +698,9 @@ class PaperTransactionModal extends Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>{icons.checkCircle}</span>
+                <span className={css(styles.icon)}>
+                  {<i className="fa-solid fa-check-circle"></i>}
+                </span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
@@ -843,9 +845,11 @@ class PaperTransactionModal extends Component {
                           !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {ethAccountIsValid
-                          ? icons.checkCircle
-                          : icons.timesCircle}
+                        {ethAccountIsValid ? (
+                          <i className="fa-solid fa-check-circle"></i>
+                        ) : (
+                          <i className="fa-solid fa-times-circle"></i>
+                        )}
                       </span>
                     )
                   ) : null

@@ -34,7 +34,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const SIDE_BAR_ITEMS = filterNull([
     isUserModerator
       ? {
-          icon: icons.bookOpen,
+          icon: <i className="fa-solid fa-book-open"></i>,
           id: "author-claim-case-dashboard",
           name: "Author Claim",
           pathname: "/moderators/author-claim-case-dashboard",
@@ -42,7 +42,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserModerator
       ? {
-          icon: icons.subscribers,
+          icon: <i className="fa-solid fa-user"></i>,
           id: "editors",
           name: "Editors",
           pathname: "/moderators/editors",
@@ -50,24 +50,15 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     userAllowedOnPermissionsDash
       ? {
-          icon: icons.userEdit,
+          icon: <i className="fa-solid fa-user-edit"></i>,
           id: "permissions",
           name: "Update Editors",
           pathname: "/moderators/permissions",
         }
       : null,
-    // TODO: kobe - take care of this
-    // userAllowedToManagePeerReviews
-    //   ? {
-    //       icon: icons.commentCheck,
-    //       id: "review",
-    //       name: "Peer Reviews",
-    //       pathname: "/moderators/reviews",
-    //     }
-    //   : null,
     userAllowedSendRSC
       ? {
-          icon: icons.coin,
+          icon: <i className="fa-duotone fa-coin"></i>,
           id: "rsc",
           name: "Manage RSC",
           pathname: "/moderators/rsc",
@@ -75,7 +66,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserHubEditor || isUserModerator
       ? {
-          icon: icons.flag,
+          icon: <i className="fa-solid fa-flag"></i>,
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",
@@ -97,11 +88,13 @@ export default function ModeratorDashboardSidebar({}: Props) {
         )}
         key={`listItem-${id}`}
       >
-        <Link href={{ pathname }} as={pathname} className={css(styles.sidebarLink)}>
-
+        <Link
+          href={{ pathname }}
+          as={pathname}
+          className={css(styles.sidebarLink)}
+        >
           <span className={css(styles.icon)}>{icon}</span>
           {name} {extraHTML}
-
         </Link>
       </Ripples>
     )

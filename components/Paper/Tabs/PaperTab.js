@@ -203,7 +203,8 @@ function PaperTab(props) {
                   permissionKey="CreatePaper"
                 >
                   <button className={css(defaultStyles.button)}>
-                    Upload the Paper PDF {icons.upload}
+                    Upload the Paper PDF{" "}
+                    {<i className="fa-solid fa-upload"></i>}
                   </button>
                 </PermissionNotificationWrapper>
               </div>
@@ -236,7 +237,8 @@ function PaperTab(props) {
             openExternalLink(paperUrl);
           }}
         >
-          View on External Site {icons.externalLink}
+          View on External Site{" "}
+          {<i className="fa-solid fa-external-link-alt"></i>}
         </button>
         <div className={css(styles.emptyPlaceholderFont, styles.orText)}>
           {" or "}
@@ -252,7 +254,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                {icons.arrowToBottom}
+                {<i className="fa-solid fa-arrow-to-bottom"></i>}
               </span>
               Download
             </Fragment>

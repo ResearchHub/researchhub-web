@@ -144,13 +144,13 @@ function UserApiTokenInputField({
             {isLoading ? (
               <Loader size={12} color={colors.TOOLTIP_TEXT_COLOR_WHITE} />
             ) : copyButtonStatus === "ready" ? (
-              icons.file
+              <i className="fa-solid fa-file"></i>
             ) : copyButtonStatus === "copied" ? (
-              icons.checkCircle
+              <i className="fa-solid fa-check-circle"></i>
             ) : userHasApiToken ? (
-              icons.times
+              <i className="fa-light fa-times"></i>
             ) : (
-              icons.plusCircleSolid
+              <i className="fa-solid fa-plus-circle"></i>
             )}
           </Ripples>
         </form>

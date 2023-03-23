@@ -15,7 +15,11 @@ export const SideColumnTitle = (props) => {
       {children}
       {onClick && (
         <div className={css(styles.toggleButton)} onClick={onClick}>
-          {state ? icons.chevronUp : icons.chevronDown}
+          {state ? (
+            <i className="fa-regular fa-chevron-up"></i>
+          ) : (
+            <i className="fa-regular fa-chevron-down"></i>
+          )}
         </div>
       )}
     </h5>

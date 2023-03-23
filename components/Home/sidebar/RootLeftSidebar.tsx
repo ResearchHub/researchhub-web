@@ -57,7 +57,7 @@ export const getLeftSidebarItemAttrs = ({
 
   return filterNull([
     {
-      icon: icons.home,
+      icon: <i className="fa-solid fa-home"></i>,
       label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,
@@ -67,7 +67,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.squares,
+      icon: <i className="fa-solid fa-th-large"></i>,
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
@@ -77,7 +77,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.book,
+      icon: <i className="fa-duotone fa-book"></i>,
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
@@ -91,7 +91,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.chartSimple,
+      icon: <i className="fa-regular fa-chart-simple"></i>,
       label: "Leaderboard",
       isMinimized,
       isActive: pathname.includes("leaderboard"),
@@ -349,14 +349,14 @@ function RootLeftSidebar({
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {icons.twitter}
+                {<i className="fa-brands fa-twitter"></i>}
               </ALink>
               <ALink
                 href="https://discord.com/invite/ZcCYgcnUp5"
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {icons.discord}
+                {<i className="fa-brands fa-discord"></i>}
               </ALink>
               <ALink
                 href="https://medium.com/researchhub"
@@ -365,7 +365,7 @@ function RootLeftSidebar({
                 }
                 target="__blank"
               >
-                {icons.medium}
+                {<i className="fa-brands fa-medium"></i>}
               </ALink>
             </div>
             <div className={formattedFooterItemsButtonRow}>
@@ -389,20 +389,15 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
-          {/* Kobe 12-07-22: Commenting this out in order to prevent layout shift */}
-          {/* {isMinimized ? (
+          {isMinimized ? (
             <div
               className={css(styles.arrowRight)}
               onClick={() => {
                 setGrowMinimized(false);
                 setIsMinimized(false);
-                storeToCookie({
-                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "false",
-                });
               }}
             >
-              {icons.arrowRightToLine}
+              <i className="fa-solid fa-arrow-right-to-line"></i>
             </div>
           ) : (
             <div
@@ -410,15 +405,11 @@ function RootLeftSidebar({
               onClick={() => {
                 setGrowMinimized(true);
                 setIsMinimized(true);
-                storeToCookie({
-                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "true",
-                });
               }}
             >
-              {icons.arrowLeftToLine}
+              <i className="fa-solid fa-arrow-left-to-line"></i>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </motion.div>

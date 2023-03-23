@@ -54,7 +54,9 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
           </div>
           {userSummary && (
             <div className={css(styles.summary)}>
-              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
+              <span className={css(styles.eduIcon)}>
+                {<i className="fa-solid fa-graduation-cap"></i>}
+              </span>
               {userSummary}
             </div>
           )}

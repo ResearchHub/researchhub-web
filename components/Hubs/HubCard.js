@@ -218,7 +218,7 @@ class HubCard extends Component {
               this.openEditHubModal();
             }}
           >
-            <span>{icons.editHub}</span>
+            <span>{<i className="fa-solid fa-edit"></i>}</span>
           </button>
         );
       }
@@ -236,7 +236,7 @@ class HubCard extends Component {
               this.removeHubConfirmation();
             }}
           >
-            <span>{icons.trash}</span>
+            <span>{<i className="fa-solid fa-trash"></i>}</span>
           </button>
         );
       }
@@ -255,17 +255,23 @@ class HubCard extends Component {
         data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
       >
         <div>
-          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          <span className={css(styles.statIcon)}>
+            {<i className="fa-solid fa-file"></i>}
+          </span>
           {hub.paper_count} Paper
           {hub.paper_count != 1 ? "s" : ""}
         </div>
         <div>
-          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          <span className={css(styles.statIcon)}>
+            {<i className="fa-solid fa-comment"></i>}
+          </span>
           {hub.discussion_count} Comment
           {hub.discussion_count != 1 ? "s" : ""}
         </div>
         <div>
-          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          <span className={css(styles.statIcon)}>
+            {<i className="fa-solid fa-user"></i>}
+          </span>
           {this.state.subCount} Member
           {this.state.subCount != 1 ? "s" : ""}
         </div>
@@ -281,7 +287,9 @@ class HubCard extends Component {
         data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
       >
         <div className={css(styles.statForRow)}>
-          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          <span className={css(styles.statIcon)}>
+            {<i className="fa-solid fa-file"></i>}
+          </span>
           {hub.paper_count}
           <span className={css(styles.rowStatTitle)}>
             {` `}Paper
@@ -289,7 +297,9 @@ class HubCard extends Component {
           </span>
         </div>
         <div className={css(styles.statForRow)}>
-          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          <span className={css(styles.statIcon)}>
+            {<i className="fa-solid fa-comment"></i>}
+          </span>
           {hub.discussion_count}
           <span className={css(styles.rowStatTitle)}>
             {` `}Comment
@@ -297,7 +307,9 @@ class HubCard extends Component {
           </span>
         </div>
         <div className={css(styles.statForRow)}>
-          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          <span className={css(styles.statIcon)}>
+            {<i className="fa-solid fa-user"></i>}
+          </span>
           {this.state.subCount}
           <span className={css(styles.rowStatTitle)}>
             {` `}Subscriber

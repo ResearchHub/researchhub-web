@@ -95,7 +95,7 @@ class UserTransaction extends Component {
         ) : (
           <EmptyState
             message={"User has not created any transactions"}
-            icon={icons.receipt}
+            icon={<i className="fa-duotone fa-receipt"></i>}
           />
         )}
         {!maxCardsToRender && this.renderLoadMoreButton()}

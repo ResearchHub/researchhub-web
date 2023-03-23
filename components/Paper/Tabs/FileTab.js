@@ -140,7 +140,7 @@ class FileTab extends Component {
             </div>
             <Ripples className={css(styles.item)} onClick={this.openDndModal}>
               <span className={css(styles.dropdownItemIcon)}>
-                {icons.plusCircle}
+                {<i className="fa-solid fa-plus-circle"></i>}
               </span>
               Add Files
             </Ripples>

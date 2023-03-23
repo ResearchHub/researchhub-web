@@ -88,7 +88,7 @@ export default function ClaimAuthorPopoverLabel({
                 {`Are you ${author.first_name}? Claim your profile`}
               </span>
               <span className={css(styles.popoverIcon)}>
-                {icons.exclamationCircle}
+                {<i className="fa-solid fa-exclamation-circle"></i>}
               </span>
             </div>
           }

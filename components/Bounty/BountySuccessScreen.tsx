@@ -63,7 +63,7 @@ function SuccessScreen({
           className={css(styles.link)}
         >
           <div className={css(styles.twitter)}>
-            {icons.twitter}
+            {<i className="fa-brands fa-twitter"></i>}
             <span className={css(styles.twitterText)}>Share on Twitter</span>
           </div>
         </a>

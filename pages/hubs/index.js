@@ -118,7 +118,9 @@ class Index extends Component {
               {categoryName === "Trending" ? (
                 <span>
                   {categoryName}
-                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                  <span className={css(styles.trendingIcon)}>
+                    {<i className="fa-duotone fa-fire-alt"></i>}
+                  </span>
                 </span>
               ) : (
                 categoryName

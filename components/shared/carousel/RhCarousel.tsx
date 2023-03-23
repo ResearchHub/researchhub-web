@@ -57,7 +57,7 @@ const RhCarouselControl = ({
           }}
           role="button"
         >
-          {icons.chevronLeft}
+          {<i className="fa-regular fa-chevron-left"></i>}
         </div>
         <div
           className={css(styles.rhCarouselControlIcon)}
@@ -68,7 +68,7 @@ const RhCarouselControl = ({
           }}
           role="button"
         >
-          {icons.chevronRight}
+          {<i className="fa-regular fa-chevron-right"></i>}
         </div>
       </div>
       <div className={css(styles.rhCarouselControlPillsContainer)}>{pills}</div>

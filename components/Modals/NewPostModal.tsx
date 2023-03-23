@@ -70,29 +70,6 @@ export const getModalOptionItems = ({
       />
     ),
   },
-  // {
-  //   key: "bounty",
-  //   header: (
-  //     <div className={css(styles.header)}>
-  //       <span>Start a Bounty</span>
-  //       <span className={css(styles.new)}>
-  //         <span className={css(styles.fireIcon)}>{icons.fire}</span>
-  //         <span className={css(styles.newText)}>New</span>
-  //       </span>
-  //     </div>
-  //   ),
-  //   onClick: (): void => {
-  //     setButtonValues({
-  //       ...DEFAULT_POST_BUTTON_VALUES,
-  //       isOpen: true,
-  //       type: "bounty",
-  //     });
-  //   },
-  //   description:
-  //     "Offer ResearchCoin in exchange for work or knowledge. Must be science related.",
-  //   icon: <RSCIcon onClick={silentEmptyFnc} />,
-  // },
-
   {
     key: "question",
     header: (
@@ -285,7 +262,8 @@ function NewPostModal({
                       href={
                         modalOptionItems[modalSelectedItemIndex]?.route ?? ""
                       }
-                      legacyBehavior>
+                      legacyBehavior
+                    >
                       <div className={css(styles.buttonLabel)}>Continue</div>
                     </Link>
                   )

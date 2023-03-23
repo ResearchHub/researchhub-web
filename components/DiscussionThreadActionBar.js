@@ -31,7 +31,7 @@ const CommentCount = (props) => {
           path={threadPath}
         >
           <span className={css(styles.iconChat)} id={"chatIcon"}>
-            {icons.chat}
+            {<i className="fa-solid fa-comment"></i>}
           </span>
           <span className={css(styles.text)} id={"text"}>
             {formatCommentCount(props.count, props.comment)}
@@ -62,7 +62,7 @@ const Share = () => {
   return (
     <div className={css(styles.shareContainer)}>
       <span className={css(styles.iconChat)} id={"shareIcon"}>
-        {icons.share}
+        {<i className="fa-solid fa-share"></i>}
       </span>
       <span className={css(styles.text)} id={"text"}>
         Share

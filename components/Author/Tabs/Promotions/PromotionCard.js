@@ -91,7 +91,7 @@ class PromotionCard extends Component {
             className={css(styles.icon, this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            {icons.eye}
+            {<i className="fa-duotone fa-eye"></i>}
           </span>
           <div
             className={css(styles.stats, this.state.showViews && styles.active)}
@@ -112,7 +112,7 @@ class PromotionCard extends Component {
             className={css(styles.icon, !this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            {icons.mousePointer}
+            {<i className="fa-solid fa-mouse-pointer"></i>}
           </span>
           <div
             className={css(

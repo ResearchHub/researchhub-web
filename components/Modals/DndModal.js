@@ -150,7 +150,11 @@ class DndModal extends Component {
           imageContainerClassName={this.calculateStyle()}
           fileAccept={fileAccept}
           addImageText={
-            this.state.files.length < 1 ? this.renderDropContent() : icons.plus
+            this.state.files.length < 1 ? (
+              this.renderDropContent()
+            ) : (
+              <i className="fa-solid fa-plus"></i>
+            )
           }
         />
         {files.length > 0 && (

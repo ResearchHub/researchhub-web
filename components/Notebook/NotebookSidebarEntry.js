@@ -25,7 +25,9 @@ const NotebookSidebarEntry = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={css(styles.noteIcon)}>{icons.paper}</div>
+      <div className={css(styles.noteIcon)}>
+        {<i className="fa-solid fa-file"></i>}
+      </div>
       {unescapeHtmlString(title)}
       {isOrgMember && (
         <NoteOptionsMenuButton

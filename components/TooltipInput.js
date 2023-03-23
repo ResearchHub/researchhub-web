@@ -47,11 +47,11 @@ export class TooltipInput extends Component {
             autoFocus={true}
           />
           <div className={css(styles.submitTooltipButton)} onClick={save}>
-            {icons.arrowRight}
+            {<i className="fa-solid fa-arrow-right"></i>}
           </div>
         </div>
         <span className={css(styles.close)} onClick={close}>
-          {icons.times}
+          {<i className="fa-light fa-times"></i>}
         </span>
       </div>
     );

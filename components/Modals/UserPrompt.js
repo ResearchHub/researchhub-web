@@ -64,7 +64,11 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverUp(true)}
             onMouseLeave={() => setHoverUp(false)}
           >
-            {hoverUp ? icons.solidThumbsUp : icons.opaqueThumbsUp}
+            {hoverUp ? (
+              <i className="fa-solid fa-thumbs-up"></i>
+            ) : (
+              <i className="fa-duotone fa-thumbs-up"></i>
+            )}
           </div>
           <div
             className={css(styles.thumbsDown)}
@@ -72,7 +76,11 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverDown(true)}
             onMouseLeave={() => setHoverDown(false)}
           >
-            {hoverDown ? icons.solidThumbsDown : icons.opaqueThumbsDown}
+            {hoverDown ? (
+              <i className="fa-solid fa-thumbs-down"></i>
+            ) : (
+              <i className="fa-duotone fa-thumbs-down"></i>
+            )}
           </div>
         </div>
       </Fragment>
@@ -85,7 +93,7 @@ const UserPrompt = (props) => {
         className={css(styles.closeButton)}
         onClick={() => displayShowPrompt(false)}
       >
-        {icons.times}
+        {<i className="fa-light fa-times"></i>}
       </div>
       {renderContent()}
     </a.div>

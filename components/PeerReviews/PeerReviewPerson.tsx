@@ -38,18 +38,17 @@ function PeerReviewPerson({ id, status, authorProfile }: Props): ReactElement {
       >
         {tooltipMessage}
       </ReactTooltip>
-
       {status == "INVITED" ? (
         <span className={css(styles.statusIcon, styles.questionIcon)}>
-          {icons.question}
+          {<i className="fa-solid fa-question"></i>}
         </span>
       ) : status == "ACCEPTED" ? (
         <span className={css(styles.statusIcon, styles.checkIcon)}>
-          {icons.checkCircleSolid}
+          {<i className="fa-solid fa-check-circle"></i>}
         </span>
       ) : status == "DECLINED" ? (
         <span className={css(styles.statusIcon, styles.timesIcon)}>
-          {icons.timesCircleSolid}
+          {<i className="fa-solid fa-times-circle"></i>}
         </span>
       ) : null}
       <div className={css(styles.avatarContainer)}>

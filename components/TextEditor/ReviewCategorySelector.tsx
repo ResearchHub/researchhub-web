@@ -46,7 +46,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
             >
               <div className={css(styles.dropdownOptLabel)}>
                 <span className={css(styles.plusIcon)}>
-                  {icons.plus}
+                  {<i className="fa-solid fa-plus"></i>}
                   {` `}
                 </span>
                 <span className={css(styles.catText)}>{cat.label}</span>
@@ -67,7 +67,9 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
       >
-        <span className={css(styles.plusIcon)}>{icons.plus}</span>
+        <span className={css(styles.plusIcon)}>
+          {<i className="fa-solid fa-plus"></i>}
+        </span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
       </div>
     );

@@ -166,7 +166,7 @@ export default function CitationTableRowItem({
                 }}
                 role="button"
               >
-                {icons.comments}
+                {<i className="fa-solid fa-comments"></i>}
                 {commentCount > 0 && (
                   <div className={css(styles.commentCountSign)}>
                     {commentCount}
@@ -189,7 +189,11 @@ export default function CitationTableRowItem({
               >
                 <div className={css(styles.typeContent)}>
                   <span className={css(styles.iconWrap)}>
-                    {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                    {isSupportSource ? (
+                      <i className="fa-solid fa-check-circle"></i>
+                    ) : (
+                      <i className="fa-solid fa-times-circle"></i>
+                    )}
                   </span>
                   <span className={css(styles.typeText)}>
                     {isSupportSource ? "Support" : "Reject"}

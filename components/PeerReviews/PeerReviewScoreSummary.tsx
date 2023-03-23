@@ -18,10 +18,13 @@ export default function PeerReviewSummary({
 }: Props): ReactElement {
   return (
     <div className={css(styles.reviewContainer)}>
-      <div className={css(styles.starContainer)}>{icons.starFilled}</div>
-
+      <div className={css(styles.starContainer)}>
+        {<i className="fa-solid fa-star"></i>}
+      </div>
       <span className={css(styles.reviewScoreContainer)}>
-        <span className={css(styles.reviewScore)}>{(summary?.avg || 0).toFixed(1)}</span>
+        <span className={css(styles.reviewScore)}>
+          {(summary?.avg || 0).toFixed(1)}
+        </span>
       </span>
     </div>
   );

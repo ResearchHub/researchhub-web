@@ -96,7 +96,11 @@ const PaperSections = (props) => {
                   toggleHidePaperSections(!hidePaperSections);
                 }}
               >
-                {hidePaperSections ? icons.chevronUp : icons.chevronDown}
+                {hidePaperSections ? (
+                  <i className="fa-regular fa-chevron-up"></i>
+                ) : (
+                  <i className="fa-regular fa-chevron-down"></i>
+                )}
               </div>
             )}
           </a>

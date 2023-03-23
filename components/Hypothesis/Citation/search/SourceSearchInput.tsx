@@ -196,7 +196,7 @@ export default function SourceSearchInput({
                   {"Choose supports / rejects"}
                 </div>
                 <div style={{ color: colors.LIGHT_GREY_BACKGROUND }}>
-                  {icons.caretDown}
+                  {<i className="fa-solid fa-caret-down"></i>}
                 </div>
               </div>
             }

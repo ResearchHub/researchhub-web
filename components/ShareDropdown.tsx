@@ -10,8 +10,16 @@ type Args = {
 
 const ShareDropdown = ({ handleClick, children }: Args) => {
   const options = [
-    { label: "Twitter", value: "twitter", icon: icons.twitter },
-    { label: "LinkedIn", value: "linkedin", icon: icons.linkedIn },
+    {
+      label: "Twitter",
+      value: "twitter",
+      icon: <i className="fa-brands fa-twitter"></i>,
+    },
+    {
+      label: "LinkedIn",
+      value: "linkedin",
+      icon: <i className="fa-brands fa-linkedin"></i>,
+    },
   ];
   const [isOpen, setIsOpen] = useState(false);
   const triggerEl = useRef(null);
@@ -78,8 +86,7 @@ const styles = StyleSheet.create({
     background: "white",
     width: 150,
   },
-  trigger: {
-  },
+  trigger: {},
   opt: {
     background: "white",
     display: "flex",

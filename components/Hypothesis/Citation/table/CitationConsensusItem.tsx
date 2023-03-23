@@ -100,11 +100,15 @@ function getDetailedText({
       )}
     >
       {isNeutral ? (
-        <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
+        <span className={css(styles.neutralImg)}>
+          {<i className="fa-duotone fa-minus-circle"></i>}
+        </span>
       ) : doesMajoritySupport ? (
         <Image width={10} height={10} src="/static/icons/check.svg" alt={""} />
       ) : (
-        <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
+        <span className={css(styles.noSupportImg)}>
+          {<i className="fa-solid fa-times-circle"></i>}
+        </span>
       )}
       <div
         className={css(styles.consensusText)}
@@ -398,7 +402,9 @@ function CitationConsensusItem({
               onClick={handleReject}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
+              <div className={css(styles.iconWrap)}>
+                {<i className="fa-solid fa-times-circle"></i>}
+              </div>
               <div className={css(styles.buttonText)}>{"Rejects"}</div>
             </div>
             <div
@@ -406,7 +412,9 @@ function CitationConsensusItem({
               onClick={handleNeutralVote}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.minusCircle}</div>
+              <div className={css(styles.iconWrap)}>
+                {<i className="fa-duotone fa-minus-circle"></i>}
+              </div>
               <div className={css(styles.buttonText)}>{"Neutral"}</div>
             </div>
             <div
@@ -414,7 +422,9 @@ function CitationConsensusItem({
               onClick={handleSupport}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
+              <div className={css(styles.iconWrap)}>
+                {<i className="fa-solid fa-check-circle"></i>}
+              </div>
               <div className={css(styles.buttonText)}>{"Supports"}</div>
             </div>
           </div>

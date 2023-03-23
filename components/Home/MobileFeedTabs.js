@@ -20,7 +20,9 @@ const MobileFeedTabs = (props) => {
         className={css(styles.tab, styles.tabLeft, activeLeft && styles.active)}
         onClick={() => onClick(true)}
       >
-        <span className={css(styles.icon)}>{icons.squares}</span>
+        <span className={css(styles.icon)}>
+          {<i className="fa-solid fa-th-large"></i>}
+        </span>
         All
       </div>
       <div

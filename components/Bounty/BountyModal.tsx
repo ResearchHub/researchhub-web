@@ -324,7 +324,7 @@ function BountyModal({
 
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
-                    {icons.clock}
+                    {<i className="fa-regular fa-clock"></i>}
                   </span>{" "}
                   <span className={css(infoSectionStyles.infoText)}>
                     The Bounty will end in 30 days or as soon as you award a
@@ -333,7 +333,7 @@ function BountyModal({
                 </div>
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
-                    {icons.undo}
+                    {<i className="fa-solid fa-undo"></i>}
                   </span>{" "}
                   If no solution satisfies your request, the full bounty amount
                   (excluding platform fee) will be refunded to you

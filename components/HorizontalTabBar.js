@@ -72,12 +72,18 @@ const HorizontalTabBar = ({
         <ScrollMenu
           arrowLeft={
             pageWidth <= showArrowsOnWidth && showArrows ? (
-              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+              <NavigationArrow
+                icon={<i className="fa-regular fa-chevron-left"></i>}
+                direction={"left"}
+              />
             ) : null
           }
           arrowRight={
             pageWidth <= showArrowsOnWidth && showArrows ? (
-              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+              <NavigationArrow
+                icon={<i className="fa-regular fa-chevron-right"></i>}
+                direction={"right"}
+              />
             ) : null
           }
           data={tabsHtml}

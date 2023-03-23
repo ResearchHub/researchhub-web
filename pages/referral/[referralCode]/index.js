@@ -114,7 +114,7 @@ const Index = ({ code, user }) => {
               </div>
               <div className={css(styles.reason)}>
                 <div className={css(styles.reasonIcon, styles.reasonIconFlask)}>
-                  {icons.coinsSolid}
+                  {<i className="fa-solid fa-coins"></i>}
                 </div>
                 <div className={css(styles.reasonText)}>
                   Create bounties to reward other scientists for completing

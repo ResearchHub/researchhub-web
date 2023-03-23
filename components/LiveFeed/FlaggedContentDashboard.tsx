@@ -205,7 +205,7 @@ function FlaggedContentDashboard({
             <FlagButtonV2
               modalHeaderText="Flag and Remove"
               flagIconOverride={styles.flagIcon}
-              iconOverride={icons.trashSolid}
+              iconOverride={<i className="fa-solid fa-trash"></i>}
               defaultReason={r.reasonChoice}
               successMsgText="Flagged Content removed"
               errorMsgText="Failed to remove flagged content"
@@ -266,7 +266,7 @@ function FlaggedContentDashboard({
                 }
               }}
             >
-              {icons.check}
+              {<i className="fa-solid fa-check"></i>}
             </span>
           ),
           label: "Dismiss Flag",
@@ -304,14 +304,14 @@ function FlaggedContentDashboard({
                     {appliedFilters.verdict === "APPROVED" ? (
                       <>
                         <span className={css(styles.icon)}>
-                          &nbsp;{icons.check}
+                          &nbsp;{<i className="fa-solid fa-check"></i>}
                         </span>
                         &nbsp;dismissed flag
                       </>
                     ) : (
                       <>
                         <span className={css(styles.icon, styles.trashIcon)}>
-                          &nbsp;{icons.trash}
+                          &nbsp;{<i className="fa-solid fa-trash"></i>}
                         </span>
                         &nbsp;removed this content due to{" "}
                         <span className={css(styles.reason)}>
@@ -329,7 +329,6 @@ function FlaggedContentDashboard({
               <div className={css(styles.timelineSeperator)}></div>
             </>
           )}
-
           <div className={css(styles.actionDetailsRow)}>
             <div className={css(styles.avatarContainer)}>
               {/* @ts-ignore */}
@@ -353,14 +352,14 @@ function FlaggedContentDashboard({
                   appliedFilters.verdict === "APPROVED" ? (
                     <>
                       <span className={css(styles.icon)}>
-                        &nbsp;{icons.check}
+                        &nbsp;{<i className="fa-solid fa-check"></i>}
                       </span>
                       &nbsp;dismissed flag
                     </>
                   ) : (
                     <>
                       <span className={css(styles.icon, styles.trashIcon)}>
-                        &nbsp;{icons.trash}
+                        &nbsp;{<i className="fa-solid fa-trash"></i>}
                       </span>
                       {/* @ts-ignore */}
                       &nbsp;removed this content due to{" "}
@@ -373,7 +372,7 @@ function FlaggedContentDashboard({
                 ) : (
                   <>
                     <span className={css(styles.icon)}>
-                      &nbsp;{icons.flagOutline}
+                      &nbsp;{<i className="fa-regular fa-flag"></i>}
                     </span>
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
@@ -390,7 +389,6 @@ function FlaggedContentDashboard({
               {timeSince(r.createdDate)}
             </span>
           </div>
-
           <div className={css(styles.entryContainer)}>
             <div className={`${css(styles.checkbox)} cbx`}>
               <CheckBox
@@ -433,7 +431,7 @@ function FlaggedContentDashboard({
             className={css(styles.redo)}
             onClick={() => loadResults(appliedFilters)}
           >
-            {icons.redo}
+            {<i className="fa-solid fa-redo"></i>}
           </span>
         </div>
         <div className={css(styles.filters)}>
@@ -513,7 +511,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {icons.trashSolid}
+                {<i className="fa-solid fa-trash"></i>}
               </span>
               <span
                 className={css(
@@ -548,7 +546,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {icons.check}
+                {<i className="fa-solid fa-check"></i>}
               </span>
             </div>
           </div>

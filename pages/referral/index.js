@@ -56,7 +56,9 @@ const Index = ({ auth }) => {
                   {showSuccessMessage ? (
                     "Copied!"
                   ) : (
-                    <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                    <span className={css(styles.copyIcon)}>
+                      {<i className="fa-light fa-copy"></i>}
+                    </span>
                   )}
                 </a>
               }

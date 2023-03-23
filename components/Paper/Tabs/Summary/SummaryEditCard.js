@@ -56,16 +56,18 @@ const SummaryEditCard = (props) => {
                 color={colors.BLUE()}
               />
             ) : active || hovered ? (
-              icons.starFilled
+              <i className="fa-solid fa-star"></i>
             ) : (
-              icons.starEmpty
+              <i className="fa-regular fa-star"></i>
             )}
           </span>
         );
       }
     } else {
       return (
-        <span className={css(styles.icon)}>{active && icons.starFilled}</span>
+        <span className={css(styles.icon)}>
+          {active && <i className="fa-solid fa-star"></i>}
+        </span>
       );
     }
   };

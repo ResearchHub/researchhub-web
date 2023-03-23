@@ -19,7 +19,11 @@ const AuthorStatsDropdown = (props) => {
       >
         <div>{"Authors & Stats"}</div>
         <div className={css(styles.icon)}>
-          {showDropdown ? icons.chevronDown : icons.chevronUp}
+          {showDropdown ? (
+            <i className="fa-regular fa-chevron-down"></i>
+          ) : (
+            <i className="fa-regular fa-chevron-up"></i>
+          )}
         </div>
       </div>
       <div

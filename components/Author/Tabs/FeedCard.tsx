@@ -84,10 +84,10 @@ export type FeedCardProps = {
 };
 
 const documentIcons = {
-  paper: icons.paperRegular,
-  post: icons.penSquare,
-  hypothesis: icons.lightbulb,
-  question: icons.question,
+  paper: <i className="fa-regular fa-file-lines"></i>,
+  post: <i className="fa-solid fa-pen-square"></i>,
+  hypothesis: <i className="fa-regular fa-lightbulb"></i>,
+  question: <i className="fa-solid fa-question"></i>,
 };
 
 function FeedCard({
@@ -389,9 +389,11 @@ function FeedCard({
                           hasAcceptedAnswer && styles.acceptedAnswer
                         )}
                       >
-                        {hasAcceptedAnswer
-                          ? icons.check
-                          : icons.commentAltLineSolid}
+                        {hasAcceptedAnswer ? (
+                          <i className="fa-solid fa-check"></i>
+                        ) : (
+                          <i className="fa-solid fa-comment-alt-lines"></i>
+                        )}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>
@@ -403,7 +405,7 @@ function FeedCard({
                   ) : (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
-                        {icons.commentRegular}
+                        {<i className="fa-regular fa-comment"></i>}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>

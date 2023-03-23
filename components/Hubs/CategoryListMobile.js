@@ -25,7 +25,9 @@ const Tab = ({ text, index, activeCategory }) => {
           {text === "Trending" ? (
             <span>
               {text}
-              <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+              <span className={css(styles.trendingIcon)}>
+                {<i className="fa-duotone fa-fire-alt"></i>}
+              </span>
             </span>
           ) : (
             text

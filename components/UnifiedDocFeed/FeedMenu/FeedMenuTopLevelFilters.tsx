@@ -76,7 +76,6 @@ const FeedMenuTopLevelFilters = ({
           }}
         >
           {isLive && <span className={css(styles.divider)}></span>}
-
           <span className={css(styles.filterIcon)}>
             {isMyHubs ? (
               <AuthorAvatar
@@ -100,7 +99,11 @@ const FeedMenuTopLevelFilters = ({
                 setIsMyHubsDropdownOpen(!isMyHubsDropdownOpen);
               }}
             >
-              {isMyHubsDropdownOpen ? icons.chevronUp : icons.chevronDown}
+              {isMyHubsDropdownOpen ? (
+                <i className="fa-regular fa-chevron-up"></i>
+              ) : (
+                <i className="fa-regular fa-chevron-down"></i>
+              )}
             </span>
           )}
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (

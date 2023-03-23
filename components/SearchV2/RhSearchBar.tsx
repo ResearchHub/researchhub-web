@@ -152,7 +152,7 @@ function RhSearchBarInput({
         className={css(styles.searchIcon)}
         onClick={pushSearchToUrlAndTrack}
       >
-        {icons.search}
+        {<i className="fa-light fa-search"></i>}
       </span>
     </div>
   );
@@ -186,7 +186,7 @@ function RhSearchBarExpandableInput({
           className={css(styles.searchIcon, styles.searchIconSmallScreen)}
           onClick={(): void => setIsExpanded(true)}
         >
-          {icons.search}
+          {<i className="fa-light fa-search"></i>}
         </span>
       )}
       {isExpanded && (
@@ -198,7 +198,7 @@ function RhSearchBarExpandableInput({
               setIsExpanded(false);
             }}
           >
-            {icons.longArrowLeft}
+            {<i className="fa-light fa-arrow-left-long"></i>}
           </span>
           <input
             autoFocus
@@ -227,7 +227,7 @@ function RhSearchBarExpandableInput({
               event.stopPropagation()
             }
           >
-            {icons.search}
+            {<i className="fa-light fa-search"></i>}
           </span>
         </Fragment>
       )}

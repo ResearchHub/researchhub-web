@@ -58,14 +58,18 @@ function FeedMenuSortDropdown({
           {selectedOrderingObj?.selectedLabel}
           {!selectedOrderingObj.disableScope && (
             <span className={css(styles.displayTimeScope)}>
-              <span className={css(styles.rightIcon)}>{icons.arrowRight}</span>
+              <span className={css(styles.rightIcon)}>
+                {<i className="fa-solid fa-arrow-right"></i>}
+              </span>
               <span className={css(styles.selectedTimeScopeLabel)}>
                 {timeScopeObj.label}
               </span>
             </span>
           )}
         </div>
-        <div className={css(styles.displayDown)}>{icons.chevronDown}</div>
+        <div className={css(styles.displayDown)}>
+          {<i className="fa-regular fa-chevron-down"></i>}
+        </div>
       </div>
       {isOpen && (
         <div className={css(styles.dropdownBody)}>
@@ -79,9 +83,7 @@ function FeedMenuSortDropdown({
               key={"sort-" + opt.value}
             >
               <div className={css(styles.optLineItem)}>
-                <div className={css(styles.optIcon)}>
-                  {opt.icon}
-                </div>
+                <div className={css(styles.optIcon)}>{opt.icon}</div>
                 <div className={css(styles.optLabel)}>{opt.label}</div>
               </div>
               {selectedOrderingObj?.value === opt.value &&

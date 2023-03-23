@@ -39,7 +39,7 @@ const ActionButton = (props) => {
   if (isModerator) {
     return (
       <ModeratorDeleteButton
-        icon={icon ? icon : icons.ban}
+        icon={icon ? icon : <i className="fa-solid fa-ban"></i>}
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
         actionType={actionType ? actionType : restore ? "restore" : "page"}

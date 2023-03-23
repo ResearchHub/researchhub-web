@@ -365,9 +365,11 @@ class PaperProgress extends Component {
               )}
               id="icon"
             >
-              {section.active && !loading
-                ? icons.checkCircle
-                : icons.plusCircle}
+              {section.active && !loading ? (
+                <i className="fa-solid fa-check-circle"></i>
+              ) : (
+                <i className="fa-solid fa-plus-circle"></i>
+              )}
             </div>
             {section.label}
             {!!section.count && ":"}

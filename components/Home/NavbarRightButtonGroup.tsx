@@ -88,7 +88,7 @@ function NavbarRightButtonGroup({
                 href={"/moderators/audit/flagged"}
                 className={css(styles.modBtn)}
               >
-                {icons.shield}
+                {<i className="fa-solid fa-shield-halved"></i>}
                 {openCaseCounts > 0 && (
                   <div className={css(styles.notifCount)}>{openCaseCounts}</div>
                 )}
@@ -131,20 +131,24 @@ function NavbarRightButtonGroup({
           >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
-                {icons.portrait}
+                {<i className="fa-solid fa-portrait"></i>}
               </span>
               {"Profile"}
             </div>
           </Link>
           <Link href={`/${user?.organization_slug}/notebook`} legacyBehavior>
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.bookOpen}</span>
+              <span className={css(styles.profileIcon)}>
+                {<i className="fa-solid fa-book-open"></i>}
+              </span>
               {"Notebook"}
             </div>
           </Link>
           <Link href={"/settings"} as={`/settings`} legacyBehavior>
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.cog}</span>
+              <span className={css(styles.profileIcon)}>
+                {<i className="fa-solid fa-cog"></i>}
+              </span>
               {"Settings"}
             </div>
           </Link>
@@ -155,7 +159,9 @@ function NavbarRightButtonGroup({
             legacyBehavior
           >
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.asterisk}</span>
+              <span className={css(styles.profileIcon)}>
+                {<i className="fa-solid fa-asterisk"></i>}
+              </span>
               {"Referral Program"}
             </div>
           </Link>
@@ -165,7 +171,9 @@ function NavbarRightButtonGroup({
               signout({ walletLink });
             }}
           >
-            <span className={css(styles.profileIcon)}>{icons.signOut}</span>
+            <span className={css(styles.profileIcon)}>
+              {<i className="fa-duotone fa-sign-out"></i>}
+            </span>
             <span>{"Logout"}</span>
           </div>
         </div>

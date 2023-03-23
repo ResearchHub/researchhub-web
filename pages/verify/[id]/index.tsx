@@ -43,7 +43,7 @@ function Page(props) {
         ) : status === "VERIFIED" ? (
           <>
             <span style={{ color: colors.GREEN(), fontSize: 48 }}>
-              {icons.checkCircleSolid}
+              {<i className="fa-solid fa-check-circle"></i>}
             </span>
             <span
               className={css(styles.stepTitle)}
@@ -64,7 +64,7 @@ function Page(props) {
         ) : status === "ERROR" ? (
           <>
             <span style={{ color: colors.ORANGE_DARK(), fontSize: 48 }}>
-              {icons.exclamationCircle}
+              {<i className="fa-solid fa-exclamation-circle"></i>}
             </span>
             <span
               className={css(styles.stepTitle)}

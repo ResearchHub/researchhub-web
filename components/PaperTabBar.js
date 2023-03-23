@@ -74,10 +74,16 @@ const PaperTabBar = (props) => {
         ref={menuRef}
         data={menu}
         arrowLeft={
-          <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+          <NavigationArrow
+            icon={<i className="fa-regular fa-chevron-left"></i>}
+            direction={"left"}
+          />
         }
         arrowRight={
-          <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+          <NavigationArrow
+            icon={<i className="fa-regular fa-chevron-right"></i>}
+            direction={"right"}
+          />
         }
         menuStyle={styles.tabContainer}
         itemStyle={{ border: "none", highlight: "none", outline: "none" }}

@@ -59,7 +59,7 @@ export default function PaperUploadWizardHeader({
     return (
       <div className={css(formGenericStyles.text, styles.header)}>
         <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
+          {<i className="fa-light fa-times"></i>}
         </span>
         {currentStep === "pdf_upload" ? (
           <div
@@ -78,7 +78,7 @@ export default function PaperUploadWizardHeader({
                 });
               }}
             >
-              {icons.longArrowLeft}
+              {<i className="fa-light fa-arrow-left-long"></i>}
             </span>
             {"Upload PDF"}
           </div>

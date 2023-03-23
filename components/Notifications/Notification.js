@@ -165,7 +165,7 @@ class Notification extends Component {
           onClick={this.toggleMenu}
           ref={(ref) => (this.notifIcon = ref)}
         >
-          {icons.bell}
+          {<i className="fa-solid fa-bell"></i>}
           {this.state.count > 0 && (
             <div className={css(styles.notifCount)}>{this.state.count}</div>
           )}

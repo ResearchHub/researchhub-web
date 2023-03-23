@@ -216,7 +216,9 @@ class BulletsContainer extends Component {
             this.transitionWrapper(this.toggleForm);
           }}
         >
-          <div className={css(styles.icon)}>{icons.takeaway}</div>
+          <div className={css(styles.icon)}>
+            {<i className="fa-duotone fa-list"></i>}
+          </div>
           <div className={css(styles.text)}>
             <h2 className={css(styles.mainText)}>
               Add a key takeaway to this paper
@@ -269,7 +271,7 @@ class BulletsContainer extends Component {
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.manage}
+            {<i className="fa-light fa-tasks"></i>}
           </span>
           Manage
         </Ripples>
@@ -278,7 +280,7 @@ class BulletsContainer extends Component {
           onClick={() => this.transitionWrapper(this.toggleForm)}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.plusCircle}
+            {<i className="fa-solid fa-plus-circle"></i>}
           </span>
           Add Takeaway
         </Ripples>

@@ -175,7 +175,9 @@ class PaperEditHistory extends Component {
             legacyBehavior
           >
             <div className={css(styles.back)}>
-              <span className={css(styles.arrow)}>{icons.longArrowLeft}</span>
+              <span className={css(styles.arrow)}>
+                {<i className="fa-light fa-arrow-left-long"></i>}
+              </span>
               Summary
             </div>
           </Link>

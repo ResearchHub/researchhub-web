@@ -5,7 +5,7 @@ export const topLevelFilters = {
   "/": {
     label: "Frontpage",
     value: "/",
-    icon: icons.globeLight,
+    icon: <i className="fa-light fa-globe"></i>,
   },
   "/my-hubs": {
     label: "My Hubs",
@@ -15,7 +15,7 @@ export const topLevelFilters = {
   "/live": {
     label: "Live",
     value: "/live",
-    icon: icons.pulse,
+    icon: <i className="fa-light fa-heart-rate"></i>,
   },
 };
 
@@ -66,7 +66,7 @@ export const sortOpts = {
     value: "hot",
     label: "Trending",
     selectedLabel: "Trending",
-    icon: icons.fire,
+    icon: <i className="fa-duotone fa-fire-alt"></i>,
     disableScope: true,
     availableFor: [
       feedTypeOpts["all"].value,
@@ -95,7 +95,7 @@ export const sortOpts = {
     value: "expiring_soon",
     label: "Expiring Soon",
     selectedLabel: "Expiring Soon",
-    icon: icons.clock,
+    icon: <i className="fa-regular fa-clock"></i>,
     disableScope: true,
     availableFor: [feedTypeOpts["bounty"].value],
   },
@@ -103,7 +103,7 @@ export const sortOpts = {
     value: "new",
     label: "Newest",
     selectedLabel: "Newest",
-    icon: icons.bolt,
+    icon: <i className="fa-solid fa-bolt"></i>,
     disableScope: true,
     availableFor: [
       feedTypeOpts["all"].value,
@@ -118,7 +118,7 @@ export const sortOpts = {
     value: "discussed",
     label: "Most Discussed",
     selectedLabel: "Discussed",
-    icon: icons.commentsAlt,
+    icon: <i className="fa-light fa-comments"></i>,
     disableScope: false,
     availableFor: [
       feedTypeOpts["all"].value,
@@ -133,7 +133,7 @@ export const sortOpts = {
     value: "upvoted",
     label: "Most Upvoted",
     selectedLabel: "Upvoted",
-    icon: icons.up,
+    icon: <i className="fa-solid fa-up"></i>,
     disableScope: false,
     availableFor: [
       feedTypeOpts["all"].value,

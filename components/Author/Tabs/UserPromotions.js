@@ -58,7 +58,7 @@ const UserPromotions = (props) => {
         ) : (
           <EmptyState
             message={"User has not supported any content"}
-            icon={icons.bolt}
+            icon={<i className="fa-solid fa-bolt"></i>}
           />
         )}
       </ReactPlaceholder>

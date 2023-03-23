@@ -90,7 +90,7 @@ const getActionButtons = ({
           className={css(styles.actionIcon)}
           data-tip={"Edit Hypothesis"}
         >
-          {icons.pencil}
+          {<i className="fa-solid fa-pencil"></i>}
         </div>
       ) : (
         <PermissionNotificationWrapper
@@ -102,7 +102,7 @@ const getActionButtons = ({
           styling={styles.borderRadius}
         >
           <div className={css(styles.actionIcon)} data-tip={"Edit Hypothesis"}>
-            {icons.pencil}
+            {<i className="fa-solid fa-pencil"></i>}
           </div>
         </PermissionNotificationWrapper>
       ),
@@ -140,7 +140,13 @@ const getActionButtons = ({
             isModerator={true}
             paperId={hypoID}
             restore={isHypoRemoved}
-            icon={isHypoRemoved ? icons.plus : icons.minus}
+            icon={
+              isHypoRemoved ? (
+                <i className="fa-solid fa-plus"></i>
+              ) : (
+                <i className="fa-solid fa-minus"></i>
+              )
+            }
             onAction={() => {
               if (isHypoRemoved) {
                 restoreDocument({

@@ -270,9 +270,11 @@ class DragNDrop extends Component {
                       !this.state.validUrl && styles.errorIcon
                     )}
                   >
-                    {this.state.validUrl
-                      ? icons.checkCircle
-                      : icons.timesCircle}
+                    {this.state.validUrl ? (
+                      <i className="fa-solid fa-check-circle"></i>
+                    ) : (
+                      <i className="fa-solid fa-times-circle"></i>
+                    )}
                   </span>
                 )
               ) : null

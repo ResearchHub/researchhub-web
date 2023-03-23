@@ -80,7 +80,9 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.medium}</span>
+                <span className={css(styles.logo)}>
+                  {<i className="fa-brands fa-medium"></i>}
+                </span>
               </div>
             </a>
             <a
@@ -90,7 +92,9 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.discord}</span>
+                <span className={css(styles.logo)}>
+                  {<i className="fa-brands fa-discord"></i>}
+                </span>
               </div>
             </a>
             <a
@@ -100,7 +104,9 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.twitter}</span>
+                <span className={css(styles.logo)}>
+                  {<i className="fa-brands fa-twitter"></i>}
+                </span>
               </div>
             </a>
             <a
@@ -109,7 +115,9 @@ class Footer extends Component {
               href="https://www.reddit.com/r/ResearchHub/"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.reddit}</span>
+                <span className={css(styles.logo)}>
+                  {<i className="fa-brands fa-reddit"></i>}
+                </span>
               </div>
             </a>
             <a
@@ -118,7 +126,9 @@ class Footer extends Component {
               href="https://github.com/ResearchHub"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.github}</span>
+                <span className={css(styles.logo)}>
+                  {<i className="fa-brands fa-github"></i>}
+                </span>
               </div>
             </a>
           </div>

@@ -353,7 +353,7 @@ const DiscussionTab = (props) => {
               : showTwitterComments && (
                   <span className={css(styles.box, styles.emptyStateBox)}>
                     <span className={css(styles.icon, styles.twitterIcon)}>
-                      {icons.twitter}
+                      {<i className="fa-brands fa-twitter"></i>}
                     </span>
                     <h3 className={css(styles.noSummaryTitle)}>
                       There are no tweets {mobileView && "\n"}for this paper

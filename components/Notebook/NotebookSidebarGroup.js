@@ -74,7 +74,7 @@ const NotebookSidebarGroup = ({
                 className={css(styles.actionButton) + " actionButton"}
                 onClick={() => handleCreateNewNote(groupKey)}
               >
-                {icons.plus}
+                {<i className="fa-solid fa-plus"></i>}
               </div>
             )}
           </div>
@@ -85,7 +85,9 @@ const NotebookSidebarGroup = ({
           className={css(styles.newNoteButton)}
           onClick={() => handleCreateNewNote(groupKey)}
         >
-          <span className={css(styles.plusIcon)}>{icons.plus}</span>
+          <span className={css(styles.plusIcon)}>
+            {<i className="fa-solid fa-plus"></i>}
+          </span>
           Create new note
         </div>
       )}

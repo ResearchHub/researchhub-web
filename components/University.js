@@ -5,7 +5,9 @@ const University = (props) => {
   const { university } = props || {};
   return (
     <div className={css(styles.extraInfo)}>
-      <span className={css(styles.icon)}>{icons.graduationCap}</span>
+      <span className={css(styles.icon)}>
+        {<i className="fa-solid fa-graduation-cap"></i>}
+      </span>
       {buildText(university.name, university.city, university.country)}
     </div>
   );

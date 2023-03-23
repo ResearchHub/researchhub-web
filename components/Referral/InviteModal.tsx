@@ -163,7 +163,6 @@ const InviteModal = ({
           below.
         </p>
       )}
-
       <div className={css(styles.referralLinkSection)}>
         <div className={css(styles.tabs)}>
           <div
@@ -173,8 +172,10 @@ const InviteModal = ({
             )}
             onClick={() => setSelectedTab("LINK")}
           >
-            <span className={css(styles.tabIcon)}>{icons.link}</span> Invite by
-            link
+            <span className={css(styles.tabIcon)}>
+              {<i className="fa-solid fa-link"></i>}
+            </span>{" "}
+            Invite by link
           </div>
           <div
             onClick={() => setSelectedTab("EMAIL")}
@@ -183,7 +184,9 @@ const InviteModal = ({
               selectedTab === "EMAIL" && styles.tabSelected
             )}
           >
-            <span className={css(styles.tabIcon)}>{icons.paperPlane}</span>{" "}
+            <span className={css(styles.tabIcon)}>
+              {<i className="fa-duotone fa-paper-plane"></i>}
+            </span>{" "}
             Invite by email
           </div>
           <div className={css(styles.invitesSent)}>
@@ -208,7 +211,7 @@ const InviteModal = ({
                         "Copied"
                       ) : (
                         <span className={css(styles.copyIcon)}>
-                          {icons.copy}
+                          {<i className="fa-light fa-copy"></i>}
                         </span>
                       )}
                     </a>
@@ -302,7 +305,6 @@ const InviteModal = ({
           </div>
         )}
       </div>
-
       <div className={css(styles.howItWorksSection)}>
         <h4 className={css(styles.sectionTitle)}>
           How it works
@@ -325,7 +327,7 @@ const InviteModal = ({
                   fontWeight: 500,
                 }}
               >
-                7% 
+                7%
               </span>{" "}
               of user's RSC earnings on ResearchHub for the first six month
               period

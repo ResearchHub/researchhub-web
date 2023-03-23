@@ -75,7 +75,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                   <FlagButtonV2
                     modalHeaderText="Flag Content"
                     flagIconOverride={styles.flagIcon}
-                    iconOverride={icons.flag}
+                    iconOverride={<i className="fa-solid fa-flag"></i>}
                     errorMsgText="Failed to flag"
                     successMsgText="Content flagged"
                     primaryButtonLabel="Flag"

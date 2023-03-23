@@ -229,7 +229,7 @@ const AuthorSupportModal = (props) => {
     return (
       <div className={css(styles.content)}>
         <div className={css(styles.backButton)} onClick={() => setPage(1)}>
-          {icons.longArrowLeft}
+          {<i className="fa-light fa-arrow-left-long"></i>}
           <span className={css(styles.backButtonLabel)}>Back</span>
         </div>
         <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
@@ -328,7 +328,9 @@ const AuthorSupportModal = (props) => {
         ) : (
           <div className={css(styles.mainHeader)}>
             Transaction Successful
-            <span className={css(styles.icon)}>{icons.checkCircle}</span>
+            <span className={css(styles.icon)}>
+              {<i className="fa-solid fa-check-circle"></i>}
+            </span>
           </div>
         )
       }

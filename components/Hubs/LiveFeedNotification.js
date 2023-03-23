@@ -510,13 +510,13 @@ class LiveFeedNotification extends Component {
       case "summary":
       case "vote_paper":
       case "paper":
-        return icons.file;
+        return <i className="fa-solid fa-file"></i>;
       case "vote_comment":
       case "comment":
-        return icons.commentAltDots;
+        return <i className="fa-duotone fa-comment-alt-dots"></i>;
       case "reply":
       case "vote_reply":
-        return icons.commentAltDots;
+        return <i className="fa-duotone fa-comment-alt-dots"></i>;
       case "thread":
       case "vote_thread":
         return icons.commentAltLines;
@@ -569,7 +569,7 @@ class LiveFeedNotification extends Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                icon={icons.ban}
+                icon={<i className="fa-solid fa-ban"></i>}
                 label={"Ban User"}
                 actionType={"user"}
                 metaData={metaData}

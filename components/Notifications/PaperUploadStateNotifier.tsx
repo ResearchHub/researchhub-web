@@ -59,7 +59,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"PAPER UPLOADED"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
-              {icons.checkCircle}
+              {<i className="fa-solid fa-check-circle"></i>}
             </span>
             {"Click here to complete next steps"}
           </div>
@@ -85,7 +85,7 @@ const getToastBody = ({
           </div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {icons.exclamationCircle}
+              {<i className="fa-solid fa-exclamation-circle"></i>}
             </span>
             {
               "We weren't able to get DOI from the source. Click here to try again by providing DOI"
@@ -100,7 +100,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"DUPLICATE PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {icons.exclamationCircle}
+              {<i className="fa-solid fa-exclamation-circle"></i>}
             </span>
             {"We've found a duplicate paper"}
           </div>
@@ -114,7 +114,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"UPLOADING PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
-              {icons.checkCircle}
+              {<i className="fa-solid fa-check-circle"></i>}
             </span>
             {"Fetching Paper Metadata..."}
           </div>

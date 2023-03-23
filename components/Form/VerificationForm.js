@@ -118,7 +118,7 @@ const VerificationForm = forwardRef((props, ref) => {
                   onClick={() => removeFile(index)}
                   class={css(styles.times)}
                 >
-                  {icons.times}
+                  {<i className="fa-light fa-times"></i>}
                 </span>
                 {
                   <img
@@ -140,7 +140,13 @@ const VerificationForm = forwardRef((props, ref) => {
         addImageClassName={files.length > 0 ? "DndHero single" : "DndDefault"}
         imageContainerClassName={calculateStyle()}
         accept={"image/*"}
-        addImageText={files.length < 1 ? renderDropContent() : icons.plus}
+        addImageText={
+          files.length < 1 ? (
+            renderDropContent()
+          ) : (
+            <i className="fa-solid fa-plus"></i>
+          )
+        }
       />
     </div>
   );

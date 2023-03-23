@@ -71,7 +71,9 @@ function PostTypeSelector({
                 {t.label}
               </div>
               {selectedType?.value === t.value && (
-                <div className={css(dropdownStyles.check)}>{icons.check}</div>
+                <div className={css(dropdownStyles.check)}>
+                  {<i className="fa-solid fa-check"></i>}
+                </div>
               )}
             </div>
           ))}
@@ -95,7 +97,9 @@ function PostTypeSelector({
           {selectedType?.icon}
         </span>
         {selectedType?.label}{" "}
-        <span className={css(styles.downIcon)}>{icons.angleDown}</span>
+        <span className={css(styles.downIcon)}>
+          {<i className="fa-light fa-angle-down"></i>}
+        </span>
       </div>
     );
   };

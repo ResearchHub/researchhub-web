@@ -46,8 +46,10 @@ const HubSelector = ({ hubState }) => {
     const allHubsHeaderOpt = {
       html: (
         <Link href={`/hubs`} className={css(styles.primaryButton)}>
-          <span className={css(styles.squaresIcon)}>{icons.squares}</span>All
-          Hubs
+          <span className={css(styles.squaresIcon)}>
+            {<i className="fa-solid fa-th-large"></i>}
+          </span>
+          All Hubs
         </Link>
       ),
       value: "all-hubs",

@@ -19,7 +19,11 @@ const OnboardHub = (props) => {
   const renderButton = () => {
     return (
       <div className={css(styles.button, subscribed && styles.active)}>
-        {subscribed ? icons.check : icons.plus}
+        {subscribed ? (
+          <i className="fa-solid fa-check"></i>
+        ) : (
+          <i className="fa-solid fa-plus"></i>
+        )}
       </div>
     );
   };

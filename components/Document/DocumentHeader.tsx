@@ -462,7 +462,7 @@ function DocumentHeader({
                 href={"#comments"}
               >
                 <span className={css(styles.detailIcon)}>
-                  {icons.commentsSolid}
+                  {<i className="fa-solid fa-comments"></i>}
                 </span>
                 {discussionCount}{" "}
                 <span className={css(styles.commentsText)}>
@@ -472,7 +472,7 @@ function DocumentHeader({
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon, styles.starIcon)}>
-                    {icons.starFilled}
+                    {<i className="fa-solid fa-star"></i>}
                   </span>
                   {unifiedDocument?.reviewSummary?.avg}
                   <span className={css(styles.reviewDetails)}>

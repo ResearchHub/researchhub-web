@@ -69,7 +69,7 @@ function DocumentActions({
           data-tip={"Download PDF"}
           onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
         >
-          {icons.download}
+          {<i className="fa-solid fa-down-to-line"></i>}
         </div>
       ),
     },
@@ -85,7 +85,9 @@ function DocumentActions({
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)}>{icons.pencil}</div>
+          <div className={css(styles.actionIcon)}>
+            {<i className="fa-solid fa-pencil"></i>}
+          </div>
         </PermissionNotificationWrapper>
       ),
     },
@@ -134,7 +136,13 @@ function DocumentActions({
             isModerator={true}
             paperId={unifiedDocument?.document?.id}
             restore={isRemoved}
-            icon={isRemoved ? icons.plus : icons.minus}
+            icon={
+              isRemoved ? (
+                <i className="fa-solid fa-plus"></i>
+              ) : (
+                <i className="fa-solid fa-minus"></i>
+              )
+            }
             onAction={() => {
               if (isRemoved) {
                 restoreDocument({

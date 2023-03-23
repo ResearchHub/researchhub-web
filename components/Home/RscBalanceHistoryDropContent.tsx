@@ -142,7 +142,7 @@ export default function RscBalanceHistoryDropContent({
             data-for={"reputation-tool-tip"}
             data-tip=""
           >
-            {icons.question}
+            {<i className="fa-solid fa-question"></i>}
           </a>
         </div>
         <ALink

@@ -255,7 +255,7 @@ class BulletsContainer extends Component {
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.manage}
+            {<i className="fa-light fa-tasks"></i>}
           </span>
           Manage
         </Ripples>
@@ -264,7 +264,7 @@ class BulletsContainer extends Component {
           onClick={() => this.transitionWrapper(this.toggleForm)}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.plusCircle}
+            {<i className="fa-solid fa-plus-circle"></i>}
           </span>
           Add Takeaway
         </Ripples>

@@ -103,20 +103,35 @@ class Index extends Component {
     });
 
     this.items = [
-      { name: "Users", id: "users", type: "users", icon: icons.subscribers },
-      { name: "Authors", id: "authors", type: "authors", icon: icons.userEdit },
-      { name: "Papers", id: "papers", type: "papers", icon: icons.bookOpen },
+      {
+        name: "Users",
+        id: "users",
+        type: "users",
+        icon: <i className="fa-solid fa-user"></i>,
+      },
+      {
+        name: "Authors",
+        id: "authors",
+        type: "authors",
+        icon: <i className="fa-solid fa-user-edit"></i>,
+      },
+      {
+        name: "Papers",
+        id: "papers",
+        type: "papers",
+        icon: <i className="fa-solid fa-book-open"></i>,
+      },
       {
         name: "Editors",
         id: "editors",
         type: "editors",
-        icon: icons.starFilled,
+        icon: <i className="fa-solid fa-star"></i>,
       },
       {
         name: "Hubs",
         id: "hubs",
         type: "hubs",
-        icon: icons.hub,
+        icon: <i className="fa-solid fa-chart-network"></i>,
       },
     ];
   }

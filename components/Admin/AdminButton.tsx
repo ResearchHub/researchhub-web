@@ -101,7 +101,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
 
   const dropdownOpts = [
     {
-      icon: icons.eyeSlash,
+      icon: <i className="fa-duotone fa-eye-slash"></i>,
       label: "Exclude from Trending",
       value: "exclude",
       isVisible: true,
@@ -110,7 +110,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.eye,
+      icon: <i className="fa-duotone fa-eye"></i>,
       label: "Include in Trending",
       value: "include",
       isVisible: true,
@@ -119,7 +119,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.upSolid,
+      icon: <i className="fa-solid fa-up"></i>,
       label: "Make Featured",
       value: "feature",
       isVisible: true,
@@ -128,7 +128,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.downSolid,
+      icon: <i className="fa-solid fa-down"></i>,
       iconStyle: styles.removeFromFeatureIcon,
       label: "Remove from Featured",
       value: "remove-feature",
@@ -191,7 +191,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
                 setIsFeaturedSubmenuOpen(!isFeaturedSubmenuOpen);
               }}
             >
-              {icons.cog}
+              {<i className="fa-solid fa-cog"></i>}
             </span>
           </div>
           <div
@@ -254,7 +254,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     <DropdownButton
       opts={optsAsHTML}
       // @ts-ignore
-      labelAsHtml={icons.shield}
+      labelAsHtml={<i className="fa-solid fa-shield-halved"></i>}
       isOpen={isOpen}
       onClick={() => setIsOpen(true)}
       onClickOutside={() => {

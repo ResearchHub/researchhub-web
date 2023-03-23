@@ -34,11 +34,11 @@ function getWizardBody({
     case "standby":
       return (
         // @ts-ignore legacy socket hook
-        <PaperUploadWizardUpdatePaper
+        (<PaperUploadWizardUpdatePaper
           onExit={onExit}
           wsAuth
           wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
-        />
+        />)
       );
     case "doi_upload":
       return <PaperUploadWizardDOIBody onExit={onExit} />;

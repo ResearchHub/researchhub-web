@@ -124,7 +124,7 @@ const ContentSupport = (props) => {
       {renderCount()}
       {!isUserContent() && (
         <span className={css(styles.plusButton)} id={"plusIcon"}>
-          {icons.plusCircleSolid}
+          {<i className="fa-solid fa-plus-circle"></i>}
         </span>
       )}
       <img

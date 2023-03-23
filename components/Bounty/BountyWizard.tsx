@@ -184,7 +184,8 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
                     setStep(step - 1);
                   }}
                 >
-                  {icons.chevronLeft} <span>Previous Step</span>
+                  {<i className="fa-regular fa-chevron-left"></i>}{" "}
+                  <span>Previous Step</span>
                 </div>
               }
               label={"Bounty Title"}
@@ -207,16 +208,6 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
               onSuccess && onSuccess();
               router.push(route);
             }}
-            // otherButtons={
-            //   <div
-            //     className={css(styles.previousStep)}
-            //     onClick={() => {
-            //       setStep(step - 1);
-            //     }}
-            //   >
-            //     {icons.chevronLeft} <span>Previous Step</span>
-            //   </div>
-            // }
           />
         );
       default:

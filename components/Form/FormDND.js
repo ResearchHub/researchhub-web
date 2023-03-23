@@ -408,9 +408,11 @@ class FormDND extends Component {
                     )}
                   >
                     <div className={css(styles.icon)}>
-                      {this.state.urlIsValid
-                        ? icons.checkCircle
-                        : icons.timesCircle}
+                      {this.state.urlIsValid ? (
+                        <i className="fa-solid fa-check-circle"></i>
+                      ) : (
+                        <i className="fa-solid fa-times-circle"></i>
+                      )}
                     </div>
                   </span>
                 )

@@ -103,7 +103,9 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
               Math.floor(rscDeltaSinceSeen)
             )}`}</div>
           )}
-          <div className={css(styles.caretDown)}>{icons.chevronDown}</div>
+          <div className={css(styles.caretDown)}>
+            {<i className="fa-regular fa-chevron-down"></i>}
+          </div>
         </div>
       }
     />

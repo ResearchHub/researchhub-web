@@ -138,7 +138,7 @@ function CitationCommentSidebar({
             hypothesisUnduxStore.set("targetCitationComment")(null)
           }
         >
-          {icons.arrowRight}
+          {<i className="fa-solid fa-arrow-right"></i>}
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>

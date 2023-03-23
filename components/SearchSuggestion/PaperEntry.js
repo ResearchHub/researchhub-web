@@ -109,7 +109,9 @@ const PaperEntry = ({
           <div className={css(styles.title, styles.text)}>
             {title && (
               <Fragment>
-                <span className={css(styles.icon)}>{icons.file}</span>
+                <span className={css(styles.icon)}>
+                  {<i className="fa-solid fa-file"></i>}
+                </span>
                 {title}
               </Fragment>
             )}

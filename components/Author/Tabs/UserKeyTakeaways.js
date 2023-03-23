@@ -80,7 +80,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
       ) : (
         <EmptyState
           message={"User has not created any summaries"}
-          icon={icons.file}
+          icon={<i className="fa-solid fa-file"></i>}
         />
       )}
     </ReactPlaceholder>

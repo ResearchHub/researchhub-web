@@ -100,7 +100,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleLeft}
+                    {<i className="fa-solid fa-angle-left"></i>}
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
@@ -111,7 +111,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleRight}
+                    {<i className="fa-solid fa-angle-right"></i>}
                   </span>
                 </div>
               );

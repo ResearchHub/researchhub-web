@@ -4,7 +4,13 @@ import {
   nullToEmptyString,
 } from "../../config/utils/nullchecks";
 import { connect } from "react-redux";
-import { ReactElement, RefObject, SyntheticEvent, useEffect, useRef } from "react";
+import {
+  ReactElement,
+  RefObject,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+} from "react";
 import colors from "../../config/themes/colors";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
@@ -111,7 +117,7 @@ function PaperDraftInlineCommentSlideButton({
       ref={buttonRef}
       style={{ top: displayableOffsetTop }}
     >
-      {icons.plusThick}
+      {<i className="fa-solid fa-plus"></i>}
     </div>
   );
 }

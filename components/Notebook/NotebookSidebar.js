@@ -145,7 +145,9 @@ const NotebookSidebar = ({
                     setIsPopoverOpen(false);
                   }}
                 >
-                  <div className={css(styles.newOrgButton)}>{icons.plus}</div>
+                  <div className={css(styles.newOrgButton)}>
+                    {<i className="fa-solid fa-plus"></i>}
+                  </div>
                   New Organization
                 </div>
               </div>
@@ -181,7 +183,7 @@ const NotebookSidebar = ({
                 setShowManageOrgModal(true);
               }}
             >
-              {icons.cog}
+              {<i className="fa-solid fa-cog"></i>}
               <span className={css(styles.sidebarButtonText)}>
                 Settings & Members
               </span>
@@ -190,7 +192,7 @@ const NotebookSidebar = ({
               className={css(styles.sidebarButton)}
               onClick={() => setIsNoteTemplateModalOpen(true)}
             >
-              {icons.shapes}
+              {<i className="fa-duotone fa-shapes"></i>}
               <span className={css(styles.sidebarButtonText)}>Templates</span>
             </div>
           </div>

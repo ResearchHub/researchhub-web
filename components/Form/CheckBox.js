@@ -49,7 +49,7 @@ const CheckBox = ({
             style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
             className={css(checkStyleOverride)}
           >
-            {icons.check}
+            {<i className="fa-solid fa-check"></i>}
           </span>
         ) : (
           <div

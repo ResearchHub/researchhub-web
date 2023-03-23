@@ -234,7 +234,7 @@ class FigureTab extends Component {
       return (
         <EmptyState
           text={"No Figures Found"}
-          icon={icons.image}
+          icon={<i className="fa-duotone fa-image"></i>}
           subtext={"No figures have been found in this paper's PDF"}
         />
       );
@@ -299,7 +299,7 @@ class FigureTab extends Component {
                 }
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  {icons.minusCircle}
+                  {<i className="fa-duotone fa-minus-circle"></i>}
                 </span>
                 Remove Figure
               </Ripples>
@@ -308,7 +308,7 @@ class FigureTab extends Component {
                 onClick={this.openDndModal}
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  {icons.plusCircle}
+                  {<i className="fa-solid fa-plus-circle"></i>}
                 </span>
                 Add Figure
               </Ripples>

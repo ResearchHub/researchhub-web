@@ -83,7 +83,7 @@ const Navbar = (props) => {
           className={css(styles.burgerIcon)}
           onClick={() => setShouldShowSlider(!shouldShowSlider)}
         >
-          {icons.burgerMenu}
+          {<i className="fa-light fa-bars"></i>}
         </div>
         <div
           onClick={(event) => {

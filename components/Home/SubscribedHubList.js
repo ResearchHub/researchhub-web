@@ -156,7 +156,7 @@ class SubscribedHubList extends Component {
           as={"/settings"}
           className={css(styles.link, styles.cogButton)}
         >
-          {icons.cog}
+          {<i className="fa-solid fa-cog"></i>}
         </Link>
       </div>
     );

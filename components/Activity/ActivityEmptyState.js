@@ -11,7 +11,9 @@ const ActivityEmptyState = ({ myHubs }) => {
 
   return (
     <div className={css(styles.emptystate)}>
-      <span className={css(styles.activityFeedIcon)}>{icons.activtyFeed}</span>
+      <span className={css(styles.activityFeedIcon)}>
+        {<i className="fa-solid fa-rss"></i>}
+      </span>
       <span style={{ fontWeight: 500, marginBottom: 10 }}>No Activity.</span>
       {myHubs ? "Follow an author to get started!" : ""}
     </div>

@@ -57,8 +57,10 @@ class Editor extends Component {
       const MagicUrl = (await import("quill-magic-url")).default;
 
       const Quill = val.default.Quill;
-      var icons = val.default.Quill.import("ui/icons");
-      icons.video = ReactDOMServer.renderToString(faIcons.video);
+      const icons = val.default.Quill.import("ui/icons");
+      icons.video = ReactDOMServer.renderToString(
+        <i className="fa-solid fa-video"></i>
+      );
 
       Quill.register(QuillPeerReviewRatingBlock);
       Quill.register("modules/magicUrl", MagicUrl);
@@ -538,7 +540,7 @@ class Editor extends Component {
                       Bounty Added{" "}
                     </span>
                     <span className={css(styles.closeBounty)}>
-                      {icons.times}
+                      {<i className="fa-light fa-times"></i>}
                     </span>
                   </button>
                 ) : (

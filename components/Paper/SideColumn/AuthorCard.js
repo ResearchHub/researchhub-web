@@ -47,7 +47,9 @@ const AuthorCard = (props) => {
         {author.profile_image ? (
           <img src={author.profile_image} className={css(styles.userImage)} />
         ) : (
-          <span className={css(styles.userIcon)}>{icons.user}</span>
+          <span className={css(styles.userIcon)}>
+            {<i className="fa-solid fa-user"></i>}
+          </span>
         )}
         {authorUserID ? (
           <div className={css(styles.name) + " clamp1"}>{name}</div>
@@ -65,14 +67,18 @@ const AuthorCard = (props) => {
         rel="noreferrer noopener"
         data-test={`author-${author.id}`}
       >
-        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <span className={css(styles.userIcon)}>
+          {<i className="fa-solid fa-user"></i>}
+        </span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </a>
     );
   } else {
     return (
       <div className={css(styles.container)} data-test={`author-${author.id}`}>
-        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <span className={css(styles.userIcon)}>
+          {<i className="fa-solid fa-user"></i>}
+        </span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </div>
     );

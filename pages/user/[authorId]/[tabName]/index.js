@@ -530,7 +530,7 @@ function AuthorPage(props) {
             className={css(styles.submitSocialButton)}
             onClick={() => saveSocial(social)}
           >
-            {icons.arrowRight}
+            {<i className="fa-solid fa-arrow-right"></i>}
           </div>
         </div>
       </div>
@@ -639,7 +639,7 @@ function AuthorPage(props) {
   const socialMediaLinkButtons = [
     {
       link: safeGuardURL(author.linkedin),
-      icon: icons.linkedIn,
+      icon: <i className="fa-brands fa-linkedin"></i>,
       nodeRef: linkedinRef,
       dataTip: "Set LinkedIn Profile",
       onClick: () => setEditLinkedin(true),
@@ -649,7 +649,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.twitter),
-      icon: icons.twitter,
+      icon: <i className="fa-brands fa-twitter"></i>,
       nodeRef: twitterRef,
       dataTip: "Set Twitter Profile",
       onClick: () => setEditTwitter(true),
@@ -659,7 +659,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.facebook),
-      icon: icons.facebook,
+      icon: <i className="fa-brands fa-facebook-f"></i>,
       nodeRef: facebookRef,
       dataTip: "Set Facebook Profile",
       onClick: () => setEditFacebook(true),
@@ -733,11 +733,13 @@ function AuthorPage(props) {
               actionType="user"
               containerStyle={styles.moderatorButton}
               icon={
-                !fetchedUser
-                  ? " "
-                  : isAuthorUserSuspended
-                  ? icons.userPlus
-                  : icons.userSlash
+                !fetchedUser ? (
+                  " "
+                ) : isAuthorUserSuspended ? (
+                  <i className="fa-solid fa-user-plus"></i>
+                ) : (
+                  <i className="fa-solid fa-user-slash"></i>
+                )
               }
               iconStyle={styles.moderatorIcon}
               key="user"
@@ -763,11 +765,13 @@ function AuthorPage(props) {
                 actionType="user"
                 containerStyle={[styles.moderatorButton, styles.reinstateUser]}
                 icon={
-                  !fetchedUser
-                    ? " "
-                    : isAuthorUserSuspended
-                    ? icons.userPlus
-                    : icons.userSlash
+                  !fetchedUser ? (
+                    " "
+                  ) : isAuthorUserSuspended ? (
+                    <i className="fa-solid fa-user-plus"></i>
+                  ) : (
+                    <i className="fa-solid fa-user-slash"></i>
+                  )
                 }
                 iconStyle={styles.moderatorIcon}
                 key="user"
@@ -800,7 +804,7 @@ function AuthorPage(props) {
               label={() => (
                 <Fragment>
                   <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.user}
+                    {<i className="fa-solid fa-user"></i>}
                   </span>
                   Sift Profile
                 </Fragment>
@@ -818,7 +822,9 @@ function AuthorPage(props) {
     <div>
       {allowEdit ? (
         <div className={css(styles.editProfileButton)} key="editButton">
-          <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
+          <span onClick={onOpenUserInfoModal}>
+            {<i className="fa-solid fa-edit"></i>}
+          </span>
         </div>
       ) : null}
     </div>
@@ -836,7 +842,9 @@ function AuthorPage(props) {
       author?.education?.length ? (
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
           <div className={css(styles.educationSummary) + " clamp2"}>
-            <span className={css(styles.icon)}>{icons.graduationCap}</span>
+            <span className={css(styles.icon)}>
+              {<i className="fa-solid fa-graduation-cap"></i>}
+            </span>
             {createEduSummary(author)}
           </div>
         </div>

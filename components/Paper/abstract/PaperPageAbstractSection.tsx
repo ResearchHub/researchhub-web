@@ -85,7 +85,9 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
               onClick={(): void => setIsEditMode(true)}
               loginRequired
             >
-              <span className={css(styles.pencilIcon)}>{icons.pencil}</span>
+              <span className={css(styles.pencilIcon)}>
+                {<i className="fa-solid fa-pencil"></i>}
+              </span>
             </PermissionNotificationWrapper>
           )}
         </div>
@@ -158,7 +160,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 height: 50,
               }}
             >
-              {icons.file}
+              {<i className="fa-solid fa-file"></i>}
             </div>
             <h2 className={css(styles.noSummaryTitle)}>
               {"Add an abstract to this paper"}

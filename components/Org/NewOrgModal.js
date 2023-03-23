@@ -178,7 +178,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {icons.chevronLeft}{" "}
+              {<i className="fa-regular fa-chevron-left"></i>}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>
@@ -238,7 +238,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {icons.chevronLeft}{" "}
+              {<i className="fa-regular fa-chevron-left"></i>}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>

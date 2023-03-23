@@ -155,7 +155,7 @@ function PaperUploadWizardStandbyBody({
                 color: colors.RED(1),
               }}
             >
-              {icons.exclamationCircle}
+              {<i className="fa-solid fa-exclamation-circle"></i>}
             </span>
             {"We weren't able to import your paper"}
           </div>

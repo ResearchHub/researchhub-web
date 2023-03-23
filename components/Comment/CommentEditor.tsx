@@ -59,7 +59,7 @@ const CommentEditor = ({
   }, [_content]);
 
   return (
-    <div ref={editorRef} className={css(styles.commentEditor)}>
+    (<div ref={editorRef} className={css(styles.commentEditor)}>
       <div>
         {author && (
           <div className={css(styles.authorRow)}>
@@ -82,7 +82,7 @@ const CommentEditor = ({
       <div className={css(styles.actions)}>
         {allowBounty && (
           // @ts-ignore
-          <CreateBountyBtn />
+          (<CreateBountyBtn />)
         )}
         <Button
           label={"Post"}
@@ -90,7 +90,7 @@ const CommentEditor = ({
           disabled={isSubmitDisabled}
         />
       </div>
-    </div>
+    </div>)
   );
 };
 

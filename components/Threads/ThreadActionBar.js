@@ -63,7 +63,7 @@ class ThreadActionBar extends Component {
           )}
           id={"editIcon"}
         >
-          {icons.pen}
+          {<i className="fa-light fa-pen"></i>}
         </span>
         <span className={css(editing && styles.active)} id={"text"}>
           Edit
@@ -128,7 +128,7 @@ class ThreadActionBar extends Component {
     return (
       <div className={css(classNames)} onClick={_handleDelete}>
         <span className={css(styles.icon)} id={"deleteIcon"}>
-          {icons.trash}
+          {<i className="fa-solid fa-trash"></i>}
         </span>
         <span id={"delete"}>Delete</span>
       </div>
@@ -207,7 +207,7 @@ class ThreadActionBar extends Component {
                 )}
                 id={"replyIcon"}
               >
-                {icons.reply}
+                {<i className="fa-light fa-reply"></i>}
               </span>
               Reply
             </div>
@@ -296,7 +296,7 @@ class ThreadActionBar extends Component {
                 className={css(styles.icon, styles.awardBountyIcon)}
                 id={"awardBountyIcon"}
               >
-                {icons.medal}
+                {<i className="fa-solid fa-medal"></i>}
               </span>
               <span className={css(styles.smallAwardText)}>Award Bounty</span>
               <span className={css(styles.awardText)}>
@@ -309,7 +309,7 @@ class ThreadActionBar extends Component {
           {this.props.toggleEdit && deleteButton}
           <FlagButtonV2
             buttonText=""
-            iconOverride={icons.flagOutline}
+            iconOverride={<i className="fa-regular fa-flag"></i>}
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"

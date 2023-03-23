@@ -53,7 +53,7 @@ class ResearchHubBanner extends Component {
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
         >
-          {icons.times}
+          {<i className="fa-light fa-times"></i>}
         </span>
         <img
           src={"/static/background/background-home.webp"}

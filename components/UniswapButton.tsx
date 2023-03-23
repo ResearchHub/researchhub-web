@@ -24,7 +24,9 @@ const UniswapButton = ({ variant, label = "RSC is available on" }: Args) => {
       >
         <div className={css(styles.rscText)}>{label}</div>
         <img src={"/static/icons/uniswap-with-text.png"} height={25} />
-        <div className={css(styles.externalIcon)}>{icons.arrowUpRight}</div>
+        <div className={css(styles.externalIcon)}>
+          {<i className="fa-solid fa-arrow-up-right"></i>}
+        </div>
       </Link>
     </div>
   );

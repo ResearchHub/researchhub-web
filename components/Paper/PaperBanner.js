@@ -25,7 +25,7 @@ const PaperBanner = (props) => {
                 <span
                   className={css(styles.removeIcon, styles.mobileRemoveIcon)}
                 >
-                  {icons.exclamationCircle}
+                  {<i className="fa-solid fa-exclamation-circle"></i>}
                 </span>
               </div>
               {upCaseFirstLetter(documentType)} Removed
@@ -62,7 +62,7 @@ const PaperBanner = (props) => {
         {isRemoved && (
           <div className={css(styles.icon)}>
             <span className={css(styles.removeIcon)}>
-              {icons.exclamationCircle}
+              {<i className="fa-solid fa-exclamation-circle"></i>}
             </span>
           </div>
         )}

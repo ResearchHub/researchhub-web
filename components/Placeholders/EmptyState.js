@@ -5,7 +5,13 @@ const EmptyState = (props) => {
   let { text, subtext, icon } = props;
   return (
     <div className={css(styles.emptyContainer)}>
-      {icon ? icon : <div className={css(styles.icon)}>{icons.file}</div>}
+      {icon ? (
+        icon
+      ) : (
+        <div className={css(styles.icon)}>
+          {<i className="fa-solid fa-file"></i>}
+        </div>
+      )}
       <div>{text && text}</div>
       <div className={css(styles.subtext)}>{subtext && subtext}</div>
     </div>

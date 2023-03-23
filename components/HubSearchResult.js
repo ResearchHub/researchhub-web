@@ -45,7 +45,9 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
         className={css(styles.card)}
         onClick={() => clearSearch()}
       >
-        <div className={css(styles.hubIcon)}>{icons.hub}</div>
+        <div className={css(styles.hubIcon)}>
+          {<i className="fa-solid fa-chart-network"></i>}
+        </div>
         <div className={css(styles.column)}>
           <div className={css(styles.mainText)}>
             {highlight ? parseHighlightText(meta.highlight, "name") : name}

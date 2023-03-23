@@ -52,7 +52,9 @@ export default function ExitableBanner({
         style={exitButtonPositionOverride}
       >
         {exitButton ?? (
-          <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
+          <div className={css(styles.exitButtonDefault)}>
+            {<i className="fa-light fa-times"></i>}
+          </div>
         )}
       </div>
     </div>
@@ -102,6 +104,6 @@ const styles = StyleSheet.create({
       background: iconColors.BACKGROUND,
       borderRadius: 3,
       transition: "0.3s",
-    },    
+    },
   },
 });

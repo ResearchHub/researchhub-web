@@ -180,7 +180,7 @@ const SummaryBulletPoint = (props) => {
         <Fragment>
           {editable && hovered && (
             <div className={css(styles.editButton)} onClick={toggleEditView}>
-              {icons.pencil}
+              {<i className="fa-solid fa-pencil"></i>}
             </div>
           )}
           <div className={css(styles.topRow)}>
@@ -220,7 +220,7 @@ const SummaryBulletPoint = (props) => {
 
       return (
         <div className={css(classNames)} onClick={removalConfirmation}>
-          {icons.trash}
+          {<i className="fa-solid fa-trash"></i>}
         </div>
       );
     }
@@ -242,7 +242,7 @@ const SummaryBulletPoint = (props) => {
             id={"goTo"}
             className={css(classNames)}
           >
-            {icons.chevronRight}
+            {<i className="fa-regular fa-chevron-right"></i>}
           </Link>
         </div>
       );

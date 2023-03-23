@@ -176,7 +176,7 @@ const BackButton = () => {
         className={css(styles.backButton)}
         legacyBehavior
       >
-        {icons.longArrowLeft}
+        {<i className="fa-light fa-arrow-left-long"></i>}
         <span className={css(styles.backButtonLabel)}>{message}</span>
       </Link>
     </div>

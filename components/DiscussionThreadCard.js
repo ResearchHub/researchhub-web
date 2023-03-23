@@ -257,7 +257,9 @@ const ReadButton = (props) => {
       id={"readLabel"}
     >
       <span className={css(styles.readLabel)}>Read</span>{" "}
-      <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+      <span className={css(styles.readArrow)}>
+        {<i className="fa-regular fa-chevron-right"></i>}
+      </span>
     </ClientLinkWrapper>
   );
 };

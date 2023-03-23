@@ -24,7 +24,7 @@ class FeedList extends Component {
     this.feeds = [
       {
         label: "All",
-        icon: icons.squares,
+        icon: <i className="fa-solid fa-th-large"></i>,
         href: "/",
         as: "/",
       },
