@@ -9,7 +9,6 @@ import { TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { hasOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
-import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 
 type CommentArgs = {
   comment: CommentType;
@@ -40,6 +39,15 @@ const Comment = ({
       </div>
     ));
   }, [comment.children]);
+
+  const _handleToggleReply = () => {
+    if (isReplyOpen && confirm("Discard changes?")) {
+      setIsReplyOpen(false);
+    }
+    else {
+      setIsReplyOpen(true);
+    }
+  }
 
   return (
     <div>
@@ -88,17 +96,21 @@ const Comment = ({
         </div>
         <div className={css(styles.actionsWrapper)}>
           <CommentActions
-            handleReply={() => setIsReplyOpen(!isReplyOpen)}
+            toggleReply={() => _handleToggleReply()}
             document={document}
             comment={comment}
+            isReplyOpen={isReplyOpen}
           />
         </div>
       </div>
       {isReplyOpen && (
-        <CommentEditor
-          handleSubmit={({ content }) => handleUpdate({ content })}
-          editorId={`reply-to-${comment.id}`}
-        />
+        <div className={css(styles.editorWrapper)}>
+          <CommentEditor
+            handleSubmit={({ content }) => handleCreate({ content })}
+            editorId={`reply-to-${comment.id}`}
+            placeholder={`Enter reply to this comment`}
+          />
+        </div>
       )}
       {comment.children.length > 0 && (
         <div className={css(styles.children)}>{_childCommentElems}</div>
@@ -119,6 +131,9 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     borderLeft: `3px solid ${colors.border}`,
     paddingTop: 15,
+  },
+  editorWrapper: {
+    marginTop: 15,
   },
   actionsWrapper: {},
   mainWrapper: {},

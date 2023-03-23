@@ -175,7 +175,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
               handleSubmit={handleCommentCreate}
               allowBounty={true}
               author={currentUser?.authorProfile}
-              previewWhenInactive={true}
+              previewModeAsDefault={true}
             />
           </div>
           <div>{_commentsElems}</div>
