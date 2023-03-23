@@ -2,7 +2,7 @@ import { ID, RhDocumentType } from "~/config/types/root_types";
 import listMockData from "../mock/list.json";
 // import createMockData from "../mock/create.json";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
-import API from "~/config/api";
+import API, { generateApiUrl } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 export const fetchCommentsAPI = async ({
@@ -13,12 +13,12 @@ export const fetchCommentsAPI = async ({
   documentType: RhDocumentType;
   documentId: ID;
   url?: string;
-}): Promise<{ comments: Comment[], next: string, prev: string }> => {
+}): Promise<{ comments: Comment[], next: string, prev: string, count: number }> => {
   // const rawComments = listMockData;
   // const comments = rawComments.map((raw) => parseComment({ raw }));
   // return Promise.resolve({comments, next: "", prev: ""});
-
-  const baseFetchUrl = API.BASE_URL + `${documentType}/${documentId}/comments/`;
+  
+  const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const _url = url || baseFetchUrl;
   const response =
     await fetch(_url, API.GET_CONFIG())
@@ -28,6 +28,7 @@ export const fetchCommentsAPI = async ({
     comments: response.results.map((raw:any) => parseComment({ raw })).slice(0),
     next: response.next,
     prev: response.prev,
+    count: response.count,
   };
 };
 
@@ -42,7 +43,7 @@ export const createCommentAPI = async ({
   documentType: RhDocumentType;
   documentId: ID;
 }): Promise<Comment> => {
-  const _url = API.BASE_URL + `${documentType}/${documentId}/comments/create_rh_comment/`;
+  const _url = generateApiUrl(`${documentType}/${documentId}/comments/create_rh_comment`);
   const response =
     await fetch(_url, API.POST_CONFIG({
       "comment_content_json": content,
@@ -53,7 +54,7 @@ export const createCommentAPI = async ({
   return Promise.resolve(comment);
 };
 
-export const updateCommentAPI = ({
+export const updateCommentAPI = async ({
   id,
   content,
   documentType,
@@ -64,11 +65,14 @@ export const updateCommentAPI = ({
   documentType: RhDocumentType;
   documentId: ID;
 }) => {
-  // TODO: Replace with actual BE update
-  const comment = parseComment({ raw: createMockData });
-  comment.id = id;
-  comment.content = content;
+  const _url = generateApiUrl(`${documentType}/${documentId}/comments/${id}`);
+  const response =
+    await fetch(_url, API.POST_CONFIG({
+      "comment_content_json": content,
+    }))
+      .then((res):any => Helpers.parseJSON(res));
 
+  const comment = parseComment({ raw: response });
   return Promise.resolve(comment);
 };
 

@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",
     top: 0,
-
     boxSizing: "border-box",
   },
   sidebarHeader: {
