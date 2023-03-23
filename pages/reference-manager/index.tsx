@@ -1,6 +1,5 @@
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
-import { ReferencesTabContextProvider } from "~/components/ReferenceManager/references/context/ReferencesTabContext";
-import HeadComponent from "~/components/Head";
+import { ReferencesTabContextProvider } from "~/components/ReferenceManager/references/context/ReferenceItemDrawerContext";
 
 export default function Index(props) {
   return (
