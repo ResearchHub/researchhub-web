@@ -20,7 +20,10 @@ import CommentSort from "./CommentSort";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
 import colors from "./lib/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 import { MessageActions } from "~/redux/message";
+import IconButton from "../Icons/IconButton";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -37,6 +40,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
+  const [count, setCount] = useState<number>(0);
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -47,21 +51,23 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
       setIsFetching(true);
       try {
         const response = await fetchCommentsAPI({
+          url,
           documentId: document.id,
           documentType: document.documentType,
         });
 
-
         setComments(response.comments);
         setFetchUrls({ next: response.next, prev: response.prev });
+        setCount(response.count);
       } catch (error) {
         console.log('error', error)
         // FIXME: Implement error handling
       } finally {
+        setIsFetching(false);
         setIsInitialFetchDone(true);
       }
     },
-    [document, isInitialFetchDone, fetchUrls]
+    [document, isInitialFetchDone, fetchUrls, count, comments]
   );
 
   const handleFetchNext = () => handleFetch({ url: fetchUrls.next });
@@ -179,6 +185,11 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
             <CommentPlaceholder key={`placeholder-${idx}`} />
           </div>
         ))}
+      {fetchUrls.next &&
+        <IconButton onClick={() => handleFetchNext()}>
+          <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load More <FontAwesomeIcon icon={faLongArrowDown} /></span>
+        </IconButton>
+      }        
     </WrapperEl>
   );
 };

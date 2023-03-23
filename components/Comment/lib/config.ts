@@ -1,4 +1,5 @@
 const config = {
+  pageSize: 20,
   sidebar: {
     width: 500
   },
