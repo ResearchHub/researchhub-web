@@ -26,13 +26,13 @@ const CommentMenu = ({ comment, handleEdit }: Args) => {
 
   useEffectHandleClick({
     el: dropdownRef.current,
-    exclude: [".comment-sort-trigger"],
+    exclude: [".comment-menu-trigger"],
     onOutsideClick: () => setIsOpen(false),
   });
 
   return (
     <div className={css(styles.wrapper)}>
-      <div className={`${css(styles.trigger)} comment-sort-trigger`}>
+      <div className={`${css(styles.trigger)} comment-menu-trigger`}>
         <IconButton
           overrideStyle={styles.labelWrapper}
           onClick={() => setIsOpen(!isOpen)}

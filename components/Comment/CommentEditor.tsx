@@ -69,12 +69,6 @@ const CommentEditor = ({
   if (previewWhenInactive) {
     useEffectHandleClick({
       el: editorRef.current,
-      onOutsideClick: () => {
-        if (isEmptyRef.current) {
-          setIsPreviewMode(true);
-          isPreviewModeRef.current = true;
-        }
-      },
       onInsideClick: () => {
         setIsPreviewMode(false);
         isPreviewModeRef.current = false;
