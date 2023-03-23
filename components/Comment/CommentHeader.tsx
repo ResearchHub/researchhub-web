@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   },
   time: {
     color: colors.secondary.text,
+    marginTop: -5,
   },
   badgeRow: {
     display: "inline-block",

@@ -28,7 +28,7 @@ type CommentEditorArgs = {
   allowBounty?: boolean;
   commentType?: COMMENT_TYPES;
   author?: AuthorProfile | null;
-  previewWhenInactive?: boolean;
+  previewModeAsDefault?: boolean;
 };
 
 const CommentEditor = ({
@@ -39,15 +39,15 @@ const CommentEditor = ({
   allowBounty = false,
   commentType,
   author,
-  previewWhenInactive = false,
+  previewModeAsDefault = false,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
   const isEmptyRef = useRef(isEmpty);
   const [isPreviewMode, setIsPreviewMode] =
-    useState<boolean>(previewWhenInactive);
-  const isPreviewModeRef = useRef(previewWhenInactive);
+    useState<boolean>(previewModeAsDefault);
+  const isPreviewModeRef = useRef(previewModeAsDefault);
   const dispatch = useDispatch();
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
@@ -66,7 +66,7 @@ const CommentEditor = ({
     content,
   });
 
-  if (previewWhenInactive) {
+  if (previewModeAsDefault) {
     useEffectHandleClick({
       el: editorRef.current,
       onInsideClick: () => {
@@ -96,7 +96,7 @@ const CommentEditor = ({
       await handleSubmit({ content: _content, commentType: _commentType });
       dangerouslySetContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
-      if (previewWhenInactive) {
+      if (previewModeAsDefault) {
         setIsPreviewMode(true);
         isPreviewModeRef.current = true;
       }
@@ -153,8 +153,12 @@ const CommentEditor = ({
             hideRipples={true}
             onClick={() => _handleSubmit()}
             disabled={isSubmitting || isEmpty}
-          />
+            />
         </div>
+        {allowBounty && (
+          // @ts-ignore
+          <CreateBountyBtn />
+        )}
       </div>
     </div>)
   );
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    flexDirection: "row",
+    flexDirection: "row-reverse",
   },
   toolbarContainer: {
     position: "relative",

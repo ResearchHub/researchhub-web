@@ -1,33 +1,31 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/pro-light-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
-import { parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { TopLevelDocument } from "~/config/types/root_types";
 import { Comment } from "./lib/types";
 import Image from "next/image";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
-import { isEmpty } from "~/config/utils/nullchecks";
-import { useSelector } from "react-redux";
-import { RootState } from "~/redux";
 
 type Args = {
-  handleReply: Function;
+  toggleReply: Function;
   comment: Comment;
   document: TopLevelDocument;
+  isReplyOpen: boolean;
 };
 
 const CommentActions = ({
   comment,
   document,
-  handleReply,
+  toggleReply,
+  isReplyOpen,
 }: Args) => {
-
 
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
-        <div className={`${css(styles.action)} reply-btn`}>
+        <div className={`${css(styles.action)} vote-btn`}>
           <CommentVote
             comment={comment}
             score={comment.score}
@@ -36,7 +34,7 @@ const CommentActions = ({
             documentID={document.id}
           />
         </div>
-        <div className={`${css(styles.action)} reply-btn`}>
+        <div className={`${css(styles.action)} tip-btn`}>
           <IconButton onClick={() => null}>
             <Image
               src="/static/icons/tip.png"
@@ -46,27 +44,39 @@ const CommentActions = ({
             />
             <span
               className={css(styles.actionText)}
-              onClick={() => handleReply()}
+              onClick={() => toggleReply()}
             >
               Tip
             </span>
           </IconButton>
         </div>
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
-          <IconButton onClick={() => null}>
-            <Image
-              src="/static/icons/reply.png"
-              height={14}
-              width={17}
-              alt="Reply"
-            />
-            <span
-              className={css(styles.actionText)}
-              onClick={() => handleReply()}
-            >
-              Reply
-            </span>
-          </IconButton>
+          {isReplyOpen ? (
+            <IconButton onClick={() => null}>
+              <FontAwesomeIcon icon={faTimes} />
+              <span
+                className={css(styles.actionText)}
+                onClick={() => toggleReply()}
+              >
+                Close
+              </span>
+            </IconButton>
+          ) : (
+            <IconButton onClick={() => null}>
+              <Image
+                src="/static/icons/reply.png"
+                height={14}
+                width={17}
+                alt="Reply"
+              />
+              <span
+                className={css(styles.actionText)}
+                onClick={() => toggleReply()}
+              >
+                Reply
+              </span>
+            </IconButton>
+          )}
         </div>
       </div>
     </div>

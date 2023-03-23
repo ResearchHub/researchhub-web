@@ -142,6 +142,8 @@ const styles = StyleSheet.create({
   },
   pill: {
     background: "unset",
+    minWidth: 15,
+    width: "auto",
   },
   voteWidgetWrapper: {
     marginRight: 0,
