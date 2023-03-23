@@ -46,8 +46,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import * as shims from "~/redux/paper/shims";
 import DocumentHeader from "~/components/Document/DocumentHeader";
-// import CommentSidebar from "~/components/Comment/CommentSidebar";
-// import CommentSidebarToggle from "~/components/Comment/CommentSidebarToggle";
+import CommentFeed from "~/components/Comment/CommentFeed";
+import CommentSidebar from "~/components/Comment/CommentSidebar";
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)
@@ -75,8 +75,6 @@ const Paper = ({
     Sentry.captureException({ error, initialPaperData, query: router.query });
     return <Error statusCode={error.code} />;
   }
-
-  // const [isCommentSidebarOpen, setIsCommentSidebarOpen] = useState(true);
 
   // ENUM: NOT_FETCHED, FETCHING, COMPLETED
   const [fetchFreshDataStatus, setFetchFreshDataStatus] =
@@ -302,7 +300,7 @@ const Paper = ({
           }}
         ></script>
       </Head>
-      <div className={css(styles.root)}>
+      <div className={css(styles.root)} id="documentRoot">
         <a name="main" />
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
@@ -326,7 +324,7 @@ const Paper = ({
               <a name="abstract" />
               <PaperPageAbstractSection paper={paper} />
             </div>
-            {isFetchComplete /* Performance Optimization */ && (
+            {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
                 {
@@ -364,14 +362,7 @@ const Paper = ({
           </div>
         </div>
 
-        {/* <CommentSidebarToggle
-          isOpen={isCommentSidebarOpen}
-          setIsOpen={setIsCommentSidebarOpen}
-        />
-        <CommentSidebar
-          isOpen={isCommentSidebarOpen}
-          setIsOpen={setIsCommentSidebarOpen}
-        /> */}
+        {/* <CommentFeed document={paperV2} WrapperEl={CommentSidebar} /> */}
       </div>
     </div>
   );
@@ -451,8 +442,8 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    // justifyContent: "space-between",
     justifyContent: "center",
+    // justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
     // This property is needed for comments sidebar to close gracefully without overflow.

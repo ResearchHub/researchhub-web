@@ -49,9 +49,9 @@ export default class Bounty {
   _status: BOUNTY_STATUS;
   _expiration_date: string;
   _contentType: ContentType | undefined;
-  // FIXME: Update to ContributionType if needed
   _relatedItem: any;
   _effortLevel: string;
+  _parentId?: ID; // Bounty contributions are linked by parentId
 
   constructor(raw: any) {
     this._id = raw.id;
@@ -73,6 +73,7 @@ export default class Bounty {
         : raw.content_type;
     this._relatedItem = raw.item;
     this._effortLevel = raw.effort_level;
+    this._parentId = raw.parent_id;
   }
 
   static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
@@ -171,6 +172,10 @@ export default class Bounty {
     return this._id;
   }
 
+  get parentId(): ID {
+    return this._parentId;
+  }
+
   get createdDate(): string {
     return this._createdDate;
   }
@@ -180,6 +185,10 @@ export default class Bounty {
   get isExpiredOrClosed(): boolean {
     return this._timeRemainingInMinutes < 0 || this._status !== "OPEN";
   }
+
+  get isOpen(): boolean {
+    return !this.isExpiredOrClosed;
+  }  
 
   get timeRemaining(): string {
     return this._timeRemaining;

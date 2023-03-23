@@ -2,17 +2,16 @@ import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
-import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 import { sortOpts } from "./lib/options";
 
 const CommentSort = ({ selectedSort, handleSelect }) => {
-
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
 
-  useEffectHandleOutsideClick({
+  useEffectHandleClick({
     el: dropdownRef.current,
     exclude: [".comment-sort-trigger"],
     onOutsideClick: () => setIsOpen(false),
@@ -30,20 +29,23 @@ const CommentSort = ({ selectedSort, handleSelect }) => {
           <FontAwesomeIcon
             icon={faAngleDown}
             style={{ marginLeft: 3, fontSize: 16 }}
-          />          
+          />
         </IconButton>
       </div>
-      <div ref={dropdownRef} className={css(styles.dropdown, isOpen && styles.dropdownOpen)}>
+      <div
+        ref={dropdownRef}
+        className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
+      >
         {sortOpts.map((s) => (
           <div className={css(styles.option)}>
             <div className={css(styles.dropdownIcon)}>{s.icon}</div>
             <div className={css(styles.dropdownLabel)}>{s.label}</div>
           </div>
         ))}
-      </div>  
+      </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -58,9 +60,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 400,
     fontSize: 16,
-  },  
-  trigger: {
   },
+  trigger: {},
   dropdown: {
     display: "none",
     position: "absolute",
@@ -76,7 +77,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
-
   },
   dropdownOpen: {
     display: "block",
@@ -94,14 +94,12 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.hover.background,
       transition: "0.2s",
-    },    
+    },
   },
   dropdownIcon: {
     fontSize: 12,
   },
-  dropdownLabel: {
-
-  }
+  dropdownLabel: {},
 });
 
 export default CommentSort;

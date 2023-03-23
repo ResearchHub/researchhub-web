@@ -1,4 +1,5 @@
-import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import Bounty from "~/config/types/bounty";
+import { RHUser, parseUser, ID, VoteType } from "~/config/types/root_types";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 
 export enum COMMENT_TYPES {
@@ -10,13 +11,16 @@ export enum COMMENT_TYPES {
 
 export type Comment = {
   id: ID;
+  threadId: ID;
+  tipped: number;
   createdDate: string;
   updatedDate: string;
+  bounties: Bounty[];
   timeAgo: string;
   createdBy: RHUser;
   content: object;
   score: number;
-  userVote: any;
+  userVote: VoteType|null;
   isEdited: boolean;
   postType: COMMENT_TYPES;
   parent?: Comment;
@@ -31,14 +35,17 @@ type parseCommentArgs = {
 export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
   const parsed = {
     id: raw.id,
+    threadId: raw.thread,
     createdDate: formatDateStandard(raw.created_date),
-    updatedDate: formatDateStandard(raw.created_date),
+    updatedDate: formatDateStandard(raw.updated_date),
     timeAgo: timeSince(raw.created_date),
     createdBy: parseUser(raw.created_by),
-    content: raw.content || {},
+    isEdited: raw.is_edited,
+    bounties: (raw.bounties || []).map((b:any) => new Bounty(b)),
+    tipped: raw.promoted || 0,
+    content: raw.comment_content_json || {},
     score: raw.score,
     userVote: raw.user_vote,
-    isEdited: raw.is_edited,
     postType: raw.post_type,
     children: [] as Comment[],
     ...(parent && { parent }),
