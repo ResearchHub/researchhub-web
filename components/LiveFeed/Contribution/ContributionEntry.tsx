@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
@@ -15,7 +14,6 @@ import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
-import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import { isEmpty } from "~/config/utils/nullchecks";
 

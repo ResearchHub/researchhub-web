@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const abi = [
   {
     inputs: [{ internalType: "address", name: "seller", type: "address" }],

@@ -1,12 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
+import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext";
 import { nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, useContext } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import { css, StyleSheet } from "aphrodite";
 import { AuthorProfile, ID } from "~/config/types/root_types";

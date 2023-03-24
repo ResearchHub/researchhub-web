@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import colors, { bannerColor } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import { getJournalImagePath, formatJournalName } from "~/config/utils/misc";
 import { capitalize } from "~/config/utils/string";
 import { getJournalFromURL } from "~/config/utils/parsers";

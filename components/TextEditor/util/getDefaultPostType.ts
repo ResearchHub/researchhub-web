@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import postTypes, {
   questionPostTypes,
 } from "~/components/TextEditor/config/postTypes";

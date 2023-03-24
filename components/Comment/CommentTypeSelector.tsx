@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faCheck } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";

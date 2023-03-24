@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import Link from "next/link";

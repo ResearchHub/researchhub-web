@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useMemo } from "react";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
@@ -16,7 +15,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import Loader from "~/components/Loader/Loader";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import colors, { iconColors, genericCardColors } from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { captureEvent } from "~/config/utils/events";
 import {

@@ -1,10 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, Fragment } from "react";
-import { fetchOrg } from "~/config/fetch";
 import ManageOrgUsers from "./ManageOrgUsers";
 import ManageOrgDetails from "./ManageOrgDetails";
 import BaseModal from "~/components/Modals/BaseModal";
-import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import { isEmpty } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";

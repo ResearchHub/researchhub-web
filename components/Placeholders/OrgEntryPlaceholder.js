@@ -1,7 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
-import colors from "~/config/themes/colors";
 
 const OrgEntryPlaceholder = ({ color, rows = 1 }) => {
   return Array.from({ length: rows }).map((k, i) => (

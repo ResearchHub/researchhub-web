@@ -13,8 +13,6 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 // Redux
 import { NotificationActions } from "~/redux/notification";
 
-// Config
-import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 

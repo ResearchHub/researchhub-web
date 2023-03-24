@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretLeft } from "@fortawesome/pro-solid-svg-icons";
 import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";

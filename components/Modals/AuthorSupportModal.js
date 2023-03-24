@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useAlert } from "react-alert";

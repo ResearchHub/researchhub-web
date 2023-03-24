@@ -5,14 +5,12 @@ import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
 import { faUser } from "@fortawesome/pro-solid-svg-icons";
 import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
 import { filterNull } from "~/config/utils/nullchecks";
-import { Fragment, ReactElement, useContext, useEffect } from "react";
+import { Fragment, useContext } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
-import { useStore } from "react-redux";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
-import killswitch from "~/config/killswitch/killswitch";
 import Link from "next/link";
 import Ripples from "react-ripples";
 import { NavbarContext } from "~/pages/Base";

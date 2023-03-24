@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { cloneElement, Component } from "react";
 import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";

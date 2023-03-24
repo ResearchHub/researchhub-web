@@ -1,10 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createUserSummary } from "~/config/utils/user";
 import { css, StyleSheet } from "aphrodite";
-import { TargetAuthor } from "./api/AuthorClaimCaseGetCases";
 import colors from "../../config/themes/colors";
 
-import { ReactElement, SyntheticEvent, useMemo } from "react";
+import { ReactElement } from "react";
 import Link from "next/link";
 
 type Props = {

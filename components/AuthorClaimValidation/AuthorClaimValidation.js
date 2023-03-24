@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { authenticateToken } from "./api/authorClaimValidateToken";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";

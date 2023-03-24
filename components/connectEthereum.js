@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export async function disconnect(provider) {
   provider.disconnect();
 }

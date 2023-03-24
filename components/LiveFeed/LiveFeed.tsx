@@ -1,11 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
-import {
-  CommentContributionItem,
-  Contribution,
-  parseContribution,
-} from "~/config/types/contribution";
+import { CommentContributionItem, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";
@@ -15,7 +11,6 @@ import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import UnifiedDocFeedCardPlaceholder from "../UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 
 export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {

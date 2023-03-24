@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   draftCssToCustomCss,
   INLINE_COMMENT_MAP,

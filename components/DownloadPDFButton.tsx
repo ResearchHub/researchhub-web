@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Form/Button";
 import { ReactElement } from "react";
 import colors from "../config/themes/colors";

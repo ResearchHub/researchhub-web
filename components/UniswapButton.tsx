@@ -3,8 +3,6 @@ import { faArrowUpRight } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 
-import ResearchCoinIcon from "./Icons/ResearchCoinIcon";
-
 type Args = {
   variant: "contained" | "text" | "shadow";
   label: string;

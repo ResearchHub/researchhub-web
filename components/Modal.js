@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css } from "aphrodite";
 import Modal from "react-modal";
 

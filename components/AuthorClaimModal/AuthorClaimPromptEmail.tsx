@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SyntheticEvent, useState } from "react";
 import { connect } from "react-redux";
 import Button from "../Form/Button";
@@ -8,7 +7,6 @@ import { css, StyleSheet } from "aphrodite";
 import FormInput from "../Form/FormInput";
 import { ID } from "../../config/types/root_types";
 import Loader from "../Loader/Loader";
-import { nullthrows } from "../../config/utils/nullchecks";
 import FormSelect from "../Form/FormSelect";
 import { breakpoints } from "../../config/themes/screen";
 import { MessageActions } from "../../redux/message";

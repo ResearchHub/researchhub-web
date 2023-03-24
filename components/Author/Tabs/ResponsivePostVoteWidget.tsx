@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Responsive from "../../Responsive";
 import VoteWidget from "../../VoteWidget";
 import { css, StyleSheet } from "aphrodite";

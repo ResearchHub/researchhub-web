@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Comment } from "./types";
 
 type replaceCommentArgs = {

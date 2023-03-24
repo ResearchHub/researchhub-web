@@ -1,6 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import { ReactElement, SyntheticEvent } from "react";
 import colors from "../../config/themes/colors";
 
 type Props = {

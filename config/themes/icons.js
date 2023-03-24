@@ -1,7 +1,6 @@
 import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCircleExclamation } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "./screen";
 

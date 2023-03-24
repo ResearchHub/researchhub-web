@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter } from "@fortawesome/fontawesome-free-brands";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ManageNotePermissions from "./ManageNotePermissions";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import { useState } from "react";

@@ -1,9 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import DropdownButton from "~/components/Form/DropdownButton";
 import colors from "~/config/themes/colors";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
 import Link from "next/link";
 
 import { breakpoints } from "~/config/themes/screen";

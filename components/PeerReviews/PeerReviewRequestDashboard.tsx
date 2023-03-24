@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement, useState, useEffect, useCallback } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { fetchPeerReviewRequests } from "./config/PeerReviewRequestAPI";

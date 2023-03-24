@@ -5,9 +5,6 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 
-// Components
-import GoogleLoginButton from "~/components/GoogleLoginButton";
-
 // Redux
 import { AuthActions } from "~/redux/auth";
 

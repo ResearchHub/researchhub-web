@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fetchUnifiedDocFeed } from "../../../config/fetch";
 import {
   emptyFncWithMsg,

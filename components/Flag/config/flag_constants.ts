@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export enum FLAG_REASON {
   SPAM = "Spam",
   COPYRIGHT = "Copyright Infringement",

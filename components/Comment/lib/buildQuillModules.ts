@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
   const modules = {
     // magicUrl: true,

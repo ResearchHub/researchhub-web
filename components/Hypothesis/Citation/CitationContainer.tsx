@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { castUriID } from "../../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
@@ -6,10 +5,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
 import CitationAddNewButton from "./CitationAddNewButton";
-import TextDropdown, {
-  TextDropdownOption,
-  TextDropdownOptions,
-} from "~/components/shared/TextDropdown";
+import TextDropdown, { TextDropdownOptions } from "~/components/shared/TextDropdown";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
 

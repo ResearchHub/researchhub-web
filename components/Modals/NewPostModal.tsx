@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import {
@@ -6,16 +5,9 @@ import {
   isNullOrUndefined,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { NullableString, User } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import {
-  PostIcon,
-  PaperIcon,
-  HypothesisIcon,
-  QuestionIcon,
-  RSCIcon,
-} from "~/config/themes/icons";
+import { PostIcon, PaperIcon, HypothesisIcon, QuestionIcon } from "~/config/themes/icons";
 import {
   ReactElement,
   useState,
@@ -28,7 +20,6 @@ import { NextRouter, useRouter } from "next/router";
 import {
   DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
-  NewPostButtonContextType,
   NewPostButtonContextValues,
 } from "~/components/contexts/NewPostButtonContext";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";

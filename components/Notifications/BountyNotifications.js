@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { StyleSheet } from "aphrodite";
 
 // Component

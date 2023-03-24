@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const ENTITIES = {
   USER: "USER",
   USER_INVITE: "USER_INVITE",

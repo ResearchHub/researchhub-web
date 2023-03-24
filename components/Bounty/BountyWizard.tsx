@@ -1,17 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
-import {
-  ReactElement,
-  useState,
-  useEffect,
-  useRef,
-  SyntheticEvent,
-} from "react";
+import { ReactElement, useState } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import ProgressBar from "@ramonak/react-progress-bar";
 
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";

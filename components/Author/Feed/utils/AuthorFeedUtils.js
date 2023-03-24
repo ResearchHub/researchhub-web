@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { timeAgo } from "~/config/utils/dates";

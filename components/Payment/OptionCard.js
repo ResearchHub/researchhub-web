@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";

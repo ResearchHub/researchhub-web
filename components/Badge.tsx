@@ -1,10 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 import { CloseIcon } from "~/config/themes/icons";
 import colors, { badgeColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
-import { ReactNode } from "react";
 
 type Args = {
   label?: string;

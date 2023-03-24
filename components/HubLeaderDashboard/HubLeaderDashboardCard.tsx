@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { css, StyleSheet } from "aphrodite";
@@ -8,7 +7,6 @@ import { toTitleCase } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import Image from "next/image";
 import Link from "next/link";
-import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = {
   commentCount: number;

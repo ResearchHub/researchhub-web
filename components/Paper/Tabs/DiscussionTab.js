@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter } from "@fortawesome/fontawesome-free-brands";
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";

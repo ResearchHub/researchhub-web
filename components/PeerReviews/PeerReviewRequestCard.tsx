@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement, useState } from "react";
 import { PeerReviewRequest } from "~/config/types/peerReview";
 import { css, StyleSheet } from "aphrodite";
@@ -8,7 +7,6 @@ import colors from "~/config/themes/colors";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { timeSince } from "~/config/utils/dates";
 import DropdownButton from "~/components/Form/DropdownButton";
-import { ID } from "~/config/types/root_types";
 import PeerReviewRequestModal from "./PeerReviewInviteModal";
 import PeerReviewPerson from "./PeerReviewPerson";
 

@@ -1,16 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { connect } from "react-redux";
-import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
 import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
-import colors, { iconColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 
-import ReputationTooltip from "~/components/ReputationTooltip";
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
 

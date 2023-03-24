@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ColumnAuthors from "~/components/Paper/SideColumn/ColumnAuthors";
 import ColumnDOI from "~/components/Paper/SideColumn/ColumnDOI";
 import ColumnDate from "~/components/Paper/SideColumn/ColumnDate";

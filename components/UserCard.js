@@ -4,7 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import numeral from "numeral";
 import { isEmpty } from "~/config/utils/nullchecks";
-import Ripples from "react-ripples";
 import { useRouter } from "next/router";
 
 import get from "lodash/get";

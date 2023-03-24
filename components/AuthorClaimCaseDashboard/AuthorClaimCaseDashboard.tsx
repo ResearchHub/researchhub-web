@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import AuthorClaimCaseContainer from "./AuthorClaimCaseContainer";

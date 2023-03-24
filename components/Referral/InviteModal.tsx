@@ -8,13 +8,10 @@ import FormInput from "~/components/Form/FormInput";
 import { useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import ALink from "../ALink";
-import AuthorAvatar from "../AuthorAvatar";
-import InviteIcon from "../Icons/InviteIcon";
 
 import { breakpoints } from "~/config/themes/screen";
 import { ID, NullableString, UnifiedDocument } from "~/config/types/root_types";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import Button from "../Form/Button";
 import Loader from "../Loader/Loader";
 import { MessageActions } from "~/redux/message";

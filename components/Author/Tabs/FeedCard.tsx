@@ -24,7 +24,7 @@ import {
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
-import { VoteType, RhDocumentType, parseUser } from "~/config/types/root_types";
+import { RhDocumentType, parseUser } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,

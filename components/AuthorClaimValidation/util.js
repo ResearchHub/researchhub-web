@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { VALIDATION_STATE } from "./constants";
 import colors from "~/config/themes/colors";

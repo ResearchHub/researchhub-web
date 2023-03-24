@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { filterNull, isNullOrUndefined } from "../../config/utils/nullchecks";
 import AuthorClaimPromptEmail, { AuthorDatum } from "./AuthorClaimPromptEmail";

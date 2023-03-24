@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormErrorState, FormState } from "../types/UploadComponentTypes";
 
 export const getIsFormValid = ({

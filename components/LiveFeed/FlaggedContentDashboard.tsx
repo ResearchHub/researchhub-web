@@ -8,7 +8,7 @@ import fetchFlaggedContributions, {
   verdictOpts,
 } from "./api/fetchFlaggedContributionsAPI";
 import { connect } from "react-redux";
-import { Contribution, parseContribution } from "~/config/types/contribution";
+import { parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { ID, KeyOf } from "~/config/types/root_types";

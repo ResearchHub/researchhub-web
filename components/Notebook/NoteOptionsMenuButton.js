@@ -22,7 +22,6 @@ import {
   deleteNote,
   fetchNote,
   makeNotePrivate,
-  removePermissionsFromNote,
   updateNoteUserPermissions,
 } from "~/config/fetch";
 import { useAlert } from "react-alert";

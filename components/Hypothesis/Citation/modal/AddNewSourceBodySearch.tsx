@@ -1,8 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { ID } from "~/config/types/root_types";
 import {

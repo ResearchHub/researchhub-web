@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // keep this in a separate file to avoid circular imports
 
 export type WizardBodyTypes =

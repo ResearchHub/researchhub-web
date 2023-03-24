@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI";
@@ -6,10 +5,7 @@ import { css, StyleSheet } from "aphrodite";
 import { isStringDOI } from "~/config/utils/isStringDOI";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
+import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";

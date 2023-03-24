@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet } from "aphrodite";
 import TextEditor from "../TextEditor";
 

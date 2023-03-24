@@ -10,7 +10,7 @@ import Button from "../../Form/Button";
 
 // Utils
 import { createEditorSummary, createEduSummary } from "~/config/utils/user";
-import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import { parseUser, ID } from "~/config/types/root_types";
 import { timeSince } from "~/config/utils/dates";
 import colors from "~/config/themes/colors";
 import { truncateText } from "~/config/utils/string";

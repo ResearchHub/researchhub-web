@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect, useDispatch } from "react-redux";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useState } from "react";

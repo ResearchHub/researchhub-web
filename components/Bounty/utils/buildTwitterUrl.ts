@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Hub } from "~/config/types/hub";
 import camelCase from "lodash/camelCase";
 

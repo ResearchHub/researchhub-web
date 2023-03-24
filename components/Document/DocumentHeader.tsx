@@ -6,11 +6,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { nullthrows } from "~/config/utils/nullchecks";
-import {
-  parseAuthorProfile,
-  TopLevelDocument,
-  VoteType,
-} from "~/config/types/root_types";
+import { parseAuthorProfile, TopLevelDocument } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import ALink from "../ALink";
@@ -296,7 +292,7 @@ function DocumentHeader({
 
   return (
     // @ts-ignore
-    <ReactPlaceholder
+    (<ReactPlaceholder
       ready={document.isReady}
       showLoadingAnimation
       customPlaceholder={<DocumentHeaderPlaceholder />}
@@ -520,7 +516,7 @@ function DocumentHeader({
           </div>
         </div>
       )}
-    </ReactPlaceholder>
+    </ReactPlaceholder>)
   );
 }
 

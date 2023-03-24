@@ -2,12 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndo } from "@fortawesome/pro-solid-svg-icons";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
-import {
-  BOUNTY_DEFAULT_AMOUNT,
-  BOUNTY_RH_PERCENTAGE,
-  MAX_RSC_REQUIRED,
-  MIN_RSC_REQUIRED,
-} from "./config/constants";
+import { BOUNTY_RH_PERCENTAGE, MAX_RSC_REQUIRED, MIN_RSC_REQUIRED } from "./config/constants";
 import { trackEvent } from "~/config/utils/analytics";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";

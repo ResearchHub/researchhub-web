@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, TextRow } from "react-placeholder/lib/placeholders";

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Bounty from "~/config/types/bounty";
 import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";

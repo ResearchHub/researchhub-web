@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "~/config/types/root_types";
 import { filterNull } from "~/config/utils/nullchecks";
 

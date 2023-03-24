@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFontCase, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { useRef, useState } from "react";
 import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
@@ -21,7 +20,7 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
   return (
     // Please note that the `ql-*` classnames are reserved names in Quill
     // and needed for proper operation.
-    (<div id={editorId} className="ql-toolbar" ref={toolbarRef}>
+    <div id={editorId} className="ql-toolbar" ref={toolbarRef}>
       <span className="ql-formats">
         <button className="ql-blockquote"></button>
         <button className="ql-link" />
@@ -56,7 +55,7 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
           <button className="ql-clean"></button>
         </span>
       </div>
-    </div>)
+    </div>
   );
 };
 

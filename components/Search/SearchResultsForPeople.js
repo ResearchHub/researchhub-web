@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
@@ -8,7 +7,6 @@ import { useRouter } from "next/router";
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import colors from "~/config/themes/colors";
-import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import LoadMoreButton from "~/components/LoadMoreButton";

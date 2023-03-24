@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sortOpts } from "../constants/UnifiedDocFilters";
 
 export const getAvailableSortOptions = ({ type, valuesOnly = false }) => {

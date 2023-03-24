@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
@@ -14,7 +13,6 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { iconColors } from "~/config/themes/colors";
-import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { getOrgUserCount } from "./utils/orgHelper";
 import Loader from "~/components/Loader/Loader";

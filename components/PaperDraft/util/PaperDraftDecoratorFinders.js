@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CompositeDecorator } from "draft-js";
 import { INLINE_COMMENT_MAP } from "./PaperDraftTextEditorUtil";
 import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";

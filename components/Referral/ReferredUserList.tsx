@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";

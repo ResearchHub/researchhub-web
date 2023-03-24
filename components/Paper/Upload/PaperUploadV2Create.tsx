@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
@@ -6,7 +5,6 @@ import {
   defaultComponentState,
   defaultFormErrorState,
   defaultFormState,
-  FormErrorState,
   FormState,
 } from "./types/UploadComponentTypes";
 import { StyleSheet, css } from "aphrodite";
@@ -37,7 +35,6 @@ import {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
-import { captureEvent } from "~/config/utils/events";
 import { sendAmpEvent } from "~/config/fetch";
 
 type ComponentProps = {

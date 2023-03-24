@@ -11,10 +11,6 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import { MessageActions } from "~/redux/message";
 import { FlagActions } from "~/redux/flags";
 
-// Utility
-
-import colors from "~/config/themes/colors";
-
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
   const alert = useAlert();
   const dispatch = useDispatch();

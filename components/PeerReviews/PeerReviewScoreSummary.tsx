@@ -4,8 +4,6 @@ import { ReactElement } from "react";
 import { PeerReviewScoreSummary } from "~/config/types/peerReview";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import ScoreInput from "~/components/Form/ScoreInput";
-import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 
 type Props = {

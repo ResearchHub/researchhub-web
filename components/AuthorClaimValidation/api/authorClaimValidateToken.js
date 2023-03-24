@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
 import { VALIDATION_STATE } from "../constants";

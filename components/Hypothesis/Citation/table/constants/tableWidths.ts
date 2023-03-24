@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const tableWidths = {
   CITED_BY: "13%",
   COMMENTS: "13%",

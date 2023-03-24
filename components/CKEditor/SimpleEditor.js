@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AUTH_TOKEN } from "~/config/constants";
 import { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";

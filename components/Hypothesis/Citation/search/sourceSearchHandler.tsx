@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { KeyOf, ValueOf } from "~/config/types/root_types";

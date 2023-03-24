@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactChildren, SyntheticEvent, useCallback } from "react";
 
 type Props = {

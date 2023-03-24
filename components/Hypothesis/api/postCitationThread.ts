@@ -1,7 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { ID } from "~/config/types/root_types";
 
 type PostCitationThreadArgs = {

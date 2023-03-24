@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { useRouter } from "next/router";
 import API from "~/config/api";

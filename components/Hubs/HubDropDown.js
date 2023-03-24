@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // NPM
 import { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";

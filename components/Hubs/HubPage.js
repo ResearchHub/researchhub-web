@@ -27,8 +27,6 @@ import RhCarousel from "../shared/carousel/RhCarousel";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
-import Link from "next/link";
-import Button from "~/components/Form/Button";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];

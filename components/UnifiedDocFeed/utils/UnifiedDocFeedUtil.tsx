@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ID, NullableString } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
@@ -72,8 +71,7 @@ export const useEffectFetchDocs = ({
     if (!fetchParams.selectedFilters.isReady) {
       setUnifiedDocsLoading && setUnifiedDocsLoading(true);
       return;
-    }
-    else if (firstLoad?.current) {
+    } else if (firstLoad?.current) {
       setUnifiedDocsLoading && setUnifiedDocsLoading(true);
       fetchUnifiedDocs(fetchParams);
     } else if (firstLoad) {

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const reviewCategories = {
   overall: {
     label: "Overall Rating",

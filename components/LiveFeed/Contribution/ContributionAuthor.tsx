@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ALink from "~/components/ALink";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";

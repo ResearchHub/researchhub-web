@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
-import Loader from "~/components/Loader/Loader";
 import Sparkle from "react-sparkle";
 
 import { ModalActions } from "~/redux/modals";

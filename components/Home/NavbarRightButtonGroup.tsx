@@ -9,7 +9,6 @@ import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
 import { getCaseCounts } from "~/components/AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import {
   ReactElement,
@@ -20,7 +19,6 @@ import {
 } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
-import api from "~/config/api";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import getFlagCountAPI from "../Flag/api/getFlagCountAPI";

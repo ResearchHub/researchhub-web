@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "../Form/Button";
 import { css, StyleSheet } from "aphrodite";
 

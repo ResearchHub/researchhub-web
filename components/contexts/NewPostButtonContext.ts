@@ -1,7 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createContext } from "react";
 import { ID, NullableString } from "~/config/types/root_types";
-import { ValidCitationType } from "../Hypothesis/Citation/modal/AddNewSourceBodySearch";
 import { WizardBodyTypes } from "../Paper/UploadWizard/types/PaperUploadWizardTypes";
 
 // TODO: calvinhlee - reorganize these context values to better represent currently available post-types

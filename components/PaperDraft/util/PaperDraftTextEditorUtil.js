@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RichUtils } from "draft-js";
 
 export const INLINE_COMMENT_MAP = {

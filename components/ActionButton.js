@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
-import Router from "next/router";
 
 // Component
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";

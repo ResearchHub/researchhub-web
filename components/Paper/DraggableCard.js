@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Draggable } from "react-beautiful-dnd";
 
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";

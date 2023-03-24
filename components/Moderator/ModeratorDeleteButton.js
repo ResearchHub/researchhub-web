@@ -15,7 +15,6 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils/nullchecks";
-import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();

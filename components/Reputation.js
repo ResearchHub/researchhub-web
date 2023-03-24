@@ -1,6 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
-import numeral from "numeral";
 import { useDispatch, connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { useState, useEffect } from "react";

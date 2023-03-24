@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
 import { StyleSheet } from "aphrodite";

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isNullOrUndefined, isEmpty } from "~/config/utils/nullchecks.ts";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";

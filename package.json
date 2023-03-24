@@ -26,6 +26,7 @@
     "@fortawesome/fontawesome-common-types": "^6.3.0",
     "@fortawesome/fontawesome-free-brands": "^5.1.0-3",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/pro-duotone-svg-icons": "^6.2.0",
     "@fortawesome/pro-light-svg-icons": "^5.15.1",

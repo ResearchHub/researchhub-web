@@ -72,7 +72,7 @@ import {
   faReddit,
   faSlack,
   faTwitter,
-} from "@fortawesome/fontawesome-free-brands";
+} from "@fortawesome/free-brands-svg-icons";
 import {
   faArrowToBottom,
   faBracketsCurly,

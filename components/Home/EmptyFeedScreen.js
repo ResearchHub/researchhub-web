@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";

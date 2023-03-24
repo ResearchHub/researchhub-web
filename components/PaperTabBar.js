@@ -5,10 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 

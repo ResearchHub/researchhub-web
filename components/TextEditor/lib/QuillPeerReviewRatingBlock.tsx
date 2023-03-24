@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 import reviewCategories from "../config/reviewCategories";

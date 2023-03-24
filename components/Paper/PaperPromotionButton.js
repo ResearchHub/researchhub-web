@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import { useState } from "react";
 import { ModalActions } from "~/redux/modals";

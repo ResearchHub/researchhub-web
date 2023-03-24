@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Toggle from "../Form/Toggle";
 
 const opts = [

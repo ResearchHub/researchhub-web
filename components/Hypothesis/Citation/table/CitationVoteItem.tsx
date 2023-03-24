@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { DOWNVOTE, UPVOTE } from "~/config/constants";

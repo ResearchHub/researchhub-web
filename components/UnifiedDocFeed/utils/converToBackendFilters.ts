@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ID } from "~/config/types/root_types";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { scopeOptions } from "../constants/UnifiedDocFilters";
 import { SelectedUrlFilters } from "./getSelectedUrlFilters";

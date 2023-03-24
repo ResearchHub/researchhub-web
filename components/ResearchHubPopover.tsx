@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Fragment, ReactElement } from "react";
 

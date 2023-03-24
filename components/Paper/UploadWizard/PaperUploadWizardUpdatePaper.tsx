@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bindActionCreators } from "redux";
 import { buildSlug } from "~/config/utils/buildSlug";
 import {
@@ -12,11 +11,7 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-  NewPostButtonContextValues,
-} from "~/components/contexts/NewPostButtonContext";
+import { NewPostButtonContext, NewPostButtonContextValues } from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";

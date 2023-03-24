@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Component

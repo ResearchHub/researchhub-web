@@ -1,8 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Ripples from "react-ripples";
-import { breakpoints } from "~/config/themes/screen";
 import colors, { iconColors } from "../../config/themes/colors";
 
 function Button(props) {

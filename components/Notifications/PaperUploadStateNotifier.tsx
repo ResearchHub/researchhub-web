@@ -6,11 +6,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-  NewPostButtonContextValues,
-} from "../contexts/NewPostButtonContext";
+import { NewPostButtonContext, NewPostButtonContextValues } from "../contexts/NewPostButtonContext";
 import { NextRouter, useRouter } from "next/router";
 import { PaperSubmissionStatus } from "../Paper/UploadWizard/types/PaperUploadWizardTypes";
 import {

@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef, useState, useEffect, RefObject } from "react";
 import Quill, { QuillOptionsStatic } from "quill";
 import ReactDOMServer from "react-dom/server";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faVideo,
   faImagePolaroid,

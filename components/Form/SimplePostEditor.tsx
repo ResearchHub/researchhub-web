@@ -1,9 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createQuestion } from "../Question/api/createQuestion";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
-import { formGenericStyles } from "../Paper/Upload/styles/formGenericStyles";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 import { StyleSheet, css } from "aphrodite";
 import { SyntheticEvent, useState } from "react";

@@ -1,8 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import API from "~/config/api";
 import Loader from "~/components/Loader/Loader";
 import NotebookHeader from "~/components/Notebook/NotebookHeader";
-import { AUTH_TOKEN } from "~/config/constants";
 import {
   BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
@@ -19,7 +17,7 @@ import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
-import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 const saveData = async ({
   editor,

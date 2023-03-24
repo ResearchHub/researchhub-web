@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement, useState } from "react";
 import { Hub } from "~/config/types/hub";
 import { RHUser } from "~/config/types/root_types";

@@ -1,7 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 import Button from "../Form/Button";
-import colors from "~/config/themes/colors";
 import RHLogo from "~/components/Home/RHLogo";
 
 function FeedNewFeatureBox({

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
 import { ID } from "../../../../config/types/root_types";
 

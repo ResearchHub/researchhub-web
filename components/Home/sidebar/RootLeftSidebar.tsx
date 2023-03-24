@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeftToLine } from "@fortawesome/pro-solid-svg-icons";
 import { faArrowRightToLine } from "@fortawesome/pro-solid-svg-icons";
-import { faMedium } from "@fortawesome/fontawesome-free-brands";
-import { faDiscord } from "@fortawesome/fontawesome-free-brands";
-import { faTwitter } from "@fortawesome/fontawesome-free-brands";
+import { faMedium } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
 import { faBook } from "@fortawesome/pro-duotone-svg-icons";
 import { faThLarge } from "@fortawesome/pro-solid-svg-icons";

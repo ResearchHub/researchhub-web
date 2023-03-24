@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as moment from "dayjs";
 import colors from "~/config/themes/colors";
 import { SideColumnTitle } from "~/components/Typography";

@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import globalColors from "~/config/themes/colors";
 
 const colors = {

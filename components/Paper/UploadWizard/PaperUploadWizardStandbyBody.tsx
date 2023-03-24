@@ -4,10 +4,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ModalActions } from "~/redux/modals";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
+import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext";
 import { nullthrows } from "~/config/utils/nullchecks";
 import { useContext, useEffect, useState } from "react";
 import colors from "~/config/themes/colors";

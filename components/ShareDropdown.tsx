@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLinkedin } from "@fortawesome/fontawesome-free-brands";
-import { faTwitter } from "@fortawesome/fontawesome-free-brands";
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";

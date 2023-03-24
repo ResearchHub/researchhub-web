@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { Helpers } from "@quantfive/js-web-config";

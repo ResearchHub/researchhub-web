@@ -5,7 +5,7 @@ import { faFontCase } from "@fortawesome/pro-solid-svg-icons";
 import { faVideo } from "@fortawesome/pro-solid-svg-icons";
 // NPM
 import ReactDOMServer from "react-dom/server";
-import { createRef, Fragment, Component } from "react";
+import { createRef, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import numeral from "numeral";

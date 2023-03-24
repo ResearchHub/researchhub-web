@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
@@ -13,7 +12,7 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchBestResults from "~/components/Search/SearchBestResults";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
-import { QUERY_PARAM, hasNoSearchResults } from "~/config/utils/search";
+import { hasNoSearchResults } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 
 const SearchResults = ({ apiResponse }) => {

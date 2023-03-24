@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as moment from "dayjs";
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
