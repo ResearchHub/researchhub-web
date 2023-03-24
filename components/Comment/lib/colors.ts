@@ -17,8 +17,8 @@ const colors = {
       text: globalColors.BLACK(0.6),
     },
     selected: {
-      background: globalColors.NEW_BLUE(0.1),
-      text: globalColors.NEW_BLUE(1.0),
+      background: globalColors.LIGHTER_GREY(1.0),
+      text: globalColors.BLACK(1.0),
     }
   },
   toggle: {
