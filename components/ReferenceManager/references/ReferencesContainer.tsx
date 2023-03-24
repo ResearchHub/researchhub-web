@@ -15,10 +15,15 @@ import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import DropdownMenu from "../menu/DropdownMenu";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
 interface Props {}
 
 export default function ReferencesContainer({}: Props): ReactElement {
+  const _userAllowedOnPermissionsDash = gateKeepCurrentUser({
+    application: "REFERENCE_MANAGER",
+    shouldRedirect: true,
+  });
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
 
