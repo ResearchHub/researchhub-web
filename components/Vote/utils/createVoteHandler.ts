@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import API from "~/config/api";
 import {

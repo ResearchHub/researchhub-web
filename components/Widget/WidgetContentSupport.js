@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -128,7 +130,7 @@ const ContentSupport = (props) => {
       {renderCount()}
       {!isUserContent() && (
         <span className={css(styles.plusButton)} id={"plusIcon"}>
-          {<i className="fa-solid fa-plus-circle"></i>}
+          {<FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>}
         </span>
       )}
       <img

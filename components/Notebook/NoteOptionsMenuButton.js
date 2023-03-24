@@ -1,3 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faShapes } from "@fortawesome/pro-duotone-svg-icons";
+import { faClone } from "@fortawesome/pro-solid-svg-icons";
+import { faUsers } from "@fortawesome/pro-solid-svg-icons";
+import { faLock } from "@fortawesome/pro-solid-svg-icons";
 import Loader from "~/components/Loader/Loader";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
@@ -40,7 +47,7 @@ const NoteOptionsMenuButton = ({
   const menuItems = [
     {
       text: "Make private",
-      icon: <i className="fa-solid fa-lock"></i>,
+      icon: <FontAwesomeIcon icon={faLock}></FontAwesomeIcon>,
       show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -63,7 +70,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Move to Workspace",
-      icon: <i className="fa-solid fa-users"></i>,
+      icon: <FontAwesomeIcon icon={faUsers}></FontAwesomeIcon>,
       show: note.access === NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -90,7 +97,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Duplicate",
-      icon: <i className="fa-solid fa-clone"></i>,
+      icon: <FontAwesomeIcon icon={faClone}></FontAwesomeIcon>,
       show: true,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -124,7 +131,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Save as template",
-      icon: <i className="fa-duotone fa-shapes"></i>,
+      icon: <FontAwesomeIcon icon={faShapes}></FontAwesomeIcon>,
       show: true,
       hoverStyle: styles.blueHover,
       onClick: (e) => {
@@ -156,7 +163,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Delete",
-      icon: <i className="fa-solid fa-trash"></i>,
+      icon: <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>,
       show: true,
       hoverStyle: styles.redHover,
       onClick: (e) => {
@@ -226,7 +233,7 @@ const NoteOptionsMenuButton = ({
             {menuLoading ? (
               <Loader size={18} />
             ) : (
-              <i className="fa-regular fa-ellipsis-h"></i>
+              <FontAwesomeIcon icon={faEllipsisH}></FontAwesomeIcon>
             )}
           </div>
         }

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import { css, StyleSheet } from "aphrodite";
@@ -129,7 +131,7 @@ function CitationCommentSidebar({
   setLastUpdateTime,
 }: CitationCommentSidebarProps): ReactElement<"div"> {
   return (
-    <div className={css(styles.citationCommentSidebar)}>
+    (<div className={css(styles.citationCommentSidebar)}>
       <div className={css(styles.header)}>
         <div
           className={css(styles.backButton)}
@@ -137,7 +139,7 @@ function CitationCommentSidebar({
             hypothesisUnduxStore.set("targetCitationComment")(null)
           }
         >
-          {<i className="fa-solid fa-arrow-right"></i>}
+          {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>
@@ -154,7 +156,7 @@ function CitationCommentSidebar({
           {citationThreadEntries}
         </div>
       ) : null}
-    </div>
+    </div>)
   );
 }
 

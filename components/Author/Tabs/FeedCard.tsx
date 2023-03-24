@@ -1,3 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
+import { faLightbulb } from "@fortawesome/pro-regular-svg-icons";
+import { faPenSquare } from "@fortawesome/pro-solid-svg-icons";
+import { faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -84,10 +92,10 @@ export type FeedCardProps = {
 };
 
 const documentIcons = {
-  paper: <i className="fa-regular fa-file-lines"></i>,
-  post: <i className="fa-solid fa-pen-square"></i>,
-  hypothesis: <i className="fa-regular fa-lightbulb"></i>,
-  question: <i className="fa-solid fa-question"></i>,
+  paper: <FontAwesomeIcon icon={faFileLines}></FontAwesomeIcon>,
+  post: <FontAwesomeIcon icon={faPenSquare}></FontAwesomeIcon>,
+  hypothesis: <FontAwesomeIcon icon={faLightbulb}></FontAwesomeIcon>,
+  question: <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>,
 };
 
 function FeedCard({
@@ -242,7 +250,7 @@ function FeedCard({
     });
 
   return (
-    <Ripples
+    (<Ripples
       className={css(
         styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder,
@@ -390,9 +398,9 @@ function FeedCard({
                         )}
                       >
                         {hasAcceptedAnswer ? (
-                          <i className="fa-solid fa-check"></i>
+                          <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                         ) : (
-                          <i className="fa-solid fa-comment-alt-lines"></i>
+                          <FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>
                         )}
                       </span>
                       <span className={css(styles.metadataText)}>
@@ -405,7 +413,7 @@ function FeedCard({
                   ) : (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
-                        {<i className="fa-solid fa-comments"></i>}
+                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>
@@ -450,7 +458,7 @@ function FeedCard({
           </div>
         </div>
       </div>
-    </Ripples>
+    </Ripples>)
   );
 }
 

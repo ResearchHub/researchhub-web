@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
 import { getCurrSelectionBlockTypesInSet } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";

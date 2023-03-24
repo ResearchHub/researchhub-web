@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowToBottom } from "@fortawesome/pro-solid-svg-icons";
+import { faExternalLinkAlt } from "@fortawesome/pro-solid-svg-icons";
+import { faUpload } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules
@@ -204,7 +208,7 @@ function PaperTab(props) {
                 >
                   <button className={css(defaultStyles.button)}>
                     Upload the Paper PDF{" "}
-                    {<i className="fa-solid fa-upload"></i>}
+                    {<FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>}
                   </button>
                 </PermissionNotificationWrapper>
               </div>
@@ -238,7 +242,7 @@ function PaperTab(props) {
           }}
         >
           View on External Site{" "}
-          {<i className="fa-solid fa-external-link-alt"></i>}
+          {<FontAwesomeIcon icon={faExternalLinkAlt}></FontAwesomeIcon>}
         </button>
         <div className={css(styles.emptyPlaceholderFont, styles.orText)}>
           {" or "}
@@ -254,7 +258,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                {<i className="fa-solid fa-arrow-to-bottom"></i>}
+                {<FontAwesomeIcon icon={faArrowToBottom}></FontAwesomeIcon>}
               </span>
               Download
             </Fragment>

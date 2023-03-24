@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "../../../config/types/root_types";
 import { formatTextWrapID } from "../../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { SyntheticEvent } from "react";

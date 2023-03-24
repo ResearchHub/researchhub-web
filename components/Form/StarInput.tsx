@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import colors from "~/config/themes/colors";
@@ -49,7 +51,7 @@ export default function StarInput({
           const isStarSelected = starNumber <= selectedValue;
 
           return (
-            <div
+            (<div
               key={`star-${index}`}
               className={css(
                 styles.star,
@@ -60,20 +62,20 @@ export default function StarInput({
             >
               {isStarSelected ? (
                 <span className={css(styles.starIconFilled)}>
-                  {<i className="fa-solid fa-star"></i>}
+                  {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
                 </span>
               ) : (
                 <span className={css(styles.starIconDisabled)}>
-                  {<i className="fa-solid fa-star"></i>}
+                  {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
                 </span>
               )}
-            </div>
+            </div>)
           );
         } else {
           const isStarSelected =
             starNumber <= selectedValue || starNumber <= hoveredValue;
           return (
-            <div
+            (<div
               key={`star-${index}`}
               className={`starRating ${css(
                 styles.star,
@@ -87,14 +89,14 @@ export default function StarInput({
             >
               {isStarSelected ? (
                 <span className={css(styles.starIconFilled)}>
-                  {<i className="fa-solid fa-star"></i>}
+                  {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
                 </span>
               ) : (
                 <span className={css(styles.starIconUnfilled)}>
-                  {<i className="fa-light fa-star"></i>}
+                  {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
                 </span>
               )}
-            </div>
+            </div>)
           );
         }
       });

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
 
@@ -13,7 +15,7 @@ const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
         className={css(styles.placeholderContainer) + " show-loading-animation"}
       >
         <div className={css(styles.noteIcon)}>
-          {<i className="fa-solid fa-file"></i>}
+          {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
         </div>
         <RectShape
           className={css(styles.textRow)}

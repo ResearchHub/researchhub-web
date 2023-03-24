@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import FormInput from "../Form/FormInput";
 import GoogleLoginButton from "../GoogleLoginButton";
@@ -261,7 +265,7 @@ const LoginModal = ({
   const isMobileScreen = getIsOnMobileScreenSize();
 
   return (
-    <BaseModal
+    (<BaseModal
       offset={"0px"}
       closeModal={_handleClose}
       isOpen={isOpen}
@@ -288,7 +292,7 @@ const LoginModal = ({
                   setStep("SELECT_PROVIDER");
                 }}
               >
-                {<i className="fa-regular fa-chevron-left"></i>}
+                {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
               </IconButton>
             )}
             <IconButton
@@ -300,7 +304,7 @@ const LoginModal = ({
                 _handleClose();
               }}
             >
-              {<i className="fa-light fa-times"></i>}
+              {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
             </IconButton>
             {step === "SELECT_PROVIDER"
               ? `Log in or sign up`
@@ -318,7 +322,7 @@ const LoginModal = ({
       {miscError && (
         <div className={css(styles.miscError)}>
           <div style={{ fontSize: 18 }}>
-            {<i className="fa-solid fa-exclamation-circle"></i>}
+            {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
           </div>
           {miscError}
         </div>
@@ -665,7 +669,7 @@ const LoginModal = ({
           </div>
         ) : null}
       </div>
-    </BaseModal>
+    </BaseModal>)
   );
 };
 

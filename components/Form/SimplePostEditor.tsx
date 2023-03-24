@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createQuestion } from "../Question/api/createQuestion";

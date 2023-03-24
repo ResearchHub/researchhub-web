@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moduleColors from "~/components/Comment/lib/colors";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import { css, StyleSheet } from "aphrodite";

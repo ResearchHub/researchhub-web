@@ -156,11 +156,6 @@ const MyApp = ({
 
   return (
     <Provider store={store}>
-      <Script
-        src="https://kit.fontawesome.com/f57f706c59.js"
-        crossorigin="anonymous"
-      />
-
       <Base
         Component={Component}
         pageProps={pageProps}

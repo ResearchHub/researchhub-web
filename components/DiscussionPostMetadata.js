@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef } from "react";
@@ -119,7 +122,7 @@ const DiscussionPostMetadata = (props) => {
           >
             <span className={css(badge.icon)}>
               {isAcceptedAnswer ? (
-                <i className="fa-solid fa-check"></i>
+                <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
               ) : (
                 postType.icon
               )}
@@ -296,7 +299,7 @@ const Timestamp = (props) => {
           <span className={css(styles.divider)}>•</span>
           {timestamp} from Twitter
           <div className={css(styles.twitterIcon)}>
-            {<i className="fa-brands fa-twitter"></i>}
+            {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
           </div>
         </a>
       </div>

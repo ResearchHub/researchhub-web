@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PERMS, ENTITIES } from "../config/notebookConstants";
 
 // Returns the greatest permission

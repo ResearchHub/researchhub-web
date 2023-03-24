@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import isQuillEmpty from "./isQuillEmpty";
 
 export default function hasQuillContent({ quillRef }) {

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -155,7 +157,7 @@ class SubscribedHubList extends Component {
           as={"/settings"}
           className={css(styles.link, styles.cogButton)}
         >
-          {<i className="fa-solid fa-cog"></i>}
+          {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
         </Link>
       </div>
     );

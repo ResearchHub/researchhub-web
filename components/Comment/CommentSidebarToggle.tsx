@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import { faComments } from "@fortawesome/free-solid-svg-icons";

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
 import Link from "next/link";
@@ -195,7 +197,7 @@ const TransactionCard = (props) => {
                     className={css(styles.infoIcon)}
                     data-tip="User's wallet address"
                   >
-                    {<i className="fa-duotone fa-info-circle"></i>}
+                    {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                     <ReactTooltip />
                   </span>
                 </span>

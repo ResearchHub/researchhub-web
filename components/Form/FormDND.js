@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 // NPM
 import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
@@ -409,9 +412,9 @@ class FormDND extends Component {
                   >
                     <div className={css(styles.icon)}>
                       {this.state.urlIsValid ? (
-                        <i className="fa-solid fa-check-circle"></i>
+                        <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
                       ) : (
-                        <i className="fa-solid fa-times-circle"></i>
+                        <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>
                       )}
                     </div>
                   </span>

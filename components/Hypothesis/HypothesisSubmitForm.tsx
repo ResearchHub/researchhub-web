@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";

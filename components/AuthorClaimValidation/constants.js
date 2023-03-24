@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const VALIDATION_STATE = {
   DENIED_TOO_MANY_ATTEMPS: "DENIED_TOO_MANY_ATTEMPS",
   DENIED_WRONG_USER: "DENIED_WRONG_USER",

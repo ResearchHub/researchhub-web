@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { css, StyleSheet } from "aphrodite";

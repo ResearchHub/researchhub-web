@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/pro-solid-svg-icons";
+import { faCaretUp } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
@@ -58,7 +61,7 @@ export default function EditorDashboardUserCard({
     );
 
     return (
-      <span
+      (<span
         className={css(
           styles.contributorPercentDiff,
           contributorPctDiff > 0
@@ -70,13 +73,12 @@ export default function EditorDashboardUserCard({
       >
         <span>
           {contributorPctDiff > 0 ? (
-            <span>{<i className="fa-solid fa-caret-up"></i>}</span>
+            <span>{<FontAwesomeIcon icon={faCaretUp}></FontAwesomeIcon>}</span>
           ) : contributorPctDiff < 0 ? (
-            <span>{<i className="fa-solid fa-caret-down"></i>}</span>
+            <span>{<FontAwesomeIcon icon={faCaretDown}></FontAwesomeIcon>}</span>
           ) : null}
         </span>
-        {Math.abs(contributorPctDiff)}%
-      </span>
+        {Math.abs(contributorPctDiff)}%</span>)
     );
   };
 

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NullableString } from "~/config/types/root_types";
 import { getAvailableSortOptions } from "./getAvailableSortOptions";
 

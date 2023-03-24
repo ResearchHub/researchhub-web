@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createQuestion } from "./api/createQuestion";
@@ -114,7 +116,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   };
 
   return (
-    <form
+    (<form
       autoComplete={"off"}
       className={css(styles.askQuestionForm)}
       id="askQuestionForm"
@@ -132,7 +134,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           {"Submission Guidelines"}
         </a>
         <span className={css(styles.close)} onClick={onExit}>
-          {<i className="fa-light fa-times"></i>}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
       </div>
       <FormInput
@@ -187,7 +189,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           type="submit"
         />
       </div>
-    </form>
+    </form>)
   );
 }
 

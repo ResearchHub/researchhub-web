@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useStore } from "react-redux";

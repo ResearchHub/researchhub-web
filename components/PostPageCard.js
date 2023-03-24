@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
@@ -199,7 +201,11 @@ class PostPageCard extends Component {
                           }
                         >
                           {" "}
-                          {<i className="fa-light fa-info-circle"></i>}
+                          {
+                            <FontAwesomeIcon
+                              icon={faInfoCircle}
+                            ></FontAwesomeIcon>
+                          }
                         </span>
                       </div>
                       <span style={{ marginLeft: 16 }}>

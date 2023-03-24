@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ScrollMenu from "react-horizontal-scrolling-menu";
@@ -75,13 +78,13 @@ const PaperTabBar = (props) => {
         data={menu}
         arrowLeft={
           <NavigationArrow
-            icon={<i className="fa-regular fa-chevron-left"></i>}
+            icon={<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
             direction={"left"}
           />
         }
         arrowRight={
           <NavigationArrow
-            icon={<i className="fa-regular fa-chevron-right"></i>}
+            icon={<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
             direction={"right"}
           />
         }

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 import { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -229,7 +232,7 @@ const AuthorSupportModal = (props) => {
     return (
       <div className={css(styles.content)}>
         <div className={css(styles.backButton)} onClick={() => setPage(1)}>
-          {<i className="fa-light fa-arrow-left-long"></i>}
+          {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
           <span className={css(styles.backButtonLabel)}>Back</span>
         </div>
         <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
@@ -329,7 +332,7 @@ const AuthorSupportModal = (props) => {
           <div className={css(styles.mainHeader)}>
             Transaction Successful
             <span className={css(styles.icon)}>
-              {<i className="fa-solid fa-check-circle"></i>}
+              {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
             </span>
           </div>
         )

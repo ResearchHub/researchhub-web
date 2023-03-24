@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors from "~/config/themes/colors";
 import { useEffect, useMemo } from "react";

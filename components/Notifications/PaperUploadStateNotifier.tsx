@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -59,7 +62,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"PAPER UPLOADED"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
-              {<i className="fa-solid fa-check-circle"></i>}
+              {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
             </span>
             {"Click here to complete next steps"}
           </div>
@@ -85,7 +88,7 @@ const getToastBody = ({
           </div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {<i className="fa-solid fa-exclamation-circle"></i>}
+              {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
             </span>
             {
               "We weren't able to get DOI from the source. Click here to try again by providing DOI"
@@ -100,7 +103,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"DUPLICATE PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {<i className="fa-solid fa-exclamation-circle"></i>}
+              {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
             </span>
             {"We've found a duplicate paper"}
           </div>
@@ -114,7 +117,7 @@ const getToastBody = ({
           <div className={css(styles.toastBodyTitle)}>{"UPLOADING PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
-              {<i className="fa-solid fa-check-circle"></i>}
+              {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
             </span>
             {"Fetching Paper Metadata..."}
           </div>

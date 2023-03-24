@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faLayerGroup } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
@@ -28,7 +33,7 @@ const ContentBadge = ({
   const router = useRouter();
 
   return (
-    <Badge
+    (<Badge
       badgeClassName={[
         styles.badge,
         styles["badgeFor_" + contentType],
@@ -66,28 +71,28 @@ const ContentBadge = ({
       ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
         <>
           <span className={css(styles.icon)}>
-            {<i className="fa-solid fa-comments"></i>}
+            {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
           </span>
           <span>Comment</span>
         </>
       ) : contentType === POST_TYPES.ANSWER ? (
         <>
           <span className={css(styles.icon)}>
-            {<i className="fa-solid fa-comment-alt-lines"></i>}
+            {<FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>}
           </span>
           <span>Answer</span>
         </>
       ) : contentType === POST_TYPES.SUMMARY ? (
         <>
           <span className={css(styles.icon)}>
-            {<i className="fa-solid fa-layer-group"></i>}
+            {<FontAwesomeIcon icon={faLayerGroup}></FontAwesomeIcon>}
           </span>
           <span>Summary</span>
         </>
       ) : contentType === POST_TYPES.REVIEW ? (
         <>
           <span className={css(styles.icon)}>
-            {<i className="fa-solid fa-star"></i>}
+            {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
           </span>
           <span>Review</span>
         </>
@@ -116,7 +121,7 @@ const ContentBadge = ({
       ) : (
         <></>
       )}
-    </Badge>
+    </Badge>)
   );
 };
 

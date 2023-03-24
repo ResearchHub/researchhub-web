@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   getCookieOrLocalStorageValue,
@@ -37,7 +39,7 @@ export default function ExitableBanner({
   }
 
   return (
-    <div className={css(styles.exitableBanner)}>
+    (<div className={css(styles.exitableBanner)}>
       <div className={css(styles.contentWrap)} style={contentStyleOverride}>
         {content}
       </div>
@@ -53,11 +55,11 @@ export default function ExitableBanner({
       >
         {exitButton ?? (
           <div className={css(styles.exitButtonDefault)}>
-            {<i className="fa-light fa-times"></i>}
+            {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 

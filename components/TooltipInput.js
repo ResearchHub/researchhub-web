@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -46,11 +49,11 @@ export class TooltipInput extends Component {
             autoFocus={true}
           />
           <div className={css(styles.submitTooltipButton)} onClick={save}>
-            {<i className="fa-solid fa-arrow-right"></i>}
+            {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           </div>
         </div>
         <span className={css(styles.close)} onClick={close}>
-          {<i className="fa-light fa-times"></i>}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
       </div>
     );

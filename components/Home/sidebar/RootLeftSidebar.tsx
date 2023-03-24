@@ -1,3 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftToLine } from "@fortawesome/pro-solid-svg-icons";
+import { faArrowRightToLine } from "@fortawesome/pro-solid-svg-icons";
+import { faMedium } from "@fortawesome/fontawesome-free-brands";
+import { faDiscord } from "@fortawesome/fontawesome-free-brands";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
+import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
+import { faBook } from "@fortawesome/pro-duotone-svg-icons";
+import { faThLarge } from "@fortawesome/pro-solid-svg-icons";
+import { faHouse } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
@@ -57,7 +67,7 @@ export const getLeftSidebarItemAttrs = ({
 
   return filterNull([
     {
-      icon: <i className="fa-solid fa-house"></i>,
+      icon: <FontAwesomeIcon icon={faHouse}></FontAwesomeIcon>,
       label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,
@@ -67,7 +77,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: <i className="fa-solid fa-th-large"></i>,
+      icon: <FontAwesomeIcon icon={faThLarge}></FontAwesomeIcon>,
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
@@ -77,7 +87,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: <i className="fa-duotone fa-book"></i>,
+      icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
@@ -91,7 +101,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: <i className="fa-regular fa-chart-simple"></i>,
+      icon: <FontAwesomeIcon icon={faChartSimple}></FontAwesomeIcon>,
       label: "Leaderboard",
       isMinimized,
       isActive: pathname.includes("leaderboard"),
@@ -349,14 +359,14 @@ function RootLeftSidebar({
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {<i className="fa-brands fa-twitter"></i>}
+                {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
               </ALink>
               <ALink
                 href="https://discord.com/invite/ZcCYgcnUp5"
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {<i className="fa-brands fa-discord"></i>}
+                {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
               </ALink>
               <ALink
                 href="https://medium.com/researchhub"
@@ -365,7 +375,7 @@ function RootLeftSidebar({
                 }
                 target="__blank"
               >
-                {<i className="fa-brands fa-medium"></i>}
+                {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
               </ALink>
             </div>
             <div className={formattedFooterItemsButtonRow}>
@@ -397,7 +407,7 @@ function RootLeftSidebar({
                 setIsMinimized(false);
               }}
             >
-              <i className="fa-solid fa-arrow-right-to-line"></i>
+              <FontAwesomeIcon icon={faArrowRightToLine}></FontAwesomeIcon>
             </div>
           ) : (
             <div
@@ -407,7 +417,7 @@ function RootLeftSidebar({
                 setIsMinimized(true);
               }}
             >
-              <i className="fa-solid fa-arrow-left-to-line"></i>
+              <FontAwesomeIcon icon={faArrowLeftToLine}></FontAwesomeIcon>
             </div>
           )}
         </div>

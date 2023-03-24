@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -113,7 +115,7 @@ function PaperUploadWizardStandbyBody({
   const didProcessFail = ["FAILED", "FAILED_DOI"].includes(uploadStatus);
 
   return (
-    <div className={css(styles.wizardStandby)}>
+    (<div className={css(styles.wizardStandby)}>
       {!didProcessFail ? (
         <div className={css(styles.wizardStandbyBox)}>
           <div className={css(styles.title)}>{"Uploading a paper"}</div>
@@ -154,7 +156,7 @@ function PaperUploadWizardStandbyBody({
                 color: colors.RED(1),
               }}
             >
-              {<i className="fa-solid fa-exclamation-circle"></i>}
+              {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
             </span>
             {"We weren't able to import your paper"}
           </div>
@@ -210,7 +212,7 @@ function PaperUploadWizardStandbyBody({
           </div>
         </div>
       )}
-    </div>
+    </div>)
   );
 }
 

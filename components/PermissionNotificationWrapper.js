@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";

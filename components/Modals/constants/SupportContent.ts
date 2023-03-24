@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const ContentTypes = {
   PAPER: "paper",
   RESEARCHHUB_POST: "researchhubpost",

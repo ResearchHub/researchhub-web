@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faToggleOff } from "@fortawesome/pro-duotone-svg-icons";
+import { faToggleOn } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useMemo } from "react";
 import colors from "~/config/themes/colors";
@@ -27,7 +30,7 @@ const FeedMenuTagDropdown = ({
   }, [feedTypeOpts]);
 
   return (
-    <div
+    (<div
       className={css(
         styles.additionalOpts,
         isWithinLastTab && styles.additionalOptsRightAlign
@@ -46,16 +49,16 @@ const FeedMenuTagDropdown = ({
           <span className={css(styles.tagLabel)}>{opt.label}</span>
           {selectedTags.includes(opt.value) ? (
             <span className={css(styles.tagIcon, styles.toggleOn)}>
-              {<i className="fa-solid fa-toggle-on"></i>}
+              {<FontAwesomeIcon icon={faToggleOn}></FontAwesomeIcon>}
             </span>
           ) : (
             <span className={css(styles.tagIcon, styles.toggleOff)}>
-              {<i className="fa-duotone fa-toggle-off"></i>}
+              {<FontAwesomeIcon icon={faToggleOff}></FontAwesomeIcon>}
             </span>
           )}
         </div>
       ))}
-    </div>
+    </div>)
   );
 };
 

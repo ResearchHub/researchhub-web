@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Error from "next/error";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import dynamic from "next/dynamic";

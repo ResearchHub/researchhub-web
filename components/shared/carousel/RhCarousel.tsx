@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
@@ -45,7 +48,7 @@ const RhCarouselControl = ({
   );
 
   return (
-    <div className={css(styles.rhCarouselControl)}>
+    (<div className={css(styles.rhCarouselControl)}>
       <div className={css(styles.rhCarouselControlIconsWrap)}>
         <div
           className={css(styles.rhCarouselControlIcon)}
@@ -57,7 +60,7 @@ const RhCarouselControl = ({
           }}
           role="button"
         >
-          {<i className="fa-regular fa-chevron-left"></i>}
+          {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
         </div>
         <div
           className={css(styles.rhCarouselControlIcon)}
@@ -68,11 +71,11 @@ const RhCarouselControl = ({
           }}
           role="button"
         >
-          {<i className="fa-regular fa-chevron-right"></i>}
+          {<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
         </div>
       </div>
       <div className={css(styles.rhCarouselControlPillsContainer)}>{pills}</div>
-    </div>
+    </div>)
   );
 };
 

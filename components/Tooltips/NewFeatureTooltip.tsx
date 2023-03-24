@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretLeft } from "@fortawesome/pro-solid-svg-icons";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { ReactElement, useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
@@ -48,7 +51,7 @@ function NewFeatureTooltip({
           Contribution Types
           <span className={css(styles.new)}>
             <span className={css(styles.fireIcon)}>
-              {<i className="fa-duotone fa-fire-alt"></i>}
+              {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
             </span>
             <span className={css(styles.newText)}>New</span>
           </span>
@@ -77,7 +80,7 @@ function NewFeatureTooltip({
           Bounties
           <span className={css(styles.new)}>
             <span className={css(styles.fireIcon)}>
-              {<i className="fa-duotone fa-fire-alt"></i>}
+              {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
             </span>
             <span className={css(styles.newText)}>New</span>
           </span>
@@ -101,7 +104,7 @@ function NewFeatureTooltip({
 
   if (shouldAlert) {
     return (
-      <div
+      (<div
         className={css(
           styles.tooltipContainer,
           styles["tooltipContainer_" + tooltipPos]
@@ -114,12 +117,12 @@ function NewFeatureTooltip({
             colorStyles["caret_" + color]
           )}
         >
-          {<i className="fa-solid fa-caret-left"></i>}
+          {<FontAwesomeIcon icon={faCaretLeft}></FontAwesomeIcon>}
         </span>
         <div className={css(styles.body, colorStyles["body_" + color])}>
           {html}
         </div>
-      </div>
+      </div>)
     );
   } else {
     return null;

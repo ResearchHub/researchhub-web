@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   AUTHOR_CLAIM_STATUS,
   AUTHOR_CLAIM_STATUS_LABEL,

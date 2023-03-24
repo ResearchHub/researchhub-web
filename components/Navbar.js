@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/pro-light-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
 import { useAccount } from "wagmi";
@@ -107,7 +109,7 @@ const Navbar = (props) => {
           className={css(styles.burgerIcon)}
           onClick={() => setShouldShowSlider(!shouldShowSlider)}
         >
-          {<i className="fa-light fa-bars"></i>}
+          {<FontAwesomeIcon icon={faBars}></FontAwesomeIcon>}
         </div>
         <div
           onClick={(event) => {

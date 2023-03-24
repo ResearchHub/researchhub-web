@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import numeral from "numeral";
@@ -55,7 +57,7 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
           {userSummary && (
             <div className={css(styles.summary)}>
               <span className={css(styles.eduIcon)}>
-                {<i className="fa-solid fa-graduation-cap"></i>}
+                {<FontAwesomeIcon icon={faGraduationCap}></FontAwesomeIcon>}
               </span>
               {userSummary}
             </div>

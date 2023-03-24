@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { captureEvent } from "~/config/utils/events";
 import { FormState } from "../types/UploadComponentTypes";

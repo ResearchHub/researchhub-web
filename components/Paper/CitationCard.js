@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight } from "@fortawesome/pro-solid-svg-icons";
+import { faAngleLeft } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -99,7 +102,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {<i className="fa-solid fa-angle-left"></i>}
+                    {<FontAwesomeIcon icon={faAngleLeft}></FontAwesomeIcon>}
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
@@ -110,7 +113,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {<i className="fa-solid fa-angle-right"></i>}
+                    {<FontAwesomeIcon icon={faAngleRight}></FontAwesomeIcon>}
                   </span>
                 </div>
               );

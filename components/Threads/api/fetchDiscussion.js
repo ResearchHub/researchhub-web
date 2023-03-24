@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as shims from "../../../redux/discussion/shims";
 
 import api from "~/config/api";

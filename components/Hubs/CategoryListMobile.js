@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { useRef, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -25,7 +27,7 @@ const Tab = ({ text, index, activeCategory }) => {
             <span>
               {text}
               <span className={css(styles.trendingIcon)}>
-                {<i className="fa-duotone fa-fire-alt"></i>}
+                {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
               </span>
             </span>
           ) : (

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { prepURL } from "~/config/api";
 import { getSortValue } from "./getSortValue";
 

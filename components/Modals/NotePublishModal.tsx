@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import API from "~/config/api";
 import BaseModal from "~/components/Modals/BaseModal";
 import Button from "~/components/Form/Button";

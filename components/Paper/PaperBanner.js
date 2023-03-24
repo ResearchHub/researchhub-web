@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
@@ -24,7 +26,11 @@ const PaperBanner = (props) => {
                 <span
                   className={css(styles.removeIcon, styles.mobileRemoveIcon)}
                 >
-                  {<i className="fa-solid fa-exclamation-circle"></i>}
+                  {
+                    <FontAwesomeIcon
+                      icon={faExclamationCircle}
+                    ></FontAwesomeIcon>
+                  }
                 </span>
               </div>
               {upCaseFirstLetter(documentType)} Removed
@@ -61,7 +67,7 @@ const PaperBanner = (props) => {
         {isRemoved && (
           <div className={css(styles.icon)}>
             <span className={css(styles.removeIcon)}>
-              {<i className="fa-solid fa-exclamation-circle"></i>}
+              {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
             </span>
           </div>
         )}

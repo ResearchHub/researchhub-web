@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createRef, Component, Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";

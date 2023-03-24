@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -19,9 +22,9 @@ const AuthorStatsDropdown = (props) => {
         <div>{"Authors & Stats"}</div>
         <div className={css(styles.icon)}>
           {showDropdown ? (
-            <i className="fa-regular fa-chevron-down"></i>
+            <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
           ) : (
-            <i className="fa-regular fa-chevron-up"></i>
+            <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
           )}
         </div>
       </div>

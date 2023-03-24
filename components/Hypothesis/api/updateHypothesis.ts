@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 import { Helpers } from "@quantfive/js-web-config";

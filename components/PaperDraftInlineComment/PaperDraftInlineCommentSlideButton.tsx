@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   isNullOrUndefined,
@@ -111,14 +113,14 @@ function PaperDraftInlineCommentSlideButton({
   }
 
   return (
-    <div
+    (<div
       className={css(styles.PaperDraftInlineCommentSlideButton)}
       onClick={closeButtonAndRenderThreadCard}
       ref={buttonRef}
       style={{ top: displayableOffsetTop }}
     >
-      {<i className="fa-solid fa-plus"></i>}
-    </div>
+      {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
+    </div>)
   );
 }
 

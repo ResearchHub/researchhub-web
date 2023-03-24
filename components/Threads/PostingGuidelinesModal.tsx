@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement } from "react";
 import BaseModal from "~/components/Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
@@ -7,7 +8,7 @@ type Props = {
   isOpen: Boolean;
   closeModal: Function;
 };
-  
+
 export default function PostingGuidelinesModal({
   isOpen,
   closeModal,

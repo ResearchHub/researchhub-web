@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import {
   forwardRef,
   useState,
@@ -118,7 +121,7 @@ const VerificationForm = forwardRef((props, ref) => {
                   onClick={() => removeFile(index)}
                   class={css(styles.times)}
                 >
-                  {<i className="fa-light fa-times"></i>}
+                  {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
                 </span>
                 {
                   <img
@@ -144,7 +147,7 @@ const VerificationForm = forwardRef((props, ref) => {
           files.length < 1 ? (
             renderDropContent()
           ) : (
-            <i className="fa-solid fa-plus"></i>
+            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
           )
         }
       />

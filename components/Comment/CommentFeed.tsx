@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import Comment from "./Comment";
 import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";

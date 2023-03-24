@@ -1,3 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOut } from "@fortawesome/pro-duotone-svg-icons";
+import { faAsterisk } from "@fortawesome/pro-solid-svg-icons";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
+import { faPortrait } from "@fortawesome/pro-solid-svg-icons";
+import { faShieldHalved } from "@fortawesome/pro-solid-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -70,7 +77,7 @@ function NavbarRightButtonGroup({
   }, [isUserModerator, isUserHubEditor]);
 
   return (
-    <div className={css(styles.userDropdown)}>
+    (<div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
         <div
           className={css(styles.buttonsGroup)}
@@ -88,7 +95,7 @@ function NavbarRightButtonGroup({
                 href={"/moderators/audit/flagged"}
                 className={css(styles.modBtn)}
               >
-                {<i className="fa-solid fa-shield-halved"></i>}
+                {<FontAwesomeIcon icon={faShieldHalved}></FontAwesomeIcon>}
                 {openCaseCounts > 0 && (
                   <div className={css(styles.notifCount)}>{openCaseCounts}</div>
                 )}
@@ -131,7 +138,7 @@ function NavbarRightButtonGroup({
           >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
-                {<i className="fa-solid fa-portrait"></i>}
+                {<FontAwesomeIcon icon={faPortrait}></FontAwesomeIcon>}
               </span>
               {"Profile"}
             </div>
@@ -139,7 +146,7 @@ function NavbarRightButtonGroup({
           <Link href={`/${user?.organization_slug}/notebook`} legacyBehavior>
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon)}>
-                {<i className="fa-solid fa-book-open"></i>}
+                {<FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>}
               </span>
               {"Notebook"}
             </div>
@@ -147,7 +154,7 @@ function NavbarRightButtonGroup({
           <Link href={"/settings"} as={`/settings`} legacyBehavior>
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon)}>
-                {<i className="fa-solid fa-cog"></i>}
+                {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
               </span>
               {"Settings"}
             </div>
@@ -160,7 +167,7 @@ function NavbarRightButtonGroup({
           >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon)}>
-                {<i className="fa-solid fa-asterisk"></i>}
+                {<FontAwesomeIcon icon={faAsterisk}></FontAwesomeIcon>}
               </span>
               {"Referral Program"}
             </div>
@@ -172,13 +179,13 @@ function NavbarRightButtonGroup({
             }}
           >
             <span className={css(styles.profileIcon)}>
-              {<i className="fa-duotone fa-sign-out"></i>}
+              {<FontAwesomeIcon icon={faSignOut}></FontAwesomeIcon>}
             </span>
             <span>{"Logout"}</span>
           </div>
         </div>
       )}
-    </div>
+    </div>)
   );
 }
 

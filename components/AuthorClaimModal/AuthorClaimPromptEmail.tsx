@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SyntheticEvent, useState } from "react";
 import { connect } from "react-redux";
 import Button from "../Form/Button";

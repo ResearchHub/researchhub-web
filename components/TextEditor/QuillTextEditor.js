@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faFontCase } from "@fortawesome/pro-solid-svg-icons";
+import { faVideo } from "@fortawesome/pro-solid-svg-icons";
 // NPM
 import ReactDOMServer from "react-dom/server";
 import { createRef, Fragment, Component } from "react";
@@ -58,7 +63,7 @@ class Editor extends Component {
       const Quill = val.default.Quill;
       const icons = val.default.Quill.import("ui/icons");
       icons.video = ReactDOMServer.renderToString(
-        <i className="fa-solid fa-video"></i>
+        <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
       );
 
       Quill.register(QuillPeerReviewRatingBlock);
@@ -359,10 +364,9 @@ class Editor extends Component {
             className={`show-full-editor ${showFullEditor ? "ql-active" : ""}`}
             onClick={() => this.setState({ showFullEditor: !showFullEditor })}
           >
-            {<i className="fa-solid fa-font-case"></i>}
+            {<FontAwesomeIcon icon={faFontCase}></FontAwesomeIcon>}
           </button>
         </span>
-
         <div
           className={`ql-full-editor ${
             showFullEditor && "ql-full-editor-visible"
@@ -544,7 +548,7 @@ class Editor extends Component {
                       Bounty Added{" "}
                     </span>
                     <span className={css(styles.closeBounty)}>
-                      {<i className="fa-light fa-times"></i>}
+                      {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
                     </span>
                   </button>
                 ) : (
@@ -715,7 +719,7 @@ class Editor extends Component {
             {this.props.isBounty === true && (
               <div className={css(styles.bountyAlert)}>
                 <span style={{ fontSize: 18 }}>
-                  {<i className="fa-light fa-info-circle"></i>}
+                  {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                 </span>
                 <span style={{ marginLeft: 5 }}>
                   Reply to this thread with an answer to be eligible for bounty

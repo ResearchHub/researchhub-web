@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";

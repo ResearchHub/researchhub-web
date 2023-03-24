@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchFeaturedDocs } from "./api/fetchFeaturedDocs";
 import { Fragment, ReactElement, useEffect, useState } from "react";

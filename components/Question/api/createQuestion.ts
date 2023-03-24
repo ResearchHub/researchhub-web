@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import API from "~/config/api";
 import { sendAmpEvent } from "~/config/fetch";
 import { buildApiUri } from "~/config/utils/buildApiUri";

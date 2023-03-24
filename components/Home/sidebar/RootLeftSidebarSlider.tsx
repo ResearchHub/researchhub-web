@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMedium } from "@fortawesome/fontawesome-free-brands";
+import { faDiscord } from "@fortawesome/fontawesome-free-brands";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -116,14 +120,14 @@ function RootLeftSidebarSlider({
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {<i className="fa-brands fa-twitter"></i>}
+              {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
             </ALink>
             <ALink
               href="https://discord.com/invite/ZcCYgcnUp5"
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {<i className="fa-brands fa-discord"></i>}
+              {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
             </ALink>
             <ALink
               href="https://medium.com/researchhub"
@@ -132,7 +136,7 @@ function RootLeftSidebarSlider({
               }
               target="__blank"
             >
-              {<i className="fa-brands fa-medium"></i>}
+              {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
             </ALink>
           </div>
           <div className={css(styles.leftSidebarSliderFooterItemsBottomRow)}>

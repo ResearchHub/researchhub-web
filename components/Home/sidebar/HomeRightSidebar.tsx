@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { css } from "aphrodite";
 import { getEducationalCarouselElements } from "~/components/shared/carousel/presets/RhEducationalCarouselElements";
 import { INFO_TAB_EXIT_KEY } from "~/components/Banner/constants/exitable_banner_keys";
@@ -16,7 +18,7 @@ export default function HomeRightSidebar(): ReactElement {
   const carouselElements = getEducationalCarouselElements();
 
   return (
-    <div className={css(styles.HomeRightSidebar)}>
+    (<div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
         <ExitableBanner
           bannerKey={INFO_TAB_EXIT_KEY}
@@ -30,7 +32,7 @@ export default function HomeRightSidebar(): ReactElement {
           }}
           exitButton={
             <div style={{ fontSize: 16 }}>
-              {<i className="fa-light fa-times"></i>}
+              {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
             </div>
           }
           exitButtonPositionOverride={{
@@ -44,6 +46,6 @@ export default function HomeRightSidebar(): ReactElement {
           shouldLimitNumCards={shouldLimitNumCards}
         />
       </ColumnContainer>
-    </div>
+    </div>)
   );
 }

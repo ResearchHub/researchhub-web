@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { FEDocType } from "~/config/utils/getUnifiedDocType";
 import { ID, NullableString, RHUser } from "~/config/types/root_types";

@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentLines } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentAltDots } from "@fortawesome/pro-duotone-svg-icons";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 
 // NPM Modules
@@ -510,16 +515,16 @@ class LiveFeedNotification extends Component {
       case "summary":
       case "vote_paper":
       case "paper":
-        return <i className="fa-solid fa-file"></i>;
+        return <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>;
       case "vote_comment":
       case "comment":
-        return <i className="fa-duotone fa-comment-alt-dots"></i>;
+        return <FontAwesomeIcon icon={faCommentAltDots}></FontAwesomeIcon>;
       case "reply":
       case "vote_reply":
-        return <i className="fa-duotone fa-comment-alt-dots"></i>;
+        return <FontAwesomeIcon icon={faCommentAltDots}></FontAwesomeIcon>;
       case "thread":
       case "vote_thread":
-        return <i className="fa-solid fa-comment-lines"></i>;
+        return <FontAwesomeIcon icon={faCommentLines}></FontAwesomeIcon>;
     }
   };
 
@@ -569,7 +574,7 @@ class LiveFeedNotification extends Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                icon={<i className="fa-solid fa-ban"></i>}
+                icon={<FontAwesomeIcon icon={faBan}></FontAwesomeIcon>}
                 label={"Ban User"}
                 actionType={"user"}
                 metaData={metaData}

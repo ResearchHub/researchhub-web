@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { captureEvent } from "@sentry/nextjs";
 import { connect } from "react-redux";
 import { copyInputValToClipboard } from "~/config/utils/copyInputValToClipboard";
@@ -109,7 +114,7 @@ function UserApiTokenInputField({
     : "";
 
   return (
-    <div className={css(styles.container)}>
+    (<div className={css(styles.container)}>
       <div className={css(styles.labelContainer)}>
         <div className={css(styles.listLabel)} id={"apiTokenField"}>
           {"API Token"}
@@ -144,18 +149,18 @@ function UserApiTokenInputField({
             {isLoading ? (
               <Loader size={12} color={colors.TOOLTIP_TEXT_COLOR_WHITE} />
             ) : copyButtonStatus === "ready" ? (
-              <i className="fa-solid fa-file"></i>
+              <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
             ) : copyButtonStatus === "copied" ? (
-              <i className="fa-solid fa-check-circle"></i>
+              <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
             ) : userHasApiToken ? (
-              <i className="fa-light fa-times"></i>
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
             ) : (
-              <i className="fa-solid fa-plus-circle"></i>
+              <FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>
             )}
           </Ripples>
         </form>
       </div>
-    </div>
+    </div>)
   );
 }
 

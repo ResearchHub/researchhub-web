@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -19,9 +22,9 @@ const OnboardHub = (props) => {
     return (
       <div className={css(styles.button, subscribed && styles.active)}>
         {subscribed ? (
-          <i className="fa-solid fa-check"></i>
+          <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
         ) : (
-          <i className="fa-solid fa-plus"></i>
+          <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
         )}
       </div>
     );

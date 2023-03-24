@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import PaperDraftInlineCommentSlideButton from "./PaperDraftInlineCommentSlideButton";
 import { ReactChildren, ReactElement } from "react";

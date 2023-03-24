@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
@@ -63,7 +65,7 @@ function SuccessScreen({
           className={css(styles.link)}
         >
           <div className={css(styles.twitter)}>
-            {<i className="fa-brands fa-twitter"></i>}
+            {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
             <span className={css(styles.twitterText)}>Share on Twitter</span>
           </div>
         </a>

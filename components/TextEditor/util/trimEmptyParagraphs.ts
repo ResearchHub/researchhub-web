@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function trimEmptyParagraphs({ htmlStr }) {
   let updatedStr = null;
   const lastParIndex = htmlStr.lastIndexOf("<p>");

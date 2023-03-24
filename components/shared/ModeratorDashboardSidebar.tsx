@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { faCoin } from "@fortawesome/pro-duotone-svg-icons";
+import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
 import { filterNull } from "~/config/utils/nullchecks";
 import { Fragment, ReactElement, useContext, useEffect } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -34,7 +40,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const SIDE_BAR_ITEMS = filterNull([
     isUserModerator
       ? {
-          icon: <i className="fa-solid fa-book-open"></i>,
+          icon: <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>,
           id: "author-claim-case-dashboard",
           name: "Author Claim",
           pathname: "/moderators/author-claim-case-dashboard",
@@ -42,7 +48,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserModerator
       ? {
-          icon: <i className="fa-solid fa-user"></i>,
+          icon: <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>,
           id: "editors",
           name: "Editors",
           pathname: "/moderators/editors",
@@ -50,7 +56,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     userAllowedOnPermissionsDash
       ? {
-          icon: <i className="fa-solid fa-user-edit"></i>,
+          icon: <FontAwesomeIcon icon={faUserEdit}></FontAwesomeIcon>,
           id: "permissions",
           name: "Update Editors",
           pathname: "/moderators/permissions",
@@ -58,7 +64,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     userAllowedSendRSC
       ? {
-          icon: <i className="fa-duotone fa-coin"></i>,
+          icon: <FontAwesomeIcon icon={faCoin}></FontAwesomeIcon>,
           id: "rsc",
           name: "Manage RSC",
           pathname: "/moderators/rsc",
@@ -66,7 +72,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserHubEditor || isUserModerator
       ? {
-          icon: <i className="fa-solid fa-flag"></i>,
+          icon: <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>,
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",

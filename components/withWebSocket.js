@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useRef } from "react";
 import { AUTH_TOKEN as TOKEN_NAME } from "../config/constants";
 

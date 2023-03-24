@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -178,7 +180,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {<i className="fa-regular fa-chevron-left"></i>}{" "}
+              {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>
@@ -238,7 +240,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {<i className="fa-regular fa-chevron-left"></i>}{" "}
+              {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>

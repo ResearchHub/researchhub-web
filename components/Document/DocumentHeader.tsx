@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
@@ -294,7 +297,7 @@ function DocumentHeader({
 
   return (
     // @ts-ignore
-    <ReactPlaceholder
+    (<ReactPlaceholder
       ready={document.isReady}
       showLoadingAnimation
       customPlaceholder={<DocumentHeaderPlaceholder />}
@@ -461,7 +464,7 @@ function DocumentHeader({
                 href={"#comments"}
               >
                 <span className={css(styles.detailIcon)}>
-                  {<i className="fa-solid fa-comments"></i>}
+                  {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                 </span>
                 {discussionCount}{" "}
                 <span className={css(styles.commentsText)}>
@@ -471,7 +474,7 @@ function DocumentHeader({
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon, styles.starIcon)}>
-                    {<i className="fa-solid fa-star"></i>}
+                    {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
                   </span>
                   {unifiedDocument?.reviewSummary?.avg}
                   <span className={css(styles.reviewDetails)}>
@@ -518,7 +521,7 @@ function DocumentHeader({
           </div>
         </div>
       )}
-    </ReactPlaceholder>
+    </ReactPlaceholder>)
   );
 }
 

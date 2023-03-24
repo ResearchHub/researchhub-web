@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { captureEvent } from "~/config/utils/events";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "~/config/types/root_types";
 import listMockData from "../mock/list.json";
 import createMockData from "../mock/create.json";

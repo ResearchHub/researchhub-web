@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function isClickOutsideCheckbox(event, ignoreElems: Array<any> = []){
   const checkboxes = Array.from(document.querySelectorAll(".cbx"));
 

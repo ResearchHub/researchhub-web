@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/pro-solid-svg-icons";
+import { faComment } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
@@ -31,7 +34,7 @@ const CommentCount = (props) => {
           path={threadPath}
         >
           <span className={css(styles.iconChat)} id={"chatIcon"}>
-            {<i className="fa-solid fa-comment"></i>}
+            {<FontAwesomeIcon icon={faComment}></FontAwesomeIcon>}
           </span>
           <span className={css(styles.text)} id={"text"}>
             {formatCommentCount(props.count, props.comment)}
@@ -62,7 +65,7 @@ const Share = () => {
   return (
     <div className={css(styles.shareContainer)}>
       <span className={css(styles.iconChat)} id={"shareIcon"}>
-        {<i className="fa-solid fa-share"></i>}
+        {<FontAwesomeIcon icon={faShare}></FontAwesomeIcon>}
       </span>
       <span className={css(styles.text)} id={"text"}>
         Share

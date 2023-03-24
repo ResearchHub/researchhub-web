@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { Fragment } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
@@ -110,7 +112,7 @@ const PaperEntry = ({
             {title && (
               <Fragment>
                 <span className={css(styles.icon)}>
-                  {<i className="fa-solid fa-file"></i>}
+                  {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
                 </span>
                 {title}
               </Fragment>

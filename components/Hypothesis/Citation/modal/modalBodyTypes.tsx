@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ValueOf } from "~/config/types/root_types";
 
 export const NEW_SOURCE_BODY_TYPES = {

@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
+import { faLayerGroup } from "@fortawesome/pro-solid-svg-icons";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faComment } from "@fortawesome/pro-regular-svg-icons";
 export const getPostTypeStruct = ({ postType, documentType }) => {
   if (
     documentType === "question" ||
@@ -23,7 +28,7 @@ const postTypes = [
     value: POST_TYPES.DISCUSSION,
     isDefault: true,
     group: "contribute",
-    icon: <i className="fa-regular fa-comment"></i>,
+    icon: <FontAwesomeIcon icon={faComment}></FontAwesomeIcon>,
     placeholder: "What are your thoughts about this paper?",
   },
   {
@@ -31,14 +36,14 @@ const postTypes = [
     value: POST_TYPES.REVIEW,
     group: "contribute",
     placeholder: "What are your overall impressions of this paper?",
-    icon: <i className="fa-solid fa-star"></i>,
+    icon: <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>,
   },
   {
     label: "Summary",
     value: POST_TYPES.SUMMARY,
     group: "contribute",
     placeholder: "Share a summary of this paper with the community",
-    icon: <i className="fa-solid fa-layer-group"></i>,
+    icon: <FontAwesomeIcon icon={faLayerGroup}></FontAwesomeIcon>,
   },
 ];
 
@@ -47,13 +52,13 @@ export const questionPostTypes = [
     label: "Answer",
     value: POST_TYPES.ANSWER,
     isDefault: true,
-    icon: <i className="fa-solid fa-comment-alt-lines"></i>,
+    icon: <FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>,
     placeholder: "Submit your answer to this question.",
   },
   {
     label: "Discuss",
     value: POST_TYPES.DISCUSSION,
-    icon: <i className="fa-regular fa-comment"></i>,
+    icon: <FontAwesomeIcon icon={faComment}></FontAwesomeIcon>,
     placeholder:
       "Use discussion to ask for clarification or suggest improvement to the question.",
   },

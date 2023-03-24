@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
 import PropTypes from "prop-types";
 import colors from "~/config/themes/colors";
@@ -79,7 +81,7 @@ const NotebookSidebarGroup = ({
                 className={css(styles.actionButton) + " actionButton"}
                 onClick={() => handleCreateNewNote(groupKey)}
               >
-                {<i className="fa-solid fa-plus"></i>}
+                {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
               </div>
             )}
           </div>
@@ -91,7 +93,7 @@ const NotebookSidebarGroup = ({
           onClick={() => handleCreateNewNote(groupKey)}
         >
           <span className={css(styles.plusIcon)}>
-            {<i className="fa-solid fa-plus"></i>}
+            {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
           </span>
           Create new note
         </div>

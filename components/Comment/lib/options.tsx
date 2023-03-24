@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments, faStar, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStarIcon, faBolt, faArrowAltUp } from "@fortawesome/pro-light-svg-icons";
 import { COMMENT_TYPES } from "./types";

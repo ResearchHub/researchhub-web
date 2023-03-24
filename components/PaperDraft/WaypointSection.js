@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Waypoint } from "react-waypoint";
 
 const WaypointSection = (props) => {

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // NPM Modules
 import { Component } from "react";
 import { connect } from "react-redux";

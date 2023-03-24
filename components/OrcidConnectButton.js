@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /**
  * Connects an ORCID account to an existing Google account.
  */

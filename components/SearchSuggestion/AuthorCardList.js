@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -117,7 +119,7 @@ class AuthorCardList extends Component {
         >
           <div className={css(styles.addButtonWrapper)}>
             <span style={{ color: colors.BLUE(1), height: 12, width: 12 }}>
-              {<i className="fa-solid fa-plus"></i>}
+              {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
             </span>
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>

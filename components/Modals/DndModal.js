@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -153,7 +155,7 @@ class DndModal extends Component {
             this.state.files.length < 1 ? (
               this.renderDropContent()
             ) : (
-              <i className="fa-solid fa-plus"></i>
+              <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
             )
           }
         />

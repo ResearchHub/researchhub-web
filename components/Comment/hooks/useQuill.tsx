@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // Imported from https://github.com/gtgalone/react-quilljs
 // A lightweight alternative to react-quill
 

@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFontCase, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { useRef, useState } from "react";
 import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";

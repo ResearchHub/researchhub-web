@@ -1,7 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { generateApiUrl } from "~/config/api";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import Image from "next/image";
 

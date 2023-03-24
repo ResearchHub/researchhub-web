@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import {
   ReactElement,
   useState,
@@ -166,33 +168,31 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
           </>
         );
       case 2:
-        return (
-          <>
-            <SimplePostEditor
-              documentType="BOUNTY"
-              bountyType={active}
-              title={TITLES[active]}
-              editorCTA={EDITORCTAS[active]}
-              onSuccess={(post) => {
-                setPost(post);
-                setStep(step + 1);
-              }}
-              otherButtons={
-                <div
-                  className={css(styles.previousStep)}
-                  onClick={() => {
-                    setStep(step - 1);
-                  }}
-                >
-                  {<i className="fa-regular fa-chevron-left"></i>}{" "}
-                  <span>Previous Step</span>
-                </div>
-              }
-              label={"Bounty Title"}
-              buttonLabel={"Next"}
-            />
-          </>
-        );
+        return (<>
+          <SimplePostEditor
+            documentType="BOUNTY"
+            bountyType={active}
+            title={TITLES[active]}
+            editorCTA={EDITORCTAS[active]}
+            onSuccess={(post) => {
+              setPost(post);
+              setStep(step + 1);
+            }}
+            otherButtons={
+              <div
+                className={css(styles.previousStep)}
+                onClick={() => {
+                  setStep(step - 1);
+                }}
+              >
+                {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}{" "}
+                <span>Previous Step</span>
+              </div>
+            }
+            label={"Bounty Title"}
+            buttonLabel={"Next"}
+          />
+        </>);
       case 3:
         return (
           <BountyWizardRSCForm

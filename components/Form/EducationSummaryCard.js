@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -31,7 +34,7 @@ const EducationSummaryCard = (props) => {
           )}
           onClick={onRemove}
         >
-          {<i className="fa-solid fa-trash"></i>}
+          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
         </div>
       )}
       <div
@@ -43,7 +46,7 @@ const EducationSummaryCard = (props) => {
       >
         {value.is_public && (
           <span className={css(styles.checkIcon)}>
-            {<i className="fa-solid fa-check"></i>}
+            {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
           </span>
         )}
       </div>

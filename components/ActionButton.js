@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import Router from "next/router";
@@ -38,7 +40,7 @@ const ActionButton = (props) => {
   if (isModerator) {
     return (
       <ModeratorDeleteButton
-        icon={icon ? icon : <i className="fa-solid fa-ban"></i>}
+        icon={icon ? icon : <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>}
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
         actionType={actionType ? actionType : restore ? "restore" : "page"}

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 import { useState, useEffect } from "react";
 
 // NPM Modules
@@ -176,7 +178,7 @@ const BackButton = () => {
         className={css(styles.backButton)}
         legacyBehavior
       >
-        {<i className="fa-light fa-arrow-left-long"></i>}
+        {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
         <span className={css(styles.backButtonLabel)}>{message}</span>
       </Link>
     </div>

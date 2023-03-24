@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/pro-solid-svg-icons";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -164,7 +166,7 @@ class Notification extends Component {
           onClick={this.toggleMenu}
           ref={(ref) => (this.notifIcon = ref)}
         >
-          {<i className="fa-solid fa-bell"></i>}
+          {<FontAwesomeIcon icon={faBell}></FontAwesomeIcon>}
           {this.state.count > 0 && (
             <div className={css(styles.notifCount)}>{this.state.count}</div>
           )}

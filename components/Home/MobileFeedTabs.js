@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThLarge } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 
@@ -20,7 +22,7 @@ const MobileFeedTabs = (props) => {
         onClick={() => onClick(true)}
       >
         <span className={css(styles.icon)}>
-          {<i className="fa-solid fa-th-large"></i>}
+          {<FontAwesomeIcon icon={faThLarge}></FontAwesomeIcon>}
         </span>
         All
       </div>

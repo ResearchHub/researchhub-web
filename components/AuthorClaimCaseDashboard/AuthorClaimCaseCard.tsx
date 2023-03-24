@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { breakpoints } from "~/config/themes/screen";
@@ -60,7 +63,7 @@ export default function AuthorClaimCaseCard({
   }, [caseStatus]);
 
   return (
-    <div
+    (<div
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
@@ -75,9 +78,9 @@ export default function AuthorClaimCaseCard({
       />
       <div className={css(styles.chevronWrap)}>
         {isCollapsed ? (
-          <i className="fa-regular fa-chevron-down"></i>
+          <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
         ) : (
-          <i className="fa-regular fa-chevron-up"></i>
+          <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
         )}
       </div>
       <div className={css(styles.cardMain)}>
@@ -119,7 +122,7 @@ export default function AuthorClaimCaseCard({
           </div>
         ) : null}
       </div>
-    </div>
+    </div>)
   );
 }
 

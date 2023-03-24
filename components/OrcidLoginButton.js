@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -86,7 +87,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrcidLoginButton);
+export default connect(mapStateToProps, mapDispatchToProps)(OrcidLoginButton);

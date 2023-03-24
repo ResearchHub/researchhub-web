@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUndo } from "@fortawesome/pro-solid-svg-icons";
+import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import {
   BOUNTY_DEFAULT_AMOUNT,
   BOUNTY_RH_PERCENTAGE,
@@ -319,331 +323,329 @@ function BountyWizardRSCForm({
     },
   };
 
-  return (
-    <>
-      {success ? (
-        <BountySuccessScreen
-          bountyText={bountyText}
-          postSlug={postSlug}
-          postId={postId}
-          hubs={hubs}
-          bountyAmount={offeredAmount}
-        />
-      ) : (
-        <>
-          <ReactTooltip
-            id="commission"
-            effect="solid"
-            className={css(bountyTooltip.tooltipContainer)}
-            delayShow={150}
-          >
-            <div className={css(bountyTooltip.bodyContainer)}>
-              <div className={css(bountyTooltip.desc)}>
-                <div>
-                  • 2% of bounty amount will be used to support the ResearchHub
-                  Community
-                </div>
-                <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
+  return (<>
+    {success ? (
+      <BountySuccessScreen
+        bountyText={bountyText}
+        postSlug={postSlug}
+        postId={postId}
+        hubs={hubs}
+        bountyAmount={offeredAmount}
+      />
+    ) : (
+      <>
+        <ReactTooltip
+          id="commission"
+          effect="solid"
+          className={css(bountyTooltip.tooltipContainer)}
+          delayShow={150}
+        >
+          <div className={css(bountyTooltip.bodyContainer)}>
+            <div className={css(bountyTooltip.desc)}>
+              <div>
+                • 2% of bounty amount will be used to support the ResearchHub
+                Community
               </div>
+              <div>• 7% of bounty amount will be paid to ResearchHub Inc</div>
             </div>
-          </ReactTooltip>
-          <ReactTooltip
-            id="net"
-            effect="solid"
-            className={css(
-              bountyTooltip.tooltipContainer,
-              bountyTooltip.tooltipContainerSmall
-            )}
-            delayShow={150}
-          >
-            <div className={css(bountyTooltip.bodyContainer)}>
-              <div className={css(bountyTooltip.desc)}>
-                Amount including fees
-              </div>
+          </div>
+        </ReactTooltip>
+        <ReactTooltip
+          id="net"
+          effect="solid"
+          className={css(
+            bountyTooltip.tooltipContainer,
+            bountyTooltip.tooltipContainerSmall
+          )}
+          delayShow={150}
+        >
+          <div className={css(bountyTooltip.bodyContainer)}>
+            <div className={css(bountyTooltip.desc)}>
+              Amount including fees
             </div>
-          </ReactTooltip>
+          </div>
+        </ReactTooltip>
 
-          <div className={css(styles.rootContainer)}>
-            <div className={css(styles.progressContainer)}>
-              <h2 className={css(styles.progressTitle)}>
-                What level of work are you looking for?
-              </h2>
-              <div className={css(styles.progressBar)}>
-                <ProgressBar
-                  height={18}
-                  percent={hoverProgress ? hoverProgress : progress}
-                  filledBackground={
-                    progressHover ? colors.NEW_BLUE(0.1) : colors.NEW_BLUE(1)
-                  }
-                >
-                  <Step>
-                    {({ accomplished }) => (
-                      <ProgressBarCircle
-                        accomplished={accomplished}
-                        onClick={() => {
-                          setProgress(0);
-                          setHoverProgress(0);
-                          setWorkAmount("casual");
-
-                          setProgressHover(false);
-                        }}
-                        label="CASUAL"
-                      />
-                    )}
-                  </Step>
-                  <Step>
-                    {({ accomplished }) => (
-                      <ProgressBarCircle
-                        accomplished={accomplished}
-                        label="LIGHT"
-                        progress={progress}
-                        hoverProgress={hoverProgress}
-                        onMouseEnter={() => {
-                          setHoverProgress(33.34);
-                          setProgressHover(true);
-                        }}
-                        onMouseLeave={() => {
-                          setHoverProgress(0);
-                          setProgressHover(false);
-                        }}
-                        onClick={() => {
-                          setProgress(33.34);
-                          setHoverProgress(0);
-                          setWorkAmount("light");
-
-                          setProgressHover(false);
-                        }}
-                      />
-                    )}
-                  </Step>
-                  <Step>
-                    {({ accomplished }) => (
-                      <ProgressBarCircle
-                        accomplished={accomplished}
-                        label="MEDIUM"
-                        progress={progress}
-                        hoverProgress={hoverProgress}
-                        onClick={() => {
-                          setProgress(66.67);
-                          setHoverProgress(0);
-                          setWorkAmount("medium");
-
-                          setProgressHover(false);
-                        }}
-                        onMouseEnter={() => {
-                          setHoverProgress(66.67);
-                          setProgressHover(true);
-                        }}
-                        onMouseLeave={() => {
-                          setHoverProgress(0);
-                          setProgressHover(false);
-                        }}
-                      />
-                    )}
-                  </Step>
-                  <Step>
-                    {({ accomplished }) => (
-                      <ProgressBarCircle
-                        accomplished={accomplished}
-                        label="COMPREHENSIVE"
-                        progress={progress}
-                        hoverProgress={hoverProgress}
-                        onMouseEnter={() => {
-                          setHoverProgress(100);
-                          setProgressHover(true);
-                        }}
-                        onMouseLeave={() => {
-                          setHoverProgress(0);
-                          setProgressHover(false);
-                        }}
-                        onClick={() => {
-                          setProgress(100);
-                          setWorkAmount("comprehensive");
-
-                          setHoverProgress(0);
-                          setProgressHover(false);
-                        }}
-                      />
-                    )}
-                  </Step>
-                </ProgressBar>
-              </div>
-              <div className={css(styles.progressDescription)}>
-                {EFFORT_LEVEL_DESCRIPTIONS[bountyType][workAmount]}
-                {"\n"}
-                {"\n"}Suggested Offer Amount:{" "}
-                {formatBountyAmount({
-                  amount: suggestedRSC[bountyType][workAmount],
-                })}{" "}
-                RSC
-              </div>
-            </div>
-            <div className={css(styles.values)}>
-              <div className={css(styles.offeringLine)}>
-                <div className={css(styles.lineItem, styles.offeringLine)}>
-                  <div
-                    className={css(styles.lineItemText, styles.offeringText)}
-                  >
-                    <div>I am offering</div>
-                  </div>
-                  <div style={{ marginLeft: "auto" }}>
-                    <div
-                      className={css(
-                        styles.lineItemValue,
-                        styles.offeringValue
-                      )}
-                    >
-                      <span
-                        className={css(styles.valueNumber, styles.valueInInput)}
-                      >
-                        <input
-                          className={css(styles.input)}
-                          type="number"
-                          onChange={handleBountyInputChange}
-                          value={offeredAmount + ""}
-                          pattern="\d*"
-                        />
-                      </span>
-                      <span className={css(styles.rscText)}>RSC</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={css(styles.lineItem, styles.platformFeeLine)}>
-                  <div
-                    className={css(styles.lineItemText, styles.platformFeeText)}
-                  >
-                    Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
-                    <span
-                      className={css(styles.tooltipIcon)}
-                      data-tip={""}
-                      data-for="commission"
-                    >
-                      {<i className="fa-light fa-info-circle"></i>}
-                    </span>
-                  </div>
-                  <div className={css(styles.lineItemValue)}>
-                    <span className={css(styles.valueNumber)}>
-                      <span>+ {researchHubAmount.toLocaleString()}</span>
-                    </span>
-                    <span className={css(styles.rscText)}>RSC</span>
-                  </div>
-                </div>
-
-                <div className={css(styles.lineItem, styles.netAmountLine)}>
-                  <ReactTooltip effect="solid" />
-                  <div className={css(styles.lineItemText)}>
-                    Total
-                    <span
-                      className={css(styles.tooltipIcon)}
-                      data-tip={""}
-                      data-for="net"
-                    >
-                      {<i className="fa-light fa-info-circle"></i>}
-                    </span>
-                  </div>
-                  <div
-                    className={css(styles.lineItemValue, styles.netAmountValue)}
-                  >
-                    <span className={css(styles.valueNumber)}>
-                      <span>{totalAmount.toLocaleString()}</span>
-                      <ResearchCoinIcon
-                        overrideStyle={styles.rscIcon}
-                        width={20}
-                        height={20}
-                      />
-                    </span>
-                    <span className={css(styles.rscText)}>RSC</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={css(infoSectionStyles.bountyInfo)}>
-              {isOriginalPoster ? null : (
-                <div
-                  className={css(
-                    infoSectionStyles.infoRow,
-                    infoSectionStyles.specialInfoRow
-                  )}
-                >
-                  <span className={css(infoSectionStyles.infoIcon)}>
-                    {
-                      <WarningIcon
-                        color={colors.DARKER_GREY()}
-                        width={20}
-                        height={20}
-                      />
-                    }
-                  </span>{" "}
-                  By contributing to the open bounty, you are giving the
-                  original poster control to award your bounty.
-                </div>
-              )}
-
-              <div className={css(infoSectionStyles.infoRow)}>
-                <span className={css(infoSectionStyles.infoIcon)}>
-                  {<i className="fa-regular fa-clock"></i>}
-                </span>{" "}
-                <span className={css(infoSectionStyles.infoText)}>
-                  The Bounty will end in 30 days or as soon as you award a
-                  solution
-                </span>
-              </div>
-              <div className={css(infoSectionStyles.infoRow)}>
-                <span className={css(infoSectionStyles.infoIcon)}>
-                  {<i className="fa-solid fa-undo"></i>}
-                </span>{" "}
-                If no solution satisfies your request, the full bounty amount
-                (excluding platform fee) will be refunded to you
-              </div>
-            </div>
-
-            <div className={css(styles.addBountyContainer)}>
-              <div
-                className={css(
-                  styles.buttonRow,
-                  showAlertNextToBtn && styles.buttonRowWithText
-                )}
+        <div className={css(styles.rootContainer)}>
+          <div className={css(styles.progressContainer)}>
+            <h2 className={css(styles.progressTitle)}>
+              What level of work are you looking for?
+            </h2>
+            <div className={css(styles.progressBar)}>
+              <ProgressBar
+                height={18}
+                percent={hoverProgress ? hoverProgress : progress}
+                filledBackground={
+                  progressHover ? colors.NEW_BLUE(0.1) : colors.NEW_BLUE(1)
+                }
               >
-                {hasMinRscAlert ? (
-                  <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
-                    {currentUserBalance < offeredAmount
-                      ? `Your RSC balance is below offered amount ${numeral(
-                          offeredAmount
-                        ).format("0[,]0")}`
-                      : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
-                  </div>
-                ) : hasMaxRscAlert ? (
-                  <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
-                    Bounty amount cannot exceed 1,000,000 RSC
-                  </div>
-                ) : withPreview ? (
-                  <div
-                    className={css(alertStyles.alert, alertStyles.previewAlert)}
-                  >
-                    You will have a chance to review and cancel before bounty is
-                    created
-                  </div>
-                ) : null}
-                <div className={css(styles.addBtnContainer)}>
-                  {otherButtons && otherButtons}
-                  <div style={{ marginLeft: "auto" }}>
-                    <Button
-                      label={addBtnLabel}
-                      customButtonStyle={styles.addButton}
-                      customLabelStyle={styles.addButtonLabel}
-                      disabled={hasMaxRscAlert || hasMinRscAlert}
-                      onClick={handleAddBounty}
+                <Step>
+                  {({ accomplished }) => (
+                    <ProgressBarCircle
+                      accomplished={accomplished}
+                      onClick={() => {
+                        setProgress(0);
+                        setHoverProgress(0);
+                        setWorkAmount("casual");
+
+                        setProgressHover(false);
+                      }}
+                      label="CASUAL"
                     />
+                  )}
+                </Step>
+                <Step>
+                  {({ accomplished }) => (
+                    <ProgressBarCircle
+                      accomplished={accomplished}
+                      label="LIGHT"
+                      progress={progress}
+                      hoverProgress={hoverProgress}
+                      onMouseEnter={() => {
+                        setHoverProgress(33.34);
+                        setProgressHover(true);
+                      }}
+                      onMouseLeave={() => {
+                        setHoverProgress(0);
+                        setProgressHover(false);
+                      }}
+                      onClick={() => {
+                        setProgress(33.34);
+                        setHoverProgress(0);
+                        setWorkAmount("light");
+
+                        setProgressHover(false);
+                      }}
+                    />
+                  )}
+                </Step>
+                <Step>
+                  {({ accomplished }) => (
+                    <ProgressBarCircle
+                      accomplished={accomplished}
+                      label="MEDIUM"
+                      progress={progress}
+                      hoverProgress={hoverProgress}
+                      onClick={() => {
+                        setProgress(66.67);
+                        setHoverProgress(0);
+                        setWorkAmount("medium");
+
+                        setProgressHover(false);
+                      }}
+                      onMouseEnter={() => {
+                        setHoverProgress(66.67);
+                        setProgressHover(true);
+                      }}
+                      onMouseLeave={() => {
+                        setHoverProgress(0);
+                        setProgressHover(false);
+                      }}
+                    />
+                  )}
+                </Step>
+                <Step>
+                  {({ accomplished }) => (
+                    <ProgressBarCircle
+                      accomplished={accomplished}
+                      label="COMPREHENSIVE"
+                      progress={progress}
+                      hoverProgress={hoverProgress}
+                      onMouseEnter={() => {
+                        setHoverProgress(100);
+                        setProgressHover(true);
+                      }}
+                      onMouseLeave={() => {
+                        setHoverProgress(0);
+                        setProgressHover(false);
+                      }}
+                      onClick={() => {
+                        setProgress(100);
+                        setWorkAmount("comprehensive");
+
+                        setHoverProgress(0);
+                        setProgressHover(false);
+                      }}
+                    />
+                  )}
+                </Step>
+              </ProgressBar>
+            </div>
+            <div className={css(styles.progressDescription)}>
+              {EFFORT_LEVEL_DESCRIPTIONS[bountyType][workAmount]}
+              {"\n"}
+              {"\n"}Suggested Offer Amount:{" "}
+              {formatBountyAmount({
+                amount: suggestedRSC[bountyType][workAmount],
+              })}{" "}
+              RSC
+            </div>
+          </div>
+          <div className={css(styles.values)}>
+            <div className={css(styles.offeringLine)}>
+              <div className={css(styles.lineItem, styles.offeringLine)}>
+                <div
+                  className={css(styles.lineItemText, styles.offeringText)}
+                >
+                  <div>I am offering</div>
+                </div>
+                <div style={{ marginLeft: "auto" }}>
+                  <div
+                    className={css(
+                      styles.lineItemValue,
+                      styles.offeringValue
+                    )}
+                  >
+                    <span
+                      className={css(styles.valueNumber, styles.valueInInput)}
+                    >
+                      <input
+                        className={css(styles.input)}
+                        type="number"
+                        onChange={handleBountyInputChange}
+                        value={offeredAmount + ""}
+                        pattern="\d*"
+                      />
+                    </span>
+                    <span className={css(styles.rscText)}>RSC</span>
                   </div>
+                </div>
+              </div>
+
+              <div className={css(styles.lineItem, styles.platformFeeLine)}>
+                <div
+                  className={css(styles.lineItemText, styles.platformFeeText)}
+                >
+                  Platform Fee ({BOUNTY_RH_PERCENTAGE}%){` `}
+                  <span
+                    className={css(styles.tooltipIcon)}
+                    data-tip={""}
+                    data-for="commission"
+                  >
+                    {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                  </span>
+                </div>
+                <div className={css(styles.lineItemValue)}>
+                  <span className={css(styles.valueNumber)}>
+                    <span>+ {researchHubAmount.toLocaleString()}</span>
+                  </span>
+                  <span className={css(styles.rscText)}>RSC</span>
+                </div>
+              </div>
+
+              <div className={css(styles.lineItem, styles.netAmountLine)}>
+                <ReactTooltip effect="solid" />
+                <div className={css(styles.lineItemText)}>
+                  Total
+                  <span
+                    className={css(styles.tooltipIcon)}
+                    data-tip={""}
+                    data-for="net"
+                  >
+                    {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                  </span>
+                </div>
+                <div
+                  className={css(styles.lineItemValue, styles.netAmountValue)}
+                >
+                  <span className={css(styles.valueNumber)}>
+                    <span>{totalAmount.toLocaleString()}</span>
+                    <ResearchCoinIcon
+                      overrideStyle={styles.rscIcon}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                  <span className={css(styles.rscText)}>RSC</span>
                 </div>
               </div>
             </div>
           </div>
-        </>
-      )}
-    </>
-  );
+          <div className={css(infoSectionStyles.bountyInfo)}>
+            {isOriginalPoster ? null : (
+              <div
+                className={css(
+                  infoSectionStyles.infoRow,
+                  infoSectionStyles.specialInfoRow
+                )}
+              >
+                <span className={css(infoSectionStyles.infoIcon)}>
+                  {
+                    <WarningIcon
+                      color={colors.DARKER_GREY()}
+                      width={20}
+                      height={20}
+                    />
+                  }
+                </span>{" "}
+                By contributing to the open bounty, you are giving the
+                original poster control to award your bounty.
+              </div>
+            )}
+
+            <div className={css(infoSectionStyles.infoRow)}>
+              <span className={css(infoSectionStyles.infoIcon)}>
+                {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
+              </span>{" "}
+              <span className={css(infoSectionStyles.infoText)}>
+                The Bounty will end in 30 days or as soon as you award a
+                solution
+              </span>
+            </div>
+            <div className={css(infoSectionStyles.infoRow)}>
+              <span className={css(infoSectionStyles.infoIcon)}>
+                {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
+              </span>{" "}
+              If no solution satisfies your request, the full bounty amount
+              (excluding platform fee) will be refunded to you
+            </div>
+          </div>
+
+          <div className={css(styles.addBountyContainer)}>
+            <div
+              className={css(
+                styles.buttonRow,
+                showAlertNextToBtn && styles.buttonRowWithText
+              )}
+            >
+              {hasMinRscAlert ? (
+                <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                  {currentUserBalance < offeredAmount
+                    ? `Your RSC balance is below offered amount ${numeral(
+                        offeredAmount
+                      ).format("0[,]0")}`
+                    : `Minimum bounty must be greater than ${MIN_RSC_REQUIRED} RSC`}
+                </div>
+              ) : hasMaxRscAlert ? (
+                <div className={css(alertStyles.alert, alertStyles.rscAlert)}>
+                  Bounty amount cannot exceed 1,000,000 RSC
+                </div>
+              ) : withPreview ? (
+                <div
+                  className={css(alertStyles.alert, alertStyles.previewAlert)}
+                >
+                  You will have a chance to review and cancel before bounty is
+                  created
+                </div>
+              ) : null}
+              <div className={css(styles.addBtnContainer)}>
+                {otherButtons && otherButtons}
+                <div style={{ marginLeft: "auto" }}>
+                  <Button
+                    label={addBtnLabel}
+                    customButtonStyle={styles.addButton}
+                    customLabelStyle={styles.addButtonLabel}
+                    disabled={hasMaxRscAlert || hasMinRscAlert}
+                    onClick={handleAddBounty}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    )}
+  </>);
 }
 
 const bountyTooltip = StyleSheet.create({

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
@@ -258,7 +260,7 @@ const ReadButton = (props) => {
     >
       <span className={css(styles.readLabel)}>Read</span>{" "}
       <span className={css(styles.readArrow)}>
-        {<i className="fa-regular fa-chevron-right"></i>}
+        {<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
       </span>
     </ClientLinkWrapper>
   );

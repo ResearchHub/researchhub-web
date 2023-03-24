@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, ReactElement, ReactNode, SyntheticEvent } from "react";
 import { NullableString } from "~/config/types/root_types";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";

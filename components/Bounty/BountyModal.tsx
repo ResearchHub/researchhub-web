@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUndo } from "@fortawesome/pro-solid-svg-icons";
+import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
 import {
   BOUNTY_DEFAULT_AMOUNT,
   BOUNTY_RH_PERCENTAGE,
@@ -161,7 +165,7 @@ function BountyModal({
   const researchHubAmount = calcResearchHubAmount({ offeredAmount });
   const totalAmount = calcTotalAmount({ offeredAmount });
   return (
-    <BaseModal
+    (<BaseModal
       closeModal={handleClose}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
@@ -258,7 +262,7 @@ function BountyModal({
                         data-tip={""}
                         data-for="commission"
                       >
-                        {<i className="fa-light fa-info-circle"></i>}
+                        {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                       </span>
                     </div>
                     <div className={css(styles.lineItemValue)}>
@@ -278,7 +282,7 @@ function BountyModal({
                         data-tip={""}
                         data-for="net"
                       >
-                        {<i className="fa-light fa-info-circle"></i>}
+                        {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                       </span>
                     </div>
                     <div
@@ -324,7 +328,7 @@ function BountyModal({
 
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
-                    {<i className="fa-regular fa-clock"></i>}
+                    {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
                   </span>{" "}
                   <span className={css(infoSectionStyles.infoText)}>
                     The Bounty will end in 30 days or as soon as you award a
@@ -333,7 +337,7 @@ function BountyModal({
                 </div>
                 <div className={css(infoSectionStyles.infoRow)}>
                   <span className={css(infoSectionStyles.infoIcon)}>
-                    {<i className="fa-solid fa-undo"></i>}
+                    {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
                   </span>{" "}
                   If no solution satisfies your request, the full bounty amount
                   (excluding platform fee) will be refunded to you
@@ -390,7 +394,7 @@ function BountyModal({
           </>
         )}
       </>
-    </BaseModal>
+    </BaseModal>)
   );
 }
 

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -97,9 +100,9 @@ const PaperSections = (props) => {
                 }}
               >
                 {hidePaperSections ? (
-                  <i className="fa-regular fa-chevron-up"></i>
+                  <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
                 ) : (
-                  <i className="fa-regular fa-chevron-down"></i>
+                  <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
                 )}
               </div>
             )}

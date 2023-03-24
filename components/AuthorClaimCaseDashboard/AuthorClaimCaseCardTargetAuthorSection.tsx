@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createUserSummary } from "~/config/utils/user";
 import { css, StyleSheet } from "aphrodite";
 import { TargetAuthor } from "./api/AuthorClaimCaseGetCases";

@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faMinusCircle } from "@fortawesome/pro-duotone-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -93,7 +97,7 @@ function getDetailedText({
   const isPlural = !isNaN(totalCount) && totalCount > 1;
   const answer = doesMajoritySupport ? "yes" : "no";
   return (
-    <div
+    (<div
       className={css(
         styles.resultWrap,
         Boolean(disableText ?? false) && styles.hideText
@@ -101,13 +105,13 @@ function getDetailedText({
     >
       {isNeutral ? (
         <span className={css(styles.neutralImg)}>
-          {<i className="fa-duotone fa-minus-circle"></i>}
+          {<FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>}
         </span>
       ) : doesMajoritySupport ? (
         <Image width={10} height={10} src="/static/icons/check.svg" alt={""} />
       ) : (
         <span className={css(styles.noSupportImg)}>
-          {<i className="fa-solid fa-times-circle"></i>}
+          {<FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>}
         </span>
       )}
       <div
@@ -146,7 +150,7 @@ function getDetailedText({
             : `${Math.floor(majorityPercent)}% of researchers think ${answer}`}
         </ReactTooltip>
       </div>
-    </div>
+    </div>)
   );
 }
 
@@ -387,7 +391,7 @@ function CitationConsensusItem({
     ) : null;
 
   return (
-    <div className={css(styles.citationConsensusItem)}>
+    (<div className={css(styles.citationConsensusItem)}>
       <div className={css(styles.wrapper)}>
         {consensusBar}
         {hasCurrUserVoted || !shouldAllowVote ? null : (
@@ -403,7 +407,7 @@ function CitationConsensusItem({
               role="button"
             >
               <div className={css(styles.iconWrap)}>
-                {<i className="fa-solid fa-times-circle"></i>}
+                {<FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>}
               </div>
               <div className={css(styles.buttonText)}>{"Rejects"}</div>
             </div>
@@ -413,7 +417,7 @@ function CitationConsensusItem({
               role="button"
             >
               <div className={css(styles.iconWrap)}>
-                {<i className="fa-duotone fa-minus-circle"></i>}
+                {<FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>}
               </div>
               <div className={css(styles.buttonText)}>{"Neutral"}</div>
             </div>
@@ -423,14 +427,14 @@ function CitationConsensusItem({
               role="button"
             >
               <div className={css(styles.iconWrap)}>
-                {<i className="fa-solid fa-check-circle"></i>}
+                {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
               </div>
               <div className={css(styles.buttonText)}>{"Supports"}</div>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 

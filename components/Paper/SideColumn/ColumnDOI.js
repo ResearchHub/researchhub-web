@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import colors from "~/config/themes/colors";
 import { SideColumnTitle } from "~/components/Typography";

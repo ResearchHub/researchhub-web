@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /**
  * Although the <Responsive /> component handles both DesktopOnly
  * and MobileOnly components dynamically, we have these

@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRedo } from "@fortawesome/pro-solid-svg-icons";
+import { faFlag } from "@fortawesome/pro-regular-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import fetchFlaggedContributions, {
   ApiFilters,
   verdictOpts,
@@ -205,7 +210,7 @@ function FlaggedContentDashboard({
             <FlagButtonV2
               modalHeaderText="Flag and Remove"
               flagIconOverride={styles.flagIcon}
-              iconOverride={<i className="fa-solid fa-trash"></i>}
+              iconOverride={<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
               defaultReason={r.reasonChoice}
               successMsgText="Flagged Content removed"
               errorMsgText="Failed to remove flagged content"
@@ -266,7 +271,7 @@ function FlaggedContentDashboard({
                 }
               }}
             >
-              {<i className="fa-solid fa-check"></i>}
+              {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
             </span>
           ),
           label: "Dismiss Flag",
@@ -276,7 +281,7 @@ function FlaggedContentDashboard({
       ];
 
       return (
-        <div className={css(styles.result)} key={r.id}>
+        (<div className={css(styles.result)} key={r.id}>
           {r.verdict && !isOneLineAction && (
             <>
               <div
@@ -304,14 +309,14 @@ function FlaggedContentDashboard({
                     {appliedFilters.verdict === "APPROVED" ? (
                       <>
                         <span className={css(styles.icon)}>
-                          &nbsp;{<i className="fa-solid fa-check"></i>}
+                          &nbsp;{<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
                         </span>
                         &nbsp;dismissed flag
                       </>
                     ) : (
                       <>
                         <span className={css(styles.icon, styles.trashIcon)}>
-                          &nbsp;{<i className="fa-solid fa-trash"></i>}
+                          &nbsp;{<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
                         </span>
                         &nbsp;removed this content due to{" "}
                         <span className={css(styles.reason)}>
@@ -352,14 +357,14 @@ function FlaggedContentDashboard({
                   appliedFilters.verdict === "APPROVED" ? (
                     <>
                       <span className={css(styles.icon)}>
-                        &nbsp;{<i className="fa-solid fa-check"></i>}
+                        &nbsp;{<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
                       </span>
                       &nbsp;dismissed flag
                     </>
                   ) : (
                     <>
                       <span className={css(styles.icon, styles.trashIcon)}>
-                        &nbsp;{<i className="fa-solid fa-trash"></i>}
+                        &nbsp;{<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
                       </span>
                       {/* @ts-ignore */}
                       &nbsp;removed this content due to{" "}
@@ -372,7 +377,7 @@ function FlaggedContentDashboard({
                 ) : (
                   <>
                     <span className={css(styles.icon)}>
-                      &nbsp;{<i className="fa-regular fa-flag"></i>}
+                      &nbsp;{<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
                     </span>
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
@@ -411,7 +416,7 @@ function FlaggedContentDashboard({
               />
             </div>
           </div>
-        </div>
+        </div>)
       );
     });
   };
@@ -423,7 +428,7 @@ function FlaggedContentDashboard({
     (v) => String(appliedFilters.verdict) === String(v.value)
   ) || { label: "Open", value: "OPEN" };
   return (
-    <div className={css(styles.dashboardContainer)}>
+    (<div className={css(styles.dashboardContainer)}>
       <div className={css(styles.header)}>
         <div className={css(styles.title)}>
           Flagged Content
@@ -431,7 +436,7 @@ function FlaggedContentDashboard({
             className={css(styles.redo)}
             onClick={() => loadResults(appliedFilters)}
           >
-            {<i className="fa-solid fa-redo"></i>}
+            {<FontAwesomeIcon icon={faRedo}></FontAwesomeIcon>}
           </span>
         </div>
         <div className={css(styles.filters)}>
@@ -511,7 +516,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {<i className="fa-solid fa-trash"></i>}
+                {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
               </span>
               <span
                 className={css(
@@ -546,7 +551,7 @@ function FlaggedContentDashboard({
                   }
                 }}
               >
-                {<i className="fa-solid fa-check"></i>}
+                {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
               </span>
             </div>
           </div>
@@ -580,7 +585,7 @@ function FlaggedContentDashboard({
           )}
         </>
       )}
-    </div>
+    </div>)
   );
 }
 

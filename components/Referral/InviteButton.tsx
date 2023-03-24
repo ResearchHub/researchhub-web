@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactNode, useState } from "react";
 import InviteModal from "./InviteModal";
 import { useSelector, connect } from "react-redux";

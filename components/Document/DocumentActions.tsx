@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faDownToLine } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
@@ -69,7 +74,7 @@ function DocumentActions({
           data-tip={"Download PDF"}
           onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
         >
-          {<i className="fa-solid fa-down-to-line"></i>}
+          {<FontAwesomeIcon icon={faDownToLine}></FontAwesomeIcon>}
         </div>
       ),
     },
@@ -86,7 +91,7 @@ function DocumentActions({
           hideRipples={true}
         >
           <div className={css(styles.actionIcon)}>
-            {<i className="fa-solid fa-pencil"></i>}
+            {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
           </div>
         </PermissionNotificationWrapper>
       ),
@@ -138,9 +143,9 @@ function DocumentActions({
             restore={isRemoved}
             icon={
               isRemoved ? (
-                <i className="fa-solid fa-plus"></i>
+                <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
               ) : (
-                <i className="fa-solid fa-minus"></i>
+                <FontAwesomeIcon icon={faMinus}></FontAwesomeIcon>
               )
             }
             onAction={() => {

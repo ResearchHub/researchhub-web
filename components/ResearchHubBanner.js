@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -52,7 +54,7 @@ class ResearchHubBanner extends Component {
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
         >
-          {<i className="fa-light fa-times"></i>}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
         <img
           src={"/static/background/background-home.webp"}

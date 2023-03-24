@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const useEffectForOutsideMenuClick = ({ handleDismissTagMenu }) => {
   const _handleOutsideClick = (e) => {
     const isTypeFilterClicked = e.target.closest(".typeFilter");

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID, NullableString } from "~/config/types/root_types";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { NextRouter } from "next/router";

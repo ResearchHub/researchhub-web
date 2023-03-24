@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import { faComment } from "@fortawesome/pro-solid-svg-icons";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faEdit } from "@fortawesome/pro-solid-svg-icons";
 import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -218,7 +224,7 @@ class HubCard extends Component {
               this.openEditHubModal();
             }}
           >
-            <span>{<i className="fa-solid fa-edit"></i>}</span>
+            <span>{<FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>}</span>
           </button>
         );
       }
@@ -236,7 +242,7 @@ class HubCard extends Component {
               this.removeHubConfirmation();
             }}
           >
-            <span>{<i className="fa-solid fa-trash"></i>}</span>
+            <span>{<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}</span>
           </button>
         );
       }
@@ -256,21 +262,21 @@ class HubCard extends Component {
       >
         <div>
           <span className={css(styles.statIcon)}>
-            {<i className="fa-solid fa-file"></i>}
+            {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
           </span>
           {hub.paper_count} Paper
           {hub.paper_count != 1 ? "s" : ""}
         </div>
         <div>
           <span className={css(styles.statIcon)}>
-            {<i className="fa-solid fa-comment"></i>}
+            {<FontAwesomeIcon icon={faComment}></FontAwesomeIcon>}
           </span>
           {hub.discussion_count} Comment
           {hub.discussion_count != 1 ? "s" : ""}
         </div>
         <div>
           <span className={css(styles.statIcon)}>
-            {<i className="fa-solid fa-user"></i>}
+            {<FontAwesomeIcon icon={faUser}></FontAwesomeIcon>}
           </span>
           {this.state.subCount} Member
           {this.state.subCount != 1 ? "s" : ""}
@@ -288,7 +294,7 @@ class HubCard extends Component {
       >
         <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>
-            {<i className="fa-solid fa-file"></i>}
+            {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
           </span>
           {hub.paper_count}
           <span className={css(styles.rowStatTitle)}>
@@ -298,7 +304,7 @@ class HubCard extends Component {
         </div>
         <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>
-            {<i className="fa-solid fa-comment"></i>}
+            {<FontAwesomeIcon icon={faComment}></FontAwesomeIcon>}
           </span>
           {hub.discussion_count}
           <span className={css(styles.rowStatTitle)}>
@@ -308,7 +314,7 @@ class HubCard extends Component {
         </div>
         <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>
-            {<i className="fa-solid fa-user"></i>}
+            {<FontAwesomeIcon icon={faUser}></FontAwesomeIcon>}
           </span>
           {this.state.subCount}
           <span className={css(styles.rowStatTitle)}>

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const AUTHOR_CLAIM_ACTION_LABEL = {
   APPROVED: "Approve",
   DENIED: "Reject",

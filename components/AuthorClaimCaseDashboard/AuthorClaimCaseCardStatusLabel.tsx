@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import {
   AUTHOR_CLAIM_STATUS,
   AUTHOR_CLAIM_STATUS_LABEL,
@@ -14,12 +17,12 @@ type Props = {
 const getIcon = (status: ValueOf<typeof AUTHOR_CLAIM_STATUS>) => {
   switch (status) {
     case AUTHOR_CLAIM_STATUS.APPROVED:
-      return <i className="fa-solid fa-check-circle"></i>;
+      return <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>;
     case AUTHOR_CLAIM_STATUS.DENIED:
     case AUTHOR_CLAIM_STATUS.INVALIDATED:
     case AUTHOR_CLAIM_STATUS.NULLIFIED:
     default:
-      return <i className="fa-solid fa-times-circle"></i>;
+      return <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>;
   }
 };
 

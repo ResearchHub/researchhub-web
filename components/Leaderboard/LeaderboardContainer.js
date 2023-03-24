@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";

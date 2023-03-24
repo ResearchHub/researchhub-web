@@ -1,7 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css } from "aphrodite";
 import { DEFAULT_ITEM_STYLE } from "~/components/shared/carousel/RhCarouselItem";
 import { faPeopleGroup } from "@fortawesome/pro-duotone-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styles } from "~/components/Home/sidebar/styles/HomeRightSidebarStyles";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";

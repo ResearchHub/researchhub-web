@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import ScrollMenu from "react-horizontal-scrolling-menu";
@@ -72,7 +75,7 @@ const HorizontalTabBar = ({
           arrowLeft={
             pageWidth <= showArrowsOnWidth && showArrows ? (
               <NavigationArrow
-                icon={<i className="fa-regular fa-chevron-left"></i>}
+                icon={<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
                 direction={"left"}
               />
             ) : null
@@ -80,7 +83,7 @@ const HorizontalTabBar = ({
           arrowRight={
             pageWidth <= showArrowsOnWidth && showArrows ? (
               <NavigationArrow
-                icon={<i className="fa-regular fa-chevron-right"></i>}
+                icon={<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
                 direction={"right"}
               />
             ) : null

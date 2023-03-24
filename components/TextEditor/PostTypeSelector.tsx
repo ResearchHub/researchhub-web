@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
@@ -38,7 +41,7 @@ function PostTypeSelector({
 
   const renderDropdown = () => {
     return (
-      <div
+      (<div
         className={css(
           dropdownStyles.dropdown,
           isOpen && dropdownStyles.dropdownOpen
@@ -72,19 +75,19 @@ function PostTypeSelector({
               </div>
               {selectedType?.value === t.value && (
                 <div className={css(dropdownStyles.check)}>
-                  {<i className="fa-solid fa-check"></i>}
+                  {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
                 </div>
               )}
             </div>
           ))}
         </div>
-      </div>
+      </div>)
     );
   };
 
   const renderDropdownTrigger = () => {
     return (
-      <div
+      (<div
         className={css(styles.trigger)}
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
@@ -98,9 +101,9 @@ function PostTypeSelector({
         </span>
         {selectedType?.label}{" "}
         <span className={css(styles.downIcon)}>
-          {<i className="fa-light fa-angle-down"></i>}
+          {<FontAwesomeIcon icon={faAngleDown}></FontAwesomeIcon>}
         </span>
-      </div>
+      </div>)
     );
   };
 

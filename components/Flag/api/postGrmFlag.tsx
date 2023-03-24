@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { captureEvent } from "~/config/utils/events";
 import { FLAG_REASON } from "../config/flag_constants";
 import { Helpers } from "@quantfive/js-web-config";

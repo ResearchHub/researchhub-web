@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 import { ValueOf } from "../../../config/types/root_types";
 

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import dynamic from "next/dynamic";
 import { ReactElement, useEffect, useState } from "react";
@@ -74,7 +77,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
   useEffectPaperFetching({ paper, setIsFetching });
 
   return (
-    <div className={css(styles.paperPageAbstractSection)}>
+    (<div className={css(styles.paperPageAbstractSection)}>
       {isFetching && <AbstractPlaceholder color="#EFEFEF" />}
       <div style={{ visibility: isFetching ? "hidden" : "visible" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -86,7 +89,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
               loginRequired
             >
               <span className={css(styles.pencilIcon)}>
-                {<i className="fa-solid fa-pencil"></i>}
+                {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
               </span>
             </PermissionNotificationWrapper>
           )}
@@ -160,7 +163,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 height: 50,
               }}
             >
-              {<i className="fa-solid fa-file"></i>}
+              {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
             </div>
             <h2 className={css(styles.noSummaryTitle)}>
               {"Add an abstract to this paper"}
@@ -199,7 +202,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 

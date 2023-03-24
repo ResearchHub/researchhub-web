@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
@@ -13,7 +15,7 @@ type Props = {
   shouldShowContextTitle?: boolean;
 };
 
-const MEDIA_WIDTH_LIMIT = 1199; /* arbitary iPad size */
+const MEDIA_WIDTH_LIMIT = 1199;/* arbitary iPad size */
 
 export default function InlineCommentThreadsDisplayBarWithMediaSize(
   props: Props
@@ -71,7 +73,7 @@ function InlineCommentThreadsDisplayBar({
   );
 
   return (
-    <div className={css(styles.inlineCommentThreadsDisplayBar)}>
+    (<div className={css(styles.inlineCommentThreadsDisplayBar)}>
       <div className={css(styles.header)}>
         <div
           className={css(styles.backButton)}
@@ -79,12 +81,12 @@ function InlineCommentThreadsDisplayBar({
             cleanupStoreAndCloseDisplay({ inlineCommentStore })
           }
         >
-          {<i className="fa-solid fa-arrow-right"></i>}
+          {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>
       {commentThreadCards}
-    </div>
+    </div>)
   );
 }
 

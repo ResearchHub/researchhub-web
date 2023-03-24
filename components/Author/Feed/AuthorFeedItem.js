@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import FeedCard from "~/components/Author/Tabs/FeedCard";

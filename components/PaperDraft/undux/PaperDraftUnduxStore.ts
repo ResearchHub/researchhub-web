@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
 import { ID } from "~/config/types/root_types";

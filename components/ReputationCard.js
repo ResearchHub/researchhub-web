@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { useStore } from "react-redux";

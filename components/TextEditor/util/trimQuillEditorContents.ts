@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function trimQuillEditorContents ({ contents }) {
   const deltas = Array.isArray(contents) ? contents : contents?.ops ? contents.ops : [];
 

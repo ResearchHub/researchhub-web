@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLinkedin } from "@fortawesome/fontawesome-free-brands";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
@@ -12,12 +15,12 @@ const ShareDropdown = ({ handleClick, children }: Args) => {
     {
       label: "Twitter",
       value: "twitter",
-      icon: <i className="fa-brands fa-twitter"></i>,
+      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
     },
     {
       label: "LinkedIn",
       value: "linkedin",
-      icon: <i className="fa-brands fa-linkedin"></i>,
+      icon: <FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>,
     },
   ];
   const [isOpen, setIsOpen] = useState(false);

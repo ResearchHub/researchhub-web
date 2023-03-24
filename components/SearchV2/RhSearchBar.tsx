@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
+import { faSearch } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import {
@@ -134,7 +137,7 @@ function RhSearchBarInput({
   setSearchString,
 }: SearchProps): ReactElement {
   return (
-    <div style={{ position: "relative" }}>
+    (<div style={{ position: "relative" }}>
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
@@ -151,9 +154,9 @@ function RhSearchBarInput({
         className={css(styles.searchIcon)}
         onClick={pushSearchToUrlAndTrack}
       >
-        {<i className="fa-light fa-search"></i>}
+        {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
       </span>
-    </div>
+    </div>)
   );
 }
 
@@ -179,13 +182,13 @@ function RhSearchBarExpandableInput({
   }, [expendableSearchbarRef]);
 
   return (
-    <Fragment>
+    (<Fragment>
       {!isExpanded && (
         <span
           className={css(styles.searchIcon, styles.searchIconSmallScreen)}
           onClick={(): void => setIsExpanded(true)}
         >
-          {<i className="fa-light fa-search"></i>}
+          {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
         </span>
       )}
       {isExpanded && (
@@ -197,7 +200,7 @@ function RhSearchBarExpandableInput({
               setIsExpanded(false);
             }}
           >
-            {<i className="fa-light fa-arrow-left-long"></i>}
+            {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
           </span>
           <input
             autoFocus
@@ -226,11 +229,11 @@ function RhSearchBarExpandableInput({
               event.stopPropagation()
             }
           >
-            {<i className="fa-light fa-search"></i>}
+            {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
           </span>
         </Fragment>
       )}
-    </Fragment>
+    </Fragment>)
   );
 }
 

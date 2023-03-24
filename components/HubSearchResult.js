@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
@@ -46,7 +48,7 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
         onClick={() => clearSearch()}
       >
         <div className={css(styles.hubIcon)}>
-          {<i className="fa-solid fa-chart-network"></i>}
+          {<FontAwesomeIcon icon={faChartNetwork}></FontAwesomeIcon>}
         </div>
         <div className={css(styles.column)}>
           <div className={css(styles.mainText)}>

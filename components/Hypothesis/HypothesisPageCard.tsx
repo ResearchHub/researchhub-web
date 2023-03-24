@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
@@ -90,7 +94,7 @@ const getActionButtons = ({
           className={css(styles.actionIcon)}
           data-tip={"Edit Hypothesis"}
         >
-          {<i className="fa-solid fa-pencil"></i>}
+          {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
         </div>
       ) : (
         <PermissionNotificationWrapper
@@ -102,7 +106,7 @@ const getActionButtons = ({
           styling={styles.borderRadius}
         >
           <div className={css(styles.actionIcon)} data-tip={"Edit Hypothesis"}>
-            {<i className="fa-solid fa-pencil"></i>}
+            {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
           </div>
         </PermissionNotificationWrapper>
       ),
@@ -142,9 +146,9 @@ const getActionButtons = ({
             restore={isHypoRemoved}
             icon={
               isHypoRemoved ? (
-                <i className="fa-solid fa-plus"></i>
+                <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
               ) : (
-                <i className="fa-solid fa-minus"></i>
+                <FontAwesomeIcon icon={faMinus}></FontAwesomeIcon>
               )
             }
             onAction={() => {

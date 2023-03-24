@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const BOUNTY_DEFAULT_AMOUNT = 1000;
 export const BOUNTY_RH_PERCENTAGE = 9;
 export const MIN_RSC_REQUIRED = 50;

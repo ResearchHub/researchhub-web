@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShapes } from "@fortawesome/pro-duotone-svg-icons";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import Link from "next/link";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
@@ -146,7 +150,7 @@ const NotebookSidebar = ({
                   }}
                 >
                   <div className={css(styles.newOrgButton)}>
-                    {<i className="fa-solid fa-plus"></i>}
+                    {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
                   </div>
                   New Organization
                 </div>
@@ -183,7 +187,7 @@ const NotebookSidebar = ({
                 setShowManageOrgModal(true);
               }}
             >
-              {<i className="fa-solid fa-cog"></i>}
+              {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
               <span className={css(styles.sidebarButtonText)}>
                 Settings & Members
               </span>
@@ -192,7 +196,7 @@ const NotebookSidebar = ({
               className={css(styles.sidebarButton)}
               onClick={() => setIsNoteTemplateModalOpen(true)}
             >
-              {<i className="fa-duotone fa-shapes"></i>}
+              {<FontAwesomeIcon icon={faShapes}></FontAwesomeIcon>}
               <span className={css(styles.sidebarButtonText)}>Templates</span>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import {
   getIsReadyForNewInlineComment,

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment } from "react";
 import { StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";

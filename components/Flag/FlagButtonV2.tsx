@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -85,14 +87,14 @@ function FlagButtonV2({
   };
 
   return (
-    <Fragment>
+    (<Fragment>
       <div
         onClick={(event): void => {
           setIsModalOpen(!isModalOpen);
         }}
         className={css(styles.flagIcon, flagIconOverride)}
       >
-        {iconOverride || <i className="fa-solid fa-flag"></i>}
+        {iconOverride || <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
         {buttonText && (
           <span className={css(buttonTextStyle)}>{buttonText}</span>
         )}
@@ -135,7 +137,7 @@ function FlagButtonV2({
         title={modalHeaderText}
         titleStyle={customModalStyle.modalHeaderText}
       />
-    </Fragment>
+    </Fragment>)
   );
 }
 

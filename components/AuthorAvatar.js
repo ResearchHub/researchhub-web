@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
 import Link from "next/link";
@@ -81,7 +83,7 @@ const AuthorAvatar = (props) => {
               // border: "3px solid transparent",
             }}
           >
-            {<i className="fa-solid fa-circle-user"></i>}
+            {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
           </span>
         )}
         {showModeratorBadge && (

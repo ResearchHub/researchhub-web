@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faBook } from "@fortawesome/pro-duotone-svg-icons";
 import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -106,7 +109,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
     } else {
       return (
         <div className={css(styles.bookIcon)}>
-          {<i className="fa-duotone fa-book"></i>}
+          {<FontAwesomeIcon icon={faBook}></FontAwesomeIcon>}
         </div>
       );
     }
@@ -248,7 +251,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
             onClick={onRemove ? onRemove : null}
             // onClick={toggleEditState}
           >
-            {<i className="fa-solid fa-pencil"></i>}
+            {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
           </div>
         </Ripples>
       );

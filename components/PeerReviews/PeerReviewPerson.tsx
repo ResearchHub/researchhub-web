@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
@@ -25,7 +29,7 @@ function PeerReviewPerson({ id, status, authorProfile }: Props): ReactElement {
       : null;
 
   return (
-    <span
+    (<span
       className={css(styles.PeerReviewPerson)}
       data-for={`person-${id}-${authorProfile?.id}`}
       data-tip
@@ -40,15 +44,15 @@ function PeerReviewPerson({ id, status, authorProfile }: Props): ReactElement {
       </ReactTooltip>
       {status == "INVITED" ? (
         <span className={css(styles.statusIcon, styles.questionIcon)}>
-          {<i className="fa-solid fa-question"></i>}
+          {<FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>}
         </span>
       ) : status == "ACCEPTED" ? (
         <span className={css(styles.statusIcon, styles.checkIcon)}>
-          {<i className="fa-solid fa-check-circle"></i>}
+          {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
         </span>
       ) : status == "DECLINED" ? (
         <span className={css(styles.statusIcon, styles.timesIcon)}>
-          {<i className="fa-solid fa-times-circle"></i>}
+          {<FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>}
         </span>
       ) : null}
       <div className={css(styles.avatarContainer)}>
@@ -59,7 +63,7 @@ function PeerReviewPerson({ id, status, authorProfile }: Props): ReactElement {
           spacing={5}
         />
       </div>
-    </span>
+    </span>)
   );
 }
 

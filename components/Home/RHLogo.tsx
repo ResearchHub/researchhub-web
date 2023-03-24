@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import dynamic from "next/dynamic";
 import { breakpoints } from "~/config/themes/screen";

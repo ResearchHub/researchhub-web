@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
@@ -15,9 +18,9 @@ export const SideColumnTitle = (props) => {
       {onClick && (
         <div className={css(styles.toggleButton)} onClick={onClick}>
           {state ? (
-            <i className="fa-regular fa-chevron-up"></i>
+            <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
           ) : (
-            <i className="fa-regular fa-chevron-down"></i>
+            <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
           )}
         </div>
       )}

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "~/components/Form/Button";
 import Link from "next/link";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";

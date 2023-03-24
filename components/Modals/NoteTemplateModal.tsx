@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import API from "~/config/api";
 import BaseModal from "~/components/Modals/BaseModal";
 import Button from "~/components/Form/Button";
@@ -50,7 +54,7 @@ function TemplateSidebarEntry({
   const [menuLoading, setMenuLoading] = useState(false);
 
   return (
-    <div
+    (<div
       className={css(
         styles.sidebarSectionContent,
         template.id === selected && styles.active
@@ -95,12 +99,12 @@ function TemplateSidebarEntry({
             <Loader size={18} />
           ) : (
             <div className={css(!isHovered && styles.hide)}>
-              {<i className="fa-solid fa-trash"></i>}
+              {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
             </div>
           )}
         </div>
       )}
-    </div>
+    </div>)
   );
 }
 
@@ -175,7 +179,7 @@ export default function NoteTemplateModal({
   const handleInput = (editor) => {};
 
   return (
-    <BaseModal
+    (<BaseModal
       closeModal={closeModal}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
@@ -237,9 +241,9 @@ export default function NoteTemplateModal({
             Templates
             <span className={css(styles.chevronIcon)}>
               {hideTemplates ? (
-                <i className="fa-regular fa-chevron-down"></i>
+                <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
               ) : (
-                <i className="fa-regular fa-chevron-up"></i>
+                <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
               )}
             </span>
           </div>
@@ -258,7 +262,7 @@ export default function NoteTemplateModal({
           )}
         </div>
       </div>
-    </BaseModal>
+    </BaseModal>)
   );
 }
 

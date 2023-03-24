@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-regular-svg-icons";
+import { faMedal } from "@fortawesome/pro-solid-svg-icons";
+import { faReply } from "@fortawesome/pro-light-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faPen } from "@fortawesome/pro-light-svg-icons";
 import { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
@@ -63,7 +69,7 @@ class ThreadActionBar extends Component {
           )}
           id={"editIcon"}
         >
-          {<i className="fa-light fa-pen"></i>}
+          {<FontAwesomeIcon icon={faPen}></FontAwesomeIcon>}
         </span>
         <span className={css(editing && styles.active)} id={"text"}>
           Edit
@@ -128,7 +134,7 @@ class ThreadActionBar extends Component {
     return (
       <div className={css(classNames)} onClick={_handleDelete}>
         <span className={css(styles.icon)} id={"deleteIcon"}>
-          {<i className="fa-solid fa-trash"></i>}
+          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
         </span>
         <span id={"delete"}>Delete</span>
       </div>
@@ -207,7 +213,7 @@ class ThreadActionBar extends Component {
                 )}
                 id={"replyIcon"}
               >
-                {<i className="fa-light fa-reply"></i>}
+                {<FontAwesomeIcon icon={faReply}></FontAwesomeIcon>}
               </span>
               Reply
             </div>
@@ -296,7 +302,7 @@ class ThreadActionBar extends Component {
                 className={css(styles.icon, styles.awardBountyIcon)}
                 id={"awardBountyIcon"}
               >
-                {<i className="fa-solid fa-medal"></i>}
+                {<FontAwesomeIcon icon={faMedal}></FontAwesomeIcon>}
               </span>
               <span className={css(styles.smallAwardText)}>Award Bounty</span>
               <span className={css(styles.awardText)}>
@@ -309,7 +315,7 @@ class ThreadActionBar extends Component {
           {this.props.toggleEdit && deleteButton}
           <FlagButtonV2
             buttonText=""
-            iconOverride={<i className="fa-regular fa-flag"></i>}
+            iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"

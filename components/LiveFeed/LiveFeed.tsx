@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
 import {
   CommentContributionItem,
@@ -65,7 +67,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 
   const resultCards = results.map((result, idx) => {
     return (
-      <div className={css(styles.result)} key={`result-${idx}`}>
+      (<div className={css(styles.result)} key={`result-${idx}`}>
         <div className={css(styles.entry)}>
           <ContributionEntry
             entry={result}
@@ -75,7 +77,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                   <FlagButtonV2
                     modalHeaderText="Flag Content"
                     flagIconOverride={styles.flagIcon}
-                    iconOverride={<i className="fa-solid fa-flag"></i>}
+                    iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
                     errorMsgText="Failed to flag"
                     successMsgText="Content flagged"
                     primaryButtonLabel="Flag"
@@ -141,7 +143,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
             ]}
           />
         </div>
-      </div>
+      </div>)
     );
   });
 

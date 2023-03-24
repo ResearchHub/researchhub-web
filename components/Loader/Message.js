@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 /***
  * @patr
  */
@@ -64,9 +67,9 @@ class Message extends Component {
         ) : (
           <span style={inlineStyle.check} color="#fff">
             {message.error ? (
-              <i className="fa-light fa-times"></i>
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
             ) : (
-              <i className="fa-solid fa-check"></i>
+              <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
             )}
           </span>
         )}

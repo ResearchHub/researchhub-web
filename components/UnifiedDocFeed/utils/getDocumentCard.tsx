@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FeedCard from "~/components/Author/Tabs/FeedCard";
 import { ReactElement } from "react";
 import { filterNull } from "~/config/utils/nullchecks";

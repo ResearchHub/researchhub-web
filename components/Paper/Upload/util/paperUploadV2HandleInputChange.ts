@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
 import {
   ComponentState,

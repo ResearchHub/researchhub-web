@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";

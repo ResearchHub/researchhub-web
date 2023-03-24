@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
@@ -48,7 +50,7 @@ const AuthorCard = (props) => {
           <img src={author.profile_image} className={css(styles.userImage)} />
         ) : (
           <span className={css(styles.userIcon)}>
-            {<i className="fa-solid fa-circle-user"></i>}
+            {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
           </span>
         )}
         {authorUserID ? (
@@ -68,7 +70,7 @@ const AuthorCard = (props) => {
         data-test={`author-${author.id}`}
       >
         <span className={css(styles.userIcon)}>
-          {<i className="fa-solid fa-circle-user"></i>}
+          {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
         </span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </a>
@@ -77,7 +79,7 @@ const AuthorCard = (props) => {
     return (
       <div className={css(styles.container)} data-test={`author-${author.id}`}>
         <span className={css(styles.userIcon)}>
-          {<i className="fa-solid fa-circle-user"></i>}
+          {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
         </span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </div>

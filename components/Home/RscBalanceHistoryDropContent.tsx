@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
@@ -119,7 +121,7 @@ export default function RscBalanceHistoryDropContent({
   );
 
   return (
-    <div className={css(styles.rscBalanceHistoryDropContent)}>
+    (<div className={css(styles.rscBalanceHistoryDropContent)}>
       <div className={css(styles.historyHeader)}>
         <ReputationTooltip />
         <div className={css(styles.header)}>
@@ -142,7 +144,7 @@ export default function RscBalanceHistoryDropContent({
             data-for={"reputation-tool-tip"}
             data-tip=""
           >
-            {<i className="fa-solid fa-question"></i>}
+            {<FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>}
           </a>
         </div>
         <ALink
@@ -198,7 +200,7 @@ export default function RscBalanceHistoryDropContent({
           <UniswapButton variant="text" />
         </div>
       </div>
-    </div>
+    </div>)
   );
 }
 

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReceipt } from "@fortawesome/pro-duotone-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -95,7 +97,7 @@ class UserTransaction extends Component {
         ) : (
           <EmptyState
             message={"User has not created any transactions"}
-            icon={<i className="fa-duotone fa-receipt"></i>}
+            icon={<FontAwesomeIcon icon={faReceipt}></FontAwesomeIcon>}
           />
         )}
         {!maxCardsToRender && this.renderLoadMoreButton()}

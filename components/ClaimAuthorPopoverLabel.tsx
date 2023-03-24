@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { Fragment, ReactElement, useCallback, useState } from "react";
 import ResearchHubPopover from "./ResearchHubPopover";
@@ -30,7 +32,7 @@ export default function ClaimAuthorPopoverLabel({
   }
 
   return (
-    <Fragment>
+    (<Fragment>
       <AuthorClaimModal
         auth={auth}
         authors={[author]}
@@ -87,14 +89,14 @@ export default function ClaimAuthorPopoverLabel({
                 {`Are you ${author.first_name}? Claim your profile`}
               </span>
               <span className={css(styles.popoverIcon)}>
-                {<i className="fa-solid fa-exclamation-circle"></i>}
+                {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
               </span>
             </div>
           }
           withArrow
         />
       </div>
-    </Fragment>
+    </Fragment>)
   );
 }
 

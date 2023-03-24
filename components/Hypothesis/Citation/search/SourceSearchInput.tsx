@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
@@ -160,7 +162,7 @@ export default function SourceSearchInput({
   ) : null;
 
   return (
-    <div className={css(styles.sourceSearchInput)}>
+    (<div className={css(styles.sourceSearchInput)}>
       {shouldShowInput ? (
         <div className={css(styles.inputSection)}>
           <FormInput
@@ -196,7 +198,7 @@ export default function SourceSearchInput({
                   {"Choose supports / rejects"}
                 </div>
                 <div style={{ color: colors.LIGHT_GREY_BACKGROUND }}>
-                  {<i className="fa-solid fa-caret-down"></i>}
+                  {<FontAwesomeIcon icon={faCaretDown}></FontAwesomeIcon>}
                 </div>
               </div>
             }
@@ -236,7 +238,7 @@ export default function SourceSearchInput({
         </div>
       )}
       {searchResultsItems}
-    </div>
+    </div>)
   );
 }
 

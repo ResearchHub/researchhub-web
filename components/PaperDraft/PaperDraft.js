@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { convertToRaw, Editor, RichUtils } from "draft-js";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
@@ -153,7 +155,7 @@ class PaperDraft extends Component {
             Paper
             {isViewerAllowedToEdit && (
               <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
-                {<i className="fa-solid fa-pencil"></i>}
+                {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
               </div>
             )}
           </h3>

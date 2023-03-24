@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
@@ -29,11 +32,11 @@ export default function PaperUploadWizardHeader({
   if (currentStep === "standby") {
     return (
       // @ts-ignore legacy socket hook
-      <PaperUploadWizardStandbyBody
+      (<PaperUploadWizardStandbyBody
         onExit={onExit}
         wsAuth
         wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
-      />
+      />)
     );
   } else if (currentStep === "posted_paper_update") {
     return (
@@ -57,9 +60,9 @@ export default function PaperUploadWizardHeader({
     );
   } else {
     return (
-      <div className={css(formGenericStyles.text, styles.header)}>
+      (<div className={css(formGenericStyles.text, styles.header)}>
         <span className={css(styles.close)} onClick={onExit}>
-          {<i className="fa-light fa-times"></i>}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
         {currentStep === "pdf_upload" ? (
           <div
@@ -78,7 +81,7 @@ export default function PaperUploadWizardHeader({
                 });
               }}
             >
-              {<i className="fa-light fa-arrow-left-long"></i>}
+              {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
             </span>
             {"Upload PDF"}
           </div>
@@ -94,7 +97,7 @@ export default function PaperUploadWizardHeader({
         >
           {"Submission Guidelines"}
         </a>
-      </div>
+      </div>)
     );
   }
 }

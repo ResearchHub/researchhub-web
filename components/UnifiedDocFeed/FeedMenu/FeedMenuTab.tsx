@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { tagFilters } from "../constants/UnifiedDocFilters";
 import FeedMenuTagDropdown from "./FeedMenuTagDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
@@ -35,7 +38,7 @@ const FeedMenuTab = ({
 
   const url = buildTypeFilterUrl({ tabObj, router });
   return (
-    <div
+    (<div
       className={`${css(
         styles.tab,
         isSelected && styles.tabSelected
@@ -63,11 +66,11 @@ const FeedMenuTab = ({
           <>
             {isTagsMenuOpen ? (
               <span className={css(styles.icon)}>
-                {<i className="fa-regular fa-chevron-up"></i>}
+                {<FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>}
               </span>
             ) : isSelected ? (
               <span className={css(styles.icon)}>
-                {<i className="fa-regular fa-chevron-down"></i>}
+                {<FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>}
               </span>
             ) : null}
             {isTagsMenuOpen && (
@@ -84,7 +87,7 @@ const FeedMenuTab = ({
           </>
         )}
       </Link>
-    </div>
+    </div>)
   );
 };
 

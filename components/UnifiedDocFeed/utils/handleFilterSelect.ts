@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feedTypeOpts, topLevelFilters } from "../constants/UnifiedDocFilters";
 import { getSortValue } from "./getSortValue";
 

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
@@ -73,9 +75,9 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
     >
       <div className={css(style && style)}>
         {flagged ? (
-          <i className="fa-solid fa-flag"></i>
+          <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>
         ) : (
-          <i className="fa-regular fa-flag"></i>
+          <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>
         )}
       </div>
     </PermissionNotificationWrapper>

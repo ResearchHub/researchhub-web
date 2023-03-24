@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -55,9 +57,9 @@ const SummaryEditCard = (props) => {
                 color={colors.BLUE()}
               />
             ) : active || hovered ? (
-              <i className="fa-solid fa-star"></i>
+              <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
             ) : (
-              <i className="fa-regular fa-star"></i>
+              <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
             )}
           </span>
         );
@@ -65,7 +67,7 @@ const SummaryEditCard = (props) => {
     } else {
       return (
         <span className={css(styles.icon)}>
-          {active && <i className="fa-solid fa-star"></i>}
+          {active && <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
         </span>
       );
     }

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 
 const University = (props) => {
@@ -5,7 +7,7 @@ const University = (props) => {
   return (
     <div className={css(styles.extraInfo)}>
       <span className={css(styles.icon)}>
-        {<i className="fa-solid fa-graduation-cap"></i>}
+        {<FontAwesomeIcon icon={faGraduationCap}></FontAwesomeIcon>}
       </span>
       {buildText(university.name, university.city, university.country)}
     </div>

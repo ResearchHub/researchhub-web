@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nameToUrl } from "~/config/constants";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";

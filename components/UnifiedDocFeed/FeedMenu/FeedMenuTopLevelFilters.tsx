@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
 import { topLevelFilters } from "../constants/UnifiedDocFilters";
@@ -57,7 +60,7 @@ const FeedMenuTopLevelFilters = ({
       }
 
       return (
-        <div
+        (<div
           className={`${css(
             styles.filter,
             isSelected && styles.filterSelected,
@@ -100,16 +103,16 @@ const FeedMenuTopLevelFilters = ({
               }}
             >
               {isMyHubsDropdownOpen ? (
-                <i className="fa-regular fa-chevron-up"></i>
+                <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
               ) : (
-                <i className="fa-regular fa-chevron-down"></i>
+                <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
               )}
             </span>
           )}
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
-        </div>
+        </div>)
       );
     });
   }, [

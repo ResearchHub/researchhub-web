@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // @ts-nocheck
 import { genericCardColors } from "~/config/themes/colors";
 import { ReactElement } from "react";

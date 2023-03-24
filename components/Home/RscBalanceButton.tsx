@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { connect } from "react-redux";
 import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
@@ -60,7 +62,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   }, [auth, balance, should_display_rsc_balance_home]);
 
   return (
-    <ResearchHubPopover
+    (<ResearchHubPopover
       align="end"
       containerStyle={{
         zIndex: 4,
@@ -104,11 +106,11 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
             )}`}</div>
           )}
           <div className={css(styles.caretDown)}>
-            {<i className="fa-regular fa-chevron-down"></i>}
+            {<FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>}
           </div>
         </div>
       }
-    />
+    />)
   );
 };
 

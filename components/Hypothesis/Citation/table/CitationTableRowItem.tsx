@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { ConsensusMeta } from "./CitationConsensusItem";
 import { css, StyleSheet } from "aphrodite";
@@ -85,7 +89,7 @@ export default function CitationTableRowItem({
   const isSupportSource = citationType === "SUPPORT";
 
   return (
-    <Link
+    (<Link
       href={"/paper/[paperId]/[paperName]"}
       as={citationTitleLinkUri}
       passHref
@@ -166,7 +170,7 @@ export default function CitationTableRowItem({
                 }}
                 role="button"
               >
-                {<i className="fa-solid fa-comments"></i>}
+                {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                 {commentCount > 0 && (
                   <div className={css(styles.commentCountSign)}>
                     {commentCount}
@@ -190,9 +194,9 @@ export default function CitationTableRowItem({
                 <div className={css(styles.typeContent)}>
                   <span className={css(styles.iconWrap)}>
                     {isSupportSource ? (
-                      <i className="fa-solid fa-check-circle"></i>
+                      <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
                     ) : (
-                      <i className="fa-solid fa-times-circle"></i>
+                      <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>
                     )}
                   </span>
                   <span className={css(styles.typeText)}>
@@ -205,7 +209,7 @@ export default function CitationTableRowItem({
           />
         </div>
       </Ripples>
-    </Link>
+    </Link>)
   );
 }
 

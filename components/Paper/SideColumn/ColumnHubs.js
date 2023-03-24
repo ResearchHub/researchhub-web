@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment } from "react";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { SideColumnTitle } from "~/components/Typography";

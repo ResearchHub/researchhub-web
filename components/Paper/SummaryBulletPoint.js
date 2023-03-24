@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
@@ -180,7 +184,7 @@ const SummaryBulletPoint = (props) => {
         <Fragment>
           {editable && hovered && (
             <div className={css(styles.editButton)} onClick={toggleEditView}>
-              {<i className="fa-solid fa-pencil"></i>}
+              {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
             </div>
           )}
           <div className={css(styles.topRow)}>
@@ -220,7 +224,7 @@ const SummaryBulletPoint = (props) => {
 
       return (
         <div className={css(classNames)} onClick={removalConfirmation}>
-          {<i className="fa-solid fa-trash"></i>}
+          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
         </div>
       );
     }
@@ -242,7 +246,7 @@ const SummaryBulletPoint = (props) => {
             id={"goTo"}
             className={css(classNames)}
           >
-            {<i className="fa-regular fa-chevron-right"></i>}
+            {<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
           </Link>
         </div>
       );

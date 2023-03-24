@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormState } from "../types/UploadComponentTypes";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "../../../../config/types/root_types";

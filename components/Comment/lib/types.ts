@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RHUser, parseUser, ID } from "~/config/types/root_types";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 

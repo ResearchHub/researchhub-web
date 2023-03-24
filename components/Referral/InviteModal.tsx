@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/pro-light-svg-icons";
+import { faPaperPlane } from "@fortawesome/pro-duotone-svg-icons";
+import { faLink } from "@fortawesome/pro-solid-svg-icons";
 import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import FormInput from "~/components/Form/FormInput";
@@ -138,7 +142,7 @@ const InviteModal = ({
   }
 
   return (
-    <BaseModal
+    (<BaseModal
       closeModal={handleClose}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
@@ -173,7 +177,7 @@ const InviteModal = ({
             onClick={() => setSelectedTab("LINK")}
           >
             <span className={css(styles.tabIcon)}>
-              {<i className="fa-solid fa-link"></i>}
+              {<FontAwesomeIcon icon={faLink}></FontAwesomeIcon>}
             </span>{" "}
             Invite by link
           </div>
@@ -185,7 +189,7 @@ const InviteModal = ({
             )}
           >
             <span className={css(styles.tabIcon)}>
-              {<i className="fa-duotone fa-paper-plane"></i>}
+              {<FontAwesomeIcon icon={faPaperPlane}></FontAwesomeIcon>}
             </span>{" "}
             Invite by email
           </div>
@@ -211,7 +215,7 @@ const InviteModal = ({
                         "Copied"
                       ) : (
                         <span className={css(styles.copyIcon)}>
-                          {<i className="fa-light fa-copy"></i>}
+                          {<FontAwesomeIcon icon={faCopy}></FontAwesomeIcon>}
                         </span>
                       )}
                     </a>
@@ -339,7 +343,7 @@ const InviteModal = ({
           ={" "}
         </div>
       </div>
-    </BaseModal>
+    </BaseModal>)
   );
 };
 

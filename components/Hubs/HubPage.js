@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
@@ -394,7 +396,7 @@ class HubPage extends Component {
               }}
               exitButton={
                 <div style={{ fontSize: 20 }}>
-                  {<i className="fa-light fa-times"></i>}
+                  {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
                 </div>
               }
               exitButtonPositionOverride={{

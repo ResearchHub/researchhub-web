@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import Link from "next/link";
 import NoteOptionsMenuButton from "./NoteOptionsMenuButton";
 import colors from "~/config/themes/colors";
@@ -26,7 +28,7 @@ const NotebookSidebarEntry = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={css(styles.noteIcon)}>
-        {<i className="fa-solid fa-file"></i>}
+        {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
       </div>
       {unescapeHtmlString(title)}
       {isOrgMember && (

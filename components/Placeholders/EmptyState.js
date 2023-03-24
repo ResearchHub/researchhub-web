@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 
 const EmptyState = (props) => {
@@ -8,7 +10,7 @@ const EmptyState = (props) => {
         icon
       ) : (
         <div className={css(styles.icon)}>
-          {<i className="fa-solid fa-file"></i>}
+          {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
         </div>
       )}
       <div>{text && text}</div>

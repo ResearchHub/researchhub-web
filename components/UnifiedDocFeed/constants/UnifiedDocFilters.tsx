@@ -1,10 +1,18 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUp } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-light-svg-icons";
+import { faBolt } from "@fortawesome/pro-solid-svg-icons";
+import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
+import { faHeartRate } from "@fortawesome/pro-light-svg-icons";
+import { faGlobe } from "@fortawesome/pro-light-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 export const topLevelFilters = {
   "/": {
     label: "Frontpage",
     value: "/",
-    icon: <i className="fa-light fa-globe"></i>,
+    icon: <FontAwesomeIcon icon={faGlobe}></FontAwesomeIcon>,
   },
   "/my-hubs": {
     label: "My Hubs",
@@ -14,7 +22,7 @@ export const topLevelFilters = {
   "/live": {
     label: "Live",
     value: "/live",
-    icon: <i className="fa-light fa-heart-rate"></i>,
+    icon: <FontAwesomeIcon icon={faHeartRate}></FontAwesomeIcon>,
   },
 };
 
@@ -65,7 +73,7 @@ export const sortOpts = {
     value: "hot",
     label: "Trending",
     selectedLabel: "Trending",
-    icon: <i className="fa-duotone fa-fire-alt"></i>,
+    icon: <FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>,
     disableScope: true,
     availableFor: [
       feedTypeOpts["all"].value,
@@ -94,7 +102,7 @@ export const sortOpts = {
     value: "expiring_soon",
     label: "Expiring Soon",
     selectedLabel: "Expiring Soon",
-    icon: <i className="fa-regular fa-clock"></i>,
+    icon: <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>,
     disableScope: true,
     availableFor: [feedTypeOpts["bounty"].value],
   },
@@ -102,7 +110,7 @@ export const sortOpts = {
     value: "new",
     label: "Newest",
     selectedLabel: "Newest",
-    icon: <i className="fa-solid fa-bolt"></i>,
+    icon: <FontAwesomeIcon icon={faBolt}></FontAwesomeIcon>,
     disableScope: true,
     availableFor: [
       feedTypeOpts["all"].value,
@@ -117,7 +125,7 @@ export const sortOpts = {
     value: "discussed",
     label: "Most Discussed",
     selectedLabel: "Discussed",
-    icon: <i className="fa-light fa-comments"></i>,
+    icon: <FontAwesomeIcon icon={faComments}></FontAwesomeIcon>,
     disableScope: false,
     availableFor: [
       feedTypeOpts["all"].value,
@@ -132,7 +140,7 @@ export const sortOpts = {
     value: "upvoted",
     label: "Most Upvoted",
     selectedLabel: "Upvoted",
-    icon: <i className="fa-solid fa-up"></i>,
+    icon: <FontAwesomeIcon icon={faUp}></FontAwesomeIcon>,
     disableScope: false,
     availableFor: [
       feedTypeOpts["all"].value,

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/pro-regular-svg-icons";
+import { faCommentDots } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import ALink from "../ALink";
 import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
@@ -166,7 +169,7 @@ const BountyAlert = ({
   });
 
   return (
-    <div className={css(styles.bountyAlert)}>
+    (<div className={css(styles.bountyAlert)}>
       <BountyModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -298,7 +301,7 @@ const BountyAlert = ({
               }}
             >
               <span className={css(styles.actionIcon)}>
-                {<i className="fa-regular fa-comment-dots"></i>}
+                {<FontAwesomeIcon icon={faCommentDots}></FontAwesomeIcon>}
               </span>
               Answer
             </div>
@@ -318,7 +321,7 @@ const BountyAlert = ({
         <div className={css(styles.action, styles.shareAction)}>
           <ShareDropdown handleClick={_handleShareClick}>
             <span className={css(styles.actionIcon)}>
-              {<i className="fa-regular fa-share"></i>}
+              {<FontAwesomeIcon icon={faShare}></FontAwesomeIcon>}
             </span>
             Share
           </ShareDropdown>
@@ -338,7 +341,7 @@ const BountyAlert = ({
           </InviteButton>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 

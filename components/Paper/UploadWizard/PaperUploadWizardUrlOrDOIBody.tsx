@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI";

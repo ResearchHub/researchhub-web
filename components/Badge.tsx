@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyleSheet, css } from "aphrodite";
 import { CloseIcon } from "~/config/themes/icons";
 import colors, { badgeColors } from "~/config/themes/colors";

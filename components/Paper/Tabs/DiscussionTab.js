@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -354,7 +356,7 @@ const DiscussionTab = (props) => {
               : showTwitterComments && (
                   <span className={css(styles.box, styles.emptyStateBox)}>
                     <span className={css(styles.icon, styles.twitterIcon)}>
-                      {<i className="fa-brands fa-twitter"></i>}
+                      {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
                     </span>
                     <h3 className={css(styles.noSummaryTitle)}>
                       There are no tweets {mobileView && "\n"}for this paper

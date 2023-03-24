@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -49,7 +51,7 @@ class CategoryList extends Component {
               <span>
                 {category_name}
                 <span className={css(styles.trendingIcon)}>
-                  {<i className="fa-duotone fa-fire-alt"></i>}
+                  {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
                 </span>
               </span>
             ) : (

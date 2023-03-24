@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";

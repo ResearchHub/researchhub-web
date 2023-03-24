@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { capitalize } from "../../config/utils/string";
 
 type FormatMainHeaderArgs = {

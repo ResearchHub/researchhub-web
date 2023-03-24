@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css } from "aphrodite";
 import { styles } from "~/components/EditorsDashboard/EditorsDashboard";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";

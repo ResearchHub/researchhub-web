@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -643,7 +647,7 @@ class PaperTransactionModal extends Component {
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
                 <span className={css(styles.icon)}>
-                  {<i className="fa-solid fa-check-circle"></i>}
+                  {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
                 </span>
               </div>
               {!offChain && (
@@ -767,7 +771,7 @@ class PaperTransactionModal extends Component {
                   className={css(styles.infoIcon)}
                   data-tip={"The address of your ETH Account (ex. 0x0000...)"}
                 >
-                  {<i className="fa-duotone fa-info-circle"></i>}
+                  {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                   <ReactTooltip />
                 </span>
               </div>
@@ -790,9 +794,13 @@ class PaperTransactionModal extends Component {
                         )}
                       >
                         {ethAccountIsValid ? (
-                          <i className="fa-solid fa-check-circle"></i>
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                          ></FontAwesomeIcon>
                         ) : (
-                          <i className="fa-solid fa-times-circle"></i>
+                          <FontAwesomeIcon
+                            icon={faTimesCircle}
+                          ></FontAwesomeIcon>
                         )}
                       </span>
                     )

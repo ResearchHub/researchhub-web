@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";

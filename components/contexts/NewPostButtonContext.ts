@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createContext } from "react";
 import { ID, NullableString } from "~/config/types/root_types";
 import { ValidCitationType } from "../Hypothesis/Citation/modal/AddNewSourceBodySearch";

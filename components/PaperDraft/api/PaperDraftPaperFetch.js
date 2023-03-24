@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Helpers } from "@quantfive/js-web-config";
 import { fetchPaperDraft } from "~/config/fetch";
 import {

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FunctionComponent } from 'react';
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
