@@ -28,15 +28,13 @@ const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
-  WrapperEl: any;
+  WrapperEl?: any;
 };
 
 const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
-  const [readyForInitialRender, setReadyForInitialRender] =
-    useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
   const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
   const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
@@ -63,9 +61,9 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
         console.log('error', error)
         // FIXME: Implement error handling
       } finally {
-        if (readyForInitialRender) {
-          setIsFetching(false);
-        }
+        // if (readyForInitialRender) {
+          // }
+        setIsFetching(false);
         setIsInitialFetchDone(true);
       }
     },
@@ -147,14 +145,8 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     <WrapperEl
       comments={comments}
       isInitialFetchDone={isInitialFetchDone}
-      setReadyForInitialRender={() => {
-        if (!readyForInitialRender) {
-          setIsFetching(false);
-          setReadyForInitialRender(true);
-        }
-      }}
     >
-      {readyForInitialRender && (
+      {isInitialFetchDone && (
         <>
           <div className={css(styles.filtersWrapper)}>
             <CommentFilters
@@ -186,7 +178,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
             <CommentPlaceholder key={`placeholder-${idx}`} />
           </div>
         ))}
-      {fetchUrls.next &&
+      {fetchUrls.next && !isFetching &&
         <IconButton onClick={() => handleFetchNext()}>
           <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load More <FontAwesomeIcon icon={faLongArrowDown} /></span>
         </IconButton>

@@ -324,7 +324,7 @@ const Paper = ({
             {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
-                {
+                {/* {
                   <DiscussionTab
                     hostname={process.env.HOST}
                     documentType={"paper"}
@@ -340,7 +340,8 @@ const Paper = ({
                       setThreads(_threads);
                     }}
                   />
-                }
+                } */}
+                <CommentFeed document={paperV2} />
               </div>
             )}
             {isFetchComplete /* Performance Optimization */ && (
@@ -359,6 +360,7 @@ const Paper = ({
           </div>
         </div>
 
+        <div />
         <CommentFeed document={paperV2} WrapperEl={CommentSidebar} />
       </div>
     </div>
