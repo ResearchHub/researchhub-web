@@ -12,19 +12,17 @@ import countComments from "./lib/countComments";
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { breakpoints } from "~/config/themes/screen";
 
-
-
 type Args = {
   children: any;
   comments: Comment[];
-  setReadyForInitialRender: Function;
+  // setReadyForInitialRender: Function;
   isInitialFetchDone: boolean;
 };
 
 const CommentSidebar = ({
   children,
   comments,
-  setReadyForInitialRender,
+  // setReadyForInitialRender,
   isInitialFetchDone = false,
 }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -41,13 +39,13 @@ const CommentSidebar = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (isOpen && isInitialFetchDone) {
-      setTimeout(() => {
-        setReadyForInitialRender(true);
-      }, 1000);
-    }
-  }, [isOpen, isInitialFetchDone])
+  // useEffect(() => {
+  //   if (isOpen && isInitialFetchDone) {
+  //     setTimeout(() => {
+  //       setReadyForInitialRender(true);
+  //     }, 1000);
+  //   }
+  // }, [isOpen, isInitialFetchDone])
 
   return (
     <div
