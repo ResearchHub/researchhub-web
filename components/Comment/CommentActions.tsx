@@ -42,37 +42,28 @@ const CommentActions = ({
               width={19}
               alt="Tip"
             />
-            <span
-              className={css(styles.actionText)}
-              onClick={() => toggleReply()}
-            >
+            <span className={css(styles.actionText)}>
               Tip
             </span>
           </IconButton>
         </div>
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           {isReplyOpen ? (
-            <IconButton onClick={() => null}>
+            <IconButton onClick={() => toggleReply()}>
               <FontAwesomeIcon icon={faTimes} />
-              <span
-                className={css(styles.actionText)}
-                onClick={() => toggleReply()}
-              >
+              <span className={css(styles.actionText)}>
                 Close
               </span>
             </IconButton>
           ) : (
-            <IconButton onClick={() => null}>
+            <IconButton onClick={() => toggleReply()}>
               <Image
                 src="/static/icons/reply.png"
                 height={13}
                 width={15}
                 alt="Reply"
               />
-              <span
-                className={css(styles.actionText)}
-                onClick={() => toggleReply()}
-              >
+              <span className={css(styles.actionText)}>
                 Reply
               </span>
             </IconButton>
