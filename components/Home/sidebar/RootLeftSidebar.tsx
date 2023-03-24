@@ -102,16 +102,16 @@ export const getLeftSidebarItemAttrs = ({
         router.push("/leaderboard/users");
       },
     },
-    {
-      icon: <FontAwesomeIcon icon={faTableTree} />,
-      label: "Reference Manager",
-      isActive: pathname.includes("reference-manager"),
-      isMinimized,
-      onClick: (event: SyntheticEvent): void => {
-        event.preventDefault();
-        router.push("/reference-manager");
-      },
-    },
+    // {
+    //   icon: <FontAwesomeIcon icon={faTableTree} />,
+    //   label: "Reference Manager",
+    //   isActive: pathname.includes("reference-manager"),
+    //   isMinimized,
+    //   onClick: (event: SyntheticEvent): void => {
+    //     event.preventDefault();
+    //     router.push("/reference-manager");
+    //   },
+    // },
   ]);
 };
 
