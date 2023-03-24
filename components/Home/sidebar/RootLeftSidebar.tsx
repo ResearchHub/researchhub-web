@@ -29,6 +29,7 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTableTree } from "@fortawesome/pro-solid-svg-icons";
+import killswitch from "~/config/killswitch/killswitch";
 
 type Props = {
   openLoginModal: any;
@@ -102,16 +103,18 @@ export const getLeftSidebarItemAttrs = ({
         router.push("/leaderboard/users");
       },
     },
-    // {
-    //   icon: <FontAwesomeIcon icon={faTableTree} />,
-    //   label: "Reference Manager",
-    //   isActive: pathname.includes("reference-manager"),
-    //   isMinimized,
-    //   onClick: (event: SyntheticEvent): void => {
-    //     event.preventDefault();
-    //     router.push("/reference-manager");
-    //   },
-    // },
+    killswitch("reference-manager")
+      ? {
+          icon: <FontAwesomeIcon icon={faTableTree} />,
+          label: "Reference Manager",
+          isActive: pathname.includes("reference-manager"),
+          isMinimized,
+          onClick: (event: SyntheticEvent): void => {
+            event.preventDefault();
+            router.push("/reference-manager");
+          },
+        }
+      : null,
   ]);
 };
 

@@ -5,9 +5,15 @@ export type AppSwitchConfig = {
   staging?: boolean;
 };
 
-const KillSwitchApps = [] as const;
+const KillSwitchApps = ["reference-manager"] as const;
 export type KillswitchApp = typeof KillSwitchApps[number];
 
-const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {} as const;
+const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
+  "reference-manager": {
+    development: true,
+    production: false,
+    staging: false,
+  },
+};
 
 export default KillswtichConfigs;
