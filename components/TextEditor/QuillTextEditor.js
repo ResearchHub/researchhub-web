@@ -29,6 +29,7 @@ import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 
 import { getCurrentUserLegacy } from "~/config/utils/user";
+import { ClipLoader } from "react-spinners";
 
 class Editor extends Component {
   constructor(props) {
@@ -497,7 +498,12 @@ class Editor extends Component {
               hideRipples
               disabled={this.state.submitDisabled}
               label={
-                <Loader loading={true} color={"#FFF"} size={20} type="clip" />
+                <ClipLoader
+                  sizeUnit={"px"}
+                  size={20}
+                  color={"#fff"}
+                  loading={true}
+                />
               }
               customButtonStyle={[
                 toolbarStyles.postButtonStyle,

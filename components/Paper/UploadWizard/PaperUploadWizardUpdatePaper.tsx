@@ -29,6 +29,7 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import withWebSocket from "~/components/withWebSocket";
 import { StyleSheet } from "aphrodite";
+import { ClipLoader } from "react-spinners";
 
 export type FormErrors = {
   paperID: boolean;
@@ -236,7 +237,16 @@ function PaperUploadWizardUpdatePaper({
             setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
           }
           placeholder={isEmpty(asyncDOI) ? "" : "DOI"}
-          icon={isEmpty(asyncDOI) && <Loader type="clip" size={14} />}
+          icon={
+            isEmpty(asyncDOI) && (
+              <ClipLoader
+                sizeUnit={"px"}
+                size={14}
+                color={colors.BLUE(1)}
+                loading={true}
+              />
+            )
+          }
           value={doi}
           iconStyles={styles.loaderStyle}
         />

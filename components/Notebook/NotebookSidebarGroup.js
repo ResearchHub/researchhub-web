@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const NotebookSidebarGroup = ({
   currentNoteId,
@@ -68,7 +69,12 @@ const NotebookSidebarGroup = ({
         {allowedToCreateNote && !isNotesEmpty && (
           <div className={css(styles.new)}>
             {createNoteIsLoading ? (
-              <Loader type="clip" size={23} />
+              <ClipLoader
+                sizeUnit={"px"}
+                size={23}
+                color={colors.BLUE(1)}
+                loading={true}
+              />
             ) : (
               <div
                 className={css(styles.actionButton) + " actionButton"}

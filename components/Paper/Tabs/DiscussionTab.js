@@ -43,6 +43,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
 import Bounty from "~/config/types/bounty";
+import { BeatLoader } from "react-spinners";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -762,7 +763,12 @@ const DiscussionTab = (props) => {
               {props.paper.nextDiscussion && !fetching && (
                 <div className={css(styles.buttonContainer)}>
                   {loading ? (
-                    <Loader loading={true} size={10} type="beat" />
+                    <BeatLoader
+                      sizeUnit={"px"}
+                      size={10}
+                      loading={true}
+                      color={colors.BLUE(1)}
+                    />
                   ) : (
                     <Ripples
                       className={css(styles.loadMoreButton)}
@@ -798,7 +804,12 @@ const DiscussionTab = (props) => {
             {props.paper.nextDiscussion && !fetching && (
               <div className={css(styles.buttonContainer)}>
                 {loading ? (
-                  <Loader loading={true} size={10} type="beat" />
+                  <BeatLoader
+                    sizeUnit={"px"}
+                    size={10}
+                    loading={true}
+                    color={colors.BLUE(1)}
+                  />
                 ) : (
                   <Ripples
                     className={css(styles.loadMoreButton)}

@@ -91,7 +91,12 @@ const ContentSupport = (props) => {
     if (fetching) {
       return (
         <span className={css(styles.count)}>
-          <Loader loading={true} size={5} type="clip" />
+          <ClipLoader
+            sizeUnit={"px"}
+            size={5}
+            color={colors.BLUE(1)}
+            loading={true}
+          />
         </span>
       );
     }
