@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
@@ -117,7 +119,11 @@ class OrcidLoginPage extends Component {
               {this.state.error && (
                 <div className={css(styles.error)}>
                   <span className={css(styles.errorIcon)}>
-                    {<i className="fa-solid fa-exclamation-triangle"></i>}
+                    {
+                      <FontAwesomeIcon
+                        icon={faExclamationTriangle}
+                      ></FontAwesomeIcon>
+                    }
                   </span>
                   Something went wrong. Please try again.
                 </div>

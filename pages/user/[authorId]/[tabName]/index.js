@@ -1,3 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
+import { faEdit } from "@fortawesome/pro-solid-svg-icons";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import { faUserSlash } from "@fortawesome/pro-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faFacebookF } from "@fortawesome/pro-brands-svg-icons";
+import { faTwitter } from "@fortawesome/pro-brands-svg-icons";
+import { faLinkedin } from "@fortawesome/pro-brands-svg-icons";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -530,7 +540,7 @@ function AuthorPage(props) {
             className={css(styles.submitSocialButton)}
             onClick={() => saveSocial(social)}
           >
-            {<i className="fa-solid fa-arrow-right"></i>}
+            {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           </div>
         </div>
       </div>
@@ -639,7 +649,7 @@ function AuthorPage(props) {
   const socialMediaLinkButtons = [
     {
       link: safeGuardURL(author.linkedin),
-      icon: <i className="fa-brands fa-linkedin"></i>,
+      icon: <FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>,
       nodeRef: linkedinRef,
       dataTip: "Set LinkedIn Profile",
       onClick: () => setEditLinkedin(true),
@@ -649,7 +659,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.twitter),
-      icon: <i className="fa-brands fa-twitter"></i>,
+      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
       nodeRef: twitterRef,
       dataTip: "Set Twitter Profile",
       onClick: () => setEditTwitter(true),
@@ -659,7 +669,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.facebook),
-      icon: <i className="fa-brands fa-facebook-f"></i>,
+      icon: <FontAwesomeIcon icon={faFacebookF}></FontAwesomeIcon>,
       nodeRef: facebookRef,
       dataTip: "Set Facebook Profile",
       onClick: () => setEditFacebook(true),
@@ -736,9 +746,9 @@ function AuthorPage(props) {
                 !fetchedUser ? (
                   " "
                 ) : isAuthorUserSuspended ? (
-                  <i className="fa-solid fa-user-plus"></i>
+                  <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>
                 ) : (
-                  <i className="fa-solid fa-user-slash"></i>
+                  <FontAwesomeIcon icon={faUserSlash}></FontAwesomeIcon>
                 )
               }
               iconStyle={styles.moderatorIcon}
@@ -768,9 +778,9 @@ function AuthorPage(props) {
                   !fetchedUser ? (
                     " "
                   ) : isAuthorUserSuspended ? (
-                    <i className="fa-solid fa-user-plus"></i>
+                    <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>
                   ) : (
-                    <i className="fa-solid fa-user-slash"></i>
+                    <FontAwesomeIcon icon={faUserSlash}></FontAwesomeIcon>
                   )
                 }
                 iconStyle={styles.moderatorIcon}
@@ -804,7 +814,7 @@ function AuthorPage(props) {
               label={() => (
                 <Fragment>
                   <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {<i className="fa-solid fa-user"></i>}
+                    {<FontAwesomeIcon icon={faUser}></FontAwesomeIcon>}
                   </span>
                   Sift Profile
                 </Fragment>
@@ -823,7 +833,7 @@ function AuthorPage(props) {
       {allowEdit ? (
         <div className={css(styles.editProfileButton)} key="editButton">
           <span onClick={onOpenUserInfoModal}>
-            {<i className="fa-solid fa-edit"></i>}
+            {<FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>}
           </span>
         </div>
       ) : null}
@@ -843,7 +853,7 @@ function AuthorPage(props) {
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
           <div className={css(styles.educationSummary) + " clamp2"}>
             <span className={css(styles.icon)}>
-              {<i className="fa-solid fa-graduation-cap"></i>}
+              {<FontAwesomeIcon icon={faGraduationCap}></FontAwesomeIcon>}
             </span>
             {createEduSummary(author)}
           </div>

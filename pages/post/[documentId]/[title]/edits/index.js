@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 import { Component } from "react";
 import Link from "next/link";
 import { withRouter } from "next/router";
@@ -176,7 +178,7 @@ class PaperEditHistory extends Component {
           >
             <div className={css(styles.back)}>
               <span className={css(styles.arrow)}>
-                {<i className="fa-light fa-arrow-left-long"></i>}
+                {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
               </span>
               Summary
             </div>

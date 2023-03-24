@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -119,7 +121,7 @@ class Index extends Component {
                 <span>
                   {categoryName}
                   <span className={css(styles.trendingIcon)}>
-                    {<i className="fa-duotone fa-fire-alt"></i>}
+                    {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
                   </span>
                 </span>
               ) : (

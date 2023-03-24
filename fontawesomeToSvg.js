@@ -60,15 +60,24 @@ module.exports = function (fileInfo, api) {
     }
   });
 
-  // Add import statement for FontAwesomeIcon class
-  root
-    .get()
-    .node.program.body.unshift(
-      j.importDeclaration(
-        [j.importSpecifier(j.identifier("FontAwesomeIcon"))],
-        j.literal("@fortawesome/react-fontawesome")
-      )
-    );
+  const fontawesomeImported = root.find(j.ImportDeclaration, {
+    source: {
+      value: "@fortawesome/react-fontawesome",
+    },
+  });
+
+  if (iconNames.size > 0 && !fontawesomeImported.size()) {
+    console.log(`adding fontawesome import to ${fileInfo.path}"}`);
+    // Add import statement for FontAwesomeIcon class
+    root
+      .get()
+      .node.program.body.unshift(
+        j.importDeclaration(
+          [j.importSpecifier(j.identifier("FontAwesomeIcon"))],
+          j.literal("@fortawesome/react-fontawesome")
+        )
+      );
+  }
 
   return root.toSource();
 };

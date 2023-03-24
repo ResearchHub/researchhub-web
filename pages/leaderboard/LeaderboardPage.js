@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
+import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -107,31 +113,31 @@ class Index extends Component {
         name: "Users",
         id: "users",
         type: "users",
-        icon: <i className="fa-solid fa-user"></i>,
+        icon: <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>,
       },
       {
         name: "Authors",
         id: "authors",
         type: "authors",
-        icon: <i className="fa-solid fa-user-edit"></i>,
+        icon: <FontAwesomeIcon icon={faUserEdit}></FontAwesomeIcon>,
       },
       {
         name: "Papers",
         id: "papers",
         type: "papers",
-        icon: <i className="fa-solid fa-book-open"></i>,
+        icon: <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>,
       },
       {
         name: "Editors",
         id: "editors",
         type: "editors",
-        icon: <i className="fa-solid fa-star"></i>,
+        icon: <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>,
       },
       {
         name: "Hubs",
         id: "hubs",
         type: "hubs",
-        icon: <i className="fa-solid fa-chart-network"></i>,
+        icon: <FontAwesomeIcon icon={faChartNetwork}></FontAwesomeIcon>,
       },
     ];
   }

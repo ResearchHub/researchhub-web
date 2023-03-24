@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/pro-duotone-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import {
   buildSubscriptionPatch,
@@ -272,9 +276,9 @@ class UserSettings extends Component {
             onClick={this.togglePasswordVisibility}
           >
             {this.state.isPasswordInputVisible ? (
-              <i className="fa-light fa-times"></i>
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
             ) : (
-              <i className="fa-solid fa-pencil"></i>
+              <FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>
             )}
           </Ripples>
         </div>
@@ -350,9 +354,9 @@ class UserSettings extends Component {
             onClick={this.toggleEmailInput}
           >
             {activeEmailInput ? (
-              <i className="fa-light fa-times"></i>
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
             ) : (
-              <i className="fa-solid fa-pencil"></i>
+              <FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>
             )}
           </Ripples>
         </div>
@@ -385,7 +389,7 @@ class UserSettings extends Component {
                   this.saveEmail();
                 }}
               >
-                {<i className="fa-duotone fa-paper-plane"></i>}
+                {<FontAwesomeIcon icon={faPaperPlane}></FontAwesomeIcon>}
               </Ripples>
             </form>
           ) : (
@@ -503,7 +507,7 @@ class UserSettings extends Component {
       >
         {hub.name}
         <div className={css(styles.closeIcon)}>
-          {<i className="fa-light fa-times"></i>}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </div>
       </Ripples>
     );

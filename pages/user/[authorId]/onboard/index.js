@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/pro-light-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -267,7 +269,7 @@ const Index = (props) => {
                 placeholder={"Search Hubs"}
               />
               <span className={css(styles.searchIcon)}>
-                {<i className="fa-light fa-search"></i>}
+                {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
               </span>
               <div
                 onClick={resetSearch}

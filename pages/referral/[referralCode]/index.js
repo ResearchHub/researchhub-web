@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCoins } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -112,7 +114,7 @@ const Index = ({ code, user }) => {
               </div>
               <div className={css(styles.reason)}>
                 <div className={css(styles.reasonIcon, styles.reasonIconFlask)}>
-                  {<i className="fa-solid fa-coins"></i>}
+                  {<FontAwesomeIcon icon={faCoins}></FontAwesomeIcon>}
                 </div>
                 <div className={css(styles.reasonText)}>
                   Create bounties to reward other scientists for completing

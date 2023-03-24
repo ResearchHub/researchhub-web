@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/pro-brands-svg-icons";
+import { faReddit } from "@fortawesome/pro-brands-svg-icons";
+import { faTwitter } from "@fortawesome/pro-brands-svg-icons";
+import { faDiscord } from "@fortawesome/pro-brands-svg-icons";
+import { faMedium } from "@fortawesome/pro-brands-svg-icons";
 import { Component } from "react";
 
 // NPM Modules
@@ -80,7 +86,7 @@ class Footer extends Component {
             >
               <div className={css(styles.social)}>
                 <span className={css(styles.logo)}>
-                  {<i className="fa-brands fa-medium"></i>}
+                  {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
                 </span>
               </div>
             </a>
@@ -92,7 +98,7 @@ class Footer extends Component {
             >
               <div className={css(styles.social)}>
                 <span className={css(styles.logo)}>
-                  {<i className="fa-brands fa-discord"></i>}
+                  {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
                 </span>
               </div>
             </a>
@@ -104,7 +110,7 @@ class Footer extends Component {
             >
               <div className={css(styles.social)}>
                 <span className={css(styles.logo)}>
-                  {<i className="fa-brands fa-twitter"></i>}
+                  {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
                 </span>
               </div>
             </a>
@@ -115,7 +121,7 @@ class Footer extends Component {
             >
               <div className={css(styles.social)}>
                 <span className={css(styles.logo)}>
-                  {<i className="fa-brands fa-reddit"></i>}
+                  {<FontAwesomeIcon icon={faReddit}></FontAwesomeIcon>}
                 </span>
               </div>
             </a>
@@ -126,7 +132,7 @@ class Footer extends Component {
             >
               <div className={css(styles.social)}>
                 <span className={css(styles.logo)}>
-                  {<i className="fa-brands fa-github"></i>}
+                  {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
                 </span>
               </div>
             </a>

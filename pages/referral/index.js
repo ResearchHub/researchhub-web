@@ -1,11 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/pro-light-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useTransition, animated } from "react-spring";
 import nookies from "nookies";
 
-import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
 // Components
@@ -57,7 +57,7 @@ const Index = ({ auth }) => {
                     "Copied!"
                   ) : (
                     <span className={css(styles.copyIcon)}>
-                      {<i className="fa-light fa-copy"></i>}
+                      {<FontAwesomeIcon icon={faCopy}></FontAwesomeIcon>}
                     </span>
                   )}
                 </a>
