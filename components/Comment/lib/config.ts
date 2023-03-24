@@ -1,9 +1,8 @@
 import { breakpoints } from "~/config/themes/screen";
 
 const config = {
-  pageSize: 20,
-  sidebar: {
-    width: 500
+  drawer:{
+    displayForBreakpoint: breakpoints.small.int,
   },
   comment: {
     previewMaxChars: 350,
