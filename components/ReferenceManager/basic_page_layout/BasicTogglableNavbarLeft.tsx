@@ -136,7 +136,13 @@ export default function BasicTogglableNavbarLeft({
 }: Props) {
   const user = getCurrentUser();
   const isLoadingUser = isEmpty(user?.id);
-
+  const profileImage =
+    user?.authorProfile?.profileImage ??
+    user?.author_profile?.profile_image ??
+    null;
+  const currentUserName = `${user?.firstName ?? user?.first_name ?? ""} ${
+    user?.lastName ?? user?.last_name ?? ""
+  }`;
   return (
     <Box
       flexDirection="column"
@@ -187,9 +193,9 @@ export default function BasicTogglableNavbarLeft({
                   flexDirection: "row",
                 }}
               >
-                {user?.authorProfile?.profileImage ? (
+                {profileImage ? (
                   <Image
-                    src={user?.authorProfile?.profileImage ?? ""}
+                    src={profileImage ?? ""}
                     width={24}
                     height={24}
                     style={{ borderRadius: "50%" }}
@@ -209,7 +215,7 @@ export default function BasicTogglableNavbarLeft({
                     letterSpacing={"1.1px"}
                     ml="12px"
                   >
-                    {`${user?.firstName} ${user?.lastName}`}
+                    {currentUserName}
                   </Typography>
                 )}
               </Box>
