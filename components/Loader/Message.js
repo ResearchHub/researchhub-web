@@ -3,17 +3,17 @@
  */
 
 import { Component } from "react";
+import dynamic from "next/dynamic";
 
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// Component
-import Loader from "./Loader.js";
-
 // Redux
 import { MessageActions } from "~/redux/message";
+
+const Loader = dynamic(() => import("./Loader"));
 
 class Message extends Component {
   constructor(props) {

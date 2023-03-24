@@ -1,5 +1,4 @@
 import { StyleSheet, css } from "aphrodite";
-import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 const Loader = (props) => {

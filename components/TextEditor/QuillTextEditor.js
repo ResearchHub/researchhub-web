@@ -7,7 +7,6 @@ import numeral from "numeral";
 
 // Component
 import FormButton from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -17,7 +16,6 @@ import ReviewCategorySelector from "~/components/TextEditor/ReviewCategorySelect
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import faIcons from "~/config/themes/icons";
 import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
 import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
 import reviewCategories from "~/components/TextEditor/config/reviewCategories";

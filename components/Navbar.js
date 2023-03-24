@@ -1,6 +1,6 @@
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
-import { useAccount, useEnsName } from "wagmi";
+import { useAccount } from "wagmi";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -13,6 +13,14 @@ import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
+import {
+  EthereumClient,
+  modalConnectors,
+  walletConnectProvider,
+} from "@web3modal/ethereum";
+import { Web3Modal } from "@web3modal/react";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { mainnet, goerli } from "wagmi/chains";
 
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
@@ -49,15 +57,31 @@ const WithdrawalModal = dynamic(() =>
 
 export const NAVBAR_HEIGHT = 68;
 
+const isProduction = process.env.REACT_APP_ENV === "production";
+
+const chains = [isProduction ? mainnet : goerli];
+
+// Wagmi client
+const { provider } = configureChains(chains, [
+  walletConnectProvider({ projectId: "a3e8904e258fe256bf772b764d3acfab" }),
+]);
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: modalConnectors({ appName: "web3Modal", chains }),
+  provider,
+});
+
+// Web3Modal Ethereum Client
+const ethereumClient = new EthereumClient(wagmiClient, chains);
+
 const Navbar = (props) => {
   const { address, isConnected } = useAccount();
-  const { data: ensName } = useEnsName({ address });
 
   const router = useRouter();
   const navbarRef = useRef(null);
-  const { isLoggedIn, user, authChecked, auth, updateUser } = props;
+  const { isLoggedIn, user, auth, updateUser } = props;
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
-  const { isOpen, open, close } = useWeb3Modal();
+  const { open, close } = useWeb3Modal();
 
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook")
@@ -108,12 +132,19 @@ const Navbar = (props) => {
       <PromotionInfoModal />
       <ReCaptchaPrompt />
       <UploadPaperModal />
-      <WithdrawalModal
-        openWeb3ReactModal={open}
-        closeWeb3ReactModal={close}
-        address={address}
-        isConnected={isConnected}
-      />
+      <WagmiConfig client={wagmiClient}>
+        <WithdrawalModal
+          openWeb3ReactModal={open}
+          closeWeb3ReactModal={close}
+          address={address}
+          isConnected={isConnected}
+        />
+        <Web3Modal
+          projectId="a3e8904e258fe256bf772b764d3acfab"
+          ethereumClient={ethereumClient}
+        />
+      </WagmiConfig>
+
       <div
         ref={navbarRef}
         className={`${css(

@@ -1,4 +1,3 @@
-import Loader from "~/components/Loader/Loader";
 import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
 import PropTypes from "prop-types";
 import colors from "~/config/themes/colors";
