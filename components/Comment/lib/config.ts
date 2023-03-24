@@ -1,3 +1,5 @@
+import { breakpoints } from "~/config/themes/screen";
+
 const config = {
   pageSize: 20,
   sidebar: {
