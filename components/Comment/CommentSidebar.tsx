@@ -9,6 +9,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Comment } from "./lib/types";
 import { getBountyAmount } from "./lib/bounty";
 import countComments from "./lib/countComments";
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { breakpoints } from "~/config/themes/screen";
+
+
 
 type Args = {
   children: any;
@@ -24,6 +28,7 @@ const CommentSidebar = ({
   isInitialFetchDone = false,
 }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [drawerEl, setDrawerEl] = useState<null | HTMLElement>(null);
   const openBountyAmount = comments.reduce(
     (total, comment) => total + getBountyAmount({ comment }),
     0
@@ -31,78 +36,114 @@ const CommentSidebar = ({
   const commentCount = useMemo(() => countComments({ comments }), [comments]);
 
   useEffect(() => {
-    const storageValue = window.localStorage.getItem(`feature-sidebar-is-open`);
-    const isOpen = (storageValue === null || storageValue === "true") ? true : false
-    
-    console.log('storageValue', storageValue)
-    console.log('isOpen', isOpen)
-    setIsOpen(isOpen);
+    if (document.documentElement.clientWidth < breakpoints.small.int) {
+      setDrawerEl(document.body)
+    }
   }, []);
 
-  const _setIsOpen = (isOpen) => {
-    setIsOpen(isOpen);
-    window.localStorage.setItem(`feature-sidebar-is-open`, isOpen);
-  }
+  useEffect(() => {
+    if (isOpen && isInitialFetchDone) {
+      setTimeout(() => {
+        setReadyForInitialRender(true);
+      }, 1000);
+    }
+  }, [isOpen, isInitialFetchDone])
 
   return (
     <div
       className={css(
-        styles.sidebar,
-        isOpen ? styles.sidebarOpen : styles.sidebarClosed
+        drawerEl
+          ? [styles.drawer]
+          : [styles.sidebar, isOpen ? styles.sidebarOpen : styles.sidebarClosed]
       )}
     >
       <div className={css(styles.feedWrapper)}>
-        <div className={css(styles.sidebarHeader)}>
-          Discussion
-          <IconButton
-            onClick={() => {
-              _setIsOpen(false);
-            }}
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </IconButton>
-        </div>
         {isInitialFetchDone && (
           <CommentSidebarToggle
             isOpen={isOpen}
             setIsOpen={(isOpen) => {
-              _setIsOpen(isOpen);
-              setReadyForInitialRender(true);
+              setIsOpen(isOpen);
             }}
             bountyAmount={openBountyAmount}
             commentCount={commentCount}
           />
         )}
-        {children}
+
+        {drawerEl ? (
+          <SwipeableDrawer
+            container={drawerEl}
+            anchor="bottom"
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            onOpen={() => setIsOpen(true)}
+            swipeAreaWidth={50}
+            disableSwipeToOpen={false}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            PaperProps={{
+              sx:{
+                top: 35,
+                borderTopLeftRadius: "28px",
+                borderTopRightRadius: "28px",
+              }
+            }}
+          >
+            <div className={css(styles.pullerBtn)} />
+            <div className={css(styles.drawerWrapper)}>
+              <div className={css(styles.sidebarHeader)}>
+                Discussion
+                <IconButton
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </IconButton>
+              </div>
+
+              {children}
+            </div>
+          </SwipeableDrawer>
+        ) : (
+          <>
+            <div className={css(styles.sidebarHeader)}>
+              Discussion
+              <IconButton
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </IconButton>
+            </div>
+            {children}
+          </>
+        )}
+
       </div>
     </div>
   );
 };
 
-// FIXME: Figure out whether to animate or not
-// const slideOpenKeyframe = {
-//   "0%": {
-//     // marginRight: -config.sidebar.width,
-//     width: 0
-//   },
-
-//   "100%": {
-//     // marginRight: 0,
-//     width: config.sidebar.width
-//   },
-// };
-
-// const slideCloseKeyframe = {
-//   "0%": {
-//     width: config.sidebar.width
-//   },
-
-//   "100%": {
-//     width: 0
-//   },
-// };
 
 const styles = StyleSheet.create({
+  drawer: {
+  },
+  drawerWrapper: {
+    height: '100%',
+    overflow: 'auto',
+    padding: 25,
+  },
+  pullerBtn: {
+    width: 30,
+    height: 6,
+    backgroundColor: "gray",
+    borderRadius: 3,
+    position: 'absolute',
+    top: 8,
+    left: 'calc(50% - 15px)',
+  },
   sidebar: {
     boxShadow: "8px 30px 30px rgba(21, 21, 21, 0.2)",
     borderLeft: `1px solid ${moduleColors.border}`,
@@ -125,19 +166,15 @@ const styles = StyleSheet.create({
   },
   sidebarOpen: {
     width: config.sidebar.width,
-    // animationName: [slideOpenKeyframe],
-    // animationDuration: "0.2s",
-    // animationDirection: "normal",
-    // animationFillMode: "forwards",
-    // animationTiming: "ease-in",
+    [`@media only screen and (max-width: 1600px)`]: {
+      width: 420,
+    },
+    [`@media only screen and (max-width: 1550px)`]: {
+      width: 0,
+    }
   },
   sidebarClosed: {
     width: 0,
-    // animationName: [slideCloseKeyframe],
-    // animationDuration: "0.2s",
-    // animationDirection: "normal",
-    // animationFillMode: "forwards",
-    // animationTiming: "ease-out",
   },
 });
 

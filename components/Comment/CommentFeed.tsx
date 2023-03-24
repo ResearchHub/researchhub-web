@@ -33,7 +33,7 @@ type Args = {
 
 const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
   const [readyForInitialRender, setReadyForInitialRender] =
     useState<boolean>(false);
@@ -63,7 +63,9 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
         console.log('error', error)
         // FIXME: Implement error handling
       } finally {
-        setIsFetching(false);
+        if (readyForInitialRender) {
+          setIsFetching(false);
+        }
         setIsInitialFetchDone(true);
       }
     },
@@ -147,11 +149,8 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
       isInitialFetchDone={isInitialFetchDone}
       setReadyForInitialRender={() => {
         if (!readyForInitialRender) {
-          setIsFetching(true);
-          setTimeout(() => {
-            setIsFetching(false);
-            setReadyForInitialRender(true);
-          }, 1000);
+          setIsFetching(false);
+          setReadyForInitialRender(true);
         }
       }}
     >
