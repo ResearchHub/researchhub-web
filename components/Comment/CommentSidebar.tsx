@@ -27,7 +27,7 @@ const CommentSidebar = ({
   setReadyForInitialRender,
   isInitialFetchDone = false,
 }: Args) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   const [drawerEl, setDrawerEl] = useState<null | HTMLElement>(null);
   const openBountyAmount = comments.reduce(
     (total, comment) => total + getBountyAmount({ comment }),
