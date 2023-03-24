@@ -32,7 +32,7 @@ const CommentSidebar = ({
   const commentCount = useMemo(() => countComments({ comments }), [comments]);
 
   useEffect(() => {
-    if (document.documentElement.clientWidth < breakpoints.small.int) {
+    if (document.documentElement.clientWidth <= config.drawer.displayForBreakpoint) {
       setDrawerEl(document.body)
     }
   }, []);
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     height: "100vh",
   },
   sidebarOpen: {
-    width: config.sidebar.width,
+    width: 500,
     [`@media only screen and (max-width: 1600px)`]: {
       width: 420,
     },
