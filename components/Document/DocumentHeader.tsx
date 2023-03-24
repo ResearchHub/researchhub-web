@@ -5,7 +5,6 @@ import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nullthrows } from "~/config/utils/nullchecks";
 import {
   parseAuthorProfile,
@@ -297,7 +296,7 @@ function DocumentHeader({
 
   return (
     // @ts-ignore
-    (<ReactPlaceholder
+    <ReactPlaceholder
       ready={document.isReady}
       showLoadingAnimation
       customPlaceholder={<DocumentHeaderPlaceholder />}
@@ -521,7 +520,7 @@ function DocumentHeader({
           </div>
         </div>
       )}
-    </ReactPlaceholder>)
+    </ReactPlaceholder>
   );
 }
 

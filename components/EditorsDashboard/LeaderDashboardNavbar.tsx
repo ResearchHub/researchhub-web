@@ -5,7 +5,6 @@ import { ReactElement, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import FormSelect from "../Form/FormSelect";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLongArrowAltDown,
   faLongArrowAltUp,

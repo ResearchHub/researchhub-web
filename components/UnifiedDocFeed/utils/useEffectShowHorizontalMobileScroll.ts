@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const useEffectShowHorizontalMobileScroll = ({
   elem,
   handleShowScrollUI,
@@ -16,9 +15,7 @@ const useEffectShowHorizontalMobileScroll = ({
   };
 
   if (elem) {
-    const hasHorizontalScroll =
-      elem.clientWidth <
-      elem.scrollWidth;
+    const hasHorizontalScroll = elem.clientWidth < elem.scrollWidth;
 
     if (hasHorizontalScroll) {
       handleShowScrollUI(hasHorizontalScroll);
