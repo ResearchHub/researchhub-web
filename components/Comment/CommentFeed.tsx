@@ -61,8 +61,6 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
         console.log('error', error)
         // FIXME: Implement error handling
       } finally {
-        // if (readyForInitialRender) {
-          // }
         setIsFetching(false);
         setIsInitialFetchDone(true);
       }
@@ -71,7 +69,6 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   );
 
   const handleFetchNext = () => handleFetch({ url: fetchUrls.next });
-  const handleFetchPrev = () => handleFetch({ url: fetchUrls.prev });
 
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {

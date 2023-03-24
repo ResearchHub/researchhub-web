@@ -10,7 +10,6 @@ import { Comment } from "./lib/types";
 import { getBountyAmount } from "./lib/bounty";
 import countComments from "./lib/countComments";
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   children: any;
@@ -22,7 +21,6 @@ type Args = {
 const CommentSidebar = ({
   children,
   comments,
-  // setReadyForInitialRender,
   isInitialFetchDone = false,
 }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -38,14 +36,6 @@ const CommentSidebar = ({
       setDrawerEl(document.body)
     }
   }, []);
-
-  // useEffect(() => {
-  //   if (isOpen && isInitialFetchDone) {
-  //     setTimeout(() => {
-  //       setReadyForInitialRender(true);
-  //     }, 1000);
-  //   }
-  // }, [isOpen, isInitialFetchDone])
 
   return (
     <div
