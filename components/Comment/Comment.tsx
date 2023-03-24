@@ -5,10 +5,13 @@ import CommentActions from "./CommentActions";
 import { Comment as CommentType } from "./lib/types";
 import { useMemo, useState } from "react";
 import CommentEditor from "./CommentEditor";
-import { TopLevelDocument } from "~/config/types/root_types";
+import { parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { hasOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
+import { useSelector } from "react-redux";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { RootState } from "~/redux";
 
 type CommentArgs = {
   comment: CommentType;
@@ -26,6 +29,9 @@ const Comment = ({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
 
   const _childCommentElems = useMemo(() => {
     return comment.children.map((c) => (
@@ -69,6 +75,7 @@ const Comment = ({
             <CommentEditor
               handleSubmit={({ content }) => handleUpdate({ comment, content })}
               content={comment.content}
+              author={currentUser?.authorProfile}
               editorId={`edit-${comment.id}`}
             />
           ) : (
@@ -108,6 +115,7 @@ const Comment = ({
           <CommentEditor
             handleSubmit={({ content }) => handleCreate({ content })}
             editorId={`reply-to-${comment.id}`}
+            author={currentUser?.authorProfile}
             placeholder={`Enter reply to this comment`}
           />
         </div>

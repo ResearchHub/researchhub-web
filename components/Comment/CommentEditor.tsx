@@ -29,6 +29,7 @@ type CommentEditorArgs = {
   commentType?: COMMENT_TYPES;
   author?: AuthorProfile | null;
   previewModeAsDefault?: boolean;
+  allowCommentTypeSelection?: boolean;
 };
 
 const CommentEditor = ({
@@ -40,6 +41,7 @@ const CommentEditor = ({
   commentType,
   author,
   previewModeAsDefault = false,
+  allowCommentTypeSelection = false,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
@@ -119,12 +121,14 @@ const CommentEditor = ({
                 {author.firstName} {author.lastName}
               </div>
             </div>
-            <span style={{ marginTop: -5 }}>
-              <CommentTypeSelector
-                handleSelect={_setCommentType}
-                selectedType={_commentType}
-              />
-            </span>
+            {allowCommentTypeSelection &&
+              <span style={{ marginTop: -5 }}>
+                <CommentTypeSelector
+                  handleSelect={_setCommentType}
+                  selectedType={_commentType}
+                />
+              </span>
+            }
           </div>
         )}
         <div className={css(styles.editor)}>
