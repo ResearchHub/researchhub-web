@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     transform: "translate(-50%, -50%)",
-    zIndex: 2,
+    zIndex: 20000000,
     borderRadius: 100,
     minWidth: 70,
     background: "white",
