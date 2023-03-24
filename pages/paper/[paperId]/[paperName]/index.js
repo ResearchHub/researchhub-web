@@ -341,6 +341,16 @@ const Paper = ({
                     }}
                   />
                 } */}
+                <div className={css(styles.sidebarHeader)}>
+                  <h3 className={css(styles.discussionSectionTitle)}>
+                    Discussion
+                  </h3>
+                  {paperV2.isReady && (
+                    <span className={css(styles.discussionCount)}>
+                      {discussionCount}
+                    </span>
+                  )}
+                </div>
                 <CommentFeed document={paperV2} />
               </div>
             )}
@@ -452,6 +462,24 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 30,
     position: "relative",
+  },
+  sidebarHeader: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 25,
+  },
+  discussionSectionTitle: {
+    margin: 0,
+  },
+  discussionCount: {
+    color: colors.BLACK(),
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "3px",
+    padding: "3px 10px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 10,
+    alignSelf: "center",
   },
   main: {
     boxSizing: "border-box",
