@@ -1,8 +1,8 @@
 import { ClipLoader, DotLoader, BeatLoader } from "react-spinners";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
-import { Lottie } from "@crello/react-lottie";
 import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const Loader = (props) => {
   const {
@@ -63,19 +63,16 @@ const Loader = (props) => {
 
       default:
         return (
-          // <ClipLoader
-          //   css={loaderStyle && loaderStyle}
-          //   sizeUnit={sizeUnit ? sizeUnit : "px"}
-          //   size={size ? size : 35}
-          //   color={color ? color : colors.BLUE(1)}
-          //   loading={loading}
-          //   style={style}
-          // />
-          <Lottie
-            config={defaultOptions}
-            height={size ? size : 50}
-            width={size ? size : 50}
-          />
+          <Player
+            autoplay
+            loop
+            mode="normal"
+            src={"/RH_animated_flask_new_starting_frame.json"}
+            style={{
+              width: size ? size : 50,
+              height: size ? size : 50,
+            }}
+          ></Player>
         );
     }
   };

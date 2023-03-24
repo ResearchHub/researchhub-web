@@ -1,6 +1,6 @@
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal } from "@web3modal/react";
-import { useAccount, useConnect, useEnsName } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -11,7 +11,7 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
-import colors, { iconColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";

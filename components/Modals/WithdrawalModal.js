@@ -21,7 +21,6 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 import colors from "~/config/themes/colors";
-import { useMetaMask } from "../connectEthereum";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import {
   getEtherscanLink,
@@ -369,32 +368,6 @@ class WithdrawalModal extends Component {
     );
   };
 
-  connectMetaMask = async () => {
-    const { connected, provider, account } = await useMetaMask();
-    if (connected) {
-      this.setUpEthListeners();
-      this.setState({
-        connectedMetaMask: connected,
-        connectedWalletLink: false,
-        ethAccount: account,
-        networkVersion: ethereum.networkVersion,
-        ethAccountIsValid: isAddress(account),
-        metaMaskVisible: true,
-        walletLinkVisible: false,
-      });
-
-      if (!this.provider) {
-        this.provider = provider;
-      }
-    } else {
-      emptyFncWithMsg("Failed to connect MetaMask");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
-
   setUpEthListeners() {
     if (!this.state.listnerNetwork && !this.state.listenerAccount) {
       this.setState({
@@ -540,7 +513,6 @@ class WithdrawalModal extends Component {
             provider={this.provider}
             ethAddressOnChange={this.handleNetworkAddressInput}
             onSuccess={this.setTransactionHash}
-            connectMetaMask={this.connectMetaMask}
             setMessage={this.props.setMessage}
             showMessage={this.props.showMessage}
             openWeb3ReactModal={this.props.openWeb3ReactModal}

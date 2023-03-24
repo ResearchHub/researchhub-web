@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { contractABI, stagingContractABI } from "./contractAbi";
-import { ethers } from "ethers";
+// import { formatUnits, parseEther } from "ethers/lib/utils";
+import { formatUnits, parseEther } from "@ethersproject/units";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -22,7 +23,6 @@ import Loader from "../Loader/Loader";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { INFURA_ENDPOINT } from "~/config/constants";
 import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";
@@ -56,7 +56,7 @@ export function DepositScreen(props) {
     address: RSCContractAddress,
     abi: CONTRACT_ABI,
     functionName: "transfer",
-    args: [HOTWALLET, amount ? ethers.utils.parseEther(amount)._hex : 0],
+    args: [HOTWALLET, amount ? parseEther(amount)._hex : 0],
   });
 
   const { data, write } = useContractWrite(config);
@@ -77,7 +77,7 @@ export function DepositScreen(props) {
 
   useEffect(() => {
     if (RSCBalance) {
-      setBalance(ethers.utils.formatUnits(RSCBalance, 18));
+      setBalance(formatUnits(RSCBalance, 18));
     }
   }, [RSCBalance]);
 

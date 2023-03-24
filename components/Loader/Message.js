@@ -58,7 +58,9 @@ class Message extends Component {
         )}
       >
         {message.load ? (
-          <Loader loading={true} />
+          <div className={css(styles.loadContainer)}>
+            <Loader loading={true} />
+          </div>
         ) : (
           <span style={inlineStyle.check} color="#fff">
             {message.error ? (
@@ -101,6 +103,11 @@ var styles = StyleSheet.create({
   load: {
     background: "rgb(249, 249, 252)",
     boxShadow: "0px 0px 10px 0px #00000026",
+  },
+  loadContainer: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
   },
   hide: {
     display: "none",

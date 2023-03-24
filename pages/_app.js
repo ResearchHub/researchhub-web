@@ -1,5 +1,4 @@
 import "./stylesheets/App.css";
-import "@fortawesome/fontawesome-svg-core/styles.css";
 import "~/components/CKEditor/CKEditor.css";
 import "~/components/EditorsDashboard/stylesheets/date.css";
 import "~/components/Modals/Stylesheets/Dnd.css";
@@ -19,7 +18,6 @@ import "react-tagsinput/react-tagsinput.css";
 import { Analytics } from "@vercel/analytics/react";
 import { configureStore } from "~/redux/configureStore";
 import { init as initApm } from "@elastic/apm-rum";
-import { LEFT_SIDEBAR_FORCE_MIN_KEY } from "~/components/Home/sidebar/RootLeftSidebar";
 import { MessageActions } from "~/redux/message";
 import { Provider } from "react-redux";
 import { SIFT_BEACON_KEY } from "~/config/constants";
@@ -29,7 +27,6 @@ import Base from "./Base";
 import nookies from "nookies";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
-import Head from "next/head";
 import Script from "next/script";
 
 if (process.env.ELASTIC_APM_URL) {

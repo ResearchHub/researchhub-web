@@ -26,7 +26,6 @@ import colors from "~/config/themes/colors";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-// import { useMetaMask } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
@@ -559,59 +558,6 @@ class PaperTransactionModal extends Component {
     );
   };
 
-  renderMetaMaskButton = () => {
-    return (
-      <div
-        className={css(
-          styles.toggle,
-          this.state.metaMaskVisible && styles.activeToggle
-        )}
-        onClick={async () => {
-          if (!this.state.connectedMetaMask) {
-            await this.connectMetaMask();
-          }
-          this.transitionScreen(() =>
-            this.setState({
-              nextScreen: true,
-              offChain: false,
-              metaMaskVisible: true,
-              walletLinkVisible: false,
-            })
-          );
-        }}
-      >
-        MetaMask
-      </div>
-    );
-  };
-
-  connectMetaMask = async () => {
-    const { connected, account, provider } = await useMetaMask();
-    if (connected) {
-      this.setUpEthListeners();
-      emptyFncWithMsg("Connected to MetaMask");
-      const valid = this.isAddress(account);
-      this.setState(
-        {
-          connectedMetaMask: connected,
-          connectedWalletLink: false,
-          ethAccount: account,
-          networkVersion: ethereum.networkVersion,
-          ethAccountIsValid: this.isAddress(account),
-        },
-        () => {
-          valid && this.updateBalance(provider);
-        }
-      );
-    } else {
-      emptyFncWithMsg("Failed to connect MetaMask");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
-
   setUpEthListeners() {
     this.setState({
       listenerNetwork: ethereum.on("networkChanged", () =>
@@ -668,8 +614,6 @@ class PaperTransactionModal extends Component {
         >
           In-App
         </div>
-        {/* {this.renderMetaMaskButton()} */}
-        {/* {this.renderWalletLinkButton()} */}
       </div>
     );
   };
