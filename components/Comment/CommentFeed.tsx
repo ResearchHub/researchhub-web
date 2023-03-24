@@ -164,6 +164,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
               allowBounty={true}
               author={currentUser?.authorProfile}
               previewModeAsDefault={true}
+              allowCommentTypeSelection={true}
             />
           </div>
           <div>{_commentsElems}</div>
