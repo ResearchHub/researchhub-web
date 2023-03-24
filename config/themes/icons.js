@@ -1,7 +1,27 @@
+import { faChevronUp, faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import {} from "@fortawesome/pro-regular-svg-icons";
+import { faQuestionCircle } from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faComment,
+  faVideoPlus,
+  faUnderline,
+  faQuoteRight,
+  faListOl,
+  faLink,
+  faItalic,
+  faImagePolaroid,
+  h2,
+  faH1,
+  faBracketsCurly,
+  faListUl,
+  faBold,
+  faUp,
+  faDown,
+  faCircleExclamation,
+} from "@fortawesome/pro-solid-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleExclamation } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "./screen";
 
 export const coinStack = ({ styles, grey }) => (
@@ -37,23 +57,23 @@ export const RSC = (props = {}) => {
 };
 
 export const voteWidgetIcons = {
-  downvote: <i className="fa-solid fa-down"></i>,
-  upvote: <i className="fa-solid fa-up"></i>,
+  downvote: <FontAwesomeIcon icon={faDown}></FontAwesomeIcon>,
+  upvote: <FontAwesomeIcon icon={faUp}></FontAwesomeIcon>,
 };
 
 export const textEditorIcons = {
-  bold: <i className="fa-solid fa-bold"></i>,
-  bulletedList: <i className="fa-solid fa-list-ul"></i>,
-  code: <i className="fa-solid fa-brackets-curly"></i>,
-  h1: <i className="fa-solid fa-h1"></i>,
-  h1: <i className="fa-solid h2"></i>,
-  image: <i className="fa-solid fa-image-polaroid"></i>,
-  italic: <i className="fa-solid fa-italic"></i>,
-  link: <i className="fa-solid fa-link"></i>,
-  numberedList: <i className="fa-solid fa-list-ol"></i>,
-  quote: <i className="fa-solid fa-quote-right"></i>,
-  underline: <i className="fa-solid fa-underline"></i>,
-  video: <i className="fa-solid fa-video-plus"></i>,
+  bold: <FontAwesomeIcon icon={faBold}></FontAwesomeIcon>,
+  bulletedList: <FontAwesomeIcon icon={faListUl}></FontAwesomeIcon>,
+  code: <FontAwesomeIcon icon={faBracketsCurly}></FontAwesomeIcon>,
+  h1: <FontAwesomeIcon icon={faH1}></FontAwesomeIcon>,
+  h1: <FontAwesomeIcon icon={h2}></FontAwesomeIcon>,
+  image: <FontAwesomeIcon icon={faImagePolaroid}></FontAwesomeIcon>,
+  italic: <FontAwesomeIcon icon={faItalic}></FontAwesomeIcon>,
+  link: <FontAwesomeIcon icon={faLink}></FontAwesomeIcon>,
+  numberedList: <FontAwesomeIcon icon={faListOl}></FontAwesomeIcon>,
+  quote: <FontAwesomeIcon icon={faQuoteRight}></FontAwesomeIcon>,
+  underline: <FontAwesomeIcon icon={faUnderline}></FontAwesomeIcon>,
+  video: <FontAwesomeIcon icon={faVideoPlus}></FontAwesomeIcon>,
 };
 
 export const WarningIcon = (props) => {
@@ -95,7 +115,7 @@ export const PaperDiscussionIcon = ({
         overrideStyle && overrideStyle
       )}
     >
-      <i className="fa-solid fa-comment"></i>
+      <FontAwesomeIcon icon={faComment}></FontAwesomeIcon>
     </span>
   );
 };
@@ -369,7 +389,7 @@ export const QuestionIcon = ({
         color: color,
       }}
     >
-      <i className="fa-duotone fa-question-circle"></i>
+      <FontAwesomeIcon icon={faQuestionCircle}></FontAwesomeIcon>
     </span>
   );
 };
@@ -448,7 +468,7 @@ export const DownIcon = ({
         overrideStyle && overrideStyle
       )}
     >
-      {<i className="fa-regular fa-chevron-down"></i>}
+      {<FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>}
     </span>
   );
 };
@@ -467,7 +487,7 @@ export const UpIcon = ({
         overrideStyle && overrideStyle
       )}
     >
-      {<i className="fa-regular fa-chevron-up"></i>}
+      {<FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>}
     </span>
   );
 };

@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect, useRef } from "react";
+import { AUTH_TOKEN } from "~/config/constants";
 import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
