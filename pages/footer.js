@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub } from "@fortawesome/pro-brands-svg-icons";
-import { faReddit } from "@fortawesome/pro-brands-svg-icons";
-import { faTwitter } from "@fortawesome/pro-brands-svg-icons";
-import { faDiscord } from "@fortawesome/pro-brands-svg-icons";
-import { faMedium } from "@fortawesome/pro-brands-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { faReddit } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faMedium } from "@fortawesome/free-brands-svg-icons";
 import { Component } from "react";
 
 // NPM Modules
