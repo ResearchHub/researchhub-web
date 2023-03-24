@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThLarge } from "@fortawesome/pro-solid-svg-icons";
+import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
@@ -26,7 +26,7 @@ class FeedList extends Component {
     this.feeds = [
       {
         label: "All",
-        icon: <FontAwesomeIcon icon={faThLarge}></FontAwesomeIcon>,
+        icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
         href: "/",
         as: "/",
       },

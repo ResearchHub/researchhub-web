@@ -6,7 +6,7 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
 import { faBook } from "@fortawesome/pro-duotone-svg-icons";
-import { faThLarge } from "@fortawesome/pro-solid-svg-icons";
+import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { faHouse } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
@@ -77,7 +77,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: <FontAwesomeIcon icon={faThLarge}></FontAwesomeIcon>,
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,

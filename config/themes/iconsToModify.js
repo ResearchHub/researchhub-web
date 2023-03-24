@@ -48,7 +48,7 @@ import {
   faSort,
   faStar as faStarFilled,
   faStop,
-  faThLarge,
+  faGrid2,
   faThumbsDown as solidThumbsDown,
   faThumbsUp as solidThumbsUp,
   faThumbtack,

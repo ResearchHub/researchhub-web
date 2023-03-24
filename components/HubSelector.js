@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThLarge } from "@fortawesome/pro-solid-svg-icons";
+import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import { useState, useMemo } from "react";
@@ -49,7 +49,7 @@ const HubSelector = ({ hubState }) => {
       html: (
         <Link href={`/hubs`} className={css(styles.primaryButton)}>
           <span className={css(styles.squaresIcon)}>
-            {<FontAwesomeIcon icon={faThLarge}></FontAwesomeIcon>}
+            {<FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>}
           </span>
           All Hubs
         </Link>
