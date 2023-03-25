@@ -1,4 +1,5 @@
 import "./stylesheets/App.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import "~/components/CKEditor/CKEditor.css";
 import "~/components/EditorsDashboard/stylesheets/date.css";
 import "~/components/Modals/Stylesheets/Dnd.css";
