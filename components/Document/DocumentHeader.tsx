@@ -343,17 +343,25 @@ function DocumentHeader({
             />
           </div>
 
-          <div className={css(styles.submissionDetailsContainer)}>
+          {/* <div className={css(styles.submissionDetailsContainer)}>
             <SubmissionDetails
               createdDate={createdDate}
               hubs={hubs}
               createdBy={createdBy}
               avatarSize={30}
             />
-          </div>
+          </div> */}
           <h1 className={css(styles.title)}>
             {unescapeHtmlString(title ?? "")}
           </h1>
+          {/* {documentType === "bounty" && bountyAmount === 0 ? null : (
+            <div className={css(styles.type, styles.additionalDetail)}>
+              <ContentBadge
+                contentType={documentType}
+                label={documentType === "bounty" && bountyAmount + " RSC"}
+              />
+            </div>
+          )}           */}
           <div className={css(styles.metadata)}>
             {documentType !== "question" && authors.length > 0 && (
               <div className={css(styles.metadataRow)}>
@@ -365,14 +373,7 @@ function DocumentHeader({
                       className={css(styles.claimProfile)}
                       onClick={() => setIsAuthorClaimModalOpen(true)}
                     >
-                      Claim your profile to earn ResearchCoin
-                      <img
-                        src={"/static/icons/coin-filled.png"}
-                        draggable={false}
-                        className={css(styles.coinIcon)}
-                        alt="RSC Coin"
-                        height={20}
-                      />
+                      Are you the author?
                     </span>
                   )}
                 </div>
@@ -449,15 +450,7 @@ function DocumentHeader({
                   styles={[styles.smallScreenVoteWidget]}
                 />
               </div>
-              {documentType === "bounty" && bountyAmount === 0 ? null : (
-                <div className={css(styles.type, styles.additionalDetail)}>
-                  <ContentBadge
-                    contentType={documentType}
-                    label={documentType === "bounty" && bountyAmount + " RSC"}
-                  />
-                </div>
-              )}
-              <ALink
+              {/* <ALink
                 overrideStyle={[styles.comments, styles.additionalDetail]}
                 href={"#comments"}
               >
@@ -468,7 +461,7 @@ function DocumentHeader({
                 <span className={css(styles.commentsText)}>
                   &nbsp;{`comments`}
                 </span>
-              </ALink>
+              </ALink> */}
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon, styles.starIcon)}>
@@ -485,7 +478,7 @@ function DocumentHeader({
                   </span>
                 </div>
               )}
-              {document.boostAmount > 0 && (
+              {/* {document.boostAmount > 0 && (
                 <div
                   className={css(styles.boostAmount, styles.additionalDetail)}
                   data-tip="ResearchCoin tipped by community members"
@@ -502,7 +495,7 @@ function DocumentHeader({
                     +{boostAmount} tipped
                   </span>
                 </div>
-              )}
+              )} */}
             </div>
             <div className={css(styles.actions)}>
               <DocumentActions
@@ -644,7 +637,8 @@ const styles = StyleSheet.create({
   },
   claimProfile: {
     cursor: "pointer",
-    color: colors.MEDIUM_GREY(),
+    // color: colors.MEDIUM_GREY(),
+    color: colors.NEW_BLUE(),
     fontWeight: 400,
     marginLeft: 8,
     // fontSize: 14,
@@ -673,6 +667,8 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 10,
+    fontSize: 28,
+    fontWeight: 600,
   },
   metadata: {
     marginTop: 25,

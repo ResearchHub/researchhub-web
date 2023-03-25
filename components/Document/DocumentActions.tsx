@@ -16,6 +16,8 @@ import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
 import ReactTooltip from "react-tooltip";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import Image from "next/image";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 
 type Args = {
   currentUser: any;
@@ -60,19 +62,19 @@ function DocumentActions({
   }
 
   const actionButtons = [
-    {
-      active: openPaperPDFModal,
-      key: "pdf",
-      html: (
-        <div
-          className={css(styles.actionIcon)}
-          data-tip={"Download PDF"}
-          onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
-        >
-          {icons.download}
-        </div>
-      ),
-    },
+    // {
+    //   active: openPaperPDFModal,
+    //   key: "pdf",
+    //   html: (
+    //     <div
+    //       className={css(styles.actionIcon)}
+    //       data-tip={"Download PDF"}
+    //       onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
+    //     >
+    //       {icons.download}
+    //     </div>
+    //   ),
+    // },
     {
       active: canEdit,
       key: "edit",
@@ -85,93 +87,162 @@ function DocumentActions({
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)}>{icons.pencil}</div>
+          <div className={css(styles.actionIcon)} style={{border: `1px solid ${colors.ORANGE_DARK2()} !important `}}>
+            <ResearchCoinIcon />
+            <span style={{fontWeight: 500, color: colors.ORANGE_DARK2()}}>
+              {`5K Bounty`}
+            </span>
+          </div>
         </PermissionNotificationWrapper>
       ),
-    },
+    },   
+
     {
-      active: true,
-      key: "support",
-      tooltip: `Support ${unifiedDocument?.documentType}`,
+      active: canEdit,
+      key: "edit",
+      tooltip: "Edit",
       html: (
-        <span>
-          <PaperPromotionButton
-            paper={unifiedDocument.document}
-            customStyle={styles.actionIcon}
-          />
-        </span>
+        <PermissionNotificationWrapper
+          modalMessage="edit document"
+          onClick={handleEdit}
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          hideRipples={true}
+        >
+          <div className={css(styles.actionIcon)}>
+            <Image
+              src="/static/icons/tip.png"
+              height={20}
+              width={21}
+              alt="Tip"
+            />
+            <span style={{fontWeight: 500}}>{`Tip`}</span>
+          </div>
+        </PermissionNotificationWrapper>
       ),
-    },
+    },    
     {
-      active: true,
-      key: "flag",
-      tooltip: "Flag content",
+      active: canEdit,
+      key: "edit",
+      tooltip: "Edit",
       html: (
-        <span>
-          <FlagButtonV2
-            modalHeaderText="Flagging"
-            flagIconOverride={styles.flagButton}
-            onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-              flagGrmContent({
-                contentID: unifiedDocument?.document?.id,
-                contentType: unifiedDocument?.documentType,
-                flagReason,
-                onError: renderErrorMsg,
-                onSuccess: renderSuccessMsg,
-              });
-            }}
-          />
-        </span>
+        <PermissionNotificationWrapper
+          modalMessage="edit document"
+          onClick={handleEdit}
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          hideRipples={true}
+        >
+          <div className={css(styles.actionIcon)}>
+            {icons.pencil}
+            <span style={{fontWeight: 500}}>{`Edit`}</span>
+          </div>
+        </PermissionNotificationWrapper>
       ),
-    },
+    },    
+     
     {
-      active: isModerator || isSubmitter || isHubEditor,
-      key: "remove-restore",
-      tooltip: isRemoved ? "Restore Page" : "Remove Page",
+      active: canEdit,
+      key: "edit",
+      tooltip: "Edit",
       html: (
-        <span className={css(styles.actionIcon, styles.moderatorAction)}>
-          <ActionButton
-            isModerator={true}
-            paperId={unifiedDocument?.document?.id}
-            restore={isRemoved}
-            icon={isRemoved ? icons.plus : icons.minus}
-            onAction={() => {
-              if (isRemoved) {
-                restoreDocument({
-                  unifiedDocumentId: unifiedDocument.id,
-                  onError: emptyFncWithMsg,
-                  onSuccess: () => {
-                    setIsRemoved(false);
-                    onDocumentRestore();
-                  },
-                });
-              } else {
-                censorDocument({
-                  unifiedDocumentId: unifiedDocument.id,
-                  onError: emptyFncWithMsg,
-                  onSuccess: (): void => {
-                    setIsRemoved(true);
-                    onDocumentRemove();
-                  },
-                });
-              }
-            }}
-            containerStyle={styles.moderatorContainer}
-            iconStyle={styles.moderatorIcon}
-          />
-        </span>
+        <PermissionNotificationWrapper
+          modalMessage="edit document"
+          onClick={handleEdit}
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          hideRipples={true}
+        >
+          <div className={css(styles.actionIcon)}>
+            {icons.commentsSolid}
+            <span style={{fontWeight: 500}}>{`22`}</span>
+          </div>
+        </PermissionNotificationWrapper>
       ),
-    },
-    {
-      active: isModerator,
-      key: "admin",
-      tooltip: "Admin",
-      html: (
-        <span className={css(styles.actionIcon, styles.moderatorAction)}>
-          <AdminButton unifiedDocumentId={unifiedDocument.id} />
-        </span>
-      ),
-    },
+    },    
+    // {
+    //   active: true,
+    //   key: "support",
+    //   tooltip: `Support ${unifiedDocument?.documentType}`,
+    //   html: (
+    //     <span>
+    //       <PaperPromotionButton
+    //         paper={unifiedDocument.document}
+    //         customStyle={styles.actionIcon}
+    //       />
+    //     </span>
+    //   ),
+    // },
+    // {
+    //   active: true,
+    //   key: "flag",
+    //   tooltip: "Flag content",
+    //   html: (
+    //     <span>
+    //       <FlagButtonV2
+    //         modalHeaderText="Flagging"
+    //         flagIconOverride={styles.flagButton}
+    //         onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+    //           flagGrmContent({
+    //             contentID: unifiedDocument?.document?.id,
+    //             contentType: unifiedDocument?.documentType,
+    //             flagReason,
+    //             onError: renderErrorMsg,
+    //             onSuccess: renderSuccessMsg,
+    //           });
+    //         }}
+    //       />
+    //     </span>
+    //   ),
+    // },
+    // {
+    //   active: isModerator || isSubmitter || isHubEditor,
+    //   key: "remove-restore",
+    //   tooltip: isRemoved ? "Restore Page" : "Remove Page",
+    //   html: (
+    //     <span className={css(styles.actionIcon, styles.moderatorAction)}>
+    //       <ActionButton
+    //         isModerator={true}
+    //         paperId={unifiedDocument?.document?.id}
+    //         restore={isRemoved}
+    //         icon={isRemoved ? icons.plus : icons.minus}
+    //         onAction={() => {
+    //           if (isRemoved) {
+    //             restoreDocument({
+    //               unifiedDocumentId: unifiedDocument.id,
+    //               onError: emptyFncWithMsg,
+    //               onSuccess: () => {
+    //                 setIsRemoved(false);
+    //                 onDocumentRestore();
+    //               },
+    //             });
+    //           } else {
+    //             censorDocument({
+    //               unifiedDocumentId: unifiedDocument.id,
+    //               onError: emptyFncWithMsg,
+    //               onSuccess: (): void => {
+    //                 setIsRemoved(true);
+    //                 onDocumentRemove();
+    //               },
+    //             });
+    //           }
+    //         }}
+    //         containerStyle={styles.moderatorContainer}
+    //         iconStyle={styles.moderatorIcon}
+    //       />
+    //     </span>
+    //   ),
+    // },
+    // {
+    //   active: isModerator,
+    //   key: "admin",
+    //   tooltip: "Admin",
+    //   html: (
+    //     <span className={css(styles.actionIcon, styles.moderatorAction)}>
+    //       <AdminButton unifiedDocumentId={unifiedDocument.id} />
+    //     </span>
+    //   ),
+    // },
   ].filter((action) => action.active);
 
   return (
@@ -250,22 +321,20 @@ const styles = StyleSheet.create({
     },
   },
   actionIcon: {
-    padding: 8,
-    borderRadius: "50%",
-    backgroundColor: "rgba(36, 31, 58, 0.03)",
-    color: "rgba(36, 31, 58, 0.35)",
-    width: 20,
-    minWidth: 20,
-    maxWidth: 20,
+    padding: "8px 16px",
+    borderRadius: "25px",
+    // backgroundColor: "rgba(36, 31, 58, 0.03)",
+    color: colors.BLACK(),
     height: 20,
     minHeight: 20,
     maxHeight: 20,
     display: "flex",
+    columnGap: "5px",
     justifyContent: "center",
     alignItems: "center",
     fontSize: 15,
     cursor: "pointer",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
+    border: `1px solid ${colors.BLACK()}`,
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",
