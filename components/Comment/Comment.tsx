@@ -73,8 +73,12 @@ const Comment = ({
           </div>
           {isEditMode ? (
             <CommentEditor
-              handleSubmit={({ content }) => handleUpdate({ comment, content })}
+              handleSubmit={async (args) => {
+                await handleUpdate(args);
+                setIsEditMode(false);
+              }}
               content={comment.content}
+              commentId={comment.id}
               author={currentUser?.authorProfile}
               editorId={`edit-${comment.id}`}
             />
@@ -113,7 +117,10 @@ const Comment = ({
       {isReplyOpen && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
-            handleSubmit={({ content }) => handleCreate({ content })}
+            handleSubmit={async ({ content, commentType }) => {
+              await handleCreate({ content, commentType, parentId: comment.id });
+              setIsReplyOpen(false);
+            }}
             editorId={`reply-to-${comment.id}`}
             author={currentUser?.authorProfile}
             placeholder={`Enter reply to this comment`}

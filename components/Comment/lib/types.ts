@@ -4,7 +4,7 @@ import { formatDateStandard, timeSince } from "~/config/utils/dates";
 import { isEmpty } from "~/config/utils/nullchecks";
 
 export enum COMMENT_TYPES {
-  DISCUSSION = "DISCUSSION",
+  DISCUSSION = "GENERIC_COMMENT",
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
   ANSWER = "ANSWER",

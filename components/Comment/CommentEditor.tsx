@@ -6,7 +6,7 @@ import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import { QuillFormats, buildQuillModules } from "./lib/quill";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
-import { AuthorProfile } from "~/config/types/root_types";
+import { AuthorProfile, ID } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
 import { COMMENT_TYPES } from "./lib/types";
@@ -22,6 +22,7 @@ const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
   editorId: string;
+  commentId?: ID;
   placeholder?: string;
   handleSubmit: Function;
   content?: object;
@@ -34,6 +35,7 @@ type CommentEditorArgs = {
 
 const CommentEditor = ({
   editorId,
+  commentId,
   placeholder = "Add comment or start a bounty",
   handleSubmit,
   content = {},
@@ -95,7 +97,12 @@ const CommentEditor = ({
         return false;
       }
 
-      await handleSubmit({ content: _content, commentType: _commentType });
+      await handleSubmit({
+        content: _content,
+        ...(commentId && { id: commentId }),
+        ...(!commentId && { commentType: _commentType }),
+      });
+
       dangerouslySetContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
       if (previewModeAsDefault) {
