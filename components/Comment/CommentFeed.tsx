@@ -7,7 +7,7 @@ import {
   updateCommentAPI,
   fetchCommentsAPI,
 } from "./lib/api";
-import { parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
 import { useDispatch, useSelector } from "react-redux";
@@ -78,19 +78,43 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
 
   const handleCommentCreate = async ({
     content,
-    postType,
+    commentType,
+    parentId,
   }: {
     content: object;
-    postType: COMMENT_TYPES;
+    commentType: COMMENT_TYPES;
+    parentId: ID;
   }) => {
     try {
       const comment: CommentType = await createCommentAPI({
         content,
-        postType,
+        commentType,
         documentId: document.id,
         documentType: document.documentType,
+        parentId: parentId,
       });
-      setComments([comment, ...comments]);
+
+      if (parentId) {
+        const foundParent = findComment({ id: parentId, comments });
+
+        if (foundParent) {
+          foundParent.comment.children = [comment, ...foundParent.comment.children]
+
+          replaceComment({
+            prev: foundParent.comment,
+            next: foundParent.comment,
+            list: comments,
+          });
+          const updatedComments = [...comments];
+          setComments(updatedComments); 
+        }
+        else {
+          console.warn("Could not find parent comment. This should not happen.")
+        }       
+      }
+      else {
+        setComments([comment, ...comments]);
+      }
     }
     catch(error) {
       dispatch(setMessage("Could not create a comment at this time"));

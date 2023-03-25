@@ -104,21 +104,15 @@ export const useQuill = (
         theme: options.theme || theme,
       });
 
-      const MagicUrl = require("quill-magic-url").default;
-      obj.Quill.register("modules/magicUrl", MagicUrl);
-      const icons = obj.Quill.import("ui/icons");
-      icons.video = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faVideo} />
-      );
-      icons.image = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faImagePolaroid} />
-      );
-      icons.link = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faLinkSimple} />
-      );
-      icons.blockquote = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faQuoteLeft} />
-      );
+      if (!options.readOnly) {
+        const MagicUrl = require('quill-magic-url').default;
+        obj.Quill.register('modules/magicUrl', MagicUrl);
+        const icons = obj.Quill.import("ui/icons");
+        icons.video = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faVideo} />);
+        icons.image = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faImagePolaroid} />);
+        icons.link = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faLinkSimple} />);
+        icons.blockquote = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faQuoteLeft} />);
+      }
 
       const quill = new obj.Quill(quillRef.current, opts);
       setObj(assign(assign({}, obj), { quill, editor: quill }));
