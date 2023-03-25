@@ -5,13 +5,11 @@ import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import { getSelectedUrlFilters } from "~/components/UnifiedDocFeed/utils/getSelectedUrlFilters";
 import { getFetchDefaults } from "~/components/UnifiedDocFeed/utils/getFetchDefaults";
-import { GetServerSideProps, NextPage } from "next";
-import FeedMenu from "~/components/UnifiedDocFeed/FeedMenu/FeedMenu";
+import { NextPage } from "next";
 
-const Index:NextPage = (props) => {
+const Index: NextPage = (props) => {
   return <HubPage isLiveFeed={true} {...props} />;
-}
-
+};
 
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;

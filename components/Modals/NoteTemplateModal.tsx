@@ -22,6 +22,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { AUTH_TOKEN } from "~/config/constants";
 
 export type TemplateSidebarEntryProps = {
   orgSlug: string;
@@ -53,7 +54,7 @@ function TemplateSidebarEntry({
   const [menuLoading, setMenuLoading] = useState(false);
 
   return (
-    (<div
+    <div
       className={css(
         styles.sidebarSectionContent,
         template.id === selected && styles.active
@@ -103,7 +104,7 @@ function TemplateSidebarEntry({
           )}
         </div>
       )}
-    </div>)
+    </div>
   );
 }
 
@@ -178,7 +179,7 @@ export default function NoteTemplateModal({
   const handleInput = (editor) => {};
 
   return (
-    (<BaseModal
+    <BaseModal
       closeModal={closeModal}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
@@ -261,7 +262,7 @@ export default function NoteTemplateModal({
           )}
         </div>
       </div>
-    </BaseModal>)
+    </BaseModal>
   );
 }
 
