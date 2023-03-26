@@ -351,7 +351,7 @@ const Paper = ({
                     </span>
                   )}
                 </div>
-                <CommentFeed document={paperV2} />
+                <CommentFeed document={paperV2} previewModeAsDefault={false} />
               </div>
             )}
             {isFetchComplete /* Performance Optimization */ && (
@@ -371,7 +371,11 @@ const Paper = ({
         </div>
 
         <div />
-        <CommentFeed document={paperV2} WrapperEl={CommentSidebar} />
+        <CommentFeed
+          document={paperV2}
+          WrapperEl={CommentSidebar}
+          previewModeAsDefault={true}
+        />
       </div>
     </div>
   );
