@@ -86,31 +86,33 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
     parentId: ID;
   }) => {
     try {
+      let parentComment:CommentType | undefined;
+      if (parentId) {
+        parentComment = findComment({ id: parentId, comments })?.comment;
+
+        if (!parentComment) {
+          console.warn("Could not find parent comment. This should not happen.")
+        }
+      }
+
       const comment: CommentType = await createCommentAPI({
         content,
         commentType,
         documentId: document.id,
         documentType: document.documentType,
-        parentId: parentId,
+        parentComment,
       });
 
-      if (parentId) {
-        const foundParent = findComment({ id: parentId, comments });
+      if (parentComment) {
+        parentComment.children = [comment, ...parentComment.children];
 
-        if (foundParent) {
-          foundParent.comment.children = [comment, ...foundParent.comment.children]
-
-          replaceComment({
-            prev: foundParent.comment,
-            next: foundParent.comment,
-            list: comments,
-          });
-          const updatedComments = [...comments];
-          setComments(updatedComments); 
-        }
-        else {
-          console.warn("Could not find parent comment. This should not happen.")
-        }       
+        replaceComment({
+          prev: parentComment,
+          next: parentComment,
+          list: comments,
+        });
+        const updatedComments = [...comments];
+        setComments(updatedComments); 
       }
       else {
         setComments([comment, ...comments]);
@@ -142,6 +144,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
 
     const found = findComment({ id, comments });
     if (found) {
+      console.log('found', found)
       replaceComment({
         prev: found.comment,
         next: _comment,
