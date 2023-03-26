@@ -474,8 +474,8 @@ const styles = StyleSheet.create({
   discussionCount: {
     color: colors.BLACK(),
     background: colors.LIGHTER_GREY(),
-    borderRadius: "3px",
-    padding: "3px 10px",
+    borderRadius: "4px",
+    padding: "5px 10px",
     fontSize: 14,
     fontWeight: 500,
     marginLeft: 10,

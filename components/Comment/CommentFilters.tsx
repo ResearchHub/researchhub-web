@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   filter: {
     borderRadius: "4px",
-    padding: "5px 8px",
+    padding: "5px 10px",
     cursor: "pointer",
     color: colors.filters.unselected.text,
   },

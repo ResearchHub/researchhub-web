@@ -1,6 +1,6 @@
 import { faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faFlag } from "@fortawesome/pro-light-svg-icons";
+import { faPencil, faFlag, faTrashAlt } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
@@ -28,6 +28,7 @@ const CommentMenu = ({ comment, handleEdit }: Args) => {
     el: dropdownRef.current,
     exclude: [".comment-menu-trigger"],
     onOutsideClick: () => setIsOpen(false),
+    onInsideClick: () => setIsOpen(false),
   });
 
   return (
@@ -48,23 +49,35 @@ const CommentMenu = ({ comment, handleEdit }: Args) => {
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
       >
         {currentUser?.id === comment.createdBy.id && (
-          <div className={css(styles.option)} onClick={() => handleEdit()}>
-            <FontAwesomeIcon
-              icon={faPencil}
-              style={{ color: colors.secondary.text, fontSize: 18 }}
-            />
+          <>
+            <div className={css(styles.option)} onClick={() => handleEdit()}>
+              <FontAwesomeIcon
+                icon={faPencil}
+                style={{ color: colors.secondary.text, fontSize: 18 }}
+              />
 
-            <div className={css(styles.dropdownLabel)}>Edit</div>
-          </div>
+              <div className={css(styles.dropdownLabel)}>Edit</div>
+            </div>
+            <div className={css(styles.option)} onClick={() => alert("not implemented")}>
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                style={{ color: colors.secondary.text, fontSize: 18 }}
+              />
+
+              <div className={css(styles.dropdownLabel)}>Remove</div>
+            </div>
+          </>
         )}
 
-        <div className={css(styles.option)} onClick={() => alert('flag')}>
-          <FontAwesomeIcon
-            icon={faFlag}
-            style={{ color: colors.secondary.text, fontSize: 18 }}
-          />
-          <div className={css(styles.dropdownLabel)}>Flag</div>
-        </div>
+        {currentUser?.id !== comment.createdBy.id && (
+          <div className={css(styles.option)} onClick={() => alert('flag')}>
+            <FontAwesomeIcon
+              icon={faFlag}
+              style={{ color: colors.secondary.text, fontSize: 18 }}
+            />
+            <div className={css(styles.dropdownLabel)}>Flag</div>
+          </div>
+        )}
       </div>
     </div>
   );

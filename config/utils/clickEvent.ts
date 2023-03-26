@@ -37,7 +37,7 @@ export function useEffectHandleClick({ el, exclude = [], onOutsideClick, onInsid
         exclude,
       });
 
-      const _isInsideClick = !_isOutsideClick;
+      const _isInsideClick = el && el.contains(e.target);
       if (_isOutsideClick) {
         onOutsideClick && onOutsideClick();
       }

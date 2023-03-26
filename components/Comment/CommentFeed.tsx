@@ -125,26 +125,29 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
   };
 
   const handleCommentUpdate = async ({
-    comment,
+    id,
     content,
   }: {
-    comment: CommentType;
+    id: ID;
     content: any;
   }) => {
     const _comment: CommentType = await updateCommentAPI({
-      id: comment.id,
+      id,
       content,
       documentId: document.id,
       documentType: document.documentType,
+      // FIXME: Temporary fix until we add created_by as obj from BE
+      currentUser
     });
-    const found = findComment({ id: comment.id, comments });
+
+    const found = findComment({ id, comments });
     if (found) {
       replaceComment({
         prev: found.comment,
         next: _comment,
         list: comments,
       });
-      const updatedComments = [...comments];
+      const updatedComments = comments.slice();
       setComments(updatedComments);
     }
   };
