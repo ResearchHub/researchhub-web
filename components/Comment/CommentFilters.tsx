@@ -3,11 +3,14 @@ import colors from "./lib/colors";
 import { filterOpts } from "./lib/options";
 
 type Args = {
-  selectedFilter: any;
+  selectedFilterValue: string;
   handleSelect: Function;
 };
 
-const CommentFilters = ({ selectedFilter, handleSelect }: Args) => {
+const CommentFilters = ({ selectedFilterValue, handleSelect }: Args) => {
+
+  const selectedFilter = filterOpts.find(f => f.value === selectedFilterValue) || filterOpts[0];
+
   return (
     <div className={css(styles.filtersWrapper)}>
       {filterOpts.map((f) => {
@@ -22,7 +25,7 @@ const CommentFilters = ({ selectedFilter, handleSelect }: Args) => {
               </div>
             ) : (
               <div
-                onClick={() => handleSelect(f)}
+                onClick={() => handleSelect(f.value)}
                 className={css([styles.filter, styles.filterUnselected])}
                 key={`filter-${f.value}`}
               >
@@ -41,6 +44,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     columnGap: "8px",
+    userSelect: "none",
   },
   filter: {
     borderRadius: "4px",

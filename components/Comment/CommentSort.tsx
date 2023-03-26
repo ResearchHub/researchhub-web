@@ -8,13 +8,14 @@ import colors from "./lib/colors";
 import { sortOpts } from "./lib/options";
 
 type Args = {
-  selectedSort: Function;
+  selectedSortValue: string;
   handleSelect: Function;
 }
 
-const CommentSort = ({ selectedSort, handleSelect }: Args) => {
+const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
+  const selectedSort = sortOpts.find(s => s.value === selectedSortValue) || sortOpts[0];
 
   useEffectHandleClick({
     el: dropdownRef.current,

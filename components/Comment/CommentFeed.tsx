@@ -36,8 +36,8 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
-  const [selectedSort, setSelectedSort] = useState<any>(sortOpts[0]);
-  const [selectedFilter, setSelectedFilter] = useState<any>(filterOpts[0]);
+  const [selectedSortValue, setSelectedSortValue] = useState<any>(sortOpts[0].value);
+  const [selectedFilterValue, setSelectedFilterValue] = useState<any>(filterOpts[0].value);
   const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
   const [count, setCount] = useState<number>(0);
   const currentUser = useSelector((state: RootState) =>
@@ -53,6 +53,8 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
           url,
           documentId: document.id,
           documentType: document.documentType,
+          sort: selectedSortValue,
+          filter: selectedFilterValue,
         });
 
         setComments(response.comments);
@@ -178,13 +180,23 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
         <>
           <div className={css(styles.filtersWrapper)}>
             <CommentFilters
-              selectedFilter={selectedFilter}
-              handleSelect={(f) => setSelectedFilter(f)}
+              selectedFilterValue={selectedFilterValue}
+              handleSelect={(fval) => {
+                setIsFetching(true);
+                setComments([]);
+                setSelectedFilterValue(fval)
+                handleFetch({});
+              }}
             />
             <div className={css(styles.sortWrapper)}>
               <CommentSort
-                selectedSort={selectedSort}
-                handleSelect={(s) => setSelectedSort(s)}
+                selectedSortValue={selectedSortValue}
+                handleSelect={(sval) => {                  
+                  setIsFetching(true);
+                  setComments([]);
+                  setSelectedSortValue(sval)
+                  handleFetch({});                  
+                }}
               />
             </div>
           </div>
