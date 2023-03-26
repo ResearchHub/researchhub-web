@@ -29,9 +29,10 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   document: TopLevelDocument;
   WrapperEl?: any;
+  previewModeAsDefault?: boolean;
 };
 
-const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
+const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React.Fragment }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
@@ -193,7 +194,7 @@ const CommentFeed = ({ document, WrapperEl = React.Fragment }: Args) => {
               handleSubmit={handleCommentCreate}
               allowBounty={true}
               author={currentUser?.authorProfile}
-              previewModeAsDefault={true}
+              previewModeAsDefault={previewModeAsDefault}
               allowCommentTypeSelection={true}
             />
           </div>
