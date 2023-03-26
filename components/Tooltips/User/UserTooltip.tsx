@@ -14,6 +14,7 @@ interface UserTooltipProps {
   createdBy: RHUser | null;
   targetContent: ReactElement;
   positions?: ("left" | "right" | "top" | "bottom")[];
+  height?: number;
 }
 
 const TOOLTIP_DELAY = 300;
@@ -22,6 +23,7 @@ export default function UserTooltip({
   createdBy,
   targetContent,
   positions,
+  height,
 }: UserTooltipProps): ReactElement {
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
@@ -67,6 +69,7 @@ export default function UserTooltip({
           style={{
             padding: 4,
             margin: -4,
+            ...(height && { height, overflow: "hidden" })
           }}
           onMouseEnter={() => {
             if (!isMobileScreen) {

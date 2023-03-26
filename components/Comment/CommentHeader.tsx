@@ -6,6 +6,8 @@ import { getOpenBounties } from "./lib/bounty";
 import { Comment, COMMENT_TYPES } from "./lib/types";
 import CommentMenu from "./CommentMenu";
 import CommentBadge from "./CommentBadge";
+import UserTooltip from "../Tooltips/User/UserTooltip";
+import ALink from "../ALink";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -19,16 +21,39 @@ const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs
   const bountyContributors = openBounties
     .map((b) => b.createdBy.authorProfile)
     .filter((a) => a.id !== comment.createdBy.authorProfile.id);
+  const noOpenBounties = bountyContributors.length === 0;
 
   return (
     <div className={css(styles.commentHeader)}>
       <CommentBadge comment={comment} />
       <div className={css(styles.details)}>
-        <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
+        {noOpenBounties ? (
+          <UserTooltip
+            createdBy={comment.createdBy}
+            height={24}
+            targetContent={
+              <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
+            }
+          />
+        ) : (
+          <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
+        )}
         <div className={css(styles.nameWrapper)}>
           <div className={css(styles.nameRow)}>
             <div className={css(styles.name)}>
-              {authorProfile.firstName} {authorProfile.lastName}
+              {noOpenBounties && (
+                <UserTooltip
+                  createdBy={comment.createdBy}
+                  targetContent={
+                    <ALink
+                      href={`/user/${authorProfile?.id}/overview`}
+                      key={`/user/${authorProfile?.id}/overview-key`}
+                    >
+                      {authorProfile.firstName} {authorProfile.lastName}
+                    </ALink>
+                  }
+                />
+              )}
               {openBounties.length > 0 && bountyContributors.length > 1 && (
                 <>{` and others`}</>
               )}
@@ -75,10 +100,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignItems: "center",
   },
-  name: { },
+  name: {},
   menuWrapper: {
     marginLeft: "auto",
-  },  
+  },
 });
 
 export default CommentHeader;
