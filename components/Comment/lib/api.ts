@@ -37,24 +37,24 @@ export const createCommentAPI = async ({
   commentType,
   documentType,
   documentId,
-  parentId,
+  parentComment,
 }: {
   content: any;
   commentType: COMMENT_TYPES;
   documentType: RhDocumentType;
   documentId: ID;
-  parentId?: ID;
+  parentComment?: Comment;
 }): Promise<Comment> => {
   const _url = generateApiUrl(`${documentType}/${documentId}/comments/create_rh_comment`);
   const response =
     await fetch(_url, API.POST_CONFIG({
       "comment_content_json": content,
       "thread_type": commentType || COMMENT_TYPES.DISCUSSION,
-      ...(parentId && {"parent_id": parentId})
+      ...(parentComment && { "parent_id": parentComment.id })
     }))
       .then((res):any => Helpers.parseJSON(res));
 
-  const comment = parseComment({ raw: response });
+  const comment = parseComment({ raw: response, parent: parentComment });
   return Promise.resolve(comment);
 };
 
