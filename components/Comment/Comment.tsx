@@ -33,18 +33,16 @@ const Comment = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  const _childCommentElems = useMemo(() => {
-    return comment.children.map((c) => (
-      <div key={c.id} className={css(styles.commentWrapper)}>
-        <Comment
-          handleUpdate={handleUpdate}
-          handleCreate={handleCreate}
-          comment={c}
-          document={document}
-        />
-      </div>
-    ));
-  }, [comment.children]);
+  const _childCommentElems = comment.children.map((c) => (
+    <div key={c.id} className={css(styles.commentWrapper)}>
+      <Comment
+        handleUpdate={handleUpdate}
+        handleCreate={handleCreate}
+        comment={c}
+        document={document}
+      />
+    </div>
+  ));
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -54,6 +52,12 @@ const Comment = ({
       setIsReplyOpen(true);
     }
   }
+
+  const _handleCloseEdit = () => {
+    if (isEditMode && confirm("Discard changes?")) {
+      setIsEditMode(false);
+    }
+  }  
 
   return (
     <div>
@@ -74,6 +78,7 @@ const Comment = ({
           {isEditMode ? (
             <CommentEditor
               handleSubmit={async (args) => {
+                console.log('args', args)
                 await handleUpdate(args);
                 setIsEditMode(false);
               }}
@@ -81,6 +86,7 @@ const Comment = ({
               commentId={comment.id}
               author={currentUser?.authorProfile}
               editorId={`edit-${comment.id}`}
+              handleClose={() => _handleCloseEdit()}
             />
           ) : (
             <div
@@ -117,6 +123,7 @@ const Comment = ({
       {isReplyOpen && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
+            handleClose={() => _handleToggleReply()}
             handleSubmit={async ({ content, commentType }) => {
               await handleCreate({ content, commentType, parentId: comment.id });
               setIsReplyOpen(false);

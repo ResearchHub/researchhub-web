@@ -63,6 +63,7 @@ export const updateCommentAPI = async ({
   content,
   documentType,
   documentId,
+  currentUser,
 }: {
   id: ID;
   content: any;
@@ -71,12 +72,14 @@ export const updateCommentAPI = async ({
 }) => {
   const _url = generateApiUrl(`${documentType}/${documentId}/comments/${id}`);
   const response =
-    await fetch(_url, API.POST_CONFIG({
+    await fetch(_url, API.PATCH_CONFIG({
       "comment_content_json": content,
     }))
       .then((res):any => Helpers.parseJSON(res));
 
   const comment = parseComment({ raw: response });
+  // FIXME: Temporary fix until we add created_by as obj from BE
+  comment.createdBy = currentUser;
   return Promise.resolve(comment);
 };
 

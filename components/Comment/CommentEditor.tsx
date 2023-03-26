@@ -18,7 +18,11 @@ import Loader from "../Loader/Loader";
 import config from "./lib/config";
 import { MessageActions } from "~/redux/message";
 import { useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import IconButton from "../Icons/IconButton";
 const { setMessage, showMessage } = MessageActions;
+
 
 type CommentEditorArgs = {
   editorId: string;
@@ -31,6 +35,7 @@ type CommentEditorArgs = {
   author?: AuthorProfile | null;
   previewModeAsDefault?: boolean;
   allowCommentTypeSelection?: boolean;
+  handleClose?: Function;
 };
 
 const CommentEditor = ({
@@ -44,6 +49,7 @@ const CommentEditor = ({
   author,
   previewModeAsDefault = false,
   allowCommentTypeSelection = false,
+  handleClose,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
@@ -118,6 +124,14 @@ const CommentEditor = ({
   return (
     (<div ref={editorRef} className={css(styles.commentEditor)}>
       <div>
+        {handleClose &&
+          <IconButton
+            overrideStyle={styles.closeBtn}
+            onClick={() => handleClose()}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </IconButton>
+        }
         {author && (
           <div
             className={css(styles.authorRow, isPreviewMode && styles.hidden)}
@@ -185,6 +199,7 @@ const styles = StyleSheet.create({
     flex: "none",
     flexDirection: "column",
     justifyContent: "space-between",
+    position: "relative",
   },
   actions: {
     display: "flex",
@@ -211,6 +226,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignItems: "center",
   },
+  closeBtn: {
+    position: "absolute",
+    right: 15,
+    top: 15,
+    fontSize: 18,
+  }
 });
 
 export default CommentEditor;
