@@ -23,7 +23,7 @@ export type Comment = {
   score: number;
   userVote: VoteType|null;
   isEdited: boolean;
-  postType: COMMENT_TYPES;
+  commentType: COMMENT_TYPES;
   parent?: Comment;
   children: Comment[];
 };
@@ -48,7 +48,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     content: raw.comment_content_json || {},
     score: raw.score,
     userVote: raw.user_vote,
-    postType: raw.post_type,
+    commentType: raw.thread_type,
     children: [] as Comment[],
     ...(parent && { parent }),
   };

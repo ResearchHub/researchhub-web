@@ -2,10 +2,10 @@ import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
-import { getBountyAmount, getOpenBounties } from "./lib/bounty";
-import { Comment } from "./lib/types";
-import ContentBadge from "../ContentBadge";
+import { getOpenBounties } from "./lib/bounty";
+import { Comment, COMMENT_TYPES } from "./lib/types";
 import CommentMenu from "./CommentMenu";
+import CommentBadge from "./CommentBadge";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -13,9 +13,9 @@ type CommentHeaderArgs = {
   handleEdit: Function;
 };
 
+
 const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
-  const bountyAmount = getBountyAmount({ comment, formatted: true });
   const bountyContributors = openBounties
     .map((b) => b.createdBy.authorProfile)
     .filter((a) => a.id !== comment.createdBy.authorProfile.id);
@@ -43,6 +43,8 @@ const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs
             </div>
             {openBounties.length ? (
               <div className={css(styles.verb)}>{` opened a bounty`}</div>
+            ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
+              <div className={css(styles.verb)}>{` peer reviewed`}</div>
             ) : (
               <div className={css(styles.verb)}>{` commented`}</div>
             )}
@@ -67,10 +69,6 @@ const styles = StyleSheet.create({
   time: {
     color: colors.secondary.text,
     marginTop: -5,
-  },
-  badgeRow: {
-    display: "inline-block",
-    marginBottom: 8,
   },
   details: {
     display: "flex",

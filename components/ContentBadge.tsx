@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   medium: {},
   icon: {
     marginRight: 6,
-    fontSize: 16,
+    fontSize: 13,
     height: 21,
   },
   rscIcon: {
