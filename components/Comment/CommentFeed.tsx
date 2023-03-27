@@ -24,15 +24,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 import { MessageActions } from "~/redux/message";
 import IconButton from "../Icons/IconButton";
+import CommentEmptyState from "./CommentEmptyState";
+import CommentSidebar from "./CommentSidebar";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
   WrapperEl?: any;
   previewModeAsDefault?: boolean;
+  context: "sidebar" | null;
 };
 
-const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React.Fragment }: Args) => {
+const CommentFeed = ({ document, previewModeAsDefault = false, context = null }: Args) => {
+  const WrapperEl = context === "sidebar" ? CommentSidebar : React.Fragment;
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
@@ -210,7 +214,9 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
               allowCommentTypeSelection={true}
             />
           </div>
+          {/* FIXME: Wire up empty state to discussion_count */}
           <div>{_commentsElems}</div>
+          {/* <CommentEmptyState height={context === "sidebar" ? "60%" : "200px"} forSection={selectedFilterValue} documentType={document.documentType} /> */}
         </>
       )}
       {isFetching &&

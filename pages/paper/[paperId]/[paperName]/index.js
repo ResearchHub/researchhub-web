@@ -47,7 +47,6 @@ import { breakpoints } from "~/config/themes/screen";
 import * as shims from "~/redux/paper/shims";
 import DocumentHeader from "~/components/Document/DocumentHeader";
 import CommentFeed from "~/components/Comment/CommentFeed";
-import CommentSidebar from "~/components/Comment/CommentSidebar";
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)
@@ -373,7 +372,7 @@ const Paper = ({
         <div />
         <CommentFeed
           document={paperV2}
-          WrapperEl={CommentSidebar}
+          context={"sidebar"}
           previewModeAsDefault={true}
         />
       </div>
