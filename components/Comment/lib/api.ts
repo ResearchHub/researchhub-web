@@ -2,24 +2,33 @@ import { ID, RhDocumentType } from "~/config/types/root_types";
 import listMockData from "../mock/list.json";
 // import createMockData from "../mock/create.json";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
-import API, { generateApiUrl } from "~/config/api";
+import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 export const fetchCommentsAPI = async ({
   documentType,
   documentId,
   url,
+  sort,
+  filter,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
   url?: string;
+  sort?: string;
+  filter?: string;
 }): Promise<{ comments: Comment[], next: string, prev: string, count: number }> => {
   // const rawComments = listMockData;
   // const comments = rawComments.map((raw) => parseComment({ raw }));
   // return Promise.resolve({comments, next: "", prev: ""});
   
+  const query = {
+    ...(filter && { "thread_type": filter }),
+    ...(sort && { "ordering": sort }),
+  }
+
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
-  const _url = url || baseFetchUrl;
+  const _url = (url || baseFetchUrl) + buildQueryString(query);
   const response =
     await fetch(_url, API.GET_CONFIG())
       .then((res):any => Helpers.parseJSON(res));

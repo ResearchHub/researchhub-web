@@ -46,15 +46,15 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
   const dispatch = useDispatch();
 
   const handleFetch = useCallback(
-    async ({ url }) => {
+    async ({ url, sort, filter }: { url?: string, sort?: string, filter?: string }) => {
       setIsFetching(true);
       try {
         const response = await fetchCommentsAPI({
           url,
           documentId: document.id,
           documentType: document.documentType,
-          sort: selectedSortValue,
-          filter: selectedFilterValue,
+          sort,
+          filter,
         });
 
         setComments(response.comments);
@@ -71,7 +71,7 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
     [document, isInitialFetchDone, fetchUrls, count, comments]
   );
 
-  const handleFetchNext = () => handleFetch({ url: fetchUrls.next });
+  const handleFetchNext = () => handleFetch({ url: fetchUrls.next, filter: selectedFilterValue, sort: selectedSortValue });
 
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {
@@ -185,7 +185,7 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
                 setIsFetching(true);
                 setComments([]);
                 setSelectedFilterValue(fval)
-                handleFetch({});
+                handleFetch({ filter: fval, sort: selectedSortValue });
               }}
             />
             <div className={css(styles.sortWrapper)}>
@@ -194,7 +194,7 @@ const CommentFeed = ({ document, previewModeAsDefault = false, WrapperEl = React
                 handleSelect={(sval) => {                  
                   setIsFetching(true);
                   setComments([]);
-                  setSelectedSortValue(sval)
+                  handleFetch({ filter: selectedFilterValue, sort: sval });
                   handleFetch({});                  
                 }}
               />
