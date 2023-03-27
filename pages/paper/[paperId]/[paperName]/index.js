@@ -322,8 +322,19 @@ const Paper = ({
             </div>
             {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
+                <div className={css(styles.sidebarHeader)}>
+                  <h3 className={css(styles.discussionSectionTitle)}>
+                    Discussion
+                  </h3>
+                  {paperV2.isReady && (
+                    <span className={css(styles.discussionCount)}>
+                      {discussionCount}
+                    </span>
+                  )}
+                </div>
+                <CommentFeed document={paperV2} previewModeAsDefault={false} />
                 <a name="comments" id="comments" ref={commentsRef} />
-                {/* {
+                {
                   <DiscussionTab
                     hostname={process.env.HOST}
                     documentType={"paper"}
@@ -339,18 +350,7 @@ const Paper = ({
                       setThreads(_threads);
                     }}
                   />
-                } */}
-                <div className={css(styles.sidebarHeader)}>
-                  <h3 className={css(styles.discussionSectionTitle)}>
-                    Discussion
-                  </h3>
-                  {paperV2.isReady && (
-                    <span className={css(styles.discussionCount)}>
-                      {discussionCount}
-                    </span>
-                  )}
-                </div>
-                <CommentFeed document={paperV2} previewModeAsDefault={false} />
+                }
               </div>
             )}
             {isFetchComplete /* Performance Optimization */ && (
