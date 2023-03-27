@@ -1337,3 +1337,10 @@ export default api;
 export const generateApiUrl = (url, queryparams) => {
   return `${api.BASE_URL}${url}/${queryparams ? queryparams : ""}`;
 };
+
+export const buildQueryString = (queryObj) => {
+  return Object.keys(queryObj).reduce(
+    (str, key) => str + (str === "" ? "?" : "&") + key + "=" + queryObj[key],
+    ""
+  );
+};
