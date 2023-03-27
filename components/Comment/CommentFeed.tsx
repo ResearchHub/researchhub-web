@@ -214,7 +214,11 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
               allowCommentTypeSelection={true}
             />
           </div>
+
           {/* FIXME: Wire up empty state to discussion_count */}
+
+
+
           <div>{_commentsElems}</div>
           {/* <CommentEmptyState height={context === "sidebar" ? "60%" : "200px"} forSection={selectedFilterValue} documentType={document.documentType} /> */}
         </>
@@ -225,7 +229,7 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
             <CommentPlaceholder key={`placeholder-${idx}`} />
           </div>
         ))}
-      {fetchUrls.next && !isFetching &&
+      {true &&
         <IconButton onClick={() => handleFetchNext()}>
           <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load More <FontAwesomeIcon icon={faLongArrowDown} /></span>
         </IconButton>
