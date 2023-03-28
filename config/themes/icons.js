@@ -1,5 +1,4 @@
 import { faChevronUp, faChevronDown } from "@fortawesome/pro-regular-svg-icons";
-import {} from "@fortawesome/pro-regular-svg-icons";
 import { faQuestionCircle } from "@fortawesome/pro-duotone-svg-icons";
 import {
   faComment,
@@ -10,7 +9,6 @@ import {
   faLink,
   faItalic,
   faImagePolaroid,
-  h2,
   faH1,
   faBracketsCurly,
   faListUl,
@@ -18,6 +16,7 @@ import {
   faUp,
   faDown,
   faCircleExclamation,
+  faH2,
 } from "@fortawesome/pro-solid-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
@@ -66,7 +65,7 @@ export const textEditorIcons = {
   bulletedList: <FontAwesomeIcon icon={faListUl}></FontAwesomeIcon>,
   code: <FontAwesomeIcon icon={faBracketsCurly}></FontAwesomeIcon>,
   h1: <FontAwesomeIcon icon={faH1}></FontAwesomeIcon>,
-  h1: <FontAwesomeIcon icon={h2}></FontAwesomeIcon>,
+  h1: <FontAwesomeIcon icon={faH2}></FontAwesomeIcon>,
   image: <FontAwesomeIcon icon={faImagePolaroid}></FontAwesomeIcon>,
   italic: <FontAwesomeIcon icon={faItalic}></FontAwesomeIcon>,
   link: <FontAwesomeIcon icon={faLink}></FontAwesomeIcon>,
