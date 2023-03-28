@@ -17,8 +17,8 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import {
   EthereumClient,
-  modalConnectors,
-  walletConnectProvider,
+  w3mConnectors,
+  w3mProvider,
 } from "@web3modal/ethereum";
 import { mainnet, goerli } from "wagmi/chains";
 
@@ -60,14 +60,13 @@ export const NAVBAR_HEIGHT = 68;
 const isProduction = process.env.REACT_APP_ENV === "production";
 
 const chains = [isProduction ? mainnet : goerli];
+const projectId = "a3e8904e258fe256bf772b764d3acfab";
 
 // Wagmi client
-const { provider } = configureChains(chains, [
-  walletConnectProvider({ projectId: "a3e8904e258fe256bf772b764d3acfab" }),
-]);
+const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: modalConnectors({ appName: "web3Modal", chains }),
+  connectors: w3mConnectors({ version: 1, chains, projectId }),
   provider,
 });
 
