@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
-import { faLayerGroup } from "@fortawesome/pro-solid-svg-icons";
-import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faCommentAltLines,
+  faLayerGroup,
+  faStar,
+} from "@fortawesome/pro-solid-svg-icons";
 import { faComment } from "@fortawesome/pro-regular-svg-icons";
 export const getPostTypeStruct = ({ postType, documentType }) => {
   if (
