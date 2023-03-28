@@ -24,6 +24,7 @@ import DiscussionActions from "../redux/discussion";
 import { breakpoints } from "~/config/themes/screen";
 import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { voteWidgetIcons } from "~/config/themes/icons";
 
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
