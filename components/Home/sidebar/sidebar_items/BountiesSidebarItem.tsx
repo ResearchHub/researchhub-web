@@ -50,6 +50,7 @@ export default function BountiesSidebarItem({
                   authorProfiles={[createdByAuthor]}
                   withAuthorName
                   horizontal
+                  border={null}
                   fontSize={14}
                   imgSize={17}
                 />

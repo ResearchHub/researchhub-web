@@ -114,7 +114,7 @@ const AuthorAvatar = (props) => {
             e.stopPropagation();
           }}
         >
-          <div>
+          <div className={css(styles.atag)}>
             {avatarComponent}
             {!!withAuthorName ? (
               <span
