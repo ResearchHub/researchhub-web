@@ -1,9 +1,9 @@
 import colors from "./lib/colors";
 import { css, StyleSheet } from "aphrodite";
-import { RhDocumentType } from "~/config/types/root_types";
+import { NullableString, RhDocumentType } from "~/config/types/root_types";
 
 type Args = {
-  forSection: "BOUNTY" | "REVIEW" | null,
+  forSection: NullableString,
   documentType: RhDocumentType,
   height: string,
 }
