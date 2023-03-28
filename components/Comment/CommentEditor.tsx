@@ -51,6 +51,7 @@ const CommentEditor = ({
   allowCommentTypeSelection = false,
   handleClose,
 }: CommentEditorArgs) => {
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);

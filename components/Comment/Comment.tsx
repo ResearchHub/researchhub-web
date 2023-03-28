@@ -3,7 +3,7 @@ import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
 import { Comment as CommentType } from "./lib/types";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
@@ -12,6 +12,8 @@ import Button from "../Form/Button";
 import { useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
+import CommentList from "./CommentList";
+
 
 type CommentArgs = {
   comment: CommentType;
@@ -26,23 +28,13 @@ const Comment = ({
   handleUpdate,
   handleCreate,
 }: CommentArgs) => {
+
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
-
-  const _childCommentElems = comment.children.map((c) => (
-    <div key={c.id} className={css(styles.commentWrapper)}>
-      <Comment
-        handleUpdate={handleUpdate}
-        handleCreate={handleCreate}
-        comment={c}
-        document={document}
-      />
-    </div>
-  ));
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -134,8 +126,10 @@ const Comment = ({
           />
         </div>
       )}
-      {comment.children.length > 0 && (
-        <div className={css(styles.children)}>{_childCommentElems}</div>
+      {comment.children.length > 0 && (          
+        <div className={css(styles.children)}>
+          <CommentList parentComment={comment} comments={comment.children} document={document} />
+        </div>
       )}
     </div>
   );

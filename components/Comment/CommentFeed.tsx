@@ -1,32 +1,18 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Comment from "./Comment";
-import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
-import CommentEditor from "~/components/Comment/CommentEditor";
-import {
-  createCommentAPI,
-  updateCommentAPI,
-  fetchCommentsAPI,
-} from "./lib/api";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
-import replaceComment from "./lib/replaceComment";
-import findComment from "./lib/findComment";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import React, { useEffect, useState } from "react";
+import { Comment as CommentType } from "./lib/types";
+import { fetchCommentsAPI } from "./lib/api";
+import { NullableString, TopLevelDocument } from "~/config/types/root_types";
 import CommentFilters from "./CommentFilters";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
 import CommentSort from "./CommentSort";
+import CommentSidebar from "./CommentSidebar";
+import CommentList from "./CommentList";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
-import colors from "./lib/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
-import { MessageActions } from "~/redux/message";
-import IconButton from "../Icons/IconButton";
+import { FeedStateContext } from "./lib/contexts";
 import CommentEmptyState from "./CommentEmptyState";
-import CommentSidebar from "./CommentSidebar";
-const { setMessage, showMessage } = MessageActions;
+
 
 type Args = {
   document: TopLevelDocument;
@@ -40,21 +26,14 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
-  const [selectedSortValue, setSelectedSortValue] = useState<any>(sortOpts[0].value);
-  const [selectedFilterValue, setSelectedFilterValue] = useState<any>(filterOpts[0].value);
-  const [fetchUrls, setFetchUrls] = useState<any>({ next: null, prev: null });
-  const [count, setCount] = useState<number>(0);
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
-  const dispatch = useDispatch();
+  const [selectedSortValue, setSelectedSortValue] = useState<string|null>(sortOpts[0].value);
+  const [selectedFilterValue, setSelectedFilterValue] = useState<string|null>(filterOpts[0].value);
 
-  const handleFetch = useCallback(
-    async ({ url, sort, filter }: { url?: string, sort?: string, filter?: string }) => {
+  const handleFetch =
+    async ({ sort, filter }: { sort?: NullableString, filter?: NullableString }) => {
       setIsFetching(true);
       try {
         const response = await fetchCommentsAPI({
-          url,
           documentId: document.id,
           documentType: document.documentType,
           sort,
@@ -62,8 +41,6 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
         });
 
         setComments(response.comments);
-        setFetchUrls({ next: response.next, prev: response.prev });
-        setCount(response.count);
       } catch (error) {
         console.log('error', error)
         // FIXME: Implement error handling
@@ -71,11 +48,7 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
         setIsFetching(false);
         setIsInitialFetchDone(true);
       }
-    },
-    [document, isInitialFetchDone, fetchUrls, count, comments]
-  );
-
-  const handleFetchNext = () => handleFetch({ url: fetchUrls.next, filter: selectedFilterValue, sort: selectedSortValue });
+    }
 
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {
@@ -83,104 +56,21 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
     }
   }, [document.id, isInitialFetchDone]);
 
-  const handleCommentCreate = async ({
-    content,
-    commentType,
-    parentId,
-  }: {
-    content: object;
-    commentType: COMMENT_TYPES;
-    parentId: ID;
-  }) => {
-    try {
-      let parentComment:CommentType | undefined;
-      if (parentId) {
-        parentComment = findComment({ id: parentId, comments })?.comment;
-
-        if (!parentComment) {
-          console.warn("Could not find parent comment. This should not happen.")
-        }
-      }
-
-      const comment: CommentType = await createCommentAPI({
-        content,
-        commentType,
-        documentId: document.id,
-        documentType: document.documentType,
-        parentComment,
-      });
-
-      if (parentComment) {
-        parentComment.children = [comment, ...parentComment.children];
-
-        replaceComment({
-          prev: parentComment,
-          next: parentComment,
-          list: comments,
-        });
-        const updatedComments = [...comments];
-        setComments(updatedComments); 
-      }
-      else {
-        setComments([comment, ...comments]);
-      }
-    }
-    catch(error) {
-      dispatch(setMessage("Could not create a comment at this time"));
-      // @ts-ignore
-      dispatch(showMessage({ show: true, error: true })); 
-      throw error;
-    }
-  };
-
-  const handleCommentUpdate = async ({
-    id,
-    content,
-  }: {
-    id: ID;
-    content: any;
-  }) => {
-    const _comment: CommentType = await updateCommentAPI({
-      id,
-      content,
-      documentId: document.id,
-      documentType: document.documentType,
-      // FIXME: Temporary fix until we add created_by as obj from BE
-      currentUser
-    });
-
-    const found = findComment({ id, comments });
-    if (found) {
-      console.log('found', found)
-      replaceComment({
-        prev: found.comment,
-        next: _comment,
-        list: comments,
-      });
-      const updatedComments = comments.slice();
-      setComments(updatedComments);
-    }
-  };
-
-  const _commentsElems = useMemo(() => {
-    return comments.map((c) => (
-      <div key={c.id} className={css(styles.commentWrapper)}>
-        <Comment
-          handleCreate={handleCommentCreate}
-          handleUpdate={handleCommentUpdate}
-          comment={c}
-          document={document}
-        />
-      </div>
-    ));
-  }, [comments]);
+  const noResults = (document.isReady && document.discussionCount === 0) || (selectedFilterValue !== null && comments.length === 0)
 
   return (
     <WrapperEl
       comments={comments}
       isInitialFetchDone={isInitialFetchDone}
     >
-      {isInitialFetchDone && (
+
+      {!isInitialFetchDone ? (
+        Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
+          <div>
+            <CommentPlaceholder key={`placeholder-${idx}`} />
+          </div>
+        ))
+      ) : (
         <>
           <div className={css(styles.filtersWrapper)}>
             <CommentFilters
@@ -195,45 +85,26 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
             <div className={css(styles.sortWrapper)}>
               <CommentSort
                 selectedSortValue={selectedSortValue}
-                handleSelect={(sval) => {                  
+                handleSelect={(sval) => {
                   setIsFetching(true);
                   setComments([]);
                   handleFetch({ filter: selectedFilterValue, sort: sval });
-                  handleFetch({});                  
+                  handleFetch({});
                 }}
               />
             </div>
           </div>
-          <div className={css(styles.editorWrapper)}>
-            <CommentEditor
-              editorId="new-thread"
-              handleSubmit={handleCommentCreate}
-              allowBounty={true}
-              author={currentUser?.authorProfile}
-              previewModeAsDefault={previewModeAsDefault}
-              allowCommentTypeSelection={true}
-            />
-          </div>
 
-          {/* FIXME: Wire up empty state to discussion_count */}
-
-
-
-          <div>{_commentsElems}</div>
-          {/* <CommentEmptyState height={context === "sidebar" ? "60%" : "200px"} forSection={selectedFilterValue} documentType={document.documentType} /> */}
+          {noResults ?
+            <CommentEmptyState height={context === "sidebar" ? "60%" : "200px"} forSection={selectedFilterValue} documentType={document.documentType} />          
+          : (
+          <FeedStateContext.Provider value={{ sort: selectedSortValue, filter: selectedFilterValue }}>
+            <CommentList setComments={setComments} comments={comments} isRootList={true} isFetchingList={isFetching} document={document} />
+          </FeedStateContext.Provider>
+          )}
         </>
       )}
-      {isFetching &&
-        Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
-          <div className={css(styles.placeholderWrapper)}>
-            <CommentPlaceholder key={`placeholder-${idx}`} />
-          </div>
-        ))}
-      {true &&
-        <IconButton onClick={() => handleFetchNext()}>
-          <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load More <FontAwesomeIcon icon={faLongArrowDown} /></span>
-        </IconButton>
-      }        
+
     </WrapperEl>
   );
 };
@@ -245,23 +116,6 @@ const styles = StyleSheet.create({
   },
   sortWrapper: {
     marginLeft: "auto",
-  },
-  editorWrapper: {
-    marginBottom: 25,
-  },
-  commentWrapper: {
-    borderBottom: `1px solid ${colors.border}`,
-    paddingTop: 25,
-    paddingBottom: 25,
-    ":first-child": {
-      paddingTop: 0,
-    },
-    ":last-child": {
-      borderBottom: 0,
-    },
-  },
-  placeholderWrapper: {
-    marginBottom: 35,
   },
 });
 

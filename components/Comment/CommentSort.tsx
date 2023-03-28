@@ -2,13 +2,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
+import { NullableString } from "~/config/types/root_types";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 import { sortOpts } from "./lib/options";
 
 type Args = {
-  selectedSortValue: string;
+  selectedSortValue: NullableString;
   handleSelect: Function;
 }
 

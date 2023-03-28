@@ -1,9 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
+import { NullableString } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { filterOpts } from "./lib/options";
 
 type Args = {
-  selectedFilterValue: string;
+  selectedFilterValue: NullableString;
   handleSelect: Function;
 };
 

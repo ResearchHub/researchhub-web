@@ -8,16 +8,18 @@ import { Helpers } from "@quantfive/js-web-config";
 export const fetchCommentsAPI = async ({
   documentType,
   documentId,
-  url,
   sort,
   filter,
+  parentId,
+  page,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
-  url?: string;
-  sort?: string;
-  filter?: string;
-}): Promise<{ comments: Comment[], next: string, prev: string, count: number }> => {
+  parentId?: ID;
+  sort?: string|null;
+  filter?: string|null;
+  page?: number;
+}): Promise<{ comments: Comment[], count: number }> => {
   // const rawComments = listMockData;
   // const comments = rawComments.map((raw) => parseComment({ raw }));
   // return Promise.resolve({comments, next: "", prev: ""});
@@ -25,19 +27,19 @@ export const fetchCommentsAPI = async ({
   const query = {
     ...(filter && { "thread_type": filter }),
     ...(sort && { "ordering": sort }),
+    ...(parentId && { "parent_id": parentId }),
+    ...(page && { "page": page }),
   }
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
-  const _url = (url || baseFetchUrl) + buildQueryString(query);
+  const _url = baseFetchUrl + buildQueryString(query);
   const response =
     await fetch(_url, API.GET_CONFIG())
       .then((res):any => Helpers.parseJSON(res));
 
   return {
     comments: response.results.map((raw:any) => parseComment({ raw })),
-    next: response.next,
-    prev: response.prev,
-    count: response.count,
+    count: response.children_count,
   };
 };
 
