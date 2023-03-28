@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import { css, StyleSheet } from "aphrodite";
@@ -16,7 +18,6 @@ import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import HypothesisUnduxStore, {
   HypothesisStore,
 } from "../undux/HypothesisUnduxStore";
-import icons from "~/config/themes/icons";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
@@ -130,7 +131,7 @@ function CitationCommentSidebar({
   setLastUpdateTime,
 }: CitationCommentSidebarProps): ReactElement<"div"> {
   return (
-    <div className={css(styles.citationCommentSidebar)}>
+    (<div className={css(styles.citationCommentSidebar)}>
       <div className={css(styles.header)}>
         <div
           className={css(styles.backButton)}
@@ -138,7 +139,7 @@ function CitationCommentSidebar({
             hypothesisUnduxStore.set("targetCitationComment")(null)
           }
         >
-          {icons.arrowRight}
+          {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
       </div>
@@ -155,7 +156,7 @@ function CitationCommentSidebar({
           {citationThreadEntries}
         </div>
       ) : null}
-    </div>
+    </div>)
   );
 }
 

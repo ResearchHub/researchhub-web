@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faDownToLine } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
@@ -10,7 +15,7 @@ import AdminButton from "../Admin/AdminButton";
 import censorDocument from "./api/censorDocAPI";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import PaperPromotionButton from "../Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "./api/restoreDocAPI";
@@ -69,7 +74,7 @@ function DocumentActions({
           data-tip={"Download PDF"}
           onClick={() => openPaperPDFModal && openPaperPDFModal(true)}
         >
-          {icons.download}
+          {<FontAwesomeIcon icon={faDownToLine}></FontAwesomeIcon>}
         </div>
       ),
     },
@@ -85,7 +90,9 @@ function DocumentActions({
           loginRequired={true}
           hideRipples={true}
         >
-          <div className={css(styles.actionIcon)}>{icons.pencil}</div>
+          <div className={css(styles.actionIcon)}>
+            {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
+          </div>
         </PermissionNotificationWrapper>
       ),
     },
@@ -134,7 +141,13 @@ function DocumentActions({
             isModerator={true}
             paperId={unifiedDocument?.document?.id}
             restore={isRemoved}
-            icon={isRemoved ? icons.plus : icons.minus}
+            icon={
+              isRemoved ? (
+                <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faMinus}></FontAwesomeIcon>
+              )
+            }
             onAction={() => {
               if (isRemoved) {
                 restoreDocument({

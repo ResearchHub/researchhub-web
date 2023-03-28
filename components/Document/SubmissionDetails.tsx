@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Hub } from "~/config/types/hub";
 import { RHUser } from "~/config/types/root_types";
 import AuthorAvatar from "../AuthorAvatar";
@@ -31,10 +31,12 @@ function SubmissionDetails({
   bounties = [],
   actionLabel = "posted in",
 }: Args): ReactElement<"div"> {
-  const showAllHubs =
-    process.browser && window.innerWidth > breakpoints.medium.int;
-
   const [isHubsDropdownOpen, setIsHubsDropdownOpen] = useState(false);
+  const [showAllHubs, setShowAlHubs] = useState(false);
+
+  useEffect(() => {
+    setShowAlHubs(window.innerWidth > breakpoints.medium.int);
+  }, []);
 
   let sliceIndex = 1;
   if (showAllHubs) {

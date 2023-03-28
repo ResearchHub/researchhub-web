@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faMinusCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faImage } from "@fortawesome/pro-duotone-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -20,7 +24,6 @@ import { PaperActions } from "~/redux/paper";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 class FigureTab extends Component {
   constructor(props) {
@@ -234,7 +237,7 @@ class FigureTab extends Component {
       return (
         <EmptyState
           text={"No Figures Found"}
-          icon={icons.image}
+          icon={<FontAwesomeIcon icon={faImage}></FontAwesomeIcon>}
           subtext={"No figures have been found in this paper's PDF"}
         />
       );
@@ -299,7 +302,7 @@ class FigureTab extends Component {
                 }
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  {icons.minusCircle}
+                  {<FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>}
                 </span>
                 Remove Figure
               </Ripples>
@@ -308,7 +311,7 @@ class FigureTab extends Component {
                 onClick={this.openDndModal}
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  {icons.plusCircle}
+                  {<FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>}
                 </span>
                 Add Figure
               </Ripples>

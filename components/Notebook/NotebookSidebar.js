@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShapes } from "@fortawesome/pro-duotone-svg-icons";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import Link from "next/link";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
@@ -8,7 +12,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import groupBy from "lodash/groupBy";
-import icons, { DownIcon } from "~/config/themes/icons";
+import { DownIcon } from "~/config/themes/icons";
 import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
@@ -145,7 +149,9 @@ const NotebookSidebar = ({
                     setIsPopoverOpen(false);
                   }}
                 >
-                  <div className={css(styles.newOrgButton)}>{icons.plus}</div>
+                  <div className={css(styles.newOrgButton)}>
+                    {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
+                  </div>
                   New Organization
                 </div>
               </div>
@@ -181,7 +187,7 @@ const NotebookSidebar = ({
                 setShowManageOrgModal(true);
               }}
             >
-              {icons.cog}
+              {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
               <span className={css(styles.sidebarButtonText)}>
                 Settings & Members
               </span>
@@ -190,7 +196,7 @@ const NotebookSidebar = ({
               className={css(styles.sidebarButton)}
               onClick={() => setIsNoteTemplateModalOpen(true)}
             >
-              {icons.shapes}
+              {<FontAwesomeIcon icon={faShapes}></FontAwesomeIcon>}
               <span className={css(styles.sidebarButtonText)}>Templates</span>
             </div>
           </div>

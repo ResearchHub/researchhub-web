@@ -1,8 +1,9 @@
-import Loader from "~/components/Loader/Loader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
 import PropTypes from "prop-types";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "./config/notebookConstants";
 import { captureEvent } from "~/config/utils/events";
@@ -10,6 +11,7 @@ import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const NotebookSidebarGroup = ({
   currentNoteId,
@@ -68,13 +70,18 @@ const NotebookSidebarGroup = ({
         {allowedToCreateNote && !isNotesEmpty && (
           <div className={css(styles.new)}>
             {createNoteIsLoading ? (
-              <Loader type="clip" size={23} />
+              <ClipLoader
+                sizeUnit={"px"}
+                size={23}
+                color={colors.BLUE(1)}
+                loading={true}
+              />
             ) : (
               <div
                 className={css(styles.actionButton) + " actionButton"}
                 onClick={() => handleCreateNewNote(groupKey)}
               >
-                {icons.plus}
+                {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
               </div>
             )}
           </div>
@@ -85,7 +92,9 @@ const NotebookSidebarGroup = ({
           className={css(styles.newNoteButton)}
           onClick={() => handleCreateNewNote(groupKey)}
         >
-          <span className={css(styles.plusIcon)}>{icons.plus}</span>
+          <span className={css(styles.plusIcon)}>
+            {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
+          </span>
           Create new note
         </div>
       )}

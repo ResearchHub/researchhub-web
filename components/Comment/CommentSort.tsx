@@ -1,5 +1,5 @@
-import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";

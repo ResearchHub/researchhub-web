@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
@@ -17,7 +18,6 @@ import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { useRouter } from "next/router";
 import VoteWidget from "../VoteWidget";
 import { DOWNVOTE, UPVOTE } from "~/config/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 
 function AwardUserRow({

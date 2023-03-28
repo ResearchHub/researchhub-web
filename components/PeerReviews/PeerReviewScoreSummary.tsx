@@ -1,11 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
 import { ReactElement } from "react";
 import { PeerReviewScoreSummary } from "~/config/types/peerReview";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import ScoreInput from "~/components/Form/ScoreInput";
-import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Props = {
   summary: PeerReviewScoreSummary;
@@ -17,13 +16,16 @@ export default function PeerReviewSummary({
   docUrl = "",
 }: Props): ReactElement {
   return (
-    <div className={css(styles.reviewContainer)}>
-      <div className={css(styles.starContainer)}>{icons.starFilled}</div>
-
+    (<div className={css(styles.reviewContainer)}>
+      <div className={css(styles.starContainer)}>
+        {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
+      </div>
       <span className={css(styles.reviewScoreContainer)}>
-        <span className={css(styles.reviewScore)}>{(summary?.avg || 0).toFixed(1)}</span>
+        <span className={css(styles.reviewScore)}>
+          {(summary?.avg || 0).toFixed(1)}
+        </span>
       </span>
-    </div>
+    </div>)
   );
 }
 

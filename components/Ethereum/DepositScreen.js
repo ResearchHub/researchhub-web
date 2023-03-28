@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { contractABI, stagingContractABI } from "./contractAbi";
-import { ethers } from "ethers";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -22,7 +21,6 @@ import Loader from "../Loader/Loader";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { INFURA_ENDPOINT } from "~/config/constants";
 import { captureEvent } from "~/config/utils/events";
 
 const isProduction = process.env.REACT_APP_ENV === "production";
@@ -42,25 +40,26 @@ const CONTRACT_ABI = isProduction ? contractABI : stagingContractABI;
 export function DepositScreen(props) {
   const { ethAccount, buttonEnabled, ethAddressOnChange, openWeb3ReactModal } =
     props;
-
+  const ethersRef = useRef();
   const { address, isConnected } = useAccount();
-
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
-
   const [amount, setAmount] = useState(0);
-
   const { data: signer } = useSigner({ chainId: CHAIN_ID });
 
   const { config } = usePrepareContractWrite({
     address: RSCContractAddress,
     abi: CONTRACT_ABI,
     functionName: "transfer",
-    args: [HOTWALLET, amount ? ethers.utils.parseEther(amount)._hex : 0],
+    args: [
+      HOTWALLET,
+      amount && ethersRef.current
+        ? ethersRef.current.utils.parseEther(amount)._hex
+        : 0,
+    ],
   });
 
   const { data, write } = useContractWrite(config);
-
   const [balance, setBalance] = useState(0);
 
   const {
@@ -77,7 +76,9 @@ export function DepositScreen(props) {
 
   useEffect(() => {
     if (RSCBalance) {
+      const ethers = require("ethers").ethers;
       setBalance(ethers.utils.formatUnits(RSCBalance, 18));
+      ethersRef.current = ethers;
     }
   }, [RSCBalance]);
 

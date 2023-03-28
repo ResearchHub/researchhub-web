@@ -1,19 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { useHasMounted } from "~/config/utils/hooks";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
-  const hasMounted = useHasMounted();
-
-  // fixes an error with `style` Prop not matching on Server/Client
-  if (!hasMounted || !props.author) {
-    return null;
-  }
+  const [deviceWidth, setDeviceWidth] = useState(null);
 
   const {
     author,
@@ -30,21 +25,25 @@ const AuthorAvatar = (props) => {
     twitterUrl,
     withAuthorName,
   } = props;
-  let deviceWidth = null;
-  if (process.browser) {
+
+  useEffect(() => {
+    let width = null;
+
     if (window.outerHeight) {
-      deviceWidth = window.outerWidth;
+      width = window.outerWidth;
     } else {
-      deviceWidth = document.body.clientWidth;
+      width = document.body.clientWidth;
     }
-  }
+
+    setDeviceWidth(width);
+  }, []);
 
   const authorId = author && author.id;
 
   function renderAvatar() {
     let finalSize = size;
-    const profileImage = author.profile_image || author.profileImage;
-    if (deviceWidth < 768 && !trueSize) {
+    const profileImage = author?.profile_image || author?.profileImage;
+    if (deviceWidth && deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
 
@@ -84,7 +83,7 @@ const AuthorAvatar = (props) => {
               // border: "3px solid transparent",
             }}
           >
-            {icons.user}
+            {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
           </span>
         )}
         {showModeratorBadge && (
@@ -99,23 +98,8 @@ const AuthorAvatar = (props) => {
 
   const avatarComponent = renderAvatar();
   const fullName = `${author?.first_name ?? author?.firstName ?? ""} ${
-    author?.last_name ?? author.lastName ?? ""
+    author?.last_name ?? author?.lastName ?? ""
   }`;
-
-  if (twitterUrl) {
-    return (
-      <div className={css(styles.avatar)}>
-        <a
-          target="_blank"
-          href={twitterUrl}
-          className={css(styles.atag)}
-          rel="noreferrer noopener"
-        >
-          {avatarComponent}
-        </a>
-      </div>
-    );
-  }
 
   return (
     <div className={css(styles.avatar)}>
@@ -123,32 +107,33 @@ const AuthorAvatar = (props) => {
         avatarComponent
       ) : (
         <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/overview`}
+          href={`/user/${authorId}/overview`}
           className={css(styles.atag)}
           rel="noreferrer noopener"
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
-          {avatarComponent}
-          {Boolean(withAuthorName) ? (
-            <span
-              style={{
-                color: fontColor ?? colors.BLACK(),
-                fontSize: fontSize ?? size,
-                fontWeight: boldName ? 500 : 400,
-                marginLeft: spacing ?? 8,
-                whiteSpace: "nowrap",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className={css(styles.name)}
-            >
-              {fullName}
-            </span>
-          ) : null}
+          <div>
+            {avatarComponent}
+            {!!withAuthorName ? (
+              <span
+                style={{
+                  color: fontColor ?? colors.BLACK(),
+                  fontSize: fontSize ?? size,
+                  fontWeight: boldName ? 500 : 400,
+                  marginLeft: spacing ?? 8,
+                  whiteSpace: "nowrap",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className={css(styles.name)}
+              >
+                {fullName}
+              </span>
+            ) : null}
+          </div>
         </Link>
       )}
     </div>

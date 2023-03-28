@@ -1,3 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShieldHalved } from "@fortawesome/pro-solid-svg-icons";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { faDown } from "@fortawesome/pro-solid-svg-icons";
+import { faUp } from "@fortawesome/pro-solid-svg-icons";
+import { faEye } from "@fortawesome/pro-duotone-svg-icons";
+import { faEyeSlash } from "@fortawesome/pro-duotone-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
@@ -8,7 +15,7 @@ import colors from "~/config/themes/colors";
 import DropdownButton from "../Form/DropdownButton";
 import excludeFromFeed from "./api/excludeDocFromFeedAPI";
 import featureDoc from "./api/featureDocAPI";
-import icons from "~/config/themes/icons";
+
 import includeInFeed from "./api/includeDocInFeedAPI";
 import removeDocFromFeatured from "./api/removeDocFromFeaturedAPI";
 
@@ -101,7 +108,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
 
   const dropdownOpts = [
     {
-      icon: icons.eyeSlash,
+      icon: <FontAwesomeIcon icon={faEyeSlash}></FontAwesomeIcon>,
       label: "Exclude from Trending",
       value: "exclude",
       isVisible: true,
@@ -110,7 +117,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.eye,
+      icon: <FontAwesomeIcon icon={faEye}></FontAwesomeIcon>,
       label: "Include in Trending",
       value: "include",
       isVisible: true,
@@ -119,7 +126,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.upSolid,
+      icon: <FontAwesomeIcon icon={faUp}></FontAwesomeIcon>,
       label: "Make Featured",
       value: "feature",
       isVisible: true,
@@ -128,7 +135,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
       },
     },
     {
-      icon: icons.downSolid,
+      icon: <FontAwesomeIcon icon={faDown}></FontAwesomeIcon>,
       iconStyle: styles.removeFromFeatureIcon,
       label: "Remove from Featured",
       value: "remove-feature",
@@ -178,7 +185,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     }
     if (opt.value === "feature") {
       return (
-        <div>
+        (<div>
           <div className={css(styles.opt)}>
             <span className={css(styles.iconWrapper, styles.iconMakeFeature)}>
               {opt.icon}
@@ -191,7 +198,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
                 setIsFeaturedSubmenuOpen(!isFeaturedSubmenuOpen);
               }}
             >
-              {icons.cog}
+              {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
             </span>
           </div>
           <div
@@ -233,7 +240,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
               />
             </div>
           </div>
-        </div>
+        </div>)
       );
     }
     return (
@@ -251,10 +258,10 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     .map((opt, i) => ({ html: opt, ...dropdownOpts[i] }));
 
   return (
-    <DropdownButton
+    (<DropdownButton
       opts={optsAsHTML}
       // @ts-ignore
-      labelAsHtml={icons.shield}
+      labelAsHtml={<FontAwesomeIcon icon={faShieldHalved}></FontAwesomeIcon>}
       isOpen={isOpen}
       onClick={() => setIsOpen(true)}
       onClickOutside={() => {
@@ -271,7 +278,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
         }
         return setIsOpen(false);
       }}
-    />
+    />)
   );
 }
 

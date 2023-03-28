@@ -1,21 +1,16 @@
-import {
-  ReactElement,
-  useState,
-  useEffect,
-  useRef,
-  SyntheticEvent,
-} from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
+import { ReactElement, useState } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import ProgressBar from "@ramonak/react-progress-bar";
 
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Button from "../Form/Button";
 import SimplePostEditor from "../Form/SimplePostEditor";
-import icons from "~/config/themes/icons";
+
 import BountyWizardRSCForm from "./BountyWizardRSCForm";
 import { useRouter } from "next/router";
 
@@ -166,32 +161,31 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
           </>
         );
       case 2:
-        return (
-          <>
-            <SimplePostEditor
-              documentType="BOUNTY"
-              bountyType={active}
-              title={TITLES[active]}
-              editorCTA={EDITORCTAS[active]}
-              onSuccess={(post) => {
-                setPost(post);
-                setStep(step + 1);
-              }}
-              otherButtons={
-                <div
-                  className={css(styles.previousStep)}
-                  onClick={() => {
-                    setStep(step - 1);
-                  }}
-                >
-                  {icons.chevronLeft} <span>Previous Step</span>
-                </div>
-              }
-              label={"Bounty Title"}
-              buttonLabel={"Next"}
-            />
-          </>
-        );
+        return (<>
+          <SimplePostEditor
+            documentType="BOUNTY"
+            bountyType={active}
+            title={TITLES[active]}
+            editorCTA={EDITORCTAS[active]}
+            onSuccess={(post) => {
+              setPost(post);
+              setStep(step + 1);
+            }}
+            otherButtons={
+              <div
+                className={css(styles.previousStep)}
+                onClick={() => {
+                  setStep(step - 1);
+                }}
+              >
+                {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}{" "}
+                <span>Previous Step</span>
+              </div>
+            }
+            label={"Bounty Title"}
+            buttonLabel={"Next"}
+          />
+        </>);
       case 3:
         return (
           <BountyWizardRSCForm
@@ -207,16 +201,6 @@ function BountyWizard({ onSuccess }: Props): ReactElement {
               onSuccess && onSuccess();
               router.push(route);
             }}
-            // otherButtons={
-            //   <div
-            //     className={css(styles.previousStep)}
-            //     onClick={() => {
-            //       setStep(step - 1);
-            //     }}
-            //   >
-            //     {icons.chevronLeft} <span>Previous Step</span>
-            //   </div>
-            // }
           />
         );
       default:

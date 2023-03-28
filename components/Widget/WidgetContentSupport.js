@@ -1,13 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
-import Loader from "~/components/Loader/Loader";
 import Sparkle from "react-sparkle";
 
 import { ModalActions } from "~/redux/modals";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils/form";
 import ReactTooltip from "react-tooltip";
@@ -92,7 +92,12 @@ const ContentSupport = (props) => {
     if (fetching) {
       return (
         <span className={css(styles.count)}>
-          <Loader loading={true} size={5} type="clip" />
+          <ClipLoader
+            sizeUnit={"px"}
+            size={5}
+            color={colors.BLUE(1)}
+            loading={true}
+          />
         </span>
       );
     }
@@ -124,7 +129,7 @@ const ContentSupport = (props) => {
       {renderCount()}
       {!isUserContent() && (
         <span className={css(styles.plusButton)} id={"plusIcon"}>
-          {icons.plusCircleSolid}
+          {<FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>}
         </span>
       )}
       <img

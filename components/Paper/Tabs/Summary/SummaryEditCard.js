@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -7,7 +9,6 @@ import * as moment from "dayjs";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Loader from "~/components/Loader/Loader";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import SummaryContributor from "../../SummaryContributor";
 
@@ -56,16 +57,18 @@ const SummaryEditCard = (props) => {
                 color={colors.BLUE()}
               />
             ) : active || hovered ? (
-              icons.starFilled
+              <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
             ) : (
-              icons.starEmpty
+              <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>
             )}
           </span>
         );
       }
     } else {
       return (
-        <span className={css(styles.icon)}>{active && icons.starFilled}</span>
+        <span className={css(styles.icon)}>
+          {active && <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
+        </span>
       );
     }
   };

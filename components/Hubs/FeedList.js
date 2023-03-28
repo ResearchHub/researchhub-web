@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
@@ -8,7 +10,7 @@ import SubscribedHubList from "../Home/SubscribedHubList";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons, { DownIcon, UpIcon } from "~/config/themes/icons";
+import { DownIcon, UpIcon } from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -24,7 +26,7 @@ class FeedList extends Component {
     this.feeds = [
       {
         label: "All",
-        icon: icons.squares,
+        icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
         href: "/",
         as: "/",
       },

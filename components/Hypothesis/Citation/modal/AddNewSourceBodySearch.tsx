@@ -1,7 +1,7 @@
-import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { ID } from "~/config/types/root_types";
 import {
@@ -26,6 +26,7 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import SourceSearchInputItem from "../search/SourceSearchInputItem";
+import { ClipLoader } from "react-spinners";
 
 const { NEW_PAPER_UPLOAD } = NEW_SOURCE_BODY_TYPES;
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
@@ -200,7 +201,12 @@ export default function AddNewSourceBodySearch({
             !isSubmitting ? (
               "Add source"
             ) : (
-              <Loader size={8} loading color="#fff" />
+              <ClipLoader
+                sizeUnit={"px"}
+                size={8}
+                color={"#fff"}
+                loading={true}
+              />
             )
           }
           onClick={(event: SyntheticEvent): void => {

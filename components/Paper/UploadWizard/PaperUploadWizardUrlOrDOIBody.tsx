@@ -7,16 +7,14 @@ import { isStringDOI } from "~/config/utils/isStringDOI";
 import { isStringURL } from "~/config/utils/isStringURL";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
+import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import Loader from "~/components/Loader/Loader";
+import { ClipLoader } from "react-spinners";
 
 type Props = {
   messageActions: any /* redux */;
@@ -188,7 +186,16 @@ function PaperUploadWizardURLBody({
           disabled={isSubmitting}
           key="upload-wizard-button"
           label={
-            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Upload"
+            isSubmitting ? (
+              <ClipLoader
+                sizeUnit={"px"}
+                size={8}
+                color={"#fff"}
+                loading={true}
+              />
+            ) : (
+              "Upload"
+            )
           }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"

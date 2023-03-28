@@ -1,3 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
+import { faLightbulb } from "@fortawesome/pro-regular-svg-icons";
+import { faPenSquare } from "@fortawesome/pro-solid-svg-icons";
+import { faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -16,7 +24,7 @@ import {
 import { isDevEnv } from "~/config/utils/env";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
-import { VoteType, RhDocumentType, parseUser } from "~/config/types/root_types";
+import { RhDocumentType, parseUser } from "~/config/types/root_types";
 import { useState, useEffect, SyntheticEvent } from "react";
 import colors, {
   genericCardColors,
@@ -24,7 +32,7 @@ import colors, {
 } from "~/config/themes/colors";
 import DesktopOnly from "~/components/DesktopOnly";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
@@ -84,10 +92,10 @@ export type FeedCardProps = {
 };
 
 const documentIcons = {
-  paper: icons.paperRegular,
-  post: icons.penSquare,
-  hypothesis: icons.lightbulb,
-  question: icons.question,
+  paper: <FontAwesomeIcon icon={faFileLines}></FontAwesomeIcon>,
+  post: <FontAwesomeIcon icon={faPenSquare}></FontAwesomeIcon>,
+  hypothesis: <FontAwesomeIcon icon={faLightbulb}></FontAwesomeIcon>,
+  question: <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>,
 };
 
 function FeedCard({
@@ -242,7 +250,7 @@ function FeedCard({
     });
 
   return (
-    <Ripples
+    (<Ripples
       className={css(
         styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder,
@@ -389,9 +397,11 @@ function FeedCard({
                           hasAcceptedAnswer && styles.acceptedAnswer
                         )}
                       >
-                        {hasAcceptedAnswer
-                          ? icons.check
-                          : icons.commentAltLineSolid}
+                        {hasAcceptedAnswer ? (
+                          <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+                        ) : (
+                          <FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>
+                        )}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>
@@ -403,7 +413,7 @@ function FeedCard({
                   ) : (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
-                        {icons.commentRegular}
+                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                       </span>
                       <span className={css(styles.metadataText)}>
                         <span>{discussion_count}</span>
@@ -448,7 +458,7 @@ function FeedCard({
           </div>
         </div>
       </div>
-    </Ripples>
+    </Ripples>)
   );
 }
 

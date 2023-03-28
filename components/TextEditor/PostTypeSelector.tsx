@@ -1,7 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useState, useRef } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import postTypes, { POST_TYPES, questionPostTypes } from "./config/postTypes";
 
@@ -38,7 +41,7 @@ function PostTypeSelector({
 
   const renderDropdown = () => {
     return (
-      <div
+      (<div
         className={css(
           dropdownStyles.dropdown,
           isOpen && dropdownStyles.dropdownOpen
@@ -71,18 +74,20 @@ function PostTypeSelector({
                 {t.label}
               </div>
               {selectedType?.value === t.value && (
-                <div className={css(dropdownStyles.check)}>{icons.check}</div>
+                <div className={css(dropdownStyles.check)}>
+                  {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+                </div>
               )}
             </div>
           ))}
         </div>
-      </div>
+      </div>)
     );
   };
 
   const renderDropdownTrigger = () => {
     return (
-      <div
+      (<div
         className={css(styles.trigger)}
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
@@ -95,8 +100,10 @@ function PostTypeSelector({
           {selectedType?.icon}
         </span>
         {selectedType?.label}{" "}
-        <span className={css(styles.downIcon)}>{icons.angleDown}</span>
-      </div>
+        <span className={css(styles.downIcon)}>
+          {<FontAwesomeIcon icon={faAngleDown}></FontAwesomeIcon>}
+        </span>
+      </div>)
     );
   };
 

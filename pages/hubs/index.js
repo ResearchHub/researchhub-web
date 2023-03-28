@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -18,7 +20,7 @@ const AddHubModal = dynamic(() => import("~/components/Modals/AddHubModal"));
 const EditHubModal = dynamic(() => import("~/components/Modals/EditHubModal"));
 
 // Config
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { getHubs, getCategories } from "~/components/Hubs/api/fetchHubs";
 
@@ -118,7 +120,9 @@ class Index extends Component {
               {categoryName === "Trending" ? (
                 <span>
                   {categoryName}
-                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                  <span className={css(styles.trendingIcon)}>
+                    {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
+                  </span>
                 </span>
               ) : (
                 categoryName

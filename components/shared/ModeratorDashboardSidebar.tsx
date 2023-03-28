@@ -1,12 +1,16 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { faCoin } from "@fortawesome/pro-duotone-svg-icons";
+import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
 import { filterNull } from "~/config/utils/nullchecks";
-import { Fragment, ReactElement, useContext, useEffect } from "react";
+import { Fragment, useContext } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
-import { useStore } from "react-redux";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import icons from "~/config/themes/icons";
-import killswitch from "~/config/killswitch/killswitch";
+
 import Link from "next/link";
 import Ripples from "react-ripples";
 import { NavbarContext } from "~/pages/Base";
@@ -34,7 +38,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   const SIDE_BAR_ITEMS = filterNull([
     isUserModerator
       ? {
-          icon: icons.bookOpen,
+          icon: <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>,
           id: "author-claim-case-dashboard",
           name: "Author Claim",
           pathname: "/moderators/author-claim-case-dashboard",
@@ -42,7 +46,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserModerator
       ? {
-          icon: icons.subscribers,
+          icon: <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>,
           id: "editors",
           name: "Editors",
           pathname: "/moderators/editors",
@@ -50,24 +54,15 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     userAllowedOnPermissionsDash
       ? {
-          icon: icons.userEdit,
+          icon: <FontAwesomeIcon icon={faUserEdit}></FontAwesomeIcon>,
           id: "permissions",
           name: "Update Editors",
           pathname: "/moderators/permissions",
         }
       : null,
-    // TODO: kobe - take care of this
-    // userAllowedToManagePeerReviews
-    //   ? {
-    //       icon: icons.commentCheck,
-    //       id: "review",
-    //       name: "Peer Reviews",
-    //       pathname: "/moderators/reviews",
-    //     }
-    //   : null,
     userAllowedSendRSC
       ? {
-          icon: icons.coin,
+          icon: <FontAwesomeIcon icon={faCoin}></FontAwesomeIcon>,
           id: "rsc",
           name: "Manage RSC",
           pathname: "/moderators/rsc",
@@ -75,7 +70,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       : null,
     isUserHubEditor || isUserModerator
       ? {
-          icon: icons.flag,
+          icon: <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>,
           id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",
@@ -97,11 +92,13 @@ export default function ModeratorDashboardSidebar({}: Props) {
         )}
         key={`listItem-${id}`}
       >
-        <Link href={{ pathname }} as={pathname} className={css(styles.sidebarLink)}>
-
+        <Link
+          href={{ pathname }}
+          as={pathname}
+          className={css(styles.sidebarLink)}
+        >
           <span className={css(styles.icon)}>{icon}</span>
           {name} {extraHTML}
-
         </Link>
       </Ripples>
     )

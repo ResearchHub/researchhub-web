@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createQuestion } from "./api/createQuestion";
@@ -13,7 +15,6 @@ import colors from "../../config/themes/colors";
 import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import icons from "~/config/themes/icons";
 
 const SimpleEditor = dynamic(() => import("../CKEditor/SimpleEditor"));
 
@@ -115,7 +116,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
   };
 
   return (
-    <form
+    (<form
       autoComplete={"off"}
       className={css(styles.askQuestionForm)}
       id="askQuestionForm"
@@ -133,7 +134,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           {"Submission Guidelines"}
         </a>
         <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
       </div>
       <FormInput
@@ -188,7 +189,7 @@ function AskQuestionForm({ documentType, user, onExit }: AskQuestionFormProps) {
           type="submit"
         />
       </div>
-    </form>
+    </form>)
   );
 }
 

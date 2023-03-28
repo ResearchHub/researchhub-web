@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import colors from "~/config/themes/colors";
-import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import LoadMoreButton from "~/components/LoadMoreButton";
@@ -38,9 +37,11 @@ const SearchResultsForPeople = ({ apiResponse, context }) => {
   const [selectedSortOrderDropdownValue, setSelectedSortOrderDropdownValue] =
     useState({});
 
-  const [pageWidth, setPageWidth] = useState(
-    process.browser ? window.innerWidth : 0
-  );
+  const [pageWidth, setPageWidth] = useState(0);
+
+  useEffect(() => {
+    setPageWidth(window.innerWidth);
+  }, []);
 
   useEffect(() => {
     const results = get(apiResponse, "results", []);

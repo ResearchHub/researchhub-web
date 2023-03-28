@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
 import { topLevelFilters } from "../constants/UnifiedDocFilters";
@@ -5,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import handleFilterSelect from "../utils/handleFilterSelect";
 import { useRouter } from "next/router";
 import AuthorAvatar from "../../AuthorAvatar";
-import icons from "~/config/themes/icons";
+
 import { connect } from "react-redux";
 import MyHubsDropdown from "../../Hubs/MyHubsDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
@@ -57,7 +60,7 @@ const FeedMenuTopLevelFilters = ({
       }
 
       return (
-        <div
+        (<div
           className={`${css(
             styles.filter,
             isSelected && styles.filterSelected,
@@ -76,7 +79,6 @@ const FeedMenuTopLevelFilters = ({
           }}
         >
           {isLive && <span className={css(styles.divider)}></span>}
-
           <span className={css(styles.filterIcon)}>
             {isMyHubs ? (
               <AuthorAvatar
@@ -100,13 +102,17 @@ const FeedMenuTopLevelFilters = ({
                 setIsMyHubsDropdownOpen(!isMyHubsDropdownOpen);
               }}
             >
-              {isMyHubsDropdownOpen ? icons.chevronUp : icons.chevronDown}
+              {isMyHubsDropdownOpen ? (
+                <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
+              )}
             </span>
           )}
           {isMyHubsDropdownOpen && isMyHubs && !renderAsDropdown && (
             <MyHubsDropdown hubState={hubState} />
           )}
-        </div>
+        </div>)
       );
     });
   }, [

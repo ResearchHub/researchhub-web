@@ -1,7 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faThumbsDown } from "@fortawesome/pro-solid-svg-icons";
+import { faThumbsUp } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useSpring, animated as a } from "react-spring";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 import API from "~/config/api";
@@ -64,7 +68,11 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverUp(true)}
             onMouseLeave={() => setHoverUp(false)}
           >
-            {hoverUp ? icons.solidThumbsUp : icons.opaqueThumbsUp}
+            {hoverUp ? (
+              <FontAwesomeIcon icon={faThumbsUp}></FontAwesomeIcon>
+            ) : (
+              <FontAwesomeIcon icon={faThumbsUp}></FontAwesomeIcon>
+            )}
           </div>
           <div
             className={css(styles.thumbsDown)}
@@ -72,7 +80,11 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverDown(true)}
             onMouseLeave={() => setHoverDown(false)}
           >
-            {hoverDown ? icons.solidThumbsDown : icons.opaqueThumbsDown}
+            {hoverDown ? (
+              <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
+            ) : (
+              <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
+            )}
           </div>
         </div>
       </Fragment>
@@ -85,7 +97,7 @@ const UserPrompt = (props) => {
         className={css(styles.closeButton)}
         onClick={() => displayShowPrompt(false)}
       >
-        {icons.times}
+        {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
       </div>
       {renderContent()}
     </a.div>

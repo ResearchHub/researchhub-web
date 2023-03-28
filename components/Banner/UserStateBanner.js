@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -6,7 +8,6 @@ import { MessageActions } from "~/redux/message";
 import { BannerActions } from "~/redux/banner";
 
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const UserStateBanner = (props) => {
   const [showBanner, setShowBanner] = useState(false);
@@ -57,14 +58,18 @@ const UserStateBanner = (props) => {
     if (user.is_suspended) {
       return (
         <Fragment>
-          <span className={css(styles.icon)}>{icons.error}</span>
+          <span className={css(styles.icon)}>
+            {<FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon>}
+          </span>
           Your account has been suspended.
         </Fragment>
       );
     } else if (user.probable_spammer) {
       return (
         <Fragment>
-          <span className={css(styles.icon)}>{icons.error}</span>
+          <span className={css(styles.icon)}>
+            {<FontAwesomeIcon icon={faExclamationTriangle}></FontAwesomeIcon>}
+          </span>
           Your account is under review.
         </Fragment>
       );

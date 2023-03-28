@@ -10,14 +10,13 @@ import {
 } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCases } from "./api/AuthorClaimCaseGetCases";
-import { useEffect, ReactElement, useState, Fragment } from "react";
-import { useRouter, NextRouter } from "next/router";
+import { useEffect, ReactElement, useState } from "react";
+import { useRouter } from "next/router";
 import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
 import colors from "../../config/themes/colors";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "../UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 import Loader from "../Loader/Loader";
-import { ValueOf } from "~/config/types/root_types";
 import { nullthrows } from "~/config/utils/nullchecks";
 
 type Props = {

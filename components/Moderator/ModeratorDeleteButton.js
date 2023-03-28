@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinusCircle } from "@fortawesome/pro-duotone-svg-icons";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
@@ -9,11 +11,10 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "../../config/themes/icons";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils/nullchecks";
-import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();
@@ -324,7 +325,11 @@ const ModeratorDeleteButton = (props) => {
     return (
       <Ripples className={css(containerClass)} onClick={performAction}>
         <span className={css(iconClass) + " modIcon"}>
-          {icon ? icon : icons.minusCircle}
+          {icon ? (
+            icon
+          ) : (
+            <FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>
+          )}
         </span>
         {label && <span className={css(labelClass)}>{label}</span>}
       </Ripples>

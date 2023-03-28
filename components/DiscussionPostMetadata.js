@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef } from "react";
@@ -17,7 +20,6 @@ import ShareModal from "~/components/ShareModal";
 import { createUserSummary } from "~/config/utils/user";
 import { timeSince } from "~/config/utils/dates";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -119,7 +121,11 @@ const DiscussionPostMetadata = (props) => {
             )}
           >
             <span className={css(badge.icon)}>
-              {isAcceptedAnswer ? icons.check : postType.icon}
+              {isAcceptedAnswer ? (
+                <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+              ) : (
+                postType.icon
+              )}
             </span>
             <span className={css(badge.label)}>ANSWER</span>
           </span>
@@ -292,7 +298,9 @@ const Timestamp = (props) => {
         >
           <span className={css(styles.divider)}>•</span>
           {timestamp} from Twitter
-          <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
+          <div className={css(styles.twitterIcon)}>
+            {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
+          </div>
         </a>
       </div>
     );

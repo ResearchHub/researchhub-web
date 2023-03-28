@@ -29,6 +29,15 @@ const nextConfig = {
       "lh3.googleusercontent.com",
     ],
   },
+  sentry: {
+    // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
+    // for client-side builds. (This will be the default starting in
+    // `@sentry/nextjs` version 8.0.0.) See
+    // https://webpack.js.org/configuration/devtool/ and
+    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#use-hidden-source-map
+    // for more information.
+    hideSourceMaps: true,
+  },
   env: {
     SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     REACT_APP_ENV: process.env.REACT_APP_ENV,
@@ -101,16 +110,16 @@ const nextConfig = {
   },
 };
 
-module.exports = withTM({ ...nextConfig });
+// module.exports = withTM({ ...nextConfig });
 
 // Kobe 12-07-22: Temporarily turning this off to see
 // If it is necessary given vercel has a dashboard integration
-// const SentryWebpackPluginOptions = {
-//   silent: true,
-//   disableClientWebpackPlugin: false,
-// };
+const SentryWebpackPluginOptions = {
+  silent: true,
+  disableClientWebpackPlugin: false,
+};
 
-// module.exports = withSentryConfig(
-//   withTM({ ...nextConfig }),
-//   SentryWebpackPluginOptions
-// );
+module.exports = withSentryConfig(
+  withTM({ ...nextConfig }),
+  SentryWebpackPluginOptions
+);

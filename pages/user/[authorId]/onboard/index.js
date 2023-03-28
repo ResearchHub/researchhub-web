@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/pro-light-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -14,7 +16,7 @@ import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -266,7 +268,9 @@ const Index = (props) => {
                 value={searchValue}
                 placeholder={"Search Hubs"}
               />
-              <span className={css(styles.searchIcon)}>{icons.search}</span>
+              <span className={css(styles.searchIcon)}>
+                {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
+              </span>
               <div
                 onClick={resetSearch}
                 className={css(
@@ -277,7 +281,6 @@ const Index = (props) => {
                 Clear
               </div>
             </div>
-
             <ReactPlaceholder
               ready={props.hubs.topHubs.length}
               showLoadingAnimation

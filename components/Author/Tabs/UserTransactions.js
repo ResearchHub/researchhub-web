@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReceipt } from "@fortawesome/pro-duotone-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -14,7 +16,7 @@ import EmptyState from "./EmptyState";
 import { TransactionActions } from "~/redux/transaction";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -95,7 +97,7 @@ class UserTransaction extends Component {
         ) : (
           <EmptyState
             message={"User has not created any transactions"}
-            icon={icons.receipt}
+            icon={<FontAwesomeIcon icon={faReceipt}></FontAwesomeIcon>}
           />
         )}
         {!maxCardsToRender && this.renderLoadMoreButton()}

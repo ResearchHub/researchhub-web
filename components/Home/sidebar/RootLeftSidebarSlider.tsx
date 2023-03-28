@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMedium } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -10,8 +14,7 @@ import { ReactElement, SyntheticEvent, useMemo } from "react";
 import { useRouter } from "next/router";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import GoogleLoginButton from "~/components/GoogleLoginButton";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "../RHLogo";
 import RootLeftSidebarSliderItem, {
   Props as RootLeftSidebarSliderItemProps,
@@ -116,14 +119,14 @@ function RootLeftSidebarSlider({
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {icons.twitter}
+              {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
             </ALink>
             <ALink
               href="https://discord.com/invite/ZcCYgcnUp5"
               overrideStyle={styles.leftSidebarSliderFooterIcon}
               target="__blank"
             >
-              {icons.discord}
+              {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
             </ALink>
             <ALink
               href="https://medium.com/researchhub"
@@ -132,7 +135,7 @@ function RootLeftSidebarSlider({
               }
               target="__blank"
             >
-              {icons.medium}
+              {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
             </ALink>
           </div>
           <div className={css(styles.leftSidebarSliderFooterItemsBottomRow)}>

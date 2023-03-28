@@ -1,4 +1,7 @@
-import { Fragment, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
+import { Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useAlert } from "react-alert";
@@ -16,7 +19,7 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -229,7 +232,7 @@ const AuthorSupportModal = (props) => {
     return (
       <div className={css(styles.content)}>
         <div className={css(styles.backButton)} onClick={() => setPage(1)}>
-          {icons.longArrowLeft}
+          {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
           <span className={css(styles.backButtonLabel)}>Back</span>
         </div>
         <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
@@ -328,7 +331,9 @@ const AuthorSupportModal = (props) => {
         ) : (
           <div className={css(styles.mainHeader)}>
             Transaction Successful
-            <span className={css(styles.icon)}>{icons.checkCircle}</span>
+            <span className={css(styles.icon)}>
+              {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
+            </span>
           </div>
         )
       }

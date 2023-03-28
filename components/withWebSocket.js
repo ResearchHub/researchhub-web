@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { AUTH_TOKEN as TOKEN_NAME } from "../config/constants";
+import { AUTH_TOKEN } from "~/config/constants";
 
 const ALLOWED_ORIGINS = [
   "localhost",
@@ -54,7 +54,7 @@ export default function withWebSocket(
       let token = null;
       if (props.wsAuth) {
         try {
-          token = window.localStorage[TOKEN_NAME];
+          token = window.localStorage[AUTH_TOKEN];
         } catch (err) {
           console.error("Did not find auth token");
           return err;

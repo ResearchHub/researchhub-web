@@ -1,7 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { generateApiUrl } from "~/config/api";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import Image from "next/image";
 
@@ -10,11 +10,12 @@ import Button from "../../Form/Button";
 
 // Utils
 import { createEditorSummary, createEduSummary } from "~/config/utils/user";
-import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import { parseUser, ID, RHUser } from "~/config/types/root_types";
 import { timeSince } from "~/config/utils/dates";
 import colors from "~/config/themes/colors";
 import { truncateText } from "~/config/utils/string";
 import { breakpoints } from "~/config/themes/screen";
+import { useRouter } from "next/router";
 
 const TRUNCATE_SIZE = 100;
 
@@ -22,6 +23,8 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
   const [fetchedUser, setUser] = useState<RHUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPopover = async () => {
@@ -141,9 +144,13 @@ const UserPopover = ({ userId }: { userId: ID }): ReactElement | null => {
       <div style={{ marginTop: 15 }}>
         <Button
           hideRipples={true}
-          isLink={{
-            href: "/user/[authorId]/[tabName]",
-            linkAs: fetchedUser?.authorProfile?.url,
+          fullWidth={true}
+          onClick={(e) => {
+            if (e.metaKey) {
+              window.open(fetchedUser?.authorProfile?.url, "_blank");
+            } else {
+              router.push(fetchedUser?.authorProfile?.url);
+            }
           }}
         >
           View Profile

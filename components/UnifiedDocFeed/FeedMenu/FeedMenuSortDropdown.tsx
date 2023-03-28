@@ -1,8 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { scopeOptions, sortOpts } from "../constants/UnifiedDocFilters";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useEffect, useRef, useState } from "react";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 
 function FeedMenuSortDropdown({
@@ -49,7 +52,7 @@ function FeedMenuSortDropdown({
 
   const timeScopeObj = scopeOptions[selectedScopeValue];
   return (
-    <div className={css(styles.FeedMenuSortDropdown)} ref={dropdownRef}>
+    (<div className={css(styles.FeedMenuSortDropdown)} ref={dropdownRef}>
       <div className={css(styles.display)} onClick={() => setIsOpen(!isOpen)}>
         <div className={css(styles.displayIcon)}>
           {selectedOrderingObj?.icon}
@@ -58,14 +61,18 @@ function FeedMenuSortDropdown({
           {selectedOrderingObj?.selectedLabel}
           {!selectedOrderingObj.disableScope && (
             <span className={css(styles.displayTimeScope)}>
-              <span className={css(styles.rightIcon)}>{icons.arrowRight}</span>
+              <span className={css(styles.rightIcon)}>
+                {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
+              </span>
               <span className={css(styles.selectedTimeScopeLabel)}>
                 {timeScopeObj.label}
               </span>
             </span>
           )}
         </div>
-        <div className={css(styles.displayDown)}>{icons.chevronDown}</div>
+        <div className={css(styles.displayDown)}>
+          {<FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>}
+        </div>
       </div>
       {isOpen && (
         <div className={css(styles.dropdownBody)}>
@@ -79,9 +86,7 @@ function FeedMenuSortDropdown({
               key={"sort-" + opt.value}
             >
               <div className={css(styles.optLineItem)}>
-                <div className={css(styles.optIcon)}>
-                  {opt.icon}
-                </div>
+                <div className={css(styles.optIcon)}>{opt.icon}</div>
                 <div className={css(styles.optLabel)}>{opt.label}</div>
               </div>
               {selectedOrderingObj?.value === opt.value &&
@@ -106,7 +111,7 @@ function FeedMenuSortDropdown({
           ))}
         </div>
       )}
-    </div>
+    </div>)
   );
 }
 

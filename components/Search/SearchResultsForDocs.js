@@ -87,9 +87,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
     entityType || router.query.type
   );
 
-  const [pageWidth, setPageWidth] = useState(
-    process.browser ? window.innerWidth : 0
-  );
+  const [pageWidth, setPageWidth] = useState(0);
 
   const [selectedHubs, setSelectedHubs] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState({});

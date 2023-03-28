@@ -1,10 +1,12 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 
 // Config
 import colors from "../config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { buildSlug } from "~/config/utils/buildSlug";
 
 const HubSearchResult = ({ result, index, clearSearch }) => {
@@ -45,7 +47,9 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
         className={css(styles.card)}
         onClick={() => clearSearch()}
       >
-        <div className={css(styles.hubIcon)}>{icons.hub}</div>
+        <div className={css(styles.hubIcon)}>
+          {<FontAwesomeIcon icon={faChartNetwork}></FontAwesomeIcon>}
+        </div>
         <div className={css(styles.column)}>
           <div className={css(styles.mainText)}>
             {highlight ? parseHighlightText(meta.highlight, "name") : name}

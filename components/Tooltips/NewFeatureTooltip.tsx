@@ -1,8 +1,11 @@
-import { ReactElement, useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretLeft } from "@fortawesome/pro-solid-svg-icons";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
+import { ReactElement } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import { connect } from "react-redux";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
@@ -30,12 +33,11 @@ function NewFeatureTooltip({
     postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName });
   };
 
-  const tooltipPos =
-    (process.browser && window.innerWidth > breakpoints.small.int) ||
-    position.length === 1
-      ? position[0]
-      : position[1];
-
+  // const tooltipPos =
+  //   (process.browser && window.innerWidth > breakpoints.small.int) ||
+  //   position.length === 1
+  //     ? position[0]
+  //     : position[1];
 
   // Kobe: Turning this feature off temporarily because something broke with it.
   // It glitches out on page load
@@ -48,7 +50,9 @@ function NewFeatureTooltip({
         <div className={css(styles.title)}>
           Contribution Types
           <span className={css(styles.new)}>
-            <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>
+              {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
+            </span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
@@ -75,7 +79,9 @@ function NewFeatureTooltip({
         <div className={css(styles.title)}>
           Bounties
           <span className={css(styles.new)}>
-            <span className={css(styles.fireIcon)}>{icons.fire}</span>
+            <span className={css(styles.fireIcon)}>
+              {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
+            </span>
             <span className={css(styles.newText)}>New</span>
           </span>
         </div>
@@ -111,7 +117,7 @@ function NewFeatureTooltip({
             colorStyles["caret_" + color]
           )}
         >
-          {icons.caretLeft}
+          {<FontAwesomeIcon icon={faCaretLeft}></FontAwesomeIcon>}
         </span>
         <div className={css(styles.body, colorStyles["body_" + color])}>
           {html}

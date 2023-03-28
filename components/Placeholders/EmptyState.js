@@ -1,11 +1,18 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
-import icons from "~/config/themes/icons";
 
 const EmptyState = (props) => {
   let { text, subtext, icon } = props;
   return (
     <div className={css(styles.emptyContainer)}>
-      {icon ? icon : <div className={css(styles.icon)}>{icons.file}</div>}
+      {icon ? (
+        icon
+      ) : (
+        <div className={css(styles.icon)}>
+          {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
+        </div>
+      )}
       <div>{text && text}</div>
       <div className={css(styles.subtext)}>{subtext && subtext}</div>
     </div>

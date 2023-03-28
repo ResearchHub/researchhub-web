@@ -22,7 +22,9 @@ const FeedMenu = ({ hubState }: Args) => {
   const tabsContainerRef = useRef<HTMLInputElement | null>(null);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [tagsMenuOpenFor, setTagsMenuOpenFor] = useState(null);
-  const shouldShowTabs = router.pathname.indexOf("live") === -1;
+  const [shouldShowTabs, setShouldShowTabs] = useState(
+    router.pathname.indexOf("live") === -1
+  );
   const selectedFilters = getSelectedUrlFilters({
     query: router.query,
     pathname: router.pathname,
@@ -33,6 +35,8 @@ const FeedMenu = ({ hubState }: Args) => {
     useEffectForOutsideMenuClick({
       handleDismissTagMenu: setTagsMenuOpenFor,
     });
+
+    setShouldShowTabs(router.pathname.indexOf("live") === -1);
   }, []);
 
   useEffect(() => {

@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/pro-duotone-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import {
   buildSubscriptionPatch,
@@ -32,7 +36,7 @@ import Head from "~/components/Head";
 import Ripples from "react-ripples";
 import Toggle from "react-toggle";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 import API from "~/config/api";
 import Button from "~/components/Form/Button";
@@ -271,7 +275,11 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.togglePasswordVisibility}
           >
-            {this.state.isPasswordInputVisible ? icons.times : icons.pencil}
+            {this.state.isPasswordInputVisible ? (
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
+            ) : (
+              <FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>
+            )}
           </Ripples>
         </div>
         <div
@@ -345,7 +353,11 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.toggleEmailInput}
           >
-            {activeEmailInput ? icons.times : icons.pencil}
+            {activeEmailInput ? (
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
+            ) : (
+              <FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>
+            )}
           </Ripples>
         </div>
         <div
@@ -377,7 +389,7 @@ class UserSettings extends Component {
                   this.saveEmail();
                 }}
               >
-                {icons.paperPlane}
+                {<FontAwesomeIcon icon={faPaperPlane}></FontAwesomeIcon>}
               </Ripples>
             </form>
           ) : (
@@ -494,7 +506,9 @@ class UserSettings extends Component {
         className={css(hubStyles.entry, styles.hubEntry)}
       >
         {hub.name}
-        <div className={css(styles.closeIcon)}>{icons.times}</div>
+        <div className={css(styles.closeIcon)}>
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+        </div>
       </Ripples>
     );
   };

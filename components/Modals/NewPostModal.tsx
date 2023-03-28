@@ -5,16 +5,9 @@ import {
   isNullOrUndefined,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { NullableString, User } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import icons, {
-  PostIcon,
-  PaperIcon,
-  HypothesisIcon,
-  QuestionIcon,
-  RSCIcon,
-} from "~/config/themes/icons";
+import { PostIcon, PaperIcon, HypothesisIcon, QuestionIcon } from "~/config/themes/icons";
 import {
   ReactElement,
   useState,
@@ -27,7 +20,6 @@ import { NextRouter, useRouter } from "next/router";
 import {
   DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
-  NewPostButtonContextType,
   NewPostButtonContextValues,
 } from "~/components/contexts/NewPostButtonContext";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
@@ -70,29 +62,6 @@ export const getModalOptionItems = ({
       />
     ),
   },
-  // {
-  //   key: "bounty",
-  //   header: (
-  //     <div className={css(styles.header)}>
-  //       <span>Start a Bounty</span>
-  //       <span className={css(styles.new)}>
-  //         <span className={css(styles.fireIcon)}>{icons.fire}</span>
-  //         <span className={css(styles.newText)}>New</span>
-  //       </span>
-  //     </div>
-  //   ),
-  //   onClick: (): void => {
-  //     setButtonValues({
-  //       ...DEFAULT_POST_BUTTON_VALUES,
-  //       isOpen: true,
-  //       type: "bounty",
-  //     });
-  //   },
-  //   description:
-  //     "Offer ResearchCoin in exchange for work or knowledge. Must be science related.",
-  //   icon: <RSCIcon onClick={silentEmptyFnc} />,
-  // },
-
   {
     key: "question",
     header: (
@@ -285,7 +254,8 @@ function NewPostModal({
                       href={
                         modalOptionItems[modalSelectedItemIndex]?.route ?? ""
                       }
-                      legacyBehavior>
+                      legacyBehavior
+                    >
                       <div className={css(styles.buttonLabel)}>Continue</div>
                     </Link>
                   )

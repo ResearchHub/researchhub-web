@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
@@ -14,7 +16,7 @@ import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
@@ -257,7 +259,9 @@ const ReadButton = (props) => {
       id={"readLabel"}
     >
       <span className={css(styles.readLabel)}>Read</span>{" "}
-      <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+      <span className={css(styles.readArrow)}>
+        {<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
+      </span>
     </ClientLinkWrapper>
   );
 };

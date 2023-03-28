@@ -9,7 +9,6 @@ import { AuthActions } from "../redux/auth";
 
 import { doesNotExist } from "~/config/utils/nullchecks";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { voteWidgetIcons } from "~/config/themes/icons";
 import {
   UPVOTE,
   DOWNVOTE,
@@ -23,6 +22,9 @@ import { formatScore } from "~/config/utils/form";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import DiscussionActions from "../redux/discussion";
 import { breakpoints } from "~/config/themes/screen";
+import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { voteWidgetIcons } from "~/config/themes/icons";
 
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
@@ -285,13 +287,17 @@ const VoteButton = (props) => {
 const UpvoteButton = (props) => {
   return (
     <VoteButton {...props} right={props.horizontalView}>
-      {props.icon}
+      <FontAwesomeIcon icon={faUp}></FontAwesomeIcon>
     </VoteButton>
   );
 };
 
 const DownvoteButton = (props) => {
-  return <VoteButton {...props}>{props.icon}</VoteButton>;
+  return (
+    <VoteButton {...props}>
+      <FontAwesomeIcon icon={faDown}></FontAwesomeIcon>
+    </VoteButton>
+  );
 };
 
 function getScore(props) {

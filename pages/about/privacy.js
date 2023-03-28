@@ -1,9 +1,7 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 
 import ComponentWrapper from "~/components/ComponentWrapper";
-import colors from "~/config/themes/colors";
 
 class Privacy extends Component {
   render() {

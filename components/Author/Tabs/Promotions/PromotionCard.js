@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMousePointer } from "@fortawesome/pro-solid-svg-icons";
+import { faEye } from "@fortawesome/pro-duotone-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -8,7 +11,7 @@ import * as moment from "dayjs";
 import { ScorePill } from "~/components/VoteWidget";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
@@ -91,7 +94,7 @@ class PromotionCard extends Component {
             className={css(styles.icon, this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            {icons.eye}
+            {<FontAwesomeIcon icon={faEye}></FontAwesomeIcon>}
           </span>
           <div
             className={css(styles.stats, this.state.showViews && styles.active)}
@@ -112,7 +115,7 @@ class PromotionCard extends Component {
             className={css(styles.icon, !this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            {icons.mousePointer}
+            {<FontAwesomeIcon icon={faMousePointer}></FontAwesomeIcon>}
           </span>
           <div
             className={css(

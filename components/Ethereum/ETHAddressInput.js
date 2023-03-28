@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWallet } from "@fortawesome/pro-regular-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
 
@@ -6,7 +9,6 @@ import FormInput from "~/components/Form/FormInput";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const ETHAddressInput = (props) => {
   const {
@@ -83,14 +85,14 @@ const ETHAddressInput = (props) => {
         >
           {props.label}
           <span className={css(styles.infoIcon)} data-tip={props.tooltip}>
-            {icons["info-circle"]}
+            {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
             <ReactTooltip />
           </span>
         </div>
       </div>
       {!props.value && (
         <span className={css(styles.placeholderIcon)}>
-          {icon ? icon : icons.wallet}
+          {icon ? icon : <FontAwesomeIcon icon={faWallet}></FontAwesomeIcon>}
         </span>
       )}
       <FormInput

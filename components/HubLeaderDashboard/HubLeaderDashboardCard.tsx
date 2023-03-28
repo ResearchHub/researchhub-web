@@ -7,7 +7,6 @@ import { toTitleCase } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import Image from "next/image";
 import Link from "next/link";
-import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = {
   commentCount: number;

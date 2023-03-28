@@ -134,22 +134,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserFollowButton);
-
-// {!allowEdit && (
-//   <div className={css(styles.editProfileButton)}>
-//     <Button
-//       label={() => (
-//         <Fragment>
-//           {/* <span style={{ marginRight: 10, userSelect: "none" }}>
-//             {icons.user}
-//           </span> */}
-//           Follow
-//         </Fragment>
-//       )}
-//       onClick={onUserFollow}
-//       customButtonStyle={styles.editButtonCustom}
-//       rippleClass={styles.rippleClass}
-//       isWhite={true} // flip to normal when following
-//     />
-//   </div>
-// )}

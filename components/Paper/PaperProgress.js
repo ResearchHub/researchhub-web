@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -16,7 +19,7 @@ import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import {
   convertToEditorValue,
   convertDeltaToText,
@@ -365,9 +368,11 @@ class PaperProgress extends Component {
               )}
               id="icon"
             >
-              {section.active && !loading
-                ? icons.checkCircle
-                : icons.plusCircle}
+              {section.active && !loading ? (
+                <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>
+              )}
             </div>
             {section.label}
             {!!section.count && ":"}

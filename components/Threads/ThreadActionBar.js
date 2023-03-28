@@ -1,17 +1,21 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-regular-svg-icons";
+import { faMedal } from "@fortawesome/pro-solid-svg-icons";
+import { faReply } from "@fortawesome/pro-light-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faPen } from "@fortawesome/pro-light-svg-icons";
 import { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import { nullthrows } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons, { MedalIcon } from "~/config/themes/icons";
 import ThreadTextEditor from "./ThreadTextEditor";
 import acceptAnswerAPI from "../Document/api/acceptAnswerAPI";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { captureException } from "@sentry/browser";
-import { timeToRoundUp } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureEvent } from "~/config/utils/events";
@@ -63,7 +67,7 @@ class ThreadActionBar extends Component {
           )}
           id={"editIcon"}
         >
-          {icons.pen}
+          {<FontAwesomeIcon icon={faPen}></FontAwesomeIcon>}
         </span>
         <span className={css(editing && styles.active)} id={"text"}>
           Edit
@@ -128,7 +132,7 @@ class ThreadActionBar extends Component {
     return (
       <div className={css(classNames)} onClick={_handleDelete}>
         <span className={css(styles.icon)} id={"deleteIcon"}>
-          {icons.trash}
+          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
         </span>
         <span id={"delete"}>Delete</span>
       </div>
@@ -207,7 +211,7 @@ class ThreadActionBar extends Component {
                 )}
                 id={"replyIcon"}
               >
-                {icons.reply}
+                {<FontAwesomeIcon icon={faReply}></FontAwesomeIcon>}
               </span>
               Reply
             </div>
@@ -296,7 +300,7 @@ class ThreadActionBar extends Component {
                 className={css(styles.icon, styles.awardBountyIcon)}
                 id={"awardBountyIcon"}
               >
-                {icons.medal}
+                {<FontAwesomeIcon icon={faMedal}></FontAwesomeIcon>}
               </span>
               <span className={css(styles.smallAwardText)}>Award Bounty</span>
               <span className={css(styles.awardText)}>
@@ -309,7 +313,7 @@ class ThreadActionBar extends Component {
           {this.props.toggleEdit && deleteButton}
           <FlagButtonV2
             buttonText=""
-            iconOverride={icons.flagOutline}
+            iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
             buttonTextStyle={styles.flagButtonTextStyle}
             flagIconOverride={styles.flagIconOverride}
             modalHeaderText="Flagging"

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 import Link from "next/link";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
@@ -18,7 +20,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorValue } from "~/config/utils/editor";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -175,7 +177,9 @@ class PaperEditHistory extends Component {
             legacyBehavior
           >
             <div className={css(styles.back)}>
-              <span className={css(styles.arrow)}>{icons.longArrowLeft}</span>
+              <span className={css(styles.arrow)}>
+                {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
+              </span>
               Summary
             </div>
           </Link>

@@ -1,6 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
-import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 
 const AuthorDetailsPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {

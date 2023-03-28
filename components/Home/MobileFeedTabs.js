@@ -1,9 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const MobileFeedTabs = (props) => {
   const { activeLeft, activeRight, onFeedSelect } = props;
@@ -20,7 +21,9 @@ const MobileFeedTabs = (props) => {
         className={css(styles.tab, styles.tabLeft, activeLeft && styles.active)}
         onClick={() => onClick(true)}
       >
-        <span className={css(styles.icon)}>{icons.squares}</span>
+        <span className={css(styles.icon)}>
+          {<FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>}
+        </span>
         All
       </div>
       <div

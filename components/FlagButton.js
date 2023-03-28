@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
@@ -8,10 +10,6 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 // Redux
 import { MessageActions } from "~/redux/message";
 import { FlagActions } from "~/redux/flags";
-
-// Utility
-import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
 
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
   const alert = useAlert();
@@ -72,7 +70,11 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       hideRipples={true}
     >
       <div className={css(style && style)}>
-        {flagged ? icons.flag : icons.flagOutline}
+        {flagged ? (
+          <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>
+        ) : (
+          <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>
+        )}
       </div>
     </PermissionNotificationWrapper>
   );

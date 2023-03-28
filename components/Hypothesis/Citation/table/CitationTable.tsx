@@ -1,4 +1,3 @@
-import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";

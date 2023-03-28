@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBolt } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -12,7 +14,6 @@ import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -58,7 +59,7 @@ const UserPromotions = (props) => {
         ) : (
           <EmptyState
             message={"User has not supported any content"}
-            icon={icons.bolt}
+            icon={<FontAwesomeIcon icon={faBolt}></FontAwesomeIcon>}
           />
         )}
       </ReactPlaceholder>

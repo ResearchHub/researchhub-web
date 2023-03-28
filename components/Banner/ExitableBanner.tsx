@@ -1,10 +1,12 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   getCookieOrLocalStorageValue,
   storeToCookieOrLocalStorage,
 } from "~/config/utils/storeToCookieOrLocalStorage";
 import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { iconColors } from "~/config/themes/colors";
 
@@ -37,7 +39,7 @@ export default function ExitableBanner({
   }
 
   return (
-    <div className={css(styles.exitableBanner)}>
+    (<div className={css(styles.exitableBanner)}>
       <div className={css(styles.contentWrap)} style={contentStyleOverride}>
         {content}
       </div>
@@ -52,10 +54,12 @@ export default function ExitableBanner({
         style={exitButtonPositionOverride}
       >
         {exitButton ?? (
-          <div className={css(styles.exitButtonDefault)}>{icons.times}</div>
+          <div className={css(styles.exitButtonDefault)}>
+            {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+          </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 
@@ -102,6 +106,6 @@ const styles = StyleSheet.create({
       background: iconColors.BACKGROUND,
       borderRadius: 3,
       transition: "0.3s",
-    },    
+    },
   },
 });

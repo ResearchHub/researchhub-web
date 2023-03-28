@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -5,7 +8,6 @@ import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const AuthorStatsDropdown = (props) => {
   const { authors, paper, paperId, hubs, isPaper } = props;
@@ -19,7 +21,11 @@ const AuthorStatsDropdown = (props) => {
       >
         <div>{"Authors & Stats"}</div>
         <div className={css(styles.icon)}>
-          {showDropdown ? icons.chevronDown : icons.chevronUp}
+          {showDropdown ? (
+            <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
+          ) : (
+            <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
+          )}
         </div>
       </div>
       <div

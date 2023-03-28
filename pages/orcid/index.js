@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
@@ -10,7 +12,6 @@ import FormInput from "../../components/Form/FormInput";
 import Button from "../../components/Form/Button";
 import Loader from "../../components/Loader/Loader";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -117,7 +118,13 @@ class OrcidLoginPage extends Component {
               />
               {this.state.error && (
                 <div className={css(styles.error)}>
-                  <span className={css(styles.errorIcon)}>{icons.error}</span>
+                  <span className={css(styles.errorIcon)}>
+                    {
+                      <FontAwesomeIcon
+                        icon={faExclamationTriangle}
+                      ></FontAwesomeIcon>
+                    }
+                  </span>
                   Something went wrong. Please try again.
                 </div>
               )}

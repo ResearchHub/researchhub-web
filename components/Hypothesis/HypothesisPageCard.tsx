@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus } from "@fortawesome/pro-solid-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
@@ -39,7 +43,7 @@ import dayjs from "dayjs";
 import DiscussionCount from "~/components/DiscussionCount";
 import dynamic from "next/dynamic";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import restoreDocument from "~/components/Document/api/restoreDocAPI";
@@ -90,7 +94,7 @@ const getActionButtons = ({
           className={css(styles.actionIcon)}
           data-tip={"Edit Hypothesis"}
         >
-          {icons.pencil}
+          {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
         </div>
       ) : (
         <PermissionNotificationWrapper
@@ -102,7 +106,7 @@ const getActionButtons = ({
           styling={styles.borderRadius}
         >
           <div className={css(styles.actionIcon)} data-tip={"Edit Hypothesis"}>
-            {icons.pencil}
+            {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
           </div>
         </PermissionNotificationWrapper>
       ),
@@ -140,7 +144,13 @@ const getActionButtons = ({
             isModerator={true}
             paperId={hypoID}
             restore={isHypoRemoved}
-            icon={isHypoRemoved ? icons.plus : icons.minus}
+            icon={
+              isHypoRemoved ? (
+                <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faMinus}></FontAwesomeIcon>
+              )
+            }
             onAction={() => {
               if (isHypoRemoved) {
                 restoreDocument({

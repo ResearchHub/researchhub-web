@@ -1,9 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 export class TooltipInput extends Component {
   detectEnter = (e) => {
@@ -47,11 +49,11 @@ export class TooltipInput extends Component {
             autoFocus={true}
           />
           <div className={css(styles.submitTooltipButton)} onClick={save}>
-            {icons.arrowRight}
+            {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           </div>
         </div>
         <span className={css(styles.close)} onClick={close}>
-          {icons.times}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
       </div>
     );

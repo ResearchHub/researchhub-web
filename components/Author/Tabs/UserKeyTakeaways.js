@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
@@ -9,7 +11,7 @@ import Ripples from "react-ripples";
 import EmptyState from "./EmptyState";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import SummaryBulletPoint from "../../Paper/SummaryBulletPoint";
 
@@ -80,7 +82,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
       ) : (
         <EmptyState
           message={"User has not created any summaries"}
-          icon={icons.file}
+          icon={<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
         />
       )}
     </ReactPlaceholder>

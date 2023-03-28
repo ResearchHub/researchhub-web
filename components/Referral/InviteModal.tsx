@@ -1,22 +1,24 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/pro-light-svg-icons";
+import { faPaperPlane } from "@fortawesome/pro-duotone-svg-icons";
+import { faLink } from "@fortawesome/pro-solid-svg-icons";
 import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import FormInput from "~/components/Form/FormInput";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import ALink from "../ALink";
-import AuthorAvatar from "../AuthorAvatar";
-import InviteIcon from "../Icons/InviteIcon";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { ID, NullableString, UnifiedDocument } from "~/config/types/root_types";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import Button from "../Form/Button";
 import Loader from "../Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { useDispatch } from "react-redux";
 import { captureEvent } from "~/config/utils/events";
+import { ClipLoader } from "react-spinners";
 
 type Args = {
   isOpen: boolean;
@@ -54,6 +56,13 @@ const InviteModal = ({
   const [firstName, setFirstName] = useState<NullableString>("");
   const [lastName, setLastName] = useState<NullableString>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [url, setURL] = useState("");
+
+  useEffect(() => {
+    setURL(
+      `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
+    );
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
@@ -163,7 +172,6 @@ const InviteModal = ({
           below.
         </p>
       )}
-
       <div className={css(styles.referralLinkSection)}>
         <div className={css(styles.tabs)}>
           <div
@@ -173,8 +181,10 @@ const InviteModal = ({
             )}
             onClick={() => setSelectedTab("LINK")}
           >
-            <span className={css(styles.tabIcon)}>{icons.link}</span> Invite by
-            link
+            <span className={css(styles.tabIcon)}>
+              {<FontAwesomeIcon icon={faLink}></FontAwesomeIcon>}
+            </span>{" "}
+            Invite by link
           </div>
           <div
             onClick={() => setSelectedTab("EMAIL")}
@@ -183,7 +193,9 @@ const InviteModal = ({
               selectedTab === "EMAIL" && styles.tabSelected
             )}
           >
-            <span className={css(styles.tabIcon)}>{icons.paperPlane}</span>{" "}
+            <span className={css(styles.tabIcon)}>
+              {<FontAwesomeIcon icon={faPaperPlane}></FontAwesomeIcon>}
+            </span>{" "}
             Invite by email
           </div>
           <div className={css(styles.invitesSent)}>
@@ -208,7 +220,7 @@ const InviteModal = ({
                         "Copied"
                       ) : (
                         <span className={css(styles.copyIcon)}>
-                          {icons.copy}
+                          {<FontAwesomeIcon icon={faCopy}></FontAwesomeIcon>}
                         </span>
                       )}
                     </a>
@@ -218,11 +230,7 @@ const InviteModal = ({
                     styles.copySuccessMessageStyle,
                     !showSuccessMessage && styles.noShow,
                   ]}
-                  value={
-                    process.browser
-                      ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
-                      : ""
-                  }
+                  value={url}
                   containerStyle={styles.containerStyle}
                   inputStyle={[styles.inputStyle, styles.referralInputStyle]}
                 />
@@ -283,7 +291,14 @@ const InviteModal = ({
                     {isLoading ? (
                       <Button
                         onClick={handleSubmit}
-                        children={<Loader color="white" size={24} />}
+                        children={
+                          <ClipLoader
+                            sizeUnit={"px"}
+                            size={24}
+                            color={"#fff"}
+                            loading={true}
+                          />
+                        }
                         customButtonStyle={styles.inviteBtn}
                       />
                     ) : (
@@ -302,7 +317,6 @@ const InviteModal = ({
           </div>
         )}
       </div>
-
       <div className={css(styles.howItWorksSection)}>
         <h4 className={css(styles.sectionTitle)}>
           How it works
@@ -325,7 +339,7 @@ const InviteModal = ({
                   fontWeight: 500,
                 }}
               >
-                7% 
+                7%
               </span>{" "}
               of user's RSC earnings on ResearchHub for the first six month
               period
@@ -334,32 +348,6 @@ const InviteModal = ({
               </div>
             </li>
           </ol>
-          {/* <div className={css(styles.squaresContainer)}>
-            <div className={css(styles.square)}>
-              <div className={css(styles.iconContainer)}>
-                {user?.id ? (
-                  <AuthorAvatar author={user?.author_profile} />
-                ) : (
-                  <div className={css(styles.userIcon)}>{icons.user}</div>
-                )}
-              </div>
-              <span className={css(styles.personTitle)}>You</span>
-              <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+7% RSC</span>{" "}
-                bonus for first six months
-              </span>
-            </div>
-            <div className={css(styles.square)}>
-              <div className={css(styles.iconContainer)}>
-                <InviteIcon />
-              </div>
-              <span className={css(styles.personTitle)}>Referral</span>
-              <span className={css(styles.subtitle)}>
-                <span className={css(styles.emphasizedEarn)}>+0 RSC</span> on
-                sign up
-              </span>
-            </div>
-          </div> */}
         </div>
       </div>
     </BaseModal>

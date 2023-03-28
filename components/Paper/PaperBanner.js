@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
@@ -5,7 +7,6 @@ import { ModalActions } from "../../redux/modals";
 import { StyleSheet, css } from "aphrodite";
 import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 import colors, { bannerColor } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const PaperBanner = (props) => {
   const { document, documentType } = props;
@@ -25,7 +26,11 @@ const PaperBanner = (props) => {
                 <span
                   className={css(styles.removeIcon, styles.mobileRemoveIcon)}
                 >
-                  {icons.exclamationCircle}
+                  {
+                    <FontAwesomeIcon
+                      icon={faExclamationCircle}
+                    ></FontAwesomeIcon>
+                  }
                 </span>
               </div>
               {upCaseFirstLetter(documentType)} Removed
@@ -62,7 +67,7 @@ const PaperBanner = (props) => {
         {isRemoved && (
           <div className={css(styles.icon)}>
             <span className={css(styles.removeIcon)}>
-              {icons.exclamationCircle}
+              {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
             </span>
           </div>
         )}

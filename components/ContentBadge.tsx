@@ -1,7 +1,12 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faLayerGroup } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
-import icons, {
+import {
   PostIcon,
   PaperIcon,
   HypothesisIcon,
@@ -28,7 +33,7 @@ const ContentBadge = ({
   const router = useRouter();
 
   return (
-    <Badge
+    (<Badge
       badgeClassName={[
         styles.badge,
         styles["badgeFor_" + contentType],
@@ -65,22 +70,30 @@ const ContentBadge = ({
         </>
       ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
         <>
-          <span className={css(styles.icon)}>{icons.commentsSolid}</span>
+          <span className={css(styles.icon)}>
+            {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
+          </span>
           <span>Comment</span>
         </>
       ) : contentType === POST_TYPES.ANSWER ? (
         <>
-          <span className={css(styles.icon)}>{icons.commentAltLineSolid}</span>
+          <span className={css(styles.icon)}>
+            {<FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>}
+          </span>
           <span>Answer</span>
         </>
       ) : contentType === POST_TYPES.SUMMARY ? (
         <>
-          <span className={css(styles.icon)}>{icons.layerGroup}</span>
+          <span className={css(styles.icon)}>
+            {<FontAwesomeIcon icon={faLayerGroup}></FontAwesomeIcon>}
+          </span>
           <span>Summary</span>
         </>
       ) : contentType === POST_TYPES.REVIEW ? (
         <>
-          <span className={css(styles.icon)}>{icons.starFilled}</span>
+          <span className={css(styles.icon)}>
+            {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
+          </span>
           <span>Review</span>
         </>
       ) : contentType === "rsc_support" ? (
@@ -108,7 +121,7 @@ const ContentBadge = ({
       ) : (
         <></>
       )}
-    </Badge>
+    </Badge>)
   );
 };
 

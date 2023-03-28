@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
@@ -17,7 +21,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
@@ -180,7 +184,7 @@ const SummaryBulletPoint = (props) => {
         <Fragment>
           {editable && hovered && (
             <div className={css(styles.editButton)} onClick={toggleEditView}>
-              {icons.pencil}
+              {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
             </div>
           )}
           <div className={css(styles.topRow)}>
@@ -220,7 +224,7 @@ const SummaryBulletPoint = (props) => {
 
       return (
         <div className={css(classNames)} onClick={removalConfirmation}>
-          {icons.trash}
+          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
         </div>
       );
     }
@@ -242,7 +246,7 @@ const SummaryBulletPoint = (props) => {
             id={"goTo"}
             className={css(classNames)}
           >
-            {icons.chevronRight}
+            {<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
           </Link>
         </div>
       );

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { StyleSheet } from "aphrodite";
 
 // Component
@@ -12,10 +12,11 @@ import {
 } from "./NotificationHelpers";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils/nullchecks";
 import { truncateText } from "~/config/utils/string";
+import { partyPopper } from "~/config/themes/icons";
 
 const ModeratorBounty = (props) => {
   const { data, notification, markAsRead, closeMenu } = props;
@@ -133,7 +134,7 @@ const ContributorBounty = (props) => {
     return (
       <Fragment>
         {"Congrats! "}
-        {icons.partyPopper()}
+        {partyPopper()}
         {" Your "}
         <HyperLink
           link={sectionLink}

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
@@ -19,14 +21,12 @@ import ExitableBanner from "~/components/Banner/ExitableBanner";
 import FeedMenu from "../UnifiedDocFeed/FeedMenu/FeedMenu";
 import Head from "~/components/Head";
 import HomeRightSidebar from "~/components/Home/sidebar/HomeRightSidebar";
-import icons from "~/config/themes/icons";
+
 import LiveFeed from "~/components/LiveFeed/LiveFeed";
 import RhCarousel from "../shared/carousel/RhCarousel";
 import Router from "next/router";
 import SubscribeButton from "../Home/SubscribeButton";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
-import Link from "next/link";
-import Button from "~/components/Form/Button";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -61,31 +61,6 @@ class HubPage extends Component {
     this.props.setUserBannerPreference(false);
   };
 
-  /**
-   * In this scroll listener, we're going to add a CSS class on the
-   * title bar when we hit a certain height
-   */
-  scrollListener = () => {
-    const { auth } = this.props;
-    if (auth.showBanner && window.scrollY > 323) {
-      this.setState({
-        titleBoxShadow: true,
-      });
-    } else if (!auth.showBanner && window.scrollY > 27) {
-      this.setState({
-        titleBoxShadow: true,
-      });
-    } else if (!auth.showBanner && window.scrollY < 27) {
-      this.setState({
-        titleBoxShadow: false,
-      });
-    } else if (auth.showBanner && window.scrollY < 323) {
-      this.setState({
-        titleBoxShadow: false,
-      });
-    }
-  };
-
   componentDidMount() {
     const { isLoggedIn, initialFeed, hubState } = this.props;
     if (initialFeed) {
@@ -101,7 +76,6 @@ class HubPage extends Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    // window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -177,14 +151,6 @@ class HubPage extends Component {
     if (createdLocationMeta === "hot") {
       createdLocationMeta = "trending";
     }
-
-    const PAYLOAD = {
-      paper_ids: promotedPapers,
-      paper_is_boosted: true,
-      interaction: "VIEW",
-      created_location: "FEED",
-      created_location_meta: "trending",
-    };
   };
 
   loadMore = () => {
@@ -380,45 +346,6 @@ class HubPage extends Component {
       <div className={css(styles.rhHomeContainer)}>
         <div className={css(styles.homeContentContainer, styles.column)}>
           <div className={css(styles.mobileInfoTab)}>
-            {/*
-          Kobe 02-01-23: This is a static banner that temporarily replaces
-          the RH slider
-        */}
-            {/* <div
-              style={{
-                background: "rgb(78,83,255)",
-                background:
-                  "linear-gradient(180deg, rgba(78,83,255,1) 30%, rgba(255,205,3,1) 100%)",
-                borderRadius: 6,
-                // height: 240,
-                margin: 16,
-                padding: "24px 16px 14px",
-                boxSizing: "border-box",
-              }}
-            >
-              <span style={{ color: "white" }}>
-                <div style={{ marginBottom: 8 }}>
-                  {icons.calendar}
-                  <span> Feb 3rd - Feb 19th</span>
-                </div>
-                <div style={{ fontWeight: 500, fontSize: 20, marginBottom: 8 }}>
-                  {" Reputation Hackathon 2023"}
-                </div>
-                <div style={{ marginBottom: 20, fontSize: 16 }}>
-                  Join hackers, builders, and scientists to design a better
-                  reputation algorithm for academic research.
-                </div>
-                <div>
-                  <Link
-                    href="https://researchhubcommunity.com"
-                    style={{ textDecoration: "none" }}
-                    target="_blank"
-                  >
-                    <Button hideRipples fullWidth label={"Sign up"} />
-                  </Link>
-                </div>
-              </span>
-            </div> */}
             <ExitableBanner
               bannerKey={INFO_TAB_EXIT_KEY}
               content={<RhCarousel rhCarouselItems={carouselElements} />}
@@ -431,7 +358,11 @@ class HubPage extends Component {
                 maxHeight: "180px !important",
                 padding: 16,
               }}
-              exitButton={<div style={{ fontSize: 20 }}>{icons.times}</div>}
+              exitButton={
+                <div style={{ fontSize: 20 }}>
+                  {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+                </div>
+              }
               exitButtonPositionOverride={{
                 top: "20px !important",
                 right: "24px !important",

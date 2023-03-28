@@ -4,7 +4,7 @@ import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdow
 import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
 import { StyleSheet, css } from "aphrodite";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import API from "../../config/api";

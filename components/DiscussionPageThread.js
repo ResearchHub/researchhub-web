@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 
 // NPM Modules
@@ -18,9 +19,10 @@ import DiscussionActions from "~/redux/discussion";
 // Utils
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { createUsername, getCurrentUserLegacy } from "~/config/utils/user";
 import { getNestedValue } from "~/config/utils/misc";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 
 const Thread = (props) => {
   const { data, hostname, title, body, createdBy, date, vote } = props;
@@ -176,7 +178,7 @@ const BackButton = () => {
         className={css(styles.backButton)}
         legacyBehavior
       >
-        {icons.longArrowLeft}
+        {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
         <span className={css(styles.backButtonLabel)}>{message}</span>
       </Link>
     </div>

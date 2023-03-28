@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { breakpoints } from "~/config/themes/screen";
@@ -11,7 +14,6 @@ import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetA
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
-import icons from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -61,7 +63,7 @@ export default function AuthorClaimCaseCard({
   }, [caseStatus]);
 
   return (
-    <div
+    (<div
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
@@ -75,7 +77,11 @@ export default function AuthorClaimCaseCard({
         setLastFetchTime={setLastFetchTime}
       />
       <div className={css(styles.chevronWrap)}>
-        {isCollapsed ? icons.chevronDown : icons.chevronUp}
+        {isCollapsed ? (
+          <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
+        ) : (
+          <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
+        )}
       </div>
       <div className={css(styles.cardMain)}>
         <div
@@ -116,7 +122,7 @@ export default function AuthorClaimCaseCard({
           </div>
         ) : null}
       </div>
-    </div>
+    </div>)
   );
 }
 

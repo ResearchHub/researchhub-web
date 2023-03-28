@@ -1,8 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import numeral from "numeral";
 import { isEmpty } from "~/config/utils/nullchecks";
-import Ripples from "react-ripples";
 import { useRouter } from "next/router";
 
 import get from "lodash/get";
@@ -10,7 +11,7 @@ import { createUserSummary } from "~/config/utils/user";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {
@@ -54,7 +55,9 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
           </div>
           {userSummary && (
             <div className={css(styles.summary)}>
-              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
+              <span className={css(styles.eduIcon)}>
+                {<FontAwesomeIcon icon={faGraduationCap}></FontAwesomeIcon>}
+              </span>
               {userSummary}
             </div>
           )}

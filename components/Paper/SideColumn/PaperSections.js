@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Component
 import ColumnContainer from "./ColumnContainer";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 const PaperSections = (props) => {
@@ -96,7 +99,11 @@ const PaperSections = (props) => {
                   toggleHidePaperSections(!hidePaperSections);
                 }}
               >
-                {hidePaperSections ? icons.chevronUp : icons.chevronDown}
+                {hidePaperSections ? (
+                  <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
+                ) : (
+                  <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
+                )}
               </div>
             )}
           </a>

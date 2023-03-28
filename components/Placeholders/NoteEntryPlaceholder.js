@@ -1,6 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
@@ -12,7 +14,9 @@ const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
         key={`noteplacholder-${i}`}
         className={css(styles.placeholderContainer) + " show-loading-animation"}
       >
-        <div className={css(styles.noteIcon)}>{icons.paper}</div>
+        <div className={css(styles.noteIcon)}>
+          {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
+        </div>
         <RectShape
           className={css(styles.textRow)}
           color={color}

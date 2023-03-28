@@ -1,4 +1,3 @@
-import { useState } from "react";
 import AvatarUpload from "~/components/AvatarUpload";
 import { captureEvent } from "~/config/utils/events";
 import { MessageActions } from "~/redux/message";

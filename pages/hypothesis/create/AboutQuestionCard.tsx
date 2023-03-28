@@ -1,7 +1,6 @@
 import { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Collapsible from "../../../components/Form/Collapsible";
-import icons from "../../../config/themes/icons";
 
 export type AboutQuestionCardProps = {
   customStyle: any;
@@ -30,7 +29,7 @@ export default function AboutQuestionCard({
           <div className={css(styles.trigger)}>
             What can you post here?
             <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
+              {<i className="fa-light fa-chevron-down"></i>}
             </span>
           </div>
         }
@@ -40,7 +39,8 @@ export default function AboutQuestionCard({
             Make a hypothesis -- a proposed explanation for an observation.
           </li>
           <li>
-            After you create the hypothesis, add relevant papers to support or reject the hypothesis
+            After you create the hypothesis, add relevant papers to support or
+            reject the hypothesis
           </li>
         </ul>
       </Collapsible>
@@ -53,7 +53,7 @@ export default function AboutQuestionCard({
           <div className={css(styles.trigger)}>
             Guidelines
             <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
+              {<i className="fa-light fa-chevron-down"></i>}
             </span>
           </div>
         }

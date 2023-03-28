@@ -1,11 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/pro-light-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
 import { useState, useRef, useEffect } from "react";
 import { useTransition, animated } from "react-spring";
 import nookies from "nookies";
 
-import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
 // Components
@@ -14,13 +14,20 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
 import { AUTH_TOKEN } from "~/config/constants";
 import ReferredUserList from "~/components/Referral/ReferredUserList";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 
 const Index = ({ auth }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);
+  const [referralLink, setReferralLink] = useState("");
   const formInputRef = useRef();
+
+  useEffect(() => {
+    setReferralLink(
+      `${window.location.protocol}//${window.location.host}/referral/${auth?.user?.referral_code}`
+    );
+  }, []);
 
   function copyToClipboard() {
     setShowSuccessMessage(true);
@@ -56,7 +63,9 @@ const Index = ({ auth }) => {
                   {showSuccessMessage ? (
                     "Copied!"
                   ) : (
-                    <span className={css(styles.copyIcon)}>{icons.copy}</span>
+                    <span className={css(styles.copyIcon)}>
+                      {<FontAwesomeIcon icon={faCopy}></FontAwesomeIcon>}
+                    </span>
                   )}
                 </a>
               }
@@ -65,11 +74,7 @@ const Index = ({ auth }) => {
                 styles.copySuccessMessageStyle,
                 !showSuccessMessage && styles.noShow,
               ]}
-              value={
-                process.browser
-                  ? `${window.location.protocol}//${window.location.host}/referral/${auth?.user?.referral_code}`
-                  : ""
-              }
+              value={referralLink}
               containerStyle={styles.containerStyle}
               inputStyle={styles.inputStyle}
             />

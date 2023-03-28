@@ -1,9 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
-// Redux
-import { AuthActions } from "~/redux/auth";
-
 const HubBanner = (props) => {
   const { hub } = props;
 

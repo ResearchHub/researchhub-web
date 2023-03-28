@@ -1,27 +1,41 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faToggleOff } from "@fortawesome/pro-duotone-svg-icons";
+import { faToggleOn } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useMemo } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { feedTypeOpts } from "../constants/UnifiedDocFilters";
 
 type Args = {
-  options: any[],
-  handleSelect: Function,
-  selectedTags: string[],
-  forTab: any,
-}
+  options: any[];
+  handleSelect: Function;
+  selectedTags: string[];
+  forTab: any;
+};
 
-const FeedMenuTagDropdown = ({ options, forTab, handleSelect, selectedTags }: Args) => {
-
+const FeedMenuTagDropdown = ({
+  options,
+  forTab,
+  handleSelect,
+  selectedTags,
+}: Args) => {
   // Kobe: This could be done with CSS however, aphrodite makes it quite time
   // consuming to implement a css-based solution.
   const isWithinLastTab = useMemo(() => {
     const tabList = Object.values(feedTypeOpts);
-    return tabList.findIndex((t) => t.value === forTab.value) === (tabList.length - 1);
-  }, [feedTypeOpts])
+    return (
+      tabList.findIndex((t) => t.value === forTab.value) === tabList.length - 1
+    );
+  }, [feedTypeOpts]);
 
   return (
-    <div className={css(styles.additionalOpts, isWithinLastTab && styles.additionalOptsRightAlign)}>
+    (<div
+      className={css(
+        styles.additionalOpts,
+        isWithinLastTab && styles.additionalOptsRightAlign
+      )}
+    >
       {options.map((opt) => (
         <div
           className={css(styles.tag)}
@@ -35,16 +49,16 @@ const FeedMenuTagDropdown = ({ options, forTab, handleSelect, selectedTags }: Ar
           <span className={css(styles.tagLabel)}>{opt.label}</span>
           {selectedTags.includes(opt.value) ? (
             <span className={css(styles.tagIcon, styles.toggleOn)}>
-              {icons.toggleOn}
+              {<FontAwesomeIcon icon={faToggleOn}></FontAwesomeIcon>}
             </span>
           ) : (
             <span className={css(styles.tagIcon, styles.toggleOff)}>
-              {icons.toggleOff}
+              {<FontAwesomeIcon icon={faToggleOff}></FontAwesomeIcon>}
             </span>
           )}
         </div>
       ))}
-    </div>
+    </div>)
   );
 };
 

@@ -5,12 +5,7 @@ import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import { isServer } from "~/config/server/isServer";
-import {
-  getPaginationInfoFromServerLoaded,
-  PaginationInfo,
-  useEffectFetchDocs,
-  useEffectUpdateStatesOnServerChanges,
-} from "./utils/UnifiedDocFeedUtil";
+import { getPaginationInfoFromServerLoaded, useEffectFetchDocs } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import colors, { genericCardColors } from "~/config/themes/colors";

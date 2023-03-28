@@ -37,7 +37,6 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
           </span>
         </button>
       </span>
-
       <div className={`ql-full-editor ${isOpen && "ql-full-editor-visible"}`}>
         <span className="ql-formats">
           <button className="ql-bold" />

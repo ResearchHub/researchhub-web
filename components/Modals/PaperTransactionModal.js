@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle, faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -23,10 +26,9 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-// import { useMetaMask } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
@@ -559,59 +561,6 @@ class PaperTransactionModal extends Component {
     );
   };
 
-  renderMetaMaskButton = () => {
-    return (
-      <div
-        className={css(
-          styles.toggle,
-          this.state.metaMaskVisible && styles.activeToggle
-        )}
-        onClick={async () => {
-          if (!this.state.connectedMetaMask) {
-            await this.connectMetaMask();
-          }
-          this.transitionScreen(() =>
-            this.setState({
-              nextScreen: true,
-              offChain: false,
-              metaMaskVisible: true,
-              walletLinkVisible: false,
-            })
-          );
-        }}
-      >
-        MetaMask
-      </div>
-    );
-  };
-
-  connectMetaMask = async () => {
-    const { connected, account, provider } = await useMetaMask();
-    if (connected) {
-      this.setUpEthListeners();
-      emptyFncWithMsg("Connected to MetaMask");
-      const valid = this.isAddress(account);
-      this.setState(
-        {
-          connectedMetaMask: connected,
-          connectedWalletLink: false,
-          ethAccount: account,
-          networkVersion: ethereum.networkVersion,
-          ethAccountIsValid: this.isAddress(account),
-        },
-        () => {
-          valid && this.updateBalance(provider);
-        }
-      );
-    } else {
-      emptyFncWithMsg("Failed to connect MetaMask");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
-
   setUpEthListeners() {
     this.setState({
       listenerNetwork: ethereum.on("networkChanged", () =>
@@ -668,8 +617,6 @@ class PaperTransactionModal extends Component {
         >
           In-App
         </div>
-        {/* {this.renderMetaMaskButton()} */}
-        {/* {this.renderWalletLinkButton()} */}
       </div>
     );
   };
@@ -698,7 +645,9 @@ class PaperTransactionModal extends Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>{icons.checkCircle}</span>
+                <span className={css(styles.icon)}>
+                  {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
+                </span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
@@ -821,7 +770,7 @@ class PaperTransactionModal extends Component {
                   className={css(styles.infoIcon)}
                   data-tip={"The address of your ETH Account (ex. 0x0000...)"}
                 >
-                  {icons["info-circle"]}
+                  {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                   <ReactTooltip />
                 </span>
               </div>
@@ -843,9 +792,15 @@ class PaperTransactionModal extends Component {
                           !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {ethAccountIsValid
-                          ? icons.checkCircle
-                          : icons.timesCircle}
+                        {ethAccountIsValid ? (
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                          ></FontAwesomeIcon>
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faTimesCircle}
+                          ></FontAwesomeIcon>
+                        )}
                       </span>
                     )
                   ) : null

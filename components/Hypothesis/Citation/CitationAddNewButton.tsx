@@ -1,7 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useState } from "react";

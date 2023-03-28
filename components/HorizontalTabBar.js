@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import ScrollMenu from "react-horizontal-scrolling-menu";
@@ -5,7 +8,6 @@ import { useState, useEffect } from "react";
 
 import colors, { pillNavColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import icons from "~/config/themes/icons";
 
 const HorizontalTabBar = ({
   tabs,
@@ -19,9 +21,7 @@ const HorizontalTabBar = ({
   type = "FLAT_NAV",
   showBorderBottom = true,
 }) => {
-  const [pageWidth, setPageWidth] = useState(
-    process.browser ? window.innerWidth : 0
-  );
+  const [pageWidth, setPageWidth] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -72,12 +72,18 @@ const HorizontalTabBar = ({
         <ScrollMenu
           arrowLeft={
             pageWidth <= showArrowsOnWidth && showArrows ? (
-              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+              <NavigationArrow
+                icon={<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
+                direction={"left"}
+              />
             ) : null
           }
           arrowRight={
             pageWidth <= showArrowsOnWidth && showArrows ? (
-              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+              <NavigationArrow
+                icon={<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
+                direction={"right"}
+              />
             ) : null
           }
           data={tabsHtml}

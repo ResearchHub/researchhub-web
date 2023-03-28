@@ -1,4 +1,6 @@
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -33,7 +35,7 @@ import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent, saveReview } from "~/config/fetch";
@@ -43,6 +45,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import getReviewCategoryScore from "~/components/TextEditor/util/getReviewCategoryScore";
 import Bounty from "~/config/types/bounty";
+import { BeatLoader } from "react-spinners";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -353,7 +356,7 @@ const DiscussionTab = (props) => {
               : showTwitterComments && (
                   <span className={css(styles.box, styles.emptyStateBox)}>
                     <span className={css(styles.icon, styles.twitterIcon)}>
-                      {icons.twitter}
+                      {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
                     </span>
                     <h3 className={css(styles.noSummaryTitle)}>
                       There are no tweets {mobileView && "\n"}for this paper
@@ -762,7 +765,12 @@ const DiscussionTab = (props) => {
               {props.paper.nextDiscussion && !fetching && (
                 <div className={css(styles.buttonContainer)}>
                   {loading ? (
-                    <Loader loading={true} size={10} type="beat" />
+                    <BeatLoader
+                      sizeUnit={"px"}
+                      size={10}
+                      loading={true}
+                      color={colors.BLUE(1)}
+                    />
                   ) : (
                     <Ripples
                       className={css(styles.loadMoreButton)}
@@ -798,7 +806,12 @@ const DiscussionTab = (props) => {
             {props.paper.nextDiscussion && !fetching && (
               <div className={css(styles.buttonContainer)}>
                 {loading ? (
-                  <Loader loading={true} size={10} type="beat" />
+                  <BeatLoader
+                    sizeUnit={"px"}
+                    size={10}
+                    loading={true}
+                    color={colors.BLUE(1)}
+                  />
                 ) : (
                   <Ripples
                     className={css(styles.loadMoreButton)}

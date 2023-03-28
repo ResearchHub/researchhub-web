@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
+import { faSearch } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import {
@@ -19,7 +22,6 @@ import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
 import { useStore } from "react-redux";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type SearchProps = {
   expendableSearchbarRef?: RefObject<HTMLInputElement>;
@@ -135,7 +137,7 @@ function RhSearchBarInput({
   setSearchString,
 }: SearchProps): ReactElement {
   return (
-    <div style={{ position: "relative" }}>
+    (<div style={{ position: "relative" }}>
       <input
         className={css(styles.rhSearchBarInput)}
         placeholder="Search"
@@ -152,9 +154,9 @@ function RhSearchBarInput({
         className={css(styles.searchIcon)}
         onClick={pushSearchToUrlAndTrack}
       >
-        {icons.search}
+        {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
       </span>
-    </div>
+    </div>)
   );
 }
 
@@ -180,13 +182,13 @@ function RhSearchBarExpandableInput({
   }, [expendableSearchbarRef]);
 
   return (
-    <Fragment>
+    (<Fragment>
       {!isExpanded && (
         <span
           className={css(styles.searchIcon, styles.searchIconSmallScreen)}
           onClick={(): void => setIsExpanded(true)}
         >
-          {icons.search}
+          {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
         </span>
       )}
       {isExpanded && (
@@ -198,7 +200,7 @@ function RhSearchBarExpandableInput({
               setIsExpanded(false);
             }}
           >
-            {icons.longArrowLeft}
+            {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
           </span>
           <input
             autoFocus
@@ -227,11 +229,11 @@ function RhSearchBarExpandableInput({
               event.stopPropagation()
             }
           >
-            {icons.search}
+            {<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
           </span>
         </Fragment>
       )}
-    </Fragment>
+    </Fragment>)
   );
 }
 

@@ -1,11 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
@@ -74,10 +73,16 @@ const PaperTabBar = (props) => {
         ref={menuRef}
         data={menu}
         arrowLeft={
-          <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+          <NavigationArrow
+            icon={<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
+            direction={"left"}
+          />
         }
         arrowRight={
-          <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+          <NavigationArrow
+            icon={<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
+            direction={"right"}
+          />
         }
         menuStyle={styles.tabContainer}
         itemStyle={{ border: "none", highlight: "none", outline: "none" }}

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faBook } from "@fortawesome/pro-duotone-svg-icons";
 import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -6,7 +9,6 @@ import Ripples from "react-ripples";
 // Config
 import { cslFields } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -105,7 +107,11 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         />
       );
     } else {
-      return <div className={css(styles.bookIcon)}>{icons.book}</div>;
+      return (
+        <div className={css(styles.bookIcon)}>
+          {<FontAwesomeIcon icon={faBook}></FontAwesomeIcon>}
+        </div>
+      );
     }
   };
 
@@ -245,7 +251,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
             onClick={onRemove ? onRemove : null}
             // onClick={toggleEditState}
           >
-            {icons.pencil}
+            {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
           </div>
         </Ripples>
       );

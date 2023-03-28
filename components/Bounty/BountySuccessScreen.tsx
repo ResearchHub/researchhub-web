@@ -1,8 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, useState } from "react";
-import icons from "~/config/themes/icons";
+import { ReactElement, useEffect, useState } from "react";
+
 import Image from "next/image";
 import buildTwitterUrl from "./utils/buildTwitterUrl";
 import { Hub } from "~/config/types/hub";
@@ -23,20 +25,26 @@ function SuccessScreen({
   hubs,
 }: Props): ReactElement {
   const [copySuccess, setCopySuccess] = useState(false);
+  const [link, setLink] = useState("");
+  const [twitterUrl, setTwitterURL] = useState("");
 
-  const link = process.browser
-    ? window.location.protocol +
-      "//" +
-      window.location.hostname +
-      `/post/${postId}/${postSlug}`
-    : "";
+  useEffect(() => {
+    setLink(
+      window.location.protocol +
+        "//" +
+        window.location.hostname +
+        `/post/${postId}/${postSlug}`
+    );
 
-  const twitterUrl = buildTwitterUrl({
-    isBountyCreator: true,
-    bountyText,
-    bountyAmount,
-    hubs,
-  });
+    setTwitterURL(
+      buildTwitterUrl({
+        isBountyCreator: true,
+        bountyText,
+        bountyAmount,
+        hubs,
+      })
+    );
+  }, []);
 
   function copyToClipboard() {
     navigator.clipboard.writeText(link);
@@ -63,7 +71,7 @@ function SuccessScreen({
           className={css(styles.link)}
         >
           <div className={css(styles.twitter)}>
-            {icons.twitter}
+            {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
             <span className={css(styles.twitterText)}>Share on Twitter</span>
           </div>
         </a>

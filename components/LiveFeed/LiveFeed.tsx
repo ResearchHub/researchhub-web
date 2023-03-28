@@ -1,19 +1,16 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
-import {
-  CommentContributionItem,
-  Contribution,
-  parseContribution,
-} from "~/config/types/contribution";
+import { CommentContributionItem, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
-import icons from "~/config/themes/icons";
+
 import LoadMoreButton from "../LoadMoreButton";
 import ContributionEntry from "./Contribution/ContributionEntry";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import UnifiedDocFeedCardPlaceholder from "../UnifiedDocFeed/UnifiedDocFeedCardPlaceholder";
 import LiveFeedCardPlaceholder from "~/components/Placeholders/LiveFeedCardPlaceholder";
 
 export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
@@ -65,7 +62,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 
   const resultCards = results.map((result, idx) => {
     return (
-      <div className={css(styles.result)} key={`result-${idx}`}>
+      (<div className={css(styles.result)} key={`result-${idx}`}>
         <div className={css(styles.entry)}>
           <ContributionEntry
             entry={result}
@@ -75,7 +72,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
                   <FlagButtonV2
                     modalHeaderText="Flag Content"
                     flagIconOverride={styles.flagIcon}
-                    iconOverride={icons.flag}
+                    iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
                     errorMsgText="Failed to flag"
                     successMsgText="Content flagged"
                     primaryButtonLabel="Flag"
@@ -141,7 +138,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
             ]}
           />
         </div>
-      </div>
+      </div>)
     );
   });
 

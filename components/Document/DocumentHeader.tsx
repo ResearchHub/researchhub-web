@@ -1,13 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { createVoteHandler } from "../Vote/utils/createVoteHandler";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nullthrows } from "~/config/utils/nullchecks";
 import {
   parseAuthorProfile,
   TopLevelDocument,
-  VoteType,
 } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
@@ -17,7 +18,6 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import DocumentActions from "./DocumentActions";
 import DocumentHeaderPlaceholder from "../Placeholders/DocumentHeaderPlaceholder";
-import icons, { HypothesisIcon } from "~/config/themes/icons";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
 import SubmissionDetails from "./SubmissionDetails";
@@ -462,7 +462,7 @@ function DocumentHeader({
                 href={"#comments"}
               >
                 <span className={css(styles.detailIcon)}>
-                  {icons.commentsSolid}
+                  {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                 </span>
                 {discussionCount}{" "}
                 <span className={css(styles.commentsText)}>
@@ -472,7 +472,7 @@ function DocumentHeader({
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon, styles.starIcon)}>
-                    {icons.starFilled}
+                    {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
                   </span>
                   {unifiedDocument?.reviewSummary?.avg}
                   <span className={css(styles.reviewDetails)}>

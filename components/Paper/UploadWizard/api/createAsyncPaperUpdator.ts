@@ -1,7 +1,6 @@
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 import { ID, NullableString } from "~/config/types/root_types";
-import Title from "~/pages/post/[documentId]/[title]";
 
 type Args = {
   currentUserID: ID;

@@ -15,9 +15,7 @@ const useEffectShowHorizontalMobileScroll = ({
   };
 
   if (elem) {
-    const hasHorizontalScroll =
-      elem.clientWidth <
-      elem.scrollWidth;
+    const hasHorizontalScroll = elem.clientWidth < elem.scrollWidth;
 
     if (hasHorizontalScroll) {
       handleShowScrollUI(hasHorizontalScroll);

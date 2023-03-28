@@ -1,4 +1,6 @@
-import { Component, Fragment } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -10,7 +12,6 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -156,7 +157,7 @@ class SubscribedHubList extends Component {
           as={"/settings"}
           className={css(styles.link, styles.cogButton)}
         >
-          {icons.cog}
+          {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
         </Link>
       </div>
     );

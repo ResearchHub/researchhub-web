@@ -1,16 +1,24 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   isNullOrUndefined,
   nullToEmptyString,
 } from "../../config/utils/nullchecks";
 import { connect } from "react-redux";
-import { ReactElement, RefObject, SyntheticEvent, useEffect, useRef } from "react";
+import {
+  ReactElement,
+  RefObject,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+} from "react";
 import colors from "../../config/themes/colors";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
-import icons from "../../config/themes/icons";
+
 import PaperDraftUnduxStore, {
   clearSelection,
   PaperDraftStore,
@@ -105,14 +113,14 @@ function PaperDraftInlineCommentSlideButton({
   }
 
   return (
-    <div
+    (<div
       className={css(styles.PaperDraftInlineCommentSlideButton)}
       onClick={closeButtonAndRenderThreadCard}
       ref={buttonRef}
       style={{ top: displayableOffsetTop }}
     >
-      {icons.plusThick}
-    </div>
+      {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
+    </div>)
   );
 }
 

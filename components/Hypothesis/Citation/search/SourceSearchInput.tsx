@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
@@ -26,7 +28,7 @@ import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
-import icons from "~/config/themes/icons";
+
 import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 export type Props = {
@@ -160,7 +162,7 @@ export default function SourceSearchInput({
   ) : null;
 
   return (
-    <div className={css(styles.sourceSearchInput)}>
+    (<div className={css(styles.sourceSearchInput)}>
       {shouldShowInput ? (
         <div className={css(styles.inputSection)}>
           <FormInput
@@ -196,7 +198,7 @@ export default function SourceSearchInput({
                   {"Choose supports / rejects"}
                 </div>
                 <div style={{ color: colors.LIGHT_GREY_BACKGROUND }}>
-                  {icons.caretDown}
+                  {<FontAwesomeIcon icon={faCaretDown}></FontAwesomeIcon>}
                 </div>
               </div>
             }
@@ -236,7 +238,7 @@ export default function SourceSearchInput({
         </div>
       )}
       {searchResultsItems}
-    </div>
+    </div>)
   );
 }
 

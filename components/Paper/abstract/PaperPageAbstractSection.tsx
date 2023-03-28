@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
+import { faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import dynamic from "next/dynamic";
 import { ReactElement, useEffect, useState } from "react";
@@ -5,7 +8,7 @@ import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { NullableString } from "~/config/types/root_types";
 import {
@@ -74,7 +77,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
   useEffectPaperFetching({ paper, setIsFetching });
 
   return (
-    <div className={css(styles.paperPageAbstractSection)}>
+    (<div className={css(styles.paperPageAbstractSection)}>
       {isFetching && <AbstractPlaceholder color="#EFEFEF" />}
       <div style={{ visibility: isFetching ? "hidden" : "visible" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -85,7 +88,9 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
               onClick={(): void => setIsEditMode(true)}
               loginRequired
             >
-              <span className={css(styles.pencilIcon)}>{icons.pencil}</span>
+              <span className={css(styles.pencilIcon)}>
+                {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
+              </span>
             </PermissionNotificationWrapper>
           )}
         </div>
@@ -158,7 +163,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 height: 50,
               }}
             >
-              {icons.file}
+              {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
             </div>
             <h2 className={css(styles.noSummaryTitle)}>
               {"Add an abstract to this paper"}
@@ -197,7 +202,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 

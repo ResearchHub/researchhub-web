@@ -1,7 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faShapes } from "@fortawesome/pro-duotone-svg-icons";
+import { faClone } from "@fortawesome/pro-solid-svg-icons";
+import { faUsers } from "@fortawesome/pro-solid-svg-icons";
+import { faLock } from "@fortawesome/pro-solid-svg-icons";
 import Loader from "~/components/Loader/Loader";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "./config/notebookConstants";
@@ -15,7 +22,6 @@ import {
   deleteNote,
   fetchNote,
   makeNotePrivate,
-  removePermissionsFromNote,
   updateNoteUserPermissions,
 } from "~/config/fetch";
 import { useAlert } from "react-alert";
@@ -40,7 +46,7 @@ const NoteOptionsMenuButton = ({
   const menuItems = [
     {
       text: "Make private",
-      icon: icons.lock,
+      icon: <FontAwesomeIcon icon={faLock}></FontAwesomeIcon>,
       show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -63,7 +69,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Move to Workspace",
-      icon: icons.friends,
+      icon: <FontAwesomeIcon icon={faUsers}></FontAwesomeIcon>,
       show: note.access === NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -90,7 +96,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Duplicate",
-      icon: icons.clone,
+      icon: <FontAwesomeIcon icon={faClone}></FontAwesomeIcon>,
       show: true,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
@@ -124,7 +130,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Save as template",
-      icon: icons.shapes,
+      icon: <FontAwesomeIcon icon={faShapes}></FontAwesomeIcon>,
       show: true,
       hoverStyle: styles.blueHover,
       onClick: (e) => {
@@ -156,7 +162,7 @@ const NoteOptionsMenuButton = ({
     },
     {
       text: "Delete",
-      icon: icons.trash,
+      icon: <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>,
       show: true,
       hoverStyle: styles.redHover,
       onClick: (e) => {
@@ -223,7 +229,11 @@ const NoteOptionsMenuButton = ({
               setIsPopoverOpen(!isPopoverOpen);
             }}
           >
-            {menuLoading ? <Loader size={18} /> : icons.ellipsisH}
+            {menuLoading ? (
+              <Loader size={18} />
+            ) : (
+              <FontAwesomeIcon icon={faEllipsisH}></FontAwesomeIcon>
+            )}
           </div>
         }
       />

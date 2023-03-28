@@ -6,7 +6,6 @@ import ColumnContainer from "./ColumnContainer";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import { ModalActions } from "~/redux/modals";
 import { fetchPaperFigures } from "~/config/fetch";
-import { absoluteUrl } from "~/config/utils/routing";
 
 const PaperPreview = ({
   paper,

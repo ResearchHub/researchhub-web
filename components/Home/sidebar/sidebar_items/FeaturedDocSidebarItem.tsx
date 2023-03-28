@@ -1,5 +1,4 @@
 import { css, StyleSheet } from "aphrodite";
-import { FEDocType } from "~/config/utils/getUnifiedDocType";
 import { UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement } from "react";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";

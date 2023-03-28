@@ -1,4 +1,4 @@
-import { Fragment, ReactElement } from "react";
+import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";

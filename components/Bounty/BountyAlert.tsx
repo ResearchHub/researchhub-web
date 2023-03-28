@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/pro-regular-svg-icons";
+import { faCommentDots } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import ALink from "../ALink";
 import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
@@ -13,7 +16,7 @@ import { breakpoints } from "~/config/themes/screen";
 import ShareDropdown from "../ShareDropdown";
 import buildTwitterUrl from "./utils/buildTwitterUrl";
 import InviteButton from "~/components/Referral/InviteButton";
-import icons from "~/config/themes/icons";
+
 import CoinStackIcon from "../Icons/CoinStackIcon";
 import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";
@@ -166,7 +169,7 @@ const BountyAlert = ({
   });
 
   return (
-    <div className={css(styles.bountyAlert)}>
+    (<div className={css(styles.bountyAlert)}>
       <BountyModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -298,7 +301,7 @@ const BountyAlert = ({
               }}
             >
               <span className={css(styles.actionIcon)}>
-                {icons.commentDots}
+                {<FontAwesomeIcon icon={faCommentDots}></FontAwesomeIcon>}
               </span>
               Answer
             </div>
@@ -317,7 +320,9 @@ const BountyAlert = ({
         )}
         <div className={css(styles.action, styles.shareAction)}>
           <ShareDropdown handleClick={_handleShareClick}>
-            <span className={css(styles.actionIcon)}>{icons.shareRegular}</span>
+            <span className={css(styles.actionIcon)}>
+              {<FontAwesomeIcon icon={faShare}></FontAwesomeIcon>}
+            </span>
             Share
           </ShareDropdown>
         </div>
@@ -336,7 +341,7 @@ const BountyAlert = ({
           </InviteButton>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 

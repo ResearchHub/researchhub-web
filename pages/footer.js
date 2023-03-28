@@ -1,9 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { faReddit } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faMedium } from "@fortawesome/free-brands-svg-icons";
 import { Component } from "react";
 
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
 
 class Footer extends Component {
   tabData = [
@@ -80,7 +85,9 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.medium}</span>
+                <span className={css(styles.logo)}>
+                  {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
+                </span>
               </div>
             </a>
             <a
@@ -90,7 +97,9 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.discord}</span>
+                <span className={css(styles.logo)}>
+                  {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
+                </span>
               </div>
             </a>
             <a
@@ -100,7 +109,9 @@ class Footer extends Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.twitter}</span>
+                <span className={css(styles.logo)}>
+                  {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
+                </span>
               </div>
             </a>
             <a
@@ -109,7 +120,9 @@ class Footer extends Component {
               href="https://www.reddit.com/r/ResearchHub/"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.reddit}</span>
+                <span className={css(styles.logo)}>
+                  {<FontAwesomeIcon icon={faReddit}></FontAwesomeIcon>}
+                </span>
               </div>
             </a>
             <a
@@ -118,7 +131,9 @@ class Footer extends Component {
               href="https://github.com/ResearchHub"
             >
               <div className={css(styles.social)}>
-                <span className={css(styles.logo)}>{icons.github}</span>
+                <span className={css(styles.logo)}>
+                  {<FontAwesomeIcon icon={faGithub}></FontAwesomeIcon>}
+                </span>
               </div>
             </a>
           </div>

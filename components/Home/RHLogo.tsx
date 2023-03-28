@@ -1,8 +1,10 @@
 import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
+import dynamic from "next/dynamic";
 import { breakpoints } from "~/config/themes/screen";
-import Lottie from "react-lottie";
 import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
 import { useRef, useState } from "react";
+
+const Lottie = dynamic(() => import("react-lottie"));
 
 type Props = {
   iconStyle: StyleDeclarationValue;
@@ -13,7 +15,6 @@ type Props = {
 export default function RHLogo({ iconStyle, white, withText }: Props) {
   const [animationPlaying, setAnimationPlaying] = useState(false);
   const lottieRef = useRef();
-  const lottieTimeout = useRef();
   const defaultOptions = {
     loop: false,
     animationData: FlaskAnimation,

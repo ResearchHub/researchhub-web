@@ -1,5 +1,4 @@
 import { css } from "aphrodite";
-import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 import Ripples from "react-ripples";
 import { ModalActions } from "~/redux/modals";

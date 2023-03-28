@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import FormInput from "../Form/FormInput";
 import GoogleLoginButton from "../GoogleLoginButton";
@@ -7,10 +11,9 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AuthActions } from "~/redux/auth";
 import { useDispatch, useSelector } from "react-redux";
-import icons from "~/config/themes/icons";
+
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { StyleSheet, css } from "aphrodite";
-import Loader from "~/components/Loader/Loader";
 import IconButton from "../Icons/IconButton";
 import colors from "~/config/themes/colors";
 import { isValidEmail } from "~/config/utils/validation";
@@ -22,6 +25,7 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Image from "next/image";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import { ClipLoader } from "react-spinners";
 
 type SCREEN =
   | "SELECT_PROVIDER"
@@ -288,7 +292,7 @@ const LoginModal = ({
                   setStep("SELECT_PROVIDER");
                 }}
               >
-                {icons.chevronLeft}
+                {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
               </IconButton>
             )}
             <IconButton
@@ -300,7 +304,7 @@ const LoginModal = ({
                 _handleClose();
               }}
             >
-              {icons.times}
+              {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
             </IconButton>
             {step === "SELECT_PROVIDER"
               ? `Log in or sign up`
@@ -317,11 +321,12 @@ const LoginModal = ({
     >
       {miscError && (
         <div className={css(styles.miscError)}>
-          <div style={{ fontSize: 18 }}>{icons.exclamationCircle}</div>
+          <div style={{ fontSize: 18 }}>
+            {<FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>}
+          </div>
           {miscError}
         </div>
       )}
-
       <div className={css(styles.contentContainer)}>
         {step === "SELECT_PROVIDER" ? (
           <div>
@@ -361,7 +366,12 @@ const LoginModal = ({
               onClick={checkIfAccountExistsApi}
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Continue"
                 )
@@ -459,7 +469,12 @@ const LoginModal = ({
               onClick={loginApi}
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Log in"
                 )
@@ -543,7 +558,12 @@ const LoginModal = ({
               fullWidth
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Sign up"
                 )
@@ -620,7 +640,12 @@ const LoginModal = ({
               disabled={isLoading ? true : false}
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Send reset email"
                 )

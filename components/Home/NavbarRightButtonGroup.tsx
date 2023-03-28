@@ -1,8 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOut } from "@fortawesome/pro-duotone-svg-icons";
+import { faAsterisk } from "@fortawesome/pro-solid-svg-icons";
+import { faCog } from "@fortawesome/pro-solid-svg-icons";
+import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
+import { faPortrait } from "@fortawesome/pro-solid-svg-icons";
+import { faShieldHalved } from "@fortawesome/pro-solid-svg-icons";
 import { AuthActions } from "~/redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
 import { getCaseCounts } from "~/components/AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import {
   ReactElement,
@@ -13,11 +19,10 @@ import {
 } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
-import api from "~/config/api";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import getFlagCountAPI from "../Flag/api/getFlagCountAPI";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import Notification from "~/components/Notifications/Notification";
 import RscBalanceButton from "./RscBalanceButton";
@@ -70,7 +75,7 @@ function NavbarRightButtonGroup({
   }, [isUserModerator, isUserHubEditor]);
 
   return (
-    <div className={css(styles.userDropdown)}>
+    (<div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
         <div
           className={css(styles.buttonsGroup)}
@@ -88,7 +93,7 @@ function NavbarRightButtonGroup({
                 href={"/moderators/audit/flagged"}
                 className={css(styles.modBtn)}
               >
-                {icons.shield}
+                {<FontAwesomeIcon icon={faShieldHalved}></FontAwesomeIcon>}
                 {openCaseCounts > 0 && (
                   <div className={css(styles.notifCount)}>{openCaseCounts}</div>
                 )}
@@ -131,20 +136,24 @@ function NavbarRightButtonGroup({
           >
             <div className={css(styles.option)}>
               <span className={css(styles.profileIcon, styles.portraitIcon)}>
-                {icons.portrait}
+                {<FontAwesomeIcon icon={faPortrait}></FontAwesomeIcon>}
               </span>
               {"Profile"}
             </div>
           </Link>
           <Link href={`/${user?.organization_slug}/notebook`} legacyBehavior>
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.bookOpen}</span>
+              <span className={css(styles.profileIcon)}>
+                {<FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>}
+              </span>
               {"Notebook"}
             </div>
           </Link>
           <Link href={"/settings"} as={`/settings`} legacyBehavior>
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.cog}</span>
+              <span className={css(styles.profileIcon)}>
+                {<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>}
+              </span>
               {"Settings"}
             </div>
           </Link>
@@ -155,7 +164,9 @@ function NavbarRightButtonGroup({
             legacyBehavior
           >
             <div className={css(styles.option)}>
-              <span className={css(styles.profileIcon)}>{icons.asterisk}</span>
+              <span className={css(styles.profileIcon)}>
+                {<FontAwesomeIcon icon={faAsterisk}></FontAwesomeIcon>}
+              </span>
               {"Referral Program"}
             </div>
           </Link>
@@ -165,12 +176,14 @@ function NavbarRightButtonGroup({
               signout({ walletLink });
             }}
           >
-            <span className={css(styles.profileIcon)}>{icons.signOut}</span>
+            <span className={css(styles.profileIcon)}>
+              {<FontAwesomeIcon icon={faSignOut}></FontAwesomeIcon>}
+            </span>
             <span>{"Logout"}</span>
           </div>
         </div>
       )}
-    </div>
+    </div>)
   );
 }
 

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -14,7 +16,7 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 
 class DndModal extends Component {
@@ -150,7 +152,11 @@ class DndModal extends Component {
           imageContainerClassName={this.calculateStyle()}
           fileAccept={fileAccept}
           addImageText={
-            this.state.files.length < 1 ? this.renderDropContent() : icons.plus
+            this.state.files.length < 1 ? (
+              this.renderDropContent()
+            ) : (
+              <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+            )
           }
         />
         {files.length > 0 && (

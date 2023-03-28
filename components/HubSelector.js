@@ -1,10 +1,12 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
 import { useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "~/components/Home/RHLogo";
 
 const HubSelector = ({ hubState }) => {
@@ -46,8 +48,10 @@ const HubSelector = ({ hubState }) => {
     const allHubsHeaderOpt = {
       html: (
         <Link href={`/hubs`} className={css(styles.primaryButton)}>
-          <span className={css(styles.squaresIcon)}>{icons.squares}</span>All
-          Hubs
+          <span className={css(styles.squaresIcon)}>
+            {<FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>}
+          </span>
+          All Hubs
         </Link>
       ),
       value: "all-hubs",

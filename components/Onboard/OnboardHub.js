@@ -1,9 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const OnboardHub = (props) => {
   const { userHubIds, hub } = props;
@@ -19,7 +21,11 @@ const OnboardHub = (props) => {
   const renderButton = () => {
     return (
       <div className={css(styles.button, subscribed && styles.active)}>
-        {subscribed ? icons.check : icons.plus}
+        {subscribed ? (
+          <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+        ) : (
+          <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+        )}
       </div>
     );
   };

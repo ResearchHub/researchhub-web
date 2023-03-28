@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentLines } from "@fortawesome/pro-solid-svg-icons";
+import { faCommentAltDots } from "@fortawesome/pro-duotone-svg-icons";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 
 // NPM Modules
@@ -17,7 +22,7 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 import { getNestedValue } from "~/config/utils/misc";
 import { buildSlug } from "~/config/utils/buildSlug";
@@ -510,16 +515,16 @@ class LiveFeedNotification extends Component {
       case "summary":
       case "vote_paper":
       case "paper":
-        return icons.file;
+        return <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>;
       case "vote_comment":
       case "comment":
-        return icons.commentAltDots;
+        return <FontAwesomeIcon icon={faCommentAltDots}></FontAwesomeIcon>;
       case "reply":
       case "vote_reply":
-        return icons.commentAltDots;
+        return <FontAwesomeIcon icon={faCommentAltDots}></FontAwesomeIcon>;
       case "thread":
       case "vote_thread":
-        return icons.commentAltLines;
+        return <FontAwesomeIcon icon={faCommentLines}></FontAwesomeIcon>;
     }
   };
 
@@ -569,7 +574,7 @@ class LiveFeedNotification extends Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                icon={icons.ban}
+                icon={<FontAwesomeIcon icon={faBan}></FontAwesomeIcon>}
                 label={"Ban User"}
                 actionType={"user"}
                 metaData={metaData}

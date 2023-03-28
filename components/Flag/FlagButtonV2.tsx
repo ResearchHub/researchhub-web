@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -11,7 +13,6 @@ import ResearchHubRadioChoices, {
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Props = {
   buttonText?: string;
@@ -86,14 +87,14 @@ function FlagButtonV2({
   };
 
   return (
-    <Fragment>
+    (<Fragment>
       <div
         onClick={(event): void => {
           setIsModalOpen(!isModalOpen);
         }}
         className={css(styles.flagIcon, flagIconOverride)}
       >
-        {iconOverride || icons.flag}
+        {iconOverride || <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
         {buttonText && (
           <span className={css(buttonTextStyle)}>{buttonText}</span>
         )}
@@ -136,7 +137,7 @@ function FlagButtonV2({
         title={modalHeaderText}
         titleStyle={customModalStyle.modalHeaderText}
       />
-    </Fragment>
+    </Fragment>)
   );
 }
 

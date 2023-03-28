@@ -1,6 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/pro-light-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import { useWeb3Modal } from "@web3modal/react";
-import { useAccount, useConnect, useEnsName } from "wagmi";
+import { useWeb3Modal, Web3Modal } from "@web3modal/react";
+import { useAccount, configureChains, createClient, WagmiConfig } from "wagmi";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -11,9 +13,15 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
-import colors, { iconColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+import {
+  EthereumClient,
+  w3mConnectors,
+  w3mProvider,
+} from "@web3modal/ethereum";
+import { mainnet, goerli } from "wagmi/chains";
+
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
@@ -49,15 +57,30 @@ const WithdrawalModal = dynamic(() =>
 
 export const NAVBAR_HEIGHT = 68;
 
+const isProduction = process.env.REACT_APP_ENV === "production";
+
+const chains = [isProduction ? mainnet : goerli];
+const projectId = "a3e8904e258fe256bf772b764d3acfab";
+
+// Wagmi client
+const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: w3mConnectors({ version: 1, chains, projectId }),
+  provider,
+});
+
+// Web3Modal Ethereum Client
+const ethereumClient = new EthereumClient(wagmiClient, chains);
+
 const Navbar = (props) => {
   const { address, isConnected } = useAccount();
-  const { data: ensName } = useEnsName({ address });
 
   const router = useRouter();
   const navbarRef = useRef(null);
-  const { isLoggedIn, user, authChecked, auth, updateUser } = props;
+  const { isLoggedIn, user, auth, updateUser } = props;
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
-  const { isOpen, open, close } = useWeb3Modal();
+  const { open, close } = useWeb3Modal();
 
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook")
@@ -85,7 +108,7 @@ const Navbar = (props) => {
           className={css(styles.burgerIcon)}
           onClick={() => setShouldShowSlider(!shouldShowSlider)}
         >
-          {icons.burgerMenu}
+          {<FontAwesomeIcon icon={faBars}></FontAwesomeIcon>}
         </div>
         <div
           onClick={(event) => {
@@ -110,12 +133,19 @@ const Navbar = (props) => {
       <PromotionInfoModal />
       <ReCaptchaPrompt />
       <UploadPaperModal />
-      <WithdrawalModal
-        openWeb3ReactModal={open}
-        closeWeb3ReactModal={close}
-        address={address}
-        isConnected={isConnected}
-      />
+      <WagmiConfig client={wagmiClient}>
+        <WithdrawalModal
+          openWeb3ReactModal={open}
+          closeWeb3ReactModal={close}
+          address={address}
+          isConnected={isConnected}
+        />
+        <Web3Modal
+          projectId="a3e8904e258fe256bf772b764d3acfab"
+          ethereumClient={ethereumClient}
+        />
+      </WagmiConfig>
+
       <div
         ref={navbarRef}
         className={`${css(

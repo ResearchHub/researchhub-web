@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import colors from "~/config/themes/colors";
 
 type ToggleOption = {

@@ -80,13 +80,14 @@ const NotificationEntry = (props) => {
 
     return (
       <div>
-        {body.map((element) => {
+        {body.map((element, i) => {
           const extraStyles = formatStyles(element.extra);
           switch (element.type) {
             case "link":
               const link = { href: element.link };
               return (
                 <HyperLink
+                  key={i}
                   link={link}
                   onClick={onClick}
                   style={extraStyles}
@@ -95,12 +96,15 @@ const NotificationEntry = (props) => {
               );
             case "text":
               return (
-                <span className={css(...extraStyles)}> {element.value} </span>
+                <span key={i} className={css(...extraStyles)}>
+                  {" "}
+                  {element.value}{" "}
+                </span>
               );
             case "break":
-              return <br></br>;
+              return <br key={i}></br>;
             default:
-              return "ERROR";
+              return <span key={i}>ERROR</span>;
           }
         })}
       </div>

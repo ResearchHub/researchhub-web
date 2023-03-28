@@ -1,11 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import API from "~/config/api";
 import BaseModal from "~/components/Modals/BaseModal";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { AUTH_TOKEN } from "~/config/constants";
+
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
@@ -19,6 +22,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { AUTH_TOKEN } from "~/config/constants";
 
 export type TemplateSidebarEntryProps = {
   orgSlug: string;
@@ -94,7 +98,9 @@ function TemplateSidebarEntry({
           {menuLoading ? (
             <Loader size={18} />
           ) : (
-            <div className={css(!isHovered && styles.hide)}>{icons.trash}</div>
+            <div className={css(!isHovered && styles.hide)}>
+              {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
+            </div>
           )}
         </div>
       )}
@@ -234,7 +240,11 @@ export default function NoteTemplateModal({
           >
             Templates
             <span className={css(styles.chevronIcon)}>
-              {hideTemplates ? icons.chevronDown : icons.chevronUp}
+              {hideTemplates ? (
+                <FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
+              )}
             </span>
           </div>
           {!hideTemplates && (

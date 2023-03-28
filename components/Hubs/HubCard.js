@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import { faComment } from "@fortawesome/pro-solid-svg-icons";
+import { faFile } from "@fortawesome/pro-solid-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
+import { faEdit } from "@fortawesome/pro-solid-svg-icons";
 import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -18,7 +24,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { capitalize } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
 
@@ -218,7 +224,7 @@ class HubCard extends Component {
               this.openEditHubModal();
             }}
           >
-            <span>{icons.editHub}</span>
+            <span>{<FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>}</span>
           </button>
         );
       }
@@ -236,7 +242,7 @@ class HubCard extends Component {
               this.removeHubConfirmation();
             }}
           >
-            <span>{icons.trash}</span>
+            <span>{<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}</span>
           </button>
         );
       }
@@ -255,17 +261,23 @@ class HubCard extends Component {
         data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
       >
         <div>
-          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          <span className={css(styles.statIcon)}>
+            {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
+          </span>
           {hub.paper_count} Paper
           {hub.paper_count != 1 ? "s" : ""}
         </div>
         <div>
-          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          <span className={css(styles.statIcon)}>
+            {<FontAwesomeIcon icon={faComment}></FontAwesomeIcon>}
+          </span>
           {hub.discussion_count} Comment
           {hub.discussion_count != 1 ? "s" : ""}
         </div>
         <div>
-          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          <span className={css(styles.statIcon)}>
+            {<FontAwesomeIcon icon={faUser}></FontAwesomeIcon>}
+          </span>
           {this.state.subCount} Member
           {this.state.subCount != 1 ? "s" : ""}
         </div>
@@ -281,7 +293,9 @@ class HubCard extends Component {
         data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
       >
         <div className={css(styles.statForRow)}>
-          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          <span className={css(styles.statIcon)}>
+            {<FontAwesomeIcon icon={faFile}></FontAwesomeIcon>}
+          </span>
           {hub.paper_count}
           <span className={css(styles.rowStatTitle)}>
             {` `}Paper
@@ -289,7 +303,9 @@ class HubCard extends Component {
           </span>
         </div>
         <div className={css(styles.statForRow)}>
-          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          <span className={css(styles.statIcon)}>
+            {<FontAwesomeIcon icon={faComment}></FontAwesomeIcon>}
+          </span>
           {hub.discussion_count}
           <span className={css(styles.rowStatTitle)}>
             {` `}Comment
@@ -297,7 +313,9 @@ class HubCard extends Component {
           </span>
         </div>
         <div className={css(styles.statForRow)}>
-          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          <span className={css(styles.statIcon)}>
+            {<FontAwesomeIcon icon={faUser}></FontAwesomeIcon>}
+          </span>
           {this.state.subCount}
           <span className={css(styles.rowStatTitle)}>
             {` `}Subscriber

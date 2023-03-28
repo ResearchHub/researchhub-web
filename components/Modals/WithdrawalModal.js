@@ -2,13 +2,13 @@ import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
 import ETHAddressInput from "../Ethereum/ETHAddressInput";
 import Button from "../Form/Button";
-import DepositScreen from "../Ethereum/DepositScreen";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
 
 // Redux
@@ -19,9 +19,8 @@ import { AuthActions } from "~/redux/auth";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
-import { useMetaMask } from "../connectEthereum";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import {
   getEtherscanLink,
@@ -30,6 +29,9 @@ import {
 } from "~/config/utils/crypto";
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { partyPopper } from "~/config/themes/icons";
+
+const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
 
 const GOERLY_CHAIN_ID = "5";
 const MAINNET_CHAIN_ID = "1";
@@ -368,32 +370,6 @@ class WithdrawalModal extends Component {
     );
   };
 
-  connectMetaMask = async () => {
-    const { connected, provider, account } = await useMetaMask();
-    if (connected) {
-      this.setUpEthListeners();
-      this.setState({
-        connectedMetaMask: connected,
-        connectedWalletLink: false,
-        ethAccount: account,
-        networkVersion: ethereum.networkVersion,
-        ethAccountIsValid: isAddress(account),
-        metaMaskVisible: true,
-        walletLinkVisible: false,
-      });
-
-      if (!this.provider) {
-        this.provider = provider;
-      }
-    } else {
-      emptyFncWithMsg("Failed to connect MetaMask");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
-
   setUpEthListeners() {
     if (!this.state.listnerNetwork && !this.state.listenerAccount) {
       this.setState({
@@ -539,7 +515,6 @@ class WithdrawalModal extends Component {
             provider={this.provider}
             ethAddressOnChange={this.handleNetworkAddressInput}
             onSuccess={this.setTransactionHash}
-            connectMetaMask={this.connectMetaMask}
             setMessage={this.props.setMessage}
             showMessage={this.props.showMessage}
             openWeb3ReactModal={this.props.openWeb3ReactModal}
@@ -696,7 +671,7 @@ class WithdrawalModal extends Component {
             <div className={css(styles.title)}>
               {title}
               <span className={css(styles.icon)}>
-                {icons.partyPopper({ style: styles.partyIcon })}
+                {partyPopper({ style: styles.partyIcon })}
               </span>
             </div>
             <div className={css(styles.confirmation)} onClick={this.closeModal}>

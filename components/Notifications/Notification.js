@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/pro-solid-svg-icons";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -11,11 +13,8 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 // Redux
 import { NotificationActions } from "~/redux/notification";
 
-// Config
-import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 class Notification extends Component {
   constructor(props) {
@@ -165,7 +164,7 @@ class Notification extends Component {
           onClick={this.toggleMenu}
           ref={(ref) => (this.notifIcon = ref)}
         >
-          {icons.bell}
+          {<FontAwesomeIcon icon={faBell}></FontAwesomeIcon>}
           {this.state.count > 0 && (
             <div className={css(styles.notifCount)}>{this.state.count}</div>
           )}

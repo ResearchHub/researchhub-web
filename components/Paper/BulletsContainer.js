@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTasks } from "@fortawesome/pro-light-svg-icons";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -17,7 +20,7 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import SectionBounty from "./Tabs/SectionBounty";
 
 const BULLET_COUNT = 5;
@@ -255,7 +258,7 @@ class BulletsContainer extends Component {
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.manage}
+            {<FontAwesomeIcon icon={faTasks}></FontAwesomeIcon>}
           </span>
           Manage
         </Ripples>
@@ -264,7 +267,7 @@ class BulletsContainer extends Component {
           onClick={() => this.transitionWrapper(this.toggleForm)}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            {icons.plusCircle}
+            {<FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>}
           </span>
           Add Takeaway
         </Ripples>

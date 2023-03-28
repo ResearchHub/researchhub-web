@@ -1,12 +1,10 @@
-import { connect, useStore } from "react-redux";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import HubEditorCreateForm from "./Hub/HubEditorCreateForm";
 import HubEditorDeleteForm from "./Hub/HubEditorDeleteForm";
-import PermissionsDashboardNavbar, {
-  FormTypes,
-} from "./PermissionsDashboardNavbar";
+import PermissionsDashboardNavbar from "./PermissionsDashboardNavbar";
 
 function PermissionsDashboard(): ReactElement<"div"> | null {
   const shouldRenderUI = gateKeepCurrentUser({

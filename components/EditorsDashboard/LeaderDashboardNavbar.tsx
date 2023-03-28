@@ -1,10 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import FormSelect from "../Form/FormSelect";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLongArrowAltDown,
   faLongArrowAltUp,

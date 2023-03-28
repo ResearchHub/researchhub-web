@@ -7,7 +7,7 @@ type Props = {
   isOpen: Boolean;
   closeModal: Function;
 };
-  
+
 export default function PostingGuidelinesModal({
   isOpen,
   closeModal,

@@ -1,9 +1,12 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -270,9 +273,11 @@ class DragNDrop extends Component {
                       !this.state.validUrl && styles.errorIcon
                     )}
                   >
-                    {this.state.validUrl
-                      ? icons.checkCircle
-                      : icons.timesCircle}
+                    {this.state.validUrl ? (
+                      <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
+                    ) : (
+                      <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>
+                    )}
                   </span>
                 )
               ) : null

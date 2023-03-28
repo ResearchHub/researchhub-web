@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowToBottom } from "@fortawesome/pro-solid-svg-icons";
+import { faExternalLinkAlt } from "@fortawesome/pro-solid-svg-icons";
+import { faUpload } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules
@@ -20,7 +24,7 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "../../../config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 import { postUpdatePaperAbstract } from "../abstract/api/postUpdatePaperAbstract";
@@ -203,7 +207,8 @@ function PaperTab(props) {
                   permissionKey="CreatePaper"
                 >
                   <button className={css(defaultStyles.button)}>
-                    Upload the Paper PDF {icons.upload}
+                    Upload the Paper PDF{" "}
+                    {<FontAwesomeIcon icon={faUpload}></FontAwesomeIcon>}
                   </button>
                 </PermissionNotificationWrapper>
               </div>
@@ -236,7 +241,8 @@ function PaperTab(props) {
             openExternalLink(paperUrl);
           }}
         >
-          View on External Site {icons.externalLink}
+          View on External Site{" "}
+          {<FontAwesomeIcon icon={faExternalLinkAlt}></FontAwesomeIcon>}
         </button>
         <div className={css(styles.emptyPlaceholderFont, styles.orText)}>
           {" or "}
@@ -252,7 +258,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                {icons.arrowToBottom}
+                {<FontAwesomeIcon icon={faArrowToBottom}></FontAwesomeIcon>}
               </span>
               Download
             </Fragment>

@@ -1,10 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import Image from "next/image";
 import BaseModal from "~/components/Modals/BaseModal";
 import { StyleSheet, css } from "aphrodite";
-import { breakpoints } from "~/config/themes/screen";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import { createOrg, updateOrgDetails } from "~/config/fetch";
@@ -15,7 +15,7 @@ import OrgCoverImgModal from "./OrgCoverImgModal";
 import { Helpers } from "@quantfive/js-web-config";
 import colors, { formColors } from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import icons from "~/config/themes/icons";
+
 import { captureEvent } from "~/config/utils/events";
 
 const STEPS = {
@@ -178,7 +178,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {icons.chevronLeft}{" "}
+              {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>
@@ -238,7 +238,7 @@ const NewOrgModal = ({
         <div className={css(styles.bottomButtons)}>
           <div className={css(styles.prevStepButton)} onClick={goToPrevStep}>
             <span>
-              {icons.chevronLeft}{" "}
+              {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}{" "}
               <span className={css(styles.previousStepText)}>
                 Previous Step
               </span>

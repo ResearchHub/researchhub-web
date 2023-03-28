@@ -1,83 +1,25 @@
-import { ClipLoader, DotLoader, BeatLoader } from "react-spinners";
 import { StyleSheet, css } from "aphrodite";
-import colors from "../../config/themes/colors";
-import { Lottie } from "@crello/react-lottie";
-import FlaskAnimation from "../../public/RH_animated_flask_new_starting_frame.json";
+import dynamic from "next/dynamic";
+
+// import { Player } from "@lottiefiles/react-lottie-player";
 
 const Loader = (props) => {
-  const {
-    loading,
-    color,
-    size,
-    sizeUnit,
-    loaderStyle,
-    style,
-    containerStyle,
-    type,
-  } = props;
-
-  const defaultOptions = {
-    loop: false,
-    autoplay: true,
-    animationData: FlaskAnimation,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+  const { size, containerStyle, type, Component } = props;
 
   const spinner = (type) => {
-    switch (type) {
-      case "dot":
-        return (
-          <DotLoader
-            css={loaderStyle && loaderStyle}
-            sizeUnit={sizeUnit ? sizeUnit : "px"}
-            size={size ? size : 60}
-            color={color ? color : colors.BLUE(1)}
-            loading={loading}
-            style={style}
-          />
-        );
-      case "clip":
-        return (
-          <ClipLoader
-            css={loaderStyle && loaderStyle}
-            sizeUnit={sizeUnit ? sizeUnit : "px"}
-            size={size ? size : 35}
-            color={color ? color : colors.BLUE(1)}
-            loading={loading}
-            style={style}
-          />
-        );
-      case "beat":
-        return (
-          <BeatLoader
-            css={loaderStyle && loaderStyle}
-            sizeUnit={sizeUnit ? sizeUnit : "px"}
-            size={size ? size : 20}
-            color={color ? color : colors.BLUE(1)}
-            loading={loading}
-            style={style}
-          />
-        );
-
-      default:
-        return (
-          <Lottie
-            config={defaultOptions}
-            height={size ? size : 50}
-            width={size ? size : 50}
-          />
-          // <ClipLoader
-          //   css={loaderStyle && loaderStyle}
-          //   sizeUnit={sizeUnit ? sizeUnit : "px"}
-          //   size={size ? size : 35}
-          //   color={color ? color : colors.BLUE(1)}
-          //   loading={loading}
-          //   style={style}
-          // />
-        );
-    }
+    if (Component)
+      return (
+        <Component
+          autoplay
+          loop
+          mode="normal"
+          src={"/RH_animated_flask_new_starting_frame.json"}
+          style={{
+            width: size ? size : 50,
+            height: size ? size : 50,
+          }}
+        ></Component>
+      );
   };
 
   return (

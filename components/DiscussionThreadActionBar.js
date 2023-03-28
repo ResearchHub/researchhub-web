@@ -1,10 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/pro-solid-svg-icons";
+import { faComment } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { doesNotExist } from "~/config/utils/nullchecks";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
@@ -31,7 +34,7 @@ const CommentCount = (props) => {
           path={threadPath}
         >
           <span className={css(styles.iconChat)} id={"chatIcon"}>
-            {icons.chat}
+            {<FontAwesomeIcon icon={faComment}></FontAwesomeIcon>}
           </span>
           <span className={css(styles.text)} id={"text"}>
             {formatCommentCount(props.count, props.comment)}
@@ -62,7 +65,7 @@ const Share = () => {
   return (
     <div className={css(styles.shareContainer)}>
       <span className={css(styles.iconChat)} id={"shareIcon"}>
-        {icons.share}
+        {<FontAwesomeIcon icon={faShare}></FontAwesomeIcon>}
       </span>
       <span className={css(styles.text)} id={"text"}>
         Share

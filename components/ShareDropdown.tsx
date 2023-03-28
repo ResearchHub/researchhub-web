@@ -1,7 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 type Args = {
   handleClick: Function;
@@ -10,8 +12,16 @@ type Args = {
 
 const ShareDropdown = ({ handleClick, children }: Args) => {
   const options = [
-    { label: "Twitter", value: "twitter", icon: icons.twitter },
-    { label: "LinkedIn", value: "linkedin", icon: icons.linkedIn },
+    {
+      label: "Twitter",
+      value: "twitter",
+      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
+    },
+    {
+      label: "LinkedIn",
+      value: "linkedin",
+      icon: <FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>,
+    },
   ];
   const [isOpen, setIsOpen] = useState(false);
   const triggerEl = useRef(null);
@@ -78,8 +88,7 @@ const styles = StyleSheet.create({
     background: "white",
     width: 150,
   },
-  trigger: {
-  },
+  trigger: {},
   opt: {
     background: "white",
     display: "flex",

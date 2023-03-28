@@ -5,18 +5,18 @@ type Args = {
   onClick: Function;
   children?: any;
   overrideStyle?: any;
-}
+};
 
 const IconButton = ({ onClick, children, overrideStyle }: Args) => {
   return (
     <div
       className={css(styles.root, styles.withAnimation, overrideStyle)}
-      onClick={() => onClick()}
+      onClick={(e) => onClick(e)}
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   root: {

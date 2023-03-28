@@ -5,10 +5,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
 import CitationAddNewButton from "./CitationAddNewButton";
-import TextDropdown, {
-  TextDropdownOption,
-  TextDropdownOptions,
-} from "~/components/shared/TextDropdown";
+import TextDropdown, { TextDropdownOptions } from "~/components/shared/TextDropdown";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
 

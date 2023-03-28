@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { useRef, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -5,7 +7,6 @@ import { connect } from "react-redux";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const Tab = ({ text, index, activeCategory }) => {
   const isActive = index === activeCategory;
@@ -25,7 +26,9 @@ const Tab = ({ text, index, activeCategory }) => {
           {text === "Trending" ? (
             <span>
               {text}
-              <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+              <span className={css(styles.trendingIcon)}>
+                {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
+              </span>
             </span>
           ) : (
             text

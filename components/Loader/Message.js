@@ -1,20 +1,22 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 /***
  * @patr
  */
 
 import { Component } from "react";
+import dynamic from "next/dynamic";
 
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// Component
-import Loader from "./Loader.js";
-
 // Redux
 import { MessageActions } from "~/redux/message";
-import icons from "~/config/themes/icons";
+
+const Loader = dynamic(() => import("./Loader"));
 
 class Message extends Component {
   constructor(props) {
@@ -48,8 +50,15 @@ class Message extends Component {
     }
   }
 
+  componentDidMount() {
+    this.loader = require("@lottiefiles/react-lottie-player").Player;
+  }
+
   render() {
     let { message } = this.props;
+    if (message.load && !this.loader) {
+      return null;
+    }
     return (
       <div
         className={css(
@@ -59,10 +68,16 @@ class Message extends Component {
         )}
       >
         {message.load ? (
-          <Loader loading={true} />
+          <div className={css(styles.loadContainer)}>
+            <Loader loading={true} Component={this.loader} />
+          </div>
         ) : (
           <span style={inlineStyle.check} color="#fff">
-            {message.error ? icons.times : icons.check}
+            {message.error ? (
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
+            ) : (
+              <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+            )}
           </span>
         )}
         {!message.load && (
@@ -98,6 +113,11 @@ var styles = StyleSheet.create({
   load: {
     background: "rgb(249, 249, 252)",
     boxShadow: "0px 0px 10px 0px #00000026",
+  },
+  loadContainer: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
   },
   hide: {
     display: "none",

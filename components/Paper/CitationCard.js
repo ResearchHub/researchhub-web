@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight } from "@fortawesome/pro-solid-svg-icons";
+import { faAngleLeft } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -13,7 +16,6 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 // Redux
 import { MessageActions } from "~/redux/message";
 import { buildSlug } from "~/config/utils/buildSlug";
-import icons from "~/config/themes/icons";
 
 class CitationCard extends Component {
   constructor(props) {
@@ -100,7 +102,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleLeft}
+                    {<FontAwesomeIcon icon={faAngleLeft}></FontAwesomeIcon>}
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
@@ -111,7 +113,7 @@ class CitationCard extends Component {
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleRight}
+                    {<FontAwesomeIcon icon={faAngleRight}></FontAwesomeIcon>}
                   </span>
                 </div>
               );

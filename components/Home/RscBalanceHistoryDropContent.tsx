@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
@@ -17,7 +19,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { toTitleCase } from "~/config/utils/string";
 import { formatBountyAmount } from "~/config/types/bounty";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
-import icons from "~/config/themes/icons";
+
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
 import UniswapButton from "../UniswapButton";
@@ -119,7 +121,7 @@ export default function RscBalanceHistoryDropContent({
   );
 
   return (
-    <div className={css(styles.rscBalanceHistoryDropContent)}>
+    (<div className={css(styles.rscBalanceHistoryDropContent)}>
       <div className={css(styles.historyHeader)}>
         <ReputationTooltip />
         <div className={css(styles.header)}>
@@ -142,7 +144,7 @@ export default function RscBalanceHistoryDropContent({
             data-for={"reputation-tool-tip"}
             data-tip=""
           >
-            {icons.question}
+            {<FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>}
           </a>
         </div>
         <ALink
@@ -198,7 +200,7 @@ export default function RscBalanceHistoryDropContent({
           <UniswapButton variant="text" />
         </div>
       </div>
-    </div>
+    </div>)
   );
 }
 

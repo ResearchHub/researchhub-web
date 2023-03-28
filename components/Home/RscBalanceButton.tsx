@@ -1,14 +1,15 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { connect } from "react-redux";
-import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { getNumberWithCommas } from "~/config/utils/getNumberWithCommas";
 import { postLastTimeClickedRscTab } from "./api/postLastTimeClickedRscTab";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, useEffect, SyntheticEvent, ReactElement } from "react";
-import colors, { iconColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import ReputationTooltip from "~/components/ReputationTooltip";
+import colors from "~/config/themes/colors";
+
 import ResearchHubPopover from "../ResearchHubPopover";
 import RscBalanceHistoryDropContent from "./RscBalanceHistoryDropContent";
 
@@ -60,7 +61,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   }, [auth, balance, should_display_rsc_balance_home]);
 
   return (
-    <ResearchHubPopover
+    (<ResearchHubPopover
       align="end"
       containerStyle={{
         zIndex: 4,
@@ -103,10 +104,12 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
               Math.floor(rscDeltaSinceSeen)
             )}`}</div>
           )}
-          <div className={css(styles.caretDown)}>{icons.chevronDown}</div>
+          <div className={css(styles.caretDown)}>
+            {<FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>}
+          </div>
         </div>
       }
-    />
+    />)
   );
 };
 

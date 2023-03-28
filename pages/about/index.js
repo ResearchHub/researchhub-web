@@ -1,8 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
+import { faSortAmountUpAlt } from "@fortawesome/pro-duotone-svg-icons";
+import { faStarHalf } from "@fortawesome/pro-duotone-svg-icons";
+import { faGlobe } from "@fortawesome/pro-light-svg-icons";
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { NavigationArrow } from "~/components/HorizontalTabBar";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
@@ -16,7 +22,7 @@ const points = [
     text: "The scientific record is too important to be hidden behind paywalls and in ivory towers. \n ResearchHub is accessible to everybody, everywhere, with no content residing behind paywalls \n and no costs to participate. Summaries are written in plain English to improve accessibility.",
     icon: (
       <span draggable={false} style={{ color: "#4b5bf6" }}>
-        {icons.globe}
+        {<FontAwesomeIcon icon={faGlobe}></FontAwesomeIcon>}
       </span>
     ),
   },
@@ -26,7 +32,7 @@ const points = [
     text: "Academic research is too siloed today. ResearchHub encourages academics and \n non-academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
     icon: (
       <span draggable={false} style={{ color: colors.YELLOW(1) }}>
-        {icons.starHalf}
+        {<FontAwesomeIcon icon={faStarHalf}></FontAwesomeIcon>}
       </span>
     ),
   },
@@ -36,7 +42,7 @@ const points = [
     text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
     icon: (
       <span draggable={false} style={{ color: colors.GREEN(1) }}>
-        {icons.sortAmountUpAlt}
+        {<FontAwesomeIcon icon={faSortAmountUpAlt}></FontAwesomeIcon>}
       </span>
     ),
   },
@@ -324,7 +330,6 @@ class Index extends Component {
             </div>
           </ReactTransitionComponent>
         </div>
-
         <div className={css(styles.column, styles.fullWidth)}>
           <div className={css(styles.valuesContainer)}>
             <div
@@ -346,14 +351,18 @@ class Index extends Component {
                 data={this.points}
                 arrowLeft={
                   <NavigationArrow
-                    icon={icons.chevronLeft}
+                    icon={
+                      <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
+                    }
                     direction={"left"}
                     customStyles={styles.navArrow}
                   />
                 }
                 arrowRight={
                   <NavigationArrow
-                    icon={icons.chevronRight}
+                    icon={
+                      <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
+                    }
                     direction={"right"}
                     customStyles={styles.navArrow}
                   />

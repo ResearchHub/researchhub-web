@@ -1,6 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import PropTypes from "prop-types";
 import React from "react";
@@ -47,7 +49,9 @@ const AuthorCard = (props) => {
         {author.profile_image ? (
           <img src={author.profile_image} className={css(styles.userImage)} />
         ) : (
-          <span className={css(styles.userIcon)}>{icons.user}</span>
+          <span className={css(styles.userIcon)}>
+            {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
+          </span>
         )}
         {authorUserID ? (
           <div className={css(styles.name) + " clamp1"}>{name}</div>
@@ -65,14 +69,18 @@ const AuthorCard = (props) => {
         rel="noreferrer noopener"
         data-test={`author-${author.id}`}
       >
-        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <span className={css(styles.userIcon)}>
+          {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
+        </span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </a>
     );
   } else {
     return (
       <div className={css(styles.container)} data-test={`author-${author.id}`}>
-        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <span className={css(styles.userIcon)}>
+          {<FontAwesomeIcon icon={faCircleUser}></FontAwesomeIcon>}
+        </span>
         <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </div>
     );

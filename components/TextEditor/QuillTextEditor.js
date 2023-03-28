@@ -1,13 +1,17 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/pro-light-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faFontCase } from "@fortawesome/pro-solid-svg-icons";
+import { faVideo } from "@fortawesome/pro-solid-svg-icons";
 // NPM
 import ReactDOMServer from "react-dom/server";
-import { createRef, Fragment, Component } from "react";
+import { createRef, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import numeral from "numeral";
 
 // Component
 import FormButton from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -17,7 +21,6 @@ import ReviewCategorySelector from "~/components/TextEditor/ReviewCategorySelect
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import faIcons from "~/config/themes/icons";
 import QuillPeerReviewRatingBlock from "~/components/TextEditor/lib/QuillPeerReviewRatingBlock";
 import PostTypeSelector from "~/components/TextEditor/PostTypeSelector";
 import reviewCategories from "~/components/TextEditor/config/reviewCategories";
@@ -27,8 +30,9 @@ import hasQuillContent from "./util/hasQuillContent";
 import isQuillEmpty from "./util/isQuillEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import icons from "~/config/themes/icons";
+
 import { getCurrentUserLegacy } from "~/config/utils/user";
+import { ClipLoader } from "react-spinners";
 
 class Editor extends Component {
   constructor(props) {
@@ -57,8 +61,10 @@ class Editor extends Component {
       const MagicUrl = (await import("quill-magic-url")).default;
 
       const Quill = val.default.Quill;
-      var icons = val.default.Quill.import("ui/icons");
-      icons.video = ReactDOMServer.renderToString(faIcons.video);
+      const icons = val.default.Quill.import("ui/icons");
+      icons.video = ReactDOMServer.renderToString(
+        <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
+      );
 
       Quill.register(QuillPeerReviewRatingBlock);
       Quill.register("modules/magicUrl", MagicUrl);
@@ -358,10 +364,9 @@ class Editor extends Component {
             className={`show-full-editor ${showFullEditor ? "ql-active" : ""}`}
             onClick={() => this.setState({ showFullEditor: !showFullEditor })}
           >
-            {faIcons.fontCase}
+            {<FontAwesomeIcon icon={faFontCase}></FontAwesomeIcon>}
           </button>
         </span>
-
         <div
           className={`ql-full-editor ${
             showFullEditor && "ql-full-editor-visible"
@@ -495,7 +500,12 @@ class Editor extends Component {
               hideRipples
               disabled={this.state.submitDisabled}
               label={
-                <Loader loading={true} color={"#FFF"} size={20} type="clip" />
+                <ClipLoader
+                  sizeUnit={"px"}
+                  size={20}
+                  color={"#fff"}
+                  loading={true}
+                />
               }
               customButtonStyle={[
                 toolbarStyles.postButtonStyle,
@@ -538,7 +548,7 @@ class Editor extends Component {
                       Bounty Added{" "}
                     </span>
                     <span className={css(styles.closeBounty)}>
-                      {icons.times}
+                      {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
                     </span>
                   </button>
                 ) : (
@@ -709,7 +719,7 @@ class Editor extends Component {
             {this.props.isBounty === true && (
               <div className={css(styles.bountyAlert)}>
                 <span style={{ fontSize: 18 }}>
-                  {icons["info-circle-light"]}
+                  {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                 </span>
                 <span style={{ marginLeft: 5 }}>
                   Reply to this thread with an answer to be eligible for bounty

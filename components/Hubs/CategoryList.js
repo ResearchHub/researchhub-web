@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -9,7 +11,7 @@ import SideColumn from "~/components/Home/SideColumn";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import { isDevEnv } from "~/config/utils/env";
 
 class CategoryList extends Component {
@@ -48,7 +50,9 @@ class CategoryList extends Component {
             {category_name === "Trending" ? (
               <span>
                 {category_name}
-                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                <span className={css(styles.trendingIcon)}>
+                  {<FontAwesomeIcon icon={faFireAlt}></FontAwesomeIcon>}
+                </span>
               </span>
             ) : (
               category_name

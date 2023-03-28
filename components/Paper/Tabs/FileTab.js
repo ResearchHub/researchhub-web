@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
 /**
  * Import the necessary modules, components, redux, config
  *
@@ -23,7 +25,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
+
 import { openExternalLink } from "~/config/utils/routing";
 
 class FileTab extends Component {
@@ -140,7 +142,7 @@ class FileTab extends Component {
             </div>
             <Ripples className={css(styles.item)} onClick={this.openDndModal}>
               <span className={css(styles.dropdownItemIcon)}>
-                {icons.plusCircle}
+                {<FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>}
               </span>
               Add Files
             </Ripples>

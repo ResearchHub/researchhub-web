@@ -4,7 +4,6 @@ import { useAlert } from "react-alert";
 import Bounty from "~/config/types/bounty";
 import BountyModal from "./BountyModal";
 import colors from "~/config/themes/colors";
-import NewFeatureTooltip from "../Tooltips/NewFeatureTooltip";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";

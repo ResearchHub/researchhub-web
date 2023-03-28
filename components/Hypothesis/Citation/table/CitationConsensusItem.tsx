@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faMinusCircle } from "@fortawesome/pro-duotone-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -28,7 +32,7 @@ import {
   UPVOTE_ENUM,
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import Image from "next/image";
 import ReactTooltip from "react-tooltip";
 
@@ -93,18 +97,22 @@ function getDetailedText({
   const isPlural = !isNaN(totalCount) && totalCount > 1;
   const answer = doesMajoritySupport ? "yes" : "no";
   return (
-    <div
+    (<div
       className={css(
         styles.resultWrap,
         Boolean(disableText ?? false) && styles.hideText
       )}
     >
       {isNeutral ? (
-        <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
+        <span className={css(styles.neutralImg)}>
+          {<FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>}
+        </span>
       ) : doesMajoritySupport ? (
         <Image width={10} height={10} src="/static/icons/check.svg" alt={""} />
       ) : (
-        <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
+        <span className={css(styles.noSupportImg)}>
+          {<FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>}
+        </span>
       )}
       <div
         className={css(styles.consensusText)}
@@ -142,7 +150,7 @@ function getDetailedText({
             : `${Math.floor(majorityPercent)}% of researchers think ${answer}`}
         </ReactTooltip>
       </div>
-    </div>
+    </div>)
   );
 }
 
@@ -383,7 +391,7 @@ function CitationConsensusItem({
     ) : null;
 
   return (
-    <div className={css(styles.citationConsensusItem)}>
+    (<div className={css(styles.citationConsensusItem)}>
       <div className={css(styles.wrapper)}>
         {consensusBar}
         {hasCurrUserVoted || !shouldAllowVote ? null : (
@@ -398,7 +406,9 @@ function CitationConsensusItem({
               onClick={handleReject}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
+              <div className={css(styles.iconWrap)}>
+                {<FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>}
+              </div>
               <div className={css(styles.buttonText)}>{"Rejects"}</div>
             </div>
             <div
@@ -406,7 +416,9 @@ function CitationConsensusItem({
               onClick={handleNeutralVote}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.minusCircle}</div>
+              <div className={css(styles.iconWrap)}>
+                {<FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>}
+              </div>
               <div className={css(styles.buttonText)}>{"Neutral"}</div>
             </div>
             <div
@@ -414,13 +426,15 @@ function CitationConsensusItem({
               onClick={handleSupport}
               role="button"
             >
-              <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
+              <div className={css(styles.iconWrap)}>
+                {<FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>}
+              </div>
               <div className={css(styles.buttonText)}>{"Supports"}</div>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 

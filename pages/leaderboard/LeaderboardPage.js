@@ -1,3 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartNetwork } from "@fortawesome/pro-solid-svg-icons";
+import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faBookOpen } from "@fortawesome/pro-solid-svg-icons";
+import { faUserEdit } from "@fortawesome/pro-solid-svg-icons";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -10,7 +16,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { timeAgo } from "~/config/utils/dates";
-import icons from "~/config/themes/icons";
+
 import colors from "~/config/themes/colors";
 
 // Components
@@ -103,20 +109,35 @@ class Index extends Component {
     });
 
     this.items = [
-      { name: "Users", id: "users", type: "users", icon: icons.subscribers },
-      { name: "Authors", id: "authors", type: "authors", icon: icons.userEdit },
-      { name: "Papers", id: "papers", type: "papers", icon: icons.bookOpen },
+      {
+        name: "Users",
+        id: "users",
+        type: "users",
+        icon: <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>,
+      },
+      {
+        name: "Authors",
+        id: "authors",
+        type: "authors",
+        icon: <FontAwesomeIcon icon={faUserEdit}></FontAwesomeIcon>,
+      },
+      {
+        name: "Papers",
+        id: "papers",
+        type: "papers",
+        icon: <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>,
+      },
       {
         name: "Editors",
         id: "editors",
         type: "editors",
-        icon: icons.starFilled,
+        icon: <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>,
       },
       {
         name: "Hubs",
         id: "hubs",
         type: "hubs",
-        icon: icons.hub,
+        icon: <FontAwesomeIcon icon={faChartNetwork}></FontAwesomeIcon>,
       },
     ];
   }

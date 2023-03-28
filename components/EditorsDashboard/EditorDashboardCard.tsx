@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/pro-solid-svg-icons";
+import { faCaretUp } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
@@ -6,7 +9,7 @@ import { toTitleCase } from "~/config/utils/string";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import DesktopOnly from "../DesktopOnly";
-import icons from "~/config/themes/icons";
+
 import Link from "next/link";
 import MobileOnly from "../MobileOnly";
 import UserRoleTag from "../shared/UserRoleTag";
@@ -58,7 +61,7 @@ export default function EditorDashboardUserCard({
     );
 
     return (
-      <span
+      (<span
         className={css(
           styles.contributorPercentDiff,
           contributorPctDiff > 0
@@ -70,14 +73,12 @@ export default function EditorDashboardUserCard({
       >
         <span>
           {contributorPctDiff > 0 ? (
-            <span>{icons.caretUp}</span>
+            <span>{<FontAwesomeIcon icon={faCaretUp}></FontAwesomeIcon>}</span>
           ) : contributorPctDiff < 0 ? (
-            <span>{icons.caretDown}</span>
+            <span>{<FontAwesomeIcon icon={faCaretDown}></FontAwesomeIcon>}</span>
           ) : null}
         </span>
-        &nbsp;
-        {Math.abs(contributorPctDiff)}%
-      </span>
+        {Math.abs(contributorPctDiff)}%</span>)
     );
   };
 
@@ -102,19 +103,15 @@ export default function EditorDashboardUserCard({
       />
     ));
   return (
-    (<Link
+    <Link
       href={"/user/[authorId]/[tabName]"}
       as={`/user/${authorID}/overview`}
-      className={css(styles.link)}>
-
+      className={css(styles.link)}
+    >
       <div className={css(styles.container, index === 0 && styles.borderTop)}>
         <div className={css(styles.row)}>
           <div className={css(styles.nameSection)}>
-            <AuthorAvatar
-              author={authorProfile}
-              disableLink={true}
-              size={35}
-            />
+            <AuthorAvatar author={authorProfile} disableLink={true} size={35} />
             <div>
               <div className={css(styles.name) + " clamp1"}>
                 {`${first_name ?? ""} ${last_name ?? ""}`}
@@ -144,10 +141,7 @@ export default function EditorDashboardUserCard({
           <div className={css(styles.contributionSection)}>
             {activeHubContributorCount !== null && (
               <div
-                className={css(
-                  styles.countLabel,
-                  styles.contributorCountLabel
-                )}
+                className={css(styles.countLabel, styles.contributorCountLabel)}
               >
                 <span className={css(styles.mobileLabel)}>
                   Hub Active Contributors
@@ -184,28 +178,21 @@ export default function EditorDashboardUserCard({
             </div>
             <div className={css(styles.countLabel, styles.supportLabel)}>
               <span className={css(styles.mobileLabel)}>Supports</span>
-              <span className={css(styles.countResponse)}>
-                {supportCount}
-              </span>
+              <span className={css(styles.countResponse)}>{supportCount}</span>
             </div>
             <div className={css(styles.countLabel)}>
               <span className={css(styles.mobileLabel)}>Comments</span>
-              <span className={css(styles.countResponse)}>
-                {commentCount}
-              </span>
+              <span className={css(styles.countResponse)}>{commentCount}</span>
             </div>
           </div>
         </div>
         <MobileOnly
           children={
-            <div className={css(styles.hubName) + " clamp1"}>
-              {hubNameTags}
-            </div>
+            <div className={css(styles.hubName) + " clamp1"}>{hubNameTags}</div>
           }
         />
       </div>
-
-    </Link>)
+    </Link>
   );
 }
 
@@ -359,8 +346,8 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     "@media only screen and (max-width: 767px)": {
       marginLeft: 0,
-      marginTop: 8
-    }
+      marginTop: 8,
+    },
   },
   rep: {
     marginLeft: "auto",

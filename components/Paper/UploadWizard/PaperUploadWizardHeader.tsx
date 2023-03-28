@@ -1,16 +1,16 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
+import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
 import { ID } from "~/config/types/root_types";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
+import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext";
 import { ReactElement, SyntheticEvent, useContext } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 
 type Props = {
@@ -29,11 +29,11 @@ export default function PaperUploadWizardHeader({
   if (currentStep === "standby") {
     return (
       // @ts-ignore legacy socket hook
-      <PaperUploadWizardStandbyBody
+      (<PaperUploadWizardStandbyBody
         onExit={onExit}
         wsAuth
         wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
-      />
+      />)
     );
   } else if (currentStep === "posted_paper_update") {
     return (
@@ -57,9 +57,9 @@ export default function PaperUploadWizardHeader({
     );
   } else {
     return (
-      <div className={css(formGenericStyles.text, styles.header)}>
+      (<div className={css(formGenericStyles.text, styles.header)}>
         <span className={css(styles.close)} onClick={onExit}>
-          {icons.times}
+          {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
         </span>
         {currentStep === "pdf_upload" ? (
           <div
@@ -78,7 +78,7 @@ export default function PaperUploadWizardHeader({
                 });
               }}
             >
-              {icons.longArrowLeft}
+              {<FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>}
             </span>
             {"Upload PDF"}
           </div>
@@ -94,7 +94,7 @@ export default function PaperUploadWizardHeader({
         >
           {"Submission Guidelines"}
         </a>
-      </div>
+      </div>)
     );
   }
 }

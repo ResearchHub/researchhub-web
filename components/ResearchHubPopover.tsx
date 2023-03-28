@@ -32,7 +32,7 @@ export default function ResearchHubPopover({
       align={align}
       containerStyle={containerStyle}
       content={({ position, childRect, popoverRect }) =>
-        Boolean(withArrow) ? (
+        !!withArrow ? (
           <ArrowContainer
             arrowClassName="popover-arrow"
             arrowColor={"#fff"}

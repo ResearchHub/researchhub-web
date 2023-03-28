@@ -14,7 +14,6 @@ import { LimitationsActions } from "~/redux/limitations";
 import { MessageActions } from "~/redux/message";
 import { PaperActions } from "~/redux/paper";
 import { StyleSheet, css } from "aphrodite";
-import { absoluteUrl } from "~/config/utils/routing";
 import { connect, useStore } from "react-redux";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
@@ -24,7 +23,6 @@ import { breakpoints } from "~/config/themes/screen";
 import { Post as PostDoc } from "~/config/types/post";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { sendAmpEvent } from "~/config/fetch";
 import { trackEvent } from "~/config/utils/analytics";
 
 const PaperTransactionModal = dynamic(() =>
@@ -61,6 +59,7 @@ const Post = (props) => {
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
   const [threads, setThreads] = useState([]);
+  const [shareURL, setShareURL] = useState("");
 
   useEffect(() => {
     const _initialPost = props?.initialPost;
@@ -70,6 +69,10 @@ const Post = (props) => {
       setPostV2(formattedPost);
     }
   }, [props]);
+
+  useEffect(() => {
+    setShareURL(window.location.href);
+  }, []);
 
   useEffect(() => {
     if (postV2.isReady && postV2.unifiedDocument.documentType === "question") {
@@ -220,24 +223,22 @@ const Post = (props) => {
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
           <div className={css(styles.postPageMain)}>
-            {process.browser && (
-              <PostPageCard
-                isEditorOfHubs={isEditorOfHubs}
-                isModerator={isModerator}
-                isSubmitter={isSubmitter}
-                post={postV2}
-                setHasBounties={setHasBounties}
-                setBounties={setBounties}
-                removePost={removePost}
-                restorePost={restorePost}
-                threads={threads}
-                hasBounties={hasBounties}
-                bounties={bounties}
-                allBounties={allBounties}
-                onBountyCancelled={onBountyCancelled}
-                shareUrl={process.browser && window.location.href}
-              />
-            )}
+            <PostPageCard
+              isEditorOfHubs={isEditorOfHubs}
+              isModerator={isModerator}
+              isSubmitter={isSubmitter}
+              post={postV2}
+              setHasBounties={setHasBounties}
+              setBounties={setBounties}
+              removePost={removePost}
+              restorePost={restorePost}
+              threads={threads}
+              hasBounties={hasBounties}
+              bounties={bounties}
+              allBounties={allBounties}
+              onBountyCancelled={onBountyCancelled}
+              shareUrl={shareURL}
+            />
             <div className={css(styles.postPageSection)}>
               <a name="comments" id="comments" />
               {postV2.isReady && (

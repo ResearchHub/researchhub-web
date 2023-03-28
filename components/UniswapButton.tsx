@@ -1,7 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRight } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
-import ResearchCoinIcon from "./Icons/ResearchCoinIcon";
 
 type Args = {
   variant: "contained" | "text" | "shadow";
@@ -10,7 +10,7 @@ type Args = {
 
 const UniswapButton = ({ variant, label = "RSC is available on" }: Args) => {
   return (
-    <div
+    (<div
       className={css(
         styles.btn,
         variant === "contained" && styles.containedVariant,
@@ -24,9 +24,11 @@ const UniswapButton = ({ variant, label = "RSC is available on" }: Args) => {
       >
         <div className={css(styles.rscText)}>{label}</div>
         <img src={"/static/icons/uniswap-with-text.png"} height={25} />
-        <div className={css(styles.externalIcon)}>{icons.arrowUpRight}</div>
+        <div className={css(styles.externalIcon)}>
+          {<FontAwesomeIcon icon={faArrowUpRight}></FontAwesomeIcon>}
+        </div>
       </Link>
-    </div>
+    </div>)
   );
 };
 

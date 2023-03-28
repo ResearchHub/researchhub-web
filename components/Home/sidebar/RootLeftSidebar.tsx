@@ -1,3 +1,18 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeftToLine,
+  faArrowRightToLine,
+  faGrid2,
+  faHouse,
+  faTableTree,
+} from "@fortawesome/pro-solid-svg-icons";
+import {
+  faMedium,
+  faDiscord,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
+import { faBook } from "@fortawesome/pro-duotone-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
@@ -17,7 +32,7 @@ import {
 } from "react";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import RHLogo from "~/components/Home/RHLogo";
 import RootLeftSidebarItem, {
   ITEM_FADE_DURATION,
@@ -27,8 +42,6 @@ import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTableTree } from "@fortawesome/pro-solid-svg-icons";
 import killswitch from "~/config/killswitch/killswitch";
 
 type Props = {
@@ -60,7 +73,7 @@ export const getLeftSidebarItemAttrs = ({
 
   return filterNull([
     {
-      icon: icons.home,
+      icon: <FontAwesomeIcon icon={faHouse}></FontAwesomeIcon>,
       label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,
@@ -70,7 +83,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.squares,
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
@@ -80,7 +93,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.book,
+      icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
@@ -94,7 +107,7 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: icons.chartSimple,
+      icon: <FontAwesomeIcon icon={faChartSimple}></FontAwesomeIcon>,
       label: "Leaderboard",
       isMinimized,
       isActive: pathname.includes("leaderboard"),
@@ -366,14 +379,14 @@ function RootLeftSidebar({
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {icons.twitter}
+                {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
               </ALink>
               <ALink
                 href="https://discord.com/invite/ZcCYgcnUp5"
                 overrideStyle={styles.leftSidebarFooterIcon}
                 target="__blank"
               >
-                {icons.discord}
+                {<FontAwesomeIcon icon={faDiscord}></FontAwesomeIcon>}
               </ALink>
               <ALink
                 href="https://medium.com/researchhub"
@@ -382,7 +395,7 @@ function RootLeftSidebar({
                 }
                 target="__blank"
               >
-                {icons.medium}
+                {<FontAwesomeIcon icon={faMedium}></FontAwesomeIcon>}
               </ALink>
             </div>
             <div className={formattedFooterItemsButtonRow}>
@@ -406,20 +419,15 @@ function RootLeftSidebar({
               </ALink>
             </div>
           </div>
-          {/* Kobe 12-07-22: Commenting this out in order to prevent layout shift */}
-          {/* {isMinimized ? (
+          {isMinimized ? (
             <div
               className={css(styles.arrowRight)}
               onClick={() => {
                 setGrowMinimized(false);
                 setIsMinimized(false);
-                storeToCookie({
-                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "false",
-                });
               }}
             >
-              {icons.arrowRightToLine}
+              <FontAwesomeIcon icon={faArrowRightToLine}></FontAwesomeIcon>
             </div>
           ) : (
             <div
@@ -427,15 +435,11 @@ function RootLeftSidebar({
               onClick={() => {
                 setGrowMinimized(true);
                 setIsMinimized(true);
-                storeToCookie({
-                  key: LEFT_SIDEBAR_FORCE_MIN_KEY,
-                  value: "true",
-                });
               }}
             >
-              {icons.arrowLeftToLine}
+              <FontAwesomeIcon icon={faArrowLeftToLine}></FontAwesomeIcon>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </motion.div>

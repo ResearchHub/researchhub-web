@@ -5,13 +5,7 @@ import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
-import {
-  defaultComponentState,
-  defaultFormErrorState,
-  defaultFormState,
-  FormErrorState,
-  FormState,
-} from "./types/UploadComponentTypes";
+import { defaultComponentState, defaultFormErrorState, defaultFormState, FormState } from "./types/UploadComponentTypes";
 import {
   getCreateNewProfileAndUpdateState,
   getHandleAuthorChange,
@@ -22,12 +16,7 @@ import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { useRouter } from "next/router";
 import { getExistingPaperForEdit } from "./api/getExistingPaperForEdit";
 import { getIsFormValid } from "./util/getIsFormValid";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  isNullOrUndefined,
-  nullthrows,
-} from "../../../config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined, nullthrows } from "../../../config/utils/nullchecks";
 import { css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { ID } from "../../../config/types/root_types";
@@ -38,21 +27,12 @@ import Button from "../../Form/Button";
 import CheckBox from "../../Form/CheckBox";
 import FormInput from "../../Form/FormInput";
 import FormSelect from "../../Form/FormSelect";
-import FormTextArea from "../../Form/FormTextArea";
-import {
-  ComponentState,
-  Fragment,
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useState,
-} from "react";
+import { Fragment, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { updateExistingPaper } from "./api/updateExistingPaper";
 import API from "~/config/api";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
-import { captureEvent } from "~/config/utils/events";
 
 const AddAuthorModal = dynamic(() => import("../../Modals/AddAuthorModal"));
 const SimpleEditor = dynamic(

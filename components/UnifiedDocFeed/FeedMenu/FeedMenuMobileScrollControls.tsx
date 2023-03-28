@@ -1,7 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { useState, useEffect } from "react";
 import useEffectShowHorizontalMobileScroll from "../utils/useEffectShowHorizontalMobileScroll";
 import { css, StyleSheet } from "aphrodite";
-import icons from "~/config/themes/icons";
 
 const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   const [showMobileLeftScroll, setShowMobileLeftScroll] = useState(false);
@@ -32,7 +34,7 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
   }, [viewportWidth, tabsContainerRef]);
 
   return (
-    <div>
+    (<div>
       <div
         className={css(
           styles.mobileScrollNav,
@@ -50,7 +52,7 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
             tabsContainerRef.current.scrollBy({ left: -60, behavior: "smooth" })
           }
         >
-          {icons.chevronLeft}
+          {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
         </span>
         <span
           className={css(
@@ -63,10 +65,10 @@ const FeedMenuMobileScrollControls = ({ tabsContainerRef, viewportWidth }) => {
             tabsContainerRef.current.scrollBy({ left: 60, behavior: "smooth" });
           }}
         >
-          {icons.chevronRight}
+          {<FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>}
         </span>
       </div>
-    </div>
+    </div>)
   );
 };
 

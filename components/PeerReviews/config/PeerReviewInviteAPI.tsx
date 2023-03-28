@@ -1,6 +1,6 @@
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
-import { PeerReviewRequest, parsePeerReviewRequest } from "~/config/types/peerReview";
+import { PeerReviewRequest } from "~/config/types/peerReview";
 import { captureEvent } from "~/config/utils/events";
 
 type Args = {

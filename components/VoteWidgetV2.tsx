@@ -19,9 +19,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { voteWidgetIcons } from "~/config/themes/icons";
 import API from "~/config/api";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
+import { faDown, faUp } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export type VoteMeta = {
   downCount: number;
@@ -197,7 +198,7 @@ export default function VoteWidgetV2({
           });
         }}
       >
-        {voteWidgetIcons.upvote}
+        {<FontAwesomeIcon icon={faUp}></FontAwesomeIcon>}
       </div>
       <div className={css(styles.displayedScore)}>{displayedScore}</div>
       <div
@@ -222,7 +223,7 @@ export default function VoteWidgetV2({
           });
         }}
       >
-        {voteWidgetIcons.downvote}
+        {<FontAwesomeIcon icon={faDown}></FontAwesomeIcon>}
       </div>
     </Fragment>
   );

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
+import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
@@ -5,7 +8,6 @@ import FormInput from "~/components/Form/FormInput";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const EducationSummaryCard = (props) => {
   const { index, label, value, onClick, onRemove, onActive } = props;
@@ -32,10 +34,9 @@ const EducationSummaryCard = (props) => {
           )}
           onClick={onRemove}
         >
-          {icons.trash}
+          {<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
         </div>
       )}
-
       <div
         className={css(
           styles.checkboxContainer,
@@ -44,7 +45,9 @@ const EducationSummaryCard = (props) => {
         onClick={() => onActive && onActive(index)}
       >
         {value.is_public && (
-          <span className={css(styles.checkIcon)}>{icons.check}</span>
+          <span className={css(styles.checkIcon)}>
+            {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
+          </span>
         )}
       </div>
     </div>

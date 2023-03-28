@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { useState } from "react";
@@ -13,7 +14,6 @@ import { connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 import Button from "../Form/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ALink from "../ALink";
 
 type Params = {

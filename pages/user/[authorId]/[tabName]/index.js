@@ -1,3 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
+import { faEdit } from "@fortawesome/pro-solid-svg-icons";
+import { faUser } from "@fortawesome/pro-solid-svg-icons";
+import { faUserSlash } from "@fortawesome/pro-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -38,7 +48,7 @@ const UserInfoModal = dynamic(() =>
 );
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { createUserSummary, createEduSummary } from "~/config/utils/user";
 import {
@@ -530,7 +540,7 @@ function AuthorPage(props) {
             className={css(styles.submitSocialButton)}
             onClick={() => saveSocial(social)}
           >
-            {icons.arrowRight}
+            {<FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>}
           </div>
         </div>
       </div>
@@ -639,7 +649,7 @@ function AuthorPage(props) {
   const socialMediaLinkButtons = [
     {
       link: safeGuardURL(author.linkedin),
-      icon: icons.linkedIn,
+      icon: <FontAwesomeIcon icon={faLinkedin}></FontAwesomeIcon>,
       nodeRef: linkedinRef,
       dataTip: "Set LinkedIn Profile",
       onClick: () => setEditLinkedin(true),
@@ -649,7 +659,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.twitter),
-      icon: icons.twitter,
+      icon: <FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>,
       nodeRef: twitterRef,
       dataTip: "Set Twitter Profile",
       onClick: () => setEditTwitter(true),
@@ -659,7 +669,7 @@ function AuthorPage(props) {
     },
     {
       link: safeGuardURL(author.facebook),
-      icon: icons.facebook,
+      icon: <FontAwesomeIcon icon={faFacebookF}></FontAwesomeIcon>,
       nodeRef: facebookRef,
       dataTip: "Set Facebook Profile",
       onClick: () => setEditFacebook(true),
@@ -733,11 +743,13 @@ function AuthorPage(props) {
               actionType="user"
               containerStyle={styles.moderatorButton}
               icon={
-                !fetchedUser
-                  ? " "
-                  : isAuthorUserSuspended
-                  ? icons.userPlus
-                  : icons.userSlash
+                !fetchedUser ? (
+                  " "
+                ) : isAuthorUserSuspended ? (
+                  <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>
+                ) : (
+                  <FontAwesomeIcon icon={faUserSlash}></FontAwesomeIcon>
+                )
               }
               iconStyle={styles.moderatorIcon}
               key="user"
@@ -763,11 +775,13 @@ function AuthorPage(props) {
                 actionType="user"
                 containerStyle={[styles.moderatorButton, styles.reinstateUser]}
                 icon={
-                  !fetchedUser
-                    ? " "
-                    : isAuthorUserSuspended
-                    ? icons.userPlus
-                    : icons.userSlash
+                  !fetchedUser ? (
+                    " "
+                  ) : isAuthorUserSuspended ? (
+                    <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>
+                  ) : (
+                    <FontAwesomeIcon icon={faUserSlash}></FontAwesomeIcon>
+                  )
                 }
                 iconStyle={styles.moderatorIcon}
                 key="user"
@@ -800,7 +814,7 @@ function AuthorPage(props) {
               label={() => (
                 <Fragment>
                   <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.user}
+                    {<FontAwesomeIcon icon={faUser}></FontAwesomeIcon>}
                   </span>
                   Sift Profile
                 </Fragment>
@@ -818,7 +832,9 @@ function AuthorPage(props) {
     <div>
       {allowEdit ? (
         <div className={css(styles.editProfileButton)} key="editButton">
-          <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
+          <span onClick={onOpenUserInfoModal}>
+            {<FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>}
+          </span>
         </div>
       ) : null}
     </div>
@@ -836,7 +852,9 @@ function AuthorPage(props) {
       author?.education?.length ? (
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
           <div className={css(styles.educationSummary) + " clamp2"}>
-            <span className={css(styles.icon)}>{icons.graduationCap}</span>
+            <span className={css(styles.icon)}>
+              {<FontAwesomeIcon icon={faGraduationCap}></FontAwesomeIcon>}
+            </span>
             {createEduSummary(author)}
           </div>
         </div>

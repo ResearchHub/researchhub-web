@@ -1,8 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import colors from "~/config/themes/colors";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import reviewCategories from "./config/reviewCategories";
-import icons from "~/config/themes/icons";
 
 function ReviewCategorySelector({ handleSelect }): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +34,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
 
   const renderDropdown = () => {
     return (
-      <div
+      (<div
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
         ref={dropdownRef}
       >
@@ -46,7 +47,7 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
             >
               <div className={css(styles.dropdownOptLabel)}>
                 <span className={css(styles.plusIcon)}>
-                  {icons.plus}
+                  {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
                   {` `}
                 </span>
                 <span className={css(styles.catText)}>{cat.label}</span>
@@ -56,20 +57,22 @@ function ReviewCategorySelector({ handleSelect }): ReactElement {
               </div>
             </div>
           ))}
-      </div>
+      </div>)
     );
   };
 
   const renderTrigger = () => {
     return (
-      <div
+      (<div
         className={css(styles.trigger)}
         onClick={() => setIsOpen(!isOpen)}
         ref={triggerRef}
       >
-        <span className={css(styles.plusIcon)}>{icons.plus}</span>
+        <span className={css(styles.plusIcon)}>
+          {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
+        </span>
         <span className={css(styles.triggerLabel)}>Add review category</span>
-      </div>
+      </div>)
     );
   };
 

@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { ConsensusMeta } from "./CitationConsensusItem";
 import { css, StyleSheet } from "aphrodite";
@@ -14,7 +18,7 @@ import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationVoteItem from "./CitationVoteItem";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
-import icons from "~/config/themes/icons";
+
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import Link from "next/link";
@@ -85,7 +89,7 @@ export default function CitationTableRowItem({
   const isSupportSource = citationType === "SUPPORT";
 
   return (
-    <Link
+    (<Link
       href={"/paper/[paperId]/[paperName]"}
       as={citationTitleLinkUri}
       passHref
@@ -166,7 +170,7 @@ export default function CitationTableRowItem({
                 }}
                 role="button"
               >
-                {icons.comments}
+                {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
                 {commentCount > 0 && (
                   <div className={css(styles.commentCountSign)}>
                     {commentCount}
@@ -189,7 +193,11 @@ export default function CitationTableRowItem({
               >
                 <div className={css(styles.typeContent)}>
                   <span className={css(styles.iconWrap)}>
-                    {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                    {isSupportSource ? (
+                      <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
+                    ) : (
+                      <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>
+                    )}
                   </span>
                   <span className={css(styles.typeText)}>
                     {isSupportSource ? "Support" : "Reject"}
@@ -201,7 +209,7 @@ export default function CitationTableRowItem({
           />
         </div>
       </Ripples>
-    </Link>
+    </Link>)
   );
 }
 

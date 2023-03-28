@@ -1,10 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinusCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ReactElement } from "react";
 import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
 import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+
 import CitationAddNewButton from "./Citation/CitationAddNewButton";
 
 type Props = {
@@ -38,7 +41,7 @@ export default function HypothesisCitationConsensusCard({
   const totalVoteCount = downCount + neutralCount + upCount;
 
   return (
-    <div className={css(styles.hypothesisCitationConsensusCard)}>
+    (<div className={css(styles.hypothesisCitationConsensusCard)}>
       <div className={css(styles.title)}>{"Current conclusion"}</div>
       <div className={css(styles.body)}>
         <div className={css(styles.consensusTextGroup)}>
@@ -56,9 +59,9 @@ export default function HypothesisCitationConsensusCard({
               {sentiment > 0 ? (
                 <img src="/static/icons/check.svg" />
               ) : sentiment < 0 ? (
-                icons.timesCircle
+                <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>
               ) : (
-                icons.minusCircle
+                <FontAwesomeIcon icon={faMinusCircle}></FontAwesomeIcon>
               )}
             </span>
             <span>
@@ -104,7 +107,7 @@ export default function HypothesisCitationConsensusCard({
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 }
 

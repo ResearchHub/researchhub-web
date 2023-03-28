@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 // NPM
 import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
@@ -12,7 +15,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -408,9 +411,11 @@ class FormDND extends Component {
                     )}
                   >
                     <div className={css(styles.icon)}>
-                      {this.state.urlIsValid
-                        ? icons.checkCircle
-                        : icons.timesCircle}
+                      {this.state.urlIsValid ? (
+                        <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>
+                      ) : (
+                        <FontAwesomeIcon icon={faTimesCircle}></FontAwesomeIcon>
+                      )}
                     </div>
                   </span>
                 )

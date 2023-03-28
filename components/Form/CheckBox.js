@@ -1,7 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import icons from "~/config/themes/icons";
+
 import colors from "../../config/themes/colors";
 
 const CheckBox = ({
@@ -49,7 +51,7 @@ const CheckBox = ({
             style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
             className={css(checkStyleOverride)}
           >
-            {icons.check}
+            {<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
           </span>
         ) : (
           <div
