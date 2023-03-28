@@ -5,7 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactElement } from "react";
+import { Fragment, useState, ReactNode } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -19,7 +19,7 @@ import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
 interface Props {}
 
-export default function ReferencesContainer({}: Props): ReactElement {
+export default function ReferencesContainer({}: Props): ReactNode {
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
