@@ -38,3 +38,12 @@ yarn-error.log*
 .eslintcache
 .eslintcache/*
 .vercel
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js
+
+# Sentry
+next.config.wizardcopy.js
