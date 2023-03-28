@@ -1,13 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftToLine } from "@fortawesome/pro-solid-svg-icons";
-import { faArrowRightToLine } from "@fortawesome/pro-solid-svg-icons";
-import { faMedium } from "@fortawesome/free-brands-svg-icons";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import {
+  faArrowLeftToLine,
+  faArrowRightToLine,
+  faGrid2,
+  faHouse,
+  faTableTree,
+} from "@fortawesome/pro-solid-svg-icons";
+import {
+  faMedium,
+  faDiscord,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
 import { faChartSimple } from "@fortawesome/pro-regular-svg-icons";
 import { faBook } from "@fortawesome/pro-duotone-svg-icons";
-import { faGrid2 } from "@fortawesome/pro-solid-svg-icons";
-import { faHouse } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { NAVBAR_HEIGHT } from "~/components/Navbar";
@@ -37,8 +42,6 @@ import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTableTree } from "@fortawesome/pro-solid-svg-icons";
 import killswitch from "~/config/killswitch/killswitch";
 
 type Props = {
