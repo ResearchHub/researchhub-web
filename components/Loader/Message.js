@@ -50,8 +50,15 @@ class Message extends Component {
     }
   }
 
+  componentDidMount() {
+    this.loader = require("@lottiefiles/react-lottie-player").Player;
+  }
+
   render() {
     let { message } = this.props;
+    if (message.load && !this.loader) {
+      return null;
+    }
     return (
       <div
         className={css(
@@ -62,7 +69,7 @@ class Message extends Component {
       >
         {message.load ? (
           <div className={css(styles.loadContainer)}>
-            <Loader loading={true} />
+            <Loader loading={true} Component={this.loader} />
           </div>
         ) : (
           <span style={inlineStyle.check} color="#fff">

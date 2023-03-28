@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 import { useState, useEffect } from "react";
 
 // NPM Modules
@@ -23,6 +22,7 @@ import colors, { discussionPageColors } from "~/config/themes/colors";
 
 import { createUsername, getCurrentUserLegacy } from "~/config/utils/user";
 import { getNestedValue } from "~/config/utils/misc";
+import { faArrowLeftLong } from "@fortawesome/pro-light-svg-icons";
 
 const Thread = (props) => {
   const { data, hostname, title, body, createdBy, date, vote } = props;

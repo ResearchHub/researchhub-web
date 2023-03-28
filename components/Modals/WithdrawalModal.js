@@ -2,13 +2,13 @@ import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
 import ETHAddressInput from "../Ethereum/ETHAddressInput";
 import Button from "../Form/Button";
-import DepositScreen from "../Ethereum/DepositScreen";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
 
 // Redux
@@ -30,6 +30,8 @@ import {
 import { captureEvent } from "~/config/utils/events";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { partyPopper } from "~/config/themes/icons";
+
+const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
 
 const GOERLY_CHAIN_ID = "5";
 const MAINNET_CHAIN_ID = "1";

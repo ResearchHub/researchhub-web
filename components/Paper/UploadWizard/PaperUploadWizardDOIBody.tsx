@@ -12,6 +12,7 @@ import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
+import { ClipLoader } from "react-spinners";
 
 type Props = {
   messageActions: any /* redux */;
@@ -154,7 +155,16 @@ function PaperUploadWizardDOIBody({
           disabled={isSubmitting}
           key="upload-wizard-button"
           label={
-            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Upload"
+            isSubmitting ? (
+              <ClipLoader
+                sizeUnit={"px"}
+                size={8}
+                color={"#fff"}
+                loading={true}
+              />
+            ) : (
+              "Upload"
+            )
           }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"

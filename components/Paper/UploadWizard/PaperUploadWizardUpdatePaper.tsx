@@ -11,7 +11,10 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { NewPostButtonContext, NewPostButtonContextValues } from "~/components/contexts/NewPostButtonContext";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextValues,
+} from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
@@ -274,7 +277,16 @@ function PaperUploadWizardUpdatePaper({
           disabled={isSubmitting || !isAsyncComplete}
           key="upload-wizard-button"
           label={
-            !isSubmitting ? "Save" : <Loader size={8} loading color="#fff" />
+            !isSubmitting ? (
+              "Save"
+            ) : (
+              <ClipLoader
+                sizeUnit={"px"}
+                size={8}
+                color={"#fff"}
+                loading={true}
+              />
+            )
           }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"

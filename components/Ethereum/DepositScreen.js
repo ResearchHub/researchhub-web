@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { contractABI, stagingContractABI } from "./contractAbi";
-// import { formatUnits, parseEther } from "ethers/lib/utils";
-import { formatUnits, parseEther } from "@ethersproject/units";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -42,25 +40,26 @@ const CONTRACT_ABI = isProduction ? contractABI : stagingContractABI;
 export function DepositScreen(props) {
   const { ethAccount, buttonEnabled, ethAddressOnChange, openWeb3ReactModal } =
     props;
-
+  const ethersRef = useRef();
   const { address, isConnected } = useAccount();
-
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
-
   const [amount, setAmount] = useState(0);
-
   const { data: signer } = useSigner({ chainId: CHAIN_ID });
 
   const { config } = usePrepareContractWrite({
     address: RSCContractAddress,
     abi: CONTRACT_ABI,
     functionName: "transfer",
-    args: [HOTWALLET, amount ? parseEther(amount)._hex : 0],
+    args: [
+      HOTWALLET,
+      amount && ethersRef.current
+        ? ethersRef.current.utils.parseEther(amount)._hex
+        : 0,
+    ],
   });
 
   const { data, write } = useContractWrite(config);
-
   const [balance, setBalance] = useState(0);
 
   const {
@@ -77,7 +76,9 @@ export function DepositScreen(props) {
 
   useEffect(() => {
     if (RSCBalance) {
-      setBalance(formatUnits(RSCBalance, 18));
+      const ethers = require("ethers").ethers;
+      setBalance(ethers.utils.formatUnits(RSCBalance, 18));
+      ethersRef.current = ethers;
     }
   }, [RSCBalance]);
 

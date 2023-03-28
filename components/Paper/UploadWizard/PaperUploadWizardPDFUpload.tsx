@@ -29,6 +29,7 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData.js";
 import Ripples from "react-ripples";
+import { ClipLoader } from "react-spinners";
 
 type Props = {
   modalReduxActions?: any;
@@ -297,7 +298,16 @@ function PaperUploadWizardPDFUpload({
           disabled={isSubmitting}
           key="upload-wizard-button"
           label={
-            !isSubmitting ? "Upload" : <Loader size={8} loading color="#fff" />
+            !isSubmitting ? (
+              "Upload"
+            ) : (
+              <ClipLoader
+                sizeUnit={"px"}
+                size={8}
+                color={"#fff"}
+                loading={true}
+              />
+            )
           }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"

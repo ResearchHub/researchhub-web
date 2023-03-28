@@ -18,6 +18,7 @@ import { MessageActions } from "~/redux/message";
 import { useAlert } from "react-alert";
 import { useDispatch } from "react-redux";
 import { captureEvent } from "~/config/utils/events";
+import { ClipLoader } from "react-spinners";
 
 type Args = {
   isOpen: boolean;
@@ -290,7 +291,14 @@ const InviteModal = ({
                     {isLoading ? (
                       <Button
                         onClick={handleSubmit}
-                        children={<Loader color="white" size={24} />}
+                        children={
+                          <ClipLoader
+                            sizeUnit={"px"}
+                            size={24}
+                            color={"#fff"}
+                            loading={true}
+                          />
+                        }
                         customButtonStyle={styles.inviteBtn}
                       />
                     ) : (

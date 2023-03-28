@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/pro-solid-svg-icons";
+import { faTimesCircle, faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import { faInfoCircle } from "@fortawesome/pro-duotone-svg-icons";
-import { faCheckCircle } from "@fortawesome/pro-solid-svg-icons";
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";

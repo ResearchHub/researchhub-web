@@ -26,6 +26,7 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import Image from "next/image";
 import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import { ClipLoader } from "react-spinners";
 
 type SCREEN =
   | "SELECT_PROVIDER"
@@ -265,7 +266,7 @@ const LoginModal = ({
   const isMobileScreen = getIsOnMobileScreenSize();
 
   return (
-    (<BaseModal
+    <BaseModal
       offset={"0px"}
       closeModal={_handleClose}
       isOpen={isOpen}
@@ -366,7 +367,12 @@ const LoginModal = ({
               onClick={checkIfAccountExistsApi}
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Continue"
                 )
@@ -464,7 +470,12 @@ const LoginModal = ({
               onClick={loginApi}
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Log in"
                 )
@@ -548,7 +559,12 @@ const LoginModal = ({
               fullWidth
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Sign up"
                 )
@@ -625,7 +641,12 @@ const LoginModal = ({
               disabled={isLoading ? true : false}
               label={
                 isLoading ? (
-                  <Loader loading={true} size={16} color={"white"} />
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={16}
+                    color={"#fff"}
+                    loading={true}
+                  />
                 ) : (
                   "Send reset email"
                 )
@@ -669,7 +690,7 @@ const LoginModal = ({
           </div>
         ) : null}
       </div>
-    </BaseModal>)
+    </BaseModal>
   );
 };
 
