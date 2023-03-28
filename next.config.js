@@ -100,16 +100,16 @@ const nextConfig = {
   },
 };
 
-module.exports = withTM({ ...nextConfig });
+// module.exports = withTM({ ...nextConfig });
 
 // Kobe 12-07-22: Temporarily turning this off to see
 // If it is necessary given vercel has a dashboard integration
-// const SentryWebpackPluginOptions = {
-//   silent: true,
-//   disableClientWebpackPlugin: false,
-// };
+const SentryWebpackPluginOptions = {
+  silent: true,
+  disableClientWebpackPlugin: false,
+};
 
-// module.exports = withSentryConfig(
-//   withTM({ ...nextConfig }),
-//   SentryWebpackPluginOptions
-// );
+module.exports = withSentryConfig(
+  withTM({ ...nextConfig }),
+  SentryWebpackPluginOptions
+);
