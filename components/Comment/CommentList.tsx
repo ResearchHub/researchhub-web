@@ -9,9 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import findComment from "./lib/findComment";
 import { isEmpty } from "~/config/utils/nullchecks";
-import config from "./lib/config";
 import IconButton from "../Icons/IconButton";
-import replaceComment from "./lib/replaceComment";
 import { MessageActions } from "~/redux/message";
 import {
   createCommentAPI,
@@ -21,26 +19,25 @@ import {
 import CommentPlaceholder from "./CommentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
-import { FeedStateContext } from "./lib/contexts";
+import { CommentTreeContext } from "./lib/contexts";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   parentComment?: CommentType;
   comments: Array<CommentType>;
-  setComments: Function;
   document: TopLevelDocument;
   isRootList?: boolean;
   isFetchingList?: boolean;
 }
 
-const CommentList = ({ comments, setComments, parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
+const CommentList = ({ comments, parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const dispatch = useDispatch();
-  const feedState = useContext(FeedStateContext);
+  const commentTreeState = useContext(CommentTreeContext);
 
   const fetchMore = async ({ }) => {
     setIsFetchingMore(true);
@@ -48,13 +45,13 @@ const CommentList = ({ comments, setComments, parentComment, document, isRootLis
       const response = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.documentType,
-        sort: feedState.sort,
-        filter: feedState.filter,
+        sort: commentTreeState.sort,
+        filter: commentTreeState.filter,
         parentId: parentComment?.id,
         page: currentPage + 1,
       });
 
-      setComments([...comments, ...response.comments]);
+      commentTreeState.onFetchMore({ comment: parentComment, fetchedChildren: response.comments });
     } catch (error) {
       console.log('error', error)
       // FIXME: Implement error handling
@@ -78,7 +75,8 @@ const CommentList = ({ comments, setComments, parentComment, document, isRootLis
         parentComment = findComment({ id: parentId, comments: comments })?.comment;
 
         if (!parentComment) {
-          console.warn("Could not find parent comment. This should not happen.")
+          console.warn(`Could not find parent comment ${parentId}. This should not happen. Aborting create.`);
+          return false;
         }
       }
 
@@ -90,21 +88,7 @@ const CommentList = ({ comments, setComments, parentComment, document, isRootLis
         parentComment,
       });
 
-      if (parentComment) {
-        parentComment.children = [comment, ...parentComment.children];
-
-        replaceComment({
-          prev: parentComment,
-          next: parentComment,
-          list: comments,
-        });
-
-        const updatedComments = comments.slice();
-        setComments(updatedComments); 
-      }
-      else {
-        setComments([comment, ...comments]);
-      }
+      commentTreeState.onCreate({ comment, parent: parentComment });
     }
     catch(error) {
       dispatch(setMessage("Could not create a comment at this time"));
@@ -121,7 +105,7 @@ const CommentList = ({ comments, setComments, parentComment, document, isRootLis
     id: ID;
     content: any;
   }) => {
-    const _comment: CommentType = await updateCommentAPI({
+    const comment: CommentType = await updateCommentAPI({
       id,
       content,
       documentId: document.id,
@@ -131,20 +115,11 @@ const CommentList = ({ comments, setComments, parentComment, document, isRootLis
       currentUser
     });
 
-    const found = findComment({ id, comments: comments });
-    if (found) {
-      replaceComment({
-        prev: found.comment,
-        next: _comment,
-        list: comments,
-      });
-      const updatedComments = comments.slice();
-      setComments(updatedComments);
-    }
+    commentTreeState.onUpdate({ comment });
   };
 
-  const _commentElems = useMemo(() => {
-    return comments.map((c) => (
+  const _commentElems = 
+    comments.map((c) => (
       <div key={c.id} className={css(styles.commentWrapper)}>
         <Comment
           handleCreate={handleCommentCreate}
@@ -154,7 +129,6 @@ const CommentList = ({ comments, setComments, parentComment, document, isRootLis
         />
       </div>
     ));
-  }, [comments, comments]);
 
   return (
     <div className={css(styles.commentListWrapper)}>

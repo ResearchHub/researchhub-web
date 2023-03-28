@@ -10,8 +10,10 @@ import CommentSidebar from "./CommentSidebar";
 import CommentList from "./CommentList";
 import CommentPlaceholder from "./CommentPlaceholder";
 import config from "./lib/config";
-import { FeedStateContext } from "./lib/contexts";
+import { CommentTreeContext } from "./lib/contexts";
 import CommentEmptyState from "./CommentEmptyState";
+import replaceComment from "./lib/replaceComment";
+import findComment from "./lib/findComment";
 
 
 type Args = {
@@ -49,6 +51,74 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
         setIsInitialFetchDone(true);
       }
     }
+
+  const onCreate = ({
+    comment, parent
+  }: {
+    comment: CommentType;
+    parent?: CommentType;
+  }) => {
+    if (parent) {
+      parent.children = [comment, ...parent.children];
+
+      replaceComment({
+        prev: parent,
+        next: parent,
+        list: comments,
+      });
+
+      const updatedComments = [...comments];
+      setComments(updatedComments); 
+    }
+    else {
+      setComments([comment, ...comments]);
+    }    
+  }
+
+  const onUpdate = ({
+    comment
+  }: {
+    comment: CommentType;
+  }) => {
+      const found = findComment({ id: comment.id, comments });
+      if (found) {
+        replaceComment({
+          prev: found.comment,
+          next: comment,
+          list: comments,
+        });
+        const updatedComments = [...comments];
+        setComments(updatedComments);         
+    }
+    else {
+      console.warn(`Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`);
+    }
+  }
+
+  const onFetchMore = ({
+    comment,
+    fetchedChildren,
+  }: {
+    comment: CommentType;
+    fetchedChildren: CommentType[];
+  }) => {
+      const found = findComment({ id: comment.id, comments });
+      if (found) {
+        const updatedComment = found.comment;
+        updatedComment.children = [...updatedComment.children, ...fetchedChildren]; 
+
+        replaceComment({
+          prev: found.comment,
+          next: updatedComment,
+          list: comments,
+        });
+        const updatedComments = [...comments];
+        setComments(updatedComments);         
+    }
+    else {
+      console.warn(`Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`);
+    }
+  }  
 
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {
@@ -98,9 +168,9 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
           {noResults ?
             <CommentEmptyState height={context === "sidebar" ? "60%" : "200px"} forSection={selectedFilterValue} documentType={document.documentType} />          
           : (
-          <FeedStateContext.Provider value={{ sort: selectedSortValue, filter: selectedFilterValue }}>
-            <CommentList setComments={setComments} comments={comments} isRootList={true} isFetchingList={isFetching} document={document} />
-          </FeedStateContext.Provider>
+          <CommentTreeContext.Provider value={{ sort: selectedSortValue, filter: selectedFilterValue, onCreate, onUpdate, onFetchMore }}>
+            <CommentList comments={comments} isRootList={true} isFetchingList={isFetching} document={document} />
+          </CommentTreeContext.Provider>
           )}
         </>
       )}
