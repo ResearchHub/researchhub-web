@@ -42,7 +42,7 @@ const AuthorAvatar = (props) => {
 
   function renderAvatar() {
     let finalSize = size;
-    const profileImage = author.profile_image || author.profileImage;
+    const profileImage = author?.profile_image || author?.profileImage;
     if (deviceWidth && deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
@@ -98,7 +98,7 @@ const AuthorAvatar = (props) => {
 
   const avatarComponent = renderAvatar();
   const fullName = `${author?.first_name ?? author?.firstName ?? ""} ${
-    author?.last_name ?? author.lastName ?? ""
+    author?.last_name ?? author?.lastName ?? ""
   }`;
 
   return (

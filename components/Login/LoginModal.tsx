@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { StyleSheet, css } from "aphrodite";
-import Loader from "~/components/Loader/Loader";
 import IconButton from "../Icons/IconButton";
 import colors from "~/config/themes/colors";
 import { isValidEmail } from "~/config/utils/validation";
