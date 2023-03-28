@@ -33,11 +33,11 @@ function NewFeatureTooltip({
     postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName });
   };
 
-  const tooltipPos =
-    (process.browser && window.innerWidth > breakpoints.small.int) ||
-    position.length === 1
-      ? position[0]
-      : position[1];
+  // const tooltipPos =
+  //   (process.browser && window.innerWidth > breakpoints.small.int) ||
+  //   position.length === 1
+  //     ? position[0]
+  //     : position[1];
 
   // Kobe: Turning this feature off temporarily because something broke with it.
   // It glitches out on page load
@@ -104,7 +104,7 @@ function NewFeatureTooltip({
 
   if (shouldAlert) {
     return (
-      (<div
+      <div
         className={css(
           styles.tooltipContainer,
           styles["tooltipContainer_" + tooltipPos]
@@ -122,7 +122,7 @@ function NewFeatureTooltip({
         <div className={css(styles.body, colorStyles["body_" + color])}>
           {html}
         </div>
-      </div>)
+      </div>
     );
   } else {
     return null;

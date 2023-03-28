@@ -92,7 +92,6 @@ const Paper = ({
   const [allBounties, setAllBounties] = useState([]);
 
   const [discussionCount, setCount] = useState(null);
-  const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const { hubs = [], uploaded_by } = paper;
   const isModerator = store.getState().auth.user.moderator;
   const currUserID = auth?.user?.id ?? null;
@@ -110,8 +109,6 @@ const Paper = ({
   );
 
   useEffect(() => {
-    if (!process.browser) return;
-
     const idx = window.location.hash.indexOf("#comments");
     if (idx > -1 && commentsRef.current) {
       const elem = commentsRef.current;

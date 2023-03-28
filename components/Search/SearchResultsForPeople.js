@@ -37,9 +37,11 @@ const SearchResultsForPeople = ({ apiResponse, context }) => {
   const [selectedSortOrderDropdownValue, setSelectedSortOrderDropdownValue] =
     useState({});
 
-  const [pageWidth, setPageWidth] = useState(
-    process.browser ? window.innerWidth : 0
-  );
+  const [pageWidth, setPageWidth] = useState(0);
+
+  useEffect(() => {
+    setPageWidth(window.innerWidth);
+  }, []);
 
   useEffect(() => {
     const results = get(apiResponse, "results", []);

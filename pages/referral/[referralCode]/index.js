@@ -12,7 +12,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
 
-import Router from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors from "~/config/themes/colors";
@@ -23,10 +22,6 @@ const Index = ({ code, user }) => {
   useEffect(() => {
     window.localStorage.setItem("referralCode", code);
   }, []);
-
-  const loginCallback = () => {
-    Router.push("/");
-  };
 
   return (
     <div className={css(styles.container)}>

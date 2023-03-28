@@ -61,31 +61,6 @@ class HubPage extends Component {
     this.props.setUserBannerPreference(false);
   };
 
-  /**
-   * In this scroll listener, we're going to add a CSS class on the
-   * title bar when we hit a certain height
-   */
-  scrollListener = () => {
-    const { auth } = this.props;
-    if (auth.showBanner && window.scrollY > 323) {
-      this.setState({
-        titleBoxShadow: true,
-      });
-    } else if (!auth.showBanner && window.scrollY > 27) {
-      this.setState({
-        titleBoxShadow: true,
-      });
-    } else if (!auth.showBanner && window.scrollY < 27) {
-      this.setState({
-        titleBoxShadow: false,
-      });
-    } else if (auth.showBanner && window.scrollY < 323) {
-      this.setState({
-        titleBoxShadow: false,
-      });
-    }
-  };
-
   componentDidMount() {
     const { isLoggedIn, initialFeed, hubState } = this.props;
     if (initialFeed) {
@@ -101,7 +76,6 @@ class HubPage extends Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    // window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -177,14 +151,6 @@ class HubPage extends Component {
     if (createdLocationMeta === "hot") {
       createdLocationMeta = "trending";
     }
-
-    const PAYLOAD = {
-      paper_ids: promotedPapers,
-      paper_is_boosted: true,
-      interaction: "VIEW",
-      created_location: "FEED",
-      created_location_meta: "trending",
-    };
   };
 
   loadMore = () => {

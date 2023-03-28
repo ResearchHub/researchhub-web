@@ -5,7 +5,7 @@ import { faLink } from "@fortawesome/pro-solid-svg-icons";
 import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import FormInput from "~/components/Form/FormInput";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import ALink from "../ALink";
 
@@ -55,6 +55,13 @@ const InviteModal = ({
   const [firstName, setFirstName] = useState<NullableString>("");
   const [lastName, setLastName] = useState<NullableString>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [url, setURL] = useState("");
+
+  useEffect(() => {
+    setURL(
+      `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
+    );
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
@@ -139,7 +146,7 @@ const InviteModal = ({
   }
 
   return (
-    (<BaseModal
+    <BaseModal
       closeModal={handleClose}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
@@ -222,11 +229,7 @@ const InviteModal = ({
                     styles.copySuccessMessageStyle,
                     !showSuccessMessage && styles.noShow,
                   ]}
-                  value={
-                    process.browser
-                      ? `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
-                      : ""
-                  }
+                  value={url}
                   containerStyle={styles.containerStyle}
                   inputStyle={[styles.inputStyle, styles.referralInputStyle]}
                 />
@@ -337,10 +340,9 @@ const InviteModal = ({
               </div>
             </li>
           </ol>
-          ={" "}
         </div>
       </div>
-    </BaseModal>)
+    </BaseModal>
   );
 };
 

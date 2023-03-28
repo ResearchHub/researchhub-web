@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/pro-light-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTransition, animated } from "react-spring";
 import nookies from "nookies";
 
@@ -20,7 +20,14 @@ import { breakpoints } from "~/config/themes/screen";
 const Index = ({ auth }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);
+  const [referralLink, setReferralLink] = useState("");
   const formInputRef = useRef();
+
+  useEffect(() => {
+    setReferralLink(
+      `${window.location.protocol}//${window.location.host}/referral/${auth?.user?.referral_code}`
+    );
+  }, []);
 
   function copyToClipboard() {
     setShowSuccessMessage(true);
@@ -67,11 +74,7 @@ const Index = ({ auth }) => {
                 styles.copySuccessMessageStyle,
                 !showSuccessMessage && styles.noShow,
               ]}
-              value={
-                process.browser
-                  ? `${window.location.protocol}//${window.location.host}/referral/${auth?.user?.referral_code}`
-                  : ""
-              }
+              value={referralLink}
               containerStyle={styles.containerStyle}
               inputStyle={styles.inputStyle}
             />

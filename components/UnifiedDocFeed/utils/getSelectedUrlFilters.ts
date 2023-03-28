@@ -62,7 +62,7 @@ export const getSelectedUrlFilters = ({
     ...(query.tags && {
       tags: isTagsAString ? [query.tags] : isTagsAnArray ? [...query.tags] : [],
     }),
-    ...(router && { isReady: router.isReady }),
+    ...(router && { isReady: true }),
   };
 
   return selected;

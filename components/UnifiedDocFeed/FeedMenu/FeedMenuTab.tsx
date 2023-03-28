@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
 import { tagFilters } from "../constants/UnifiedDocFilters";
 import FeedMenuTagDropdown from "./FeedMenuTagDropdown";
 import { SelectedUrlFilters } from "../utils/getSelectedUrlFilters";
@@ -15,9 +14,9 @@ import { buildTypeFilterUrl } from "../utils/buildTypeFilterUrl";
 type Args = {
   selectedFilters: SelectedUrlFilters;
   tabObj: any;
-  handleOpenTagsMenu: Function;
-  handleFilterSelect: Function;
-  setTagsMenuOpenFor: Function;
+  handleOpenTagsMenu: (arg) => void;
+  handleFilterSelect: (arg) => void;
+  setTagsMenuOpenFor: (arg) => void;
   isTagsMenuOpen: boolean;
   isSelected: boolean;
 };
@@ -38,7 +37,7 @@ const FeedMenuTab = ({
 
   const url = buildTypeFilterUrl({ tabObj, router });
   return (
-    (<div
+    <div
       className={`${css(
         styles.tab,
         isSelected && styles.tabSelected
@@ -87,7 +86,7 @@ const FeedMenuTab = ({
           </>
         )}
       </Link>
-    </div>)
+    </div>
   );
 };
 

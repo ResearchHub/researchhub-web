@@ -1,12 +1,17 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
 import colors from "~/config/themes/colors";
 
 const ReputationTooltip = (props) => {
+  const [showReputationTooltip, setShowReputationTooltip] = useState(false);
+
+  useEffect(() => {
+    setShowReputationTooltip(true);
+  }, []);
   return (
     <Fragment>
-      {process.browser && (
+      {showReputationTooltip && (
         <ReactTooltip
           id="reputation-tool-tip"
           className={css(styles.tooltip)}

@@ -21,9 +21,7 @@ const HorizontalTabBar = ({
   type = "FLAT_NAV",
   showBorderBottom = true,
 }) => {
-  const [pageWidth, setPageWidth] = useState(
-    process.browser ? window.innerWidth : 0
-  );
+  const [pageWidth, setPageWidth] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
