@@ -3,12 +3,11 @@ import colors from "./lib/colors";
 import { filterOpts } from "./lib/options";
 
 type Args = {
-  selectedFilter: any,
-  handleSelect: Function,
-}
+  selectedFilter: any;
+  handleSelect: Function;
+};
 
 const CommentFilters = ({ selectedFilter, handleSelect }: Args) => {
-
   return (
     <div className={css(styles.filtersWrapper)}>
       {filterOpts.map((f) => {

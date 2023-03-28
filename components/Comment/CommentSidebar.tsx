@@ -1,19 +1,36 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moduleColors from "~/components/Comment/lib/colors";
-import CommentFeed from "~/components/Comment/CommentFeed";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
+import config from "./lib/config";
+import CommentSidebarToggle from "./CommentSidebarToggle";
+import { useMemo, useState } from "react";
+import { Comment } from "./lib/types";
+import { getBountyAmount } from "./lib/bounty";
+import countComments from "./lib/countComments";
 
 type Args = {
-  isOpen: boolean;
-  setIsOpen: Function;
+  children: any;
+  comments: Comment[];
+  setReadyForInitialRender: Function;
+  isInitialFetchDone: boolean;
 };
 
-const WIDTH = 500;
+const CommentSidebar = ({
+  children,
+  comments,
+  setReadyForInitialRender,
+  isInitialFetchDone = false,
+}: Args) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const openBountyAmount = comments.reduce(
+    (total, comment) => total + getBountyAmount({ comment }),
+    0
+  );
+  const commentCount = useMemo(() => countComments({ comments }), [comments]);
 
-const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
   return (
     <div
       className={css(
@@ -24,44 +41,62 @@ const CommentSidebar = ({ isOpen, setIsOpen }: Args) => {
       <div className={css(styles.feedWrapper)}>
         <div className={css(styles.sidebarHeader)}>
           Activity
-          <IconButton onClick={() => setIsOpen(false)}>
+          <IconButton
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         </div>
-        <CommentFeed unifiedDocumentId={5555} />
+        {isInitialFetchDone && (
+          <CommentSidebarToggle
+            isOpen={isOpen}
+            setIsOpen={(isOpen) => {
+              setIsOpen(isOpen);
+              setReadyForInitialRender(true);
+            }}
+            bountyAmount={openBountyAmount}
+            commentCount={commentCount}
+          />
+        )}
+        {children}
       </div>
     </div>
   );
 };
 
-const slideOpenKeyframe = {
-  "0%": {
-    marginRight: -WIDTH,
-  },
+// FIXME: Figure out whether to animate or not
+// const slideOpenKeyframe = {
+//   "0%": {
+//     // marginRight: -config.sidebar.width,
+//     width: 0
+//   },
 
-  "100%": {
-    marginRight: 0,
-  },
-};
+//   "100%": {
+//     // marginRight: 0,
+//     width: config.sidebar.width
+//   },
+// };
 
-const slideCloseKeyframe = {
-  "0%": {
-    marginRight: 0,
-  },
+// const slideCloseKeyframe = {
+//   "0%": {
+//     width: config.sidebar.width
+//   },
 
-  "100%": {
-    marginRight: -WIDTH,
-  },
-};
+//   "100%": {
+//     width: 0
+//   },
+// };
 
 const styles = StyleSheet.create({
   sidebar: {
-    background: moduleColors.sidebar.background,
+    boxShadow: "8px 30px 30px rgba(21, 21, 21, 0.2)",
     borderLeft: `1px solid ${moduleColors.border}`,
     borderBottom: `1px solid ${moduleColors.border}`,
     position: "sticky",
     top: 0,
-    width: WIDTH,
+
     boxSizing: "border-box",
   },
   sidebarHeader: {
@@ -73,23 +108,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   feedWrapper: {
-    padding: "15px 32px",
+    padding: "15px 25px",
     overflowY: "scroll",
     height: "100vh",
   },
   sidebarOpen: {
-    animationName: [slideOpenKeyframe],
-    animationDuration: "0.5s",
-    animationDirection: "normal",
-    animationFillMode: "forwards",
-    animationTiming: "ease-in",
+    width: config.sidebar.width,
+    // animationName: [slideOpenKeyframe],
+    // animationDuration: "0.2s",
+    // animationDirection: "normal",
+    // animationFillMode: "forwards",
+    // animationTiming: "ease-in",
   },
   sidebarClosed: {
-    animationName: [slideCloseKeyframe],
-    animationDuration: "0.5s",
-    animationDirection: "normal",
-    animationFillMode: "forwards",
-    animationTiming: "ease-out",
+    width: 0,
+    // animationName: [slideCloseKeyframe],
+    // animationDuration: "0.2s",
+    // animationDirection: "normal",
+    // animationFillMode: "forwards",
+    // animationTiming: "ease-out",
   },
 });
 

@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: colors.BLACK(1),
     display: "flex",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 500,
     userSelect: "none",
   },

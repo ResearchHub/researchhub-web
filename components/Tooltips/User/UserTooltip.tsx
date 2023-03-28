@@ -16,7 +16,7 @@ interface UserTooltipProps {
   positions?: ("left" | "right" | "top" | "bottom")[];
 }
 
-const TOOLTIP_DELAY = 600;
+const TOOLTIP_DELAY = 300;
 
 export default function UserTooltip({
   createdBy,

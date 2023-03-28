@@ -90,6 +90,8 @@ const Navbar = (props) => {
     ? "Lab Notebook"
     : pathname.includes("leaderboard")
     ? "Leaderboard"
+    : pathname.includes("reference-manager")
+    ? "Reference Manager"
     : deSlug(router?.query?.slug ?? "");
 
   useEffect(() => {

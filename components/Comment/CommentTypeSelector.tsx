@@ -4,7 +4,7 @@ import { COMMENT_TYPES } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
 import { commentTypes } from "./lib/options";
-import { useEffectHandleOutsideClick } from "~/config/utils/isOutsideClick";
+import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 
@@ -19,7 +19,7 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
     commentTypes.find((t) => t.value === selectedType) || commentTypes[0];
   const dropdownRef = useRef(null);
 
-  useEffectHandleOutsideClick({
+  useEffectHandleClick({
     el: dropdownRef.current,
     exclude: [".comment-type-dropdown"],
     onOutsideClick: () => setIsOpen(false),

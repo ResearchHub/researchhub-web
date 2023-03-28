@@ -37,6 +37,9 @@ import { ModalActions } from "~/redux/modals";
 import { connect } from "react-redux";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTableTree } from "@fortawesome/pro-solid-svg-icons";
+import killswitch from "~/config/killswitch/killswitch";
 
 type Props = {
   openLoginModal: any;
@@ -110,6 +113,18 @@ export const getLeftSidebarItemAttrs = ({
         router.push("/leaderboard/users");
       },
     },
+    killswitch("reference-manager")
+      ? {
+          icon: <FontAwesomeIcon icon={faTableTree} />,
+          label: "Reference Manager",
+          isActive: pathname.includes("reference-manager"),
+          isMinimized,
+          onClick: (event: SyntheticEvent): void => {
+            event.preventDefault();
+            router.push("/reference-manager");
+          },
+        }
+      : null,
   ]);
 };
 
@@ -235,7 +250,9 @@ function RootLeftSidebar({
       className={formattedRootLeftSidebar}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
-        ["hubs", "user"].includes(pathname.split("/")[1]) ||
+        ["hubs", "user", "reference-manager"].includes(
+          pathname.split("/")[1]
+        ) ||
         pathname === "/hypothesis/create"
           ? {
               borderRight: `1px solid ${colors.GREY_BORDER}`,

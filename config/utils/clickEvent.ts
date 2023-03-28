@@ -6,10 +6,11 @@ type IsOutsideClickArgs = {
   exclude?: Array<String>,
 }
 
-type useEffectHandleOutsideClickArgs = {
+type useEffectHandleClickArgs = {
   el: Element | null | undefined,
   exclude?: Array<String>,
-  onOutsideClick: Function,
+  onOutsideClick?: Function,
+  onInsideClick?: Function
 }
 
 export function isOutsideClick({ el, clickedEl, exclude = [] }: IsOutsideClickArgs){
@@ -26,7 +27,7 @@ export function isOutsideClick({ el, clickedEl, exclude = [] }: IsOutsideClickAr
   return !(isWithin || clickOnExcluded);
 }
 
-export function useEffectHandleOutsideClick({ el, exclude = [], onOutsideClick }: useEffectHandleOutsideClickArgs) {
+export function useEffectHandleClick({ el, exclude = [], onOutsideClick, onInsideClick }: useEffectHandleClickArgs) {
 
   useEffect(() => {
     const _handleClick = (e) => {
@@ -36,8 +37,12 @@ export function useEffectHandleOutsideClick({ el, exclude = [], onOutsideClick }
         exclude,
       });
 
+      const _isInsideClick = !_isOutsideClick;
       if (_isOutsideClick) {
-        onOutsideClick();
+        onOutsideClick && onOutsideClick();
+      }
+      else if (_isInsideClick) {
+        onInsideClick && onInsideClick();
       }
     };
 
@@ -48,4 +53,6 @@ export function useEffectHandleOutsideClick({ el, exclude = [], onOutsideClick }
     };
   }, [el]);  
 }
+
+
 

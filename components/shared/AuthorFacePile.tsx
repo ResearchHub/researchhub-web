@@ -24,7 +24,7 @@ export default function AuthorFacePile({
   withAuthorName,
   fontSize,
   overrideStyle,
-  border = `2px solid ${colors.LIGHT_GREY(1)}`
+  border = `2px solid white`
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
     () =>
@@ -39,7 +39,7 @@ export default function AuthorFacePile({
             <AuthorAvatar
               author={author}
               border={border}
-              key={index}
+              key={`avatar-${index}`}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();
                 event.preventDefault();
@@ -62,6 +62,9 @@ export default function AuthorFacePile({
         Boolean(horizontal) && styles.horizontal,
         overrideStyle
       )}
+      // When negative margins are used, the width of this container will be smaller than actually is and result in unintended spacing of adjacent elements.
+      // The following line ensures that the "box" wraps around all of the avatars.
+      style={{ marginRight: margin < 0 ? Math.abs(margin) : 0 }}
     >
       {tags}
     </div>

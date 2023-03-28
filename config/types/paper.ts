@@ -12,6 +12,7 @@ import {
   parseUnifiedDocument,
   TopLevelDocument,
   UnifiedDocument,
+  RhDocumentType,
 } from "./root_types";
 
 export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
@@ -74,6 +75,7 @@ export class Paper implements TopLevelDocument {
   _isReady: boolean;
   _boostAmount: number;
   _isOpenAccess: boolean;
+  _documentType: RhDocumentType;
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw);
@@ -90,6 +92,7 @@ export class Paper implements TopLevelDocument {
     this._id = raw.id;
     this._isOpenAccess = raw.is_open_access || null;
     this._journal = raw.external_source;
+    this._documentType = "paper";
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote);
@@ -190,4 +193,8 @@ export class Paper implements TopLevelDocument {
   get formats(): Array<PaperFormat> {
     return this._formats;
   }
+
+  get documentType(): RhDocumentType {
+    return this._documentType;
+  }  
 }

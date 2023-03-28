@@ -57,6 +57,8 @@ const VoteWidget = (props) => {
     onNeutralVote,
     disableUpvote,
     disableDownvote,
+    downvoteIcon = voteWidgetIcons.downvote,
+    upvoteIcon = voteWidgetIcons.upvote,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -171,6 +173,7 @@ const VoteWidget = (props) => {
           horizontalView={horizontalView && horizontalView}
           styleClass={upvoteStyleClass}
           small={small}
+          icon={upvoteIcon}
         />
       </PermissionNotificationWrapper>
       <ReactTooltip
@@ -201,6 +204,7 @@ const VoteWidget = (props) => {
           horizontalView={horizontalView && horizontalView}
           styleClass={downvoteStyleClass}
           small={small}
+          icon={downvoteIcon}
         />
       </PermissionNotificationWrapper>
     </div>
