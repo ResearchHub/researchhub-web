@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import { faComments } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";

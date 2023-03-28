@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/pro-light-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import { useWeb3Modal } from "@web3modal/react";
-import { useAccount } from "wagmi";
+import { useWeb3Modal, Web3Modal } from "@web3modal/react";
+import { useAccount, configureChains, createClient, WagmiConfig } from "wagmi";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -20,8 +20,6 @@ import {
   modalConnectors,
   walletConnectProvider,
 } from "@web3modal/ethereum";
-import { Web3Modal } from "@web3modal/react";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { mainnet, goerli } from "wagmi/chains";
 
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
