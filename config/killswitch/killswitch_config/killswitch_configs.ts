@@ -12,7 +12,7 @@ const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   "reference-manager": {
     development: true,
     production: false,
-    staging: false,
+    staging: true,
   },
 };
 
