@@ -127,7 +127,12 @@ const Comment = ({
         </div>
       )}
 
-      <CommentList parentComment={comment} comments={comment.children} document={document} />
+      <CommentList
+        parentComment={comment}
+        totalCount={comment.childrenCount}
+        comments={comment.children}
+        document={document}
+      />
     </div>
   );
 };

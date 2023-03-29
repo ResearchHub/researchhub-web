@@ -27,6 +27,7 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
   const WrapperEl = context === "sidebar" ? CommentSidebar : React.Fragment;
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(0);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
   const [selectedSortValue, setSelectedSortValue] = useState<string|null>(sortOpts[0].value);
   const [selectedFilterValue, setSelectedFilterValue] = useState<string|null>(filterOpts[0].value);
@@ -43,9 +44,11 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
         });
 
         setComments(response.comments);
+        setRootLevelCommentCount(response.count);
       } catch (error) {
         console.log('error', error)
         // FIXME: Implement error handling
+        // FIXME: Log to sentry
       } finally {
         setIsFetching(false);
         setIsInitialFetchDone(true);
@@ -97,15 +100,17 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
 
   const onFetchMore = ({
     comment,
-    fetchedChildren,
+    fetchedComments,
   }: {
-    comment: CommentType;
-    fetchedChildren: CommentType[];
+    comment?: CommentType;
+    fetchedComments: CommentType[];
   }) => {
+
+    if (comment) {
       const found = findComment({ id: comment.id, comments });
       if (found) {
         const updatedComment = found.comment;
-        updatedComment.children = [...updatedComment.children, ...fetchedChildren]; 
+        updatedComment.children = [...updatedComment.children, ...fetchedComments];
 
         replaceComment({
           prev: found.comment,
@@ -113,12 +118,16 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
           list: comments,
         });
         const updatedComments = [...comments];
-        setComments(updatedComments);         
+        setComments(updatedComments);
+      }
+      else {
+        console.warn(`Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`);
+      }
     }
     else {
-      console.warn(`Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`);
+      setComments([...comments, ...fetchedComments]);
     }
-  }  
+  }
 
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {
@@ -169,7 +178,13 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
             <CommentEmptyState height={context === "sidebar" ? "60%" : "200px"} forSection={selectedFilterValue} documentType={document.documentType} />          
           : (
           <CommentTreeContext.Provider value={{ sort: selectedSortValue, filter: selectedFilterValue, onCreate, onUpdate, onFetchMore }}>
-            <CommentList comments={comments} isRootList={true} isFetchingList={isFetching} document={document} />
+            <CommentList
+              isRootList={true}
+              comments={comments}
+              totalCount={rootLevelCommentCount}
+              isFetchingList={isFetching}
+              document={document}
+            />
           </CommentTreeContext.Provider>
           )}
         </>
