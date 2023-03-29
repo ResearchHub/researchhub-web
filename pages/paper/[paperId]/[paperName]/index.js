@@ -322,17 +322,24 @@ const Paper = ({
             </div>
             {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
-                <div className={css(styles.sidebarHeader)}>
-                  <h3 className={css(styles.discussionSectionTitle)}>
-                    Discussion
-                  </h3>
-                  {paperV2.isReady && (
-                    <span className={css(styles.discussionCount)}>
-                      {discussionCount}
-                    </span>
-                  )}
-                </div>
-                <CommentFeed document={paperV2} previewModeAsDefault={false} />
+                {router.query.cv2 === "" && (
+                  <>
+                    <div className={css(styles.discussionSectionHeader)}>
+                      <h3 className={css(styles.discussionSectionTitle)}>
+                        Discussion
+                      </h3>
+                      {paperV2.isReady && (
+                        <span className={css(styles.discussionCount)}>
+                          {discussionCount}
+                        </span>
+                      )}
+                    </div>
+                    <CommentFeed
+                      document={paperV2}
+                      previewModeAsDefault={false}
+                    />
+                  </>
+                )}
                 <a name="comments" id="comments" ref={commentsRef} />
                 {
                   <DiscussionTab
@@ -370,11 +377,14 @@ const Paper = ({
         </div>
 
         <div />
-        <CommentFeed
-          document={paperV2}
-          context={"sidebar"}
-          previewModeAsDefault={true}
-        />
+        {router.query.cv2 &&
+          ["sidebar", "drawer"].includes(router.query.cv2) && (
+            <CommentFeed
+              document={paperV2}
+              context={"sidebar"}
+              previewModeAsDefault={true}
+            />
+          )}
       </div>
     </div>
   );
@@ -466,7 +476,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     position: "relative",
   },
-  sidebarHeader: {
+  discussionSectionHeader: {
     display: "flex",
     alignItems: "center",
     marginBottom: 25,
