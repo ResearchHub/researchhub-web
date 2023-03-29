@@ -28,9 +28,10 @@ type Args = {
   document: TopLevelDocument;
   isRootList?: boolean;
   isFetchingList?: boolean;
+  totalCount: number;
 }
 
-const CommentList = ({ comments = [], parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
+const CommentList = ({ comments = [], totalCount, parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const currentUser = useSelector((state: RootState) =>
@@ -42,18 +43,16 @@ const CommentList = ({ comments = [], parentComment, document, isRootList = fals
   const fetchMore = async ({ }) => {
     setIsFetchingMore(true);
     try {
-      const nextPage = currentPage + 1;
       const response = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.documentType,
         sort: commentTreeState.sort,
         filter: commentTreeState.filter,
-        commentId: parentComment?.id,
         page: currentPage,
       });
 
-      commentTreeState.onFetchMore({ comment: parentComment, fetchedChildren: response.comments });
-      setCurrentPage(nextPage)
+      commentTreeState.onFetchMore({ comment: parentComment, fetchedComments: response.comments });
+      setCurrentPage(currentPage + 1)
     } catch (error) {
       console.log('error', error)
       // FIXME: Implement error handling
@@ -61,6 +60,29 @@ const CommentList = ({ comments = [], parentComment, document, isRootList = fals
       setIsFetchingMore(false);
     }
   }
+
+  // const fetchMore = async ({ }) => {
+  //   setIsFetchingMore(true);
+  //   try {
+  //     const nextPage = currentPage + 1;
+  //     const response = await fetchCommentsAPI({
+  //       documentId: document.id,
+  //       documentType: document.documentType,
+  //       sort: commentTreeState.sort,
+  //       filter: commentTreeState.filter,
+  //       commentId: parentComment?.id,
+  //       page: currentPage,
+  //     });
+
+  //     commentTreeState.onFetchMore({ comment: parentComment, fetchedChildren: response.comments });
+  //     setCurrentPage(nextPage)
+  //   } catch (error) {
+  //     console.log('error', error)
+  //     // FIXME: Implement error handling
+  //   } finally {
+  //     setIsFetchingMore(false);
+  //   }
+  // }  
 
   const handleCommentCreate = async ({
     content,
@@ -132,10 +154,8 @@ const CommentList = ({ comments = [], parentComment, document, isRootList = fals
       </div>
     ));
 
-  let loadMoreCount = 0;
-  if (parentComment) {
-    loadMoreCount = parentComment.childrenCount - comments.length;
-  }
+  const loadedComments = comments;
+  let loadMoreCount = totalCount - loadedComments.length;
 
   return (
     <div>
