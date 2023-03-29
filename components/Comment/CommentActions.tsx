@@ -33,7 +33,7 @@ const CommentActions = ({
             documentType={document.documentType}
             documentID={document.id}
           />
-        </div>
+        </div>     
         <div className={`${css(styles.action)} tip-btn`}>
           <IconButton onClick={() => null}>
             <Image
@@ -46,7 +46,7 @@ const CommentActions = ({
               Tip
             </span>
           </IconButton>
-        </div>
+        </div>   
         {/* <div className={`${css(styles.action)} award-btn`}>
           <IconButton onClick={() => null}>
             <FontAwesomeIcon icon={faCrown} style={{fontSize: 16}} />
@@ -55,6 +55,7 @@ const CommentActions = ({
             </span>
           </IconButton>
         </div>         */}
+             
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => toggleReply()}>
             <Image
