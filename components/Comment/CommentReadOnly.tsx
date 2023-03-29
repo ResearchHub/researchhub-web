@@ -12,7 +12,11 @@ type Args = {
 };
 
 const CommentReadOnly = ({ content }: Args) => {
-  const { quill, quillRef } = useQuill({ readOnly: true, modules: {toolbar: false}, formats: [] });
+  const { quill, quillRef } = useQuill({
+    readOnly: true,
+    modules: { toolbar: false },
+    formats: [],
+  });
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
 

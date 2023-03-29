@@ -21,7 +21,7 @@ export type Comment = {
   createdBy: RHUser;
   content: object;
   score: number;
-  userVote: VoteType|null;
+  userVote: VoteType | null;
   isEdited: boolean;
   commentType: COMMENT_TYPES;
   parent?: Comment;
@@ -35,7 +35,6 @@ type parseCommentArgs = {
 };
 
 export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
-
   const parsed = {
     id: raw.id,
     threadId: raw.thread,
@@ -44,20 +43,20 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     timeAgo: timeSince(raw.created_date),
     createdBy: parseUser(raw.created_by),
     isEdited: raw.is_edited,
-    bounties: (raw.bounties || []).map((b:any) => new Bounty(b)),
+    bounties: (raw.bounties || []).map((b: any) => new Bounty(b)),
     tipped: raw.promoted || 0,
     content: raw.comment_content_json || {},
     score: raw.score,
     userVote: raw.user_vote,
     commentType: raw.thread_type,
     children: [] as Comment[],
-    childrenCount: raw.children_count || 0, 
+    childrenCount: raw.children_count || 0,
     ...(parent && { parent }),
   };
 
-  parsed.children = (raw.children ?? []).filter((child:any) => !isEmpty(child)).map((child: any) =>
-    parseComment({ raw: child, parent: parsed })
-  );
+  parsed.children = (raw.children ?? [])
+    .filter((child: any) => !isEmpty(child))
+    .map((child: any) => parseComment({ raw: child, parent: parsed }));
 
   return parsed;
 };

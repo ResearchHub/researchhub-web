@@ -1,13 +1,13 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 import { filterOpts, sortOpts } from "./options";
 
 type CommentTreeContext = {
-  sort: string|null;
-  filter: string|null;
+  sort: string | null;
+  filter: string | null;
   onCreate: Function;
   onUpdate: Function;
   onFetchMore: Function;
-}
+};
 
 export const CommentTreeContext = createContext<CommentTreeContext>({
   sort: sortOpts[0].value,

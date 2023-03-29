@@ -15,7 +15,7 @@ import { Comment } from "./lib/types";
 type Args = {
   comment: Comment;
   handleEdit: Function;
-}
+};
 
 const CommentMenu = ({ comment, handleEdit }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -58,7 +58,10 @@ const CommentMenu = ({ comment, handleEdit }: Args) => {
 
               <div className={css(styles.dropdownLabel)}>Edit</div>
             </div>
-            <div className={css(styles.option)} onClick={() => alert("not implemented")}>
+            <div
+              className={css(styles.option)}
+              onClick={() => alert("not implemented")}
+            >
               <FontAwesomeIcon
                 icon={faTrashAlt}
                 style={{ color: colors.secondary.text, fontSize: 18 }}
@@ -70,7 +73,7 @@ const CommentMenu = ({ comment, handleEdit }: Args) => {
         )}
 
         {currentUser?.id !== comment.createdBy.id && (
-          <div className={css(styles.option)} onClick={() => alert('flag')}>
+          <div className={css(styles.option)} onClick={() => alert("flag")}>
             <FontAwesomeIcon
               icon={faFlag}
               style={{ color: colors.secondary.text, fontSize: 18 }}

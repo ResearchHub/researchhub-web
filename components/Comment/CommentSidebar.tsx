@@ -28,7 +28,12 @@ const CommentSidebar = ({
   const commentCount = useMemo(() => countComments({ comments }), [comments]);
 
   return (
-    <div className={css(styles.sidebar, isOpen ? styles.sidebarOpen : styles.sidebarClosed)}>
+    <div
+      className={css(
+        styles.sidebar,
+        isOpen ? styles.sidebarOpen : styles.sidebarClosed
+      )}
+    >
       <div className={css(styles.feedWrapper)}>
         {isInitialFetchDone && (
           <CommentSidebarToggle
@@ -56,13 +61,11 @@ const CommentSidebar = ({
   );
 };
 
-
 const styles = StyleSheet.create({
-  drawer: {
-  },
+  drawer: {},
   drawerWrapper: {
-    height: '100%',
-    overflow: 'auto',
+    height: "100%",
+    overflow: "auto",
     padding: 25,
   },
   pullerBtn: {
@@ -70,9 +73,9 @@ const styles = StyleSheet.create({
     height: 6,
     backgroundColor: "gray",
     borderRadius: 3,
-    position: 'absolute',
+    position: "absolute",
     top: 8,
-    left: 'calc(50% - 15px)',
+    left: "calc(50% - 15px)",
   },
   sidebar: {
     boxShadow: "8px 30px 30px rgba(21, 21, 21, 0.2)",
@@ -101,7 +104,7 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: 1550px)`]: {
       width: 0,
-    }
+    },
   },
   sidebarClosed: {
     width: 0,

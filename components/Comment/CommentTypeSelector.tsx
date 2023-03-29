@@ -28,7 +28,7 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
   const _handleSelect = (value) => {
     setIsOpen(false);
     handleSelect(value);
-  }
+  };
 
   return (
     <div className={css(styles.commentTypeSelector)}>

@@ -15,8 +15,11 @@ type CommentHeaderArgs = {
   handleEdit: Function;
 };
 
-
-const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs) => {
+const CommentHeader = ({
+  authorProfile,
+  comment,
+  handleEdit,
+}: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const bountyContributors = openBounties
     .map((b) => b.createdBy.authorProfile)
@@ -40,7 +43,9 @@ const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs
             createdBy={comment.createdBy}
             overrideTargetStyle={styles.avatarWrapper}
             targetContent={
-              <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
+              <CommentAvatars
+                authors={[authorProfile, ...bountyContributors]}
+              />
             }
           />
         ) : (

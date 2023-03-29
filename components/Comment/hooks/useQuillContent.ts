@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import Quill from 'quill';
+import Quill from "quill";
 import { isEmpty } from "~/config/utils/nullchecks";
 
 type Args = {
-  quill: Quill | undefined,
-  content: object,
-}
+  quill: Quill | undefined;
+  content: object;
+};
 
 const useQuillContent = ({ quill, content = {} }: Args) => {
   const [_content, _setContent] = useState<object>(content);
@@ -13,7 +13,7 @@ const useQuillContent = ({ quill, content = {} }: Args) => {
 
   useEffect(() => {
     if (quill) {
-      quill.on('text-change', (delta, oldDelta, source) => {
+      quill.on("text-change", (delta, oldDelta, source) => {
         if (source === "user") {
           const nextContent = quill.getContents();
           _setContent(nextContent);
@@ -32,14 +32,14 @@ const useQuillContent = ({ quill, content = {} }: Args) => {
       setIsInitialized(true);
     }
   }, [isInitialized, content, quill]);
-  
+
   return {
     content: _content,
     dangerouslySetContent: (content) => {
-      quill!.setContents(content)
+      quill!.setContents(content);
       _setContent(content);
     },
-  }
-}
+  };
+};
 
 export default useQuillContent;

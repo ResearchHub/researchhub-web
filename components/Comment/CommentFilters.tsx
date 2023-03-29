@@ -9,8 +9,8 @@ type Args = {
 };
 
 const CommentFilters = ({ selectedFilterValue, handleSelect }: Args) => {
-
-  const selectedFilter = filterOpts.find(f => f.value === selectedFilterValue) || filterOpts[0];
+  const selectedFilter =
+    filterOpts.find((f) => f.value === selectedFilterValue) || filterOpts[0];
 
   return (
     <div className={css(styles.filtersWrapper)}>

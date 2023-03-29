@@ -1,4 +1,8 @@
-export const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload }) => {
+export const buildQuillModules = ({
+  editorId,
+  handleSubmit,
+  handleImageUpload,
+}) => {
   const modules = {
     // magicUrl: true,
     keyboard: {
@@ -21,7 +25,7 @@ export const buildQuillModules = ({ editorId, handleSubmit, handleImageUpload })
   };
 
   return modules;
-}
+};
 
 export default function isQuillEmpty(content) {
   return !content || JSON.stringify(content) === '{"ops":[{"insert":"\\n"}]}';

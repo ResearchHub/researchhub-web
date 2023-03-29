@@ -19,7 +19,7 @@ const colors = {
     selected: {
       background: globalColors.LIGHTER_GREY(1.0),
       text: globalColors.BLACK(1.0),
-    }
+    },
   },
   toggle: {
     commentIcon: globalColors.MEDIUM_GREY(1.0),
@@ -33,6 +33,6 @@ const colors = {
   },
   dot: "rgb(200 200 202)",
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
-}
+};
 
 export default colors;
