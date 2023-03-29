@@ -24,13 +24,13 @@ const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   parentComment?: CommentType;
-  comments: Array<CommentType>;
+  comments?: Array<CommentType>;
   document: TopLevelDocument;
   isRootList?: boolean;
   isFetchingList?: boolean;
 }
 
-const CommentList = ({ comments, parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
+const CommentList = ({ comments = [], parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const currentUser = useSelector((state: RootState) =>
@@ -42,16 +42,18 @@ const CommentList = ({ comments, parentComment, document, isRootList = false, is
   const fetchMore = async ({ }) => {
     setIsFetchingMore(true);
     try {
+      const nextPage = currentPage + 1;
       const response = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.documentType,
         sort: commentTreeState.sort,
         filter: commentTreeState.filter,
-        parentId: parentComment?.id,
-        page: currentPage + 1,
+        commentId: parentComment?.id,
+        page: currentPage,
       });
 
       commentTreeState.onFetchMore({ comment: parentComment, fetchedChildren: response.comments });
+      setCurrentPage(nextPage)
     } catch (error) {
       console.log('error', error)
       // FIXME: Implement error handling
@@ -120,7 +122,7 @@ const CommentList = ({ comments, parentComment, document, isRootList = false, is
 
   const _commentElems = 
     comments.map((c) => (
-      <div key={c.id} className={css(styles.commentWrapper)}>
+      <div key={c.id} className={css(styles.commentWrapper, c.children.length > 0 && styles.commentWrapperWithChildren)}>
         <Comment
           handleCreate={handleCommentCreate}
           handleUpdate={handleCommentUpdate}
@@ -130,8 +132,13 @@ const CommentList = ({ comments, parentComment, document, isRootList = false, is
       </div>
     ));
 
+  let loadMoreCount = 0;
+  if (parentComment) {
+    loadMoreCount = parentComment.childrenCount - comments.length;
+  }
+
   return (
-    <div className={css(styles.commentListWrapper)}>
+    <div>
       {isRootList &&
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
@@ -145,18 +152,19 @@ const CommentList = ({ comments, parentComment, document, isRootList = false, is
         </div>
       }
 
-      <div className={css(styles.commentListWrapper)}>
-        {_commentElems}
-      </div>
-
-      {(isFetchingMore || isFetchingList) &&
-        <CommentPlaceholder />
-      }
-      {true &&
-        <IconButton onClick={() => fetchMore({})}>
-          <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load More <FontAwesomeIcon icon={faLongArrowDown} /></span>
-        </IconButton>
-      }
+        <div className={css(styles.commentListWrapper, !isRootList && comments.length > 0 && styles.childrenList)}>
+          {_commentElems.length > 0 &&
+            _commentElems
+          }
+          {(isFetchingMore || isFetchingList) &&
+            <CommentPlaceholder />
+          }
+          {loadMoreCount > 0 &&
+            <IconButton onClick={() => fetchMore({})}>
+              <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load {loadMoreCount} More <FontAwesomeIcon icon={faLongArrowDown} /></span>
+            </IconButton>
+          }
+        </div>
     </div>
   )
 }
@@ -165,16 +173,28 @@ const styles = StyleSheet.create({
   commentListWrapper: {
 
   },
+  childrenList: {
+    paddingTop: 15,
+    marginLeft: 10,
+    paddingLeft: 15,
+    borderLeft: `3px solid ${colors.border}`,
+  },
   commentWrapper: {
     borderBottom: `1px solid ${colors.border}`,
-    paddingTop: 25,
     paddingBottom: 25,
+    paddingTop: 25,
     ":first-child": {
       paddingTop: 0,
+      paddingBottom: 25,
     },
     ":last-child": {
       borderBottom: 0,
+      paddingBottom: 0,
+      marginBottom: 25,
     },
+  },
+  commentWrapperWithChildren: {
+    paddingBottom: 0,
   },
   editorWrapper: {
     marginBottom: 25,

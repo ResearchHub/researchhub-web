@@ -10,12 +10,12 @@ export const fetchCommentsAPI = async ({
   documentId,
   sort,
   filter,
-  parentId,
+  commentId,
   page,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
-  parentId?: ID;
+  commentId?: ID;
   sort?: string|null;
   filter?: string|null;
   page?: number;
@@ -27,15 +27,22 @@ export const fetchCommentsAPI = async ({
   const query = {
     ...(filter && { "thread_type": filter }),
     ...(sort && { "ordering": sort }),
-    ...(parentId && { "parent_id": parentId }),
-    ...(page && { "page": page }),
+    ...(page && page > 1 && { "page": page }),
   }
 
-  const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
+  const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments` + (commentId ? `/${commentId}` : ""));
   const _url = baseFetchUrl + buildQueryString(query);
   const response =
     await fetch(_url, API.GET_CONFIG())
       .then((res):any => Helpers.parseJSON(res));
+
+  if (response.detail) {
+    throw Error(response.detail);
+  }
+  else if (!response) {
+    // FIXME: Log to sentry
+    throw Error("Unexpected error fetching more comments")
+  }
 
   return {
     comments: response.results.map((raw:any) => parseComment({ raw })),

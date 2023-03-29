@@ -126,11 +126,8 @@ const Comment = ({
           />
         </div>
       )}
-      {comment.children.length > 0 && (          
-        <div className={css(styles.children)}>
-          <CommentList parentComment={comment} comments={comment.children} document={document} />
-        </div>
-      )}
+
+      <CommentList parentComment={comment} comments={comment.children} document={document} />
     </div>
   );
 };
@@ -141,12 +138,6 @@ const styles = StyleSheet.create({
   },
   headerWrapper: {
     marginBottom: 10,
-  },
-  children: {
-    marginLeft: 10,
-    paddingLeft: 15,
-    borderLeft: `3px solid ${colors.border}`,
-    paddingTop: 15,
   },
   editorWrapper: {
     marginTop: 15,
