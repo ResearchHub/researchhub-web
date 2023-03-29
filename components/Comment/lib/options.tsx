@@ -36,27 +36,35 @@ export const commentTypes = [
   },
 ];
 
-export const filterOpts = [{
-  label: "All",
-  value: null,
-},{
-  label: "Bounties",
-  value: "BOUNTY",  
-},{
-  label: "Peer reviews",
-  value: "REVIEW",
-}];
+export const filterOpts = [
+  {
+    label: "All",
+    value: null,
+  },
+  {
+    label: "Bounties",
+    value: "BOUNTY",
+  },
+  {
+    label: "Peer reviews",
+    value: "REVIEW",
+  },
+];
 
-export const sortOpts = [{
-  label: "Best",
-  value: "BEST",
-  icon: <FontAwesomeIcon icon={faStarIcon} />,
-},{
-  label: "Newest",
-  value: "CREATED_DATE",
-  icon: <FontAwesomeIcon icon={faBolt} />,
-}, {
-  label: "Upvoted",
-  value: "TOP",
-  icon: <FontAwesomeIcon icon={faArrowAltUp} />,
-}];
+export const sortOpts = [
+  {
+    label: "Best",
+    value: "BEST",
+    icon: <FontAwesomeIcon icon={faStarIcon} />,
+  },
+  {
+    label: "Newest",
+    value: "CREATED_DATE",
+    icon: <FontAwesomeIcon icon={faBolt} />,
+  },
+  {
+    label: "Upvoted",
+    value: "TOP",
+    icon: <FontAwesomeIcon icon={faArrowAltUp} />,
+  },
+];

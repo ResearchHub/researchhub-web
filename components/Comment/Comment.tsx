@@ -14,7 +14,6 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import CommentList from "./CommentList";
 
-
 type CommentArgs = {
   comment: CommentType;
   handleUpdate: Function;
@@ -28,7 +27,6 @@ const Comment = ({
   handleUpdate,
   handleCreate,
 }: CommentArgs) => {
-
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
@@ -39,17 +37,16 @@ const Comment = ({
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
       setIsReplyOpen(false);
-    }
-    else {
+    } else {
       setIsReplyOpen(true);
     }
-  }
+  };
 
   const _handleCloseEdit = () => {
     if (isEditMode && confirm("Discard changes?")) {
       setIsEditMode(false);
     }
-  }  
+  };
 
   return (
     <div>
@@ -70,7 +67,7 @@ const Comment = ({
           {isEditMode ? (
             <CommentEditor
               handleSubmit={async (args) => {
-                console.log('args', args)
+                console.log("args", args);
                 await handleUpdate(args);
                 setIsEditMode(false);
               }}
@@ -117,7 +114,11 @@ const Comment = ({
           <CommentEditor
             handleClose={() => _handleToggleReply()}
             handleSubmit={async ({ content, commentType }) => {
-              await handleCreate({ content, commentType, parentId: comment.id });
+              await handleCreate({
+                content,
+                commentType,
+                parentId: comment.id,
+              });
               setIsReplyOpen(false);
             }}
             editorId={`reply-to-${comment.id}`}

@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Comment } from "./lib/types";
 import { getBountyAmount } from "./lib/bounty";
 import countComments from "./lib/countComments";
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 type Args = {
   children: any;
@@ -28,7 +28,7 @@ const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
   const commentCount = 999;
 
   useEffect(() => {
-    setDrawerEl(document.body)
+    setDrawerEl(document.body);
   }, []);
 
   return (
@@ -60,7 +60,7 @@ const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
             top: 35,
             borderTopLeftRadius: "28px",
             borderTopRightRadius: "28px",
-          }
+          },
         }}
       >
         <div className={css(styles.pullerBtn)} />
@@ -79,19 +79,15 @@ const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
           {children}
         </div>
       </SwipeableDrawer>
-
-
-
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  drawerRoot: {
-  },
+  drawerRoot: {},
   drawerContentWrapper: {
-    height: '100%',
-    overflow: 'auto',
+    height: "100%",
+    overflow: "auto",
     padding: 25,
   },
   pullerBtn: {
@@ -99,9 +95,9 @@ const styles = StyleSheet.create({
     height: 6,
     backgroundColor: "gray",
     borderRadius: 3,
-    position: 'absolute',
+    position: "absolute",
     top: 8,
-    left: 'calc(50% - 15px)',
+    left: "calc(50% - 15px)",
   },
   sidebar: {
     boxShadow: "8px 30px 30px rgba(21, 21, 21, 0.2)",

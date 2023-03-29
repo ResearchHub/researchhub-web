@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 
 const config = {
-  drawer:{
+  drawer: {
     displayForBreakpoint: breakpoints.small.int,
   },
   comment: {

@@ -23,7 +23,6 @@ import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 const { setMessage, showMessage } = MessageActions;
 
-
 type CommentEditorArgs = {
   editorId: string;
   commentId?: ID;
@@ -51,7 +50,6 @@ const CommentEditor = ({
   allowCommentTypeSelection = false,
   handleClose,
 }: CommentEditorArgs) => {
-
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
@@ -116,23 +114,22 @@ const CommentEditor = ({
         setIsPreviewMode(true);
         isPreviewModeRef.current = true;
       }
-    }
-    finally {
+    } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    (<div ref={editorRef} className={css(styles.commentEditor)}>
+    <div ref={editorRef} className={css(styles.commentEditor)}>
       <div>
-        {handleClose &&
+        {handleClose && (
           <IconButton
             overrideStyle={styles.closeBtn}
             onClick={() => handleClose()}
           >
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
-        }
+        )}
         {author && (
           <div
             className={css(styles.authorRow, isPreviewMode && styles.hidden)}
@@ -143,14 +140,14 @@ const CommentEditor = ({
                 {author.firstName} {author.lastName}
               </div>
             </div>
-            {allowCommentTypeSelection &&
+            {allowCommentTypeSelection && (
               <span style={{ marginTop: -5 }}>
                 <CommentTypeSelector
                   handleSelect={_setCommentType}
                   selectedType={_commentType}
                 />
               </span>
-            }
+            )}
           </div>
         )}
         <div className={css(styles.editor)}>
@@ -170,19 +167,23 @@ const CommentEditor = ({
           <Button
             fullWidth
             label={
-              isSubmitting ? <Loader color="white" type="clip" size={22} /> : <>{`Post`}</>
+              isSubmitting ? (
+                <Loader color="white" type="clip" size={22} />
+              ) : (
+                <>{`Post`}</>
+              )
             }
             hideRipples={true}
             onClick={() => _handleSubmit()}
             disabled={isSubmitting || isEmpty}
-            />
+          />
         </div>
         {allowBounty && (
           // @ts-ignore
           <CreateBountyBtn />
         )}
       </div>
-    </div>)
+    </div>
   );
 };
 
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     right: 15,
     top: 15,
     fontSize: 18,
-  }
+  },
 });
 
 export default CommentEditor;

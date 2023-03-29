@@ -5,15 +5,20 @@ import config from "./lib/config";
 
 type Args = {
   repeatCount?: number;
-}
+};
 
-const CommentPlaceholder = ({ repeatCount = config.comment.placeholderCount }: Args) => {
+const CommentPlaceholder = ({
+  repeatCount = config.comment.placeholderCount,
+}: Args) => {
   return (
     <div>
       {Array.from(new Array(repeatCount)).map((_, idx) => (
         <div className={css(styles.wrapper) + " show-loading-animation"}>
           <div className={css(styles.header)}>
-            <RoundShape className={css(styles.avatar)} color={colors.placeholder} />
+            <RoundShape
+              className={css(styles.avatar)}
+              color={colors.placeholder}
+            />
             <div className={css(styles.detailsWrapper)}>
               <RectShape
                 color={colors.placeholder}

@@ -29,9 +29,16 @@ type Args = {
   isRootList?: boolean;
   isFetchingList?: boolean;
   totalCount: number;
-}
+};
 
-const CommentList = ({ comments = [], totalCount, parentComment, document, isRootList = false, isFetchingList = false }: Args) => {
+const CommentList = ({
+  comments = [],
+  totalCount,
+  parentComment,
+  document,
+  isRootList = false,
+  isFetchingList = false,
+}: Args) => {
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const currentUser = useSelector((state: RootState) =>
@@ -40,7 +47,7 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
   const dispatch = useDispatch();
   const commentTreeState = useContext(CommentTreeContext);
 
-  const fetchMore = async ({ }) => {
+  const fetchMore = async ({}) => {
     setIsFetchingMore(true);
     try {
       const response = await fetchCommentsAPI({
@@ -51,15 +58,18 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
         page: currentPage,
       });
 
-      commentTreeState.onFetchMore({ comment: parentComment, fetchedComments: response.comments });
-      setCurrentPage(currentPage + 1)
+      commentTreeState.onFetchMore({
+        comment: parentComment,
+        fetchedComments: response.comments,
+      });
+      setCurrentPage(currentPage + 1);
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
       // FIXME: Implement error handling
     } finally {
       setIsFetchingMore(false);
     }
-  }
+  };
 
   // const fetchMore = async ({ }) => {
   //   setIsFetchingMore(true);
@@ -82,7 +92,7 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
   //   } finally {
   //     setIsFetchingMore(false);
   //   }
-  // }  
+  // }
 
   const handleCommentCreate = async ({
     content,
@@ -94,12 +104,17 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
     parentId: ID;
   }) => {
     try {
-      let parentComment:CommentType | undefined;
+      let parentComment: CommentType | undefined;
       if (parentId) {
-        parentComment = findComment({ id: parentId, comments: comments })?.comment;
+        parentComment = findComment({
+          id: parentId,
+          comments: comments,
+        })?.comment;
 
         if (!parentComment) {
-          console.warn(`Could not find parent comment ${parentId}. This should not happen. Aborting create.`);
+          console.warn(
+            `Could not find parent comment ${parentId}. This should not happen. Aborting create.`
+          );
           return false;
         }
       }
@@ -113,11 +128,10 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
       });
 
       commentTreeState.onCreate({ comment, parent: parentComment });
-    }
-    catch(error) {
+    } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
       // @ts-ignore
-      dispatch(showMessage({ show: true, error: true })); 
+      dispatch(showMessage({ show: true, error: true }));
       throw error;
     }
   };
@@ -136,30 +150,35 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
       documentType: document.documentType,
       // FIXME: Temporary fix until we add created_by as obj from BE
       // @ts-ignore
-      currentUser
+      currentUser,
     });
 
     commentTreeState.onUpdate({ comment });
   };
 
-  const _commentElems = 
-    comments.map((c) => (
-      <div key={c.id} className={css(styles.commentWrapper, c.children.length > 0 && styles.commentWrapperWithChildren)}>
-        <Comment
-          handleCreate={handleCommentCreate}
-          handleUpdate={handleCommentUpdate}
-          comment={c}
-          document={document}
-        />
-      </div>
-    ));
+  const _commentElems = comments.map((c) => (
+    <div
+      key={c.id}
+      className={css(
+        styles.commentWrapper,
+        c.children.length > 0 && styles.commentWrapperWithChildren
+      )}
+    >
+      <Comment
+        handleCreate={handleCommentCreate}
+        handleUpdate={handleCommentUpdate}
+        comment={c}
+        document={document}
+      />
+    </div>
+  ));
 
   const loadedComments = comments;
-  let loadMoreCount = totalCount - loadedComments.length;
+  const loadMoreCount = totalCount - loadedComments.length;
 
   return (
     <div>
-      {isRootList &&
+      {isRootList && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
             editorId="new-thread"
@@ -170,29 +189,37 @@ const CommentList = ({ comments = [], totalCount, parentComment, document, isRoo
             allowCommentTypeSelection={true}
           />
         </div>
-      }
+      )}
 
-        <div className={css(styles.commentListWrapper, !isRootList && comments.length > 0 && styles.childrenList)}>
-          {_commentElems.length > 0 &&
-            _commentElems
-          }
-          {(isFetchingMore || isFetchingList) &&
-            <CommentPlaceholder />
-          }
-          {loadMoreCount > 0 &&
-            <IconButton onClick={() => fetchMore({})}>
-              <span style={{ color: colors.primary.btn, fontSize: 14, fontWeight: 500 }}>Load {loadMoreCount} More <FontAwesomeIcon icon={faLongArrowDown} /></span>
-            </IconButton>
-          }
-        </div>
+      <div
+        className={css(
+          styles.commentListWrapper,
+          !isRootList && comments.length > 0 && styles.childrenList
+        )}
+      >
+        {_commentElems.length > 0 && _commentElems}
+        {(isFetchingMore || isFetchingList) && <CommentPlaceholder />}
+        {loadMoreCount > 0 && (
+          <IconButton onClick={() => fetchMore({})}>
+            <span
+              style={{
+                color: colors.primary.btn,
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              Load {loadMoreCount} More{" "}
+              <FontAwesomeIcon icon={faLongArrowDown} />
+            </span>
+          </IconButton>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  commentListWrapper: {
-
-  },
+  commentListWrapper: {},
   childrenList: {
     paddingTop: 15,
     marginLeft: 10,
@@ -218,7 +245,7 @@ const styles = StyleSheet.create({
   },
   editorWrapper: {
     marginBottom: 25,
-  },  
+  },
 });
 
 export default CommentList;

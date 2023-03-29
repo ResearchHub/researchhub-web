@@ -5,7 +5,6 @@ import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-
 export const fetchCommentsAPI = async ({
   documentType,
   documentId,
@@ -15,40 +14,38 @@ export const fetchCommentsAPI = async ({
 }: {
   documentType: RhDocumentType;
   documentId: ID;
-  sort?: string|null;
-  filter?: string|null;
+  sort?: string | null;
+  filter?: string | null;
   page?: number;
-}): Promise<{ comments: Comment[], count: number }> => {
+}): Promise<{ comments: Comment[]; count: number }> => {
   // const rawComments = listMockData;
   // const comments = rawComments.map((raw) => parseComment({ raw }));
   // return Promise.resolve({comments, next: "", prev: ""});
-  
+
   const query = {
-    ...(filter && { "thread_type": filter }),
-    ...(sort && { "ordering": sort }),
-    ...(page && page > 1 && { "page": page }),
-  }
+    ...(filter && { thread_type: filter }),
+    ...(sort && { ordering: sort }),
+    ...(page && page > 1 && { page: page }),
+  };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const url = baseFetchUrl + buildQueryString(query);
-  const response =
-    await fetch(url, API.GET_CONFIG())
-      .then((res):any => Helpers.parseJSON(res));
+  const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
+    Helpers.parseJSON(res)
+  );
 
   if (response?.detail) {
     // FIXME: Log to sentry
     throw Error(response.detail);
-  }
-  else if (!response?.results) {
+  } else if (!response?.results) {
     // FIXME: Log to sentry
-    throw Error("Unexpected error fetching more comments")
+    throw Error("Unexpected error fetching more comments");
   }
 
   return {
-    comments: response.results.map((raw:any) => parseComment({ raw })),
+    comments: response.results.map((raw: any) => parseComment({ raw })),
     count: response.count,
   };
-
 };
 
 export const fetchSingleCommentAPI = async ({
@@ -57,28 +54,29 @@ export const fetchSingleCommentAPI = async ({
   documentId,
   parentComment,
 }: {
-  commentId: ID,
+  commentId: ID;
   documentType: RhDocumentType;
-  documentId: ID;  
+  documentId: ID;
   parentComment?: Comment;
 }): Promise<Comment> => {
-
-  const url = generateApiUrl(`${documentType}/${documentId}/comments` + (commentId ? `/${commentId}` : ""));
-  const response =
-    await fetch(url, API.GET_CONFIG())
-      .then((res):any => Helpers.parseJSON(res));
+  const url = generateApiUrl(
+    `${documentType}/${documentId}/comments` +
+      (commentId ? `/${commentId}` : "")
+  );
+  const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
+    Helpers.parseJSON(res)
+  );
 
   if (response.detail) {
     // FIXME: Log to sentry
     throw Error(response.detail);
-  }
-  else if (!response) {
+  } else if (!response) {
     // FIXME: Log to sentry
-    throw Error(`Unexpected error fetching comment for ${commentId}`)
+    throw Error(`Unexpected error fetching comment for ${commentId}`);
   }
 
   return parseComment({ raw: response, parent: parentComment });
-}
+};
 
 export const createCommentAPI = async ({
   content,
@@ -93,14 +91,17 @@ export const createCommentAPI = async ({
   documentId: ID;
   parentComment?: Comment;
 }): Promise<Comment> => {
-  const _url = generateApiUrl(`${documentType}/${documentId}/comments/create_rh_comment`);
-  const response =
-    await fetch(_url, API.POST_CONFIG({
-      "comment_content_json": content,
-      "thread_type": commentType || COMMENT_TYPES.DISCUSSION,
-      ...(parentComment && { "parent_id": parentComment.id })
-    }))
-      .then((res):any => Helpers.parseJSON(res));
+  const _url = generateApiUrl(
+    `${documentType}/${documentId}/comments/create_rh_comment`
+  );
+  const response = await fetch(
+    _url,
+    API.POST_CONFIG({
+      comment_content_json: content,
+      thread_type: commentType || COMMENT_TYPES.DISCUSSION,
+      ...(parentComment && { parent_id: parentComment.id }),
+    })
+  ).then((res): any => Helpers.parseJSON(res));
 
   const comment = parseComment({ raw: response, parent: parentComment });
   return Promise.resolve(comment);
@@ -119,11 +120,12 @@ export const updateCommentAPI = async ({
   documentId: ID;
 }) => {
   const _url = generateApiUrl(`${documentType}/${documentId}/comments/${id}`);
-  const response =
-    await fetch(_url, API.PATCH_CONFIG({
-      "comment_content_json": content,
-    }))
-      .then((res):any => Helpers.parseJSON(res));
+  const response = await fetch(
+    _url,
+    API.PATCH_CONFIG({
+      comment_content_json: content,
+    })
+  ).then((res): any => Helpers.parseJSON(res));
 
   const comment = parseComment({ raw: response });
   // FIXME: Temporary fix until we add created_by as obj from BE

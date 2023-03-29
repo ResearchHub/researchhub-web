@@ -21,7 +21,6 @@ const CommentActions = ({
   toggleReply,
   isReplyOpen,
 }: Args) => {
-
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
@@ -33,7 +32,7 @@ const CommentActions = ({
             documentType={document.documentType}
             documentID={document.id}
           />
-        </div>     
+        </div>
         <div className={`${css(styles.action)} tip-btn`}>
           <IconButton onClick={() => null}>
             <Image
@@ -42,11 +41,9 @@ const CommentActions = ({
               width={19}
               alt="Tip"
             />
-            <span className={css(styles.actionText)}>
-              Tip
-            </span>
+            <span className={css(styles.actionText)}>Tip</span>
           </IconButton>
-        </div>   
+        </div>
         {/* <div className={`${css(styles.action)} award-btn`}>
           <IconButton onClick={() => null}>
             <FontAwesomeIcon icon={faCrown} style={{fontSize: 16}} />
@@ -55,7 +52,7 @@ const CommentActions = ({
             </span>
           </IconButton>
         </div>         */}
-             
+
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => toggleReply()}>
             <Image
@@ -64,9 +61,7 @@ const CommentActions = ({
               width={15}
               alt="Reply"
             />
-            <span className={css(styles.actionText)}>
-              Reply
-            </span>
+            <span className={css(styles.actionText)}>Reply</span>
           </IconButton>
         </div>
       </div>
