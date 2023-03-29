@@ -322,7 +322,8 @@ const Paper = ({
             </div>
             {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
-                {router.query.cv2 === "" && (
+                <a name="comments" id="comments" ref={commentsRef} />
+                {router.query.cv2 === "" ? (
                   <>
                     <div className={css(styles.discussionSectionHeader)}>
                       <h3 className={css(styles.discussionSectionTitle)}>
@@ -339,9 +340,7 @@ const Paper = ({
                       previewModeAsDefault={false}
                     />
                   </>
-                )}
-                <a name="comments" id="comments" ref={commentsRef} />
-                {
+                ) : (
                   <DiscussionTab
                     hostname={process.env.HOST}
                     documentType={"paper"}
@@ -357,7 +356,7 @@ const Paper = ({
                       setThreads(_threads);
                     }}
                   />
-                }
+                )}
               </div>
             )}
             {isFetchComplete /* Performance Optimization */ && (
