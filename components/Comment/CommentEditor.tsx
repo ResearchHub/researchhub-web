@@ -97,12 +97,12 @@ const CommentEditor = ({
   const _handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      if (quill!.getLength() <= config.comment.minLength) {
-        dispatch(setMessage(`Comment must be greater than ${config.comment.minLength} characters long.`));
-        // @ts-ignore
-        dispatch(showMessage({ show: true, error: true }));
-        return false;
-      }
+      // if (quill!.getLength() <= config.comment.minLength) {
+      //   dispatch(setMessage(`Comment must be greater than ${config.comment.minLength} characters long.`));
+      //   // @ts-ignore
+      //   dispatch(showMessage({ show: true, error: true }));
+      //   return false;
+      // }
 
       await handleSubmit({
         content: _content,
@@ -166,10 +166,6 @@ const CommentEditor = ({
         </div>
       </div>
       <div className={css(styles.actions)}>
-        {allowBounty && (
-          // @ts-ignore
-          (<CreateBountyBtn />)
-        )}
         <div style={{ width: 70 }}>
           <Button
             fullWidth
