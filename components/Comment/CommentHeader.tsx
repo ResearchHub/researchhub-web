@@ -30,7 +30,7 @@ const CommentHeader = ({ authorProfile, comment, handleEdit }: CommentHeaderArgs
         {noOpenBounties ? (
           <UserTooltip
             createdBy={comment.createdBy}
-            height={24}
+            overrideTargetStyle={styles.avatarWrapper}
             targetContent={
               <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
             }
@@ -89,6 +89,11 @@ const styles = StyleSheet.create({
   },
   details: {
     display: "flex",
+  },
+  avatarWrapper: {
+    height: 30,
+    padding: "10px 4px",
+    overflow: "hidden",
   },
   nameWrapper: {
     marginLeft: 7,
