@@ -18,7 +18,7 @@ export default function HomeRightSidebar(): ReactElement {
   const carouselElements = getEducationalCarouselElements();
 
   return (
-    (<div className={css(styles.HomeRightSidebar)}>
+    <div className={css(styles.HomeRightSidebar)}>
       <ColumnContainer overrideStyles={styles.HomeRightSidebarContainer}>
         <ExitableBanner
           bannerKey={INFO_TAB_EXIT_KEY}
@@ -46,6 +46,6 @@ export default function HomeRightSidebar(): ReactElement {
           shouldLimitNumCards={shouldLimitNumCards}
         />
       </ColumnContainer>
-    </div>)
+    </div>
   );
 }

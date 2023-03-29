@@ -1,8 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/pro-solid-svg-icons";
-import { faLayerGroup } from "@fortawesome/pro-solid-svg-icons";
-import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
-import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faStar,
+  faLayerGroup,
+  faCommentAltLines,
+  faComments,
+} from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
@@ -14,8 +16,8 @@ import {
 } from "~/config/themes/icons";
 import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
-import { POST_TYPES } from "./TextEditor/config/postTypes";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
+import { POST_TYPES } from "./TextEditor/config/postTypes";
 
 type Args = {
   contentType: string;
@@ -33,7 +35,7 @@ const ContentBadge = ({
   const router = useRouter();
 
   return (
-    (<Badge
+    <Badge
       badgeClassName={[
         styles.badge,
         styles["badgeFor_" + contentType],
@@ -121,7 +123,7 @@ const ContentBadge = ({
       ) : (
         <></>
       )}
-    </Badge>)
+    </Badge>
   );
 };
 
