@@ -1,13 +1,17 @@
 import { Box } from "@mui/system";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { Fragment, ReactNode } from "react";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { TextRow } from "react-placeholder/lib/placeholders";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import colors from "~/config/themes/colors";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Divider from "@mui/material/Divider";
+import DropdownMenu from "../menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import Image from "next/image";
@@ -19,19 +23,9 @@ import ListItemText from "@mui/material/ListItemText";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import { isEmpty } from "~/config/utils/nullchecks";
-import Loader from "~/components/Loader/Loader";
-import { TextBlock, TextRow } from "react-placeholder/lib/placeholders";
-import colors from "~/config/themes/colors";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
-
-// type DrawerProps = {
-//   isOpen: boolean;
-//   navWidth: number;
-//   theme: Theme;
-// };
 
 const HOME_NAV_BUTTON_CONFIG: {
   icon: ReactNode;
@@ -69,64 +63,12 @@ const HOME_NAV_BUTTON_CONFIG: {
   },
 ];
 
-// const openedMixin = (theme: Theme, navWidth: number): CSSObject => ({
-//   transition: theme.transitions.create("width", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.enteringScreen,
-//   }),
-//   overflowX: "hidden",
-//   width: navWidth,
-// });
-
-// const closedMixin = (theme: Theme): CSSObject => ({
-//   transition: theme.transitions.create("width", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen,
-//   }),
-//   overflowX: "hidden",
-//   width: `calc(${theme.spacing(7)} + 1px)`,
-//   [theme.breakpoints.up("sm")]: {
-//     width: `calc(${theme.spacing(8)} + 1px)`,
-//   },
-// });
-
-// const doNotPassProps = new Set(["isOpen", "navWidth"]);
-// const Drawer = styled(MuiDrawer, {
-//   shouldForwardProp: (propName: string): boolean =>
-//     !doNotPassProps.has(propName),
-// })(({ theme, isOpen, navWidth }: DrawerProps) => ({
-//   background: "#FAFAFC",
-//   boxSizing: "border-box",
-//   flexShrink: 0,
-//   position: "sticky",
-//   top: 0,
-//   whiteSpace: "nowrap",
-//   width: navWidth,
-//   ...(isOpen && {
-//     ...openedMixin(theme, navWidth),
-//     "& .MuiDrawer-paper": openedMixin(theme, navWidth),
-//   }),
-//   ...(!isOpen && {
-//     ...closedMixin(theme),
-//     "& .MuiDrawer-paper": closedMixin(theme),
-//   }),
-// }));
-
 type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
   theme?: Theme;
 };
-
-// const DrawerHeader = styled("div")(({ theme }: { theme: Theme }) => ({
-//   alignItems: "center",
-//   display: "flex",
-//   padding: theme.spacing(0, 1),
-//   // necessary for content to be below app bar
-//   ...theme.mixins.toolbar,
-//   justifyContent: "flex-end",
-// }));
 
 export default function BasicTogglableNavbarLeft({
   isOpen,
@@ -149,12 +91,6 @@ export default function BasicTogglableNavbarLeft({
       width={navWidth}
       sx={{ borderLeft: "1px solid #e8e8ef" }}
     >
-      {/* <Drawer
-        isOpen={isOpen}
-        navWidth={navWidth}
-        theme={theme}
-        variant="permanent"
-      > */}
       <Box
         className="LeftNavbarUserSection"
         sx={{ background: "#FAFAFC", padding: "16px 16px" }}
@@ -225,35 +161,45 @@ export default function BasicTogglableNavbarLeft({
             </Fragment>
           )}
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid #3971FF",
-            borderRadius: "4px",
-            height: isOpen ? "48px" : "28px",
-            width: isOpen ? undefined : "28px",
-            textTransform: "none",
-            cursor: "pointer",
-          }}
-        >
-          <AddSharpIcon fontSize="small" color="primary" />
-          {isOpen && (
-            <Typography
-              color="#3971FF"
-              component="div"
-              fontSize={14}
-              fontWeight={500}
-              letterSpacing={"1.2px"}
-              noWrap
-              variant="h6"
-              ml={"6px"}
+        <DropdownMenu
+          menuItemProps={[
+            { itemLabel: "File(s) from computer", onClick: () => {} },
+            { itemLabel: "Import library", onClick: () => {} },
+          ]}
+          menuLabel={
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #3971FF",
+                borderRadius: "4px",
+                height: isOpen ? "48px" : "28px",
+                width: isOpen ? "100%" : "28px",
+                textTransform: "none",
+                padding: "0 8px",
+                cursor: "pointer",
+              }}
             >
-              {"Upload reference"}
-            </Typography>
-          )}
-        </Box>
+              <AddSharpIcon fontSize="small" color="primary" />
+              {isOpen && (
+                <Typography
+                  color="#3971FF"
+                  component="div"
+                  fontSize={14}
+                  fontWeight={500}
+                  letterSpacing={"1.2px"}
+                  noWrap
+                  variant="h6"
+                  ml={"6px"}
+                >
+                  {"Upload reference"}
+                </Typography>
+              )}
+            </Box>
+          }
+          size="medium"
+        />
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         {HOME_NAV_BUTTON_CONFIG.map((navbuttonObjs, index) => {
@@ -336,7 +282,71 @@ export default function BasicTogglableNavbarLeft({
           </Typography>
         </ListItemButton>
       </List>
-      {/* </Drawer> */}
     </Box>
   );
 }
+
+// type DrawerProps = {
+//   isOpen: boolean;
+//   navWidth: number;
+//   theme: Theme;
+// };
+
+/* <Drawer
+        isOpen={isOpen}
+        navWidth={navWidth}
+        theme={theme}
+        variant="permanent"
+      > */
+
+// const openedMixin = (theme: Theme, navWidth: number): CSSObject => ({
+//   transition: theme.transitions.create("width", {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.enteringScreen,
+//   }),
+//   overflowX: "hidden",
+//   width: navWidth,
+// });
+
+// const closedMixin = (theme: Theme): CSSObject => ({
+//   transition: theme.transitions.create("width", {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   overflowX: "hidden",
+//   width: `calc(${theme.spacing(7)} + 1px)`,
+//   [theme.breakpoints.up("sm")]: {
+//     width: `calc(${theme.spacing(8)} + 1px)`,
+//   },
+// });
+
+// const doNotPassProps = new Set(["isOpen", "navWidth"]);
+// const Drawer = styled(MuiDrawer, {
+//   shouldForwardProp: (propName: string): boolean =>
+//     !doNotPassProps.has(propName),
+// })(({ theme, isOpen, navWidth }: DrawerProps) => ({
+//   background: "#FAFAFC",
+//   boxSizing: "border-box",
+//   flexShrink: 0,
+//   position: "sticky",
+//   top: 0,
+//   whiteSpace: "nowrap",
+//   width: navWidth,
+//   ...(isOpen && {
+//     ...openedMixin(theme, navWidth),
+//     "& .MuiDrawer-paper": openedMixin(theme, navWidth),
+//   }),
+//   ...(!isOpen && {
+//     ...closedMixin(theme),
+//     "& .MuiDrawer-paper": closedMixin(theme),
+//   }),
+// }));
+
+// const DrawerHeader = styled("div")(({ theme }: { theme: Theme }) => ({
+//   alignItems: "center",
+//   display: "flex",
+//   padding: theme.spacing(0, 1),
+//   // necessary for content to be below app bar
+//   ...theme.mixins.toolbar,
+//   justifyContent: "flex-end",
+// }));

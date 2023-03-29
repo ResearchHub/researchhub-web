@@ -54,6 +54,7 @@ export default function DropdownMenu({
         size={size}
         sx={{
           background: "rgba(250, 250, 252, 1)",
+          padding: 0,
         }}
       >
         {menuLabel}
@@ -61,7 +62,7 @@ export default function DropdownMenu({
       <Menu
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: "top",
+          vertical: "bottom",
           horizontal: "left",
         }}
         onClose={handleClose}
