@@ -26,6 +26,7 @@ export type Comment = {
   commentType: COMMENT_TYPES;
   parent?: Comment;
   children: Comment[];
+  childrenCount: number;
 };
 
 type parseCommentArgs = {
@@ -50,6 +51,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     userVote: raw.user_vote,
     commentType: raw.thread_type,
     children: [] as Comment[],
+    childrenCount: raw.children_count || 0, 
     ...(parent && { parent }),
   };
 
