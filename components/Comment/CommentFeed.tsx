@@ -14,17 +14,15 @@ import { CommentTreeContext } from "./lib/contexts";
 import CommentEmptyState from "./CommentEmptyState";
 import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
-
+import CommentDrawer from "./CommentDrawer";
 
 type Args = {
   document: TopLevelDocument;
-  WrapperEl?: any;
   previewModeAsDefault?: boolean;
-  context: "sidebar" | null;
+  context: "sidebar" | "drawer" | null;
 };
 
 const CommentFeed = ({ document, previewModeAsDefault = false, context = null }: Args) => {
-  const WrapperEl = context === "sidebar" ? CommentSidebar : React.Fragment;
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(0);
@@ -136,6 +134,12 @@ const CommentFeed = ({ document, previewModeAsDefault = false, context = null }:
   }, [document.id, isInitialFetchDone]);
 
   const noResults = (document.isReady && document.discussionCount === 0) || (selectedFilterValue !== null && comments.length === 0)
+  const WrapperEl = 
+    context === "sidebar"
+      ? CommentSidebar
+      : context === "drawer"
+      ? CommentDrawer
+      : React.Fragment;
 
   return (
     <WrapperEl
