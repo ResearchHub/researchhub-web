@@ -15,8 +15,8 @@ const CommentAvatars = ({ authors }: CommentAvatarsArgs) => {
         margin={avatarMargin}
         horizontal={true}
         authorProfiles={authors}
-        imgSize={24}
-        fontSize={24}
+        imgSize={30}
+        fontSize={30}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faCrown } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { TopLevelDocument } from "~/config/types/root_types";
@@ -47,6 +47,14 @@ const CommentActions = ({
             </span>
           </IconButton>
         </div>
+        {/* <div className={`${css(styles.action)} award-btn`}>
+          <IconButton onClick={() => null}>
+            <FontAwesomeIcon icon={faCrown} style={{fontSize: 16}} />
+            <span className={css(styles.actionText)}>
+              Award
+            </span>
+          </IconButton>
+        </div>         */}
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => toggleReply()}>
             <Image
