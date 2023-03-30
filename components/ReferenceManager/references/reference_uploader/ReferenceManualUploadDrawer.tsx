@@ -14,6 +14,10 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
+import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -74,7 +78,7 @@ export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [referenceTypes, setReferenceTypes] = useState<string[] | null>(null);
+  const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
   const [selectedReferenceType, setSelectedReferenceType] =
     useState<NullableString>(null);
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
@@ -89,6 +93,11 @@ export default function ReferenceManualUploadDrawer({
     setReferenceTypes,
     setSelectedReferenceType,
   });
+
+  const formattedMenuItemProps = referenceTypes.map((refType: string) => ({
+    label: snakeCaseToNormalCase(refType),
+    value: refType,
+  }));
 
   return (
     <Drawer
@@ -137,6 +146,17 @@ export default function ReferenceManualUploadDrawer({
             sx={{ cursor: "pointer" }}
           />
         </Stack>
+        <Box display="flex" flexDirection="column">
+          <ReferenceItemFieldSelect
+            formID="ref-type"
+            label="Reference type"
+            menuItemProps={formattedMenuItemProps}
+            onChange={setSelectedReferenceType}
+            placeholder="Select reference type"
+            required
+            value={selectedReferenceType}
+          />
+        </Box>
       </Box>
     </Drawer>
   );

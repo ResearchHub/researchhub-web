@@ -33,5 +33,7 @@ export const stripHTML = (str) => {
 
 export const snakeCaseToNormalCase = (str) => {
   let result = str?.replace("_", " ") ?? " ";
-  return result.charAt(0).toUpperCase() + (result.slice(1) ?? "");
+  return (
+    result.charAt(0).toUpperCase() + (result?.slice(1)?.toLowerCase() ?? "")
+  );
 };

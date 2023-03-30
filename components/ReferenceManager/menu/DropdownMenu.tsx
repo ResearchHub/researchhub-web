@@ -29,9 +29,9 @@ export default function DropdownMenu({
   const menuItems = menuItemProps.map(
     (itemProps: DropdownMenuItemProps, index: number) => {
       const { itemLabel, onClick } = itemProps;
+
       return (
         <MenuItem
-          {...itemProps}
           key={`dropdown-menu-item-${itemLabel}-${index}`}
           onClick={(event: MouseEvent): void => {
             onClick(event);
