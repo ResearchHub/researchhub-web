@@ -10,7 +10,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { toTitleCase } from "~/config/utils/string";
+import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { Typography } from "@mui/material";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
@@ -87,7 +87,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                 <ReferenceItemFieldInput
                   formID={field_key}
                   key={`reference-item-tab-input-${field_key}`}
-                  label={label}
+                  label={snakeCaseToNormalCase(label)}
                   onChange={(newValue: string): void => {
                     setLocalReferenceFields({
                       ...localReferenceFields,

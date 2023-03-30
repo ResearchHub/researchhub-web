@@ -5,18 +5,15 @@ import { Helpers } from "@quantfive/js-web-config";
 type Args = {
   onError: (error: Error) => void;
   onSuccess: (response: any) => void;
-  payload: any;
 };
 
-export const updateReferenceCitation = ({
+export const fetchReferenceCitationTypes = ({
   onError,
   onSuccess,
-  payload,
 }: Args): void => {
-  const formattedPayload = payload;
   fetch(
-    buildApiUri({ apiPath: `citation_entry/${payload?.id}` }),
-    API.PUT_CONFIG(formattedPayload)
+    buildApiUri({ apiPath: `citation_entry/get_citation_types` }),
+    API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

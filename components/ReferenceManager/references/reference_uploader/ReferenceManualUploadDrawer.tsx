@@ -14,6 +14,12 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { NullableString } from "~/config/types/root_types";
+import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import {
+  ReferenceSchemaValueSet,
+  fetchReferenceCitationSchema,
+} from "../api/fetchReferenceCitationSchema";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -31,12 +37,14 @@ function initComponentStates({
   setReferenceSchemaValueSet,
 }): void {
   setIsDrawerOpen(false);
-  const resettedSchemaSet = {};
-  for (const key in referenceSchemaValueSet) {
-    resettedSchemaSet[key] = null;
+  const resettedSchema = {};
+  for (const key in referenceSchemaValueSet.schema) {
+    resettedSchema[key] = null;
   }
-  setReferenceSchemaValueSet(resettedSchemaSet);
-  console.warn("initComponentStates");
+  setReferenceSchemaValueSet({
+    schema: resettedSchema,
+    required: referenceSchemaValueSet.required,
+  });
 }
 
 function useEffectPrepSchemas({
@@ -47,8 +55,24 @@ function useEffectPrepSchemas({
 }): void {
   useEffect((): void => {
     setIsLoading(true);
-
-    console.warn("useEffectPrepSchemas");
+    fetchReferenceCitationTypes({
+      onError: (error) => {
+        alert(error);
+      },
+      onSuccess: (result) => {
+        setReferenceTypes(result);
+        const selectedReferenceType = result[0];
+        setSelectedReferenceType(selectedReferenceType);
+        fetchReferenceCitationSchema({
+          citation_type: selectedReferenceType,
+          onError: emptyFncWithMsg,
+          onSuccess: ({ schema, required }): void => {
+            setIsLoading(false);
+            setReferenceSchemaValueSet({ schema, required });
+          },
+        });
+      },
+    });
   }, []);
 }
 
@@ -59,7 +83,11 @@ export default function ReferenceManualUploadDrawer({
   const [referenceTypes, setReferenceTypes] = useState<string[] | null>(null);
   const [selectedReferenceType, setSelectedReferenceType] =
     useState<NullableString>(null);
-  const [referenceSchemaValueSet, setReferenceSchemaValueSet] = useState({});
+  const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
+    useState<ReferenceSchemaValueSet>({
+      schema: {},
+      required: [],
+    });
 
   useEffectPrepSchemas({
     setIsLoading,
