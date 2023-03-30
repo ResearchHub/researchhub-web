@@ -222,7 +222,7 @@ export default function RscBalanceHistoryDropContent({
           </a>
         </div>
       </div>
-    </div>)
+    </div>
   );
 }
 

@@ -14,6 +14,7 @@ import PermissionActions from "../redux/permission";
 import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 import Script from "next/script";
+import { ExchangeRateContextProvider } from "~/components/contexts/ExchangeRateContext";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
