@@ -16,7 +16,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { NullableString } from "~/config/types/root_types";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
-  LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 36;
+  LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
 
 type Props = {
   drawerProps: {
@@ -24,19 +24,6 @@ type Props = {
     setIsDrawerOpen: (flag: boolean) => void;
   };
 };
-
-function useEffectPrepSchemas({
-  setIsLoading,
-  setReferenceSchemaValueSet,
-  setReferenceTypes,
-  setSelectedReferenceType,
-}): void {
-  useEffect((): void => {
-    setIsLoading(true);
-
-    alert("hello");
-  }, []);
-}
 
 function initComponentStates({
   referenceSchemaValueSet,
@@ -49,6 +36,20 @@ function initComponentStates({
     resettedSchemaSet[key] = null;
   }
   setReferenceSchemaValueSet(resettedSchemaSet);
+  console.warn("initComponentStates");
+}
+
+function useEffectPrepSchemas({
+  setIsLoading,
+  setReferenceSchemaValueSet,
+  setReferenceTypes,
+  setSelectedReferenceType,
+}): void {
+  useEffect((): void => {
+    setIsLoading(true);
+
+    console.warn("useEffectPrepSchemas");
+  }, []);
 }
 
 export default function ReferenceManualUploadDrawer({
@@ -73,13 +74,14 @@ export default function ReferenceManualUploadDrawer({
       BackdropProps={{ invisible: true }}
       onBackdropClick={() => setIsDrawerOpen(false)}
       open={isDrawerOpen}
-      onClose={(): void =>
+      onClose={(event: SyntheticEvent): void => {
+        event.preventDefault();
         initComponentStates({
           referenceSchemaValueSet,
           setIsDrawerOpen,
           setReferenceSchemaValueSet,
-        })
-      }
+        });
+      }}
       sx={{
         width: "0",
         zIndex: 3 /* AppTopBar zIndex is 3 */,
