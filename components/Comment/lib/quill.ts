@@ -146,3 +146,11 @@ export const forceShowPlaceholder = ({
     quillRef.current.querySelector(".ql-editor").classList.add("ql-blank")
   }
 };
+
+
+export const focusEditor = ({ quill }: { quill: Quill|undefined }) => {
+  if (quill) {
+    quill.focus();
+    placeCursorAtEnd({ quill });
+  }
+};

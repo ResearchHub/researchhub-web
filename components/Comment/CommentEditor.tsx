@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import { QuillFormats, buildQuillModules, insertReviewCategory } from "./lib/quill";
+import { QuillFormats, buildQuillModules, insertReviewCategory, focusEditor } from "./lib/quill";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile, ID } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
@@ -36,6 +36,7 @@ type CommentEditorArgs = {
   previewModeAsDefault?: boolean;
   allowCommentTypeSelection?: boolean;
   handleClose?: Function;
+  focusOnMount?: boolean;
 };
 
 const CommentEditor = ({
@@ -49,6 +50,7 @@ const CommentEditor = ({
   author,
   previewModeAsDefault = false,
   allowCommentTypeSelection = false,
+  focusOnMount = false,
   handleClose,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -61,7 +63,7 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
-  const { quill, quillRef } = useQuill({
+  const { quill, quillRef, isReady } = useQuill({
     modules: buildQuillModules({
       editorId,
       handleImageUpload: () => null,
@@ -97,6 +99,12 @@ const CommentEditor = ({
     const isEmpty = isQuillEmpty(_content) ? true : false;
     setIsEmpty(isEmpty);
   }, [_content]);
+
+  useEffect(() => {
+    if (isReady && focusOnMount) {
+      focusEditor({ quill });
+    }
+  }, [isReady])
 
   const _handleSubmit = async () => {
     setIsSubmitting(true);

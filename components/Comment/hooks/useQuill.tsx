@@ -92,6 +92,7 @@ export const useQuill = (
     quill: undefined as Quill | undefined,
     editorRef: quillRef,
     editor: undefined as Quill | undefined,
+    isReady: false,
   });
 
   useEffect(() => {
@@ -128,7 +129,7 @@ export const useQuill = (
       }
 
       const quill = new obj.Quill(quillRef.current, opts);
-      setObj(assign(assign({}, obj), { quill, editor: quill }));
+      setObj(assign(assign({}, obj), { quill, editor: quill, isReady: true }));
     }
     setIsLoaded(true);
   }, [isLoaded, obj, options]);

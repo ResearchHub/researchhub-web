@@ -1,7 +1,7 @@
 import Quill from "quill";
 import { useEffect } from "react";
 import { commentTypes, reviewCategories } from "../lib/options";
-import { forceShowPlaceholder, hasQuillContent, insertReviewCategory, placeCursorAtEnd, trimQuillEditorContents } from "../lib/quill";
+import { forceShowPlaceholder, hasQuillContent, insertReviewCategory, placeCursorAtEnd, trimQuillEditorContents, focusEditor } from "../lib/quill";
 import { COMMENT_TYPES } from "../lib/types";
 
 function useEffectForCommentTypeChange ({ commentType, quill, quillRef }: { commentType: string, quill: Quill|undefined, quillRef: any }) {
@@ -50,7 +50,7 @@ function useEffectForCommentTypeChange ({ commentType, quill, quillRef }: { comm
       });
     }
 
-    placeCursorAtEnd({ quill })
+    focusEditor({ quill });
   }, [commentType])
 }
 

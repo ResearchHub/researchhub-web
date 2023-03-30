@@ -112,6 +112,7 @@ const Comment = ({
       {isReplyOpen && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
+            focusOnMount={true}
             handleClose={() => _handleToggleReply()}
             handleSubmit={async ({ content, commentType }) => {
               await handleCreate({
