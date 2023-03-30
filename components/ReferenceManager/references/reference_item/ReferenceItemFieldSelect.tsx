@@ -1,10 +1,10 @@
+import { isEmpty } from "~/config/utils/nullchecks";
 import { ReactElement } from "react";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
-import Typography from "@mui/material/Typography";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { isEmpty } from "~/config/utils/nullchecks";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
 
 type MenuItemProps = { label: string; value: string };
 type Props = {

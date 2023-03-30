@@ -9,15 +9,14 @@ import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSideba
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
 import { NullableString } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import { snakeCaseToNormalCase } from "~/config/utils/string";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
+import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
-import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
+import ReferenceItemFieldInput from "../reference_item/ReferenceItemFieldInput";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -99,6 +98,31 @@ export default function ReferenceManualUploadDrawer({
     value: refType,
   }));
 
+  const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema).map(
+    (schemaField: string) => {
+      const label = snakeCaseToNormalCase(schemaField);
+      const schemaFieldValue = referenceSchemaValueSet.schema[schemaField];
+      return (
+        <ReferenceItemFieldInput
+          formID={schemaField}
+          key={`reference-manual-upload-field-${schemaField}`}
+          label={label}
+          onChange={(newValue: string): void => {
+            setReferenceSchemaValueSet({
+              schema: {
+                ...referenceSchemaValueSet.schema,
+                [schemaField]: newValue,
+              },
+              required: referenceSchemaValueSet.required,
+            });
+          }}
+          placeholder={label}
+          value={schemaFieldValue}
+        />
+      );
+    }
+  );
+
   return (
     <Drawer
       anchor="left"
@@ -155,6 +179,7 @@ export default function ReferenceManualUploadDrawer({
             required
             value={selectedReferenceType}
           />
+          {formattedSchemaInputs}
         </Box>
       </Box>
     </Drawer>
