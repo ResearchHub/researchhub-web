@@ -156,7 +156,8 @@ const CommentFeed = ({
       : React.Fragment;
 
   return (
-    <WrapperEl comments={comments} isInitialFetchDone={isInitialFetchDone}>
+    // @ts-ignore
+    <WrapperEl {...(context ? { comments } : {} )} {...(context ? { isInitialFetchDone } : {} )}>
       {!isInitialFetchDone ? (
         Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
           <div>

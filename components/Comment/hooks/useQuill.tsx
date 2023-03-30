@@ -11,6 +11,7 @@ import {
   faLinkSimple,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
+import QuillPeerReviewRatingBlock from "../lib/quillPeerReviewRatingBlock";
 
 const theme = "snow";
 
@@ -107,6 +108,10 @@ export const useQuill = (
       if (!options.readOnly) {
         const MagicUrl = require("quill-magic-url").default;
         obj.Quill.register("modules/magicUrl", MagicUrl);
+
+        obj.Quill.register(QuillPeerReviewRatingBlock);
+        obj.Quill.register("modules/magicUrl", MagicUrl);
+
         const icons = obj.Quill.import("ui/icons");
         icons.video = ReactDOMServer.renderToString(
           <FontAwesomeIcon icon={faVideo} />

@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import { QuillFormats, buildQuillModules } from "./lib/quill";
+import { QuillFormats, buildQuillModules, insertReviewCategory } from "./lib/quill";
 import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
 import { AuthorProfile, ID } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
@@ -15,12 +15,13 @@ import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import Loader from "../Loader/Loader";
-import config from "./lib/config";
 import { MessageActions } from "~/redux/message";
 import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
+import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
+import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -75,6 +76,12 @@ const CommentEditor = ({
     content,
   });
 
+  useEffectForCommentTypeChange({
+    quill,
+    quillRef,
+    commentType: _commentType,
+  })
+
   if (previewModeAsDefault) {
     useEffectHandleClick({
       el: editorRef.current,
@@ -120,7 +127,7 @@ const CommentEditor = ({
   };
 
   return (
-    <div ref={editorRef} className={css(styles.commentEditor)}>
+    <div ref={editorRef} className={`${css(styles.commentEditor)} CommentEditor`}>
       <div>
         {handleClose && (
           <IconButton
@@ -152,6 +159,15 @@ const CommentEditor = ({
         )}
         <div className={css(styles.editor)}>
           <div ref={quillRef} />
+          {_commentType === COMMENT_TYPES.REVIEW && (
+            <div className={css(styles.reviewCategoryContainer)}>
+              <CommentReviewCategorySelector
+                handleSelect={(category) => {
+                  insertReviewCategory({ category, quill, quillRef });
+                }}
+              />
+            </div>
+            )}
           <div
             className={css(
               styles.toolbarContainer,

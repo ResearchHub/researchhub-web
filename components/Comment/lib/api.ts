@@ -4,11 +4,13 @@ import listMockData from "../mock/list.json";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import config from "./config";
+import { sortOpts } from "./options";
 
 export const fetchCommentsAPI = async ({
   documentType,
   documentId,
-  sort,
+  sort = sortOpts[0].value,
   filter,
   page,
 }: {
@@ -26,6 +28,7 @@ export const fetchCommentsAPI = async ({
     ...(filter && { thread_type: filter }),
     ...(sort && { ordering: sort }),
     ...(page && page > 1 && { page: page }),
+    child_count: config.feed.pageSize,
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);

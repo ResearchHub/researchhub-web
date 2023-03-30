@@ -13,19 +13,12 @@ type Args = {
 };
 
 const CommentReadOnly = ({ content }: Args) => {
-  var startTime = performance.now()
-
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
 
   var cfg = {};
   var converter = new QuillDeltaToHtmlConverter(content.ops, cfg);
   var html = converter.convert();
-
-      var endTime = performance.now()
-      console.log('content', content.ops)
-      console.log('html', html)
-      console.log(`Call to doSomething took ${endTime - startTime} milliseconds`)
 
       // if (length > config.comment.previewMaxChars) {
       //   setShowLoadMoreBtn(true);
