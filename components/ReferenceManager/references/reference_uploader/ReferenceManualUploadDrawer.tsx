@@ -1,25 +1,19 @@
-import {
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Drawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
-import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
-import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
-import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { NullableString } from "~/config/types/root_types";
-import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import {
-  ReferenceSchemaValueSet,
   fetchReferenceCitationSchema,
+  ReferenceSchemaValueSet,
 } from "../api/fetchReferenceCitationSchema";
+import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
+import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
+import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
+import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
+import { NullableString } from "~/config/types/root_types";
+import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import Drawer from "@mui/material/Drawer";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
