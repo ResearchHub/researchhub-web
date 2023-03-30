@@ -10,7 +10,7 @@ import {
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
-import { useReferenceTabContext } from "../context/ReferenceItemDrawerContext";
+import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 
 function useEffectFetchReferenceCitations({
   onSuccess,

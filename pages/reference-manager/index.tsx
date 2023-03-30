@@ -1,4 +1,4 @@
-import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/context/ReferenceItemDrawerContext";
+import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/reference_item/context/ReferenceItemDrawerContext";
 import HeadComponent from "~/components/Head";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
 import killswitch from "~/config/killswitch/killswitch";

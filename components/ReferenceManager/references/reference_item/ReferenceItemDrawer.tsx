@@ -13,7 +13,7 @@ import {
 import { toTitleCase } from "~/config/utils/string";
 import { Typography } from "@mui/material";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
-import { useReferenceTabContext } from "../context/ReferenceItemDrawerContext";
+import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";

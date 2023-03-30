@@ -13,6 +13,7 @@ import BasicTogglableNavbarLeft, {
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 
 interface Props {}
 
@@ -23,13 +24,20 @@ export default function ReferencesContainer({}: Props): ReactNode {
   });
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
-
+  const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
+    useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   if (!userAllowed) {
     return null;
   } else {
     return (
       <Fragment>
+        <ReferenceManualUploadDrawer
+          drawerProps={{
+            isDrawerOpen: isManualUploadDrawerOpen,
+            setIsDrawerOpen: setIsManualUploadDrawerOpen,
+          }}
+        />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex">
           <BasicTogglableNavbarLeft

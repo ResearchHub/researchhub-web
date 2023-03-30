@@ -164,7 +164,7 @@ export default function BasicTogglableNavbarLeft({
         <DropdownMenu
           menuItemProps={[
             { itemLabel: "File(s) from computer", onClick: () => {} },
-            { itemLabel: "Import library", onClick: () => {} },
+            { itemLabel: "Add entry manually", onClick: () => {} },
           ]}
           menuLabel={
             <Box
