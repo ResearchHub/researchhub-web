@@ -22,7 +22,11 @@ const CommentHeader = ({ authorProfile, comment }: CommentHeaderArgs) => {
     <div className={css(styles.commentHeader)}>
       {openBounties.length > 0 && (
         <div className={css(styles.badgeRow)}>
-          <ContentBadge contentType="bounty" label={`${bountyAmount} RSC`} />
+          <ContentBadge
+            contentType="bounty"
+            label={`${bountyAmount} RSC`}
+            bountyAmount={bountyAmount}
+          />
         </div>
       )}
       <div className={css(styles.details)}>

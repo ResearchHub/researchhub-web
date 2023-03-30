@@ -61,15 +61,11 @@ export default function BountiesSidebarItem({
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
-              <RSCTooltip
-                targetContent={
-                  <ContentBadge
-                    label={`${`${roundedOfferAmount} RSC`}`}
-                    contentType="bounty"
-                    size="small"
-                  />
-                }
-                amount={bountyAmount}
+              <ContentBadge
+                label={`${roundedOfferAmount} RSC`}
+                contentType="bounty"
+                size="small"
+                bountyAmount={roundedOfferAmount}
               />
             </span>
           </div>
@@ -122,7 +118,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     display: "flex",
     fontSize: 14,
-    overflowX: "auto",
     whiteSpace: "nowrap",
     "-ms-overflow-style": "none" /* IE and Edge */,
     "scrollbar-width": "none" /* Firefox */,

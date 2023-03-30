@@ -2,7 +2,17 @@ import { useContext, createContext, useEffect, useState } from "react";
 import numeral from "numeral";
 import { fetchExchangeRate } from "~/config/fetch/exchangeRate";
 
-const ExchangeRateContext = createContext({});
+type ContextType = {
+  exchangeRate: number;
+  rscToUSD: (rsc: number) => number;
+  rscToUSDDisplay: (rsc: number) => string;
+};
+
+const ExchangeRateContext = createContext<ContextType>({
+  exchangeRate: 0,
+  rscToUSD: () => 0,
+  rscToUSDDisplay: () => "",
+});
 
 export const useExchangeRate = () => useContext(ExchangeRateContext);
 

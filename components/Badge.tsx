@@ -11,6 +11,8 @@ type Args = {
   onClick?: Function;
   onRemove?: Function;
   badgeClassName: any;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 };
 
 const Badge = ({
@@ -20,6 +22,8 @@ const Badge = ({
   onClick,
   onRemove,
   badgeClassName,
+  onMouseEnter,
+  onMouseLeave,
 }: Args) => {
   return (
     <div
@@ -28,6 +32,8 @@ const Badge = ({
         onClick && styles.badgeWithOnClick,
         badgeClassName
       )}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onClick={(event) => onClick && onClick(event)}
       data-test={isDevEnv() ? `badge-${id}` : undefined}
     >

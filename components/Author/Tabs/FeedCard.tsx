@@ -254,7 +254,7 @@ function FeedCard({
     });
 
   return (
-    (<Ripples
+    <Ripples
       className={css(
         styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder,
@@ -380,25 +380,19 @@ function FeedCard({
                   </div>
                   {hasActiveBounty && (
                     <div className={css(styles.metaItem)}>
-                      <RSCTooltip
-                        targetContent={
-                          <ContentBadge
-                            contentType="bounty"
-                            label={
-                              <div
-                                style={{ display: "flex", whiteSpace: "pre" }}
-                              >
-                                <div style={{ flex: 1 }}>
-                                  {formatBountyAmount({
-                                    amount: bountyAmount,
-                                  })}{" "}
-                                  RSC
-                                </div>
-                              </div>
-                            }
-                          />
+                      <ContentBadge
+                        contentType="bounty"
+                        bountyAmount={bountyAmount}
+                        label={
+                          <div style={{ display: "flex", whiteSpace: "pre" }}>
+                            <div style={{ flex: 1 }}>
+                              {formatBountyAmount({
+                                amount: bountyAmount,
+                              })}{" "}
+                              RSC
+                            </div>
+                          </div>
                         }
-                        amount={bountyAmount}
                       />
                     </div>
                   )}
@@ -418,7 +412,9 @@ function FeedCard({
                         {hasAcceptedAnswer ? (
                           <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                         ) : (
-                          <FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>
+                          <FontAwesomeIcon
+                            icon={faCommentAltLines}
+                          ></FontAwesomeIcon>
                         )}
                       </span>
                       <span className={css(styles.metadataText)}>
@@ -476,7 +472,7 @@ function FeedCard({
           </div>
         </div>
       </div>
-    </Ripples>)
+    </Ripples>
   );
 }
 

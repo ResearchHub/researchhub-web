@@ -125,6 +125,7 @@ const AuthorFeedItem = ({
           <ContentBadge
             contentType="bounty"
             label={`${formattedBountyAmount} RSC`}
+            bountyAmount={formattedBountyAmount}
           />
         </span>
       );

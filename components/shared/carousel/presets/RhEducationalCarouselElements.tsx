@@ -50,9 +50,7 @@ export const getEducationalCarouselElements = () => [
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
         <span style={{ marginRight: 8, marginTop: 3 }}>
-          {RSC({
-            style: styles.RSC,
-          })}
+          <RSC style={styles.RSC} />
         </span>
         {" About ResearchCoin (RSC)"}
       </div>
