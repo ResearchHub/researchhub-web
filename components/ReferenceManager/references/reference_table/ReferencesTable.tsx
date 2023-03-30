@@ -1,4 +1,4 @@
-import { columnsFormat } from "../utils/referenceTableFormat";
+import { columnsFormat } from "./utils/referenceTableFormat";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { DataGrid } from "@mui/x-data-grid";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
@@ -6,7 +6,7 @@ import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserRefer
 import {
   formatReferenceRowData,
   ReferenceTableRowDataType,
-} from "../utils/formatReferenceRowData";
+} from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
