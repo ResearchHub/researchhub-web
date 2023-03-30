@@ -25,7 +25,7 @@ export default function ReferencesContainer({}: Props): ReactNode {
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
-    useState<boolean>(true);
+    useState<boolean>(false);
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
 

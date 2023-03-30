@@ -25,6 +25,32 @@ type Props = {
   };
 };
 
+function useEffectPrepSchemas({
+  setIsLoading,
+  setReferenceSchemaValueSet,
+  setReferenceTypes,
+  setSelectedReferenceType,
+}): void {
+  useEffect((): void => {
+    setIsLoading(true);
+
+    alert("hello");
+  }, []);
+}
+
+function initComponentStates({
+  referenceSchemaValueSet,
+  setIsDrawerOpen,
+  setReferenceSchemaValueSet,
+}): void {
+  setIsDrawerOpen(false);
+  const resettedSchemaSet = {};
+  for (const key in referenceSchemaValueSet) {
+    resettedSchemaSet[key] = null;
+  }
+  setReferenceSchemaValueSet(resettedSchemaSet);
+}
+
 export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
@@ -34,14 +60,12 @@ export default function ReferenceManualUploadDrawer({
     useState<NullableString>(null);
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] = useState({});
 
-  const initComponentStates = (): void => {
-    setIsDrawerOpen(false);
-    const resettedSchemaSet = {};
-    for (const key in referenceSchemaValueSet) {
-      resettedSchemaSet[key] = null;
-    }
-    setReferenceSchemaValueSet(resettedSchemaSet);
-  };
+  useEffectPrepSchemas({
+    setIsLoading,
+    setReferenceSchemaValueSet,
+    setReferenceTypes,
+    setSelectedReferenceType,
+  });
 
   return (
     <Drawer
@@ -49,7 +73,13 @@ export default function ReferenceManualUploadDrawer({
       BackdropProps={{ invisible: true }}
       onBackdropClick={() => setIsDrawerOpen(false)}
       open={isDrawerOpen}
-      onClose={initComponentStates}
+      onClose={(): void =>
+        initComponentStates({
+          referenceSchemaValueSet,
+          setIsDrawerOpen,
+          setReferenceSchemaValueSet,
+        })
+      }
       sx={{
         width: "0",
         zIndex: 3 /* AppTopBar zIndex is 3 */,
