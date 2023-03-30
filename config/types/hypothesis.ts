@@ -11,6 +11,7 @@ import {
   UnifiedDocument,
   ID,
   RhDocumentType,
+  ApiDocumentType,
 } from "./root_types";
 
 export type CitationConsensus = {
@@ -48,6 +49,7 @@ export class Hypothesis implements TopLevelDocument {
   _boostAmount: number;
   _consensus: CitationConsensus | undefined;
   _documentType: RhDocumentType;
+  _apiDocumentType: ApiDocumentType;
   
 
   constructor(raw: any) {
@@ -66,6 +68,7 @@ export class Hypothesis implements TopLevelDocument {
     this._markdown = raw.full_markdown;
     this._isReady = raw.id ? true : false;
     this._documentType = "hypothesis";
+    this._apiDocumentType = "hypothesis";
 
     if (raw.aggregate_citation_consensus) {
       this._consensus = parseConsensus(raw.aggregate_citation_consensus);
@@ -148,5 +151,9 @@ export class Hypothesis implements TopLevelDocument {
 
   get documentType(): RhDocumentType {
     return this._documentType;
-  }  
+  }
+
+  get apiDocumentType(): ApiDocumentType {
+    return this._apiDocumentType;
+  }
 }

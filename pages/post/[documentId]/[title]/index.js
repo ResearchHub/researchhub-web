@@ -24,6 +24,7 @@ import { Post as PostDoc } from "~/config/types/post";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { trackEvent } from "~/config/utils/analytics";
+import CommentFeed from "~/components/Comment/CommentFeed";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -220,6 +221,7 @@ const Post = (props) => {
       />
       <PaperBanner document={post} documentType="post" />
       <div className={css(styles.postPageRoot)}>
+        <a name="main" />
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
           <div className={css(styles.postPageMain)}>
@@ -241,7 +243,22 @@ const Post = (props) => {
             />
             <div className={css(styles.postPageSection)}>
               <a name="comments" id="comments" />
-              {postV2.isReady && (
+
+              {router.query.cv2 === "" ? (
+                <>
+                  <div className={css(styles.discussionSectionHeader)}>
+                    <h3 className={css(styles.discussionSectionTitle)}>
+                      Discussion
+                    </h3>
+                    {postV2.isReady && (
+                      <span className={css(styles.discussionCount)}>
+                        {discussionCount}
+                      </span>
+                    )}
+                  </div>
+                  <CommentFeed document={postV2} previewModeAsDefault={false} />
+                </>
+              ) : postV2.isReady ? (
                 <DiscussionTab
                   hostname={process.env.HOST}
                   documentType={postV2.unifiedDocument.documentType}
@@ -263,10 +280,20 @@ const Post = (props) => {
                   bounties={bounties || post.bounties}
                   handleAwardBounty={handleAwardBounty}
                 />
-              )}
+              ) : null}
             </div>
           </div>
         </div>
+
+        <div />
+        {router.query.cv2 &&
+          ["sidebar", "drawer"].includes(router.query.cv2) && (
+            <CommentFeed
+              document={postV2}
+              context={router.query.cv2}
+              previewModeAsDefault={true}
+            />
+          )}
       </div>
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script
@@ -342,9 +369,12 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   postPageRoot: {
     display: "flex",
-    justifyContent: "center",
+    // justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
+    // This property is needed for comments sidebar to close gracefully without overflow.
+    overflowX: "clip",
   },
   postPageContainer: {
     marginTop: 30,
@@ -369,6 +399,24 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
+  },
+  discussionSectionHeader: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 25,
+  },
+  discussionSectionTitle: {
+    margin: 0,
+  },
+  discussionCount: {
+    color: colors.BLACK(),
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "4px",
+    padding: "5px 10px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 10,
+    alignSelf: "center",
   },
 });
 

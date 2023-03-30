@@ -49,7 +49,7 @@ const CommentFeed = ({
     try {
       const response = await fetchCommentsAPI({
         documentId: document.id,
-        documentType: document.documentType,
+        documentType: document.apiDocumentType,
         sort,
         filter,
       });
