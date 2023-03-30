@@ -54,7 +54,6 @@ const CommentEditor = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
-  const isEmptyRef = useRef(isEmpty);
   const [isPreviewMode, setIsPreviewMode] =
     useState<boolean>(previewModeAsDefault);
   const isPreviewModeRef = useRef(previewModeAsDefault);
@@ -74,6 +73,7 @@ const CommentEditor = ({
   const { content: _content, dangerouslySetContent } = useQuillContent({
     quill,
     content,
+    notifyOnContentChangeRate: 500 // ms
   });
 
   useEffectForCommentTypeChange({
@@ -96,7 +96,6 @@ const CommentEditor = ({
   useEffect(() => {
     const isEmpty = isQuillEmpty(_content) ? true : false;
     setIsEmpty(isEmpty);
-    isEmptyRef.current = isEmpty;
   }, [_content]);
 
   const _handleSubmit = async () => {
@@ -125,14 +124,14 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
-
+  console.log('updating editor', _content)
   return (
     <div ref={editorRef} className={`${css(styles.commentEditor)} CommentEditor`}>
       <div>
         {handleClose && (
           <IconButton
             overrideStyle={styles.closeBtn}
-            onClick={() => handleClose()}
+            onClick={handleClose}
           >
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>

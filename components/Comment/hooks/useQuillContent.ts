@@ -1,22 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Quill from "quill";
 import { isEmpty } from "~/config/utils/nullchecks";
+import debounce from "lodash/debounce";
 
 type Args = {
   quill: Quill | undefined;
   content: object;
+  notifyOnContentChangeRate: number;
 };
 
-const useQuillContent = ({ quill, content = {} }: Args) => {
-  const [_content, _setContent] = useState<object>(content);
+const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Args) => {
+  const [_content, setContent] = useState<object>(content);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+  const debouncedSetContent = useCallback(debounce((c) => setContent(c), notifyOnContentChangeRate), [_content])
 
   useEffect(() => {
     if (quill) {
       quill.on("text-change", (delta, oldDelta, source) => {
         if (source === "user") {
           const nextContent = quill.getContents();
-          _setContent(nextContent);
+          debouncedSetContent(nextContent);
         }
       });
     }
@@ -25,8 +29,9 @@ const useQuillContent = ({ quill, content = {} }: Args) => {
   useEffect(() => {
     if (quill) {
       if (!isInitialized && !isEmpty(content)) {
+        // @ts-ignore
         quill!.setContents(content);
-        _setContent(content);
+        debouncedSetContent(content);
       }
 
       setIsInitialized(true);
@@ -37,7 +42,7 @@ const useQuillContent = ({ quill, content = {} }: Args) => {
     content: _content,
     dangerouslySetContent: (content) => {
       quill!.setContents(content);
-      _setContent(content);
+      setContent(content);
     },
   };
 };
