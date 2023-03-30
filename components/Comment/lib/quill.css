@@ -2,12 +2,12 @@
   border: none !important;
 }
 .CommentEditor .ql-container .ql-editor[contenteditable="true"] {
-  min-height: 60px;
+  min-height: 50px;
 }
 /* Placeholder */
 .CommentEditor .ql-editor.ql-blank::before {
   left: 0 !important;
-  color: rgba(124, 121, 137, 1);
+  color: rgb(168, 167, 169, 1);
   font-size: 14px;
   font-style: normal;
 }

@@ -4,9 +4,9 @@ import { commentTypes, reviewCategories } from "../lib/options";
 import { forceShowPlaceholder, hasQuillContent, insertReviewCategory, placeCursorAtEnd, trimQuillEditorContents, focusEditor } from "../lib/quill";
 import { COMMENT_TYPES } from "../lib/types";
 
-function useEffectForCommentTypeChange ({ commentType, quill, quillRef }: { commentType: string, quill: Quill|undefined, quillRef: any }) {
+function useEffectForCommentTypeChange ({ commentType, quill, quillRef, isReady }: { commentType: string, quill: Quill|undefined, quillRef: any, isReady: boolean }) {
   useEffect(() => {
-    if (!quill) {
+    if (!(isReady && quill)) {
       return;
     }
 

@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   },
   plusIcon: {
     fontSize: 15,
+    color: "rgb(124, 121, 137)",
   },
   trigger: {
     userSelect: "none",
@@ -103,17 +104,17 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     alignItems: "center",
     display: "inline-flex",
-    color: colors.MEDIUM_GREY2(),
+    color: "rgb(124, 121, 137)",
   },
   triggerLabel: {
-    marginLeft: 6,
+    marginLeft: 2,
   },
   dropdown: {
     position: "absolute",
     display: "none",
     zIndex: 6,
     background: "white",
-    padding: "15px 0 10px 0",
+    padding: "7px 0 8px 0",
     borderRadius: 4,
     marginTop: 5,
     boxShadow:

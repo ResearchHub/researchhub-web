@@ -18,7 +18,7 @@ export const commentTypes = [
     isDefault: true,
     group: "contribute",
     icon: <FontAwesomeIcon icon={faComments} />,
-    placeholder: "What are your thoughts about this paper?",
+    placeholder: "Add comment or start a bounty",
   },
   {
     label: "Peer review",

@@ -4,8 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import { QuillFormats, buildQuillModules, insertReviewCategory, focusEditor } from "./lib/quill";
-import isQuillEmpty from "../TextEditor/util/isQuillEmpty";
+import { QuillFormats, buildQuillModules, insertReviewCategory, focusEditor, forceShowPlaceholder, hasQuillContent } from "./lib/quill";
 import { AuthorProfile, ID } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
@@ -22,6 +21,7 @@ import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
 import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
+import config from "./lib/config";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -81,6 +81,7 @@ const CommentEditor = ({
   useEffectForCommentTypeChange({
     quill,
     quillRef,
+    isReady,
     commentType: _commentType,
   })
 
@@ -96,9 +97,14 @@ const CommentEditor = ({
   }
 
   useEffect(() => {
-    const isEmpty = isQuillEmpty(_content) ? true : false;
-    setIsEmpty(isEmpty);
-  }, [_content]);
+    if (isReady) {
+      const _isEmpty = !hasQuillContent({ quill })
+      setIsEmpty(_isEmpty);
+      if (_isEmpty) {
+        forceShowPlaceholder({ quillRef, placeholderText: commentTypes.find(ct => ct.value === _commentType)?.placeholder })
+      }
+    }
+  }, [_content, isReady]);
 
   useEffect(() => {
     if (isReady && focusOnMount) {
@@ -109,12 +115,12 @@ const CommentEditor = ({
   const _handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // if (quill!.getLength() <= config.comment.minLength) {
-      //   dispatch(setMessage(`Comment must be greater than ${config.comment.minLength} characters long.`));
-      //   // @ts-ignore
-      //   dispatch(showMessage({ show: true, error: true }));
-      //   return false;
-      // }
+      if (quill!.getLength() <= config.comment.minLength) {
+        dispatch(setMessage(`Comment must be greater than ${config.comment.minLength} characters long.`));
+        // @ts-ignore
+        dispatch(showMessage({ show: true, error: true }));
+        return false;
+      }
 
       await handleSubmit({
         content: _content,
@@ -253,6 +259,9 @@ const styles = StyleSheet.create({
     top: 15,
     fontSize: 18,
   },
+  reviewCategoryContainer: {
+    marginTop: 15,
+  }
 });
 
 export default CommentEditor;

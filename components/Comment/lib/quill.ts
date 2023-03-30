@@ -30,6 +30,9 @@ export const buildQuillModules = ({
   return modules;
 };
 
+/**
+ * @deprecated use hasQuillContent instead
+ */
 export default function isQuillEmpty(content) {
   return !content || JSON.stringify(content) === '{"ops":[{"insert":"\\n"}]}';
 }
@@ -79,7 +82,9 @@ export function trimQuillEditorContents ({ contents }) {
   return deltas;
 }
 
-export function hasQuillContent({ quill, contentType }: { quill: Quill, contentType?: string }) {
+export function hasQuillContent({ quill, contentType }: { quill: Quill|undefined, contentType?: string }) {
+  if (!quill) return false;
+
   const contents = quill.getContents();
   const deltas = contents?.ops || [];
   let hasContent = false;
@@ -136,14 +141,17 @@ export const placeCursorAtEnd = ({ quill }: { quill: Quill }) => {
 
 export const forceShowPlaceholder = ({
   quillRef,
-  placeholderText = "What are your thoughts about this paper?"
+  placeholderText = "What are your thoughts about this paper?",
 }: {
   quillRef: any;
   placeholderText: string|undefined;
 }) => {
-  if (placeholderText) {
-    quillRef.current.querySelector(".ql-editor").setAttribute("data-placeholder", placeholderText);
-    quillRef.current.querySelector(".ql-editor").classList.add("ql-blank")
+  if (placeholderText && quillRef?.current) {
+    const editorEl = quillRef.current.querySelector(".ql-editor");
+    if (editorEl) {
+      editorEl.setAttribute("data-placeholder", placeholderText);
+      editorEl.classList.add("ql-blank");
+    }
   }
 };
 
