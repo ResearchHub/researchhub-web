@@ -89,7 +89,7 @@ export default function BasicTogglableNavbarLeft({
     <Box
       flexDirection="column"
       width={navWidth}
-      sx={{ borderLeft: "1px solid #e8e8ef" }}
+      sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
     >
       <Box
         className="LeftNavbarUserSection"
