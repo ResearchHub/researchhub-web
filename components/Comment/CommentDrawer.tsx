@@ -32,7 +32,7 @@ const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
   }, []);
 
   return (
-    <div className={css(styles.drawerRoot)}>
+    <>
       {isInitialFetchDone && (
         <CommentSidebarToggle
           isOpen={isOpen}
@@ -79,7 +79,7 @@ const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
           {children}
         </div>
       </SwipeableDrawer>
-    </div>
+    </>
   );
 };
 

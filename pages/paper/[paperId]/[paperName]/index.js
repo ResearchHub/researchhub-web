@@ -380,7 +380,7 @@ const Paper = ({
           ["sidebar", "drawer"].includes(router.query.cv2) && (
             <CommentFeed
               document={paperV2}
-              context={"sidebar"}
+              context={router.query.cv2}
               previewModeAsDefault={true}
             />
           )}
