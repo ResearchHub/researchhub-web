@@ -1,5 +1,9 @@
 import { ChangeEvent, ReactElement } from "react";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullthrows,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -11,7 +15,7 @@ type Props = {
   placeholder?: string;
   required?: boolean;
   value?: any;
-  onChange: (value: any) => void;
+  onChange?: (value: any) => void;
 };
 
 export default function ReferenceItemFieldInput({
@@ -48,13 +52,17 @@ export default function ReferenceItemFieldInput({
         fullWidth
         onClick={silentEmptyFnc}
         id={formID}
-        onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-          onChange(event?.target?.value);
-        }}
+        // onChange={
+        //   !isNullOrUndefined(onChange)
+        //     ? (event: ChangeEvent<HTMLInputElement>): void => {
+        //         nullthrows(onChange)(event?.target?.value);
+        //       }
+        //     : undefined
+        // }
         placeholder={placeholder}
         required={required}
         size="small"
-        value={value}
+        // value={value}
         sx={{
           background: "#fff",
         }}
