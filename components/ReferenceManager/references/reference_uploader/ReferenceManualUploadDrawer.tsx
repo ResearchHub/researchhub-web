@@ -152,7 +152,6 @@ export default function ReferenceManualUploadDrawer({
             label="Reference type"
             menuItemProps={formattedMenuItemProps}
             onChange={setSelectedReferenceType}
-            placeholder="Select reference type"
             required
             value={selectedReferenceType}
           />
