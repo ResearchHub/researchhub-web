@@ -46,6 +46,7 @@ export default function ReferencesContainer({}: Props): ReactNode {
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
+            setIsManualUploadDrawerOpen={setIsManualUploadDrawerOpen}
             // theme={theme}
           />
           <Box

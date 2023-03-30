@@ -67,6 +67,7 @@ type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
+  setIsManualUploadDrawerOpen: (flag: boolean) => void;
   theme?: Theme;
 };
 
@@ -74,6 +75,7 @@ export default function BasicTogglableNavbarLeft({
   isOpen,
   navWidth,
   setIsOpen,
+  setIsManualUploadDrawerOpen,
   theme,
 }: Props) {
   const user = getCurrentUser();
@@ -164,7 +166,10 @@ export default function BasicTogglableNavbarLeft({
         <DropdownMenu
           menuItemProps={[
             { itemLabel: "File(s) from computer", onClick: () => {} },
-            { itemLabel: "Add entry manually", onClick: () => {} },
+            {
+              itemLabel: "Add entry manually",
+              onClick: (): void => setIsManualUploadDrawerOpen(true),
+            },
           ]}
           menuLabel={
             <Box

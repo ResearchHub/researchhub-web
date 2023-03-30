@@ -10,6 +10,10 @@ import Box from "@mui/material/Box";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { NullableString } from "~/config/types/root_types";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 36;
@@ -24,7 +28,20 @@ type Props = {
 export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
-  const [reference, setReference] = useState({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [referenceTypes, setReferenceTypes] = useState<string[] | null>(null);
+  const [selectedReferenceType, setSelectedReferenceType] =
+    useState<NullableString>(null);
+  const [referenceSchemaValueSet, setReferenceSchemaValueSet] = useState({});
+
+  const initComponentStates = (): void => {
+    setIsDrawerOpen(false);
+    const resettedSchemaSet = {};
+    for (const key in referenceSchemaValueSet) {
+      resettedSchemaSet[key] = null;
+    }
+    setReferenceSchemaValueSet(resettedSchemaSet);
+  };
 
   return (
     <Drawer
@@ -32,6 +49,7 @@ export default function ReferenceManualUploadDrawer({
       BackdropProps={{ invisible: true }}
       onBackdropClick={() => setIsDrawerOpen(false)}
       open={isDrawerOpen}
+      onClose={initComponentStates}
       sx={{
         width: "0",
         zIndex: 3 /* AppTopBar zIndex is 3 */,
@@ -41,14 +59,30 @@ export default function ReferenceManualUploadDrawer({
       <Box
         sx={{
           background: "rgba(250, 250, 252, 1)",
-          width: "472px",
-          height: "100%",
-          marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
           borderLeft: `1px solid #e8e8ef`,
+          boxSizing: "border-box",
+          height: "100%",
           marginLeft: `${APPLICABLE_LEFT_NAV_WIDTH}px`,
+          marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
+          padding: "16px 24px",
+          width: "472px",
         }}
       >
-        HIHIHIHI
+        <Stack
+          alignItems="center"
+          direction="row"
+          justifyContent="space-between"
+          mb="24px"
+          spacing={1}
+        >
+          <Typography variant="h6">{"Add entry manually"}</Typography>
+          <CloseOutlinedIcon
+            fontSize="small"
+            color="disabled"
+            onClick={(): void => setIsDrawerOpen(false)}
+            sx={{ cursor: "pointer" }}
+          />
+        </Stack>
       </Box>
     </Drawer>
   );
