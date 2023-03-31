@@ -30,6 +30,7 @@ import postTypes, {
 import { breakpoints } from "~/config/themes/screen";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { useExchangeRate } from "./contexts/ExchangeRateContext";
+import ContentBadge from "./ContentBadge";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -149,14 +150,16 @@ const DiscussionPostMetadata = (props) => {
     commentBounties[0].status === "OPEN"
   ) {
     text = (
-      <span>
+      <span className={css(styles.isOffering)}>
         is offering{" "}
-        <span className={css(styles.strong)}>
-          {formatBountyAmount({
+        <ContentBadge
+          label={`${formatBountyAmount({
             amount: commentBounties[0].amount,
-          })}{" "}
-          RSC ≈ {rscToUSDDisplay(commentBounties[0].amount)}
-        </span>
+          })} RSC`}
+          contentType="bounty"
+          size="small"
+          bountyAmount={commentBounties[0].amount}
+        />
       </span>
     );
   }
@@ -430,6 +433,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
     },
+  },
+  isOffering: {
+    display: "flex",
+    alignItems: "center",
+    whiteSpace: "pre-wrap",
   },
   atag: {
     cursor: "pointer",
