@@ -30,10 +30,12 @@ const CommentActions = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
+  const disableSocialActions = currentUser?.id === comment.createdBy.id;
+
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
-        <div className={`${css(styles.action)} vote-btn`}>
+        <div className={`${css(styles.action, disableSocialActions && styles.disabled)} vote-btn`}>
           <CommentVote
             comment={comment}
             score={comment.score}
@@ -42,25 +44,23 @@ const CommentActions = ({
             documentID={document.id}
           />
         </div>
-        <div className={`${css(styles.action)} tip-btn`}>
-          {currentUser?.id !== comment.createdBy.id &&
-            <WidgetContentSupport
-              data={{
-                created_by: comment.createdBy.raw,
-              }}
-              metaData={{
-                contentType: "researchhub_comment", objectId: comment.id
-              }}
-            >
-              <Image
-                src="/static/icons/tip.png"
-                height={20}
-                width={20}
-                alt="Tip"
-              />
-              <span className={css(styles.actionText)}>Tip</span>              
-            </WidgetContentSupport>
-          }
+        <div className={`${css(styles.action, disableSocialActions && styles.disabled)} tip-btn`}>
+          <WidgetContentSupport
+            data={{
+              created_by: comment.createdBy.raw,
+            }}
+            metaData={{
+              contentType: "researchhub_comment", objectId: comment.id
+            }}
+          >
+            <Image
+              src="/static/icons/tip.png"
+              height={20}
+              width={20}
+              alt="Tip"
+            />
+            <span className={css(styles.actionText)}>Tip</span>
+          </WidgetContentSupport>
         </div>
 
         {/* <div className={`${css(styles.action)} award-btn`}>
@@ -93,6 +93,19 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
   },
+  disabled: {
+    "::before": {
+      cursor: "not-allowed",
+      zIndex: 5,
+      content: `""`,
+      position: "absolute",
+      top: 0,
+      left: 0,
+      bottom: 0,
+      width: "100%",
+      height: "100%"
+    }
+  },
   action: {
     display: "flex",
     columnGap: "5px",
@@ -100,6 +113,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     fontSize: 14,
     fontWeight: 500,
+    position: "relative",
   },
   actionReply: {
     marginLeft: "auto",

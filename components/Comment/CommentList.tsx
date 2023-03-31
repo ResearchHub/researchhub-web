@@ -31,7 +31,7 @@ type Args = {
   isRootList?: boolean;
   isFetching?: boolean;
   totalCount: number;
-  fetchMore: Function;
+  handleFetchMore: Function;
 };
 
 const CommentList = ({
@@ -39,7 +39,7 @@ const CommentList = ({
   totalCount,
   parentComment,
   document,
-  fetchMore,
+  handleFetchMore,
   isRootList = false,
   isFetching = false,
 }: Args) => {
@@ -50,68 +50,6 @@ const CommentList = ({
   );
   const dispatch = useDispatch();
   const commentTreeState = useContext(CommentTreeContext);
-  
-  const handleCommentCreate = async ({
-    content,
-    commentType,
-    parentId,
-  }: {
-    content: object;
-    commentType: COMMENT_TYPES;
-    parentId: ID;
-  }) => {
-    try {
-      let parentComment: CommentType | undefined;
-      if (parentId) {
-        parentComment = findComment({
-          id: parentId,
-          comments: comments,
-        })?.comment;
-
-        if (!parentComment) {
-          console.warn(
-            `Could not find parent comment ${parentId}. This should not happen. Aborting create.`
-          );
-          return false;
-        }
-      }
-
-      const comment: CommentType = await createCommentAPI({
-        content,
-        commentType,
-        documentId: document.id,
-        documentType: document.apiDocumentType,
-        parentComment,
-      });
-
-      commentTreeState.onCreate({ comment, parent: parentComment });
-    } catch (error) {
-      dispatch(setMessage("Could not create a comment at this time"));
-      // @ts-ignore
-      dispatch(showMessage({ show: true, error: true }));
-      throw error;
-    }
-  };
-
-  const handleCommentUpdate = async ({
-    id,
-    content,
-  }: {
-    id: ID;
-    content: any;
-  }) => {
-    const comment: CommentType = await updateCommentAPI({
-      id,
-      content,
-      documentId: document.id,
-      documentType: document.apiDocumentType,
-      // FIXME: Temporary fix until we add created_by as obj from BE
-      // @ts-ignore
-      currentUser,
-    });
-
-    commentTreeState.onUpdate({ comment });
-  };
 
   const _commentElems = comments.map((c) => (
     <div
@@ -122,8 +60,6 @@ const CommentList = ({
       )}
     >
       <Comment
-        handleCreate={handleCommentCreate}
-        handleUpdate={handleCommentUpdate}
         comment={c}
         document={document}
       />
@@ -135,19 +71,6 @@ const CommentList = ({
 
   return (
     <div>
-      {isRootList && (
-        <div className={css(styles.editorWrapper)}>
-          <CommentEditor
-            editorId="new-thread"
-            handleSubmit={handleCommentCreate}
-            allowBounty={true}
-            author={currentUser?.authorProfile}
-            previewModeAsDefault={false}
-            allowCommentTypeSelection={true}
-          />
-        </div>
-      )}
-
       <div
         className={css(
           styles.commentListWrapper,
@@ -157,7 +80,7 @@ const CommentList = ({
         {_commentElems.length > 0 && _commentElems}
         {isFetching && <CommentPlaceholder />}
         {loadMoreCount > 0 && (
-          <IconButton onClick={fetchMore}>
+          <IconButton onClick={handleFetchMore}>
             <span
               style={{
                 color: colors.primary.btn,
@@ -199,9 +122,6 @@ const styles = StyleSheet.create({
   },
   commentWrapperWithChildren: {
     paddingBottom: 0,
-  },
-  editorWrapper: {
-    marginBottom: 25,
   },
 });
 

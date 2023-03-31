@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Comment as CommentType } from "./lib/types";
-import { fetchCommentsAPI } from "./lib/api";
-import { NullableString, TopLevelDocument } from "~/config/types/root_types";
+import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
+import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
+import { ID, NullableString, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import CommentFilters from "./CommentFilters";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
@@ -16,6 +16,13 @@ import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
 import CommentDrawer from "./CommentDrawer";
 import ContentSupportModal from "../Modals/ContentSupportModal";
+import CommentEditor from "./CommentEditor";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { RootState } from "~/redux";
+import { MessageActions } from "~/redux/message";
+import colors from "./lib/colors";
+const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
@@ -39,7 +46,12 @@ const CommentFeed = ({
   const [selectedFilterValue, setSelectedFilterValue] = useState<string | null>(
     filterOpts[0].value
   );
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+  const dispatch = useDispatch();
 
+  
   const handleFetch = async ({
     sort,
     filter,
@@ -105,6 +117,48 @@ const CommentFeed = ({
       console.warn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
       );
+    }
+  };
+
+  const handleCommentCreate = async ({
+    content,
+    commentType,
+    parentId,
+  }: {
+    content: object;
+    commentType: COMMENT_TYPES;
+    parentId: ID;
+  }) => {
+    try {
+      let parentComment: CommentType | undefined;
+      if (parentId) {
+        parentComment = findComment({
+          id: parentId,
+          comments: comments,
+        })?.comment;
+
+        if (!parentComment) {
+          console.warn(
+            `Could not find parent comment ${parentId}. This should not happen. Aborting create.`
+          );
+          return false;
+        }
+      }
+
+      const comment: CommentType = await createCommentAPI({
+        content,
+        commentType,
+        documentId: document.id,
+        documentType: document.apiDocumentType,
+        parentComment,
+      });
+
+      onCreate({ comment, parent: parentComment });
+    } catch (error) {
+      dispatch(setMessage("Could not create a comment at this time"));
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true }));
+      throw error;
     }
   };
 
@@ -189,6 +243,17 @@ const CommentFeed = ({
         <CommentPlaceholder />
       ) : (
         <>
+          <div className={css(styles.editorWrapper)}>
+            <CommentEditor
+              editorId="new-thread"
+              handleSubmit={handleCommentCreate}
+              allowBounty={true}
+              author={currentUser?.authorProfile}
+              previewModeAsDefault={false}
+              allowCommentTypeSelection={true}
+            />
+          </div>
+
           <div className={css(styles.filtersWrapper)}>
             <CommentFilters
               selectedFilterValue={selectedFilterValue}
@@ -227,7 +292,7 @@ const CommentFeed = ({
               totalCount={rootLevelCommentCount}
               isFetching={isFetching}
               document={document}
-              fetchMore={fetchMore}
+              handleFetchMore={handleFetch}
             />
           </CommentTreeContext.Provider>
           {noResults &&
@@ -245,12 +310,17 @@ const CommentFeed = ({
 
 const styles = StyleSheet.create({
   filtersWrapper: {
-    margin: "15px 0 30px 0",
+    margin: "45px 0 30px 0",
     display: "flex",
+    paddingBottom: 15,
+    borderBottom: `1px solid ${colors.filters.divider}`
   },
   sortWrapper: {
     marginLeft: "auto",
   },
+  editorWrapper: {
+    marginBottom: 25,
+  },  
 });
 
 export default CommentFeed;

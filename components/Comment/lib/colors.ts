@@ -14,12 +14,13 @@ const colors = {
   },
   filters: {
     unselected: {
-      text: globalColors.BLACK(0.6),
+      text: globalColors.BLACK(0.9),
     },
     selected: {
       background: globalColors.LIGHTER_GREY(1.0),
-      text: globalColors.BLACK(1.0),
+      text: globalColors.BLACK(0.9),
     },
+    divider:  globalColors.BLACK(0.4),
   },
   toggle: {
     commentIcon: globalColors.MEDIUM_GREY(1.0),

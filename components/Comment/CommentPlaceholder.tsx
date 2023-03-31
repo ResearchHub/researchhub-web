@@ -57,6 +57,7 @@ const CommentPlaceholder = ({
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
+    marginBottom: 40,
   },
   header: {
     display: "flex",

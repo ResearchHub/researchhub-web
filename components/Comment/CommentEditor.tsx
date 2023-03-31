@@ -13,7 +13,6 @@ import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
-import Loader from "../Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +21,7 @@ import IconButton from "../Icons/IconButton";
 import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
 import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
 import config from "./lib/config";
+import { ClipLoader } from "react-spinners";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -197,7 +197,14 @@ const CommentEditor = ({
             fullWidth
             label={
               isSubmitting ? (
-                <Loader color="white" type="clip" size={22} />
+                <div style={{ display: "flex", alignItems: "center", minHeight: "28px" }}>
+                  <ClipLoader
+                    sizeUnit={"px"}
+                    size={18}
+                    color={"#fff"}
+                    loading={true}
+                  />
+                </div>
               ) : (
                 <>{`Post`}</>
               )

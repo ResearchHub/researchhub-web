@@ -2,33 +2,31 @@ import CommentHeader from "./CommentHeader";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
-import { Comment as CommentType } from "./lib/types";
+import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
-import { parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { hasOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import CommentList from "./CommentList";
-import { fetchSingleCommentAPI } from "./lib/api";
+import { createCommentAPI, fetchSingleCommentAPI, updateCommentAPI } from "./lib/api";
 import { CommentTreeContext } from "./lib/contexts";
 import config from "./lib/config";
+import { MessageActions } from "~/redux/message";
+const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
   comment: CommentType;
-  handleUpdate: Function;
-  handleCreate: Function;
   document: TopLevelDocument;
 };
 
 const Comment = ({
   comment,
   document,
-  handleUpdate,
-  handleCreate,
 }: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
@@ -39,6 +37,7 @@ const Comment = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
   const commentTreeState = useContext(CommentTreeContext);
+  const dispatch = useDispatch();
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -54,7 +53,7 @@ const Comment = ({
     }
   };
 
-  const fetchMoreReplies = async () => {
+  const handleFetchMoreReplies = async () => {
     setIsFetchingMore(true);
     try {
       const response = await fetchSingleCommentAPI({
@@ -78,7 +77,50 @@ const Comment = ({
     } finally {
       setIsFetchingMore(false);
     }
+  }; 
+  
+  const handleReplyCreate = async ({
+    content,
+  }: {
+    content: object;
+  }) => {
+    try {
+      const _comment: CommentType = await createCommentAPI({
+        content,
+        documentId: document.id,
+        documentType: document.apiDocumentType,
+        parentComment: comment.parent,
+      });
+
+      commentTreeState.onCreate({ comment, parent: comment.parent });
+    } catch (error) {
+      dispatch(setMessage("Could not create a comment at this time"));
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true }));
+      throw error;
+    }
   };  
+
+  const handleCommentUpdate = async ({
+    id,
+    content,
+  }: {
+    id: ID;
+    content: any;
+  }) => {
+    const comment: CommentType = await updateCommentAPI({
+      id,
+      content,
+      documentId: document.id,
+      documentType: document.apiDocumentType,
+      // FIXME: Temporary fix until we add created_by as obj from BE
+      // @ts-ignore
+      currentUser,
+    });
+
+    commentTreeState.onUpdate({ comment });
+  };
+  
 
   return (
     <div>
@@ -99,8 +141,7 @@ const Comment = ({
           {isEditMode ? (
             <CommentEditor
               handleSubmit={async (args) => {
-                console.log("args", args);
-                await handleUpdate(args);
+                await handleCommentUpdate(args);
                 setIsEditMode(false);
               }}
               content={comment.content}
@@ -147,11 +188,7 @@ const Comment = ({
             focusOnMount={true}
             handleClose={() => _handleToggleReply()}
             handleSubmit={async ({ content, commentType }) => {
-              await handleCreate({
-                content,
-                commentType,
-                parentId: comment.id,
-              });
+              await handleReplyCreate({ content });
               setIsReplyOpen(false);
             }}
             editorId={`reply-to-${comment.id}`}
@@ -167,7 +204,7 @@ const Comment = ({
         comments={comment.children}
         document={document}
         isFetching={isFetchingMore}
-        fetchMore={fetchMoreReplies}
+        handleFetchMore={handleFetchMoreReplies}
       />
     </div>
   );

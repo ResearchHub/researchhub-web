@@ -98,13 +98,13 @@ export const fetchSingleCommentAPI = async ({
 
 export const createCommentAPI = async ({
   content,
-  commentType,
+  commentType = COMMENT_TYPES.DISCUSSION,
   documentType,
   documentId,
   parentComment,
 }: {
   content: any;
-  commentType: COMMENT_TYPES;
+  commentType?: COMMENT_TYPES;
   documentType: RhDocumentType;
   documentId: ID;
   parentComment?: Comment;
@@ -116,7 +116,7 @@ export const createCommentAPI = async ({
     _url,
     API.POST_CONFIG({
       comment_content_json: content,
-      thread_type: commentType || COMMENT_TYPES.DISCUSSION,
+      thread_type: commentType,
       ...(parentComment && { parent_id: parentComment.id }),
     })
   ).then((res): any => Helpers.parseJSON(res));
