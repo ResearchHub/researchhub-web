@@ -51,12 +51,17 @@ const ReferenceItemDrawerButton = ({
 };
 
 export default function ReferenceItemDrawer({}: Props): ReactElement {
-  const { isDrawerOpen, referenceItemDrawerData, setIsDrawerOpen } =
-    useReferenceTabContext();
-
+  const {
+    isDrawerOpen,
+    referenceItemDrawerData,
+    setIsDrawerOpen,
+    setReferencesFetchTime,
+  } = useReferenceTabContext();
+  const { citation_type, id: citation_id } = referenceItemDrawerData ?? {};
   const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemDrawerData?.fields ?? {}
   );
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const requiredFieldsSet = useMemo(
     // NOTE: calvinhlee - this needs to be improved from BE
@@ -170,7 +175,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         </Stack>
         <Stack direction="row" alignItems="center" spacing={1} mb="24px">
           <Typography variant="h5" fontWeight="bold">
-            {toTitleCase(referenceItemDrawerData?.citation_type ?? "")}
+            {toTitleCase(citation_type ?? "")}
           </Typography>
         </Stack>
         {tabInputItems}
@@ -179,9 +184,28 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             margin="0 0 32px 0"
             onClick={(event: SyntheticEvent): void => {
               event.preventDefault();
+              setIsSubmitting(true);
               updateReferenceCitation({
-                payload: localReferenceFields,
-                onSuccess: emptyFncWithMsg,
+                payload: {
+                  // TODO: calvinhlee - create utily functions to format these
+                  fields: localReferenceFields,
+                  citation_id,
+                  citation_type,
+                  organization: 1,
+                  // creators: localReferenceFields.creators
+                  //   .split(", ")
+                  //   .map((name: string) => {
+                  //     const splittedName = name.split(" ");
+                  //     return {
+                  //       first_name: splittedName[0],
+                  //       last_name: splittedName.slice[1].join(" "),
+                  //     };
+                  //   }),
+                },
+                onSuccess: () => {
+                  setReferencesFetchTime(Date.now());
+                  setIsSubmitting(false);
+                },
                 onError: emptyFncWithMsg,
               });
             }}

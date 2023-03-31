@@ -7,18 +7,22 @@ export type ReferenceItemDrawerData = any; // schema for ReferenceItemDrawerData
 export type ReferenceItemDrawerContextValueType = {
   isDrawerOpen: boolean;
   referenceItemDrawerData: ReferenceItemDrawerData;
+  referencesFetchTime: number;
   setIsDrawerOpen: (flag: boolean) => void;
   setReferenceItemDrawerData: (data: ReferenceItemDrawerData) => void;
+  setReferencesFetchTime: (time: number) => void;
 };
 
 export const DEFAULT_REFERENCE_ITEM_DRAWER_DATA: ReferenceItemDrawerData = {};
 
 export const DEFAULT_REFERENCE_ITEM_DRAWER_CONTEXT_VALUE: ReferenceItemDrawerContextValueType =
   {
-    isDrawerOpen: true,
+    isDrawerOpen: false,
     referenceItemDrawerData: DEFAULT_REFERENCE_ITEM_DRAWER_DATA,
     setIsDrawerOpen: emptyFncWithMsg,
     setReferenceItemDrawerData: emptyFncWithMsg,
+    referencesFetchTime: Date.now(),
+    setReferencesFetchTime: emptyFncWithMsg,
   };
 
 export const ReferencesTabContext: Context<ReferenceItemDrawerContextValueType> =
@@ -35,14 +39,17 @@ export function ReferenceItemDrawerContextProvider({ children }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [referenceItemDrawerData, setReferenceItemDrawerData] =
     useState<ReferenceItemDrawerData>(DEFAULT_REFERENCE_ITEM_DRAWER_DATA);
+  const [referencesFetchTime, setReferencesFetchTime] = useState(Date.now());
 
   return (
     <ReferencesTabContext.Provider
       value={{
         isDrawerOpen,
         referenceItemDrawerData,
+        referencesFetchTime,
         setIsDrawerOpen,
         setReferenceItemDrawerData,
+        setReferencesFetchTime,
       }}
     >
       {children}

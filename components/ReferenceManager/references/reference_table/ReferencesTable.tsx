@@ -13,8 +13,9 @@ import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 
 function useEffectFetchReferenceCitations({
-  onSuccess,
   onError,
+  onSuccess,
+  referencesFetchTime,
   setIsLoading,
 }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
@@ -25,11 +26,11 @@ function useEffectFetchReferenceCitations({
       setIsLoading(true);
       fetchCurrentUserReferenceCitations({ onSuccess, onError });
     }
-  }, [fetchCurrentUserReferenceCitations, user?.id]);
+  }, [fetchCurrentUserReferenceCitations, user?.id, referencesFetchTime]);
 }
 
 export default function ReferencesTable() {
-  const { setIsDrawerOpen, setReferenceItemDrawerData } =
+  const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [referenceTableRowData, setReferenceTableRowData] = useState<
@@ -43,6 +44,7 @@ export default function ReferencesTable() {
       setIsLoading(false);
     },
     onError: emptyFncWithMsg,
+    referencesFetchTime,
   });
 
   const formattedReferenceRows = !isLoading
