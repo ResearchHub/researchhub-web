@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 25,
   },
 });
 

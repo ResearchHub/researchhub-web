@@ -92,7 +92,7 @@ const Comment = ({
         parentComment: comment.parent,
       });
 
-      commentTreeState.onCreate({ comment, parent: comment.parent });
+      commentTreeState.onCreate({ comment: _comment, parent: comment });
     } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
       // @ts-ignore

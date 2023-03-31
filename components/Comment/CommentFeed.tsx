@@ -249,7 +249,7 @@ const CommentFeed = ({
               handleSubmit={handleCommentCreate}
               allowBounty={true}
               author={currentUser?.authorProfile}
-              previewModeAsDefault={false}
+              previewModeAsDefault={context ? true : false}
               allowCommentTypeSelection={true}
             />
           </div>
@@ -292,7 +292,7 @@ const CommentFeed = ({
               totalCount={rootLevelCommentCount}
               isFetching={isFetching}
               document={document}
-              handleFetchMore={handleFetch}
+              handleFetchMore={fetchMore}
             />
           </CommentTreeContext.Provider>
           {noResults &&

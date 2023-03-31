@@ -323,22 +323,26 @@ const Paper = ({
             {isFetchComplete && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
-                {router.query.cv2 === "" ? (
+                {Object.hasOwn(router.query, "cv2") ? (
                   <>
-                    <div className={css(styles.discussionSectionHeader)}>
-                      <h3 className={css(styles.discussionSectionTitle)}>
-                        Discussion
-                      </h3>
-                      {paperV2.isReady && (
-                        <span className={css(styles.discussionCount)}>
-                          {discussionCount}
-                        </span>
-                      )}
-                    </div>
-                    <CommentFeed
-                      document={paperV2}
-                      previewModeAsDefault={false}
-                    />
+                    {router.query.cv2 === "" && (
+                      <>
+                        <div className={css(styles.discussionSectionHeader)}>
+                          <h3 className={css(styles.discussionSectionTitle)}>
+                            Discussion
+                          </h3>
+                          {paperV2.isReady && (
+                            <span className={css(styles.discussionCount)}>
+                              {discussionCount}
+                            </span>
+                          )}
+                        </div>
+                        <CommentFeed
+                          document={paperV2}
+                          previewModeAsDefault={false}
+                        />
+                      </>
+                    )}
                   </>
                 ) : (
                   <DiscussionTab

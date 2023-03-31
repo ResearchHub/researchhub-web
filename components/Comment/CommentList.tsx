@@ -78,20 +78,24 @@ const CommentList = ({
         )}
       >
         {_commentElems.length > 0 && _commentElems}
-        {isFetching && <CommentPlaceholder />}
+        <div className={css(styles.placeholderWrapper)}>
+          {isFetching && <CommentPlaceholder />}
+        </div>
         {loadMoreCount > 0 && (
-          <IconButton onClick={handleFetchMore}>
-            <span
-              style={{
-                color: colors.primary.btn,
-                fontSize: 14,
-                fontWeight: 500,
-              }}
-            >
-              Load {loadMoreCount} More{" "}
-              <FontAwesomeIcon icon={faLongArrowDown} />
-            </span>
-          </IconButton>
+          <div className={css(styles.loadMoreWrapper)}>
+            <IconButton onClick={handleFetchMore}>
+              <span
+                style={{
+                  color: colors.primary.btn,
+                  fontSize: 14,
+                  fontWeight: 500,
+                }}
+              >
+                Load {loadMoreCount} More{" "}
+                <FontAwesomeIcon icon={faLongArrowDown} />
+              </span>
+            </IconButton>
+          </div>
         )}
       </div>
     </div>
@@ -105,6 +109,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingLeft: 15,
     borderLeft: `3px solid ${colors.border}`,
+  },
+  loadMoreWrapper: {
+    marginTop: 15,
+  },
+  placeholderWrapper: {
+    marginTop: 15,
   },
   commentWrapper: {
     borderBottom: `1px solid ${colors.border}`,

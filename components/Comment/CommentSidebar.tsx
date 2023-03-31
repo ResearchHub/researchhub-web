@@ -20,7 +20,7 @@ const CommentSidebar = ({
   comments,
   isInitialFetchDone = false,
 }: Args) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   const openBountyAmount = comments.reduce(
     (total, comment) => total + getBountyAmount({ comment }),
     0
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   },
   sidebarHeader: {
     fontWeight: 500,
+    marginBottom: 25,
     fontSize: 18,
     display: "flex",
     justifyContent: "space-between",
