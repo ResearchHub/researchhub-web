@@ -28,7 +28,8 @@ export const fetchCommentsAPI = async ({
     ...(filter && { thread_type: filter }),
     ...(sort && { ordering: sort }),
     ...(page && page > 1 && { page: page }),
-    child_count: config.feed.pageSize,
+    child_count: config.feed.childPageSize,
+    page_size: config.feed.rootLevelPageSize,
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
@@ -56,16 +57,30 @@ export const fetchSingleCommentAPI = async ({
   documentType,
   documentId,
   parentComment,
+  currentChildOffset = 0,
+  sort = sortOpts[0].value,
+  filter,
 }: {
   commentId: ID;
   documentType: RhDocumentType;
   documentId: ID;
   parentComment?: Comment;
+  currentChildOffset: number;
+  sort?: string | null;
+  filter?: string | null;  
 }): Promise<Comment> => {
-  const url = generateApiUrl(
+  const query = {
+    ...(filter && { thread_type: filter }),
+    ...(sort && { ordering: sort }),
+    child_count: config.feed.repliesPageSize,
+    child_offset: currentChildOffset + config.feed.repliesPageSize,
+  };
+
+  const baseFetchUrl = generateApiUrl(
     `${documentType}/${documentId}/comments` +
       (commentId ? `/${commentId}` : "")
   );
+  const url = baseFetchUrl + buildQueryString(query);
   const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
     Helpers.parseJSON(res)
   );
@@ -75,7 +90,7 @@ export const fetchSingleCommentAPI = async ({
     throw Error(response.detail);
   } else if (!response) {
     // FIXME: Log to sentry
-    throw Error(`Unexpected error fetching comment for ${commentId}`);
+    throw Error(`Unexpected error fetching comment ${commentId}`);
   }
 
   return parseComment({ raw: response, parent: parentComment });

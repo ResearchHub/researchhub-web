@@ -2,7 +2,9 @@ import { breakpoints } from "~/config/themes/screen";
 
 const config = {
   feed: {
-    pageSize: 20,
+    rootLevelPageSize: 5,
+    childPageSize: 3,
+    repliesPageSize: 1,
   },
   drawer: {
     displayForBreakpoint: breakpoints.small.int,

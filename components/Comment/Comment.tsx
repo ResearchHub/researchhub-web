@@ -3,7 +3,7 @@ import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
 import { Comment as CommentType } from "./lib/types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
@@ -13,6 +13,9 @@ import { useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import CommentList from "./CommentList";
+import { fetchSingleCommentAPI } from "./lib/api";
+import { CommentTreeContext } from "./lib/contexts";
+import config from "./lib/config";
 
 type CommentArgs = {
   comment: CommentType;
@@ -28,11 +31,14 @@ const Comment = ({
   handleCreate,
 }: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const _hasOpenBounties = hasOpenBounties({ comment });
+  const [currentChildOffset, setCurrentChildOffset] = useState<number>(0);
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const commentTreeState = useContext(CommentTreeContext);
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -47,6 +53,32 @@ const Comment = ({
       setIsEditMode(false);
     }
   };
+
+  const fetchMoreReplies = async () => {
+    setIsFetchingMore(true);
+    try {
+      const response = await fetchSingleCommentAPI({
+        documentId: document.id,
+        documentType: document.apiDocumentType,
+        commentId: comment.id,
+        sort: commentTreeState.sort,
+        filter: commentTreeState.filter,
+        currentChildOffset,
+        parentComment: comment.parent,
+      });
+
+      commentTreeState.onFetchMore({
+        comment,
+        fetchedComments: response.children,
+      });
+      setCurrentChildOffset(currentChildOffset + config.feed.repliesPageSize);
+    } catch (error) {
+      console.log("error", error);
+      // FIXME: Implement error handling
+    } finally {
+      setIsFetchingMore(false);
+    }
+  };  
 
   return (
     <div>
@@ -134,6 +166,8 @@ const Comment = ({
         totalCount={comment.childrenCount}
         comments={comment.children}
         document={document}
+        isFetching={isFetchingMore}
+        fetchMore={fetchMoreReplies}
       />
     </div>
   );

@@ -30,6 +30,7 @@ const CommentFeed = ({
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
@@ -139,6 +140,30 @@ const CommentFeed = ({
     }
   };
 
+  const fetchMore = async () => {
+    setIsFetching(true);
+    try {
+      const nextPage = currentPage + 1;
+      const response = await fetchCommentsAPI({
+        documentId: document.id,
+        documentType: document.apiDocumentType,
+        sort: selectedSortValue,
+        filter: selectedFilterValue,
+        page: nextPage,
+      });
+      console.log('nextPage', nextPage)
+      setCurrentPage(nextPage);
+      onFetchMore({
+        fetchedComments: response.comments,
+      });
+    } catch (error) {
+      console.log("error", error);
+      // FIXME: Implement error handling
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {
       handleFetch({});
@@ -152,18 +177,14 @@ const CommentFeed = ({
     context === "sidebar"
       ? CommentSidebar
       : context === "drawer"
-      ? CommentDrawer
-      : React.Fragment;
+        ? CommentDrawer
+        : React.Fragment;
 
   return (
     // @ts-ignore
-    <WrapperEl {...(context ? { comments } : {} )} {...(context ? { isInitialFetchDone } : {} )}>
+    <WrapperEl {...(context ? { comments } : {})} {...(context ? { isInitialFetchDone } : {})}>
       {!isInitialFetchDone ? (
-        Array.from(new Array(config.comment.placeholderCount)).map((_, idx) => (
-          <div>
-            <CommentPlaceholder key={`placeholder-${idx}`} />
-          </div>
-        ))
+        <CommentPlaceholder />
       ) : (
         <>
           <div className={css(styles.filtersWrapper)}>
@@ -189,31 +210,31 @@ const CommentFeed = ({
             </div>
           </div>
 
-          {noResults ? (
+          <CommentTreeContext.Provider
+            value={{
+              sort: selectedSortValue,
+              filter: selectedFilterValue,
+              onCreate,
+              onUpdate,
+              onFetchMore,
+            }}
+          >
+            <CommentList
+              isRootList={true}
+              comments={comments}
+              totalCount={rootLevelCommentCount}
+              isFetching={isFetching}
+              document={document}
+              fetchMore={fetchMore}
+            />
+          </CommentTreeContext.Provider>
+          {noResults &&
             <CommentEmptyState
-              height={context === "sidebar" ? "60%" : "200px"}
+              height={context === "sidebar" ? "60%" : "300px"}
               forSection={selectedFilterValue}
               documentType={document.documentType}
             />
-          ) : (
-            <CommentTreeContext.Provider
-              value={{
-                sort: selectedSortValue,
-                filter: selectedFilterValue,
-                onCreate,
-                onUpdate,
-                onFetchMore,
-              }}
-            >
-              <CommentList
-                isRootList={true}
-                comments={comments}
-                totalCount={rootLevelCommentCount}
-                isFetchingList={isFetching}
-                document={document}
-              />
-            </CommentTreeContext.Provider>
-          )}
+          }
         </>
       )}
     </WrapperEl>
