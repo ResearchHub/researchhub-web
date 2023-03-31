@@ -48,7 +48,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     content: raw.comment_content_json || {},
     score: raw.score,
     userVote: raw.user_vote,
-    commentType: raw.thread_type,
+    commentType: raw.thread?.thread_type || COMMENT_TYPES.DISCUSSION,
     children: [] as Comment[],
     childrenCount: raw.children_count || 0,
     ...(parent && { parent }),

@@ -1,21 +1,6 @@
-import StarInput from "~/components/Form/StarInput";
-import ReactDOMServer from "react-dom/server";
 import { genClientId } from "~/config/utils/id";
 import { reviewCategories } from "./options";
-
-const _buildHTML = ({ node, category, starSize = "med", withLabel = false, readOnly = false }) => {
-  const rating = node.getAttribute('data-rating');
-  const starInput = <StarInput value={rating} readOnly={readOnly} size={starSize} withLabel={withLabel} />
-  const starInputAsHtml = ReactDOMServer.renderToString(starInput);
-
-  return `
-    <div class="ql-review-category">
-      <div class="ql-review-category-label">${category}</div>
-      <div class="ql-review-category-rating">${starInputAsHtml}</div>
-    </div>
-  `;
-}
-
+import { buildHtmlForReviewBlot } from "./quill";
 
 let QuillPeerReviewRatingBlock = {};
 if (process.browser) {
@@ -44,12 +29,12 @@ if (process.browser) {
         if (starEl) {
           const newRating = starEl.getAttribute('data-rating');
           node.setAttribute("data-rating", newRating);
-          const html = _buildHTML({ node, category: categoryObj.label });
+          const html = buildHtmlForReviewBlot({ node, category: categoryObj.label });
           node.innerHTML = html;
         }
       });
 
-      const html = _buildHTML({ node, category: categoryObj.label });
+      const html = buildHtmlForReviewBlot({ node, category: categoryObj.label });
       node.innerHTML = html;
 
       node.setAttribute("id", `id-${genClientId()}`)
@@ -83,7 +68,7 @@ if (process.browser) {
           withLabel = true;
         }
 
-        this.domNode.innerHTML = _buildHTML({
+        this.domNode.innerHTML = buildHtmlForReviewBlot({
           node: this.domNode,
           starSize,
           category: categoryObj.label,

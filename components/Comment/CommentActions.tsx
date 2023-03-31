@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import ContentSupportModal from "../Modals/ContentSupportModal";
+
 type Args = {
   toggleReply: Function;
   comment: Comment;
@@ -43,29 +43,25 @@ const CommentActions = ({
           />
         </div>
         <div className={`${css(styles.action)} tip-btn`}>
-          <IconButton onClick={() => null}>
-            <Image
-              src="/static/icons/tip.png"
-              height={18}
-              width={19}
-              alt="Tip"
-            />
-            <span className={css(styles.actionText)}>Tip</span>
-          </IconButton>
-
           {currentUser?.id !== comment.createdBy.id &&
             <WidgetContentSupport
-                data={{
-                  created_by: comment.createdBy.raw,
-                }}
-                metaData={{
-                  contentType: "researchhub_comment", objectId: comment.id  
-                }}
-              />          
+              data={{
+                created_by: comment.createdBy.raw,
+              }}
+              metaData={{
+                contentType: "researchhub_comment", objectId: comment.id
+              }}
+            >
+              <Image
+                src="/static/icons/tip.png"
+                height={20}
+                width={20}
+                alt="Tip"
+              />
+              <span className={css(styles.actionText)}>Tip</span>              
+            </WidgetContentSupport>
           }
         </div>
-
-
 
         {/* <div className={`${css(styles.action)} award-btn`}>
           <IconButton onClick={() => null}>

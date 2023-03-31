@@ -1,5 +1,7 @@
 import Quill from "quill";
 import { reviewCategories } from "./options";
+import StarInput from "~/components/Form/StarInput";
+import ReactDOMServer from "react-dom/server";
 
 export const buildQuillModules = ({
   editorId,
@@ -162,3 +164,26 @@ export const focusEditor = ({ quill }: { quill: Quill|undefined }) => {
     placeCursorAtEnd({ quill });
   }
 };
+
+type buildHtmlForReviewBlotArgs = {
+  node: any;
+  category: string;
+  starSize?: string;
+  rating?: number;
+  withLabel?: boolean;
+  readOnly?: boolean;
+}
+
+export const buildHtmlForReviewBlot = ({ node = null, category, starSize = "med", rating, withLabel = false, readOnly = false }: buildHtmlForReviewBlotArgs) => {
+  // @ts-ignore
+  const _rating = rating ? rating : (node ? node.getAttribute('data-rating') : 0);
+  const starInput = <StarInput value={_rating} readOnly={readOnly} size={starSize} withLabel={withLabel} />
+  const starInputAsHtml = ReactDOMServer.renderToString(starInput);
+
+  return `
+    <div class="ql-review-category">
+      <div class="ql-review-category-label">${category}</div>
+      <div class="ql-review-category-rating">${starInputAsHtml}</div>
+    </div>
+  `;
+}

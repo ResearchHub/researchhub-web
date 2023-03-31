@@ -7,10 +7,13 @@ import IconButton from "../Icons/IconButton";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'; 
+import { reviewCategories } from "./lib/options";
+import { buildHtmlForReviewBlot } from "./lib/quill";
 
 type Args = {
   content: any;
 };
+
 
 const CommentReadOnly = ({ content }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
@@ -18,8 +21,20 @@ const CommentReadOnly = ({ content }: Args) => {
 
   var cfg = {};
   var converter = new QuillDeltaToHtmlConverter(content.ops, cfg);
-  var html = converter.convert();
+  converter.renderCustomWith(function(customOp, contextOp){
+    if (customOp.insert.type === 'peer-review-rating') {
+      const category = customOp.insert.value?.category 
+      const label = reviewCategories[category]?.label || "Unknown category";
+      const rating = customOp.insert.value?.rating;
+      // @ts-ignore
+      const html = buildHtmlForReviewBlot({ category: label, readOnly: true, rating });
+      return html;
+    } else {
+        console.error('Unmanaged custom blot!');
+    }
+  });
 
+  const html = converter.convert();
       // if (length > config.comment.previewMaxChars) {
       //   setShowLoadMoreBtn(true);
       //   if (isPreview) {
