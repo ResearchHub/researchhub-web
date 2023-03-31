@@ -29,8 +29,10 @@ const CommentReadOnly = ({ content }: Args) => {
 
   return (
     <div>
-      <div className={showLoadMoreBtn && isPreview ? "quill-preview-mode" : ""}>
-        <div  dangerouslySetInnerHTML={{__html: html}} />
+      <div className="CommentEditor">
+        <div className={"ql-container ql-snow" + (showLoadMoreBtn && isPreview ? "quill-preview-mode" : "")}>
+          <div className="ql-editor" dangerouslySetInnerHTML={{__html: html}} />
+        </div>
       </div>
       {showLoadMoreBtn && (
         <IconButton

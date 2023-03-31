@@ -80,7 +80,7 @@ const CommentList = ({
         content,
         commentType,
         documentId: document.id,
-        documentType: document.documentType,
+        documentType: document.apiDocumentType,
         parentComment,
       });
 
@@ -104,7 +104,7 @@ const CommentList = ({
       id,
       content,
       documentId: document.id,
-      documentType: document.documentType,
+      documentType: document.apiDocumentType,
       // FIXME: Temporary fix until we add created_by as obj from BE
       // @ts-ignore
       currentUser,
