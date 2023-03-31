@@ -40,7 +40,7 @@ function initComponentStates({
   setIsDrawerOpen(false);
   const resettedSchema = {};
   for (const key in referenceSchemaValueSet.schema) {
-    resettedSchema[key] = null;
+    resettedSchema[key] = "";
   }
   setReferenceSchemaValueSet({
     schema: resettedSchema,
