@@ -30,8 +30,8 @@ function referenceFormatSwitchMap(datum: any): ReferenceTableRowDataType {
     case "ARTWORK":
       return formatArtwork(datum);
     case "MANUSCRIPT":
-      return formatManuscript(datum);
     default:
+      return formatManuscript(datum);
       throw new Error(
         `formatReferenceRowData: unable to find appropriate citation_type - ${citation_type}`
       );

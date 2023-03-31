@@ -3,7 +3,7 @@ import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
 
 export type ReferenceSchemaValueSet = {
-  schema: object;
+  schema: any;
   required: string[];
 };
 

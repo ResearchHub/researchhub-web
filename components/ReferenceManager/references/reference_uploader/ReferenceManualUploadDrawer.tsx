@@ -1,4 +1,4 @@
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import {
   fetchReferenceCitationSchema,
   ReferenceSchemaValueSet,
@@ -19,6 +19,8 @@ import ReferenceItemFieldInput from "../reference_item/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { createReferenceCitation } from "../api/createReferenceCitation";
+import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -47,6 +49,7 @@ function initComponentStates({
 }
 
 function useEffectPrepSchemas({
+  selectedReferenceType,
   setIsLoading,
   setReferenceSchemaValueSet,
   setReferenceTypes,
@@ -54,30 +57,42 @@ function useEffectPrepSchemas({
 }): void {
   useEffect((): void => {
     setIsLoading(true);
-    fetchReferenceCitationTypes({
-      onError: (error) => {
-        alert(error);
-      },
-      onSuccess: (result) => {
-        setReferenceTypes(result);
-        const selectedReferenceType = result[0];
-        setSelectedReferenceType(selectedReferenceType);
-        fetchReferenceCitationSchema({
-          citation_type: selectedReferenceType,
-          onError: emptyFncWithMsg,
-          onSuccess: ({ schema, required }): void => {
-            setIsLoading(false);
-            setReferenceSchemaValueSet({ schema, required });
-          },
-        });
-      },
-    });
-  }, []);
+    if (!isEmpty(selectedReferenceType) && selectedReferenceType) {
+      fetchReferenceCitationSchema({
+        citation_type: selectedReferenceType,
+        onError: emptyFncWithMsg,
+        onSuccess: ({ schema, required }): void => {
+          setIsLoading(false);
+          setReferenceSchemaValueSet({ schema, required });
+        },
+      });
+    } else {
+      fetchReferenceCitationTypes({
+        onError: (error) => {
+          alert(error);
+        },
+        onSuccess: (result) => {
+          setReferenceTypes(result);
+          const selectedReferenceType = result[0];
+          setSelectedReferenceType(selectedReferenceType);
+          fetchReferenceCitationSchema({
+            citation_type: selectedReferenceType,
+            onError: emptyFncWithMsg,
+            onSuccess: ({ schema, required }): void => {
+              setIsLoading(false);
+              setReferenceSchemaValueSet({ schema, required });
+            },
+          });
+        },
+      });
+    }
+  }, [selectedReferenceType]);
 }
 
 export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
+  const { setReferencesFetchTime } = useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
@@ -90,6 +105,7 @@ export default function ReferenceManualUploadDrawer({
     });
 
   useEffectPrepSchemas({
+    selectedReferenceType,
     setIsLoading,
     setReferenceSchemaValueSet,
     setReferenceTypes,
@@ -104,11 +120,48 @@ export default function ReferenceManualUploadDrawer({
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
-    
+    console.warn(
+      "referenceSchemaValueSet.schema, ",
+      referenceSchemaValueSet.schema
+    );
+    const formattedCreators =
+      referenceSchemaValueSet?.schema?.creators
+        ?.split(", ")
+        ?.map((creatorName) => {
+          const splittedName = creatorName.split(" ");
+          return {
+            first_name: splittedName[0],
+            last_name: splittedName.slice(1).join(" "),
+          };
+        }) ?? [];
+
+    createReferenceCitation({
+      onError: emptyFncWithMsg,
+      onSuccess: () => {
+        setIsSubmitting(false);
+        setReferencesFetchTime(Date.now());
+      },
+      payload: {
+        fields: {
+          ...referenceSchemaValueSet.schema,
+          creators: formattedCreators,
+        },
+        citation_type: selectedReferenceType,
+        organization: 1,
+      },
+    });
   };
 
-  const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema).map(
-    (schemaField: string) => {
+  const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema)
+    .sort((a, _b): number => {
+      if (a === "title") {
+        return -1;
+      } else if (a === "creators") {
+        return 0;
+      }
+      return 1;
+    })
+    .map((schemaField: string) => {
       const label = snakeCaseToNormalCase(schemaField);
       const schemaFieldValue = referenceSchemaValueSet.schema[schemaField];
       return (
@@ -129,8 +182,7 @@ export default function ReferenceManualUploadDrawer({
           value={schemaFieldValue}
         />
       );
-    }
-  );
+    });
 
   return (
     <Drawer
@@ -191,7 +243,11 @@ export default function ReferenceManualUploadDrawer({
           {formattedSchemaInputs}
           <Box display="flex" flexDirection="row" mb="36px">
             <div style={{ width: "88px" }}>
-              <PrimaryButton onClick={handleSubmit} size="medium">
+              <PrimaryButton
+                onClick={handleSubmit}
+                size="medium"
+                disabled={false}
+              >
                 <Typography fontSize="14px" fontWeight="400">
                   {"Add entry"}
                 </Typography>
@@ -204,6 +260,7 @@ export default function ReferenceManualUploadDrawer({
                   setIsDrawerOpen(false);
                 }}
                 size="medium"
+                sx={{ textTransform: "none" }}
               >
                 <Typography fontSize="14px" fontWeight="400">
                   {"Cancel"}

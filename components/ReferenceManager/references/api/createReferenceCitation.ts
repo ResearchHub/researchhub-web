@@ -1,0 +1,23 @@
+import API from "~/config/api";
+import { buildApiUri } from "~/config/utils/buildApiUri";
+import { Helpers } from "@quantfive/js-web-config";
+
+type Args = {
+  onError: (error: Error) => void;
+  onSuccess: (response: any) => void;
+  payload: any;
+};
+
+export const createReferenceCitation = ({
+  onError,
+  onSuccess,
+  payload,
+}: Args): void => {
+  console.warn("payload: ", payload);
+
+  fetch(buildApiUri({ apiPath: `citation_entry` }), API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((result: any): void => onSuccess(result))
+    .catch(onError);
+};
