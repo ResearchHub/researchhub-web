@@ -15,7 +15,7 @@ import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
 import PrimaryButton from "../../form/PrimaryButton";
-import ReferenceItemFieldInput from "../reference_item/ReferenceItemFieldInput";
+import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";

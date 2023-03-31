@@ -165,7 +165,14 @@ export default function BasicTogglableNavbarLeft({
         </Box>
         <DropdownMenu
           menuItemProps={[
-            { itemLabel: "File(s) from computer", onClick: () => {} },
+            {
+              itemLabel: (
+                <>
+                  <input type="file" aria-label=""/>
+                </>
+              ),
+              onClick: () => {},
+            },
             {
               itemLabel: "Add entry manually",
               onClick: (): void => setIsManualUploadDrawerOpen(true),

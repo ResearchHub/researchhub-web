@@ -25,7 +25,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
-import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
+import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
 import Loader from "~/components/Loader/Loader";
 import colors from "~/config/themes/colors";
