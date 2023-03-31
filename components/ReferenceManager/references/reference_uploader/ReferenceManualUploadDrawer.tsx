@@ -4,6 +4,7 @@ import {
   ReferenceSchemaValueSet,
 } from "../api/fetchReferenceCitationSchema";
 import { Button } from "@mui/material";
+import { createReferenceCitation } from "../api/createReferenceCitation";
 import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
@@ -11,16 +12,15 @@ import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
 import { NullableString } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
+import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
-import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
+import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { createReferenceCitation } from "../api/createReferenceCitation";
-import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -120,10 +120,7 @@ export default function ReferenceManualUploadDrawer({
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
-    console.warn(
-      "referenceSchemaValueSet.schema, ",
-      referenceSchemaValueSet.schema
-    );
+
     const formattedCreators =
       referenceSchemaValueSet?.schema?.creators
         ?.split(", ")

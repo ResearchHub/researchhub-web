@@ -23,6 +23,7 @@ import ListItemText from "@mui/material/ListItemText";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
+import Dropzone from "react-dropzone";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -167,9 +168,17 @@ export default function BasicTogglableNavbarLeft({
           menuItemProps={[
             {
               itemLabel: (
-                <>
-                  <input type="file" aria-label=""/>
-                </>
+                <Dropzone
+                  accept={[".pdf"]}
+                  onDrop={(acceptedFiles) => console.log(acceptedFiles)}
+                >
+                  {({ getRootProps, getInputProps }) => (
+                    <div {...getRootProps()}>
+                      <input {...getInputProps()} />
+                      {"File(s) from computer"}
+                    </div>
+                  )}
+                </Dropzone>
               ),
               onClick: () => {},
             },
