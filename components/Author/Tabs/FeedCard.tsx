@@ -592,9 +592,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     display: "flex",
     alignItems: "center",
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      // marginRight: 20,
-    },
   },
   rscToUsdAmount: {
     opacity: 0,
