@@ -15,6 +15,7 @@ import CommentEmptyState from "./CommentEmptyState";
 import replaceComment from "./lib/replaceComment";
 import findComment from "./lib/findComment";
 import CommentDrawer from "./CommentDrawer";
+import ContentSupportModal from "../Modals/ContentSupportModal";
 
 type Args = {
   document: TopLevelDocument;
@@ -183,6 +184,7 @@ const CommentFeed = ({
   return (
     // @ts-ignore
     <WrapperEl {...(context ? { comments } : {})} {...(context ? { isInitialFetchDone } : {})}>
+      <ContentSupportModal />
       {!isInitialFetchDone ? (
         <CommentPlaceholder />
       ) : (

@@ -7,7 +7,12 @@ import { Comment } from "./lib/types";
 import Image from "next/image";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
-
+import WidgetContentSupport from "../Widget/WidgetContentSupport";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { parseUser } from "~/config/types/root_types";
+import { isEmpty } from "~/config/utils/nullchecks";
+import ContentSupportModal from "../Modals/ContentSupportModal";
 type Args = {
   toggleReply: Function;
   comment: Comment;
@@ -21,6 +26,10 @@ const CommentActions = ({
   toggleReply,
   isReplyOpen,
 }: Args) => {
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
@@ -43,7 +52,21 @@ const CommentActions = ({
             />
             <span className={css(styles.actionText)}>Tip</span>
           </IconButton>
+
+          {currentUser?.id !== comment.createdBy.id &&
+            <WidgetContentSupport
+                data={{
+                  created_by: comment.createdBy.raw,
+                }}
+                metaData={{
+                  contentType: "researchhub_comment", objectId: comment.id  
+                }}
+              />          
+          }
         </div>
+
+
+
         {/* <div className={`${css(styles.action)} award-btn`}>
           <IconButton onClick={() => null}>
             <FontAwesomeIcon icon={faCrown} style={{fontSize: 16}} />

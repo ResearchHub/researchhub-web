@@ -173,6 +173,7 @@ export type RHUser = {
   lastName: string;
   editorOf?: Array<Hub>;
   reputation: number;
+  raw: any;
 };
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
@@ -261,6 +262,8 @@ export const parseUser = (raw: any): RHUser => {
     editorOf: raw.editor_of,
     reputation: raw.reputation,
     createdAt: raw.created_date,
+    // Used for legacy components
+    raw,
   };
 
   return mapped;
