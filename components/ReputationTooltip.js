@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 14,
     // background: colors.BLUE(1),
-    background: "rgba(0, 0, 0, 0.7)",
+    background: "rgba(0, 0, 0, 1)",
     opacity: 1,
     boxSizing: "border-box",
   },
   paragraph: {
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   description: {
     opacity: 1,

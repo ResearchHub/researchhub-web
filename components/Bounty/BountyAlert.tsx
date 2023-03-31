@@ -3,7 +3,10 @@ import { faShare } from "@fortawesome/pro-regular-svg-icons";
 import { faCommentDots } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import ALink from "../ALink";
-import Bounty, { BOUNTY_STATUS } from "~/config/types/bounty";
+import Bounty, {
+  BOUNTY_STATUS,
+  formatBountyAmount,
+} from "~/config/types/bounty";
 import colors, { bountyColors } from "~/config/themes/colors";
 import numeral from "numeral";
 import ResearchHubPopover from "../ResearchHubPopover";
@@ -21,6 +24,9 @@ import CoinStackIcon from "../Icons/CoinStackIcon";
 import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";
 import { connect } from "react-redux";
+import { useExchangeRate } from "../contexts/ExchangeRateContext";
+import RSCTooltip from "../Tooltips/RSC/RSCTooltip";
+import ContentBadge from "../ContentBadge";
 
 type BountyAlertParams = {
   bounty: Bounty;
@@ -58,6 +64,8 @@ const BountyAlert = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAwardBountyModalOpen, setIsAwardBountyModalOpen] = useState(false);
   const router = useRouter();
+
+  const { rscToUSDDisplay } = useExchangeRate();
 
   let timeRemaining, createdBy, status;
   allBounties.sort((a, b) => {
@@ -169,7 +177,7 @@ const BountyAlert = ({
   });
 
   return (
-    (<div className={css(styles.bountyAlert)}>
+    <div className={css(styles.bountyAlert)}>
       <BountyModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -204,7 +212,14 @@ const BountyAlert = ({
             )}
           />
         </div>
-        <div>
+        <div
+          style={{
+            display: "flex",
+            whiteSpace: "pre-wrap",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
           {showPlural ? (
             <span>A group of users</span>
           ) : createdBy ? (
@@ -255,17 +270,30 @@ const BountyAlert = ({
               />
             </span>
           )}
-          {` `}
-          {allBounties.length > 1 ? "are" : "is"} offering{" "}
-          <span className={css(styles.strong)}>
-            {numeral(amount).format("0,0.[0000000000]")} RSC
+          {allBounties.length > 1 ? " are" : " is"} offering{" "}
+          <ContentBadge
+            contentType="bounty"
+            bountyAmount={amount}
+            label={
+              <>
+                {" "}
+                {formatBountyAmount({
+                  amount,
+                })}{" "}
+                RSC
+              </>
+            }
+          />
+          {/* <span className={css(styles.strong, styles.clickable)}>
             <ResearchCoinIcon
               width={16}
               height={16}
-              overrideStyle={styles.rscIcon}
-            />
-          </span>{" "}
-          for answers {showPlural ? "to their questions" : "to this question"}
+              overrideStyle={styles.rscBannerIcon}
+            />{" "}
+            {numeral(amount).format("0,0.[0000000000]")} RSC
+          </span> */}
+          <span> for answers </span>
+          {showPlural ? "to their questions" : "to this question"}
           <span className={css(styles.divider)}>•</span>
           <span className={css(styles.expireTime)}>
             {showPlural ? "Bounties expire" : "Bounty expires"} in{" "}
@@ -341,7 +369,7 @@ const BountyAlert = ({
           </InviteButton>
         </div>
       </div>
-    </div>)
+    </div>
   );
 };
 
@@ -428,12 +456,18 @@ const styles = StyleSheet.create({
   },
   strong: {
     fontWeight: 500,
-    color: colors.BLACK(),
+    color: colors.ORANGE_DARK2(),
   },
-  alertIcon: {},
+  clickable: {
+    cursor: "pointer",
+  },
   rscIcon: {
     verticalAlign: "text-top",
     marginLeft: 5,
+  },
+  rscBannerIcon: {
+    marginLeft: 2,
+    verticalAlign: "text-top",
   },
   divider: {
     marginLeft: 7,

@@ -14,25 +14,36 @@ import {
   HypothesisIcon,
   QuestionIcon,
 } from "~/config/themes/icons";
-import { useRouter } from "next/router";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { POST_TYPES } from "./TextEditor/config/postTypes";
+import { ReactElement, useState } from "react";
+import { useExchangeRate } from "./contexts/ExchangeRateContext";
 
 type Args = {
   contentType: string;
   size?: "small" | "medium";
-  label: string;
+  label: string | ReactElement;
   onClick?: null | Function;
+  rscContentOverride?: any;
+  badgeOverride?: any;
+  bountyAmount?: number;
+  badgeHovered?: boolean;
+  keepPositionAbsolute?: boolean;
 };
 
-const ContentBadge = ({
+const ContentBadgeBase = ({
   contentType,
   size = "medium",
   label = "",
   onClick = null,
+  rscContentOverride,
+  badgeOverride,
+  bountyAmount,
+  badgeHovered,
+  keepPositionAbsolute,
 }: Args) => {
-  const router = useRouter();
+  const { rscToUSDDisplay } = useExchangeRate();
 
   return (
     <Badge
@@ -40,6 +51,9 @@ const ContentBadge = ({
         styles.badge,
         styles["badgeFor_" + contentType],
         styles[size],
+        badgeOverride,
+        badgeHovered && contentType === "bounty" && styles.bountyHovered,
+        keepPositionAbsolute && styles.keepPositionAbsolute,
       ]}
     >
       {contentType === "paper" ? (
@@ -100,26 +114,43 @@ const ContentBadge = ({
         </>
       ) : contentType === "rsc_support" ? (
         <>
-          <span className={css(styles.icon)}>
+          <span className={css(styles.icon, styles.rscIcon)}>
             <ResearchCoinIcon version={4} height={16} width={16} />
             {` `}
           </span>
           <span className={css(styles.rscContent)}>{label}</span>
         </>
       ) : contentType === "bounty" ? (
-        <>
-          <span
-            className={css(styles.icon, size === "small" && styles.iconSmall)}
+        <div>
+          <div className={css(styles.row)}>
+            <span
+              className={css(
+                styles.icon,
+                size === "small" && styles.iconSmall,
+                styles.rscIcon
+              )}
+            >
+              <ResearchCoinIcon
+                version={4}
+                height={size === "small" ? 14 : 16}
+                width={size === "small" ? 14 : 16}
+              />
+              {` `}
+            </span>
+            <span className={css(styles.rscContent, rscContentOverride)}>
+              {label}
+            </span>
+          </div>
+          <div
+            className={css(
+              styles.usdAmount,
+              badgeHovered && styles.transitionOpacity
+            )}
           >
-            <ResearchCoinIcon
-              version={4}
-              height={size === "small" ? 14 : 16}
-              width={size === "small" ? 14 : 16}
-            />
-            {` `}
-          </span>
-          <span className={css(styles.rscContent)}>{label}</span>
-        </>
+            {" "}
+            ≈ {rscToUSDDisplay(bountyAmount)}
+          </div>
+        </div>
       ) : (
         <></>
       )}
@@ -127,7 +158,39 @@ const ContentBadge = ({
   );
 };
 
+const ContentBadge = (props) => {
+  const [badgeHovered, setBadgeHovered] = useState(false);
+  const [keepPositionAbsolute, setKeepPositionAbsolute] = useState(false);
+  return (
+    <div
+      className={css(styles.badgeContainer)}
+      onMouseEnter={() => {
+        setBadgeHovered(props.contentType === "bounty");
+        setKeepPositionAbsolute(props.contentType === "bounty");
+      }}
+      onMouseLeave={() => {
+        setBadgeHovered(false);
+        setTimeout(() => {
+          setKeepPositionAbsolute(false);
+        }, 300);
+      }}
+    >
+      <ContentBadgeBase
+        {...props}
+        badgeHovered={badgeHovered}
+        keepPositionAbsolute={keepPositionAbsolute}
+      />
+      {keepPositionAbsolute && (
+        <ContentBadgeBase {...props} badgeHovered={false} />
+      )}
+    </div>
+  );
+};
+
 const styles = StyleSheet.create({
+  badgeContainer: {
+    position: "relative",
+  },
   small: {
     fontSize: 12,
     padding: "3px 6px 1px",
@@ -138,16 +201,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 21,
   },
+  rscIcon: {
+    height: "16px",
+    display: "flex",
+  },
   iconSmall: {
-    height: 18,
+    height: 14,
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,
     color: bountyColors.BADGE_TEXT,
+    padding: "5px 10px",
+    paddingTop: 4,
   },
   badgeFor_bounty: {
     background: bountyColors.BADGE_BACKGROUND,
     color: bountyColors.BADGE_TEXT,
+    padding: "5px 10px",
+    paddingTop: 4,
+
+    ":after": {
+      content: "''",
+      position: "absolute",
+      zIndex: -1,
+      width: "100%",
+      height: "100%",
+      opacity: 0,
+      borderRadius: 5,
+      boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+      transition: "opacity 0.3s ease-in-out",
+      top: 0,
+      left: 0,
+    },
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),
@@ -167,6 +252,34 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginBottom: 0,
     },
+  },
+  row: {
+    display: "flex",
+    aliggItems: "center",
+  },
+  keepPositionAbsolute: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+  bountyHovered: {
+    position: "absolute",
+    transform: "scale(1.1)",
+    ":after": {
+      opacity: 1,
+    },
+  },
+  usdAmount: {
+    fontSize: 12,
+    color: colors.LIGHT_GREY_TEXT,
+    textAlign: "right",
+    opacity: 0,
+    transition: "all .3s ease-in-out",
+    height: 0,
+  },
+  transitionOpacity: {
+    opacity: 1,
+    height: 17,
   },
 });
 

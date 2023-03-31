@@ -29,6 +29,8 @@ import postTypes, {
 } from "./TextEditor/config/postTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { useExchangeRate } from "./contexts/ExchangeRateContext";
+import ContentBadge from "./ContentBadge";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
 );
@@ -58,13 +60,10 @@ const DiscussionPostMetadata = (props) => {
     noShowSupport,
   } = props;
 
-  const alert = useAlert();
-  // const store = useStore();
   const router = useRouter();
+  const { rscToUSDDisplay } = useExchangeRate();
 
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
-  const dropdown = useRef();
-  const ellipsis = useRef();
   let isUserOwnInlineComment = false;
 
   if (isLoggedIn) {
@@ -72,21 +71,6 @@ const DiscussionPostMetadata = (props) => {
       ? currentAuthorId === metaData.authorId
       : true;
   }
-
-  const renderHeadline = () => {
-    const showHeadline =
-      authorProfile &&
-      (authorProfile.headline || authorProfile.education) &&
-      !hideHeadline;
-
-    if (showHeadline) {
-      return (
-        <div className={css(styles.headline) + " clamp1"}>
-          {createUserSummary(authorProfile)}
-        </div>
-      );
-    }
-  };
 
   const renderBadge = ({ type, isAcceptedAnswer = false, bounties = [] }) => {
     const openBounty =
@@ -166,14 +150,16 @@ const DiscussionPostMetadata = (props) => {
     commentBounties[0].status === "OPEN"
   ) {
     text = (
-      <span>
+      <span className={css(styles.isOffering)}>
         is offering{" "}
-        <span className={css(styles.strong)}>
-          {formatBountyAmount({
+        <ContentBadge
+          label={`${formatBountyAmount({
             amount: commentBounties[0].amount,
-          })}{" "}
-          RSC
-        </span>
+          })} RSC`}
+          contentType="bounty"
+          size="small"
+          bountyAmount={commentBounties[0].amount}
+        />
       </span>
     );
   }
@@ -447,6 +433,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
     },
+  },
+  isOffering: {
+    display: "flex",
+    alignItems: "center",
+    whiteSpace: "pre-wrap",
   },
   atag: {
     cursor: "pointer",

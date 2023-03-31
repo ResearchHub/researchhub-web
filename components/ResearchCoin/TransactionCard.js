@@ -11,8 +11,10 @@ import colors from "~/config/themes/colors";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { getEtherscanLink } from "~/config/utils/crypto";
+import { useExchangeRate } from "../contexts/ExchangeRateContext";
 
 const TransactionCard = (props) => {
+  const { rscToUSDDisplay } = useExchangeRate();
   let { transaction, style } = props;
   function renderStatus(status) {
     switch (status) {
@@ -210,14 +212,19 @@ const TransactionCard = (props) => {
             </>
           )}
         </div>
-        <div className={css(styles.amountContainer)}>
-          {numeral(transaction.amount).format("0,0.[0000000000]")}
-          <img
-            className={css(styles.coin)}
-            src={"/static/icons/coin-filled.png"}
-            draggable={false}
-            alt="RSC Icon"
-          />
+        <div>
+          <div className={css(styles.amountContainer)}>
+            {numeral(transaction.amount).format("0,0.[0000000000]")}
+            <img
+              className={css(styles.coin)}
+              src={"/static/icons/coin-filled.png"}
+              draggable={false}
+              alt="RSC Icon"
+            />
+          </div>
+          <div className={css(styles.usdAmount)}>
+            ≈ {rscToUSDDisplay(transaction.amount)}
+          </div>
         </div>
       </div>
     </div>
@@ -248,6 +255,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 620px)": {
       position: "relative",
     },
+  },
+  usdAmount: {
+    marginTop: 4,
+    fontSize: 14,
+    color: colors.LIGHT_GREY_TEXT,
   },
   row: {
     display: "flex",
@@ -363,6 +375,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     fontSize: 15,
+    justifyContent: "flex-end",
     "@media only screen and (max-width: 767px)": {
       position: "absolute",
       top: 16,

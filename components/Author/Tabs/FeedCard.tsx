@@ -44,6 +44,8 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
+import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
+import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -142,12 +144,14 @@ function FeedCard({
   );
   const [score, setScore] = useState<number>(initialScore);
   const [isHubsOpen, setIsHubsOpen] = useState(false);
+  const [rscBadgeHover, setRSCBadgeHover] = useState(false);
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
       first_figure && first_figure,
     ])
   );
+
   // const bounty = bounties?.[0];
   const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
@@ -250,7 +254,7 @@ function FeedCard({
     });
 
   return (
-    (<Ripples
+    <Ripples
       className={css(
         styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder,
@@ -378,8 +382,16 @@ function FeedCard({
                     <div className={css(styles.metaItem)}>
                       <ContentBadge
                         contentType="bounty"
+                        bountyAmount={bountyAmount}
                         label={
-                          formatBountyAmount({ amount: bountyAmount }) + " RSC"
+                          <div style={{ display: "flex", whiteSpace: "pre" }}>
+                            <div style={{ flex: 1 }}>
+                              {formatBountyAmount({
+                                amount: bountyAmount,
+                              })}{" "}
+                              RSC
+                            </div>
+                          </div>
                         }
                       />
                     </div>
@@ -400,7 +412,9 @@ function FeedCard({
                         {hasAcceptedAnswer ? (
                           <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                         ) : (
-                          <FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>
+                          <FontAwesomeIcon
+                            icon={faCommentAltLines}
+                          ></FontAwesomeIcon>
                         )}
                       </span>
                       <span className={css(styles.metadataText)}>
@@ -458,7 +472,7 @@ function FeedCard({
           </div>
         </div>
       </div>
-    </Ripples>)
+    </Ripples>
   );
 }
 
@@ -574,13 +588,22 @@ const styles = StyleSheet.create({
     },
   },
   metaItem: {
-    marginRight: 15,
+    marginRight: 10,
     marginBottom: 5,
     display: "flex",
     alignItems: "center",
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      marginRight: 20,
-    },
+  },
+  rscToUsdAmount: {
+    opacity: 0,
+    width: "0px",
+    height: "0px",
+    overflow: "hidden",
+    transition: "all .3s ease-in-out",
+  },
+  rscToUsdAmountFull: {
+    width: "100%",
+    height: "100%",
+    opacity: 1,
   },
   metaItemAsBadge: {
     marginRight: 10,

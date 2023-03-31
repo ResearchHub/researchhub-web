@@ -100,6 +100,7 @@ export default function HomeSidebarBountiesSection({
       return (
         <BountiesSidebarItem
           bountyAmount={formatBountyAmount({ amount })}
+          rawBountyAmount={amount}
           bountyContentSnippet={title || item?.plain_text}
           createdBy={parseUser(created_by)}
           createdByAuthor={created_by?.author_profile}

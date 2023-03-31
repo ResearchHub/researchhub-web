@@ -17,6 +17,7 @@ type Props = {
   relatedDocID: ID;
   slug: NullableString;
   createdBy: RHUser | null;
+  rawBountyAmount: number;
 };
 
 export default function BountiesSidebarItem({
@@ -28,6 +29,7 @@ export default function BountiesSidebarItem({
   relatedDocID,
   slug,
   createdBy,
+  rawBountyAmount,
 }: Props): ReactElement {
   const roundedOfferAmount = bountyAmount;
 
@@ -59,9 +61,10 @@ export default function BountiesSidebarItem({
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
               <ContentBadge
-                label={`${`${roundedOfferAmount} RSC`}`}
+                label={`${roundedOfferAmount} RSC`}
                 contentType="bounty"
                 size="small"
+                bountyAmount={rawBountyAmount}
               />
             </span>
           </div>
@@ -114,7 +117,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     display: "flex",
     fontSize: 14,
-    overflowX: "auto",
     whiteSpace: "nowrap",
     "-ms-overflow-style": "none" /* IE and Edge */,
     "scrollbar-width": "none" /* Firefox */,

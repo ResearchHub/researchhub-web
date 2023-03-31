@@ -61,7 +61,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
   }, [auth, balance, should_display_rsc_balance_home]);
 
   return (
-    (<ResearchHubPopover
+    <ResearchHubPopover
       align="end"
       containerStyle={{
         zIndex: 4,
@@ -95,9 +95,9 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
             alt="RSC Coin"
           />
           {shouldDisplayBalanceHome && (
-            <span className={css(styles.balanceText)}>
+            <div className={css(styles.balanceText)}>
               {getNumberWithCommas(Math.floor(balance ?? 0))} RSC
-            </span>
+            </div>
           )}
           {shouldDisplayRscDelta && (
             <div className={css(styles.rscDelta)}>{`+ ${getNumberWithCommas(
@@ -105,11 +105,11 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
             )}`}</div>
           )}
           <div className={css(styles.caretDown)}>
-            {<FontAwesomeIcon icon={faChevronDown}></FontAwesomeIcon>}
+            <FontAwesomeIcon icon={faChevronDown} />
           </div>
         </div>
       }
-    />)
+    />
   );
 };
 
@@ -124,11 +124,6 @@ const styles = StyleSheet.create({
     padding: 8,
     userSelect: "none",
     position: "relative",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-      borderRadius: 3,
-      transition: "0.3s",
-    },
   },
   balanceText: {
     fontSize: 14,
@@ -161,6 +156,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     borderRadius: "50px",
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+  },
+  usdAmount: {
+    fontSize: 12,
+    color: colors.LIGHT_GREY_TEXT,
+    position: "absolute",
+    bottom: -8,
+    right: 24,
   },
   caretDown: { marginLeft: 4, fontSize: 12, color: colors.ORANGE_DARK2() },
 });

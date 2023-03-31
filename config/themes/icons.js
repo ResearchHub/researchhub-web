@@ -44,8 +44,7 @@ export const partyPopper = (props = {}) => {
     />
   );
 };
-export const RSC = (props = {}) => {
-  const { style } = props;
+export const RSC = ({ style }) => {
   return (
     <img
       className={css(styles.iconRSC, style && style)}
