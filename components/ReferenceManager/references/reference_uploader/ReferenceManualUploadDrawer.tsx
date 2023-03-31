@@ -3,6 +3,7 @@ import {
   fetchReferenceCitationSchema,
   ReferenceSchemaValueSet,
 } from "../api/fetchReferenceCitationSchema";
+import { Button } from "@mui/material";
 import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
@@ -13,10 +14,11 @@ import { snakeCaseToNormalCase } from "~/config/utils/string";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
+import PrimaryButton from "../../form/PrimaryButton";
+import ReferenceItemFieldInput from "../reference_item/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../reference_item/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ReferenceItemFieldInput from "../reference_item/ReferenceItemFieldInput";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -77,6 +79,7 @@ export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
   const [selectedReferenceType, setSelectedReferenceType] =
     useState<NullableString>(null);
@@ -97,6 +100,12 @@ export default function ReferenceManualUploadDrawer({
     label: snakeCaseToNormalCase(refType),
     value: refType,
   }));
+
+  const handleSubmit = (event: SyntheticEvent): void => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    
+  };
 
   const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema).map(
     (schemaField: string) => {
@@ -180,6 +189,28 @@ export default function ReferenceManualUploadDrawer({
             value={selectedReferenceType}
           />
           {formattedSchemaInputs}
+          <Box display="flex" flexDirection="row" mb="36px">
+            <div style={{ width: "88px" }}>
+              <PrimaryButton onClick={handleSubmit} size="medium">
+                <Typography fontSize="14px" fontWeight="400">
+                  {"Add entry"}
+                </Typography>
+              </PrimaryButton>
+            </div>
+            <div style={{ width: "88px", marginLeft: "16px" }}>
+              <Button
+                onClick={(event: SyntheticEvent): void => {
+                  event.preventDefault();
+                  setIsDrawerOpen(false);
+                }}
+                size="medium"
+              >
+                <Typography fontSize="14px" fontWeight="400">
+                  {"Cancel"}
+                </Typography>
+              </Button>
+            </div>
+          </Box>
         </Box>
       </Box>
     </Drawer>

@@ -52,17 +52,17 @@ export default function ReferenceItemFieldInput({
         fullWidth
         onClick={silentEmptyFnc}
         id={formID}
-        // onChange={
-        //   !isNullOrUndefined(onChange)
-        //     ? (event: ChangeEvent<HTMLInputElement>): void => {
-        //         nullthrows(onChange)(event?.target?.value);
-        //       }
-        //     : undefined
-        // }
+        onChange={
+          !isNullOrUndefined(onChange)
+            ? (event: ChangeEvent<HTMLInputElement>): void => {
+                nullthrows(onChange)(event?.target?.value);
+              }
+            : undefined
+        }
         placeholder={placeholder}
         required={required}
         size="small"
-        // value={value}
+        value={value}
         sx={{
           background: "#fff",
         }}

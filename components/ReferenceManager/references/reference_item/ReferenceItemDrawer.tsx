@@ -71,38 +71,47 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     }
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
 
-  const tabInputItems = isDrawerOpen
-    ? filterNull(
-        // TODO: calvinhlee - we need better ways to sort these fields
-        Object.keys(localReferenceFields)
-          .sort()
-          .map(
-            (
-              field_key
-            ): ReactElement<typeof ReferenceItemFieldInput> | null => {
-              const label = field_key,
-                value = localReferenceFields[field_key],
-                isRequired = requiredFieldsSet.has(field_key);
-              return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
-                <ReferenceItemFieldInput
-                  formID={field_key}
-                  key={`reference-item-tab-input-${field_key}`}
-                  label={snakeCaseToNormalCase(label)}
-                  onChange={(newValue: string): void => {
-                    setLocalReferenceFields({
-                      ...localReferenceFields,
-                      [field_key]: newValue,
-                    });
-                  }}
-                  placeholder={label}
-                  required={isRequired}
-                  value={value}
-                />
-              );
-            }
-          )
-      )
-    : [];
+  const tabInputItems = filterNull(
+    // TODO: calvinhlee - we need better ways to sort these fields
+    Object.keys(localReferenceFields)
+      .sort((a, _b): number => {
+        if (a === "title") {
+          return -1;
+        } else if (a === "creators") {
+          return 0;
+        }
+        return 1;
+      })
+      .map((field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
+        let label = snakeCaseToNormalCase(field_key),
+          value = localReferenceFields[field_key],
+          isRequired = requiredFieldsSet.has(field_key);
+        if (field_key === "creators") {
+          value = value
+            .map((creator): string => {
+              return `${creator.first_name} ${creator.last_name}`;
+            })
+            .join(", ");
+        }
+
+        return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
+          <ReferenceItemFieldInput
+            formID={field_key}
+            key={`reference-item-tab-input-${field_key}`}
+            label={label}
+            onChange={(newValue: string): void => {
+              setLocalReferenceFields({
+                ...localReferenceFields,
+                [field_key]: newValue,
+              });
+            }}
+            placeholder={label}
+            required={isRequired}
+            value={value}
+          />
+        );
+      })
+  );
 
   return (
     <Drawer
@@ -164,7 +173,6 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             {toTitleCase(referenceItemDrawerData?.citation_type ?? "")}
           </Typography>
         </Stack>
-
         {tabInputItems}
         <Box alignItems="center" display="flex" justifyContent="center">
           <PrimaryButton
