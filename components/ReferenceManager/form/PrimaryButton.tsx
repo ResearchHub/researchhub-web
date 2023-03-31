@@ -4,6 +4,7 @@ import { isEmpty } from "~/config/utils/nullchecks";
 
 interface Props {
   children: ReactElement | string;
+  disabled: boolean;
   onClick: (event: SyntheticEvent) => void;
   margin?: string;
   size?: "small" | "medium" | "large";
@@ -11,12 +12,14 @@ interface Props {
 
 export default function PrimaryButton({
   children,
+  disabled,
   margin = undefined,
   onClick,
   size,
 }: Props): ReactElement {
   return (
     <Button
+      disabled={disabled}
       onClick={onClick}
       size={size}
       sx={{
@@ -32,11 +35,12 @@ export default function PrimaryButton({
       }}
     >
       <Box
-        component="span"
+        // component="span"
         sx={{
           color: "#fff",
           textTransform: "none",
           fontSize: 18,
+          height: 20,
           lineHeight: "22px",
         }}
       >

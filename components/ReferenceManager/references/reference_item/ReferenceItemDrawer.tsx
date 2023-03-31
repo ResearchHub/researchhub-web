@@ -27,6 +27,8 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
+import Loader from "~/components/Loader/Loader";
+import colors from "~/config/themes/colors";
 
 type Props = {};
 
@@ -182,6 +184,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         <Box alignItems="center" display="flex" justifyContent="center">
           <PrimaryButton
             margin="0 0 32px 0"
+            disabled={isSubmitting}
             onClick={(event: SyntheticEvent): void => {
               event.preventDefault();
               setIsSubmitting(true);
@@ -204,14 +207,17 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                 },
                 onSuccess: () => {
                   setReferencesFetchTime(Date.now());
-                  setIsSubmitting(false);
+                  setTimeout(() => {
+                    setIsSubmitting(false);
+                    setIsDrawerOpen(false);
+                  }, 1000);
                 },
                 onError: emptyFncWithMsg,
               });
             }}
             size="large"
           >
-            {"Update"}
+            {isSubmitting ? "Updating..." : "Update"}
           </PrimaryButton>
         </Box>
       </Box>
