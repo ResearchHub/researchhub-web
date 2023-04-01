@@ -117,12 +117,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   commentWrapper: {
-    borderBottom: `1px solid ${colors.border}`,
-    paddingBottom: 25,
+    // borderBottom: `1px solid ${colors.border}`,
+    // paddingBottom: 25,
     paddingTop: 25,
     ":first-child": {
       paddingTop: 0,
-      paddingBottom: 25,
+      // paddingBottom: 25,
     },
     ":last-child": {
       borderBottom: 0,

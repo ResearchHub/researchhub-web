@@ -2,6 +2,7 @@ import Quill from "quill";
 import { reviewCategories } from "./options";
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'; 
 
 export const buildQuillModules = ({
   editorId,
@@ -186,4 +187,54 @@ export const buildHtmlForReviewBlot = ({ node = null, category, starSize = "med"
       <div class="ql-review-category-rating">${starInputAsHtml}</div>
     </div>
   `;
+}
+
+export const textLength = ({ quillOps = [] }: { quillOps: Array<any> }) => {
+  return quillOps.reduce((length: number, op: any) => length + (typeof(op.insert) === "string" ? op.insert.length : 0), 0);
+}
+
+export const trimDeltas = ({ quillOps = [], maxLength = 0 } : { quillOps: Array<any>, maxLength: number }) => {
+  const trimmedOps:Array<any> = [];
+  let lengthSoFar = 0;
+  for (let i = 0; i < quillOps.length; i++) {
+    const op = quillOps[i];
+    if (typeof(op.insert) === "string") {
+      if (lengthSoFar + op.insert.length <= maxLength) {
+        trimmedOps.push(op);
+        lengthSoFar += op.insert.length;
+      }
+      else {
+        const remainingLength = maxLength - lengthSoFar;
+        const trimmed = op.insert.substring(0, remainingLength);
+        const trimmedOp = Object.assign(Object.assign({}, op), {insert: trimmed});
+        trimmedOps.push(trimmedOp);
+        break;
+      }
+    }
+    else {
+      trimmedOps.push(op);
+    }
+  }
+
+  return trimmedOps;
+}
+
+export const quillDeltaToHtml = ({ ops }) => {
+  const converter = new QuillDeltaToHtmlConverter(ops, {});
+  // @ts-ignore
+  converter.renderCustomWith(function(customOp, contextOp){
+    if (customOp.insert.type === 'peer-review-rating') {
+      const category = customOp.insert.value?.category 
+      const label = reviewCategories[category]?.label || "Unknown category";
+      const rating = customOp.insert.value?.rating;
+      // @ts-ignore
+      const html = buildHtmlForReviewBlot({ category: label, readOnly: true, rating });
+
+      return html;
+    } else {
+        console.error('Unmanaged custom blot!');
+    }
+  });
+  
+  return converter.convert();
 }

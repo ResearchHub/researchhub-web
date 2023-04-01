@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { useQuill } from "./hooks/useQuill";
 import config from "./lib/config";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import IconButton from "../Icons/IconButton";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'; 
-import { reviewCategories } from "./lib/options";
-import { buildHtmlForReviewBlot } from "./lib/quill";
+import { textLength, trimDeltas, quillDeltaToHtml } from "./lib/quill";
 
 type Args = {
   content: any;
@@ -17,42 +14,40 @@ type Args = {
 
 const CommentReadOnly = ({ content }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
-  const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
+  // const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
+  const [previewHtml, setPreviewHtml] = useState<any>(null);
+  const [fullHtml, setFullHtml] = useState<any>(null);
 
-  var cfg = {};
-  var converter = new QuillDeltaToHtmlConverter(content.ops, cfg);
-  converter.renderCustomWith(function(customOp, contextOp){
-    if (customOp.insert.type === 'peer-review-rating') {
-      const category = customOp.insert.value?.category 
-      const label = reviewCategories[category]?.label || "Unknown category";
-      const rating = customOp.insert.value?.rating;
-      // @ts-ignore
-      const html = buildHtmlForReviewBlot({ category: label, readOnly: true, rating });
-      return html;
-    } else {
-        console.error('Unmanaged custom blot!');
+  useEffect(() => {
+    const length = textLength({ quillOps: content.ops });
+    if (length > config.comment.previewMaxChars) {
+      const trimmed = trimDeltas({ quillOps: content.ops, maxLength: config.comment.previewMaxChars });
+      const trimmedHtml = quillDeltaToHtml({ ops: trimmed });
+      setPreviewHtml(trimmedHtml);
+      // setShowLoadMoreBtn(true);
     }
-  });
+    
+    const html = quillDeltaToHtml({ ops: content.ops });
+    setFullHtml(html);
+  }, []);
 
-  const html = converter.convert();
-      // if (length > config.comment.previewMaxChars) {
-      //   setShowLoadMoreBtn(true);
-      //   if (isPreview) {
-      //     quill.deleteText(config.comment.previewMaxChars, length);
-      //   }
-      // }
 
+  const htmlToRender = (isPreview && previewHtml) ? previewHtml : fullHtml;
+  console.log('htmlToRender', htmlToRender)
   return (
     <div>
       <div className="CommentEditor">
-        <div className={"ql-container ql-snow" + (showLoadMoreBtn && isPreview ? "quill-preview-mode" : "")}>
-          <div className="ql-editor" dangerouslySetInnerHTML={{__html: html}} />
+        <div className={"ql-container ql-snow" + (previewHtml && isPreview ? "quill-preview-mode" : "")}>
+          <div className="ql-editor" dangerouslySetInnerHTML={{__html: htmlToRender}} />
         </div>
       </div>
-      {showLoadMoreBtn && (
+      {previewHtml && (
         <IconButton
           overrideStyle={styles.readMoreWrapper}
-          onClick={() => setIsPreview(!isPreview)}
+          onClick={() => {
+            console.log('ccc', content)
+            setIsPreview(!isPreview)
+          }}
         >
           <span className={css(styles.readMore)}>
             {isPreview ? `Read More` : `Show Less`}

@@ -89,7 +89,7 @@ const Comment = ({
         content,
         documentId: document.id,
         documentType: document.apiDocumentType,
-        parentComment: comment.parent,
+        parentComment: comment,
       });
 
       commentTreeState.onCreate({ comment: _comment, parent: comment });

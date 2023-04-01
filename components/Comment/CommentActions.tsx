@@ -50,7 +50,7 @@ const CommentActions = ({
               created_by: comment.createdBy.raw,
             }}
             metaData={{
-              contentType: "researchhub_comment", objectId: comment.id
+              contentType: "rhcommentmodel", objectId: comment.id
             }}
           >
             <Image
