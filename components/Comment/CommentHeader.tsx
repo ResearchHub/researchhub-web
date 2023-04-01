@@ -8,6 +8,9 @@ import CommentMenu from "./CommentMenu";
 import CommentBadge from "./CommentBadge";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 import ALink from "../ALink";
+import { Purchase } from "~/config/types/purchase";
+import { formatBountyAmount } from "~/config/types/bounty";
+
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -22,12 +25,17 @@ const CommentHeader = ({
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const bountyContributors = openBounties
-    .map((b) => b.createdBy.authorProfile)
+    .map((b) => b!.createdBy!.authorProfile)
     .filter((a) => a.id !== comment.createdBy.authorProfile.id);
   const noOpenBounties = bountyContributors.length === 0;
-
+  const tipAmount = comment.tips.reduce(
+    (total:number, tip:Purchase) => total + Number(tip.amount),
+    0
+  );
+  const badge = <CommentBadge comment={comment} />
   return (
     <div className={css(styles.commentHeader)}>
+<<<<<<< HEAD
       {openBounties.length > 0 && (
         <div className={css(styles.badgeRow)}>
           <ContentBadge
@@ -37,6 +45,18 @@ const CommentHeader = ({
           />
         </div>
       )}
+=======
+      {(badge || comment.tips.length > 0) &&
+        <div className={css(styles.badgeRow)}>
+          {badge}
+          {comment.tips.length > 0 &&
+            <div className={css(styles.tipsWrapper)}>
+              +{formatBountyAmount({ amount: tipAmount, withPrecision: false })}{` RSC tipped`}
+            </div>
+          }
+        </div>      
+      }
+>>>>>>> fedd1f4d8 ([Comments] RSC tipping)
       <div className={css(styles.details)}>
         {noOpenBounties ? (
           <UserTooltip
@@ -117,6 +137,18 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     fontSize: 15,
     alignItems: "center",
+  },
+  badgeRow: {
+    marginBottom: 10,
+  },
+  tipsWrapper: {
+    color: colors.bounty.text,
+    display: "flex",
+    alignItems: "center",
+    lineHeight: "10px",
+    columnGap: "5px",
+    fontWeight: 500,
+    fontSize: 15,
   },
   name: {},
   menuWrapper: {

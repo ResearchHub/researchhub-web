@@ -2,7 +2,7 @@ import CommentHeader from "./CommentHeader";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
-import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
+import { Comment as CommentType } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
