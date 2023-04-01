@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import { QuillFormats, buildQuillModules, insertReviewCategory, focusEditor, forceShowPlaceholder, hasQuillContent } from "./lib/quill";
-import { AuthorProfile, ID } from "~/config/types/root_types";
+import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
 import { COMMENT_TYPES } from "./lib/types";
@@ -14,7 +14,7 @@ import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { MessageActions } from "~/redux/message";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
@@ -22,6 +22,10 @@ import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
 import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
 import config from "./lib/config";
 import { ClipLoader } from "react-spinners";
+import { RootState } from "~/redux";
+import { isEmpty as isInputEmpty } from "~/config/utils/nullchecks";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import Bounty from "~/config/types/bounty";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -60,6 +64,10 @@ const CommentEditor = ({
     useState<boolean>(previewModeAsDefault);
   const isPreviewModeRef = useRef(previewModeAsDefault);
   const dispatch = useDispatch();
+  const [interimBounty, setInterimBounty] = useState<Bounty|null>(null);
+  const currentUser = useSelector((state: RootState) =>
+    isInputEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );  
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
@@ -126,10 +134,12 @@ const CommentEditor = ({
         content: _content,
         ...(commentId && { id: commentId }),
         ...(!commentId && { commentType: _commentType }),
+        ...(interimBounty && { bountyAmount: interimBounty.amount }),
       });
 
       dangerouslySetContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
+      setInterimBounty(null);
       if (previewModeAsDefault) {
         setIsPreviewMode(true);
         isPreviewModeRef.current = true;
@@ -138,7 +148,7 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
-  console.log('updating editor', _content)
+  
   return (
     <div ref={editorRef} className={`${css(styles.commentEditor)} CommentEditor`}>
       <div>
@@ -215,8 +225,29 @@ const CommentEditor = ({
           />
         </div>
         {allowBounty && (
-          // @ts-ignore
-          <CreateBountyBtn />
+          <>
+            {interimBounty ? (
+              <div className={css(styles.bountyPreview)} onClick={() => setInterimBounty(null)}>
+                <ResearchCoinIcon height={18} width={18} />
+                <span>{interimBounty.formattedAmount} RSC Bounty</span>
+                <FontAwesomeIcon style={{ color: colors.gray }} icon={faTimes} />
+              </div>
+            ) : (
+              // @ts-ignore
+              <CreateBountyBtn
+                onBountyAdd={(bounty) => {
+                  setInterimBounty(bounty);
+                }}
+                withPreview={true}
+                currentUser={currentUser}
+                bountyText={"Test test"}
+                onBountyCancelled={() => {
+                  console.log('cancelled')
+                }}
+              />
+            )}
+          </>
+
         )}
       </div>
     </div>
@@ -268,7 +299,20 @@ const styles = StyleSheet.create({
   },
   reviewCategoryContainer: {
     marginTop: 15,
-  }
+  },
+  bountyPreview: {
+    alignItems: "center",
+    display: "flex",
+    cursor: "pointer",
+    columnGap: "10px",
+    background: colors.bounty.background,
+    padding: "6px 12px",
+    borderRadius: "4px",
+    fontSize: 14,
+    lineHeight: "10px",
+    color: colors.bounty.text,
+    fontWeight: 500,
+  },
 });
 
 export default CommentEditor;

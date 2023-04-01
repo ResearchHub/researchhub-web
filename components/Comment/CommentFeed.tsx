@@ -124,10 +124,12 @@ const CommentFeed = ({
     content,
     commentType,
     parentId,
+    bountyAmount,
   }: {
     content: object;
     commentType: COMMENT_TYPES;
     parentId: ID;
+    bountyAmount?: number;
   }) => {
     try {
       let parentComment: CommentType | undefined;
@@ -151,6 +153,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         parentComment,
+        bountyAmount,
       });
 
       onCreate({ comment, parent: parentComment });

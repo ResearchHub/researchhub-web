@@ -102,15 +102,17 @@ export const createCommentAPI = async ({
   documentType,
   documentId,
   parentComment,
+  bountyAmount,
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
   documentType: RhDocumentType;
   documentId: ID;
   parentComment?: Comment;
+  bountyAmount: number;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
-    `${documentType}/${documentId}/comments/create_rh_comment`
+    `${documentType}/${documentId}/comments/` + (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment")
   );
   const response = await fetch(
     _url,
@@ -118,6 +120,7 @@ export const createCommentAPI = async ({
       comment_content_json: content,
       thread_type: commentType,
       ...(parentComment && { parent_id: parentComment.id }),
+      ...(bountyAmount && { amount: bountyAmount }),
     })
   ).then((res): any => Helpers.parseJSON(res));
 

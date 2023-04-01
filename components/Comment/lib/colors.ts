@@ -33,6 +33,7 @@ const colors = {
     background: globalColors.ORANGE_LIGHTER(1.0),
   },
   dot: "rgb(200 200 202)",
+  gray: globalColors.BLACK(0.6),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
 };
 

@@ -14,7 +14,6 @@ type Args = {
 
 const CommentReadOnly = ({ content }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
-  // const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
   const [previewHtml, setPreviewHtml] = useState<any>(null);
   const [fullHtml, setFullHtml] = useState<any>(null);
 
@@ -24,16 +23,13 @@ const CommentReadOnly = ({ content }: Args) => {
       const trimmed = trimDeltas({ quillOps: content.ops, maxLength: config.comment.previewMaxChars });
       const trimmedHtml = quillDeltaToHtml({ ops: trimmed });
       setPreviewHtml(trimmedHtml);
-      // setShowLoadMoreBtn(true);
     }
     
     const html = quillDeltaToHtml({ ops: content.ops });
     setFullHtml(html);
   }, []);
 
-
   const htmlToRender = (isPreview && previewHtml) ? previewHtml : fullHtml;
-  console.log('htmlToRender', htmlToRender)
   return (
     <div>
       <div className="CommentEditor">
