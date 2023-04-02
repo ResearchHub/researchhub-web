@@ -1,84 +1,25 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { ID } from "~/config/types/root_types";
-import { ReactElement, useEffect, useState } from "react";
-
+import { ReactElement } from "react";
 import Image from "next/image";
-import buildTwitterUrl from "./utils/buildTwitterUrl";
-import { Hub } from "~/config/types/hub";
+import Bounty from "~/config/types/bounty";
 
 type Props = {
-  bountyAmount: number;
-  bountyText: string;
-  postId: ID;
-  postSlug: string;
-  hubs?: Hub[];
+  originalBounty?: Bounty
 };
 
 function SuccessScreen({
-  bountyAmount,
-  bountyText,
-  postId,
-  postSlug,
-  hubs,
+  originalBounty
 }: Props): ReactElement {
-  const [copySuccess, setCopySuccess] = useState(false);
-  const [link, setLink] = useState("");
-  const [twitterUrl, setTwitterURL] = useState("");
-
-  useEffect(() => {
-    setLink(
-      window.location.protocol +
-        "//" +
-        window.location.hostname +
-        `/post/${postId}/${postSlug}`
-    );
-
-    setTwitterURL(
-      buildTwitterUrl({
-        isBountyCreator: true,
-        bountyText,
-        bountyAmount,
-        hubs,
-      })
-    );
-  }, []);
-
-  function copyToClipboard() {
-    navigator.clipboard.writeText(link);
-    document.execCommand("copy");
-    // e.target.focus(); // TODO: Uncomment if we don't want highlighting
-    setCopySuccess(true);
-    setTimeout(() => {
-      setCopySuccess(false);
-    }, 2000);
-  }
-
   return (
     <div className={css(styles.container)}>
-      <Image src="/static/icons/success2.png" width={62} height={62} />
-      <h2 className={css(styles.title)}>Your Bounty has been started!</h2>
-      <p className={css(styles.description)}>
-        Share this bounty to get a quicker response.
-      </p>
-      <div className={css(styles.shareRow)}>
-        <a
-          href={twitterUrl}
-          data-size="large"
-          target="_blank"
-          className={css(styles.link)}
-        >
-          <div className={css(styles.twitter)}>
-            {<FontAwesomeIcon icon={faTwitter}></FontAwesomeIcon>}
-            <span className={css(styles.twitterText)}>Share on Twitter</span>
-          </div>
-        </a>
-      </div>
-      <div className={css(styles.copyURLButton)} onClick={copyToClipboard}>
-        {copySuccess ? "URL Successfully Copied!" : "Copy URL"}
-      </div>
+      <Image src="/static/icons/success2.png" width={62} height={62} alt={"Bounty successfully created"} />
+      <h2 className={css(styles.title)}>
+        {originalBounty
+          ? `Thank you for your contribution.`
+          : `Your Bounty has been started.`
+        }
+      </h2>
     </div>
   );
 }

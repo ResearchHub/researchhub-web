@@ -106,7 +106,6 @@ export default class Bounty {
   static createAPI({
     bountyAmount,
     itemObjectId,
-    effortLevel,
     itemContentType = "researchhubunifieddocument",
   }) {
     // TODO: Change hard coded value
@@ -120,7 +119,6 @@ export default class Bounty {
       amount: parseFloat(bountyAmount),
       item_content_type: itemContentType,
       item_object_id: itemObjectId,
-      effort_level: effortLevel,
       expiration_date: thirtyDaysFromNow,
     };
 

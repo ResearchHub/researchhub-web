@@ -17,6 +17,7 @@ import { createCommentAPI, fetchSingleCommentAPI, updateCommentAPI } from "./lib
 import { CommentTreeContext } from "./lib/contexts";
 import config from "./lib/config";
 import { MessageActions } from "~/redux/message";
+import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -161,13 +162,26 @@ const Comment = ({
               {_hasOpenBounties && (
                 <div className={css(styles.contributeWrapper)}>
                   <div>Contribute RSC to this bounty</div>
-                  <Button
-                    label="Contribute"
-                    customButtonStyle={styles.contributeBtn}
-                    customLabelStyle={styles.contributeBtnLabel}
-                    hideRipples={true}
-                    size="small"
-                  />
+                  <CreateBountyBtn
+                    onBountyAdd={(bounty) => {
+                      alert('contribution');
+                    }}
+                    withPreview={false}
+                    relatedItemId={comment.id}
+                    relatedItemContentType={"rhcommentmodel"}
+                    originalBounty={comment.bounties[0]}
+                  >
+                    <Button
+                      label="Contribute"
+                      customButtonStyle={styles.contributeBtn}
+                      customLabelStyle={styles.contributeBtnLabel}
+                      hideRipples={true}
+                      size="small"
+                    />
+                  </CreateBountyBtn>
+
+
+
                 </div>
               )}
             </div>

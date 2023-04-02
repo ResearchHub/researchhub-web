@@ -9,10 +9,8 @@ import {
   MIN_RSC_REQUIRED,
 } from "./config/constants";
 import { captureEvent } from "@sentry/browser";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { Hub } from "~/config/types/hub";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
 import { trackEvent } from "~/config/utils/analytics";
@@ -27,21 +25,21 @@ import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
 import ContentBadge from "../ContentBadge";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { RootState } from "~/redux";
+import { ID, parseUser } from "~/config/types/root_types";
 
 type Props = {
   isOpen: boolean;
   withPreview: boolean;
   closeModal: Function;
+  originalBounty?: Bounty;
   handleBountyAdded: Function;
   addBtnLabel?: string;
-  bountyText: string;
-  postId: number;
-  postSlug: string;
-  unifiedDocId: number;
+  relatedItemId: ID;
+  relatedItemContentType: string;
   showMessage: Function;
   setMessage: Function;
-  isOriginalPoster: boolean;
-  hubs?: Hub[];
 };
 
 function BountyModal({
@@ -49,21 +47,21 @@ function BountyModal({
   withPreview,
   closeModal,
   handleBountyAdded,
-  unifiedDocId,
-  postId,
-  postSlug,
-  bountyText,
   showMessage,
   setMessage,
-  isOriginalPoster,
-  hubs = [],
+  relatedItemId,
+  originalBounty,
+  relatedItemContentType,
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
     ReactTooltip.rebuild();
   });
-  const currentUser = getCurrentUser();
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
   const currentUserBalance = currentUser?.balance ?? 0;
+
   const [offeredAmount, setOfferedAmount] = useState<number>(
     parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
   );
@@ -135,10 +133,6 @@ function BountyModal({
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
       const totalBountyAmount = calcTotalAmount({ offeredAmount });
       if (withPreview) {
-        // handleBountyAdded({
-        //   grossBountyAmount: bountyAmount,
-        //   totalBountyAmount: totalBountyAmount,
-        // });
         handleBountyAdded(
           new Bounty({
             amount: offeredAmount,
@@ -148,7 +142,8 @@ function BountyModal({
       } else {
         Bounty.createAPI({
           bountyAmount: offeredAmount,
-          itemObjectId: unifiedDocId,
+          itemObjectId: relatedItemId,
+          itemContentType: relatedItemContentType,
         })
           .then((createdBounty) => {
             sendBountyCreateAmpEvent({ currentUser, createdBounty });
@@ -178,20 +173,14 @@ function BountyModal({
         success ? null : (
           <span className={css(styles.modalTitle)}>
             {" "}
-            {isOriginalPoster ? "Add" : "Contribute to"} Bounty{" "}
+            {originalBounty ? "Contribute to" : "Add"} Bounty{" "}
           </span>
         )
       }
     >
       <>
         {success ? (
-          <BountySuccessScreen
-            bountyText={bountyText}
-            postSlug={postSlug}
-            postId={postId}
-            hubs={hubs}
-            bountyAmount={offeredAmount}
-          />
+          <BountySuccessScreen />
         ) : (
           <>
             <ReactTooltip
@@ -321,7 +310,7 @@ function BountyModal({
                 </div>
               </div>
               <div className={css(infoSectionStyles.bountyInfo)}>
-                {isOriginalPoster ? null : (
+                {!originalBounty && (
                   <div
                     className={css(
                       infoSectionStyles.infoRow,

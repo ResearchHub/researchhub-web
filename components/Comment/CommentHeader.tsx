@@ -35,17 +35,6 @@ const CommentHeader = ({
   const badge = <CommentBadge comment={comment} />
   return (
     <div className={css(styles.commentHeader)}>
-<<<<<<< HEAD
-      {openBounties.length > 0 && (
-        <div className={css(styles.badgeRow)}>
-          <ContentBadge
-            contentType="bounty"
-            label={`${bountyAmount} RSC`}
-            bountyAmount={bountyAmount}
-          />
-        </div>
-      )}
-=======
       {(badge || comment.tips.length > 0) &&
         <div className={css(styles.badgeRow)}>
           {badge}
@@ -56,7 +45,6 @@ const CommentHeader = ({
           }
         </div>      
       }
->>>>>>> fedd1f4d8 ([Comments] RSC tipping)
       <div className={css(styles.details)}>
         {noOpenBounties ? (
           <UserTooltip
