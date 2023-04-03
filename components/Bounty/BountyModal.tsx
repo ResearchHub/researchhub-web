@@ -57,6 +57,7 @@ function BountyModal({
   useEffect(() => {
     ReactTooltip.rebuild();
   });
+
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -180,7 +181,7 @@ function BountyModal({
     >
       <>
         {success ? (
-          <BountySuccessScreen />
+          <BountySuccessScreen originalBounty={originalBounty} />
         ) : (
           <>
             <ReactTooltip
@@ -310,7 +311,7 @@ function BountyModal({
                 </div>
               </div>
               <div className={css(infoSectionStyles.bountyInfo)}>
-                {!originalBounty && (
+                {originalBounty && (
                   <div
                     className={css(
                       infoSectionStyles.infoRow,
@@ -319,34 +320,32 @@ function BountyModal({
                   >
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {
-                        <WarningIcon
-                          color={colors.DARKER_GREY()}
-                          width={20}
-                          height={20}
-                        />
+                        <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
                       }
                     </span>{" "}
-                    By contributing to the open bounty, you are giving the
-                    original poster control to award your bounty.
+                    The bounty creator wll be able to award the bounty amount including your contribution to a solution they pick.
                   </div>
                 )}
-
-                <div className={css(infoSectionStyles.infoRow)}>
-                  <span className={css(infoSectionStyles.infoIcon)}>
-                    {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
-                  </span>{" "}
-                  <span className={css(infoSectionStyles.infoText)}>
-                    The Bounty will end in 30 days or as soon as you award a
-                    solution
-                  </span>
-                </div>
-                <div className={css(infoSectionStyles.infoRow)}>
-                  <span className={css(infoSectionStyles.infoIcon)}>
-                    {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
-                  </span>{" "}
-                  If no solution satisfies your request, the full bounty amount
-                  (excluding platform fee) will be refunded to you
-                </div>
+                {!originalBounty &&
+                  <div className={css(infoSectionStyles.infoRow)}>
+                    <span className={css(infoSectionStyles.infoIcon)}>
+                      {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
+                    </span>{" "}
+                    <span className={css(infoSectionStyles.infoText)}>
+                      The Bounty will end in 30 days or as soon as you award a
+                      solution
+                    </span>
+                  </div>
+                }
+                {!originalBounty &&
+                  <div className={css(infoSectionStyles.infoRow)}>
+                    <span className={css(infoSectionStyles.infoIcon)}>
+                      {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
+                    </span>{" "}
+                    If no solution satisfies your request, the full bounty amount
+                    (excluding platform fee) will be refunded to you
+                  </div>
+                }
               </div>
 
               <div className={css(styles.addBountyContainer)}>
@@ -385,7 +384,7 @@ function BountyModal({
                   ) : null}
                   <div className={css(styles.addBtnContainer)}>
                     <Button
-                      label={addBtnLabel}
+                      label={originalBounty ? "Contribute" : "Add bounty"}
                       customButtonStyle={styles.addButton}
                       customLabelStyle={styles.addButtonLabel}
                       size={`small`}
@@ -439,14 +438,6 @@ const alertStyles = StyleSheet.create({
 
 const infoSectionStyles = StyleSheet.create({
   specialInfoRow: {
-    borderBottom: "1px solid rgb(232 232 242)",
-    padding: 0,
-    marginLeft: 30,
-    marginRight: 30,
-    paddingBottom: 8,
-    // background: colors.YELLOW(0.1),
-    // paddingTop: 8,
-    // paddingBottom: 8,
   },
   bountyInfo: {
     textAlign: "left",
@@ -462,11 +453,15 @@ const infoSectionStyles = StyleSheet.create({
     display: "flex",
     paddingRight: 30,
     paddingLeft: 30,
+    paddingBottom: 12,
     fontSize: 14,
     lineHeight: "20px",
     alignItems: "flex-start",
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
     ":last-child": {
       marginBottom: 0,
+      borderBottom: 0,
+      paddingBottom: 0,
     },
   },
   infoIcon: {

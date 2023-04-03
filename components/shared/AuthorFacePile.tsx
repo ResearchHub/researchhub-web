@@ -13,6 +13,7 @@ type Props = {
   overrideStyle?: any;
   withAuthorName?: boolean;
   border?: string;
+  withTooltip?: boolean;
 };
 
 export default function AuthorFacePile({
@@ -22,6 +23,7 @@ export default function AuthorFacePile({
   labelSpacing,
   margin = 12,
   withAuthorName,
+  withTooltip = false,
   fontSize,
   overrideStyle,
   border = `2px solid white`
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
   authorFacePile: {
     display: "flex",
     flexDirection: "column",
-    flexWrap: "wrap",
     justifyContent: "center",
   },
   horizontal: {

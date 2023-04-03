@@ -165,7 +165,9 @@ const CommentEditor = ({
             className={css(styles.authorRow, isPreviewMode && styles.hidden)}
           >
             <div className={css(styles.nameRow)}>
-              <CommentAvatars authors={[author]} />
+              {currentUser &&
+                <CommentAvatars withTooltip={false} people={[currentUser]} />
+              }
               <div className={css(styles.name)}>
                 {author.firstName} {author.lastName}
               </div>

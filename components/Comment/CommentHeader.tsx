@@ -1,4 +1,4 @@
-import { AuthorProfile } from "~/config/types/root_types";
+import { AuthorProfile, RHUser } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
@@ -10,6 +10,9 @@ import UserTooltip from "../Tooltips/User/UserTooltip";
 import ALink from "../ALink";
 import { Purchase } from "~/config/types/purchase";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { useContext } from "react";
+import { CommentTreeContext } from "./lib/contexts";
+import { breakpoints } from "~/config/themes/screen";
 
 
 type CommentHeaderArgs = {
@@ -24,15 +27,18 @@ const CommentHeader = ({
   handleEdit,
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
-  const bountyContributors = openBounties
-    .map((b) => b!.createdBy!.authorProfile)
-    .filter((a) => a.id !== comment.createdBy.authorProfile.id);
-  const noOpenBounties = bountyContributors.length === 0;
+  // @ts-ignore
+  const bountyContributors: RHUser[] = (openBounties || [])
+    .map((b) => b!.createdBy)
+    .filter((person) => person!.id !== comment.createdBy.id)
+
   const tipAmount = comment.tips.reduce(
-    (total:number, tip:Purchase) => total + Number(tip.amount),
+    (total: number, tip: Purchase) => total + Number(tip.amount),
     0
   );
   const badge = <CommentBadge comment={comment} />
+  const commentTreeState = useContext(CommentTreeContext);
+
   return (
     <div className={css(styles.commentHeader)}>
       {(badge || comment.tips.length > 0) &&
@@ -43,40 +49,45 @@ const CommentHeader = ({
               +{formatBountyAmount({ amount: tipAmount, withPrecision: false })}{` RSC tipped`}
             </div>
           }
-        </div>      
+        </div>
       }
       <div className={css(styles.details)}>
-        {noOpenBounties ? (
-          <UserTooltip
-            createdBy={comment.createdBy}
-            overrideTargetStyle={styles.avatarWrapper}
-            targetContent={
-              <CommentAvatars
-                authors={[authorProfile, ...bountyContributors]}
-              />
-            }
-          />
-        ) : (
-          <CommentAvatars authors={[authorProfile, ...bountyContributors]} />
-        )}
+        <CommentAvatars people={[comment.createdBy, ...bountyContributors]} spacing={-10} withTooltip={true} />
+
         <div className={css(styles.nameWrapper)}>
           <div className={css(styles.nameRow)}>
             <div className={css(styles.name)}>
-              {noOpenBounties && (
-                <UserTooltip
-                  createdBy={comment.createdBy}
-                  targetContent={
-                    <ALink
-                      href={`/user/${authorProfile?.id}/overview`}
-                      key={`/user/${authorProfile?.id}/overview-key`}
-                    >
-                      {authorProfile.firstName} {authorProfile.lastName}
-                    </ALink>
+              <UserTooltip
+                createdBy={comment.createdBy}
+                targetContent={
+                  <ALink
+                    href={`/user/${authorProfile?.id}/overview`}
+                    key={`/user/${authorProfile?.id}/overview-key`}
+                  >
+                    {authorProfile.firstName} {authorProfile.lastName}
+                  </ALink>
+                }
+              />
+              {openBounties.length > 0 && bountyContributors.length > 0 && (
+                <>
+                  {commentTreeState.context !== "sidebar" &&
+                    <div className={css(styles.additionalAuthor)}>
+                      {`, `}
+                      <UserTooltip
+                        createdBy={comment.createdBy}
+                        targetContent={
+                          <ALink
+                            href={`/user/${bountyContributors[0].id}/overview`}
+                            key={`/user/${bountyContributors[0].id}/overview-key`}
+                          >
+                            {bountyContributors[0].firstName} {bountyContributors[0].lastName}
+                          </ALink>
+                        }
+                      />
+                    </div>
                   }
-                />
-              )}
-              {openBounties.length > 0 && bountyContributors.length > 1 && (
-                <>{` and others`}</>
+                  <>{` and others`}</>
+                </>
               )}
             </div>
             {openBounties.length ? (
@@ -138,10 +149,21 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 15,
   },
-  name: {},
+  name: {
+    display: "flex",
+    whiteSpace: "pre",
+    alignItems: "center",
+  },
   menuWrapper: {
     marginLeft: "auto",
   },
+  additionalAuthor: {
+    display: "flex",
+    alignItems: "center",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    }
+  }
 });
 
 export default CommentHeader;

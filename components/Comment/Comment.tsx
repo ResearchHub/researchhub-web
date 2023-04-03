@@ -164,7 +164,9 @@ const Comment = ({
                   <div>Contribute RSC to this bounty</div>
                   <CreateBountyBtn
                     onBountyAdd={(bounty) => {
-                      alert('contribution');
+                      const updated = Object.assign({}, comment)
+                      updated.bounties.push(bounty); 
+                      commentTreeState.onUpdate({ comment: updated });
                     }}
                     withPreview={false}
                     relatedItemId={comment.id}
@@ -179,9 +181,6 @@ const Comment = ({
                       size="small"
                     />
                   </CreateBountyBtn>
-
-
-
                 </div>
               )}
             </div>
@@ -254,6 +253,7 @@ const styles = StyleSheet.create({
     padding: "6px 8px",
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     fontWeight: 500,
     fontSize: 14,
     borderRadius: "4px",

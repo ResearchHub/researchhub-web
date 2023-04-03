@@ -1,23 +1,45 @@
-import AuthorFacePile from "../shared/AuthorFacePile";
 import { css, StyleSheet } from "aphrodite";
-import { AuthorProfile, ID } from "~/config/types/root_types";
+import { RHUser } from "~/config/types/root_types";
+import AuthorAvatar from "../AuthorAvatar";
+import UserTooltip from "../Tooltips/User/UserTooltip";
 
 type CommentAvatarsArgs = {
-  authors: AuthorProfile[];
+  people: RHUser[];
+  withTooltip?: boolean;
+  spacing: number
+  size?: number
 };
 
-const CommentAvatars = ({ authors }: CommentAvatarsArgs) => {
-  const avatarMargin = authors.length > 1 ? -12 : 0;
-
+const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30 }: CommentAvatarsArgs) => {
   return (
     <div className={css(styles.avatarsWrapper)}>
-      <AuthorFacePile
-        margin={avatarMargin}
-        horizontal={true}
-        authorProfiles={authors}
-        imgSize={30}
-        fontSize={30}
-      />
+
+      {people.map((p, idx) => {
+
+        const avatarEl = <div className={css(styles.avatarWrapper)}>
+          <AuthorAvatar
+            author={p.authorProfile}
+            size={30}
+            trueSize={true}
+          />
+        </div>
+
+        return (
+          <div className={css(styles.person)} style={{marginLeft: idx === 0 ? 0 : spacing}} >
+            {withTooltip ? (
+              <UserTooltip
+                createdBy={p}
+                overrideTargetStyle={styles.avatarWrapper}
+                targetContent={
+                  avatarEl
+                }
+              />
+            ) : (
+              avatarEl
+            )}
+          </div>
+        )
+      })}
     </div>
   );
 };
@@ -29,6 +51,12 @@ const styles = StyleSheet.create({
     columnGap: "7px",
     fontSize: 15,
   },
+  person: {
+    
+  },
+  avatarWrapper: {
+
+  }
 });
 
 export default CommentAvatars;

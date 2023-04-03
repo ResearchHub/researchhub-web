@@ -10,7 +10,7 @@ const CommentBadge = ({ comment }: { comment: Comment }) => {
   if (openBounties.length > 0) {
     return (
       <div className={css(styles.badgeWrapper)}>
-        <ContentBadge contentType="bounty" label={`${bountyAmount} RSC`} />
+        <ContentBadge contentType="bounty" label={`${bountyAmount} RSC Bounty`} />
       </div>
     );
   } else if (comment.commentType === COMMENT_TYPES.REVIEW) {

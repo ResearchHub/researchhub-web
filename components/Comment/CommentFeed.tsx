@@ -284,6 +284,7 @@ const CommentFeed = ({
             value={{
               sort: selectedSortValue,
               filter: selectedFilterValue,
+              context,
               onCreate,
               onUpdate,
               onFetchMore,
