@@ -114,9 +114,6 @@ const Comment = ({
       content,
       documentId: document.id,
       documentType: document.apiDocumentType,
-      // FIXME: Temporary fix until we add created_by as obj from BE
-      // @ts-ignore
-      currentUser,
     });
 
     commentTreeState.onUpdate({ comment });

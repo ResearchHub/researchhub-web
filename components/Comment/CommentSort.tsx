@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/pro-light-svg-icons";
+import { faAngleDown, faCheck } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState } from "react";
 import { NullableString } from "~/config/types/root_types";
@@ -45,9 +45,17 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
       >
         {sortOpts.map((s) => (
-          <div className={css(styles.option)}>
+          <div className={css(styles.option)} key={`sort-${s.value}`} onClick={() => {
+            handleSelect(s.value);
+            setIsOpen(false);
+          }}>
             <div className={css(styles.dropdownIcon)}>{s.icon}</div>
             <div className={css(styles.dropdownLabel)}>{s.label}</div>
+            {selectedSortValue === s.value && (
+              <div className={css(styles.check)}>
+                <FontAwesomeIcon style={{ fontSize: 12 }} icon={faCheck} />
+              </div>            
+            )}
           </div>
         ))}
       </div>
@@ -104,6 +112,12 @@ const styles = StyleSheet.create({
       transition: "0.2s",
     },
   },
+  check: {
+    position: "absolute",
+    right: 15,
+    top: 8,
+    fontSize: 12,
+  },  
   dropdownIcon: {
     fontSize: 12,
   },

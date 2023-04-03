@@ -52,20 +52,14 @@ const CommentFeed = ({
   const dispatch = useDispatch();
 
   
-  const handleFetch = async ({
-    sort,
-    filter,
-  }: {
-    sort?: NullableString;
-    filter?: NullableString;
-  }) => {
+  const handleFetch = async ({ sort, filter } : { sort?: string|null, filter?: string|null}) => {
     setIsFetching(true);
     try {
       const response = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
-        sort,
-        filter,
+        sort: sort || selectedSortValue,
+        filter: filter || selectedFilterValue,
       });
 
       setComments(response.comments);
@@ -271,10 +265,10 @@ const CommentFeed = ({
               <CommentSort
                 selectedSortValue={selectedSortValue}
                 handleSelect={(sval) => {
+                  setSelectedSortValue(sval)
                   setIsFetching(true);
                   setComments([]);
-                  handleFetch({ filter: selectedFilterValue, sort: sval });
-                  handleFetch({});
+                  handleFetch({ sort: sval });
                 }}
               />
             </div>

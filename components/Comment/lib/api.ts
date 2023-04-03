@@ -109,7 +109,7 @@ export const createCommentAPI = async ({
   documentType: RhDocumentType;
   documentId: ID;
   parentComment?: Comment;
-  bountyAmount: number;
+  bountyAmount?: number;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` + (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment")
@@ -133,7 +133,6 @@ export const updateCommentAPI = async ({
   content,
   documentType,
   documentId,
-  currentUser,
 }: {
   id: ID;
   content: any;
@@ -149,8 +148,6 @@ export const updateCommentAPI = async ({
   ).then((res): any => Helpers.parseJSON(res));
 
   const comment = parseComment({ raw: response });
-  // FIXME: Temporary fix until we add created_by as obj from BE
-  comment.createdBy = currentUser;
   return Promise.resolve(comment);
 };
 
