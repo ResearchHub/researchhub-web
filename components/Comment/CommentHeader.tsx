@@ -52,7 +52,7 @@ const CommentHeader = ({
         </div>
       }
       <div className={css(styles.details)}>
-        <CommentAvatars people={[comment.createdBy, ...bountyContributors]} spacing={-10} withTooltip={true} />
+        <CommentAvatars people={[comment.createdBy, ...bountyContributors]} spacing={-15} withTooltip={true} />
 
         <div className={css(styles.nameWrapper)}>
           <div className={css(styles.nameRow)}>

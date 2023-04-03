@@ -6,7 +6,7 @@ import UserTooltip from "../Tooltips/User/UserTooltip";
 type CommentAvatarsArgs = {
   people: RHUser[];
   withTooltip?: boolean;
-  spacing: number
+  spacing?: number
   size?: number
 };
 

@@ -58,8 +58,8 @@ const CommentFeed = ({
       const response = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
-        sort: sort || selectedSortValue,
-        filter: filter || selectedFilterValue,
+        sort: (sort || sort === null) ? sort : selectedSortValue,
+        filter: (filter || filter === null) ? filter : selectedSortValue,
       });
 
       setComments(response.comments);
@@ -203,7 +203,7 @@ const CommentFeed = ({
         filter: selectedFilterValue,
         page: nextPage,
       });
-      console.log('nextPage', nextPage)
+
       setCurrentPage(nextPage);
       onFetchMore({
         fetchedComments: response.comments,
@@ -215,6 +215,14 @@ const CommentFeed = ({
       setIsFetching(false);
     }
   };
+
+  const resetFeed = async () => {
+    setComments([]);
+    setCurrentPage(1);
+    setSelectedSortValue(sortOpts[0].value);
+    setSelectedFilterValue(filterOpts[0].value);
+    setRootLevelCommentCount(0);
+  }
 
   useEffect(() => {
     if (document.id && !isInitialFetchDone) {
@@ -255,8 +263,8 @@ const CommentFeed = ({
             <CommentFilters
               selectedFilterValue={selectedFilterValue}
               handleSelect={(fval) => {
+                resetFeed();
                 setIsFetching(true);
-                setComments([]);
                 setSelectedFilterValue(fval);
                 handleFetch({ filter: fval, sort: selectedSortValue });
               }}
