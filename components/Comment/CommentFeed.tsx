@@ -26,13 +26,11 @@ const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
-  previewModeAsDefault?: boolean;
   context: "sidebar" | "drawer" | null;
 };
 
 const CommentFeed = ({
   document,
-  previewModeAsDefault = false,
   context = null,
 }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -59,7 +57,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: (sort || sort === null) ? sort : selectedSortValue,
-        filter: (filter || filter === null) ? filter : selectedSortValue,
+        filter: (filter || filter === null) ? filter : selectedFilterValue,
       });
 
       setComments(response.comments);
@@ -230,6 +228,7 @@ const CommentFeed = ({
     }
   }, [document.id, isInitialFetchDone]);
 
+  const isQuestion = document.unifiedDocument.documentType === "question";
   const noResults =
     (document.isReady && document.discussionCount === 0) ||
     (selectedFilterValue !== null && comments.length === 0);
@@ -255,13 +254,14 @@ const CommentFeed = ({
               allowBounty={true}
               author={currentUser?.authorProfile}
               previewModeAsDefault={context ? true : false}
-              allowCommentTypeSelection={true}
+              allowCommentTypeSelection={!isQuestion}
             />
           </div>
 
           <div className={css(styles.filtersWrapper)}>
             <CommentFilters
               selectedFilterValue={selectedFilterValue}
+              hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
               handleSelect={(fval) => {
                 resetFeed();
                 setIsFetching(true);

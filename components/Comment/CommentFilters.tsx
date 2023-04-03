@@ -6,17 +6,20 @@ import { filterOpts } from "./lib/options";
 type Args = {
   selectedFilterValue: NullableString;
   handleSelect: Function;
+  hideOptions?: Array<string|null>
 };
 
-const CommentFilters = ({ selectedFilterValue, handleSelect }: Args) => {
+const CommentFilters = ({ selectedFilterValue, handleSelect, hideOptions = [] }: Args) => {
   const selectedFilter =
     filterOpts.find((f) => f.value === selectedFilterValue) || filterOpts[0];
 
+  const _filterOpts = filterOpts.filter((f) => !hideOptions.includes(f.value));
+
   return (
     <div className={css(styles.filtersWrapper)}>
-      {filterOpts.map((f) => {
+      {_filterOpts.map((f) => {
         return (
-          <div>
+          <div key={`filter-${f.value}`}>
             {f.value === selectedFilter.value ? (
               <div
                 className={css([styles.filter, styles.filterSelected])}
