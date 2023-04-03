@@ -17,7 +17,7 @@ import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
 import { trackEvent } from "~/config/utils/analytics";
 import BaseModal from "../Modals/BaseModal";
-import Bounty from "~/config/types/bounty";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import BountySuccessScreen from "./BountySuccessScreen";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
@@ -25,6 +25,8 @@ import { WarningIcon } from "~/config/themes/icons";
 import numeral from "numeral";
 import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import { useExchangeRate } from "../contexts/ExchangeRateContext";
+import ContentBadge from "../ContentBadge";
 
 type Props = {
   isOpen: boolean;
@@ -68,6 +70,8 @@ function BountyModal({
   const [hasMinRscAlert, setHasMinRscAlert] = useState(false);
   const [hasMaxRscAlert, setHasMaxRscAlert] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const { rscToUSDDisplay } = useExchangeRate();
 
   useEffect((): void => {
     setHasMinRscAlert(
@@ -165,7 +169,7 @@ function BountyModal({
   const researchHubAmount = calcResearchHubAmount({ offeredAmount });
   const totalAmount = calcTotalAmount({ offeredAmount });
   return (
-    (<BaseModal
+    <BaseModal
       closeModal={handleClose}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
@@ -262,7 +266,11 @@ function BountyModal({
                         data-tip={""}
                         data-for="commission"
                       >
-                        {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                        {
+                          <FontAwesomeIcon
+                            icon={faInfoCircle}
+                          ></FontAwesomeIcon>
+                        }
                       </span>
                     </div>
                     <div className={css(styles.lineItemValue)}>
@@ -282,7 +290,11 @@ function BountyModal({
                         data-tip={""}
                         data-for="net"
                       >
-                        {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
+                        {
+                          <FontAwesomeIcon
+                            icon={faInfoCircle}
+                          ></FontAwesomeIcon>
+                        }
                       </span>
                     </div>
                     <div
@@ -301,6 +313,10 @@ function BountyModal({
                       </span>
                       <span className={css(styles.rscText)}>RSC</span>
                     </div>
+                  </div>
+                  <div className={css(styles.usdValue)}>
+                    ≈ {rscToUSDDisplay(totalAmount)}{" "}
+                    <span style={{ marginLeft: 22 }}>USD</span>
                   </div>
                 </div>
               </div>
@@ -394,7 +410,7 @@ function BountyModal({
           </>
         )}
       </>
-    </BaseModal>)
+    </BaseModal>
   );
 }
 
@@ -611,9 +627,16 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     borderTop: `2px solid rgb(229 229 230)`,
     fontWeight: 500,
+    marginBottom: 0,
   },
   netAmountValue: {
     fontWeight: 500,
+  },
+  usdValue: {
+    fontSize: 12,
+    textAlign: "right",
+    marginTop: 8,
+    color: colors.LIGHT_GREY_TEXT,
   },
 });
 

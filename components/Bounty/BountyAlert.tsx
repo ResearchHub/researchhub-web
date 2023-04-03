@@ -25,7 +25,6 @@ import { UnifiedDocument } from "~/config/types/root_types";
 import AwardBountyModal from "./AwardBountyModal";
 import { connect } from "react-redux";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
-import RSCTooltip from "../Tooltips/RSC/RSCTooltip";
 import ContentBadge from "../ContentBadge";
 
 type BountyAlertParams = {

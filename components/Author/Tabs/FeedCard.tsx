@@ -44,8 +44,6 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
-import { useExchangeRate } from "~/components/contexts/ExchangeRateContext";
-import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")

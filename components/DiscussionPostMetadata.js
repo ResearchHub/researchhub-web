@@ -4,7 +4,6 @@ import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { useState, useRef } from "react";
-import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import * as moment from "dayjs";
 import Link from "next/link";
@@ -17,7 +16,6 @@ import UserRoleTag from "~/components/shared/UserRoleTag";
 import ShareModal from "~/components/ShareModal";
 
 // Config
-import { createUserSummary } from "~/config/utils/user";
 import { timeSince } from "~/config/utils/dates";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 
@@ -29,7 +27,6 @@ import postTypes, {
 } from "./TextEditor/config/postTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { formatBountyAmount } from "~/config/types/bounty";
-import { useExchangeRate } from "./contexts/ExchangeRateContext";
 import ContentBadge from "./ContentBadge";
 const ContentSupportModal = dynamic(() =>
   import("./Modals/ContentSupportModal")
@@ -61,8 +58,6 @@ const DiscussionPostMetadata = (props) => {
   } = props;
 
   const router = useRouter();
-  const { rscToUSDDisplay } = useExchangeRate();
-
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
   let isUserOwnInlineComment = false;
 
