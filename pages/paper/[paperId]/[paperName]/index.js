@@ -87,6 +87,7 @@ const Paper = ({
 
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
+  const [screenSizeAtLoading, setScreenSizeAtLoading] = useState(null);
 
   const [discussionCount, setCount] = useState(null);
   const { hubs = [], uploaded_by } = paper;
@@ -134,6 +135,10 @@ const Paper = ({
       fetchFreshData(paper?.id);
     }
   }, [fetchFreshDataStatus, paper]);
+
+  useEffect(() => {
+    setScreenSizeAtLoading(window.innerWidth);
+  }, []);
 
   useEffect(() => {
     const paperPageHasChanged = paper.id !== router.query.paperId;
@@ -268,6 +273,7 @@ const Paper = ({
     }
   });
 
+  const commentSectionAsDrawer = screenSizeAtLoading <= breakpoints.small.int;
   return (
     <div>
       <PaperBanner
@@ -320,48 +326,24 @@ const Paper = ({
               <a name="abstract" />
               <PaperPageAbstractSection paper={paper} />
             </div>
-            {isFetchComplete && (
+            {isFetchComplete && !commentSectionAsDrawer && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
-                {Object.hasOwn(router.query, "cv2") ? (
-                  <>
-                    {router.query.cv2 === "" && (
-                      <>
-                        <div className={css(styles.discussionSectionHeader)}>
-                          <h3 className={css(styles.discussionSectionTitle)}>
-                            Discussion
-                          </h3>
-                          {paperV2.isReady && (
-                            <span className={css(styles.discussionCount)}>
-                              {discussionCount}
-                            </span>
-                          )}
-                        </div>
-                        <CommentFeed
-                          document={paperV2}
-                          previewModeAsDefault={false}
-                        />
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <DiscussionTab
-                    hostname={process.env.HOST}
-                    documentType={"paper"}
-                    paperId={paper.id}
-                    paperState={paper}
-                    setHasBounties={setHasBounties}
-                    setAllBounties={setAllBounties}
-                    showBountyBtn={true}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                    isCollapsible={false}
-                    setThreadProp={(_threads) => {
-                      setThreads(_threads);
-                    }}
-                  />
-                )}
+                <div className={css(styles.discussionSectionHeader)}>
+                  <h3 className={css(styles.discussionSectionTitle)}>
+                    Discussion
+                  </h3>
+                  {paperV2.isReady && (
+                    <span className={css(styles.discussionCount)}>
+                      {discussionCount}
+                    </span>
+                  )}
+                </div>
+                <CommentFeed document={paperV2} />
               </div>
+            )}
+            {commentSectionAsDrawer && (
+              <CommentFeed document={paperV2} context={"drawer"} />
             )}
             {isFetchComplete /* Performance Optimization */ && (
               <div className={css(styles.section)}>
@@ -380,14 +362,6 @@ const Paper = ({
         </div>
 
         <div />
-        {router.query.cv2 &&
-          ["sidebar", "drawer"].includes(router.query.cv2) && (
-            <CommentFeed
-              document={paperV2}
-              context={router.query.cv2}
-              previewModeAsDefault={true}
-            />
-          )}
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30 }:
         const avatarEl = <div className={css(styles.avatarWrapper)}>
           <AuthorAvatar
             author={p.authorProfile}
-            size={30}
+            size={size}
             trueSize={true}
           />
         </div>

@@ -123,6 +123,7 @@ const Comment = ({
   };
   
 
+  const isQuestion = document?.unifiedDocument?.documentType === "question";
   return (
     <div>
       <div>
@@ -149,6 +150,7 @@ const Comment = ({
               commentId={comment.id}
               author={currentUser?.authorProfile}
               editorId={`edit-${comment.id}`}
+              allowCommentTypeSelection={!isQuestion}
               handleClose={() => _handleCloseEdit()}
             />
           ) : (
@@ -192,7 +194,6 @@ const Comment = ({
             toggleReply={() => _handleToggleReply()}
             document={document}
             comment={comment}
-            isReplyOpen={isReplyOpen}
           />
         </div>
       </div>

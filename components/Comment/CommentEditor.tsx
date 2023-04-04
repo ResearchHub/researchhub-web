@@ -166,9 +166,9 @@ const CommentEditor = ({
           >
             <div className={css(styles.nameRow)}>
               {currentUser &&
-                <CommentAvatars withTooltip={false} people={[currentUser]} />
+                <CommentAvatars size={25} withTooltip={false} people={[currentUser]} />
               }
-              <div className={css(styles.name)}>
+              <div>
                 {author.firstName} {author.lastName}
               </div>
             </div>
@@ -241,11 +241,6 @@ const CommentEditor = ({
                   setInterimBounty(bounty);
                 }}
                 withPreview={true}
-                currentUser={currentUser}
-                bountyText={"Test test"}
-                onBountyCancelled={() => {
-                  console.log('cancelled')
-                }}
               />
             )}
           </>
@@ -289,7 +284,7 @@ const styles = StyleSheet.create({
   },
   nameRow: {
     display: "flex",
-    columnGap: "5px",
+    columnGap: "7px",
     fontSize: 15,
     alignItems: "center",
   },

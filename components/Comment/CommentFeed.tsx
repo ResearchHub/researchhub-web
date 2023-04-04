@@ -243,7 +243,7 @@ const CommentFeed = ({
     }
   }, [document.id, isInitialFetchDone]);
 
-  const isQuestion = document.unifiedDocument.documentType === "question";
+  const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
     (document.isReady && document.discussionCount === 0) ||
     (selectedFilterValue !== null && comments.length === 0);
