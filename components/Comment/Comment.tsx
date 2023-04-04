@@ -56,6 +56,7 @@ const Comment = ({
 
   const handleFetchMoreReplies = async () => {
     setIsFetchingMore(true);
+
     try {
       const response = await fetchSingleCommentAPI({
         documentId: document.id,
@@ -63,15 +64,17 @@ const Comment = ({
         commentId: comment.id,
         sort: commentTreeState.sort,
         filter: commentTreeState.filter,
-        currentChildOffset,
+        childOffset: comment.children.length,
         parentComment: comment.parent,
       });
 
+      // console.log('response.children', response.children)
+      // return;
       commentTreeState.onFetchMore({
         comment,
         fetchedComments: response.children,
       });
-      setCurrentChildOffset(currentChildOffset + config.feed.repliesPageSize);
+      setCurrentChildOffset(currentChildOffset + response.children.length);
     } catch (error) {
       console.log("error", error);
       // FIXME: Implement error handling

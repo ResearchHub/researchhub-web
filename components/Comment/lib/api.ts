@@ -25,7 +25,7 @@ export const fetchCommentsAPI = async ({
   // return Promise.resolve({comments, next: "", prev: ""});
 
   const query = {
-    ...(filter && { thread_type: filter }),
+    ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     ...(page && page > 1 && { page: page }),
     child_count: config.feed.childPageSize,
@@ -57,7 +57,7 @@ export const fetchSingleCommentAPI = async ({
   documentType,
   documentId,
   parentComment,
-  currentChildOffset = 0,
+  childOffset = 0,
   sort = sortOpts[0].value,
   filter,
 }: {
@@ -65,15 +65,15 @@ export const fetchSingleCommentAPI = async ({
   documentType: RhDocumentType;
   documentId: ID;
   parentComment?: Comment;
-  currentChildOffset: number;
+  childOffset: number;
   sort?: string | null;
   filter?: string | null;  
 }): Promise<Comment> => {
   const query = {
-    ...(filter && { thread_type: filter }),
+    ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     child_count: config.feed.repliesPageSize,
-    child_offset: currentChildOffset + config.feed.repliesPageSize,
+    child_offset: childOffset,
   };
 
   const baseFetchUrl = generateApiUrl(

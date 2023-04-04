@@ -91,7 +91,7 @@ const CommentList = ({
                   fontWeight: 500,
                 }}
               >
-                Load {loadMoreCount} More{" "}
+                Load {loadMoreCount} {parentComment ? `${loadMoreCount > 1 ? "Replies" : "Reply"}` : "More"}{" "}
                 <FontAwesomeIcon icon={faLongArrowDown} />
               </span>
             </IconButton>
