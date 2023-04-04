@@ -13,7 +13,9 @@ import { formatBountyAmount } from "~/config/types/bounty";
 import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { timeTo } from "~/config/utils/dates";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -93,6 +95,15 @@ const CommentHeader = ({
           </div>
           <div className={css(styles.time)}>
             {comment.timeAgo}
+            {openBounties.length > 0 &&
+              <span>
+                <span className={css(styles.dot)}>•</span>
+                <span className={css(styles.expiringText)}>
+                  <FontAwesomeIcon style={{ fontSize: 13, marginRight: 5}} icon={faClock} />
+                  {`Expiring in ` + timeTo(openBounties[0].expiration_date)}
+                </span>
+              </span>
+            }
           </div>
         </div>
       </div>
@@ -101,6 +112,14 @@ const CommentHeader = ({
 };
 
 const styles = StyleSheet.create({
+  dot: {
+    color: colors.dot,
+    marginLeft: 8,
+    marginRight: 8,
+  },
+  expiringText: {
+
+  },
   commentHeader: {
     fontSize: 14,
   },
@@ -109,7 +128,7 @@ const styles = StyleSheet.create({
   },
   time: {
     color: colors.secondary.text,
-    marginTop: -5,
+    marginTop: -3,
   },
   details: {
     display: "flex",

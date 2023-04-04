@@ -12,6 +12,7 @@ import { ContentType, parseContentType } from "./contentType";
 import Router from "next/router";
 import { Comment } from "~/components/Comment/lib/types";
 
+
 export function formatBountyAmount({ amount, withPrecision = true }) {
   if (withPrecision) {
     return numeral(amount).format("0,0.[0000000000]");
