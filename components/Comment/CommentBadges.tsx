@@ -33,7 +33,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   }
   else if (comment.isAcceptedAnswer) {
     badges.push(
-      <ContentBadge contentType={COMMENT_TYPES.ANSWER} label="" />
+      <ContentBadge tooltip={`Selected by poster (${comment.createdBy.firstName} ${comment.createdBy.lastName})`} contentType={COMMENT_TYPES.ANSWER} label="" />
     );    
   }
 

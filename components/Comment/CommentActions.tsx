@@ -112,7 +112,7 @@ const CommentActions = ({
   if (isQuestion) {
     openUserOwnedRootBounty = findOpenRootBounties({ comments: commentTreeState.comments, user: currentUser })[0];
     isAllowedToAward = Boolean(openUserOwnedRootBounty);
-    isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id;
+    isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id && !comment.isAcceptedAnswer;
   }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;

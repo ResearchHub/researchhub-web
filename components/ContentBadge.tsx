@@ -7,7 +7,6 @@ import {
 import {
   faCheck,
 } from "@fortawesome/pro-solid-svg-icons";
-
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
@@ -212,6 +211,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
+  withTooltip: {
+    cursor: "default"
+  },
   medium: {},
   icon: {
     marginRight: 6,
@@ -224,6 +226,9 @@ const styles = StyleSheet.create({
   },
   iconSmall: {
     height: 14,
+  },
+  wrapper: {
+    display: "flex"
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,
@@ -256,8 +261,8 @@ const styles = StyleSheet.create({
     background: "#FDF8E6",
   },
   badgeFor_ANSWER: {
-    background: colors.GREEN(),
-    color: "white",
+    background: colors.GREEN(0.1),
+    color: colors.GREEN(1.0),
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),
