@@ -30,6 +30,7 @@ export const fetchCommentsAPI = async ({
     ...(page && page > 1 && { page: page }),
     child_count: config.feed.childPageSize,
     page_size: config.feed.rootLevelPageSize,
+    ascending: "FALSE",
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
@@ -74,6 +75,7 @@ export const fetchSingleCommentAPI = async ({
     ...(sort && { ordering: sort }),
     child_count: config.feed.repliesPageSize,
     child_offset: childOffset,
+    ascending: "FALSE",
   };
 
   const baseFetchUrl = generateApiUrl(
