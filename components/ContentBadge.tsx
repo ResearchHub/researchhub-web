@@ -17,7 +17,7 @@ import {
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { POST_TYPES } from "./TextEditor/config/postTypes";
-import { ReactElement, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 import { useExchangeRate } from "./contexts/ExchangeRateContext";
 
 type Args = {
@@ -161,17 +161,23 @@ const ContentBadgeBase = ({
 const ContentBadge = (props) => {
   const [badgeHovered, setBadgeHovered] = useState(false);
   const [keepPositionAbsolute, setKeepPositionAbsolute] = useState(false);
+  // TODO type this properly with a timeout
+  const mouseLeaveTimeout = useRef();
   return (
     <div
       className={css(styles.badgeContainer)}
-      onMouseEnter={() => {
-        setBadgeHovered(props.contentType === "bounty");
-        setKeepPositionAbsolute(props.contentType === "bounty");
+      onMouseMove={() => {
+        if (!mouseLeaveTimeout.current) {
+          setBadgeHovered(props.contentType === "bounty");
+          setKeepPositionAbsolute(props.contentType === "bounty");
+        }
       }}
       onMouseLeave={() => {
+        clearTimeout(mouseLeaveTimeout.current);
         setBadgeHovered(false);
-        setTimeout(() => {
+        mouseLeaveTimeout.current = setTimeout(() => {
           setKeepPositionAbsolute(false);
+          mouseLeaveTimeout.current = null;
         }, 300);
       }}
     >
