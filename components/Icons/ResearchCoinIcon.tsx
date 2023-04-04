@@ -102,7 +102,15 @@ const ResearchCoinIcon = ({
             fill="white"
           />
         </svg>
-      ) : null}
+      ) : version === 5 ? (
+        <img
+          className={css(overrideStyle && overrideStyle)}
+          src={"/static/icons/coin-empty.png"}
+          alt="RSC Coin"
+          width={width}
+          height={height}
+        />
+      )  : null}
     </span>
   );
 };

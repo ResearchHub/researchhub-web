@@ -8,27 +8,86 @@ import Image from "next/image";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 import WidgetContentSupport from "../Widget/WidgetContentSupport";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { getUserOpenBounties } from "./lib/bounty";
+import { CommentTreeContext } from "./lib/contexts";
+import { useContext } from "react";
+import Bounty, { tallyAmounts } from "~/config/types/bounty";
+import { MessageActions } from "~/redux/message";
+const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   toggleReply: Function;
   comment: Comment;
   document: TopLevelDocument;
-  isReplyOpen: boolean;
 };
 
 const CommentActions = ({
   comment,
   document,
   toggleReply,
-  isReplyOpen,
 }: Args) => {
+  const dispatch = useDispatch();
+  const commentTreeState = useContext(CommentTreeContext);
+  const isQuestion = document.unifiedDocument.documentType === "question";
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  let isAllowedToAward = false;
+  let openUserOwnedRootBounty:Bounty;
+
+  if (isQuestion) {
+    openUserOwnedRootBounty = commentTreeState.comments.reduce((bounties:Bounty[], c:Comment) => [...bounties, ...getUserOpenBounties({ comment: c, user: currentUser })] ,[])[0];
+    isAllowedToAward = Boolean(openUserOwnedRootBounty);
+  }
+
+
+  const handleAwardBounty = async ({ bounty, }: { bounty: Bounty, }) => {
+    const totalAmount = tallyAmounts({ bounties: [bounty, ...bounty.children] })
+    if (confirm(`Award ${totalAmount} bounty to ${comment.createdBy.firstName} ${comment.createdBy.lastName}?`)) {
+      try {
+        Bounty.awardAPI({
+          bountyId: bounty.id,
+          recipientUserId: comment.createdBy.id,
+          objectId: comment.id,
+          amount: totalAmount,
+        })
+          .then((updatedBounty:Bounty) => {
+            const awardedComent = Object.assign({}, comment);
+            awardedComent.awardedBountyAmount += totalAmount;
+            
+            const updatedCommentBounty = Object.assign({}, bounty!.relatedItem?.object);
+            updatedBounty.status = updatedBounty.status;
+            updatedBounty.children = bounty.children;
+            updatedBounty.relatedItem = bounty.relatedItem;
+            updatedBounty.children.map(c => c.status = updatedBounty.status);
+
+            const bIdx = updatedCommentBounty.bounties.findIndex(b => b.id === updatedBounty.id);
+            if (bIdx > -1) {
+              updatedCommentBounty.bounties[bIdx] = updatedBounty;
+            }
+
+            commentTreeState.onUpdate({ comment: updatedCommentBounty });
+            commentTreeState.onUpdate({ comment: awardedComent });
+          })
+          .catch((error) => {
+            // FIXME: Log to sentry
+            dispatch(setMessage(`Could not award bounty at this time. Error: ${error?.detail}`));
+            // @ts-ignore
+            dispatch(showMessage({ show: true, error: true }));
+
+          });
+      }
+      catch(error) {
+        console.log('error', error);
+      }
+    }
+  };
+
+
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
 
@@ -49,6 +108,7 @@ const CommentActions = ({
             data={{
               created_by: comment.createdBy.raw,
             }}
+            showAmount={false}
             metaData={{
               contentType: "rhcommentmodel", objectId: comment.id
             }}
@@ -63,14 +123,16 @@ const CommentActions = ({
           </WidgetContentSupport>
         </div>
 
-        {/* <div className={`${css(styles.action)} award-btn`}>
-          <IconButton onClick={() => null}>
-            <FontAwesomeIcon icon={faCrown} style={{fontSize: 16}} />
-            <span className={css(styles.actionText)}>
-              Award
-            </span>
-          </IconButton>
-        </div>         */}
+        {isAllowedToAward &&
+          <div className={`${css(styles.action)} award-btn`}>
+            <IconButton onClick={() => handleAwardBounty({ bounty: openUserOwnedRootBounty })}>
+              <FontAwesomeIcon icon={faCrown} style={{ fontSize: 16 }} />
+              <span className={css(styles.actionText)}>
+                Award
+              </span>
+            </IconButton>
+          </div>
+        }
 
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => toggleReply()}>

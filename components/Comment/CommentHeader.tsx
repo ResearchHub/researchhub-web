@@ -5,7 +5,7 @@ import colors from "./lib/colors";
 import { getOpenBounties } from "./lib/bounty";
 import { Comment, COMMENT_TYPES } from "./lib/types";
 import CommentMenu from "./CommentMenu";
-import CommentBadge from "./CommentBadge";
+import CommentBadges from "./CommentBadges";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 import ALink from "../ALink";
 import { Purchase } from "~/config/types/purchase";
@@ -32,25 +32,13 @@ const CommentHeader = ({
     .map((b) => b!.createdBy)
     .filter((person) => person!.id !== comment.createdBy.id)
 
-  const tipAmount = comment.tips.reduce(
-    (total: number, tip: Purchase) => total + Number(tip.amount),
-    0
-  );
-  const badge = <CommentBadge comment={comment} />
+
+
   const commentTreeState = useContext(CommentTreeContext);
 
   return (
     <div className={css(styles.commentHeader)}>
-      {(badge || comment.tips.length > 0) &&
-        <div className={css(styles.badgeRow)}>
-          {badge}
-          {comment.tips.length > 0 &&
-            <div className={css(styles.tipsWrapper)}>
-              +{formatBountyAmount({ amount: tipAmount, withPrecision: false })}{` RSC tipped`}
-            </div>
-          }
-        </div>
-      }
+      <CommentBadges comment={comment} />
       <div className={css(styles.details)}>
         <CommentAvatars people={[comment.createdBy, ...bountyContributors]} spacing={-15} withTooltip={true} />
 
@@ -138,7 +126,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   badgeRow: {
-    marginBottom: 10,
   },
   tipsWrapper: {
     color: colors.bounty.text,

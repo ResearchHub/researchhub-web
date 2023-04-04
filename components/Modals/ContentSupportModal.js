@@ -60,7 +60,7 @@ class ContentSupportModal extends Component {
   };
 
   handleTransaction = () => {
-    const { showMessage, updateUser, modals, auth } = this.props;
+    const { showMessage, updateUser, modals, auth, onSupport } = this.props;
     const { metaData, count, setCount } = modals.openContentSupportModal.props;
     showMessage({ show: true, load: true });
     supportContent({ ...metaData, amount: this.state.amount })
@@ -71,6 +71,9 @@ class ContentSupportModal extends Component {
         setCount(updatedCount); // update promoted score
         updateUser({ balance }); // update user's RSC balance
         this.closeModal();
+        if (typeof onSupport === "function") {
+          onSupport(res);
+        }
       })
       .catch(this.showErrorMessage);
   };

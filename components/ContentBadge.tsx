@@ -120,6 +120,14 @@ const ContentBadgeBase = ({
           </span>
           <span className={css(styles.rscContent)}>{label}</span>
         </>
+      ) : contentType === "award" ? (
+        <>
+          <span className={css(styles.icon)}>
+            <ResearchCoinIcon version={5} height={16} width={16} />
+            {` `}
+          </span>
+          <span>{label}</span>
+        </>
       ) : contentType === "bounty" ? (
         <div>
           <div className={css(styles.row)}>
@@ -239,6 +247,10 @@ const styles = StyleSheet.create({
       top: 0,
       left: 0,
     },
+  },
+  badgeFor_award: {
+    color: "rgba(232, 181, 4, 1)",
+    background: "#FDF8E6",
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),

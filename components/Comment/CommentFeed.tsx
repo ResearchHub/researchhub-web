@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
-import { ID, NullableString, parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import CommentFilters from "./CommentFilters";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
@@ -9,7 +9,6 @@ import CommentSort from "./CommentSort";
 import CommentSidebar from "./CommentSidebar";
 import CommentList from "./CommentList";
 import CommentPlaceholder from "./CommentPlaceholder";
-import config from "./lib/config";
 import { CommentTreeContext } from "./lib/contexts";
 import CommentEmptyState from "./CommentEmptyState";
 import replaceComment from "./lib/replaceComment";
@@ -20,8 +19,9 @@ import CommentEditor from "./CommentEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
-import { MessageActions } from "~/redux/message";
 import colors from "./lib/colors";
+import { MessageActions } from "~/redux/message";
+import { Purchase } from "~/config/types/purchase";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -190,6 +190,21 @@ const CommentFeed = ({
     }
   };
 
+  const onSupport = (data:any) => {
+    const found = findComment({ id: data.object_id, comments });
+    if (found) {
+      console.log(found)
+      const updatedComment = {...found.comment};
+      const tip:Purchase = {
+        amount: data.amount,
+        // @ts-ignore
+        createdBy: currentUser,
+      }
+      updatedComment.tips.push(tip);
+      onUpdate({ comment: updatedComment })
+    }
+  }
+
   const fetchMore = async () => {
     setIsFetching(true);
     try {
@@ -242,7 +257,12 @@ const CommentFeed = ({
   return (
     // @ts-ignore
     <WrapperEl {...(context ? { comments } : {})} {...(context ? { isInitialFetchDone } : {})}>
-      <ContentSupportModal />
+      <ContentSupportModal
+        // @ts-ignore
+        onSupport={(data:any) => {
+          onSupport(data);
+        }}
+      />
       {!isInitialFetchDone ? (
         <CommentPlaceholder />
       ) : (
@@ -286,6 +306,7 @@ const CommentFeed = ({
             value={{
               sort: selectedSortValue,
               filter: selectedFilterValue,
+              comments,
               context,
               onCreate,
               onUpdate,
