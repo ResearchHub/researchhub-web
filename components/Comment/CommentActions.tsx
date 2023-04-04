@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { findOpenRootBounties, getUserOpenBounties } from "./lib/bounty";
+import { findOpenRootBounties, getOpenBounties, getUserOpenBounties } from "./lib/bounty";
 import { CommentTreeContext } from "./lib/contexts";
 import { useContext } from "react";
 import Bounty, { tallyAmounts } from "~/config/types/bounty";
@@ -111,9 +111,11 @@ const CommentActions = ({
   let openUserOwnedRootBounty:Bounty;
   if (isQuestion) {
     openUserOwnedRootBounty = findOpenRootBounties({ comments: commentTreeState.comments, user: currentUser })[0];
-    isAllowedToAward = Boolean(openUserOwnedRootBounty);
-    isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id && !comment.isAcceptedAnswer;
+    isAllowedToAward = Boolean(openUserOwnedRootBounty) && getOpenBounties({ comment }).length === 0;
+    isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id && !comment.isAcceptedAnswer && comment.bounties.length === 0;
   }
+
+  
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
 

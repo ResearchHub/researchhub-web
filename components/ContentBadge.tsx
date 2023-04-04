@@ -161,6 +161,21 @@ const ContentBadgeBase = ({
             ≈ {rscToUSDDisplay(bountyAmount)}
           </div>
         </div>
+      ) : contentType === "closedBounty" ? (
+        <>
+          <span
+            className={css(styles.icon, size === "small" && styles.iconSmall)}
+          >
+            <ResearchCoinIcon
+              version={4}
+              color={colors.BLACK(0.5)}
+              height={size === "small" ? 14 : 16}
+              width={size === "small" ? 14 : 16}
+            />
+            {` `}
+          </span>
+          <span>{label}</span>
+        </>
       ) : (
         <></>
       )}
@@ -255,6 +270,10 @@ const styles = StyleSheet.create({
       top: 0,
       left: 0,
     },
+  },
+  badgeFor_closedBounty: {
+    color: colors.BLACK(0.5),
+    background: colors.LIGHT_GREY(1.0),
   },
   badgeFor_award: {
     color: "rgba(232, 181, 4, 1)",

@@ -5,13 +5,21 @@ import { Comment } from "./types";
 export const getBountyAmount = ({
   comment,
   formatted = false,
+  status = "OPEN",
 }: {
   comment: Comment;
   formatted?: boolean;
+  status?: "OPEN"|"CLOSED"
 }): number => {
   const amount = comment.bounties.reduce(
-    (total: number, b: Bounty) => total + (b.isOpen ? b.amount : 0),
-    0
+    (total: number, b: Bounty) => {
+      if (status === "OPEN") {
+        return total + (b.isOpen ? b.amount : 0)
+      }
+      else {
+        return total + (b.isExpiredOrClosed ? b.amount : 0)
+      }
+    },0
   );
 
   return formatted
@@ -19,12 +27,6 @@ export const getBountyAmount = ({
     : amount;
 };
 
-export const hasOpenBounties = ({ comment }: { comment: Comment }): boolean => {
-  return comment.bounties.reduce(
-    (hasOpenBounties: boolean, curr: Bounty) => hasOpenBounties || curr.isOpen,
-    false
-  );
-};
 
 export const getOpenBounties = ({
   comment,
@@ -32,6 +34,18 @@ export const getOpenBounties = ({
   comment: Comment;
 }): Bounty[] => {
   return comment.bounties.filter((b) => b.isOpen);
+};
+
+export const getClosedBounties = ({
+  comment,
+}: {
+  comment: Comment;
+}): Bounty[] => {
+  return comment.bounties.filter((b) => b.isExpiredOrClosed);
+};
+
+export const hasOpenBounties = ({ comment }: { comment: Comment }): boolean => {
+  return getOpenBounties({comment}).length > 0;
 };
 
 export const getUserOpenBounties = ({ comment, user, rootBountyOnly = true }: { comment: Comment, user: RHUser | null, rootBountyOnly?: boolean }): Bounty[] => {

@@ -2,7 +2,7 @@ import { AuthorProfile, RHUser } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
-import { getOpenBounties } from "./lib/bounty";
+import { getClosedBounties, getOpenBounties } from "./lib/bounty";
 import { Comment, COMMENT_TYPES } from "./lib/types";
 import CommentMenu from "./CommentMenu";
 import CommentBadges from "./CommentBadges";
@@ -27,15 +27,17 @@ const CommentHeader = ({
   handleEdit,
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
+  const closedBounties = getClosedBounties({ comment });
+
+  // Prioritize open bounties first
   // @ts-ignore
-  const bountyContributors: RHUser[] = (openBounties || [])
+  const bountyContributors:RHUser[] = (openBounties.length > 0 ? openBounties : closedBounties.length > 0 ? closedBounties : [])
     .map((b) => b!.createdBy)
     .filter((person) => person!.id !== comment.createdBy.id)
 
 
-
   const commentTreeState = useContext(CommentTreeContext);
-
+  const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
   return (
     <div className={css(styles.commentHeader)}>
       <CommentBadges comment={comment} />
@@ -56,7 +58,7 @@ const CommentHeader = ({
                   </ALink>
                 }
               />
-              {openBounties.length > 0 && bountyContributors.length > 0 && (
+              {hasAnyBounties && bountyContributors.length > 0 && (
                 <>
                   {commentTreeState.context !== "sidebar" &&
                     <div className={css(styles.additionalAuthor)}>
@@ -78,7 +80,7 @@ const CommentHeader = ({
                 </>
               )}
             </div>
-            {openBounties.length ? (
+            {hasAnyBounties ? (
               <div className={css(styles.verb)}>{` opened a bounty`}</div>
             ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
               <div className={css(styles.verb)}>{` peer reviewed`}</div>
@@ -89,7 +91,9 @@ const CommentHeader = ({
               <CommentMenu handleEdit={handleEdit} comment={comment} />
             </div>
           </div>
-          <div className={css(styles.time)}>{comment.timeAgo}</div>
+          <div className={css(styles.time)}>
+            {comment.timeAgo}
+          </div>
         </div>
       </div>
     </div>

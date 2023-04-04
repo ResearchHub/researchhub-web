@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { getBountyAmount, getOpenBounties } from "./lib/bounty";
+import { getBountyAmount, getOpenBounties, getClosedBounties } from "./lib/bounty";
 import { Comment, COMMENT_TYPES } from "./lib/types";
 import ContentBadge from "../ContentBadge";
 import { Purchase } from "~/config/types/purchase";
@@ -7,7 +7,9 @@ import { formatBountyAmount } from "~/config/types/bounty";
 
 const CommentBadges = ({ comment }: { comment: Comment }) => {
   const openBounties = getOpenBounties({ comment });
-  const bountyAmount = getBountyAmount({ comment, formatted: true });
+  const openBountyAmount = getBountyAmount({ comment, formatted: true });
+  const closedBounties = getClosedBounties({ comment });
+  const closedBountyAmount = getBountyAmount({ comment, status: "CLOSED", formatted: true })
   const tipAmount = comment.tips.reduce(
     (total: number, tip: Purchase) => total + Number(tip.amount),
     0
@@ -18,9 +20,16 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
 
   if (openBounties.length > 0) {
     badges.push(
-      <ContentBadge contentType="bounty" label={`${bountyAmount} RSC Bounty`} />
+      <ContentBadge contentType="bounty" label={`${openBountyAmount} Bounty`} />
     )
   }
+  else if (closedBounties.length > 0) {
+    badges.push(
+      <ContentBadge contentType="closedBounty" label={`${closedBountyAmount} Closed Bounty`} />
+    )
+  }
+
+
   if (comment.commentType === COMMENT_TYPES.REVIEW) {
     badges.push(
       <ContentBadge contentType={COMMENT_TYPES.REVIEW} label="" />
