@@ -47,3 +47,6 @@ export const getUserOpenBounties = ({ comment, user, rootBountyOnly = true }: { 
     }, []);
 };
 
+export const findOpenRootBounties = ({ user, comments }) => {
+  return comments.reduce((bounties:Bounty[], c:Comment) => [...bounties, ...getUserOpenBounties({ comment: c, user })] ,[]);
+}

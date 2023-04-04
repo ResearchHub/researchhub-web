@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/pro-regular-svg-icons";
+import { faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { TopLevelDocument } from "~/config/types/root_types";
@@ -12,11 +13,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { getUserOpenBounties } from "./lib/bounty";
+import { findOpenRootBounties, getUserOpenBounties } from "./lib/bounty";
 import { CommentTreeContext } from "./lib/contexts";
 import { useContext } from "react";
 import Bounty, { tallyAmounts } from "~/config/types/bounty";
 import { MessageActions } from "~/redux/message";
+import { markAsAcceptedAnswerAPI } from "./lib/api";
+import { findAllComments } from "./lib/findComment";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -36,14 +39,6 @@ const CommentActions = ({
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
-  let isAllowedToAward = false;
-  let openUserOwnedRootBounty:Bounty;
-
-  if (isQuestion) {
-    openUserOwnedRootBounty = commentTreeState.comments.reduce((bounties:Bounty[], c:Comment) => [...bounties, ...getUserOpenBounties({ comment: c, user: currentUser })] ,[])[0];
-    isAllowedToAward = Boolean(openUserOwnedRootBounty);
-  }
-
 
   const handleAwardBounty = async ({ bounty, }: { bounty: Bounty, }) => {
     const totalAmount = tallyAmounts({ bounties: [bounty, ...bounty.children] })
@@ -73,7 +68,7 @@ const CommentActions = ({
             commentTreeState.onUpdate({ comment: updatedCommentBounty });
             commentTreeState.onUpdate({ comment: awardedComent });
           })
-          .catch((error) => {
+          .catch((error:any) => {
             // FIXME: Log to sentry
             dispatch(setMessage(`Could not award bounty at this time. Error: ${error?.detail}`));
             // @ts-ignore
@@ -87,7 +82,38 @@ const CommentActions = ({
     }
   };
 
+  const handleAcceptAnswer = async ({ commentId }) => {
+    if (confirm(`Accept ${comment.createdBy.firstName} ${comment.createdBy.lastName}'s answer ?`)) {
+      try {
+        await markAsAcceptedAnswerAPI({ commentId, documentType: document.apiDocumentType, documentId: document.id });
+        const previouslyAccepted =  findAllComments({comments: commentTreeState.comments, conditions: [{key: "isAcceptedAnswer", value: true }] }).map(f => f.comment)
+        
+        previouslyAccepted.map(c => {
+          const updated = Object.assign({}, c, {isAcceptedAnswer: false});
+          commentTreeState.onUpdate({ comment: updated });
+        })
+        
+        const newlyAccepted = Object.assign({}, comment, {isAcceptedAnswer: true});
+        commentTreeState.onUpdate({ comment: newlyAccepted });
+      }
+      catch(error:any) {
+        // FIXME: Log to sentry
+        dispatch(setMessage(`Could not award bounty at this time. Error: ${error?.detail}`));
+        // @ts-ignore
+        dispatch(showMessage({ show: true, error: true }));        
+      }
+    }
+  }
 
+
+  let isAllowedToAward = false;
+  let isAllowedToAcceptAnswer = false;
+  let openUserOwnedRootBounty:Bounty;
+  if (isQuestion) {
+    openUserOwnedRootBounty = findOpenRootBounties({ comments: commentTreeState.comments, user: currentUser })[0];
+    isAllowedToAward = Boolean(openUserOwnedRootBounty);
+    isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id;
+  }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
 
@@ -122,6 +148,17 @@ const CommentActions = ({
             <span className={css(styles.actionText)}>Tip</span>
           </WidgetContentSupport>
         </div>
+
+        {isAllowedToAcceptAnswer &&
+          <div className={`${css(styles.action)} accept-btn`}>
+            <IconButton onClick={() => handleAcceptAnswer({ commentId: comment.id })}>
+              <FontAwesomeIcon icon={faCommentCheck} style={{ fontSize: 18 }} />
+              <span className={css(styles.actionText)}>
+                Accept
+              </span>
+            </IconButton>
+          </div>
+        }
 
         {isAllowedToAward &&
           <div className={`${css(styles.action)} award-btn`}>

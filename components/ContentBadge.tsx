@@ -2,9 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
   faLayerGroup,
-  faCommentAltLines,
   faComments,
 } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faCheck,
+} from "@fortawesome/pro-solid-svg-icons";
+
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
@@ -94,7 +97,7 @@ const ContentBadgeBase = ({
       ) : contentType === POST_TYPES.ANSWER ? (
         <>
           <span className={css(styles.icon)}>
-            {<FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>}
+            {<FontAwesomeIcon style={{fontSize: 17}} icon={faCheck}></FontAwesomeIcon>}
           </span>
           <span>Answer</span>
         </>
@@ -251,6 +254,10 @@ const styles = StyleSheet.create({
   badgeFor_award: {
     color: "rgba(232, 181, 4, 1)",
     background: "#FDF8E6",
+  },
+  badgeFor_ANSWER: {
+    background: colors.GREEN(),
+    color: "white",
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),

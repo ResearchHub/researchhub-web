@@ -151,6 +151,31 @@ export const updateCommentAPI = async ({
   return Promise.resolve(comment);
 };
 
+export const markAsAcceptedAnswerAPI = async({
+  commentId,
+  documentType,
+  documentId,
+}: {
+  commentId: ID,
+  documentType: RhDocumentType;
+  documentId: ID;
+}) => {
+  const url = generateApiUrl(
+    `${documentType}/${documentId}/comments/${commentId}/mark_as_accepted_answer`
+  );
+
+  try {
+    const response = await fetch(url, API.POST_CONFIG()).then((res): any =>
+      Helpers.parseJSON(res)
+    );
+
+  }
+  catch(error) {
+    // FIXME: Log to sentry
+    throw Error(`Unexpected error for ${commentId}`);
+  }
+}
+
 export const deleteCommentAPI = ({
   id,
   parentId,

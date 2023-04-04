@@ -26,10 +26,15 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
       <ContentBadge contentType={COMMENT_TYPES.REVIEW} label="" />
     )
   }
-  if (comment.commentType === COMMENT_TYPES.SUMMARY) {
+  else if (comment.commentType === COMMENT_TYPES.SUMMARY) {
     badges.push(
       <ContentBadge contentType={COMMENT_TYPES.SUMMARY} label="" />
     );
+  }
+  else if (comment.isAcceptedAnswer) {
+    badges.push(
+      <ContentBadge contentType={COMMENT_TYPES.ANSWER} label="" />
+    );    
   }
 
   if (totalAwarded > 0) {

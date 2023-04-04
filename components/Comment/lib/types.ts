@@ -29,6 +29,7 @@ export type Comment = {
   children: Comment[];
   childrenCount: number;
   tips: Purchase[];
+  isAcceptedAnswer: boolean;
 };
 
 type parseCommentArgs = {
@@ -55,6 +56,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     childrenCount: raw.children_count || 0,
     ...(parent && { parent }),
     tips: (raw.purchases || []).map((p:any) => parsePurchase(p)),
+    isAcceptedAnswer: Boolean(raw.is_accepted_answer),
   };
 
   const relatedItem:RelatedItem = {
