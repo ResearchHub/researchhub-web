@@ -15,12 +15,6 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
 
   const badges:any[] = [];
   const totalAwarded = tipAmount + comment.awardedBountyAmount;
-  if (totalAwarded > 0) {
-    const formatted = formatBountyAmount({ amount: totalAwarded, withPrecision: false });
-    badges.push(
-      <ContentBadge contentType="award" label={`${formatted} Awarded`} />
-    );
-  }
 
   if (openBounties.length > 0) {
     badges.push(
@@ -35,6 +29,13 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   if (comment.commentType === COMMENT_TYPES.SUMMARY) {
     badges.push(
       <ContentBadge contentType={COMMENT_TYPES.SUMMARY} label="" />
+    );
+  }
+
+  if (totalAwarded > 0) {
+    const formatted = formatBountyAmount({ amount: totalAwarded, withPrecision: false });
+    badges.push(
+      <ContentBadge contentType="award" label={`${formatted} Awarded`} />
     );
   }
 
@@ -54,7 +55,8 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
 
 const styles = StyleSheet.create({
   badgesWrapper: {
-
+    columnGap: "8px",
+    display: "flex",
   },
   badgeWrapper: {
     display: "inline-block",
