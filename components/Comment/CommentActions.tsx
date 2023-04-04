@@ -19,7 +19,7 @@ import { useContext } from "react";
 import Bounty, { tallyAmounts } from "~/config/types/bounty";
 import { MessageActions } from "~/redux/message";
 import { markAsAcceptedAnswerAPI } from "./lib/api";
-import { findAllComments } from "./lib/findComment";
+import findComment, { findAllComments } from "./lib/findComment";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -105,7 +105,7 @@ const CommentActions = ({
     }
   }
 
-
+  // FIXME: Refactor into function
   let isAllowedToAward = false;
   let isAllowedToAcceptAnswer = false;
   let openUserOwnedRootBounty:Bounty;
@@ -114,8 +114,18 @@ const CommentActions = ({
     isAllowedToAward = Boolean(openUserOwnedRootBounty) && getOpenBounties({ comment }).length === 0;
     isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id && !comment.isAcceptedAnswer && comment.bounties.length === 0;
   }
+  else {
+    const found = findComment({ id: comment.id, comments: commentTreeState.comments });
+    if (found) {
+      const rootCommentId = found.path[0];
+      const foundRootComment = findComment({ id: rootCommentId, comments: commentTreeState.comments });
 
-  
+      if (foundRootComment) {
+        openUserOwnedRootBounty = getUserOpenBounties({ comment: foundRootComment.comment, user: currentUser })[0];
+        isAllowedToAward = Boolean(openUserOwnedRootBounty) && Boolean(comment.parent);
+      }
+    }
+  }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
 

@@ -10,7 +10,7 @@ const config = {
     displayForBreakpoint: breakpoints.small.int,
   },
   comment: {
-    previewMaxChars: 350,
+    previewMaxChars: 500,
     placeholderCount: 8,
     minLength: 20,
   },

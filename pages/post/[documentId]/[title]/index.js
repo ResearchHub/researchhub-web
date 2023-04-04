@@ -213,8 +213,9 @@ const Post = (props) => {
     currUserID,
     hubs: post?.hubs ?? [],
   });
+  const isQuestion = initialPost.document_type === "QUESTION";
   const commentSectionAsDrawer = screenSizeAtLoading <= breakpoints.small.int;
-  const commentSectionAsSidebar = initialPost.document_type !== "QUESTION";
+  const commentSectionAsSidebar = !isQuestion;
 
   return !isNullOrUndefined(post) && Object.keys(post).length > 0 ? (
     <div>
@@ -226,7 +227,7 @@ const Post = (props) => {
         canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
       />
       <PaperBanner document={post} documentType="post" />
-      <div className={css(styles.postPageRoot)}>
+      <div className={css(styles.postPageRoot, isQuestion && styles.question)}>
         <a name="main" />
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
@@ -268,10 +269,13 @@ const Post = (props) => {
           </div>
         </div>
 
-        {/* <div /> */}
-        {commentSectionAsSidebar && (
-          <CommentFeed document={postV2} context="sidebar" />
+        {commentSectionAsSidebar && !commentSectionAsDrawer && (
+          <>
+            <CommentFeed document={postV2} context="sidebar" />
+          </>
         )}
+        {/* {commentSectionAsSidebar && !commentSectionAsDrawer && (
+        )} */}
       </div>
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script
@@ -347,12 +351,14 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   postPageRoot: {
     display: "flex",
-    // justifyContent: "center",
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
     // This property is needed for comments sidebar to close gracefully without overflow.
     overflowX: "clip",
+  },
+  question: {
+    justifyContent: "center",
   },
   postPageContainer: {
     marginTop: 30,
