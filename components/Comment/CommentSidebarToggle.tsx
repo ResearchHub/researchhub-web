@@ -5,7 +5,6 @@ import { faComments } from "@fortawesome/free-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
-import config from "./lib/config";
 
 type Args = {
   setIsOpen: Function;
@@ -29,7 +28,7 @@ const CommentSidebarToggle = ({
   const [mountEl, setMountEl] = useState<HTMLElement | null>(null);
   useEffect(() => {
     if (!mountEl) {
-      const _mountEl = document.getElementById(config.toggle.elemToMountAt);
+      const _mountEl = document.body;
       setMountEl(_mountEl);
     }
   }, []);

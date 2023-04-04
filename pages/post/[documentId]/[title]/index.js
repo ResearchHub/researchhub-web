@@ -51,7 +51,6 @@ const Post = (props) => {
 
   const store = useStore();
   const initialPost = props?.initialPost || {};
-
   const currentUser = getCurrentUser();
   const [post, setPost] = useState(initialPost);
   const [postV2, setPostV2] = useState(new PostDoc(initialPost));
@@ -61,6 +60,7 @@ const Post = (props) => {
   const [allBounties, setAllBounties] = useState([]);
   const [threads, setThreads] = useState([]);
   const [shareURL, setShareURL] = useState("");
+  const [screenSizeAtLoading, setScreenSizeAtLoading] = useState(null);
 
   useEffect(() => {
     const _initialPost = props?.initialPost;
@@ -73,6 +73,10 @@ const Post = (props) => {
 
   useEffect(() => {
     setShareURL(window.location.href);
+  }, []);
+
+  useEffect(() => {
+    setScreenSizeAtLoading(window.innerWidth);
   }, []);
 
   useEffect(() => {
@@ -209,6 +213,8 @@ const Post = (props) => {
     currUserID,
     hubs: post?.hubs ?? [],
   });
+  const commentSectionAsDrawer = screenSizeAtLoading <= breakpoints.small.int;
+  const commentSectionAsSidebar = initialPost.document_type !== "QUESTION";
 
   return !isNullOrUndefined(post) && Object.keys(post).length > 0 ? (
     <div>
@@ -241,59 +247,31 @@ const Post = (props) => {
               onBountyCancelled={onBountyCancelled}
               shareUrl={shareURL}
             />
-            <div className={css(styles.postPageSection)}>
-              <a name="comments" id="comments" />
-
-              {router.query.cv2 === "" ? (
-                <>
-                  <div className={css(styles.discussionSectionHeader)}>
-                    <h3 className={css(styles.discussionSectionTitle)}>
-                      Discussion
-                    </h3>
-                    {postV2.isReady && (
-                      <span className={css(styles.discussionCount)}>
-                        {discussionCount}
-                      </span>
-                    )}
-                  </div>
-                  <CommentFeed document={postV2} previewModeAsDefault={false} />
-                </>
-              ) : postV2.isReady ? (
-                <DiscussionTab
-                  hostname={process.env.HOST}
-                  documentType={postV2.unifiedDocument.documentType}
-                  post={post}
-                  bountyType={postV2.unifiedDocument.documentType}
-                  setHasBounties={setHasBounties}
-                  setThreadProp={(_threads) => {
-                    setThreads(_threads);
-                  }}
-                  setAllBounties={setAllBounties}
-                  setBounties={setBounties}
-                  postId={post.id}
-                  showBountyBtn={
-                    post?.document_type && post.document_type !== "QUESTION"
-                  }
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  isCollapsible={false}
-                  bounties={bounties || post.bounties}
-                  handleAwardBounty={handleAwardBounty}
-                />
-              ) : null}
-            </div>
+            {commentSectionAsDrawer ? (
+              <CommentFeed document={postV2} context={"drawer"} />
+            ) : !commentSectionAsSidebar ? (
+              <div className={css(styles.postPageSection)}>
+                <a name="comments" id="comments" />
+                <div className={css(styles.discussionSectionHeader)}>
+                  <h3 className={css(styles.discussionSectionTitle)}>
+                    Discussion
+                  </h3>
+                  {postV2.isReady && (
+                    <span className={css(styles.discussionCount)}>
+                      {discussionCount}
+                    </span>
+                  )}
+                </div>
+                <CommentFeed document={postV2} previewModeAsDefault={false} />
+              </div>
+            ) : null}
           </div>
         </div>
 
-        <div />
-        {router.query.cv2 &&
-          ["sidebar", "drawer"].includes(router.query.cv2) && (
-            <CommentFeed
-              document={postV2}
-              context={router.query.cv2}
-              previewModeAsDefault={true}
-            />
-          )}
+        {/* <div /> */}
+        {commentSectionAsSidebar && (
+          <CommentFeed document={postV2} context="sidebar" />
+        )}
       </div>
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script
