@@ -204,4 +204,8 @@ export class Paper implements TopLevelDocument {
   get apiDocumentType(): ApiDocumentType {
     return this._apiDocumentType;
   }    
+
+  set discussionCount(count) {
+    this._discussionCount = count;
+  }  
 }

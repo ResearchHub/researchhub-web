@@ -106,12 +106,14 @@ const CommentActions = ({
   }
 
   // FIXME: Refactor into function
+  const openBounties = getOpenBounties({ comment });
+  const isAllowedToTip = openBounties.length === 0;
   let isAllowedToAward = false;
   let isAllowedToAcceptAnswer = false;
   let openUserOwnedRootBounty:Bounty;
   if (isQuestion) {
     openUserOwnedRootBounty = findOpenRootBounties({ comments: commentTreeState.comments, user: currentUser })[0];
-    isAllowedToAward = Boolean(openUserOwnedRootBounty) && getOpenBounties({ comment }).length === 0;
+    isAllowedToAward = Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
     isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id && !comment.isAcceptedAnswer && comment.bounties.length === 0;
   }
   else {
@@ -141,25 +143,27 @@ const CommentActions = ({
             documentID={document.id}
           />
         </div>
-        <div className={`${css(styles.action, disableSocialActions && styles.disabled)} tip-btn`}>
-          <WidgetContentSupport
-            data={{
-              created_by: comment.createdBy.raw,
-            }}
-            showAmount={false}
-            metaData={{
-              contentType: "rhcommentmodel", objectId: comment.id
-            }}
-          >
-            <Image
-              src="/static/icons/tip.png"
-              height={20}
-              width={20}
-              alt="Tip"
-            />
-            <span className={css(styles.actionText)}>Tip</span>
-          </WidgetContentSupport>
-        </div>
+        {isAllowedToTip &&
+          <div className={`${css(styles.action, disableSocialActions && styles.disabled)} tip-btn`}>
+            <WidgetContentSupport
+              data={{
+                created_by: comment.createdBy.raw,
+              }}
+              showAmount={false}
+              metaData={{
+                contentType: "rhcommentmodel", objectId: comment.id
+              }}
+            >
+              <Image
+                src="/static/icons/tip.png"
+                height={20}
+                width={20}
+                alt="Tip"
+              />
+              <span className={css(styles.actionText)}>Tip</span>
+            </WidgetContentSupport>
+          </div>
+        }
 
         {isAllowedToAcceptAnswer &&
           <div className={`${css(styles.action)} accept-btn`}>

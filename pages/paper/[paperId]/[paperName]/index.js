@@ -339,11 +339,28 @@ const Paper = ({
                     </span>
                   )}
                 </div>
-                <CommentFeed document={paperV2} />
+                <CommentFeed
+                  document={paperV2}
+                  onCommentCreate={() => {
+                    setCount(discussionCount + 1);
+                    paperV2.discussionCount = discussionCount + 1;
+                    setPaperV2(paperV2);
+                  }}
+                  totalCommentCount={discussionCount}
+                />
               </div>
             )}
             {commentSectionAsDrawer && (
-              <CommentFeed document={paperV2} context={"drawer"} />
+              <CommentFeed
+                document={paperV2}
+                context={"drawer"}
+                onCommentCreate={() => {
+                  setCount(discussionCount + 1);
+                  paperV2.discussionCount = discussionCount + 1;
+                  setPaperV2(paperV2);
+                }}
+                totalCommentCount={discussionCount}
+              />
             )}
             {isFetchComplete /* Performance Optimization */ && (
               <div className={css(styles.section)}>

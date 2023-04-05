@@ -4,28 +4,24 @@ import { css, StyleSheet } from "aphrodite";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentSidebarToggle from "./CommentSidebarToggle";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Comment } from "./lib/types";
-import { getBountyAmount } from "./lib/bounty";
-import countComments from "./lib/countComments";
 
 type Args = {
   children: any;
   comments: Comment[];
+  totalCommentCount: number;
   isInitialFetchDone: boolean;
 };
 
 const CommentSidebar = ({
   children,
   comments,
+  totalCommentCount,
   isInitialFetchDone = false,
 }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
-  const openBountyAmount = comments.reduce(
-    (total, comment) => total + getBountyAmount({ comment }),
-    0
-  );
-  const commentCount = useMemo(() => countComments({ comments }), [comments]);
+
 
   return (
     <div
@@ -41,8 +37,8 @@ const CommentSidebar = ({
             setIsOpen={(isOpen) => {
               setIsOpen(isOpen);
             }}
-            bountyAmount={openBountyAmount}
-            commentCount={commentCount}
+            bountyAmount={0}
+            commentCount={totalCommentCount}
           />
         )}
         <div className={css(styles.sidebarHeader)}>

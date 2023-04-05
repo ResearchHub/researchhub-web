@@ -27,10 +27,14 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   document: TopLevelDocument;
   context: "sidebar" | "drawer" | null;
+  onCommentCreate?: Function;
+  totalCommentCount: number;
 };
 
 const CommentFeed = ({
   document,
+  onCommentCreate,
+  totalCommentCount,
   context = null,
 }: Args) => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -93,6 +97,8 @@ const CommentFeed = ({
     } else {
       setComments([comment, ...comments]);
     }
+
+    typeof(onCommentCreate) === "function" && onCommentCreate(comment);
   };
 
   const onUpdate = ({ comment }: { comment: CommentType }) => {
@@ -256,7 +262,11 @@ const CommentFeed = ({
 
   return (
     // @ts-ignore
-    <WrapperEl {...(context ? { comments } : {})} {...(context ? { isInitialFetchDone } : {})}>
+    <WrapperEl
+      {...(context ? { comments } : {})}
+      {...(context ? { isInitialFetchDone } : {})}
+      {...(context ? { totalCommentCount } : {})}
+    >
       <ContentSupportModal
         // @ts-ignore
         onSupport={(data:any) => {

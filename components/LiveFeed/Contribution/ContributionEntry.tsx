@@ -16,6 +16,8 @@ import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
 import Link from "next/link";
 import { isEmpty } from "~/config/utils/nullchecks";
+import CommentReadOnly from "~/components/Comment/CommentReadOnly";
+
 
 type Args = {
   entry: Contribution;
@@ -65,13 +67,11 @@ const ContributionEntry = ({
   switch (contentType.name) {
     case "comment":
       showActions = true;
+      console.log('content', item)
       item = item as CommentContributionItem;
-      const formattedText = !isEmpty(item.plainText)
-        ? item.plainText
-        : entry?.raw?.item?.text?.plainText ?? "";
       body = (
         <span className={css(styles.commentBody)}>
-          {truncateText(formattedText, 300)}
+          <CommentReadOnly content={item.content} />
         </span>
       );
       break;
@@ -102,10 +102,13 @@ const ContributionEntry = ({
         </ALink>
       );
 
+
       body = truncateText(
         entry.relatedItem?.unifiedDocument?.document?.body,
         300
       );
+
+      console.log('body', body)
       break;
 
     case "hypothesis":

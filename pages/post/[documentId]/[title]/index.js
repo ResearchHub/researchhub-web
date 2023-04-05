@@ -1,5 +1,4 @@
 import API from "~/config/api";
-import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Error from "next/error";
 import Head from "~/components/Head";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
@@ -263,7 +262,16 @@ const Post = (props) => {
                     </span>
                   )}
                 </div>
-                <CommentFeed document={postV2} previewModeAsDefault={false} />
+                <CommentFeed
+                  document={postV2}
+                  previewModeAsDefault={false}
+                  onCommentCreate={() => {
+                    setCount(discussionCount + 1);
+                    postV2.discussionCount = discussionCount + 1;
+                    setPostV2(postV2);
+                  }}
+                  totalCommentCount={discussionCount}
+                />
               </div>
             ) : null}
           </div>
@@ -271,11 +279,18 @@ const Post = (props) => {
 
         {commentSectionAsSidebar && !commentSectionAsDrawer && (
           <>
-            <CommentFeed document={postV2} context="sidebar" />
+            <CommentFeed
+              document={postV2}
+              context="sidebar"
+              onCommentCreate={() => {
+                setCount(discussionCount + 1);
+                postV2.discussionCount = discussionCount + 1;
+                setPostV2(postV2);
+              }}
+              totalCommentCount={discussionCount}
+            />
           </>
         )}
-        {/* {commentSectionAsSidebar && !commentSectionAsDrawer && (
-        )} */}
       </div>
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script

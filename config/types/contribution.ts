@@ -29,10 +29,10 @@ export type RscSupportSourceItem = {
 export type CommentContributionItem = {
   text?: any;
   unifiedDocument: UnifiedDocument;
-  plainText: string;
   createdBy: RHUser;
   createdDate: string;
   id: ID;
+  content: any;
   postType: POST_TYPES;
 };
 
@@ -155,6 +155,8 @@ export const parseContribution = (raw: any): Contribution => {
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
     mapped["item"] = parseCommentContributionItem(raw);
+  } else if (["rhcommentmodel"].includes(raw.content_type.name)) {
+    mapped["item"] = parseCommentContributionV2Item(raw);
   } else if (raw.content_type.name === "paper") {
     mapped["item"] = parsePaperContributionItem(raw);
   } else if (
@@ -199,11 +201,40 @@ export const parseContribution = (raw: any): Contribution => {
   return mapped;
 };
 
+/**
+ * @deprecated use useSelector to fetch user directly from state instead. Using this method will result in old state
+ */
 export const parseCommentContributionItem = (
   raw: any
 ): CommentContributionItem => {
   const mapped = {
     plainText: raw.item.plain_text,
+    createdBy: parseUser(raw.created_by || raw.item.created_by),
+    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
+    id: raw.item.id,
+    content: {},
+    createdDate: raw.created_date,
+    postType: raw.item.discussion_post_type,
+  };
+
+  return mapped;
+};
+
+export const parseCommentContributionV2Item = (
+  raw: any
+): CommentContributionItem => {
+  raw.item.unified_document = {
+    "documents": [
+        {
+            "id": 899,
+            "title": "Possibly anomalous insulin / blood glucose event",
+            "slug": "possibly-anomalous-insulin-blood-glucose-event"
+        }
+    ],
+    "document_type": "DISCUSSION"
+}
+  const mapped = {
+    content: raw.item.comment_content_json,
     createdBy: parseUser(raw.created_by || raw.item.created_by),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     id: raw.item.id,
@@ -217,6 +248,60 @@ export const parseCommentContributionItem = (
 export const parseBountyContributionItem = (
   raw: any
 ): BountyContributionItem => {
+
+  raw.item.item = {
+    "item": {
+      "id": 1199,
+      "thread": {
+        "content_object": {
+          "id": 51,
+          "unified_document": {
+            "id": 1549,
+            "documents": [
+              {
+                "id": 51,
+                "renderable_text": "this is a new question",
+                "title": "new question",
+                "slug": "new-question"
+              }
+            ],
+            "document_type": "QUESTION"
+          }
+        }
+      },
+      "comment_content_json": {
+        "ops": [
+          {
+            "insert": "Replying 3rd level Replying 3rd level Replying 3rd level Replying 3rd level Replying 3rd level Replying 3rd level\n"
+          }
+        ]
+      }
+    },
+    "content_type": {
+      "id": 118,
+      "name": "rhcommentmodel"
+    },
+    "created_by": {
+      "id": 8,
+      "author_profile": {
+        "id": 416,
+        "first_name": "Kobe",
+        "last_name": "Attias",
+        "profile_image": "https://lh3.googleusercontent.com/a/AATXAJxMWwF8N8q__74Pl5_Fvp_srsuekx5iNmsB54eBURA=s96-c"
+      },
+      "first_name": "Kobe",
+      "last_name": "Attias"
+    },
+    "hubs": [
+      {
+        "id": 227,
+        "name": "agronomy",
+        "hub_image": null,
+        "slug": "agronomy"
+      }
+    ],
+    "created_date": "2023-04-04T19:10:06.717838Z"
+  }
   raw.item.item.content_type = raw.item.content_type;
 
   const mapped = {
@@ -268,7 +353,7 @@ export const parseHypothesisContributionItem = (
 export const parseSupportSourceItem = (
   raw: any,
   contentType: any
-): RscSupportSourceItem => {
+): RscSupportSourceItem => {  
   return {
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
     plainText: raw.plain_text,
@@ -282,6 +367,8 @@ export const parseRscSupportContributionItem = (
 ): RscSupportContributionItem => {
   let createdBy;
   let recipient;
+
+
   if (raw.item.content_type.app_label === "discussion") {
     createdBy = parseUser(raw.created_by);
     recipient = parseUser(raw.item.user);

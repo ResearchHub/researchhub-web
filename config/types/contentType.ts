@@ -8,7 +8,7 @@ export type ContentType = {
 export const parseContentType = (raw: any): ContentType => {
   let contentTypeName;
   const inputName = raw.name || raw.model;
-  if (["thread", "comment", "reply"].includes(inputName)) {
+  if (["thread", "comment", "reply", "rhcommentmodel"].includes(inputName)) {
     contentTypeName = "comment";
   } else if (inputName === "paper") {
     contentTypeName = "paper";

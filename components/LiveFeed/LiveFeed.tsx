@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import fetchContributionsAPI, { ApiFilters } from "./api/fetchContributionsAPI";
-import { CommentContributionItem, parseContribution } from "~/config/types/contribution";
+import { CommentContributionItem, Contribution, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { ID, UnifiedDocument } from "~/config/types/root_types";
 import { ReactElement, useState, useEffect } from "react";

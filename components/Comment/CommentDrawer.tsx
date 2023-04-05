@@ -15,17 +15,16 @@ type Args = {
   children: any;
   comments: Comment[];
   isInitialFetchDone: boolean;
+  totalCommentCount: number;
 };
 
-const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
+const CommentDrawer = ({ children, comments, totalCommentCount, isInitialFetchDone }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [drawerEl, setDrawerEl] = useState<null | HTMLElement>(null);
-  const openBountyAmount = comments.reduce(
-    (total, comment) => total + getBountyAmount({ comment }),
-    0
-  );
-
-  const commentCount = 999;
+  // const openBountyAmount = comments.reduce(
+  //   (total, comment) => total + getBountyAmount({ comment }),
+  //   0
+  // );
 
   useEffect(() => {
     setDrawerEl(document.body);
@@ -39,8 +38,8 @@ const CommentDrawer = ({ children, comments, isInitialFetchDone }) => {
           setIsOpen={(isOpen) => {
             setIsOpen(isOpen);
           }}
-          bountyAmount={openBountyAmount}
-          commentCount={commentCount}
+          bountyAmount={0}
+          commentCount={totalCommentCount}
         />
       )}
 
