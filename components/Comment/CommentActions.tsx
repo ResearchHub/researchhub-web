@@ -139,7 +139,7 @@ const CommentActions = ({
             comment={comment}
             score={comment.score}
             userVote={comment.userVote}
-            documentType={document.documentType}
+            documentType={document.apiDocumentType}
             documentID={document.id}
           />
         </div>
