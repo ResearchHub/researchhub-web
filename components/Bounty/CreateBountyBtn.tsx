@@ -44,7 +44,9 @@ function CreateBountyBtn({
         originalBounty={originalBounty}
       />
       {children ? (
-        <div>{children}</div>
+        <div onClick={() => {
+          setIsModalOpen(true);
+        }}>{children}</div>
       ) : (
         <IconButton
           onClick={() => {
