@@ -44,6 +44,7 @@ import { RESEARCHHUB_POST_DOCUMENT_TYPES } from "~/config/utils/getUnifiedDocTyp
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import ContentBadge from "~/components/ContentBadge";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -260,196 +261,213 @@ function FeedCard({
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
-      onClick={(event: SyntheticEvent) => {
+      onClick={(event) => {
         handleClick && handleClick(event);
-        nextRouter.push(feDocUrl);
+
+        // if (event.metaKey || event.shiftKey) {
+        //   window.open(feDocUrl);
+        // } else {
+        //   nextRouter.push(feDocUrl);
+        // }
       }}
     >
-      <div
-        className={css(
-          styles.feedCard,
-          featured && styles.featuredContainer,
-          withSidePadding && styles.padding16
-        )}
-      >
-        {!hideVotes && (
-          <DesktopOnly>
-            <div className={css(styles.leftSection)}>
-              {/* TODO: migrate to VoteWidgetV2 */}
-              <ResponsivePostVoteWidget
-                onDesktop
-                onNeutralVote={onNeutralVote}
-                onDownvote={onDownvote}
-                onUpvote={onUpvote}
-                score={score}
-                voteState={voteState}
-              />
-            </div>
-          </DesktopOnly>
-        )}
-        <div className={css(styles.container)}>
-          <div>
-            {featured && (
-              <div className={css(styles.featuredBadge)}>Featured</div>
-            )}
-            <div className={css(styles.rowContainer)}>
-              <SubmissionDetails
-                createdDate={createdDate}
-                hubs={hubs}
-                createdBy={createdBy}
-                avatarSize={20}
-                bounties={bounties}
-              />
-            </div>
-            <div className={css(styles.rowContainer)}>
-              <div className={css(styles.column, styles.metaData)}>
-                <div className={css(styles.rowContainer)}>
-                  <div className={css(styles.cardBody)}>
-                    <h2 className={css(styles.title)}>{cardTitle}</h2>
-                    {cardBody && (
-                      <div className={css(styles.abstract) + " clamp2"}>
-                        {cardBody}
+      <Link href={feDocUrl} className={css(styles.link)}>
+        <div
+          className={css(
+            styles.feedCard,
+            featured && styles.featuredContainer,
+            withSidePadding && styles.padding16
+          )}
+        >
+          {!hideVotes && (
+            <DesktopOnly>
+              <div className={css(styles.leftSection)}>
+                {/* TODO: migrate to VoteWidgetV2 */}
+                <ResponsivePostVoteWidget
+                  onDesktop
+                  onNeutralVote={onNeutralVote}
+                  onDownvote={onDownvote}
+                  onUpvote={onUpvote}
+                  score={score}
+                  voteState={voteState}
+                />
+              </div>
+            </DesktopOnly>
+          )}
+          <div className={css(styles.container)}>
+            <div>
+              {featured && (
+                <div className={css(styles.featuredBadge)}>Featured</div>
+              )}
+              <div className={css(styles.rowContainer)}>
+                <SubmissionDetails
+                  createdDate={createdDate}
+                  hubs={hubs}
+                  createdBy={createdBy}
+                  avatarSize={20}
+                  bounties={bounties}
+                />
+              </div>
+              <div className={css(styles.rowContainer)}>
+                <div className={css(styles.column, styles.metaData)}>
+                  <div className={css(styles.rowContainer)}>
+                    <div className={css(styles.cardBody)}>
+                      <h2 className={css(styles.title)}>{cardTitle}</h2>
+                      {cardBody && (
+                        <div className={css(styles.abstract) + " clamp2"}>
+                          {cardBody}
+                        </div>
+                      )}
+                    </div>
+                    {previews.length > 0 && (
+                      <div
+                        className={css(styles.column, styles.previewSide)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        {isPreviewing && (
+                          <PaperPDFModal
+                            paper={paper}
+                            onClose={() => setIsPreviewing(false)}
+                          />
+                        )}
+                        <div
+                          className={css(styles.preview, styles.paperPreview)}
+                        >
+                          <img
+                            src={previews[0].file}
+                            className={css(styles.image)}
+                            key={`preview_${previews[0].file}`}
+                            alt={`Paper Preview Page 1`}
+                            onClick={(e) => {
+                              e && e.preventDefault();
+                              e && e.stopPropagation();
+                              setIsPreviewing(true);
+                              openPaperPDFModal(true);
+                            }}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
-                  {previews.length > 0 && (
-                    <div
-                      className={css(styles.column, styles.previewSide)}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      {isPreviewing && (
-                        <PaperPDFModal
-                          paper={paper}
-                          onClose={() => setIsPreviewing(false)}
-                        />
-                      )}
-                      <div className={css(styles.preview, styles.paperPreview)}>
-                        <img
-                          src={previews[0].file}
-                          className={css(styles.image)}
-                          key={`preview_${previews[0].file}`}
-                          alt={`Paper Preview Page 1`}
-                          onClick={(e) => {
-                            e && e.preventDefault();
-                            e && e.stopPropagation();
-                            setIsPreviewing(true);
-                            openPaperPDFModal(true);
-                          }}
+                  <div
+                    className={css(
+                      styles.metadataContainer,
+                      styles.publishContainer
+                    )}
+                  >
+                    {!hideVotes && (
+                      <div
+                        className={css(
+                          styles.metaItem,
+                          styles.mobileVoteWidget
+                        )}
+                      >
+                        {/* TODO: migrate to VoteWidgetV2 */}
+                        <VoteWidget
+                          horizontalView={true}
+                          onDownvote={onDownvote}
+                          onUpvote={onUpvote}
+                          onNeutralVote={onNeutralVote}
+                          score={score}
+                          styles={styles.voteWidget}
+                          upvoteStyleClass={styles.mobileVote}
+                          downvoteStyleClass={styles.mobileVote}
+                          type="Discussion"
+                          selected={voteState}
                         />
                       </div>
-                    </div>
-                  )}
-                </div>
-                <div
-                  className={css(
-                    styles.metadataContainer,
-                    styles.publishContainer
-                  )}
-                >
-                  {!hideVotes && (
+                    )}
                     <div
-                      className={css(styles.metaItem, styles.mobileVoteWidget)}
+                      className={css(styles.metaItem, styles.metaItemAsBadge)}
                     >
-                      {/* TODO: migrate to VoteWidgetV2 */}
-                      <VoteWidget
-                        horizontalView={true}
-                        onDownvote={onDownvote}
-                        onUpvote={onUpvote}
-                        onNeutralVote={onNeutralVote}
-                        score={score}
-                        styles={styles.voteWidget}
-                        upvoteStyleClass={styles.mobileVote}
-                        downvoteStyleClass={styles.mobileVote}
-                        type="Discussion"
-                        selected={voteState}
-                      />
-                    </div>
-                  )}
-                  <div className={css(styles.metaItem, styles.metaItemAsBadge)}>
-                    <ContentBadge
-                      contentType={
-                        formattedDocType === "bounty"
-                          ? "post"
-                          : formattedDocType
-                      }
-                    />
-                  </div>
-                  {hasActiveBounty && (
-                    <div className={css(styles.metaItem)}>
                       <ContentBadge
-                        contentType="bounty"
-                        bountyAmount={bountyAmount}
-                        label={
-                          <div style={{ display: "flex", whiteSpace: "pre" }}>
-                            <div style={{ flex: 1 }}>
-                              {formatBountyAmount({
-                                amount: bountyAmount,
-                              })}{" "}
-                              RSC
-                            </div>
-                          </div>
+                        contentType={
+                          formattedDocType === "bounty"
+                            ? "post"
+                            : formattedDocType
                         }
                       />
                     </div>
-                  )}
-                  {formattedDocType === "question" ? (
-                    <div
-                      className={css(
-                        styles.metaItem,
-                        hasAcceptedAnswer && styles.acceptedAnswer
-                      )}
-                    >
-                      <span
+                    {hasActiveBounty && (
+                      <div className={css(styles.metaItem)}>
+                        <ContentBadge
+                          contentType="bounty"
+                          bountyAmount={bountyAmount}
+                          label={
+                            <div style={{ display: "flex", whiteSpace: "pre" }}>
+                              <div style={{ flex: 1 }}>
+                                {formatBountyAmount({
+                                  amount: bountyAmount,
+                                })}{" "}
+                                RSC
+                              </div>
+                            </div>
+                          }
+                        />
+                      </div>
+                    )}
+                    {formattedDocType === "question" ? (
+                      <div
                         className={css(
-                          styles.metadataIcon,
+                          styles.metaItem,
                           hasAcceptedAnswer && styles.acceptedAnswer
                         )}
                       >
-                        {hasAcceptedAnswer ? (
-                          <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                        ) : (
-                          <FontAwesomeIcon
-                            icon={faCommentAltLines}
-                          ></FontAwesomeIcon>
-                        )}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        <span>{discussion_count}</span>
-                        <span className={css(styles.hideTextMobile)}>
-                          {` Answer${discussion_count === 1 ? "" : "s"}`}
+                        <span
+                          className={css(
+                            styles.metadataIcon,
+                            hasAcceptedAnswer && styles.acceptedAnswer
+                          )}
+                        >
+                          {hasAcceptedAnswer ? (
+                            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faCommentAltLines}
+                            ></FontAwesomeIcon>
+                          )}
                         </span>
-                      </span>
-                    </div>
-                  ) : (
-                    <div className={css(styles.metaItem)}>
-                      <span className={css(styles.metadataIcon)}>
-                        {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
-                      </span>
-                      <span className={css(styles.metadataText)}>
-                        <span>{discussion_count}</span>
-                        <span className={css(styles.hideTextMobile)}>
-                          {` Comment${discussion_count === 1 ? "" : "s"}`}
+                        <span className={css(styles.metadataText)}>
+                          <span>{discussion_count}</span>
+                          <span className={css(styles.hideTextMobile)}>
+                            {` Answer${discussion_count === 1 ? "" : "s"}`}
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                  )}
+                      </div>
+                    ) : (
+                      <div className={css(styles.metaItem)}>
+                        <span className={css(styles.metadataIcon)}>
+                          {
+                            <FontAwesomeIcon
+                              icon={faComments}
+                            ></FontAwesomeIcon>
+                          }
+                        </span>
+                        <span className={css(styles.metadataText)}>
+                          <span>{discussion_count}</span>
+                          <span className={css(styles.hideTextMobile)}>
+                            {` Comment${discussion_count === 1 ? "" : "s"}`}
+                          </span>
+                        </span>
+                      </div>
+                    )}
 
-                  {reviews?.count > 0 && (
-                    <div
-                      className={css(
-                        styles.reviewSummaryContainer,
-                        styles.metaItem
-                      )}
-                    >
-                      <PeerReviewScoreSummary
-                        summary={reviews}
-                        feDocUrl={feDocUrl}
-                      />
-                    </div>
-                  )}
-                  {/* {boostAmount > 0 && (
+                    {reviews?.count > 0 && (
+                      <div
+                        className={css(
+                          styles.reviewSummaryContainer,
+                          styles.metaItem
+                        )}
+                      >
+                        <PeerReviewScoreSummary
+                          summary={reviews}
+                          feDocUrl={feDocUrl}
+                        />
+                      </div>
+                    )}
+                    {/* {boostAmount > 0 && (
                     <div className={css(styles.metaItem)}>
                       <span className={css(styles.metadataIcon)}>
                         <ResearchCoinIcon
@@ -464,12 +482,13 @@ function FeedCard({
                       </span>
                     </div>
                   )} */}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </Ripples>
   );
 }
