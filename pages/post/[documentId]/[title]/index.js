@@ -62,13 +62,19 @@ const Post = (props) => {
   const [screenSizeAtLoading, setScreenSizeAtLoading] = useState(null);
 
   useEffect(() => {
-    const _initialPost = props?.initialPost;
-    if (_initialPost) {
-      setPost(_initialPost);
-      const formattedPost = new PostDoc(_initialPost);
-      setPostV2(formattedPost);
-    }
-  }, [props]);
+    const initialRun = async () => {
+      const _initialPost = props?.initialPost;
+      if (_initialPost) {
+        setPost(_initialPost);
+        const userVote = await getUserVote(_initialPost.id);
+        _initialPost.user_vote = userVote;
+        const formattedPost = new PostDoc(_initialPost);
+        setPostV2(formattedPost);
+      }
+    };
+
+    initialRun();
+  }, []);
 
   useEffect(() => {
     setShareURL(window.location.href);
@@ -98,6 +104,20 @@ const Post = (props) => {
       setCount(post.discussion_count);
     }
   }, [post]);
+
+  const getUserVote = async (documentId) => {
+    const response = await fetch(
+      API.USER_VOTE({ documentId, documentType: "post" }),
+      API.GET_CONFIG()
+    );
+
+    if (response.ok) {
+      const json = await response.json();
+      return json;
+    } else {
+      return null;
+    }
+  };
 
   const onBountyCancelled = (bountiesCancelled) => {
     const bountyMap = {};

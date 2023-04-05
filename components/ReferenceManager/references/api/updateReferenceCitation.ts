@@ -13,7 +13,6 @@ export const updateReferenceCitation = ({
   onSuccess,
   payload,
 }: Args): void => {
-  debugger;
   const formattedPayload = payload;
   fetch(
     buildApiUri({ apiPath: `citation_entry/${payload?.id}` }),

@@ -842,8 +842,22 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    USER_VOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
+    USER_VOTE: ({
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      documentType,
+      documentId,
+    }) => {
+      let url = buildPaperChainUrl(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "user_vote/";
     },
