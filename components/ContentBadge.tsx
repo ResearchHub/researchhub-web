@@ -158,7 +158,7 @@ const ContentBadgeBase = ({
             )}
           >
             {" "}
-            ≈ {rscToUSDDisplay(bountyAmount)}
+            ≈ {rscToUSDDisplay(bountyAmount || 0)}
           </div>
         </div>
       ) : contentType === "closedBounty" ? (
@@ -200,8 +200,11 @@ const ContentBadge = (props) => {
       onMouseLeave={() => {
         clearTimeout(mouseLeaveTimeout.current);
         setBadgeHovered(false);
+        
+        // @ts-ignore
         mouseLeaveTimeout.current = setTimeout(() => {
           setKeepPositionAbsolute(false);
+          // @ts-ignore
           mouseLeaveTimeout.current = null;
         }, 300);
       }}

@@ -22,7 +22,7 @@ export const ExchangeRateContextProvider = ({ children }) => {
   useEffect(() => {
     const asyncExchangeRate = async () => {
       const _exchangeRate = await fetchExchangeRate();
-      setExchangeRate(_exchangeRate.results[0].real_rate);
+      setExchangeRate(_exchangeRate.results[0]?.real_rate);
     };
 
     asyncExchangeRate();
