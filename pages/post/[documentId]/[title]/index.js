@@ -24,6 +24,7 @@ import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { trackEvent } from "~/config/utils/analytics";
 import CommentFeed from "~/components/Comment/CommentFeed";
+import config from "~/components/Comment/lib/config";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -233,7 +234,8 @@ const Post = (props) => {
     hubs: post?.hubs ?? [],
   });
   const isQuestion = initialPost.document_type === "QUESTION";
-  const commentSectionAsDrawer = screenSizeAtLoading <= breakpoints.small.int;
+  const commentSectionAsDrawer =
+    screenSizeAtLoading > 0 && screenSizeAtLoading <= breakpoints.small.int;
   const commentSectionAsSidebar = !isQuestion;
 
   return !isNullOrUndefined(post) && Object.keys(post).length > 0 ? (
@@ -389,8 +391,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
-    // This property is needed for comments sidebar to close gracefully without overflow.
     overflowX: "clip",
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        justifyContent: "center",
+      },
   },
   question: {
     justifyContent: "center",

@@ -12,6 +12,7 @@ const config = {
   },
   sidebar: {
     previewMaxChars: 375,
+    fixedPosMaxWidth: 1550,
   },
   default: {
     previewMaxChars: 700,

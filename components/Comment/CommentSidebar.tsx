@@ -4,8 +4,9 @@ import { css, StyleSheet } from "aphrodite";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentSidebarToggle from "./CommentSidebarToggle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Comment } from "./lib/types";
+import config from "./lib/config";
 
 type Args = {
   children: any;
@@ -21,39 +22,64 @@ const CommentSidebar = ({
   isInitialFetchDone = false,
 }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isInFixedPosRange, setIsInFixedPosRange] = useState<boolean>(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= config.sidebar.fixedPosMaxWidth) {
+        setIsInFixedPosRange(true);
+      }
+      else {
+        setIsInFixedPosRange(false);
+      }
+    }
+
+    if (window.innerWidth <= config.sidebar.fixedPosMaxWidth) {
+      setIsInFixedPosRange(true);
+      setIsOpen(false);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return (): void => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [])
 
   return (
-    <div
-      className={css(
-        styles.sidebar,
-        isOpen ? styles.sidebarOpen : styles.sidebarClosed
-      )}
-    >
-      <div className={css(styles.feedWrapper)}>
-        {isInitialFetchDone && (
-          <CommentSidebarToggle
-            isOpen={isOpen}
-            setIsOpen={(isOpen) => {
-              setIsOpen(isOpen);
-            }}
-            bountyAmount={0}
-            commentCount={totalCommentCount}
-          />
+    <>
+      <div
+        className={css(
+          styles.sidebar,
+          isOpen ? styles.sidebarOpen : styles.sidebarClosed,
+          isInFixedPosRange && isOpen && styles.sidebarFixedOpen,
         )}
-        <div className={css(styles.sidebarHeader)}>
-          Discussion
-          <IconButton
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </IconButton>
+      >
+        <div className={css(styles.feedWrapper)}>
+          {isInitialFetchDone && (
+            <CommentSidebarToggle
+              isOpen={isOpen}
+              setIsOpen={(isOpen) => {
+                setIsOpen(isOpen);
+              }}
+              bountyAmount={0}
+              commentCount={totalCommentCount}
+            />
+          )}
+          <div className={css(styles.sidebarHeader)}>
+            Discussion
+            <IconButton
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </IconButton>
+          </div>
+          {children}
         </div>
-        {children}
       </div>
-    </div>
+    </>
   );
 };
 
@@ -80,6 +106,9 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     boxSizing: "border-box",
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
+      display: "none"
+    },    
   },
   sidebarHeader: {
     fontWeight: 500,
@@ -99,12 +128,20 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: 1600px)`]: {
       width: 420,
     },
-    [`@media only screen and (max-width: 1550px)`]: {
-      width: 0,
-    },
   },
   sidebarClosed: {
     width: 0,
+  },
+  sidebarFixedOpen: {
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
+      display: "block",
+      width: 500,
+      position: "fixed",
+      right: 0,
+      top: 0,
+      zIndex: 999999,
+      background: "white",
+    },    
   },
 });
 
