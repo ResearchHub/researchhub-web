@@ -1,11 +1,10 @@
 import { ID, RhDocumentType } from "~/config/types/root_types";
-import listMockData from "../mock/list.json";
-// import createMockData from "../mock/create.json";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import config from "./config";
 import { sortOpts } from "./options";
+import { parseVote, Vote } from "~/config/types/vote";
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -20,10 +19,6 @@ export const fetchCommentsAPI = async ({
   filter?: string | null;
   page?: number;
 }): Promise<{ comments: Comment[]; count: number }> => {
-  // const rawComments = listMockData;
-  // const comments = rawComments.map((raw) => parseComment({ raw }));
-  // return Promise.resolve({comments, next: "", prev: ""});
-
   const query = {
     ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
@@ -68,7 +63,7 @@ export const fetchSingleCommentAPI = async ({
   parentComment?: Comment;
   childOffset: number;
   sort?: string | null;
-  filter?: string | null;  
+  filter?: string | null;
 }): Promise<Comment> => {
   const query = {
     ...(filter && { filtering: filter }),
@@ -80,7 +75,7 @@ export const fetchSingleCommentAPI = async ({
 
   const baseFetchUrl = generateApiUrl(
     `${documentType}/${documentId}/comments` +
-      (commentId ? `/${commentId}` : "")
+    (commentId ? `/${commentId}` : "")
   );
   const url = baseFetchUrl + buildQueryString(query);
   const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
@@ -153,7 +148,7 @@ export const updateCommentAPI = async ({
   return Promise.resolve(comment);
 };
 
-export const markAsAcceptedAnswerAPI = async({
+export const markAsAcceptedAnswerAPI = async ({
   commentId,
   documentType,
   documentId,
@@ -172,7 +167,7 @@ export const markAsAcceptedAnswerAPI = async({
     );
 
   }
-  catch(error) {
+  catch (error) {
     // FIXME: Log to sentry
     throw Error(`Unexpected error for ${commentId}`);
   }
@@ -195,3 +190,39 @@ export const deleteCommentAPI = ({
 
   return Promise.resolve();
 };
+
+export const voteForComment = async ({
+  voteType,
+  documentType,
+  documentId,
+  commentId,
+}: {
+  voteType: "upvote" | "downvote" | "neutralvote";
+  documentType: RhDocumentType;
+  documentId: ID;
+  commentId: ID;
+}): Promise<Vote> => {
+
+  const url = generateApiUrl(
+    `${documentType}/${documentId}/comments/${commentId}/${voteType}`
+  );
+
+  try {
+    const response = await fetch(url, API.POST_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+
+
+    return parseVote(response);
+  }
+  catch (error:any) {
+    const isExpectedError = error.response.status < 500;
+    if (isExpectedError) {
+      throw error;
+    }
+    else {
+      // FIXME: Log to sentry
+      throw Error("Unexpected error while casting vote");
+    }
+  }
+}

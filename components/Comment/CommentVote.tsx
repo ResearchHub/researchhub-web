@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
 import {
@@ -15,14 +15,20 @@ import { Comment } from "./lib/types";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowAltUp,
-  faArrowAltDown,
+  faUp,
+  faDown,
 } from "@fortawesome/pro-regular-svg-icons";
 import colors from "./lib/colors";
+import { voteForComment } from "./lib/api";
+import { Vote } from "~/config/types/vote";
+import { CommentTreeContext } from "./lib/contexts";
+import { MessageActions } from "~/redux/message";
+const { setMessage, showMessage } = MessageActions;
+
 
 type Args = {
   score: number;
-  userVote: VoteType | null | undefined;
+  userVote: Vote | null;
   documentType: RhDocumentType;
   documentID: ID;
   comment: Comment;
@@ -35,6 +41,7 @@ const CommentVote = ({
   documentType,
   documentID,
 }: Args) => {
+  const commentTreeState = useContext(CommentTreeContext);
   const [_score, _setScore] = useState<number>(score);
   const [_userVote, _setUserVote] = useState(userVote);
   const dispatch = useDispatch();
@@ -42,100 +49,110 @@ const CommentVote = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  const handleVoteSuccess = ({ voteType }) => {
+  const handleVoteSuccess = ({ userVote }: { userVote:Vote }) => {
+
+    const newUserVote = userVote;
     let newScore = _score;
-    if (voteType === NEUTRALVOTE) {
-      if (_userVote === UPVOTE) {
+    if (newUserVote.voteType === NEUTRALVOTE) {
+      if (_userVote?.voteType === UPVOTE) {
         newScore -= 1;
-      } else if (_userVote === DOWNVOTE) {
+      } else if (_userVote?.voteType === DOWNVOTE) {
         newScore += 1;
       }
+    } else {
+      if (newUserVote.voteType === UPVOTE) {
+        newScore += 1;
+      }
+      else if (newUserVote.voteType === DOWNVOTE) {
+        newScore -= 1;
+      }
     }
-
+    
+    
     _setScore(newScore);
-    _setUserVote(voteType);
+    _setUserVote(newUserVote);
+    const updateComment = Object.assign({}, comment, { userVote: newUserVote });
+    commentTreeState.onUpdate({ comment: updateComment });
+    console.log('updatedComment', updateComment)
   };
-
-  const onUpvote = useCallback(() => {
-    if (currentUser) {
-      return createVoteHandler({
-        dispatch,
-        currentAuthor: currentUser?.authorProfile,
-        currentVote: _userVote,
-        documentCreatedBy: nullthrows(comment.createdBy),
-        documentID,
-        documentType,
-        onError: () => null,
-        onSuccess: handleVoteSuccess,
-        voteType: UPVOTE,
-      });
-    }
-    return null;
-  }, [currentUser, _userVote, comment, documentID, documentType]);
-
-  const onDownvote = useCallback(() => {
-    if (currentUser) {
-      return createVoteHandler({
-        dispatch,
-        currentAuthor: currentUser?.authorProfile,
-        currentVote: _userVote,
-        documentCreatedBy: nullthrows(comment.createdBy),
-        documentID,
-        documentType,
-        onError: () => null,
-        onSuccess: handleVoteSuccess,
-        voteType: DOWNVOTE,
-      });
-    }
-    return null;
-  }, [currentUser, _userVote, comment, documentID, documentType]);
-
-  const onNeutralVote = useCallback(() => {
-    if (currentUser) {
-      return createVoteHandler({
-        dispatch,
-        currentAuthor: currentUser?.authorProfile,
-        currentVote: _userVote,
-        documentCreatedBy: nullthrows(comment.createdBy),
-        documentID,
-        documentType: documentType,
-        onError: () => null,
-        onSuccess: handleVoteSuccess,
-        voteType: NEUTRALVOTE,
-      });
-    }
-    return null;
-  }, [currentUser, _userVote, comment, documentID, documentType]);
 
   return (
     <VoteWidget
       score={_score}
       horizontalView={true}
-      onUpvote={onUpvote}
+      onUpvote={async () => {
+        try {
+          const userVote = await voteForComment({
+            voteType: "upvote",
+            commentId: comment.id,
+            documentId: documentID,
+            documentType, 
+          })
+          handleVoteSuccess({ userVote })
+        }
+        catch(error) {
+          // @ts-ignore
+          dispatch(setMessage(error));
+          // @ts-ignore
+          dispatch(showMessage({ show: true, error: true }));
+        }
+      }}
       // @ts-ignore
-      onNeutralVote={onNeutralVote}
-      onDownvote={onDownvote}
-      selected={_userVote}
+      onNeutralVote={async () => {
+        try {
+          const userVote = await voteForComment({
+            voteType: "neutralvote",
+            commentId: comment.id,
+            documentId: documentID,
+            documentType, 
+          })
+          handleVoteSuccess({ userVote })
+        }
+        catch(error) {
+          // @ts-ignore
+          dispatch(setMessage(error));
+          // @ts-ignore
+          dispatch(showMessage({ show: true, error: true }));
+        }
+      }}
+      onDownvote={async () => {
+        try {
+          const userVote = await voteForComment({
+            voteType: "downvote",
+            commentId: comment.id,
+            documentId: documentID,
+            documentType, 
+          })
+          handleVoteSuccess({ userVote })
+        }
+        catch(error) {
+          // @ts-ignore
+          dispatch(setMessage(error));
+          // @ts-ignore
+          dispatch(showMessage({ show: true, error: true }));
+        }
+      }}
+      selected={_userVote ? _userVote.voteType : null}
       isPaper={documentType === "paper"}
       type={documentType}
       pillClass={styles.pill}
       downvoteStyleClass={styles.downvote}
       upvoteStyleClass={styles.upvote}
       styles={[styles.voteWidgetWrapper]}
-      downvoteIcon={<FontAwesomeIcon icon={faArrowAltDown} />}
-      upvoteIcon={<FontAwesomeIcon icon={faArrowAltUp} />}
+      downvoteIcon={<FontAwesomeIcon icon={faDown} />}
+      upvoteIcon={<FontAwesomeIcon icon={faUp} />}
     />
   );
 };
 
 const styles = StyleSheet.create({
   downvote: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 0,
     color: colors.secondary.text,
   },
   upvote: {
-    fontSize: 16,
+    fontSize: 18,
     marginRight: 0,
     marginLeft: -1,
     color: colors.secondary.text,

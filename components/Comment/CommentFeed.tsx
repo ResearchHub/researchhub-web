@@ -20,8 +20,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import colors from "./lib/colors";
-import { MessageActions } from "~/redux/message";
 import { Purchase } from "~/config/types/purchase";
+import { MessageActions } from "~/redux/message";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {

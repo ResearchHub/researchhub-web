@@ -1,6 +1,7 @@
 import Bounty, { parseBountyList, RelatedItem } from "~/config/types/bounty";
 import { parsePurchase, Purchase } from "~/config/types/purchase";
-import { RHUser, parseUser, ID, VoteType } from "~/config/types/root_types";
+import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 import { isEmpty } from "~/config/utils/nullchecks";
 
@@ -22,7 +23,7 @@ export type Comment = {
   createdBy: RHUser;
   content: object;
   score: number;
-  userVote: VoteType | null;
+  userVote: Vote | null;
   isEdited: boolean;
   commentType: COMMENT_TYPES;
   parent?: Comment;
@@ -48,7 +49,7 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     isEdited: raw.is_edited,
     content: raw.comment_content_json || {},
     score: raw.score,
-    userVote: raw.user_vote,
+    userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
     awardedBountyAmount: raw.awarded_bounty_amount || 0,
     commentType: raw.thread?.thread_type || COMMENT_TYPES.DISCUSSION,
     bounties: [] as Bounty[],
