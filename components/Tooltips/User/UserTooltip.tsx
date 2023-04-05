@@ -27,6 +27,7 @@ export default function UserTooltip({
 
   const inPopoverRef = useRef(false);
   const popoverRefTimeout = useRef(null);
+  const leavePopoverTimeout = useRef(null);
 
   const isMobileScreen = getIsOnMobileScreenSize();
 
@@ -51,9 +52,11 @@ export default function UserTooltip({
             inPopoverRef.current = true;
           }}
           onMouseLeave={(e) => {
-            setTimeout(() => {
+            clearTimeout(leavePopoverTimeout.current);
+            leavePopoverTimeout.current = setTimeout(() => {
               inPopoverRef.current = false;
               setUserPopoverOpen(false);
+              leavePopoverTimeout.current = null;
             }, TOOLTIP_DELAY / 2);
           }}
           id={`user-popover-${genClientId()}`}
@@ -69,18 +72,21 @@ export default function UserTooltip({
             margin: -4,
           }}
           onMouseEnter={() => {
-            if (!isMobileScreen) {
+            clearTimeout(popoverRefTimeout.current);
+            if (!isMobileScreen && !leavePopoverTimeout.current) {
               popoverRefTimeout.current = setTimeout(() => {
                 setUserPopoverOpen(true);
               }, TOOLTIP_DELAY);
             }
           }}
           onMouseLeave={(e) => {
+            clearTimeout(leavePopoverTimeout.current);
             if (userPopoverOpen) {
-              setTimeout(() => {
+              leavePopoverTimeout.current = setTimeout(() => {
                 if (!inPopoverRef.current) {
                   setUserPopoverOpen(false);
                 }
+                leavePopoverTimeout.current = null;
               }, TOOLTIP_DELAY / 2);
             } else {
               if (!inPopoverRef.current) {
