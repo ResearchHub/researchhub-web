@@ -99,8 +99,8 @@ export const getLeftSidebarItemAttrs = ({
       isActive: pathname.includes("notebook"),
       href: `${organization_slug}/notebook`,
       onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
         if (!isLoggedIn) {
+          event.preventDefault();
           openLoginModal(true, "Please Sign in with Google to continue.");
         }
       },
