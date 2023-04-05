@@ -77,9 +77,9 @@ export const getLeftSidebarItemAttrs = ({
       label: "Home",
       isActive: ["", "/"].includes(pathname),
       isMinimized,
+      href: "/",
       onClick: (event: SyntheticEvent): void => {
-        event.preventDefault();
-        router.push("/");
+        // event.preventDefault();
       },
     },
     {
@@ -87,9 +87,9 @@ export const getLeftSidebarItemAttrs = ({
       label: "Hubs",
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
+      href: "/hubs",
       onClick: (event: SyntheticEvent): void => {
-        event.preventDefault();
-        router.push("/hubs");
+        // event.preventDefault();
       },
     },
     {
@@ -97,12 +97,11 @@ export const getLeftSidebarItemAttrs = ({
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
+      href: `${organization_slug}/notebook`,
       onClick: (event: SyntheticEvent): void => {
-        event.preventDefault();
         if (!isLoggedIn) {
+          event.preventDefault();
           openLoginModal(true, "Please Sign in with Google to continue.");
-        } else {
-          router.push(`/${organization_slug}/notebook`);
         }
       },
     },
@@ -111,9 +110,9 @@ export const getLeftSidebarItemAttrs = ({
       label: "Leaderboard",
       isMinimized,
       isActive: pathname.includes("leaderboard"),
+      href: "/leaderboard/users",
       onClick: (event: SyntheticEvent): void => {
-        event.preventDefault();
-        router.push("/leaderboard/users");
+        // event.preventDefault();
       },
     },
     killswitch("reference-manager")
@@ -122,9 +121,9 @@ export const getLeftSidebarItemAttrs = ({
           label: "Reference Manager",
           isActive: pathname.includes("reference-manager"),
           isMinimized,
+          href: "/reference-manager",
           onClick: (event: SyntheticEvent): void => {
-            event.preventDefault();
-            router.push("/reference-manager");
+            // event.preventDefault();
           },
         }
       : null,

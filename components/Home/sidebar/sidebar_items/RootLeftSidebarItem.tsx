@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import {
   ReactElement,
   ReactNode,
@@ -14,6 +15,7 @@ export type Props = {
   isActive?: boolean;
   isMinimized: boolean;
   label: string;
+  href: string;
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
 };
@@ -26,6 +28,7 @@ export default function RootLeftSidebarItem({
   isMinimized,
   label,
   onClick,
+  href,
   subItems,
 }: Props): ReactElement {
   const [didMount, setDidMount] = useState<boolean>(false);
@@ -49,14 +52,14 @@ export default function RootLeftSidebarItem({
   }, [isMinimized]);
 
   return (
-    <div
+    <Link
+      href={href}
       className={css(
         styles.rootLeftSidebarItem,
         isMinimizedLocal && isMinimized && styles.rootLeftSidebarItemMin,
         isActive && styles.rootLeftSidebarItemActive
       )}
       onClick={onClick}
-      role="button"
     >
       <div
         className={css(
@@ -94,7 +97,7 @@ export default function RootLeftSidebarItem({
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </Link>
   );
 }
 
@@ -112,6 +115,7 @@ const styles = StyleSheet.create({
     padding: "0 26px",
     width: "100%",
     overflow: "hidden",
+    textDecoration: "none",
     ":hover": {
       background: colors.LIGHTER_GREY(1),
     },
