@@ -20,7 +20,7 @@ const colors = {
       background: globalColors.LIGHTER_GREY(1.0),
       text: globalColors.BLACK(0.9),
     },
-    divider:  globalColors.BLACK(0.4),
+    divider: globalColors.GREY_LINE(1.0),
   },
   toggle: {
     commentIcon: globalColors.MEDIUM_GREY(1.0),
@@ -29,6 +29,7 @@ const colors = {
   },
   bounty: {
     btn: globalColors.ORANGE_DARK2(1.0),
+    contributeBtn: globalColors.ORANGE_LIGHT2(1.0),
     text: globalColors.ORANGE_DARK2(1.0),
     background: globalColors.ORANGE_LIGHTER(1.0),
   },

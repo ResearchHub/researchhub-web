@@ -4,12 +4,10 @@ import { useAlert } from "react-alert";
 import Bounty from "~/config/types/bounty";
 import BountyModal from "./BountyModal";
 import colors from "~/config/themes/colors";
-import numeral from "numeral";
-import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import IconButton from "../Icons/IconButton";
-import { ID, RHUser } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 
 type Args = {
   withPreview: boolean;
@@ -45,21 +43,21 @@ function CreateBountyBtn({
         withPreview={withPreview}
         originalBounty={originalBounty}
       />
-      <IconButton
-        onClick={() => {
-          setIsModalOpen(true);
-        }}
-      >
-        <div>
-          <span className={css(styles.bountyTextContainer)}>
-            <span
-              data-tip={""}
-              data-for="bountyTooltip"
-              className={css(styles.addBountyLabel)}
-            >
-              {children ? (
-                children
-              ) : (
+      {children ? (
+        <div>{children}</div>
+      ) : (
+        <IconButton
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
+        >
+          <div>
+            <span className={css(styles.bountyTextContainer)}>
+              <span
+                data-tip={""}
+                data-for="bountyTooltip"
+                className={css(styles.addBountyLabel)}
+              >
                 <div className={css(styles.addBounty)}>
                   <span className={css(styles.bountyIcon)}>
                     {/* @ts-ignore */}
@@ -67,11 +65,11 @@ function CreateBountyBtn({
                   </span>
                   Add Bounty
                 </div>
-              )}
+              </span>
             </span>
-          </span>
-        </div>
-      </IconButton>
+          </div>
+        </IconButton>
+      )}
     </div>
   );
 }

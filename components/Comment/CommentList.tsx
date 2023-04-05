@@ -1,28 +1,12 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
-import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
+import { TopLevelDocument } from "~/config/types/root_types";
+import { Comment as CommentType } from "./lib/types";
 import Comment from "./Comment";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
-import CommentEditor from "~/components/Comment/CommentEditor";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "~/redux";
-import findComment from "./lib/findComment";
-import { isEmpty } from "~/config/utils/nullchecks";
 import IconButton from "../Icons/IconButton";
-import { MessageActions } from "~/redux/message";
-import {
-  createCommentAPI,
-  updateCommentAPI,
-  fetchCommentsAPI,
-  fetchSingleCommentAPI,
-} from "./lib/api";
 import CommentPlaceholder from "./CommentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
-import { CommentTreeContext } from "./lib/contexts";
-import config from "./lib/config";
-const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   parentComment?: CommentType;
@@ -43,13 +27,6 @@ const CommentList = ({
   isRootList = false,
   isFetching = false,
 }: Args) => {
-  
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
-  const dispatch = useDispatch();
-  const commentTreeState = useContext(CommentTreeContext);
 
   const _commentElems = comments.map((c) => (
     <div
@@ -106,7 +83,7 @@ const styles = StyleSheet.create({
   commentListWrapper: {},
   childrenList: {
     paddingTop: 15,
-    marginLeft: 10,
+    marginLeft: 9,
     paddingLeft: 15,
     borderLeft: `3px solid ${colors.border}`,
   },
@@ -117,12 +94,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   commentWrapper: {
-    // borderBottom: `1px solid ${colors.border}`,
-    // paddingBottom: 25,
     paddingTop: 25,
     ":first-child": {
       paddingTop: 0,
-      // paddingBottom: 25,
     },
     ":last-child": {
       borderBottom: 0,

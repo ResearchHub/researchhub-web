@@ -163,7 +163,13 @@ const Comment = ({
               <CommentReadOnly content={comment.content} />
               {_hasOpenBounties && (
                 <div className={css(styles.contributeWrapper)}>
-                  <div>Contribute RSC to this bounty</div>
+                  {isQuestion ? (
+                    <div>Contribute RSC to this bounty</div>
+                  ) : (
+                    <div>
+                      Reply to this thread with an answer to be eligible for bounty reward.
+                    </div>
+                  )}
                   <CreateBountyBtn
                     onBountyAdd={(bounty) => {
                       const updatedComment = Object.assign({}, comment);
@@ -238,11 +244,11 @@ const styles = StyleSheet.create({
   actionsWrapper: {},
   mainWrapper: {},
   mainWrapperForBounty: {
-    boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
-    borderRadius: 10,
-    padding: 10,
-    background: "white",
-    marginBottom: 5,
+    // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
+    // borderRadius: 10,
+    // padding: 10,
+    // background: "white",
+    // marginBottom: 5,
   },
   commentReadOnlyWrapper: {
     marginBottom: 15,
@@ -252,19 +258,21 @@ const styles = StyleSheet.create({
   },
   contributeWrapper: {
     background: colors.bounty.background,
-    padding: "6px 8px",
+    padding: "5px 6px 5px 9px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     fontWeight: 500,
     fontSize: 14,
-    borderRadius: "4px",
-    marginTop: 5,
+    borderRadius: "8px",
+    marginTop: 10,
   },
   contributeBtn: {
-    background: colors.bounty.btn,
+    background: colors.bounty.contributeBtn,
+    fontWeight: 500,
     border: 0,
     marginLeft: "auto",
+    borderRadius: "4px"
   },
   contributeBtnLabel: {
     fontWeight: 500,

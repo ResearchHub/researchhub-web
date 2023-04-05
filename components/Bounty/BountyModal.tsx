@@ -323,7 +323,7 @@ function BountyModal({
                         <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
                       }
                     </span>{" "}
-                    The bounty creator wll be able to award the bounty amount including your contribution to a solution they pick.
+                    The bounty creator wll be able to award the full bounty amount including your contribution to a solution they pick.
                   </div>
                 )}
                 {!originalBounty &&

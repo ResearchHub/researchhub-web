@@ -35,6 +35,7 @@ const colors = {
   ORANGE_DARK: (opacity = 1) => `rgba(237, 157, 20, ${opacity})`,
   ORANGE_DARK2: (opacity = 1) => `rgba(255, 122, 0, ${opacity})`,
   ORANGE_LIGHT: (opacity = 1) => `rgb(255, 195, 61, ${opacity})`,
+  ORANGE_LIGHT2: (opacity = 1) => `rgb(255, 148, 22, ${opacity})`,
   ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`,
   ORANGE_LIGHTER: (opacity = 1) => `rgb(252, 242, 220, ${opacity})`,
   PASTEL_GREEN_TEXT: "#88cb88",
