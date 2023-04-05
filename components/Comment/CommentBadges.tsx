@@ -20,7 +20,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
 
   if (openBounties.length > 0) {
     badges.push(
-      <ContentBadge contentType="bounty" label={`${openBountyAmount} Bounty`} />
+      <ContentBadge contentType="bounty" label={`${openBountyAmount} RSC`} />
     )
   }
   else if (closedBounties.length > 0) {

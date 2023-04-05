@@ -9,18 +9,18 @@ import { textLength, trimDeltas, quillDeltaToHtml } from "./lib/quill";
 
 type Args = {
   content: any;
+  previewMaxCharLength?: number;
 };
 
-
-const CommentReadOnly = ({ content }: Args) => {
+const CommentReadOnly = ({ content, previewMaxCharLength = config.default.previewMaxChars }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [previewHtml, setPreviewHtml] = useState<any>(null);
   const [fullHtml, setFullHtml] = useState<any>(null);
 
   useEffect(() => {
     const length = textLength({ quillOps: content.ops });
-    if (length > config.comment.previewMaxChars) {
-      const trimmed = trimDeltas({ quillOps: content.ops, maxLength: config.comment.previewMaxChars });
+    if (length > previewMaxCharLength) {
+      const trimmed = trimDeltas({ quillOps: content.ops, maxLength: previewMaxCharLength });
       const trimmedHtml = quillDeltaToHtml({ ops: trimmed });
       setPreviewHtml(trimmedHtml);
     }
@@ -41,7 +41,6 @@ const CommentReadOnly = ({ content }: Args) => {
         <IconButton
           overrideStyle={styles.readMoreWrapper}
           onClick={() => {
-            console.log('ccc', content)
             setIsPreview(!isPreview)
           }}
         >

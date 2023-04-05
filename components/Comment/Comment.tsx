@@ -15,7 +15,7 @@ import { RootState } from "~/redux";
 import CommentList from "./CommentList";
 import { createCommentAPI, fetchSingleCommentAPI, updateCommentAPI } from "./lib/api";
 import { CommentTreeContext } from "./lib/contexts";
-import config from "./lib/config";
+import { getConfigForContext } from "./lib/config";
 import { MessageActions } from "~/redux/message";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 const { setMessage, showMessage } = MessageActions;
@@ -68,8 +68,6 @@ const Comment = ({
         parentComment: comment.parent,
       });
 
-      // console.log('response.children', response.children)
-      // return;
       commentTreeState.onFetchMore({
         comment,
         fetchedComments: response.children,
@@ -124,6 +122,7 @@ const Comment = ({
   
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
+  const previewMaxChars = getConfigForContext(commentTreeState.context).previewMaxChars;
   return (
     <div>
       <div>
@@ -160,13 +159,13 @@ const Comment = ({
                 _hasOpenBounties && styles.commentReadOnlyWrapperForBounty
               )}
             >
-              <CommentReadOnly content={comment.content} />
+              <CommentReadOnly content={comment.content} previewMaxCharLength={previewMaxChars} />
               {_hasOpenBounties && (
                 <div className={css(styles.contributeWrapper)}>
                   {isQuestion ? (
-                    <div>Contribute RSC to this bounty</div>
+                    <div className={css(styles.contributeText)}>Contribute RSC to this bounty</div>
                   ) : (
-                    <div>
+                    <div className={css(styles.contributeText)}>
                       Reply to this thread with an answer to be eligible for bounty reward.
                     </div>
                   )}
@@ -256,9 +255,13 @@ const styles = StyleSheet.create({
   commentReadOnlyWrapperForBounty: {
     marginBottom: 0,
   },
+  contributeText: {
+    maxWidth: "75%",
+    lineHeight: "18px",
+  },
   contributeWrapper: {
     background: colors.bounty.background,
-    padding: "5px 6px 5px 9px",
+    padding: "7px 9px 8px 12px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",

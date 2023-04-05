@@ -3,12 +3,9 @@ import moduleColors from "~/components/Comment/lib/colors";
 import { css, StyleSheet } from "aphrodite";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
-import config from "./lib/config";
 import CommentSidebarToggle from "./CommentSidebarToggle";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Comment } from "./lib/types";
-import { getBountyAmount } from "./lib/bounty";
-import countComments from "./lib/countComments";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 type Args = {

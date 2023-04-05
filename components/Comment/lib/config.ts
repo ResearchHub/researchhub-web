@@ -8,12 +8,23 @@ const config = {
   },
   drawer: {
     displayForBreakpoint: breakpoints.small.int,
+    previewMaxChars: 375,
+  },
+  sidebar: {
+    previewMaxChars: 375,
+  },
+  default: {
+    previewMaxChars: 700,
   },
   comment: {
-    previewMaxChars: 500,
     placeholderCount: 8,
     minLength: 20,
   },
 };
+
+export const getConfigForContext = (context: "sidebar" | "default" | "drawer" | undefined | null) => {
+  const _config = config[context || "default"];
+  return _config || config["default"];
+}
 
 export default config;
