@@ -59,8 +59,7 @@ export default function RootLeftSidebarItem({
         isMinimizedLocal && isMinimized && styles.rootLeftSidebarItemMin,
         isActive && styles.rootLeftSidebarItemActive
       )}
-      // onClick={onClick}
-      // role="button"
+      onClick={onClick}
     >
       <div
         className={css(
