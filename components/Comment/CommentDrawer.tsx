@@ -10,12 +10,11 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 type Args = {
   children: any;
-  comments: Comment[];
   isInitialFetchDone: boolean;
   totalCommentCount: number;
 };
 
-const CommentDrawer = ({ children, comments, totalCommentCount, isInitialFetchDone }: Args) => {
+const CommentDrawer = ({ children, totalCommentCount, isInitialFetchDone }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [drawerEl, setDrawerEl] = useState<null | HTMLElement>(null);
   // const openBountyAmount = comments.reduce(
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
   drawerContentWrapper: {
     height: "100%",
     overflow: "auto",
-    padding: 25,
+    padding: "15px 0px",
   },
   pullerBtn: {
     width: 30,
@@ -110,6 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 25,
+    padding: "15px 25px",
   },
 });
 

@@ -6,13 +6,14 @@ import UserTooltip from "../Tooltips/User/UserTooltip";
 type CommentAvatarsArgs = {
   people: RHUser[];
   withTooltip?: boolean;
-  spacing?: number
-  size?: number
+  spacing?: number;
+  size?: number;
+  wrapperStyle?: any;
 };
 
-const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30 }: CommentAvatarsArgs) => {
+const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30, wrapperStyle }: CommentAvatarsArgs) => {
   return (
-    <div className={css(styles.avatarsWrapper)}>
+    <div className={css(styles.avatarsWrapper, wrapperStyle)}>
 
       {people.map((p, idx) => {
 
@@ -25,7 +26,7 @@ const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30 }:
         </div>
 
         return (
-          <div className={css(styles.person)} style={{marginLeft: idx === 0 ? 0 : spacing}} >
+          <div className={css(styles.person)} key={`avatar-${idx}`} style={{marginLeft: idx === 0 ? 0 : spacing}} >
             {withTooltip ? (
               <UserTooltip
                 createdBy={p}

@@ -44,7 +44,12 @@ const CommentHeader = ({
     <div className={css(styles.commentHeader)}>
       <CommentBadges comment={comment} />
       <div className={css(styles.details)}>
-        <CommentAvatars people={[comment.createdBy, ...bountyContributors]} spacing={-15} withTooltip={true} />
+        <CommentAvatars
+          people={[comment.createdBy, ...bountyContributors]}
+          spacing={-15}
+          withTooltip={true}
+          wrapperStyle={styles.avatars}
+        />
 
         <div className={css(styles.nameWrapper)}>
           <div className={css(styles.nameRow)}>
@@ -135,7 +140,6 @@ const styles = StyleSheet.create({
   },
   time: {
     color: colors.secondary.text,
-    marginTop: -3,
   },
   details: {
     display: "flex",
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "5px",
     fontSize: 15,
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   badgeRow: {
   },
@@ -173,6 +177,7 @@ const styles = StyleSheet.create({
   },
   menuWrapper: {
     marginLeft: "auto",
+    marginTop: -9,
   },
   additionalAuthor: {
     display: "flex",
@@ -180,6 +185,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     }
+  },
+  avatars: {
+    alignItems: "flex-start",
   }
 });
 

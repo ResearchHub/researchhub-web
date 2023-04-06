@@ -129,7 +129,7 @@ const Comment = ({
         <div
           className={css(
             styles.mainWrapper,
-            _hasOpenBounties && styles.mainWrapperForBounty
+            _hasOpenBounties && styles.mainWrapperForBounty,
           )}
         >
           <div className={css(styles.headerWrapper)}>

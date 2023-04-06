@@ -33,7 +33,7 @@ const CommentList = ({
       key={c.id}
       className={css(
         styles.commentWrapper,
-        c.children.length > 0 && styles.commentWrapperWithChildren
+        !c.parent && styles.rootCommentWrapper,  
       )}
     >
       <Comment
@@ -55,9 +55,11 @@ const CommentList = ({
         )}
       >
         {_commentElems.length > 0 && _commentElems}
-        <div className={css(styles.placeholderWrapper)}>
-          {isFetching && <CommentPlaceholder />}
-        </div>
+        {isFetching && 
+          <div className={css(styles.placeholderWrapper)}>
+            <CommentPlaceholder />
+          </div>
+        }
         {loadMoreCount > 0 && (
           <div className={css(styles.loadMoreWrapper)}>
             <IconButton onClick={handleFetchMore}>
@@ -82,7 +84,6 @@ const CommentList = ({
 const styles = StyleSheet.create({
   commentListWrapper: {},
   childrenList: {
-    paddingTop: 15,
     marginLeft: 9,
     paddingLeft: 15,
     borderLeft: `3px solid ${colors.border}`,
@@ -95,17 +96,15 @@ const styles = StyleSheet.create({
   },
   commentWrapper: {
     paddingTop: 25,
-    ":first-child": {
-      paddingTop: 0,
-    },
     ":last-child": {
       borderBottom: 0,
       paddingBottom: 0,
-      marginBottom: 25,
+      marginBottom: 0,
     },
   },
-  commentWrapperWithChildren: {
-    paddingBottom: 0,
+  rootCommentWrapper: {
+    borderBottom: `1px solid ${colors.border}`,
+    paddingBottom: 25,
   },
 });
 

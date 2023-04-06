@@ -151,7 +151,7 @@ class ContentSupportModal extends Component {
       <BaseModal
         isOpen={modals.openContentSupportModal.isOpen}
         closeModal={this.closeModal}
-        title={"Award ResearchCoin"}
+        title={"Tip ResearchCoin"}
         subtitle={
           <Fragment>
             Support the author, or contributor, by giving them ResearchCoin, or

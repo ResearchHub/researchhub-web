@@ -10,14 +10,12 @@ import config from "./lib/config";
 
 type Args = {
   children: any;
-  comments: Comment[];
   totalCommentCount: number;
   isInitialFetchDone: boolean;
 };
 
 const CommentSidebar = ({
   children,
-  comments,
   totalCommentCount,
   isInitialFetchDone = false,
 }: Args) => {
@@ -84,21 +82,6 @@ const CommentSidebar = ({
 };
 
 const styles = StyleSheet.create({
-  drawer: {},
-  drawerWrapper: {
-    height: "100%",
-    overflow: "auto",
-    padding: 25,
-  },
-  pullerBtn: {
-    width: 30,
-    height: 6,
-    backgroundColor: "gray",
-    borderRadius: 3,
-    position: "absolute",
-    top: 8,
-    left: "calc(50% - 15px)",
-  },
   sidebar: {
     boxShadow: "8px 30px 30px rgba(21, 21, 21, 0.2)",
     borderLeft: `1px solid ${moduleColors.border}`,
@@ -106,6 +89,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     boxSizing: "border-box",
+    padding: "15px 0px",
     [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
       display: "none"
     },    
@@ -117,9 +101,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    padding: "0px 25px",
   },
   feedWrapper: {
-    padding: "15px 25px",
     overflowY: "scroll",
     height: "100vh",
   },

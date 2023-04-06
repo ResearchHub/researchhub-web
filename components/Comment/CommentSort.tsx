@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faCheck } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { NullableString } from "~/config/types/root_types";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 import { sortOpts } from "./lib/options";
+import { CommentTreeContext } from "./lib/contexts";
 
 type Args = {
   selectedSortValue: NullableString;
@@ -15,9 +16,11 @@ type Args = {
 
 const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const commentTreeState = useContext(CommentTreeContext);
   const dropdownRef = useRef(null);
   const selectedSort =
     sortOpts.find((s) => s.value === selectedSortValue) || sortOpts[0];
+  const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer"
 
   useEffectHandleClick({
     el: dropdownRef.current,
@@ -26,7 +29,7 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
   });
 
   return (
-    <div className={css(styles.wrapper)}>
+    <div className={css(styles.wrapper, isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
       <div className={`${css(styles.trigger)} comment-sort-trigger`}>
         <IconButton
           overrideStyle={styles.labelWrapper}
@@ -69,15 +72,17 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   labelWrapper: {
-    marginTop: 5,
+    marginTop: 0,
     display: "flex",
     columnGap: "4px",
     color: colors.primary.text,
     alignItems: "center",
-    fontWeight: 400,
+    fontWeight: 500,
+    padding: "6px 10px 6px 10px",
     fontSize: 16,
   },
-  trigger: {},
+  trigger: {
+  },
   dropdown: {
     display: "none",
     position: "absolute",
@@ -122,6 +127,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   dropdownLabel: {},
+  sectionForNarrowWidthContexts: {
+    marginRight: 15,
+  }
 });
 
 export default CommentSort;

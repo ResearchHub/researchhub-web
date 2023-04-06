@@ -112,7 +112,7 @@ const ContentSupport = (props) => {
     if (isUserContent()) {
       return "ResearchCoin awarded to your post";
     }
-    return "Award ResearchCoin";
+    return "Tip author with ResearchCoin";
   };
 
   return (

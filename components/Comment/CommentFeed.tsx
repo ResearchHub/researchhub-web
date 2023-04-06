@@ -259,11 +259,11 @@ const CommentFeed = ({
       : context === "drawer"
         ? CommentDrawer
         : React.Fragment;
-
+  const isNarrowWidthContext = context === "sidebar" || context === "drawer"
+  
   return (
     // @ts-ignore
     <WrapperEl
-      {...(context ? { comments } : {})}
       {...(context ? { isInitialFetchDone } : {})}
       {...(context ? { totalCommentCount } : {})}
     >
@@ -274,10 +274,22 @@ const CommentFeed = ({
         }}
       />
       {!isInitialFetchDone ? (
-        <CommentPlaceholder />
+        <div className={css(isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
+          <CommentPlaceholder />
+        </div>
       ) : (
-        <>
-          <div className={css(styles.editorWrapper)}>
+        <CommentTreeContext.Provider
+        value={{
+          sort: selectedSortValue,
+          filter: selectedFilterValue,
+          comments,
+          context,
+          onCreate,
+          onUpdate,
+          onFetchMore,
+        }}
+      >        
+          <div className={css(styles.editorWrapper, isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
             <CommentEditor
               editorId="new-thread"
               handleSubmit={handleCommentCreate}
@@ -312,26 +324,19 @@ const CommentFeed = ({
             </div>
           </div>
 
-          <CommentTreeContext.Provider
-            value={{
-              sort: selectedSortValue,
-              filter: selectedFilterValue,
-              comments,
-              context,
-              onCreate,
-              onUpdate,
-              onFetchMore,
-            }}
-          >
-            <CommentList
-              isRootList={true}
-              comments={comments}
-              totalCount={rootLevelCommentCount}
-              isFetching={isFetching}
-              document={document}
-              handleFetchMore={fetchMore}
-            />
-          </CommentTreeContext.Provider>
+
+            <div className={css(isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
+              <CommentList
+                isRootList={true}
+                comments={comments}
+                totalCount={rootLevelCommentCount}
+                isFetching={isFetching}
+                document={document}
+                handleFetchMore={fetchMore}
+              />
+            </div>
+    
+          
           {noResults &&
             <CommentEmptyState
               height={context === "sidebar" ? "60%" : "300px"}
@@ -339,7 +344,7 @@ const CommentFeed = ({
               documentType={document.documentType}
             />
           }
-        </>
+        </CommentTreeContext.Provider>
       )}
     </WrapperEl>
   );
@@ -347,7 +352,7 @@ const CommentFeed = ({
 
 const styles = StyleSheet.create({
   filtersWrapper: {
-    margin: "45px 0 30px 0",
+    margin: "45px 0 15px 0",
     display: "flex",
     paddingBottom: 15,
     borderBottom: `1px solid ${colors.filters.divider}`
@@ -357,7 +362,10 @@ const styles = StyleSheet.create({
   },
   editorWrapper: {
     marginBottom: 25,
-  },  
+  },
+  sectionForNarrowWidthContexts: {
+    padding: "0px 25px",
+  }
 });
 
 export default CommentFeed;
