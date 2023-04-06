@@ -270,7 +270,16 @@ const Post = (props) => {
               shareUrl={shareURL}
             />
             {commentSectionAsDrawer ? (
-              <CommentFeed document={postV2} context={"drawer"} />
+              <CommentFeed
+                document={postV2}
+                context={"drawer"}
+                onCommentCreate={() => {
+                  setCount(discussionCount + 1);
+                  postV2.discussionCount = discussionCount + 1;
+                  setPostV2(postV2);
+                }}
+                totalCommentCount={discussionCount}
+              />
             ) : !commentSectionAsSidebar ? (
               <div className={css(styles.postPageSection)}>
                 <a name="comments" id="comments" />

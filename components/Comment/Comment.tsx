@@ -271,6 +271,9 @@ const styles = StyleSheet.create({
   contributeDetails: {
     maxWidth: "70%",
     lineHeight: "22px",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      maxWidth: "100%",
+    }
   },
   hideForNarrowWidthContexts: {
     display: "none",
@@ -290,6 +293,11 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     marginTop: 10,
     marginBottom: 10,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      rowGap: "10px",
+    }
   },
   contributeBtn: {
     background: colors.bounty.contributeBtn,
