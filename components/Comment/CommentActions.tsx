@@ -107,7 +107,7 @@ const CommentActions = ({
 
   // FIXME: Refactor into function
   const openBounties = getOpenBounties({ comment });
-  const isAllowedToTip = openBounties.length === 0;
+  const isAllowedToTip = openBounties.length === 0 && comment.createdBy.id !== currentUser?.id;
   let isAllowedToAward = false;
   let isAllowedToAcceptAnswer = false;
   let openUserOwnedRootBounty:Bounty;

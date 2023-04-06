@@ -1,23 +1,16 @@
-import { useCallback, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
 import {
-  VoteType,
   RhDocumentType,
   ID,
   parseUser,
 } from "~/config/types/root_types";
-import { createVoteHandler } from "../Vote/utils/createVoteHandler";
 import { RootState } from "~/redux";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { isEmpty } from "~/config/utils/nullchecks";
 import VoteWidget from "../VoteWidget";
 import { Comment } from "./lib/types";
-import { css, StyleSheet } from "aphrodite";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUp,
-  faDown,
-} from "@fortawesome/pro-regular-svg-icons";
+import { StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import { voteForComment } from "./lib/api";
 import { Vote } from "~/config/types/vote";
@@ -45,35 +38,40 @@ const CommentVote = ({
   const [_score, _setScore] = useState<number>(score);
   const [_userVote, _setUserVote] = useState(userVote);
   const dispatch = useDispatch();
-  const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );
 
   const handleVoteSuccess = ({ userVote }: { userVote:Vote }) => {
-
     const newUserVote = userVote;
+    const currentUserVote = _userVote;
     let newScore = _score;
     if (newUserVote.voteType === NEUTRALVOTE) {
-      if (_userVote?.voteType === UPVOTE) {
+      if (currentUserVote?.voteType === UPVOTE) {
         newScore -= 1;
-      } else if (_userVote?.voteType === DOWNVOTE) {
+      } else if (currentUserVote?.voteType === DOWNVOTE) {
         newScore += 1;
       }
     } else {
       if (newUserVote.voteType === UPVOTE) {
-        newScore += 1;
+        if (currentUserVote?.voteType === DOWNVOTE) {
+          newScore += 2;
+        }
+        else {
+          newScore += 1;
+        }
       }
       else if (newUserVote.voteType === DOWNVOTE) {
-        newScore -= 1;
+        if (currentUserVote?.voteType === UPVOTE) {
+          newScore -= 2;
+        }
+        else {
+          newScore -= 1;
+        }
       }
     }
-    
     
     _setScore(newScore);
     _setUserVote(newUserVote);
     const updateComment = Object.assign({}, comment, { userVote: newUserVote });
     commentTreeState.onUpdate({ comment: updateComment });
-    console.log('updatedComment', updateComment)
   };
 
   return (
@@ -135,25 +133,23 @@ const CommentVote = ({
       selected={_userVote ? _userVote.voteType : null}
       isPaper={documentType === "paper"}
       type={documentType}
-      pillClass={styles.pill}
+      // pillClass={styles.pill}
       downvoteStyleClass={styles.downvote}
       upvoteStyleClass={styles.upvote}
       styles={[styles.voteWidgetWrapper]}
-      downvoteIcon={<FontAwesomeIcon icon={faDown} />}
-      upvoteIcon={<FontAwesomeIcon icon={faUp} />}
     />
   );
 };
 
 const styles = StyleSheet.create({
   downvote: {
-    fontSize: 18,
-    marginLeft: 0,
+    fontSize: 16,
+    marginLeft: 2,
     color: colors.secondary.text,
   },
   upvote: {
-    fontSize: 18,
-    marginRight: 0,
+    fontSize: 16,
+    marginRight: 2,
     marginLeft: -1,
     color: colors.secondary.text,
   },
