@@ -33,16 +33,13 @@ class Message extends Component {
     document.removeEventListener("touchstart", this.eventListen, true);
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps, prevState) {
     let { messageActions, message } = this.props;
-    if (
-      nextProps.message.show &&
-      this.props.message.show !== nextProps.message.show
-    ) {
-      if (nextProps.message.clickoff) {
+    if (this.props.message.show) {
+      if (this.props.message.clickoff) {
         document.addEventListener("touchstart", this.eventListen, true);
         document.addEventListener("click", this.eventListen, true);
-      } else if (!nextProps.message.load) {
+      } else if (!this.props.message.load) {
         this.popupMessageTimeout = setTimeout(() => {
           messageActions.showMessage({ show: false });
         }, message.timeout || 2000);
