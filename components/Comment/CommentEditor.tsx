@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     padding: "15px",
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 4,
     flex: "none",
     flexDirection: "column",
     justifyContent: "space-between",

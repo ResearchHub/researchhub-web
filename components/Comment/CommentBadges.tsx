@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   badgeWrapper: {
     display: "inline-block",
-    marginBottom: 8,
+    marginBottom: 10,
   },
 });
 

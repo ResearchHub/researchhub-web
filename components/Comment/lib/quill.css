@@ -8,7 +8,7 @@
 .CommentEditor .ql-editor.ql-blank::before {
   left: 0 !important;
   color: rgb(168, 167, 169, 1);
-  font-size: 14px;
+  font-size: 15px;
   font-style: normal;
 }
 
@@ -29,14 +29,14 @@
   pointer-events: none;
   display: none;
   margin-top: -1.42rem;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .CommentEditor .ql-editor {
   /* cursor: text; */
   padding: 0 !important;
   font-family: "Roboto" !important;
-  font-size: 14px !important;
+  font-size: 15px !important;
 }
 
 .CommentEditor .toolbar {
@@ -48,7 +48,7 @@
 }
 
 .CommentEditor .ql-disabled .ql-editor {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 26px;
 }
 
@@ -135,7 +135,7 @@
   }
 }
 
-@media only screen and (max-width: 414px) {
+@media only screen and (max-width: 415px) {
   /* .ql-editor { */
   /* font-size: 12px; */
   /* } */
@@ -155,14 +155,14 @@
 .CommentEditor .ql-editor h5,
 .CommentEditor .ql-editor h6,
 .CommentEditor .ql-editor strong {
-  font-size: 14px !important;
+  font-size: 15px !important;
   font-weight: 600;
   line-height: unset;
 }
 
 .CommentEditor.ql-editor ul,
 .CommentEditor .ql-editor ol {
-  font-size: 14px;
+  font-size: 15px;
   padding-left: 0;
 }
 
@@ -220,7 +220,7 @@
 }
 
 .CommentEditor .ql-review-category-label {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 

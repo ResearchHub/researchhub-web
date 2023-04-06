@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
     textTransform: "capitalize",
     padding: 0,
-    borderRadius: 10,
+    borderRadius: 4,
     marginTop: 5,
     marginLeft: 5,
     width: 150,
