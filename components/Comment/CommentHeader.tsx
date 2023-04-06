@@ -8,8 +8,6 @@ import CommentMenu from "./CommentMenu";
 import CommentBadges from "./CommentBadges";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 import ALink from "../ALink";
-import { Purchase } from "~/config/types/purchase";
-import { formatBountyAmount } from "~/config/types/bounty";
 import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";

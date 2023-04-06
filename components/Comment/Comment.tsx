@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
-import { hasOpenBounties } from "./lib/bounty";
+import { getOpenBounties, hasOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -18,6 +18,12 @@ import { CommentTreeContext } from "./lib/contexts";
 import { getConfigForContext } from "./lib/config";
 import { MessageActions } from "~/redux/message";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/pro-regular-svg-icons";
+import { timeTo } from "~/config/utils/dates";
+import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import { breakpoints } from "~/config/themes/screen";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -32,7 +38,7 @@ const Comment = ({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const _hasOpenBounties = hasOpenBounties({ comment });
+  const openBounties = getOpenBounties({ comment });
   const [currentChildOffset, setCurrentChildOffset] = useState<number>(0);
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -120,16 +126,17 @@ const Comment = ({
     commentTreeState.onUpdate({ comment });
   };
   
-
+  const hasOpenBounties = openBounties.length > 0;
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const previewMaxChars = getConfigForContext(commentTreeState.context).previewMaxChars;
+  const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer";
   return (
     <div>
       <div>
         <div
           className={css(
             styles.mainWrapper,
-            _hasOpenBounties && styles.mainWrapperForBounty,
+            hasOpenBounties && styles.mainWrapperForBounty,
           )}
         >
           <div className={css(styles.headerWrapper)}>
@@ -156,19 +163,21 @@ const Comment = ({
             <div
               className={css(
                 styles.commentReadOnlyWrapper,
-                _hasOpenBounties && styles.commentReadOnlyWrapperForBounty
+                hasOpenBounties && styles.commentReadOnlyWrapperForBounty
               )}
             >
               <CommentReadOnly content={comment.content} previewMaxCharLength={previewMaxChars} />
-              {_hasOpenBounties && (
+              {hasOpenBounties && (
                 <div className={css(styles.contributeWrapper)}>
-                  {isQuestion ? (
-                    <div className={css(styles.contributeText)}>Contribute RSC to this bounty</div>
-                  ) : (
-                    <div className={css(styles.contributeText)}>
-                      Reply to this thread with an answer to be eligible for bounty reward.
-                    </div>
-                  )}
+                  <div className={css(styles.contributeDetails)}>
+                    <span style={{ fontWeight: 500 }}>
+                      <FontAwesomeIcon style={{ fontSize: 13, marginRight: 5}} icon={faClock} />
+                      {`Bounty expiring in ` + timeTo(openBounties[0].expiration_date) + `.  `}
+                    </span>
+                    <span>
+                        <>{`Reply to this ${isQuestion ? "question" : "thread"} to be eligible for bounty award.`}</>
+                    </span>
+                  </div>
                   <CreateBountyBtn
                     onBountyAdd={(bounty) => {
                       const updatedComment = Object.assign({}, comment);
@@ -182,12 +191,16 @@ const Comment = ({
                     originalBounty={comment.bounties[0]}
                   >
                     <Button
-                      label="Contribute"
                       customButtonStyle={styles.contributeBtn}
                       customLabelStyle={styles.contributeBtnLabel}
                       hideRipples={true}
                       size="small"
-                    />
+                    >
+                      <div>
+                        <FontAwesomeIcon icon={faPlus} />{` `}
+                        Contribute<span className={css(styles.bountyBtnText, isNarrowWidthContext && styles.hideForNarrowWidthContexts)}> to bounty</span>
+                      </div>
+                      </Button>
                   </CreateBountyBtn>
                 </div>
               )}
@@ -255,20 +268,28 @@ const styles = StyleSheet.create({
   commentReadOnlyWrapperForBounty: {
     marginBottom: 0,
   },
-  contributeText: {
-    maxWidth: "75%",
-    lineHeight: "18px",
+  contributeDetails: {
+    maxWidth: "70%",
+    lineHeight: "22px",
+  },
+  hideForNarrowWidthContexts: {
+    display: "none",
+  },
+  bountyBtnText: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    }
   },
   contributeWrapper: {
     background: colors.bounty.background,
-    padding: "7px 9px 8px 12px",
+    padding: "9px 11px 10px 14px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    fontWeight: 500,
     fontSize: 14,
-    borderRadius: "8px",
+    borderRadius: "4px",
     marginTop: 10,
+    marginBottom: 10,
   },
   contributeBtn: {
     background: colors.bounty.contributeBtn,

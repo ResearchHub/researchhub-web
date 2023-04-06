@@ -31,7 +31,7 @@ const colors = {
     btn: globalColors.ORANGE_DARK2(1.0),
     contributeBtn: globalColors.ORANGE_LIGHT2(1.0),
     text: globalColors.ORANGE_DARK2(1.0),
-    background: globalColors.ORANGE_LIGHTER(1.0),
+    background: globalColors.ORANGE_LIGHTER(0.6),
   },
   dot: "rgb(200 200 202)",
   gray: globalColors.BLACK(0.6),
