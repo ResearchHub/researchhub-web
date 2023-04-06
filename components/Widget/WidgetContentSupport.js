@@ -121,6 +121,7 @@ const ContentSupport = (props) => {
       data-tip={dataTip()}
       ref={tooltipRef}
       data-effect="solid"
+      data-delay-show={500}
     >
       <IconButton
         onClick={(event) => {

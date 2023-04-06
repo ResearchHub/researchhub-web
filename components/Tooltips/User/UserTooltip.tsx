@@ -17,7 +17,7 @@ interface UserTooltipProps {
   overrideTargetStyle?: any | null;
 }
 
-const TOOLTIP_DELAY = 300;
+const TOOLTIP_DELAY = 400;
 
 export default function UserTooltip({
   createdBy,

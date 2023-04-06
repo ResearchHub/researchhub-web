@@ -49,7 +49,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   if (totalAwarded > 0) {
     const formatted = formatBountyAmount({ amount: totalAwarded, withPrecision: false });
     badges.push(
-      <ContentBadge contentType="award" label={`${formatted} Awarded`} />
+      <ContentBadge tooltip="Total awarded including tips + bounties" contentType="award" label={`${formatted} Awarded`} />
     );
   }
 
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   badgesWrapper: {
     columnGap: "8px",
     display: "flex",
+    cursor: "default",
   },
   badgeWrapper: {
     display: "inline-block",
