@@ -105,7 +105,8 @@ const styles = StyleSheet.create({
   },
   feedWrapper: {
     overflowY: "scroll",
-    height: "100vh",
+    height: "90vh",
+    paddingBottom: "10vh",
   },
   sidebarOpen: {
     width: 500,
