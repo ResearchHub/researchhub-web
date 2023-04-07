@@ -51,6 +51,7 @@ const CommentFeed = ({
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const [currentDocumentId, setCurrentDocumentId] = useState<ID|null>(null);
   const dispatch = useDispatch();
 
   
@@ -244,14 +245,16 @@ const CommentFeed = ({
   }
 
   useEffect(() => {
-    if (document.id && !isInitialFetchDone) {
+    if (document.id && document.id !== currentDocumentId) {
+      resetFeed();
       handleFetch({});
+      setCurrentDocumentId(document.id);
     }
-  }, [document.id, isInitialFetchDone]);
+  }, [document.id, currentDocumentId]);  
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
-    (document.isReady && document.discussionCount === 0) ||
+    (document.isReady && rootLevelCommentCount === 0) ||
     (selectedFilterValue !== null && comments.length === 0);
   const WrapperEl =
     context === "sidebar"
