@@ -244,7 +244,9 @@ export default function ReferenceManualUploadDrawer({
               required
               value={selectedReferenceType}
             />
-            <ReferenceDoiSearchInput />
+            <ReferenceDoiSearchInput
+              onSearchSuccess={(doiMetaData: any): void => {}}
+            />
             <ReferenceUploadImportOptionSelector
               onFileSelect={(attachment: File | null): void =>
                 setReferenceSchemaValueSet({
