@@ -49,7 +49,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   if (totalAwarded > 0) {
     const formatted = formatBountyAmount({ amount: totalAwarded, withPrecision: false });
     badges.push(
-      <ContentBadge tooltip="Total awarded including tips + bounties" contentType="award" label={`${formatted} Awarded`} />
+      <ContentBadge tooltip="Total ResearchCoin awarded including tips + bounties" contentType="award" label={`${formatted} Awarded`} />
     );
   }
 
