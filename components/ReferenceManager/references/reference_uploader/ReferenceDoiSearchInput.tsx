@@ -44,7 +44,14 @@ export default function ReferenceDoiSearchInput({
       >
         {"Identifiers"}
       </Typography>
-      <Box sx={{ alignItems: "center", display: "flex", flexDirection: "row" }}>
+      <Box
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <OutlinedInput
           disabled={isLoading}
           fullWidth
@@ -64,8 +71,8 @@ export default function ReferenceDoiSearchInput({
             cursor: "pointer",
             display: "flex",
             flexDirection: "row",
-            width: "40px",
-            justifyContent: "center",
+            width: "12%",
+            justifyContent: "flex-end",
             height: "100%",
           }}
           onClick={(event: SyntheticEvent): void => {
