@@ -83,7 +83,7 @@ const CommentEditor = ({
   const { content: _content, dangerouslySetContent } = useQuillContent({
     quill,
     content,
-    notifyOnContentChangeRate: 500 // ms
+    notifyOnContentChangeRate: 300 // ms
   });
 
   useEffectForCommentTypeChange({
