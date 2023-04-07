@@ -21,6 +21,7 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import ReferenceUploadImportOptionSelector from "./ReferenceUploadImportOptionSelector";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -93,6 +94,7 @@ export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
@@ -220,7 +222,7 @@ export default function ReferenceManualUploadDrawer({
           mb="24px"
           spacing={1}
         >
-          <Typography variant="h6">{"Add entry manually"}</Typography>
+          <Typography variant="h6">{"Upload reference"}</Typography>
           <CloseOutlinedIcon
             fontSize="small"
             color="disabled"
@@ -237,6 +239,7 @@ export default function ReferenceManualUploadDrawer({
             required
             value={selectedReferenceType}
           />
+          <ReferenceUploadImportOptionSelector />
           {formattedSchemaInputs}
           <Box display="flex" flexDirection="row" mb="36px">
             <div style={{ width: "88px" }}>

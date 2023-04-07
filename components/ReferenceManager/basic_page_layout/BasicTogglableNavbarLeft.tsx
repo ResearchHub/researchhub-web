@@ -11,7 +11,6 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import colors from "~/config/themes/colors";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Divider from "@mui/material/Divider";
-import DropdownMenu from "../menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import Image from "next/image";
@@ -23,7 +22,6 @@ import ListItemText from "@mui/material/ListItemText";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import Dropzone from "react-dropzone";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -75,7 +73,6 @@ type Props = {
 export default function BasicTogglableNavbarLeft({
   isOpen,
   navWidth,
-  setIsOpen,
   setIsManualUploadDrawerOpen,
   theme,
 }: Props) {
@@ -164,63 +161,38 @@ export default function BasicTogglableNavbarLeft({
             </Fragment>
           )}
         </Box>
-        <DropdownMenu
-          menuItemProps={[
-            {
-              itemLabel: (
-                <Dropzone
-                  accept={[".pdf"]}
-                  onDrop={(acceptedFiles) => console.log(acceptedFiles)}
-                >
-                  {({ getRootProps, getInputProps }) => (
-                    <div {...getRootProps()}>
-                      <input {...getInputProps()} />
-                      {"File(s) from computer"}
-                    </div>
-                  )}
-                </Dropzone>
-              ),
-              onClick: () => {},
-            },
-            {
-              itemLabel: "Add entry manually",
-              onClick: (): void => setIsManualUploadDrawerOpen(true),
-            },
-          ]}
-          menuLabel={
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid #3971FF",
-                borderRadius: "4px",
-                height: isOpen ? "48px" : "28px",
-                width: isOpen ? "100%" : "28px",
-                textTransform: "none",
-                padding: "0 8px",
-                cursor: "pointer",
-              }}
+        <Box
+          sx={{
+            alignItems: "center",
+            border: "1px solid #3971FF",
+            borderRadius: "4px",
+            boxSizing: "border-box",
+            cursor: "pointer",
+            display: "flex",
+            height: isOpen ? "48px" : "28px",
+            justifyContent: "center",
+            padding: "0 8px",
+            textTransform: "none",
+            width: isOpen ? "100%" : "28px",
+          }}
+          onClick={(): void => setIsManualUploadDrawerOpen(true)}
+        >
+          <AddSharpIcon fontSize="small" color="primary" />
+          {isOpen && (
+            <Typography
+              color="#3971FF"
+              component="div"
+              fontSize={14}
+              fontWeight={500}
+              letterSpacing={"1.2px"}
+              noWrap
+              variant="h6"
+              ml={"6px"}
             >
-              <AddSharpIcon fontSize="small" color="primary" />
-              {isOpen && (
-                <Typography
-                  color="#3971FF"
-                  component="div"
-                  fontSize={14}
-                  fontWeight={500}
-                  letterSpacing={"1.2px"}
-                  noWrap
-                  variant="h6"
-                  ml={"6px"}
-                >
-                  {"Upload reference"}
-                </Typography>
-              )}
-            </Box>
-          }
-          size="medium"
-        />
+              {"Upload reference"}
+            </Typography>
+          )}
+        </Box>
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         {HOME_NAV_BUTTON_CONFIG.map((navbuttonObjs, index) => {

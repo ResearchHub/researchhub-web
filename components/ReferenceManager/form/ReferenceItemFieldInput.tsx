@@ -30,7 +30,7 @@ export default function ReferenceItemFieldInput({
     <Box
       sx={{
         background: "transparent",
-        height: "78px",
+        height: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
