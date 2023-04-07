@@ -3,7 +3,6 @@ import {
   emptyFncWithMsg,
   isEmpty,
   nullthrows,
-  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
@@ -65,6 +64,7 @@ export default function ReferenceDoiSearchInput({
             background: "#fff",
           }}
         />
+
         <Box
           sx={{
             alignItems: "center",
@@ -85,12 +85,15 @@ export default function ReferenceDoiSearchInput({
                   onSearchSuccess(payload);
                   setIsLoading(false);
                 },
-                onError: emptyFncWithMsg,
+                onError: (error) => {
+                  emptyFncWithMsg(error);
+                  setIsLoading(false);
+                },
               });
             }
           }}
         >
-          <SearchIcon />
+          {isLoading ? "spin" : <SearchIcon />}
         </Box>
       </Box>
     </Box>
