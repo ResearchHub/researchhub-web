@@ -131,6 +131,7 @@ const CommentFeed = ({
     bountyAmount?: number;
   }) => {
     try {
+      const isRootComment = !parentId;
       let parentComment: CommentType | undefined;
       if (parentId) {
         parentComment = findComment({
@@ -156,6 +157,9 @@ const CommentFeed = ({
       });
 
       onCreate({ comment, parent: parentComment });
+      if (isRootComment) {
+        setRootLevelCommentCount(rootLevelCommentCount+1)
+      }
     } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
       // @ts-ignore
@@ -326,7 +330,6 @@ const CommentFeed = ({
               />
             </div>
           </div>
-
 
             <div className={css(isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
               <CommentList
