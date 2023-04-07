@@ -193,9 +193,14 @@ export const textLength = ({ quillOps = [] }: { quillOps: Array<any> }) => {
   return quillOps.reduce((length: number, op: any) => length + (typeof(op.insert) === "string" ? op.insert.length : 0), 0);
 }
 
-export const trimDeltas = ({ quillOps = [], maxLength = 0 } : { quillOps: Array<any>, maxLength: number }) => {
+export const imageLength = ({ quillOps = [] }: { quillOps: Array<any> }) => {
+  return quillOps.reduce((length: number, op: any) => length + (op.insert.image ? 1 : 0), 0);  
+}
+
+export const trimDeltas = ({ quillOps = [], maxLength = 0, maxImages = 1 } : { quillOps: Array<any>, maxLength: number, maxImages: number }) => {
   const trimmedOps:Array<any> = [];
   let lengthSoFar = 0;
+  let imagesSoFar = 0;
   for (let i = 0; i < quillOps.length; i++) {
     const op = quillOps[i];
     if (typeof(op.insert) === "string") {
@@ -211,6 +216,15 @@ export const trimDeltas = ({ quillOps = [], maxLength = 0 } : { quillOps: Array<
         break;
       }
     }
+    else if (typeof(op.insert) === "object" && op.insert.image) {
+      if (imagesSoFar < maxImages) {
+        trimmedOps.push(op);
+        imagesSoFar += 1;
+      }
+      if (imagesSoFar === maxImages) {
+        break;
+      }
+    }    
     else {
       trimmedOps.push(op);
     }

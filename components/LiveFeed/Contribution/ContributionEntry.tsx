@@ -17,6 +17,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { isEmpty } from "~/config/utils/nullchecks";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
+import config from "~/components/Comment/lib/config";
 
 
 type Args = {
@@ -74,7 +75,7 @@ const ContributionEntry = ({
         item = item as CommentContributionItem;
         body = (
           <span className={css(styles.commentBody)}>
-            <CommentReadOnly content={item.content} />
+            <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
           </span>
         );
         break;

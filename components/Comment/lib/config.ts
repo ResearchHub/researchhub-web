@@ -3,23 +3,30 @@ import { breakpoints } from "~/config/themes/screen";
 const config = {
   feed: {
     rootLevelPageSize: 15,
-    childPageSize: 5,
+    childPageSize: 7,
     repliesPageSize: 4,
   },
   drawer: {
     displayForBreakpoint: breakpoints.small.int,
     previewMaxChars: 375,
+    previewMaxImages: 1,
   },
   sidebar: {
     previewMaxChars: 375,
+    previewMaxImages: 1,
     fixedPosMaxWidth: 1550,
   },
   default: {
     previewMaxChars: 700,
+    previewMaxImages: 2,
+  },
+  liveFeed: {
+    previewMaxChars: 500,
+    previewMaxImages: 1,
   },
   comment: {
     placeholderCount: 8,
-    minLength: 20,
+    minLength: 15,
   },
 };
 
