@@ -21,7 +21,7 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ReferenceUploadImportOptionSelector from "./ReferenceUploadImportOptionSelector";
+import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
@@ -247,7 +247,7 @@ export default function ReferenceManualUploadDrawer({
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {}}
             />
-            <ReferenceUploadImportOptionSelector
+            <ReferenceUploadAttachments
               onFileSelect={(attachment: File | null): void =>
                 setReferenceSchemaValueSet({
                   attachment,

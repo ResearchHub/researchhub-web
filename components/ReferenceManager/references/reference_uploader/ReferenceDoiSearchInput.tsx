@@ -71,7 +71,7 @@ export default function ReferenceDoiSearchInput({
             cursor: "pointer",
             display: "flex",
             flexDirection: "row",
-            width: "12%",
+            width: "40px",
             justifyContent: "flex-end",
             height: "100%",
           }}
@@ -91,7 +91,4 @@ export default function ReferenceDoiSearchInput({
       </Box>
     </Box>
   );
-}
-function onClick(event: MouseEvent<HTMLDivElement, MouseEvent>): void {
-  throw new Error("Function not implemented.");
 }

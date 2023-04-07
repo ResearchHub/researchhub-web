@@ -12,7 +12,7 @@ type Props = {
   onFileSelect: (file: File | null) => void;
 };
 
-export default function ReferenceUploadImportOptionSelector({
+export default function ReferenceUploadAttachments({
   selectedFile,
   onFileSelect,
 }: Props): ReactElement {
