@@ -46,7 +46,7 @@ const CommentReadOnly = ({
   return (
     <div>
       <div className={`CommentEditor ${isNarrowWidthContext ? "CommentEditorForNarrowWidth" : "" }`}>
-        <div className={"ql-container ql-snow " + (previewHtml && isPreview ? "quill-preview-mode" : "")}>
+        <div className={"ql-container ql-snow  " + (previewHtml && isPreview ? "quill-preview-mode" : "")}>
           <div className="ql-editor" dangerouslySetInnerHTML={{__html: htmlToRender}} />
         </div>
       </div>
