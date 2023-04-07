@@ -145,6 +145,8 @@ const ContributionEntry = ({
         </ALink>
       );
       break;
+    default:
+        console.warn("Could not render contribution item", item);
   }
 
   const primaryUrl = _getPrimaryUrl(entry);
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
   },
   body: {},
   commentBody: {
-    fontStyle: "italic",
+    // fontStyle: "italic",
     width: "100%",
   },
   hubDropdownContainer: {

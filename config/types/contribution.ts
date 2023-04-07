@@ -115,8 +115,8 @@ export type Contribution = {
 };
 
 export const parseBountyRelatedItem = (raw: any): RelatedBountyItem => {
-  const uniDoc =
-    typeof raw.unified_document === "object" ? raw.unified_document : raw;
+  const uniDoc = raw?.unified_document || raw?.thread?.content_object?.unified_document;
+
   return {
     contentType: parseContentType(raw.content_type),
     unifiedDocument: parseUnifiedDocument(uniDoc),
