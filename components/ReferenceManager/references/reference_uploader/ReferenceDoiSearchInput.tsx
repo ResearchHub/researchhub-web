@@ -4,13 +4,12 @@ import {
   isEmpty,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import Box from "@mui/material/Box";
-import colors from "~/config/themes/colors";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Typography from "@mui/material/Typography";
-import { NullableString } from "~/config/types/root_types";
-import SearchIcon from "@mui/icons-material/Search";
 import { fetchReferenceFromDoi } from "../api/fetchReferenceFromDoi";
+import { NullableString } from "~/config/types/root_types";
+import Box from "@mui/material/Box";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import SearchIcon from "@mui/icons-material/Search";
+import Typography from "@mui/material/Typography";
 
 type Props = {
   onSearchSuccess: (searchMetaData: any) => void;
@@ -41,7 +40,7 @@ export default function ReferenceDoiSearchInput({
         sx={{ background: "transparent" }}
         width="100%"
       >
-        {"Identifiers"}
+        {"Identifiers (doi)"}
       </Typography>
       <Box
         sx={{

@@ -1,10 +1,11 @@
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import {
-  fetchReferenceCitationSchema,
+  DEFAULT_REF_SCHEMA_SET,
   ReferenceSchemaValueSet,
-} from "../api/fetchReferenceCitationSchema";
+} from "./reference_default_schemas";
 import { Button } from "@mui/material";
 import { createReferenceCitation } from "../api/createReferenceCitation";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
 import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
@@ -16,14 +17,14 @@ import { useReferenceTabContext } from "../reference_item/context/ReferenceItemD
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
+import moment from "moment";
 import PrimaryButton from "../../form/PrimaryButton";
+import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
+import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
-import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
-import moment from "moment";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -46,6 +47,7 @@ function initComponentStates({
     resettedSchema[key] = "";
   }
   setReferenceSchemaValueSet({
+    attachment: null,
     schema: resettedSchema,
     required: referenceSchemaValueSet.required,
   });
@@ -103,11 +105,7 @@ export default function ReferenceManualUploadDrawer({
   const [selectedReferenceType, setSelectedReferenceType] =
     useState<NullableString>(null);
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
-    useState<ReferenceSchemaValueSet>({
-      attachment: null,
-      schema: {},
-      required: [],
-    });
+    useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
 
   useEffectPrepSchemas({
     selectedReferenceType,
@@ -230,7 +228,13 @@ export default function ReferenceManualUploadDrawer({
           <CloseOutlinedIcon
             fontSize="small"
             color="disabled"
-            onClick={(): void => setIsDrawerOpen(false)}
+            onClick={(): void =>
+              initComponentStates({
+                referenceSchemaValueSet,
+                setIsDrawerOpen,
+                setReferenceSchemaValueSet,
+              })
+            }
             sx={{ cursor: "pointer" }}
           />
         </Stack>
@@ -309,7 +313,11 @@ export default function ReferenceManualUploadDrawer({
               <Button
                 onClick={(event: SyntheticEvent): void => {
                   event.preventDefault();
-                  setIsDrawerOpen(false);
+                  initComponentStates({
+                    referenceSchemaValueSet,
+                    setIsDrawerOpen,
+                    setReferenceSchemaValueSet,
+                  });
                 }}
                 size="medium"
                 sx={{ textTransform: "none" }}

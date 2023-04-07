@@ -1,12 +1,7 @@
 import API from "~/config/api";
 import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
-
-export type ReferenceSchemaValueSet = {
-  attachment: File | null;
-  schema: any;
-  required: string[];
-};
+import { ReferenceSchemaValueSet } from "../reference_uploader/reference_default_schemas";
 
 type Args = {
   citation_type: string;

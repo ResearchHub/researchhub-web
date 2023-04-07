@@ -1,11 +1,11 @@
-import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { ReactElement, SyntheticEvent, useState } from "react";
-import Dropzone from "react-dropzone";
-import colors from "~/config/themes/colors";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { ReactElement, SyntheticEvent } from "react";
+import Box from "@mui/material/Box";
+import colors from "~/config/themes/colors";
+import Dropzone from "react-dropzone";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import Typography from "@mui/material/Typography";
+import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 
 type Props = {
   selectedFile: File | null;
