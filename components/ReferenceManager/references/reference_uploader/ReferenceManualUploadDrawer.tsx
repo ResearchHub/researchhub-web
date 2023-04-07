@@ -23,6 +23,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
+import moment from "moment";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -245,7 +246,35 @@ export default function ReferenceManualUploadDrawer({
               value={selectedReferenceType}
             />
             <ReferenceDoiSearchInput
-              onSearchSuccess={(doiMetaData: any): void => {}}
+              onSearchSuccess={(doiMetaData: any): void => {
+                const {
+                  title,
+                  doi,
+                  display_name,
+                  authorships,
+                  publication_date,
+                } = doiMetaData ?? {};
+                const formattedTitle = title ?? display_name ?? "";
+                setReferenceSchemaValueSet({
+                  attachment: referenceSchemaValueSet.attachment,
+                  schema: {
+                    ...referenceSchemaValueSet.schema,
+                    access_date: moment().format("MM-DD-YYYY"),
+                    creators: (authorships ?? [])
+                      .map(
+                        (authorship) => authorship.author?.display_name ?? ""
+                      )
+                      .join(", "),
+                    date: !isEmpty(publication_date)
+                      ? moment(publication_date).format("MM-DD-YYYY")
+                      : "",
+                    doi,
+                    title: formattedTitle,
+                    publication_title: formattedTitle,
+                  },
+                  required: referenceSchemaValueSet.required,
+                });
+              }}
             />
             <ReferenceUploadAttachments
               onFileSelect={(attachment: File | null): void =>
@@ -253,7 +282,9 @@ export default function ReferenceManualUploadDrawer({
                   attachment,
                   schema: {
                     ...referenceSchemaValueSet.schema,
-                    title: attachment?.name?.split(".pdf")[0] ?? "",
+                    title: isEmpty(referenceSchemaValueSet.schema.title)
+                      ? attachment?.name?.split(".pdf")[0] ?? ""
+                      : referenceSchemaValueSet.schema.title,
                   },
                   required: referenceSchemaValueSet.required,
                 })

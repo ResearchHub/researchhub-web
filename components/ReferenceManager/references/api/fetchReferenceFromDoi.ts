@@ -22,6 +22,8 @@ export const fetchReferenceFromDoi = ({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((result: any): void => onSuccess(result))
+    .then((result: any): void => {
+      onSuccess(result);
+    })
     .catch(onError);
 };

@@ -78,9 +78,13 @@ export default function ReferenceDoiSearchInput({
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
             if (!isEmpty(doi)) {
+              setIsLoading(true);
               fetchReferenceFromDoi({
                 doi: nullthrows(doi),
-                onSuccess: onSearchSuccess,
+                onSuccess: (payload) => {
+                  onSearchSuccess(payload);
+                  setIsLoading(false);
+                },
                 onError: emptyFncWithMsg,
               });
             }
