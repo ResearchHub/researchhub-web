@@ -43,7 +43,8 @@ const CommentReadOnly = ({ content, previewMaxCharLength = config.default.previe
       {previewHtml && (
         <IconButton
           overrideStyle={styles.readMoreWrapper}
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             setIsPreview(!isPreview)
           }}
         >

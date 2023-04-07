@@ -24,6 +24,7 @@ const AuthorAvatar = (props) => {
     trueSize,
     twitterUrl,
     withAuthorName,
+    anonymousAvatarStyle,
   } = props;
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const AuthorAvatar = (props) => {
           />
         ) : (
           <span
-            className={css(styles.userIcon)}
+            className={css(styles.userIcon, anonymousAvatarStyle)}
             style={{
               width: finalSize,
               height: finalSize,

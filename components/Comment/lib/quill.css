@@ -305,4 +305,5 @@
 
 .CommentEditor .ql-editor pre {
   background: #f0f0f0 !important;
+  max-width: 800px;
 }

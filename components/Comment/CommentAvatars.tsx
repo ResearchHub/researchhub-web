@@ -17,11 +17,12 @@ const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30, w
 
       {people.map((p, idx) => {
 
-        const avatarEl = <div className={css(styles.avatarWrapper)}>
+        const avatarEl = <div className={css(styles.avatarWrapper)} >
           <AuthorAvatar
             author={p.authorProfile}
             size={size}
             trueSize={true}
+            anonymousAvatarStyle={styles.anonymousAvatar}
           />
         </div>
 
@@ -52,6 +53,9 @@ const styles = StyleSheet.create({
     columnGap: "7px",
     fontSize: 15,
     marginTop: 3,
+  },
+  anonymousAvatar: {
+    marginTop: -2,
   },
   person: {
     
