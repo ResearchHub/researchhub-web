@@ -67,7 +67,7 @@ const ContributionEntry = ({
 
 
   switch (contentType.name) {
-    case "rhcommentmodel":
+    case "comment":
       showActions = true;
       
       item = item as CommentContributionItem;
@@ -220,7 +220,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
   },
-  highlightedContent: {},
+  highlightedContent: {
+    width: "100%",
+  },
   textContainer: {
     display: "flex",
   },
@@ -233,6 +235,7 @@ const styles = StyleSheet.create({
   body: {},
   commentBody: {
     fontStyle: "italic",
+    width: "100%",
   },
   hubDropdownContainer: {
     display: "inline-block",

@@ -1,7 +1,7 @@
 import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import { QuillFormats, buildQuillModules, insertReviewCategory, focusEditor, forceShowPlaceholder, hasQuillContent } from "./lib/quill";
@@ -67,7 +67,7 @@ const CommentEditor = ({
   const [interimBounty, setInterimBounty] = useState<Bounty|null>(null);
   const currentUser = useSelector((state: RootState) =>
     isInputEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
-  );  
+  );
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
