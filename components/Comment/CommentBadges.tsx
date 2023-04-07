@@ -56,7 +56,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   if (badges.length > 0) {
     return (
       <div className={css(styles.badgesWrapper)}>
-        {badges.map(b => (<div className={css(styles.badgeWrapper)}>{b}</div>))}
+        {badges.map((b, idx) => (<div key={`badge-${idx}-${comment.id}`} className={css(styles.badgeWrapper)}>{b}</div>))}
       </div>
     )
   }

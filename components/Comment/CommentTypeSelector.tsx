@@ -49,8 +49,9 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
         ref={dropdownRef}
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
       >
-        {commentTypes.map((t) => (
+        {commentTypes.map((t, idx) => (
           <div
+            key={`type-${idx}`}
             className={css(styles.dropdownOpt)}
             onClick={() => _handleSelect(t.value)}
           >
