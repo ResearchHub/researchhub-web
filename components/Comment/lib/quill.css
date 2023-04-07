@@ -200,9 +200,11 @@
 }
 
 .CommentEditor .ql-formats > button.ql-link {
-  transform: rotate(-45deg) !important;
   height: 20px !important;
   margin-top: 1px;
+}
+.CommentEditor .ql-formats > button.ql-link svg {
+  transform: rotate(-45deg) !important;
 }
 
 .CommentEditor .show-full-editor {
@@ -265,6 +267,7 @@
 .CommentEditor .ql-up {
   font-size: 10px;
   margin-left: 5px;
+  height: 10px;
 }
 
 .CommentEditor .quill .ql-editor[contenteditable="false"] .starRating {
