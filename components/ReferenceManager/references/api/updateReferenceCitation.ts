@@ -14,8 +14,6 @@ export const updateReferenceCitation = ({
   payload,
 }: Args): void => {
   const formattedPayload = payload;
-  console.warn("formattedPayload: ", formattedPayload);
-
   fetch(
     buildApiUri({ apiPath: `citation_entry/${payload?.citation_id}` }),
     API.PUT_CONFIG(formattedPayload)

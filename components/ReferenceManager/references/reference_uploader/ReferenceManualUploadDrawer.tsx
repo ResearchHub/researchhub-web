@@ -186,7 +186,6 @@ export default function ReferenceManualUploadDrawer({
         />
       );
     });
-  console.warn("attachment: ", referenceSchemaValueSet.attachment);
 
   return (
     <Drawer
@@ -254,6 +253,7 @@ export default function ReferenceManualUploadDrawer({
                   authorships,
                   publication_date,
                 } = doiMetaData ?? {};
+                console.warn("doiMetaData: ", doiMetaData);
                 const formattedTitle = title ?? display_name ?? "";
                 setReferenceSchemaValueSet({
                   attachment: referenceSchemaValueSet.attachment,
