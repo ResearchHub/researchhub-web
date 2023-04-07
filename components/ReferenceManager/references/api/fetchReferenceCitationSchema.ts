@@ -3,6 +3,7 @@ import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
 
 export type ReferenceSchemaValueSet = {
+  attachment: File | null;
   schema: any;
   required: string[];
 };
@@ -32,7 +33,11 @@ export const fetchReferenceCitationSchema = ({
       for (const key of Object.keys(result?.properties)) {
         emptySchema[key] = "";
       }
-      onSuccess({ schema: emptySchema, required: result?.required ?? [] });
+      onSuccess({
+        attachment: null,
+        schema: emptySchema,
+        required: result?.required ?? [],
+      });
     })
     .catch(onError);
 };

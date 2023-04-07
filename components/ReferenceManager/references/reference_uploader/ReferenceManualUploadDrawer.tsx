@@ -22,6 +22,7 @@ import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ReferenceUploadImportOptionSelector from "./ReferenceUploadImportOptionSelector";
+import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
@@ -102,6 +103,7 @@ export default function ReferenceManualUploadDrawer({
     useState<NullableString>(null);
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
     useState<ReferenceSchemaValueSet>({
+      attachment: null,
       schema: {},
       required: [],
     });
@@ -170,6 +172,7 @@ export default function ReferenceManualUploadDrawer({
           label={label}
           onChange={(newValue: string): void => {
             setReferenceSchemaValueSet({
+              attachment: referenceSchemaValueSet.attachment,
               schema: {
                 ...referenceSchemaValueSet.schema,
                 [schemaField]: newValue,
@@ -182,6 +185,7 @@ export default function ReferenceManualUploadDrawer({
         />
       );
     });
+  console.warn("attachment: ", referenceSchemaValueSet.attachment);
 
   return (
     <Drawer
@@ -231,15 +235,30 @@ export default function ReferenceManualUploadDrawer({
           />
         </Stack>
         <Box display="flex" flexDirection="column">
-          <ReferenceItemFieldSelect
-            formID="ref-type"
-            label="Reference type"
-            menuItemProps={formattedMenuItemProps}
-            onChange={setSelectedReferenceType}
-            required
-            value={selectedReferenceType}
-          />
-          <ReferenceUploadImportOptionSelector />
+          <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
+            <ReferenceItemFieldSelect
+              formID="ref-type"
+              label="Reference type"
+              menuItemProps={formattedMenuItemProps}
+              onChange={setSelectedReferenceType}
+              required
+              value={selectedReferenceType}
+            />
+            <ReferenceDoiSearchInput />
+            <ReferenceUploadImportOptionSelector
+              onFileSelect={(attachment: File | null): void =>
+                setReferenceSchemaValueSet({
+                  attachment,
+                  schema: {
+                    ...referenceSchemaValueSet.schema,
+                    title: attachment?.name?.split(".pdf")[0] ?? "",
+                  },
+                  required: referenceSchemaValueSet.required,
+                })
+              }
+              selectedFile={referenceSchemaValueSet.attachment}
+            />
+          </Box>
           {formattedSchemaInputs}
           <Box display="flex" flexDirection="row" mb="36px">
             <div style={{ width: "88px" }}>
