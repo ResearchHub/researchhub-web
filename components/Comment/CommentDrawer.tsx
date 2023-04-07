@@ -61,7 +61,7 @@ const CommentDrawer = ({ children, totalCommentCount, isInitialFetchDone }: Args
         <div className={css(styles.pullerBtn)} />
         <div className={css(styles.drawerContentWrapper)}>
           <div className={css(styles.header)}>
-            Discussion
+            Conversation
             <IconButton
               onClick={() => {
                 setIsOpen(false);

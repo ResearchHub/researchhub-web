@@ -65,7 +65,7 @@ const CommentSidebar = ({
             />
           )}
           <div className={css(styles.sidebarHeader)}>
-            Discussion
+            Conversation
             <IconButton
               onClick={() => {
                 setIsOpen(false);

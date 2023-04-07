@@ -285,7 +285,7 @@ const Post = (props) => {
                 <a name="comments" id="comments" />
                 <div className={css(styles.discussionSectionHeader)}>
                   <h3 className={css(styles.discussionSectionTitle)}>
-                    Discussion
+                    Conversation
                   </h3>
                   {postV2.isReady && (
                     <span className={css(styles.discussionCount)}>
