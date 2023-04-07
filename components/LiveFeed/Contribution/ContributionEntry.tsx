@@ -146,7 +146,7 @@ const ContributionEntry = ({
       );
       break;
     default:
-        console.warn("Could not render contribution item", item);
+        console.warn("[Contribution] Could not render contribution item", item);
   }
 
   const primaryUrl = _getPrimaryUrl(entry);

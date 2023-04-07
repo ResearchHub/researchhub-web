@@ -96,12 +96,12 @@ export type Verdict = {
 export type Contribution = {
   raw: any;
   item:
-    | PaperContributionItem
-    | PostContributionItem
-    | HypothesisContributionItem
-    | CommentContributionItem
-    | BountyContributionItem
-    | RscSupportContributionItem;
+  | PaperContributionItem
+  | PostContributionItem
+  | HypothesisContributionItem
+  | CommentContributionItem
+  | BountyContributionItem
+  | RscSupportContributionItem;
   createdDate: Date;
   contentType: ContentType;
   flaggedBy?: FlaggedBy | null;
@@ -138,62 +138,68 @@ export const parseFlaggedBy = (raw: any): FlaggedBy | null => {
 };
 
 export const parseContribution = (raw: any): Contribution => {
-  const mapped = {
-    raw,
-    createdDate: raw.created_date,
-    contentType: parseContentType(raw.content_type),
-    id: raw.id,
-    // Note: On paper, hubs is available on nested "item" key due to async nature of paper upload
-    // "hubs" not available during creation of "user action" record so we need to get it elsewhere.
-    hubs: (raw.hubs?.length
-      ? raw.hubs
-      : raw.item?.hubs?.length
-      ? raw.item.hubs
-      : []
-    ).map((h) => parseHub(h)),
-  };
+  let mapped:any = {}
+  try {
+    mapped = {
+      raw,
+      createdDate: raw.created_date,
+      contentType: parseContentType(raw.content_type),
+      id: raw.id,
+      // Note: On paper, hubs is available on nested "item" key due to async nature of paper upload
+      // "hubs" not available during creation of "user action" record so we need to get it elsewhere.
+      hubs: (raw.hubs?.length
+        ? raw.hubs
+        : raw.item?.hubs?.length
+          ? raw.item.hubs
+          : []
+      ).map((h) => parseHub(h)),
+    };
 
-  if (raw.content_type.name === "rhcommentmodel") {
-    mapped["item"] = parseCommentContributionV2Item(raw);
-  } else if (raw.content_type.name === "paper") {
-    mapped["item"] = parsePaperContributionItem(raw);
-  } else if (
-    raw.content_type.name === "researchhubpost" ||
-    raw.content_type.name === "researchhubunifieddocument"
-  ) {
-    if (
-      raw?.item?.unified_document?.document_type?.toLowerCase() === "question"
+    if (raw.content_type.name === "rhcommentmodel") {
+      mapped["item"] = parseCommentContributionV2Item(raw);
+    } else if (raw.content_type.name === "paper") {
+      mapped["item"] = parsePaperContributionItem(raw);
+    } else if (
+      raw.content_type.name === "researchhubpost" ||
+      raw.content_type.name === "researchhubunifieddocument"
     ) {
-      mapped.contentType.name = "question";
+      if (
+        raw?.item?.unified_document?.document_type?.toLowerCase() === "question"
+      ) {
+        mapped.contentType.name = "question";
+      }
+      mapped["item"] = parsePostContributionItem(raw);
+    } else if (raw.content_type.name === "hypothesis") {
+      mapped["item"] = parseHypothesisContributionItem(raw);
+    } else if (raw.content_type.name === "bounty") {
+      mapped["item"] = parseBountyContributionItem(raw);
+      mapped["relatedItem"] = parseBountyRelatedItem(raw.item.item);
+    } else if (raw.content_type.name === "purchase") {
+      mapped["item"] = parseRscSupportContributionItem(raw);
+    } else {
+      throw Error(
+        "Could not parse object with content_type=" + raw.content_type.name
+      );
     }
-    mapped["item"] = parsePostContributionItem(raw);
-  } else if (raw.content_type.name === "hypothesis") {
-    mapped["item"] = parseHypothesisContributionItem(raw);
-  } else if (raw.content_type.name === "bounty") {
-    mapped["item"] = parseBountyContributionItem(raw);
-    mapped["relatedItem"] = parseBountyRelatedItem(raw.item.item);
-  } else if (raw.content_type.name === "purchase") {
-    mapped["item"] = parseRscSupportContributionItem(raw);
-  } else {
-    throw Error(
-      "Could not parse object with content_type=" + raw.content_type.name
-    );
-  }
 
-  if (raw.flagged_by) {
-    mapped["flaggedBy"] = parseFlaggedBy(raw.flagged_by);
-  }
-  if (raw.verdict) {
-    mapped["verdict"] = parseVerdict(raw.verdict);
-  }
-  if (raw.reason) {
-    mapped["reason"] = raw.reason;
-  }
-  if (raw.reason_choice) {
-    mapped["reasonChoice"] = raw.reason_choice;
-  }
+    if (raw.flagged_by) {
+      mapped["flaggedBy"] = parseFlaggedBy(raw.flagged_by);
+    }
+    if (raw.verdict) {
+      mapped["verdict"] = parseVerdict(raw.verdict);
+    }
+    if (raw.reason) {
+      mapped["reason"] = raw.reason;
+    }
+    if (raw.reason_choice) {
+      mapped["reasonChoice"] = raw.reason_choice;
+    }
 
-  mapped["_raw"] = raw;
+    mapped["_raw"] = raw;
+  }
+  catch (error) {
+    console.warn("[Contribution] Failed to parse contribution", raw);
+  }
 
   /* @ts-ignore */
   return mapped;
@@ -256,9 +262,9 @@ export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
     slug: raw.item.slug,
     createdBy: parseUser(
       raw.created_by ||
-        raw.uploaded_by ||
-        raw.item.created_by ||
-        raw.item.uploaded_by
+      raw.uploaded_by ||
+      raw.item.created_by ||
+      raw.item.uploaded_by
     ),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     createdDate: raw.created_date,
@@ -287,8 +293,8 @@ export const parseHypothesisContributionItem = (
 export const parseSupportSourceItem = (
   raw: any,
   contentType: any
-): RscSupportSourceItem => {  
-  
+): RscSupportSourceItem => {
+
   const unifiedDocument = raw?.thread?.content_object?.unified_document || raw.unified_document
 
   return {
