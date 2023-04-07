@@ -20,7 +20,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
 
   if (openBounties.length > 0) {
     badges.push(
-      <ContentBadge contentType="bounty" label={`${openBountyAmount} RSC`} />
+      <ContentBadge contentType="bounty" label={`${openBountyAmount} RSC Bounty`} />
     )
   }
   else if (closedBounties.length > 0) {
@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
     columnGap: "8px",
     display: "flex",
     cursor: "default",
+    marginTop: 10,
   },
   badgeWrapper: {
     display: "inline-block",
-    marginBottom: 10,
   },
 });
 

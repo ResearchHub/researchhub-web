@@ -128,7 +128,7 @@ const ContentBadgeBase = ({
         ) : contentType === "award" ? (
           <>
             <span className={css(styles.icon)}>
-              <ResearchCoinIcon version={5} height={16} width={16} />
+              <ResearchCoinIcon color="rgb(232, 181, 4)" version={4} height={16} width={16} />
               {` `}
             </span>
             <span>{label}</span>

@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "7px",
     fontSize: 15,
+    marginTop: 3,
   },
   person: {
     

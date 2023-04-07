@@ -40,7 +40,6 @@ const CommentHeader = ({
   const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
   return (
     <div className={css(styles.commentHeader)}>
-      <CommentBadges comment={comment} />
       <div className={css(styles.details)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
@@ -104,12 +103,13 @@ const CommentHeader = ({
                   <span className={css(styles.expiringText)}>
                     <FontAwesomeIcon style={{ fontSize: 13, marginRight: 5}} icon={faClock} />
                     {`Ended ` + timeSince(closedBounties[0].expiration_date)}
-                  </span>                  
+                  </span>
               </>
                 )}
           </div>
         </div>
       </div>
+      <CommentBadges comment={comment} />
     </div>
   );
 };
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   menuWrapper: {
     marginLeft: "auto",
-    marginTop: -9,
+    marginTop: -10,
   },
   additionalAuthor: {
     display: "flex",
