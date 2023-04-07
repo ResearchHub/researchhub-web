@@ -64,10 +64,12 @@ const ContributionEntry = ({
 
   let title: string | ReactNode;
   let body: string | ReactNode;
+
+
   switch (contentType.name) {
-    case "comment":
+    case "rhcommentmodel":
       showActions = true;
-      console.log('content', item)
+      
       item = item as CommentContributionItem;
       body = (
         <span className={css(styles.commentBody)}>
@@ -78,7 +80,7 @@ const ContributionEntry = ({
 
     case "rsc_support":
       item = item as RscSupportContributionItem;
-
+      
       if (item.source.contentType.name === "comment") {
         body = (
           <span className={css(styles.commentBody)}>
@@ -115,7 +117,7 @@ const ContributionEntry = ({
     case "post":
     case "question":
     case "paper":
-    default:
+    // default:
       showActions = true;
       item =
         contentType.name === "hypothesis"

@@ -139,7 +139,7 @@ export const parseFlaggedBy = (raw: any): FlaggedBy | null => {
 
 export const parseContribution = (raw: any): Contribution => {
   const mapped = {
-    raw: raw,
+    raw,
     createdDate: raw.created_date,
     contentType: parseContentType(raw.content_type),
     id: raw.id,
@@ -153,9 +153,7 @@ export const parseContribution = (raw: any): Contribution => {
     ).map((h) => parseHub(h)),
   };
 
-  if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
-    mapped["item"] = parseCommentContributionItem(raw);
-  } else if (["rhcommentmodel"].includes(raw.content_type.name)) {
+  if (raw.content_type.name === "rhcommentmodel") {
     mapped["item"] = parseCommentContributionV2Item(raw);
   } else if (raw.content_type.name === "paper") {
     mapped["item"] = parsePaperContributionItem(raw);
@@ -223,20 +221,10 @@ export const parseCommentContributionItem = (
 export const parseCommentContributionV2Item = (
   raw: any
 ): CommentContributionItem => {
-  raw.item.unified_document = {
-    "documents": [
-        {
-            "id": 899,
-            "title": "Possibly anomalous insulin / blood glucose event",
-            "slug": "possibly-anomalous-insulin-blood-glucose-event"
-        }
-    ],
-    "document_type": "DISCUSSION"
-}
   const mapped = {
     content: raw.item.comment_content_json,
     createdBy: parseUser(raw.created_by || raw.item.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
+    unifiedDocument: parseUnifiedDocument(raw.item.thread.content_object.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
     postType: raw.item.discussion_post_type,
@@ -248,60 +236,6 @@ export const parseCommentContributionV2Item = (
 export const parseBountyContributionItem = (
   raw: any
 ): BountyContributionItem => {
-
-  raw.item.item = {
-    "item": {
-      "id": 1199,
-      "thread": {
-        "content_object": {
-          "id": 51,
-          "unified_document": {
-            "id": 1549,
-            "documents": [
-              {
-                "id": 51,
-                "renderable_text": "this is a new question",
-                "title": "new question",
-                "slug": "new-question"
-              }
-            ],
-            "document_type": "QUESTION"
-          }
-        }
-      },
-      "comment_content_json": {
-        "ops": [
-          {
-            "insert": "Replying 3rd level Replying 3rd level Replying 3rd level Replying 3rd level Replying 3rd level Replying 3rd level\n"
-          }
-        ]
-      }
-    },
-    "content_type": {
-      "id": 118,
-      "name": "rhcommentmodel"
-    },
-    "created_by": {
-      "id": 8,
-      "author_profile": {
-        "id": 416,
-        "first_name": "Kobe",
-        "last_name": "Attias",
-        "profile_image": "https://lh3.googleusercontent.com/a/AATXAJxMWwF8N8q__74Pl5_Fvp_srsuekx5iNmsB54eBURA=s96-c"
-      },
-      "first_name": "Kobe",
-      "last_name": "Attias"
-    },
-    "hubs": [
-      {
-        "id": 227,
-        "name": "agronomy",
-        "hub_image": null,
-        "slug": "agronomy"
-      }
-    ],
-    "created_date": "2023-04-04T19:10:06.717838Z"
-  }
   raw.item.item.content_type = raw.item.content_type;
 
   const mapped = {
@@ -354,8 +288,11 @@ export const parseSupportSourceItem = (
   raw: any,
   contentType: any
 ): RscSupportSourceItem => {  
+  
+  const unifiedDocument = raw?.thread?.content_object?.unified_document || raw.unified_document
+
   return {
-    unifiedDocument: parseUnifiedDocument(raw.unified_document),
+    unifiedDocument: parseUnifiedDocument(unifiedDocument),
     plainText: raw.plain_text,
     id: raw.id,
     contentType: parseContentType(contentType),
