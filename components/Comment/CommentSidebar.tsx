@@ -7,6 +7,7 @@ import CommentSidebarToggle from "./CommentSidebarToggle";
 import { useEffect, useState } from "react";
 import { Comment } from "./lib/types";
 import config from "./lib/config";
+import colors from "~/config/themes/colors";
 
 type Args = {
   children: any;
@@ -65,7 +66,14 @@ const CommentSidebar = ({
             />
           )}
           <div className={css(styles.sidebarHeader)}>
-            Conversation
+            <div style={{display: "flex", alignItems: "center"}}>
+              Conversation
+              {isInitialFetchDone && (
+                <span className={css(styles.discussionCount)}>
+                  {totalCommentCount}
+                </span>
+              )}
+            </div>
             <IconButton
               onClick={() => {
                 setIsOpen(false);
@@ -89,7 +97,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     boxSizing: "border-box",
-    padding: "15px 0px",
+    padding: "25px 0px",
     [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
       display: "none"
     },    
@@ -114,6 +122,15 @@ const styles = StyleSheet.create({
       width: 420,
     },
   },
+  discussionCount: {
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "4px",
+    padding: "5px 10px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 10,
+    alignSelf: "center",
+  },  
   sidebarClosed: {
     width: 0,
   },

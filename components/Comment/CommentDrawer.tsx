@@ -5,8 +5,8 @@ import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentSidebarToggle from "./CommentSidebarToggle";
 import { useEffect, useState } from "react";
-import { Comment } from "./lib/types";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import colors from "~/config/themes/colors";
 
 type Args = {
   children: any;
@@ -61,7 +61,14 @@ const CommentDrawer = ({ children, totalCommentCount, isInitialFetchDone }: Args
         <div className={css(styles.pullerBtn)} />
         <div className={css(styles.drawerContentWrapper)}>
           <div className={css(styles.header)}>
-            Conversation
+            <div style={{display: "flex", alignItems: "center"}}>
+              Conversation
+              {isInitialFetchDone && (
+                <span className={css(styles.discussionCount)}>
+                  {totalCommentCount}
+                </span>
+              )}
+            </div>
             <IconButton
               onClick={() => {
                 setIsOpen(false);
@@ -84,6 +91,15 @@ const styles = StyleSheet.create({
     height: "100%",
     overflow: "auto",
     padding: "15px 0px",
+  },
+  discussionCount: {
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "4px",
+    padding: "5px 10px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 10,
+    alignSelf: "center",
   },
   pullerBtn: {
     width: 30,

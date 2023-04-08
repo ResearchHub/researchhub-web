@@ -88,6 +88,9 @@ class ContentSupportModal extends Component {
     alert.show({
       text: `Award ${parseInt(amount, 10)} RSC to this post?`,
       buttonText: "Yes",
+      containerStyle: {
+        zIndex: 20000,
+      },
       onClick: () => this.handleTransaction(),
     });
   };
@@ -152,6 +155,7 @@ class ContentSupportModal extends Component {
         isOpen={modals.openContentSupportModal.isOpen}
         closeModal={this.closeModal}
         title={"Tip ResearchCoin"}
+        zIndex={1000001}
         subtitle={
           <Fragment>
             Support the author, or contributor, by giving them ResearchCoin, or
