@@ -18,6 +18,8 @@ import UserTooltip from "~/components/Tooltips/User/UserTooltip";
 import CommentAvatars from "~/components/Comment/CommentAvatars";
 import { timeSince } from "~/config/utils/dates";
 import { UnifiedDocument } from "~/config/types/root_types";
+import ContentBadge from "~/components/ContentBadge";
+import { formatBountyAmount } from "~/config/types/bounty";
 
 type Args = {
   entry: Contribution;
@@ -67,18 +69,23 @@ const ContributionHeader = ({ entry }: Args) => {
     if (item.source.contentType.name === "comment") {
       actionLabel = (
         <>
-          received &nbsp;
-          <ResearchCoinIcon
-            overrideStyle={styles.rscIcon}
-            version={4}
-            width={16}
-            height={16}
+          {` was tipped `}
+          <ContentBadge
+            contentType="bounty"
+            bountyAmount={item.amount}
+            size={`small`}
+            label={
+              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                <div style={{ flex: 1 }}>
+                  {formatBountyAmount({
+                    amount: item.amount,
+                  })}{" "}
+                  RSC
+                </div>
+              </div>
+            }
           />
-          <span className={css(styles.rsc)}>
-            {` `}
-            {item.amount} RSC
-          </span>{" "}
-          from{" "}
+          {" from "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
           &nbsp;for their{" "}
           <ALink
@@ -118,21 +125,54 @@ const ContributionHeader = ({ entry }: Args) => {
   } else if (contentType.name === "comment") {
     item = item as CommentContributionItem;
     unifiedDocument = item.unifiedDocument;
-    let action = "commented";
-    if (item.postType === POST_TYPES.ANSWER) {
-      action = "submitted answer";
-    } else if (item.postType === POST_TYPES.SUMMARY) {
-      action = "submitted summary";
-    } else if (item.postType === POST_TYPES.REVIEW) {
-      action = "submitted review";
-    }
 
     actionLabel = (
       <>
-        {action}{" "}
+        {item.postType === POST_TYPES.ANSWER ? (
+          <>submitted answer</>
+        ) : item.postType === POST_TYPES.SUMMARY ? (
+          <>submitted summary</>
+        ) : item.postType === POST_TYPES.REVIEW ? (
+          <>submitted review</>
+        ) : (
+          <>
+            {item.parent ? (
+              <div style={{ display: "flex", alignItems: "flex-start" }}>
+                {` replied to `}
+                <UserTooltip
+                  createdBy={item.parent.createdBy}
+                  targetContent={
+                    <ALink
+                      href={`/user/${item.parent.createdBy.authorProfile?.id}/overview`}
+                      key={`/user/${item.parent.createdBy.authorProfile?.id}/overview-key`}
+                    >
+                      {item.parent.createdBy.firstName} {item.parent.createdBy.lastName}
+                    </ALink>
+                  }
+                />
+              </div>
+            ) : (
+              <>
+                {` commented`}
+              </>
+            )}
+
+            {unifiedDocument &&
+              <span className={css(styles.secondaryText)}>
+                {` in `}{unifiedDocument.documentType}
+              </span>
+            }
+
+          </>
+        )}
       </>
-    );
+      
+
+
+
+    )
   }
+
 
 
   return (
@@ -160,19 +200,17 @@ const ContributionHeader = ({ entry }: Args) => {
         </div>
         {/* @ts-ignore */}
         {unifiedDocument &&
-          <div>
-            <ALink
-              overrideStyle={styles.link}
-              href={getUrlToUniDoc(unifiedDocument) + "#comments"}
-            >
-              {unifiedDocument?.document?.title}
-            </ALink>
-          </div>
+          <ALink
+            overrideStyle={[styles.link, styles.unifiedDocument]}
+            href={getUrlToUniDoc(unifiedDocument) + "#comments"}
+          >
+            {unifiedDocument?.document?.title}
+          </ALink>
         }
         <div className={css(styles.secondaryText)}>{timeSince(item.createdDate)}</div>
       </div>
     </div>
-  );
+  )
 };
 
 const styles = StyleSheet.create({
@@ -181,9 +219,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     flexDirection: "row",
-    marginLeft: -30,
+    marginLeft: 0,
     // @ts-ignore
     whiteSpace: "break-spaces",
+  },
+  unifiedDocument: {
+    fontWeight: 500,
   },
   nameRow: {
     display: "flex",
@@ -191,7 +232,7 @@ const styles = StyleSheet.create({
   avatarWrapper: {
     marginTop: 0,
     paddingRight: 10,
-    marginLeft: -10,
+    marginLeft: 0,
   },
   metadataRow: {
 
@@ -207,6 +248,8 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     color: colors.BLACK(0.6),
+    display: "flex",
+    alignItems: "flex-start",
   },
   overrideSubmittedBy: {
     alignItems: "unset",

@@ -17,6 +17,7 @@ const colors = {
   ICY_BLUE: "#E9EFFF",
   ICY_GREY: "rgb(251, 251, 253)",
   INPUT_BACKGROUND_GREY: "rgba(250, 250, 250, 1)",
+  LIGHT_GRAY_BACKGROUND: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`,
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
   LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`,
   LIGHT_GREY_BACKGROUND: "#EDEDED",

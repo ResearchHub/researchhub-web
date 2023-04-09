@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     maxWidth: 320,
     position: "relative",
     width: "100%",
+    background: "white",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
     },

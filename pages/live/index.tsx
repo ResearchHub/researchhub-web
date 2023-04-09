@@ -6,9 +6,14 @@ import nookies from "nookies";
 import { getSelectedUrlFilters } from "~/components/UnifiedDocFeed/utils/getSelectedUrlFilters";
 import { getFetchDefaults } from "~/components/UnifiedDocFeed/utils/getFetchDefaults";
 import { NextPage } from "next";
+import colors from "~/config/themes/colors";
 
 const Index: NextPage = (props) => {
-  return <HubPage isLiveFeed={true} {...props} />;
+  return (
+    <div style={{ background: colors.LIGHT_GRAY_BACKGROUND(1.0)}}>
+      <HubPage isLiveFeed={true} {...props} />
+    </div>
+  )
 };
 
 Index.getInitialProps = async (ctx) => {

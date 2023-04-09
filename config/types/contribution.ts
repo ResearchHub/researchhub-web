@@ -36,7 +36,14 @@ export type CommentContributionItem = {
   id: ID;
   content: any;
   postType: POST_TYPES;
+  parent: null|CommentContributionItemParent
 };
+
+export type CommentContributionItemParent = {
+  content: any;
+  id: ID;
+  createdBy: RHUser;
+}
 
 export type PaperContributionItem = {
   unifiedDocument: UnifiedDocument;
@@ -158,7 +165,7 @@ export const parseContribution = (raw: any): Contribution => {
     };
 
     if (raw.content_type.name === "rhcommentmodel") {
-      mapped["item"] = parseCommentContributionV2Item(raw);
+      mapped["item"] = parseCommentContributionItem(raw);
     } else if (raw.content_type.name === "paper") {
       mapped["item"] = parsePaperContributionItem(raw);
     } else if (
@@ -207,26 +214,8 @@ export const parseContribution = (raw: any): Contribution => {
   return mapped;
 };
 
-/**
- * @deprecated use useSelector to fetch user directly from state instead. Using this method will result in old state
- */
+
 export const parseCommentContributionItem = (
-  raw: any
-): CommentContributionItem => {
-  const mapped = {
-    plainText: raw.item.plain_text,
-    createdBy: parseUser(raw.created_by || raw.item.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
-    id: raw.item.id,
-    content: {},
-    createdDate: raw.created_date,
-    postType: raw.item.discussion_post_type,
-  };
-
-  return mapped;
-};
-
-export const parseCommentContributionV2Item = (
   raw: any
 ): CommentContributionItem => {
   const mapped = {
@@ -236,6 +225,12 @@ export const parseCommentContributionV2Item = (
     id: raw.item.id,
     createdDate: raw.created_date,
     postType: raw.item.discussion_post_type,
+    parent: raw.item.parent
+    ? {
+      id: raw.item.parent.id,
+      content: raw.item.parent.comment_content_json,
+      createdBy: parseUser(raw.item.parent.created_by),
+    } : null,
   };
 
   return mapped;

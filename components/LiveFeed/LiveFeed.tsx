@@ -181,8 +181,14 @@ const styles = StyleSheet.create({
   result: {
     display: "flex",
     marginBottom: 25,
-    borderBottom: `1px solid ${colors.GREY_LINE(1.0)}`,
-    paddingBottom: 25,
+    border: `1px solid ${colors.GREY_LINE(1.0)}`,
+    borderRadius: "4px",
+    padding: "25px 25px 25px 25px",
+    background:"white",
+    ":hover": {
+      transition: "0.2s",
+      background: colors.LIGHT_GRAY_BACKGROUND(0.5),
+    }
   },
   entry: {
     width: "100%",
@@ -213,7 +219,7 @@ const styles = StyleSheet.create({
   },
   resultsContainer: {
     marginTop: 16,
-    width: 800,
+    maxWidth: 800,
     marginLeft: "auto",
     marginRight: "auto",
   },
