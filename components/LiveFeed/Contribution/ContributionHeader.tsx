@@ -20,6 +20,7 @@ import { timeSince } from "~/config/utils/dates";
 import { UnifiedDocument } from "~/config/types/root_types";
 import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { truncateText } from "~/config/utils/string";
 
 type Args = {
   entry: Contribution;
@@ -87,19 +88,15 @@ const ContributionHeader = ({ entry }: Args) => {
           />
           {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          &nbsp;for their{" "}
-          <ALink
-            overrideStyle={styles.link}
-            href={getUrlToUniDoc(item.source.unifiedDocument) + "#comments"}
-          >
-            comment
-          </ALink>
+          <span className={css(styles.passiveText)}>
+            {` for their comment on`}
+          </span>
         </>
       );
     } else {
       actionLabel = (
         <>
-          supported{` `}
+          tipped{` `}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
           &nbsp;
           <ResearchCoinIcon
@@ -112,7 +109,9 @@ const ContributionHeader = ({ entry }: Args) => {
             {` `}
             {item.amount} RSC
           </span>
-          &nbsp; for their{" "}
+          <span className={css(styles.passiveText)}>
+            {" for their "}
+          </span>
           <ALink
             overrideStyle={styles.link}
             href={getUrlToUniDoc(item.source.unifiedDocument)}
@@ -152,14 +151,14 @@ const ContributionHeader = ({ entry }: Args) => {
                 />
               </div>
             ) : (
-              <>
+              <span className={css(styles.passiveText)}>
                 {` commented`}
-              </>
+              </span>
             )}
 
             {unifiedDocument &&
               <span className={css(styles.secondaryText)}>
-                {` in `}{unifiedDocument.documentType}
+                {` on `}
               </span>
             }
 
@@ -194,9 +193,7 @@ const ContributionHeader = ({ entry }: Args) => {
             }
           />
 
-          <div className={css(styles.secondaryText)}>
-            {` `}{actionLabel}
-          </div>
+            {actionLabel}
         </div>
         {/* @ts-ignore */}
         {unifiedDocument &&
@@ -204,7 +201,7 @@ const ContributionHeader = ({ entry }: Args) => {
             overrideStyle={[styles.link, styles.unifiedDocument]}
             href={getUrlToUniDoc(unifiedDocument) + "#comments"}
           >
-            {unifiedDocument?.document?.title}
+            {truncateText(unifiedDocument?.document?.title, 100) }
           </ALink>
         }
         <div className={css(styles.secondaryText)}>{timeSince(item.createdDate)}</div>
@@ -228,11 +225,15 @@ const styles = StyleSheet.create({
   },
   nameRow: {
     display: "flex",
+    flexWrap: "wrap",
   },
   avatarWrapper: {
     marginTop: 0,
     paddingRight: 10,
     marginLeft: 0,
+  },
+  passiveText: {
+    color: colors.BLACK(0.6),
   },
   metadataRow: {
 
