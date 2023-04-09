@@ -85,7 +85,7 @@ const ContributionHeader = ({ entry }: Args) => {
               </div>
             }
           />
-          {" from "}
+          {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
           &nbsp;for their{" "}
           <ALink

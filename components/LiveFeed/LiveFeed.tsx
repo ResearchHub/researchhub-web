@@ -59,88 +59,96 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
       },
     });
   };
+  
+  
+  const entries = results.map((result, idx) => (
+    <ContributionEntry
+      key={`entry-${idx}`}
+      entry={result}
+      actions={[
+        {
+          html: (
+            <FlagButtonV2
+              modalHeaderText="Flag Content"
+              flagIconOverride={styles.flagIcon}
+              iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
+              errorMsgText="Failed to flag"
+              successMsgText="Content flagged"
+              primaryButtonLabel="Flag"
+              subHeaderText="I am flagging this content because of:"
+              onSubmit={(
+                flagReason,
+                renderErrorMsg,
+                renderSuccessMsg
+              ) => {
+                let args: any = {
+                  flagReason,
+                  onError: renderErrorMsg,
+                  onSuccess: renderSuccessMsg,
+                };
 
-  const resultCards = results.map((result, idx) => {
+                let item = result.item;
+                if (result.contentType.name === "comment") {
+                  item = item as CommentContributionItem;
+                  args.commentPayload = {
+                    ...(result._raw.content_type.name === "thread" && {
+                      threadID: item.id,
+                      commentType: "thread",
+                    }),
+                    ...(result._raw.content_type.name === "comment" && {
+                      commentID: item.id,
+                      commentType: "comment",
+                    }),
+                    ...(result._raw.content_type.name === "reply" && {
+                      replyID: item.id,
+                      commentType: "reply",
+                    }),
+                  };
+                }
+
+                const unifiedDocument: UnifiedDocument =
+                  // @ts-ignore
+                  item.unifiedDocument;
+                if (
+                  ["paper", "post", "hypothesis", "question"].includes(
+                    unifiedDocument.documentType
+                  )
+                ) {
+                  args = {
+                    contentType: unifiedDocument.documentType,
+                    // @ts-ignore
+                    contentID: unifiedDocument.document.id,
+                    ...args,
+                  };
+                } else {
+                  console.error(
+                    `${result.contentType.name} Not supported for flagging`
+                  );
+                  return false;
+                }
+
+                flagGrmContent(args);
+              }}
+            />
+          ),
+          label: "Flag",
+          isActive: true,
+        },
+      ]}
+    />
+  )).filter(r => r !== null);
+
+  const resultCards = entries.map((entry, idx) => {
     return (
-      (<div className={css(styles.result)} key={`result-${idx}`}>
-        <div className={css(styles.entry)}>
-          <ContributionEntry
-            entry={result}
-            actions={[
-              {
-                html: (
-                  <FlagButtonV2
-                    modalHeaderText="Flag Content"
-                    flagIconOverride={styles.flagIcon}
-                    iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
-                    errorMsgText="Failed to flag"
-                    successMsgText="Content flagged"
-                    primaryButtonLabel="Flag"
-                    subHeaderText="I am flagging this content because of:"
-                    onSubmit={(
-                      flagReason,
-                      renderErrorMsg,
-                      renderSuccessMsg
-                    ) => {
-                      let args: any = {
-                        flagReason,
-                        onError: renderErrorMsg,
-                        onSuccess: renderSuccessMsg,
-                      };
-
-                      let item = result.item;
-                      if (result.contentType.name === "comment") {
-                        item = item as CommentContributionItem;
-                        args.commentPayload = {
-                          ...(result._raw.content_type.name === "thread" && {
-                            threadID: item.id,
-                            commentType: "thread",
-                          }),
-                          ...(result._raw.content_type.name === "comment" && {
-                            commentID: item.id,
-                            commentType: "comment",
-                          }),
-                          ...(result._raw.content_type.name === "reply" && {
-                            replyID: item.id,
-                            commentType: "reply",
-                          }),
-                        };
-                      }
-
-                      const unifiedDocument: UnifiedDocument =
-                        // @ts-ignore
-                        item.unifiedDocument;
-                      if (
-                        ["paper", "post", "hypothesis", "question"].includes(
-                          unifiedDocument.documentType
-                        )
-                      ) {
-                        args = {
-                          contentType: unifiedDocument.documentType,
-                          // @ts-ignore
-                          contentID: unifiedDocument.document.id,
-                          ...args,
-                        };
-                      } else {
-                        console.error(
-                          `${result.contentType.name} Not supported for flagging`
-                        );
-                        return false;
-                      }
-
-                      flagGrmContent(args);
-                    }}
-                  />
-                ),
-                label: "Flag",
-                isActive: true,
-              },
-            ]}
-          />
+      (
+        <div key={`wrapped-entry-${idx}`} className={css(styles.result)} key={`result-${idx}`}>
+          <div className={css(styles.entry)}>
+            {entry}
+          </div>
         </div>
-      </div>)
+      )
     );
-  });
+  })
 
   return (
     <div>

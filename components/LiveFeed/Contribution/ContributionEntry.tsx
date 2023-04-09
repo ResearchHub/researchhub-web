@@ -66,6 +66,9 @@ const ContributionEntry = ({
   let title: string | ReactNode;
   let body: string | ReactNode;
 
+  try {
+
+
 
   switch (contentType.name) {
     case "comment":
@@ -148,7 +151,11 @@ const ContributionEntry = ({
     default:
       console.warn("[Contribution] Could not render contribution item", item);
   }
-
+}
+catch(error) {
+  console.warn("[Contribution] Could not render", entry)
+  return null;
+}
 
   const primaryUrl = _getPrimaryUrl(entry);
   return (
