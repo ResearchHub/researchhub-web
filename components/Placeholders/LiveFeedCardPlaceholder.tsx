@@ -1,7 +1,8 @@
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
+import { TextBlock, RoundShape, RectShape } from "react-placeholder/lib/placeholders";
+import colors from "~/config/themes/colors";
 
 type Props = {
   color: string;
@@ -13,44 +14,73 @@ export default function UnifiedDocFeedCardPlaceholder({
   return (
     <div
       className={css(styles.docFeedCardPlaceholder) + " show-loading-animation"}
-    >    
+    >
       <div className={css(styles.cardMain)}>
         <div className={css(styles.column)}>
           <div className={css(styles.header)}>
 
             <div className={css(styles.topLine)}>
               <RoundShape
+                className={css(styles.avatar)}
                 color={color}
-                style={{ width: 28, height: 28 }}
               />
-              <TextBlock
-                className={css(styles.textRow)}
-                rows={1}
-                color={color}
-                style={{ width: "100%", marginLeft: 15 }}
-              />
-            </div>  
-            <TextBlock
-              className={css(styles.textRow, styles.paddingTop)}
-              rows={1}
-              color={color}
-              style={{ width: "100%" }}
-            />
-          </div>
-          <div className={css(styles.row)}>
-            <div style={{ width: "35%" }}>
-              <TextBlock
-                rows={1}
-                color={color}
-                style={{ width: "100%", paddingRight: 50 }}
-              />
+              <div className={css(styles.detailsWrapper)}>
+                <RectShape
+                  color={color}
+                  style={{ width: "80%", height: "1em" }}
+                />
+                <RectShape
+                  color={color}
+                  style={{ width: "70%", height: "1em" }}
+                />
+                <RectShape
+                  color={color}
+                  style={{ width: "10%", height: "1em" }}
+                />
+              </div>
             </div>
+          </div>
+
+
+
+          <div className={css(styles.row)}>
+              <TextBlock
+                rows={1}
+                color={color}
+                style={{ width: "30%" }}
+              />
             <TextBlock
               rows={1}
               color={color}
-              style={{ paddingLeft: 30, width: "50%" }}
+              style={{  width: "70%" }}
             />
           </div>
+
+          <div className={css(styles.row)}>
+              <TextBlock
+                rows={1}
+                color={color}
+                style={{ width: "50%" }}
+              />
+            <TextBlock
+              rows={1}
+              color={color}
+              style={{  width: "30%" }}
+            />
+          </div> 
+          <div className={css(styles.row)}>
+              <TextBlock
+                rows={1}
+                color={color}
+                style={{ width: "20%" }}
+              />
+            <TextBlock
+              rows={1}
+              color={color}
+              style={{  width: "70%" }}
+            />
+          </div>                    
+
         </div>
       </div>
     </div>
@@ -58,8 +88,22 @@ export default function UnifiedDocFeedCardPlaceholder({
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    height: 38,
+    width: 38,
+  },
+  detailsWrapper: {
+    marginLeft: 15,
+    display: "flex",
+    flexDirection: "column",
+    rowGap: 6,
+    fontSize: 9,
+    width: "100%",
+  },
   docFeedCardPlaceholder: {
-    borderBottom: "1px solid #EDEDED",
+    border: `1px solid ${colors.GREY_LINE(1.0)}`,
+    borderRadius: "4px",
+    marginBottom: 25,
     boxSizing: "border-box",
     display: "flex",
     height: "100%",
@@ -69,6 +113,8 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     position: "relative",
     width: "100%",
+    background: "white",
+    padding: "25px 25px 25px 25px",
   },
   topLine: {
     display: "flex",
@@ -76,6 +122,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingBottom: 10,
+    marginBottom: 15,
   },
   paddingTop: {
     paddingTop: 8,
@@ -93,11 +140,12 @@ const styles = StyleSheet.create({
   },
   row: {
     display: "flex",
-    // marginBottom: 15,
+    marginBottom: 10,
   },
   cardMain: {
     display: "flex",
     width: "100%",
+    maxWidth: "100%",
   },
   marginBottom: {
     marginBottom: 0,

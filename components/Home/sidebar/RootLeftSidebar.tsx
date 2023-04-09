@@ -5,6 +5,7 @@ import {
   faGrid2,
   faHouse,
   faTableTree,
+  faWavePulse,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faMedium,
@@ -83,15 +84,15 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-      label: "Hubs",
-      isActive: ["/hubs"].includes(pathname),
+      icon: <FontAwesomeIcon icon={faWavePulse}></FontAwesomeIcon>,
+      label: "Live",
       isMinimized,
-      href: "/hubs",
+      isActive: pathname.includes("live"),
+      href: "/live",
       onClick: (event: SyntheticEvent): void => {
         // event.preventDefault();
       },
-    },
+    },    
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Notebook",
@@ -106,15 +107,25 @@ export const getLeftSidebarItemAttrs = ({
       },
     },
     {
-      icon: <FontAwesomeIcon icon={faChartSimple}></FontAwesomeIcon>,
-      label: "Leaderboard",
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+      label: "Hubs",
+      isActive: ["/hubs"].includes(pathname),
       isMinimized,
-      isActive: pathname.includes("leaderboard"),
-      href: "/leaderboard/users",
+      href: "/hubs",
       onClick: (event: SyntheticEvent): void => {
         // event.preventDefault();
       },
-    },
+    },    
+    // {
+    //   icon: <FontAwesomeIcon icon={faChartSimple}></FontAwesomeIcon>,
+    //   label: "Leaderboard",
+    //   isMinimized,
+    //   isActive: pathname.includes("leaderboard"),
+    //   href: "/leaderboard/users",
+    //   onClick: (event: SyntheticEvent): void => {
+    //     // event.preventDefault();
+    //   },
+    // },
     killswitch("reference-manager")
       ? {
           icon: <FontAwesomeIcon icon={faTableTree} />,
@@ -252,7 +263,7 @@ function RootLeftSidebar({
       className={formattedRootLeftSidebar}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
-        ["hubs", "user", "reference-manager"].includes(
+        ["hubs", "user", "reference-manager", "live"].includes(
           pathname.split("/")[1]
         ) ||
         pathname === "/hypothesis/create"
@@ -350,6 +361,12 @@ function RootLeftSidebar({
               </InviteButton>
             </span>
             <ALink
+              href="/leaderboard/users"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {"Leaderboard"}
+            </ALink>
+            <ALink
               href="https://docs.researchhub.com"
               target="_blank"
               overrideStyle={formattedFooterTxtItem}
@@ -362,14 +379,6 @@ function RootLeftSidebar({
             >
               {"Jobs"}
             </ALink>
-            {organization_slug && (
-              <ALink
-                href={`/${organization_slug}/notebook`}
-                overrideStyle={formattedFooterTxtItem}
-              >
-                {"Publish"}
-              </ALink>
-            )}
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
@@ -493,7 +502,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     margin: "0 32px 18px",
     ":hover": {
-      color: colors.TEXT_GREY(1),
+      color: colors.NEW_BLUE(1),
     },
   },
   leftSidebarFooterTxtItemMin: {

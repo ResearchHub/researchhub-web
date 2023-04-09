@@ -27,32 +27,6 @@ type Args = {
   hubsDropdownOpenForKey?: string;
 };
 
-const _getPrimaryUrl = (entry: Contribution): string => {
-  const { contentType } = entry;
-  let { item } = entry;
-
-  switch (contentType.name) {
-    case "comment":
-      item = item as CommentContributionItem;
-      return getUrlToUniDoc(item.unifiedDocument) + "#comments";
-    case "rsc_support":
-      item = item as RscSupportContributionItem;
-      return getUrlToUniDoc(item?.source.unifiedDocument);
-    case "bounty":
-      item = item as BountyContributionItem;
-      return getUrlToUniDoc(entry?.relatedItem?.unifiedDocument);
-    case "paper":
-      item = item as PaperContributionItem;
-      return getUrlToUniDoc(item?.unifiedDocument);
-    case "hypothesis":
-    case "post":
-    case "question":
-    default:
-      item = item as PostContributionItem;
-      return getUrlToUniDoc(item?.unifiedDocument);
-  }
-};
-
 const ContributionEntry = ({
   entry,
   actions,
@@ -67,99 +41,95 @@ const ContributionEntry = ({
   let body: string | ReactNode;
 
   try {
+    switch (contentType.name) {
+      case "comment":
+        showActions = true;
 
-
-
-  switch (contentType.name) {
-    case "comment":
-      showActions = true;
-
-      item = item as CommentContributionItem;
-      body = (
-        <span className={css(styles.commentBody)}>
-          <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
-        </span>
-      );
-      break;
-
-    case "rsc_support":
-      item = item as RscSupportContributionItem;
-
-      if (item.source.contentType.name === "comment") {
+        item = item as CommentContributionItem;
         body = (
           <span className={css(styles.commentBody)}>
-            <CommentReadOnly content={item.source.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
           </span>
         );
-      } else {
-        body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
+        break;
+
+      case "rsc_support":
+        item = item as RscSupportContributionItem;
+
+        if (item.source.contentType.name === "comment") {
+          body = (
+            <span className={css(styles.commentBody)}>
+              <CommentReadOnly content={item.source.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            </span>
+          );
+        } else {
+          body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
+          title = (
+            <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
+              {item?.source.unifiedDocument?.document?.title}
+            </ALink>
+          );
+        }
+        break;
+
+      case "bounty":
         title = (
-          <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
-            {item?.source.unifiedDocument?.document?.title}
+          <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
+            {entry.relatedItem?.unifiedDocument?.document?.title}
           </ALink>
         );
-      }
-      break;
-
-    case "bounty":
-      title = (
-        <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
-          {entry.relatedItem?.unifiedDocument?.document?.title}
-        </ALink>
-      );
 
 
-      body = truncateText(
-        entry.relatedItem?.unifiedDocument?.document?.body,
-        300
-      );
+        body = truncateText(
+          entry.relatedItem?.unifiedDocument?.document?.body,
+          300
+        );
 
-      break;
+        break;
 
-    case "hypothesis":
-    case "post":
-    case "question":
-    case "paper":
-      // default:
-      showActions = true;
-      item =
-        contentType.name === "hypothesis"
-          ? (item as HypothesisContributionItem)
-          : contentType.name === "post"
-            ? (item as PostContributionItem)
-            : (item as PaperContributionItem);
+      case "hypothesis":
+      case "post":
+      case "question":
+      case "paper":
+        // default:
+        showActions = true;
+        item =
+          contentType.name === "hypothesis"
+            ? (item as HypothesisContributionItem)
+            : contentType.name === "post"
+              ? (item as PostContributionItem)
+              : (item as PaperContributionItem);
 
-      // @ts-ignore
-      body = truncateText(
-        item?.unifiedDocument?.document?.body ||
-        item?.abstract ||
-        item?.renderable_text,
-        300
-      );
-      if (contentType.name === "hypothesis") {
-        /* below is a hack (need to address in the future) */
-        item.unifiedDocument.documentType = "hypothesis";
-        item.unifiedDocument.document = { id: item.id, slug: item.slug };
-        body = item.renderable_text;
-      }
-      title = (
-        <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
-          {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
-        </ALink>
-      );
-      break;
-    default:
-      console.warn("[Contribution] Could not render contribution item", item);
+        // @ts-ignore
+        body = truncateText(
+          item?.unifiedDocument?.document?.body ||
+          item?.abstract ||
+          item?.renderable_text,
+          300
+        );
+        if (contentType.name === "hypothesis") {
+          /* below is a hack (need to address in the future) */
+          item.unifiedDocument.documentType = "hypothesis";
+          item.unifiedDocument.document = { id: item.id, slug: item.slug };
+          body = item.renderable_text;
+        }
+        title = (
+          <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
+            {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
+          </ALink>
+        );
+        break;
+      default:
+        console.warn("[Contribution] Could not render contribution item", item);
+    }
   }
-}
-catch(error) {
-  console.warn("[Contribution] Could not render", entry)
-  return null;
-}
+  catch (error) {
+    console.warn("[Contribution] Could not render", entry)
+    return null;
+  }
 
-  const primaryUrl = _getPrimaryUrl(entry);
   return (
-    <Link href={primaryUrl} className={css(styles.linkWrapper)}>
+    <>
       <div className={css(styles.entryContent)}>
         <ContributionHeader entry={entry} />
         <div className={css(styles.highlightedContentContainer)}>
@@ -194,16 +164,11 @@ catch(error) {
           )} */}
         </div>
       </div>
-    </Link>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  linkWrapper: {
-    textDecoration: "none",
-    color: "inherit",
-    width: "100%",
-  },
   entryContent: {
     fontSize: 14,
     lineHeight: "20px",

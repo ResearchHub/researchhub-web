@@ -89,6 +89,8 @@ const Navbar = (props) => {
     ? "Leaderboard"
     : pathname.includes("reference-manager")
     ? "Reference Manager"
+    : pathname.includes("live")
+    ? "Live Activity"
     : deSlug(router?.query?.slug ?? "");
 
   useEffect(() => {

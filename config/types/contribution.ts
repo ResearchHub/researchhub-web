@@ -14,6 +14,7 @@ import { parseHub, Hub } from "./hub";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import { Comment, parseComment } from "~/components/Comment/lib/types";
+import { getUrlToUniDoc } from "../utils/routing";
 
 export type RelatedBountyItem = {
   contentType: ContentType;
@@ -339,3 +340,29 @@ export const parsePostContributionItem = (raw: any): PostContributionItem => {
 
   return mapped;
 };
+
+export const getContributionUrl = (entry: Contribution): string => {
+  const { contentType } = entry;
+  let { item } = entry;
+
+  switch (contentType.name) {
+    case "comment":
+      item = item as CommentContributionItem;
+      return getUrlToUniDoc(item.unifiedDocument) + "#comments";
+    case "rsc_support":
+      item = item as RscSupportContributionItem;
+      return getUrlToUniDoc(item?.source.unifiedDocument);
+    case "bounty":
+      item = item as BountyContributionItem;
+      return getUrlToUniDoc(entry?.relatedItem?.unifiedDocument);
+    case "paper":
+      item = item as PaperContributionItem;
+      return getUrlToUniDoc(item?.unifiedDocument);
+    case "hypothesis":
+    case "post":
+    case "question":
+    default:
+      item = item as PostContributionItem;
+      return getUrlToUniDoc(item?.unifiedDocument);
+  }
+}
