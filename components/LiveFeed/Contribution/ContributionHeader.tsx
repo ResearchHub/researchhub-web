@@ -5,10 +5,8 @@ import {
   Contribution,
   RscSupportContributionItem,
 } from "~/config/types/contribution";
-import SubmissionDetails from "~/components/Document/SubmissionDetails";
 import ContributionAuthor from "./ContributionAuthor";
 import { ReactNode } from "react";
-import ContentBadge from "~/components/ContentBadge";
 import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
@@ -16,6 +14,10 @@ import colors from "~/config/themes/colors";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { breakpoints } from "~/config/themes/screen";
 import RSCTooltip from "~/components/Tooltips/RSC/RSCTooltip";
+import UserTooltip from "~/components/Tooltips/User/UserTooltip";
+import CommentAvatars from "~/components/Comment/CommentAvatars";
+import { timeSince } from "~/config/utils/dates";
+import { UnifiedDocument } from "~/config/types/root_types";
 
 type Args = {
   entry: Contribution;
@@ -27,10 +29,13 @@ const ContributionHeader = ({ entry }: Args) => {
   const { createdBy, createdDate } = item;
 
   let contentBadgeLabel: ReactNode | string;
-  let actionLabel = <>posted in</>;
-
+  let actionLabel = <>posted</>;
+  let unifiedDocument:UnifiedDocument;
+  
+  
   if (contentType.name === "bounty") {
     item = item as BountyContributionItem;
+    unifiedDocument = item.unifiedDocument
     actionLabel = (
       <RSCTooltip
         amount={item.amount}
@@ -57,6 +62,8 @@ const ContributionHeader = ({ entry }: Args) => {
   } else if (contentType.name === "rsc_support") {
     item = item as RscSupportContributionItem;
     contentBadgeLabel = item.amount + " RSC";
+    unifiedDocument = item.source.unifiedDocument;
+
     if (item.source.contentType.name === "comment") {
       actionLabel = (
         <>
@@ -110,62 +117,59 @@ const ContributionHeader = ({ entry }: Args) => {
     }
   } else if (contentType.name === "comment") {
     item = item as CommentContributionItem;
-    let action = "commented on";
+    unifiedDocument = item.unifiedDocument;
+    let action = "commented";
     if (item.postType === POST_TYPES.ANSWER) {
-      action = "submitted answer for";
+      action = "submitted answer";
     } else if (item.postType === POST_TYPES.SUMMARY) {
-      action = "submitted summary for";
+      action = "submitted summary";
     } else if (item.postType === POST_TYPES.REVIEW) {
-      action = "submitted review for";
+      action = "submitted review";
     }
 
     actionLabel = (
       <>
         {action}{" "}
-        <ALink
-          overrideStyle={styles.link}
-          href={getUrlToUniDoc(item.unifiedDocument) + "#comments"}
-        >
-          {item.unifiedDocument?.document?.title}
-        </ALink>
-        {hubs.length ? <>{` `}&nbsp;in</> : ""}
       </>
     );
   }
 
-  // @ts-ignore
-  const contentTypeForBadge =
-    entry.contentType.name === "comment"
-      ? entry.item.postType || POST_TYPES.DISCUSSION
-      : entry.contentType.name;
+
   return (
     <div className={css(styles.header)}>
-      <SubmissionDetails
-        createdBy={createdBy}
-        hubs={hubs}
-        createdDate={createdDate}
-        avatarSize={20}
-        actionLabel={actionLabel}
-        overrideSubmittedBy={styles.overrideSubmittedBy}
-      />
-      <div className={`${css(styles.contentBadge)}`}>
-        {/* @ts-ignore */}
-        {contentType.name === "rsc_support" || contentType.name === "bounty" ? (
-          <RSCTooltip
-            amount={item.amount}
+      <div className={css(styles.avatarWrapper)}>
+        <CommentAvatars people={[createdBy]} withTooltip={true} />
+      </div>
+      <div className={css(styles.metadataRow)}>
+        <div className={css(styles.nameRow)}>
+          <UserTooltip
+            createdBy={createdBy}
             targetContent={
-              <ContentBadge
-                label={contentBadgeLabel}
-                contentType={contentTypeForBadge}
-              />
+              <ALink
+                href={`/user/${createdBy.authorProfile?.id}/overview`}
+                key={`/user/${createdBy.authorProfile?.id}/overview-key`}
+              >
+                {createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}
+              </ALink>
             }
           />
-        ) : (
-          <ContentBadge
-            label={contentBadgeLabel}
-            contentType={contentTypeForBadge}
-          />
-        )}
+
+          <div className={css(styles.secondaryText)}>
+            {` `}{actionLabel}
+          </div>
+        </div>
+        {/* @ts-ignore */}
+        {unifiedDocument &&
+          <div>
+            <ALink
+              overrideStyle={styles.link}
+              href={getUrlToUniDoc(unifiedDocument) + "#comments"}
+            >
+              {unifiedDocument?.document?.title}
+            </ALink>
+          </div>
+        }
+        <div className={css(styles.secondaryText)}>{timeSince(item.createdDate)}</div>
       </div>
     </div>
   );
@@ -176,14 +180,33 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    flexDirection: "row",
+    marginLeft: -30,
+    // @ts-ignore
+    whiteSpace: "break-spaces",
+  },
+  nameRow: {
+    display: "flex",
+  },
+  avatarWrapper: {
+    marginTop: 0,
+    paddingRight: 10,
+    marginLeft: -10,
+  },
+  metadataRow: {
+
   },
   contentBadge: {
-    marginLeft: "auto",
+    marginTop: 10,
+    marginLeft: "0px",
     opacity: 1,
     display: "flex",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
     },
+  },
+  secondaryText: {
+    color: colors.BLACK(0.6),
   },
   overrideSubmittedBy: {
     alignItems: "unset",

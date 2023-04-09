@@ -4,7 +4,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 
 type CommentAvatarsArgs = {
-  people: RHUser[];
+  people: Array<RHUser|null>;
   withTooltip?: boolean;
   spacing?: number;
   size?: number;
@@ -19,7 +19,7 @@ const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30, w
 
         const avatarEl = <div className={css(styles.avatarWrapper)} >
           <AuthorAvatar
-            author={p.authorProfile}
+            author={p?.authorProfile}
             size={size}
             trueSize={true}
             anonymousAvatarStyle={styles.anonymousAvatar}

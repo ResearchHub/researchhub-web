@@ -376,7 +376,6 @@ class HubPage extends Component {
           <div className={css(styles.row, styles.homeContentContainerBody)}>
             {this.props.isLiveFeed ? (
               <div className={css(styles.liveFeedwrapper)}>
-                <FeedMenu />
                 <LiveFeed hub={hub} isHomePage={home} />
               </div>
             ) : (

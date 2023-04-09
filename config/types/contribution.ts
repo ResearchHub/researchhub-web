@@ -13,6 +13,7 @@ import { parseContentType, ContentType } from "./contentType";
 import { parseHub, Hub } from "./hub";
 import { formatBountyAmount } from "~/config/types/bounty";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
+import { Comment, parseComment } from "~/components/Comment/lib/types";
 
 export type RelatedBountyItem = {
   contentType: ContentType;
@@ -24,6 +25,7 @@ export type RscSupportSourceItem = {
   plainText: string;
   unifiedDocument: UnifiedDocument;
   contentType: ContentType;
+  content?: any
 };
 
 export type CommentContributionItem = {
@@ -299,9 +301,9 @@ export const parseSupportSourceItem = (
 
   return {
     unifiedDocument: parseUnifiedDocument(unifiedDocument),
-    plainText: raw.plain_text,
     id: raw.id,
     contentType: parseContentType(contentType),
+    content: raw.comment_content_json,
   };
 };
 

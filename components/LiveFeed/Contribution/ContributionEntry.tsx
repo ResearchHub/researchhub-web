@@ -67,95 +67,88 @@ const ContributionEntry = ({
   let body: string | ReactNode;
 
 
-  try {
-    switch (contentType.name) {
-      case "comment":
-        showActions = true;
+  switch (contentType.name) {
+    case "comment":
+      showActions = true;
 
-        item = item as CommentContributionItem;
+      item = item as CommentContributionItem;
+      body = (
+        <span className={css(styles.commentBody)}>
+          <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+        </span>
+      );
+      break;
+
+    case "rsc_support":
+      item = item as RscSupportContributionItem;
+
+      if (item.source.contentType.name === "comment") {
         body = (
           <span className={css(styles.commentBody)}>
-            <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            <CommentReadOnly content={item.source.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
           </span>
         );
-        break;
-
-      case "rsc_support":
-        item = item as RscSupportContributionItem;
-
-        if (item.source.contentType.name === "comment") {
-          body = (
-            <span className={css(styles.commentBody)}>
-              {truncateText(item?.source.plainText, 300)}
-            </span>
-          );
-        } else {
-          body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
-          title = (
-            <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
-              {item?.source.unifiedDocument?.document?.title}
-            </ALink>
-          );
-        }
-        break;
-
-      case "bounty":
+      } else {
+        body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
         title = (
-          <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
-            {entry.relatedItem?.unifiedDocument?.document?.title}
+          <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
+            {item?.source.unifiedDocument?.document?.title}
           </ALink>
         );
+      }
+      break;
+
+    case "bounty":
+      title = (
+        <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
+          {entry.relatedItem?.unifiedDocument?.document?.title}
+        </ALink>
+      );
 
 
-        body = truncateText(
-          entry.relatedItem?.unifiedDocument?.document?.body,
-          300
-        );
+      body = truncateText(
+        entry.relatedItem?.unifiedDocument?.document?.body,
+        300
+      );
 
-        break;
+      break;
 
-      case "hypothesis":
-      case "post":
-      case "question":
-      case "paper":
-        // default:
-        showActions = true;
-        item =
-          contentType.name === "hypothesis"
-            ? (item as HypothesisContributionItem)
-            : contentType.name === "post"
-              ? (item as PostContributionItem)
-              : (item as PaperContributionItem);
+    case "hypothesis":
+    case "post":
+    case "question":
+    case "paper":
+      // default:
+      showActions = true;
+      item =
+        contentType.name === "hypothesis"
+          ? (item as HypothesisContributionItem)
+          : contentType.name === "post"
+            ? (item as PostContributionItem)
+            : (item as PaperContributionItem);
 
-        // @ts-ignore
-        body = truncateText(
-          item?.unifiedDocument?.document?.body ||
-          item?.abstract ||
-          item?.renderable_text,
-          300
-        );
-        if (contentType.name === "hypothesis") {
-          /* below is a hack (need to address in the future) */
-          item.unifiedDocument.documentType = "hypothesis";
-          item.unifiedDocument.document = { id: item.id, slug: item.slug };
-          body = item.renderable_text;
-        }
-        title = (
-          <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
-            {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
-          </ALink>
-        );
-        break;
-      default:
-        console.warn("[Contribution] Could not render contribution item", item);
-    }
-
+      // @ts-ignore
+      body = truncateText(
+        item?.unifiedDocument?.document?.body ||
+        item?.abstract ||
+        item?.renderable_text,
+        300
+      );
+      if (contentType.name === "hypothesis") {
+        /* below is a hack (need to address in the future) */
+        item.unifiedDocument.documentType = "hypothesis";
+        item.unifiedDocument.document = { id: item.id, slug: item.slug };
+        body = item.renderable_text;
+      }
+      title = (
+        <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
+          {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
+        </ALink>
+      );
+      break;
+    default:
+      console.warn("[Contribution] Could not render contribution item", item);
   }
-  catch (error) {
-    console.warn("[Contribution] Could not render item", item)
-    console.error(error);
-    return null;
-  }
+
 
   const primaryUrl = _getPrimaryUrl(entry);
   return (
@@ -175,7 +168,7 @@ const ContributionEntry = ({
               </div>
             )}
           </div>
-          {showActions && (
+          {/* {showActions && (
             <div className={css(styles.actions)}>
               {actions.map(
                 (action, idx) =>
@@ -191,7 +184,7 @@ const ContributionEntry = ({
                   )
               )}
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </Link>
@@ -224,7 +217,7 @@ const styles = StyleSheet.create({
   },
   details: {},
   highlightedContentContainer: {
-    padding: "7px 0px 0px 0px",
+    padding: "15px 0px 0px 0px",
     marginTop: 0,
     position: "relative",
     display: "flex",

@@ -180,9 +180,9 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 const styles = StyleSheet.create({
   result: {
     display: "flex",
-    marginBottom: 15,
-    borderBottom: `1px solid ${colors.GREY(0.5)}`,
-    paddingBottom: 13,
+    marginBottom: 25,
+    borderBottom: `1px solid ${colors.GREY_LINE(1.0)}`,
+    paddingBottom: 25,
   },
   entry: {
     width: "100%",
@@ -213,6 +213,9 @@ const styles = StyleSheet.create({
   },
   resultsContainer: {
     marginTop: 16,
+    width: 800,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   numSelected: {
     marginRight: 10,
