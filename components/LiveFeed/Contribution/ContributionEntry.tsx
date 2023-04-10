@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   },
   body: {},
   commentBody: {
-    // fontStyle: "italic",
+    cursor: "pointer",
     width: "100%",
   },
   hubDropdownContainer: {

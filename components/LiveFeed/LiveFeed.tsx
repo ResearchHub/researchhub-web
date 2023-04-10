@@ -160,7 +160,7 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
   })
 
   return (
-    <div className={css(styles.pageWrapper)}>
+    <div className={css(styles.pageWrapper) + " live-feed"}>
       {isLoadingPage ? (
         <div className={css(styles.placeholderWrapper)}>
           {Array(10)

@@ -90,6 +90,11 @@
   color: inherit;
 }
 
+.live-feed .CommentEditor .ql-editor,
+.live-feed .CommentEditor .ql-editor > * {
+  cursor: pointer;
+}
+
 .CommentEditor .ql-editor * {
   background-color: unset !important;
 }
