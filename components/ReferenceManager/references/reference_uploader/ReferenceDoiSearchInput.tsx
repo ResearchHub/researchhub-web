@@ -10,6 +10,8 @@ import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
+import { ClipLoader } from "react-spinners";
+import colors from "~/config/themes/colors";
 
 type Props = {
   onSearchSuccess: (searchMetaData: any) => void;
@@ -92,7 +94,11 @@ export default function ReferenceDoiSearchInput({
             }
           }}
         >
-          {isLoading ? "spin" : <SearchIcon />}
+          {isLoading ? (
+            <ClipLoader color={colors.NEW_BLUE(1)} size={14} />
+          ) : (
+            <SearchIcon />
+          )}
         </Box>
       </Box>
     </Box>
