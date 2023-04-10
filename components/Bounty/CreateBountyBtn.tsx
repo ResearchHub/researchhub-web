@@ -1,13 +1,16 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
-import { useAlert } from "react-alert";
 import Bounty from "~/config/types/bounty";
 import BountyModal from "./BountyModal";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import IconButton from "../Icons/IconButton";
-import { ID } from "~/config/types/root_types";
+import { ID, parseUser } from "~/config/types/root_types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { ModalActions } from "~/redux/modals";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 type Args = {
   withPreview: boolean;
@@ -26,11 +29,19 @@ function CreateBountyBtn({
   originalBounty,
   children
 }: Args): ReactElement {
-  const alert = useAlert();
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const auth = useSelector((state: RootState) => state.auth);
+  const isLoggedIn = auth.authChecked && auth.isLoggedIn;
 
   return (
-    <div className={css(styles.createBountyBtn)}>
+    <div
+      className={css(styles.createBountyBtn)}
+      onClick={() => {
+        if (!isLoggedIn) {
+          dispatch(ModalActions.openLoginModal(true, "Please Sign in to continue."))
+        }
+      }}>
       {/* @ts-ignore */}
       <BountyModal
         isOpen={isModalOpen}
@@ -45,12 +56,12 @@ function CreateBountyBtn({
       />
       {children ? (
         <div onClick={() => {
-          setIsModalOpen(true);
+          isLoggedIn && setIsModalOpen(true);
         }}>{children}</div>
       ) : (
         <IconButton
           onClick={() => {
-            setIsModalOpen(true);
+            isLoggedIn && setIsModalOpen(true);
           }}
         >
           <div>

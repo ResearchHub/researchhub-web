@@ -26,6 +26,7 @@ import { RootState } from "~/redux";
 import { isEmpty as isInputEmpty } from "~/config/utils/nullchecks";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
+import { ModalActions } from "~/redux/modals";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -68,6 +69,7 @@ const CommentEditor = ({
   const currentUser = useSelector((state: RootState) =>
     isInputEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const auth = useSelector((state: RootState) => state.auth);
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
@@ -109,7 +111,10 @@ const CommentEditor = ({
       const _isEmpty = !hasQuillContent({ quill })
       setIsEmpty(_isEmpty);
       if (_isEmpty) {
-        forceShowPlaceholder({ quillRef, placeholderText: commentTypes.find(ct => ct.value === _commentType)?.placeholder })
+        forceShowPlaceholder({
+          quillRef,
+          placeholderText: placeholder
+        })
       }
     }
   }, [_content, isReady]);
@@ -148,9 +153,17 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
-  
+
+  const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
-    <div ref={editorRef} className={`${css(styles.commentEditor)} CommentEditor`}>
+    <div
+      ref={editorRef}
+      className={`${css(styles.commentEditor)} CommentEditor`}
+      onClick={() => {
+        if (!isLoggedIn) {
+          dispatch(ModalActions.openLoginModal(true, "Please Sign in to continue."))
+        }
+    }}>
       <div>
         {handleClose && (
           <IconButton
