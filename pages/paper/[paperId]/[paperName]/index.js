@@ -302,10 +302,10 @@ const Paper = ({
           }}
         ></script>
       </Head>
-      <div className={css(styles.root)} id="documentRoot">
+      <div className={css(styles.root)}>
         <a name="main" />
         <div className={css(styles.container)}>
-          <div className={css(styles.main)}>
+          <div className={css(styles.main)} id="mainContent">
             <div className={css(styles.top)}>
               <div className={css(styles.headerContainer)}>
                 <DocumentHeader

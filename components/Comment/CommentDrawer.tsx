@@ -3,7 +3,7 @@ import moduleColors from "~/components/Comment/lib/colors";
 import { css, StyleSheet } from "aphrodite";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
-import CommentSidebarToggle from "./CommentSidebarToggle";
+import CommentToggle from "./CommentToggle";
 import { useEffect, useState } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import colors from "~/config/themes/colors";
@@ -29,7 +29,7 @@ const CommentDrawer = ({ children, totalCommentCount, isInitialFetchDone }: Args
   return (
     <>
       {isInitialFetchDone && (
-        <CommentSidebarToggle
+        <CommentToggle
           isOpen={isOpen}
           setIsOpen={(isOpen) => {
             setIsOpen(isOpen);

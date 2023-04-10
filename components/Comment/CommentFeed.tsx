@@ -269,7 +269,18 @@ const CommentFeed = ({
   const isNarrowWidthContext = context === "sidebar" || context === "drawer"
   
   return (
-    // @ts-ignore
+    <CommentTreeContext.Provider
+    value={{
+      sort: selectedSortValue,
+      filter: selectedFilterValue,
+      comments,
+      context,
+      onCreate,
+      onUpdate,
+      onFetchMore,
+    }}
+  >         
+    {/* @ts-ignore */}
     <WrapperEl
       {...(context ? { isInitialFetchDone } : {})}
       {...(context ? { totalCommentCount } : {})}
@@ -285,17 +296,7 @@ const CommentFeed = ({
           <CommentPlaceholder />
         </div>
       ) : (
-        <CommentTreeContext.Provider
-        value={{
-          sort: selectedSortValue,
-          filter: selectedFilterValue,
-          comments,
-          context,
-          onCreate,
-          onUpdate,
-          onFetchMore,
-        }}
-      >        
+   <>
           <div className={css(styles.editorWrapper, isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
             <CommentEditor
               editorId="new-thread"
@@ -350,9 +351,10 @@ const CommentFeed = ({
               documentType={document.documentType}
             />
           }
-        </CommentTreeContext.Provider>
+        </>
       )}
     </WrapperEl>
+    </CommentTreeContext.Provider>
   );
 };
 

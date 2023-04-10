@@ -15,6 +15,7 @@ const config = {
     previewMaxChars: 375,
     previewMaxImages: 1,
     fixedPosMaxWidth: 1550,
+    width: 500,
   },
   default: {
     previewMaxChars: 700,
@@ -23,6 +24,9 @@ const config = {
   liveFeed: {
     previewMaxChars: 500,
     previewMaxImages: 1,
+  },
+  toggle: {
+    width: 75
   },
   comment: {
     placeholderCount: 8,

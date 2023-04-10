@@ -252,7 +252,7 @@ const Post = (props) => {
         <a name="main" />
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
-          <div className={css(styles.postPageMain)}>
+          <div className={css(styles.postPageMain)} id="mainContent">
             <PostPageCard
               isEditorOfHubs={isEditorOfHubs}
               isModerator={isModerator}

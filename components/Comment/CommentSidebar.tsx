@@ -3,9 +3,8 @@ import moduleColors from "~/components/Comment/lib/colors";
 import { css, StyleSheet } from "aphrodite";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
-import CommentSidebarToggle from "./CommentSidebarToggle";
+import CommentToggle from "./CommentToggle";
 import { useEffect, useState } from "react";
-import { Comment } from "./lib/types";
 import config from "./lib/config";
 import colors from "~/config/themes/colors";
 
@@ -56,7 +55,7 @@ const CommentSidebar = ({
       >
         <div className={css(styles.feedWrapper)}>
           {isInitialFetchDone && (
-            <CommentSidebarToggle
+            <CommentToggle
               isOpen={isOpen}
               setIsOpen={(isOpen) => {
                 setIsOpen(isOpen);
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
     paddingBottom: "10vh",
   },
   sidebarOpen: {
-    width: 500,
+    width: config.sidebar.width,
   },
   discussionCount: {
     background: colors.LIGHTER_GREY(),
@@ -134,7 +133,7 @@ const styles = StyleSheet.create({
   sidebarFixedOpen: {
     [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
       display: "block",
-      width: 500,
+      width: config.sidebar.width,
       position: "fixed",
       right: 0,
       top: 0,
