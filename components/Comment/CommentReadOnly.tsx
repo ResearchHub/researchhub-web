@@ -36,7 +36,6 @@ const CommentReadOnly = ({
       const trimmedHtml = quillDeltaToHtml({ ops: trimmed });
       setPreviewHtml(trimmedHtml);
     }
-
     const html = quillDeltaToHtml({ ops: content.ops });
     setFullHtml(html);
   }, []);

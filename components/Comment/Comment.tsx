@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   headerWrapper: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
   editorWrapper: {
     marginTop: 15,

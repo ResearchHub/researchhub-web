@@ -315,3 +315,7 @@
   background: #f0f0f0 !important;
   max-width: 800px;
 }
+
+.CommentEditor .ql-editor {
+  white-space: initial;
+}
