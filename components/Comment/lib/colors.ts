@@ -14,12 +14,13 @@ const colors = {
   },
   filters: {
     unselected: {
-      text: globalColors.BLACK(0.6),
+      text: globalColors.BLACK(0.9),
     },
     selected: {
-      background: globalColors.NEW_BLUE(0.1),
-      text: globalColors.NEW_BLUE(1.0),
-    }
+      background: globalColors.LIGHTER_GREY(1.0),
+      text: globalColors.BLACK(0.9),
+    },
+    divider: globalColors.GREY_LINE(1.0),
   },
   toggle: {
     commentIcon: globalColors.MEDIUM_GREY(1.0),
@@ -28,11 +29,13 @@ const colors = {
   },
   bounty: {
     btn: globalColors.ORANGE_DARK2(1.0),
+    contributeBtn: globalColors.ORANGE_LIGHT2(1.0),
     text: globalColors.ORANGE_DARK2(1.0),
-    background: globalColors.ORANGE_LIGHTER(1.0),
+    background: globalColors.ORANGE_LIGHTER(0.6),
   },
   dot: "rgb(200 200 202)",
+  gray: globalColors.BLACK(0.6),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
-}
+};
 
 export default colors;

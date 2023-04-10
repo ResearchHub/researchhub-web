@@ -17,7 +17,7 @@ const AlertTemplate = ({ style, options, message, close }) => {
         right: 0,
         bottom: 0,
         backgroundColor: "rgba(0, 0, 0, 0.5)",
-        zIndex: "11",
+        zIndex: "1000005",
         borderRadius: 5,
       },
     };

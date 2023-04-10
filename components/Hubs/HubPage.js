@@ -376,7 +376,6 @@ class HubPage extends Component {
           <div className={css(styles.row, styles.homeContentContainerBody)}>
             {this.props.isLiveFeed ? (
               <div className={css(styles.liveFeedwrapper)}>
-                <FeedMenu />
                 <LiveFeed hub={hub} isHomePage={home} />
               </div>
             ) : (
@@ -429,8 +428,8 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    paddingLeft: 16,
-    paddingRight: 16,
+    // paddingLeft: 16,
+    // paddingRight: 16,
     [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
       paddingLeft: 28,
       paddingRight: 28,

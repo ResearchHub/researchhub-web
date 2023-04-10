@@ -104,7 +104,7 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    zIndex: 999999,
+    zIndex: 9999999,
     whiteSpace: "pre-wrap",
   },
   load: {

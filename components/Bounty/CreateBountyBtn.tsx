@@ -1,177 +1,92 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
-import { useAlert } from "react-alert";
 import Bounty from "~/config/types/bounty";
 import BountyModal from "./BountyModal";
 import colors from "~/config/themes/colors";
-import numeral from "numeral";
-import ReactTooltip from "react-tooltip";
 import { breakpoints } from "~/config/themes/screen";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import IconButton from "../Icons/IconButton";
+import { ID, parseUser } from "~/config/types/root_types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { ModalActions } from "~/redux/modals";
+import { isEmpty } from "~/config/utils/nullchecks";
+
+type Args = {
+  withPreview: boolean;
+  onBountyAdd: Function;
+  relatedItemId: ID,
+  relatedItemContentType: string,
+  children: any,
+  originalBounty: Bounty,
+}
 
 function CreateBountyBtn({
   withPreview = false,
   onBountyAdd,
-  bountyText,
-  post,
-  bounties,
-  onBountyCancelled,
-  isOriginalPoster,
-  currentUser,
-}): ReactElement {
-  const alert = useAlert();
+  relatedItemId,
+  relatedItemContentType,
+  originalBounty,
+  children
+}: Args): ReactElement {
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  let totalBountyAmount = 0;
-
-  bounties &&
-    bounties.forEach((bounty) => {
-      totalBountyAmount += bounty.amount;
-    });
-
-  const userBounty =
-    bounties &&
-    bounties.find((bounty) => bounty?.createdBy?.id === currentUser?.id);
-
-  const userHasBounty = Boolean(userBounty);
-
-  const closeBounty = () => {
-    alert.show({
-      text: <div>Are you sure you want to close your bounty?</div>,
-      buttonText: "Yes",
-      onClick: () => {
-        Bounty.closeBountyAPI({ bounty: userBounty }).then((bounties) => {
-          onBountyCancelled && onBountyCancelled(bounties);
-        });
-      },
-    });
-  };
-
-  if (userHasBounty) {
-    return null;
-  }
+  const auth = useSelector((state: RootState) => state.auth);
+  const isLoggedIn = auth.authChecked && auth.isLoggedIn;
 
   return (
-    <div className={css(styles.createBountyBtn)}>
-      <ReactTooltip
-        id="bountyTooltip"
-        effect="solid"
-        place="top"
-        className={css(bountyTooltip.tooltipContainer)}
-        delayShow={500}
-      >
-        <div className={css(bountyTooltip.bodyContainer)}>
-          <div className={css(bountyTooltip.title)}>
-            {userHasBounty ? "Close your Bounty" : "Add RSC Bounty"}
-          </div>
-          <div className={css(bountyTooltip.desc)}>
-            {userHasBounty ? (
-              <>
-                {isOriginalPoster ? (
-                  <>
-                    <div>
-                      • Once closed, all group bounties will also be closed
-                    </div>
-                    <div>• Once closed, your RSC will be returned to you</div>
-                  </>
-                ) : (
-                  <div>• Once closed, your RSC will be returned to you</div>
-                )}
-              </>
-            ) : (
-              <>
-                <div>• Offer ResearchCoin to the best solution</div>
-                <div>• Improves chances of quality submissions</div>
-              </>
-            )}
-          </div>
-        </div>
-      </ReactTooltip>
+    <div
+      className={css(styles.createBountyBtn)}
+      onClick={() => {
+        if (!isLoggedIn) {
+          dispatch(ModalActions.openLoginModal(true, "Please Sign in to continue."))
+        }
+      }}>
+      {/* @ts-ignore */}
       <BountyModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
         handleBountyAdded={(bounty) => {
           onBountyAdd(bounty);
         }}
-        hubs={post?.hubs}
-        isOriginalPoster={isOriginalPoster}
-        addBtnLabel={
-          bounties?.length > 0 ? "Contribute to Bounty" : "Add Bounty"
-        }
+        relatedItemId={relatedItemId}
+        relatedItemContentType={relatedItemContentType}
         withPreview={withPreview}
-        bountyText={bountyText}
-        postId={post?.id}
-        unifiedDocId={post?.unifiedDocument?.id}
-        postSlug={post?.unifiedDocument?.document?.slug}
+        originalBounty={originalBounty}
       />
-      <IconButton
-        onClick={() => {
-          userHasBounty ? closeBounty() : setIsModalOpen(true);
-        }}
-      >
-        <button
-          disabled={!currentUser?.id}
-          className={css(styles.addBounty)}
-
+      {children ? (
+        <div onClick={() => {
+          isLoggedIn && setIsModalOpen(true);
+        }}>{children}</div>
+      ) : (
+        <IconButton
+          onClick={() => {
+            isLoggedIn && setIsModalOpen(true);
+          }}
         >
           <div>
             <span className={css(styles.bountyTextContainer)}>
-              {!userHasBounty && (
-                <span className={css(styles.bountyIcon)}>
-                  {/* @ts-ignore */}
-                  <ResearchCoinIcon width={24} height={24} version={3} />
-                </span>
-              )}
               <span
                 data-tip={""}
                 data-for="bountyTooltip"
                 className={css(styles.addBountyLabel)}
               >
-                {userHasBounty ? (
-                  `Close your ${numeral(
-                    isOriginalPoster ? totalBountyAmount : userBounty.amount
-                  ).format("0,0.[0000000000]")} RSC Bounty`
-                ) : !isOriginalPoster && bounties && bounties.length ? (
-                  <span>
-                    Contribute{" "}
-                    <span className={css(styles.desktop)}>ResearchCoin </span>
-                    <span className={css(styles.mobile)}>RSC </span> to the Bounty
+                <div className={css(styles.addBounty)}>
+                  <span className={css(styles.bountyIcon)}>
+                    {/* @ts-ignore */}
+                    <ResearchCoinIcon width={24} height={24} version={3} />
                   </span>
-                ) : (
-                  <span>
-                    Add Bounty
-                  </span>
-                )}
+                  Add Bounty
+                </div>
               </span>
             </span>
           </div>
-        </button>
-      </IconButton>
-      {/* )} */}
+        </IconButton>
+      )}
     </div>
   );
 }
 
-const bountyTooltip = StyleSheet.create({
-  tooltipContainer: {
-    textAlign: "left",
-    maxWidth: 300,
-    padding: 15,
-  },
-  bodyContainer: {},
-  title: {
-    textAlign: "center",
-    color: "white",
-    fontSize: 16,
-    fontWeight: 500,
-    marginBottom: 8,
-  },
-  desc: {
-    fontSize: 14,
-    lineHeight: "20px",
-  },
-});
 
 const styles = StyleSheet.create({
   removeBounty: {
@@ -216,7 +131,10 @@ const styles = StyleSheet.create({
     background: "unset",
     padding: "unset",
     fontFamily: "Roboto",
+    alignItems: "center",
     boxSizing: "border-box",
+    display: "flex",
+    columnGap: "5px",
   },
   addBountyLabel: {
     // fontWeight: 500,

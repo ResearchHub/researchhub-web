@@ -274,49 +274,6 @@ class PostPageCard extends Component {
                       </div>
                     </>
                   )}
-                  {post?.unifiedDocument?.documentType === "question" &&
-                    !userHasBounty && (
-                      <div className={css(styles.createBountyContainer)}>
-                        <CreateBountyBtn
-                          onBountyAdd={(bounty) => {
-                            this.props.setBounties([
-                              ...this.props.bounties,
-                              bounty,
-                            ]);
-                            this.props.setHasBounties(true);
-                          }}
-                          isOriginalPoster={
-                            post.unifiedDocument.createdBy.id === user.id
-                          }
-                          currentUser={user}
-                          bountyText={this.toPlaintext(postBody)}
-                          post={post}
-                          bounties={this.props.bounties}
-                          onBountyCancelled={this.props.onBountyCancelled}
-                        />
-                      </div>
-                    )}
-                  {post?.unifiedDocument?.documentType === "bounty" &&
-                    post?.bountyType === "metastudy" && (
-                      <div className={css(styles.buttonRow)}>
-                        <Button
-                          label={"Start a Meta-Study"}
-                          hideRipples
-                          customButtonStyle={styles.metastudyButton}
-                          onClick={() => {
-                            router.push(
-                              `/hypothesis/create?from=bounty&id=${
-                                post.id
-                              }&postSlug=${
-                                post.slug
-                              }&title=${encodeURIComponent(
-                                post.title
-                              )}&bounty_id=${this.props.bounties[0].id}`
-                            );
-                          }}
-                        />
-                      </div>
-                    )}
                 </div>
               )}
             </ReactPlaceholder>

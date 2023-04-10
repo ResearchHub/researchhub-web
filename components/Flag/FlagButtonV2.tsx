@@ -33,6 +33,7 @@ type Props = {
   successMsgText?: string;
   subHeaderText?: string;
   primaryButtonLabel?: string;
+  children?: any
 };
 
 function FlagButtonV2({
@@ -49,6 +50,7 @@ function FlagButtonV2({
   successMsgText,
   subHeaderText = "I am flagging this content because of:",
   primaryButtonLabel = "Flag content",
+  children,
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
@@ -88,17 +90,25 @@ function FlagButtonV2({
 
   return (
     (<Fragment>
-      <div
-        onClick={(event): void => {
+      {children ? (
+        <div onClick={(event): void => {
           setIsModalOpen(!isModalOpen);
-        }}
-        className={css(styles.flagIcon, flagIconOverride)}
-      >
-        {iconOverride || <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
-        {buttonText && (
-          <span className={css(buttonTextStyle)}>{buttonText}</span>
-        )}
-      </div>
+        }}>
+          {children}
+        </div>
+      ) : (
+        <div
+          onClick={(event): void => {
+            setIsModalOpen(!isModalOpen);
+          }}
+          className={css(styles.flagIcon, flagIconOverride)}
+        >
+          {iconOverride || <FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
+          {buttonText && (
+            <span className={css(buttonTextStyle)}>{buttonText}</span>
+          )}
+        </div>
+      )}
       <BaseModal
         children={
           <div className={css(customModalStyle.modalBody)}>

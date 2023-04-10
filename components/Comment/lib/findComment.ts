@@ -7,22 +7,34 @@ type FoundComment = {
 };
 
 type findArgs = {
-  id: ID;
+  id?: ID;
   comment: Comment;
+  conditions?: Array<{key: string, value: any}>,
   path?: Array<ID>;
 };
 
 type findCommentArgs = {
-  id: ID;
+  id?: ID;
   comments: Comment[];
+  conditions?: Array<{key: string, value: any}>,
 };
 
 const _find = ({
   id,
   comment,
+  conditions,
   path = [],
 }: findArgs): FoundComment | undefined => {
-  if (comment.id === id) {
+  if (conditions) {
+    const isSatisfied = conditions.reduce((satisfied: boolean, cond:any) => satisfied && comment[cond.key] === cond.value, true);
+    if (isSatisfied) {
+      return {
+        comment,
+        path: [...path, id],
+      };      
+    }
+  }
+  else if (comment.id === id) {
     return {
       comment,
       path: [...path, id],
@@ -30,7 +42,7 @@ const _find = ({
   }
   for (let i = 0; i < comment.children.length; i++) {
     const child = comment.children[i];
-    const found = _find({ id, comment: child, path: [...path, comment.id] });
+    const found = _find({ id, comment: child, conditions, path: [...path, comment.id] });
 
     if (found) {
       return found;
@@ -40,10 +52,11 @@ const _find = ({
 
 const findComment = ({
   id,
+  conditions,
   comments,
 }: findCommentArgs): FoundComment | undefined => {
   for (let i = 0; i < comments.length; i++) {
-    const found = _find({ id, comment: comments[i] });
+    const found = _find({ id, comment: comments[i], conditions });
 
     if (found) {
       return found;
@@ -51,5 +64,22 @@ const findComment = ({
   }
 };
 
+
+export const findAllComments = ({
+  id,
+  conditions,
+  comments,
+}: findCommentArgs): FoundComment[] => {
+  const found:FoundComment[] = []
+  for (let i = 0; i < comments.length; i++) {
+    const c = _find({ id, comment: comments[i], conditions });
+
+    if (c) {
+      found.push(c);
+    }
+  }
+
+  return found;
+};
 
 export default findComment;

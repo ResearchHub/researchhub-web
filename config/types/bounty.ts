@@ -10,6 +10,8 @@ import numeral from "numeral";
 import { captureEvent } from "../utils/events";
 import { ContentType, parseContentType } from "./contentType";
 import Router from "next/router";
+import { Comment } from "~/components/Comment/lib/types";
+
 
 export function formatBountyAmount({ amount, withPrecision = true }) {
   if (withPrecision) {
@@ -17,6 +19,10 @@ export function formatBountyAmount({ amount, withPrecision = true }) {
   } else {
     return Number(parseFloat(amount).toFixed(0)).toLocaleString();
   }
+}
+
+export const tallyAmounts = ({ bounties }:  { bounties: Bounty[] }) => {
+  return bounties.reduce((total, b:Bounty) => total + b.amount, 0);
 }
 
 export enum BOUNTY_STATUS {
@@ -38,6 +44,37 @@ export const fetchBounty = ({ unifiedDocId }) => {
     });
 };
 
+export const parseBountyList = (rawBounties: any[], relatedItem?: RelatedItem): Bounty[] => {
+
+  const parentBounties = {};
+  const allBounties:Bounty[] = [];
+  for (let i = 0; i < rawBounties.length; i++) {
+    const current = new Bounty(rawBounties[i], relatedItem);
+    
+    if (!current.parentId) {
+      parentBounties[String(current.id)] = current;
+    }
+
+    allBounties.push(current);
+  }
+
+  for (let i = 0; i < allBounties.length; i++) {
+    const current = allBounties[i];
+    const parent = parentBounties[String(current.parentId)];
+    if (parent) {
+      parent.appendChild(current);
+      current.parent = parent;
+    }
+  }
+
+  return allBounties;
+}
+
+export type RelatedItem = {
+  type: "comment",
+  object: Comment
+}
+
 export default class Bounty {
   _id: ID;
   _createdDate: string;
@@ -49,11 +86,13 @@ export default class Bounty {
   _status: BOUNTY_STATUS;
   _expiration_date: string;
   _contentType: ContentType | undefined;
-  _relatedItem: any;
   _effortLevel: string;
-  _parentId?: ID; // Bounty contributions are linked by parentId
+  _parent: Bounty|undefined; // Bounty contributions are linked by parentId
+  _parentId: ID|undefined; 
+  _children: Bounty[];
+  _relatedItem: RelatedItem|undefined;
 
-  constructor(raw: any) {
+  constructor(raw: any, relatedItem?: RelatedItem|undefined) {
     this._id = raw.id;
     this._createdDate = formatDateStandard(raw.created_date);
     this._timeRemaining = timeToRoundUp(raw.expiration_date);
@@ -73,20 +112,23 @@ export default class Bounty {
         : raw.content_type;
     this._relatedItem = raw.item;
     this._effortLevel = raw.effort_level;
-    this._parentId = raw.parent_id;
+    this._children = [];
+    this._parentId = raw?.parent?.id;
+    this._relatedItem = relatedItem;
   }
 
-  static awardAPI({ bountyId, recipientUserId, objectId, contentType }) {
+  static awardAPI({ bountyId, recipientUserId, objectId, amount, contentType = "rhcommentmodel" }):Promise<Bounty> {
     const data = {
       recipient: recipientUserId,
       content_type: contentType,
       object_id: objectId,
+      amount,
     };
 
     const url = generateApiUrl("bounty") + bountyId + "/approve_bounty/";
 
     return new Promise((resolve, reject) => {
-      fetch(url, api.POST_CONFIG(data))
+      fetch(url, api.POST_CONFIG([data]))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -96,7 +138,7 @@ export default class Bounty {
           captureEvent({
             error,
             msg: "Failed to award bounty",
-            data: { bountyId, recipientUserId, contentType },
+            data: { bountyId, recipientUserId, contentType, amount },
           });
           return reject(error);
         });
@@ -106,7 +148,6 @@ export default class Bounty {
   static createAPI({
     bountyAmount,
     itemObjectId,
-    effortLevel,
     itemContentType = "researchhubunifieddocument",
   }) {
     // TODO: Change hard coded value
@@ -120,7 +161,6 @@ export default class Bounty {
       amount: parseFloat(bountyAmount),
       item_content_type: itemContentType,
       item_object_id: itemObjectId,
-      effort_level: effortLevel,
       expiration_date: thirtyDaysFromNow,
     };
 
@@ -172,9 +212,17 @@ export default class Bounty {
     return this._id;
   }
 
-  get parentId(): ID {
+  get parentId(): ID|undefined {
     return this._parentId;
   }
+
+  get parent(): Bounty|undefined {
+    return this._parent;
+  }
+
+  get children(): Bounty[] {
+    return this._children;
+  }  
 
   get createdDate(): string {
     return this._createdDate;
@@ -192,6 +240,24 @@ export default class Bounty {
 
   get timeRemaining(): string {
     return this._timeRemaining;
+  }
+
+  getUniqueContributors({ openOnly = true }): RHUser[] {
+    const uniqueContributors:Array<RHUser> = [];
+
+    if (this.createdBy) {
+      uniqueContributors.push(this.createdBy);
+    }
+
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      const isAlreadyInList = Boolean(uniqueContributors.find(c => c.id === child!.createdBy!.id));
+      if (!isAlreadyInList && child.createdBy && (openOnly ? child.isOpen : true)) {
+        uniqueContributors.push(child.createdBy);
+      }
+    }
+
+    return uniqueContributors;
   }
 
   get timeRemainingInMinutes(): number {
@@ -217,7 +283,7 @@ export default class Bounty {
     return this._contentType;
   }
 
-  get relatedItem(): any {
+  get relatedItem(): RelatedItem|undefined {
     return this._relatedItem;
   }
 
@@ -228,4 +294,28 @@ export default class Bounty {
   get effortLevel(): string {
     return this._effortLevel;
   }
+
+  appendChild(bounty:Bounty): void {
+    this._children.push(bounty);
+  }
+
+  set parent(bounty:Bounty|undefined) {
+    this._parent = bounty;
+  }  
+
+  set createdBy(user:RHUser|null) {
+    this._createdBy = user;
+  }    
+
+  set children(children:Array<Bounty>) {
+    this._children = children;
+  }      
+
+  set status(status:BOUNTY_STATUS) {
+    this._status = status;
+  }        
+
+  set relatedItem(relatedItem:RelatedItem|undefined) {
+    this._relatedItem = relatedItem;
+  }          
 }

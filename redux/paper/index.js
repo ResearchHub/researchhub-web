@@ -158,7 +158,7 @@ export const PaperActions = {
   getUserVote: (paperId) => {
     return async (dispatch) => {
       const response = await fetch(
-        API.USER_VOTE(paperId),
+        API.USER_VOTE({ paperId }),
         API.GET_CONFIG()
       ).catch(handleCatch);
 

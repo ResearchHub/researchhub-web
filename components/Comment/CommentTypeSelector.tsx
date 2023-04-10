@@ -25,6 +25,11 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
     onOutsideClick: () => setIsOpen(false),
   });
 
+  const _handleSelect = (value) => {
+    setIsOpen(false);
+    handleSelect(value);
+  };
+
   return (
     <div className={css(styles.commentTypeSelector)}>
       <div className={`${css(styles.trigger)} comment-type-dropdown`}>
@@ -44,10 +49,11 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
         ref={dropdownRef}
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
       >
-        {commentTypes.map((t) => (
+        {commentTypes.map((t, idx) => (
           <div
+            key={`type-${idx}`}
             className={css(styles.dropdownOpt)}
-            onClick={() => handleSelect(t)}
+            onClick={() => _handleSelect(t.value)}
           >
             <div className={css(styles.dropdownOptIcon)}>{t.icon}</div>
             <div className={css(styles.dropdownOptLabel)}>{t.label}</div>
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
     textTransform: "capitalize",
     padding: 0,
-    borderRadius: 10,
+    borderRadius: 4,
     marginTop: 5,
     marginLeft: 5,
     width: 150,

@@ -1,149 +1,165 @@
-.ql-container {
+.CommentEditor .ql-container {
   border: none !important;
 }
-.ql-container .ql-editor {
-  min-height: 40px;
+.CommentEditor .ql-container .ql-editor[contenteditable="true"] {
+  min-height: 50px;
 }
 /* Placeholder */
-.ql-editor.ql-blank::before {
+.CommentEditor .ql-editor.ql-blank::before {
   left: 0 !important;
-  color: rgba(124, 121, 137, 1);
-  font-size: 14px;
+  color: rgb(168, 167, 169, 1);
+  font-size: 15px;
   font-style: normal;
 }
 
-.quill-preview-mode .ql-editor > :last-child::after {
+.CommentEditor .quill-preview-mode .ql-editor > :last-child::after {
   content: "...";
 }
 
-.ql-snow .ql-editor blockquote {
+.CommentEditor .ql-snow .ql-editor blockquote {
   padding-left: 10px !important;
 }
 
-.ql-editor.peer-review.ql-blank::before {
-  top: 25px !important;
+.CommentEditor .peer-review .ql-editor.ql-blank::before {
+  margin-top: 23px;
 }
 
-.ql-editor.ql-blank::after {
+.CommentEditor .ql-editor.ql-blank::after {
   content: attr(data-placeholder);
   pointer-events: none;
   display: none;
   margin-top: -1.42rem;
-  font-size: 14px;
+  font-size: 15px;
 }
 
-.ql-editor {
+.CommentEditor .ql-editor {
   /* cursor: text; */
   padding: 0 !important;
   font-family: "Roboto" !important;
-  font-size: 14px !important;
+  font-size: 15px !important;
 }
 
-.toolbar {
+.CommentEditor .toolbar {
   background: #ffffff;
 }
 
-.ql-disabled {
+.CommentEditor .ql-formats .ql-video {
+  margin: 0;
+}
+
+.CommentEditor .ql-disabled {
   cursor: "default";
 }
 
-.ql-disabled .ql-editor {
-  font-size: 14px;
+.CommentEditor .ql-disabled .ql-editor {
+  font-size: 15px;
   line-height: 26px;
 }
 
-.ql-toolbar {
+.CommentEditor .ql-toolbar {
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
   /* max-height: 70px; */
 }
 
-.ql-formats {
+.CommentEditor .ql-formats {
   border-spacing: 0px !important;
   margin-right: 0;
 }
 
-.ql-snow.ql-toolbar:after {
+.CommentEditor .ql-snow.ql-toolbar:after {
   display: block !important;
 }
 
-.ql-syntax {
+.CommentEditor .ql-syntax {
   background-color: #f7f7f7 !important;
   border: 1px solid #d5d5d5;
   color: rgb(0, 0, 0) !important;
 }
 
-.ql-clipboard {
+.CommentEditor .ql-clipboard {
   position: relative;
 }
 
-.ql-tooltip {
-  /* top: -14px !important;
-  left: unset !important;
-  right: -14px !important;
-  transform: unset !important; */
+.CommentEditor .ql-tooltip {
   z-index: 10;
 }
-.ql-tooltip[data-mode="video"] {
+.CommentEditor .ql-tooltip[data-mode="video"] {
   left: 0 !important;
 }
 
-.ql-editor > p {
+.CommentEditor .ql-editor > p {
   font-size: inherit;
   color: inherit;
 }
 
-.ql-editor * {
+.live-feed .CommentEditor .ql-editor,
+.live-feed .CommentEditor .ql-editor > * {
+  cursor: pointer;
+}
+
+.CommentEditor .ql-editor * {
   background-color: unset !important;
 }
 
-.ql-editor > p > img {
+.CommentEditor .ql-editor > p > img {
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-width: 600px;
   max-height: 600px;
+  margin-top: 1em;
+  margin-bottom: 1em;
   /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */
 }
 
-.ql-editor > p > video {
+.CommentEditor .ql-editor > p > video {
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  max-width: 100%;
+  max-width: 600px;
   max-height: 600px;
 }
 
-.ql-editor > blockquote {
+.CommentEditor .ql-editor > blockquote {
   color: #656565;
   font-style: italic;
 }
 
-.ql-video {
+.CommentEditor .ql-video {
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  height: 300px;
-  width: 600px;
-  max-width: 100%;
+  height: 400px;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 4px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 @media only screen and (max-width: 767px) {
-  .ql-video {
+  .CommentEditor .ql-video {
     margin-left: auto;
     margin-right: auto;
     display: flex;
-    height: 200px;
-    width: 400px;
+    height: 300px;
   }
 }
 
-@media only screen and (max-width: 414px) {
+.CommentEditor.CommentEditorForNarrowWidth .ql-video {
+  height: 300px;
+  width: 100%;
+}
+
+@media only screen and (max-width: 415px) {
   /* .ql-editor { */
   /* font-size: 12px; */
   /* } */
-  .ql-video {
+  .CommentEditor .ql-video {
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -152,25 +168,25 @@
   }
 }
 
-.ql-editor h1,
-.ql-editor h2,
-.ql-editor h3,
-.ql-editor h4,
-.ql-editor h5,
-.ql-editor h6,
-.ql-editor strong {
-  font-size: 14px !important;
+.CommentEditor .ql-editor h1,
+.CommentEditor .ql-editor h2,
+.CommentEditor .ql-editor h3,
+.CommentEditor .ql-editor h4,
+.CommentEditor .ql-editor h5,
+.CommentEditor .ql-editor h6,
+.CommentEditor .ql-editor strong {
+  font-size: 15px !important;
   font-weight: 600;
   line-height: unset;
 }
 
-.ql-editor ul,
-.ql-editor ol {
-  font-size: 14px;
+.CommentEditor.ql-editor ul,
+.CommentEditor .ql-editor ol {
+  font-size: 15px;
   padding-left: 0;
 }
 
-.ql-full-editor {
+.CommentEditor .ql-full-editor {
   display: none;
   bottom: 45px;
   position: absolute;
@@ -180,103 +196,101 @@
   z-index: 2;
   background: white;
 }
-.ql-full-editor-visible {
+.CommentEditor .ql-full-editor-visible {
   display: block;
 }
 
-.ql-formats > button {
+.CommentEditor .ql-formats > button {
   color: rgb(124, 121, 137);
   height: 24px !important;
   padding: 3px 3px !important;
   margin-left: 2px !important;
   width: auto !important;
 }
-.ql-formats > button.ql-blockquote {
+.CommentEditor .ql-formats > button.ql-blockquote {
   margin-left: 0;
   margin-top: -1px;
 }
 
-.ql-formats > button.ql-link {
-  transform: rotate(-45deg) !important;
+.CommentEditor .ql-formats > button.ql-link {
   height: 20px !important;
   margin-top: 1px;
 }
+.CommentEditor .ql-formats > button.ql-link svg {
+  transform: rotate(-45deg) !important;
+}
 
-/* .ql-video {
-  margin-left: 4px;
-} */
-.show-full-editor {
+.CommentEditor .show-full-editor {
   margin-left: 3px;
   display: inline-flex !important;
   align-items: center;
   color: black;
 }
 
-/* .video-stream {
-  height: 250px;
-  width: 400px;
-} */
-
-.ql-toolbar {
+.CommentEditor .ql-toolbar {
   background: white;
 }
-.ql-toolbar.ql-snow {
+.CommentEditor .ql-toolbar.ql-snow {
   border: 0 !important;
   padding-left: 0;
   padding-top: 13px;
   display: flex;
 }
 
-.ql-review-category {
+.CommentEditor .ql-review-category {
   display: flex;
 }
 
-.ql-review-category-label {
-  font-size: 14px;
+.CommentEditor .ql-review-category-label {
+  font-size: 15px;
   font-weight: 600;
 }
 
-.ql-review-category-rating {
+.CommentEditor .ql-review-category-rating {
   margin-left: auto;
 }
 
-.ql-peer-review-rating-block {
+.CommentEditor .ql-peer-review-rating-block {
   white-space: normal;
 }
 
-.quill .ql-editor[contenteditable="false"] .ql-peer-review-rating-block {
+.CommentEditor
+  .quill
+  .ql-editor[contenteditable="false"]
+  .ql-peer-review-rating-block {
   margin-bottom: 7px;
 }
 
-.ql-review-category-placeholder {
+.CommentEditor .ql-review-category-placeholder {
   color: rgb(124, 121, 137);
 }
 
-.ql-snow .ql-stroke {
+.CommentEditor .ql-snow .ql-stroke {
   stroke: rgb(124, 121, 137) !important;
 }
-.ql-snow .ql-fill,
-.ql-snow .ql-stroke.ql-fill {
+.CommentEditor .ql-snow .ql-fill,
+.CommentEditor .ql-snow .ql-stroke.ql-fill {
   fill: rgb(124, 121, 137) !important;
 }
 
-.ql-snow .ql-editor a {
+.CommentEditor .ql-snow .ql-editor a {
   color: rgb(57, 113, 255) !important;
 }
 
-.ql-up {
+.CommentEditor .ql-up {
   font-size: 10px;
   margin-left: 5px;
+  height: 10px;
 }
 
-.quill .ql-editor[contenteditable="false"] .starRating {
+.CommentEditor .quill .ql-editor[contenteditable="false"] .starRating {
   cursor: initial !important;
 }
 
-.quill .ql-editor[contenteditable="true"] {
+.CommentEditor .quill .ql-editor[contenteditable="true"] {
   min-height: 5em;
 }
-button.ql-active {
+.CommentEditor button.ql-active {
   background-color: rgba(32, 33, 36, 0.122) !important;
   border: none !important;
   box-shadow: none !important;
@@ -286,29 +300,30 @@ button.ql-active {
   color: black !important;
 }
 
-.ql-active .ql-stroke {
+.CommentEditor .ql-active .ql-stroke {
   stroke: black !important;
 }
 
-.ql-active .ql-fill {
+.CommentEditor .ql-active .ql-fill {
   fill: black !important;
 }
 
-.ql-toolbar button:hover {
+.CommentEditor .ql-toolbar button:hover {
   color: black !important;
 }
-.ql-toolbar button:hover .ql-stroke {
+.CommentEditor .ql-toolbar button:hover .ql-stroke {
   stroke: black !important;
 }
 
-.ql-toolbar button:hover .ql-fill {
+.CommentEditor .ql-toolbar button:hover .ql-fill {
   fill: black !important;
 }
 
-/* .ql-toolbar button:hover .ql-fill {
-  stroke: black !important;
-} */
-
-.ql-editor pre {
+.CommentEditor .ql-editor pre {
   background: #f0f0f0 !important;
+  max-width: 800px;
+}
+
+.CommentEditor .ql-editor {
+  white-space: initial;
 }

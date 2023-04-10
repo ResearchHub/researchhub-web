@@ -16,38 +16,15 @@ import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
 import Link from "next/link";
 import { isEmpty } from "~/config/utils/nullchecks";
+import CommentReadOnly from "~/components/Comment/CommentReadOnly";
+import config from "~/components/Comment/lib/config";
+
 
 type Args = {
   entry: Contribution;
   actions: Array<any>;
   setHubsDropdownOpenForKey?: Function;
   hubsDropdownOpenForKey?: string;
-};
-
-const _getPrimaryUrl = (entry: Contribution): string => {
-  const { contentType } = entry;
-  let { item } = entry;
-
-  switch (contentType.name) {
-    case "comment":
-      item = item as CommentContributionItem;
-      return getUrlToUniDoc(item.unifiedDocument) + "#comments";
-    case "rsc_support":
-      item = item as RscSupportContributionItem;
-      return getUrlToUniDoc(item?.source.unifiedDocument);
-    case "bounty":
-      item = item as BountyContributionItem;
-      return getUrlToUniDoc(entry?.relatedItem?.unifiedDocument);
-    case "paper":
-      item = item as PaperContributionItem;
-      return getUrlToUniDoc(item?.unifiedDocument);
-    case "hypothesis":
-    case "post":
-    case "question":
-    default:
-      item = item as PostContributionItem;
-      return getUrlToUniDoc(item?.unifiedDocument);
-  }
 };
 
 const ContributionEntry = ({
@@ -62,89 +39,109 @@ const ContributionEntry = ({
 
   let title: string | ReactNode;
   let body: string | ReactNode;
-  switch (contentType.name) {
-    case "comment":
-      showActions = true;
-      item = item as CommentContributionItem;
-      const formattedText = !isEmpty(item.plainText)
-        ? item.plainText
-        : entry?.raw?.item?.text?.plainText ?? "";
-      body = (
-        <span className={css(styles.commentBody)}>
-          {truncateText(formattedText, 300)}
-        </span>
-      );
-      break;
 
-    case "rsc_support":
-      item = item as RscSupportContributionItem;
+  try {
+    switch (contentType.name) {
+      case "comment":
+        showActions = true;
 
-      if (item.source.contentType.name === "comment") {
+        item = item as CommentContributionItem;
         body = (
           <span className={css(styles.commentBody)}>
-            {truncateText(item?.source.plainText, 300)}
+            <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
           </span>
         );
-      } else {
-        body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
+        break;
+
+      case "rsc_support":
+        item = item as RscSupportContributionItem;
+
+        if (item.source.contentType.name === "comment") {
+          body = (
+            <span className={css(styles.commentBody)}>
+              <CommentReadOnly content={item.source.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            </span>
+          );
+        } else {
+          body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
+          title = (
+            <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
+              {item?.source.unifiedDocument?.document?.title}
+            </ALink>
+          );
+        }
+        break;
+
+        case "bounty":
+        item = item as BountyContributionItem;
+        
+        if (item.content) {
+          body = (
+            <span className={css(styles.commentBody)}>
+              <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            </span>
+          );
+        }
+        else {
+          title = (
+            <ALink href={getUrlToUniDoc(item.unifiedDocument)}>
+              {item.unifiedDocument?.document?.title}
+            </ALink>
+          );
+          body = truncateText(
+            entry.relatedItem?.unifiedDocument?.document?.body,
+            300
+          );
+        }
+
+        break;
+
+      case "hypothesis":
+      case "post":
+      case "question":
+      case "paper":
+        // default:
+        showActions = true;
+        item =
+          contentType.name === "hypothesis"
+            ? (item as HypothesisContributionItem)
+            : contentType.name === "post"
+              ? (item as PostContributionItem)
+              : (item as PaperContributionItem);
+
+        
+        body = truncateText(
+          item?.unifiedDocument?.document?.body ||
+          // @ts-ignore
+          item?.abstract ||
+          // @ts-ignore
+          item?.renderable_text,
+          300
+        );
+        if (contentType.name === "hypothesis") {
+          /* below is a hack (need to address in the future) */
+          item.unifiedDocument.documentType = "hypothesis";
+          item.unifiedDocument.document = { id: item.id, slug: item.slug };
+          // @ts-ignore
+          body = item.renderable_text;
+        }
         title = (
-          <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
-            {item?.source.unifiedDocument?.document?.title}
+          <ALink overrideStyle={styles.documentLink} href={getUrlToUniDoc(item?.unifiedDocument)}>
+            {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
           </ALink>
         );
-      }
-      break;
-
-    case "bounty":
-      title = (
-        <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
-          {entry.relatedItem?.unifiedDocument?.document?.title}
-        </ALink>
-      );
-
-      body = truncateText(
-        entry.relatedItem?.unifiedDocument?.document?.body,
-        300
-      );
-      break;
-
-    case "hypothesis":
-    case "post":
-    case "question":
-    case "paper":
-    default:
-      showActions = true;
-      item =
-        contentType.name === "hypothesis"
-          ? (item as HypothesisContributionItem)
-          : contentType.name === "post"
-          ? (item as PostContributionItem)
-          : (item as PaperContributionItem);
-
-      // @ts-ignore
-      body = truncateText(
-        item?.unifiedDocument?.document?.body ||
-          item?.abstract ||
-          item?.renderable_text,
-        300
-      );
-      if (contentType.name === "hypothesis") {
-        /* below is a hack (need to address in the future) */
-        item.unifiedDocument.documentType = "hypothesis";
-        item.unifiedDocument.document = { id: item.id, slug: item.slug };
-        body = item.renderable_text;
-      }
-      title = (
-        <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
-          {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
-        </ALink>
-      );
-      break;
+        break;
+      default:
+        console.warn("[Contribution] Could not render contribution item", item);
+    }
+  }
+  catch (error) {
+    console.warn("[Contribution] Could not render", entry)
+    return null;
   }
 
-  const primaryUrl = _getPrimaryUrl(entry);
   return (
-    <Link href={primaryUrl} className={css(styles.linkWrapper)}>
+    <>
       <div className={css(styles.entryContent)}>
         <ContributionHeader entry={entry} />
         <div className={css(styles.highlightedContentContainer)}>
@@ -160,7 +157,7 @@ const ContributionEntry = ({
               </div>
             )}
           </div>
-          {showActions && (
+          {/* {showActions && (
             <div className={css(styles.actions)}>
               {actions.map(
                 (action, idx) =>
@@ -176,19 +173,14 @@ const ContributionEntry = ({
                   )
               )}
             </div>
-          )}
+          )} */}
         </div>
       </div>
-    </Link>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  linkWrapper: {
-    textDecoration: "none",
-    color: "inherit",
-    width: "100%",
-  },
   entryContent: {
     fontSize: 14,
     lineHeight: "20px",
@@ -209,13 +201,15 @@ const styles = StyleSheet.create({
   },
   details: {},
   highlightedContentContainer: {
-    padding: "7px 0px 0px 0px",
+    padding: "15px 0px 0px 0px",
     marginTop: 0,
     position: "relative",
     display: "flex",
     justifyContent: "space-between",
   },
-  highlightedContent: {},
+  highlightedContent: {
+    width: "100%",
+  },
   textContainer: {
     display: "flex",
   },
@@ -227,7 +221,8 @@ const styles = StyleSheet.create({
   },
   body: {},
   commentBody: {
-    fontStyle: "italic",
+    cursor: "pointer",
+    width: "100%",
   },
   hubDropdownContainer: {
     display: "inline-block",
@@ -257,6 +252,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
     display: "flex",
   },
+  documentLink: {
+    fontWeight: 500,
+  },  
 });
 
 export default ContributionEntry;

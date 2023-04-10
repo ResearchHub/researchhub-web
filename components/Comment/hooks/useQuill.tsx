@@ -11,6 +11,7 @@ import {
   faLinkSimple,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
+import QuillPeerReviewRatingBlock from "../lib/quillPeerReviewRatingBlock";
 
 const theme = "snow";
 
@@ -91,6 +92,7 @@ export const useQuill = (
     quill: undefined as Quill | undefined,
     editorRef: quillRef,
     editor: undefined as Quill | undefined,
+    isReady: false,
   });
 
   useEffect(() => {
@@ -104,24 +106,30 @@ export const useQuill = (
         theme: options.theme || theme,
       });
 
-      const MagicUrl = require("quill-magic-url").default;
-      obj.Quill.register("modules/magicUrl", MagicUrl);
-      const icons = obj.Quill.import("ui/icons");
-      icons.video = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faVideo} />
-      );
-      icons.image = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faImagePolaroid} />
-      );
-      icons.link = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faLinkSimple} />
-      );
-      icons.blockquote = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faQuoteLeft} />
-      );
+      if (!options.readOnly) {
+        const MagicUrl = require("quill-magic-url").default;
+        obj.Quill.register("modules/magicUrl", MagicUrl);
+
+        obj.Quill.register(QuillPeerReviewRatingBlock);
+        obj.Quill.register("modules/magicUrl", MagicUrl);
+
+        const icons = obj.Quill.import("ui/icons");
+        icons.video = ReactDOMServer.renderToString(
+          <FontAwesomeIcon icon={faVideo} />
+        );
+        icons.image = ReactDOMServer.renderToString(
+          <FontAwesomeIcon icon={faImagePolaroid} />
+        );
+        icons.link = ReactDOMServer.renderToString(
+          <FontAwesomeIcon icon={faLinkSimple} />
+        );
+        icons.blockquote = ReactDOMServer.renderToString(
+          <FontAwesomeIcon icon={faQuoteLeft} />
+        );
+      }
 
       const quill = new obj.Quill(quillRef.current, opts);
-      setObj(assign(assign({}, obj), { quill, editor: quill }));
+      setObj(assign(assign({}, obj), { quill, editor: quill, isReady: true }));
     }
     setIsLoaded(true);
   }, [isLoaded, obj, options]);

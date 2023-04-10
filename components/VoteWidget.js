@@ -257,9 +257,6 @@ const VoteButton = (props) => {
     style = [styles.iconDisabled];
   }
 
-  if (selected) {
-    style.push(styles.selected);
-  }
   if (horizontalView) {
     style.push(styles.horizontalViewButton);
     if (right) {
@@ -277,6 +274,10 @@ const VoteButton = (props) => {
     style.push(styleClass);
   }
 
+  if (selected) {
+    style.push(styles.selected);
+  }
+
   return (
     <div className={css(...style)} onClick={!disabled && onClick}>
       {props.children}
@@ -287,17 +288,13 @@ const VoteButton = (props) => {
 const UpvoteButton = (props) => {
   return (
     <VoteButton {...props} right={props.horizontalView}>
-      <FontAwesomeIcon icon={faUp}></FontAwesomeIcon>
+      {props.icon}
     </VoteButton>
   );
 };
 
 const DownvoteButton = (props) => {
-  return (
-    <VoteButton {...props}>
-      <FontAwesomeIcon icon={faDown}></FontAwesomeIcon>
-    </VoteButton>
-  );
+  return <VoteButton {...props}>{props.icon}</VoteButton>;
 };
 
 function getScore(props) {

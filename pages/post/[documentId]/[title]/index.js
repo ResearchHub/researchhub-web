@@ -1,5 +1,4 @@
 import API from "~/config/api";
-import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Error from "next/error";
 import Head from "~/components/Head";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
@@ -24,6 +23,8 @@ import { Post as PostDoc } from "~/config/types/post";
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { trackEvent } from "~/config/utils/analytics";
+import CommentFeed from "~/components/Comment/CommentFeed";
+import config from "~/components/Comment/lib/config";
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -50,7 +51,6 @@ const Post = (props) => {
 
   const store = useStore();
   const initialPost = props?.initialPost || {};
-
   const currentUser = getCurrentUser();
   const [post, setPost] = useState(initialPost);
   const [postV2, setPostV2] = useState(new PostDoc(initialPost));
@@ -60,18 +60,29 @@ const Post = (props) => {
   const [allBounties, setAllBounties] = useState([]);
   const [threads, setThreads] = useState([]);
   const [shareURL, setShareURL] = useState("");
+  const [screenSizeAtLoading, setScreenSizeAtLoading] = useState(null);
 
   useEffect(() => {
-    const _initialPost = props?.initialPost;
-    if (_initialPost) {
-      setPost(_initialPost);
-      const formattedPost = new PostDoc(_initialPost);
-      setPostV2(formattedPost);
-    }
-  }, [props]);
+    const initialRun = async () => {
+      const _initialPost = props?.initialPost;
+      if (_initialPost) {
+        setPost(_initialPost);
+        const userVote = await getUserVote(_initialPost.id);
+        _initialPost.user_vote = userVote;
+        const formattedPost = new PostDoc(_initialPost);
+        setPostV2(formattedPost);
+      }
+    };
+
+    initialRun();
+  }, []);
 
   useEffect(() => {
     setShareURL(window.location.href);
+  }, []);
+
+  useEffect(() => {
+    setScreenSizeAtLoading(window.innerWidth);
   }, []);
 
   useEffect(() => {
@@ -94,6 +105,20 @@ const Post = (props) => {
       setCount(post.discussion_count);
     }
   }, [post]);
+
+  const getUserVote = async (documentId) => {
+    const response = await fetch(
+      API.USER_VOTE({ documentId, documentType: "post" }),
+      API.GET_CONFIG()
+    );
+
+    if (response.ok) {
+      const json = await response.json();
+      return json;
+    } else {
+      return null;
+    }
+  };
 
   const onBountyCancelled = (bountiesCancelled) => {
     const bountyMap = {};
@@ -208,6 +233,10 @@ const Post = (props) => {
     currUserID,
     hubs: post?.hubs ?? [],
   });
+  const isQuestion = initialPost.document_type === "QUESTION";
+  const commentSectionAsDrawer =
+    screenSizeAtLoading > 0 && screenSizeAtLoading <= breakpoints.small.int;
+  const commentSectionAsSidebar = !isQuestion;
 
   return !isNullOrUndefined(post) && Object.keys(post).length > 0 ? (
     <div>
@@ -219,10 +248,11 @@ const Post = (props) => {
         canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
       />
       <PaperBanner document={post} documentType="post" />
-      <div className={css(styles.postPageRoot)}>
+      <div className={css(styles.postPageRoot, isQuestion && styles.question)}>
+        <a name="main" />
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
-          <div className={css(styles.postPageMain)}>
+          <div className={css(styles.postPageMain)} id="mainContent">
             <PostPageCard
               isEditorOfHubs={isEditorOfHubs}
               isModerator={isModerator}
@@ -239,34 +269,59 @@ const Post = (props) => {
               onBountyCancelled={onBountyCancelled}
               shareUrl={shareURL}
             />
-            <div className={css(styles.postPageSection)}>
-              <a name="comments" id="comments" />
-              {postV2.isReady && (
-                <DiscussionTab
-                  hostname={process.env.HOST}
-                  documentType={postV2.unifiedDocument.documentType}
-                  post={post}
-                  bountyType={postV2.unifiedDocument.documentType}
-                  setHasBounties={setHasBounties}
-                  setThreadProp={(_threads) => {
-                    setThreads(_threads);
+            {commentSectionAsDrawer ? (
+              <CommentFeed
+                document={postV2}
+                context={"drawer"}
+                onCommentCreate={() => {
+                  setCount(discussionCount + 1);
+                  postV2.discussionCount = discussionCount + 1;
+                  setPostV2(postV2);
+                }}
+                totalCommentCount={discussionCount}
+              />
+            ) : !commentSectionAsSidebar ? (
+              <div className={css(styles.postPageSection)}>
+                <a name="comments" id="comments" />
+                <div className={css(styles.discussionSectionHeader)}>
+                  <h3 className={css(styles.discussionSectionTitle)}>
+                    Conversation
+                  </h3>
+                  {postV2.isReady && (
+                    <span className={css(styles.discussionCount)}>
+                      {discussionCount}
+                    </span>
+                  )}
+                </div>
+                <CommentFeed
+                  document={postV2}
+                  previewModeAsDefault={false}
+                  onCommentCreate={() => {
+                    setCount(discussionCount + 1);
+                    postV2.discussionCount = discussionCount + 1;
+                    setPostV2(postV2);
                   }}
-                  setAllBounties={setAllBounties}
-                  setBounties={setBounties}
-                  postId={post.id}
-                  showBountyBtn={
-                    post?.document_type && post.document_type !== "QUESTION"
-                  }
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  isCollapsible={false}
-                  bounties={bounties || post.bounties}
-                  handleAwardBounty={handleAwardBounty}
+                  totalCommentCount={discussionCount}
                 />
-              )}
-            </div>
+              </div>
+            ) : null}
           </div>
         </div>
+
+        {commentSectionAsSidebar && !commentSectionAsDrawer && (
+          <>
+            <CommentFeed
+              document={postV2}
+              context="sidebar"
+              onCommentCreate={() => {
+                setCount(discussionCount + 1);
+                postV2.discussionCount = discussionCount + 1;
+                setPostV2(postV2);
+              }}
+              totalCommentCount={discussionCount}
+            />
+          </>
+        )}
       </div>
       <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
       <Script
@@ -342,9 +397,17 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   postPageRoot: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
+    overflowX: "clip",
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        justifyContent: "center",
+      },
+  },
+  question: {
+    justifyContent: "center",
   },
   postPageContainer: {
     marginTop: 30,
@@ -369,6 +432,24 @@ const styles = StyleSheet.create({
     marginTop: 25,
     paddingTop: 25,
     borderTop: `1px solid ${colors.GREY_LINE()}`,
+  },
+  discussionSectionHeader: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 25,
+  },
+  discussionSectionTitle: {
+    margin: 0,
+  },
+  discussionCount: {
+    color: colors.BLACK(),
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "4px",
+    padding: "5px 10px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 10,
+    alignSelf: "center",
   },
 });
 

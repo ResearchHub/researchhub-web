@@ -4,8 +4,10 @@ import colors from "./lib/colors";
 import { faComments } from "@fortawesome/free-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { CommentTreeContext } from "./lib/contexts";
 import config from "./lib/config";
+import { breakpoints } from "~/config/themes/screen";
 
 type Args = {
   setIsOpen: Function;
@@ -14,7 +16,7 @@ type Args = {
   commentCount: number;
 };
 
-const CommentSidebarToggle = ({
+const CommentToggle = ({
   isOpen,
   setIsOpen,
   bountyAmount = 0,
@@ -25,11 +27,13 @@ const CommentSidebarToggle = ({
     bountyAmount > 1000
       ? (bountyAmount / 1000).toFixed(0) + "k"
       : bountyAmount.toFixed(0);
+  const commentTreeState = useContext(CommentTreeContext);
+  const [mountEl, setMountEl] = useState<Element | null>(null);
 
-  const [mountEl, setMountEl] = useState<HTMLElement | null>(null);
   useEffect(() => {
     if (!mountEl) {
-      const _mountEl = document.getElementById(config.toggle.elemToMountAt);
+      const _mountEl =
+        document.body.querySelector("#mainContent") || document.body;
       setMountEl(_mountEl);
     }
   }, []);
@@ -39,7 +43,12 @@ const CommentSidebarToggle = ({
       {mountEl &&
         createPortal(
           <div
-            className={css(styles.toggle)}
+            className={css(
+              styles.toggle,
+              commentTreeState.context === "sidebar" &&
+                isOpen &&
+                styles.sidebarOpen
+            )}
             onClick={() => setIsOpen(!isOpen)}
           >
             <div
@@ -50,6 +59,7 @@ const CommentSidebarToggle = ({
             >
               <div>
                 <FontAwesomeIcon
+                  // @ts-ignore
                   icon={faComments}
                   style={{ color: colors.toggle.commentIcon }}
                 />
@@ -79,14 +89,15 @@ const CommentSidebarToggle = ({
 const styles = StyleSheet.create({
   toggle: {
     position: "fixed",
-    left: "50%",
-    bottom: 50,
+    left: `calc(50% + ${config.toggle.width / 2}px)`,
+    bottom: 15,
     alignItems: "center",
     display: "flex",
-    transform: "translate(-50%, -50%)",
-    zIndex: 2,
+    // transform: "translate(-50%, -50%)",
+    transform: "translateX(50%)",
+    zIndex: 1000000,
     borderRadius: 100,
-    minWidth: 70,
+    minWidth: config.toggle.width,
     background: "white",
     cursor: "pointer",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
@@ -95,6 +106,23 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.hover.background,
     },
+
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        left: `calc(50% + ${config.toggle.width / 2}px)`,
+      },
+    [`@media only screen and (max-width: ${breakpoints.large.int}px)`]: {
+      left: `calc(50% - ${config.toggle.width}px)`,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.int}px)`]: {
+      left: `calc(50% - ${config.toggle.width}px)`,
+    },
+  },
+  sidebarOpen: {
+    [`@media only screen and (min-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        left: `calc(50% - ${config.sidebar.width / 2 - 75 / 2}px)`,
+      },
   },
   item: {
     padding: "12px 20px",
@@ -114,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentSidebarToggle;
+export default CommentToggle;

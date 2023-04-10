@@ -62,7 +62,7 @@ export const createVoteHandler = ({
   const resolvedDocumentAuthorID =
     documentCreatedBy?.authorProfile?.id ||
     documentCreatedBy?.author_profile?.id;
-
+    
   return async (event: SyntheticEvent) => {
     if (event) {
       event.preventDefault();

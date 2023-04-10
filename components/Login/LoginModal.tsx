@@ -270,6 +270,7 @@ const LoginModal = ({
       closeModal={_handleClose}
       isOpen={isOpen}
       hideClose={true}
+      zIndex={99999999}
       titleStyle={styles.modalTitleStyleOverride}
       modalContentStyle={styles.modalContentStyle}
       title={

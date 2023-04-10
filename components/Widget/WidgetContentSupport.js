@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/pro-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -11,6 +9,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils/form";
 import ReactTooltip from "react-tooltip";
+import IconButton from "../Icons/IconButton";
 
 const DEFAULT_SHIMMER_TIME = 1150;
 
@@ -23,6 +22,8 @@ const ContentSupport = (props) => {
     openLoginModal,
     openContentSupportModal,
     awardedBountyAmount,
+    showAmount = true,
+    children,
   } = props;
 
   const tooltipRef = useRef(null);
@@ -111,7 +112,7 @@ const ContentSupport = (props) => {
     if (isUserContent()) {
       return "ResearchCoin awarded to your post";
     }
-    return "Award ResearchCoin";
+    return "Tip author with ResearchCoin";
   };
 
   return (
@@ -120,23 +121,17 @@ const ContentSupport = (props) => {
       data-tip={dataTip()}
       ref={tooltipRef}
       data-effect="solid"
-      onClick={(event) => {
-        handleClick(event);
-        ReactTooltip.hide();
-      }}
+      data-delay-show={500}
     >
-      {renderAnimation()}
-      {renderCount()}
-      {!isUserContent() && (
-        <span className={css(styles.plusButton)} id={"plusIcon"}>
-          {<FontAwesomeIcon icon={faPlusCircle}></FontAwesomeIcon>}
-        </span>
-      )}
-      <img
-        className={css(styles.icon)}
-        src={"/static/icons/coin-filled.png"}
-        alt="RSC Coin"
-      />
+      <IconButton
+        onClick={(event) => {
+          handleClick(event);
+          ReactTooltip.hide();
+        }}
+      >
+        {showAmount && renderCount()}
+        {children}
+      </IconButton>
     </div>
   );
 };

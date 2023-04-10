@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
   faLayerGroup,
-  faCommentAltLines,
   faComments,
+} from "@fortawesome/pro-solid-svg-icons";
+import {
+  faCheck,
 } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
@@ -30,6 +32,7 @@ type Args = {
   bountyAmount?: number;
   badgeHovered?: boolean;
   keepPositionAbsolute?: boolean;
+  tooltip?: string;
 };
 
 const ContentBadgeBase = ({
@@ -42,6 +45,7 @@ const ContentBadgeBase = ({
   bountyAmount,
   badgeHovered,
   keepPositionAbsolute,
+  tooltip,
 }: Args) => {
   const { rscToUSDDisplay } = useExchangeRate();
 
@@ -56,104 +60,129 @@ const ContentBadgeBase = ({
         keepPositionAbsolute && styles.keepPositionAbsolute,
       ]}
     >
-      {contentType === "paper" ? (
-        <>
-          <span className={css(styles.icon)}>
-            <PaperIcon withAnimation={false} onClick={undefined} />
-          </span>
-          <span>Paper</span>
-        </>
-      ) : contentType === "post" ? (
-        <>
-          <span className={css(styles.icon)}>
-            <PostIcon withAnimation={false} onClick={undefined} />
-          </span>
-          <span>Post</span>
-        </>
-      ) : contentType === "hypothesis" ? (
-        <>
-          <span className={css(styles.icon)}>
-            <HypothesisIcon withAnimation={false} onClick={undefined} />
-          </span>
-          <span>Meta Study</span>
-        </>
-      ) : contentType === "question" ? (
-        <>
-          <span className={css(styles.icon)}>
-            <QuestionIcon withAnimation={false} onClick={undefined} />
-          </span>
-          <span>Question</span>
-        </>
-      ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
-        <>
-          <span className={css(styles.icon)}>
-            {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
-          </span>
-          <span>Comment</span>
-        </>
-      ) : contentType === POST_TYPES.ANSWER ? (
-        <>
-          <span className={css(styles.icon)}>
-            {<FontAwesomeIcon icon={faCommentAltLines}></FontAwesomeIcon>}
-          </span>
-          <span>Answer</span>
-        </>
-      ) : contentType === POST_TYPES.SUMMARY ? (
-        <>
-          <span className={css(styles.icon)}>
-            {<FontAwesomeIcon icon={faLayerGroup}></FontAwesomeIcon>}
-          </span>
-          <span>Summary</span>
-        </>
-      ) : contentType === POST_TYPES.REVIEW ? (
-        <>
-          <span className={css(styles.icon)}>
-            {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
-          </span>
-          <span>Review</span>
-        </>
-      ) : contentType === "rsc_support" ? (
-        <>
-          <span className={css(styles.icon, styles.rscIcon)}>
-            <ResearchCoinIcon version={4} height={16} width={16} />
-            {` `}
-          </span>
-          <span className={css(styles.rscContent)}>{label}</span>
-        </>
-      ) : contentType === "bounty" ? (
-        <div>
-          <div className={css(styles.row)}>
-            <span
+      <div data-delay-show={500} data-tip={tooltip} style={{display: "flex"}}>
+        {contentType === "paper" ? (
+          <>
+            <span className={css(styles.icon)}>
+              <PaperIcon withAnimation={false} onClick={undefined} />
+            </span>
+            <span>Paper</span>
+          </>
+        ) : contentType === "post" ? (
+          <>
+            <span className={css(styles.icon)}>
+              <PostIcon withAnimation={false} onClick={undefined} />
+            </span>
+            <span>Post</span>
+          </>
+        ) : contentType === "hypothesis" ? (
+          <>
+            <span className={css(styles.icon)}>
+              <HypothesisIcon withAnimation={false} onClick={undefined} />
+            </span>
+            <span>Meta Study</span>
+          </>
+        ) : contentType === "question" ? (
+          <>
+            <span className={css(styles.icon)}>
+              <QuestionIcon withAnimation={false} onClick={undefined} />
+            </span>
+            <span>Question</span>
+          </>
+        ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
+          <>
+            <span className={css(styles.icon)}>
+              {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
+            </span>
+            <span>Comment</span>
+          </>
+        ) : contentType === POST_TYPES.ANSWER ? (
+          <>
+            <span className={css(styles.icon)}>
+              {<FontAwesomeIcon style={{ fontSize: 17 }} icon={faCheck}></FontAwesomeIcon>}
+            </span>
+            <span>Answer</span>
+          </>
+        ) : contentType === POST_TYPES.SUMMARY ? (
+          <>
+            <span className={css(styles.icon)}>
+              {<FontAwesomeIcon icon={faLayerGroup}></FontAwesomeIcon>}
+            </span>
+            <span>Summary</span>
+          </>
+        ) : contentType === POST_TYPES.REVIEW ? (
+          <>
+            <span className={css(styles.icon)}>
+              {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
+            </span>
+            <span>Peer Review</span>
+          </>
+        ) : contentType === "rsc_support" ? (
+          <>
+            <span className={css(styles.icon, styles.rscIcon)}>
+              <ResearchCoinIcon version={4} height={16} width={16} />
+              {` `}
+            </span>
+            <span className={css(styles.rscContent)}>{label}</span>
+          </>
+        ) : contentType === "award" ? (
+          <>
+            <span className={css(styles.icon)}>
+              <ResearchCoinIcon color="rgb(232, 181, 4)" version={4} height={16} width={16} />
+              {` `}
+            </span>
+            <span>{label}</span>
+          </>
+        ) : contentType === "bounty" ? (
+          <div>
+            <div className={css(styles.row)}>
+              <span
+                className={css(
+                  styles.icon,
+                  size === "small" && styles.iconSmall,
+                  styles.rscIcon
+                )}
+              >
+                <ResearchCoinIcon
+                  version={4}
+                  height={size === "small" ? 14 : 16}
+                  width={size === "small" ? 14 : 16}
+                />
+                {` `}
+              </span>
+              <span className={css(styles.rscContent, rscContentOverride)}>
+                {label}
+              </span>
+            </div>
+            <div
               className={css(
-                styles.icon,
-                size === "small" && styles.iconSmall,
-                styles.rscIcon
+                styles.usdAmount,
+                badgeHovered && styles.transitionOpacity
               )}
+            >
+              {" "}
+              ≈ {rscToUSDDisplay(bountyAmount || 0)}
+            </div>
+          </div>
+        ) : contentType === "closedBounty" ? (
+          <>
+            <span
+              className={css(styles.icon, size === "small" && styles.iconSmall)}
             >
               <ResearchCoinIcon
                 version={4}
+                color={colors.BLACK(0.5)}
                 height={size === "small" ? 14 : 16}
                 width={size === "small" ? 14 : 16}
               />
               {` `}
             </span>
-            <span className={css(styles.rscContent, rscContentOverride)}>
-              {label}
-            </span>
-          </div>
-          <div
-            className={css(
-              styles.usdAmount,
-              badgeHovered && styles.transitionOpacity
-            )}
-          >
-            {" "}
-            ≈ {rscToUSDDisplay(bountyAmount)}
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
+            <span>{label}</span>
+          </>
+        ) : (
+          <></>
+        )}
+      </div>
     </Badge>
   );
 };
@@ -175,8 +204,11 @@ const ContentBadge = (props) => {
       onMouseLeave={() => {
         clearTimeout(mouseLeaveTimeout.current);
         setBadgeHovered(false);
+
+        // @ts-ignore
         mouseLeaveTimeout.current = setTimeout(() => {
           setKeepPositionAbsolute(false);
+          // @ts-ignore
           mouseLeaveTimeout.current = null;
         }, 300);
       }}
@@ -201,10 +233,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
+  withTooltip: {
+    cursor: "default"
+  },
   medium: {},
   icon: {
     marginRight: 6,
-    fontSize: 16,
+    fontSize: 13,
     height: 21,
   },
   rscIcon: {
@@ -213,6 +248,9 @@ const styles = StyleSheet.create({
   },
   iconSmall: {
     height: 14,
+  },
+  wrapper: {
+    display: "flex"
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,
@@ -239,6 +277,18 @@ const styles = StyleSheet.create({
       top: 0,
       left: 0,
     },
+  },
+  badgeFor_closedBounty: {
+    color: colors.BLACK(0.5),
+    background: colors.LIGHT_GREY(1.0),
+  },
+  badgeFor_award: {
+    color: "rgba(232, 181, 4, 1)",
+    background: "#FDF8E6",
+  },
+  badgeFor_ANSWER: {
+    background: colors.GREEN(0.1),
+    color: colors.GREEN(1.0),
   },
   rscContent: {
     color: colors.ORANGE_DARK2(),

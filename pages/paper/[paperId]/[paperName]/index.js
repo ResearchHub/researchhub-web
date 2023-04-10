@@ -47,7 +47,6 @@ import { breakpoints } from "~/config/themes/screen";
 import * as shims from "~/redux/paper/shims";
 import DocumentHeader from "~/components/Document/DocumentHeader";
 import CommentFeed from "~/components/Comment/CommentFeed";
-import CommentSidebar from "~/components/Comment/CommentSidebar";
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)
@@ -88,6 +87,7 @@ const Paper = ({
 
   const [hasBounties, setHasBounties] = useState(false);
   const [allBounties, setAllBounties] = useState([]);
+  const [screenSizeAtLoading, setScreenSizeAtLoading] = useState(null);
 
   const [discussionCount, setCount] = useState(null);
   const { hubs = [], uploaded_by } = paper;
@@ -135,6 +135,10 @@ const Paper = ({
       fetchFreshData(paper?.id);
     }
   }, [fetchFreshDataStatus, paper]);
+
+  useEffect(() => {
+    setScreenSizeAtLoading(window.innerWidth);
+  }, []);
 
   useEffect(() => {
     const paperPageHasChanged = paper.id !== router.query.paperId;
@@ -269,6 +273,7 @@ const Paper = ({
     }
   });
 
+  const commentSectionAsDrawer = screenSizeAtLoading <= breakpoints.small.int;
   return (
     <div>
       <PaperBanner
@@ -297,10 +302,10 @@ const Paper = ({
           }}
         ></script>
       </Head>
-      <div className={css(styles.root)} id="documentRoot">
+      <div className={css(styles.root)}>
         <a name="main" />
         <div className={css(styles.container)}>
-          <div className={css(styles.main)}>
+          <div className={css(styles.main)} id="mainContent">
             <div className={css(styles.top)}>
               <div className={css(styles.headerContainer)}>
                 <DocumentHeader
@@ -321,27 +326,41 @@ const Paper = ({
               <a name="abstract" />
               <PaperPageAbstractSection paper={paper} />
             </div>
-            {isFetchComplete && (
+            {isFetchComplete && !commentSectionAsDrawer && (
               <div className={css(styles.discussionContainer, styles.section)}>
                 <a name="comments" id="comments" ref={commentsRef} />
-                {
-                  <DiscussionTab
-                    hostname={process.env.HOST}
-                    documentType={"paper"}
-                    paperId={paper.id}
-                    paperState={paper}
-                    setHasBounties={setHasBounties}
-                    setAllBounties={setAllBounties}
-                    showBountyBtn={true}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                    isCollapsible={false}
-                    setThreadProp={(_threads) => {
-                      setThreads(_threads);
-                    }}
-                  />
-                }
+                <div className={css(styles.discussionSectionHeader)}>
+                  <h3 className={css(styles.discussionSectionTitle)}>
+                    Conversation
+                  </h3>
+                  {paperV2.isReady && (
+                    <span className={css(styles.discussionCount)}>
+                      {discussionCount}
+                    </span>
+                  )}
+                </div>
+                <CommentFeed
+                  document={paperV2}
+                  onCommentCreate={() => {
+                    setCount(discussionCount + 1);
+                    paperV2.discussionCount = discussionCount + 1;
+                    setPaperV2(paperV2);
+                  }}
+                  totalCommentCount={discussionCount}
+                />
               </div>
+            )}
+            {commentSectionAsDrawer && (
+              <CommentFeed
+                document={paperV2}
+                context={"drawer"}
+                onCommentCreate={() => {
+                  setCount(discussionCount + 1);
+                  paperV2.discussionCount = discussionCount + 1;
+                  setPaperV2(paperV2);
+                }}
+                totalCommentCount={discussionCount}
+              />
             )}
             {isFetchComplete /* Performance Optimization */ && (
               <div className={css(styles.section)}>
@@ -359,7 +378,7 @@ const Paper = ({
           </div>
         </div>
 
-        {/* <CommentFeed document={paperV2} WrapperEl={CommentSidebar} /> */}
+        <div />
       </div>
     </div>
   );
@@ -439,8 +458,8 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    justifyContent: "center",
-    // justifyContent: "space-between",
+    // justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
     // This property is needed for comments sidebar to close gracefully without overflow.
@@ -450,6 +469,24 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 30,
     position: "relative",
+  },
+  discussionSectionHeader: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 25,
+  },
+  discussionSectionTitle: {
+    margin: 0,
+  },
+  discussionCount: {
+    color: colors.BLACK(),
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "4px",
+    padding: "5px 10px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginLeft: 10,
+    alignSelf: "center",
   },
   main: {
     boxSizing: "border-box",

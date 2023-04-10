@@ -1,41 +1,58 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import colors from "./lib/colors";
+import config from "./lib/config";
 
-const CommentPlaceholder = () => {
+type Args = {
+  repeatCount?: number;
+};
+
+const CommentPlaceholder = ({
+  repeatCount = config.comment.placeholderCount,
+}: Args) => {
   return (
-    <div className={css(styles.wrapper) + " show-loading-animation"}>
-      <div className={css(styles.header)}>
-        <RoundShape className={css(styles.avatar)} color={colors.placeholder} />
-        <div className={css(styles.detailsWrapper)}>
-          <RectShape
-            color={colors.placeholder}
-            style={{ width: "80%", height: "1em" }}
-          />
-          <RectShape
-            color={colors.placeholder}
-            style={{ width: "70%", height: "1em" }}
-          />
+    <div>
+      {Array.from(new Array(repeatCount)).map((_, idx) => (
+        <div
+          key={`placeholder-${idx}`}
+          className={css(styles.wrapper) + " show-loading-animation"}
+        >
+          <div className={css(styles.header)}>
+            <RoundShape
+              className={css(styles.avatar)}
+              color={colors.placeholder}
+            />
+            <div className={css(styles.detailsWrapper)}>
+              <RectShape
+                color={colors.placeholder}
+                style={{ width: "80%", height: "1em" }}
+              />
+              <RectShape
+                color={colors.placeholder}
+                style={{ width: "70%", height: "1em" }}
+              />
+            </div>
+          </div>
+          <div className={css(styles.body)}>
+            <RectShape
+              color={colors.placeholder}
+              style={{ width: "100%", height: "1em" }}
+            />
+            <RectShape
+              color={colors.placeholder}
+              style={{ width: "90%", height: "1em" }}
+            />
+            <RectShape
+              color={colors.placeholder}
+              style={{ width: "80%", height: "1em" }}
+            />
+            <RectShape
+              color={colors.placeholder}
+              style={{ width: "70%", height: "1em" }}
+            />
+          </div>
         </div>
-      </div>
-      <div className={css(styles.body)}>
-        <RectShape
-          color={colors.placeholder}
-          style={{ width: "100%", height: "1em" }}
-        />
-        <RectShape
-          color={colors.placeholder}
-          style={{ width: "90%", height: "1em" }}
-        />
-        <RectShape
-          color={colors.placeholder}
-          style={{ width: "80%", height: "1em" }}
-        />
-        <RectShape
-          color={colors.placeholder}
-          style={{ width: "70%", height: "1em" }}
-        />
-      </div>
+      ))}
     </div>
   );
 };
@@ -43,6 +60,7 @@ const CommentPlaceholder = () => {
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
+    marginBottom: 40,
   },
   header: {
     display: "flex",

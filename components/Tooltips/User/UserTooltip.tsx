@@ -14,14 +14,16 @@ interface UserTooltipProps {
   createdBy: RHUser | null;
   targetContent: ReactElement;
   positions?: ("left" | "right" | "top" | "bottom")[];
+  overrideTargetStyle?: any | null;
 }
 
-const TOOLTIP_DELAY = 300;
+const TOOLTIP_DELAY = 400;
 
 export default function UserTooltip({
   createdBy,
   targetContent,
   positions,
+  overrideTargetStyle,
 }: UserTooltipProps): ReactElement {
   const [userPopoverOpen, setUserPopoverOpen] = useState(false);
 
@@ -67,10 +69,7 @@ export default function UserTooltip({
       isOpen={userPopoverOpen}
       targetContent={
         <div
-          style={{
-            padding: 4,
-            margin: -4,
-          }}
+          className={css(styles.targetWrapper, overrideTargetStyle)}
           onMouseEnter={() => {
             clearTimeout(popoverRefTimeout.current);
             if (!isMobileScreen && !leavePopoverTimeout.current) {
@@ -110,4 +109,8 @@ const styles = StyleSheet.create({
   userPopoverLeft: {
     marginRight: -4,
   },
+  targetWrapper: {
+    padding: 4,
+    margin: -4,
+  }
 });

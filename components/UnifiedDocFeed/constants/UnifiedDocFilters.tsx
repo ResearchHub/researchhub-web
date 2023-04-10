@@ -19,11 +19,11 @@ export const topLevelFilters = {
     value: "/my-hubs",
     icon: null,
   },
-  "/live": {
-    label: "Live",
-    value: "/live",
-    icon: <FontAwesomeIcon icon={faHeartRate}></FontAwesomeIcon>,
-  },
+  // "/live": {
+  //   label: "Live",
+  //   value: "/live",
+  //   icon: <FontAwesomeIcon icon={faHeartRate}></FontAwesomeIcon>,
+  // },
 };
 
 export const UnifiedDocFilters = {

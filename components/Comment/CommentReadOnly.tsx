@@ -1,45 +1,83 @@
-import { useEffect, useState } from "react";
-import { useQuill } from "./hooks/useQuill";
+import { useEffect, useState, useContext } from "react";
 import config from "./lib/config";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import IconButton from "../Icons/IconButton";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  textLength,
+  imageLength,
+  trimDeltas,
+  quillDeltaToHtml,
+} from "./lib/quill";
+import { CommentTreeContext } from "./lib/contexts";
 
 type Args = {
   content: any;
+  previewMaxCharLength?: number;
+  previewMaxImageLength?: number;
 };
 
-const CommentReadOnly = ({ content }: Args) => {
-  const { quill, quillRef } = useQuill();
+const CommentReadOnly = ({
+  content,
+  previewMaxCharLength = config.default.previewMaxChars,
+  previewMaxImageLength = config.default.previewMaxImages,
+}: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
-  const [showLoadMoreBtn, setShowLoadMoreBtn] = useState<boolean>(false);
+  const [previewHtml, setPreviewHtml] = useState<any>(null);
+  const [fullHtml, setFullHtml] = useState<any>(null);
+  const commentTreeState = useContext(CommentTreeContext);
 
   useEffect(() => {
-    if (quill) {
-      quill.disable();
-      quill.setContents(content);
-      const length = quill.getLength();
-
-      if (length > config.comment.previewMaxChars) {
-        setShowLoadMoreBtn(true);
-        if (isPreview) {
-          quill.deleteText(config.comment.previewMaxChars, length);
-        }
-      }
+    const _textLength = textLength({ quillOps: content.ops });
+    const _imageLength = imageLength({ quillOps: content.ops });
+    if (
+      _textLength > previewMaxCharLength ||
+      _imageLength > previewMaxImageLength
+    ) {
+      const trimmed = trimDeltas({
+        quillOps: content.ops,
+        maxLength: previewMaxCharLength,
+        maxImages: previewMaxImageLength,
+      });
+      const trimmedHtml = quillDeltaToHtml({ ops: trimmed });
+      setPreviewHtml(trimmedHtml);
     }
-  }, [quill, isPreview]);
+    const html = quillDeltaToHtml({ ops: content.ops });
+    setFullHtml(html);
+  }, []);
 
+  const isNarrowWidthContext =
+    commentTreeState.context === "sidebar" ||
+    commentTreeState.context === "drawer";
+  const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   return (
     <div>
-      <div className={showLoadMoreBtn && isPreview ? "quill-preview-mode" : ""}>
-        <div ref={quillRef} />
+      <div
+        className={`CommentEditor ${
+          isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
+        }`}
+      >
+        <div
+          className={
+            "ql-container ql-snow  " +
+            (previewHtml && isPreview ? "quill-preview-mode" : "")
+          }
+        >
+          <div
+            className="ql-editor"
+            dangerouslySetInnerHTML={{ __html: htmlToRender }}
+          />
+        </div>
       </div>
-      {showLoadMoreBtn && (
+      {previewHtml && (
         <IconButton
           overrideStyle={styles.readMoreWrapper}
-          onClick={() => setIsPreview(!isPreview)}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsPreview(!isPreview);
+          }}
         >
           <span className={css(styles.readMore)}>
             {isPreview ? `Read More` : `Show Less`}

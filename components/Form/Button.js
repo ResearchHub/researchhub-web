@@ -1,6 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import Ripples from "react-ripples";
 import colors, { iconColors } from "../../config/themes/colors";
 
 function Button(props) {
@@ -19,8 +18,6 @@ function Button(props) {
     onSubmit,
     icon,
     customIconStyle,
-    hideRipples,
-    rippleClass,
     children,
   } = props;
 
@@ -85,7 +82,7 @@ function Button(props) {
         )}
         type={type ? type : "button"}
         onSubmit={onSubmit ? onSubmit : null}
-        onClick={hideRipples && onClick ? onClick : null}
+        onClick={onClick ? onClick : null}
       >
         {icon && (
           <img
@@ -107,16 +104,6 @@ function Button(props) {
         </div>
       </button>
     );
-    if (!hideRipples && !disabled) {
-      return (
-        <Ripples
-          className={css(styles.ripples, rippleClass)}
-          onClick={onClick ? onClick : null}
-        >
-          {button}
-        </Ripples>
-      );
-    }
     return button;
   }
 }
@@ -173,7 +160,6 @@ const styles = StyleSheet.create({
     padding: "8px 22px",
     fontSize: 18,
   },
-  ripples: {},
   isWhite: {
     backgroundColor: "#FFF",
     border: `1px solid ${colors.NEW_BLUE(1)}`,

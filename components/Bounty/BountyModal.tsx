@@ -9,10 +9,8 @@ import {
   MIN_RSC_REQUIRED,
 } from "./config/constants";
 import { captureEvent } from "@sentry/browser";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { Hub } from "~/config/types/hub";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, useState, useEffect } from "react";
 import { trackEvent } from "~/config/utils/analytics";
@@ -27,21 +25,21 @@ import ReactTooltip from "react-tooltip";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
 import ContentBadge from "../ContentBadge";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { RootState } from "~/redux";
+import { ID, parseUser } from "~/config/types/root_types";
 
 type Props = {
   isOpen: boolean;
   withPreview: boolean;
   closeModal: Function;
+  originalBounty?: Bounty;
   handleBountyAdded: Function;
   addBtnLabel?: string;
-  bountyText: string;
-  postId: number;
-  postSlug: string;
-  unifiedDocId: number;
+  relatedItemId: ID;
+  relatedItemContentType: string;
   showMessage: Function;
   setMessage: Function;
-  isOriginalPoster: boolean;
-  hubs?: Hub[];
 };
 
 function BountyModal({
@@ -49,21 +47,22 @@ function BountyModal({
   withPreview,
   closeModal,
   handleBountyAdded,
-  unifiedDocId,
-  postId,
-  postSlug,
-  bountyText,
   showMessage,
   setMessage,
-  isOriginalPoster,
-  hubs = [],
+  relatedItemId,
+  originalBounty,
+  relatedItemContentType,
   addBtnLabel = "Add Bounty",
 }: Props): ReactElement {
   useEffect(() => {
     ReactTooltip.rebuild();
   });
-  const currentUser = getCurrentUser();
+
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
   const currentUserBalance = currentUser?.balance ?? 0;
+
   const [offeredAmount, setOfferedAmount] = useState<number>(
     parseFloat(BOUNTY_DEFAULT_AMOUNT + "")
   );
@@ -135,10 +134,6 @@ function BountyModal({
     if (!(hasMinRscAlert || hasMaxRscAlert)) {
       const totalBountyAmount = calcTotalAmount({ offeredAmount });
       if (withPreview) {
-        // handleBountyAdded({
-        //   grossBountyAmount: bountyAmount,
-        //   totalBountyAmount: totalBountyAmount,
-        // });
         handleBountyAdded(
           new Bounty({
             amount: offeredAmount,
@@ -148,7 +143,8 @@ function BountyModal({
       } else {
         Bounty.createAPI({
           bountyAmount: offeredAmount,
-          itemObjectId: unifiedDocId,
+          itemObjectId: relatedItemId,
+          itemContentType: relatedItemContentType,
         })
           .then((createdBounty) => {
             sendBountyCreateAmpEvent({ currentUser, createdBounty });
@@ -178,20 +174,14 @@ function BountyModal({
         success ? null : (
           <span className={css(styles.modalTitle)}>
             {" "}
-            {isOriginalPoster ? "Add" : "Contribute to"} Bounty{" "}
+            {originalBounty ? "Contribute to" : "Add"} Bounty{" "}
           </span>
         )
       }
     >
       <>
         {success ? (
-          <BountySuccessScreen
-            bountyText={bountyText}
-            postSlug={postSlug}
-            postId={postId}
-            hubs={hubs}
-            bountyAmount={offeredAmount}
-          />
+          <BountySuccessScreen originalBounty={originalBounty} />
         ) : (
           <>
             <ReactTooltip
@@ -321,7 +311,7 @@ function BountyModal({
                 </div>
               </div>
               <div className={css(infoSectionStyles.bountyInfo)}>
-                {isOriginalPoster ? null : (
+                {originalBounty && (
                   <div
                     className={css(
                       infoSectionStyles.infoRow,
@@ -330,34 +320,32 @@ function BountyModal({
                   >
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {
-                        <WarningIcon
-                          color={colors.DARKER_GREY()}
-                          width={20}
-                          height={20}
-                        />
+                        <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
                       }
                     </span>{" "}
-                    By contributing to the open bounty, you are giving the
-                    original poster control to award your bounty.
+                    The bounty creator will be able to award the full bounty amount including your contribution to a solution they pick.
                   </div>
                 )}
-
-                <div className={css(infoSectionStyles.infoRow)}>
-                  <span className={css(infoSectionStyles.infoIcon)}>
-                    {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
-                  </span>{" "}
-                  <span className={css(infoSectionStyles.infoText)}>
-                    The Bounty will end in 30 days or as soon as you award a
-                    solution
-                  </span>
-                </div>
-                <div className={css(infoSectionStyles.infoRow)}>
-                  <span className={css(infoSectionStyles.infoIcon)}>
-                    {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
-                  </span>{" "}
-                  If no solution satisfies your request, the full bounty amount
-                  (excluding platform fee) will be refunded to you
-                </div>
+                {!originalBounty &&
+                  <div className={css(infoSectionStyles.infoRow)}>
+                    <span className={css(infoSectionStyles.infoIcon)}>
+                      {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
+                    </span>{" "}
+                    <span className={css(infoSectionStyles.infoText)}>
+                      The Bounty will end in 30 days or as soon as you award a
+                      solution
+                    </span>
+                  </div>
+                }
+                {!originalBounty &&
+                  <div className={css(infoSectionStyles.infoRow)}>
+                    <span className={css(infoSectionStyles.infoIcon)}>
+                      {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
+                    </span>{" "}
+                    If no solution satisfies your request, the full bounty amount
+                    (excluding platform fee) will be refunded to you
+                  </div>
+                }
               </div>
 
               <div className={css(styles.addBountyContainer)}>
@@ -396,7 +384,7 @@ function BountyModal({
                   ) : null}
                   <div className={css(styles.addBtnContainer)}>
                     <Button
-                      label={addBtnLabel}
+                      label={originalBounty ? "Contribute" : "Add bounty"}
                       customButtonStyle={styles.addButton}
                       customLabelStyle={styles.addButtonLabel}
                       size={`small`}
@@ -450,14 +438,6 @@ const alertStyles = StyleSheet.create({
 
 const infoSectionStyles = StyleSheet.create({
   specialInfoRow: {
-    borderBottom: "1px solid rgb(232 232 242)",
-    padding: 0,
-    marginLeft: 30,
-    marginRight: 30,
-    paddingBottom: 8,
-    // background: colors.YELLOW(0.1),
-    // paddingTop: 8,
-    // paddingBottom: 8,
   },
   bountyInfo: {
     textAlign: "left",
@@ -473,11 +453,15 @@ const infoSectionStyles = StyleSheet.create({
     display: "flex",
     paddingRight: 30,
     paddingLeft: 30,
+    paddingBottom: 12,
     fontSize: 14,
     lineHeight: "20px",
     alignItems: "flex-start",
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
     ":last-child": {
       marginBottom: 0,
+      borderBottom: 0,
+      paddingBottom: 0,
     },
   },
   infoIcon: {

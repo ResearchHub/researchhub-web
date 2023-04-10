@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/pro-solid-svg-icons";
+import { faStar as faStarEmpty } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import colors from "~/config/themes/colors";
@@ -66,7 +67,7 @@ export default function StarInput({
                 </span>
               ) : (
                 <span className={css(styles.starIconDisabled)}>
-                  {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
+                  {<FontAwesomeIcon icon={faStarEmpty}></FontAwesomeIcon>}
                 </span>
               )}
             </div>)
@@ -158,7 +159,12 @@ const styles = StyleSheet.create({
   starIconFilled: {
     color: colors.YELLOW(),
   },
-  starIconUnfilled: {},
+  starIconUnfilled: {
+    color: colors.LIGHT_GREY(),
+    ":hover": {
+      color: colors.YELLOW(),
+    }
+  },
   starIconDisabled: {
     color: colors.LIGHT_GREY(),
   },
