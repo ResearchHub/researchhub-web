@@ -22,7 +22,7 @@ export const buildQuillModules = ({
       },
     },
     toolbar: {
-      // magicUrl: true,
+      magicUrl: true,
       container: `#${editorId}`,
       handlers: {
         image: handleImageUpload,
