@@ -226,3 +226,37 @@ export const voteForComment = async ({
     }
   }
 }
+
+export const flagComment = async({
+  commentId,
+  documentType,
+  documentId,
+  flagReason,
+}: {
+  commentId: ID,
+  documentType: RhDocumentType;
+  documentId: ID;  
+  flagReason: string;  
+}) => {
+  const url = generateApiUrl(
+    `${documentType}/${documentId}/comments/${commentId}/flag`
+  );
+
+  try {
+    const response = await fetch(url, API.POST_CONFIG({ reason_choice: flagReason }))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+
+    return true;
+  }
+  catch (error:any) {
+    const isAlreadyFlagged = error.response.status === 409;
+    if (isAlreadyFlagged) {
+      throw "This comment has already been flagged";
+    }
+    else {
+      // FIXME: Log to sentry
+      throw "Unexpected error while Flagging";
+    }
+  }  
+} 

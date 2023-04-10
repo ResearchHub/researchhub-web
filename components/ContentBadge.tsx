@@ -115,7 +115,7 @@ const ContentBadgeBase = ({
             <span className={css(styles.icon)}>
               {<FontAwesomeIcon icon={faStar}></FontAwesomeIcon>}
             </span>
-            <span>Review</span>
+            <span>Peer Review</span>
           </>
         ) : contentType === "rsc_support" ? (
           <>

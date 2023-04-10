@@ -43,6 +43,10 @@
   background: #ffffff;
 }
 
+.CommentEditor .ql-formats .ql-video {
+  margin: 0;
+}
+
 .CommentEditor .ql-disabled {
   cursor: "default";
 }
@@ -131,6 +135,8 @@
   width: 100%;
   max-width: 600px;
   border-radius: 4px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 @media only screen and (max-width: 767px) {

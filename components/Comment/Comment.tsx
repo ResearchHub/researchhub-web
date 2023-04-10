@@ -145,6 +145,7 @@ const Comment = ({
             <CommentHeader
               authorProfile={comment.createdBy.authorProfile}
               comment={comment}
+              document={document}
               handleEdit={() => setIsEditMode(!isEditMode)}
             />
           </div>

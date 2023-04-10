@@ -1,4 +1,4 @@
-import { AuthorProfile, RHUser } from "~/config/types/root_types";
+import { AuthorProfile, RHUser, TopLevelDocument } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
@@ -19,12 +19,14 @@ type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
   handleEdit: Function;
+  document: TopLevelDocument;
 };
 
 const CommentHeader = ({
   authorProfile,
   comment,
   handleEdit,
+  document,
 }: CommentHeaderArgs) => {
   const openBounties = getOpenBounties({ comment });
   const closedBounties = getClosedBounties({ comment });
@@ -92,7 +94,7 @@ const CommentHeader = ({
               <div className={css(styles.verb)}>{` commented`}</div>
             )}
             <div className={css(styles.menuWrapper)}>
-              <CommentMenu handleEdit={handleEdit} comment={comment} />
+              <CommentMenu handleEdit={handleEdit} comment={comment} document={document} />
             </div>
           </div>
           <div className={css(styles.time)}>
