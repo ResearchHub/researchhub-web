@@ -155,6 +155,7 @@ const Comment = ({
                 await handleCommentUpdate(args);
                 setIsEditMode(false);
               }}
+              commentType={comment.commentType}
               content={comment.content}
               commentId={comment.id}
               author={currentUser?.authorProfile}
