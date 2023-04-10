@@ -11,7 +11,7 @@ import {
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { parseContentType, ContentType } from "./contentType";
 import { parseHub, Hub } from "./hub";
-import { formatBountyAmount } from "~/config/types/bounty";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
 import { Comment, parseComment } from "~/components/Comment/lib/types";
 import { getUrlToUniDoc } from "../utils/routing";
@@ -79,6 +79,7 @@ export type BountyContributionItem = {
   amount: number;
   content: any;
   id: ID;
+  parent?: Bounty;
 };
 
 export type PostContributionItem = {
@@ -249,6 +250,7 @@ export const parseBountyContributionItem = (
     createdDate: raw.created_date,
     amount: formatBountyAmount({ amount: raw.item.amount }),
     content: raw?.item?.item?.comment_content_json,
+    ...(raw.item.bounty_parent && {parent: new Bounty(raw.item.bounty_parent)}),
   };
 
   return mapped;

@@ -39,27 +39,54 @@ const ContributionHeader = ({ entry }: Args) => {
   if (contentType.name === "bounty") {
     item = item as BountyContributionItem;
     unifiedDocument = item.unifiedDocument
-    actionLabel = (
-      <>
-        {` opened `}
-        <ContentBadge
-          contentType="bounty"
-          bountyAmount={item.amount}
-          size={`small`}
-          label={
-            <div style={{ display: "flex", whiteSpace: "pre" }}>
-              <div style={{ flex: 1 }}>
-                {formatBountyAmount({
-                  amount: item.amount,
-                })}{" "}
-                RSC
+
+    if (item.parent) {
+      actionLabel = (
+        <>
+          {` contributed `}
+          <ContentBadge
+            contentType="bounty"
+            bountyAmount={item.amount}
+            size={`small`}
+            label={
+              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                <div style={{ flex: 1 }}>
+                  {formatBountyAmount({
+                    amount: item.amount,
+                  })}{" "}
+                  RSC
+                </div>
               </div>
-            </div>
-          }
-        />
-        {` bounty on`}
-      </>
-    );
+            }
+          />
+          {` to bounty on `}
+        </>
+      );
+    }
+    else {
+      actionLabel = (
+        <>
+          {` opened `}
+          <ContentBadge
+            contentType="bounty"
+            bountyAmount={item.amount}
+            size={`small`}
+            label={
+              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                <div style={{ flex: 1 }}>
+                  {formatBountyAmount({
+                    amount: item.amount,
+                  })}{" "}
+                  RSC
+                </div>
+              </div>
+            }
+          />
+          {` bounty on`}
+        </>
+      );
+    }
+
     contentBadgeLabel = item.amount + " RSC";
   } else if (contentType.name === "rsc_support") {
     item = item as RscSupportContributionItem;
