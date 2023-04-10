@@ -226,7 +226,7 @@ export const parseCommentContributionItem = (
     unifiedDocument: parseUnifiedDocument(raw.item.thread.content_object.unified_document),
     id: raw.item.id,
     createdDate: raw.created_date,
-    postType: raw.item.discussion_post_type,
+    postType: raw.item.thread?.thread_type,
     parent: raw.item.parent
     ? {
       id: raw.item.parent.id,

@@ -150,11 +150,11 @@ const ContributionHeader = ({ entry }: Args) => {
     actionLabel = (
       <>
         {item.postType === POST_TYPES.ANSWER ? (
-          <>submitted answer</>
+          <>{` submitted answer `}</>
         ) : item.postType === POST_TYPES.SUMMARY ? (
-          <>submitted summary</>
+          <>{` submitted summary `}</>
         ) : item.postType === POST_TYPES.REVIEW ? (
-          <>submitted review</>
+          <>{` peer reviewed `}</>
         ) : (
           <>
             {item.parent ? (
