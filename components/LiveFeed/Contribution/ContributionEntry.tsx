@@ -72,18 +72,27 @@ const ContributionEntry = ({
         }
         break;
 
-      case "bounty":
-        title = (
-          <ALink href={getUrlToUniDoc(entry.relatedItem?.unifiedDocument)}>
-            {entry.relatedItem?.unifiedDocument?.document?.title}
-          </ALink>
-        );
-
-
-        body = truncateText(
-          entry.relatedItem?.unifiedDocument?.document?.body,
-          300
-        );
+        case "bounty":
+        item = item as BountyContributionItem;
+        
+        if (item.content) {
+          body = (
+            <span className={css(styles.commentBody)}>
+              <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            </span>
+          );
+        }
+        else {
+          title = (
+            <ALink href={getUrlToUniDoc(item.unifiedDocument)}>
+              {item.unifiedDocument?.document?.title}
+            </ALink>
+          );
+          body = truncateText(
+            entry.relatedItem?.unifiedDocument?.document?.body,
+            300
+          );
+        }
 
         break;
 
@@ -100,10 +109,12 @@ const ContributionEntry = ({
               ? (item as PostContributionItem)
               : (item as PaperContributionItem);
 
-        // @ts-ignore
+        
         body = truncateText(
           item?.unifiedDocument?.document?.body ||
+          // @ts-ignore
           item?.abstract ||
+          // @ts-ignore
           item?.renderable_text,
           300
         );
@@ -111,10 +122,11 @@ const ContributionEntry = ({
           /* below is a hack (need to address in the future) */
           item.unifiedDocument.documentType = "hypothesis";
           item.unifiedDocument.document = { id: item.id, slug: item.slug };
+          // @ts-ignore
           body = item.renderable_text;
         }
         title = (
-          <ALink href={getUrlToUniDoc(item?.unifiedDocument)}>
+          <ALink overrideStyle={styles.documentLink} href={getUrlToUniDoc(item?.unifiedDocument)}>
             {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
           </ALink>
         );
@@ -240,6 +252,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
     display: "flex",
   },
+  documentLink: {
+    fontWeight: 500,
+  },  
 });
 
 export default ContributionEntry;

@@ -32,7 +32,7 @@ const ContributionHeader = ({ entry }: Args) => {
   const { createdBy, createdDate } = item;
 
   let contentBadgeLabel: ReactNode | string;
-  let actionLabel = <>posted</>;
+  let actionLabel = <>{` posted `}</>;
   let unifiedDocument:UnifiedDocument;
   
   
@@ -40,26 +40,25 @@ const ContributionHeader = ({ entry }: Args) => {
     item = item as BountyContributionItem;
     unifiedDocument = item.unifiedDocument
     actionLabel = (
-      <RSCTooltip
-        amount={item.amount}
-        targetContent={
-          <>
-            created &nbsp;
-            <ResearchCoinIcon
-              overrideStyle={styles.rscIcon}
-              version={4}
-              width={16}
-              height={16}
-            />
-            <span className={css(styles.rsc)}>
-              {` `}
-              {item.amount} RSC
-            </span>
-            &nbsp; bounty
-            {hubs.length ? <>{` `}in</> : ""}
-          </>
-        }
-      />
+      <>
+        {` opened `}
+        <ContentBadge
+          contentType="bounty"
+          bountyAmount={item.amount}
+          size={`small`}
+          label={
+            <div style={{ display: "flex", whiteSpace: "pre" }}>
+              <div style={{ flex: 1 }}>
+                {formatBountyAmount({
+                  amount: item.amount,
+                })}{" "}
+                RSC
+              </div>
+            </div>
+          }
+        />
+        {` bounty on`}
+      </>
     );
     contentBadgeLabel = item.amount + " RSC";
   } else if (contentType.name === "rsc_support") {
@@ -88,9 +87,7 @@ const ContributionHeader = ({ entry }: Args) => {
           />
           {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          <span className={css(styles.passiveText)}>
-            {` for their comment on`}
-          </span>
+          {` for their comment on`}
         </>
       );
     } else {
@@ -109,9 +106,7 @@ const ContributionHeader = ({ entry }: Args) => {
             {` `}
             {item.amount} RSC
           </span>
-          <span className={css(styles.passiveText)}>
             {" for their "}
-          </span>
           <ALink
             overrideStyle={styles.link}
             href={getUrlToUniDoc(item.source.unifiedDocument)}
@@ -151,9 +146,9 @@ const ContributionHeader = ({ entry }: Args) => {
                 />
               </div>
             ) : (
-              <span className={css(styles.passiveText)}>
+              <>
                 {` commented`}
-              </span>
+              </>
             )}
 
             {unifiedDocument &&
@@ -165,11 +160,11 @@ const ContributionHeader = ({ entry }: Args) => {
           </>
         )}
       </>
-      
-
-
-
     )
+  }
+  else {
+    // @ts-ignore
+    actionLabel = <>{` posted ${item?.unifiedDocument?.documentType}`}</>;
   }
 
 
@@ -232,11 +227,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginLeft: 0,
   },
-  passiveText: {
-    color: colors.BLACK(0.6),
-  },
   metadataRow: {
-
+    color: colors.BLACK(0.6),
   },
   contentBadge: {
     marginTop: 10,

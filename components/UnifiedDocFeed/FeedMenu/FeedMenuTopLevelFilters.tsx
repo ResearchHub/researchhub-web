@@ -33,20 +33,26 @@ const FeedMenuTopLevelFilters = ({
   const renderAsDropdown = false;
   const shouldShowMyHubs = router.pathname.indexOf("/hubs/") === -1;
 
-  useEffect(() => {
-    const _handleClickOutside = (event) => {
-      // @ts-ignore
-      if (!filterEl.current.contains(event.target)) {
-        setIsMyHubsDropdownOpen(false);
+    useEffect(() => {
+      const _handleClickOutside = (event) => {
+
+        // @ts-ignore
+        if (!filterEl.current.contains(event.target)) {
+          setIsMyHubsDropdownOpen(false);
+        }
+      };
+
+      if (shouldShowMyHubs) {
+        document.addEventListener("click", _handleClickOutside);
+        return () => {
+          document.removeEventListener("click", _handleClickOutside);
+        };
       }
-    };
+    }, [router.isReady]);
 
-    document.addEventListener("click", _handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", _handleClickOutside);
-    };
-  }, []);
+  if (!shouldShowMyHubs) {
+    return null;
+  }
 
   const filterElems = useMemo(() => {
     const filterValues = Object.values(topLevelFilters);
@@ -166,12 +172,12 @@ const styles = StyleSheet.create({
     borderBottom: 0,
     padding: "10px 14px",
   },
-  lastFilter: {
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: "auto",
-      marginRight: "0px",
-    },
-  },
+  // lastFilter: {
+  //   "@media only screen and (max-width: 767px)": {
+  //     marginLeft: "auto",
+  //     marginRight: "0px",
+  //   },
+  // },
   filter: {
     padding: "0px 2px 10px 2px",
     display: "flex",

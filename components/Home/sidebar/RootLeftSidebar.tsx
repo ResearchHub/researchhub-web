@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
   },
   leftSidebarFooterTxtItem: {
     color: colors.TEXT_GREY(1),
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 400,
     textDecoration: "none",
     margin: "0 32px 18px",

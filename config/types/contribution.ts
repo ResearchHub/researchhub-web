@@ -23,7 +23,6 @@ export type RelatedBountyItem = {
 
 export type RscSupportSourceItem = {
   id: ID;
-  plainText: string;
   unifiedDocument: UnifiedDocument;
   contentType: ContentType;
   content?: any
@@ -78,6 +77,7 @@ export type BountyContributionItem = {
   createdBy: RHUser;
   createdDate: string;
   amount: number;
+  content: any;
   id: ID;
 };
 
@@ -244,10 +244,11 @@ export const parseBountyContributionItem = (
 
   const mapped = {
     createdBy: parseUser(raw.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
+    unifiedDocument: parseUnifiedDocument(raw?.item?.item?.thread?.content_object?.unified_document),
     id: raw.id,
     createdDate: raw.created_date,
     amount: formatBountyAmount({ amount: raw.item.amount }),
+    content: raw?.item?.item?.comment_content_json,
   };
 
   return mapped;
