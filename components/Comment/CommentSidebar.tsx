@@ -118,9 +118,6 @@ const styles = StyleSheet.create({
   },
   sidebarOpen: {
     width: 500,
-    [`@media only screen and (max-width: 1600px)`]: {
-      width: 420,
-    },
   },
   discussionCount: {
     background: colors.LIGHTER_GREY(),

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   toggle: {
     position: "fixed",
     left: "50%",
-    bottom: 50,
+    bottom: 15,
     alignItems: "center",
     display: "flex",
     transform: "translate(-50%, -50%)",
