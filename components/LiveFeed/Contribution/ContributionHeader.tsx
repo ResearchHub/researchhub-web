@@ -121,14 +121,17 @@ const ContributionHeader = ({ entry }: Args) => {
       actionLabel = (
         <>
           {` tipped `}
-          <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          &nbsp;
-          <ResearchCoinIcon
-            overrideStyle={styles.rscIcon}
-            version={4}
-            width={16}
-            height={16}
-          />
+          <UserTooltip
+              createdBy={item.recipient}
+              targetContent={
+                <ALink
+                  href={`/user/${item.recipient.authorProfile?.id}/overview`}
+                  key={`/user/${item.recipient.authorProfile?.id}/overview-key`}
+                >
+                  {item.recipient.firstName} {item.recipient.lastName}
+                </ALink>
+              }
+            />          
           <ContentBadge
             contentType="bounty"
             bountyAmount={item.amount}
