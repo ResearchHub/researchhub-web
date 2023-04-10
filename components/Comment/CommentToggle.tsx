@@ -32,7 +32,8 @@ const CommentToggle = ({
 
   useEffect(() => {
     if (!mountEl) {
-      const _mountEl = document.body.querySelector("#mainContent") || document.body;
+      const _mountEl =
+        document.body.querySelector("#mainContent") || document.body;
       setMountEl(_mountEl);
     }
   }, []);
@@ -42,7 +43,12 @@ const CommentToggle = ({
       {mountEl &&
         createPortal(
           <div
-            className={css(styles.toggle, (commentTreeState.context === "sidebar" && isOpen) && styles.sidebarOpen )}
+            className={css(
+              styles.toggle,
+              commentTreeState.context === "sidebar" &&
+                isOpen &&
+                styles.sidebarOpen
+            )}
             onClick={() => setIsOpen(!isOpen)}
           >
             <div
@@ -83,7 +89,7 @@ const CommentToggle = ({
 const styles = StyleSheet.create({
   toggle: {
     position: "fixed",
-    left: `calc(50% + ${config.toggle.width/2}px)`,
+    left: `calc(50% + ${config.toggle.width / 2}px)`,
     bottom: 15,
     alignItems: "center",
     display: "flex",
@@ -101,20 +107,22 @@ const styles = StyleSheet.create({
       background: colors.hover.background,
     },
 
-    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
-      left: `calc(50% + ${config.toggle.width/2}px)`,
-    },
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        left: `calc(50% + ${config.toggle.width / 2}px)`,
+      },
     [`@media only screen and (max-width: ${breakpoints.large.int}px)`]: {
       left: `calc(50% - ${config.toggle.width}px)`,
-    },    
+    },
     [`@media only screen and (max-width: ${breakpoints.xsmall.int}px)`]: {
       left: `calc(50% - ${config.toggle.width}px)`,
-    }    
+    },
   },
   sidebarOpen: {
-    [`@media only screen and (min-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
-      left: `calc(50% - ${config.sidebar.width/2 - 75/2}px)`,
-    }
+    [`@media only screen and (min-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        left: `calc(50% - ${config.sidebar.width / 2 - 75 / 2}px)`,
+      },
   },
   item: {
     padding: "12px 20px",

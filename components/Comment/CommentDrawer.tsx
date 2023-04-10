@@ -14,7 +14,11 @@ type Args = {
   totalCommentCount: number;
 };
 
-const CommentDrawer = ({ children, totalCommentCount, isInitialFetchDone }: Args) => {
+const CommentDrawer = ({
+  children,
+  totalCommentCount,
+  isInitialFetchDone,
+}: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [drawerEl, setDrawerEl] = useState<null | HTMLElement>(null);
   // const openBountyAmount = comments.reduce(
@@ -61,7 +65,7 @@ const CommentDrawer = ({ children, totalCommentCount, isInitialFetchDone }: Args
         <div className={css(styles.pullerBtn)} />
         <div className={css(styles.drawerContentWrapper)}>
           <div className={css(styles.header)}>
-            <div style={{display: "flex", alignItems: "center"}}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               Conversation
               {isInitialFetchDone && (
                 <span className={css(styles.discussionCount)}>

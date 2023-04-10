@@ -7,13 +7,21 @@ import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
-import { getOpenBounties, getUserOpenBounties, hasOpenBounties } from "./lib/bounty";
+import {
+  getOpenBounties,
+  getUserOpenBounties,
+  hasOpenBounties,
+} from "./lib/bounty";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import CommentList from "./CommentList";
-import { createCommentAPI, fetchSingleCommentAPI, updateCommentAPI } from "./lib/api";
+import {
+  createCommentAPI,
+  fetchSingleCommentAPI,
+  updateCommentAPI,
+} from "./lib/api";
 import { CommentTreeContext } from "./lib/contexts";
 import { getConfigForContext } from "./lib/config";
 import { MessageActions } from "~/redux/message";
@@ -31,19 +39,20 @@ type CommentArgs = {
   document: TopLevelDocument;
 };
 
-const Comment = ({
-  comment,
-  document,
-}: CommentArgs) => {
+const Comment = ({ comment, document }: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const openBounties = getOpenBounties({ comment });
   const [currentChildOffset, setCurrentChildOffset] = useState<number>(0);
   const currentUser = useSelector((state: RootState) =>
-  isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
-  const userOpenRootBounties = getUserOpenBounties({ comment, user: currentUser, rootBountyOnly: true });
+  const userOpenRootBounties = getUserOpenBounties({
+    comment,
+    user: currentUser,
+    rootBountyOnly: true,
+  });
   const commentTreeState = useContext(CommentTreeContext);
   const dispatch = useDispatch();
 
@@ -86,13 +95,9 @@ const Comment = ({
     } finally {
       setIsFetchingMore(false);
     }
-  }; 
-  
-  const handleReplyCreate = async ({
-    content,
-  }: {
-    content: object;
-  }) => {
+  };
+
+  const handleReplyCreate = async ({ content }: { content: object }) => {
     try {
       const _comment: CommentType = await createCommentAPI({
         content,
@@ -108,7 +113,7 @@ const Comment = ({
       dispatch(showMessage({ show: true, error: true }));
       throw error;
     }
-  };  
+  };
 
   const handleCommentUpdate = async ({
     id,
@@ -126,19 +131,23 @@ const Comment = ({
 
     commentTreeState.onUpdate({ comment });
   };
-  
+
   const hasOpenBounties = openBounties.length > 0;
-  const currentUserIsOpenBountyCreator =  userOpenRootBounties.length > 0;
+  const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
   const isQuestion = document?.unifiedDocument?.documentType === "question";
-  const previewMaxChars = getConfigForContext(commentTreeState.context).previewMaxChars;
-  const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer";
+  const previewMaxChars = getConfigForContext(
+    commentTreeState.context
+  ).previewMaxChars;
+  const isNarrowWidthContext =
+    commentTreeState.context === "sidebar" ||
+    commentTreeState.context === "drawer";
   return (
     <div>
       <div>
         <div
           className={css(
             styles.mainWrapper,
-            hasOpenBounties && styles.mainWrapperForBounty,
+            hasOpenBounties && styles.mainWrapperForBounty
           )}
         >
           <div className={css(styles.headerWrapper)}>
@@ -170,23 +179,33 @@ const Comment = ({
                 hasOpenBounties && styles.commentReadOnlyWrapperForBounty
               )}
             >
-              <CommentReadOnly content={comment.content} previewMaxCharLength={previewMaxChars} />
+              <CommentReadOnly
+                content={comment.content}
+                previewMaxCharLength={previewMaxChars}
+              />
               {hasOpenBounties && (
                 <div className={css(styles.contributeWrapper)}>
                   <div className={css(styles.contributeDetails)}>
                     <span style={{ fontWeight: 500 }}>
-                      <FontAwesomeIcon style={{ fontSize: 13, marginRight: 5}} icon={faClock} />
-                      {`Bounty expiring in ` + timeTo(openBounties[0].expiration_date) + `.  `}
+                      <FontAwesomeIcon
+                        style={{ fontSize: 13, marginRight: 5 }}
+                        icon={faClock}
+                      />
+                      {`Bounty expiring in ` +
+                        timeTo(openBounties[0].expiration_date) +
+                        `.  `}
                     </span>
                     <span>
-                        <>{`Reply to this ${isQuestion ? "question" : "thread"} to be eligible for bounty award.`}</>
+                      <>{`Reply to this ${
+                        isQuestion ? "question" : "thread"
+                      } to be eligible for bounty award.`}</>
                     </span>
                   </div>
                   <CreateBountyBtn
                     onBountyAdd={(bounty) => {
                       const updatedComment = Object.assign({}, comment);
                       comment.bounties[0].appendChild(bounty);
-                      updatedComment.bounties.push(bounty); 
+                      updatedComment.bounties.push(bounty);
                       commentTreeState.onUpdate({ comment: updatedComment });
                     }}
                     withPreview={false}
@@ -201,13 +220,39 @@ const Comment = ({
                       size="small"
                     >
                       <div>
-                        <FontAwesomeIcon icon={faPlus} />{` `}
-                        {currentUserIsOpenBountyCreator
-                          ? <>Add RSC<span className={css(styles.bountyBtnText, isNarrowWidthContext && styles.hideForNarrowWidthContexts)}> to bounty</span></>
-                          : <>Contribute<span className={css(styles.bountyBtnText, isNarrowWidthContext && styles.hideForNarrowWidthContexts)}> to bounty</span></>
-                        }
+                        <FontAwesomeIcon icon={faPlus} />
+                        {` `}
+                        {currentUserIsOpenBountyCreator ? (
+                          <>
+                            Add RSC
+                            <span
+                              className={css(
+                                styles.bountyBtnText,
+                                isNarrowWidthContext &&
+                                  styles.hideForNarrowWidthContexts
+                              )}
+                            >
+                              {" "}
+                              to bounty
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            Contribute
+                            <span
+                              className={css(
+                                styles.bountyBtnText,
+                                isNarrowWidthContext &&
+                                  styles.hideForNarrowWidthContexts
+                              )}
+                            >
+                              {" "}
+                              to bounty
+                            </span>
+                          </>
+                        )}
                       </div>
-                      </Button>
+                    </Button>
                   </CreateBountyBtn>
                 </div>
               )}
@@ -280,7 +325,7 @@ const styles = StyleSheet.create({
     lineHeight: "22px",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       maxWidth: "100%",
-    }
+    },
   },
   hideForNarrowWidthContexts: {
     display: "none",
@@ -288,7 +333,7 @@ const styles = StyleSheet.create({
   bountyBtnText: {
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }
+    },
   },
   contributeWrapper: {
     background: colors.bounty.background,
@@ -304,14 +349,14 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       alignItems: "flex-start",
       rowGap: "10px",
-    }
+    },
   },
   contributeBtn: {
     background: colors.bounty.contributeBtn,
     fontWeight: 500,
     border: 0,
     marginLeft: "auto",
-    borderRadius: "4px"
+    borderRadius: "4px",
   },
   contributeBtnLabel: {
     fontWeight: 500,

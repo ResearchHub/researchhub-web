@@ -35,7 +35,7 @@ function CommentReviewCategorySelector({ handleSelect }): ReactElement {
 
   const renderDropdown = () => {
     return (
-      (<div
+      <div
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
         ref={dropdownRef}
       >
@@ -58,23 +58,20 @@ function CommentReviewCategorySelector({ handleSelect }): ReactElement {
               </div>
             </div>
           ))}
-      </div>)
+      </div>
     );
   };
 
   const renderTrigger = () => {
     return (
-      (<div
-        className={css(styles.trigger)}        
-        ref={triggerRef}
-      >
+      <div className={css(styles.trigger)} ref={triggerRef}>
         <IconButton onClick={() => setIsOpen(!isOpen)}>
           <span className={css(styles.plusIcon)}>
             {<FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>}
           </span>
           <span className={css(styles.triggerLabel)}>Add review category</span>
         </IconButton>
-      </div>)
+      </div>
     );
   };
 

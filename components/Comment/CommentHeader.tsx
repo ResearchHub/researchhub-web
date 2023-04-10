@@ -1,4 +1,8 @@
-import { AuthorProfile, RHUser, TopLevelDocument } from "~/config/types/root_types";
+import {
+  AuthorProfile,
+  RHUser,
+  TopLevelDocument,
+} from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
@@ -33,10 +37,15 @@ const CommentHeader = ({
 
   // Prioritize open bounties first
   // @ts-ignore
-  const bountyContributors:RHUser[] = (openBounties.length > 0 ? openBounties : closedBounties.length > 0 ? closedBounties : [])
+  const bountyContributors: RHUser[] = (
+    openBounties.length > 0
+      ? openBounties
+      : closedBounties.length > 0
+      ? closedBounties
+      : []
+  )
     .map((b) => b!.createdBy)
-    .filter((person) => person!.id !== comment.createdBy.id)
-
+    .filter((person) => person!.id !== comment.createdBy.id);
 
   const commentTreeState = useContext(CommentTreeContext);
   const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
@@ -66,7 +75,7 @@ const CommentHeader = ({
               />
               {hasAnyBounties && bountyContributors.length > 0 && (
                 <>
-                  {commentTreeState.context !== "sidebar" &&
+                  {commentTreeState.context !== "sidebar" && (
                     <div className={css(styles.additionalAuthor)}>
                       {`, `}
                       <UserTooltip
@@ -76,12 +85,13 @@ const CommentHeader = ({
                             href={`/user/${bountyContributors[0].id}/overview`}
                             key={`/user/${bountyContributors[0].id}/overview-key`}
                           >
-                            {bountyContributors[0].firstName} {bountyContributors[0].lastName}
+                            {bountyContributors[0].firstName}{" "}
+                            {bountyContributors[0].lastName}
                           </ALink>
                         }
                       />
                     </div>
-                  }
+                  )}
                   <>{` and others`}</>
                 </>
               )}
@@ -94,20 +104,27 @@ const CommentHeader = ({
               <div className={css(styles.verb)}>{` commented`}</div>
             )}
             <div className={css(styles.menuWrapper)}>
-              <CommentMenu handleEdit={handleEdit} comment={comment} document={document} />
+              <CommentMenu
+                handleEdit={handleEdit}
+                comment={comment}
+                document={document}
+              />
             </div>
           </div>
           <div className={css(styles.time)}>
             {comment.timeAgo}
-                {closedBounties.length > 0 && (
+            {closedBounties.length > 0 && (
               <>
                 <span className={css(styles.dot)}>•</span>
-                  <span className={css(styles.expiringText)}>
-                    <FontAwesomeIcon style={{ fontSize: 13, marginRight: 5}} icon={faClock} />
-                    {`Ended ` + timeSince(closedBounties[0].expiration_date)}
-                  </span>
+                <span className={css(styles.expiringText)}>
+                  <FontAwesomeIcon
+                    style={{ fontSize: 13, marginRight: 5 }}
+                    icon={faClock}
+                  />
+                  {`Ended ` + timeSince(closedBounties[0].expiration_date)}
+                </span>
               </>
-                )}
+            )}
           </div>
         </div>
       </div>
@@ -122,9 +139,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8,
   },
-  expiringText: {
-
-  },
+  expiringText: {},
   commentHeader: {
     fontSize: 14,
   },
@@ -152,8 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignItems: "flex-start",
   },
-  badgeRow: {
-  },
+  badgeRow: {},
   tipsWrapper: {
     color: colors.bounty.text,
     display: "flex",
@@ -177,11 +191,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
-    }
+    },
   },
   avatars: {
     alignItems: "flex-start",
-  }
+  },
 });
 
 export default CommentHeader;

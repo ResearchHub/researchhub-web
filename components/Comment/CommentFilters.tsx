@@ -8,18 +8,29 @@ import { filterOpts } from "./lib/options";
 type Args = {
   selectedFilterValue: NullableString;
   handleSelect: Function;
-  hideOptions?: Array<string|null>
+  hideOptions?: Array<string | null>;
 };
 
-const CommentFilters = ({ selectedFilterValue, handleSelect, hideOptions = [] }: Args) => {
+const CommentFilters = ({
+  selectedFilterValue,
+  handleSelect,
+  hideOptions = [],
+}: Args) => {
   const commentTreeState = useContext(CommentTreeContext);
   const selectedFilter =
     filterOpts.find((f) => f.value === selectedFilterValue) || filterOpts[0];
   const _filterOpts = filterOpts.filter((f) => !hideOptions.includes(f.value));
-  const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer"
+  const isNarrowWidthContext =
+    commentTreeState.context === "sidebar" ||
+    commentTreeState.context === "drawer";
 
   return (
-    <div className={css(styles.filtersWrapper, isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
+    <div
+      className={css(
+        styles.filtersWrapper,
+        isNarrowWidthContext && styles.sectionForNarrowWidthContexts
+      )}
+    >
       {_filterOpts.map((f) => {
         return (
           <div key={`filter-${f.value}`}>
@@ -71,7 +82,7 @@ const styles = StyleSheet.create({
   },
   sectionForNarrowWidthContexts: {
     marginLeft: 25,
-  }
+  },
 });
 
 export default CommentFilters;

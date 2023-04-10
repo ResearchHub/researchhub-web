@@ -4,7 +4,14 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState, useContext } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
-import { QuillFormats, buildQuillModules, insertReviewCategory, focusEditor, forceShowPlaceholder, hasQuillContent } from "./lib/quill";
+import {
+  QuillFormats,
+  buildQuillModules,
+  insertReviewCategory,
+  focusEditor,
+  forceShowPlaceholder,
+  hasQuillContent,
+} from "./lib/quill";
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
@@ -58,7 +65,7 @@ const CommentEditor = ({
   focusOnMount = false,
   handleClose,
 }: CommentEditorArgs) => {
-  console.log('commentType', commentType)
+  console.log("commentType", commentType);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
@@ -66,7 +73,7 @@ const CommentEditor = ({
     useState<boolean>(previewModeAsDefault);
   const isPreviewModeRef = useRef(previewModeAsDefault);
   const dispatch = useDispatch();
-  const [interimBounty, setInterimBounty] = useState<Bounty|null>(null);
+  const [interimBounty, setInterimBounty] = useState<Bounty | null>(null);
   const currentUser = useSelector((state: RootState) =>
     isInputEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
@@ -86,7 +93,7 @@ const CommentEditor = ({
   const { content: _content, dangerouslySetContent } = useQuillContent({
     quill,
     content,
-    notifyOnContentChangeRate: 300 // ms
+    notifyOnContentChangeRate: 300, // ms
   });
 
   useEffectForCommentTypeChange({
@@ -94,7 +101,7 @@ const CommentEditor = ({
     quillRef,
     isReady,
     commentType: _commentType,
-  })
+  });
 
   if (previewModeAsDefault) {
     useEffectHandleClick({
@@ -109,13 +116,13 @@ const CommentEditor = ({
 
   useEffect(() => {
     if (isReady) {
-      const _isEmpty = !hasQuillContent({ quill })
+      const _isEmpty = !hasQuillContent({ quill });
       setIsEmpty(_isEmpty);
       if (_isEmpty) {
         forceShowPlaceholder({
           quillRef,
-          placeholderText: placeholder
-        })
+          placeholderText: placeholder,
+        });
       }
     }
   }, [_content, isReady]);
@@ -124,13 +131,17 @@ const CommentEditor = ({
     if (isReady && focusOnMount) {
       focusEditor({ quill });
     }
-  }, [isReady])
+  }, [isReady]);
 
   const _handleSubmit = async () => {
     setIsSubmitting(true);
     try {
       if (quill!.getLength() <= config.comment.minLength) {
-        dispatch(setMessage(`Comment must be greater than ${config.comment.minLength} characters long.`));
+        dispatch(
+          setMessage(
+            `Comment must be greater than ${config.comment.minLength} characters long.`
+          )
+        );
         // @ts-ignore
         dispatch(showMessage({ show: true, error: true }));
         return false;
@@ -162,15 +173,15 @@ const CommentEditor = ({
       className={`${css(styles.commentEditor)} CommentEditor`}
       onClick={() => {
         if (!isLoggedIn) {
-          dispatch(ModalActions.openLoginModal(true, "Please Sign in to continue."))
+          dispatch(
+            ModalActions.openLoginModal(true, "Please Sign in to continue.")
+          );
         }
-    }}>
+      }}
+    >
       <div>
         {handleClose && (
-          <IconButton
-            overrideStyle={styles.closeBtn}
-            onClick={handleClose}
-          >
+          <IconButton overrideStyle={styles.closeBtn} onClick={handleClose}>
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         )}
@@ -179,9 +190,13 @@ const CommentEditor = ({
             className={css(styles.authorRow, isPreviewMode && styles.hidden)}
           >
             <div className={css(styles.nameRow)}>
-              {currentUser &&
-                <CommentAvatars size={25} withTooltip={false} people={[currentUser]} />
-              }
+              {currentUser && (
+                <CommentAvatars
+                  size={25}
+                  withTooltip={false}
+                  people={[currentUser]}
+                />
+              )}
               <div>
                 {author.firstName} {author.lastName}
               </div>
@@ -206,7 +221,7 @@ const CommentEditor = ({
                 }}
               />
             </div>
-            )}
+          )}
           <div
             className={css(
               styles.toolbarContainer,
@@ -223,7 +238,13 @@ const CommentEditor = ({
             fullWidth
             label={
               isSubmitting ? (
-                <div style={{ display: "flex", alignItems: "center", minHeight: "28px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    minHeight: "28px",
+                  }}
+                >
                   <ClipLoader
                     sizeUnit={"px"}
                     size={18}
@@ -243,10 +264,16 @@ const CommentEditor = ({
         {allowBounty && (
           <>
             {interimBounty ? (
-              <div className={css(styles.bountyPreview)} onClick={() => setInterimBounty(null)}>
+              <div
+                className={css(styles.bountyPreview)}
+                onClick={() => setInterimBounty(null)}
+              >
                 <ResearchCoinIcon height={18} width={18} />
                 <span>{interimBounty.formattedAmount} RSC Bounty</span>
-                <FontAwesomeIcon style={{ color: colors.gray }} icon={faTimes} />
+                <FontAwesomeIcon
+                  style={{ color: colors.gray }}
+                  icon={faTimes}
+                />
               </div>
             ) : (
               // @ts-ignore
@@ -258,7 +285,6 @@ const CommentEditor = ({
               />
             )}
           </>
-
         )}
       </div>
     </div>

@@ -1,11 +1,7 @@
 import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
-import {
-  RhDocumentType,
-  ID,
-  parseUser,
-} from "~/config/types/root_types";
+import { RhDocumentType, ID, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import VoteWidget from "../VoteWidget";
@@ -17,7 +13,6 @@ import { Vote } from "~/config/types/vote";
 import { CommentTreeContext } from "./lib/contexts";
 import { MessageActions } from "~/redux/message";
 const { setMessage, showMessage } = MessageActions;
-
 
 type Args = {
   score: number;
@@ -39,7 +34,7 @@ const CommentVote = ({
   const [_userVote, _setUserVote] = useState(userVote);
   const dispatch = useDispatch();
 
-  const handleVoteSuccess = ({ userVote }: { userVote:Vote }) => {
+  const handleVoteSuccess = ({ userVote }: { userVote: Vote }) => {
     const newUserVote = userVote;
     const currentUserVote = _userVote;
     let newScore = _score;
@@ -53,21 +48,18 @@ const CommentVote = ({
       if (newUserVote.voteType === UPVOTE) {
         if (currentUserVote?.voteType === DOWNVOTE) {
           newScore += 2;
-        }
-        else {
+        } else {
           newScore += 1;
         }
-      }
-      else if (newUserVote.voteType === DOWNVOTE) {
+      } else if (newUserVote.voteType === DOWNVOTE) {
         if (currentUserVote?.voteType === UPVOTE) {
           newScore -= 2;
-        }
-        else {
+        } else {
           newScore -= 1;
         }
       }
     }
-    
+
     _setScore(newScore);
     _setUserVote(newUserVote);
     const updateComment = Object.assign({}, comment, { userVote: newUserVote });
@@ -84,11 +76,10 @@ const CommentVote = ({
             voteType: "upvote",
             commentId: comment.id,
             documentId: documentID,
-            documentType, 
-          })
-          handleVoteSuccess({ userVote })
-        }
-        catch(error) {
+            documentType,
+          });
+          handleVoteSuccess({ userVote });
+        } catch (error) {
           // @ts-ignore
           dispatch(setMessage(error));
           // @ts-ignore
@@ -102,11 +93,10 @@ const CommentVote = ({
             voteType: "neutralvote",
             commentId: comment.id,
             documentId: documentID,
-            documentType, 
-          })
-          handleVoteSuccess({ userVote })
-        }
-        catch(error) {
+            documentType,
+          });
+          handleVoteSuccess({ userVote });
+        } catch (error) {
           // @ts-ignore
           dispatch(setMessage(error));
           // @ts-ignore
@@ -119,11 +109,10 @@ const CommentVote = ({
             voteType: "downvote",
             commentId: comment.id,
             documentId: documentID,
-            documentType, 
-          })
-          handleVoteSuccess({ userVote })
-        }
-        catch(error) {
+            documentType,
+          });
+          handleVoteSuccess({ userVote });
+        } catch (error) {
           // @ts-ignore
           dispatch(setMessage(error));
           // @ts-ignore

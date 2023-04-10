@@ -20,7 +20,9 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
   const dropdownRef = useRef(null);
   const selectedSort =
     sortOpts.find((s) => s.value === selectedSortValue) || sortOpts[0];
-  const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer"
+  const isNarrowWidthContext =
+    commentTreeState.context === "sidebar" ||
+    commentTreeState.context === "drawer";
 
   useEffectHandleClick({
     el: dropdownRef.current,
@@ -29,7 +31,12 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
   });
 
   return (
-    <div className={css(styles.wrapper, isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
+    <div
+      className={css(
+        styles.wrapper,
+        isNarrowWidthContext && styles.sectionForNarrowWidthContexts
+      )}
+    >
       <div className={`${css(styles.trigger)} comment-sort-trigger`}>
         <IconButton
           overrideStyle={styles.labelWrapper}
@@ -48,16 +55,20 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
       >
         {sortOpts.map((s) => (
-          <div className={css(styles.option)} key={`sort-${s.value}`} onClick={() => {
-            handleSelect(s.value);
-            setIsOpen(false);
-          }}>
+          <div
+            className={css(styles.option)}
+            key={`sort-${s.value}`}
+            onClick={() => {
+              handleSelect(s.value);
+              setIsOpen(false);
+            }}
+          >
             <div className={css(styles.dropdownIcon)}>{s.icon}</div>
             <div className={css(styles.dropdownLabel)}>{s.label}</div>
             {selectedSortValue === s.value && (
               <div className={css(styles.check)}>
                 <FontAwesomeIcon style={{ fontSize: 12 }} icon={faCheck} />
-              </div>            
+              </div>
             )}
           </div>
         ))}
@@ -81,8 +92,7 @@ const styles = StyleSheet.create({
     padding: "6px 10px 6px 10px",
     fontSize: 16,
   },
-  trigger: {
-  },
+  trigger: {},
   dropdown: {
     display: "none",
     position: "absolute",
@@ -122,14 +132,14 @@ const styles = StyleSheet.create({
     right: 15,
     top: 8,
     fontSize: 12,
-  },  
+  },
   dropdownIcon: {
     fontSize: 12,
   },
   dropdownLabel: {},
   sectionForNarrowWidthContexts: {
     marginRight: 15,
-  }
+  },
 });
 
 export default CommentSort;

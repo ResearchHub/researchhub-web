@@ -38,20 +38,24 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
     onInsideClick: () => setIsOpen(false),
   });
 
-  const _handleFlag = async (flagReason:string) => {
+  const _handleFlag = async (flagReason: string) => {
     try {
-      await flagComment({ commentId: comment.id, flagReason, documentId: document.id, documentType: document.apiDocumentType })
+      await flagComment({
+        commentId: comment.id,
+        flagReason,
+        documentId: document.id,
+        documentType: document.apiDocumentType,
+      });
       dispatch(setMessage("Flagged"));
       // @ts-ignore
       dispatch(showMessage({ show: true, error: false }));
-    }
-    catch(error) {
+    } catch (error) {
       // @ts-ignore
       dispatch(setMessage(error));
       // @ts-ignore
       dispatch(showMessage({ show: true, error: true }));
     }
-  }
+  };
 
   return (
     <div className={css(styles.wrapper)}>
@@ -95,22 +99,20 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
         )}
 
         {currentUser?.id !== comment.createdBy.id && (
-          
-            <FlagButtonV2
-              modalHeaderText="Flagging"
-              onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-                _handleFlag(flagReason);
-              }}
-            >
-              <div className={css(styles.option)}>
-                <FontAwesomeIcon
-                  icon={faFlag}
-                  style={{ color: colors.secondary.text, fontSize: 18 }}
-                />
-                <div className={css(styles.dropdownLabel)}>Flag</div>
-
-              </div>
-            </FlagButtonV2>
+          <FlagButtonV2
+            modalHeaderText="Flagging"
+            onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+              _handleFlag(flagReason);
+            }}
+          >
+            <div className={css(styles.option)}>
+              <FontAwesomeIcon
+                icon={faFlag}
+                style={{ color: colors.secondary.text, fontSize: 18 }}
+              />
+              <div className={css(styles.dropdownLabel)}>Flag</div>
+            </div>
+          </FlagButtonV2>
         )}
       </div>
     </div>

@@ -13,7 +13,10 @@ const CommentPlaceholder = ({
   return (
     <div>
       {Array.from(new Array(repeatCount)).map((_, idx) => (
-        <div key={`placeholder-${idx}`} className={css(styles.wrapper) + " show-loading-animation"}>
+        <div
+          key={`placeholder-${idx}`}
+          className={css(styles.wrapper) + " show-loading-animation"}
+        >
           <div className={css(styles.header)}>
             <RoundShape
               className={css(styles.avatar)}

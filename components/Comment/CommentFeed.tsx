@@ -51,18 +51,23 @@ const CommentFeed = ({
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
-  const [currentDocumentId, setCurrentDocumentId] = useState<ID|null>(null);
+  const [currentDocumentId, setCurrentDocumentId] = useState<ID | null>(null);
   const dispatch = useDispatch();
 
-  
-  const handleFetch = async ({ sort, filter } : { sort?: string|null, filter?: string|null}) => {
+  const handleFetch = async ({
+    sort,
+    filter,
+  }: {
+    sort?: string | null;
+    filter?: string | null;
+  }) => {
     setIsFetching(true);
     try {
       const response = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
-        sort: (sort || sort === null) ? sort : selectedSortValue,
-        filter: (filter || filter === null) ? filter : selectedFilterValue,
+        sort: sort || sort === null ? sort : selectedSortValue,
+        filter: filter || filter === null ? filter : selectedFilterValue,
       });
 
       setComments(response.comments);
@@ -99,7 +104,7 @@ const CommentFeed = ({
       setComments([comment, ...comments]);
     }
 
-    typeof(onCommentCreate) === "function" && onCommentCreate(comment);
+    typeof onCommentCreate === "function" && onCommentCreate(comment);
   };
 
   const onUpdate = ({ comment }: { comment: CommentType }) => {
@@ -158,7 +163,7 @@ const CommentFeed = ({
 
       onCreate({ comment, parent: parentComment });
       if (isRootComment) {
-        setRootLevelCommentCount(rootLevelCommentCount+1)
+        setRootLevelCommentCount(rootLevelCommentCount + 1);
       }
     } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
@@ -201,20 +206,20 @@ const CommentFeed = ({
     }
   };
 
-  const onSupport = (data:any) => {
+  const onSupport = (data: any) => {
     const found = findComment({ id: data.object_id, comments });
     if (found) {
-      console.log(found)
-      const updatedComment = {...found.comment};
-      const tip:Purchase = {
+      console.log(found);
+      const updatedComment = { ...found.comment };
+      const tip: Purchase = {
         amount: data.amount,
         // @ts-ignore
         createdBy: currentUser,
-      }
+      };
       updatedComment.tips.push(tip);
-      onUpdate({ comment: updatedComment })
+      onUpdate({ comment: updatedComment });
     }
-  }
+  };
 
   const fetchMore = async () => {
     setIsFetching(true);
@@ -246,7 +251,7 @@ const CommentFeed = ({
     setSelectedSortValue(sortOpts[0].value);
     setSelectedFilterValue(filterOpts[0].value);
     setRootLevelCommentCount(0);
-  }
+  };
 
   useEffect(() => {
     if (document.id && document.id !== currentDocumentId) {
@@ -254,7 +259,7 @@ const CommentFeed = ({
       handleFetch({});
       setCurrentDocumentId(document.id);
     }
-  }, [document.id, currentDocumentId]);  
+  }, [document.id, currentDocumentId]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
@@ -264,75 +269,88 @@ const CommentFeed = ({
     context === "sidebar"
       ? CommentSidebar
       : context === "drawer"
-        ? CommentDrawer
-        : React.Fragment;
-  const isNarrowWidthContext = context === "sidebar" || context === "drawer"
-  
+      ? CommentDrawer
+      : React.Fragment;
+  const isNarrowWidthContext = context === "sidebar" || context === "drawer";
+
   return (
     <CommentTreeContext.Provider
-    value={{
-      sort: selectedSortValue,
-      filter: selectedFilterValue,
-      comments,
-      context,
-      onCreate,
-      onUpdate,
-      onFetchMore,
-    }}
-  >         
-    {/* @ts-ignore */}
-    <WrapperEl
-      {...(context ? { isInitialFetchDone } : {})}
-      {...(context ? { totalCommentCount } : {})}
+      value={{
+        sort: selectedSortValue,
+        filter: selectedFilterValue,
+        comments,
+        context,
+        onCreate,
+        onUpdate,
+        onFetchMore,
+      }}
     >
-      <ContentSupportModal
-        // @ts-ignore
-        onSupport={(data:any) => {
-          onSupport(data);
-        }}
-      />
-      {!isInitialFetchDone ? (
-        <div className={css(isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
-          <CommentPlaceholder />
-        </div>
-      ) : (
-   <>
-          <div className={css(styles.editorWrapper, isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
-            <CommentEditor
-              editorId="new-thread"
-              handleSubmit={handleCommentCreate}
-              allowBounty={true}
-              author={currentUser?.authorProfile}
-              previewModeAsDefault={context ? true : false}
-              allowCommentTypeSelection={!isQuestion}
-            />
+      {/* @ts-ignore */}
+      <WrapperEl
+        {...(context ? { isInitialFetchDone } : {})}
+        {...(context ? { totalCommentCount } : {})}
+      >
+        <ContentSupportModal
+          // @ts-ignore
+          onSupport={(data: any) => {
+            onSupport(data);
+          }}
+        />
+        {!isInitialFetchDone ? (
+          <div
+            className={css(
+              isNarrowWidthContext && styles.sectionForNarrowWidthContexts
+            )}
+          >
+            <CommentPlaceholder />
           </div>
-
-          <div className={css(styles.filtersWrapper)}>
-            <CommentFilters
-              selectedFilterValue={selectedFilterValue}
-              hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
-              handleSelect={(fval) => {
-                resetFeed();
-                setIsFetching(true);
-                setSelectedFilterValue(fval);
-                handleFetch({ filter: fval, sort: selectedSortValue });
-              }}
-            />
-            <div className={css(styles.sortWrapper)}>
-              <CommentSort
-                selectedSortValue={selectedSortValue}
-                handleSelect={(sval) => {
-                  setSelectedSortValue(sval)
-                  setIsFetching(true);
-                  setComments([]);
-                  handleFetch({ sort: sval });
-                }}
+        ) : (
+          <>
+            <div
+              className={css(
+                styles.editorWrapper,
+                isNarrowWidthContext && styles.sectionForNarrowWidthContexts
+              )}
+            >
+              <CommentEditor
+                editorId="new-thread"
+                handleSubmit={handleCommentCreate}
+                allowBounty={true}
+                author={currentUser?.authorProfile}
+                previewModeAsDefault={context ? true : false}
+                allowCommentTypeSelection={!isQuestion}
               />
             </div>
-          </div>
 
-            <div className={css(isNarrowWidthContext && styles.sectionForNarrowWidthContexts)}>
+            <div className={css(styles.filtersWrapper)}>
+              <CommentFilters
+                selectedFilterValue={selectedFilterValue}
+                hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
+                handleSelect={(fval) => {
+                  resetFeed();
+                  setIsFetching(true);
+                  setSelectedFilterValue(fval);
+                  handleFetch({ filter: fval, sort: selectedSortValue });
+                }}
+              />
+              <div className={css(styles.sortWrapper)}>
+                <CommentSort
+                  selectedSortValue={selectedSortValue}
+                  handleSelect={(sval) => {
+                    setSelectedSortValue(sval);
+                    setIsFetching(true);
+                    setComments([]);
+                    handleFetch({ sort: sval });
+                  }}
+                />
+              </div>
+            </div>
+
+            <div
+              className={css(
+                isNarrowWidthContext && styles.sectionForNarrowWidthContexts
+              )}
+            >
               <CommentList
                 isRootList={true}
                 comments={comments}
@@ -342,18 +360,17 @@ const CommentFeed = ({
                 handleFetchMore={fetchMore}
               />
             </div>
-    
-          
-          {noResults &&
-            <CommentEmptyState
-              height={context === "sidebar" ? "60%" : "300px"}
-              forSection={selectedFilterValue}
-              documentType={document.documentType}
-            />
-          }
-        </>
-      )}
-    </WrapperEl>
+
+            {noResults && (
+              <CommentEmptyState
+                height={context === "sidebar" ? "60%" : "300px"}
+                forSection={selectedFilterValue}
+                documentType={document.documentType}
+              />
+            )}
+          </>
+        )}
+      </WrapperEl>
     </CommentTreeContext.Provider>
   );
 };
@@ -363,7 +380,7 @@ const styles = StyleSheet.create({
     margin: "45px 0 15px 0",
     display: "flex",
     paddingBottom: 15,
-    borderBottom: `1px solid ${colors.filters.divider}`
+    borderBottom: `1px solid ${colors.filters.divider}`,
   },
   sortWrapper: {
     marginLeft: "auto",
@@ -373,7 +390,7 @@ const styles = StyleSheet.create({
   },
   sectionForNarrowWidthContexts: {
     padding: "0px 25px",
-  }
+  },
 });
 
 export default CommentFeed;

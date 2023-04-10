@@ -27,19 +27,15 @@ const CommentList = ({
   isRootList = false,
   isFetching = false,
 }: Args) => {
-
   const _commentElems = comments.map((c) => (
     <div
       key={c.id}
       className={css(
         styles.commentWrapper,
-        !c.parent && styles.rootCommentWrapper,  
+        !c.parent && styles.rootCommentWrapper
       )}
     >
-      <Comment
-        comment={c}
-        document={document}
-      />
+      <Comment comment={c} document={document} />
     </div>
   ));
 
@@ -55,11 +51,11 @@ const CommentList = ({
         )}
       >
         {_commentElems.length > 0 && _commentElems}
-        {isFetching && 
+        {isFetching && (
           <div className={css(styles.placeholderWrapper)}>
             <CommentPlaceholder />
           </div>
-        }
+        )}
         {loadMoreCount > 0 && (
           <div className={css(styles.loadMoreWrapper)}>
             <IconButton onClick={handleFetchMore}>
@@ -70,7 +66,10 @@ const CommentList = ({
                   fontWeight: 500,
                 }}
               >
-                Load {loadMoreCount} {parentComment ? `${loadMoreCount > 1 ? "Replies" : "Reply"}` : "More"}{" "}
+                Load {loadMoreCount}{" "}
+                {parentComment
+                  ? `${loadMoreCount > 1 ? "Replies" : "Reply"}`
+                  : "More"}{" "}
                 <FontAwesomeIcon icon={faLongArrowDown} />
               </span>
             </IconButton>

@@ -1,9 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCrown } from "@fortawesome/pro-regular-svg-icons";
-import { faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
+import { faCrown, faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
-import { TopLevelDocument } from "~/config/types/root_types";
+import { TopLevelDocument, parseUser } from "~/config/types/root_types";
 import { Comment } from "./lib/types";
 import Image from "next/image";
 import IconButton from "../Icons/IconButton";
@@ -11,9 +10,12 @@ import colors from "./lib/colors";
 import WidgetContentSupport from "../Widget/WidgetContentSupport";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
-import { parseUser } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { findOpenRootBounties, getOpenBounties, getUserOpenBounties } from "./lib/bounty";
+import {
+  findOpenRootBounties,
+  getOpenBounties,
+  getUserOpenBounties,
+} from "./lib/bounty";
 import { CommentTreeContext } from "./lib/contexts";
 import { useContext } from "react";
 import Bounty, { tallyAmounts } from "~/config/types/bounty";
@@ -28,11 +30,7 @@ type Args = {
   document: TopLevelDocument;
 };
 
-const CommentActions = ({
-  comment,
-  document,
-  toggleReply,
-}: Args) => {
+const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const dispatch = useDispatch();
   const commentTreeState = useContext(CommentTreeContext);
   const isQuestion = document.unifiedDocument.documentType === "question";
@@ -40,9 +38,15 @@ const CommentActions = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
-  const handleAwardBounty = async ({ bounty, }: { bounty: Bounty, }) => {
-    const totalAmount = tallyAmounts({ bounties: [bounty, ...bounty.children] })
-    if (confirm(`Award ${totalAmount} bounty to ${comment.createdBy.firstName} ${comment.createdBy.lastName}?`)) {
+  const handleAwardBounty = async ({ bounty }: { bounty: Bounty }) => {
+    const totalAmount = tallyAmounts({
+      bounties: [bounty, ...bounty.children],
+    });
+    if (
+      confirm(
+        `Award ${totalAmount} bounty to ${comment.createdBy.firstName} ${comment.createdBy.lastName}?`
+      )
+    ) {
       try {
         Bounty.awardAPI({
           bountyId: bounty.id,
@@ -50,17 +54,24 @@ const CommentActions = ({
           objectId: comment.id,
           amount: totalAmount,
         })
-          .then((updatedBounty:Bounty) => {
+          .then((updatedBounty: Bounty) => {
             const awardedComent = Object.assign({}, comment);
             awardedComent.awardedBountyAmount += totalAmount;
-            
-            const updatedCommentBounty = Object.assign({}, bounty!.relatedItem?.object);
+
+            const updatedCommentBounty = Object.assign(
+              {},
+              bounty!.relatedItem?.object
+            );
             updatedBounty.status = updatedBounty.status;
             updatedBounty.children = bounty.children;
             updatedBounty.relatedItem = bounty.relatedItem;
-            updatedBounty.children.map(c => c.status = updatedBounty.status);
+            updatedBounty.children.map(
+              (c) => (c.status = updatedBounty.status)
+            );
 
-            const bIdx = updatedCommentBounty.bounties.findIndex(b => b.id === updatedBounty.id);
+            const bIdx = updatedCommentBounty.bounties.findIndex(
+              (b) => b.id === updatedBounty.id
+            );
             if (bIdx > -1) {
               updatedCommentBounty.bounties[bIdx] = updatedBounty;
             }
@@ -68,63 +79,98 @@ const CommentActions = ({
             commentTreeState.onUpdate({ comment: updatedCommentBounty });
             commentTreeState.onUpdate({ comment: awardedComent });
           })
-          .catch((error:any) => {
+          .catch((error: any) => {
             // FIXME: Log to sentry
-            dispatch(setMessage(`Could not award bounty at this time. Error: ${error?.detail}`));
+            dispatch(
+              setMessage(
+                `Could not award bounty at this time. Error: ${error?.detail}`
+              )
+            );
             // @ts-ignore
             dispatch(showMessage({ show: true, error: true }));
-
           });
-      }
-      catch(error) {
-        console.log('error', error);
+      } catch (error) {
+        console.log("error", error);
       }
     }
   };
 
   const handleAcceptAnswer = async ({ commentId }) => {
-    if (confirm(`Accept ${comment.createdBy.firstName} ${comment.createdBy.lastName}'s answer ?`)) {
+    if (
+      confirm(
+        `Accept ${comment.createdBy.firstName} ${comment.createdBy.lastName}'s answer ?`
+      )
+    ) {
       try {
-        await markAsAcceptedAnswerAPI({ commentId, documentType: document.apiDocumentType, documentId: document.id });
-        const previouslyAccepted =  findAllComments({comments: commentTreeState.comments, conditions: [{key: "isAcceptedAnswer", value: true }] }).map(f => f.comment)
-        
-        previouslyAccepted.map(c => {
-          const updated = Object.assign({}, c, {isAcceptedAnswer: false});
+        await markAsAcceptedAnswerAPI({
+          commentId,
+          documentType: document.apiDocumentType,
+          documentId: document.id,
+        });
+        const previouslyAccepted = findAllComments({
+          comments: commentTreeState.comments,
+          conditions: [{ key: "isAcceptedAnswer", value: true }],
+        }).map((f) => f.comment);
+
+        previouslyAccepted.map((c) => {
+          const updated = Object.assign({}, c, { isAcceptedAnswer: false });
           commentTreeState.onUpdate({ comment: updated });
-        })
-        
-        const newlyAccepted = Object.assign({}, comment, {isAcceptedAnswer: true});
+        });
+
+        const newlyAccepted = Object.assign({}, comment, {
+          isAcceptedAnswer: true,
+        });
         commentTreeState.onUpdate({ comment: newlyAccepted });
-      }
-      catch(error:any) {
+      } catch (error: any) {
         // FIXME: Log to sentry
-        dispatch(setMessage(`Could not award bounty at this time. Error: ${error?.detail}`));
+        dispatch(
+          setMessage(
+            `Could not award bounty at this time. Error: ${error?.detail}`
+          )
+        );
         // @ts-ignore
-        dispatch(showMessage({ show: true, error: true }));        
+        dispatch(showMessage({ show: true, error: true }));
       }
     }
-  }
+  };
 
   // FIXME: Refactor into function
   const openBounties = getOpenBounties({ comment });
-  const isAllowedToTip = openBounties.length === 0 && comment.createdBy.id !== currentUser?.id;
+  const isAllowedToTip =
+    openBounties.length === 0 && comment.createdBy.id !== currentUser?.id;
   let isAllowedToAward = false;
   let isAllowedToAcceptAnswer = false;
-  let openUserOwnedRootBounty:Bounty;
+  let openUserOwnedRootBounty: Bounty;
   if (isQuestion) {
-    openUserOwnedRootBounty = findOpenRootBounties({ comments: commentTreeState.comments, user: currentUser })[0];
-    isAllowedToAward = Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
-    isAllowedToAcceptAnswer = document!.createdBy!.id == currentUser?.id && !comment.isAcceptedAnswer && comment.bounties.length === 0;
-  }
-  else {
-    const found = findComment({ id: comment.id, comments: commentTreeState.comments });
+    openUserOwnedRootBounty = findOpenRootBounties({
+      comments: commentTreeState.comments,
+      user: currentUser,
+    })[0];
+    isAllowedToAward =
+      Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
+    isAllowedToAcceptAnswer =
+      document!.createdBy!.id == currentUser?.id &&
+      !comment.isAcceptedAnswer &&
+      comment.bounties.length === 0;
+  } else {
+    const found = findComment({
+      id: comment.id,
+      comments: commentTreeState.comments,
+    });
     if (found) {
       const rootCommentId = found.path[0];
-      const foundRootComment = findComment({ id: rootCommentId, comments: commentTreeState.comments });
+      const foundRootComment = findComment({
+        id: rootCommentId,
+        comments: commentTreeState.comments,
+      });
 
       if (foundRootComment) {
-        openUserOwnedRootBounty = getUserOpenBounties({ comment: foundRootComment.comment, user: currentUser })[0];
-        isAllowedToAward = Boolean(openUserOwnedRootBounty) && Boolean(comment.parent);
+        openUserOwnedRootBounty = getUserOpenBounties({
+          comment: foundRootComment.comment,
+          user: currentUser,
+        })[0];
+        isAllowedToAward =
+          Boolean(openUserOwnedRootBounty) && Boolean(comment.parent);
       }
     }
   }
@@ -134,7 +180,12 @@ const CommentActions = ({
   return (
     <div className={css(styles.wrapper)}>
       <div className={css(styles.actionsWrapper)}>
-        <div className={`${css(styles.action, disableSocialActions && styles.disabled)} vote-btn`}>
+        <div
+          className={`${css(
+            styles.action,
+            disableSocialActions && styles.disabled
+          )} vote-btn`}
+        >
           <CommentVote
             comment={comment}
             score={comment.score}
@@ -143,15 +194,21 @@ const CommentActions = ({
             documentID={document.id}
           />
         </div>
-        {isAllowedToTip &&
-          <div className={`${css(styles.action, disableSocialActions && styles.disabled)} tip-btn`}>
+        {isAllowedToTip && (
+          <div
+            className={`${css(
+              styles.action,
+              disableSocialActions && styles.disabled
+            )} tip-btn`}
+          >
             <WidgetContentSupport
               data={{
                 created_by: comment.createdBy.raw,
               }}
               showAmount={false}
               metaData={{
-                contentType: "rhcommentmodel", objectId: comment.id
+                contentType: "rhcommentmodel",
+                objectId: comment.id,
               }}
             >
               <Image
@@ -163,29 +220,31 @@ const CommentActions = ({
               <span className={css(styles.actionText)}>Tip</span>
             </WidgetContentSupport>
           </div>
-        }
+        )}
 
-        {isAllowedToAcceptAnswer &&
+        {isAllowedToAcceptAnswer && (
           <div className={`${css(styles.action)} accept-btn`}>
-            <IconButton onClick={() => handleAcceptAnswer({ commentId: comment.id })}>
+            <IconButton
+              onClick={() => handleAcceptAnswer({ commentId: comment.id })}
+            >
               <FontAwesomeIcon icon={faCommentCheck} style={{ fontSize: 18 }} />
-              <span className={css(styles.actionText)}>
-                Accept
-              </span>
+              <span className={css(styles.actionText)}>Accept</span>
             </IconButton>
           </div>
-        }
+        )}
 
-        {isAllowedToAward &&
+        {isAllowedToAward && (
           <div className={`${css(styles.action)} award-btn`}>
-            <IconButton onClick={() => handleAwardBounty({ bounty: openUserOwnedRootBounty })}>
+            <IconButton
+              onClick={() =>
+                handleAwardBounty({ bounty: openUserOwnedRootBounty })
+              }
+            >
               <FontAwesomeIcon icon={faCrown} style={{ fontSize: 16 }} />
-              <span className={css(styles.actionText)}>
-                Award
-              </span>
+              <span className={css(styles.actionText)}>Award</span>
             </IconButton>
           </div>
-        }
+        )}
 
         <div className={`${css(styles.action, styles.actionReply)} reply-btn`}>
           <IconButton onClick={() => toggleReply()}>
@@ -218,8 +277,8 @@ const styles = StyleSheet.create({
       left: 0,
       bottom: 0,
       width: "100%",
-      height: "100%"
-    }
+      height: "100%",
+    },
   },
   action: {
     display: "flex",

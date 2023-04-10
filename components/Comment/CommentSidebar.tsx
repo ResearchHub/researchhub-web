@@ -26,11 +26,10 @@ const CommentSidebar = ({
     const handleResize = () => {
       if (window.innerWidth <= config.sidebar.fixedPosMaxWidth) {
         setIsInFixedPosRange(true);
-      }
-      else {
+      } else {
         setIsInFixedPosRange(false);
       }
-    }
+    };
 
     if (window.innerWidth <= config.sidebar.fixedPosMaxWidth) {
       setIsInFixedPosRange(true);
@@ -42,7 +41,7 @@ const CommentSidebar = ({
     return (): void => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [])
+  }, []);
 
   return (
     <>
@@ -50,7 +49,7 @@ const CommentSidebar = ({
         className={css(
           styles.sidebar,
           isOpen ? styles.sidebarOpen : styles.sidebarClosed,
-          isInFixedPosRange && isOpen && styles.sidebarFixedOpen,
+          isInFixedPosRange && isOpen && styles.sidebarFixedOpen
         )}
       >
         <div className={css(styles.feedWrapper)}>
@@ -65,7 +64,7 @@ const CommentSidebar = ({
             />
           )}
           <div className={css(styles.sidebarHeader)}>
-            <div style={{display: "flex", alignItems: "center"}}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               Conversation
               {isInitialFetchDone && (
                 <span className={css(styles.discussionCount)}>
@@ -97,9 +96,10 @@ const styles = StyleSheet.create({
     top: 0,
     boxSizing: "border-box",
     padding: "25px 0px",
-    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
-      display: "none"
-    },    
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        display: "none",
+      },
   },
   sidebarHeader: {
     fontWeight: 500,
@@ -126,20 +126,21 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginLeft: 10,
     alignSelf: "center",
-  },  
+  },
   sidebarClosed: {
     width: 0,
   },
   sidebarFixedOpen: {
-    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]: {
-      display: "block",
-      width: config.sidebar.width,
-      position: "fixed",
-      right: 0,
-      top: 0,
-      zIndex: 999999,
-      background: "white",
-    },    
+    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+      {
+        display: "block",
+        width: config.sidebar.width,
+        position: "fixed",
+        right: 0,
+        top: 0,
+        zIndex: 999999,
+        background: "white",
+      },
   },
 });
 

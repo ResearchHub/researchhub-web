@@ -4,43 +4,51 @@ import AuthorAvatar from "../AuthorAvatar";
 import UserTooltip from "../Tooltips/User/UserTooltip";
 
 type CommentAvatarsArgs = {
-  people: Array<RHUser|null>;
+  people: Array<RHUser | null>;
   withTooltip?: boolean;
   spacing?: number;
   size?: number;
   wrapperStyle?: any;
 };
 
-const CommentAvatars = ({ people, withTooltip = false, spacing = 0, size = 30, wrapperStyle }: CommentAvatarsArgs) => {
+const CommentAvatars = ({
+  people,
+  withTooltip = false,
+  spacing = 0,
+  size = 30,
+  wrapperStyle,
+}: CommentAvatarsArgs) => {
   return (
     <div className={css(styles.avatarsWrapper, wrapperStyle)}>
-
       {people.map((p, idx) => {
-
-        const avatarEl = <div className={css(styles.avatarWrapper)} >
-          <AuthorAvatar
-            author={p?.authorProfile}
-            size={size}
-            trueSize={true}
-            anonymousAvatarStyle={styles.anonymousAvatar}
-          />
-        </div>
+        const avatarEl = (
+          <div className={css(styles.avatarWrapper)}>
+            <AuthorAvatar
+              author={p?.authorProfile}
+              size={size}
+              trueSize={true}
+              anonymousAvatarStyle={styles.anonymousAvatar}
+            />
+          </div>
+        );
 
         return (
-          <div className={css(styles.person)} key={`avatar-${idx}`} style={{marginLeft: idx === 0 ? 0 : spacing}} >
+          <div
+            className={css(styles.person)}
+            key={`avatar-${idx}`}
+            style={{ marginLeft: idx === 0 ? 0 : spacing }}
+          >
             {withTooltip ? (
               <UserTooltip
                 createdBy={p}
                 overrideTargetStyle={styles.avatarWrapper}
-                targetContent={
-                  avatarEl
-                }
+                targetContent={avatarEl}
               />
             ) : (
               avatarEl
             )}
           </div>
-        )
+        );
       })}
     </div>
   );
@@ -57,12 +65,8 @@ const styles = StyleSheet.create({
   anonymousAvatar: {
     marginTop: -2,
   },
-  person: {
-    
-  },
-  avatarWrapper: {
-
-  }
+  person: {},
+  avatarWrapper: {},
 });
 
 export default CommentAvatars;

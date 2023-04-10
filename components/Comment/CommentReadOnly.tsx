@@ -5,7 +5,12 @@ import colors from "./lib/colors";
 import IconButton from "../Icons/IconButton";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { textLength, imageLength, trimDeltas, quillDeltaToHtml } from "./lib/quill";
+import {
+  textLength,
+  imageLength,
+  trimDeltas,
+  quillDeltaToHtml,
+} from "./lib/quill";
 import { CommentTreeContext } from "./lib/contexts";
 
 type Args = {
@@ -17,7 +22,7 @@ type Args = {
 const CommentReadOnly = ({
   content,
   previewMaxCharLength = config.default.previewMaxChars,
-  previewMaxImageLength = config.default.previewMaxImages
+  previewMaxImageLength = config.default.previewMaxImages,
 }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [previewHtml, setPreviewHtml] = useState<any>(null);
@@ -27,11 +32,14 @@ const CommentReadOnly = ({
   useEffect(() => {
     const _textLength = textLength({ quillOps: content.ops });
     const _imageLength = imageLength({ quillOps: content.ops });
-    if (_textLength > previewMaxCharLength || _imageLength > previewMaxImageLength) {
+    if (
+      _textLength > previewMaxCharLength ||
+      _imageLength > previewMaxImageLength
+    ) {
       const trimmed = trimDeltas({
         quillOps: content.ops,
         maxLength: previewMaxCharLength,
-        maxImages: previewMaxImageLength
+        maxImages: previewMaxImageLength,
       });
       const trimmedHtml = quillDeltaToHtml({ ops: trimmed });
       setPreviewHtml(trimmedHtml);
@@ -40,13 +48,27 @@ const CommentReadOnly = ({
     setFullHtml(html);
   }, []);
 
-  const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer"  
-  const htmlToRender = (isPreview && previewHtml) ? previewHtml : fullHtml;
+  const isNarrowWidthContext =
+    commentTreeState.context === "sidebar" ||
+    commentTreeState.context === "drawer";
+  const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   return (
     <div>
-      <div className={`CommentEditor ${isNarrowWidthContext ? "CommentEditorForNarrowWidth" : "" }`}>
-        <div className={"ql-container ql-snow  " + (previewHtml && isPreview ? "quill-preview-mode" : "")}>
-          <div className="ql-editor" dangerouslySetInnerHTML={{__html: htmlToRender}} />
+      <div
+        className={`CommentEditor ${
+          isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
+        }`}
+      >
+        <div
+          className={
+            "ql-container ql-snow  " +
+            (previewHtml && isPreview ? "quill-preview-mode" : "")
+          }
+        >
+          <div
+            className="ql-editor"
+            dangerouslySetInnerHTML={{ __html: htmlToRender }}
+          />
         </div>
       </div>
       {previewHtml && (
@@ -54,7 +76,7 @@ const CommentReadOnly = ({
           overrideStyle={styles.readMoreWrapper}
           onClick={(e) => {
             e.preventDefault();
-            setIsPreview(!isPreview)
+            setIsPreview(!isPreview);
           }}
         >
           <span className={css(styles.readMore)}>
