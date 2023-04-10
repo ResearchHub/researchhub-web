@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
 import colors from "./lib/colors";
-import { getOpenBounties, hasOpenBounties } from "./lib/bounty";
+import { getOpenBounties, getUserOpenBounties, hasOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -41,8 +41,9 @@ const Comment = ({
   const openBounties = getOpenBounties({ comment });
   const [currentChildOffset, setCurrentChildOffset] = useState<number>(0);
   const currentUser = useSelector((state: RootState) =>
-    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const userOpenRootBounties = getUserOpenBounties({ comment, user: currentUser, rootBountyOnly: true });
   const commentTreeState = useContext(CommentTreeContext);
   const dispatch = useDispatch();
 
@@ -127,6 +128,7 @@ const Comment = ({
   };
   
   const hasOpenBounties = openBounties.length > 0;
+  const currentUserIsOpenBountyCreator =  userOpenRootBounties.length > 0;
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const previewMaxChars = getConfigForContext(commentTreeState.context).previewMaxChars;
   const isNarrowWidthContext = commentTreeState.context === "sidebar" || commentTreeState.context === "drawer";
@@ -198,7 +200,10 @@ const Comment = ({
                     >
                       <div>
                         <FontAwesomeIcon icon={faPlus} />{` `}
-                        Contribute<span className={css(styles.bountyBtnText, isNarrowWidthContext && styles.hideForNarrowWidthContexts)}> to bounty</span>
+                        {currentUserIsOpenBountyCreator
+                          ? <>Add RSC<span className={css(styles.bountyBtnText, isNarrowWidthContext && styles.hideForNarrowWidthContexts)}> to bounty</span></>
+                          : <>Contribute<span className={css(styles.bountyBtnText, isNarrowWidthContext && styles.hideForNarrowWidthContexts)}> to bounty</span></>
+                        }
                       </div>
                       </Button>
                   </CreateBountyBtn>
