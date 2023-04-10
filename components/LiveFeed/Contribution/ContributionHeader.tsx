@@ -120,7 +120,7 @@ const ContributionHeader = ({ entry }: Args) => {
     } else {
       actionLabel = (
         <>
-          tipped{` `}
+          {` tipped `}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
           &nbsp;
           <ResearchCoinIcon
@@ -129,10 +129,21 @@ const ContributionHeader = ({ entry }: Args) => {
             width={16}
             height={16}
           />
-          <span className={css(styles.rsc)}>
-            {` `}
-            {item.amount} RSC
-          </span>
+          <ContentBadge
+            contentType="bounty"
+            bountyAmount={item.amount}
+            size={`small`}
+            label={
+              <div style={{ display: "flex", whiteSpace: "pre" }}>
+                <div style={{ flex: 1 }}>
+                  {formatBountyAmount({
+                    amount: item.amount,
+                  })}{" "}
+                  RSC
+                </div>
+              </div>
+            }
+          />
             {" for their "}
           <ALink
             overrideStyle={styles.link}
