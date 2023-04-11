@@ -4,9 +4,7 @@ import {
   faLayerGroup,
   faComments,
 } from "@fortawesome/pro-solid-svg-icons";
-import {
-  faCheck,
-} from "@fortawesome/pro-solid-svg-icons";
+import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
@@ -60,7 +58,7 @@ const ContentBadgeBase = ({
         keepPositionAbsolute && styles.keepPositionAbsolute,
       ]}
     >
-      <div data-delay-show={500} data-tip={tooltip} style={{display: "flex"}}>
+      <div data-delay-show={500} data-tip={tooltip} style={{ display: "flex" }}>
         {contentType === "paper" ? (
           <>
             <span className={css(styles.icon)}>
@@ -89,7 +87,8 @@ const ContentBadgeBase = ({
             </span>
             <span>Question</span>
           </>
-        ) : contentType === POST_TYPES.DISCUSSION || contentType === "comment" ? (
+        ) : contentType === POST_TYPES.DISCUSSION ||
+          contentType === "comment" ? (
           <>
             <span className={css(styles.icon)}>
               {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
@@ -99,7 +98,12 @@ const ContentBadgeBase = ({
         ) : contentType === POST_TYPES.ANSWER ? (
           <>
             <span className={css(styles.icon)}>
-              {<FontAwesomeIcon style={{ fontSize: 17 }} icon={faCheck}></FontAwesomeIcon>}
+              {
+                <FontAwesomeIcon
+                  style={{ fontSize: 17 }}
+                  icon={faCheck}
+                ></FontAwesomeIcon>
+              }
             </span>
             <span>Answer</span>
           </>
@@ -128,7 +132,12 @@ const ContentBadgeBase = ({
         ) : contentType === "award" ? (
           <>
             <span className={css(styles.icon)}>
-              <ResearchCoinIcon color="rgb(232, 181, 4)" version={4} height={16} width={16} />
+              <ResearchCoinIcon
+                color="rgb(232, 181, 4)"
+                version={4}
+                height={16}
+                width={16}
+              />
               {` `}
             </span>
             <span>{label}</span>
@@ -194,7 +203,7 @@ const ContentBadge = (props) => {
   const mouseLeaveTimeout = useRef();
   return (
     <div
-      className={css(styles.badgeContainer)}
+      className={css(styles.badgeContainer, props.badgeContainerOverride)}
       onMouseMove={() => {
         if (!mouseLeaveTimeout.current) {
           setBadgeHovered(props.contentType === "bounty");
@@ -234,7 +243,7 @@ const styles = StyleSheet.create({
     padding: "3px 6px 1px",
   },
   withTooltip: {
-    cursor: "default"
+    cursor: "default",
   },
   medium: {},
   icon: {
@@ -250,7 +259,7 @@ const styles = StyleSheet.create({
     height: 14,
   },
   wrapper: {
-    display: "flex"
+    display: "flex",
   },
   badgeFor_rsc_support: {
     background: bountyColors.BADGE_BACKGROUND,

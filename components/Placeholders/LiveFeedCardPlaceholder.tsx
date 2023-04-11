@@ -1,7 +1,11 @@
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import { TextBlock, RoundShape, RectShape } from "react-placeholder/lib/placeholders";
+import {
+  TextBlock,
+  RoundShape,
+  RectShape,
+} from "react-placeholder/lib/placeholders";
 import colors from "~/config/themes/colors";
 
 type Props = {
@@ -18,12 +22,8 @@ export default function UnifiedDocFeedCardPlaceholder({
       <div className={css(styles.cardMain)}>
         <div className={css(styles.column)}>
           <div className={css(styles.header)}>
-
             <div className={css(styles.topLine)}>
-              <RoundShape
-                className={css(styles.avatar)}
-                color={color}
-              />
+              <RoundShape className={css(styles.avatar)} color={color} />
               <div className={css(styles.detailsWrapper)}>
                 <RectShape
                   color={color}
@@ -41,46 +41,19 @@ export default function UnifiedDocFeedCardPlaceholder({
             </div>
           </div>
 
-
-
           <div className={css(styles.row)}>
-              <TextBlock
-                rows={1}
-                color={color}
-                style={{ width: "30%" }}
-              />
-            <TextBlock
-              rows={1}
-              color={color}
-              style={{  width: "70%" }}
-            />
+            <TextBlock rows={1} color={color} style={{ width: "30%" }} />
+            <TextBlock rows={1} color={color} style={{ width: "70%" }} />
           </div>
 
           <div className={css(styles.row)}>
-              <TextBlock
-                rows={1}
-                color={color}
-                style={{ width: "50%" }}
-              />
-            <TextBlock
-              rows={1}
-              color={color}
-              style={{  width: "30%" }}
-            />
-          </div> 
+            <TextBlock rows={1} color={color} style={{ width: "50%" }} />
+            <TextBlock rows={1} color={color} style={{ width: "30%" }} />
+          </div>
           <div className={css(styles.row)}>
-              <TextBlock
-                rows={1}
-                color={color}
-                style={{ width: "20%" }}
-              />
-            <TextBlock
-              rows={1}
-              color={color}
-              style={{  width: "70%" }}
-            />
-          </div>                    
-
+            <TextBlock rows={1} color={color} style={{ width: "20%" }} />
+            <TextBlock rows={1} color={color} style={{ width: "70%" }} />
+          </div>
         </div>
       </div>
     </div>
@@ -103,7 +76,7 @@ const styles = StyleSheet.create({
   docFeedCardPlaceholder: {
     border: `1px solid ${colors.GREY_LINE(1.0)}`,
     borderRadius: "4px",
-    marginBottom: 25,
+    marginBottom: 16,
     boxSizing: "border-box",
     display: "flex",
     height: "100%",

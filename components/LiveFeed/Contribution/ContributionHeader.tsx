@@ -35,6 +35,26 @@ const ContributionHeader = ({ entry }: Args) => {
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
 
+  const badge = (
+    <ContentBadge
+      contentType="bounty"
+      bountyAmount={item?.amount}
+      badgeContainerOverride={styles.userTooltip}
+      size={`small`}
+      badgeOverride={styles.badgeOverride}
+      label={
+        <div style={{ display: "flex", whiteSpace: "pre" }}>
+          <div style={{ flex: 1 }}>
+            {formatBountyAmount({
+              amount: item?.amount,
+            })}{" "}
+            RSC
+          </div>
+        </div>
+      }
+    />
+  );
+
   if (contentType.name === "bounty") {
     item = item as BountyContributionItem;
     unifiedDocument = item.unifiedDocument;
@@ -43,43 +63,15 @@ const ContributionHeader = ({ entry }: Args) => {
       actionLabel = (
         <>
           {` contributed `}
-          <ContentBadge
-            contentType="bounty"
-            bountyAmount={item.amount}
-            size={`small`}
-            label={
-              <div style={{ display: "flex", whiteSpace: "pre" }}>
-                <div style={{ flex: 1 }}>
-                  {formatBountyAmount({
-                    amount: item.amount,
-                  })}{" "}
-                  RSC
-                </div>
-              </div>
-            }
-          />
-          {` to bounty on `}
+          {badge}
+          {` to a bounty on `}
         </>
       );
     } else {
       actionLabel = (
         <>
           {` opened `}
-          <ContentBadge
-            contentType="bounty"
-            bountyAmount={item.amount}
-            size={`small`}
-            label={
-              <div style={{ display: "flex", whiteSpace: "pre" }}>
-                <div style={{ flex: 1 }}>
-                  {formatBountyAmount({
-                    amount: item.amount,
-                  })}{" "}
-                  RSC
-                </div>
-              </div>
-            }
-          />
+          {badge}
           {` bounty on `}
         </>
       );
@@ -95,21 +87,7 @@ const ContributionHeader = ({ entry }: Args) => {
       actionLabel = (
         <>
           {` was tipped `}
-          <ContentBadge
-            contentType="bounty"
-            bountyAmount={item.amount}
-            size={`small`}
-            label={
-              <div style={{ display: "flex", whiteSpace: "pre" }}>
-                <div style={{ flex: 1 }}>
-                  {formatBountyAmount({
-                    amount: item.amount,
-                  })}{" "}
-                  RSC
-                </div>
-              </div>
-            }
-          />
+          {badge}
           {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
           {` for their comment on`}
@@ -121,6 +99,7 @@ const ContributionHeader = ({ entry }: Args) => {
           {` tipped `}
           <UserTooltip
             createdBy={item.recipient}
+            overrideTargetStyle={styles.userTooltip}
             targetContent={
               <ALink
                 href={`/user/${item.recipient.authorProfile?.id}/overview`}
@@ -130,21 +109,7 @@ const ContributionHeader = ({ entry }: Args) => {
               </ALink>
             }
           />
-          <ContentBadge
-            contentType="bounty"
-            bountyAmount={item.amount}
-            size={`small`}
-            label={
-              <div style={{ display: "flex", whiteSpace: "pre" }}>
-                <div style={{ flex: 1 }}>
-                  {formatBountyAmount({
-                    amount: item.amount,
-                  })}{" "}
-                  RSC
-                </div>
-              </div>
-            }
-          />
+          {badge}
           {" for their "}
           <ALink
             overrideStyle={styles.link}
@@ -174,6 +139,7 @@ const ContributionHeader = ({ entry }: Args) => {
                 {` replied to `}
                 <UserTooltip
                   createdBy={item.parent.createdBy}
+                  overrideTargetStyle={styles.userTooltip}
                   targetContent={
                     <ALink
                       href={`/user/${item.parent.createdBy.authorProfile?.id}/overview`}
@@ -206,34 +172,34 @@ const ContributionHeader = ({ entry }: Args) => {
       <div className={css(styles.avatarWrapper)}>
         <CommentAvatars size={25} people={[createdBy]} withTooltip={true} />
       </div>
-      <div className={css(styles.metadataRow)}>
-        <div className={css(styles.nameRow)}>
-          <UserTooltip
-            createdBy={createdBy}
-            targetContent={
-              <ALink
-                href={`/user/${createdBy.authorProfile?.id}/overview`}
-                key={`/user/${createdBy.authorProfile?.id}/overview-key`}
-              >
-                {createdBy.authorProfile.firstName}{" "}
-                {createdBy.authorProfile.lastName}
-              </ALink>
-            }
-          />
+      <div className={css(styles.metadataWrapper)}>
+        <div className={css(styles.metadataRow)}>
+          <div>
+            <UserTooltip
+              createdBy={createdBy}
+              overrideTargetStyle={styles.userTooltip}
+              targetContent={
+                <ALink
+                  href={`/user/${createdBy.authorProfile?.id}/overview`}
+                  key={`/user/${createdBy.authorProfile?.id}/overview-key`}
+                >
+                  {createdBy.authorProfile.firstName}{" "}
+                  {createdBy.authorProfile.lastName}
+                </ALink>
+              }
+            />
 
-          {actionLabel}
+            {actionLabel}
+            {/* @ts-ignore */}
+            {unifiedDocument && (
+              <span className={css(styles.unifiedDocument)}>
+                {truncateText(unifiedDocument?.document?.title, 100)}
+              </span>
+            )}
+          </div>
         </div>
-        {/* @ts-ignore */}
-        {unifiedDocument && (
-          <ALink
-            overrideStyle={[styles.link, styles.unifiedDocument]}
-            href={getUrlToUniDoc(unifiedDocument) + "#comments"}
-          >
-            {truncateText(unifiedDocument?.document?.title, 100)}
-          </ALink>
-        )}
-        <div className={css(styles.secondaryText)}>
-          {"  •  "}
+        <div className={css(styles.secondaryText, styles.date)}>
+          {/* {" •  "} */}
           {timeSince(item.createdDate)}
         </div>
       </div>
@@ -252,12 +218,32 @@ const styles = StyleSheet.create({
     // @ts-ignore
     whiteSpace: "break-spaces",
   },
+  userTooltip: {
+    display: "inline-flex",
+  },
   unifiedDocument: {
     fontWeight: 500,
+    color: colors.BLACK(),
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
   },
-  nameRow: {
+  metadataWrapper: {
     display: "flex",
-    flexWrap: "wrap",
+    width: "100%",
+    alignItems: "flex-start",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+      alignItems: "unset",
+    },
+  },
+  badgeOverride: {
+    marginRight: 0,
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginRight: 0,
+    },
   },
   avatarWrapper: {
     marginTop: 0,
@@ -268,7 +254,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     display: "flex",
     flexWrap: "wrap",
-    width: "100%",
+    flex: 1,
   },
   contentBadge: {
     marginTop: 10,
@@ -281,8 +267,15 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     color: colors.BLACK(0.6),
+  },
+  date: {
     display: "flex",
     alignItems: "flex-start",
+    marginLeft: 16,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: 0,
+      fontSize: 14,
+    },
   },
   overrideSubmittedBy: {
     alignItems: "unset",
