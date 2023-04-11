@@ -63,95 +63,102 @@ export default function LiveFeed({ hub, isHomePage }): ReactElement<"div"> {
 
 
   const entries = results.map((result, idx) => {
-    const url = getContributionUrl(result);
-    return {
-      url,
-      el: (
-        <ContributionEntry
-          key={`entry-${idx}`}
-          entry={result}
-          actions={[
-            {
-              html: (
-                <FlagButtonV2
-                  modalHeaderText="Flag Content"
-                  flagIconOverride={styles.flagIcon}
-                  iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
-                  errorMsgText="Failed to flag"
-                  successMsgText="Content flagged"
-                  primaryButtonLabel="Flag"
-                  subHeaderText="I am flagging this content because of:"
-                  onSubmit={(
-                    flagReason,
-                    renderErrorMsg,
-                    renderSuccessMsg
-                  ) => {
-                    let args: any = {
+    try {
+      const url = getContributionUrl(result);
+      return {
+        url,
+        el: (
+          <ContributionEntry
+            key={`entry-${idx}`}
+            entry={result}
+            actions={[
+              {
+                html: (
+                  <FlagButtonV2
+                    modalHeaderText="Flag Content"
+                    flagIconOverride={styles.flagIcon}
+                    iconOverride={<FontAwesomeIcon icon={faFlag}></FontAwesomeIcon>}
+                    errorMsgText="Failed to flag"
+                    successMsgText="Content flagged"
+                    primaryButtonLabel="Flag"
+                    subHeaderText="I am flagging this content because of:"
+                    onSubmit={(
                       flagReason,
-                      onError: renderErrorMsg,
-                      onSuccess: renderSuccessMsg,
-                    };
-
-                    let item = result.item;
-                    if (result.contentType.name === "comment") {
-                      item = item as CommentContributionItem;
-                      args.commentPayload = {
-                        ...(result._raw.content_type.name === "thread" && {
-                          threadID: item.id,
-                          commentType: "thread",
-                        }),
-                        ...(result._raw.content_type.name === "comment" && {
-                          commentID: item.id,
-                          commentType: "comment",
-                        }),
-                        ...(result._raw.content_type.name === "reply" && {
-                          replyID: item.id,
-                          commentType: "reply",
-                        }),
+                      renderErrorMsg,
+                      renderSuccessMsg
+                    ) => {
+                      let args: any = {
+                        flagReason,
+                        onError: renderErrorMsg,
+                        onSuccess: renderSuccessMsg,
                       };
-                    }
 
-                    const unifiedDocument: UnifiedDocument =
-                      // @ts-ignore
-                      item.unifiedDocument;
-                    if (
-                      ["paper", "post", "hypothesis", "question"].includes(
-                        unifiedDocument.documentType
-                      )
-                    ) {
-                      args = {
-                        contentType: unifiedDocument.documentType,
+                      let item = result.item;
+                      if (result.contentType.name === "comment") {
+                        item = item as CommentContributionItem;
+                        args.commentPayload = {
+                          ...(result._raw.content_type.name === "thread" && {
+                            threadID: item.id,
+                            commentType: "thread",
+                          }),
+                          ...(result._raw.content_type.name === "comment" && {
+                            commentID: item.id,
+                            commentType: "comment",
+                          }),
+                          ...(result._raw.content_type.name === "reply" && {
+                            replyID: item.id,
+                            commentType: "reply",
+                          }),
+                        };
+                      }
+
+                      const unifiedDocument: UnifiedDocument =
                         // @ts-ignore
-                        contentID: unifiedDocument.document.id,
-                        ...args,
-                      };
-                    } else {
-                      console.error(
-                        `${result.contentType.name} Not supported for flagging`
-                      );
-                      return false;
-                    }
+                        item.unifiedDocument;
+                      if (
+                        ["paper", "post", "hypothesis", "question"].includes(
+                          unifiedDocument.documentType
+                        )
+                      ) {
+                        args = {
+                          contentType: unifiedDocument.documentType,
+                          // @ts-ignore
+                          contentID: unifiedDocument.document.id,
+                          ...args,
+                        };
+                      } else {
+                        console.error(
+                          `${result.contentType.name} Not supported for flagging`
+                        );
+                        return false;
+                      }
 
-                    flagGrmContent(args);
-                  }}
-                />
-              ),
-              label: "Flag",
-              isActive: true,
-            },
-          ]}
-        />
-      )
+                      flagGrmContent(args);
+                    }}
+                  />
+                ),
+                label: "Flag",
+                isActive: true,
+              },
+            ]}
+          />
+        )
+      }
+
+    }
+    catch (error) {
+      console.error("[Contribution] Could not render Entry", error);
+      return null
     }
   }).filter(r => r !== null);
 
   const resultCards = entries.map((entry, idx) => {
     return (
       (
-        <Link href={entry.url} className={css(styles.linkWrapper, styles.entryWrapper)}>
+        <Link href={entry!.url} className={css(styles.linkWrapper, styles.entryWrapper)}>
           <div key={`wrapped-entry-${idx}`} className={css(styles.result)}>
             <div className={css(styles.entry)}>
-              {entry.el}
+              {entry!.el}
             </div>
           </div>
         </Link>
@@ -199,11 +206,11 @@ const styles = StyleSheet.create({
     maxWidth: 800,
     width: 800,
     marginLeft: "auto",
-    marginRight: "auto",   
+    marginRight: "auto",
     paddingTop: 25,
     [`@media only screen and (max-width: 800px)`]: {
       width: "100%",
-    } 
+    }
   },
   result: {
     display: "flex",
