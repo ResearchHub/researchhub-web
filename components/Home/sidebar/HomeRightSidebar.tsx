@@ -26,7 +26,6 @@ export default function HomeRightSidebar(): ReactElement {
           contentStyleOverride={{
             background: colors.NEW_BLUE(0.07),
             borderRadius: 6,
-            height: 240,
             margin: 16,
             padding: "14px 16px 14px",
           }}

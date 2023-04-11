@@ -39,7 +39,7 @@ export default function ExitableBanner({
   }
 
   return (
-    (<div className={css(styles.exitableBanner)}>
+    <div className={css(styles.exitableBanner)}>
       <div className={css(styles.contentWrap)} style={contentStyleOverride}>
         {content}
       </div>
@@ -59,7 +59,7 @@ export default function ExitableBanner({
           </div>
         )}
       </div>
-    </div>)
+    </div>
   );
 }
 
@@ -78,10 +78,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   contentWrap: {
-    alignItems: "center",
-    display: "flex",
     width: "100%",
-    height: "100%",
   },
   exitButtonDefault: {
     color: "#fff",

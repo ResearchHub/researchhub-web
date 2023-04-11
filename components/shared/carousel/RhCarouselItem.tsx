@@ -1,4 +1,3 @@
-
 import { css, StyleSheet } from "aphrodite";
 import { motion } from "framer-motion";
 import { ReactElement, ReactNode } from "react";
@@ -69,7 +68,6 @@ const styles = StyleSheet.create({
   rhCarouselItemRoot: {
     display: "flex",
     flexDirection: "column",
-    minWidth: 248,
     width: "100%",
     position: "absolute",
     boxSizing: "border-box",
@@ -101,6 +99,9 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   link: {
     fontWeight: 400,
   },
+  learnMore: {
+    marginTop: 8,
+  },
   rhCarouselItemBody: {
     display: "block",
     width: "100%",
@@ -112,7 +113,7 @@ export const DEFAULT_ITEM_STYLE = StyleSheet.create({
   },
   uniswapWrapper: {
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none"
-    }
-  }
+      display: "none",
+    },
+  },
 });

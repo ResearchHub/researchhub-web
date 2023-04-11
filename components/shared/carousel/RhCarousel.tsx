@@ -48,7 +48,7 @@ const RhCarouselControl = ({
   );
 
   return (
-    (<div className={css(styles.rhCarouselControl)}>
+    <div className={css(styles.rhCarouselControl)}>
       <div className={css(styles.rhCarouselControlIconsWrap)}>
         <div
           className={css(styles.rhCarouselControlIcon)}
@@ -75,7 +75,7 @@ const RhCarouselControl = ({
         </div>
       </div>
       <div className={css(styles.rhCarouselControlPillsContainer)}>{pills}</div>
-    </div>)
+    </div>
   );
 };
 
@@ -115,10 +115,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    minHeight: 200,
+    minHeight: 250,
     minWidth: "100%",
     width: "100%",
     position: "relative",
+    "@media only screen and (min-width: 1260px)": {
+      minHeight: 200,
+    },
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       minHeight: 165,
     },
