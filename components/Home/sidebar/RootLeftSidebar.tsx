@@ -92,13 +92,13 @@ export const getLeftSidebarItemAttrs = ({
       onClick: (event: SyntheticEvent): void => {
         // event.preventDefault();
       },
-    },    
+    },
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
-      href: `${organization_slug}/notebook`,
+      href: `/${organization_slug}/notebook`,
       onClick: (event: SyntheticEvent): void => {
         if (!isLoggedIn) {
           event.preventDefault();
@@ -115,7 +115,7 @@ export const getLeftSidebarItemAttrs = ({
       onClick: (event: SyntheticEvent): void => {
         // event.preventDefault();
       },
-    },    
+    },
     {
       icon: <FontAwesomeIcon icon={faChartSimple}></FontAwesomeIcon>,
       label: "Leaderboard",
