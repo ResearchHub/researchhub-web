@@ -11,7 +11,8 @@ import { formatBountyAmount } from "~/config/types/bounty";
 
 const CommentBadges = ({ comment }: { comment: Comment }) => {
   const openBounties = getOpenBounties({ comment });
-  const openBountyAmount = getBountyAmount({ comment, formatted: true });
+  const openBountyAmountFormatted = getBountyAmount({ comment, formatted: true });
+  const openBountyAmount = getBountyAmount({ comment, formatted: false });
   const closedBounties = getClosedBounties({ comment });
   const closedBountyAmount = getBountyAmount({
     comment,
@@ -31,7 +32,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
       <ContentBadge
         contentType="bounty"
         bountyAmount={openBountyAmount}
-        label={`${openBountyAmount} RSC Bounty`}
+        label={`${openBountyAmountFormatted} RSC Bounty`}
       />
     );
   } else if (closedBounties.length > 0) {
