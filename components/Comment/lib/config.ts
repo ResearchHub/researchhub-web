@@ -4,7 +4,7 @@ const config = {
   feed: {
     rootLevelPageSize: 15,
     childPageSize: 7,
-    repliesPageSize: 4,
+    repliesPageSize: 5,
   },
   drawer: {
     displayForBreakpoint: breakpoints.small.int,

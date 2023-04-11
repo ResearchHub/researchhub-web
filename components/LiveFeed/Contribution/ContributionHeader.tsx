@@ -90,7 +90,7 @@ const ContributionHeader = ({ entry }: Args) => {
           {badge}
           {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          {` for their comment on`}
+          {` for their comment on `}
         </>
       );
     } else {
@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexWrap: "wrap",
     flex: 1,
+    lineHeight: "1.5em",
   },
   contentBadge: {
     marginTop: 10,

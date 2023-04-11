@@ -319,6 +319,7 @@ const CommentFeed = ({
                 author={currentUser?.authorProfile}
                 previewModeAsDefault={context ? true : false}
                 allowCommentTypeSelection={!isQuestion}
+                editorStyleOverride={context === "drawer" ? styles.roundedEditor : null}
               />
             </div>
 
@@ -381,6 +382,9 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingBottom: 15,
     borderBottom: `1px solid ${colors.filters.divider}`,
+  },
+  roundedEditor: {
+    borderRadius: "14px",
   },
   sortWrapper: {
     marginLeft: "auto",

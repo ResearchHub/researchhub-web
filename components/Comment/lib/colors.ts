@@ -33,6 +33,9 @@ const colors = {
     text: globalColors.ORANGE_DARK2(1.0),
     background: globalColors.ORANGE_LIGHTER(0.6),
   },
+  avatar: {
+    background: globalColors.LIGHT_GREY(1.0),
+  },
   dot: "rgb(200 200 202)",
   gray: globalColors.BLACK(0.6),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
