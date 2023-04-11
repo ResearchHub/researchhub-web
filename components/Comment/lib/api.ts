@@ -75,7 +75,7 @@ export const fetchSingleCommentAPI = async ({
 
   const baseFetchUrl = generateApiUrl(
     `${documentType}/${documentId}/comments` +
-    (commentId ? `/${commentId}` : "")
+      (commentId ? `/${commentId}` : "")
   );
   const url = baseFetchUrl + buildQueryString(query);
   const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
@@ -109,7 +109,8 @@ export const createCommentAPI = async ({
   bountyAmount?: number;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
-    `${documentType}/${documentId}/comments/` + (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment")
+    `${documentType}/${documentId}/comments/` +
+      (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment")
   );
   const response = await fetch(
     _url,
@@ -153,7 +154,7 @@ export const markAsAcceptedAnswerAPI = async ({
   documentType,
   documentId,
 }: {
-  commentId: ID,
+  commentId: ID;
   documentType: RhDocumentType;
   documentId: ID;
 }) => {
@@ -165,13 +166,11 @@ export const markAsAcceptedAnswerAPI = async ({
     const response = await fetch(url, API.POST_CONFIG()).then((res): any =>
       Helpers.parseJSON(res)
     );
-
-  }
-  catch (error) {
+  } catch (error) {
     // FIXME: Log to sentry
     throw Error(`Unexpected error for ${commentId}`);
   }
-}
+};
 
 export const deleteCommentAPI = async ({
   id,
@@ -184,20 +183,19 @@ export const deleteCommentAPI = async ({
   documentId: ID;
 }) => {
   const url = generateApiUrl(
-    `${documentType}/${documentId}/comments/${id}`
+    `${documentType}/${documentId}/comments/${id}/delete_rh_comment`
   );
 
   try {
-    const response = await fetch(url, API.PATCH_CONFIG({is_removed: true}))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
-  }
-  catch (error:any) {
+    const response = await fetch(
+      url,
+      API.POST_CONFIG({ is_removed: true })
+    ).then(Helpers.checkStatus);
+  } catch (error: any) {
     const isExpectedError = error.response.status < 500;
     if (isExpectedError) {
       throw error;
-    }
-    else {
+    } else {
       // FIXME: Log to sentry
       throw Error("Unexpected error while deleting comment");
     }
@@ -217,7 +215,6 @@ export const voteForComment = async ({
   documentId: ID;
   commentId: ID;
 }): Promise<Vote> => {
-
   const url = generateApiUrl(
     `${documentType}/${documentId}/comments/${commentId}/${voteType}`
   );
@@ -227,51 +224,49 @@ export const voteForComment = async ({
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
 
-
     return parseVote(response);
-  }
-  catch (error:any) {
+  } catch (error: any) {
     const isExpectedError = error.response.status < 500;
     if (isExpectedError) {
       throw error;
-    }
-    else {
+    } else {
       // FIXME: Log to sentry
       throw Error("Unexpected error while casting vote");
     }
   }
-}
+};
 
-export const flagComment = async({
+export const flagComment = async ({
   commentId,
   documentType,
   documentId,
   flagReason,
 }: {
-  commentId: ID,
+  commentId: ID;
   documentType: RhDocumentType;
-  documentId: ID;  
-  flagReason: string;  
+  documentId: ID;
+  flagReason: string;
 }) => {
   const url = generateApiUrl(
     `${documentType}/${documentId}/comments/${commentId}/flag`
   );
 
   try {
-    const response = await fetch(url, API.POST_CONFIG({ reason_choice: flagReason }))
+    const response = await fetch(
+      url,
+      API.POST_CONFIG({ reason_choice: flagReason })
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
 
     return true;
-  }
-  catch (error:any) {
+  } catch (error: any) {
     const isAlreadyFlagged = error.response.status === 409;
     if (isAlreadyFlagged) {
       throw "This comment has already been flagged";
-    }
-    else {
+    } else {
       // FIXME: Log to sentry
       throw "Unexpected error while Flagging";
     }
-  }  
-} 
+  }
+};
