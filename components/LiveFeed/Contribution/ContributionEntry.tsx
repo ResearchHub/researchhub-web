@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
   },
   documentLink: {
     fontWeight: 500,
+    lineHeight: "1.25em",
   },  
 });
 

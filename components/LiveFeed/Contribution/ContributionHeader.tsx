@@ -90,7 +90,7 @@ const ContributionHeader = ({ entry }: Args) => {
           {badge}
           {" by "}
           <ContributionAuthor authorProfile={item.recipient?.authorProfile} />
-          {` for their comment on`}
+          {` for their comment on `}
         </>
       );
     } else {
