@@ -172,6 +172,7 @@ export default function BasicTogglableNavbarLeft({
             height: isOpen ? "48px" : "28px",
             justifyContent: "center",
             padding: "0 8px",
+            position: "sticky", 
             textTransform: "none",
             width: isOpen ? "100%" : "28px",
           }}

@@ -238,7 +238,7 @@ export default function ReferenceManualUploadDrawer({
           background: "rgba(250, 250, 252, 1)",
           borderLeft: `1px solid #e8e8ef`,
           boxSizing: "border-box",
-          height: "100%",
+          height: "500%",
           marginLeft: `${APPLICABLE_LEFT_NAV_WIDTH}px`,
           marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
           padding: "16px 24px",
@@ -251,6 +251,16 @@ export default function ReferenceManualUploadDrawer({
           justifyContent="space-between"
           mb="24px"
           spacing={1}
+          sx={{
+            background: "rgba(250, 250, 252, 1)",
+            height: "40px",
+            position: "sticky",
+            top: `${ROOT_NAVBAR_HEIGHT}px`,
+            zIndex: 4,
+            margin: "-16px 0 0",
+            padding: "16px 0",
+
+          }}
         >
           <Typography variant="h6">{"Upload reference"}</Typography>
           <CloseOutlinedIcon
