@@ -19,7 +19,6 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 import config from "~/components/Comment/lib/config";
 
-
 type Args = {
   entry: Contribution;
   actions: Array<any>;
@@ -48,7 +47,11 @@ const ContributionEntry = ({
         item = item as CommentContributionItem;
         body = (
           <span className={css(styles.commentBody)}>
-            <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+            <CommentReadOnly
+              content={item.content}
+              previewMaxImageLength={config.liveFeed.previewMaxImages}
+              previewMaxCharLength={config.liveFeed.previewMaxChars}
+            />
           </span>
         );
         break;
@@ -59,11 +62,18 @@ const ContributionEntry = ({
         if (item.source.contentType.name === "comment") {
           body = (
             <span className={css(styles.commentBody)}>
-              <CommentReadOnly content={item.source.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+              <CommentReadOnly
+                content={item.source.content}
+                previewMaxImageLength={config.liveFeed.previewMaxImages}
+                previewMaxCharLength={config.liveFeed.previewMaxChars}
+              />
             </span>
           );
         } else {
-          body = truncateText(item?.source.unifiedDocument?.document?.body, 300);
+          body = truncateText(
+            item?.source.unifiedDocument?.document?.body,
+            300
+          );
           title = (
             <ALink href={getUrlToUniDoc(item?.source.unifiedDocument)}>
               {item?.source.unifiedDocument?.document?.title}
@@ -72,17 +82,20 @@ const ContributionEntry = ({
         }
         break;
 
-        case "bounty":
+      case "bounty":
         item = item as BountyContributionItem;
-        
+
         if (item.content) {
           body = (
             <span className={css(styles.commentBody)}>
-              <CommentReadOnly content={item.content} previewMaxImageLength={config.liveFeed.previewMaxImages} previewMaxCharLength={config.liveFeed.previewMaxChars} />
+              <CommentReadOnly
+                content={item.content}
+                previewMaxImageLength={config.liveFeed.previewMaxImages}
+                previewMaxCharLength={config.liveFeed.previewMaxChars}
+              />
             </span>
           );
-        }
-        else {
+        } else {
           title = (
             <ALink href={getUrlToUniDoc(item.unifiedDocument)}>
               {item.unifiedDocument?.document?.title}
@@ -106,16 +119,15 @@ const ContributionEntry = ({
           contentType.name === "hypothesis"
             ? (item as HypothesisContributionItem)
             : contentType.name === "post"
-              ? (item as PostContributionItem)
-              : (item as PaperContributionItem);
+            ? (item as PostContributionItem)
+            : (item as PaperContributionItem);
 
-        
         body = truncateText(
           item?.unifiedDocument?.document?.body ||
-          // @ts-ignore
-          item?.abstract ||
-          // @ts-ignore
-          item?.renderable_text,
+            // @ts-ignore
+            item?.abstract ||
+            // @ts-ignore
+            item?.renderable_text,
           300
         );
         if (contentType.name === "hypothesis") {
@@ -126,7 +138,10 @@ const ContributionEntry = ({
           body = item.renderable_text;
         }
         title = (
-          <ALink overrideStyle={styles.documentLink} href={getUrlToUniDoc(item?.unifiedDocument)}>
+          <ALink
+            overrideStyle={styles.documentLink}
+            href={getUrlToUniDoc(item?.unifiedDocument)}
+          >
             {item?.unifiedDocument?.document?.title ?? item?.title ?? ""}
           </ALink>
         );
@@ -134,9 +149,8 @@ const ContributionEntry = ({
       default:
         console.warn("[Contribution] Could not render contribution item", item);
     }
-  }
-  catch (error) {
-    console.warn("[Contribution] Could not render", entry)
+  } catch (error) {
+    console.warn("[Contribution] Could not render", entry);
     return null;
   }
 
@@ -255,7 +269,7 @@ const styles = StyleSheet.create({
   documentLink: {
     fontWeight: 500,
     lineHeight: "1.25em",
-  },  
+  },
 });
 
 export default ContributionEntry;

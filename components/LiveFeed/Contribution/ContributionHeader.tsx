@@ -164,7 +164,7 @@ const ContributionHeader = ({ entry }: Args) => {
     );
   } else {
     // @ts-ignore
-    actionLabel = <>{` posted ${item?.unifiedDocument?.documentType}`}</>;
+    actionLabel = <>{` posted a ${item?.unifiedDocument?.documentType}`}</>;
   }
 
   return (
