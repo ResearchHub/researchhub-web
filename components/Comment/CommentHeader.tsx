@@ -61,48 +61,50 @@ const CommentHeader = ({
 
         <div className={css(styles.nameWrapper)}>
           <div className={css(styles.nameRow)}>
-            <div className={css(styles.name)}>
-              <UserTooltip
-                createdBy={comment.createdBy}
-                targetContent={
-                  <ALink
-                    href={`/user/${authorProfile?.id}/overview`}
-                    key={`/user/${authorProfile?.id}/overview-key`}
-                  >
-                    {authorProfile.firstName} {authorProfile.lastName}
-                  </ALink>
-                }
-              />
-              {hasAnyBounties && bountyContributors.length > 0 && (
-                <>
-                  {commentTreeState.context !== "sidebar" && (
-                    <div className={css(styles.additionalAuthor)}>
-                      {`, `}
-                      <UserTooltip
-                        createdBy={comment.createdBy}
-                        targetContent={
-                          <ALink
-                            href={`/user/${bountyContributors[0].id}/overview`}
-                            key={`/user/${bountyContributors[0].id}/overview-key`}
-                          >
-                            {bountyContributors[0].firstName}{" "}
-                            {bountyContributors[0].lastName}
-                          </ALink>
-                        }
-                      />
-                    </div>
-                  )}
-                  <>{` and others`}</>
-                </>
+            <div className={css(styles.leftContentWrapper)}>
+              <div className={css(styles.name)}>
+                <UserTooltip
+                  createdBy={comment.createdBy}
+                  targetContent={
+                    <ALink
+                      href={`/user/${authorProfile?.id}/overview`}
+                      key={`/user/${authorProfile?.id}/overview-key`}
+                    >
+                      {authorProfile.firstName} {authorProfile.lastName}
+                    </ALink>
+                  }
+                />
+                {hasAnyBounties && bountyContributors.length > 0 && (
+                  <>
+                    {commentTreeState.context !== "sidebar" && (
+                      <div className={css(styles.additionalAuthor)}>
+                        {`, `}
+                        <UserTooltip
+                          createdBy={comment.createdBy}
+                          targetContent={
+                            <ALink
+                              href={`/user/${bountyContributors[0].id}/overview`}
+                              key={`/user/${bountyContributors[0].id}/overview-key`}
+                            >
+                              {bountyContributors[0].firstName}{" "}
+                              {bountyContributors[0].lastName}
+                            </ALink>
+                          }
+                        />
+                      </div>
+                    )}
+                    <>{` and others`}</>
+                  </>
+                )}
+              </div>
+              {hasAnyBounties ? (
+                <div className={css(styles.verb)}>{` opened a bounty`}</div>
+              ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
+                <div className={css(styles.verb)}>{` peer reviewed`}</div>
+              ) : (
+                <div className={css(styles.verb)}>{` commented`}</div>
               )}
             </div>
-            {hasAnyBounties ? (
-              <div className={css(styles.verb)}>{` opened a bounty`}</div>
-            ) : comment.commentType === COMMENT_TYPES.REVIEW ? (
-              <div className={css(styles.verb)}>{` peer reviewed`}</div>
-            ) : (
-              <div className={css(styles.verb)}>{` commented`}</div>
-            )}
             <div className={css(styles.menuWrapper)}>
               <CommentMenu
                 handleEdit={handleEdit}
@@ -138,6 +140,11 @@ const styles = StyleSheet.create({
     color: colors.dot,
     marginLeft: 8,
     marginRight: 8,
+  },
+  leftContentWrapper: {
+    display: "flex",
+    flexWrap: "wrap",
+    columnGap: "5px",
   },
   expiringText: {},
   commentHeader: {
