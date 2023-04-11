@@ -30,6 +30,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
     badges.push(
       <ContentBadge
         contentType="bounty"
+        bountyAmount={openBountyAmount}
         label={`${openBountyAmount} RSC Bounty`}
       />
     );
