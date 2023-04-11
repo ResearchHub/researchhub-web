@@ -4,7 +4,11 @@ import {
 } from "./reference_default_schemas";
 import { Button } from "@mui/material";
 import { createReferenceCitation } from "../api/createReferenceCitation";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
 import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
@@ -135,21 +139,45 @@ export default function ReferenceManualUploadDrawer({
           };
         }) ?? [];
 
-    createReferenceCitation({
-      onError: emptyFncWithMsg,
-      onSuccess: () => {
-        setIsSubmitting(false);
-        setReferencesFetchTime(Date.now());
+    const payload = {
+      fields: {
+        ...referenceSchemaValueSet.schema,
+        creators: formattedCreators,
       },
-      payload: {
-        fields: {
-          ...referenceSchemaValueSet.schema,
-          creators: formattedCreators,
+      citation_type: selectedReferenceType,
+      organization: 1,
+    };
+    // Need to prep attachment as Base64 for Django support
+    const attachment = referenceSchemaValueSet.attachment;
+    if (!isEmpty(attachment)) {
+      const reader = new FileReader();
+      reader.readAsBinaryString(nullthrows(attachment));
+      reader.onload = () => {
+        const attachmentStr64 = reader.result;
+        // @ts-ignore unnecessary type checking
+        payload.attachment_src = attachmentStr64;
+        // @ts-ignore unnecessary type checking
+        payload.attachment_name = attachment?.name ?? "";
+
+        createReferenceCitation({
+          onError: emptyFncWithMsg,
+          onSuccess: () => {
+            setIsSubmitting(false);
+            setReferencesFetchTime(Date.now());
+          },
+          payload,
+        });
+      };
+    } else {
+      createReferenceCitation({
+        onError: emptyFncWithMsg,
+        onSuccess: () => {
+          setIsSubmitting(false);
+          setReferencesFetchTime(Date.now());
         },
-        citation_type: selectedReferenceType,
-        organization: 1,
-      },
-    });
+        payload,
+      });
+    }
   };
 
   const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema)
