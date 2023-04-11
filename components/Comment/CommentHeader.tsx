@@ -54,7 +54,7 @@ const CommentHeader = ({
       <div className={css(styles.details)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
-          spacing={-15}
+          spacing={-20}
           withTooltip={true}
           wrapperStyle={styles.avatars}
         />
