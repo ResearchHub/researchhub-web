@@ -1,7 +1,7 @@
 import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
@@ -49,6 +49,7 @@ type CommentEditorArgs = {
   allowCommentTypeSelection?: boolean;
   handleClose?: Function;
   focusOnMount?: boolean;
+  editorStyleOverride?: any;
 };
 
 const CommentEditor = ({
@@ -64,8 +65,8 @@ const CommentEditor = ({
   allowCommentTypeSelection = false,
   focusOnMount = false,
   handleClose,
+  editorStyleOverride,
 }: CommentEditorArgs) => {
-  console.log("commentType", commentType);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
@@ -170,7 +171,7 @@ const CommentEditor = ({
   return (
     <div
       ref={editorRef}
-      className={`${css(styles.commentEditor)} CommentEditor`}
+      className={`${css(styles.commentEditor, editorStyleOverride)} CommentEditor` }
       onClick={() => {
         if (!isLoggedIn) {
           dispatch(
