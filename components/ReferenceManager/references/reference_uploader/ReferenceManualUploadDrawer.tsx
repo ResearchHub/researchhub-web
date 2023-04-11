@@ -358,13 +358,13 @@ export default function ReferenceManualUploadDrawer({
             left="0px"
             sx={{
               background: "rgb(250, 250, 252)",
-              borderTop: "1px solid #E9EAEF",
+              // borderTop: "1px solid #E9EAEF",
             }}
           >
             <div style={{ width: "88px" }}>
               <PrimaryButton
                 onClick={handleSubmit}
-                size="medium"
+                size="large"
                 disabled={false}
               >
                 <Typography fontSize="14px" fontWeight="400">
@@ -382,7 +382,7 @@ export default function ReferenceManualUploadDrawer({
                     setReferenceSchemaValueSet,
                   });
                 }}
-                size="medium"
+                size="large"
                 sx={{ textTransform: "none" }}
               >
                 <Typography fontSize="14px" fontWeight="400">
