@@ -31,7 +31,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
-  LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 34;
+  LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 37;
 
 type Props = {
   drawerProps: {
@@ -165,6 +165,7 @@ export default function ReferenceManualUploadDrawer({
             setIsSubmitting(false);
             setReferencesFetchTime(Date.now());
             setIsDrawerOpen(false);
+            setReferenceSchemaValueSet(DEFAULT_REF_SCHEMA_SET);
           },
           payload,
         });
@@ -176,6 +177,7 @@ export default function ReferenceManualUploadDrawer({
           setIsSubmitting(false);
           setReferencesFetchTime(Date.now());
           setIsDrawerOpen(false);
+          setReferenceSchemaValueSet(DEFAULT_REF_SCHEMA_SET);
         },
         payload,
       });
@@ -249,11 +251,12 @@ export default function ReferenceManualUploadDrawer({
           background: "rgba(250, 250, 252, 1)",
           borderLeft: `1px solid #e8e8ef`,
           boxSizing: "border-box",
-          height: "500%",
           marginLeft: `${APPLICABLE_LEFT_NAV_WIDTH}px`,
           marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
           padding: "16px 24px",
+          paddingBottom: "0px",
           width: "472px",
+          position: "relative",
         }}
       >
         <Stack
@@ -344,7 +347,20 @@ export default function ReferenceManualUploadDrawer({
             />
           </Box>
           {formattedSchemaInputs}
-          <Box display="flex" flexDirection="row" mb="36px">
+          <Box
+            display="flex"
+            flexDirection="row"
+            position="sticky"
+            bottom="0px"
+            padding="16px"
+            paddingLeft="0px"
+            width="100%"
+            left="0px"
+            sx={{
+              background: "rgb(250, 250, 252)",
+              borderTop: "1px solid #E9EAEF",
+            }}
+          >
             <div style={{ width: "88px" }}>
               <PrimaryButton
                 onClick={handleSubmit}
