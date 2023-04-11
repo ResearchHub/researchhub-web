@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexWrap: "wrap",
     flex: 1,
+    lineHeight: "1.5em",
   },
   contentBadge: {
     marginTop: 10,
