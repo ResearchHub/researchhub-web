@@ -173,9 +173,8 @@ export const markAsAcceptedAnswerAPI = async ({
   }
 }
 
-export const deleteCommentAPI = ({
+export const deleteCommentAPI = async ({
   id,
-  parentId,
   documentType,
   documentId,
 }: {
@@ -184,9 +183,25 @@ export const deleteCommentAPI = ({
   documentType: RhDocumentType;
   documentId: ID;
 }) => {
-  console.log("deleting comment via API");
-  console.log("id", id);
-  console.log("parentId", parentId);
+  const url = generateApiUrl(
+    `${documentType}/${documentId}/comments/${id}`
+  );
+
+  try {
+    const response = await fetch(url, API.PATCH_CONFIG({is_removed: true}))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+  }
+  catch (error:any) {
+    const isExpectedError = error.response.status < 500;
+    if (isExpectedError) {
+      throw error;
+    }
+    else {
+      // FIXME: Log to sentry
+      throw Error("Unexpected error while deleting comment");
+    }
+  }
 
   return Promise.resolve();
 };

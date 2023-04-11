@@ -169,6 +169,7 @@ function BountyModal({
       closeModal={handleClose}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
+      zIndex={1000001}
       modalContentStyle={styles.modalContentStyle}
       title={
         success ? null : (

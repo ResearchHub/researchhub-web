@@ -18,6 +18,8 @@
 
 .CommentEditor .ql-snow .ql-editor blockquote {
   padding-left: 10px !important;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .CommentEditor .peer-review .ql-editor.ql-blank::before {
