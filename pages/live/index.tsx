@@ -7,20 +7,18 @@ import { getSelectedUrlFilters } from "~/components/UnifiedDocFeed/utils/getSele
 import { getFetchDefaults } from "~/components/UnifiedDocFeed/utils/getFetchDefaults";
 import { NextPage } from "next";
 import colors from "~/config/themes/colors";
-import Head from "~/components/Head";
+import HeadComponent from "~/components/Head";
 
 const Index: NextPage = (props) => {
   return (
-    <>
-      <Head
+    <div style={{ background: colors.LIGHT_GRAY_BACKGROUND(1.0) }}>
+      <HeadComponent
         title={"ResearchHub | Live Activity"}
-        description={"View all activity on ResearchHub ResearchHub"}
+        description={"Discuss and Discover the latest research on ResearchHub"}
       />
-      <div style={{ background: colors.LIGHT_GRAY_BACKGROUND(1.0) }}>
-        <HubPage isLiveFeed={true} {...props} />
-      </div>
-    </>
-  )
+      <HubPage isLiveFeed={true} {...props} />
+    </div>
+  );
 };
 
 Index.getInitialProps = async (ctx) => {

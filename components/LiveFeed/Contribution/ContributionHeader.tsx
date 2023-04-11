@@ -33,12 +33,11 @@ const ContributionHeader = ({ entry }: Args) => {
 
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
-  let unifiedDocument:UnifiedDocument;
-  
-  
+  let unifiedDocument: UnifiedDocument;
+
   if (contentType.name === "bounty") {
     item = item as BountyContributionItem;
-    unifiedDocument = item.unifiedDocument
+    unifiedDocument = item.unifiedDocument;
 
     if (item.parent) {
       actionLabel = (
@@ -62,8 +61,7 @@ const ContributionHeader = ({ entry }: Args) => {
           {` to bounty on `}
         </>
       );
-    }
-    else {
+    } else {
       actionLabel = (
         <>
           {` opened `}
@@ -82,7 +80,7 @@ const ContributionHeader = ({ entry }: Args) => {
               </div>
             }
           />
-          {` bounty on`}
+          {` bounty on `}
         </>
       );
     }
@@ -122,16 +120,16 @@ const ContributionHeader = ({ entry }: Args) => {
         <>
           {` tipped `}
           <UserTooltip
-              createdBy={item.recipient}
-              targetContent={
-                <ALink
-                  href={`/user/${item.recipient.authorProfile?.id}/overview`}
-                  key={`/user/${item.recipient.authorProfile?.id}/overview-key`}
-                >
-                  {item.recipient.firstName} {item.recipient.lastName}
-                </ALink>
-              }
-            />          
+            createdBy={item.recipient}
+            targetContent={
+              <ALink
+                href={`/user/${item.recipient.authorProfile?.id}/overview`}
+                key={`/user/${item.recipient.authorProfile?.id}/overview-key`}
+              >
+                {item.recipient.firstName} {item.recipient.lastName}
+              </ALink>
+            }
+          />
           <ContentBadge
             contentType="bounty"
             bountyAmount={item.amount}
@@ -147,7 +145,7 @@ const ContributionHeader = ({ entry }: Args) => {
               </div>
             }
           />
-            {" for their "}
+          {" for their "}
           <ALink
             overrideStyle={styles.link}
             href={getUrlToUniDoc(item.source.unifiedDocument)}
@@ -181,39 +179,32 @@ const ContributionHeader = ({ entry }: Args) => {
                       href={`/user/${item.parent.createdBy.authorProfile?.id}/overview`}
                       key={`/user/${item.parent.createdBy.authorProfile?.id}/overview-key`}
                     >
-                      {item.parent.createdBy.firstName} {item.parent.createdBy.lastName}
+                      {item.parent.createdBy.firstName}{" "}
+                      {item.parent.createdBy.lastName}
                     </ALink>
                   }
                 />
               </div>
             ) : (
-              <>
-                {` commented`}
-              </>
+              <>{` commented`}</>
             )}
 
-            {unifiedDocument &&
-              <span className={css(styles.secondaryText)}>
-                {` on `}
-              </span>
-            }
-
+            {unifiedDocument && (
+              <span className={css(styles.secondaryText)}>{` on `}</span>
+            )}
           </>
         )}
       </>
-    )
-  }
-  else {
+    );
+  } else {
     // @ts-ignore
     actionLabel = <>{` posted ${item?.unifiedDocument?.documentType}`}</>;
   }
 
-
-
   return (
     <div className={css(styles.header)}>
       <div className={css(styles.avatarWrapper)}>
-        <CommentAvatars people={[createdBy]} withTooltip={true} />
+        <CommentAvatars size={25} people={[createdBy]} withTooltip={true} />
       </div>
       <div className={css(styles.metadataRow)}>
         <div className={css(styles.nameRow)}>
@@ -224,35 +215,40 @@ const ContributionHeader = ({ entry }: Args) => {
                 href={`/user/${createdBy.authorProfile?.id}/overview`}
                 key={`/user/${createdBy.authorProfile?.id}/overview-key`}
               >
-                {createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}
+                {createdBy.authorProfile.firstName}{" "}
+                {createdBy.authorProfile.lastName}
               </ALink>
             }
           />
 
-            {actionLabel}
+          {actionLabel}
         </div>
         {/* @ts-ignore */}
-        {unifiedDocument &&
+        {unifiedDocument && (
           <ALink
             overrideStyle={[styles.link, styles.unifiedDocument]}
             href={getUrlToUniDoc(unifiedDocument) + "#comments"}
           >
-            {truncateText(unifiedDocument?.document?.title, 100) }
+            {truncateText(unifiedDocument?.document?.title, 100)}
           </ALink>
-        }
-        <div className={css(styles.secondaryText)}>{timeSince(item.createdDate)}</div>
+        )}
+        <div className={css(styles.secondaryText)}>
+          {"  •  "}
+          {timeSince(item.createdDate)}
+        </div>
       </div>
     </div>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
   header: {
     display: "flex",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "center",
     flexDirection: "row",
     marginLeft: 0,
+    width: "100%",
     // @ts-ignore
     whiteSpace: "break-spaces",
   },
@@ -270,6 +266,9 @@ const styles = StyleSheet.create({
   },
   metadataRow: {
     color: colors.BLACK(0.6),
+    display: "flex",
+    flexWrap: "wrap",
+    width: "100%",
   },
   contentBadge: {
     marginTop: 10,
