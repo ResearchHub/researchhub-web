@@ -457,18 +457,20 @@ function DocumentHeader({
                   />
                 </div>
               )}
-              <ALink
-                overrideStyle={[styles.comments, styles.additionalDetail]}
-                href={"#comments"}
-              >
-                <span className={css(styles.detailIcon)}>
-                  {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
-                </span>
-                {discussionCount}{" "}
-                <span className={css(styles.commentsText)}>
-                  &nbsp;{`comments`}
-                </span>
-              </ALink>
+              {documentType !== "post" &&
+                <ALink
+                  overrideStyle={[styles.comments, styles.additionalDetail]}
+                  href={"#comments"}
+                >
+                  <span className={css(styles.detailIcon)}>
+                    {<FontAwesomeIcon icon={faComments}></FontAwesomeIcon>}
+                  </span>
+                  {discussionCount}{" "}
+                  <span className={css(styles.commentsText)}>
+                    &nbsp;{`comments`}
+                  </span>
+                </ALink>
+              }
               {(unifiedDocument?.reviewSummary?.count || 0) > 0 && (
                 <div className={css(styles.reviews, styles.additionalDetail)}>
                   <span className={css(styles.detailIcon, styles.starIcon)}>

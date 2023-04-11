@@ -4,7 +4,7 @@ import colors from "./lib/colors";
 import { faComments } from "@fortawesome/free-solid-svg-icons";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { createPortal } from "react-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import config from "./lib/config";
 import { breakpoints } from "~/config/themes/screen";
@@ -29,6 +29,9 @@ const CommentToggle = ({
       : bountyAmount.toFixed(0);
   const commentTreeState = useContext(CommentTreeContext);
   const [mountEl, setMountEl] = useState<Element | null>(null);
+  const prevScrollYPos = useRef(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const isVisibleRef = useRef(true);
 
   useEffect(() => {
     if (!mountEl) {
@@ -38,6 +41,31 @@ const CommentToggle = ({
     }
   }, []);
 
+  if (commentTreeState.context === "sidebar") {
+    useEffect(() => {
+      const _handleScroll = () => {
+        if (window.scrollY > prevScrollYPos.current && isVisibleRef.current) {
+          setIsVisible(false);
+          isVisibleRef.current = false;
+        } else if (
+          window.scrollY < prevScrollYPos.current &&
+          !isVisibleRef.current
+        ) {
+          setIsVisible(true);
+          isVisibleRef.current = true;
+        }
+
+        prevScrollYPos.current = window.scrollY;
+      };
+
+      document.addEventListener("scroll", _handleScroll);
+
+      return () => {
+        document.removeEventListener("scroll", _handleScroll);
+      };
+    }, []);
+  }
+
   return (
     <>
       {mountEl &&
@@ -45,6 +73,7 @@ const CommentToggle = ({
           <div
             className={css(
               styles.toggle,
+              isVisible ? styles.visibleToggle : styles.hiddenToggle,
               commentTreeState.context === "sidebar" &&
                 isOpen &&
                 styles.sidebarOpen
@@ -86,7 +115,39 @@ const CommentToggle = ({
   );
 };
 
+const slideDownFrames = {
+  from: {
+    opacity: 1,
+  },
+  to: {
+    opacity: 0,
+  },
+};
+
+const slideUpFrames = {
+  from: {
+    opacity: 0,
+  },
+  to: {
+    opacity: 1,
+  },
+};
+
 const styles = StyleSheet.create({
+  hiddenToggle: {
+    animationName: [slideDownFrames],
+    animationDuration: "0.25s",
+    animationDirection: "normal",
+    animationFillMode: "forwards",
+    animationTiming: "ease-in",
+  },
+  visibleToggle: {
+    animationName: [slideUpFrames],
+    animationDuration: "0.25s",
+    animationDirection: "normal",
+    animationFillMode: "forwards",
+    animationTiming: "ease-in",
+  },
   toggle: {
     position: "fixed",
     left: `calc(50% + ${config.toggle.width / 2}px)`,
