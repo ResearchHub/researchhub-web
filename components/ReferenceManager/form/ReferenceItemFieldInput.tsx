@@ -10,21 +10,23 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
 
 type Props = {
+  disabled?: boolean;
   formID: string;
   label: string;
+  onChange?: (value: any) => void;
   placeholder?: string;
   required?: boolean;
   value?: any;
-  onChange?: (value: any) => void;
 };
 
 export default function ReferenceItemFieldInput({
+  disabled,
   formID,
   label,
-  required = false,
-  placeholder,
-  value = "",
   onChange,
+  placeholder,
+  required = false,
+  value = "",
 }: Props): ReactElement {
   return (
     <Box
@@ -49,6 +51,7 @@ export default function ReferenceItemFieldInput({
         {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
       </Typography>
       <OutlinedInput
+        disabled={Boolean(disabled)}
         fullWidth
         onClick={silentEmptyFnc}
         id={formID}

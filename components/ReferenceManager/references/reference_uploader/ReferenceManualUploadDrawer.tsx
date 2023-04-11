@@ -164,6 +164,7 @@ export default function ReferenceManualUploadDrawer({
           onSuccess: () => {
             setIsSubmitting(false);
             setReferencesFetchTime(Date.now());
+            setIsDrawerOpen(false);
           },
           payload,
         });
@@ -174,6 +175,7 @@ export default function ReferenceManualUploadDrawer({
         onSuccess: () => {
           setIsSubmitting(false);
           setReferencesFetchTime(Date.now());
+          setIsDrawerOpen(false);
         },
         payload,
       });
@@ -190,10 +192,19 @@ export default function ReferenceManualUploadDrawer({
       return 1;
     })
     .map((schemaField: string) => {
-      const label = snakeCaseToNormalCase(schemaField);
+      let label = snakeCaseToNormalCase(schemaField);
       const schemaFieldValue = referenceSchemaValueSet.schema[schemaField];
+      if (schemaField === "creators") {
+        // TODO: calvinhlee - make separate creators input fields
+        label = "Authors / Creators (comma separated)";
+      }
+      if (schemaField === "date") {
+        // TODO: calvinhlee - make separate date input fields
+        label = "Date (MM-DD-YYYY)";
+      }
       return (
         <ReferenceItemFieldInput
+          disabled={isSubmitting}
           formID={schemaField}
           key={`reference-manual-upload-field-${schemaField}`}
           label={label}
@@ -259,7 +270,6 @@ export default function ReferenceManualUploadDrawer({
             zIndex: 4,
             margin: "-16px 0 0",
             padding: "16px 0",
-
           }}
         >
           <Typography variant="h6">{"Upload reference"}</Typography>
@@ -295,7 +305,6 @@ export default function ReferenceManualUploadDrawer({
                   authorships,
                   publication_date,
                 } = doiMetaData ?? {};
-                console.warn("doiMetaData: ", doiMetaData);
                 const formattedTitle = title ?? display_name ?? "";
                 setReferenceSchemaValueSet({
                   attachment: referenceSchemaValueSet.attachment,

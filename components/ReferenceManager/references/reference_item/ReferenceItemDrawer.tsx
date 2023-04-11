@@ -74,7 +74,16 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     if (isEmpty(referenceItemDrawerData?.id) || !isDrawerOpen) {
       setLocalReferenceFields({});
     } else {
-      setLocalReferenceFields(referenceItemDrawerData?.fields ?? {});
+      setLocalReferenceFields(
+        {
+          ...referenceItemDrawerData?.fields,
+          creators: referenceItemDrawerData?.fields?.creators
+            .map((creator): string => {
+              return `${creator.first_name} ${creator.last_name}`;
+            })
+            .join(", "),
+        } ?? {}
+      );
     }
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
 
@@ -93,12 +102,14 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         let label = snakeCaseToNormalCase(field_key),
           value = localReferenceFields[field_key],
           isRequired = requiredFieldsSet.has(field_key);
+
         if (field_key === "creators") {
-          value = value
-            .map((creator): string => {
-              return `${creator.first_name} ${creator.last_name}`;
-            })
-            .join(", ");
+          // TODO: calvinhlee - make separate creators input fields
+          label = "Authors / Creators (comma separated)";
+        }
+        if (field_key === "date") {
+          // TODO: calvinhlee - make separate date input fields
+          label = "Date (MM-DD-YYYY)";
         }
 
         return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
@@ -191,19 +202,22 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
               updateReferenceCitation({
                 payload: {
                   // TODO: calvinhlee - create utily functions to format these
-                  fields: localReferenceFields,
+                  fields: {
+                    ...localReferenceFields,
+                    creators:
+                      localReferenceFields.creators
+                        ?.split(", ")
+                        ?.map((creatorName) => {
+                          const splittedName = creatorName.split(" ");
+                          return {
+                            first_name: splittedName[0],
+                            last_name: splittedName.slice(1).join(" "),
+                          };
+                        }) ?? [],
+                  },
                   citation_id,
                   citation_type,
                   organization: 1,
-                  // creators: localReferenceFields.creators
-                  //   .split(", ")
-                  //   .map((name: string) => {
-                  //     const splittedName = name.split(" ");
-                  //     return {
-                  //       first_name: splittedName[0],
-                  //       last_name: splittedName.slice[1].join(" "),
-                  //     };
-                  //   }),
                 },
                 onSuccess: () => {
                   setReferencesFetchTime(Date.now());
