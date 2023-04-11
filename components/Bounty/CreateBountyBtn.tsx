@@ -74,7 +74,7 @@ function CreateBountyBtn({
                 <div className={css(styles.addBounty)}>
                   <span className={css(styles.bountyIcon)}>
                     {/* @ts-ignore */}
-                    <ResearchCoinIcon width={24} height={24} version={3} />
+                    <ResearchCoinIcon width={24} height={22} version={3} />
                   </span>
                   Add Bounty
                 </div>

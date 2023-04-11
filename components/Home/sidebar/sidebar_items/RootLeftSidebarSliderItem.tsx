@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import Link from "next/link";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
 import colors from "~/config/themes/colors";
 
@@ -7,6 +8,7 @@ export type Props = {
   isActive?: boolean;
   isMinimized?: boolean;
   label: string;
+  href: string;
   onClick: (event: SyntheticEvent) => void;
 };
 
@@ -16,10 +18,12 @@ export default function RootLeftSidebarSliderItem({
   icon,
   isActive = false,
   label,
+  href,
   onClick,
 }: Props): ReactElement {
   return (
-    <div
+    <Link
+      href={href}
       className={css(
         styles.rootLeftSidebarSliderItem,
         isActive && styles.rootLeftSidebarSliderItemActive
@@ -35,7 +39,7 @@ export default function RootLeftSidebarSliderItem({
       >
         {label}
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -53,6 +57,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
     overflow: "hidden",
     width: "100%",
+    textDecoration: "none",
     ":hover": {
       background: colors.LIGHTER_GREY(1),
     },

@@ -11,10 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
 import { TopLevelDocument, parseUser } from "~/config/types/root_types";
 import { Comment } from "./lib/types";
-import { flagComment } from "./lib/api";
+import { deleteCommentAPI, flagComment } from "./lib/api";
 import { MessageActions } from "~/redux/message";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
-import { flagGrmContent } from "../Flag/api/postGrmFlag";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -57,6 +56,17 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
     }
   };
 
+  const _handleDelete = async () => {
+    if (confirm("Delete comment?")) {
+      await deleteCommentAPI({
+        id: comment.id,
+        documentType: document.apiDocumentType,
+        documentId: document.id,
+      })
+
+    }
+  }
+
   return (
     <div className={css(styles.wrapper)}>
       <div className={`${css(styles.trigger)} comment-menu-trigger`}>
@@ -86,7 +96,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
             </div>
             <div
               className={css(styles.option)}
-              onClick={() => alert("not implemented")}
+              onClick={_handleDelete}
             >
               <FontAwesomeIcon
                 icon={faTrashAlt}
