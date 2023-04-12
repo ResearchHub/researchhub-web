@@ -62,10 +62,9 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
         id: comment.id,
         documentType: document.apiDocumentType,
         documentId: document.id,
-      })
-
+      });
     }
-  }
+  };
 
   return (
     <div className={css(styles.wrapper)}>
@@ -94,10 +93,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
 
               <div className={css(styles.dropdownLabel)}>Edit</div>
             </div>
-            <div
-              className={css(styles.option)}
-              onClick={_handleDelete}
-            >
+            <div className={css(styles.option)} onClick={_handleDelete}>
               <FontAwesomeIcon
                 icon={faTrashAlt}
                 style={{ color: colors.secondary.text, fontSize: 18 }}

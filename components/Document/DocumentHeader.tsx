@@ -1,6 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/pro-solid-svg-icons";
-import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faStar,
+  faComments,
+  faArrowDownToLine,
+} from "@fortawesome/pro-solid-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
@@ -274,7 +277,7 @@ function DocumentHeader({
       >
         <FontAwesomeIcon
           //@ts-ignore
-          icon={["fas", "arrow-down-to-line"]}
+          icon={faArrowDownToLine}
           style={{ marginRight: 4 }}
         />{" "}
         View PDF
