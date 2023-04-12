@@ -6,9 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 
-import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import { connect } from "react-redux";
-import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
 import { breakpoints } from "~/config/themes/screen";
 
 function NewFeatureTooltip({
@@ -17,21 +15,16 @@ function NewFeatureTooltip({
   position = ["right", "bottom"],
   color = "blue",
 }): ReactElement | null {
-  const [shouldAlert, setShouldAlert] = useEffectNewFeatureShouldAlertUser({
-    auth,
-    featureName,
-  });
-  const normalizedFeatureName = featureName.toLocaleLowerCase();
+  // Kobe: Turning this feature off temporarily because something broke with it.
+  // It glitches out on page load
+  // const normalizedFeatureName = featureName.toLocaleLowerCase();
 
-  const handleDismiss = () => {
-    window.localStorage.setItem(
-      `feature_${normalizedFeatureName}_clicked`,
-      "true"
-    );
-
-    setShouldAlert(false);
-    postNewFeatureNotifiedToUser({ auth, featureName: normalizedFeatureName });
-  };
+  // const handleDismiss = () => {
+  //   window.localStorage.setItem(
+  //     `feature_${normalizedFeatureName}_clicked`,
+  //     "true"
+  //   );
+  // };
 
   // const tooltipPos =
   //   (process.browser && window.innerWidth > breakpoints.small.int) ||
@@ -39,8 +32,7 @@ function NewFeatureTooltip({
   //     ? position[0]
   //     : position[1];
 
-  // Kobe: Turning this feature off temporarily because something broke with it.
-  // It glitches out on page load
+
   return null;
 
   let html: ReactElement = <></>;

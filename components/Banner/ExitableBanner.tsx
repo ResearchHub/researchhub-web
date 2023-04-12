@@ -9,6 +9,9 @@ import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
 
 import { breakpoints } from "~/config/themes/screen";
 import { iconColors } from "~/config/themes/colors";
+import { useSelector } from "react-redux";
+import { RootState } from "~/redux";
+import { useDismissableFeature } from "~/config/hooks/useDismissableFeature";
 
 type Props = {
   bannerKey: string;
@@ -27,13 +30,25 @@ export default function ExitableBanner({
   exitButtonPositionOverride,
   onExit,
 }: Props): ReactElement | null {
-  const [isExited, setIsExited] = useState<boolean>(
-    getCookieOrLocalStorageValue({
-      key: bannerKey,
-    })?.value === "exited"
-  );
+  // const [isExited, setIsExited] = useState<boolean>(
+  //   getCookieOrLocalStorageValue({
+  //     key: bannerKey,
+  //   })?.value === "exited"
+  // );
 
-  if (isExited) {
+  const auth = useSelector((state: RootState) => state.auth);
+  
+  const {
+    isDismissed,
+    dismissFeature,
+    dismissStatus
+  } = useDismissableFeature({ auth, featureName: bannerKey })
+  console.log('isDismissed', isDismissed);
+  console.log('dismissFeature', dismissFeature);
+  console.log('dismissStatus', dismissStatus);
+  
+
+  if (dismissStatus === "unchecked" || (dismissStatus === "checked" && isDismissed)) {
     onExit && onExit();
     return null;
   }
@@ -49,7 +64,7 @@ export default function ExitableBanner({
           event.preventDefault();
           event.stopPropagation();
           storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
-          setIsExited(true);
+          dismissFeature();
         }}
         style={exitButtonPositionOverride}
       >
