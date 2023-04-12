@@ -12,16 +12,20 @@ type PostNewFeatureNotifiedArgs = {
   featureName: string;
 };
 
+	
+type DissmissStatus = "unchecked" | "checked" | "checking"
+
+
 export function useDismissableFeature({
   auth,
   featureName,
 }: UseEffectNewFeatureArgs): {
   isDismissed: boolean,
   dismissFeature: Function,
-  dismissStatus: "unchecked" | "checked" | "checking"
+  dismissStatus: DissmissStatus
 } {
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
-  const [status, setStatus] = useState<"unchecked" | "checking" | "checked" >("unchecked");
+  const [status, setStatus] = useState<DissmissStatus>("unchecked");
   const dismissFeature = () => {
     setIsDismissed(true);
     _dismissFeatureAPI({ auth, featureName })
