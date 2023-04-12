@@ -2,10 +2,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import {
-  getCookieOrLocalStorageValue,
   storeToCookieOrLocalStorage,
 } from "~/config/utils/storeToCookieOrLocalStorage";
-import { ReactNode, ReactElement, SyntheticEvent, useState } from "react";
+import { ReactNode, ReactElement, SyntheticEvent } from "react";
 
 import { breakpoints } from "~/config/themes/screen";
 import { iconColors } from "~/config/themes/colors";
@@ -30,12 +29,6 @@ export default function ExitableBanner({
   exitButtonPositionOverride,
   onExit,
 }: Props): ReactElement | null {
-  // const [isExited, setIsExited] = useState<boolean>(
-  //   getCookieOrLocalStorageValue({
-  //     key: bannerKey,
-  //   })?.value === "exited"
-  // );
-
   const auth = useSelector((state: RootState) => state.auth);
   
   const {
@@ -43,9 +36,6 @@ export default function ExitableBanner({
     dismissFeature,
     dismissStatus
   } = useDismissableFeature({ auth, featureName: bannerKey })
-  console.log('isDismissed', isDismissed);
-  console.log('dismissFeature', dismissFeature);
-  console.log('dismissStatus', dismissStatus);
   
 
   if (dismissStatus === "unchecked" || (dismissStatus === "checked" && isDismissed)) {
@@ -63,7 +53,6 @@ export default function ExitableBanner({
         onClick={(event: SyntheticEvent): void => {
           event.preventDefault();
           event.stopPropagation();
-          storeToCookieOrLocalStorage({ key: bannerKey, value: "exited" });
           dismissFeature();
         }}
         style={exitButtonPositionOverride}
