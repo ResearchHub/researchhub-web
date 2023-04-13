@@ -2,7 +2,7 @@ import { faEllipsisH } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faFlag, faTrashAlt } from "@fortawesome/pro-light-svg-icons";
 import { css, StyleSheet } from "aphrodite";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
@@ -13,6 +13,7 @@ import { TopLevelDocument, parseUser } from "~/config/types/root_types";
 import { Comment } from "./lib/types";
 import { deleteCommentAPI, flagComment } from "./lib/api";
 import { MessageActions } from "~/redux/message";
+import { CommentTreeContext } from "./lib/contexts";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 const { setMessage, showMessage } = MessageActions;
 
@@ -29,6 +30,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
+  const commentTreeState = useContext(CommentTreeContext);
 
   useEffectHandleClick({
     el: dropdownRef.current,
@@ -63,6 +65,8 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
         documentType: document.apiDocumentType,
         documentId: document.id,
       });
+
+      commentTreeState.onRemove({ comment });
     }
   };
 

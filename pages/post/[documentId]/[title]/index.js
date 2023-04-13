@@ -278,6 +278,11 @@ const Post = (props) => {
                   postV2.discussionCount = discussionCount + 1;
                   setPostV2(postV2);
                 }}
+                onCommentRemove={() => {
+                  setCount(discussionCount - 1);
+                  postV2.discussionCount = discussionCount - 1;
+                  setPostV2(postV2);
+                }}
                 totalCommentCount={discussionCount}
               />
             ) : !commentSectionAsSidebar ? (
@@ -301,6 +306,11 @@ const Post = (props) => {
                     postV2.discussionCount = discussionCount + 1;
                     setPostV2(postV2);
                   }}
+                  onCommentRemove={() => {
+                    setCount(discussionCount - 1);
+                    postV2.discussionCount = discussionCount - 1;
+                    setPostV2(postV2);
+                  }}
                   totalCommentCount={discussionCount}
                 />
               </div>
@@ -316,6 +326,11 @@ const Post = (props) => {
               onCommentCreate={() => {
                 setCount(discussionCount + 1);
                 postV2.discussionCount = discussionCount + 1;
+                setPostV2(postV2);
+              }}
+              onCommentRemove={() => {
+                setCount(discussionCount - 1);
+                postV2.discussionCount = discussionCount - 1;
                 setPostV2(postV2);
               }}
               totalCommentCount={discussionCount}

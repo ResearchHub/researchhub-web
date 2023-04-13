@@ -18,7 +18,6 @@ const replaceComment = ({ prev, next, list }: replaceCommentArgs) => {
     const idx = prev.parent.children.findIndex((child) => child.id === prev.id);
     prev.parent.children[idx] = next;
   } else {
-    console.log("no parent");
     const idx = list.findIndex((child) => child.id === prev.id);
     list[idx] = next;
   }

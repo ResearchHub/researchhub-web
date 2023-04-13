@@ -346,6 +346,11 @@ const Paper = ({
                     paperV2.discussionCount = discussionCount + 1;
                     setPaperV2(paperV2);
                   }}
+                  onCommentRemove={() => {
+                    setCount(discussionCount - 1);
+                    postV2.discussionCount = discussionCount - 1;
+                    setPostV2(postV2);
+                  }}
                   totalCommentCount={discussionCount}
                 />
               </div>
@@ -358,6 +363,11 @@ const Paper = ({
                   setCount(discussionCount + 1);
                   paperV2.discussionCount = discussionCount + 1;
                   setPaperV2(paperV2);
+                }}
+                onCommentRemove={() => {
+                  setCount(discussionCount - 1);
+                  postV2.discussionCount = discussionCount - 1;
+                  setPostV2(postV2);
                 }}
                 totalCommentCount={discussionCount}
               />
