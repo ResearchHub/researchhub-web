@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // A lightweight alternative to react-quill
 
 import { useRef, useState, useEffect, RefObject } from "react";
-import Quill, { QuillOptionsStatic } from "quill";
+import Quill, { Delta, QuillOptionsStatic } from "quill";
 import ReactDOMServer from "react-dom/server";
 import {
   faVideo,
@@ -12,6 +12,14 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
 import QuillPeerReviewRatingBlock from "../lib/quillPeerReviewRatingBlock";
+// import dynamic from "next/dynamic";
+// const EmbedVideo = dynamic(
+//   () => import("../lib/quill/EmbedVideo"), {ssr: false}
+// );
+
+// console.log('EmbedVide', EmbedVideo)
+
+
 
 const theme = "snow";
 
@@ -105,13 +113,17 @@ export const useQuill = (
         formats: options.formats || formats,
         theme: options.theme || theme,
       });
-
+// console.log('EmbedVideo', EmbedVideo.load())
       if (!options.readOnly) {
         const MagicUrl = require("quill-magic-url").default;
         obj.Quill.register("modules/magicUrl", MagicUrl);
 
         obj.Quill.register(QuillPeerReviewRatingBlock);
-        obj.Quill.register("modules/magicUrl", MagicUrl);
+
+        const EmbedVideo = require("../lib/quill/EmbedVideo").default;
+
+        console.log("EmbedVideo", EmbedVideo)
+        obj.Quill.register("modules/embedVideo", EmbedVideo);
 
         const icons = obj.Quill.import("ui/icons");
         icons.video = ReactDOMServer.renderToString(

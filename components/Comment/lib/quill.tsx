@@ -11,6 +11,7 @@ export const buildQuillModules = ({
 }) => {
   const modules = {
     magicUrl: true,
+    embedVideo: true,
     keyboard: {
       bindings: {
         commandEnter: {
