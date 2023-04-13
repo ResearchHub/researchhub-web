@@ -117,9 +117,6 @@ export const useQuill = (
         obj.Quill.register(QuillPeerReviewRatingBlock);
 
         const icons = obj.Quill.import("ui/icons");
-        icons.video = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faVideo} />
-        );
         icons.image = ReactDOMServer.renderToString(
           <FontAwesomeIcon icon={faImagePolaroid} />
         );

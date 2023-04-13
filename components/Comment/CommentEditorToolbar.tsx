@@ -25,7 +25,6 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
         <button className="ql-blockquote"></button>
         <button className="ql-link" />
         <button className="ql-image" />
-        <button className="ql-video"></button>
         <button
           id="show-editor"
           className={`show-full-editor ${isOpen ? "ql-active" : ""}`}

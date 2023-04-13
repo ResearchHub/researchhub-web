@@ -1,5 +1,4 @@
 import Quill from "quill";
-import { focusEditor, placeCursorAtEnd } from "../quill";
 import Delta from 'quill-delta/lib/delta';
 
 class EmbedVideo {
