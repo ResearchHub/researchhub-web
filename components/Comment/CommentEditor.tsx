@@ -84,7 +84,8 @@ const CommentEditor = ({
   );
   const { quill, quillRef, isReady } = useQuill({
     modules: buildQuillModules({
-      editorId,
+      toolbarSelector: `#${editorId}`,
+      editorSelector: `#CommentEditor-${editorId}`,
       handleImageUpload: () => null,
       handleSubmit: () => handleSubmit({ content: _content }),
     }),
@@ -166,11 +167,11 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
-
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
     <div
       ref={editorRef}
+      id={`CommentEditor-${editorId}`}
       className={`${css(styles.commentEditor, editorStyleOverride)} CommentEditor` }
       onClick={() => {
         if (!isLoggedIn) {
@@ -180,6 +181,7 @@ const CommentEditor = ({
         }
       }}
     >
+      <div id={`CommentEditor-video`}></div>
       <div>
         {handleClose && (
           <IconButton overrideStyle={styles.closeBtn} onClick={handleClose}>

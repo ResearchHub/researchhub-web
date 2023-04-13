@@ -5,12 +5,16 @@ import ReactDOMServer from "react-dom/server";
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'; 
 
 export const buildQuillModules = ({
-  editorId,
+  toolbarSelector,
+  editorSelector,
   handleSubmit,
   handleImageUpload,
 }) => {
   const modules = {
     magicUrl: true,
+    embedVideo: {
+      container: editorSelector,
+    },
     keyboard: {
       bindings: {
         commandEnter: {
@@ -23,7 +27,7 @@ export const buildQuillModules = ({
     },
     toolbar: {
       magicUrl: true,
-      container: `#${editorId}`,
+      container: toolbarSelector,
       handlers: {
         image: handleImageUpload,
       },
@@ -137,9 +141,9 @@ export const insertReviewCategory = ({ quillRef, quill, category, index }: {
 };
 
 export const placeCursorAtEnd = ({ quill }: { quill: Quill }) => {
-  const range = quill.getLength();
+  const index = quill.getLength() - 1;
   // @ts-ignore
-  quill.setSelection(range + 1);
+  quill.setSelection(index);
 }
 
 export const forceShowPlaceholder = ({
