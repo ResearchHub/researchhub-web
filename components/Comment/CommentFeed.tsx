@@ -22,18 +22,21 @@ import { RootState } from "~/redux";
 import colors from "./lib/colors";
 import { Purchase } from "~/config/types/purchase";
 import { MessageActions } from "~/redux/message";
+import removeComment from "./lib/removeComment";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
   context: "sidebar" | "drawer" | null;
   onCommentCreate?: Function;
+  onCommentRemove?: Function;
   totalCommentCount: number;
 };
 
 const CommentFeed = ({
   document,
   onCommentCreate,
+  onCommentRemove,
   totalCommentCount,
   context = null,
 }: Args) => {
@@ -117,6 +120,30 @@ const CommentFeed = ({
       });
       const updatedComments = [...comments];
       setComments(updatedComments);
+    } else {
+      console.warn(
+        `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
+      );
+    }
+  };
+
+  const onRemove = ({ comment }: { comment: CommentType }) => {
+    const found = findComment({ id: comment.id, comments });
+    if (found) {
+      removeComment({
+        comment: found.comment,
+        list: comments,
+      });
+      const isRootComment = !comment.parent;
+      if (isRootComment) {
+        setRootLevelCommentCount(rootLevelCommentCount - 1);
+      } else {
+        comment!.parent!.childrenCount -= 1;
+      }
+      const updatedComments = [...comments];
+
+      setComments(updatedComments);
+      onCommentRemove && onCommentRemove(comment);
     } else {
       console.warn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -282,6 +309,7 @@ const CommentFeed = ({
         context,
         onCreate,
         onUpdate,
+        onRemove,
         onFetchMore,
       }}
     >
@@ -319,7 +347,9 @@ const CommentFeed = ({
                 author={currentUser?.authorProfile}
                 previewModeAsDefault={context ? true : false}
                 allowCommentTypeSelection={!isQuestion}
-                editorStyleOverride={context === "drawer" ? styles.roundedEditor : null}
+                editorStyleOverride={
+                  context === "drawer" ? styles.roundedEditor : null
+                }
               />
             </div>
 

@@ -8,6 +8,7 @@ type CommentTreeContext = {
   context: "sidebar" | "drawer" | null;
   onCreate: Function;
   onUpdate: Function;
+  onRemove: Function;
   onFetchMore: Function;
   comments: Comment[];
 };
@@ -20,6 +21,7 @@ export const CommentTreeContext = createContext<CommentTreeContext>({
   // These functions are defined in the component the context is used.
   // they will receive their value in there since their definition depends on state.
   onCreate: () => null,
+  onRemove: () => null,
   onUpdate: () => null,
   onFetchMore: () => null,
 });

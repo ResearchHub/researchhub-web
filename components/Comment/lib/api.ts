@@ -187,10 +187,9 @@ export const deleteCommentAPI = async ({
   );
 
   try {
-    const response = await fetch(
-      url,
-      API.POST_CONFIG({ is_removed: true })
-    ).then(Helpers.checkStatus);
+    await fetch(url, API.POST_CONFIG({ is_removed: true })).then(
+      Helpers.checkStatus
+    );
   } catch (error: any) {
     const isExpectedError = error.response.status < 500;
     if (isExpectedError) {
@@ -200,8 +199,6 @@ export const deleteCommentAPI = async ({
       throw Error("Unexpected error while deleting comment");
     }
   }
-
-  return Promise.resolve();
 };
 
 export const voteForComment = async ({
