@@ -1,5 +1,6 @@
 import Quill from "quill";
 import { focusEditor, placeCursorAtEnd } from "../quill";
+import Delta from 'quill-delta/lib/delta';
 
 class EmbedVideo {
   container: any;
@@ -9,6 +10,7 @@ class EmbedVideo {
   constructor(quill:Quill, options = {}) {
     this.quill = quill;
     this.options = options;
+    // @ts-ignore
     this.container = document.querySelector(options.container),
     this.container.addEventListener('paste', (event) => this.handlePaste(event));
   }
@@ -40,7 +42,6 @@ class EmbedVideo {
   }
 
   insertYoutubeEmbed(videoId) {
-    const Delta = Quill.import('delta');
     const cursorIndex = this.quill.getLength() - 1; // Get the current length of the editor content
     const videoUrl = `https://www.youtube.com/embed/${videoId}?showinfo=0`;
     const videoDelta = new Delta().retain(cursorIndex).insert({ video: videoUrl });

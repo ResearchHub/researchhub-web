@@ -181,7 +181,6 @@ const CommentEditor = ({
         }
       }}
     >
-      <div id={`CommentEditor-video`}></div>
       <div>
         {handleClose && (
           <IconButton overrideStyle={styles.closeBtn} onClick={handleClose}>
