@@ -10,6 +10,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { resolveFieldKeyLabels } from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { Typography } from "@mui/material";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
@@ -27,8 +28,6 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
-import Loader from "~/components/Loader/Loader";
-import colors from "~/config/themes/colors";
 
 type Props = {};
 
@@ -93,24 +92,16 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       .sort((a, _b): number => {
         if (a === "title") {
           return -1;
-        } else if (a === "creators") {
+        } else if (a == "creators") {
           return 0;
         }
         return 1;
       })
       .map((field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
-        let label = snakeCaseToNormalCase(field_key),
+        let label = resolveFieldKeyLabels(field_key),
           value = localReferenceFields[field_key],
-          isRequired = requiredFieldsSet.has(field_key);
-
-        if (field_key === "creators") {
-          // TODO: calvinhlee - make separate creators input fields
-          label = "Authors / Creators (comma separated)";
-        }
-        if (field_key === "date") {
-          // TODO: calvinhlee - make separate date input fields
-          label = "Date (MM-DD-YYYY)";
-        }
+          isRequired = false;
+        // isRequired = requiredFieldsSet.has(field_key);
 
         return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
           <ReferenceItemFieldInput
@@ -188,7 +179,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         </Stack>
         <Stack direction="row" alignItems="center" spacing={1} mb="24px">
           <Typography variant="h5" fontWeight="bold">
-            {toTitleCase(citation_type ?? "")}
+            {toTitleCase(snakeCaseToNormalCase(citation_type ?? ""))}
           </Typography>
         </Stack>
         {tabInputItems}
