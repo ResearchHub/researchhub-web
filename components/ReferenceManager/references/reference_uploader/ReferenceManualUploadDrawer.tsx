@@ -294,7 +294,12 @@ export default function ReferenceManualUploadDrawer({
         <Box
           display="flex"
           flexDirection="column"
-          sx={{ height: "100%", padding: "16px 24px", overflow: "scroll" }}
+          sx={{
+            height: "calc(88% - 70px) " /* 70 is the height of footer */,
+            padding: "16px 24px",
+            overflow: "scroll",
+            marginBottom: "100px",
+          }}
         >
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
             <ReferenceDoiSearchInput
