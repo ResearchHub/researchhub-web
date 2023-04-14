@@ -184,47 +184,58 @@ export default function ReferenceManualUploadDrawer({
     }
   };
 
-  const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema)
-    .sort((a, _b): number => {
-      if (a === "title") {
-        return -1;
-      } else if (a === "creators") {
-        return 0;
-      }
-      return 1;
-    })
-    .map((schemaField: string) => {
-      let label = snakeCaseToNormalCase(schemaField);
-      const schemaFieldValue = referenceSchemaValueSet.schema[schemaField];
-      if (schemaField === "creators") {
-        // TODO: calvinhlee - make separate creators input fields
-        label = "Authors / Creators (comma separated)";
-      }
-      if (schemaField === "date") {
-        // TODO: calvinhlee - make separate date input fields
-        label = "Date (MM-DD-YYYY)";
-      }
-      return (
-        <ReferenceItemFieldInput
-          disabled={isSubmitting}
-          formID={schemaField}
-          key={`reference-manual-upload-field-${schemaField}`}
-          label={label}
-          onChange={(newValue: string): void => {
-            setReferenceSchemaValueSet({
-              attachment: referenceSchemaValueSet.attachment,
-              schema: {
-                ...referenceSchemaValueSet.schema,
-                [schemaField]: newValue,
-              },
-              required: referenceSchemaValueSet.required,
-            });
-          }}
-          placeholder={label}
-          value={schemaFieldValue}
-        />
-      );
-    });
+  const formattedSchemaInputs = [
+    <ReferenceItemFieldSelect
+      formID="ref-type"
+      key="ref-type"
+      label="Reference type"
+      menuItemProps={formattedMenuItemProps}
+      onChange={setSelectedReferenceType}
+      required
+      value={selectedReferenceType}
+    />,
+    ...Object.keys(referenceSchemaValueSet.schema)
+      .sort((a, _b): number => {
+        if (a === "title") {
+          return -1;
+        } else if (a === "creators") {
+          return 0;
+        }
+        return 1;
+      })
+      .map((schemaField: string) => {
+        let label = snakeCaseToNormalCase(schemaField);
+        const schemaFieldValue = referenceSchemaValueSet.schema[schemaField];
+        if (schemaField === "creators") {
+          // TODO: calvinhlee - make separate creators input fields
+          label = "Authors / Creators (comma separated)";
+        }
+        if (schemaField === "date") {
+          // TODO: calvinhlee - make separate date input fields
+          label = "Date (MM-DD-YYYY)";
+        }
+        return (
+          <ReferenceItemFieldInput
+            disabled={isSubmitting}
+            formID={schemaField}
+            key={`reference-manual-upload-field-${schemaField}`}
+            label={label}
+            onChange={(newValue: string): void => {
+              setReferenceSchemaValueSet({
+                attachment: referenceSchemaValueSet.attachment,
+                schema: {
+                  ...referenceSchemaValueSet.schema,
+                  [schemaField]: newValue,
+                },
+                required: referenceSchemaValueSet.required,
+              });
+            }}
+            placeholder={label}
+            value={schemaFieldValue}
+          />
+        );
+      }),
+  ];
 
   return (
     <Drawer
@@ -291,14 +302,6 @@ export default function ReferenceManualUploadDrawer({
         </Stack>
         <Box display="flex" flexDirection="column">
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
-            <ReferenceItemFieldSelect
-              formID="ref-type"
-              label="Reference type"
-              menuItemProps={formattedMenuItemProps}
-              onChange={setSelectedReferenceType}
-              required
-              value={selectedReferenceType}
-            />
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
                 const {
