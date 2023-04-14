@@ -16,7 +16,10 @@ import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSideba
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
 import { NullableString } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
-import { resolveFieldKeyLabels } from "../utils/resolveFieldKeyLabels";
+import {
+  resolveFieldKeyLabels,
+  sortSchemaFieldKeys,
+} from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
@@ -195,23 +198,14 @@ export default function ReferenceManualUploadDrawer({
       required
       value={selectedReferenceType}
     />,
-    ...Object.keys(referenceSchemaValueSet.schema)
-      .sort((a, _b): number => {
-        if (a === "title") {
-          return -1;
-        } else if (a === "creators") {
-          return 0;
-        }
-        return 1;
-      })
-      .map((schemaField: string) => {
+    ...sortSchemaFieldKeys(Object.keys(referenceSchemaValueSet.schema)).map(
+      (schemaField: string) => {
         const label = resolveFieldKeyLabels(schemaField),
           schemaFieldValue = referenceSchemaValueSet.schema[schemaField],
           isRequired = false;
-
         return (
           <ReferenceItemFieldInput
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
             formID={schemaField}
             key={`reference-manual-upload-field-${schemaField}`}
             label={label}
@@ -230,7 +224,8 @@ export default function ReferenceManualUploadDrawer({
             value={schemaFieldValue}
           />
         );
-      }),
+      }
+    ),
   ];
 
   return (
@@ -325,7 +320,7 @@ export default function ReferenceManualUploadDrawer({
                     date: !isEmpty(publication_date)
                       ? moment(publication_date).format("MM-DD-YYYY")
                       : "",
-                    doi,
+                    DOI: doi,
                     title: formattedTitle,
                     publication_title: formattedTitle,
                   },

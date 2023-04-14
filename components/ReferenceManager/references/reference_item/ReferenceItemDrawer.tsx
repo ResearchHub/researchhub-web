@@ -10,7 +10,10 @@ import {
   useMemo,
   useState,
 } from "react";
-import { resolveFieldKeyLabels } from "../utils/resolveFieldKeyLabels";
+import {
+  resolveFieldKeyLabels,
+  sortSchemaFieldKeys,
+} from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { Typography } from "@mui/material";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
@@ -88,21 +91,12 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
 
   const tabInputItems = filterNull(
     // TODO: calvinhlee - we need better ways to sort these fields
-    Object.keys(localReferenceFields)
-      .sort((a, _b): number => {
-        if (a === "title") {
-          return -1;
-        } else if (a == "creators") {
-          return 0;
-        }
-        return 1;
-      })
-      .map((field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
+    sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
+      (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
         let label = resolveFieldKeyLabels(field_key),
           value = localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
-
         return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
           <ReferenceItemFieldInput
             formID={field_key}
@@ -119,7 +113,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             value={value}
           />
         );
-      })
+      }
+    )
   );
 
   return (
