@@ -62,6 +62,7 @@ export const QuillFormats = [
   "clean",
   "background",
   "code-block",
+  "code",
   "direction",
   "peer-review-rating",
 ];
