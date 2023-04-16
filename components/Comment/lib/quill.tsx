@@ -12,6 +12,7 @@ export const buildQuillModules = ({
 }) => {
   const modules = {
     magicUrl: true,
+    formula: true,
     embedVideo: {
       container: editorSelector,
     },
@@ -27,6 +28,7 @@ export const buildQuillModules = ({
     },
     toolbar: {
       magicUrl: true,
+      formula: true,
       container: toolbarSelector,
       handlers: {
         image: handleImageUpload,
@@ -64,6 +66,7 @@ export const QuillFormats = [
   "code-block",
   "code",
   "direction",
+  "formula",
   "peer-review-rating",
 ];
 

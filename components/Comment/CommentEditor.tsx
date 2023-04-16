@@ -230,7 +230,7 @@ const CommentEditor = ({
               isPreviewMode && styles.hidden
             )}
           >
-            <CommentEditorToolbar editorId={editorId} />
+            <CommentEditorToolbar quill={quill} editorId={editorId} />
           </div>
         </div>
       </div>
