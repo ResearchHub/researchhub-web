@@ -17,7 +17,6 @@ export type ReferenceTableRowDataType = {
 function formatAuthors(
   authors: { first_name: string; last_name: string }[]
 ): string {
-  console.log(authors);
   return authors
     .map(
       (artistEl) => `${artistEl.first_name ?? ""} ${artistEl.last_name ?? ""}`

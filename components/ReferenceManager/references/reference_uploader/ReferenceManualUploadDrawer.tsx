@@ -16,6 +16,10 @@ import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSideba
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
 import { NullableString } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import {
+  resolveFieldKeyLabels,
+  sortSchemaFieldKeys,
+} from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
@@ -184,47 +188,45 @@ export default function ReferenceManualUploadDrawer({
     }
   };
 
-  const formattedSchemaInputs = Object.keys(referenceSchemaValueSet.schema)
-    .sort((a, _b): number => {
-      if (a === "title") {
-        return -1;
-      } else if (a === "creators") {
-        return 0;
+  const formattedSchemaInputs = [
+    <ReferenceItemFieldSelect
+      formID="ref-type"
+      key="ref-type"
+      label="Reference type"
+      menuItemProps={formattedMenuItemProps}
+      onChange={setSelectedReferenceType}
+      required
+      value={selectedReferenceType}
+    />,
+    ...sortSchemaFieldKeys(Object.keys(referenceSchemaValueSet.schema)).map(
+      (schemaField: string) => {
+        const label = resolveFieldKeyLabels(schemaField),
+          schemaFieldValue = referenceSchemaValueSet.schema[schemaField],
+          isRequired = false;
+        return (
+          <ReferenceItemFieldInput
+            disabled={isSubmitting || isLoading}
+            formID={schemaField}
+            key={`reference-manual-upload-field-${schemaField}`}
+            label={label}
+            onChange={(newValue: string): void => {
+              setReferenceSchemaValueSet({
+                attachment: referenceSchemaValueSet.attachment,
+                schema: {
+                  ...referenceSchemaValueSet.schema,
+                  [schemaField]: newValue,
+                },
+                required: referenceSchemaValueSet.required,
+              });
+            }}
+            placeholder={label}
+            required={isRequired}
+            value={schemaFieldValue}
+          />
+        );
       }
-      return 1;
-    })
-    .map((schemaField: string) => {
-      let label = snakeCaseToNormalCase(schemaField);
-      const schemaFieldValue = referenceSchemaValueSet.schema[schemaField];
-      if (schemaField === "creators") {
-        // TODO: calvinhlee - make separate creators input fields
-        label = "Authors / Creators (comma separated)";
-      }
-      if (schemaField === "date") {
-        // TODO: calvinhlee - make separate date input fields
-        label = "Date (MM-DD-YYYY)";
-      }
-      return (
-        <ReferenceItemFieldInput
-          disabled={isSubmitting}
-          formID={schemaField}
-          key={`reference-manual-upload-field-${schemaField}`}
-          label={label}
-          onChange={(newValue: string): void => {
-            setReferenceSchemaValueSet({
-              attachment: referenceSchemaValueSet.attachment,
-              schema: {
-                ...referenceSchemaValueSet.schema,
-                [schemaField]: newValue,
-              },
-              required: referenceSchemaValueSet.required,
-            });
-          }}
-          placeholder={label}
-          value={schemaFieldValue}
-        />
-      );
-    });
+    ),
+  ];
 
   return (
     <Drawer
@@ -249,30 +251,30 @@ export default function ReferenceManualUploadDrawer({
       <Box
         sx={{
           background: "rgba(250, 250, 252, 1)",
-          borderLeft: `1px solid #e8e8ef`,
+          borderLeft: "1px solid #E9EAEF",
           boxSizing: "border-box",
-          marginLeft: `${APPLICABLE_LEFT_NAV_WIDTH}px`,
+          marginLeft: `${APPLICABLE_LEFT_NAV_WIDTH + 3}px`,
           marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
-          padding: "16px 24px",
           paddingBottom: "0px",
-          width: "472px",
           position: "relative",
+          width: "472px",
+          height: "100%",
+          overflow: "hidden",
         }}
       >
         <Stack
           alignItems="center"
           direction="row"
           justifyContent="space-between"
-          mb="24px"
           spacing={1}
           sx={{
             background: "rgba(250, 250, 252, 1)",
+            borderBottom: "1px solid #E9EAEF",
             height: "40px",
+            padding: "16px 24px",
             position: "sticky",
-            top: `${ROOT_NAVBAR_HEIGHT}px`,
+            top: `0px`,
             zIndex: 4,
-            margin: "-16px 0 0",
-            padding: "16px 0",
           }}
         >
           <Typography variant="h6">{"Upload reference"}</Typography>
@@ -289,16 +291,17 @@ export default function ReferenceManualUploadDrawer({
             sx={{ cursor: "pointer" }}
           />
         </Stack>
-        <Box display="flex" flexDirection="column">
+        <Box
+          display="flex"
+          flexDirection="column"
+          sx={{
+            height: "calc(88% - 70px) " /* 70 is the height of footer */,
+            padding: "16px 24px",
+            overflow: "scroll",
+            marginBottom: "100px",
+          }}
+        >
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
-            <ReferenceItemFieldSelect
-              formID="ref-type"
-              label="Reference type"
-              menuItemProps={formattedMenuItemProps}
-              onChange={setSelectedReferenceType}
-              required
-              value={selectedReferenceType}
-            />
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
                 const {
@@ -322,7 +325,7 @@ export default function ReferenceManualUploadDrawer({
                     date: !isEmpty(publication_date)
                       ? moment(publication_date).format("MM-DD-YYYY")
                       : "",
-                    doi,
+                    DOI: doi,
                     title: formattedTitle,
                     publication_title: formattedTitle,
                   },
@@ -347,50 +350,46 @@ export default function ReferenceManualUploadDrawer({
             />
           </Box>
           {formattedSchemaInputs}
-          <Box
-            display="flex"
-            flexDirection="row"
-            position="sticky"
-            bottom="0px"
-            padding="16px"
-            paddingLeft="0px"
-            width="100%"
-            left="0px"
-            sx={{
-              background: "rgb(250, 250, 252)",
-              // borderTop: "1px solid #E9EAEF",
-            }}
-          >
-            <div style={{ width: "88px" }}>
-              <PrimaryButton
-                onClick={handleSubmit}
-                size="large"
-                disabled={false}
-              >
-                <Typography fontSize="14px" fontWeight="400">
-                  {"Add entry"}
-                </Typography>
-              </PrimaryButton>
-            </div>
-            <div style={{ width: "88px", marginLeft: "16px" }}>
-              <Button
-                onClick={(event: SyntheticEvent): void => {
-                  event.preventDefault();
-                  initComponentStates({
-                    referenceSchemaValueSet,
-                    setIsDrawerOpen,
-                    setReferenceSchemaValueSet,
-                  });
-                }}
-                size="large"
-                sx={{ textTransform: "none" }}
-              >
-                <Typography fontSize="14px" fontWeight="400">
-                  {"Cancel"}
-                </Typography>
-              </Button>
-            </div>
-          </Box>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="row"
+          position="sticky"
+          bottom="0px"
+          padding="16px 24px"
+          width="100%"
+          sx={{
+            background: "rgb(250, 250, 252)",
+            borderTop: "1px solid #E9EAEF",
+            left: 0,
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ width: "88px" }}>
+            <PrimaryButton onClick={handleSubmit} size="large" disabled={false}>
+              <Typography fontSize="14px" fontWeight="400">
+                {"Add entry"}
+              </Typography>
+            </PrimaryButton>
+          </div>
+          <div style={{ width: "88px", marginLeft: "16px" }}>
+            <Button
+              onClick={(event: SyntheticEvent): void => {
+                event.preventDefault();
+                initComponentStates({
+                  referenceSchemaValueSet,
+                  setIsDrawerOpen,
+                  setReferenceSchemaValueSet,
+                });
+              }}
+              size="large"
+              sx={{ textTransform: "none" }}
+            >
+              <Typography fontSize="14px" fontWeight="400">
+                {"Cancel"}
+              </Typography>
+            </Button>
+          </div>
         </Box>
       </Box>
     </Drawer>
