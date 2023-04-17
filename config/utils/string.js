@@ -30,3 +30,10 @@ export const isString = (str) => {
 export const stripHTML = (str) => {
   return (str || "").replace(/(<([^>]+)>)/gi, "");
 };
+
+export const snakeCaseToNormalCase = (str) => {
+  let result = str?.replace(/_/g, " ") ?? "";
+  return (
+    result.charAt(0).toUpperCase() + (result?.slice(1)?.toLowerCase() ?? "")
+  );
+};

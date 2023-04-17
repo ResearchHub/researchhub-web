@@ -1,32 +1,38 @@
 import { ChangeEvent, ReactElement } from "react";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullthrows,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
 
 type Props = {
+  disabled?: boolean;
   formID: string;
   label: string;
+  onChange?: (value: any) => void;
   placeholder?: string;
   required?: boolean;
   value?: any;
-  onChange: (value: any) => void;
 };
 
 export default function ReferenceItemFieldInput({
+  disabled,
   formID,
   label,
-  required = false,
-  placeholder,
-  value = "",
   onChange,
+  placeholder,
+  required = false,
+  value = "",
 }: Props): ReactElement {
   return (
     <Box
       sx={{
         background: "transparent",
-        height: "78px",
+        height: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
@@ -45,12 +51,17 @@ export default function ReferenceItemFieldInput({
         {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
       </Typography>
       <OutlinedInput
+        disabled={Boolean(disabled)}
         fullWidth
         onClick={silentEmptyFnc}
         id={formID}
-        onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-          onChange(event?.target?.value);
-        }}
+        onChange={
+          !isNullOrUndefined(onChange)
+            ? (event: ChangeEvent<HTMLInputElement>): void => {
+                nullthrows(onChange)(event?.target?.value);
+              }
+            : undefined
+        }
         placeholder={placeholder}
         required={required}
         size="small"

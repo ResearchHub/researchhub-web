@@ -1,4 +1,4 @@
-import { columnsFormat } from "../utils/referenceTableFormat";
+import { columnsFormat } from "./utils/referenceTableFormat";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { DataGrid } from "@mui/x-data-grid";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
@@ -6,15 +6,16 @@ import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserRefer
 import {
   formatReferenceRowData,
   ReferenceTableRowDataType,
-} from "../utils/formatReferenceRowData";
+} from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
-import { useReferenceTabContext } from "../context/ReferenceItemDrawerContext";
+import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 
 function useEffectFetchReferenceCitations({
-  onSuccess,
   onError,
+  onSuccess,
+  referencesFetchTime,
   setIsLoading,
 }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
@@ -25,11 +26,11 @@ function useEffectFetchReferenceCitations({
       setIsLoading(true);
       fetchCurrentUserReferenceCitations({ onSuccess, onError });
     }
-  }, [fetchCurrentUserReferenceCitations, user?.id]);
+  }, [fetchCurrentUserReferenceCitations, user?.id, referencesFetchTime]);
 }
 
 export default function ReferencesTable() {
-  const { setIsDrawerOpen, setReferenceItemDrawerData } =
+  const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [referenceTableRowData, setReferenceTableRowData] = useState<
@@ -43,6 +44,7 @@ export default function ReferencesTable() {
       setIsLoading(false);
     },
     onError: emptyFncWithMsg,
+    referencesFetchTime,
   });
 
   const formattedReferenceRows = !isLoading
@@ -80,7 +82,7 @@ export default function ReferencesTable() {
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
       />
-      <div
+      {/* <div
         style={{
           width: "100%",
           background: "pink",
@@ -89,7 +91,7 @@ export default function ReferencesTable() {
         }}
       >
         {"Infinite pagination!!!!!"}
-      </div>
+      </div> */}
     </div>
   );
 }

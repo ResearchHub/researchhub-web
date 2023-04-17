@@ -1,6 +1,8 @@
 export const DATA_GRID_STYLE_OVERRIDE = {
   border: "1px solid #E9EAEF",
-
+  "&	.MuiDataGrid-overlayWrapper": {
+    zIndex: 2,
+  },
   "& .MuiDataGrid-columnHeaders": {
     // border: "1px solid #E9EAEF",
     background: "#FAFAFC",

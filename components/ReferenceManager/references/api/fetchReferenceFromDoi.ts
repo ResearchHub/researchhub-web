@@ -3,23 +3,27 @@ import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
 
 type Args = {
+  doi: string;
   onError: (error: Error) => void;
   onSuccess: (response: any) => void;
-  payload: any;
 };
 
-export const updateReferenceCitation = ({
+export const fetchReferenceFromDoi = ({
+  doi,
   onError,
   onSuccess,
-  payload,
 }: Args): void => {
-  const formattedPayload = payload;
   fetch(
-    buildApiUri({ apiPath: `citation_entry/${payload?.citation_id}` }),
-    API.PUT_CONFIG(formattedPayload)
+    buildApiUri({
+      apiPath: "citation_entry/doi_search",
+      queryString: `?doi=${doi}`,
+    }),
+    API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((result: any): void => onSuccess(result))
+    .then((result: any): void => {
+      onSuccess(result);
+    })
     .catch(onError);
 };

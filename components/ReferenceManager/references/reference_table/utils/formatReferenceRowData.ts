@@ -30,8 +30,8 @@ function referenceFormatSwitchMap(datum: any): ReferenceTableRowDataType {
     case "ARTWORK":
       return formatArtwork(datum);
     case "MANUSCRIPT":
-      return formatManuscript(datum);
     default:
+      return formatManuscript(datum);
       throw new Error(
         `formatReferenceRowData: unable to find appropriate citation_type - ${citation_type}`
       );
@@ -41,20 +41,15 @@ function referenceFormatSwitchMap(datum: any): ReferenceTableRowDataType {
 function formatArtwork(datum: any): ReferenceTableRowDataType {
   const {
     citation_type,
-    fields: {
-      access_date,
-      creators: { artist },
-      date,
-      title,
-    },
+    fields: { access_date, creators, date, title },
     id,
   } = datum ?? { fields: {}, creators: {} };
-  const lastAuthor = artist[artist.length - 1];
+  const lastAuthor = creators[creators.length - 1];
   return {
     id,
     citation_type,
     title,
-    authors: formatAuthors(artist),
+    authors: formatAuthors(creators),
     last_author: `${lastAuthor?.first_name ?? ""} ${
       lastAuthor?.last_name ?? ""
     }`,
@@ -67,20 +62,15 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
 function formatManuscript(datum: any): ReferenceTableRowDataType {
   const {
     citation_type,
-    fields: {
-      access_date,
-      creators: { author },
-      date,
-      title,
-    },
+    fields: { access_date, creators, date, title },
     id,
   } = datum ?? { fields: {}, creators: {} };
-  const lastAuthor = author[author.length - 1];
+  const lastAuthor = creators[creators.length - 1];
   return {
     id,
     citation_type,
     title,
-    authors: formatAuthors(author),
+    authors: formatAuthors(creators),
     last_author: `${lastAuthor?.first_name ?? ""} ${
       lastAuthor?.last_name ?? ""
     }`,

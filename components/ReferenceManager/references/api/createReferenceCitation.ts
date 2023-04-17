@@ -8,16 +8,12 @@ type Args = {
   payload: any;
 };
 
-export const updateReferenceCitation = ({
+export const createReferenceCitation = ({
   onError,
   onSuccess,
   payload,
 }: Args): void => {
-  const formattedPayload = payload;
-  fetch(
-    buildApiUri({ apiPath: `citation_entry/${payload?.citation_id}` }),
-    API.PUT_CONFIG(formattedPayload)
-  )
+  fetch(buildApiUri({ apiPath: `citation_entry` }), API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((result: any): void => onSuccess(result))

@@ -5,40 +5,48 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactElement } from "react";
+import { Fragment, useState, ReactNode } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
-import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
-import DropdownMenu from "../menu/DropdownMenu";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 
 interface Props {}
 
-export default function ReferencesContainer({}: Props): ReactElement {
+export default function ReferencesContainer({}: Props): ReactNode {
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
+  const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
+    useState<boolean>(false);
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
+
   if (!userAllowed) {
     return null;
   } else {
     return (
       <Fragment>
+        <ReferenceManualUploadDrawer
+          drawerProps={{
+            isDrawerOpen: isManualUploadDrawerOpen,
+            setIsDrawerOpen: setIsManualUploadDrawerOpen,
+          }}
+        />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex">
           <BasicTogglableNavbarLeft
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
+            setIsManualUploadDrawerOpen={setIsManualUploadDrawerOpen}
             // theme={theme}
           />
           <Box
@@ -66,32 +74,6 @@ export default function ReferencesContainer({}: Props): ReactElement {
                   marginBottom: "20px",
                 }}
               >
-                <DropdownMenu
-                  menuItemProps={[
-                    { itemLabel: "File(s) from computer", onClick: () => {} },
-                    { itemLabel: "Import library", onClick: () => {} },
-                  ]}
-                  menuLabel={
-                    <div
-                      style={{
-                        alignItems: "center",
-                        color: "rgba(170, 168, 180, 1)",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: 68,
-                        height: 26,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <TableChartOutlinedIcon
-                        fontSize="medium"
-                        sx={{ color: "#7C7989" }}
-                      />
-                      <ExpandMore fontSize="medium" sx={{ color: "#AAA8B4" }} />
-                    </div>
-                  }
-                  size="medium"
-                />
                 <div
                   className="ReferenceContainerSearchFieldWrap"
                   style={{

@@ -10,10 +10,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import { toTitleCase } from "~/config/utils/string";
+import {
+  resolveFieldKeyLabels,
+  sortSchemaFieldKeys,
+} from "../utils/resolveFieldKeyLabels";
+import { snakeCaseToNormalCase, toTitleCase } from "~/config/utils/string";
 import { Typography } from "@mui/material";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
-import { useReferenceTabContext } from "../context/ReferenceItemDrawerContext";
+import { useReferenceTabContext } from "./context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -25,7 +29,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
-import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
+import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
 
 type Props = {};
@@ -51,12 +55,17 @@ const ReferenceItemDrawerButton = ({
 };
 
 export default function ReferenceItemDrawer({}: Props): ReactElement {
-  const { isDrawerOpen, referenceItemDrawerData, setIsDrawerOpen } =
-    useReferenceTabContext();
-
+  const {
+    isDrawerOpen,
+    referenceItemDrawerData,
+    setIsDrawerOpen,
+    setReferencesFetchTime,
+  } = useReferenceTabContext();
+  const { citation_type, id: citation_id } = referenceItemDrawerData ?? {};
   const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemDrawerData?.fields ?? {}
   );
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const requiredFieldsSet = useMemo(
     // NOTE: calvinhlee - this needs to be improved from BE
@@ -67,42 +76,46 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     if (isEmpty(referenceItemDrawerData?.id) || !isDrawerOpen) {
       setLocalReferenceFields({});
     } else {
-      setLocalReferenceFields(referenceItemDrawerData?.fields ?? {});
+      setLocalReferenceFields(
+        {
+          ...referenceItemDrawerData?.fields,
+          creators: referenceItemDrawerData?.fields?.creators
+            .map((creator): string => {
+              return `${creator.first_name} ${creator.last_name}`;
+            })
+            .join(", "),
+        } ?? {}
+      );
     }
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
 
-  const tabInputItems = isDrawerOpen
-    ? filterNull(
-        // TODO: calvinhlee - we need better ways to sort these fields
-        Object.keys(localReferenceFields)
-          .sort()
-          .map(
-            (
-              field_key
-            ): ReactElement<typeof ReferenceItemFieldInput> | null => {
-              const label = field_key,
-                value = localReferenceFields[field_key],
-                isRequired = requiredFieldsSet.has(field_key);
-              return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
-                <ReferenceItemFieldInput
-                  formID={field_key}
-                  key={`reference-item-tab-input-${field_key}`}
-                  label={label}
-                  onChange={(newValue: string): void => {
-                    setLocalReferenceFields({
-                      ...localReferenceFields,
-                      [field_key]: newValue,
-                    });
-                  }}
-                  placeholder={label}
-                  required={isRequired}
-                  value={value}
-                />
-              );
-            }
-          )
-      )
-    : [];
+  const tabInputItems = filterNull(
+    // TODO: calvinhlee - we need better ways to sort these fields
+    sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
+      (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
+        let label = resolveFieldKeyLabels(field_key),
+          value = localReferenceFields[field_key],
+          isRequired = false;
+        // isRequired = requiredFieldsSet.has(field_key);
+        return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
+          <ReferenceItemFieldInput
+            formID={field_key}
+            key={`reference-item-tab-input-${field_key}`}
+            label={label}
+            onChange={(newValue: string): void => {
+              setLocalReferenceFields({
+                ...localReferenceFields,
+                [field_key]: newValue,
+              });
+            }}
+            placeholder={label}
+            required={isRequired}
+            value={value}
+          />
+        );
+      }
+    )
+  );
 
   return (
     <Drawer
@@ -161,25 +174,50 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         </Stack>
         <Stack direction="row" alignItems="center" spacing={1} mb="24px">
           <Typography variant="h5" fontWeight="bold">
-            {toTitleCase(referenceItemDrawerData?.citation_type ?? "")}
+            {toTitleCase(snakeCaseToNormalCase(citation_type ?? ""))}
           </Typography>
         </Stack>
-
         {tabInputItems}
         <Box alignItems="center" display="flex" justifyContent="center">
           <PrimaryButton
             margin="0 0 32px 0"
+            disabled={isSubmitting}
             onClick={(event: SyntheticEvent): void => {
               event.preventDefault();
+              setIsSubmitting(true);
               updateReferenceCitation({
-                payload: localReferenceFields,
-                onSuccess: emptyFncWithMsg,
+                payload: {
+                  // TODO: calvinhlee - create utily functions to format these
+                  fields: {
+                    ...localReferenceFields,
+                    creators:
+                      localReferenceFields.creators
+                        ?.split(", ")
+                        ?.map((creatorName) => {
+                          const splittedName = creatorName.split(" ");
+                          return {
+                            first_name: splittedName[0],
+                            last_name: splittedName.slice(1).join(" "),
+                          };
+                        }) ?? [],
+                  },
+                  citation_id,
+                  citation_type,
+                  organization: 1,
+                },
+                onSuccess: () => {
+                  setReferencesFetchTime(Date.now());
+                  setTimeout(() => {
+                    setIsSubmitting(false);
+                    setIsDrawerOpen(false);
+                  }, 1000);
+                },
                 onError: emptyFncWithMsg,
               });
             }}
             size="large"
           >
-            {"Update"}
+            {isSubmitting ? "Updating..." : "Update"}
           </PrimaryButton>
         </Box>
       </Box>
