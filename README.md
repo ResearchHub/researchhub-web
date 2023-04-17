@@ -19,13 +19,13 @@ We believe that by empowering scientists to independently fund, create, and publ
 
 ## Important Links 👀
 
-💡 Got an idea or request? [Create a discussion on Github](https://github.com/ResearchHub/researchhub-web-internal/discussions/categories/ideas-and-requests).  
-❓ Got a question? [Ask it here](https://github.com/ResearchHub/researchhub-web-internal/discussions/categories/q-a)  
-🐛 Found a bug? [Report it here](https://github.com/ResearchHub/researchhub-web-internal/discussions/categories/bugs)  
-💰 Earn ResearchCoin (RSC) by [completing bounties](https://github.com/ResearchHub/researchhub-web/issues?q=is%3Aopen+is%3Aissue+label%3Abounty)  
-🙌 Want to work with us? [View our open positions](https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049)  
-➕ Want to contribute to this project? [Introduce yourself in our Discord community](https://discord.gg/ZcCYgcnUp5)  
-📰 Read the [ResearchCoin White Paper](https://www.researchhub.com/paper/819400/the-researchcoin-whitepaper)
+
+💡 Got an idea or request? [Open issue on Github](https://github.com/ResearchHub/researchhub-web/issues).  
+🐛 Found a bug? [Report it here](https://github.com/ResearchHub/researchhub-web/issues).   
+➕ Want to contribute to this project? [Introduce yourself in our Discord community](https://discord.gg/ZcCYgcnUp5)    
+🔨 [See what we are working on](https://github.com/orgs/ResearchHub/projects/2)   
+📰 Read the [ResearchCoin White Paper](https://www.researchhub.com/paper/819400/the-researchcoin-whitepaper)  
+
 
 ## Setup
 
