@@ -1,8 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFontCase, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { faFunction } from "@fortawesome/pro-solid-svg-icons";
+import Delta from 'quill-delta/lib/delta';
+
 
 type Args = {
   editorId: string;
@@ -27,6 +29,7 @@ const CommentEditorToolbar = ({ editorId,  quill }: Args) => {
       const text = quill.getText(range.index, range.length);
       quill.deleteText(range.index, range.length);
       quill.insertEmbed(range.index, 'formula', text);
+      // quill.insertText(range.index + range.length + 1 , ' ');
     }
     else {
       // If no text is selected, display formula tooltip
@@ -38,6 +41,37 @@ const CommentEditorToolbar = ({ editorId,  quill }: Args) => {
       }
     }
   }
+
+
+//   useEffect(() => {
+
+//     if (!quill) return;
+// // Custom keyboard binding for the Space key
+// quill.keyboard.addBinding(
+//   {
+//     key: 32, // Space key
+//     handler: (range, context) => {
+//       // Get the content of Quill editor before the current cursor position
+//       const precedingContent = quill.getContents(0, range.index);
+
+//       // Check if the last inserted content is a formula
+//       const isFormula = precedingContent.ops.some(op => op.insert && op.insert.formula);
+
+//       if (isFormula) {
+//         // If the preceding content is a formula, insert a regular space instead of a non-breaking space
+//         quill.deleteText(range.index - 1, 1);
+//         quill.insertText(range.index - 1, ' ');
+//         quill.setSelection(range.index, 'silent');
+//         return false;
+//       }
+//       // If not a formula, let the default Space behavior continue
+//       return true;
+//     },
+//   },
+// );
+
+
+//   }, [quill])
 
   return (
     // Please note that the `ql-*` classnames are reserved names in Quill

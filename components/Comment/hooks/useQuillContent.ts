@@ -3,7 +3,6 @@ import Quill from "quill";
 import Delta from 'quill-delta/lib/delta';
 import { isEmpty } from "~/config/utils/nullchecks";
 import debounce from "lodash/debounce";
-import { marked } from 'marked';
 import { DeltaOperation } from 'quill-delta';
 
 type Args = {
@@ -69,14 +68,97 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
 
 
   useEffect(() => {
+
+    if (!quill) return;
+
+
+
+
+    
+    quill.keyboard.addBinding(
+      {
+        key: ' ',
+        handler: (range, context) => {
+
+              // Get the blot before the space
+              const editorLength = quill.getLength();
+              const [blotBefore, offsetBefore] = quill.getLeaf(editorLength - 2);
+              const currentPosition = quill.getSelection().index;
+
+              console.log(blotBefore)
+              if (blotBefore.constructor.name === "FormulaBlot") {
+                console.log('111')
+                quill.insertText(currentPosition, ' ');
+                return true;
+              }
+
+              return true
+
+
+
+        },
+      },
+    );
+
+  }, [quill])
+  
+
+  useEffect(() => {
     
     if (quill) {
       quill.on("text-change", (delta, oldDelta, source) => {
         if (source === "user") {
           const nextContent: Delta = quill.getContents();
           const lastDelta: DeltaOperation = nextContent.ops[nextContent.ops.length-1];
+
+
+
+
+          // const currentPosition = quill.getSelection().index;
+          // const deltaBeforeLast = nextContent.ops[nextContent.ops.length-2]
+
+          // if (deltaBeforeLast.insert.formula) {
+          //   console.log('formula')
+          //   console.log('lastDelta', lastDelta)
+          // }
+
+          // console.log('deltaBeforeLast' , deltaBeforeLast)
           
-          
+
+
+
+          // // Get the content of Quill editor before the current cursor position
+          // const range = quill.getSelection()
+          // const precedingContent = quill.getContents(0, range!.index);
+    
+          // console.log('precedingContent', precedingContent);
+
+
+          // // Check if the last inserted content is a formula
+          // const isFormula = precedingContent.ops.some(op => op.insert && op.insert.formula);
+    
+          // if (isFormula) {
+          //   // If the preceding content is a formula, insert a space and update the cursor position
+          //   console.log('it is a formula', range.index)
+
+
+
+          //   quill.insertText(range.index, '\u200B');
+            
+          //   // quill.setSelection(range.index + 1, 'silent');
+          //   return false;
+          // }
+
+
+
+
+
+
+
+
+
+
+
           if (typeof(lastDelta.insert) === "string") {
             const currentString = lastDelta.insert
             const codeBlockRegex = /```(?:\r?\n|\r)?$/;
@@ -85,7 +167,6 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
 
 
             
-            console.log('currentString', currentString)
             let regexMatch;
             if ((regexMatch = currentString.match(codeBlockRegex))) {
               // 1. Create the Delta for the code block without tick marks

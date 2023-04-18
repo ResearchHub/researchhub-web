@@ -110,10 +110,12 @@ export const useQuill = (
 
 
       if (!options.readOnly) {
+
+        
         const MagicUrl = require("quill-magic-url").default;
         obj.Quill.register("modules/magicUrl", MagicUrl);
         obj.Quill.register("modules/embedVideo", EmbedVideo);
-
+        
         obj.Quill.register(QuillPeerReviewRatingBlock);
 
         const icons = obj.Quill.import("ui/icons");
