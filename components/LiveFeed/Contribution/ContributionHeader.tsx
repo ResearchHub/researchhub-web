@@ -34,7 +34,6 @@ const ContributionHeader = ({ entry }: Args) => {
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
-console.log('entry', entry)
 
   const badge = (
     <ContentBadge

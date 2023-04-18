@@ -167,9 +167,7 @@ export const parseContribution = (raw: any): Contribution => {
     };
 
     if (raw.content_type.name === "rhcommentmodel") {
-      console.log('comment1', raw)
       mapped["item"] = parseCommentContributionItem(raw);
-      console.log('comment2', mapped["item"])
     } else if (raw.content_type.name === "paper") {
       mapped["item"] = parsePaperContributionItem(raw);
     } else if (
