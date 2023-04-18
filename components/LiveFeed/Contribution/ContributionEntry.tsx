@@ -34,7 +34,7 @@ const ContributionEntry = ({
 }: Args) => {
   const { contentType } = entry;
   let { item } = entry;
-  let showActions = false;
+  let showActions = true;
 
   let title: string | ReactNode;
   let body: string | ReactNode;
@@ -171,7 +171,7 @@ const ContributionEntry = ({
               </div>
             )}
           </div>
-          {/* {showActions && (
+          {actions.length > 0 && (
             <div className={css(styles.actions)}>
               {actions.map(
                 (action, idx) =>
@@ -187,7 +187,7 @@ const ContributionEntry = ({
                   )
               )}
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </>
