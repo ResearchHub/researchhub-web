@@ -184,6 +184,9 @@ function FlaggedContentDashboard({
         const incomingResults = response.results.map((r) =>
           parseContribution(r)
         );
+
+        console.log('incomingResults', incomingResults)
+
         if (url) {
           setResults([...results, ...incomingResults]);
         } else {

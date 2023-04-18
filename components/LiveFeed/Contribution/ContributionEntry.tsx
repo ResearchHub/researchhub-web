@@ -153,7 +153,7 @@ const ContributionEntry = ({
     console.warn("[Contribution] Could not render", entry);
     return null;
   }
-
+  
   return (
     <>
       <div className={css(styles.entryContent)}>

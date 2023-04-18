@@ -34,6 +34,7 @@ const ContributionHeader = ({ entry }: Args) => {
   let contentBadgeLabel: ReactNode | string;
   let actionLabel = <>{` posted `}</>;
   let unifiedDocument: UnifiedDocument;
+console.log('entry', entry)
 
   const badge = (
     <ContentBadge
@@ -193,7 +194,15 @@ const ContributionHeader = ({ entry }: Args) => {
             {/* @ts-ignore */}
             {unifiedDocument && (
               <span className={css(styles.unifiedDocument)}>
+              <ALink
+                overrideStyle={styles.link}
+                href={getUrlToUniDoc(unifiedDocument)}
+              >
                 {truncateText(unifiedDocument?.document?.title, 100)}
+              </ALink>
+
+
+                
               </span>
             )}
           </div>

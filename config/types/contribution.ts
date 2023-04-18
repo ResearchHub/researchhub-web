@@ -167,7 +167,9 @@ export const parseContribution = (raw: any): Contribution => {
     };
 
     if (raw.content_type.name === "rhcommentmodel") {
+      console.log('comment1', raw)
       mapped["item"] = parseCommentContributionItem(raw);
+      console.log('comment2', mapped["item"])
     } else if (raw.content_type.name === "paper") {
       mapped["item"] = parsePaperContributionItem(raw);
     } else if (
@@ -220,6 +222,7 @@ export const parseContribution = (raw: any): Contribution => {
 export const parseCommentContributionItem = (
   raw: any
 ): CommentContributionItem => {
+
   const mapped = {
     content: raw.item.comment_content_json,
     createdBy: parseUser(raw.created_by || raw.item.created_by),
