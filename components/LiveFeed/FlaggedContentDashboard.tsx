@@ -8,7 +8,7 @@ import fetchFlaggedContributions, {
   verdictOpts,
 } from "./api/fetchFlaggedContributionsAPI";
 import { connect } from "react-redux";
-import { parseContribution } from "~/config/types/contribution";
+import { Contribution, parseContribution } from "~/config/types/contribution";
 import { css, StyleSheet } from "aphrodite";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
 import { ID, KeyOf } from "~/config/types/root_types";
@@ -184,6 +184,7 @@ function FlaggedContentDashboard({
         const incomingResults = response.results.map((r) =>
           parseContribution(r)
         );
+
         if (url) {
           setResults([...results, ...incomingResults]);
         } else {
@@ -211,7 +212,7 @@ function FlaggedContentDashboard({
               modalHeaderText="Flag and Remove"
               flagIconOverride={styles.flagIcon}
               iconOverride={<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>}
-              defaultReason={r.reasonChoice}
+              defaultReason={r.reason}
               successMsgText="Flagged Content removed"
               errorMsgText="Failed to remove flagged content"
               subHeaderText="I am removing this content because of:"
@@ -382,7 +383,7 @@ function FlaggedContentDashboard({
                     &nbsp;flagged this content as{" "}
                     <span className={css(styles.reason)}>
                       {/* @ts-ignore */}
-                      {FLAG_REASON[r.reasonChoice] ??
+                      {FLAG_REASON[r.reason] ??
                         FLAG_REASON["NOT_SPECIFIED"]}
                     </span>
                   </>
@@ -491,9 +492,11 @@ function FlaggedContentDashboard({
                 )}
                 onClick={() => {
                   if (window.confirm("Remove all selected content?")) {
+
                     removeFlaggedContent({
                       apiParams: {
                         flagIds: selectedResultIds,
+                        
                       },
                       onSuccess: () => {
                         setNumNavInteractions(

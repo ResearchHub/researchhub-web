@@ -1358,3 +1358,10 @@ export const buildQueryString = (queryObj) => {
     ""
   );
 };
+
+export const buildQuerystringListParam = ({ delimiter, list = [] }) => {
+  const regex = new RegExp(delimiter + "$");
+  return list
+    .reduce((str, cur) => str + "model=" + cur + delimiter, "")
+    .replace(regex, "");
+};

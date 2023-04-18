@@ -34,6 +34,7 @@ export default function fetchFlaggedContributions({
 }: Args) {
   const url = pageUrl ||  API.FLAGS({ ...filters })
 
+
   return fetch(
     url,
     API.GET_CONFIG()

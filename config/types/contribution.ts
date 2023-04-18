@@ -220,6 +220,7 @@ export const parseContribution = (raw: any): Contribution => {
 export const parseCommentContributionItem = (
   raw: any
 ): CommentContributionItem => {
+
   const mapped = {
     content: raw.item.comment_content_json,
     createdBy: parseUser(raw.created_by || raw.item.created_by),

@@ -34,7 +34,7 @@ const ContributionEntry = ({
 }: Args) => {
   const { contentType } = entry;
   let { item } = entry;
-  let showActions = false;
+  let showActions = true;
 
   let title: string | ReactNode;
   let body: string | ReactNode;
@@ -153,7 +153,7 @@ const ContributionEntry = ({
     console.warn("[Contribution] Could not render", entry);
     return null;
   }
-
+  
   return (
     <>
       <div className={css(styles.entryContent)}>
@@ -171,7 +171,7 @@ const ContributionEntry = ({
               </div>
             )}
           </div>
-          {/* {showActions && (
+          {actions.length > 0 && (
             <div className={css(styles.actions)}>
               {actions.map(
                 (action, idx) =>
@@ -187,7 +187,7 @@ const ContributionEntry = ({
                   )
               )}
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </>

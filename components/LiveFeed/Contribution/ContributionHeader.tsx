@@ -193,7 +193,15 @@ const ContributionHeader = ({ entry }: Args) => {
             {/* @ts-ignore */}
             {unifiedDocument && (
               <span className={css(styles.unifiedDocument)}>
+              <ALink
+                overrideStyle={styles.link}
+                href={getUrlToUniDoc(unifiedDocument)}
+              >
                 {truncateText(unifiedDocument?.document?.title, 100)}
+              </ALink>
+
+
+                
               </span>
             )}
           </div>
