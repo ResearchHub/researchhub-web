@@ -1,9 +1,13 @@
 import API, { buildQuerystringListParam } from "~/config/api";
 import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
-import { ID, UnifiedDocument, User, parseUnifiedDocument } from "~/config/types/root_types";
+import {
+  ID,
+  UnifiedDocument,
+  User,
+  parseUnifiedDocument,
+} from "~/config/types/root_types";
 import { getPlainText } from "~/components/Comment/lib/quill";
-
 
 type Args = {
   onError: (error: Error) => void;
@@ -24,11 +28,17 @@ export type SimpleBounty = {
   unifiedDocument: UnifiedDocument;
 };
 
-export const fetchOpenBounties = ({ onError, onSuccess, model, page }: Args): void => {
+export const fetchOpenBounties = ({
+  onError,
+  onSuccess,
+  model,
+  page,
+}: Args): void => {
   fetch(
     buildApiUri({
       apiPath: "bounty/get_bounties",
-      queryString: "?status=OPEN" + (model ? `&item_content_type__model=${model}` : ""),
+      queryString:
+        "?status=OPEN" + (model ? `&item_content_type__model=${model}` : ""),
     }),
     API.GET_CONFIG()
   )
@@ -44,7 +54,7 @@ export const fetchOpenBounties = ({ onError, onSuccess, model, page }: Args): vo
             expiration_date,
             id,
             item,
-            unified_document
+            unified_document,
           } = bounty ?? {};
 
           return {
@@ -54,7 +64,9 @@ export const fetchOpenBounties = ({ onError, onSuccess, model, page }: Args): vo
             expiration_date,
             id,
             item,
-            plainText: getPlainText({ quillOps: item!.comment_content_json!.ops }),
+            plainText: getPlainText({
+              quillOps: item!.comment_content_json!.ops,
+            }),
             unifiedDocument: parseUnifiedDocument(unified_document),
           };
         })
