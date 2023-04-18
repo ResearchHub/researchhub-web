@@ -79,26 +79,64 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
       {
         key: ' ',
         handler: (range, context) => {
-
-              // Get the blot before the space
-              const editorLength = quill.getLength();
-              const [blotBefore, offsetBefore] = quill.getLeaf(editorLength - 2);
-              const currentPosition = quill.getSelection().index;
-
-              console.log(blotBefore)
-              if (blotBefore.constructor.name === "FormulaBlot") {
-                console.log('111')
-                quill.insertText(currentPosition, ' ');
-                return true;
-              }
-
-              return true
-
-
-
+          setTimeout(() => quill.setSelection(quill.getSelection().index + 10, 0), 0)
+          return true
         },
       },
     );
+
+    quill.keyboard.addBinding(
+      {
+        key: 39,
+        handler: (range, context) => {
+          const index = quill.getSelection().index;
+        // Check if the cursor is at the end of the editor
+        if (quill.getLength() - 1 === index) {
+          quill.insertText(index, ' ', "user");
+          console.log('end')
+          setTimeout(() => quill.setSelection(quill.getSelection().index + 10, 0), 0)
+          return true;
+
+          const content: Delta = quill.getContents();
+          const lastDelta: DeltaOperation = content.ops[content.ops.length-1];
+
+          // 4. Set the cursor position to the end of the editor
+          // quill.setSelection(quill.getLength() + 2, 0);
+
+          // 5. Focus the editor
+          quill.focus();
+
+          // if (lastDelta.insert === '\n') {
+          //   console.log('1')
+          //   // Move the cursor to the new position
+          //   quill.setSelection(range.index + 1, "silent");
+          // }
+          
+          
+          // Insert a space
+          return false;
+        }
+        return true
+        },
+      },
+    );    
+
+   
+    // quill.keyboard.bindings[39] = [{
+    //   key: 39,
+    //   handler: (range, context) => {
+    //     // Check if the cursor is at the end of the editor
+    //     if (quill.getLength() - 1 === range.index) {
+    //       // Insert a space
+    //       quill.insertText(range.index, ' ', "user");
+    //       // Move the cursor to the new position
+    //       quill.setSelection(range.index + 1, "silent");
+    //       return false;
+    //     }
+    //     return true;
+    //   }
+    // }];  
+
 
   }, [quill])
   
