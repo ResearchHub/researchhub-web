@@ -37,6 +37,7 @@ const useEffectFetchOpenBounties = ({
           setPaginationInfo({ isFetching: false, page });
           setOpenBounties(bounties);
         },
+        model: "rhcommentmodel",
         onError: emptyFncWithMsg,
       });
     }
@@ -76,40 +77,22 @@ export default function HomeSidebarBountiesSection({
       expiration_date,
       id,
       item,
+      plainText,
+      unifiedDocument,
     }: SimpleBounty): ReactElement<typeof BountiesSidebarItem> => {
-      // TODO: calvinhlee - Change backend payload format to resolve docType
-      const {
-        id: relatedDocID,
-        title,
-        slug,
-      } = (item?.documents ?? [])[0] ?? {};
-      const { document_type: itemDocType, unified_document } = item ?? {};
-
-      const documentType = itemDocType
-        ? getFEUnifiedDocType(itemDocType)
-        : getFEUnifiedDocType(unified_document?.document_type);
-      const resolvedRelatedDocID =
-        relatedDocID ??
-        unified_document?.documents?.id ??
-        (unified_document?.documents ?? [])[0]?.id;
-      const resolvedSlug =
-        slug ??
-        unified_document?.documents?.slug ??
-        (unified_document?.documents ?? [])[0]?.slug;
-
       return (
         <BountiesSidebarItem
           bountyAmount={formatBountyAmount({ amount })}
           rawBountyAmount={amount}
-          bountyContentSnippet={title || item?.plain_text}
+          bountyContentSnippet={plainText}
           createdBy={parseUser(created_by)}
           createdByAuthor={created_by?.author_profile}
-          documentType={documentType}
+          documentType={unifiedDocument?.documentType}
           expirationDate={expiration_date}
           isCommentBounty={Boolean(contentTypeName)}
-          key={`bounty-${id}-related-doc-${relatedDocID}`}
-          relatedDocID={resolvedRelatedDocID}
-          slug={resolvedSlug}
+          key={`bounty-${id}-related-doc-${unifiedDocument?.document?.id}`}
+          relatedDocID={unifiedDocument?.document?.id}
+          slug={unifiedDocument?.document?.slug}
         />
       );
     }

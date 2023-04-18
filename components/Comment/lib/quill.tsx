@@ -252,3 +252,21 @@ export const quillDeltaToHtml = ({ ops }) => {
   
   return converter.convert();
 }
+
+export function getPlainText({ quillOps = [] }) {
+
+  let plainText = "";
+  quillOps.forEach((op:any) => {
+    if (typeof op.insert === 'string') {
+      plainText += op.insert;
+    } else if (op.insert && !op.insert.image) {
+      Object.keys(op.insert).forEach(key => {
+        if (key !== 'image') {
+          plainText += op.insert[key];
+        }
+      });
+    }
+  });
+
+  return plainText;
+}
