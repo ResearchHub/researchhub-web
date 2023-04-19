@@ -33,6 +33,7 @@ import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { toFormData } from "~/config/utils/toFormData";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 37;
@@ -128,6 +129,14 @@ export default function ReferenceManualUploadDrawer({
     value: refType,
   }));
 
+  const resetEverything = (error?: Error) => {
+    emptyFncWithMsg(error);
+    setIsSubmitting(false);
+    setReferencesFetchTime(Date.now());
+    // setIsDrawerOpen(false);
+    setReferenceSchemaValueSet(DEFAULT_REF_SCHEMA_SET);
+  };
+
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -143,49 +152,25 @@ export default function ReferenceManualUploadDrawer({
           };
         }) ?? [];
 
-    const payload = {
+    const payload = toFormData({
       fields: {
         ...referenceSchemaValueSet.schema,
         creators: formattedCreators,
       },
       citation_type: selectedReferenceType,
       organization: 1,
-    };
-    // Need to prep attachment as Base64 for Django support
+    });
+
     const attachment = referenceSchemaValueSet.attachment;
     if (!isEmpty(attachment)) {
-      const reader = new FileReader();
-      reader.readAsBinaryString(nullthrows(attachment));
-      reader.onload = () => {
-        const attachmentStr64 = reader.result;
-        // @ts-ignore unnecessary type checking
-        payload.attachment_src = attachmentStr64;
-        // @ts-ignore unnecessary type checking
-        payload.attachment_name = attachment?.name ?? "";
-
-        createReferenceCitation({
-          onError: emptyFncWithMsg,
-          onSuccess: () => {
-            setIsSubmitting(false);
-            setReferencesFetchTime(Date.now());
-            setIsDrawerOpen(false);
-            setReferenceSchemaValueSet(DEFAULT_REF_SCHEMA_SET);
-          },
-          payload,
-        });
-      };
-    } else {
-      createReferenceCitation({
-        onError: emptyFncWithMsg,
-        onSuccess: () => {
-          setIsSubmitting(false);
-          setReferencesFetchTime(Date.now());
-          setIsDrawerOpen(false);
-          setReferenceSchemaValueSet(DEFAULT_REF_SCHEMA_SET);
-        },
-        payload,
-      });
+      // @ts-ignore unnecessary type checking
+      payload.append("attachment", attachment);
     }
+    createReferenceCitation({
+      onError: resetEverything,
+      onSuccess: resetEverything,
+      payload,
+    });
   };
 
   const formattedSchemaInputs = [
