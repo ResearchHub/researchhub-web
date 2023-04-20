@@ -41,7 +41,7 @@ export default function ReferencesContainer({}: Props): ReactNode {
           }}
         />
         <ReferenceItemDrawer />
-        <Box flexDirection="row" display="flex">
+        <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
@@ -55,6 +55,8 @@ export default function ReferencesContainer({}: Props): ReactNode {
               flexDirection: "column",
               padding: "32px 32px",
               width: "100%",
+              overflow: "auto",
+              flex: 1,
             }}
           >
             <div style={{ marginBottom: 32 }}>

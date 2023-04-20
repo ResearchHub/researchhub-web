@@ -178,7 +178,7 @@ const routes = (BASE_URL) => {
     FLAG_COUNT: () => {
       return BASE_URL + "audit/flagged_count/";
     },
-    ORGANIZATION: ({ userId, orgId, orgSlug }) => {
+    ORGANIZATION: ({ userId, orgId, orgSlug, route }) => {
       let url = `${BASE_URL}organization/`;
       let restId = null;
       if (userId) {
@@ -193,7 +193,7 @@ const routes = (BASE_URL) => {
         },
         rest: {
           id: restId,
-          route: userId ? "get_user_organizations" : null,
+          route: route ? route : userId ? "get_user_organizations" : null,
         },
       };
 

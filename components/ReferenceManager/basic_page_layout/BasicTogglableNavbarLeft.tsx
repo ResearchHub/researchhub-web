@@ -22,6 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
+import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -91,108 +92,54 @@ export default function BasicTogglableNavbarLeft({
       width={navWidth}
       sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
     >
-      <Box
-        className="LeftNavbarUserSection"
-        sx={{ background: "#FAFAFC", padding: "16px 16px" }}
-      >
+      <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
         <Box
           sx={{
             alignItems: "center",
             color: "rgba(170, 168, 180, 1)",
             cursor: "pointer",
-            paddingBottom: "16px",
-            marginBottom: "16px",
             display: "flex",
             borderBottom: "1px solid #E9EAEF",
             flexDirection: "row",
             justifyContent: "space-between",
           }}
         >
-          {isLoadingUser ? (
-            <Box sx={{ width: "100%", boxSizing: "border-box" }}>
-              <TextRow
-                color={colors.LIGHT_GREY_BORDER}
-                style={{
-                  borderRadius: 4,
-                  height: 28,
-                  margin: "0 auto",
-                  width: "95%",
-                }}
-              />
-            </Box>
-          ) : (
-            <Fragment>
-              <Box
-                sx={{
-                  display: "flex",
-                  color: "rgba(36, 31, 58, 1)",
-                  flexDirection: "row",
-                }}
-              >
-                {profileImage ? (
-                  <Image
-                    src={profileImage ?? ""}
-                    width={24}
-                    height={24}
-                    style={{ borderRadius: "50%" }}
-                    alt={""}
-                  />
-                ) : (
-                  <AccountCircleOutlinedIcon fontSize="medium" />
-                )}
-                {isOpen && (
-                  <Typography
-                    component="div"
-                    fontSize={16}
-                    fontWeight={500}
-                    color="#7C7989"
-                    noWrap
-                    variant="h6"
-                    letterSpacing={"1.1px"}
-                    ml="12px"
-                  >
-                    {currentUserName}
-                  </Typography>
-                )}
-              </Box>
-              {isOpen && (
-                <ExpandMore fontSize="medium" sx={{ color: "#7C7989" }} />
-              )}
-            </Fragment>
-          )}
+          <OrganizationPopover isReferenceManager={true} />
         </Box>
-        <Box
-          sx={{
-            alignItems: "center",
-            border: "1px solid #3971FF",
-            borderRadius: "4px",
-            boxSizing: "border-box",
-            cursor: "pointer",
-            display: "flex",
-            height: isOpen ? "48px" : "28px",
-            justifyContent: "center",
-            padding: "0 8px",
-            position: "sticky", 
-            textTransform: "none",
-            width: isOpen ? "100%" : "28px",
-          }}
-          onClick={(): void => setIsManualUploadDrawerOpen(true)}
-        >
-          <AddSharpIcon fontSize="small" color="primary" />
-          {isOpen && (
-            <Typography
-              color="#3971FF"
-              component="div"
-              fontSize={14}
-              fontWeight={500}
-              letterSpacing={"1.2px"}
-              noWrap
-              variant="h6"
-              ml={"6px"}
-            >
-              {"Upload reference"}
-            </Typography>
-          )}
+        <Box sx={{ padding: "16px", paddingBottom: 0 }}>
+          <Box
+            sx={{
+              alignItems: "center",
+              border: "1px solid #3971FF",
+              borderRadius: "4px",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              display: "flex",
+              height: isOpen ? "48px" : "28px",
+              justifyContent: "center",
+              padding: "0 8px",
+              position: "sticky",
+              textTransform: "none",
+              width: isOpen ? "100%" : "28px",
+            }}
+            onClick={(): void => setIsManualUploadDrawerOpen(true)}
+          >
+            <AddSharpIcon fontSize="small" color="primary" />
+            {isOpen && (
+              <Typography
+                color="#3971FF"
+                component="div"
+                fontSize={14}
+                fontWeight={500}
+                letterSpacing={"1.2px"}
+                noWrap
+                variant="h6"
+                ml={"6px"}
+              >
+                {"Upload reference"}
+              </Typography>
+            )}
+          </Box>
         </Box>
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>

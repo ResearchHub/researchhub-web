@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShapes } from "@fortawesome/pro-duotone-svg-icons";
-import { faCog } from "@fortawesome/pro-solid-svg-icons";
-import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import { faCog, faPlus } from "@fortawesome/pro-solid-svg-icons";
 import Link from "next/link";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
