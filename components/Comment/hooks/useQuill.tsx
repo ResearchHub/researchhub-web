@@ -96,6 +96,35 @@ export const useQuill = (
   });
 
   useEffect(() => {
+
+    const initializeQuill = async ({ quillInstance, quillLib }) => {
+        if (typeof window !== 'undefined') {
+          import('../lib/quill/loadQuillModules').then((loadQuillModules) => {
+            loadQuillModules.default({ quillLib, quillInstance });
+          });
+        }
+
+
+      const MagicUrl = require("quill-magic-url").default;
+      quillLib.register("modules/magicUrl", MagicUrl);
+      quillLib.register(QuillPeerReviewRatingBlock);
+      
+
+      const icons = quillLib.import("ui/icons");
+      icons.video = ReactDOMServer.renderToString(
+        <FontAwesomeIcon icon={faVideo} />
+      );
+      icons.image = ReactDOMServer.renderToString(
+        <FontAwesomeIcon icon={faImagePolaroid} />
+      );
+      icons.link = ReactDOMServer.renderToString(
+        <FontAwesomeIcon icon={faLinkSimple} />
+      );
+      icons.blockquote = ReactDOMServer.renderToString(
+        <FontAwesomeIcon icon={faQuoteLeft} />
+      );
+    }
+
     if (!obj.Quill) {
       setObj((prev) => assign(prev, { Quill: require("quill") }));
     }
@@ -106,30 +135,13 @@ export const useQuill = (
         theme: options.theme || theme,
       });
 
-      if (!options.readOnly) {
-        const MagicUrl = require("quill-magic-url").default;
-        obj.Quill.register("modules/magicUrl", MagicUrl);
-
-        obj.Quill.register(QuillPeerReviewRatingBlock);
-        obj.Quill.register("modules/magicUrl", MagicUrl);
-
-        const icons = obj.Quill.import("ui/icons");
-        icons.video = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faVideo} />
-        );
-        icons.image = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faImagePolaroid} />
-        );
-        icons.link = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faLinkSimple} />
-        );
-        icons.blockquote = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faQuoteLeft} />
-        );
-      }
-
+      
       const quill = new obj.Quill(quillRef.current, opts);
       setObj(assign(assign({}, obj), { quill, editor: quill, isReady: true }));
+
+      if (!options.readOnly) {
+        initializeQuill({ quillInstance: quill, quillLib: obj.Quill});
+      }
     }
     setIsLoaded(true);
   }, [isLoaded, obj, options]);

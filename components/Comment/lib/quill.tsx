@@ -6,7 +6,10 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
 export const buildQuillModules = ({ editorId, handleSubmit }) => {
   const modules = {
-    magicUrl: true,
+    // magicUrl: true,
+    // mentions: {
+    //   setIsActive: false
+    // },
     keyboard: {
       bindings: {
         commandEnter: {
@@ -18,7 +21,7 @@ export const buildQuillModules = ({ editorId, handleSubmit }) => {
       },
     },
     toolbar: {
-      magicUrl: true,
+      // magicUrl: true,
       container: `#${editorId}`,
     },
   };
@@ -53,6 +56,8 @@ export const QuillFormats = [
   "code-block",
   "direction",
   "peer-review-rating",
+  "searchUsers",
+  "user",
 ];
 
 export function trimQuillEditorContents({ contents }) {

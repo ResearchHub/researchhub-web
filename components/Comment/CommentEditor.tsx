@@ -219,7 +219,7 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
-
+console.log('_content', _content)
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
     <div
