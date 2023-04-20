@@ -9,7 +9,7 @@ import {
   useEffectOnReferenceTypeChange,
   parseDoiSearchResultOntoValueSet,
 } from "./reference_upload_utils";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { isEmpty, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
@@ -60,6 +60,7 @@ export default function ReferenceManualUploadDrawer({
     setIsLoading(false);
     setIsSubmitting(false);
     const resettedSchema = {};
+    // NOTE: preserving schema like this saves a BE call.
     for (const key in referenceSchemaValueSet.schema) {
       resettedSchema[key] = "";
     }
@@ -128,7 +129,7 @@ export default function ReferenceManualUploadDrawer({
     <Drawer
       anchor="left"
       BackdropProps={{ invisible: true }}
-      onBackdropClick={() => setIsDrawerOpen(false)}
+      onBackdropClick={initComponentStates}
       open={isDrawerOpen}
       onClose={(event: SyntheticEvent): void => {
         event.preventDefault();

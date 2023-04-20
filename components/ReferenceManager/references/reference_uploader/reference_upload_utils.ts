@@ -1,11 +1,11 @@
-import { SyntheticEvent, useEffect, useState } from "react";
-import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
-import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
-import moment from "moment";
-import { toFormData } from "~/config/utils/toFormData";
 import { createReferenceCitation } from "../api/createReferenceCitation";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
+import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
 import { NullableString } from "~/config/types/root_types";
+import { SyntheticEvent, useEffect } from "react";
+import { toFormData } from "~/config/utils/toFormData";
+import moment from "moment";
 
 export function useEffectOnReferenceTypeChange({
   prevRefSchemaValueSet,

@@ -62,8 +62,6 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     setIsDrawerOpen,
     setReferencesFetchTime,
   } = useReferenceTabContext();
-  console.warn("referenceItemDrawerData: ", referenceItemDrawerData);
-
   const { citation_type, id: citation_id } = referenceItemDrawerData ?? {};
   const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemDrawerData?.fields ?? {}
