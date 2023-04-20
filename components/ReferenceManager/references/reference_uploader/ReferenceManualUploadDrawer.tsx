@@ -3,29 +3,26 @@ import {
   ReferenceSchemaValueSet,
 } from "./reference_default_schemas";
 import { Button } from "@mui/material";
-import { createReferenceCitation } from "../api/createReferenceCitation";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  nullthrows,
-} from "~/config/utils/nullchecks";
-import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
-import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
+import { isEmpty } from "~/config/utils/nullchecks";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
 import { NullableString } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import { ReactElement, SyntheticEvent, useState, useCallback } from "react";
 import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
+import {
+  handleSubmit,
+  useEffectOnReferenceTypeChange,
+  parseDoiSearchResultOntoValueSet,
+} from "./reference_upload_utils";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
-import moment from "moment";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
@@ -33,7 +30,6 @@ import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { toFormData } from "~/config/utils/toFormData";
 
 const APPLICABLE_LEFT_NAV_WIDTH =
   LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 37;
@@ -44,64 +40,6 @@ type Props = {
     setIsDrawerOpen: (flag: boolean) => void;
   };
 };
-
-function initComponentStates({
-  referenceSchemaValueSet,
-  setIsDrawerOpen,
-  setReferenceSchemaValueSet,
-}): void {
-  setIsDrawerOpen(false);
-  const resettedSchema = {};
-  for (const key in referenceSchemaValueSet.schema) {
-    resettedSchema[key] = "";
-  }
-  setReferenceSchemaValueSet({
-    attachment: null,
-    schema: resettedSchema,
-    required: referenceSchemaValueSet.required,
-  });
-}
-
-function useEffectPrepSchemas({
-  selectedReferenceType,
-  setIsLoading,
-  setReferenceSchemaValueSet,
-  setReferenceTypes,
-  setSelectedReferenceType,
-}): void {
-  useEffect((): void => {
-    setIsLoading(true);
-    if (!isEmpty(selectedReferenceType) && selectedReferenceType) {
-      fetchReferenceCitationSchema({
-        citation_type: selectedReferenceType,
-        onError: emptyFncWithMsg,
-        onSuccess: ({ schema, required }): void => {
-          setIsLoading(false);
-          setReferenceSchemaValueSet({ schema, required });
-        },
-      });
-    } else {
-      fetchReferenceCitationTypes({
-        onError: (error) => {
-          alert(error);
-        },
-        onSuccess: (result) => {
-          setReferenceTypes(result);
-          const selectedReferenceType = result[0];
-          setSelectedReferenceType(selectedReferenceType);
-          fetchReferenceCitationSchema({
-            citation_type: selectedReferenceType,
-            onError: emptyFncWithMsg,
-            onSuccess: ({ schema, required }): void => {
-              setIsLoading(false);
-              setReferenceSchemaValueSet({ schema, required });
-            },
-          });
-        },
-      });
-    }
-  }, [selectedReferenceType]);
-}
 
 export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
@@ -116,7 +54,23 @@ export default function ReferenceManualUploadDrawer({
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
     useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
 
-  useEffectPrepSchemas({
+  const initComponentStates = useCallback((): void => {
+    setIsDrawerOpen(false);
+    setIsLoading(false);
+    setIsSubmitting(false);
+    const resettedSchema = {};
+    for (const key in referenceSchemaValueSet.schema) {
+      resettedSchema[key] = "";
+    }
+    setReferenceSchemaValueSet({
+      attachment: null,
+      schema: resettedSchema,
+      required: referenceSchemaValueSet.required,
+    });
+  }, [selectedReferenceType]);
+
+  useEffectOnReferenceTypeChange({
+    prevRefSchemaValueSet: referenceSchemaValueSet,
     selectedReferenceType,
     setIsLoading,
     setReferenceSchemaValueSet,
@@ -128,50 +82,6 @@ export default function ReferenceManualUploadDrawer({
     label: snakeCaseToNormalCase(refType),
     value: refType,
   }));
-
-  const resetEverything = (error?: Error) => {
-    emptyFncWithMsg(error);
-    setIsSubmitting(false);
-    setReferencesFetchTime(Date.now());
-    // setIsDrawerOpen(false);
-    setReferenceSchemaValueSet(DEFAULT_REF_SCHEMA_SET);
-  };
-
-  const handleSubmit = (event: SyntheticEvent): void => {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    const formattedCreators =
-      referenceSchemaValueSet?.schema?.creators
-        ?.split(", ")
-        ?.map((creatorName) => {
-          const splittedName = creatorName.split(" ");
-          return {
-            first_name: splittedName[0],
-            last_name: splittedName.slice(1).join(" "),
-          };
-        }) ?? [];
-
-    const payload = toFormData({
-      fields: {
-        ...referenceSchemaValueSet.schema,
-        creators: formattedCreators,
-      },
-      citation_type: selectedReferenceType,
-      organization: 1,
-    });
-
-    const attachment = referenceSchemaValueSet.attachment;
-    if (!isEmpty(attachment)) {
-      // @ts-ignore unnecessary type checking
-      payload.append("attachment", attachment);
-    }
-    createReferenceCitation({
-      onError: resetEverything,
-      onSuccess: resetEverything,
-      payload,
-    });
-  };
 
   const formattedSchemaInputs = [
     <ReferenceItemFieldSelect
@@ -221,11 +131,7 @@ export default function ReferenceManualUploadDrawer({
       open={isDrawerOpen}
       onClose={(event: SyntheticEvent): void => {
         event.preventDefault();
-        initComponentStates({
-          referenceSchemaValueSet,
-          setIsDrawerOpen,
-          setReferenceSchemaValueSet,
-        });
+        initComponentStates();
       }}
       sx={{
         width: "0",
@@ -266,13 +172,7 @@ export default function ReferenceManualUploadDrawer({
           <CloseOutlinedIcon
             fontSize="small"
             color="disabled"
-            onClick={(): void =>
-              initComponentStates({
-                referenceSchemaValueSet,
-                setIsDrawerOpen,
-                setReferenceSchemaValueSet,
-              })
-            }
+            onClick={(): void => initComponentStates()}
             sx={{ cursor: "pointer" }}
           />
         </Stack>
@@ -289,32 +189,10 @@ export default function ReferenceManualUploadDrawer({
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
-                const {
-                  title,
-                  doi,
-                  display_name,
-                  authorships,
-                  publication_date,
-                } = doiMetaData ?? {};
-                const formattedTitle = title ?? display_name ?? "";
-                setReferenceSchemaValueSet({
-                  attachment: referenceSchemaValueSet.attachment,
-                  schema: {
-                    ...referenceSchemaValueSet.schema,
-                    access_date: moment().format("MM-DD-YYYY"),
-                    creators: (authorships ?? [])
-                      .map(
-                        (authorship) => authorship.author?.display_name ?? ""
-                      )
-                      .join(", "),
-                    date: !isEmpty(publication_date)
-                      ? moment(publication_date).format("MM-DD-YYYY")
-                      : "",
-                    DOI: doi,
-                    title: formattedTitle,
-                    publication_title: formattedTitle,
-                  },
-                  required: referenceSchemaValueSet.required,
+                parseDoiSearchResultOntoValueSet({
+                  doiMetaData,
+                  setReferenceSchemaValueSet,
+                  referenceSchemaValueSet,
                 });
               }}
             />
@@ -351,7 +229,20 @@ export default function ReferenceManualUploadDrawer({
           }}
         >
           <div style={{ width: "88px" }}>
-            <PrimaryButton onClick={handleSubmit} size="large" disabled={false}>
+            <PrimaryButton
+              onClick={(event: SyntheticEvent): void =>
+                handleSubmit({
+                  event,
+                  initComponentStates,
+                  referenceSchemaValueSet,
+                  selectedReferenceType,
+                  setIsSubmitting,
+                  setReferencesFetchTime,
+                })
+              }
+              size="large"
+              disabled={false}
+            >
               <Typography fontSize="14px" fontWeight="400">
                 {"Add entry"}
               </Typography>
@@ -361,11 +252,7 @@ export default function ReferenceManualUploadDrawer({
             <Button
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
-                initComponentStates({
-                  referenceSchemaValueSet,
-                  setIsDrawerOpen,
-                  setReferenceSchemaValueSet,
-                });
+                initComponentStates();
               }}
               size="large"
               sx={{ textTransform: "none" }}
