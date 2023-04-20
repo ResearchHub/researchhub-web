@@ -107,7 +107,11 @@ const NotebookSidebar = ({
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
           <ResearchHubPopover
-            containerStyle={{ marginLeft: "10px", marginTop: "-10px" }}
+            containerStyle={{
+              marginLeft: "10px",
+              marginTop: "-10px",
+              zIndex: 11,
+            }}
             isOpen={isPopoverOpen}
             popoverContent={
               <div className={css(styles.popoverBodyContent)}>
