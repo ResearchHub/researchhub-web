@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     padding: "12px 0",
     textDecoration: "none",
+    overflow: "hidden",
     width: "100%",
     ":hover": {
       background: colors.LIGHT_GREY_BACKGROUND,
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
     display: "flex",
+    overflow: "auto",
     fontSize: 14,
     whiteSpace: "nowrap",
     "-ms-overflow-style": "none" /* IE and Edge */,
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   bountiesSidebarItemContent: {
     color: colors.BLACK(1),
     display: "flex",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 500,
     overflowWrap: "anywhere",
     textOverflow: "ellipsis",

@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
     position: "relative",
     width: "100%",
+    overflow: "hidden",
   },
   main: {
     display: "flex",
