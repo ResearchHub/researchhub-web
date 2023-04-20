@@ -3,6 +3,12 @@ import {
   ReferenceSchemaValueSet,
 } from "./reference_default_schemas";
 import { Button } from "@mui/material";
+import { ClipLoader } from "react-spinners";
+import {
+  handleSubmit,
+  useEffectOnReferenceTypeChange,
+  parseDoiSearchResultOntoValueSet,
+} from "./reference_upload_utils";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
@@ -14,11 +20,6 @@ import {
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
-import {
-  handleSubmit,
-  useEffectOnReferenceTypeChange,
-  parseDoiSearchResultOntoValueSet,
-} from "./reference_upload_utils";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -244,7 +245,11 @@ export default function ReferenceManualUploadDrawer({
               disabled={false}
             >
               <Typography fontSize="14px" fontWeight="400">
-                {"Add entry"}
+                {isSubmitting ? (
+                  <ClipLoader color="#fff" size={14} />
+                ) : (
+                  "Add entry"
+                )}
               </Typography>
             </PrimaryButton>
           </div>

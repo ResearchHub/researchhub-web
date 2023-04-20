@@ -31,6 +31,7 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
+import { convertHttpToHttps } from "~/config/utils/routing";
 
 type Props = {};
 
@@ -61,6 +62,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     setIsDrawerOpen,
     setReferencesFetchTime,
   } = useReferenceTabContext();
+  console.warn("referenceItemDrawerData: ", referenceItemDrawerData);
+
   const { citation_type, id: citation_id } = referenceItemDrawerData ?? {};
   const [localReferenceFields, setLocalReferenceFields] = useState(
     referenceItemDrawerData?.fields ?? {}
@@ -178,6 +181,14 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           </Typography>
         </Stack>
         {tabInputItems}
+        {referenceItemDrawerData?.attachment ? (
+          <iframe
+            height={"20%"}
+            src={convertHttpToHttps(referenceItemDrawerData?.attachment)}
+            style={{ marginBottom: "16px" }}
+            width={"100%"}
+          />
+        ) : null}
         <Box alignItems="center" display="flex" justifyContent="center">
           <PrimaryButton
             margin="0 0 32px 0"
