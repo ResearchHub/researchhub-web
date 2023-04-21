@@ -92,6 +92,10 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       );
     }
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
+  console.warn(
+    "sortSchemaFieldKeys(Object.keys(localReferenceFields)): ",
+    sortSchemaFieldKeys(Object.keys(localReferenceFields))
+  );
 
   const tabInputItems = filterNull(
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
