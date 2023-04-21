@@ -32,6 +32,7 @@ import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 
 const CALCULATED_LEFT_MARGIN =
   LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
@@ -60,9 +61,7 @@ export default function ReferenceManualUploadDrawer({
 
   const { currentOrg } = useOrgs();
 
-  console.log(currentOrg);
-
-  const initComponentStates = useCallback((): void => {
+  const resetComponentState = useCallback((): void => {
     setIsLoading(false);
     setIsSubmitting(false);
     const resettedSchema = {};
@@ -107,27 +106,43 @@ export default function ReferenceManualUploadDrawer({
         const label = resolveFieldKeyLabels(schemaField),
           schemaFieldValue = referenceSchemaValueSet.schema[schemaField],
           isRequired = false;
-        return (
-          <ReferenceItemFieldInput
-            disabled={isSubmitting || isLoading}
-            formID={schemaField}
-            key={`reference-manual-upload-field-${schemaField}`}
-            label={label}
-            onChange={(newValue: string): void => {
-              setReferenceSchemaValueSet({
-                attachment: referenceSchemaValueSet.attachment,
-                schema: {
-                  ...referenceSchemaValueSet.schema,
-                  [schemaField]: newValue,
-                },
-                required: referenceSchemaValueSet.required,
-              });
-            }}
-            placeholder={label}
-            required={isRequired}
-            value={schemaFieldValue}
-          />
-        );
+        const onChange = (newValue: string): void => {
+          setReferenceSchemaValueSet({
+            attachment: referenceSchemaValueSet.attachment,
+            schema: {
+              ...referenceSchemaValueSet.schema,
+              [schemaField]: newValue,
+            },
+            required: referenceSchemaValueSet.required,
+          });
+        };
+        if (schemaField === "creators") {
+          return (
+            <ReferenceItemFieldCreatorTagInput
+              disabled={isSubmitting || isLoading}
+              formID={schemaField}
+              key={`reference-manual-upload-field-${schemaField}`}
+              label={label}
+              onChange={onChange}
+              placeholder={label}
+              required={isRequired}
+              value={schemaFieldValue}
+            />
+          );
+        } else {
+          return (
+            <ReferenceItemFieldInput
+              disabled={isSubmitting || isLoading}
+              formID={schemaField}
+              key={`reference-manual-upload-field-${schemaField}`}
+              label={label}
+              onChange={onChange}
+              placeholder={label}
+              required={isRequired}
+              value={schemaFieldValue}
+            />
+          );
+        }
       }
     ),
   ];
@@ -138,12 +153,12 @@ export default function ReferenceManualUploadDrawer({
       BackdropProps={{ invisible: true }}
       onBackdropClick={(event: SyntheticEvent): void => {
         event.preventDefault();
-        initComponentStates();
+        resetComponentState();
       }}
       open={isDrawerOpen}
       onClose={(event: SyntheticEvent): void => {
         event.preventDefault();
-        initComponentStates();
+        resetComponentState();
       }}
       sx={{
         width: "0",
@@ -184,7 +199,7 @@ export default function ReferenceManualUploadDrawer({
           <CloseOutlinedIcon
             fontSize="small"
             color="disabled"
-            onClick={(): void => initComponentStates()}
+            onClick={(): void => resetComponentState()}
             sx={{ cursor: "pointer" }}
           />
         </Stack>
@@ -245,7 +260,7 @@ export default function ReferenceManualUploadDrawer({
               onClick={(event: SyntheticEvent): void =>
                 handleSubmit({
                   event,
-                  initComponentStates,
+                  resetComponentState,
                   referenceSchemaValueSet,
                   selectedReferenceType,
                   setIsSubmitting,
@@ -269,7 +284,7 @@ export default function ReferenceManualUploadDrawer({
             <Button
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
-                initComponentStates();
+                resetComponentState();
               }}
               size="large"
               sx={{ textTransform: "none" }}

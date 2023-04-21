@@ -19,18 +19,18 @@ export const columnsFormat: GridColDef[] = [
     field: "published_date",
     headerName: "Publication Date",
     type: "string",
-    width: 180,
+    width: 140,
   },
   {
     field: "published_year",
     headerName: "Publication Year",
     type: "string",
-    width: 180,
+    width: 140,
   },
   {
     field: "added_date",
     headerName: "Added Date",
     type: "string",
-    width: 180,
+    width: 140,
   },
 ];
