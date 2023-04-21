@@ -2,7 +2,7 @@ import { createReferenceCitation } from "../api/createReferenceCitation";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
 import { fetchReferenceCitationTypes } from "../../form/api/fetchReferenceCitationTypes";
-import { NullableString } from "~/config/types/root_types";
+import { ID, NullableString } from "~/config/types/root_types";
 import { SyntheticEvent, useEffect } from "react";
 import { toFormData } from "~/config/utils/toFormData";
 import moment from "moment";
@@ -74,6 +74,7 @@ export const handleSubmit = ({
   selectedReferenceType: NullableString;
   setIsSubmitting: (flag: boolean) => void;
   setReferencesFetchTime: (date: number) => void;
+  organizationId: ID;
 }): void => {
   event.preventDefault();
   setIsSubmitting(true);

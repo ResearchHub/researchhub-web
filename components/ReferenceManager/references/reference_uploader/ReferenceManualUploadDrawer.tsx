@@ -264,7 +264,7 @@ export default function ReferenceManualUploadDrawer({
                   selectedReferenceType,
                   setIsSubmitting,
                   setReferencesFetchTime,
-                  organizationId: currentOrg.id,
+                  organizationId: currentOrg?.id,
                 })
               }
               size="large"
