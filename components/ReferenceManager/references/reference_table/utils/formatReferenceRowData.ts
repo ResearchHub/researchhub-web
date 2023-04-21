@@ -4,6 +4,7 @@ import { ID, NullableString } from "~/config/types/root_types";
 export type ReferenceTableRowDataType = {
   // NOTE: Logical ordering for display reason
   // TODO: calvinhlee update this once BE is setup
+  added_date: string;
   id: ID;
   citation_type: NullableString;
   title: NullableString;
@@ -32,20 +33,22 @@ function referenceFormatSwitchMap(datum: any): ReferenceTableRowDataType {
     case "MANUSCRIPT":
     default:
       return formatManuscript(datum);
-      throw new Error(
-        `formatReferenceRowData: unable to find appropriate citation_type - ${citation_type}`
-      );
+    // throw new Error(
+    //   `formatReferenceRowData: unable to find appropriate citation_type - ${citation_type}`
+    // );
   }
 }
 
 function formatArtwork(datum: any): ReferenceTableRowDataType {
   const {
+    created_date,
     citation_type,
     fields: { access_date, creators, date, title },
     id,
   } = datum ?? { fields: {}, creators: {} };
   const lastAuthor = creators[creators.length - 1];
   return {
+    added_date: created_date.split("T")[0],
     id,
     citation_type,
     title,
@@ -61,12 +64,14 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
 
 function formatManuscript(datum: any): ReferenceTableRowDataType {
   const {
+    created_date,
     citation_type,
     fields: { access_date, creators, date, title },
     id,
   } = datum ?? { fields: {}, creators: {} };
   const lastAuthor = creators[creators.length - 1];
   return {
+    added_date: created_date.split("T")[0],
     id,
     citation_type,
     title,

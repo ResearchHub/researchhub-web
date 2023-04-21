@@ -9,7 +9,7 @@ import {
   useEffectOnReferenceTypeChange,
   parseDoiSearchResultOntoValueSet,
 } from "./reference_upload_utils";
-import { isEmpty, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { isEmpty } from "~/config/utils/nullchecks";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
