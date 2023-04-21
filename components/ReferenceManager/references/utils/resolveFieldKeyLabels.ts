@@ -19,13 +19,15 @@ export const resolveFieldKeyLabels = (str: string): string => {
 
 export const sortSchemaFieldKeys = (fieldKeys: string[]): string[] => {
   const keySet = new Set(fieldKeys);
-  const result = filterNull([
-    keySet.has("title") ? "title" : null,
-    keySet.has("creators") ? "creators" : null,
-  ]);
-  keySet.delete("title");
+  const subResult: string[] = [];
+  keySet.has("title") && subResult.push("title");
+  keySet.has("creators") && subResult.push("creators");
+  keySet.has("publication_title") && subResult.push("publication_title");
   keySet.delete("creators");
-  return [...result, ...Array.from(keySet)];
+  keySet.delete("title");
+  keySet.delete("publication_title");
+
+  return [...subResult, ...Array.from(keySet)];
   // return labels
   //   .sort((a: string, b: string): number => {
   //     if (a === "title") {
