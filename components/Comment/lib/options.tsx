@@ -18,7 +18,7 @@ export const commentTypes = [
     isDefault: true,
     group: "contribute",
     icon: <FontAwesomeIcon icon={faComments} />,
-    placeholder: "Add comment or start a bounty",
+    placeholder: "Add a comment or start a bounty",
   },
   {
     label: "Peer review",
@@ -105,4 +105,3 @@ export const reviewCategories = {
     isDefault: false,
   },
 };
-

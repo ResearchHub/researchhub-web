@@ -34,6 +34,9 @@ import { isEmpty as isInputEmpty } from "~/config/utils/nullchecks";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
+import api from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -55,7 +58,7 @@ type CommentEditorArgs = {
 const CommentEditor = ({
   editorId,
   commentId,
-  placeholder = "Add comment or start a bounty",
+  placeholder = "Add a comment or start a bounty",
   handleSubmit,
   content = {},
   allowBounty = false,
@@ -82,10 +85,53 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
+
+  const getFileUrl = ({ fileString, type }) => {
+    const payload = {
+      content_type: type.split("/")[1],
+      content: fileString,
+    };
+    return fetch(api.SAVE_IMAGE, api.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        return res;
+      });
+  };
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const imageHandler = (obj) => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async function () {
+      // showLoader(true);
+      const file = input.files[0];
+      const fileString = await toBase64(file);
+      const type = file.type;
+      const fileUrl = await getFileUrl({ fileString, type });
+      if (quill) {
+        const range = quill.getSelection();
+
+        // this part the image is inserted
+        // by 'image' option below, you just have to put src(link) of img here.
+        quill.insertEmbed(range.index, "image", fileUrl);
+      }
+      // showLoader(false);
+    };
+  };
+
   const { quill, quillRef, isReady } = useQuill({
     modules: buildQuillModules({
       editorId,
-      handleImageUpload: () => null,
       handleSubmit: () => handleSubmit({ content: _content }),
     }),
     formats: QuillFormats,
@@ -96,6 +142,13 @@ const CommentEditor = ({
     content,
     notifyOnContentChangeRate: 300, // ms
   });
+
+  useEffect(() => {
+    if (quill) {
+      // Add custom handler for Image Upload
+      quill.getModule("toolbar").addHandler("image", imageHandler);
+    }
+  }, [quill]);
 
   useEffectForCommentTypeChange({
     quill,
@@ -171,7 +224,10 @@ const CommentEditor = ({
   return (
     <div
       ref={editorRef}
-      className={`${css(styles.commentEditor, editorStyleOverride)} CommentEditor` }
+      className={`${css(
+        styles.commentEditor,
+        editorStyleOverride
+      )} CommentEditor`}
       onClick={() => {
         if (!isLoggedIn) {
           dispatch(

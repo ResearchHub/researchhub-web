@@ -4,11 +4,7 @@ import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
-export const buildQuillModules = ({
-  editorId,
-  handleSubmit,
-  handleImageUpload,
-}) => {
+export const buildQuillModules = ({ editorId, handleSubmit }) => {
   const modules = {
     magicUrl: true,
     keyboard: {
@@ -24,9 +20,6 @@ export const buildQuillModules = ({
     toolbar: {
       magicUrl: true,
       container: `#${editorId}`,
-      handlers: {
-        image: handleImageUpload,
-      },
     },
   };
 
