@@ -34,6 +34,7 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
+import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 
 type Props = {};
 
@@ -91,35 +92,49 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       );
     }
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
-  console.warn(
-    "sortSchemaFieldKeys(Object.keys(localReferenceFields)): ",
-    sortSchemaFieldKeys(Object.keys(localReferenceFields))
-  );
 
   const tabInputItems = filterNull(
-    // TODO: calvinhlee - we need better ways to sort these fields
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
         let label = resolveFieldKeyLabels(field_key),
           value = localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
-        return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
-          <ReferenceItemFieldInput
-            formID={field_key}
-            key={`reference-item-tab-input-${field_key}`}
-            label={label}
-            onChange={(newValue: string): void => {
-              setLocalReferenceFields({
-                ...localReferenceFields,
-                [field_key]: newValue,
-              });
-            }}
-            placeholder={label}
-            required={isRequired}
-            value={value}
-          />
-        );
+        if (field_key === "creators") {
+          return (
+            <ReferenceItemFieldCreatorTagInput
+              formID={field_key}
+              key={`reference-item-tab-input-${field_key}`}
+              label={label}
+              onChange={(newValue: string[]): void => {
+                setLocalReferenceFields({
+                  ...localReferenceFields,
+                  [field_key]: newValue.join(", "),
+                });
+              }}
+              placeholder={label}
+              required={isRequired}
+              value={value.split(", ")}
+            />
+          );
+        } else {
+          return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
+            <ReferenceItemFieldInput
+              formID={field_key}
+              key={`reference-item-tab-input-${field_key}`}
+              label={label}
+              onChange={(newValue: string): void => {
+                setLocalReferenceFields({
+                  ...localReferenceFields,
+                  [field_key]: newValue,
+                });
+              }}
+              placeholder={label}
+              required={isRequired}
+              value={value}
+            />
+          );
+        }
       }
     )
   );
