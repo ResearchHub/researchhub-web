@@ -233,10 +233,9 @@ const Post = (props) => {
     currUserID,
     hubs: post?.hubs ?? [],
   });
-  const isQuestion = initialPost.document_type === "QUESTION";
   const commentSectionAsDrawer =
     screenSizeAtLoading > 0 && screenSizeAtLoading <= breakpoints.small.int;
-  const commentSectionAsSidebar = !isQuestion;
+  const commentSectionAsSidebar = false;
 
   return !isNullOrUndefined(post) && Object.keys(post).length > 0 ? (
     <div>
@@ -248,7 +247,12 @@ const Post = (props) => {
         canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
       />
       <PaperBanner document={post} documentType="post" />
-      <div className={css(styles.postPageRoot, isQuestion && styles.question)}>
+      <div
+        className={css(
+          styles.postPageRoot,
+          commentSectionAsSidebar && styles.withSidebar
+        )}
+      >
         <a name="main" />
         <PaperTransactionModal post={post} updatePostState={updatePostState} />
         <div className={css(styles.postPageContainer)}>
@@ -412,17 +416,17 @@ export async function getStaticProps(ctx) {
 const styles = StyleSheet.create({
   postPageRoot: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "flex-start",
     width: "100%",
     overflowX: "clip",
+  },
+  withSidebar: {
+    justifyContent: "space-between",
     [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
       {
         justifyContent: "center",
       },
-  },
-  question: {
-    justifyContent: "center",
   },
   postPageContainer: {
     marginTop: 30,

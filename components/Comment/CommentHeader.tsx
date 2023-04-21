@@ -80,7 +80,7 @@ const CommentHeader = ({
                       <div className={css(styles.additionalAuthor)}>
                         {`, `}
                         <UserTooltip
-                          createdBy={comment.createdBy}
+                          createdBy={bountyContributors[0]}
                           targetContent={
                             <ALink
                               href={`/user/${bountyContributors[0].id}/overview`}

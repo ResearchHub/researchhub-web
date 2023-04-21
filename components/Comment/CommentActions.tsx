@@ -138,41 +138,22 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
   const openBounties = getOpenBounties({ comment });
   const isAllowedToTip =
     openBounties.length === 0 && comment.createdBy.id !== currentUser?.id;
-  let isAllowedToAward = false;
   let isAllowedToAcceptAnswer = false;
-  let openUserOwnedRootBounty: Bounty;
+
+  // Root bounties are bounties that are not contributions.
+  // A user can award a bounty if they currently have an open root bounty.
+  const openUserOwnedRootBounty: Bounty = findOpenRootBounties({
+    comments: commentTreeState.comments,
+    user: currentUser,
+  })[0];
+  const isAllowedToAward =
+    Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
+
   if (isQuestion) {
-    openUserOwnedRootBounty = findOpenRootBounties({
-      comments: commentTreeState.comments,
-      user: currentUser,
-    })[0];
-    isAllowedToAward =
-      Boolean(openUserOwnedRootBounty) && openBounties.length === 0;
     isAllowedToAcceptAnswer =
       document!.createdBy!.id == currentUser?.id &&
       !comment.isAcceptedAnswer &&
       comment.bounties.length === 0;
-  } else {
-    const found = findComment({
-      id: comment.id,
-      comments: commentTreeState.comments,
-    });
-    if (found) {
-      const rootCommentId = found.path[0];
-      const foundRootComment = findComment({
-        id: rootCommentId,
-        comments: commentTreeState.comments,
-      });
-
-      if (foundRootComment) {
-        openUserOwnedRootBounty = getUserOpenBounties({
-          comment: foundRootComment.comment,
-          user: currentUser,
-        })[0];
-        isAllowedToAward =
-          Boolean(openUserOwnedRootBounty) && Boolean(comment.parent);
-      }
-    }
   }
 
   const disableSocialActions = currentUser?.id === comment.createdBy.id;
