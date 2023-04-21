@@ -46,10 +46,3 @@ git checkout -b MY_BRANCH_NAME
 ```
 
 3. Submit a pull request against `master` branch of this repository
-
-## Code Bounties
-
-- Bounties are regularly listed in the <a href="issues">issues</a> section.
-- Issues with a bounty associated will have the bounty badge
-- Bounties will be paid in the form of ResearchCoin (RSC)
-- Bounty will need to be explicitly approved by a member of the ResearchHub team
