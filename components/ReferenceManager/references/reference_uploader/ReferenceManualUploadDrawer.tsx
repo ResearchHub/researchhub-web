@@ -19,7 +19,7 @@ import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
-import { snakeCaseToNormalCase } from "~/config/utils/string";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -32,7 +32,6 @@ import ReferenceTypeSelect from "../../form/ReferenceTypeSelect";
 import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 const CALCULATED_LEFT_MARGIN =
   LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
