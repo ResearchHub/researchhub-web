@@ -60,13 +60,15 @@ export default function BountiesSidebarItem({
             />
             <span className={css(styles.bountiesSidebarTitle)}>
               <span>{"is offering "}</span>
-              <ContentBadge
-                label={`${roundedOfferAmount} RSC`}
-                contentType="bounty"
-                size="small"
-                bountyAmount={rawBountyAmount}
-              />
             </span>
+          </div>
+          <div className={css(styles.bountyBadge)}>
+            <ContentBadge
+              label={`${roundedOfferAmount} RSC`}
+              contentType="bounty"
+              size="small"
+              bountyAmount={rawBountyAmount}
+            />
           </div>
           <div className={css(styles.bountiesSidebarItemContent)}>
             {bountyContentSnippet?.length > 180
@@ -112,6 +114,10 @@ const styles = StyleSheet.create({
     height: "100%",
     textOverflow: "ellipsis",
     marginTop: 1, // arbitrary to match AuthorFacePile
+  },
+  bountyBadge: {
+    display: "flex",
+    marginBottom: 8,
   },
   bountiesSidebarItemHeader: {
     alignItems: "center",
