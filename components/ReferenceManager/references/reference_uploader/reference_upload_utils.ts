@@ -1,7 +1,7 @@
 import { createReferenceCitation } from "../api/createReferenceCitation";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchReferenceCitationSchema } from "../api/fetchReferenceCitationSchema";
-import { fetchReferenceCitationTypes } from "../api/fetchReferenceCitationTypes";
+import { fetchReferenceCitationTypes } from "../../form/api/fetchReferenceCitationTypes";
 import { NullableString } from "~/config/types/root_types";
 import { SyntheticEvent, useEffect } from "react";
 import { toFormData } from "~/config/utils/toFormData";
@@ -12,34 +12,10 @@ export function useEffectOnReferenceTypeChange({
   selectedReferenceType,
   setIsLoading,
   setReferenceSchemaValueSet,
-  setReferenceTypes,
-  setSelectedReferenceType,
 }): void {
-  const wasSchemaEmpty = isEmpty(
-    Object.keys(prevRefSchemaValueSet?.schema ?? {})
-  );
   useEffect((): void => {
-    setIsLoading(true);
-    if (isEmpty(selectedReferenceType)) {
-      fetchReferenceCitationTypes({
-        onError: (error) => {
-          emptyFncWithMsg(error);
-        },
-        onSuccess: (result) => {
-          setReferenceTypes(result);
-          const selectedReferenceType = result[0];
-          setSelectedReferenceType(selectedReferenceType);
-          fetchReferenceCitationSchema({
-            citation_type: selectedReferenceType,
-            onError: emptyFncWithMsg,
-            onSuccess: ({ schema, required }): void => {
-              setIsLoading(false);
-              setReferenceSchemaValueSet({ schema, required });
-            },
-          });
-        },
-      });
-    } else {
+    if (!isEmpty(selectedReferenceType)) {
+      setIsLoading(true);
       fetchReferenceCitationSchema({
         citation_type: selectedReferenceType,
         onError: emptyFncWithMsg,
@@ -53,7 +29,7 @@ export function useEffectOnReferenceTypeChange({
         },
       });
     }
-  }, [selectedReferenceType, wasSchemaEmpty]);
+  }, [selectedReferenceType]);
 }
 
 export function parseDoiSearchResultOntoValueSet({

@@ -1,19 +1,18 @@
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
-import { fetchReferenceCitationSchema } from "../references/api/fetchReferenceCitationSchema";
+import { fetchReferenceCitationTypes } from "./api/fetchReferenceCitationTypes";
 import { NullableString } from "~/config/types/root_types";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
+import { snakeCaseToNormalCase } from "~/config/utils/string";
 
-type MenuItemProps = { label: string; value: string };
 type Props = {
   formID: string;
   label: string;
-  menuItemProps: MenuItemProps[];
-  onChange: (value: any) => void;
+  onChange: (value: NullableString) => void;
   placeholder?: string;
   required?: boolean;
   value?: any;
@@ -26,34 +25,57 @@ export default function ReferenceTypeSelect({
   placeholder,
   value = "",
   onChange,
-  menuItemProps,
 }: Props): ReactElement {
+  const [isFetching, setIsfetching] = useState<boolean>(false);
   const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
-  const [selectedReferenceType, setSelectedReferenceType] =
-    useState<NullableString>(null);
 
-  // useEffect((): void => {
-  //   fetchReferenceCitationSchema({
-  //     citation_type: selectedReferenceType,
-  //     onError: emptyFncWithMsg,
-  //     onSuccess: onChange,
-  // }, []);
+  useEffect((): void => {
+    setIsfetching(true);
+    fetchReferenceCitationTypes({
+      onError: emptyFncWithMsg,
+      onSuccess: (result: string[]): void => {
+        setReferenceTypes(result);
+        onChange(result[0]);
+        setIsfetching(false);
+      },
+    });
+  }, [setReferenceTypes, setIsfetching]);
 
-  const referenceTypeMenuEls = menuItemProps.map(
-    ({ label, value }: MenuItemProps): ReactElement<typeof MenuItem> => (
-      <MenuItem key={`ref-item-field-${value}-${label}`} value={value}>
-        {label}
-      </MenuItem>
-    )
+  const referenceTypesSet = useMemo(
+    (): Set<string> => new Set(referenceTypes),
+    [referenceTypes]
+  );
+  /* For some instances, value is forcibly given an arbitrary string from parent 
+     to override select. We need to sanity check this.*/
+  const sanityCheckAndGetValue = (): string => {
+    if (referenceTypesSet.has(value)) {
+      return value;
+    } else {
+      onChange("JOURNAL_ARTICLE");
+      return "JOURNAL_ARTICLE";
+    }
+  };
+  const sanityCheckedSelectedRefType = useMemo(
+    (): string => sanityCheckAndGetValue(),
+    [value]
+  );
+
+  const referenceTypeMenuEls = referenceTypes.map(
+    (refType: string): ReactElement<typeof MenuItem> => {
+      return (
+        <MenuItem key={`ref-item-field-${value}-${label}`} value={refType}>
+          {snakeCaseToNormalCase(refType)}
+        </MenuItem>
+      );
+    }
   );
 
   if (!isEmpty(placeholder)) {
-    referenceTypeMenuEls = [
+    referenceTypeMenuEls.unshift(
       <MenuItem key="ref-item-field-placeholder" value="">
         <em>{placeholder}</em>
-      </MenuItem>,
-      ...referenceTypeMenuEls,
-    ];
+      </MenuItem>
+    );
   }
 
   return (
@@ -78,21 +100,24 @@ export default function ReferenceTypeSelect({
         {label}
         {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
       </Typography>
-      <Select
-        displayEmpty
-        fullWidth
-        id={formID}
-        inputProps={{ "aria-label": "Without label" }}
-        onChange={(event: SelectChangeEvent): void =>
-          onChange(event.target.value)
-        }
-        sx={{ background: "#fff" }}
-        value={value}
-        MenuProps={{ MenuListProps: { sx: { height: "320px" } } }}
-        size="small"
-      >
-        {referenceTypeMenuEls}
-      </Select>
+      {isFetching || isEmpty(referenceTypes) ? null : (
+        <Select
+          disabled={isFetching}
+          displayEmpty
+          fullWidth
+          id={formID}
+          inputProps={{ "aria-label": "Without label" }}
+          onChange={(event: SelectChangeEvent): void => {
+            onChange(event.target.value ?? "");
+          }}
+          sx={{ background: "#fff" }}
+          value={isFetching ? "" : sanityCheckedSelectedRefType}
+          MenuProps={{ MenuListProps: { sx: { height: "320px" } } }}
+          size="small"
+        >
+          {referenceTypeMenuEls}
+        </Select>
+      )}
     </Box>
   );
 }

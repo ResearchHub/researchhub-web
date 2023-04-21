@@ -28,7 +28,7 @@ import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceDoiSearchInput from "../../form/ReferenceDoiSearchInput";
 import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
-import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
+import ReferenceTypeSelect from "../../form/ReferenceTypeSelect";
 import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -50,12 +50,10 @@ export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
   const [selectedReferenceType, setSelectedReferenceType] =
-    useState<NullableString>(null);
+    useState<NullableString>("");
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
     useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
 
@@ -75,28 +73,25 @@ export default function ReferenceManualUploadDrawer({
       required: referenceSchemaValueSet.required,
     });
     setIsDrawerOpen(false);
-  }, [selectedReferenceType]);
+    setSelectedReferenceType("");
+  }, [
+    referenceSchemaValueSet,
+    referenceSchemaValueSet.schema,
+    referenceSchemaValueSet.required,
+  ]);
 
   useEffectOnReferenceTypeChange({
     prevRefSchemaValueSet: referenceSchemaValueSet,
     selectedReferenceType,
     setIsLoading,
     setReferenceSchemaValueSet,
-    setReferenceTypes,
-    setSelectedReferenceType,
   });
 
-  const formattedMenuItemProps = referenceTypes.map((refType: string) => ({
-    label: snakeCaseToNormalCase(refType),
-    value: refType,
-  }));
-
   const formattedSchemaInputs = [
-    <ReferenceItemFieldSelect
+    <ReferenceTypeSelect
       formID="ref-type"
       key="ref-type"
       label="Reference type"
-      menuItemProps={formattedMenuItemProps}
       onChange={setSelectedReferenceType}
       required
       value={selectedReferenceType}
@@ -216,6 +211,10 @@ export default function ReferenceManualUploadDrawer({
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
+                setSelectedReferenceType(
+                  // ReferenceTypeSelect will sanity check for us
+                  doiMetaData?.type.replace("-", "_")?.toUpperCase()
+                );
                 parseDoiSearchResultOntoValueSet({
                   doiMetaData,
                   setReferenceSchemaValueSet,
