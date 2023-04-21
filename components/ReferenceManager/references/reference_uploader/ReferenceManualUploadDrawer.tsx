@@ -32,8 +32,10 @@ import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-const APPLICABLE_LEFT_NAV_WIDTH =
-  LOCAL_LEFT_NAV_WIDTH + LEFT_SIDEBAR_MIN_WIDTH - 37;
+const CALCULATED_LEFT_MARGIN =
+  LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
+  LEFT_SIDEBAR_MIN_WIDTH /* Researchhub web left nav*/ +
+  2; /* arbitrary border "breather" */
 
 type Props = {
   drawerProps: {
@@ -149,7 +151,7 @@ export default function ReferenceManualUploadDrawer({
           background: "rgba(250, 250, 252, 1)",
           borderLeft: "1px solid #E9EAEF",
           boxSizing: "border-box",
-          marginLeft: `${APPLICABLE_LEFT_NAV_WIDTH + 3}px`,
+          marginLeft: `${CALCULATED_LEFT_MARGIN}px`,
           marginTop: `${ROOT_NAVBAR_HEIGHT}px`,
           paddingBottom: "0px",
           position: "relative",
