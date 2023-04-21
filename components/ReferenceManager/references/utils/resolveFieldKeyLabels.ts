@@ -3,7 +3,7 @@ import { filterNull, isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 const labelMap = {
-  creators: "Authors / Creators (comma separated)",
+  creators: "Authors / Creators",
   date: "Date (MM-DD-YYYY)",
   doi: "DOI",
   DOI: "DOI",
