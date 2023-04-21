@@ -10,7 +10,7 @@ import {
   isEmpty,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { fetchReferenceFromDoi } from "../api/fetchReferenceFromDoi";
+import { fetchReferenceFromDoi } from "../references/api/fetchReferenceFromDoi";
 import { NullableString } from "~/config/types/root_types";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
