@@ -1,9 +1,9 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import { TagsInput } from "react-tag-input-component";
 import { InputProps } from "./ReferenceItemFieldInput";
+import { ReactElement } from "react";
+import { TagsInput } from "react-tag-input-component";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import colors from "~/config/themes/colors";
+import Typography from "@mui/material/Typography";
 
 type Props = InputProps & {};
 

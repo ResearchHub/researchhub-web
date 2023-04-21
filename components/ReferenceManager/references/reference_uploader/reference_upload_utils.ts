@@ -85,15 +85,15 @@ export function parseDoiSearchResultOntoValueSet({
 
 export const handleSubmit = ({
   event,
-  initComponentStates,
   referenceSchemaValueSet,
+  resetComponentState,
   selectedReferenceType,
   setIsSubmitting,
   setReferencesFetchTime,
   organizationId,
 }: {
   event: SyntheticEvent;
-  initComponentStates: () => void;
+  resetComponentState: () => void;
   referenceSchemaValueSet: any;
   selectedReferenceType: NullableString;
   setIsSubmitting: (flag: boolean) => void;
@@ -128,7 +128,7 @@ export const handleSubmit = ({
     onError: (error) => alert(error),
     onSuccess: () => {
       setReferencesFetchTime(Date.now());
-      initComponentStates();
+      resetComponentState();
     },
     payload,
   });

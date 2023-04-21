@@ -1,3 +1,6 @@
+import { Button } from "@mui/material";
+import { ClipLoader } from "react-spinners";
+import { convertHttpToHttps } from "~/config/utils/routing";
 import {
   emptyFncWithMsg,
   filterNull,
@@ -31,9 +34,6 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
-import { convertHttpToHttps } from "~/config/utils/routing";
-import { ClipLoader } from "react-spinners";
-import { Button } from "@mui/material";
 
 type Props = {};
 
@@ -91,6 +91,10 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       );
     }
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
+  console.warn(
+    "sortSchemaFieldKeys(Object.keys(localReferenceFields)): ",
+    sortSchemaFieldKeys(Object.keys(localReferenceFields))
+  );
 
   const tabInputItems = filterNull(
     // TODO: calvinhlee - we need better ways to sort these fields

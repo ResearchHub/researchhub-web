@@ -26,13 +26,13 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
+import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
-import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 
 const CALCULATED_LEFT_MARGIN =
   LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
@@ -260,8 +260,8 @@ export default function ReferenceManualUploadDrawer({
               onClick={(event: SyntheticEvent): void =>
                 handleSubmit({
                   event,
-                  resetComponentState,
                   referenceSchemaValueSet,
+                  resetComponentState,
                   selectedReferenceType,
                   setIsSubmitting,
                   setReferencesFetchTime,
