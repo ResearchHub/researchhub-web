@@ -15,7 +15,7 @@ import colors from "~/config/themes/colors";
 import ContributionHeader from "../Contribution/ContributionHeader";
 import { ReactNode } from "react";
 import Link from "next/link";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { isEmpty, localWarnLog } from "~/config/utils/nullchecks";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 import config from "~/components/Comment/lib/config";
 
@@ -147,13 +147,13 @@ const ContributionEntry = ({
         );
         break;
       default:
-        console.warn("[Contribution] Could not render contribution item", item);
+        localWarnLog("[Contribution] Could not render contribution item", item);
     }
   } catch (error) {
-    console.warn("[Contribution] Could not render", entry);
+    localWarnLog("[Contribution] Could not render", entry);
     return null;
   }
-  
+
   return (
     <>
       <div className={css(styles.entryContent)}>

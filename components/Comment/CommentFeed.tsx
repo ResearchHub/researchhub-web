@@ -17,7 +17,7 @@ import CommentDrawer from "./CommentDrawer";
 import ContentSupportModal from "../Modals/ContentSupportModal";
 import CommentEditor from "./CommentEditor";
 import { useDispatch, useSelector } from "react-redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { isEmpty, localWarnLog } from "~/config/utils/nullchecks";
 import { RootState } from "~/redux";
 import colors from "./lib/colors";
 import { Purchase } from "~/config/types/purchase";
@@ -121,7 +121,7 @@ const CommentFeed = ({
       const updatedComments = [...comments];
       setComments(updatedComments);
     } else {
-      console.warn(
+      localWarnLog(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
       );
     }
@@ -145,7 +145,7 @@ const CommentFeed = ({
       setComments(updatedComments);
       onCommentRemove && onCommentRemove(comment);
     } else {
-      console.warn(
+      localWarnLog(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
       );
     }
@@ -172,7 +172,7 @@ const CommentFeed = ({
         })?.comment;
 
         if (!parentComment) {
-          console.warn(
+          localWarnLog(
             `Could not find parent comment ${parentId}. This should not happen. Aborting create.`
           );
           return false;
@@ -224,7 +224,7 @@ const CommentFeed = ({
         const updatedComments = [...comments];
         setComments(updatedComments);
       } else {
-        console.warn(
+        localWarnLog(
           `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
         );
       }

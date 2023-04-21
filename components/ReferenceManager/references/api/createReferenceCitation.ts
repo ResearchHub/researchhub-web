@@ -13,8 +13,6 @@ export const createReferenceCitation = ({
   onSuccess,
   payload,
 }: Args): void => {
-  console.warn("YOYOYOYOYOYO: ", payload);
-
   fetch(
     buildApiUri({ apiPath: `citation_entry` }),
     API.POST_FILE_CONFIG(payload)
