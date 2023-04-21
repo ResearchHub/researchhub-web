@@ -56,7 +56,6 @@ export default function ReferenceManualUploadDrawer({
     useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
 
   const initComponentStates = useCallback((): void => {
-    setIsDrawerOpen(false);
     setIsLoading(false);
     setIsSubmitting(false);
     const resettedSchema = {};
@@ -69,6 +68,7 @@ export default function ReferenceManualUploadDrawer({
       schema: resettedSchema,
       required: referenceSchemaValueSet.required,
     });
+    setIsDrawerOpen(false);
   }, [selectedReferenceType]);
 
   useEffectOnReferenceTypeChange({
@@ -129,7 +129,10 @@ export default function ReferenceManualUploadDrawer({
     <Drawer
       anchor="left"
       BackdropProps={{ invisible: true }}
-      onBackdropClick={initComponentStates}
+      onBackdropClick={(event: SyntheticEvent): void => {
+        event.preventDefault();
+        initComponentStates();
+      }}
       open={isDrawerOpen}
       onClose={(event: SyntheticEvent): void => {
         event.preventDefault();
@@ -137,7 +140,7 @@ export default function ReferenceManualUploadDrawer({
       }}
       sx={{
         width: "0",
-        zIndex: 3 /* AppTopBar zIndex is 3 */,
+        zIndex: 3 /* AppTopBar zIndex is 5 */,
         height: "100%",
       }}
     >
