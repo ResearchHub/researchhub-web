@@ -140,8 +140,6 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
     openBounties.length === 0 && comment.createdBy.id !== currentUser?.id;
   let isAllowedToAcceptAnswer = false;
 
-
-
   // Root bounties are bounties that are not contributions.
   // A user can award a bounty if they currently have an open root bounty.
   const openUserOwnedRootBounty: Bounty = findOpenRootBounties({
