@@ -15,22 +15,12 @@ export function useEffectOnReferenceTypeChange({
   setReferenceTypes,
   setSelectedReferenceType,
 }): void {
+  const wasSchemaEmpty = isEmpty(
+    Object.keys(prevRefSchemaValueSet?.schema ?? {})
+  );
   useEffect((): void => {
     setIsLoading(true);
-    if (!isEmpty(selectedReferenceType)) {
-      fetchReferenceCitationSchema({
-        citation_type: selectedReferenceType,
-        onError: emptyFncWithMsg,
-        onSuccess: ({ schema, required }): void => {
-          setIsLoading(false);
-          // Pasting existing values onto the new schema set
-          for (const key in schema) {
-            schema[key] = prevRefSchemaValueSet?.schema[key] ?? "";
-          }
-          setReferenceSchemaValueSet({ schema, required });
-        },
-      });
-    } else {
+    if (isEmpty(selectedReferenceType)) {
       fetchReferenceCitationTypes({
         onError: (error) => {
           emptyFncWithMsg(error);
@@ -49,8 +39,21 @@ export function useEffectOnReferenceTypeChange({
           });
         },
       });
+    } else {
+      fetchReferenceCitationSchema({
+        citation_type: selectedReferenceType,
+        onError: emptyFncWithMsg,
+        onSuccess: ({ schema, required }): void => {
+          setIsLoading(false);
+          // Pasting existing values onto the new schema set
+          for (const key in schema) {
+            schema[key] = prevRefSchemaValueSet?.schema[key] ?? "";
+          }
+          setReferenceSchemaValueSet({ schema, required });
+        },
+      });
     }
-  }, [selectedReferenceType]);
+  }, [selectedReferenceType, wasSchemaEmpty]);
 }
 
 export function parseDoiSearchResultOntoValueSet({
@@ -66,9 +69,9 @@ export function parseDoiSearchResultOntoValueSet({
     schema: {
       ...referenceSchemaValueSet.schema,
       access_date: moment().format("MM-DD-YYYY"),
-      creators: (authorships ?? [])
-        .map((authorship) => authorship.author?.display_name ?? "")
-        .join(", "),
+      creators: (authorships ?? []).map(
+        (authorship) => authorship.author?.display_name ?? ""
+      ),
       date: !isEmpty(publication_date)
         ? moment(publication_date).format("MM-DD-YYYY")
         : "",
@@ -82,15 +85,15 @@ export function parseDoiSearchResultOntoValueSet({
 
 export const handleSubmit = ({
   event,
-  initComponentStates,
   referenceSchemaValueSet,
+  resetComponentState,
   selectedReferenceType,
   setIsSubmitting,
   setReferencesFetchTime,
   organizationId,
 }: {
   event: SyntheticEvent;
-  initComponentStates: () => void;
+  resetComponentState: () => void;
   referenceSchemaValueSet: any;
   selectedReferenceType: NullableString;
   setIsSubmitting: (flag: boolean) => void;
@@ -99,15 +102,13 @@ export const handleSubmit = ({
   event.preventDefault();
   setIsSubmitting(true);
   const formattedCreators =
-    referenceSchemaValueSet?.schema?.creators
-      ?.split(", ")
-      ?.map((creatorName) => {
-        const splittedName = creatorName.split(" ");
-        return {
-          first_name: splittedName[0],
-          last_name: splittedName.slice(1).join(" "),
-        };
-      }) ?? [];
+    referenceSchemaValueSet?.schema?.creators?.map((creatorName) => {
+      const splittedName = creatorName.split(" ");
+      return {
+        first_name: splittedName[0],
+        last_name: splittedName.slice(1).join(" "),
+      };
+    }) ?? [];
 
   const payload = toFormData({
     fields: {
@@ -127,7 +128,7 @@ export const handleSubmit = ({
     onError: (error) => alert(error),
     onSuccess: () => {
       setReferencesFetchTime(Date.now());
-      initComponentStates();
+      resetComponentState();
     },
     payload,
   });
