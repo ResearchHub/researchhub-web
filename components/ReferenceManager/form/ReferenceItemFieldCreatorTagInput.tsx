@@ -12,7 +12,7 @@ export default function ReferenceItemFieldCreatorTagInput({
   label,
   onChange,
   required = false,
-  value = "",
+  value = [],
 }: Props): ReactElement {
   return (
     <Box
