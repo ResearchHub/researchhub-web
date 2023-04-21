@@ -1,23 +1,17 @@
-import {
-  ChangeEvent,
-  KeyboardEventHandler,
-  ReactElement,
-  SyntheticEvent,
-  useState,
-} from "react";
+import { ChangeEvent, ReactElement, SyntheticEvent, useState } from "react";
+import { ClipLoader } from "react-spinners";
 import {
   emptyFncWithMsg,
   isEmpty,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { fetchReferenceFromDoi } from "../api/fetchReferenceFromDoi";
+import { fetchReferenceFromDoi } from "./api/fetchReferenceFromDoi";
 import { NullableString } from "~/config/types/root_types";
 import Box from "@mui/material/Box";
+import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
-import { ClipLoader } from "react-spinners";
-import colors from "~/config/themes/colors";
 
 type Props = {
   onSearchSuccess: (searchMetaData: any) => void;

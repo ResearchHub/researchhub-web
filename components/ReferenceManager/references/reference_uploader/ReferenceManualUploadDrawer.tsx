@@ -19,20 +19,19 @@ import {
   resolveFieldKeyLabels,
   sortSchemaFieldKeys,
 } from "../utils/resolveFieldKeyLabels";
-import { snakeCaseToNormalCase } from "~/config/utils/string";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
 import PrimaryButton from "../../form/PrimaryButton";
-import ReferenceDoiSearchInput from "./ReferenceDoiSearchInput";
+import ReferenceDoiSearchInput from "../../form/ReferenceDoiSearchInput";
 import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
-import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
-import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
+import ReferenceTypeSelect from "../../form/ReferenceTypeSelect";
+import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 const CALCULATED_LEFT_MARGIN =
   LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
@@ -50,12 +49,10 @@ export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
 }: Props): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [referenceTypes, setReferenceTypes] = useState<string[]>([]);
   const [selectedReferenceType, setSelectedReferenceType] =
-    useState<NullableString>(null);
+    useState<NullableString>("");
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
     useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
 
@@ -75,28 +72,25 @@ export default function ReferenceManualUploadDrawer({
       required: referenceSchemaValueSet.required,
     });
     setIsDrawerOpen(false);
-  }, [selectedReferenceType]);
+    setSelectedReferenceType("");
+  }, [
+    referenceSchemaValueSet,
+    referenceSchemaValueSet.schema,
+    referenceSchemaValueSet.required,
+  ]);
 
   useEffectOnReferenceTypeChange({
     prevRefSchemaValueSet: referenceSchemaValueSet,
     selectedReferenceType,
     setIsLoading,
     setReferenceSchemaValueSet,
-    setReferenceTypes,
-    setSelectedReferenceType,
   });
 
-  const formattedMenuItemProps = referenceTypes.map((refType: string) => ({
-    label: snakeCaseToNormalCase(refType),
-    value: refType,
-  }));
-
   const formattedSchemaInputs = [
-    <ReferenceItemFieldSelect
+    <ReferenceTypeSelect
       formID="ref-type"
       key="ref-type"
       label="Reference type"
-      menuItemProps={formattedMenuItemProps}
       onChange={setSelectedReferenceType}
       required
       value={selectedReferenceType}
@@ -126,7 +120,7 @@ export default function ReferenceManualUploadDrawer({
               onChange={onChange}
               placeholder={label}
               required={isRequired}
-              value={schemaFieldValue}
+              value={isEmpty(schemaFieldValue) ? [] : schemaFieldValue}
             />
           );
         } else {
@@ -216,6 +210,10 @@ export default function ReferenceManualUploadDrawer({
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
+                setSelectedReferenceType(
+                  // ReferenceTypeSelect will sanity check for us
+                  doiMetaData?.type.replace("-", "_")?.toUpperCase()
+                );
                 parseDoiSearchResultOntoValueSet({
                   doiMetaData,
                   setReferenceSchemaValueSet,
@@ -265,7 +263,7 @@ export default function ReferenceManualUploadDrawer({
                   selectedReferenceType,
                   setIsSubmitting,
                   setReferencesFetchTime,
-                  organizationId: currentOrg.id,
+                  organizationId: currentOrg?.id,
                 })
               }
               size="large"

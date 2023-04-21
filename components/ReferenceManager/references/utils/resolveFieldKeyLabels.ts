@@ -1,5 +1,4 @@
-import { keys } from "undux/dist/src/utils";
-import { filterNull, isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 const labelMap = {
@@ -32,19 +31,4 @@ export const sortSchemaFieldKeys = (fieldKeys: string[]): string[] => {
   keySet.delete("doi");
 
   return [...subResult, ...Array.from(keySet)];
-  // return labels
-  //   .sort((a: string, b: string): number => {
-  //     if (a === "title") {
-  //       return -1;
-  //     } else if (a === "creators") {
-  //       return 0;
-  //     }
-  //     return 1;
-  //   })
-  //   .sort((a: string, _b): number => {
-  //     if (a === "title") {
-  //       return -1;
-  //     }
-  //     return 0;
-  //   });
 };
