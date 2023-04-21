@@ -4,17 +4,27 @@ import { fetchUserOrgs } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 
 type ContextType = {
-  orgs: [];
+  orgs: Org[];
+  currentOrg: Org | undefined;
+  setCurrentOrg: (org: Org) => void;
+};
+
+type Org = {
+  id?: number;
+  name?: string;
 };
 
 const OrganizationContext = createContext<ContextType>({
   orgs: [],
+  setCurrentOrg: () => {},
+  currentOrg: {},
 });
 
 export const useOrgs = () => useContext(OrganizationContext);
 
 export const OrganizationContextProvider = ({ children, user }) => {
   const [orgs, setOrgs] = useState([]);
+  const [currentOrg, setCurrentOrg] = useState({});
 
   useEffect(() => {
     const _fetchAndSetUserOrgs = async () => {
@@ -46,6 +56,8 @@ export const OrganizationContextProvider = ({ children, user }) => {
     <OrganizationContext.Provider
       value={{
         orgs,
+        currentOrg,
+        setCurrentOrg,
       }}
     >
       {children}

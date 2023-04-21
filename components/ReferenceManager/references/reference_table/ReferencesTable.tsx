@@ -11,6 +11,7 @@ import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 function useEffectFetchReferenceCitations({
   onError,
@@ -21,12 +22,23 @@ function useEffectFetchReferenceCitations({
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
 
+  const { currentOrg } = useOrgs();
+
   useEffect(() => {
-    if (!isNullOrUndefined(user?.id)) {
+    if (!isNullOrUndefined(user?.id) && currentOrg?.id) {
       setIsLoading(true);
-      fetchCurrentUserReferenceCitations({ onSuccess, onError });
+      fetchCurrentUserReferenceCitations({
+        onSuccess,
+        onError,
+        organizationId: currentOrg?.id,
+      });
     }
-  }, [fetchCurrentUserReferenceCitations, user?.id, referencesFetchTime]);
+  }, [
+    fetchCurrentUserReferenceCitations,
+    user?.id,
+    referencesFetchTime,
+    currentOrg,
+  ]);
 }
 
 export default function ReferencesTable() {

@@ -31,6 +31,7 @@ import ReferenceItemFieldSelect from "../../form/ReferenceItemFieldSelect";
 import ReferenceUploadAttachments from "./ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 const CALCULATED_LEFT_MARGIN =
   LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
@@ -56,6 +57,10 @@ export default function ReferenceManualUploadDrawer({
     useState<NullableString>(null);
   const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
     useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
+
+  const { currentOrg } = useOrgs();
+
+  console.log(currentOrg);
 
   const initComponentStates = useCallback((): void => {
     setIsLoading(false);
@@ -245,6 +250,7 @@ export default function ReferenceManualUploadDrawer({
                   selectedReferenceType,
                   setIsSubmitting,
                   setReferencesFetchTime,
+                  organizationId: currentOrg.id,
                 })
               }
               size="large"

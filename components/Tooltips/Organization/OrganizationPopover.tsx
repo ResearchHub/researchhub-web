@@ -27,7 +27,6 @@ type Props = {
 export default function OrganizationPopover({
   isReferenceManager,
 }: Props): ReactElement {
-  const [currentOrg, setCurrentOrg] = useState();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
@@ -35,7 +34,7 @@ export default function OrganizationPopover({
 
   const { organization } = router.query;
 
-  const { orgs } = useOrgs();
+  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
 
   useEffect(() => {
     if (organization && orgs.length) {
