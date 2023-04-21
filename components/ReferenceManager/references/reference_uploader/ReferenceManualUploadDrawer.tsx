@@ -121,7 +121,7 @@ export default function ReferenceManualUploadDrawer({
               onChange={onChange}
               placeholder={label}
               required={isRequired}
-              value={schemaFieldValue}
+              value={isEmpty(schemaFieldValue) ? [] : schemaFieldValue}
             />
           );
         } else {
