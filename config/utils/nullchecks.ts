@@ -1,7 +1,5 @@
-import { NullableString } from "../types/root_types";
-
-export function localWarnLog(message: NullableString): void {
-  console.warn(message);
+export function localWarn(...args: any[]): void {
+  console.warn(...args);
 }
 export function emptyFncWithMsg(
   message: Error | string | null | undefined | unknown

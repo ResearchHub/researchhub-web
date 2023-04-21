@@ -10,14 +10,13 @@ import {
   PostContributionItem,
   RscSupportContributionItem,
 } from "~/config/types/contribution";
+import { localWarn } from "~/config/utils/nullchecks";
+import { ReactNode } from "react";
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
-import ContributionHeader from "../Contribution/ContributionHeader";
-import { ReactNode } from "react";
-import Link from "next/link";
-import { isEmpty, localWarnLog } from "~/config/utils/nullchecks";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 import config from "~/components/Comment/lib/config";
+import ContributionHeader from "../Contribution/ContributionHeader";
 
 type Args = {
   entry: Contribution;
@@ -147,10 +146,10 @@ const ContributionEntry = ({
         );
         break;
       default:
-        localWarnLog("[Contribution] Could not render contribution item", item);
+        localWarn("[Contribution] Could not render contribution item", item);
     }
   } catch (error) {
-    localWarnLog("[Contribution] Could not render", entry);
+    localWarn("[Contribution] Could not render", entry);
     return null;
   }
 

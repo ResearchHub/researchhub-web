@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AUTH_TOKEN } from "~/config/constants";
-import { localWarnLog } from "~/config/utils/nullchecks";
+import { localWarn } from "~/config/utils/nullchecks";
 
 const ALLOWED_ORIGINS = [
   "localhost",
@@ -109,14 +109,14 @@ export default function withWebSocket(
 
       ws.onclose = () => {
         setConnected(false);
-        localWarnLog(`Disconnected from websocket at ${url}`);
+        localWarn(`Disconnected from websocket at ${url}`);
         autoReconnect && reconnect();
       };
     }
 
     function reconnect() {
       if (!ws || ws.readyState === WebSocket.CLOSED) {
-        localWarnLog(`Attempting to reconnect to websocket at ${url}`);
+        localWarn(`Attempting to reconnect to websocket at ${url}`);
         configureWebSocket();
       }
     }
@@ -126,7 +126,7 @@ export default function withWebSocket(
         code = code || CLOSE_CODES.GOING_AWAY;
         reason = reason || "Unmounting";
         ws.onclose = () => {
-          localWarnLog(`Closing websocket connection at ${url}: ${reason}`);
+          localWarn(`Closing websocket connection at ${url}: ${reason}`);
         };
         try {
           // Params are not supported by some verisons of Firefox

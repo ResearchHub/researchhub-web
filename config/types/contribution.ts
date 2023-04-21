@@ -2,20 +2,18 @@ import {
   AuthorProfile,
   ID,
   KeyOf,
-  parseAuthorProfile,
   parseUnifiedDocument,
   parseUser,
   RHUser,
   UnifiedDocument,
 } from "./root_types";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
+import { getUrlToUniDoc } from "../utils/routing";
+import { localWarn } from "../utils/nullchecks";
 import { parseContentType, ContentType } from "./contentType";
 import { parseHub, Hub } from "./hub";
-import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
-import { Comment, parseComment } from "~/components/Comment/lib/types";
-import { getUrlToUniDoc } from "../utils/routing";
-import { localWarnLog } from "../utils/nullchecks";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 
 export type RelatedBountyItem = {
   contentType: ContentType;
@@ -210,7 +208,7 @@ export const parseContribution = (raw: any): Contribution => {
 
     mapped["_raw"] = raw;
   } catch (error) {
-    localWarnLog("[Contribution] Failed to parse contribution", raw);
+    localWarn("[Contribution] Failed to parse contribution", raw);
   }
 
   /* @ts-ignore */
