@@ -68,7 +68,10 @@ const Notebook = ({ auth, user, wsResponse }) => {
       let currOrg;
 
       try {
-        userOrgs = await fetchUserOrgs({ user });
+        userOrgs = await fetchUserOrgs({
+          user,
+          route: "get_user_organizations",
+        });
         currOrg = getCurrentOrgFromRouter(userOrgs);
 
         setCurrentOrganization(currOrg);

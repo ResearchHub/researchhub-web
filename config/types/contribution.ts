@@ -2,19 +2,18 @@ import {
   AuthorProfile,
   ID,
   KeyOf,
-  parseAuthorProfile,
   parseUnifiedDocument,
   parseUser,
   RHUser,
   UnifiedDocument,
 } from "./root_types";
 import { FLAG_REASON } from "~/components/Flag/config/flag_constants";
+import { getUrlToUniDoc } from "../utils/routing";
+import { localWarn } from "../utils/nullchecks";
 import { parseContentType, ContentType } from "./contentType";
 import { parseHub, Hub } from "./hub";
-import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { POST_TYPES } from "~/components/TextEditor/config/postTypes";
-import { Comment, parseComment } from "~/components/Comment/lib/types";
-import { getUrlToUniDoc } from "../utils/routing";
+import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 
 export type RelatedBountyItem = {
   contentType: ContentType;
@@ -25,7 +24,7 @@ export type RscSupportSourceItem = {
   id: ID;
   unifiedDocument: UnifiedDocument;
   contentType: ContentType;
-  content?: any
+  content?: any;
 };
 
 export type CommentContributionItem = {
@@ -36,14 +35,14 @@ export type CommentContributionItem = {
   id: ID;
   content: any;
   postType: POST_TYPES;
-  parent: null|CommentContributionItemParent
+  parent: null | CommentContributionItemParent;
 };
 
 export type CommentContributionItemParent = {
   content: any;
   id: ID;
   createdBy: RHUser;
-}
+};
 
 export type PaperContributionItem = {
   unifiedDocument: UnifiedDocument;
@@ -107,12 +106,12 @@ export type Verdict = {
 export type Contribution = {
   raw: any;
   item:
-  | PaperContributionItem
-  | PostContributionItem
-  | HypothesisContributionItem
-  | CommentContributionItem
-  | BountyContributionItem
-  | RscSupportContributionItem;
+    | PaperContributionItem
+    | PostContributionItem
+    | HypothesisContributionItem
+    | CommentContributionItem
+    | BountyContributionItem
+    | RscSupportContributionItem;
   createdDate: Date;
   contentType: ContentType;
   flaggedBy?: FlaggedBy | null;
@@ -126,7 +125,8 @@ export type Contribution = {
 };
 
 export const parseBountyRelatedItem = (raw: any): RelatedBountyItem => {
-  const uniDoc = raw?.unified_document || raw?.thread?.content_object?.unified_document;
+  const uniDoc =
+    raw?.unified_document || raw?.thread?.content_object?.unified_document;
 
   return {
     contentType: parseContentType(raw.content_type),
@@ -149,7 +149,7 @@ export const parseFlaggedBy = (raw: any): FlaggedBy | null => {
 };
 
 export const parseContribution = (raw: any): Contribution => {
-  let mapped:any = {}
+  let mapped: any = {};
   try {
     mapped = {
       raw,
@@ -161,8 +161,8 @@ export const parseContribution = (raw: any): Contribution => {
       hubs: (raw.hubs?.length
         ? raw.hubs
         : raw.item?.hubs?.length
-          ? raw.item.hubs
-          : []
+        ? raw.item.hubs
+        : []
       ).map((h) => parseHub(h)),
     };
 
@@ -207,33 +207,33 @@ export const parseContribution = (raw: any): Contribution => {
     }
 
     mapped["_raw"] = raw;
-  }
-  catch (error) {
-    console.warn("[Contribution] Failed to parse contribution", raw);
+  } catch (error) {
+    localWarn("[Contribution] Failed to parse contribution", raw);
   }
 
   /* @ts-ignore */
   return mapped;
 };
 
-
 export const parseCommentContributionItem = (
   raw: any
 ): CommentContributionItem => {
-
   const mapped = {
     content: raw.item.comment_content_json,
     createdBy: parseUser(raw.created_by || raw.item.created_by),
-    unifiedDocument: parseUnifiedDocument(raw.item.thread.content_object.unified_document),
+    unifiedDocument: parseUnifiedDocument(
+      raw.item.thread.content_object.unified_document
+    ),
     id: raw.item.id,
     createdDate: raw.created_date,
     postType: raw.item.thread?.thread_type,
     parent: raw.item.parent
-    ? {
-      id: raw.item.parent.id,
-      content: raw.item.parent.comment_content_json,
-      createdBy: parseUser(raw.item.parent.created_by),
-    } : null,
+      ? {
+          id: raw.item.parent.id,
+          content: raw.item.parent.comment_content_json,
+          createdBy: parseUser(raw.item.parent.created_by),
+        }
+      : null,
   };
 
   return mapped;
@@ -246,12 +246,16 @@ export const parseBountyContributionItem = (
 
   const mapped = {
     createdBy: parseUser(raw.created_by),
-    unifiedDocument: parseUnifiedDocument(raw?.item?.item?.thread?.content_object?.unified_document),
+    unifiedDocument: parseUnifiedDocument(
+      raw?.item?.item?.thread?.content_object?.unified_document
+    ),
     id: raw.id,
     createdDate: raw.created_date,
     amount: formatBountyAmount({ amount: raw.item.amount }),
     content: raw?.item?.item?.comment_content_json,
-    ...(raw.item.bounty_parent && {parent: new Bounty(raw.item.bounty_parent)}),
+    ...(raw.item.bounty_parent && {
+      parent: new Bounty(raw.item.bounty_parent),
+    }),
   };
 
   return mapped;
@@ -264,9 +268,9 @@ export const parsePaperContributionItem = (raw: any): PaperContributionItem => {
     slug: raw.item.slug,
     createdBy: parseUser(
       raw.created_by ||
-      raw.uploaded_by ||
-      raw.item.created_by ||
-      raw.item.uploaded_by
+        raw.uploaded_by ||
+        raw.item.created_by ||
+        raw.item.uploaded_by
     ),
     unifiedDocument: parseUnifiedDocument(raw.item.unified_document),
     createdDate: raw.created_date,
@@ -296,8 +300,8 @@ export const parseSupportSourceItem = (
   raw: any,
   contentType: any
 ): RscSupportSourceItem => {
-
-  const unifiedDocument = raw?.thread?.content_object?.unified_document || raw.unified_document
+  const unifiedDocument =
+    raw?.thread?.content_object?.unified_document || raw.unified_document;
 
   return {
     unifiedDocument: parseUnifiedDocument(unifiedDocument),
@@ -312,7 +316,6 @@ export const parseRscSupportContributionItem = (
 ): RscSupportContributionItem => {
   let createdBy;
   let recipient;
-
 
   if (raw.item.content_type.app_label === "discussion") {
     createdBy = parseUser(raw.created_by);
@@ -369,4 +372,4 @@ export const getContributionUrl = (entry: Contribution): string => {
       item = item as PostContributionItem;
       return getUrlToUniDoc(item?.unifiedDocument);
   }
-}
+};

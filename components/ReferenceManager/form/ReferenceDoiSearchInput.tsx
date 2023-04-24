@@ -1,17 +1,17 @@
 import { ChangeEvent, ReactElement, SyntheticEvent, useState } from "react";
+import { ClipLoader } from "react-spinners";
 import {
   emptyFncWithMsg,
   isEmpty,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { fetchReferenceFromDoi } from "../api/fetchReferenceFromDoi";
+import { fetchReferenceFromDoi } from "./api/fetchReferenceFromDoi";
 import { NullableString } from "~/config/types/root_types";
 import Box from "@mui/material/Box";
+import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
-import { ClipLoader } from "react-spinners";
-import colors from "~/config/themes/colors";
 
 type Props = {
   onSearchSuccess: (searchMetaData: any) => void;
@@ -22,6 +22,23 @@ export default function ReferenceDoiSearchInput({
 }: Props): ReactElement {
   const [doi, setDoi] = useState<NullableString>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const executeSearch = (): void => {
+    if (!isEmpty(doi)) {
+      setIsLoading(true);
+      fetchReferenceFromDoi({
+        doi: nullthrows(doi),
+        onSuccess: (payload) => {
+          onSearchSuccess(payload);
+          setIsLoading(false);
+        },
+        onError: (error) => {
+          emptyFncWithMsg(error);
+          setIsLoading(false);
+        },
+      });
+    }
+  };
 
   return (
     <Box
@@ -58,6 +75,11 @@ export default function ReferenceDoiSearchInput({
           onChange={(event: ChangeEvent<HTMLInputElement>): void => {
             setDoi(event?.target?.value);
           }}
+          onKeyDown={(event): void => {
+            if (event.key === "Enter" || event?.keyCode === 13) {
+              executeSearch();
+            }
+          }}
           placeholder="Enter identifiers (doi)"
           size="small"
           value={doi}
@@ -65,7 +87,6 @@ export default function ReferenceDoiSearchInput({
             background: "#fff",
           }}
         />
-
         <Box
           sx={{
             alignItems: "center",
@@ -78,20 +99,7 @@ export default function ReferenceDoiSearchInput({
           }}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
-            if (!isEmpty(doi)) {
-              setIsLoading(true);
-              fetchReferenceFromDoi({
-                doi: nullthrows(doi),
-                onSuccess: (payload) => {
-                  onSearchSuccess(payload);
-                  setIsLoading(false);
-                },
-                onError: (error) => {
-                  emptyFncWithMsg(error);
-                  setIsLoading(false);
-                },
-              });
-            }
+            executeSearch();
           }}
         >
           {isLoading ? (

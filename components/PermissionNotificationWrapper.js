@@ -6,6 +6,7 @@ import {
   currentUserHasMinimumReputation,
   getMinimumReputation,
 } from "~/config/utils/reputation";
+import { localWarn } from "~/config/utils/nullchecks";
 
 const PropsWarning = `Must supply at least one of the following props to
 PermissionNotificationWrapper: loginRequired, onClick, permissionKey.
@@ -32,7 +33,7 @@ const PermissionNotificationWrapper = (props) => {
     } else if (onClick) {
       onClick(e);
     } else {
-      console.warn(PropsWarning);
+      localWarn(PropsWarning);
     }
   }
 

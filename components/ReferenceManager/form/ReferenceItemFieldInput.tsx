@@ -9,7 +9,7 @@ import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
 
-type Props = {
+export type InputProps = {
   disabled?: boolean;
   formID: string;
   label: string;
@@ -27,7 +27,7 @@ export default function ReferenceItemFieldInput({
   placeholder,
   required = false,
   value = "",
-}: Props): ReactElement {
+}: InputProps): ReactElement {
   return (
     <Box
       sx={{

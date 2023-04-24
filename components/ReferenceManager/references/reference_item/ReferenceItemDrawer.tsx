@@ -1,3 +1,6 @@
+import { Button } from "@mui/material";
+import { ClipLoader } from "react-spinners";
+import { convertHttpToHttps } from "~/config/utils/routing";
 import {
   emptyFncWithMsg,
   filterNull,
@@ -31,6 +34,7 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
+import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
 
 type Props = {};
 
@@ -66,8 +70,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     referenceItemDrawerData?.fields ?? {}
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  const requiredFieldsSet = useMemo(
+  const hasAttachment = !isEmpty(referenceItemDrawerData?.attachment);
+  const _requiredFieldsSet = useMemo(
     // NOTE: calvinhlee - this needs to be improved from BE
     () => new Set(referenceItemDrawerData?.required_fields ?? []),
     [referenceItemDrawerData?.id]
@@ -90,29 +94,47 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
   }, [referenceItemDrawerData?.id, isDrawerOpen]);
 
   const tabInputItems = filterNull(
-    // TODO: calvinhlee - we need better ways to sort these fields
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
       (field_key): ReactElement<typeof ReferenceItemFieldInput> | null => {
         let label = resolveFieldKeyLabels(field_key),
           value = localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
-        return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
-          <ReferenceItemFieldInput
-            formID={field_key}
-            key={`reference-item-tab-input-${field_key}`}
-            label={label}
-            onChange={(newValue: string): void => {
-              setLocalReferenceFields({
-                ...localReferenceFields,
-                [field_key]: newValue,
-              });
-            }}
-            placeholder={label}
-            required={isRequired}
-            value={value}
-          />
-        );
+        if (field_key === "creators") {
+          return (
+            <ReferenceItemFieldCreatorTagInput
+              formID={field_key}
+              key={`reference-item-tab-input-${field_key}`}
+              label={label}
+              onChange={(newValue: string[]): void => {
+                setLocalReferenceFields({
+                  ...localReferenceFields,
+                  [field_key]: newValue.join(", "),
+                });
+              }}
+              placeholder={label}
+              required={isRequired}
+              value={value.split(", ")}
+            />
+          );
+        } else {
+          return TAB_ITEM_FILTER_KEYS.has(field_key) ? null : (
+            <ReferenceItemFieldInput
+              formID={field_key}
+              key={`reference-item-tab-input-${field_key}`}
+              label={label}
+              onChange={(newValue: string): void => {
+                setLocalReferenceFields({
+                  ...localReferenceFields,
+                  [field_key]: newValue,
+                });
+              }}
+              placeholder={label}
+              required={isRequired}
+              value={value}
+            />
+          );
+        }
       }
     )
   );
@@ -123,16 +145,17 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
       BackdropProps={{ invisible: true }}
       onBackdropClick={() => setIsDrawerOpen(false)}
       open={isDrawerOpen}
-      // onClose={(event: SyntheticEvent): void => setIsDrawerOpen(false)}
       sx={{
         width: "0",
         zIndex: 4 /* AppTopBar zIndex is 3 */,
+        height: "100%",
       }}
     >
       <Box
-        padding="32px"
         sx={{
+          padding: "32px 24px 0",
           background: "rgb(250 250 252)",
+          boxSizing: "border-box",
           width: "472px",
         }}
       >
@@ -178,9 +201,39 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           </Typography>
         </Stack>
         {tabInputItems}
-        <Box alignItems="center" display="flex" justifyContent="center">
+        {hasAttachment ? (
+          <div
+            style={{
+              height: "20%",
+              marginBottom: "292px",
+            }}
+          >
+            <iframe
+              height={"100%"}
+              src={convertHttpToHttps(referenceItemDrawerData?.attachment)}
+              width={"100%"}
+            />
+          </div>
+        ) : null}
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        sx={{
+          background: "rgb(250, 250, 252)",
+          borderTop: "1px solid #E9EAEF",
+          bottom: "0px",
+          boxSizing: "border-box",
+          left: 0,
+          minHeight: 60,
+          padding: "0 24px",
+          position: "sticky",
+          width: "100%",
+        }}
+      >
+        <div style={{ width: "88px" }}>
           <PrimaryButton
-            margin="0 0 32px 0"
             disabled={isSubmitting}
             onClick={(event: SyntheticEvent): void => {
               event.preventDefault();
@@ -217,9 +270,25 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
             }}
             size="large"
           >
-            {isSubmitting ? "Updating..." : "Update"}
+            <Typography fontSize="14px" fontWeight="400">
+              {isSubmitting ? <ClipLoader color="#fff" size={14} /> : "Update"}
+            </Typography>
           </PrimaryButton>
-        </Box>
+        </div>
+        <div style={{ width: "88px", marginLeft: "16px" }}>
+          <Button
+            onClick={(event: SyntheticEvent): void => {
+              event.preventDefault();
+              setIsDrawerOpen(false);
+            }}
+            size="large"
+            sx={{ textTransform: "none" }}
+          >
+            <Typography fontSize="14px" fontWeight="400">
+              {"Cancel"}
+            </Typography>
+          </Button>
+        </div>
       </Box>
     </Drawer>
   );

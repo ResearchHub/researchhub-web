@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
 import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
+import { CommentTreeContext } from "./lib/contexts";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
-import CommentFilters from "./CommentFilters";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
-import CommentSort from "./CommentSort";
-import CommentSidebar from "./CommentSidebar";
+import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { isEmpty, localWarn } from "~/config/utils/nullchecks";
+import { MessageActions } from "~/redux/message";
+import { Purchase } from "~/config/types/purchase";
+import { RootState } from "~/redux";
+import { useDispatch, useSelector } from "react-redux";
+import colors from "./lib/colors";
+import CommentDrawer from "./CommentDrawer";
+import CommentEditor from "./CommentEditor";
+import CommentEmptyState from "./CommentEmptyState";
+import CommentFilters from "./CommentFilters";
 import CommentList from "./CommentList";
 import CommentPlaceholder from "./CommentPlaceholder";
-import { CommentTreeContext } from "./lib/contexts";
-import CommentEmptyState from "./CommentEmptyState";
-import replaceComment from "./lib/replaceComment";
-import findComment from "./lib/findComment";
-import CommentDrawer from "./CommentDrawer";
+import CommentSidebar from "./CommentSidebar";
+import CommentSort from "./CommentSort";
 import ContentSupportModal from "../Modals/ContentSupportModal";
-import CommentEditor from "./CommentEditor";
-import { useDispatch, useSelector } from "react-redux";
-import { isEmpty } from "~/config/utils/nullchecks";
-import { RootState } from "~/redux";
-import colors from "./lib/colors";
-import { Purchase } from "~/config/types/purchase";
-import { MessageActions } from "~/redux/message";
+import findComment from "./lib/findComment";
+import React, { useEffect, useState } from "react";
 import removeComment from "./lib/removeComment";
+import replaceComment from "./lib/replaceComment";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -121,7 +121,7 @@ const CommentFeed = ({
       const updatedComments = [...comments];
       setComments(updatedComments);
     } else {
-      console.warn(
+      localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
       );
     }
@@ -145,7 +145,7 @@ const CommentFeed = ({
       setComments(updatedComments);
       onCommentRemove && onCommentRemove(comment);
     } else {
-      console.warn(
+      localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
       );
     }
@@ -172,7 +172,7 @@ const CommentFeed = ({
         })?.comment;
 
         if (!parentComment) {
-          console.warn(
+          localWarn(
             `Could not find parent comment ${parentId}. This should not happen. Aborting create.`
           );
           return false;
@@ -224,7 +224,7 @@ const CommentFeed = ({
         const updatedComments = [...comments];
         setComments(updatedComments);
       } else {
-        console.warn(
+        localWarn(
           `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
         );
       }

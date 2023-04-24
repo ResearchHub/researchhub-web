@@ -5,7 +5,7 @@ import { Helpers } from "@quantfive/js-web-config";
 type Args = {
   onError: (error: Error) => void;
   onSuccess: (response: any) => void;
-  payload: any;
+  payload: FormData;
 };
 
 export const createReferenceCitation = ({
@@ -13,7 +13,10 @@ export const createReferenceCitation = ({
   onSuccess,
   payload,
 }: Args): void => {
-  fetch(buildApiUri({ apiPath: `citation_entry` }), API.POST_CONFIG(payload))
+  fetch(
+    buildApiUri({ apiPath: `citation_entry` }),
+    API.POST_FILE_CONFIG(payload)
+  )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((result: any): void => onSuccess(result))

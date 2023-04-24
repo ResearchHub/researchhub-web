@@ -9363,6 +9363,11 @@ react-step-progress-bar@^1.0.3:
     invariant "^2.2.4"
     react-transition-group "^2.4.0"
 
+react-tag-input-component@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-tag-input-component/-/react-tag-input-component-2.0.2.tgz#f62f013c6a535141dd1c6c3a88858223170150f1"
+  integrity sha512-dydI9luVwwv9vrjE5u1TTnkcOVkOVL6mhFti8r6hLi78V2F2EKWQOLptURz79UYbDHLSk6tnbvGl8FE+sMpADg==
+
 react-tagsinput@^3.19.0:
   version "3.20.0"
   resolved "https://registry.yarnpkg.com/react-tagsinput/-/react-tagsinput-3.20.0.tgz#2aa802ee95ba13efa2ea1e04f638f4e5013f0334"

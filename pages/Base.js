@@ -15,6 +15,7 @@ import RootLeftSidebar from "~/components/Home/sidebar/RootLeftSidebar";
 import Router from "next/router";
 import Script from "next/script";
 import { ExchangeRateContextProvider } from "~/components/contexts/ExchangeRateContext";
+import OrganizationContextProvider from "~/components/contexts/OrganizationContext";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -100,31 +101,33 @@ function Base({
           </Script>
         </>
       )}
-      <ExchangeRateContextProvider>
-        <NavbarContext.Provider
-          value={{ numNavInteractions, setNumNavInteractions }}
-        >
-          <NewPostButtonContext.Provider
-            value={{
-              values: newPostButtonValues,
-              setValues: setNewPostButtonValues,
-            }}
+      <OrganizationContextProvider user={auth.user}>
+        <ExchangeRateContextProvider>
+          <NavbarContext.Provider
+            value={{ numNavInteractions, setNumNavInteractions }}
           >
-            {isDevEnv() && SPEC__reloadClientSideData()}
-            <div className={css(styles.pageWrapper)}>
-              <DynamicPermissionNotification />
-              <DynamicMessage />
-              <RootLeftSidebar
-                rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-              />
-              <div className={css(styles.main)}>
-                <DynamicNavbar />
-                <Component {...pageProps} {...appProps} />
+            <NewPostButtonContext.Provider
+              value={{
+                values: newPostButtonValues,
+                setValues: setNewPostButtonValues,
+              }}
+            >
+              {isDevEnv() && SPEC__reloadClientSideData()}
+              <div className={css(styles.pageWrapper)}>
+                <DynamicPermissionNotification />
+                <DynamicMessage />
+                <RootLeftSidebar
+                  rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+                />
+                <div className={css(styles.main)}>
+                  <DynamicNavbar />
+                  <Component {...pageProps} {...appProps} />
+                </div>
               </div>
-            </div>
-          </NewPostButtonContext.Provider>
-        </NavbarContext.Provider>
-      </ExchangeRateContextProvider>
+            </NewPostButtonContext.Provider>
+          </NavbarContext.Provider>
+        </ExchangeRateContextProvider>
+      </OrganizationContextProvider>
     </AlertProvider>
   );
 }
