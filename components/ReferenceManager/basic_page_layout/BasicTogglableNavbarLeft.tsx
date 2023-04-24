@@ -1,28 +1,23 @@
 import { Box } from "@mui/system";
-import { Fragment, ReactNode } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { TextRow } from "react-placeholder/lib/placeholders";
+import { ReactNode } from "react";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import colors from "~/config/themes/colors";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Divider from "@mui/material/Divider";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
-import Image from "next/image";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -181,7 +176,7 @@ export default function BasicTogglableNavbarLeft({
           height: "100vh",
         }}
       >
-        <ListItemButton
+        <ListItem
           sx={{
             minHeight: 48,
             justifyContent: isOpen ? "initial" : "center",
@@ -198,9 +193,9 @@ export default function BasicTogglableNavbarLeft({
             noWrap
             variant="h6"
           >
-            {"WORKSPACE"}
+            {"PROJECTS"}
           </Typography>
-        </ListItemButton>
+        </ListItem>
         <ListItemButton
           sx={{
             minHeight: 48,
