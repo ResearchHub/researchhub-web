@@ -183,11 +183,11 @@ export const deleteCommentAPI = async ({
   documentId: ID;
 }) => {
   const url = generateApiUrl(
-    `${documentType}/${documentId}/comments/${id}/delete_rh_comment`
+    `${documentType}/${documentId}/comments/${id}/censor`
   );
 
   try {
-    await fetch(url, API.POST_CONFIG({ is_removed: true })).then(
+    await fetch(url, API.PUT_CONFIG({ })).then(
       Helpers.checkStatus
     );
   } catch (error: any) {
