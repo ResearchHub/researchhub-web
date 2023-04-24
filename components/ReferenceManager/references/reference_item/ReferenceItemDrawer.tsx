@@ -205,7 +205,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           <div
             style={{
               height: "20%",
-              marginBottom: "292px",
+              maxHeight: "20%",
+              marginBottom: "440px",
             }}
           >
             <iframe
@@ -223,7 +224,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         sx={{
           background: "rgb(250, 250, 252)",
           borderTop: "1px solid #E9EAEF",
-          bottom: "0px",
+          bottom: 0,
           boxSizing: "border-box",
           left: 0,
           minHeight: 60,
