@@ -29,6 +29,7 @@ const CommentReadOnly = ({
   const [fullHtml, setFullHtml] = useState<any>(null);
   const commentTreeState = useContext(CommentTreeContext);
 
+
   useEffect(() => {
     const _textLength = textLength({ quillOps: content.ops });
     const _imageLength = imageLength({ quillOps: content.ops });

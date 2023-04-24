@@ -4,7 +4,26 @@ import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
+<<<<<<< HEAD
 export const buildQuillModules = ({ editorId, handleSubmit }) => {
+=======
+export type QuillUserOp = {
+  insert: {
+    value: {
+      userId: string;
+      firstName: string;
+      lastName: string;
+    }
+  };
+}
+
+
+export const buildQuillModules = ({
+  editorId,
+  handleSubmit,
+  handleImageUpload,
+}) => {
+>>>>>>> 13e1ca74f ([Mentions] Fetching suggested users from BE)
   const modules = {
     // magicUrl: true,
     // mentions: {
@@ -280,7 +299,7 @@ export const trimDeltas = ({
   return trimmedOps;
 };
 
-export const quillDeltaToHtml = ({ ops }) => {
+export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
   const converter = new QuillDeltaToHtmlConverter(ops, {});
   // @ts-ignore
   converter.renderCustomWith(function (customOp, contextOp) {
@@ -296,7 +315,24 @@ export const quillDeltaToHtml = ({ ops }) => {
       });
 
       return html;
-    } else {
+    } 
+    else if (customOp.insert.type === "user") {
+
+      console.log('customOp', customOp)
+      // const userOp:QuillUserOp = customOp
+
+
+      let mentionedUser = customOp.insert.value;
+
+      if (mentionedUser?.userId) {
+        return `<a class="ql-user" href="/user/${mentionedUser.authorProfile.id}/overview">${mentionedUser.firstName} ${mentionedUser.lastName}</a>`
+      }
+      else {
+        // TODO: Add to sentry 
+        console.error("Mentioned user does not exist. This likely means userId was not saved on the op, or user was deleted.", customOp.insert.value);  
+      }
+    }
+    else {
       console.error("Unmanaged custom blot!");
     }
   });
@@ -319,4 +355,16 @@ export function getPlainText({ quillOps = [] }) {
   });
 
   return plainText;
+}
+
+export function filterOps({ quillOps = [], opName }) {
+  const ops:any[] = [];
+
+  quillOps.forEach((op:any) => {
+    if (op.insert && op.insert[opName]) {
+      ops.push(op);
+    }
+  });
+
+  return ops;
 }

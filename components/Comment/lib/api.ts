@@ -1,10 +1,11 @@
-import { ID, RhDocumentType } from "~/config/types/root_types";
+import { ID, RHUser, RhDocumentType, parseUser } from "~/config/types/root_types";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import config from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
+
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -267,3 +268,4 @@ export const flagComment = async ({
     }
   }
 };
+

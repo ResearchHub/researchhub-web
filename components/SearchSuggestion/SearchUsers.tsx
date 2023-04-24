@@ -1,22 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { StyleSheet, css } from 'aphrodite';
-
-const users = [
-  {
-    id: 15,
-    firstName: 'John',
-    lastName: 'Doe',
-    profileImg: 'https://example.com/john-doe.jpg',
-  },
-  {
-    id: 17,
-    firstName: 'Jane',
-    lastName: 'Smith',
-    profileImg: 'https://example.com/jane-smith.jpg',
-  },
-  // Add more users here
-];
+import API, { generateApiUrl } from '~/config/api';
+import { ID } from '~/config/types/root_types';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,14 +34,78 @@ const styles = StyleSheet.create({
   },
 });
 
+
+type SuggestedUser = {
+  firstName: string;
+  lastName: string;
+  id: ID;
+  profileImg: string;
+}
+
+const parseUserSuggestion = (raw: any): SuggestedUser => {
+  return {
+    firstName: raw.first_name,
+    lastName: raw.last_name,
+    id: raw.id,
+    profileImg: raw.profile_img,
+  }
+}
+
+const fetchUserSuggestions = (query): Promise<SuggestedUser[]> => {
+
+  const url = generateApiUrl(
+    `${API.BASE_URL}/search/user/suggest/?full_name_suggest__completion=${query}`
+  );
+
+
+
+  let suggestedUsers:SuggestedUser[] = []
+  return fetch(url, API.GET_CONFIG({}))
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        // TODO: Unexpected error. log to sentry
+        throw new Error('HTTP-Error: ' + response.status);
+      }
+    })
+    .then(data => {
+      // Extract the suggestions from the response JSON
+      const suggestions = data.full_name_suggest__completion;
+  
+      // Process the suggestions as needed, e.g., display them in the UI
+      suggestions.forEach(suggestion => {
+        console.log(suggestion.text);
+        suggestion.options.forEach(option => {
+          suggestedUsers.push(parseUserSuggestion(option._source))
+        });
+      });
+
+      return suggestedUsers;
+    })
+    .catch(error => {
+      console.error('Request Failed:', error);
+      return [];
+    });
+}
+
+
+
+
+
+
 const SearchUsers = ({ onSelect }) => {
   const [isActive, setIsActive] = useState(true);
   const inputRef = useRef(null);
+  const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
 
-  const handleInputChange = useCallback(() => {
+  const handleInputChange = useCallback(async () => {
     console.log('Input value:', inputRef.current.value);
+
+    const _userSuggestions = await fetchUserSuggestions(inputRef.current.value);
+    setUserSuggestions(_userSuggestions);
     // Your custom logic here
-  }, []);
+  }, [userSuggestions, inputRef?.current?.value]);
 
   const debouncedHandleInputChange = useCallback(
     debounce(handleInputChange, 250),
@@ -95,7 +145,7 @@ const SearchUsers = ({ onSelect }) => {
             className={css(styles.input)}
           />
           <div className={css(styles.userDropdown)}>
-            {users.map((user, index) => (
+            {userSuggestions.map((user, index) => (
               <div
                 key={index}
                 className={css(styles.userRow)}
