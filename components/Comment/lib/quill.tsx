@@ -2,17 +2,21 @@ import Quill from "quill";
 import { reviewCategories } from "./options";
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
-import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+import { InsertDataQuill, QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+InsertDataQuill
 
 <<<<<<< HEAD
 export const buildQuillModules = ({ editorId, handleSubmit }) => {
 =======
 export type QuillUserOp = {
+  attributes: any,
   insert: {
+    type: string,
     value: {
       userId: string;
       firstName: string;
       lastName: string;
+      authorProfileId: string;
     }
   };
 }
@@ -317,15 +321,13 @@ export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
       return html;
     } 
     else if (customOp.insert.type === "user") {
-
-      console.log('customOp', customOp)
-      // const userOp:QuillUserOp = customOp
-
-
-      let mentionedUser = customOp.insert.value;
+      const userOp:QuillUserOp = customOp as any;
+      let mentionedUser = userOp.insert.value;
 
       if (mentionedUser?.userId) {
-        return `<a class="ql-user" href="/user/${mentionedUser.authorProfile.id}/overview">${mentionedUser.firstName} ${mentionedUser.lastName}</a>`
+        const hasName = (mentionedUser.firstName + mentionedUser.firstName).length > 0;
+        const fullName = hasName ? `${mentionedUser.firstName} ${mentionedUser.firstName}` : "Unknown User";
+        return `<a class="ql-user" href="/user/${mentionedUser.authorProfileId}/overview">${fullName}</a>`
       }
       else {
         // TODO: Add to sentry 

@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { StyleSheet, css } from 'aphrodite';
-import API, { generateApiUrl } from '~/config/api';
+import API from '~/config/api';
 import { ID } from '~/config/types/root_types';
+import AuthorAvatar from '../AuthorAvatar';
 
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
+    display: "inline-block",
   },
   input: {
     width: '100%',
@@ -14,10 +16,11 @@ const styles = StyleSheet.create({
   userDropdown: {
     position: 'absolute',
     left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     zIndex: 1,
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    ':nth-child(1n) > div': {
+      backgroundColor: 'white',
+    }
   },
   userRow: {
     display: 'flex',
@@ -39,7 +42,10 @@ type SuggestedUser = {
   firstName: string;
   lastName: string;
   id: ID;
-  profileImg: string;
+  authorProfile: {
+    profileImage: string;
+    id: ID;
+  }
 }
 
 const parseUserSuggestion = (raw: any): SuggestedUser => {
@@ -47,20 +53,19 @@ const parseUserSuggestion = (raw: any): SuggestedUser => {
     firstName: raw.first_name,
     lastName: raw.last_name,
     id: raw.id,
-    profileImg: raw.profile_img,
+    authorProfile: {
+      id: raw.author_profile.id,
+      profileImage: raw.author_profile.profile_img,
+    }
   }
 }
 
-const fetchUserSuggestions = (query): Promise<SuggestedUser[]> => {
+const fetchUserSuggestions = (query:string): Promise<SuggestedUser[]> => {
 
-  const url = generateApiUrl(
-    `${API.BASE_URL}/search/user/suggest/?full_name_suggest__completion=${query}`
-  );
+  const url = `${API.BASE_URL}search/user/suggest/?full_name_suggest__completion=${query}`;
 
-
-
-  let suggestedUsers:SuggestedUser[] = []
-  return fetch(url, API.GET_CONFIG({}))
+  let suggestedUsers:SuggestedUser[] = [];
+  return fetch(url, API.GET_CONFIG())
     .then(response => {
       if (response.ok) {
         return response.json();
@@ -69,15 +74,15 @@ const fetchUserSuggestions = (query): Promise<SuggestedUser[]> => {
         throw new Error('HTTP-Error: ' + response.status);
       }
     })
-    .then(data => {
-      // Extract the suggestions from the response JSON
+    .then((data) => {
       const suggestions = data.full_name_suggest__completion;
-  
-      // Process the suggestions as needed, e.g., display them in the UI
       suggestions.forEach(suggestion => {
         console.log(suggestion.text);
         suggestion.options.forEach(option => {
-          suggestedUsers.push(parseUserSuggestion(option._source))
+          const hasAuthorProfile = option._source.author_profile;
+          if (hasAuthorProfile) {
+            suggestedUsers.push(parseUserSuggestion(option._source))
+          }
         });
       });
 
@@ -99,11 +104,17 @@ const SearchUsers = ({ onSelect }) => {
   const inputRef = useRef(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   const handleInputChange = useCallback(async () => {
     console.log('Input value:', inputRef.current.value);
 
-    const _userSuggestions = await fetchUserSuggestions(inputRef.current.value);
-    setUserSuggestions(_userSuggestions);
+    const suggestions = await fetchUserSuggestions(inputRef.current.value);
+    setUserSuggestions(suggestions);
     // Your custom logic here
   }, [userSuggestions, inputRef?.current?.value]);
 
@@ -134,7 +145,6 @@ const SearchUsers = ({ onSelect }) => {
 
   return (
     <div className={css(styles.container)}>
-      My React Component
       {isActive ? (
         <>
           <input
@@ -145,20 +155,18 @@ const SearchUsers = ({ onSelect }) => {
             className={css(styles.input)}
           />
           <div className={css(styles.userDropdown)}>
+            <div>
             {userSuggestions.map((user, index) => (
               <div
                 key={index}
                 className={css(styles.userRow)}
                 onClick={() => handleUserRowClick(user)}
               >
-                <img
-                  src={user.profileImg}
-                  alt={`\${user.firstName} \${user.lastName}`}
-                  className={css(styles.profileImg)}
-                />
+                <AuthorAvatar author={user.authorProfile} />
                 {user.firstName} {user.lastName}
               </div>
             ))}
+            </div>
           </div>
         </>
       ) : null}

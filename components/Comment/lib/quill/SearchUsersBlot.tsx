@@ -1,4 +1,3 @@
-// SearchUsersBlot.js
 import ReactQuill from 'react-quill';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -8,10 +7,11 @@ const Quill = ReactQuill.Quill;
 const Embed = Quill.import('blots/block/embed');
 
 class SearchUsersBlot extends Embed {
-  
   static create(value) {
     const node = super.create(value);
     const container = document.createElement('div');
+    container.style.display = 'inline-block';
+
     const onUserSelect = value.onUserSelect || (() => null);
     ReactDOM.render(<SearchUsers onSelect={onUserSelect} />, container);
     node.appendChild(container);
@@ -20,6 +20,7 @@ class SearchUsersBlot extends Embed {
 }
 
 SearchUsersBlot.blotName = 'searchUsers';
-SearchUsersBlot.tagName = 'div';
+SearchUsersBlot.tagName = 'span';
+
 
 export default SearchUsersBlot;

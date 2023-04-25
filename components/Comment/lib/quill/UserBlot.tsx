@@ -9,6 +9,7 @@ class UserBlot extends Embed {
     node.setAttribute("data-id", `${user.id}`)
     node.setAttribute("data-first-name", `${user.firstName}`);
     node.setAttribute("data-last-name", `${user.lastName}`);
+    node.setAttribute("data-author-id", `${user.authorId}`);
     return node;
   }
 
@@ -17,6 +18,7 @@ class UserBlot extends Embed {
       userId: node.getAttribute("data-id"),
       firstName: node.getAttribute("data-first-name"),
       lastName: node.getAttribute("data-last-name"),
+      authorId: node.getAttribute("data-author-id"),
     };
   }  
 }

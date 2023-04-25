@@ -32,7 +32,7 @@ class MentionsModule {
 
     if (atIndex !== -1) {
       if (!this.searchUsersExists()) {
-        this.insertSearchUsersBlot(atIndex);
+        this.insertSearchUsersBlot(atIndex+1);
       }
     }
   }

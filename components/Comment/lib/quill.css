@@ -3,6 +3,7 @@
 }
 .CommentEditor .ql-container .ql-editor[contenteditable="true"] {
   min-height: 50px;
+  overflow: visible;
 }
 /* Placeholder */
 .CommentEditor .ql-editor.ql-blank::before {
