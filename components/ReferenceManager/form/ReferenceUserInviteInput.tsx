@@ -1,17 +1,13 @@
 import { ChangeEvent, ReactElement, SyntheticEvent, useState } from "react";
 import { ClipLoader } from "react-spinners";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  nullthrows,
-} from "~/config/utils/nullchecks";
-import { fetchReferenceFromDoi } from "./api/fetchReferenceFromDoi";
 import { ID, NullableString } from "~/config/types/root_types";
 import Box from "@mui/material/Box";
-import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
+import { isValidEmail } from "~/config/utils/validation";
 
 type Invitee = { userID?: ID; userEmail?: string };
 type Props = {
@@ -26,18 +22,41 @@ export default function ReferenceUserInviteInput({
   onInputChange,
   projectID,
 }: Props): ReactElement {
-  const [doi, setDoi] = useState<NullableString>(null);
+  const [inviteeEmail, setInviteeEmail] = useState<NullableString>(null);
   const [inviteList, setInviteList] = useState<Invitee[]>([]);
   const [isSendingInvitation, setisSendingInvitation] =
     useState<boolean>(false);
-  const initialInviteList =
+  const _initialInviteList =
     []; /* TODO: calvinhlee -  move this to a api call + useEffect */
-  const sendInvitation = () => {};
+  const sendInvitation = () => {
+    if (isValidEmail(inviteeEmail)) {
+      setInviteList([
+        ...inviteList,
+        {
+          userEmail: nullthrows(
+            inviteeEmail,
+            "inviteeEmail should not be null"
+          ),
+        },
+      ]);
+    }
+  };
+
+  const inviteeEls = inviteList.map(({ userEmail }: Invitee) => {
+    return (
+      <div style={{ display: "flex", width: "100%", alignItems: "center" }}>
+        <FontAwesomeIcon
+          icon={faCircleUser}
+          style={{ marginRight: 8 }}
+        ></FontAwesomeIcon>
+        {userEmail}
+      </div>
+    );
+  });
   return (
     <Box
       sx={{
         background: "transparent",
-        height: "72px",
         marginBottom: "16px",
         width: "100%",
       }}
@@ -66,7 +85,9 @@ export default function ReferenceUserInviteInput({
           disabled={isSendingInvitation}
           fullWidth
           onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            onInputChange(event?.target?.value);
+            const stringValue = event?.target?.value ?? "";
+            setInviteeEmail(stringValue);
+            onInputChange(stringValue);
           }}
           onKeyDown={(event): void => {
             if (event.key === "Enter" || event?.keyCode === 13) {
@@ -75,7 +96,7 @@ export default function ReferenceUserInviteInput({
           }}
           placeholder="Enter collaborator's email"
           size="small"
-          value={doi}
+          value={inviteeEmail}
           sx={{
             background: "#fff",
           }}
@@ -105,6 +126,19 @@ export default function ReferenceUserInviteInput({
           )}
         </Box>
       </Box>
+      {!isEmpty(inviteList) ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            marginTop: 2,
+          }}
+        >
+          {inviteeEls}
+        </Box>
+      ) : null}
     </Box>
   );
 }

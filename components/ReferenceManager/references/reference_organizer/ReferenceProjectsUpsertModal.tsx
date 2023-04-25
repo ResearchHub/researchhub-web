@@ -80,6 +80,7 @@ export default function ReferenceProjectsUpsertModal({
             <div
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
+                onCloseModal()
               }}
               style={{
                 width: "88px",
