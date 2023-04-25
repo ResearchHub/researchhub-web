@@ -11,6 +11,8 @@ import {
   focusEditor,
   forceShowPlaceholder,
   hasQuillContent,
+  filterOps,
+  QuillUserOp,
 } from "./lib/quill";
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
@@ -201,8 +203,11 @@ const CommentEditor = ({
         return false;
       }
 
+      const mentions = filterOps({ quillOps: _content.ops, opName: "user" }).map((op:any) => op.insert.user.userId );
+
       await handleSubmit({
         content: _content,
+        mentions,
         ...(commentId && { id: commentId }),
         ...(!commentId && { commentType: _commentType }),
         ...(interimBounty && { bountyAmount: interimBounty.amount }),

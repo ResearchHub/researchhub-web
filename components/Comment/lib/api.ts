@@ -5,6 +5,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import config from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
+import uniqBy from "lodash/uniqBy";
 
 
 export const fetchCommentsAPI = async ({
@@ -101,6 +102,7 @@ export const createCommentAPI = async ({
   documentId,
   parentComment,
   bountyAmount,
+  mentions = [],
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
@@ -108,6 +110,7 @@ export const createCommentAPI = async ({
   documentId: ID;
   parentComment?: Comment;
   bountyAmount?: number;
+  mentions?: Array<String>;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -118,6 +121,7 @@ export const createCommentAPI = async ({
     API.POST_CONFIG({
       comment_content_json: content,
       thread_type: commentType,
+      mentions: uniqBy(mentions),
       ...(parentComment && { parent_id: parentComment.id }),
       ...(bountyAmount && { amount: bountyAmount }),
     })
@@ -132,17 +136,20 @@ export const updateCommentAPI = async ({
   content,
   documentType,
   documentId,
+  mentions,
 }: {
   id: ID;
   content: any;
   documentType: RhDocumentType;
   documentId: ID;
+  mentions?: Array<String>;
 }) => {
   const _url = generateApiUrl(`${documentType}/${documentId}/comments/${id}`);
   const response = await fetch(
     _url,
     API.PATCH_CONFIG({
       comment_content_json: content,
+      mentions: uniqBy(mentions),
     })
   ).then((res): any => Helpers.parseJSON(res));
 

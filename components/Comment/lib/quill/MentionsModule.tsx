@@ -58,7 +58,6 @@ class MentionsModule {
     // Move the cursor to the end of the newly inserted UserBlot
     this.quill.setSelection(atIndex + 1, "silent");
 
-
     const contents = this.quill.getContents();
     const newContents = {
       ops: contents.ops.filter((op) => {
