@@ -32,9 +32,7 @@ export async function getServerSideProps(ctx) {
   const authToken = cookies[AUTH_TOKEN];
   const url = generateApiUrl(`organization/0/get_user_organizations`);
   const orgResponse = await fetchUserOrgs({ url }, authToken);
-  console.log(orgResponse);
   const org = orgResponse[0];
-  console.log(org);
 
   return {
     redirect: {

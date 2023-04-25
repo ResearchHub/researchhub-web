@@ -88,6 +88,7 @@ class BaseModal extends Component {
     if (this.props.overlayStyle) {
       return this.props.overlayStyle;
     }
+    const overlayStyleOverride = this.props.overlayStyleOverride || {};
     return {
       overlay: {
         position: "fixed",
@@ -101,6 +102,7 @@ class BaseModal extends Component {
         bottom: 0,
         backgroundColor: "rgba(0,0,0,0.2)",
         zIndex: this.props.zIndex ? this.props.zIndex : "11",
+        ...overlayStyleOverride,
       },
     };
   };
