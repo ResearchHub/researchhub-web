@@ -27,6 +27,7 @@ function Organization({
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [org, setOrg] = useState({
+    id: null,
     name: "researchhub",
     cover_image: "",
   });
@@ -61,23 +62,28 @@ function Organization({
     setOrg({ ...org, name: value });
   };
 
-  const createOrgFin = async () => {
+  const fin = async (e) => {
+    e.preventDefault();
     try {
       setLoading(true);
-      const response = await createOrg({
-        name: org.name,
-      });
+      let respJson;
+      if (!org.id) {
+        const response = await createOrg({
+          name: org.name,
+        });
 
-      const respJson = await response.json();
+        respJson = await response.json();
+        setOrg({ ...org, ...respJson, cover_image: org.cover_image });
+      }
 
       const updatedOrg = await updateOrgProfileImg({
-        orgId: respJson.id,
+        orgId: respJson?.id || org.id,
         file: orgPhoto,
       });
 
       setCreatedOrg(updatedOrg);
 
-      if (response.status >= 200 && response.status < 300) {
+      if (updatedOrg.id) {
         router.push("/reference-manager/onboarding/teammates");
       }
     } catch (e) {
@@ -119,18 +125,25 @@ function Organization({
         }}
         section={"pictures"}
       />
-      <FormInput
-        inputStyle={sharedOnboardingStyles.input}
-        onChange={organizationNameChange}
-        placeholder={"Organization Name"}
-      />
-      {/* <div className={css(sharedOnboardingStyles.spacer)}></div> */}
-      <button
-        className={css(sharedOnboardingStyles.continueButton)}
-        onClick={createOrgFin}
-      >
-        {loading ? <FontAwesomeIcon icon={faSpinnerThird} spin /> : "Continue"}
-      </button>
+      <form onSubmit={fin}>
+        <FormInput
+          inputStyle={sharedOnboardingStyles.input}
+          onChange={organizationNameChange}
+          placeholder={"Organization Name"}
+          required={true}
+        />
+        {/* <div className={css(sharedOnboardingStyles.spacer)}></div> */}
+        <button
+          className={css(sharedOnboardingStyles.continueButton)}
+          type={"submit"}
+        >
+          {loading ? (
+            <FontAwesomeIcon icon={faSpinnerThird} spin />
+          ) : (
+            "Continue"
+          )}
+        </button>
+      </form>
     </div>
   );
 }

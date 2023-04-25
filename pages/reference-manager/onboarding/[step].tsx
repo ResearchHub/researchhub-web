@@ -8,6 +8,7 @@ import LoginModal from "~/components/Login/LoginModal";
 import Organization from "~/components/ReferenceManager/onboarding/Organization";
 import Teammates from "~/components/ReferenceManager/onboarding/Teammates";
 import { useState } from "react";
+import ImportReferences from "~/components/ReferenceManager/onboarding/ImportReferences";
 
 function Index(props) {
   const { isLoggedIn, authChecked, user } = props;
@@ -23,7 +24,7 @@ function Index(props) {
       case "teammates":
         return <Teammates createdOrg={createdOrg} />;
       case "import":
-        return null;
+        return <ImportReferences />;
       case "scholar":
         return null;
       default:

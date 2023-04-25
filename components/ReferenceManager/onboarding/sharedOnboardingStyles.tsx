@@ -6,12 +6,13 @@ const sharedOnboardingStyles = StyleSheet.create({
     fontSize: 42,
     fontWeight: 500,
     textAlign: "center",
+    marginBottom: 0,
   },
   subtext: {
     fontSize: 24,
     color: "#AAA8B4",
-    marginTop: 24,
-    marginBottom: 40,
+    marginTop: 12,
+    marginBottom: 30,
     textAlign: "center",
   },
   continueButton: {
@@ -30,8 +31,15 @@ const sharedOnboardingStyles = StyleSheet.create({
   },
   input: {
     cursor: "text",
+    ":focus": {
+      ":hover": {
+        boxShadow: "none",
+      },
+    },
     ":hover": {
       borderColor: "#E8E8F2",
+      outline: "none",
+      boxShadow: "none",
       ":focus": {
         borderColor: "#3f85f7",
       },
