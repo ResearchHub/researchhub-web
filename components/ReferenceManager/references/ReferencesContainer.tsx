@@ -5,7 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactNode } from "react";
+import { Fragment, useState, ReactNode, SyntheticEvent } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -26,7 +26,6 @@ export default function ReferencesContainer({}: Props): ReactNode {
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
     useState<boolean>(false);
-
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
 
   if (!userAllowed) {
@@ -40,6 +39,7 @@ export default function ReferencesContainer({}: Props): ReactNode {
             setIsDrawerOpen: setIsManualUploadDrawerOpen,
           }}
         />
+       
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft

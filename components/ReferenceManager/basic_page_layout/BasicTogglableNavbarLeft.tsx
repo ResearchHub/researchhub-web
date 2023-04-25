@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { ReactNode } from "react";
+import { ReactNode, SyntheticEvent, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
@@ -18,6 +18,7 @@ import OrganizationPopover from "~/components/Tooltips/Organization/Organization
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
+import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -72,6 +73,9 @@ export default function BasicTogglableNavbarLeft({
   setIsManualUploadDrawerOpen,
   theme,
 }: Props) {
+  const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
+    useState<boolean>(false);
+
   const user = getCurrentUser();
   const isLoadingUser = isEmpty(user?.id);
   const profileImage =
@@ -87,6 +91,14 @@ export default function BasicTogglableNavbarLeft({
       width={navWidth}
       sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
     >
+      <ReferenceProjectsUpsertModal
+        isModalOpen={isProjectsUpsertModalOpen}
+        onCloseModal={(event: SyntheticEvent): void => {
+          event?.preventDefault();
+          setIsProjectsUpsertModalOpen(false);
+        }}
+        projectID={undefined}
+      />
       <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
         <Box
           sx={{
@@ -203,6 +215,10 @@ export default function BasicTogglableNavbarLeft({
             px: 2.5,
             maxHeight: 50,
           }}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setIsProjectsUpsertModalOpen(true);
+          }}
         >
           <AddSharpIcon fontSize="small" color="primary" />
           <Typography
@@ -214,14 +230,13 @@ export default function BasicTogglableNavbarLeft({
             variant="h6"
             ml={"6px"}
           >
-            {" Add new"}
+            {"Create a new project"}
           </Typography>
         </ListItemButton>
       </List>
     </Box>
   );
 }
-
 // type DrawerProps = {
 //   isOpen: boolean;
 //   navWidth: number;
