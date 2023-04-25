@@ -43,7 +43,7 @@ class MentionsModule {
   }
   
   insertSearchUsersBlot(atIndex) {
-    this.quill.insertEmbed(atIndex, 'searchUsers', { onUserSelect: this.handleUserSelect.bind(this) }, "user");
+    this.quill.insertEmbed(atIndex, 'searchUsers', { onUserSelect: this.handleUserSelect.bind(this) });
     this.quill.setSelection(atIndex + 1, "user");
   }
   

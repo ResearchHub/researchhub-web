@@ -1,5 +1,5 @@
 import Quill from 'quill';
-const Embed = Quill.import('blots/embed');
+const Embed = Quill.import('blots/inline');
 
 class UserBlot extends Embed {
   static create(user) {

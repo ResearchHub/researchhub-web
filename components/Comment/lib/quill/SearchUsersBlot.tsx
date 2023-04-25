@@ -1,10 +1,9 @@
-import ReactQuill from 'react-quill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SearchUsers from '~/components/SearchSuggestion/SearchUsers';
 
-const Quill = ReactQuill.Quill;
-const Embed = Quill.import('blots/block/embed');
+import Quill from "quill";
+const Embed = Quill.import('blots/embed');
 
 class SearchUsersBlot extends Embed {
   static create(value) {
