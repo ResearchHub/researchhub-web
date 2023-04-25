@@ -4,6 +4,7 @@ import { StyleSheet, css } from 'aphrodite';
 import API from '~/config/api';
 import AuthorAvatar from '../AuthorAvatar';
 import { SuggestedUser } from './lib/types';
+import colors, { formColors } from '~/config/themes/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,22 +13,38 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
+    padding: "8px",
+    borderRadius: "4px",
+    marginLeft: 2,
+    border: `1px solid ${formColors.BORDER}`,
+    outline: "none",
+    ":focus": {
+      border: `1px solid ${colors.NEW_BLUE()}`,
+    },
   },
   userDropdown: {
     position: 'absolute',
+    width: '100%',
     left: 0,
     zIndex: 1,
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     ':nth-child(1n) > div': {
       backgroundColor: 'white',
-    }
+    },
+    
   },
   userRow: {
     display: 'flex',
+    columnGap: "8px",
     alignItems: 'center',
-    padding: '8px 16px',
+    padding: '8px 12px',
+    fontSize: 14,
     borderBottom: '1px solid #eee',
     cursor: 'pointer',
+    ":hover": {
+      transition: "0.3s",
+      color: colors.BLACK(0.7),
+    },
   },
   profileImg: {
     width: 40,
@@ -140,7 +157,7 @@ const SuggestUsers = ({ onSelect }) => {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Type here..."
+            placeholder="Mention a user"
             onChange={debouncedHandleInputChange}
             className={css(styles.input)}
           />
@@ -152,7 +169,7 @@ const SuggestUsers = ({ onSelect }) => {
                 className={css(styles.userRow)}
                 onClick={() => handleUserRowClick(user)}
               >
-                <AuthorAvatar author={user.authorProfile} />
+                <AuthorAvatar author={user.authorProfile} size={25} trueSize />
                 {user.firstName} {user.lastName}
               </div>
             ))}
