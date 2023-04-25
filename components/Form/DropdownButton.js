@@ -13,6 +13,7 @@ const DropdownButton = ({
   onClickOutside,
   dropdownClassName,
   customButtonClassName,
+  popoverStyle,
   labelAsHtml = null,
   selected = null,
   overridePopoverStyle = null,
@@ -32,6 +33,7 @@ const DropdownButton = ({
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}
       isOpen={isOpen}
+      popoverStyle={popoverStyle}
       popoverContent={
         <div className={css(styles.popoverBodyContent, overridePopoverStyle)}>
           <div className={css(styles.htmlBefore)}>{htmlBefore}</div>
@@ -115,11 +117,11 @@ const styles = StyleSheet.create({
   popoverBodyContent: {
     backgroundColor: "white",
     borderRadius: 4,
-    boxShadow: "0px 0px 10px 0px #00000026",
+    // boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",
     flexDirection: "column",
-    marginLeft: 10,
-    marginTop: 5,
+    // marginLeft: 10,
+    // marginTop: 5,
     userSelect: "none",
     width: 270,
     overflowY: "scroll",

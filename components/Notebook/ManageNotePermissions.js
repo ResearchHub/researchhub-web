@@ -412,6 +412,8 @@ const ManageNotePermissions = ({
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
             dropdownClassName="perm-popover"
+            popoverStyle={{ transform: "translate(-30px, -10px)" }}
+            overrideTargetButton={styles.overrideTargetButton}
             overridePopoverStyle={styles.permDropdown}
             onSelect={(newPerm) => {
               if (newPerm === "REMOVE") {
@@ -531,8 +533,14 @@ const styles = StyleSheet.create({
     width: "60%",
     overflowX: "hidden",
   },
+  overrideTargetButton: {
+    ":hover": {
+      background: "unset",
+    },
+  },
   permDropdown: {
-    marginRight: 30,
+    // transform: "translateX(30px)",
+    // marginRight: 30,
   },
   permJustText: {
     textTransform: "capitalize",

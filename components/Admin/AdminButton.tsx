@@ -185,7 +185,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     }
     if (opt.value === "feature") {
       return (
-        (<div>
+        <div>
           <div className={css(styles.opt)}>
             <span className={css(styles.iconWrapper, styles.iconMakeFeature)}>
               {opt.icon}
@@ -240,7 +240,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
               />
             </div>
           </div>
-        </div>)
+        </div>
       );
     }
     return (
@@ -258,7 +258,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
     .map((opt, i) => ({ html: opt, ...dropdownOpts[i] }));
 
   return (
-    (<DropdownButton
+    <DropdownButton
       opts={optsAsHTML}
       // @ts-ignore
       labelAsHtml={<FontAwesomeIcon icon={faShieldHalved}></FontAwesomeIcon>}
@@ -278,7 +278,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }: Args) {
         }
         return setIsOpen(false);
       }}
-    />)
+    />
   );
 }
 

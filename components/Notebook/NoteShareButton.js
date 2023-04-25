@@ -17,6 +17,7 @@ const NoteShareButton = ({
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}
       isOpen={isOpen}
+      popoverStyle={{ transform: "translate(-20px, 20px)" }}
       popoverContent={
         <div className={css(styles.popoverContainer)}>
           <ManageNotePermissions
@@ -65,12 +66,9 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     borderRadius: 4,
-    boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",
     flexDirection: "column",
     userSelect: "none",
-    marginRight: 20,
-    marginTop: 10,
   },
   shareLink: {
     cursor: "pointer",

@@ -4,7 +4,7 @@ import { Fragment, ReactElement } from "react";
 type Props = {
   align?: "start" | "center" | "end";
   className?: string;
-  containerStyle?: object;
+  containerStyle?: any;
   isOpen: boolean;
   onClickOutside?: ((e: MouseEvent) => void) | undefined;
   padding?: number;
@@ -13,6 +13,7 @@ type Props = {
   setIsPopoverOpen?: (flag: boolean) => void;
   targetContent: ReactElement;
   withArrow?: boolean;
+  popoverStyle?: any;
 };
 
 export default function ResearchHubPopover({
@@ -20,6 +21,7 @@ export default function ResearchHubPopover({
   isOpen,
   padding,
   popoverContent,
+  popoverStyle = {},
   positions,
   targetContent,
   withArrow,
@@ -50,6 +52,7 @@ export default function ResearchHubPopover({
               background: "#fff",
               boxShadow: "0px 0px 10px 0px #00000026",
               borderRadius: 4,
+              ...popoverStyle,
             }}
           >
             {popoverContent}
