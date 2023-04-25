@@ -15,11 +15,12 @@ export default function ReferenceSwitchInput({
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "space-betweent",
         alignItems: "center",
-        width: "100%",
+        display: "flex",
         height: "100%",
+        justifyContent: "space-betweent",
+        marginBottom: "16px",
+        width: "100%",
       }}
     >
       <Typography

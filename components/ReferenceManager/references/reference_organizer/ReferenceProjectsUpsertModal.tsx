@@ -4,6 +4,8 @@ import { ReactElement, SyntheticEvent, useState } from "react";
 import dynamic from "next/dynamic";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
+import ReferenceUserInviteInput from "../../form/ReferenceUserInviteInput";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -55,6 +57,11 @@ export default function ReferenceProjectsUpsertModal({
             onSwitch={(isPublic: boolean): void => {
               setProjectValues({ ...projectValues, isPublic });
             }}
+          />
+          <ReferenceUserInviteInput
+            label={"Invite collaborators (optional)"}
+            onInputChange={silentEmptyFnc}
+            projectID={projectID}
           />
         </div>
       }
