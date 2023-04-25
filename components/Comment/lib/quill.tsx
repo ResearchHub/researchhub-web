@@ -2,8 +2,16 @@ import Quill from "quill";
 import { reviewCategories } from "./options";
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
-import { InsertDataQuill, QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-InsertDataQuill
+import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+
+
+export type UserBlotValue = {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  authorProfileId: string;
+}
 
 <<<<<<< HEAD
 export const buildQuillModules = ({ editorId, handleSubmit }) => {
@@ -12,12 +20,7 @@ export type QuillUserOp = {
   attributes: any,
   insert: {
     type: string,
-    value: {
-      userId: string;
-      firstName: string;
-      lastName: string;
-      authorProfileId: string;
-    }
+    value: UserBlotValue,
   };
 }
 
@@ -79,7 +82,7 @@ export const QuillFormats = [
   "code-block",
   "direction",
   "peer-review-rating",
-  "searchUsers",
+  "suggestUsers",
   "user",
 ];
 
@@ -369,4 +372,13 @@ export function filterOps({ quillOps = [], opName }) {
   });
 
   return ops;
+}
+
+export const convertToUserBlotType = (user:SuggestedUser):UserBlotValue => {
+  return {
+    userId: String(user.id),
+    authorProfileId: String(user.authorProfile.id),
+    firstName: user.firstName,
+    lastName: user.lastName, 
+  }
 }

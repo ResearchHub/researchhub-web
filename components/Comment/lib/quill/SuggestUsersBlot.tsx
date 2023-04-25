@@ -1,25 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SearchUsers from '~/components/SearchSuggestion/SearchUsers';
+import SuggestUsers from '~/components/SearchSuggestion/SuggestUsers';
 
 import Quill from "quill";
 const Embed = Quill.import('blots/embed');
 
-class SearchUsersBlot extends Embed {
+class SuggestUsersBlot extends Embed {
   static create(value) {
     const node = super.create(value);
     const container = document.createElement('div');
     container.style.display = 'inline-block';
 
     const onUserSelect = value.onUserSelect || (() => null);
-    ReactDOM.render(<SearchUsers onSelect={onUserSelect} />, container);
+    ReactDOM.render(<SuggestUsers onSelect={onUserSelect} />, container);
     node.appendChild(container);
     return node;
   }
 }
 
-SearchUsersBlot.blotName = 'searchUsers';
-SearchUsersBlot.tagName = 'span';
+SuggestUsersBlot.blotName = 'suggestUsers';
+SuggestUsersBlot.tagName = 'span';
 
 
-export default SearchUsersBlot;
+export default SuggestUsersBlot;

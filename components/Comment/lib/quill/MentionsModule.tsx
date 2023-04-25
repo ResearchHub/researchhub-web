@@ -1,84 +1,75 @@
-import ReactDOM from 'react-dom';
-import SearchUsers from '~/components/SearchSuggestion/SearchUsers';
-import SearchUsersBlot from './SearchUsersBlot';
-import UserBlot from './UserBlot';
+import { convertToUserBlotType } from '../quill';
+import SuggestUsersBlot from './SuggestUsersBlot';
+import { SuggestedUser } from '~/components/SearchSuggestion/lib/types';
 
-
-// class MentionsModule {
-//   constructor(quill, options) {
-//     const container = document.createElement('div');
-//     ReactDOM.render(<SearchUsers onSelect={() => null} />, container);
-//     quill.root.parentNode.appendChild(container);
-//   }
-// }
-
-// export default MentionsModule;
-
-// MentionsModule.js
 class MentionsModule {
+  quill: any;
+  options: any;
+  lastCharTyped: null;
   constructor(quill, options) {
     this.quill = quill;
     this.options = options;
-    this.isActive = false;
     this.handleTextChange = this.handleTextChange.bind(this);
+
+    this.lastCharTyped = null;
 
     this.quill.on('text-change', this.handleTextChange);
   }
 
   handleTextChange() {
-    const index = this.quill.getSelection()?.index || 0;
-    const textBeforeCursor = this.quill.getText(0, index);
-    const atIndex = textBeforeCursor.lastIndexOf('@');
+    const cursorIndex = this.quill.getSelection()?.index || 0;
+    const textBeforeCursor = this.quill.getText(0, cursorIndex);
+    this.lastCharTyped = textBeforeCursor.slice(-1);
 
-    if (atIndex !== -1) {
-      if (!this.searchUsersExists()) {
-        this.insertSearchUsersBlot(atIndex+1);
+    if (this.lastCharTyped === "@") {
+      if (!this.suggestUsersEmbedded()) {
+        this.insertSuggestUsersBlot(cursorIndex);
       }
     }
   }
 
-  searchUsersExists() {
-    const searchUsersBlots = this.quill.scroll.descendants(SearchUsersBlot, 0, this.quill.getLength());
-    return searchUsersBlots.length > 0;
+  suggestUsersEmbedded() {
+    const suggestUsersBlots = this.quill.scroll.descendants(SuggestUsersBlot, 0, this.quill.getLength());
+    return suggestUsersBlots.length > 0;
   }
   
-  insertSearchUsersBlot(atIndex) {
-    this.quill.insertEmbed(atIndex, 'searchUsers', { onUserSelect: this.handleUserSelect.bind(this) });
-    this.quill.setSelection(atIndex + 1, "user");
+  insertSuggestUsersBlot(atIndex) {
+    this.quill.insertEmbed(atIndex, 'suggestUsers', { onUserSelect: this.handleUserSelect.bind(this) });
+    this.quill.setSelection(atIndex, "user");
   }
+
+  handleUserSelect(user:SuggestedUser) {
+    const userBlotValue = convertToUserBlotType(user);
+    const [suggestUsersBlot] = this.quill.scroll.descendants(SuggestUsersBlot, 0, this.quill.getLength());
   
-
-  handleUserSelect(user) {
-
-
-    // Find the SearchUsersBlot instance in the scroll
-    const [searchUsersBlot] = this.quill.scroll.descendants(SearchUsersBlot, 0, this.quill.getLength());
-  
-    if (!searchUsersBlot) {
+    if (!suggestUsersBlot) {
       return;
     }
 
-    
-    // Get the current position of the SearchUsersBlot
-    const atIndex = searchUsersBlot.offset(this.quill.scroll);
-    console.log('searchUsersBlot', searchUsersBlot)
-    console.log('atIndex', atIndex)
+    // Get the current position of the SuggestUsersBlot
+    const atIndex = suggestUsersBlot.offset(this.quill.scroll);
   
-    // Remove the existing SearchUsersBlot
-    this.quill.deleteText(atIndex - 1, 1);
+    // Remove "@" character
+    this.quill.deleteText(atIndex-1, 1);
   
     // Insert the new UserBlot at the current position
-    this.quill.insertEmbed(atIndex, 'user', user);
+    this.quill.insertEmbed(atIndex, 'user', userBlotValue);
   
     // Move the cursor to the end of the newly inserted UserBlot
-    setTimeout(() => this.quill.setSelection(atIndex + 10, 0), 0)
     this.quill.setSelection(atIndex + 1, "silent");
 
+
+    const contents = this.quill.getContents();
+    const newContents = {
+      ops: contents.ops.filter((op) => {
+        return !(typeof op.insert === 'object' && Object.keys(op.insert).includes(SuggestUsersBlot.blotName));
+      }),
+    };
+    this.quill.setContents(newContents, "user");
+
+    // Move the cursor to the end of the newly inserted UserBlot
+    this.quill.setSelection(this.quill.getLength() + 1, "silent");
   }
-  
-  
-  
-  
 }
 
 export default MentionsModule;

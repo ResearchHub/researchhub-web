@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { StyleSheet, css } from 'aphrodite';
 import API from '~/config/api';
-import { ID } from '~/config/types/root_types';
 import AuthorAvatar from '../AuthorAvatar';
+import { SuggestedUser } from './lib/types';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,16 +37,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
-type SuggestedUser = {
-  firstName: string;
-  lastName: string;
-  id: ID;
-  authorProfile: {
-    profileImage: string;
-    id: ID;
-  }
-}
 
 const parseUserSuggestion = (raw: any): SuggestedUser => {
   return {
@@ -99,7 +89,7 @@ const fetchUserSuggestions = (query:string): Promise<SuggestedUser[]> => {
 
 
 
-const SearchUsers = ({ onSelect }) => {
+const SuggestUsers = ({ onSelect }) => {
   const [isActive, setIsActive] = useState(true);
   const inputRef = useRef(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
@@ -174,4 +164,4 @@ const SearchUsers = ({ onSelect }) => {
   );
 };
 
-export default SearchUsers;
+export default SuggestUsers;
