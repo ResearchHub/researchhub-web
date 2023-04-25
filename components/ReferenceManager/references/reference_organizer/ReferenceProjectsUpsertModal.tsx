@@ -6,6 +6,9 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
 import ReferenceUserInviteInput from "../../form/ReferenceUserInviteInput";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
+import colors from "~/config/themes/colors";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -48,6 +51,7 @@ export default function ReferenceProjectsUpsertModal({
             onChange={(projectName: string) => {
               setProjectValues({ ...projectValues, projectName });
             }}
+            placeholder="Enter project name"
             required
             value={projectValues.projectName}
           />
@@ -57,12 +61,68 @@ export default function ReferenceProjectsUpsertModal({
             onSwitch={(isPublic: boolean): void => {
               setProjectValues({ ...projectValues, isPublic });
             }}
+            required
           />
           <ReferenceUserInviteInput
             label={"Invite collaborators (optional)"}
             onInputChange={silentEmptyFnc}
             projectID={projectID}
           />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              margin: "16px 0 -16px",
+              width: "100%",
+            }}
+          >
+            <div
+              onClick={(event: SyntheticEvent): void => {
+                event.preventDefault();
+              }}
+              style={{
+                width: "88px",
+                marginLeft: "16px",
+                alignItems: "center",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                height: "40px",
+                borderRadius: "4px",
+              }}
+            >
+              <Typography
+                fontSize="14px"
+                fontWeight="400"
+                color={colors.NEW_BLUE()}
+              >
+                {"Cancel"}
+              </Typography>
+            </div>
+            <div
+              onClick={(event: SyntheticEvent): void => {
+                event.preventDefault();
+              }}
+              style={{
+                width: "88px",
+                marginLeft: "16px",
+                background: colors.NEW_BLUE(),
+                alignItems: "center",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                height: "40px",
+                borderRadius: "4px",
+              }}
+            >
+              <Typography fontSize="14px" fontWeight="400" color="#fff">
+                {"Create"}
+              </Typography>
+            </div>
+          </div>
         </div>
       }
       title={

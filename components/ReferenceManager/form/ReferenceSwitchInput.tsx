@@ -1,16 +1,19 @@
 import { Box, Switch, Typography } from "@mui/material";
 import { ReactElement } from "react";
+import colors from "~/config/themes/colors";
 
 type Props = {
   isChecked: boolean;
   label: string;
   onSwitch: (flag: boolean) => void;
+  required?: boolean;
 };
 
 export default function ReferenceSwitchInput({
   isChecked,
   label,
   onSwitch,
+  required,
 }: Props): ReactElement {
   return (
     <div
@@ -34,6 +37,7 @@ export default function ReferenceSwitchInput({
         width="100%"
       >
         {label}
+        {required ? <span style={{ color: colors.BLUE() }}>{"*"}</span> : null}
       </Typography>
       <Switch
         checked={isChecked}
