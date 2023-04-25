@@ -7,9 +7,11 @@ import { StyleSheet, css } from "aphrodite";
 import LoginModal from "~/components/Login/LoginModal";
 import Organization from "~/components/ReferenceManager/onboarding/Organization";
 import Teammates from "~/components/ReferenceManager/onboarding/Teammates";
+import { useState } from "react";
 
 function Index(props) {
   const { isLoggedIn, authChecked, user } = props;
+  const [createdOrg, setCreatedOrg] = useState({});
   const router = useRouter();
 
   const screen = () => {
@@ -17,9 +19,9 @@ function Index(props) {
       case "welcome":
         return <Welcome />;
       case "lab":
-        return <Organization />;
+        return <Organization setCreatedOrg={setCreatedOrg} />;
       case "teammates":
-        return <Teammates />;
+        return <Teammates createdOrg={createdOrg} />;
       case "import":
         return null;
       case "scholar":

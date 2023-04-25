@@ -8,22 +8,50 @@ import AvatarUpload from "~/components/AvatarUpload";
 import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import { createOrg, updateOrgProfileImg } from "~/config/fetch";
+import {
+  createOrg,
+  inviteUserToOrg,
+  updateOrgProfileImg,
+} from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
 import { faPlus, faTimes } from "@fortawesome/pro-solid-svg-icons";
 
-function Teammates({ showMessage, setMessage }) {
+type TeammatesProps = {
+  createdOrg: {};
+};
+
+function Teammates({ createdOrg }) {
   const [loading, setLoading] = useState(false);
   const [numEmails, setNumEmails] = useState(3);
+  const [emailsToInvite, setEmailsToInvite] = useState({});
   const [inputsHovered, setInputsHovered] = useState({});
   const router = useRouter();
 
-  const emailChange = (id, value) => {};
+  const emailChange = (id, value) => {
+    const emailsToInv = { ...emailsToInvite };
+    emailsToInv[id] = value;
+    setEmailsToInvite(emailsToInv);
+  };
 
-  const fin = (e) => {
+  const fin = async (e) => {
     e.preventDefault();
+
+    const entries = Object.entries(emailsToInvite);
+    const allInvites: Promise<Response>[] = [];
+
+    for (const [key, value] of entries) {
+      const invitedUser = inviteUserToOrg({
+        orgId: createdOrg.id,
+        email: value,
+      });
+      allInvites.push(invitedUser);
+    }
+
+    const res = await Promise.all(allInvites);
+
+    router.push("/reference-manager/onboarding/import");
   };
 
   const emailInputs = useMemo(() => {

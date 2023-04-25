@@ -13,7 +13,17 @@ import { MessageActions } from "~/redux/message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
 
-function Organization({ showMessage, setMessage }) {
+type OrganizationProps = {
+  setCreatedOrg: ({}) => void;
+  setMessage: (string: string) => void;
+  showMessage: ({ show, error }) => void;
+};
+
+function Organization({
+  showMessage,
+  setMessage,
+  setCreatedOrg,
+}: OrganizationProps) {
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [org, setOrg] = useState({
@@ -65,6 +75,8 @@ function Organization({ showMessage, setMessage }) {
         file: orgPhoto,
       });
 
+      setCreatedOrg(updatedOrg);
+
       if (response.status >= 200 && response.status < 300) {
         router.push("/reference-manager/onboarding/teammates");
       }
@@ -85,7 +97,7 @@ function Organization({ showMessage, setMessage }) {
         className={css(styles.addPhotoSection)}
         onClick={() => setAvatarUploadIsOpen(true)}
       >
-        <OrgAvatar org={org} size={100} />
+        <OrgAvatar org={org} size={100} fontSize={50} />
         <p className={css(styles.addPhotoText)}>Add a photo</p>
       </div>
       <AvatarUpload
