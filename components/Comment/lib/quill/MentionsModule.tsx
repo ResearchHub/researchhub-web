@@ -49,27 +49,31 @@ class MentionsModule {
   
 
   handleUserSelect(user) {
+
+
     // Find the SearchUsersBlot instance in the scroll
     const [searchUsersBlot] = this.quill.scroll.descendants(SearchUsersBlot, 0, this.quill.getLength());
   
     if (!searchUsersBlot) {
       return;
     }
-  
+
+    
     // Get the current position of the SearchUsersBlot
     const atIndex = searchUsersBlot.offset(this.quill.scroll);
+    console.log('searchUsersBlot', searchUsersBlot)
+    console.log('atIndex', atIndex)
   
     // Remove the existing SearchUsersBlot
-    this.quill.deleteText(atIndex, 1, "user");
+    this.quill.deleteText(atIndex - 1, 1);
   
     // Insert the new UserBlot at the current position
-    this.quill.insertEmbed(atIndex, 'user', user, "user");
+    this.quill.insertEmbed(atIndex, 'user', user);
   
     // Move the cursor to the end of the newly inserted UserBlot
+    setTimeout(() => this.quill.setSelection(atIndex + 10, 0), 0)
     this.quill.setSelection(atIndex + 1, "silent");
 
-    console.log('user', user)
-    console.log('quill', this.quill.getContents())
   }
   
   

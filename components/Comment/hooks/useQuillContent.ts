@@ -23,6 +23,15 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
           debouncedSetContent(nextContent);
         }
       });
+
+      quill.keyboard.addBinding(
+        {
+          key: ' ',
+          handler: (range, context) => {
+            setTimeout(() => quill.setSelection(quill.getSelection().index + 10, 0), 0)
+            return true
+          }
+        });
     }
   }, [quill]);
 
