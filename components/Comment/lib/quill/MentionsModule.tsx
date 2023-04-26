@@ -10,13 +10,27 @@ class MentionsModule {
     this.quill = quill;
     this.options = options;
     this.suggestInputText = "";
+    const editorWrapperEl = this.quill.container.closest(".CommentEditor");
+
+    editorWrapperEl.addEventListener("click", this.handleEditorClick.bind(this))
     this.quill.container.addEventListener("keydown", this.handleKeyDown.bind(this))
     document.addEventListener("click", this.handleMouseClick.bind(this))
   }
 
+  handleEditorClick(event) {
+    const mentionElIsClicked = event.target.closest(".ql-mention");
+    if (mentionElIsClicked) {
+      // event.preventDefault();
+
+      const cursorIndex = this.quill.getLength() - 1
+      this.quill.focus();
+      this.quill.insertEmbed(cursorIndex, 'suggestUsers', { onUserSelect: this.handleUserSelect.bind(this), onChange: this.handleTextChange.bind(this) });
+      this.quill.setSelection(cursorIndex, "user");
+
+    }
+  }
+
   handleMouseClick(event) {
-    console.log(event)
-    console.log(event.target)
     if (this.suggestUsersEmbedded()) {
       this.removeSuggestUsersBlot();
     }

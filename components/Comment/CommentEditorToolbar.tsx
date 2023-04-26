@@ -1,13 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFontCase, faChevronUp } from "@fortawesome/pro-regular-svg-icons";
+import { faFontCase, faChevronUp, faAt } from "@fortawesome/pro-regular-svg-icons";
 import { useRef, useState } from "react";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 type Args = {
   editorId: string;
+  quill: any;
 };
 
-const CommentEditorToolbar = ({ editorId }: Args) => {
+const CommentEditorToolbar = ({ editorId, quill }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toolbarRef = useRef(null);
 
@@ -23,6 +24,9 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
     <div id={editorId} className="ql-toolbar" ref={toolbarRef}>
       <span className="ql-formats">
         <button className="ql-blockquote"></button>
+        <button className="ql-mention">
+          <FontAwesomeIcon icon={faAt} />
+        </button>        
         <button className="ql-link" />
         <button className="ql-image" />
         <button className="ql-video"></button>

@@ -290,7 +290,7 @@ console.log('_content', _content)
               isPreviewMode && styles.hidden
             )}
           >
-            <CommentEditorToolbar editorId={editorId} />
+            <CommentEditorToolbar editorId={editorId} quill={quill} />
           </div>
         </div>
       </div>
