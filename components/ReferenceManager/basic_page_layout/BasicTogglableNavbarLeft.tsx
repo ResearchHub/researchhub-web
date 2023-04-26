@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { isEmpty } from "~/config/utils/nullchecks";
-import { ReactNode, SyntheticEvent, useState } from "react";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
@@ -20,6 +20,8 @@ import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useRouter } from "next/router";
+import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -74,9 +76,6 @@ export default function BasicTogglableNavbarLeft({
   setIsManualUploadDrawerOpen,
   theme,
 }: Props) {
-  const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
-    useState<boolean>(false);
-  const [projectsFetchedTime, setProjectsFetchedTime] = useState(Date.now());
   const user = getCurrentUser();
   const isLoadingUser = isEmpty(user?.id);
   const profileImage =
@@ -86,6 +85,34 @@ export default function BasicTogglableNavbarLeft({
   const currentUserName = `${user?.firstName ?? user?.first_name ?? ""} ${
     user?.lastName ?? user?.last_name ?? ""
   }`;
+  // TODO: calvinhlee - clean up this mess around organization and other callsites like this
+  const router = useRouter();
+  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
+  const { organization } = router.query;
+  useEffect(() => {
+    if (organization && orgs.length) {
+      // @ts-ignore
+      const curOrg = orgs.find((org) => org.slug === organization);
+      // @ts-ignore
+      setCurrentOrg(curOrg);
+    }
+  }, [organization, orgs]);
+  const currentOrgID = currentOrg?.id ?? null;
+
+  const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
+    useState<boolean>(false);
+  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
+  useEffect((): void => {
+    fetchReferenceProjects({
+      onError: emptyFncWithMsg,
+      onSuccess: (result): void => {
+        setCurrentOrgProjects(result);
+      },
+      payload: {
+        organization: currentOrgID,
+      },
+    });
+  }, [currentOrgID]);
   return (
     <Box
       flexDirection="column"

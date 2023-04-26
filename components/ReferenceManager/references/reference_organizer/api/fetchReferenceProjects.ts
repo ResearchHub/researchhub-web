@@ -28,6 +28,6 @@ export const fetchReferenceProjects = ({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((result: any): void => onSuccess(result))
+    .then((payload: any): void => onSuccess(payload?.results))
     .catch(onError);
 };
