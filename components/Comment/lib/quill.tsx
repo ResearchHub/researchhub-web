@@ -43,7 +43,7 @@ export const buildQuillModules = ({
           shortKey: true,
           metaKey: true,
           handler: handleSubmit,
-        },
+        },     
       },
     },
     toolbar: {

@@ -6,54 +6,6 @@ import AuthorAvatar from '../AuthorAvatar';
 import { SuggestedUser } from './lib/types';
 import colors, { formColors } from '~/config/themes/colors';
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    display: "inline-block",
-  },
-  input: {
-    width: '100%',
-    padding: "8px",
-    borderRadius: "4px",
-    marginLeft: 2,
-    border: `1px solid ${formColors.BORDER}`,
-    outline: "none",
-    ":focus": {
-      border: `1px solid ${colors.NEW_BLUE()}`,
-    },
-  },
-  userDropdown: {
-    position: 'absolute',
-    width: '100%',
-    left: 0,
-    zIndex: 1,
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    ':nth-child(1n) > div': {
-      backgroundColor: 'white',
-    },
-    
-  },
-  userRow: {
-    display: 'flex',
-    columnGap: "8px",
-    alignItems: 'center',
-    padding: '8px 12px',
-    fontSize: 14,
-    borderBottom: '1px solid #eee',
-    cursor: 'pointer',
-    ":hover": {
-      transition: "0.3s",
-      color: colors.BLACK(0.7),
-    },
-  },
-  profileImg: {
-    width: 40,
-    height: 40,
-    borderRadius: '50%',
-    marginRight: 8,
-  },
-});
-
 
 const parseUserSuggestion = (raw: any): SuggestedUser => {
   return {
@@ -67,11 +19,11 @@ const parseUserSuggestion = (raw: any): SuggestedUser => {
   }
 }
 
-const fetchUserSuggestions = (query:string): Promise<SuggestedUser[]> => {
+const fetchUserSuggestions = (query: string): Promise<SuggestedUser[]> => {
 
   const url = `${API.BASE_URL}search/user/suggest/?full_name_suggest__completion=${query}`;
 
-  let suggestedUsers:SuggestedUser[] = [];
+  let suggestedUsers: SuggestedUser[] = [];
   return fetch(url, API.GET_CONFIG())
     .then(response => {
       if (response.ok) {
@@ -102,11 +54,13 @@ const fetchUserSuggestions = (query:string): Promise<SuggestedUser[]> => {
 }
 
 
+type Args = {
+  onSelect: Function;
+  onChange: Function;
+}
 
 
-
-
-const SuggestUsers = ({ onSelect }) => {
+const SuggestUsers = ({ onSelect, onChange }: Args) => {
   const [isActive, setIsActive] = useState(true);
   const inputRef = useRef(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
@@ -118,11 +72,9 @@ const SuggestUsers = ({ onSelect }) => {
   }, []);
 
   const handleInputChange = useCallback(async () => {
-    console.log('Input value:', inputRef.current.value);
-
+    onChange(inputRef.current.value);
     const suggestions = await fetchUserSuggestions(inputRef.current.value);
     setUserSuggestions(suggestions);
-    // Your custom logic here
   }, [userSuggestions, inputRef?.current?.value]);
 
   const debouncedHandleInputChange = useCallback(
@@ -163,16 +115,16 @@ const SuggestUsers = ({ onSelect }) => {
           />
           <div className={css(styles.userDropdown)}>
             <div>
-            {userSuggestions.map((user, index) => (
-              <div
-                key={index}
-                className={css(styles.userRow)}
-                onClick={() => handleUserRowClick(user)}
-              >
-                <AuthorAvatar author={user.authorProfile} size={25} trueSize />
-                {user.firstName} {user.lastName}
-              </div>
-            ))}
+              {userSuggestions.map((user, index) => (
+                <div
+                  key={index}
+                  className={css(styles.userRow)}
+                  onClick={() => handleUserRowClick(user)}
+                >
+                  <AuthorAvatar author={user.authorProfile} size={25} trueSize />
+                  {user.firstName} {user.lastName}
+                </div>
+              ))}
             </div>
           </div>
         </>
@@ -180,5 +132,53 @@ const SuggestUsers = ({ onSelect }) => {
     </div>
   );
 };
+
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    display: "inline-block",
+  },
+  input: {
+    width: '100%',
+    padding: "8px",
+    borderRadius: "4px",
+    marginLeft: 2,
+    border: `1px solid ${formColors.BORDER}`,
+    outline: "none",
+    ":focus": {
+      border: `1px solid ${colors.NEW_BLUE()}`,
+    },
+  },
+  userDropdown: {
+    position: 'absolute',
+    width: '100%',
+    left: 0,
+    zIndex: 1,
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    ':nth-child(1n) > div': {
+      backgroundColor: 'white',
+    },
+  },
+  userRow: {
+    display: 'flex',
+    columnGap: "8px",
+    alignItems: 'center',
+    padding: '8px 12px',
+    fontSize: 14,
+    borderBottom: '1px solid #eee',
+    cursor: 'pointer',
+    ":hover": {
+      transition: "0.3s",
+      color: colors.BLACK(0.7),
+    },
+  },
+  profileImg: {
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    marginRight: 8,
+  },
+});
 
 export default SuggestUsers;

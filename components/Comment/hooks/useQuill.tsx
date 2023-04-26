@@ -103,26 +103,6 @@ export const useQuill = (
             loadQuillModules.default({ quillLib, quillInstance });
           });
         }
-
-
-      const MagicUrl = require("quill-magic-url").default;
-      quillLib.register("modules/magicUrl", MagicUrl);
-      quillLib.register(QuillPeerReviewRatingBlock);
-      
-
-      const icons = quillLib.import("ui/icons");
-      icons.video = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faVideo} />
-      );
-      icons.image = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faImagePolaroid} />
-      );
-      icons.link = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faLinkSimple} />
-      );
-      icons.blockquote = ReactDOMServer.renderToString(
-        <FontAwesomeIcon icon={faQuoteLeft} />
-      );
     }
 
     if (!obj.Quill) {
