@@ -30,6 +30,8 @@ export default function ReferenceProjectsNavbarEl({
         maxHeight: 50,
         px: 2.5,
         margin: "8px",
+        marginLeft: 0,
+        marginRight: 0,
       }}
     >
       {/* TODO: calvinhlee - move this to context */}
@@ -43,7 +45,7 @@ export default function ReferenceProjectsNavbarEl({
       />
       <ALink href={`/reference-manager/${orgSlug}/?project=${projectID}`}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <FolderIcon fontSize="small" />
+          <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} />
           <Typography
             component="div"
             fontSize={14}
@@ -51,6 +53,7 @@ export default function ReferenceProjectsNavbarEl({
             noWrap
             variant="h6"
             ml={"6px"}
+            color={"#241F3A"}
           >
             {projectName}
           </Typography>
@@ -58,6 +61,10 @@ export default function ReferenceProjectsNavbarEl({
       </ALink>
       <AddCircleOutlineIcon
         fontSize="small"
+        sx={{
+          marginLeft: "auto",
+          color: "#7C7989",
+        }}
         onClick={() => {
           setIsManualUploadDrawerOpen(true);
         }}
