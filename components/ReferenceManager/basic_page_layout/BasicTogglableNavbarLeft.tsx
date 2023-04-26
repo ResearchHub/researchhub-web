@@ -109,7 +109,7 @@ export default function BasicTogglableNavbarLeft({
   const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
     useState<boolean>(false);
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
-
+  const [projectsFetchTime, setProjectsFetchTime] = useState(Date.now());
   useEffect((): void => {
     fetchReferenceProjects({
       onError: emptyFncWithMsg,
@@ -120,7 +120,7 @@ export default function BasicTogglableNavbarLeft({
         organization: currentOrgID,
       },
     });
-  }, [currentOrgID]);
+  }, [currentOrgID, projectsFetchTime]);
 
   const refProjectsNavbarEls = currentOrgProjects?.map((refProject) => {
     return (
@@ -144,6 +144,7 @@ export default function BasicTogglableNavbarLeft({
           event?.preventDefault();
           setIsProjectsUpsertModalOpen(false);
         }}
+        onUpsertSuccess={setProjectsFetchTime}
         projectID={undefined}
       />
       <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>

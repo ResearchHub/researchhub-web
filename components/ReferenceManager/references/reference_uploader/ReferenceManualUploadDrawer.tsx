@@ -13,7 +13,7 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
-import { NullableString } from "~/config/types/root_types";
+import { ID, NullableString } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState, useCallback } from "react";
 import {
   resolveFieldKeyLabels,
@@ -34,8 +34,8 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 const CALCULATED_LEFT_MARGIN =
-  LOCAL_LEFT_NAV_WIDTH /* Reference Manager left nav */ +
-  LEFT_SIDEBAR_MIN_WIDTH /* Researchhub web left nav*/ +
+  240 /* LOCAL_LEFT_NAV_WIDTH */ +
+  80 /* LEFT_SIDEBAR_MIN_WIDTH */ +
   2; /* arbitrary border "breather" */
 
 type Props = {
@@ -43,10 +43,12 @@ type Props = {
     isDrawerOpen: boolean;
     setIsDrawerOpen: (flag: boolean) => void;
   };
+  projectID?: ID;
 };
 
 export default function ReferenceManualUploadDrawer({
   drawerProps: { isDrawerOpen, setIsDrawerOpen },
+  projectID,
 }: Props): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -263,7 +265,8 @@ export default function ReferenceManualUploadDrawer({
                   selectedReferenceType,
                   setIsSubmitting,
                   setReferencesFetchTime,
-                  organizationId: currentOrg?.id,
+                  organizationID: currentOrg?.id,
+                  projectID,
                 })
               }
               size="large"

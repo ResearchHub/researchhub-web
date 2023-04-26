@@ -17,6 +17,7 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 type ComponentProps = {
   isModalOpen: boolean;
   onCloseModal: (event: SyntheticEvent) => void;
+  onUpsertSuccess: () => void;
   projectID: ID;
 };
 
@@ -29,6 +30,7 @@ type ProjectValues = {
 export default function ReferenceProjectsUpsertModal({
   isModalOpen,
   onCloseModal,
+  onUpsertSuccess,
   projectID,
 }: ComponentProps): ReactElement {
   // TODO: calvinhlee - clean up this mess around organization and other callsites like this
@@ -61,7 +63,7 @@ export default function ReferenceProjectsUpsertModal({
     };
     upsertReferenceProject({
       onSuccess: (result) => {
-        console.warn("result: ", result);
+        onUpsertSuccess();
       },
       onError: (error) => {
         console.warn("error: ", error);

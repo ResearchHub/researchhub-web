@@ -65,7 +65,8 @@ export const handleSubmit = ({
   selectedReferenceType,
   setIsSubmitting,
   setReferencesFetchTime,
-  organizationId,
+  organizationID,
+  projectID,
 }: {
   event: SyntheticEvent;
   resetComponentState: () => void;
@@ -73,7 +74,8 @@ export const handleSubmit = ({
   selectedReferenceType: NullableString;
   setIsSubmitting: (flag: boolean) => void;
   setReferencesFetchTime: (date: number) => void;
-  organizationId: ID;
+  organizationID: ID;
+  projectID: ID;
 }): void => {
   event.preventDefault();
   setIsSubmitting(true);
@@ -92,7 +94,8 @@ export const handleSubmit = ({
       creators: formattedCreators,
     },
     citation_type: selectedReferenceType,
-    organization: organizationId,
+    organization: organizationID,
+    project: projectID,
   });
 
   const attachment = referenceSchemaValueSet.attachment;

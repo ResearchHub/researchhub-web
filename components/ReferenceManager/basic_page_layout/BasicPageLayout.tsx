@@ -73,12 +73,12 @@ export default function BasicPageLayout({ children }: Props) {
           </Box>
         </Box>
       </AppTopBar>
-      <BasicTogglableNavbarLeft
+      {/* <BasicTogglableNavbarLeft
         isOpen={isLeftNavOpen}
         navWidth={leftNavWidth}
         setIsOpen={setIsLeftNavOpen}
         theme={theme}
-      />
+      /> */}
       <BasicAppMain
         appPaddingLeft={APP_PADDING_LEFT}
         isLeftNavOpen={isLeftNavOpen}

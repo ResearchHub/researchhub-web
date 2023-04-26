@@ -33,13 +33,15 @@ export default function ReferencesContainer({}: Props): ReactNode {
   } else {
     return (
       <Fragment>
+        {/* TODO: calvinhlee - move this to context */}
         <ReferenceManualUploadDrawer
           drawerProps={{
             isDrawerOpen: isManualUploadDrawerOpen,
             setIsDrawerOpen: setIsManualUploadDrawerOpen,
           }}
+          key="root-nav"
         />
-       
+
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
