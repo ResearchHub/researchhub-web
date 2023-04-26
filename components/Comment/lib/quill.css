@@ -102,9 +102,9 @@
   cursor: pointer;
 }
 
-.CommentEditor .ql-editor * {
+/* .CommentEditor .ql-editor * {
   background-color: unset !important;
-}
+} */
 
 .CommentEditor .ql-editor > p > img {
   margin-left: auto;

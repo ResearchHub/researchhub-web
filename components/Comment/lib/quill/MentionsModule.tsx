@@ -11,6 +11,15 @@ class MentionsModule {
     this.options = options;
     this.suggestInputText = "";
     this.quill.container.addEventListener("keydown", this.handleKeyDown.bind(this))
+    document.addEventListener("click", this.handleMouseClick.bind(this))
+  }
+
+  handleMouseClick(event) {
+    console.log(event)
+    console.log(event.target)
+    if (this.suggestUsersEmbedded()) {
+      this.removeSuggestUsersBlot();
+    }
   }
 
   handleKeyDown(event) {
@@ -25,11 +34,11 @@ class MentionsModule {
     }
     else if (backspaceKey && this.suggestInputText === "" && this.suggestUsersEmbedded()) {
       event.preventDefault();
-      this.removeSuggestUsersBlot({ insertAtChar: false });
+      this.removeSuggestUsersBlot();
       this.quill.setSelection(this.quill.getLength() + 1, "silent");
     }
     else if (escKey) {
-      this.removeSuggestUsersBlot({ insertAtChar: false });
+      this.removeSuggestUsersBlot();
       this.quill.setSelection(this.quill.getLength() + 1, "silent");
     }
   }
@@ -53,16 +62,13 @@ class MentionsModule {
     this.quill.setSelection(atIndex, "user");
   }
 
-  removeSuggestUsersBlot({insertAtChar = false}) {
+  removeSuggestUsersBlot() {
     const contents = this.quill.getContents();
     const newContents = {
       ops: contents.ops.filter((op) => {
         return !(typeof op.insert === 'object' && Object.keys(op.insert).includes(SuggestUsersBlot.blotName));
       }),
     };
-    if (insertAtChar) {
-      newContents.ops.push({ insert: "@" })
-    }
     this.quill.setContents(newContents, "user");
   }
 
@@ -86,7 +92,7 @@ class MentionsModule {
     // Move the cursor to the end of the newly inserted UserBlot
     this.quill.setSelection(atIndex + 1, "silent");
 
-    this.removeSuggestUsersBlot({});
+    this.removeSuggestUsersBlot();
 
     // Move the cursor to the end of the newly inserted UserBlot
     this.quill.setSelection(this.quill.getLength() + 1, "silent");

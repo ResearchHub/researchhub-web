@@ -4,7 +4,7 @@ import { StyleSheet, css } from 'aphrodite';
 import API from '~/config/api';
 import AuthorAvatar from '../AuthorAvatar';
 import { SuggestedUser } from './lib/types';
-import colors, { formColors } from '~/config/themes/colors';
+import colors from '~/config/themes/colors';
 
 
 const parseUserSuggestion = (raw: any): SuggestedUser => {
@@ -64,6 +64,8 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
   const [isActive, setIsActive] = useState(true);
   const inputRef = useRef(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
+  const [focusedChoice, setFocusedChoice] = useState<SuggestedUser | null>(null);
+
 
   useEffect(() => {
     if (inputRef.current) {
@@ -75,6 +77,7 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
     onChange(inputRef.current.value);
     const suggestions = await fetchUserSuggestions(inputRef.current.value);
     setUserSuggestions(suggestions);
+    setFocusedChoice(suggestions[0]);
   }, [userSuggestions, inputRef?.current?.value]);
 
   const debouncedHandleInputChange = useCallback(
@@ -87,46 +90,58 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
     onSelect(user);
   };
 
-  useEffect(() => {
+  const handleKeyDown = (e) => {
+    const downKey = e.keyCode === 40;
+    const upKey = e.keyCode === 38;
+    const enterKey = e.keyCode === 13;
 
-    const handleClick = (e) => {
-      if (e.target === document.body) {
-        setIsActive(false);
-      }
-    };
-
-    document.addEventListener('click', handleClick);
-
-    return () => {
-      document.removeEventListener('click', handleClick);
-    };
-  }, []);
+    if (downKey) {
+      e.preventDefault();
+      const currentIdx = userSuggestions.findIndex(u => u.id === focusedChoice?.id);
+      const nextIdx = currentIdx + 1 > userSuggestions.length - 1 ? 0 : currentIdx + 1;
+      setFocusedChoice(userSuggestions[nextIdx]);
+    }
+    else if (upKey) {
+      e.preventDefault();
+      const currentIdx = userSuggestions.findIndex(u => u.id === focusedChoice?.id);
+      const nextIdx = currentIdx - 1 < 0 ? userSuggestions.length - 1 : currentIdx - 1;
+      setFocusedChoice(userSuggestions[nextIdx]);
+    }
+    else if (enterKey) {
+      e.preventDefault();
+      onSelect(focusedChoice);
+    }
+  }
 
   return (
     <div className={css(styles.container)}>
       {isActive ? (
         <>
           <input
+            onKeyDown={handleKeyDown}
             ref={inputRef}
             type="text"
             placeholder="Mention a user"
             onChange={debouncedHandleInputChange}
             className={css(styles.input)}
           />
-          <div className={css(styles.userDropdown)}>
-            <div>
-              {userSuggestions.map((user, index) => (
-                <div
-                  key={index}
-                  className={css(styles.userRow)}
-                  onClick={() => handleUserRowClick(user)}
-                >
-                  <AuthorAvatar author={user.authorProfile} size={25} trueSize />
-                  {user.firstName} {user.lastName}
-                </div>
-              ))}
+          {userSuggestions.length > 0 &&
+            <div className={css(styles.userDropdown)}>
+              <div>
+                {userSuggestions.map((user, index) => (
+                  <div
+                    key={index}
+                    onMouseEnter={() => setFocusedChoice(user)}
+                    className={css(styles.userRow, focusedChoice?.id === user.id && styles.userRowFocused)}
+                    onClick={() => handleUserRowClick(user)}
+                  >
+                    <AuthorAvatar author={user.authorProfile} size={25} trueSize />
+                    {user.firstName} {user.lastName}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          }
         </>
       ) : null}
     </div>
@@ -141,21 +156,18 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    padding: "8px",
+    padding: "0",
     borderRadius: "4px",
     marginLeft: 2,
-    border: `1px solid ${formColors.BORDER}`,
+    border: `none`,
     outline: "none",
-    ":focus": {
-      border: `1px solid ${colors.NEW_BLUE()}`,
-    },
   },
   userDropdown: {
     position: 'absolute',
-    width: '100%',
-    left: 0,
+    width: '200px',
+    left: -15,
     zIndex: 1,
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
     ':nth-child(1n) > div': {
       backgroundColor: 'white',
     },
@@ -166,12 +178,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: '8px 12px',
     fontSize: 14,
-    borderBottom: '1px solid #eee',
     cursor: 'pointer',
-    ":hover": {
-      transition: "0.3s",
-      color: colors.BLACK(0.7),
-    },
+  },
+  userRowFocused: {
+    background: colors.NEW_BLUE(0.1),
   },
   profileImg: {
     width: 40,
