@@ -1,6 +1,10 @@
 import { Box } from "@mui/system";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -22,6 +26,8 @@ import ReferenceProjectsUpsertModal from "../references/reference_organizer/Refe
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
 import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
+import ReferenceProjectsNavbarEl from "../references/reference_organizer/ReferenceProjectsNavbarEl";
+import ALink from "~/components/ALink";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -98,10 +104,12 @@ export default function BasicTogglableNavbarLeft({
     }
   }, [organization, orgs]);
   const currentOrgID = currentOrg?.id ?? null;
-
+  // @ts-ignore
+  const currentOrgSlug = currentOrg?.slug ?? null;
   const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
     useState<boolean>(false);
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
+
   useEffect((): void => {
     fetchReferenceProjects({
       onError: emptyFncWithMsg,
@@ -113,6 +121,17 @@ export default function BasicTogglableNavbarLeft({
       },
     });
   }, [currentOrgID]);
+
+  const refProjectsNavbarEls = currentOrgProjects?.map((refProject) => {
+    return (
+      <ReferenceProjectsNavbarEl
+        key={`ref-project-${refProject?.id}`}
+        orgSlug={nullthrows(currentOrgSlug, "Org must be present")}
+        projectID={refProject?.id}
+        projectName={refProject?.project_name}
+      />
+    );
+  });
   return (
     <Box
       flexDirection="column"
@@ -181,29 +200,31 @@ export default function BasicTogglableNavbarLeft({
         {HOME_NAV_BUTTON_CONFIG.map((navbuttonObjs, index) => {
           const { label, icon } = navbuttonObjs;
           return (
-            <ListItem key={label} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: isOpen ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+            <ALink href={`/reference-manager/${currentOrgSlug}`}>
+              <ListItem key={label} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: isOpen ? 1 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: isOpen ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={label}
-                  sx={{ opacity: isOpen ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: isOpen ? 1 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={label}
+                    sx={{ opacity: isOpen ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </ALink>
           );
         })}
       </List>
@@ -261,6 +282,7 @@ export default function BasicTogglableNavbarLeft({
             {"Create a new project"}
           </Typography>
         </ListItemButton>
+        {refProjectsNavbarEls}
       </List>
     </Box>
   );
