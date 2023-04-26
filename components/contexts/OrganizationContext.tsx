@@ -6,7 +6,8 @@ import { captureEvent } from "~/config/utils/events";
 type ContextType = {
   orgs: Org[];
   currentOrg: Org | undefined;
-  setCurrentOrg: (org: Org) => void;
+  setCurrentOrg: null | ((org: Org) => void);
+  fetchAndSetUserOrgs: null | (() => void);
 };
 
 type Org = {
@@ -16,8 +17,9 @@ type Org = {
 
 const OrganizationContext = createContext<ContextType>({
   orgs: [],
-  setCurrentOrg: () => {},
+  setCurrentOrg: () => null,
   currentOrg: {},
+  fetchAndSetUserOrgs: null,
 });
 
 export const useOrgs = () => useContext(OrganizationContext);
@@ -26,29 +28,28 @@ export const OrganizationContextProvider = ({ children, user }) => {
   const [orgs, setOrgs] = useState([]);
   const [currentOrg, setCurrentOrg] = useState({});
 
+  const fetchAndSetUserOrgs = async () => {
+    let userOrgs;
+
+    try {
+      userOrgs = await fetchUserOrgs({
+        user,
+        route: "get_user_organizations",
+      });
+
+      setOrgs(userOrgs);
+    } catch (error) {
+      captureEvent({
+        error,
+        msg: "Failed to fetch user orgs",
+        data: { userId: user.id, page: "reference-manager" },
+      });
+    }
+  };
+
   useEffect(() => {
-    const _fetchAndSetUserOrgs = async () => {
-      let userOrgs;
-      let currOrg;
-
-      try {
-        userOrgs = await fetchUserOrgs({
-          user,
-          route: "get_user_organizations",
-        });
-
-        setOrgs(userOrgs);
-      } catch (error) {
-        captureEvent({
-          error,
-          msg: "Failed to fetch user orgs",
-          data: { userId: user.id, page: "reference-manager" },
-        });
-      }
-    };
-
     if (user?.id) {
-      _fetchAndSetUserOrgs();
+      fetchAndSetUserOrgs();
     }
   }, [user]);
 
@@ -58,6 +59,7 @@ export const OrganizationContextProvider = ({ children, user }) => {
         orgs,
         currentOrg,
         setCurrentOrg,
+        fetchAndSetUserOrgs,
       }}
     >
       {children}

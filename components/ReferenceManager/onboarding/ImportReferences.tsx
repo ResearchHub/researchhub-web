@@ -11,12 +11,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
 import { faTimes } from "@fortawesome/pro-solid-svg-icons";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
+import { updateUser } from "./api";
 
 type ImportReferencesProps = {
-  createdOrg: {};
+  user: {
+    id: number;
+  };
 };
 
-function ImportReferences({}) {
+function ImportReferences({ user }: ImportReferencesProps) {
   const [loading, setLoading] = useState(false);
   const [numEmails, setNumEmails] = useState(3);
   const [emailsToInvite, setEmailsToInvite] = useState({});
@@ -31,6 +34,11 @@ function ImportReferences({}) {
 
   const fin = async (e) => {
     e.preventDefault();
+
+    await updateUser({
+      userID: user.id,
+      params: { reference_manager_onboarding_complete: true },
+    });
 
     router.push("/reference-manager");
   };
@@ -86,7 +94,7 @@ function ImportReferences({}) {
 
   return (
     <div>
-      <h1 className={css(sharedOnboardingStyles.h1)}>Import your references</h1>
+      <h1 className={css(sharedOnboardingStyles.h1)}>Import Your References</h1>
       <p className={css(sharedOnboardingStyles.subtext)}>
         You can import your references from other reference managers <br />
         (use BibTex, JSON, or CSV format)
@@ -151,7 +159,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
+  user: state.auth.user,
 });
 
 const mapDispatchToProps = {

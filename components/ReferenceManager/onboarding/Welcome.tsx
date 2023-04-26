@@ -104,7 +104,7 @@ function Welcome({ saveAuthorChanges, user, updateUser }) {
       <h1 className={css(sharedOnboardingStyles.h1)}>
         Welcome to the
         <br />
-        ResearchHub Citation Manager
+        ResearchHub Reference Manager
       </h1>
       <p className={css(sharedOnboardingStyles.subtext)}>
         Personalize your profile

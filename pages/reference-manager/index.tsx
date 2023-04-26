@@ -34,7 +34,7 @@ export async function getServerSideProps(ctx) {
   const userResponse = await fetch(userURL, api.GET_CONFIG(authToken));
   const userJson = await userResponse.json();
 
-  if (!userJson.reference_manager_onboarding_complete) {
+  if (!userJson.results[0].reference_manager_onboarding_complete) {
     return {
       redirect: {
         destination: `/reference-manager/onboarding/welcome`,

@@ -12,6 +12,7 @@ import { createOrg, updateOrgProfileImg } from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 type OrganizationProps = {
   setCreatedOrg: ({}) => void;
@@ -33,6 +34,8 @@ function Organization({
   });
   const [orgPhoto, setOrgPhoto] = useState<FormData | null>(null);
   const router = useRouter();
+
+  const { fetchAndSetUserOrgs } = useOrgs();
 
   const saveProfilePicture = async (picture) => {
     const changes = new FormData();
@@ -82,6 +85,7 @@ function Organization({
       });
 
       setCreatedOrg(updatedOrg);
+      fetchAndSetUserOrgs && fetchAndSetUserOrgs();
 
       if (updatedOrg.id) {
         router.push("/reference-manager/onboarding/teammates");
@@ -97,7 +101,10 @@ function Organization({
     <div>
       <h1 className={css(sharedOnboardingStyles.h1)}>Create an Organization</h1>
       <p className={css(sharedOnboardingStyles.subtext)}>
-        Add details for your teammates
+        Invite your lab, or other collaborators to an organization
+        <br />
+        You can also skip this step to continue with your personal Reference
+        Manager
       </p>
       <div
         className={css(styles.addPhotoSection)}
