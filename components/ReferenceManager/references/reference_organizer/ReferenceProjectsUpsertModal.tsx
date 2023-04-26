@@ -16,7 +16,7 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 type ComponentProps = {
   isModalOpen: boolean;
-  onCloseModal: (event: SyntheticEvent) => void;
+  onCloseModal: (event?: SyntheticEvent) => void;
   onUpsertSuccess: () => void;
   projectID: ID;
 };
@@ -53,6 +53,14 @@ export default function ReferenceProjectsUpsertModal({
     projectID,
     projectName: null,
   });
+  const handleCloseModal = (event?: SyntheticEvent) => {
+    onCloseModal(event);
+    setProjectValues({
+      isPublic: true,
+      projectID,
+      projectName: null,
+    });
+  };
 
   const handleSubmit = () => {
     const { projectID, projectName } = projectValues;
@@ -64,6 +72,7 @@ export default function ReferenceProjectsUpsertModal({
     upsertReferenceProject({
       onSuccess: (result) => {
         onUpsertSuccess();
+        handleCloseModal();
       },
       onError: (error) => {
         console.warn("error: ", error);
@@ -118,7 +127,7 @@ export default function ReferenceProjectsUpsertModal({
             <div
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
-                onCloseModal(event);
+                handleCloseModal(event);
               }}
               style={{
                 width: "88px",
@@ -178,7 +187,7 @@ export default function ReferenceProjectsUpsertModal({
           <div>{`${isUpdate ? "Update" : "Create"} a project`}</div>
         </div>
       }
-      closeModal={onCloseModal}
+      closeModal={handleCloseModal}
       isOpen={isModalOpen}
       modalContentStyle={customModalStyle.modalContentStyle}
       modalStyle={customModalStyle.modalStyle}

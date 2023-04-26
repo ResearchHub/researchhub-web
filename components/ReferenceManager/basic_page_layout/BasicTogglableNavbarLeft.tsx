@@ -140,11 +140,11 @@ export default function BasicTogglableNavbarLeft({
     >
       <ReferenceProjectsUpsertModal
         isModalOpen={isProjectsUpsertModalOpen}
-        onCloseModal={(event: SyntheticEvent): void => {
+        onCloseModal={(event?: SyntheticEvent): void => {
           event?.preventDefault();
           setIsProjectsUpsertModalOpen(false);
         }}
-        onUpsertSuccess={setProjectsFetchTime}
+        onUpsertSuccess={() => setProjectsFetchTime(Date.now())}
         projectID={undefined}
       />
       <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
