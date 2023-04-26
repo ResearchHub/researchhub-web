@@ -4,6 +4,7 @@ import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+import UserBlot from "./quill/UserBlot";
 
 
 export type UserBlotValue = {
@@ -328,9 +329,7 @@ export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
       let mentionedUser = userOp.insert.value;
 
       if (mentionedUser?.userId) {
-        const hasName = (mentionedUser.firstName + mentionedUser.firstName).length > 0;
-        const fullName = hasName ? `${mentionedUser.firstName} ${mentionedUser.firstName}` : "Unknown User";
-        return `<a class="ql-user" href="/user/${mentionedUser.authorProfileId}/overview">${fullName}</a>`
+        return UserBlot.buildHTML(mentionedUser);
       }
       else {
         // TODO: Add to sentry 

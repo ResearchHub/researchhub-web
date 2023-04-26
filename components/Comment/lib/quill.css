@@ -336,3 +336,13 @@
   font-size: 15px;
   padding-left: 0;
 }
+
+.CommentEditor .ql-editor a.ql-user {
+  background: rgb(57, 113, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.CommentEditor .ql-editor a.ql-user:hover {
+  background: rgb(57, 113, 255, 0.2);
+}
