@@ -19,6 +19,7 @@ import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -75,7 +76,7 @@ export default function BasicTogglableNavbarLeft({
 }: Props) {
   const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
     useState<boolean>(false);
-
+  const [projectsFetchedTime, setProjectsFetchedTime] = useState(Date.now());
   const user = getCurrentUser();
   const isLoadingUser = isEmpty(user?.id);
   const profileImage =

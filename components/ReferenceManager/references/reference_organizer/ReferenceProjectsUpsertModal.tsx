@@ -1,39 +1,75 @@
 import { customModalStyle } from "./styles/projects_upsert_modal_style";
 import { ID, NullableString } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { isEmpty, nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import { Typography } from "@mui/material";
+import { upsertReferenceProject } from "./api/upsertReferenceProject";
+import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
 import ReferenceUserInviteInput from "../../form/ReferenceUserInviteInput";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
-import Button from "@mui/material/Button";
-import { Typography } from "@mui/material";
-import colors from "~/config/themes/colors";
+import { useRouter } from "next/router";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 type ComponentProps = {
-  projectID: ID;
   isModalOpen: boolean;
   onCloseModal: (event: SyntheticEvent) => void;
+  projectID: ID;
 };
 
 type ProjectValues = {
+  isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
-  isPublic: boolean;
 };
 
 export default function ReferenceProjectsUpsertModal({
-  projectID,
   isModalOpen,
   onCloseModal,
+  projectID,
 }: ComponentProps): ReactElement {
+  // TODO: calvinhlee - clean up this mess around organization and other callsites like this
+  const router = useRouter();
+  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
+  const { organization } = router.query;
+
+  useEffect(() => {
+    if (organization && orgs.length) {
+      // @ts-ignore
+      const curOrg = orgs.find((org) => org.slug === organization);
+      // @ts-ignore
+      setCurrentOrg(curOrg);
+    }
+  }, [organization, orgs]);
+
+  const isUpdate = !isEmpty(projectID);
   const [projectValues, setProjectValues] = useState<ProjectValues>({
+    isPublic: true,
     projectID,
     projectName: null,
-    isPublic: true,
   });
+
+  const handleSubmit = () => {
+    const { projectID, projectName } = projectValues;
+    const formattedPayload = {
+      organization: currentOrg?.id,
+      project: isUpdate ? projectID : undefined,
+      project_name: nullthrows(projectName, "Project name may not be null"),
+    };
+    upsertReferenceProject({
+      onSuccess: (result) => {
+        console.warn("result: ", result);
+      },
+      onError: (error) => {
+        console.warn("error: ", error);
+      },
+      payload: formattedPayload,
+    });
+  };
+
   return (
     <BaseModal
       children={
@@ -80,7 +116,7 @@ export default function ReferenceProjectsUpsertModal({
             <div
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
-                onCloseModal()
+                onCloseModal(event);
               }}
               style={{
                 width: "88px",
@@ -105,6 +141,7 @@ export default function ReferenceProjectsUpsertModal({
             <div
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
+                handleSubmit();
               }}
               style={{
                 width: "88px",
@@ -120,7 +157,7 @@ export default function ReferenceProjectsUpsertModal({
               }}
             >
               <Typography fontSize="14px" fontWeight="400" color="#fff">
-                {"Create"}
+                {isUpdate ? "Update" : "Create"}
               </Typography>
             </div>
           </div>
@@ -136,7 +173,7 @@ export default function ReferenceProjectsUpsertModal({
             alignItems: "center",
           }}
         >
-          <div>{"Create a project"}</div>
+          <div>{`${isUpdate ? "Update" : "Create"} a project`}</div>
         </div>
       }
       closeModal={onCloseModal}
