@@ -3,21 +3,10 @@ import debounce from 'lodash.debounce';
 import { StyleSheet, css } from 'aphrodite';
 import API from '~/config/api';
 import AuthorAvatar from '../AuthorAvatar';
-import { SuggestedUser } from './lib/types';
+import { SuggestedUser, parseUserSuggestion } from './lib/types';
 import colors from '~/config/themes/colors';
+import UserTooltip from '../Tooltips/User/UserTooltip';
 
-
-const parseUserSuggestion = (raw: any): SuggestedUser => {
-  return {
-    firstName: raw.first_name,
-    lastName: raw.last_name,
-    id: raw.id,
-    authorProfile: {
-      id: raw.author_profile.id,
-      profileImage: raw.author_profile.profile_img,
-    }
-  }
-}
 
 const fetchUserSuggestions = (query: string): Promise<SuggestedUser[]> => {
 
@@ -36,7 +25,6 @@ const fetchUserSuggestions = (query: string): Promise<SuggestedUser[]> => {
     .then((data) => {
       const suggestions = data.full_name_suggest__completion;
       suggestions.forEach(suggestion => {
-        console.log(suggestion.text);
         suggestion.options.forEach(option => {
           const hasAuthorProfile = option._source.author_profile;
           if (hasAuthorProfile) {
@@ -135,8 +123,15 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
                     className={css(styles.userRow, focusedChoice?.id === user.id && styles.userRowFocused)}
                     onClick={() => handleUserRowClick(user)}
                   >
-                    <AuthorAvatar author={user.authorProfile} size={25} trueSize />
-                    {user.firstName} {user.lastName}
+                    <div className={css(styles.userRowContent)}>
+                      <AuthorAvatar author={user.authorProfile} size={25} trueSize />
+                      <div className={css(styles.userRowDetatils)}>
+                        <span className={css(styles.fullName)}>{user.firstName} {user.lastName}</span>
+                        <span className={css(styles.dot)}>•</span>
+                        <span className={css(styles.rep)}>{user.reputation} Rep</span>
+                      </div>
+                    </div>
+                    
                   </div>
                 ))}
               </div>
@@ -164,7 +159,7 @@ const styles = StyleSheet.create({
   },
   userDropdown: {
     position: 'absolute',
-    width: '200px',
+    width: "auto",
     left: -15,
     zIndex: 1,
     boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
@@ -173,12 +168,30 @@ const styles = StyleSheet.create({
     },
   },
   userRow: {
-    display: 'flex',
-    columnGap: "8px",
-    alignItems: 'center',
     padding: '8px 12px',
     fontSize: 14,
     cursor: 'pointer',
+  },
+  fullName: {
+    fontWeight: 500,
+  },
+  dot: {
+    color: colors.MEDIUM_GREY2(),
+  },
+  rep: {
+    color: colors.MEDIUM_GREY2(),
+    fontSize: 13
+  },
+  userRowContent: {
+    display: "flex",
+    columnGap: "8px",
+    alignItems: 'center',
+  },
+  userRowDetatils: {
+    display: "flex",
+    columnGap: "8px",
+    alignItems: 'center',
+    whiteSpace: "pre",
   },
   userRowFocused: {
     background: colors.NEW_BLUE(0.1),

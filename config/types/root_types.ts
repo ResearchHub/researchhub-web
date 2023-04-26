@@ -82,6 +82,7 @@ export type AuthorProfile = {
   sequence?: "first" | "additional";
   url: string;
   description: string;
+  headline: string;
 };
 
 // TODO: Deprecate this in favor of RHUser
@@ -231,6 +232,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     url: `/user/${raw.id}/overview`,
     description: raw.description,
     education: raw.education,
+    headline: raw?.headline?.title || "",
     ...(raw.sequence && { sequence: raw.sequence }),
   };
 
