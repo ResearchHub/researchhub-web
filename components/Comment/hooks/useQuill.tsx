@@ -1,5 +1,7 @@
 import { useRef, useState, useEffect, RefObject } from "react";
 import Quill, { QuillOptionsStatic } from "quill";
+import { getFileUrl } from "../lib/api";
+import toBase64 from "../lib/toBase64";
 
 export const buildQuillModules = ({
   editorId,
@@ -10,9 +12,6 @@ export const buildQuillModules = ({
     toolbar: {
       magicUrl: true,
       container: `#${editorId}`,
-      handlers: {
-        image: () => null,
-      },
     },
   };
 
@@ -62,6 +61,24 @@ export const useQuill = ({ options, editorId }: Args) => {
     isReady: false,
   });
 
+  const handleImageUpload = (quill) => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async function () {
+      const file = input!.files![0];
+      const fileString = await toBase64(file);
+      const type = file.type;
+      const fileUrl = await getFileUrl({ fileString, type });
+      const range = quill!.getSelection();
+
+      // this part the image is inserted
+      // by 'image' option below, you just have to put src(link) of img here.
+      quill!.insertEmbed(range!.index, "image", fileUrl);
+    }
+  };
+
   useEffect(() => {
     const quillLibLoaded = Boolean(obj.Quill);
     const readyToCreateQuillInstance = quillLibLoaded && modulesRegistered && !obj.quill && quillRef && quillRef.current;
@@ -98,6 +115,9 @@ export const useQuill = ({ options, editorId }: Args) => {
         editor: quill,
         isReady: true,
       }));
+
+      // We can only register image upload handler only once quill instance is available
+      quill.getModule("toolbar").addHandler("image", () => handleImageUpload(quill));
     }
 
   }, [obj, options, modulesRegistered]);

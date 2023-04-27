@@ -21,36 +21,6 @@ export type QuillUserOp = {
   };
 }
 
-
-export const buildQuillModules = ({
-  editorId,
-  handleSubmit,
-  handleImageUpload,
-}) => {
-  const modules = {
-    // magicUrl: true,
-    // mentions: {
-    //   setIsActive: false
-    // },
-    keyboard: {
-      bindings: {
-        commandEnter: {
-          key: 13,
-          shortKey: true,
-          metaKey: true,
-          handler: handleSubmit,
-        },     
-      },
-    },
-    toolbar: {
-      // magicUrl: true,
-      container: `#${editorId}`,
-    },
-  };
-
-  return modules;
-};
-
 /**
  * @deprecated use hasQuillContent instead
  */

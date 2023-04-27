@@ -279,3 +279,16 @@ export const flagComment = async ({
     }
   }
 };
+
+export const getFileUrl = ({ fileString, type }) => {
+  const payload = {
+    content_type: type.split("/")[1],
+    content: fileString,
+  };
+  return fetch(API.SAVE_IMAGE, API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => {
+      return res;
+    });
+};
