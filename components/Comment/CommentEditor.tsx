@@ -5,14 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
-  QuillFormats,
-  buildQuillModules,
   insertReviewCategory,
   focusEditor,
   forceShowPlaceholder,
   hasQuillContent,
   filterOps,
-  QuillUserOp,
 } from "./lib/quill";
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
@@ -132,12 +129,10 @@ const CommentEditor = ({
   };
 
   const { quill, quillRef, isReady } = useQuill({
-    modules: buildQuillModules({
-      editorId,
-      handleSubmit: () => handleSubmit({ content: _content }),
-    }),
-    formats: QuillFormats,
-    placeholder,
+    options: {
+      placeholder,
+    },
+    editorId,
   });
   const { content: _content, dangerouslySetContent } = useQuillContent({
     quill,
@@ -224,7 +219,7 @@ const CommentEditor = ({
       setIsSubmitting(false);
     }
   };
-console.log('_content', _content)
+
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
     <div
@@ -287,10 +282,10 @@ console.log('_content', _content)
           <div
             className={css(
               styles.toolbarContainer,
-              isPreviewMode && styles.hidden
+              (isPreviewMode || !isReady) && styles.hidden
             )}
           >
-            <CommentEditorToolbar editorId={editorId} quill={quill} />
+            <CommentEditorToolbar editorId={editorId} />
           </div>
         </div>
       </div>

@@ -1,91 +1,58 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// Imported from https://github.com/gtgalone/react-quilljs
-// A lightweight alternative to react-quill
-
 import { useRef, useState, useEffect, RefObject } from "react";
 import Quill, { QuillOptionsStatic } from "quill";
-import ReactDOMServer from "react-dom/server";
-import {
-  faVideo,
-  faImagePolaroid,
-  faLinkSimple,
-} from "@fortawesome/pro-regular-svg-icons";
-import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
-import QuillPeerReviewRatingBlock from "../lib/quillPeerReviewRatingBlock";
 
-const theme = "snow";
+export const buildQuillModules = ({
+  editorId,
+}) => {
+  const modules = {
+    magicUrl: true,
+    mentions: true,
+    toolbar: {
+      magicUrl: true,
+      container: `#${editorId}`,
+      handlers: {
+        image: () => null,
+      },
+    },
+  };
 
-const modules = {
-  toolbar: [
-    ["bold", "italic", "underline", "strike"],
-    [{ align: [] }],
-
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }],
-
-    [{ size: ["small", false, "large", "huge"] }],
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ["link", "image", "video"],
-    [{ color: [] }, { background: [] }],
-
-    ["clean"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
+  return modules;
 };
 
-const formats = [
+export const formats = [
+  "image",
+  "header",
+  "font",
+  "size",
   "bold",
   "italic",
   "underline",
   "strike",
-  "align",
+  "blockquote",
   "list",
+  "bullet",
   "indent",
-  "size",
-  "header",
   "link",
-  "image",
   "video",
-  "color",
-  "background",
   "clean",
+  "background",
+  "code-block",
+  "direction",
+  "peer-review-rating",
+  "suggestUsers",
+  "user",
 ];
 
-function assign(target: any, _varArgs: any) {
-  "use strict";
-  if (target === null || target === undefined) {
-    throw new TypeError("Cannot convert undefined or null to object");
-  }
 
-  const to = Object(target);
-
-  for (let index = 1; index < arguments.length; index++) {
-    const nextSource = arguments[index];
-
-    if (nextSource !== null && nextSource !== undefined) {
-      for (const nextKey in nextSource) {
-        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-          to[nextKey] = nextSource[nextKey];
-        }
-      }
-    }
-  }
-  return to;
+type Args = {
+  options: QuillOptionsStatic;
+  editorId: String;
 }
 
-/**
- *
- * @param options Quill static options. https://github.com/gtgalone/react-quilljs#options
- * @returns Returns quill, quillRef, and Quill. https://github.com/gtgalone/react-quilljs#return
- */
-export const useQuill = (
-  options: QuillOptionsStatic | undefined = { theme, modules, formats }
-) => {
+export const useQuill = ({ options, editorId }: Args) => {
   const quillRef: RefObject<any> = useRef();
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [modulesRegistered, setModulesRegistered] = useState<boolean>(false);
   const [obj, setObj] = useState({
     Quill: undefined as any | undefined,
     quillRef,
@@ -96,35 +63,44 @@ export const useQuill = (
   });
 
   useEffect(() => {
+    const quillLibLoaded = Boolean(obj.Quill);
+    const readyToCreateQuillInstance = quillLibLoaded && modulesRegistered && !obj.quill && quillRef && quillRef.current;
 
-    const initializeQuill = async ({ quillInstance, quillLib }) => {
-        if (typeof window !== 'undefined') {
-          import('../lib/quill/loadQuillModules').then((loadQuillModules) => {
-            loadQuillModules.default({ quillLib, quillInstance });
-          });
-        }
-    }
-
-    if (!obj.Quill) {
-      setObj((prev) => assign(prev, { Quill: require("quill") }));
-    }
-    if (obj.Quill && !obj.quill && quillRef && quillRef.current && isLoaded) {
-      const opts = assign(options, {
-        modules: assign(modules, options.modules),
-        formats: options.formats || formats,
-        theme: options.theme || theme,
+    const _loadQuillModules = async ({ quillLib }) => {
+      import('../lib/quill/loadQuillModules').then((loadQuillModules) => {
+        loadQuillModules.default({ quillLib });
+        setModulesRegistered(true);
       });
+    }
 
-      
-      const quill = new obj.Quill(quillRef.current, opts);
-      setObj(assign(assign({}, obj), { quill, editor: quill, isReady: true }));
-
-      if (!options.readOnly) {
-        initializeQuill({ quillInstance: quill, quillLib: obj.Quill});
+    if (quillLibLoaded) {
+      if (!modulesRegistered) {
+        _loadQuillModules({ quillLib: obj.Quill });
       }
     }
-    setIsLoaded(true);
-  }, [isLoaded, obj, options]);
+    else {
+      setObj((prev) => ({ ...prev, Quill: require("quill") }));
+    }
+
+    if (readyToCreateQuillInstance && !obj.quill) {
+      const modules = buildQuillModules({ editorId });
+      const opts = {
+        ...options,
+        modules,
+        formats,
+        theme: "snow",
+      };
+
+      const quill = new obj.Quill(quillRef.current, opts);
+      setObj((prev) => ({
+        ...prev,
+        quill,
+        editor: quill,
+        isReady: true,
+      }));
+    }
+
+  }, [obj, options, modulesRegistered]);
 
   return obj;
 };

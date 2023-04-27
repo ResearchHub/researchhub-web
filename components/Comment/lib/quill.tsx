@@ -13,9 +13,6 @@ export type UserBlotValue = {
   authorProfileId: string;
 }
 
-<<<<<<< HEAD
-export const buildQuillModules = ({ editorId, handleSubmit }) => {
-=======
 export type QuillUserOp = {
   attributes: any,
   insert: {
@@ -30,7 +27,6 @@ export const buildQuillModules = ({
   handleSubmit,
   handleImageUpload,
 }) => {
->>>>>>> 13e1ca74f ([Mentions] Fetching suggested users from BE)
   const modules = {
     // magicUrl: true,
     // mentions: {
@@ -61,30 +57,6 @@ export const buildQuillModules = ({
 export default function isQuillEmpty(content) {
   return !content || JSON.stringify(content) === '{"ops":[{"insert":"\\n"}]}';
 }
-
-export const QuillFormats = [
-  "image",
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "video",
-  "clean",
-  "background",
-  "code-block",
-  "direction",
-  "peer-review-rating",
-  "suggestUsers",
-  "user",
-];
 
 export function trimQuillEditorContents({ contents }) {
   const deltas = Array.isArray(contents)

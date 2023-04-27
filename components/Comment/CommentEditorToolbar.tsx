@@ -5,10 +5,9 @@ import { useEffectHandleClick } from "~/config/utils/clickEvent";
 
 type Args = {
   editorId: string;
-  quill: any;
 };
 
-const CommentEditorToolbar = ({ editorId, quill }: Args) => {
+const CommentEditorToolbar = ({ editorId }: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toolbarRef = useRef(null);
 

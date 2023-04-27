@@ -17,6 +17,11 @@ class MentionsModule {
     document.addEventListener("click", this.handleMouseClick.bind(this))
   }
 
+  destroy() {
+    this.quill.container.removeEventListener("keydown", this.handleKeyDown.bind(this));
+    document.removeEventListener("click", this.handleMouseClick.bind(this));
+  }
+
   handleMouseClick(event) {
     const editorIsClicked =  this.editorEl.contains(event.target);
     const mentionBtnIsClicked =  event.target.closest(".ql-mention");

@@ -10,17 +10,17 @@ import {
   faLinkSimple,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
-const loadQuillModules = ({ quillLib, quillInstance }) => {
+
+
+const loadQuillModules = ({ quillLib }) => {
   quillLib.register({ 'formats/suggestUsers': SuggestUsersBlot });
   quillLib.register('modules/mentions', MentionsModule);
   quillLib.register(UserBlot);
-
 
   const MagicUrl = require("quill-magic-url").default;
   quillLib.register("modules/magicUrl", MagicUrl);
   
   quillLib.register(QuillPeerReviewRatingBlock);
-  
 
   const icons = quillLib.import("ui/icons");
   icons.video = ReactDOMServer.renderToString(
@@ -35,18 +35,6 @@ const loadQuillModules = ({ quillLib, quillInstance }) => {
   icons.blockquote = ReactDOMServer.renderToString(
     <FontAwesomeIcon icon={faQuoteLeft} />
   );
-
-
-  quillInstance.update({
-    modules: {
-      toolbar: false,
-      mentions: true,
-    },
-  });
-
-  // Explicit initialization of MentionsModule is necessary
-  const mentionsModule = new MentionsModule(quillInstance, {});
-
 };
 
 export default loadQuillModules;
