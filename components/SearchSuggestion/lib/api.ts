@@ -3,7 +3,7 @@ import { SuggestedUser, parseUserSuggestion } from './types';
 
 export const fetchUserSuggestions = (query: string): Promise<SuggestedUser[]> => {
 
-  const url = `${API.BASE_URL}search/user/suggest/?full_name_suggest__completion=${query}`;
+  const url = `${API.BASE_URL}search/user/?search_multi_match=${query}`;
 
   let suggestedUsers: SuggestedUser[] = [];
   return fetch(url, API.GET_CONFIG())
@@ -15,15 +15,12 @@ export const fetchUserSuggestions = (query: string): Promise<SuggestedUser[]> =>
         throw new Error('HTTP-Error: ' + response.status);
       }
     })
-    .then((data) => {
-      const suggestions = data.full_name_suggest__completion;
-      suggestions.forEach(suggestion => {
-        suggestion.options.forEach(option => {
-          const hasAuthorProfile = option._source.author_profile;
-          if (hasAuthorProfile) {
-            suggestedUsers.push(parseUserSuggestion(option._source))
-          }
-        });
+    .then((data:any) => {
+      data.results.forEach(suggestion => {
+        const hasAuthorProfile = suggestion.author_profile;
+        if (hasAuthorProfile) {
+          suggestedUsers.push(parseUserSuggestion(suggestion))
+        }
       });
 
       return suggestedUsers;

@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     },
   },
   userRow: {
-    padding: '8px 12px',
+    padding: '6px 10px',
     fontSize: 14,
     cursor: 'pointer',
   },
