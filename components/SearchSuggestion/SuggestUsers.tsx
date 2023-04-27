@@ -1,59 +1,23 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { StyleSheet, css } from 'aphrodite';
-import API from '~/config/api';
 import AuthorAvatar from '../AuthorAvatar';
-import { SuggestedUser, parseUserSuggestion } from './lib/types';
+import { SuggestedUser } from './lib/types';
 import colors from '~/config/themes/colors';
-import UserTooltip from '../Tooltips/User/UserTooltip';
-
-
-const fetchUserSuggestions = (query: string): Promise<SuggestedUser[]> => {
-
-  const url = `${API.BASE_URL}search/user/suggest/?full_name_suggest__completion=${query}`;
-
-  let suggestedUsers: SuggestedUser[] = [];
-  return fetch(url, API.GET_CONFIG())
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        // TODO: Unexpected error. log to sentry
-        throw new Error('HTTP-Error: ' + response.status);
-      }
-    })
-    .then((data) => {
-      const suggestions = data.full_name_suggest__completion;
-      suggestions.forEach(suggestion => {
-        suggestion.options.forEach(option => {
-          const hasAuthorProfile = option._source.author_profile;
-          if (hasAuthorProfile) {
-            suggestedUsers.push(parseUserSuggestion(option._source))
-          }
-        });
-      });
-
-      return suggestedUsers;
-    })
-    .catch(error => {
-      console.error('Request Failed:', error);
-      return [];
-    });
-}
-
+import { fetchUserSuggestions } from './lib/api';
 
 type Args = {
   onSelect: Function;
   onChange: Function;
 }
 
+const MIN_LENGTH_TO_FETCH_RESULTS = 2;
 
 const SuggestUsers = ({ onSelect, onChange }: Args) => {
   const [isActive, setIsActive] = useState(true);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement| null>(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
   const [focusedChoice, setFocusedChoice] = useState<SuggestedUser | null>(null);
-
 
   useEffect(() => {
     if (inputRef.current) {
@@ -62,10 +26,19 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
   }, []);
 
   const handleInputChange = useCallback(async () => {
+    if (!inputRef.current) return;
+    
+    if (inputRef.current.value.length >= MIN_LENGTH_TO_FETCH_RESULTS) {
+      const suggestions = await fetchUserSuggestions(inputRef.current.value);
+      setUserSuggestions(suggestions);
+      setFocusedChoice(suggestions[0]);
+    }
+    else {
+      setUserSuggestions([]);
+      setFocusedChoice(null);
+    }
+    
     onChange(inputRef.current.value);
-    const suggestions = await fetchUserSuggestions(inputRef.current.value);
-    setUserSuggestions(suggestions);
-    setFocusedChoice(suggestions[0]);
   }, [userSuggestions, inputRef?.current?.value]);
 
   const debouncedHandleInputChange = useCallback(
