@@ -162,7 +162,7 @@ const CommentFeed = ({
     commentType: COMMENT_TYPES;
     parentId: ID;
     bountyAmount?: number;
-    mentions?: Array<String>
+    mentions?: Array<string>;
   }) => {
     try {
       const isRootComment = !parentId;

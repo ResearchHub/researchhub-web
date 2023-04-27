@@ -1,12 +1,16 @@
-import { AuthorProfile, ID, parseAuthorProfile } from "~/config/types/root_types";
+import {
+  AuthorProfile,
+  ID,
+  parseAuthorProfile,
+} from "~/config/types/root_types";
 
 export type SuggestedUser = {
   firstName: string;
   lastName: string;
   id: ID;
   reputation: number;
-  authorProfile: AuthorProfile
-}
+  authorProfile: AuthorProfile;
+};
 
 export const parseUserSuggestion = (raw: any): SuggestedUser => {
   return {
@@ -15,5 +19,5 @@ export const parseUserSuggestion = (raw: any): SuggestedUser => {
     id: raw.id,
     reputation: raw.reputation || 0,
     authorProfile: parseAuthorProfile(raw.author_profile),
-  }
-}
+  };
+};

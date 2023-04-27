@@ -1,4 +1,9 @@
-import { ID, RHUser, RhDocumentType, parseUser } from "~/config/types/root_types";
+import {
+  ID,
+  RHUser,
+  RhDocumentType,
+  parseUser,
+} from "~/config/types/root_types";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -6,7 +11,6 @@ import config from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
 import uniqBy from "lodash/uniqBy";
-
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -110,7 +114,7 @@ export const createCommentAPI = async ({
   documentId: ID;
   parentComment?: Comment;
   bountyAmount?: number;
-  mentions?: Array<String>;
+  mentions?: Array<string>;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -142,7 +146,7 @@ export const updateCommentAPI = async ({
   content: any;
   documentType: RhDocumentType;
   documentId: ID;
-  mentions?: Array<String>;
+  mentions?: Array<string>;
 }) => {
   const _url = generateApiUrl(`${documentType}/${documentId}/comments/${id}`);
   const response = await fetch(
@@ -275,4 +279,3 @@ export const flagComment = async ({
     }
   }
 };
-

@@ -6,7 +6,7 @@ export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
 export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null | undefined;
-export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis"
+export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
 
 export interface TopLevelDocument {
   authors: Array<AuthorProfile>;

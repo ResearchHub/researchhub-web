@@ -11,7 +11,10 @@ import { formatBountyAmount } from "~/config/types/bounty";
 
 const CommentBadges = ({ comment }: { comment: Comment }) => {
   const openBounties = getOpenBounties({ comment });
-  const openBountyAmountFormatted = getBountyAmount({ comment, formatted: true });
+  const openBountyAmountFormatted = getBountyAmount({
+    comment,
+    formatted: true,
+  });
   const openBountyAmount = getBountyAmount({ comment, formatted: false });
   const closedBounties = getClosedBounties({ comment });
   const closedBountyAmount = getBountyAmount({

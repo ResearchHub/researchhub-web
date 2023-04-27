@@ -23,8 +23,7 @@ const CommentAvatars = ({
   wrapperStyle,
   maxPeople = 3,
 }: CommentAvatarsArgs) => {
-
-  const avatarPeople = people.slice(0, maxPeople)
+  const avatarPeople = people.slice(0, maxPeople);
   const remainderPeople = people.length - maxPeople;
 
   return (
@@ -59,21 +58,19 @@ const CommentAvatars = ({
           </div>
         );
       })}
-      {remainderPeople > 0 &&
-        <div
-          className={css(styles.person)}
-          style={{ marginLeft: spacing }}
-        >
+      {remainderPeople > 0 && (
+        <div className={css(styles.person)} style={{ marginLeft: spacing }}>
           <div className={css(styles.avatarWrapper)}>
-            <div className={css(styles.remainderAvatar)} style={{ height: size, width: size }}>
-              <FontAwesomeIcon icon={faPlus} style={{fontSize: 12}} />
+            <div
+              className={css(styles.remainderAvatar)}
+              style={{ height: size, width: size }}
+            >
+              <FontAwesomeIcon icon={faPlus} style={{ fontSize: 12 }} />
               <span>{remainderPeople}</span>
             </div>
           </div>
         </div>
-      }
-
-      
+      )}
     </div>
   );
 };
@@ -92,7 +89,7 @@ const styles = StyleSheet.create({
   person: {
     zIndex: 2,
     border: `2px solid white`,
-    borderRadius: "50px"
+    borderRadius: "50px",
   },
   remainderAvatar: {
     background: colors.avatar.background,

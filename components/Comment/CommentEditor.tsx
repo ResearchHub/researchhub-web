@@ -134,7 +134,10 @@ const CommentEditor = ({
     },
     editorId,
   });
-  const { content: _content, dangerouslySetContent }: { content: any, dangerouslySetContent: Function }  = useQuillContent({
+  const {
+    content: _content,
+    dangerouslySetContent,
+  }: { content: any; dangerouslySetContent: Function } = useQuillContent({
     quill,
     content,
     notifyOnContentChangeRate: 300, // ms
@@ -187,11 +190,11 @@ const CommentEditor = ({
   useEffect(() => {
     // Remove module event listeners when editor is unmounted
     return () => {
-      const mentionsModule = quill?.getModule("mentions")
+      const mentionsModule = quill?.getModule("mentions");
       if (mentionsModule) {
         mentionsModule.destroy();
       }
-    }
+    };
   }, []);
 
   const _handleSubmit = async () => {
@@ -208,7 +211,10 @@ const CommentEditor = ({
         return false;
       }
 
-      const mentions = filterOps({ quillOps: _content.ops, opName: "user" }).map((op:any) => op.insert.user.userId );
+      const mentions = filterOps({
+        quillOps: _content.ops,
+        opName: "user",
+      }).map((op: any) => op.insert.user.userId);
 
       await handleSubmit({
         content: _content,

@@ -29,15 +29,14 @@ const CommentReadOnly = ({
   const [fullHtml, setFullHtml] = useState<any>(null);
   const commentTreeState = useContext(CommentTreeContext);
 
-
   useEffect(() => {
     const trimContentEnabled = previewMaxCharLength > 0;
     const _textLength = textLength({ quillOps: content.ops });
     const _imageLength = imageLength({ quillOps: content.ops });
     if (
-      trimContentEnabled && 
+      trimContentEnabled &&
       (_textLength > previewMaxCharLength ||
-      _imageLength > previewMaxImageLength)
+        _imageLength > previewMaxImageLength)
     ) {
       const trimmed = trimDeltas({
         quillOps: content.ops,

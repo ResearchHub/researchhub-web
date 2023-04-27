@@ -97,7 +97,13 @@ const Comment = ({ comment, document }: CommentArgs) => {
     }
   };
 
-  const handleReplyCreate = async ({ content, mentions }: { content: object, mentions?: Array<String> }) => {
+  const handleReplyCreate = async ({
+    content,
+    mentions,
+  }: {
+    content: object;
+    mentions?: Array<string>;
+  }) => {
     try {
       const _comment: CommentType = await createCommentAPI({
         content,
@@ -123,7 +129,7 @@ const Comment = ({ comment, document }: CommentArgs) => {
   }: {
     id: ID;
     content: any;
-    mentions?: Array<String>;
+    mentions?: Array<string>;
   }) => {
     const comment: CommentType = await updateCommentAPI({
       id,
