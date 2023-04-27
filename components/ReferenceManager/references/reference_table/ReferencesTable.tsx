@@ -12,6 +12,7 @@ import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useRouter } from "next/router";
 
 function useEffectFetchReferenceCitations({
   onError,
@@ -23,14 +24,16 @@ function useEffectFetchReferenceCitations({
   const user = getCurrentUser();
 
   const { currentOrg } = useOrgs();
-
+  const router = useRouter();
   useEffect(() => {
     if (!isNullOrUndefined(user?.id) && currentOrg?.id) {
       setIsLoading(true);
       fetchCurrentUserReferenceCitations({
         onSuccess,
         onError,
-        organizationId: currentOrg?.id,
+        organizationID: currentOrg?.id,
+        // @ts-ignore
+        projectID: router.query?.project,
       });
     }
   }, [
@@ -38,6 +41,7 @@ function useEffectFetchReferenceCitations({
     user?.id,
     referencesFetchTime,
     currentOrg,
+    router.query?.project,
   ]);
 }
 

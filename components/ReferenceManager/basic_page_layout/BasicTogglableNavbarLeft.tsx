@@ -1,28 +1,33 @@
 import { Box } from "@mui/system";
-import { Fragment, ReactNode } from "react";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { isEmpty } from "~/config/utils/nullchecks";
-import { TextRow } from "react-placeholder/lib/placeholders";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  nullthrows,
+} from "~/config/utils/nullchecks";
+import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import colors from "~/config/themes/colors";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Divider from "@mui/material/Divider";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
-import Image from "next/image";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
+import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useRouter } from "next/router";
+import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
+import ReferenceProjectsNavbarEl from "../references/reference_organizer/ReferenceProjectsNavbarEl";
+import ALink from "~/components/ALink";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -86,12 +91,62 @@ export default function BasicTogglableNavbarLeft({
   const currentUserName = `${user?.firstName ?? user?.first_name ?? ""} ${
     user?.lastName ?? user?.last_name ?? ""
   }`;
+  // TODO: calvinhlee - clean up this mess around organization and other callsites like this
+  const router = useRouter();
+  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
+  const { organization } = router.query;
+  useEffect(() => {
+    if (organization && orgs.length) {
+      // @ts-ignore
+      const curOrg = orgs.find((org) => org.slug === organization);
+      // @ts-ignore
+      setCurrentOrg(curOrg);
+    }
+  }, [organization, orgs]);
+  const currentOrgID = currentOrg?.id ?? null;
+  // @ts-ignore
+  const currentOrgSlug = currentOrg?.slug ?? null;
+  const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
+    useState<boolean>(false);
+  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
+  const [projectsFetchTime, setProjectsFetchTime] = useState(Date.now());
+  useEffect((): void => {
+    fetchReferenceProjects({
+      onError: emptyFncWithMsg,
+      onSuccess: (result): void => {
+        setCurrentOrgProjects(result);
+      },
+      payload: {
+        organization: currentOrgID,
+      },
+    });
+  }, [currentOrgID, projectsFetchTime]);
+
+  const refProjectsNavbarEls = currentOrgProjects?.map((refProject) => {
+    return (
+      <ReferenceProjectsNavbarEl
+        key={`ref-project-${refProject?.id}`}
+        orgSlug={nullthrows(currentOrgSlug, "Org must be present")}
+        projectID={refProject?.id}
+        projectName={refProject?.project_name}
+      />
+    );
+  });
   return (
     <Box
       flexDirection="column"
       width={navWidth}
       sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
     >
+      <ReferenceProjectsUpsertModal
+        isModalOpen={isProjectsUpsertModalOpen}
+        onCloseModal={(event?: SyntheticEvent): void => {
+          event?.preventDefault();
+          setIsProjectsUpsertModalOpen(false);
+        }}
+        onUpsertSuccess={() => setProjectsFetchTime(Date.now())}
+        projectID={undefined}
+      />
       <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
         <Box
           sx={{
@@ -146,29 +201,31 @@ export default function BasicTogglableNavbarLeft({
         {HOME_NAV_BUTTON_CONFIG.map((navbuttonObjs, index) => {
           const { label, icon } = navbuttonObjs;
           return (
-            <ListItem key={label} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: isOpen ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+            <ALink href={`/reference-manager/${currentOrgSlug}`}>
+              <ListItem key={label} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: isOpen ? 1 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: isOpen ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={label}
-                  sx={{ opacity: isOpen ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: isOpen ? 1 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={label}
+                    sx={{ opacity: isOpen ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </ALink>
           );
         })}
       </List>
@@ -181,7 +238,7 @@ export default function BasicTogglableNavbarLeft({
           height: "100vh",
         }}
       >
-        <ListItemButton
+        <ListItem
           sx={{
             minHeight: 48,
             justifyContent: isOpen ? "initial" : "center",
@@ -198,15 +255,19 @@ export default function BasicTogglableNavbarLeft({
             noWrap
             variant="h6"
           >
-            {"WORKSPACE"}
+            {"PROJECTS"}
           </Typography>
-        </ListItemButton>
+        </ListItem>
         <ListItemButton
           sx={{
             minHeight: 48,
             justifyContent: isOpen ? "initial" : "center",
             px: 2.5,
             maxHeight: 50,
+          }}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setIsProjectsUpsertModalOpen(true);
           }}
         >
           <AddSharpIcon fontSize="small" color="primary" />
@@ -219,14 +280,14 @@ export default function BasicTogglableNavbarLeft({
             variant="h6"
             ml={"6px"}
           >
-            {" Add new"}
+            {"Create a new project"}
           </Typography>
         </ListItemButton>
+        {refProjectsNavbarEls}
       </List>
     </Box>
   );
 }
-
 // type DrawerProps = {
 //   isOpen: boolean;
 //   navWidth: number;
