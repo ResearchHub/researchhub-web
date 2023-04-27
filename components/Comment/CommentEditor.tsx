@@ -134,7 +134,7 @@ const CommentEditor = ({
     },
     editorId,
   });
-  const { content: _content, dangerouslySetContent } = useQuillContent({
+  const { content: _content, dangerouslySetContent }: { content: any, dangerouslySetContent: Function }  = useQuillContent({
     quill,
     content,
     notifyOnContentChangeRate: 300, // ms

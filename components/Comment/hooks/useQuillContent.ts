@@ -5,12 +5,12 @@ import debounce from "lodash/debounce";
 
 type Args = {
   quill: Quill | undefined;
-  content: object;
+  content: any;
   notifyOnContentChangeRate: number;
 };
 
 const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Args) => {
-  const [_content, setContent] = useState<object>(content);
+  const [_content, setContent] = useState<any>(content);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   const debouncedSetContent = useCallback(debounce((c) => setContent(c), notifyOnContentChangeRate), [_content])
@@ -24,6 +24,8 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
         }
       });
 
+      // This keybinding fixes a known issue in quill which that the space key is sometimes "stuck"
+      // right after inserting an embed element like "Mentions"
       // @ts-ignore
       quill.keyboard.addBinding(
         {
