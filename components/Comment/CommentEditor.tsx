@@ -184,6 +184,16 @@ const CommentEditor = ({
     }
   }, [isReady]);
 
+  useEffect(() => {
+    // Remove module event listeners when editor is unmounted
+    return () => {
+      const mentionsModule = quill?.getModule("mentions")
+      if (mentionsModule) {
+        mentionsModule.destroy();
+      }
+    }
+  }, []);
+
   const _handleSubmit = async () => {
     setIsSubmitting(true);
     try {

@@ -24,14 +24,16 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
         }
       });
 
+      // @ts-ignore
       quill.keyboard.addBinding(
         {
           key: ' ',
           handler: (range, context) => {
+            // @ts-ignore
             setTimeout(() => quill.setSelection(quill.getSelection().index + 10, 0), 0)
             return true
           }
-        });
+        } as any);
     }
   }, [quill]);
 
