@@ -6,33 +6,28 @@ class MentionsModule {
   quill: any;
   options: any;
   suggestInputText: string;
+  editorEl: any;
   constructor(quill, options) {
     this.quill = quill;
     this.options = options;
     this.suggestInputText = "";
-    const editorWrapperEl = this.quill.container.closest(".CommentEditor");
+    this.editorEl = this.quill.container.closest(".CommentEditor");
 
-    editorWrapperEl.addEventListener("click", this.handleEditorClick.bind(this))
     this.quill.container.addEventListener("keydown", this.handleKeyDown.bind(this))
     document.addEventListener("click", this.handleMouseClick.bind(this))
   }
 
-  handleEditorClick(event) {
-    const mentionElIsClicked = event.target.closest(".ql-mention");
-    if (mentionElIsClicked) {
-      // event.preventDefault();
-
-      const cursorIndex = this.quill.getLength() - 1
-      this.quill.focus();
-      this.quill.insertEmbed(cursorIndex, 'suggestUsers', { onUserSelect: this.handleUserSelect.bind(this), onChange: this.handleTextChange.bind(this) });
-      this.quill.setSelection(cursorIndex, "user");
-
-    }
-  }
-
   handleMouseClick(event) {
+    const editorIsClicked =  this.editorEl.contains(event.target);
+    const mentionBtnIsClicked =  event.target.closest(".ql-mention");
+
     if (this.suggestUsersEmbedded()) {
       this.removeSuggestUsersBlot();
+    }
+    else if (editorIsClicked && mentionBtnIsClicked) {
+      const cursorIndex = this.quill.getSelection()?.index || 0;
+      this.quill.insertText(cursorIndex, "@")
+      this.insertSuggestUsersBlot(cursorIndex+1);
     }
   }
 

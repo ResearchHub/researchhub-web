@@ -31,11 +31,13 @@ const CommentReadOnly = ({
 
 
   useEffect(() => {
+    const trimContentEnabled = previewMaxCharLength > 0;
     const _textLength = textLength({ quillOps: content.ops });
     const _imageLength = imageLength({ quillOps: content.ops });
     if (
-      _textLength > previewMaxCharLength ||
-      _imageLength > previewMaxImageLength
+      trimContentEnabled && 
+      (_textLength > previewMaxCharLength ||
+      _imageLength > previewMaxImageLength)
     ) {
       const trimmed = trimDeltas({
         quillOps: content.ops,

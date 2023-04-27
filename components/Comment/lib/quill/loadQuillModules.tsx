@@ -16,7 +16,6 @@ const loadQuillModules = ({ quillLib, quillInstance }) => {
   quillLib.register(UserBlot);
 
 
-
   const MagicUrl = require("quill-magic-url").default;
   quillLib.register("modules/magicUrl", MagicUrl);
   
