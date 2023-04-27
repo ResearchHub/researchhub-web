@@ -25,14 +25,18 @@ class MentionsModule {
   handleMouseClick(event) {
     const editorIsClicked =  this.editorEl.contains(event.target);
     const mentionBtnIsClicked =  event.target.closest(".ql-mention");
+    
+    if (editorIsClicked && mentionBtnIsClicked) {
+      if (this.suggestUsersEmbedded()) {
+        return;
+      }
 
-    if (this.suggestUsersEmbedded()) {
-      this.removeSuggestUsersBlot();
-    }
-    else if (editorIsClicked && mentionBtnIsClicked) {
       const cursorIndex = this.quill.getSelection()?.index || 0;
       this.quill.insertText(cursorIndex, "@")
       this.insertSuggestUsersBlot(cursorIndex+1);
+    }
+    else if (this.suggestUsersEmbedded()) {
+      this.removeSuggestUsersBlot();
     }
   }
 
