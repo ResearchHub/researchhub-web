@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import Quill from "quill";
 import { isEmpty } from "~/config/utils/nullchecks";
 import debounce from "lodash/debounce";
+import UserBlot from "../lib/quill/UserBlot";
 
 type Args = {
   quill: Quill | undefined;
@@ -31,8 +32,16 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
         {
           key: ' ',
           handler: (range, context) => {
-            // @ts-ignore
-            setTimeout(() => quill.setSelection(quill.getSelection().index + 10, 0), 0)
+            const [leaf] = quill.getLeaf(range.index - 1);
+            const userBlot = leaf.domNode.parentElement.querySelector('.ql-user');
+            const isPrevElementUserBlot = context?.prefix === "" && userBlot;
+
+            if (isPrevElementUserBlot) {
+              // Fix to avoid space not working if prev element is custom blot.
+              // @ts-ignore
+              setTimeout(() => quill.setSelection(quill.getSelection().index + 1, 0), 0)
+            }
+            
             return true
           }
         } as any);

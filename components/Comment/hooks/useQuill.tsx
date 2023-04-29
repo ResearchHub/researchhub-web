@@ -102,7 +102,6 @@ export const useQuill = ({ options, editorId }: Args) => {
     if (readyToCreateQuillInstance && !obj.quill) {
       const modules = buildQuillModules({ editorId });
       const opts = {
-        ...options,
         modules,
         formats,
         theme: "snow",
