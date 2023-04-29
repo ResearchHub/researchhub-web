@@ -30,8 +30,6 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
     
     const textContent = inputRef.current?.textContent || ""
 
-    console.log('inputRef', inputRef)
-
     if (textContent.length >= MIN_LENGTH_TO_FETCH_RESULTS) {
       const suggestions = await fetchUserSuggestions(textContent);
       setUserSuggestions(suggestions);
