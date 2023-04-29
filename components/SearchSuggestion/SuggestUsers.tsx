@@ -15,7 +15,7 @@ const MIN_LENGTH_TO_FETCH_RESULTS = 2;
 
 const SuggestUsers = ({ onSelect, onChange }: Args) => {
   const [isActive, setIsActive] = useState(true);
-  const inputRef = useRef<HTMLInputElement| null>(null);
+  const inputRef = useRef<HTMLDivElement| null>(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
   const [focusedChoice, setFocusedChoice] = useState<SuggestedUser | null>(null);
 
@@ -28,8 +28,12 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
   const handleInputChange = useCallback(async () => {
     if (!inputRef.current) return;
     
-    if (inputRef.current.value.length >= MIN_LENGTH_TO_FETCH_RESULTS) {
-      const suggestions = await fetchUserSuggestions(inputRef.current.value);
+    const textContent = inputRef.current?.textContent || ""
+
+    console.log('inputRef', inputRef)
+
+    if (textContent.length >= MIN_LENGTH_TO_FETCH_RESULTS) {
+      const suggestions = await fetchUserSuggestions(textContent);
       setUserSuggestions(suggestions);
       setFocusedChoice(suggestions[0]);
     }
@@ -38,8 +42,8 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
       setFocusedChoice(null);
     }
     
-    onChange(inputRef.current.value);
-  }, [userSuggestions, inputRef?.current?.value]);
+    onChange(inputRef.current.textContent);
+  }, [userSuggestions, inputRef?.current?.textContent]);
 
   const debouncedHandleInputChange = useCallback(
     debounce(handleInputChange, 250),
@@ -78,14 +82,16 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
     <div className={css(styles.container)}>
       {isActive ? (
         <>
-          <input
+          <div
             onKeyDown={handleKeyDown}
             ref={inputRef}
-            type="text"
-            placeholder="Mention a user"
-            onChange={debouncedHandleInputChange}
+            contentEditable
+            onInput={debouncedHandleInputChange}
             className={css(styles.input)}
           />
+          {userSuggestions.length === 0 &&
+            <div className={css(styles.userDropdown, styles.userDropdownEmpty)}>Search for user to mention...</div>
+          }
           {userSuggestions.length > 0 &&
             <div className={css(styles.userDropdown)}>
               <div>
@@ -123,7 +129,7 @@ const styles = StyleSheet.create({
     display: "inline-block",
   },
   input: {
-    width: '100%',
+    minWidth: 20,
     padding: "0",
     borderRadius: "4px",
     marginLeft: 2,
@@ -139,6 +145,11 @@ const styles = StyleSheet.create({
     ':nth-child(1n) > div': {
       backgroundColor: 'white',
     },
+  },
+  userDropdownEmpty: {
+    padding: '6px 10px',
+    backgroundColor: 'white',
+    whiteSpace: "pre",
   },
   userRow: {
     padding: '6px 10px',
