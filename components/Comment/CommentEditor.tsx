@@ -5,12 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
-  QuillFormats,
-  buildQuillModules,
   insertReviewCategory,
   focusEditor,
   forceShowPlaceholder,
   hasQuillContent,
+  filterOps,
 } from "./lib/quill";
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
@@ -34,8 +33,6 @@ import { isEmpty as isInputEmpty } from "~/config/utils/nullchecks";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
-import api from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -86,69 +83,22 @@ const CommentEditor = ({
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
 
-  const getFileUrl = ({ fileString, type }) => {
-    const payload = {
-      content_type: type.split("/")[1],
-      content: fileString,
-    };
-    return fetch(api.SAVE_IMAGE, api.POST_CONFIG(payload))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        return res;
-      });
-  };
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const imageHandler = (obj) => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
-    input.onchange = async function () {
-      // showLoader(true);
-      const file = input.files[0];
-      const fileString = await toBase64(file);
-      const type = file.type;
-      const fileUrl = await getFileUrl({ fileString, type });
-      if (quill) {
-        const range = quill.getSelection();
-
-        // this part the image is inserted
-        // by 'image' option below, you just have to put src(link) of img here.
-        quill.insertEmbed(range.index, "image", fileUrl);
-      }
-      // showLoader(false);
-    };
-  };
 
   const { quill, quillRef, isReady } = useQuill({
-    modules: buildQuillModules({
-      editorId,
-      handleSubmit: () => handleSubmit({ content: _content }),
-    }),
-    formats: QuillFormats,
-    placeholder,
+    options: {
+      placeholder,
+    },
+    editorId,
   });
-  const { content: _content, dangerouslySetContent } = useQuillContent({
+  const {
+    content: _content,
+    dangerouslySetContent,
+  }: { content: any; dangerouslySetContent: Function } = useQuillContent({
     quill,
     content,
     notifyOnContentChangeRate: 300, // ms
   });
-
-  useEffect(() => {
-    if (quill) {
-      // Add custom handler for Image Upload
-      quill.getModule("toolbar").addHandler("image", imageHandler);
-    }
-  }, [quill]);
 
   useEffectForCommentTypeChange({
     quill,
@@ -187,6 +137,16 @@ const CommentEditor = ({
     }
   }, [isReady]);
 
+  useEffect(() => {
+    // Remove module event listeners when editor is unmounted
+    return () => {
+      const mentionsModule = quill?.getModule("mentions");
+      if (mentionsModule) {
+        mentionsModule.destroy();
+      }
+    };
+  }, []);
+
   const _handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -201,8 +161,14 @@ const CommentEditor = ({
         return false;
       }
 
+      const mentions = filterOps({
+        quillOps: _content.ops,
+        opName: "user",
+      }).map((op: any) => op.insert.user.userId);
+
       await handleSubmit({
         content: _content,
+        mentions,
         ...(commentId && { id: commentId }),
         ...(!commentId && { commentType: _commentType }),
         ...(interimBounty && { bountyAmount: interimBounty.amount }),
@@ -282,7 +248,7 @@ const CommentEditor = ({
           <div
             className={css(
               styles.toolbarContainer,
-              isPreviewMode && styles.hidden
+              (isPreviewMode || !isReady) && styles.hidden
             )}
           >
             <CommentEditorToolbar editorId={editorId} />

@@ -18,7 +18,7 @@ const config = {
     width: 500,
   },
   default: {
-    previewMaxChars: 1250,
+    previewMaxChars: 0,
     previewMaxImages: 2,
   },
   liveFeed: {
@@ -26,7 +26,7 @@ const config = {
     previewMaxImages: 1,
   },
   toggle: {
-    width: 75
+    width: 75,
   },
   comment: {
     placeholderCount: 8,
@@ -34,9 +34,11 @@ const config = {
   },
 };
 
-export const getConfigForContext = (context: "sidebar" | "default" | "drawer" | undefined | null) => {
+export const getConfigForContext = (
+  context: "sidebar" | "default" | "drawer" | undefined | null
+) => {
   const _config = config[context || "default"];
   return _config || config["default"];
-}
+};
 
 export default config;

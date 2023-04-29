@@ -97,13 +97,20 @@ const Comment = ({ comment, document }: CommentArgs) => {
     }
   };
 
-  const handleReplyCreate = async ({ content }: { content: object }) => {
+  const handleReplyCreate = async ({
+    content,
+    mentions,
+  }: {
+    content: object;
+    mentions?: Array<string>;
+  }) => {
     try {
       const _comment: CommentType = await createCommentAPI({
         content,
         documentId: document.id,
         documentType: document.apiDocumentType,
         parentComment: comment,
+        mentions,
       });
 
       commentTreeState.onCreate({ comment: _comment, parent: comment });
@@ -118,15 +125,18 @@ const Comment = ({ comment, document }: CommentArgs) => {
   const handleCommentUpdate = async ({
     id,
     content,
+    mentions,
   }: {
     id: ID;
     content: any;
+    mentions?: Array<string>;
   }) => {
     const comment: CommentType = await updateCommentAPI({
       id,
       content,
       documentId: document.id,
       documentType: document.apiDocumentType,
+      mentions,
     });
 
     commentTreeState.onUpdate({ comment });
@@ -272,8 +282,8 @@ const Comment = ({ comment, document }: CommentArgs) => {
           <CommentEditor
             focusOnMount={true}
             handleClose={() => _handleToggleReply()}
-            handleSubmit={async ({ content, commentType }) => {
-              await handleReplyCreate({ content });
+            handleSubmit={async ({ content, mentions }) => {
+              await handleReplyCreate({ content, mentions });
               setIsReplyOpen(false);
             }}
             editorId={`reply-to-${comment.id}`}

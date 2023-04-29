@@ -1,10 +1,16 @@
-import { ID, RhDocumentType } from "~/config/types/root_types";
+import {
+  ID,
+  RHUser,
+  RhDocumentType,
+  parseUser,
+} from "~/config/types/root_types";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import config from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
+import uniqBy from "lodash/uniqBy";
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -100,6 +106,7 @@ export const createCommentAPI = async ({
   documentId,
   parentComment,
   bountyAmount,
+  mentions = [],
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
@@ -107,6 +114,7 @@ export const createCommentAPI = async ({
   documentId: ID;
   parentComment?: Comment;
   bountyAmount?: number;
+  mentions?: Array<string>;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -117,6 +125,7 @@ export const createCommentAPI = async ({
     API.POST_CONFIG({
       comment_content_json: content,
       thread_type: commentType,
+      mentions: uniqBy(mentions),
       ...(parentComment && { parent_id: parentComment.id }),
       ...(bountyAmount && { amount: bountyAmount }),
     })
@@ -131,17 +140,20 @@ export const updateCommentAPI = async ({
   content,
   documentType,
   documentId,
+  mentions,
 }: {
   id: ID;
   content: any;
   documentType: RhDocumentType;
   documentId: ID;
+  mentions?: Array<string>;
 }) => {
   const _url = generateApiUrl(`${documentType}/${documentId}/comments/${id}`);
   const response = await fetch(
     _url,
     API.PATCH_CONFIG({
       comment_content_json: content,
+      mentions: uniqBy(mentions),
     })
   ).then((res): any => Helpers.parseJSON(res));
 
@@ -266,4 +278,17 @@ export const flagComment = async ({
       throw "Unexpected error while Flagging";
     }
   }
+};
+
+export const getFileUrl = ({ fileString, type }) => {
+  const payload = {
+    content_type: type.split("/")[1],
+    content: fileString,
+  };
+  return fetch(API.SAVE_IMAGE, API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => {
+      return res;
+    });
 };

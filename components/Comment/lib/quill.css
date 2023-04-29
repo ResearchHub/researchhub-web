@@ -3,6 +3,7 @@
 }
 .CommentEditor .ql-container .ql-editor[contenteditable="true"] {
   min-height: 50px;
+  overflow: visible;
 }
 /* Placeholder */
 .CommentEditor .ql-editor.ql-blank::before {
@@ -101,9 +102,9 @@
   cursor: pointer;
 }
 
-.CommentEditor .ql-editor * {
+/* .CommentEditor .ql-editor * {
   background-color: unset !important;
-}
+} */
 
 .CommentEditor .ql-editor > p > img {
   margin-left: auto;
@@ -334,4 +335,14 @@
 .CommentEditor .ql-editor ul {
   font-size: 15px;
   padding-left: 0;
+}
+
+.CommentEditor .ql-editor a.ql-user {
+  background: rgb(57, 113, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.CommentEditor .ql-editor a.ql-user:hover {
+  background: rgb(57, 113, 255, 0.2);
 }

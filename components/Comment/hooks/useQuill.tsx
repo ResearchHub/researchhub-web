@@ -1,91 +1,57 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// Imported from https://github.com/gtgalone/react-quilljs
-// A lightweight alternative to react-quill
-
 import { useRef, useState, useEffect, RefObject } from "react";
 import Quill, { QuillOptionsStatic } from "quill";
-import ReactDOMServer from "react-dom/server";
-import {
-  faVideo,
-  faImagePolaroid,
-  faLinkSimple,
-} from "@fortawesome/pro-regular-svg-icons";
-import { faQuoteLeft } from "@fortawesome/pro-solid-svg-icons";
-import QuillPeerReviewRatingBlock from "../lib/quillPeerReviewRatingBlock";
+import { getFileUrl } from "../lib/api";
+import toBase64 from "../lib/toBase64";
 
-const theme = "snow";
+export const buildQuillModules = ({
+  editorId,
+}) => {
+  const modules = {
+    magicUrl: true,
+    mentions: true,
+    toolbar: {
+      magicUrl: true,
+      container: `#${editorId}`,
+    },
+  };
 
-const modules = {
-  toolbar: [
-    ["bold", "italic", "underline", "strike"],
-    [{ align: [] }],
-
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }],
-
-    [{ size: ["small", false, "large", "huge"] }],
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ["link", "image", "video"],
-    [{ color: [] }, { background: [] }],
-
-    ["clean"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
+  return modules;
 };
 
-const formats = [
+export const formats = [
+  "image",
+  "header",
+  "font",
+  "size",
   "bold",
   "italic",
   "underline",
   "strike",
-  "align",
+  "blockquote",
   "list",
+  "bullet",
   "indent",
-  "size",
-  "header",
   "link",
-  "image",
   "video",
-  "color",
-  "background",
   "clean",
+  "background",
+  "code-block",
+  "direction",
+  "peer-review-rating",
+  "suggestUsers",
+  "user",
 ];
 
-function assign(target: any, _varArgs: any) {
-  "use strict";
-  if (target === null || target === undefined) {
-    throw new TypeError("Cannot convert undefined or null to object");
-  }
 
-  const to = Object(target);
-
-  for (let index = 1; index < arguments.length; index++) {
-    const nextSource = arguments[index];
-
-    if (nextSource !== null && nextSource !== undefined) {
-      for (const nextKey in nextSource) {
-        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-          to[nextKey] = nextSource[nextKey];
-        }
-      }
-    }
-  }
-  return to;
+type Args = {
+  options: QuillOptionsStatic;
+  editorId: String;
 }
 
-/**
- *
- * @param options Quill static options. https://github.com/gtgalone/react-quilljs#options
- * @returns Returns quill, quillRef, and Quill. https://github.com/gtgalone/react-quilljs#return
- */
-export const useQuill = (
-  options: QuillOptionsStatic | undefined = { theme, modules, formats }
-) => {
+export const useQuill = ({ options, editorId }: Args) => {
   const quillRef: RefObject<any> = useRef();
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [modulesRegistered, setModulesRegistered] = useState<boolean>(false);
   const [obj, setObj] = useState({
     Quill: undefined as any | undefined,
     quillRef,
@@ -95,44 +61,65 @@ export const useQuill = (
     isReady: false,
   });
 
-  useEffect(() => {
-    if (!obj.Quill) {
-      setObj((prev) => assign(prev, { Quill: require("quill") }));
+  const handleImageUpload = (quill) => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async function () {
+      const file = input!.files![0];
+      const fileString = await toBase64(file);
+      const type = file.type;
+      const fileUrl = await getFileUrl({ fileString, type });
+      const range = quill!.getSelection();
+
+      // this part the image is inserted
+      // by 'image' option below, you just have to put src(link) of img here.
+      quill!.insertEmbed(range!.index, "image", fileUrl);
     }
-    if (obj.Quill && !obj.quill && quillRef && quillRef.current && isLoaded) {
-      const opts = assign(options, {
-        modules: assign(modules, options.modules),
-        formats: options.formats || formats,
-        theme: options.theme || theme,
+  };
+
+  useEffect(() => {
+    const quillLibLoaded = Boolean(obj.Quill);
+    const readyToCreateQuillInstance = quillLibLoaded && modulesRegistered && !obj.quill && quillRef && quillRef.current;
+
+    const _loadQuillModules = async ({ quillLib }) => {
+      import('../lib/quill/loadQuillModules').then((loadQuillModules) => {
+        loadQuillModules.default({ quillLib });
+        setModulesRegistered(true);
       });
+    }
 
-      if (!options.readOnly) {
-        const MagicUrl = require("quill-magic-url").default;
-        obj.Quill.register("modules/magicUrl", MagicUrl);
-
-        obj.Quill.register(QuillPeerReviewRatingBlock);
-        obj.Quill.register("modules/magicUrl", MagicUrl);
-
-        const icons = obj.Quill.import("ui/icons");
-        icons.video = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faVideo} />
-        );
-        icons.image = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faImagePolaroid} />
-        );
-        icons.link = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faLinkSimple} />
-        );
-        icons.blockquote = ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faQuoteLeft} />
-        );
+    if (quillLibLoaded) {
+      if (!modulesRegistered) {
+        _loadQuillModules({ quillLib: obj.Quill });
       }
+    }
+    else {
+      setObj((prev) => ({ ...prev, Quill: require("quill") }));
+    }
+
+    if (readyToCreateQuillInstance && !obj.quill) {
+      const modules = buildQuillModules({ editorId });
+      const opts = {
+        modules,
+        formats,
+        theme: "snow",
+      };
 
       const quill = new obj.Quill(quillRef.current, opts);
-      setObj(assign(assign({}, obj), { quill, editor: quill, isReady: true }));
+      setObj((prev) => ({
+        ...prev,
+        quill,
+        editor: quill,
+        isReady: true,
+      }));
+
+      // We can only register image upload handler only once quill instance is available
+      quill.getModule("toolbar").addHandler("image", () => handleImageUpload(quill));
     }
-    setIsLoaded(true);
-  }, [isLoaded, obj, options]);
+
+  }, [obj, options, modulesRegistered]);
 
   return obj;
 };

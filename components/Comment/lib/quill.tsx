@@ -3,28 +3,23 @@ import { reviewCategories } from "./options";
 import StarInput from "~/components/Form/StarInput";
 import ReactDOMServer from "react-dom/server";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 
-export const buildQuillModules = ({ editorId, handleSubmit }) => {
-  const modules = {
-    magicUrl: true,
-    keyboard: {
-      bindings: {
-        commandEnter: {
-          key: 13,
-          shortKey: true,
-          metaKey: true,
-          handler: handleSubmit,
-        },
-      },
-    },
-    toolbar: {
-      magicUrl: true,
-      container: `#${editorId}`,
-    },
+
+export type UserBlotValue = {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  authorProfileId: string;
+}
+
+export type QuillUserOp = {
+  attributes: any,
+  insert: {
+    type: string,
+    value: UserBlotValue,
   };
-
-  return modules;
-};
+}
 
 /**
  * @deprecated use hasQuillContent instead
@@ -32,28 +27,6 @@ export const buildQuillModules = ({ editorId, handleSubmit }) => {
 export default function isQuillEmpty(content) {
   return !content || JSON.stringify(content) === '{"ops":[{"insert":"\\n"}]}';
 }
-
-export const QuillFormats = [
-  "image",
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "video",
-  "clean",
-  "background",
-  "code-block",
-  "direction",
-  "peer-review-rating",
-];
 
 export function trimQuillEditorContents({ contents }) {
   const deltas = Array.isArray(contents)
@@ -275,7 +248,7 @@ export const trimDeltas = ({
   return trimmedOps;
 };
 
-export const quillDeltaToHtml = ({ ops }) => {
+export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
   const converter = new QuillDeltaToHtmlConverter(ops, {});
   // @ts-ignore
   converter.renderCustomWith(function (customOp, contextOp) {
@@ -291,7 +264,22 @@ export const quillDeltaToHtml = ({ ops }) => {
       });
 
       return html;
-    } else {
+    } 
+    else if (customOp.insert.type === "user") {
+      const userOp:QuillUserOp = customOp as any;
+      let user = userOp.insert.value;
+
+      if (user?.userId) {
+        const hasName = (user.firstName + user.lastName).length > 0;
+        const fullName = hasName ? `${user.firstName} ${user.lastName}` : "Unknown User";
+        return `<a class="ql-user" href="/user/${user.authorProfileId}/overview">@${fullName}</a>`
+      }
+      else {
+        // TODO: Add to sentry 
+        console.error("Mentioned user does not exist. This likely means userId was not saved on the op, or user was deleted.", customOp.insert.value);  
+      }
+    }
+    else {
       console.error("Unmanaged custom blot!");
     }
   });
@@ -314,4 +302,25 @@ export function getPlainText({ quillOps = [] }) {
   });
 
   return plainText;
+}
+
+export function filterOps({ quillOps = [], opName }) {
+  const ops:any[] = [];
+
+  quillOps.forEach((op:any) => {
+    if (op.insert && op.insert[opName]) {
+      ops.push(op);
+    }
+  });
+
+  return ops;
+}
+
+export const convertToUserBlotType = (user:SuggestedUser):UserBlotValue => {
+  return {
+    userId: String(user.id),
+    authorProfileId: String(user.authorProfile.id),
+    firstName: user.firstName,
+    lastName: user.lastName, 
+  }
 }
