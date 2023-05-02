@@ -78,7 +78,7 @@ const AuthorAvatar = (props) => {
             style={{
               width: finalSize,
               height: finalSize,
-              fontSize: finalSize + 1,
+              fontSize: finalSize,
               border,
               borderRadius: "50%",
               // border: "3px solid transparent",
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   userIcon: {
     color: "#aaa",
     position: "relative",
-    marginBottom: 2,
+    display: "flex",
     left: 0.25,
   },
   name: {

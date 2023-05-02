@@ -36,7 +36,9 @@ const styles = StyleSheet.create({
   initialsContainer: {
     height: "100%",
     borderRadius: "100px",
-    background: colors.GREY(),
+    background: "#FBFBFD",
+    border: "1px solid #E5E5F0",
+    color: "#7C7989",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

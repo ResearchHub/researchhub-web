@@ -1,6 +1,5 @@
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
-import CustomHead from "../components/Head";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 process.on("unhandledRejection", (err) => {
@@ -83,7 +82,6 @@ export default class MyDocument extends Document {
             }}
           />
           <script src="https://accounts.google.com/gsi/client" async></script>
-          <CustomHead />
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>
           <Main />

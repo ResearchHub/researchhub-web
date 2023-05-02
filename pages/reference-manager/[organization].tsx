@@ -8,6 +8,7 @@ import { captureEvent } from "~/config/utils/events";
 
 function Index(props) {
   const { isLoggedIn, authChecked } = props;
+
   if (!killswitch("reference-manager")) {
     return null;
   } else

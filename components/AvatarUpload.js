@@ -7,7 +7,7 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
 const AvatarUpload = (props) => {
-  let { isOpen, closeModal, saveButton, section } = props;
+  let { isOpen, closeModal, saveButton, section, overlayStyleOverride } = props;
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
@@ -27,7 +27,12 @@ const AvatarUpload = (props) => {
   };
 
   return (
-    <BaseModal title={"Upload Picture"} isOpen={isOpen} closeModal={closeModal}>
+    <BaseModal
+      title={"Upload a photo"}
+      isOpen={isOpen}
+      closeModal={closeModal}
+      overlayStyleOverride={overlayStyleOverride}
+    >
       <div className={css(styles.modalContainer)}>
         <AvatarEdit
           height={200}

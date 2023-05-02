@@ -88,15 +88,20 @@ export const handleSubmit = ({
       };
     }) ?? [];
 
-  const payload = toFormData({
+  const fields = {
     fields: {
       ...referenceSchemaValueSet.schema,
       creators: formattedCreators,
     },
     citation_type: selectedReferenceType,
     organization: organizationID,
-    project: projectID,
-  });
+  };
+
+  if (projectID) {
+    fields.project = projectID;
+  }
+
+  const payload = toFormData(fields);
 
   const attachment = referenceSchemaValueSet.attachment;
   if (!isEmpty(attachment)) {

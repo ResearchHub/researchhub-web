@@ -16,6 +16,7 @@ import Router from "next/router";
 import Script from "next/script";
 import { ExchangeRateContextProvider } from "~/components/contexts/ExchangeRateContext";
 import OrganizationContextProvider from "~/components/contexts/OrganizationContext";
+import CustomHead from "../components/Head";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -84,6 +85,7 @@ function Base({
 
   return (
     <AlertProvider template={DynamicAlertTemplate} {...options}>
+      <CustomHead />
       {process.env.GA_TRACKING_ID && (
         <>
           <Script
