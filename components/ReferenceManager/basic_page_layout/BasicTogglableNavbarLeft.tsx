@@ -83,14 +83,6 @@ export default function BasicTogglableNavbarLeft({
   theme,
 }: Props) {
   const user = getCurrentUser();
-  const isLoadingUser = isEmpty(user?.id);
-  const profileImage =
-    user?.authorProfile?.profileImage ??
-    user?.author_profile?.profile_image ??
-    null;
-  const currentUserName = `${user?.firstName ?? user?.first_name ?? ""} ${
-    user?.lastName ?? user?.last_name ?? ""
-  }`;
   // TODO: calvinhlee - clean up this mess around organization and other callsites like this
   const router = useRouter();
   const { orgs, setCurrentOrg, currentOrg } = useOrgs();
@@ -122,16 +114,19 @@ export default function BasicTogglableNavbarLeft({
     });
   }, [currentOrgID, projectsFetchTime]);
 
-  const refProjectsNavbarEls = currentOrgProjects?.map((refProject) => {
-    return (
-      <ReferenceProjectsNavbarEl
-        key={`ref-project-${refProject?.id}`}
-        orgSlug={nullthrows(currentOrgSlug, "Org must be present")}
-        projectID={refProject?.id}
-        projectName={refProject?.project_name}
-      />
-    );
-  });
+  const refProjectsNavbarEls = currentOrgProjects?.map(
+    (refProject, elIndex) => {
+      return (
+        <ReferenceProjectsNavbarEl
+          key={`ref-project-${refProject?.id}-${elIndex}`}
+          orgSlug={nullthrows(currentOrgSlug, "Org must be present")}
+          projectID={refProject?.id}
+          projectName={refProject?.project_name}
+        />
+      );
+    }
+  );
+
   return (
     <Box
       flexDirection="column"
@@ -201,7 +196,10 @@ export default function BasicTogglableNavbarLeft({
         {HOME_NAV_BUTTON_CONFIG.map((navbuttonObjs, index) => {
           const { label, icon } = navbuttonObjs;
           return (
-            <ALink href={`/reference-manager/${currentOrgSlug}`}>
+            <ALink
+              href={`/reference-manager/${currentOrgSlug}`}
+              key={`ref-org-link-${index}-${currentOrgSlug}`}
+            >
               <ListItem key={label} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
