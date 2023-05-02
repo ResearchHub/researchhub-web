@@ -1,30 +1,14 @@
-import nookies from "nookies";
-import { connect } from "react-redux";
-
-import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/reference_item/context/ReferenceItemDrawerContext";
-import HeadComponent from "~/components/Head";
-import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
-import killswitch from "~/config/killswitch/killswitch";
-import LoginModal from "~/components/Login/LoginModal";
-import { fetchUserOrgs } from "~/config/fetch";
 import { AUTH_TOKEN } from "~/config/constants";
-import api, { generateApiUrl } from "~/config/api";
+import { connect } from "react-redux";
+import { fetchUserOrgs } from "~/config/fetch";
+import { generateApiUrl } from "~/config/api";
+import nookies from "nookies";
+import ReferencesRoot from "~/components/ReferenceManager/references/ReferencesRoot";
 
 function Index(props) {
   const { isLoggedIn, authChecked } = props;
-  if (!killswitch("reference-manager")) {
-    return null;
-  } else
-    return (
-      <ReferenceItemDrawerContextProvider>
-        <HeadComponent title={"ResearchHub Reference Manager"}></HeadComponent>
-        {isLoggedIn || !authChecked ? (
-          <ReferencesContainer {...props} />
-        ) : (
-          <LoginModal isOpen={true} />
-        )}
-      </ReferenceItemDrawerContextProvider>
-    );
+
+  return <ReferencesRoot authChecked={authChecked} isLoggedIn={isLoggedIn} />;
 }
 
 export async function getServerSideProps(ctx) {
