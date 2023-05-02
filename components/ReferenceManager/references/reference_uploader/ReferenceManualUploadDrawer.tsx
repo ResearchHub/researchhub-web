@@ -1,7 +1,3 @@
-import {
-  DEFAULT_REF_SCHEMA_SET,
-  ReferenceSchemaValueSet,
-} from "./reference_default_schemas";
 import { Button } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 import {
@@ -10,10 +6,7 @@ import {
   parseDoiSearchResultOntoValueSet,
 } from "./reference_upload_utils";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { LEFT_MAX_NAV_WIDTH as LOCAL_LEFT_NAV_WIDTH } from "../../basic_page_layout/BasicTogglableNavbarLeft";
-import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { NAVBAR_HEIGHT as ROOT_NAVBAR_HEIGHT } from "~/components/Navbar";
-import { ID, NullableString } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState, useCallback } from "react";
 import {
   resolveFieldKeyLabels,
@@ -21,6 +14,7 @@ import {
 } from "../utils/resolveFieldKeyLabels";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
+import { useReferenceUploadDrawerContext } from "./context/ReferenceUploadDrawerContext";
 import Box from "@mui/material/Box";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Drawer from "@mui/material/Drawer";
@@ -38,26 +32,21 @@ const CALCULATED_LEFT_MARGIN =
   80 /* LEFT_SIDEBAR_MIN_WIDTH */ +
   2; /* arbitrary border "breather" */
 
-type Props = {
-  drawerProps: {
-    isDrawerOpen: boolean;
-    setIsDrawerOpen: (flag: boolean) => void;
-  };
-  projectID?: ID;
-};
-
-export default function ReferenceManualUploadDrawer({
-  drawerProps: { isDrawerOpen, setIsDrawerOpen },
-  projectID,
-}: Props): ReactElement {
+export default function ReferenceManualUploadDrawer(): ReactElement {
   const { setReferencesFetchTime } = useReferenceTabContext();
+  const {
+    isDrawerOpen,
+    projectID,
+    referenceSchemaValueSet,
+    selectedReferenceType,
+    setIsDrawerOpen,
+    setProjectID,
+    setReferenceSchemaValueSet,
+    setSelectedReferenceType,
+  } = useReferenceUploadDrawerContext();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [selectedReferenceType, setSelectedReferenceType] =
-    useState<NullableString>("");
-  const [referenceSchemaValueSet, setReferenceSchemaValueSet] =
-    useState<ReferenceSchemaValueSet>(DEFAULT_REF_SCHEMA_SET);
-
   const { currentOrg } = useOrgs();
 
   const resetComponentState = useCallback((): void => {
@@ -74,6 +63,7 @@ export default function ReferenceManualUploadDrawer({
       required: referenceSchemaValueSet.required,
     });
     setIsDrawerOpen(false);
+    setProjectID(null);
     setSelectedReferenceType("");
   }, [
     referenceSchemaValueSet,

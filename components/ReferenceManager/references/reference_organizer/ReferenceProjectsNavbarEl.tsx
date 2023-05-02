@@ -6,6 +6,7 @@ import ALink from "~/components/ALink";
 import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceManualUploadDrawer from "../reference_uploader/ReferenceManualUploadDrawer";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
+import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 
 type Props = {
   orgSlug: string;
@@ -18,8 +19,10 @@ export default function ReferenceProjectsNavbarEl({
   projectID,
   projectName,
 }: Props): ReactElement {
-  const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
-    useState<boolean>(false);
+  const {
+    setIsDrawerOpen: setIsUploadDrawerOpen,
+    setProjectID: setProjectIDForDrawer,
+  } = useReferenceUploadDrawerContext();
   return (
     <ALink href={`/reference-manager/${orgSlug}/?project=${projectID}`}>
       <Box
@@ -35,17 +38,12 @@ export default function ReferenceProjectsNavbarEl({
           marginLeft: 0,
           marginRight: 0,
         }}
+        onMouseDown={(event: SyntheticEvent): void => {
+          event.preventDefault();
+          setIsUploadDrawerOpen(false);
+          setProjectIDForDrawer(null);
+        }}
       >
-        {/* TODO: calvinhlee - move this to context */}
-        <ReferenceManualUploadDrawer
-          drawerProps={{
-            isDrawerOpen: isManualUploadDrawerOpen,
-            setIsDrawerOpen: setIsManualUploadDrawerOpen,
-          }}
-          projectID={projectID}
-          key={`upload-${orgSlug}-${projectName}`}
-        />
-
         <div style={{ display: "flex", alignItems: "center" }}>
           <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} />
           <Typography
@@ -63,10 +61,13 @@ export default function ReferenceProjectsNavbarEl({
         <ReferenceProjectNavbarElOption
           onSelectAddNewReference={(event: SyntheticEvent): void => {
             event.preventDefault();
-            setIsManualUploadDrawerOpen(true);
+            setProjectIDForDrawer(projectID);
+            setIsUploadDrawerOpen(true);
           }}
           onSelectCreateSubProject={(event: SyntheticEvent): void => {
             event.preventDefault();
+            setProjectIDForDrawer(null);
+            setIsUploadDrawerOpen(false);
           }}
         />
       </Box>

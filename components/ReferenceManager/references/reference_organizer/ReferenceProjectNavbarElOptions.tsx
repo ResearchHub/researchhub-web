@@ -8,6 +8,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 
 type Props = {
   onSelectAddNewReference: (event: SyntheticEvent) => void;

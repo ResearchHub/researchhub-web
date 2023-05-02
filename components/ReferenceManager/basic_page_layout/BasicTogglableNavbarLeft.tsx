@@ -28,6 +28,7 @@ import { useRouter } from "next/router";
 import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
 import ReferenceProjectsNavbarEl from "../references/reference_organizer/ReferenceProjectsNavbarEl";
 import ALink from "~/components/ALink";
+import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -72,19 +73,19 @@ type Props = {
   isOpen: boolean;
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
-  setIsManualUploadDrawerOpen: (flag: boolean) => void;
   theme?: Theme;
 };
 
 export default function BasicTogglableNavbarLeft({
   isOpen,
   navWidth,
-  setIsManualUploadDrawerOpen,
   theme,
 }: Props) {
   const user = getCurrentUser();
   // TODO: calvinhlee - clean up this mess around organization and other callsites like this
   const router = useRouter();
+  const { isDrawerOpen, setIsDrawerOpen: isUploadDrawerOpen } =
+    useReferenceUploadDrawerContext();
   const { orgs, setCurrentOrg, currentOrg } = useOrgs();
   const { organization } = router.query;
   useEffect(() => {
@@ -172,7 +173,7 @@ export default function BasicTogglableNavbarLeft({
               textTransform: "none",
               width: isOpen ? "100%" : "28px",
             }}
-            onClick={(): void => setIsManualUploadDrawerOpen(true)}
+            onClick={(): void => isUploadDrawerOpen(true)}
           >
             <AddSharpIcon fontSize="small" color="primary" />
             {isOpen && (
