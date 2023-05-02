@@ -84,8 +84,10 @@ export default function BasicTogglableNavbarLeft({
   const user = getCurrentUser();
   // TODO: calvinhlee - clean up this mess around organization and other callsites like this
   const router = useRouter();
-  const { isDrawerOpen, setIsDrawerOpen: isUploadDrawerOpen } =
-    useReferenceUploadDrawerContext();
+  const {
+    setIsDrawerOpen: isUploadDrawerOpen,
+    setProjectID: setProjectIDForDrawer,
+  } = useReferenceUploadDrawerContext();
   const { orgs, setCurrentOrg, currentOrg } = useOrgs();
   const { organization } = router.query;
   useEffect(() => {
@@ -158,39 +160,44 @@ export default function BasicTogglableNavbarLeft({
           <OrganizationPopover isReferenceManager={true} />
         </Box>
         <Box sx={{ padding: "16px", paddingBottom: 0 }}>
-          <Box
-            sx={{
-              alignItems: "center",
-              border: "1px solid #3971FF",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-              cursor: "pointer",
-              display: "flex",
-              height: isOpen ? "48px" : "28px",
-              justifyContent: "center",
-              padding: "0 8px",
-              position: "sticky",
-              textTransform: "none",
-              width: isOpen ? "100%" : "28px",
-            }}
-            onClick={(): void => isUploadDrawerOpen(true)}
-          >
-            <AddSharpIcon fontSize="small" color="primary" />
-            {isOpen && (
-              <Typography
-                color="#3971FF"
-                component="div"
-                fontSize={14}
-                fontWeight={500}
-                letterSpacing={"1.2px"}
-                noWrap
-                variant="h6"
-                ml={"6px"}
-              >
-                {"Upload reference"}
-              </Typography>
-            )}
-          </Box>
+          <ALink href={`/reference-manager/${currentOrgSlug}/`}>
+            <Box
+              sx={{
+                alignItems: "center",
+                border: "1px solid #3971FF",
+                borderRadius: "4px",
+                boxSizing: "border-box",
+                cursor: "pointer",
+                display: "flex",
+                height: isOpen ? "48px" : "28px",
+                justifyContent: "center",
+                padding: "0 8px",
+                position: "sticky",
+                textTransform: "none",
+                width: isOpen ? "100%" : "28px",
+              }}
+              onClick={(): void => {
+                setProjectIDForDrawer(null);
+                isUploadDrawerOpen(true);
+              }}
+            >
+              <AddSharpIcon fontSize="small" color="primary" />
+              {isOpen && (
+                <Typography
+                  color="#3971FF"
+                  component="div"
+                  fontSize={14}
+                  fontWeight={500}
+                  letterSpacing={"1.2px"}
+                  noWrap
+                  variant="h6"
+                  ml={"6px"}
+                >
+                  {"Upload reference"}
+                </Typography>
+              )}
+            </Box>
+          </ALink>
         </Box>
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>

@@ -1,12 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent, useState } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { ReactElement, SyntheticEvent } from "react";
+import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
 import FolderIcon from "@mui/icons-material/Folder";
-import ReferenceManualUploadDrawer from "../reference_uploader/ReferenceManualUploadDrawer";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
-import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 
 type Props = {
   orgSlug: string;
