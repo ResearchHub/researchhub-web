@@ -85,6 +85,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           ...referenceItemDrawerData?.fields,
           creators: referenceItemDrawerData?.fields?.creators
             .map((creator): string => {
+              debugger;
               return `${creator.first_name} ${creator.last_name}`;
             })
             .join(", "),

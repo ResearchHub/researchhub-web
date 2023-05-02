@@ -45,7 +45,7 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
-export default function ReferencesTable() {
+export default function ReferencesTable({ createdReferences }) {
   const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -62,6 +62,10 @@ export default function ReferencesTable() {
     onError: emptyFncWithMsg,
     referencesFetchTime,
   });
+
+  useEffect(() => {
+    setReferenceTableRowData([...createdReferences, ...referenceTableRowData]);
+  }, [createdReferences]);
 
   const formattedReferenceRows = !isLoading
     ? nullthrows(formatReferenceRowData(referenceTableRowData))

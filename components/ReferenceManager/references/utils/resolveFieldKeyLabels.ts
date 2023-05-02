@@ -2,7 +2,7 @@ import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 const labelMap = {
-  creators: "Authors / Creators",
+  creators: "Authors",
   date: "Date (MM-DD-YYYY)",
   doi: "DOI",
   DOI: "DOI",

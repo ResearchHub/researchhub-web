@@ -5,7 +5,11 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
+<<<<<<< HEAD
 import { Fragment, useState, ReactElement } from "react";
+=======
+import { Fragment, useState, ReactNode } from "react";
+>>>>>>> 338d065b1 (adding data for dois)
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -14,19 +18,46 @@ import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
+import DroppableZone from "~/components/DroppableZone";
+import api, { generateApiUrl } from "~/config/api";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { connect } from "react-redux";
+import { MessageActions } from "~/redux/message";
 
-interface Props {}
+interface Props {
+  showMessage: ({ show, load }) => void;
+}
 
-export default function ReferencesContainer({}: Props): ReactElement {
+function ReferencesContainer({ showMessage }: Props): ReactNode {
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
+  const [createdReferences, setCreatedReferences] = useState<[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
     useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
+  const { currentOrg } = useOrgs();
+
+  const handleFileDrop = async (acceptedFiles) => {
+    const formData = new FormData();
+    acceptedFiles.forEach((file) => {
+      formData.append("pdfs[]", file);
+    });
+    formData.append("organization_id", currentOrg.id);
+    // formData.append('project_id', )
+    const url = generateApiUrl("citation_entry/pdf_uploads");
+    showMessage({ load: true, show: true });
+    const resp = await fetch(url, api.POST_FILE_CONFIG(formData));
+    const json = await resp.json();
+    showMessage({ load: false, show: false });
+    setLoading(false);
+    setCreatedReferences(json.created);
+    // for (let i = 0; i < )
+  };
 
   if (!userAllowed) {
     return <Fragment />;
@@ -51,85 +82,97 @@ export default function ReferencesContainer({}: Props): ReactElement {
             setIsManualUploadDrawerOpen={setIsManualUploadDrawerOpen}
             // theme={theme}
           />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "32px 32px",
-              width: "100%",
-              overflow: "auto",
-              flex: 1,
-            }}
-          >
-            <div style={{ marginBottom: 32 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                {"All References"}
-              </Typography>
-            </div>
-            <Box className="ReferencesContainerMain">
-              <Box
-                className="ReferencesContainerTitleSection"
-                sx={{
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  height: 44,
-                  marginBottom: "20px",
-                }}
-              >
-                <div
-                  className="ReferenceContainerSearchFieldWrap"
-                  style={{
-                    maxWidth: 400,
+          <DroppableZone multiple noClick handleFileDrop={handleFileDrop}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "32px 32px",
+                width: "100%",
+                overflow: "auto",
+                boxSizing: "border-box",
+                flex: 1,
+              }}
+              className={"references-section"}
+            >
+              <div style={{ marginBottom: 32 }}>
+                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                  {"All References"}
+                </Typography>
+              </div>
+              <Box className="ReferencesContainerMain">
+                <Box
+                  className="ReferencesContainerTitleSection"
+                  sx={{
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "space-between",
                     width: "100%",
+                    height: 44,
+                    marginBottom: "20px",
                   }}
                 >
-                  <OutlinedInput
-                    fullWidth
-                    label={searchText && "Search"}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      // TODO: calvinhlee - create a MUI convenience function for handling target values
-                      setSearchText(event.target.value);
+                  <div
+                    className="ReferenceContainerSearchFieldWrap"
+                    style={{
+                      maxWidth: 400,
+                      width: "100%",
                     }}
-                    placeholder="Search..."
-                    size="small"
-                    sx={{
-                      borderColor: "#E9EAEF",
-                      background: "rgba(250, 250, 252, 1)",
-                      "&:hover": {
+                  >
+                    <OutlinedInput
+                      fullWidth
+                      label={searchText && "Search"}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        // TODO: calvinhlee - create a MUI convenience function for handling target values
+                        setSearchText(event.target.value);
+                      }}
+                      placeholder="Search..."
+                      size="small"
+                      sx={{
                         borderColor: "#E9EAEF",
-                      },
-                    }}
-                    inputProps={{
-                      sx: {
-                        border: "0px !important",
+                        background: "rgba(250, 250, 252, 1)",
                         "&:hover": {
-                          border: "0px",
+                          borderColor: "#E9EAEF",
                         },
-                      },
-                    }}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          edge="end"
-                        >
-                          <i
-                            className="fa-regular fa-magnifying-glass"
-                            style={{ fontSize: 16 }}
-                          ></i>
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </div>
+                      }}
+                      inputProps={{
+                        sx: {
+                          border: "0px !important",
+                          "&:hover": {
+                            border: "0px",
+                          },
+                        },
+                      }}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            edge="end"
+                          >
+                            <i
+                              className="fa-regular fa-magnifying-glass"
+                              style={{ fontSize: 16 }}
+                            ></i>
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </div>
+                </Box>
+                <ReferencesTable createdReferences={createdReferences} />
               </Box>
-              <ReferencesTable />
             </Box>
-          </Box>
+          </DroppableZone>
         </Box>
       </Fragment>
     );
   }
 }
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(null, mapDispatchToProps)(ReferencesContainer);
