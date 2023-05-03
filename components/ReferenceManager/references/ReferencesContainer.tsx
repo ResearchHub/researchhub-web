@@ -50,13 +50,21 @@ function ReferencesContainer({ showMessage }: Props): ReactNode {
     formData.append("organization_id", currentOrg.id);
     // formData.append('project_id', )
     const url = generateApiUrl("citation_entry/pdf_uploads");
-    showMessage({ load: true, show: true });
+    const preload = [];
+
+    acceptedFiles.map(() => {
+      const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
+      preload.push({
+        citation_type: "LOADING",
+        id: uuid,
+      });
+    });
+
+    setCreatedReferences(preload);
     const resp = await fetch(url, api.POST_FILE_CONFIG(formData));
     const json = await resp.json();
-    showMessage({ load: false, show: false });
     setLoading(false);
     setCreatedReferences(json.created);
-    // for (let i = 0; i < )
   };
 
   if (!userAllowed) {

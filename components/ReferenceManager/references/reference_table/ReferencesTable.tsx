@@ -1,6 +1,6 @@
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import {
@@ -64,7 +64,31 @@ export default function ReferencesTable({ createdReferences }) {
   });
 
   useEffect(() => {
-    setReferenceTableRowData([...createdReferences, ...referenceTableRowData]);
+    let loadReferences = false;
+    createdReferences.forEach((reference) => {
+      if (reference.citation_type === "LOADING") {
+        loadReferences = true;
+      }
+    });
+
+    let newReferences = [...createdReferences, ...referenceTableRowData];
+
+    if (!loadReferences) {
+      let count = 0;
+      newReferences = referenceTableRowData.map((reference) => {
+        if (
+          reference.citation_type === "LOADING" &&
+          count < createdReferences.length
+        ) {
+          const ref = createdReferences[count];
+          count += 1;
+          return ref;
+        } else {
+          return reference;
+        }
+      });
+    }
+    setReferenceTableRowData(newReferences);
   }, [createdReferences]);
 
   const formattedReferenceRows = !isLoading
@@ -87,7 +111,7 @@ export default function ReferencesTable({ createdReferences }) {
           },
         }}
         loading={isLoading}
-        onCellClick={(params, event, _details): void => {
+        onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemDrawerData({
             ...nullthrows(
@@ -97,6 +121,18 @@ export default function ReferencesTable({ createdReferences }) {
           if (params.field !== "__check__") {
             setIsDrawerOpen(true);
           }
+        }}
+        slots={{
+          cell: (cell) => {
+            if (cell.value === "load") {
+              return (
+                <div className="data-grid-loader">
+                  <GridSkeletonCell {...cell} />
+                </div>
+              );
+            }
+            return <GridCell {...cell} />;
+          },
         }}
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
