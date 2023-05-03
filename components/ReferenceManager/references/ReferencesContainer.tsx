@@ -82,7 +82,12 @@ function ReferencesContainer({ showMessage }: Props): ReactNode {
             setIsManualUploadDrawerOpen={setIsManualUploadDrawerOpen}
             // theme={theme}
           />
-          <DroppableZone multiple noClick handleFileDrop={handleFileDrop}>
+          <DroppableZone
+            multiple
+            noClick
+            handleFileDrop={handleFileDrop}
+            accept=".pdf"
+          >
             <Box
               sx={{
                 display: "flex",

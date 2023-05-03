@@ -1,8 +1,15 @@
 import { StyleSheet, css } from "aphrodite";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import Dropzone from "react-dropzone";
-import api, { generateApiUrl } from "~/config/api";
 import colors from "~/config/themes/colors";
+
+type Props = {
+  accept?: string;
+  multiple?: boolean;
+  children?: ReactElement;
+  noClick?: boolean;
+  handleFileDrop: (acceptedFiles: any[]) => void;
+};
 
 function DroppableZone({
   accept,
@@ -10,7 +17,7 @@ function DroppableZone({
   children,
   noClick,
   handleFileDrop,
-}) {
+}: Props) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
@@ -88,7 +95,8 @@ const styles = StyleSheet.create({
     cursor: "default",
     borderRadius: 3,
     outline: "none",
-    height: "100%",
+    marginRight: 4,
+    marginBottom: 4,
   },
   uploadImage: {
     height: 80,
