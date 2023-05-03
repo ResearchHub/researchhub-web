@@ -15,7 +15,10 @@ import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
 import ReferenceUserInviteInput from "../../form/ReferenceUserInviteInput";
 import { useRouter } from "next/router";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
+import {
+  getCurrentUserCurrentOrg,
+  useOrgs,
+} from "~/components/contexts/OrganizationContext";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
@@ -29,10 +32,7 @@ export default function ReferenceProjectsUpsertModal({
   onCloseModal,
   onUpsertSuccess,
 }: ComponentProps): ReactElement {
-  // TODO: calvinhlee - clean up this mess around organization and other callsites like this
-  const router = useRouter();
-  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
-  const { organization } = router.query;
+  const currentOrg = getCurrentUserCurrentOrg();
   const {
     isModalOpen,
     projectValue,
@@ -40,15 +40,6 @@ export default function ReferenceProjectsUpsertModal({
     setProjectValue,
     upsertPurpose,
   } = useReferenceProjectUpsertContext();
-
-  useEffect(() => {
-    if (organization && orgs.length) {
-      // @ts-ignore
-      const curOrg = orgs.find((org) => org.slug === organization);
-      // @ts-ignore
-      setCurrentOrg(curOrg);
-    }
-  }, [organization, orgs]);
 
   const handleCloseModal = (event?: SyntheticEvent) => {
     onCloseModal(event);
