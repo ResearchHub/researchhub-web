@@ -5,6 +5,10 @@ import { useReferenceUploadDrawerContext } from "../reference_uploader/context/R
 import ALink from "~/components/ALink";
 import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
+import {
+  DEFAULT_PROJECT_VALUES,
+  useReferenceProjectUpsertContext,
+} from "./context/ReferenceProjectsUpsertContext";
 
 type Props = {
   orgSlug: string;
@@ -12,15 +16,21 @@ type Props = {
   projectName: string;
 };
 
-export default function ReferenceProjectsNavbarEl({
+export default function <ReferenceProjectsNavbarEl>({
   orgSlug,
   projectID,
   projectName,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
-    setProjectID: setProjectIDForDrawer,
+    setProjectID: setProjectIDRefUploader,
   } = useReferenceUploadDrawerContext();
+  const {
+    setIsModalOpen: setIsProjectUpsertModalOpen,
+    setProjectValue: setProjectUpsertValue,
+    setUpsertPurpose: setProjectUpsertPurpose,
+  } = useReferenceProjectUpsertContext();
+
   return (
     <ALink href={`/reference-manager/${orgSlug}/?project=${projectID}`}>
       <Box
@@ -39,7 +49,7 @@ export default function ReferenceProjectsNavbarEl({
         onMouseDown={(event: SyntheticEvent): void => {
           event.preventDefault();
           setIsUploadDrawerOpen(false);
-          setProjectIDForDrawer(null);
+          setProjectIDRefUploader(null);
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -59,13 +69,28 @@ export default function ReferenceProjectsNavbarEl({
         <ReferenceProjectNavbarElOption
           onSelectAddNewReference={(event: SyntheticEvent): void => {
             event.preventDefault();
-            setProjectIDForDrawer(projectID);
+            setProjectIDRefUploader(projectID);
             setIsUploadDrawerOpen(true);
           }}
           onSelectCreateSubProject={(event: SyntheticEvent): void => {
             event.preventDefault();
-            setProjectIDForDrawer(null);
+            setProjectIDRefUploader(null);
             setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("create_sub_project");
+            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+            setIsProjectUpsertModalOpen(true);
+          }}
+          onSelectEditProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("update");
+            setProjectUpsertValue({
+              ...DEFAULT_PROJECT_VALUES,
+              projectID,
+              projectName,
+            });
+            setIsProjectUpsertModalOpen(true);
           }}
         />
       </Box>

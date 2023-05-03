@@ -4,6 +4,7 @@ import {
   emptyFncWithMsg,
   isEmpty,
   nullthrows,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
@@ -138,13 +139,8 @@ export default function BasicTogglableNavbarLeft({
       sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
     >
       <ReferenceProjectsUpsertModal
-        isModalOpen={isProjectsUpsertModalOpen}
-        onCloseModal={(event?: SyntheticEvent): void => {
-          event?.preventDefault();
-          setIsProjectsUpsertModalOpen(false);
-        }}
+        onCloseModal={silentEmptyFnc}
         onUpsertSuccess={() => setProjectsFetchTime(Date.now())}
-        projectID={undefined}
       />
       <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
         <Box

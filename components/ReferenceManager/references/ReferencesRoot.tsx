@@ -1,5 +1,6 @@
 import { Fragment, ReactElement } from "react";
 import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/reference_item/context/ReferenceItemDrawerContext";
+import { ReferenceProjectsUpsertContextProvider } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
 import { ReferenceUploadDrawerContextProvider } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
@@ -21,18 +22,20 @@ export default function ReferencesRoot({
     return (
       <ReferenceItemDrawerContextProvider>
         <ReferenceUploadDrawerContextProvider>
-          <HeadComponent
-            title={"ResearchHub Reference Manager"}
-          ></HeadComponent>
-          {isLoggedIn || !authChecked ? (
-            <ReferencesContainer />
-          ) : (
-            <LoginModal
-              isOpen={true}
-              handleClose={undefined}
-              loginCallback={undefined}
-            />
-          )}
+          <ReferenceProjectsUpsertContextProvider>
+            <HeadComponent
+              title={"ResearchHub Reference Manager"}
+            ></HeadComponent>
+            {isLoggedIn || !authChecked ? (
+              <ReferencesContainer />
+            ) : (
+              <LoginModal
+                isOpen={true}
+                handleClose={undefined}
+                loginCallback={undefined}
+              />
+            )}
+          </ReferenceProjectsUpsertContextProvider>
         </ReferenceUploadDrawerContextProvider>
       </ReferenceItemDrawerContextProvider>
     );

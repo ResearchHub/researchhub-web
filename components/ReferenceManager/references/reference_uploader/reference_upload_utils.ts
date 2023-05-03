@@ -88,7 +88,12 @@ export const handleSubmit = ({
       };
     }) ?? [];
 
-  const fields = {
+  const fields: {
+    fields: any;
+    organization: ID;
+    project?: ID;
+    citation_type: NullableString;
+  } = {
     fields: {
       ...referenceSchemaValueSet.schema,
       creators: formattedCreators,
