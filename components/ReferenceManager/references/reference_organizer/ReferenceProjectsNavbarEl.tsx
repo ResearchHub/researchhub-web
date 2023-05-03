@@ -16,7 +16,7 @@ type Props = {
   projectName: string;
 };
 
-export default function <ReferenceProjectsNavbarEl>({
+export default function ReferenceProjectsNavbarEl({
   orgSlug,
   projectID,
   projectName,
