@@ -94,11 +94,10 @@ export default function ReferencesTable({ createdReferences }) {
               referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),
           });
-          setIsDrawerOpen(true);
+          if (params.field !== "__check__") {
+            setIsDrawerOpen(true);
+          }
         }}
-        // onRowClick={(params, event, details) => {
-        //   event.stopPropagation();
-        // }}
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
       />
