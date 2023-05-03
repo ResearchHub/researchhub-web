@@ -47,6 +47,14 @@ export default function ReferenceProjectNavbarElOption({
       >
         <MenuItem
           onClick={(event: MouseEvent): void => {
+            onSelectCreateSubProject(event);
+            handleClose;
+          }}
+        >
+          {"Edit"}
+        </MenuItem>
+        <MenuItem
+          onClick={(event: MouseEvent): void => {
             onSelectAddNewReference(event);
             handleClose();
           }}

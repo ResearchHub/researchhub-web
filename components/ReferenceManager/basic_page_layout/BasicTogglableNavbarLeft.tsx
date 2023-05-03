@@ -85,6 +85,7 @@ export default function BasicTogglableNavbarLeft({
   // TODO: calvinhlee - clean up this mess around organization and other callsites like this
   const router = useRouter();
   const {
+    projectID,
     setIsDrawerOpen: isUploadDrawerOpen,
     setProjectID: setProjectIDForDrawer,
   } = useReferenceUploadDrawerContext();
