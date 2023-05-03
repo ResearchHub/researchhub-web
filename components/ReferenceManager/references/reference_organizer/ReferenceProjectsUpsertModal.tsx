@@ -1,31 +1,25 @@
 import { customModalStyle } from "./styles/projects_upsert_modal_style";
-import { ID, NullableString } from "~/config/types/root_types";
 import {
   emptyFncWithMsg,
-  isEmpty,
   nullthrows,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
+import { ReactElement, SyntheticEvent } from "react";
 import { Typography } from "@mui/material";
 import { upsertReferenceProject } from "./api/upsertReferenceProject";
+import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
 import ReferenceUserInviteInput from "../../form/ReferenceUserInviteInput";
-import { useRouter } from "next/router";
-import {
-  getCurrentUserCurrentOrg,
-  useOrgs,
-} from "~/components/contexts/OrganizationContext";
-import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 type ComponentProps = {
-  onCloseModal: (event?: SyntheticEvent) => void;
-  onUpsertSuccess: () => void;
+  onCloseModal?: (event?: SyntheticEvent) => void;
+  onUpsertSuccess?: () => void;
 };
 
 export default function ReferenceProjectsUpsertModal({
@@ -39,10 +33,11 @@ export default function ReferenceProjectsUpsertModal({
     resetContext,
     setProjectValue,
     upsertPurpose,
+    resetProjectsFetchTime,
   } = useReferenceProjectUpsertContext();
 
   const handleCloseModal = (event?: SyntheticEvent) => {
-    onCloseModal(event);
+    onCloseModal && onCloseModal(event);
     resetContext!();
   };
 
@@ -55,7 +50,8 @@ export default function ReferenceProjectsUpsertModal({
     };
     upsertReferenceProject({
       onSuccess: (result) => {
-        onUpsertSuccess();
+        resetProjectsFetchTime();
+        onUpsertSuccess && onUpsertSuccess();
         handleCloseModal();
       },
       onError: emptyFncWithMsg,

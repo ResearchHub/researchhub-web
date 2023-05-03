@@ -14,6 +14,7 @@ type ContextType = {
 type Org = {
   id?: number;
   name?: string;
+  slug?: string;
 };
 
 const OrganizationContext = createContext<ContextType>({

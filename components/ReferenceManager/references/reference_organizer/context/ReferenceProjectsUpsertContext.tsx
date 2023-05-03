@@ -12,10 +12,12 @@ export type ProjectValue = {
 export type ReferenceProjectsUpsertContextValueType = {
   isModalOpen: boolean;
   projectValue: ProjectValue;
+  projectsFetchTime: number;
   resetContext: () => void;
   setIsModalOpen: (flag: boolean) => void;
   setProjectValue: (value: ProjectValue) => void;
   setUpsertPurpose: (value: UpsertPurpose) => void;
+  resetProjectsFetchTime: () => void;
   upsertPurpose: UpsertPurpose;
 };
 export const DEFAULT_PROJECT_VALUES = {
@@ -26,8 +28,10 @@ export const DEFAULT_PROJECT_VALUES = {
 export const DEFAULT_REFERENCE_PROJECT_UPSERT_CONTEXT_VALUE: ReferenceProjectsUpsertContextValueType =
   {
     isModalOpen: false,
+    projectsFetchTime: Date.now(),
     projectValue: DEFAULT_PROJECT_VALUES,
     resetContext: silentEmptyFnc,
+    resetProjectsFetchTime: silentEmptyFnc,
     setIsModalOpen: silentEmptyFnc,
     setProjectValue: silentEmptyFnc,
     setUpsertPurpose: silentEmptyFnc,
@@ -50,7 +54,10 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
   const [projectValue, setProjectValue] = useState<ProjectValue>(
     DEFAULT_PROJECT_VALUES
   );
-
+  const [projectsFetchTime, setProjectsFetchTime] = useState<number>(
+    Date.now()
+  );
+  const resetProjectsFetchTime = () => setProjectsFetchTime(Date.now());
   const resetContext = (): void => {
     setIsModalOpen(false);
     setProjectValue(DEFAULT_PROJECT_VALUES);
@@ -61,8 +68,10 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
     <ReferencesTabContext.Provider
       value={{
         isModalOpen,
+        projectsFetchTime,
         projectValue,
         resetContext,
+        resetProjectsFetchTime,
         setIsModalOpen,
         setProjectValue,
         setUpsertPurpose,
