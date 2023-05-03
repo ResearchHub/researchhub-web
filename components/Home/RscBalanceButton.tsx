@@ -64,7 +64,7 @@ const RscBalanceButton = ({ auth }: Props): ReactElement => {
     <ResearchHubPopover
       align="end"
       containerStyle={{
-        zIndex: 4,
+        zIndex: 6,
       }}
       isOpen={isPopoverOpen}
       onClickOutside={(_event): void => setIsPopoverOpen(false)}

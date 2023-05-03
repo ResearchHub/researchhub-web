@@ -75,7 +75,7 @@ function NavbarRightButtonGroup({
   }, [isUserModerator, isUserHubEditor]);
 
   return (
-    (<div className={css(styles.userDropdown)}>
+    <div className={css(styles.userDropdown)}>
       <div className={css(styles.navbarButtonContainer)}>
         <div
           className={css(styles.buttonsGroup)}
@@ -183,7 +183,7 @@ function NavbarRightButtonGroup({
           </div>
         </div>
       )}
-    </div>)
+    </div>
   );
 }
 
