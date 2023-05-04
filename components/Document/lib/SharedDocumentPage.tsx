@@ -1,5 +1,5 @@
 import HorizontalTabBar from "~/components/HorizontalTabBar";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import Error from "next/error";
 import { getTabs } from "./tabbedNavigation";
 
@@ -20,7 +20,7 @@ const SharedDocumentPage = ({ documentData, errorCode }: Args) => {
     <div>
       <HorizontalTabBar tabs={tabs} />
     </div>
-  );  
-}
+  );
+};
 
 export default SharedDocumentPage;
