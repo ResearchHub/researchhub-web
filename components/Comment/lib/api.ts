@@ -24,7 +24,7 @@ export const fetchCommentsAPI = async ({
   sort?: string | null;
   filter?: string | null;
   page?: number;
-}): Promise<{ comments: Comment[]; count: number }> => {
+}): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
@@ -49,7 +49,7 @@ export const fetchCommentsAPI = async ({
   }
 
   return {
-    comments: response.results.map((raw: any) => parseComment({ raw })),
+    comments: response.results,
     count: response.count,
   };
 };
