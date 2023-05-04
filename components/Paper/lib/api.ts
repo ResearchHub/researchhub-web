@@ -3,10 +3,10 @@ import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 
 type Args = {
-  paperId: string;
-};
+  paperId: String
+}
 
-export const fetchPaper = ({ paperId }: Args): Promise<any> => {
+export const fetchPaper = ({ paperId }: Args):Promise<any> => {
   return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
