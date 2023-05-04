@@ -16,6 +16,8 @@ import { connect } from "react-redux";
 import { fetchOrgUsers, sendAmpEvent } from "~/config/fetch";
 import { useRouter } from "next/router";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
 
 type FormFields = {
   authors: any[];
@@ -109,6 +111,7 @@ function NotePublishModal({
     authors: [],
     hubs: [],
   });
+  const [loading, setLoading] = useState(false);
   const [authorOptions, setAuthorOptions] = useState([]);
   const [hubOptions, setHubOptions] = useState([]);
   const [checkBoxGuidelines, setCheckBoxGuidelines] = useState(false);
@@ -185,6 +188,7 @@ function NotePublishModal({
       setShouldDisplayError(false);
       setIsSubmitting(true);
 
+      setLoading(true);
       sendPost()
         .then((response) => {
           /* @ts-ignore */
@@ -195,9 +199,20 @@ function NotePublishModal({
             };
             updateUser(param);
           }
-          router.push(`/post/${id}/${slug}`);
+
+          return fetch(
+            "/api/revalidate",
+            API.POST_CONFIG({
+              path: `/post/${id}/${slug}`,
+            })
+          ).then(() => {
+            router.push(`/post/${id}/${slug}`);
+            setLoading(false);
+          });
         })
         .catch((err) => {
+          setLoading(false);
+          console.log(err);
           if (err.response?.status === 402) {
             setMessage("Not enough coins in balance");
             showMessage({ show: true, error: true });
@@ -391,7 +406,15 @@ function NotePublishModal({
                 customButtonStyle={styles.buttonStyle}
                 disabled={isSubmitting || !checkBoxGuidelines}
                 isWhite={false}
-                label={isPublished ? "Republish" : "Publish"}
+                label={
+                  loading ? (
+                    <FontAwesomeIcon icon={faSpinnerThird} color="#fff" spin />
+                  ) : isPublished ? (
+                    "Republish"
+                  ) : (
+                    "Publish"
+                  )
+                }
                 onClick={handlePost}
               />
             </div>
