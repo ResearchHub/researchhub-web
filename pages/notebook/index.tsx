@@ -14,8 +14,6 @@ interface Props {
 }
 
 const NotebookPage = ({ errorCode }: Props) => {
-  console.log("errorCode", errorCode);
-
   if (errorCode) {
     return <NextError statusCode={errorCode} />;
   }
