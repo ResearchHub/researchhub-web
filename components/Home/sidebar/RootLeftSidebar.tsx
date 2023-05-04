@@ -71,7 +71,6 @@ export const getLeftSidebarItemAttrs = ({
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
   const isLoggedIn = !isEmpty(id);
-
   return filterNull([
     {
       icon: <FontAwesomeIcon icon={faHouse}></FontAwesomeIcon>,
@@ -98,7 +97,7 @@ export const getLeftSidebarItemAttrs = ({
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
-      href: `/${organization_slug}/notebook`,
+      href: `/notebook`,
       onClick: (event: SyntheticEvent): void => {
         if (!isLoggedIn) {
           event.preventDefault();

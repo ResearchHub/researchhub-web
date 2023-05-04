@@ -12,8 +12,7 @@ import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/conve
 export const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
-  dev: "localhost:8000" /* localhost */,
-  // dev: "127.0.0.1:8000" /* localhost */,
+  dev: "localhost:8000",
 };
 
 const prepFilters = (filters) => {
