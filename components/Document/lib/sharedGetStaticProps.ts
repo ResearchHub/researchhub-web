@@ -15,9 +15,21 @@ const getCommentFilterByTab = async ({ tabName }) => {
       return "REVIEW";
     case "conversation":
     default:
-      return null;
+      throw new Error(`Invalid document type. Type was ${documentType}`);
   }
 };
+
+const getCommentFilterByTab = async ({ tabName }) => {
+  switch (tabName) {
+    case "bounties":
+      return "BOUNTY";
+    case "peer-reviews":
+      return "REVIEW";
+    case "conversation":
+    default:
+      return null;
+  }
+}
 
 export default async function sharedGetStaticProps(ctx) {
   const { documentId, documentType, documentSlug, tabName } = ctx.params!;
