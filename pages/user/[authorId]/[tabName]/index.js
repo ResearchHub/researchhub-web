@@ -152,27 +152,27 @@ function AuthorPage(props) {
         {
           href: "overview",
           label: "Overview",
-          name: "Overview",
+          value: "overview",
         },
         {
           href: "bounties",
           label: "Bounties",
-          name: "Bounties",
+          value: "bounties",
         },
         {
           href: "discussions",
           label: "Comments",
-          name: "Comments",
+          value: "comments",
         },
         {
           href: "submissions",
           label: "Submissions",
-          name: "Submissions",
+          value: "submissions",
         },
         {
           href: "authored-papers",
           label: "Authored Papers",
-          name: "Authored Papers",
+          value: "authored-papers",
         },
       ];
 
@@ -180,7 +180,7 @@ function AuthorPage(props) {
         tabs.push({
           href: "rsc",
           label: "RSC",
-          name: "RSC",
+          value: "rsc",
         });
       }
     } else {
@@ -193,10 +193,20 @@ function AuthorPage(props) {
       ];
     }
 
-    return tabs.map((t) => {
-      t.isSelected = t.href === router.query.tabName ? true : false;
-      return t;
-    });
+    const tabsWithSelected = tabs.map((tab) =>
+      tab.href === router.query.tabName ? { ...tab, isSelected: true } : tab
+    );
+    const tabsWithHref = tabsWithSelected.map((tab) => ({
+      ...tab,
+      href: `/user/${author.id}/${tab.href}`,
+    }));
+
+    const hasSelected = Boolean(tabsWithHref.find((t) => t.isSelected));
+    if (!hasSelected) {
+      tabsWithHref[0].isSelected = true;
+    }
+
+    return tabsWithHref;
   };
 
   const handleTabClick = (tab) => {
