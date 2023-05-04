@@ -10,12 +10,12 @@ interface Args {
 const DocumentPage: NextPage<Args> = ({ documentData, errorCode }) => {
   return (
     <SharedDocumentPage documentData={documentData} errorCode={errorCode} />
-  )
+  );
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   return sharedGetStaticProps(ctx);
-}
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -24,6 +24,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-
 export default DocumentPage;
-

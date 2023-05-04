@@ -1,9 +1,8 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import Link from 'next/link';
-import { HTMLAttributes, AnchorHTMLAttributes } from 'react';
-
+import Link from "next/link";
+import { HTMLAttributes, AnchorHTMLAttributes } from "react";
 
 interface Props {
   tabs: Array<any>;
@@ -11,24 +10,18 @@ interface Props {
   containerStyle?: any;
 }
 
-const HorizontalTabBar = ({
-  tabs,
-  onClick,
-  containerStyle = null,
-}: Props) => {
+const HorizontalTabBar = ({ tabs, onClick, containerStyle = null }: Props) => {
   const renderTab = (tab, index) => {
     const { isSelected, label } = tab;
     const tabType = tab.href ? "link" : "div";
 
     const props = {
       key: tab.value,
-      className: css(
-        styles.tab, isSelected && styles.tabSelected,
-      ),
-      ...(tab.href && {href: tab.href}),
-      ...(onClick && {onClick: () => onClick(tab, index)}),
-    }
-  
+      className: css(styles.tab, isSelected && styles.tabSelected),
+      ...(tab.href && { href: tab.href }),
+      ...(onClick && { onClick: () => onClick(tab, index) }),
+    };
+
     return (
       <_WrapperElement type={tabType} props={props} key={tab.value}>
         {label}
@@ -37,27 +30,22 @@ const HorizontalTabBar = ({
   };
 
   return (
-    <div
-      className={css(
-        styles.container,
-        containerStyle,
-      )}
-    >
-      <div className={css(styles.tabContainer)}>
-        {tabs.map(renderTab)}
-      </div>
+    <div className={css(styles.container, containerStyle)}>
+      <div className={css(styles.tabContainer)}>{tabs.map(renderTab)}</div>
     </div>
   );
 };
 
 function _WrapperElement({ children, type, props = {} }): JSX.Element {
   switch (type) {
-    case 'link':
+    case "link":
       return (
         // @ts-ignore
-        <Link {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</Link>
+        <Link {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}>
+          {children}
+        </Link>
       );
-    case 'div':
+    case "div":
     default:
       return (
         <div {...(props as HTMLAttributes<HTMLDivElement>)}>{children}</div>
@@ -81,7 +69,7 @@ const styles = StyleSheet.create({
     scrollbarWidth: "none",
     "::-webkit-scrollbar": {
       display: "none",
-    },        
+    },
   },
   tab: {
     color: colors.BLACK(0.5),

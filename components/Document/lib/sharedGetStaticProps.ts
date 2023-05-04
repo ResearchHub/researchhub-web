@@ -4,7 +4,7 @@ const config = {
   revalidateTimeIfNotFound: 1,
   revalidateTimeIfError: 10,
   revalidateTimeIfFound: 600,
-}
+};
 
 const getDocumentByType = async ({ documentType, documentId }) => {
   switch (documentType) {
@@ -13,7 +13,7 @@ const getDocumentByType = async ({ documentType, documentId }) => {
     default:
       return null;
   }
-}
+};
 
 export default async function sharedGetStaticProps(ctx) {
   const { documentId, documentType, documentSlug } = ctx.params!;
@@ -22,10 +22,10 @@ export default async function sharedGetStaticProps(ctx) {
   try {
     documentData = await getDocumentByType({ documentType, documentId });
   } catch (err) {
-    console.log('error', err);
+    console.log("error", err);
     return {
       props: {
-        errorCode: 500
+        errorCode: 500,
       },
       // If paper has an error, we want to try again immediately
       revalidate: config.revalidateTimeIfError,
@@ -39,10 +39,10 @@ export default async function sharedGetStaticProps(ctx) {
     if (documentData.slug && documentData.slug === documentSlug) {
       return {
         props: {
-          documentData
+          documentData,
         },
         revalidate: config.revalidateTimeIfFound,
-      }
+      };
     } else {
       return {
         redirect: {
@@ -51,8 +51,7 @@ export default async function sharedGetStaticProps(ctx) {
         },
       };
     }
-  }
-  else {
+  } else {
     return {
       props: {
         errorCode: 404,
