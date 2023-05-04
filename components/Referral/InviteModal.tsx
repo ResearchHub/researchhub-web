@@ -62,7 +62,7 @@ const InviteModal = ({
     setURL(
       `${window.location.protocol}//${window.location.host}/referral/${user.referral_code}`
     );
-  }, []);
+  }, [user]);
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
