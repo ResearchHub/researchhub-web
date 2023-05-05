@@ -7,6 +7,8 @@ import getDocumentFromRaw from "./types";
 import { TopLevelDocument } from "~/config/types/root_types";
 import { captureEvent } from "~/config/utils/events";
 import { parseComment } from "~/components/Comment/lib/types";
+import API from "~/config/api";
+import { useState } from "react";
 
 interface Args {
   documentData?: any;
@@ -16,8 +18,14 @@ interface Args {
 }
 
 const SharedDocumentPage = ({ documentData, commentData, documentType, errorCode }: Args) => {
+
+  console.log('documentData', documentData)
+  console.log('commentData', commentData)
+  console.log('documentType', documentType)
+
   const router = useRouter();
   const tabs = getTabs({ router });
+  const [commentCount, setCommentCount] = useState(commentData?.count || 0);
 
   if (router.isFallback) {
     // Fixme: Show loading screen
@@ -52,7 +60,13 @@ const SharedDocumentPage = ({ documentData, commentData, documentType, errorCode
           initialComments={parsedComments}
           document={document}
           onCommentCreate={() => {
-            alert('implement me');
+            fetch(
+              "/api/revalidate",
+              API.POST_CONFIG({
+                path: router.asPath,
+              })
+            );
+            setCommentCount(commentCount + 1);
           }}
           onCommentRemove={() => {
             alert('implement me');
