@@ -20,7 +20,8 @@ const getCommentFilterByTab = async ({ tabName }) => {
 };
 
 export default async function sharedGetStaticProps(ctx) {
-  const { documentId, documentType, documentSlug, tabName } = ctx.params!;
+  const { documentId, documentType, documentSlug } = ctx.params!;
+  const tabName = ctx.params?.tabName || null;
   const shouldFetchComments = tabName !== undefined;
   let documentData: any | null = null;
   let commentData: any | null = null;
@@ -34,6 +35,7 @@ export default async function sharedGetStaticProps(ctx) {
         errorCode: 500,
         documentType,
         commentData,
+        tabName,
       },
       // If paper has an error, we want to try again immediately
       revalidate: config.revalidateTimeIfError,
@@ -41,6 +43,7 @@ export default async function sharedGetStaticProps(ctx) {
   }
 
   if (documentData) {
+    console.log('documentdata', documentData)
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
     // in an infinite 301 loop.
@@ -68,6 +71,7 @@ export default async function sharedGetStaticProps(ctx) {
           documentData,
           commentData,
           documentType,
+          tabName,
         },
         revalidate: config.revalidateTimeIfFound,
       };
@@ -78,6 +82,7 @@ export default async function sharedGetStaticProps(ctx) {
         errorCode: 404,
         documentType,
         commentData,
+        tabName,
       },
       revalidate: config.revalidateTimeIfNotFound,
     };

@@ -47,6 +47,7 @@ const CommentFeed = ({
   context = null,
 }: Args) => {
   const hasInitialComments = initialComments !== undefined;
+  const [isReadyForEditor, setIsReadyForEditor] = useState<boolean>(false);
   const [comments, setComments] = useState<CommentType[]>(
     initialComments || []
   );
@@ -311,6 +312,10 @@ const CommentFeed = ({
     }
   }, [document.id, currentDocumentId, hasInitialComments]);
 
+  useEffect(() => {
+    setIsReadyForEditor(true);
+  }, []);
+
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
     (document.isReady && rootLevelCommentCount === 0) ||
@@ -363,17 +368,19 @@ const CommentFeed = ({
                 isNarrowWidthContext && styles.sectionForNarrowWidthContexts
               )}
             >
-              <CommentEditor
-                editorId="new-thread"
-                handleSubmit={handleCommentCreate}
-                allowBounty={true}
-                author={currentUser?.authorProfile}
-                previewModeAsDefault={context ? true : false}
-                allowCommentTypeSelection={!isQuestion}
-                editorStyleOverride={
-                  context === "drawer" ? styles.roundedEditor : null
-                }
-              />
+              {isReadyForEditor &&
+                <CommentEditor
+                  editorId="new-thread"
+                  handleSubmit={handleCommentCreate}
+                  allowBounty={true}
+                  author={currentUser?.authorProfile}
+                  previewModeAsDefault={context ? true : false}
+                  allowCommentTypeSelection={!isQuestion}
+                  editorStyleOverride={
+                    context === "drawer" ? styles.roundedEditor : null
+                  }
+                />
+              }
             </div>
 
             <div className={css(styles.filtersWrapper)}>
