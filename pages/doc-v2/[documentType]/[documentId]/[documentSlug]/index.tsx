@@ -36,7 +36,6 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-
   return (
     <SharedDocumentPage
       document={document}

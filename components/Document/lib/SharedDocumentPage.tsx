@@ -5,6 +5,7 @@ import { getTabs } from "./tabbedNavigation";
 import { StyleSheet, css } from "aphrodite";
 import DocumentHeader from "../DocumentHeaderV2";
 import { TopLevelDocument } from "~/config/types/root_types";
+import globalColors from "~/config/themes/colors";
 
 interface Args {
   document: TopLevelDocument;
@@ -12,6 +13,12 @@ interface Args {
   documentType: string;
   tabName?: string;
   children?: any;
+}
+
+const config = {
+  width: 868,
+  background: "#FCFCFC",
+  border: globalColors.GREY_LINE(1.0),
 }
 
 const SharedDocumentPage = ({ document, documentType, tabName, children, errorCode }: Args) => {
@@ -25,12 +32,18 @@ const SharedDocumentPage = ({ document, documentType, tabName, children, errorCo
 
   return (
     <div className={css(styles.pageWrapper)}>
-      <div className={css(styles.headerWrapper)}>
-        <DocumentHeader document={document} />
-        <HorizontalTabBar tabs={tabs} />
+      <div className={css(styles.topArea)}>
+        <div className={css(styles.headerWrapper)}>
+          <div className={css(styles.headerContentWrapper)}>
+            <DocumentHeader document={document} />
+            <HorizontalTabBar tabs={tabs} />
+          </div>
+        </div>
       </div>
-      <div className={css(styles.bodyWrapper)}>
-        {children}
+      <div className={css(styles.bodyArea)}>
+        <div className={css(styles.bodyContentWrapper)}>
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -38,13 +51,27 @@ const SharedDocumentPage = ({ document, documentType, tabName, children, errorCo
 
 const styles = StyleSheet.create({
   pageWrapper: {
-    background: "#FCFCFC",
+    height: "100%",
+    background: config.background,
   },
-  headerWrapper: {
+  topArea: {
     background: "white",
   },
-  bodyWrapper: {
-
+  headerWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    borderBottom: `2px solid ${config.border}`,
+  },
+  headerContentWrapper: {
+    width: config.width,
+  },
+  bodyArea: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 25,
+  },
+  bodyContentWrapper: {
+    width: config.width,
   }
 });
 
