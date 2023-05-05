@@ -7,11 +7,8 @@ import getDocumentFromRaw from "./types";
 import { TopLevelDocument } from "~/config/types/root_types";
 import { captureEvent } from "~/config/utils/events";
 import { parseComment } from "~/components/Comment/lib/types";
-<<<<<<< HEAD
 import API from "~/config/api";
 import { useState } from "react";
-=======
->>>>>>> d3ba4fd24 ([Doc V3] Fetching comment data during build time)
 
 interface Args {
   documentData?: any;
@@ -21,14 +18,11 @@ interface Args {
 }
 
 const SharedDocumentPage = ({ documentData, commentData, documentType, errorCode }: Args) => {
-<<<<<<< HEAD
 
   console.log('documentData', documentData)
   console.log('commentData', commentData)
   console.log('documentType', documentType)
 
-=======
->>>>>>> d3ba4fd24 ([Doc V3] Fetching comment data during build time)
   const router = useRouter();
   const tabs = getTabs({ router });
   const [commentCount, setCommentCount] = useState(commentData?.count || 0);
@@ -45,7 +39,7 @@ const SharedDocumentPage = ({ documentData, commentData, documentType, errorCode
   try {
     document = getDocumentFromRaw({ raw: documentData, type: documentType });
   }
-  catch (error) {
+  catch (error:any) {
     captureEvent({ error, msg: "[Document] Could not parse", data: { documentData, documentType } });
     return <Error statusCode={500} />;
   }
