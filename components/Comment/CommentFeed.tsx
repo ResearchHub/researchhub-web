@@ -1,4 +1,8 @@
-import { Comment as CommentType, COMMENT_TYPES, parseComment } from "./lib/types";
+import {
+  Comment as CommentType,
+  COMMENT_TYPES,
+  parseComment,
+} from "./lib/types";
 import { CommentTreeContext } from "./lib/contexts";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
@@ -31,7 +35,7 @@ type Args = {
   onCommentCreate?: Function;
   onCommentRemove?: Function;
   totalCommentCount: number;
-  initialComments?: CommentType[];
+  initialComments?: CommentType[] | undefined;
 };
 
 const CommentFeed = ({
@@ -39,14 +43,23 @@ const CommentFeed = ({
   onCommentCreate,
   onCommentRemove,
   totalCommentCount,
-  initialComments = [],
+  initialComments = undefined,
   context = null,
 }: Args) => {
-  const [comments, setComments] = useState<CommentType[]>(initialComments);
-  const [isFetching, setIsFetching] = useState<boolean>(initialComments.length > 0 ? false : true);
-  const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(initialComments.length || 0);
+  const hasInitialComments = initialComments !== undefined;
+  const [comments, setComments] = useState<CommentType[]>(
+    initialComments || []
+  );
+  const [isFetching, setIsFetching] = useState<boolean>(
+    hasInitialComments ? false : true
+  );
+  const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
+    initialComments?.length || 0
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(initialComments.length > 0 ? true : false);
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(
+    hasInitialComments ? true : false
+  );
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
   );
@@ -75,7 +88,7 @@ const CommentFeed = ({
         filter: filter || filter === null ? filter : selectedFilterValue,
       });
 
-      const parsedComments = comments.map((raw: any) => parseComment({ raw }))
+      const parsedComments = comments.map((raw: any) => parseComment({ raw }));
 
       setComments(parsedComments);
       setRootLevelCommentCount(count);
@@ -289,13 +302,14 @@ const CommentFeed = ({
     setRootLevelCommentCount(0);
   };
 
-  // useEffect(() => {
-  //   if (document.id && document.id !== currentDocumentId) {
-  //     resetFeed();
-  //     handleFetch({});
-  //     setCurrentDocumentId(document.id);
-  //   }
-  // }, [document.id, currentDocumentId]);
+  useEffect(() => {
+    const documentHasChanged = document.id && document.id !== currentDocumentId;
+    if (documentHasChanged && !hasInitialComments) {
+      resetFeed();
+      handleFetch({});
+      setCurrentDocumentId(document.id);
+    }
+  }, [document.id, currentDocumentId, hasInitialComments]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =

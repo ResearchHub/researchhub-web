@@ -4,12 +4,21 @@ import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 
 interface Args {
   documentData?: any;
+  documentType: string;
   errorCode?: number;
 }
 
-const DocumentPage: NextPage<Args> = ({ documentData, errorCode }) => {
+const DocumentPage: NextPage<Args> = ({
+  documentData,
+  documentType,
+  errorCode,
+}) => {
   return (
-    <SharedDocumentPage documentData={documentData} errorCode={errorCode} />
+    <SharedDocumentPage
+      documentData={documentData}
+      errorCode={errorCode}
+      documentType={documentType}
+    />
   );
 };
 

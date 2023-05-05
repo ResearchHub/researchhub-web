@@ -1,19 +1,10 @@
 import { fetchCommentsAPI } from "~/components/Comment/lib/api";
-import { fetchPaper } from "~/components/Paper/lib/api";
+import { getDocumentByType } from "./getDocumentByType";
 
 const config = {
   revalidateTimeIfNotFound: 1,
   revalidateTimeIfError: 10,
   revalidateTimeIfFound: 600,
-};
-
-const getDocumentByType = async ({ documentType, documentId }) => {
-  switch (documentType) {
-    case "paper":
-      return fetchPaper({ paperId: documentId });
-    default:
-      throw new Error(`Invalid document type. Type was ${documentType}`);
-  }
 };
 
 const getCommentFilterByTab = async ({ tabName }) => {
@@ -26,13 +17,13 @@ const getCommentFilterByTab = async ({ tabName }) => {
     default:
       return null;
   }
-}
+};
 
 export default async function sharedGetStaticProps(ctx) {
   const { documentId, documentType, documentSlug, tabName } = ctx.params!;
-  const shouldFetchComments = tabName !== undefined
-  let documentData;
-  let commentData;
+  const shouldFetchComments = tabName !== undefined;
+  let documentData: any | null = null;
+  let commentData: any | null = null;
 
   try {
     documentData = await getDocumentByType({ documentType, documentId });
@@ -53,7 +44,8 @@ export default async function sharedGetStaticProps(ctx) {
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
     // in an infinite 301 loop.
-    const shouldRedirect = !documentData.slug || documentData.slug !== documentSlug;
+    const shouldRedirect =
+      !documentData.slug || documentData.slug !== documentSlug;
     if (shouldRedirect) {
       return {
         redirect: {
@@ -63,7 +55,7 @@ export default async function sharedGetStaticProps(ctx) {
       };
     } else {
       if (shouldFetchComments) {
-        const filter =  await getCommentFilterByTab({ tabName })
+        const filter = await getCommentFilterByTab({ tabName });
         commentData = await fetchCommentsAPI({
           documentId,
           documentType,
