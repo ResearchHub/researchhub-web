@@ -1,5 +1,9 @@
 import { Box } from "@mui/system";
-import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
@@ -90,15 +94,18 @@ export default function BasicTogglableNavbarLeft({
   const currentOrgSlug = currentOrg?.slug ?? null;
 
   useEffect((): void => {
-    fetchReferenceProjects({
-      onError: emptyFncWithMsg,
-      onSuccess: (result): void => {
-        setCurrentOrgProjects(result);
-      },
-      payload: {
-        organization: currentOrgID,
-      },
-    });
+    if (!isEmpty(currentOrgID)) {
+      fetchReferenceProjects({
+        onError: emptyFncWithMsg,
+        onSuccess: (result): void => {
+          debugger;
+          setCurrentOrgProjects(result);
+        },
+        payload: {
+          organization: currentOrgID,
+        },
+      });
+    }
   }, [currentOrgID, projectsFetchTime]);
 
   const refProjectsNavbarEls = currentOrgProjects?.map(
