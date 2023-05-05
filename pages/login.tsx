@@ -1,6 +1,7 @@
 import Login from "~/components/Login/Login";
 import { NextPage } from 'next';
 import { useRouter } from "next/router";
+import Head from "~/components/Head";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -14,6 +15,9 @@ const LoginPage: NextPage = () => {
 
   return (
     <div>
+      <Head
+        title={"Login to ResearchHub"}
+      />      
       <Login
         title={hasRedirect ? "Login to continue" : undefined}
         persistent={true}
