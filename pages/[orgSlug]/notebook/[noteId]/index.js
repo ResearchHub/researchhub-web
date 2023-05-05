@@ -3,6 +3,8 @@ import Notebook from "~/components/Notebook/Notebook";
 import Script from "next/script";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { useRouter } from "next/router";
+import nookies from "nookies";
+import { AUTH_TOKEN } from "~/config/constants";
 
 const Index = () => {
   const router = useRouter();
@@ -19,5 +21,23 @@ const Index = () => {
     </>
   );
 };
+
+export async function getServerSideProps(ctx) {
+  const cookies = nookies.get(ctx);
+  const authToken = cookies[AUTH_TOKEN];
+
+  if (!authToken) {
+    return {
+      redirect: {
+        destination: `/login?redirect=${ctx.req.url}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 export default Index;

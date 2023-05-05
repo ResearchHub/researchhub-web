@@ -25,13 +25,11 @@ export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
 
-  // Ideally, we should redirect user to login page if they don't have an auth token
-  // However, because we do not have such a page, we will redirect them to 404
-  // Open issue: https://github.com/ResearchHub/researchhub-web/issues/1408
   if (!authToken) {
     return {
-      props: {
-        errorCode: 404,
+      redirect: {
+        destination: `/login?redirect=${ctx.req.url}`,
+        permanent: false,
       },
     };
   }
