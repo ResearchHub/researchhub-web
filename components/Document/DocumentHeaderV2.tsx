@@ -1,26 +1,10 @@
-import Bounty from "~/config/types/bounty";
 import { TopLevelDocument } from "~/config/types/root_types";
-import ContentBadge from "../ContentBadge";
 import { StyleSheet, css } from "aphrodite";
+import DocumentBadges from "./DocumentBadges";
+
 
 interface Props {
   document: TopLevelDocument;
-}
-
-type BProps =  {
-  document: TopLevelDocument;
-}
-
-const DocumentBadges = ({ document }: BProps) => {
-  return (
-    <div>
-      <ContentBadge
-        contentType={document.documentType}
-        label={document.documentType}
-        size={"large"}
-      />
-    </div>
-  )
 }
 
 const DocumentHeader = ({ document }: Props) => {
@@ -37,6 +21,7 @@ const DocumentHeader = ({ document }: Props) => {
 const styles = StyleSheet.create({
   badgesWrapper: {
     display: "flex",
+    marginBottom: 10,
   }
 })
 

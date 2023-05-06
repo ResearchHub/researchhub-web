@@ -245,6 +245,8 @@ const styles = StyleSheet.create({
   medium: {},
   large: {
     fontSize: 16,
+    padding: "10px 14px 6px",
+    height: 37,
   },
   withTooltip: {
     cursor: "default",
@@ -307,7 +309,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     color: colors.BLACK(0.5),
-    background: colors.LIGHT_GREY(1.0),
+    background: colors.LIGHTER_GREY(1.0),
     display: "flex",
     padding: "4px 10px 1px 10px",
     textTransform: "capitalize",

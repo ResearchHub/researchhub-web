@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   pageWrapper: {
     height: "100%",
     background: config.background,
+    paddingTop: 25,
   },
   topArea: {
     background: "white",
