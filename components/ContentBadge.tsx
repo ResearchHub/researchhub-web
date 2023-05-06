@@ -22,7 +22,7 @@ import { useExchangeRate } from "./contexts/ExchangeRateContext";
 
 type Args = {
   contentType: string;
-  size?: "small" | "medium";
+  size?: "small" | "medium" | "large";
   label: string | ReactElement;
   onClick?: null | Function;
   rscContentOverride?: any;
@@ -242,10 +242,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
+  medium: {},
+  large: {
+    fontSize: 16,
+  },
   withTooltip: {
     cursor: "default",
   },
-  medium: {},
   icon: {
     marginRight: 6,
     fontSize: 13,
