@@ -1,6 +1,7 @@
 import { TopLevelDocument } from "~/config/types/root_types";
 import { StyleSheet, css } from "aphrodite";
 import DocumentBadges from "./DocumentBadges";
+import DocumentLineItems from "./DocumentLineItems";
 
 
 interface Props {
@@ -14,6 +15,7 @@ const DocumentHeader = ({ document }: Props) => {
         <DocumentBadges document={document} />
       </div>
       <h1>{document.title}</h1>
+      <DocumentLineItems document={document} />
     </div>
   )
 }
