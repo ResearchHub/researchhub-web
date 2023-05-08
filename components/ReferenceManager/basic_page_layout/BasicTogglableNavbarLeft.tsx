@@ -28,6 +28,7 @@ import ReferenceProjectsUpsertModal from "../references/reference_organizer/Refe
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
+import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -98,7 +99,6 @@ export default function BasicTogglableNavbarLeft({
       fetchReferenceProjects({
         onError: emptyFncWithMsg,
         onSuccess: (result): void => {
-          debugger;
           setCurrentOrgProjects(result);
         },
         payload: {
@@ -109,15 +109,11 @@ export default function BasicTogglableNavbarLeft({
   }, [currentOrgID, projectsFetchTime]);
 
   const refProjectsNavbarEls = currentOrgProjects?.map(
-    (refProject, elIndex) => {
-      return (
-        <ReferenceProjectsNavbarEl
-          key={`ref-project-${refProject?.id}-${elIndex}`}
-          orgSlug={nullthrows(currentOrgSlug, "Org must be present")}
-          projectID={refProject?.id}
-          projectName={refProject?.project_name}
-        />
-      );
+    (referenceProject, elIndex) => {
+      return renderNestedReferenceProjectsNavbarEl({
+        currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
+        referenceProject,
+      });
     }
   );
 

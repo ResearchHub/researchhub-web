@@ -77,7 +77,7 @@ export default function ReferenceProjectsNavbarEl({
             setProjectIDRefUploader(null);
             setIsUploadDrawerOpen(false);
             setProjectUpsertPurpose("create_sub_project");
-            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID,  });
             setIsProjectUpsertModalOpen(true);
           }}
           onSelectEditProject={(event: SyntheticEvent): void => {

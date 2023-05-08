@@ -56,6 +56,7 @@ export default function ReferenceProjectsUpsertModal({
       },
       onError: emptyFncWithMsg,
       payload: formattedPayload,
+      upsertPurpose,
     });
   };
 
