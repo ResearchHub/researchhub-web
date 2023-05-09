@@ -3,11 +3,11 @@
   organization notebook.
 */
 import nookies from "nookies";
-import NextError from "next/error";
 import { AUTH_TOKEN } from "~/config/constants";
 import { generateApiUrl } from "~/config/api";
 import { fetchUserOrgs } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
+import NextError from "next/error";
 
 interface Props {
   errorCode: number;
@@ -24,20 +24,32 @@ const NotebookPage = ({ errorCode }: Props) => {
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-
-  if (!authToken) {
-    return {
-      redirect: {
-        destination: `/login?redirect=${ctx.req.url}`,
-        permanent: false,
-      },
-    };
-  }
-
   const url = generateApiUrl(`organization/0/get_user_organizations`);
 
+  let orgsResponse: Response;
+  try {
+    orgsResponse = await fetchUserOrgs({ url }, authToken);
+  }
+  catch (error: any) {
+    if (error?.response?.status === 401) {
+      return {
+        redirect: {
+          destination: `/login?redirect=${ctx.req.url}`,
+          permanent: false,
+        },
+      };
+    }
+    else {
+      return {
+        props: {
+          errorCode: 500,
+        },
+      }
+    }
+  }
+
   // @ts-ignore
-  const allUserOrgs: Array<any> = await fetchUserOrgs({ url }, authToken);
+  const allUserOrgs: Array<any> = orgsResponse;
 
   // Precondition: Every user should have at least one organization
   // Precondition: Last org is the default org
@@ -59,7 +71,7 @@ export async function getServerSideProps(ctx) {
 
   return {
     redirect: {
-      destination: `${org.slug}/notebook`,
+      destination: `/${org.slug}/notebook`,
       permanent: false,
     },
   };
