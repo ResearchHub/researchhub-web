@@ -14,7 +14,9 @@ export interface AuthResponse {
   errorResponse?: any;
 }
 
-export default async function ensureAuthenticated ({ nextPageContext }: Props):Promise<AuthResponse> {
+export default async function ensureAuthenticated({
+  nextPageContext,
+}: Props): Promise<AuthResponse> {
   const cookies = nookies.get(nextPageContext);
   const authToken = cookies[AUTH_TOKEN];
 
@@ -22,10 +24,10 @@ export default async function ensureAuthenticated ({ nextPageContext }: Props):P
   try {
     authResponse = await fetch(API.USER({}), API.GET_CONFIG(authToken))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-  }
-  catch(error:any) {
-    const isAuthError = error.response.status === 401 || error.response.status === 403;
+      .then(Helpers.parseJSON);
+  } catch (error: any) {
+    const isAuthError =
+      error.response.status === 401 || error.response.status === 403;
 
     if (isAuthError) {
       return {
@@ -36,10 +38,9 @@ export default async function ensureAuthenticated ({ nextPageContext }: Props):P
             destination: `/login?redirect=${nextPageContext.req.url}`,
             permanent: false,
           },
-        }
-      };    
-    }
-    else {
+        },
+      };
+    } else {
       return {
         isAuthenticated: false,
         user: null,
@@ -47,14 +48,14 @@ export default async function ensureAuthenticated ({ nextPageContext }: Props):P
           props: {
             errorCode: 500,
           },
-        }
-      }
-    }    
+        },
+      };
+    }
   }
 
   // There are two signals users is logged out:
   // 1. /user endpoint throws a 401 (above scenario)
-  // 2. /user endpoint returns empty result 
+  // 2. /user endpoint returns empty result
   // @ts-ignore
   const userIsLoggedOut = authResponse.results.length === 0;
   if (userIsLoggedOut) {
@@ -66,7 +67,7 @@ export default async function ensureAuthenticated ({ nextPageContext }: Props):P
           destination: `/login?redirect=${nextPageContext.req.url}`,
           permanent: false,
         },
-      }
+      },
     };
   }
 
@@ -75,5 +76,5 @@ export default async function ensureAuthenticated ({ nextPageContext }: Props):P
     isAuthenticated: true,
     // @ts-ignore
     user: authResponse.results[0],
-  }
+  };
 }

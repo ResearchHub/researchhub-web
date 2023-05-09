@@ -10,7 +10,6 @@ import NextError from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
 import ensureAuthenticated from "~/config/auth/ensureAuthenticated";
 
-
 interface Props {
   errorCode?: number;
   errorText?: string;
@@ -38,15 +37,13 @@ const Index = ({ errorCode, errorText }: Props) => {
 };
 
 export async function getServerSideProps(ctx) {
-
   const authResponse = await ensureAuthenticated({ nextPageContext: ctx });
   if (!authResponse.isAuthenticated) {
     return authResponse.redirectResponse;
-  }
-  else if (authResponse.errorResponse) {
+  } else if (authResponse.errorResponse) {
     return authResponse.errorResponse;
   }
-  
+
   // Precondition: User is logged in
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
@@ -54,23 +51,21 @@ export async function getServerSideProps(ctx) {
   try {
     response = await fetchNote({ noteId: ctx.params.noteId }, authToken)
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-  }
-  catch (error: any) {
+      .then(Helpers.parseJSON);
+  } catch (error: any) {
     if (error?.response?.status === 403 || error?.response?.status === 401) {
       return {
         props: {
           errorCode: 403,
           errorText: "You do not have permission to view this page",
-        },        
-      }
-    }
-    else {
+        },
+      };
+    } else {
       return {
         props: {
           errorCode: 500,
         },
-      }
+      };
     }
   }
 
