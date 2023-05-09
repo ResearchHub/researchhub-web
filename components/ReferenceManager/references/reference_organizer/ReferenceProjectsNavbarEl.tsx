@@ -1,10 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, useState } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { ReactElement, SyntheticEvent } from "react";
+import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
 import FolderIcon from "@mui/icons-material/Folder";
-import ReferenceManualUploadDrawer from "../reference_uploader/ReferenceManualUploadDrawer";
+import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
+import {
+  DEFAULT_PROJECT_VALUES,
+  useReferenceProjectUpsertContext,
+} from "./context/ReferenceProjectsUpsertContext";
 
 type Props = {
   orgSlug: string;
@@ -17,33 +21,37 @@ export default function ReferenceProjectsNavbarEl({
   projectID,
   projectName,
 }: Props): ReactElement {
-  const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
-    useState<boolean>(false);
+  const {
+    setIsDrawerOpen: setIsUploadDrawerOpen,
+    setProjectID: setProjectIDRefUploader,
+  } = useReferenceUploadDrawerContext();
+  const {
+    setIsModalOpen: setIsProjectUpsertModalOpen,
+    setProjectValue: setProjectUpsertValue,
+    setUpsertPurpose: setProjectUpsertPurpose,
+  } = useReferenceProjectUpsertContext();
+
   return (
-    <Box
-      sx={{
-        alignItems: "center",
-        cursor: "pointer",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        maxHeight: 50,
-        px: 2.5,
-        margin: "8px",
-        marginLeft: 0,
-        marginRight: 0,
-      }}
-    >
-      {/* TODO: calvinhlee - move this to context */}
-      <ReferenceManualUploadDrawer
-        drawerProps={{
-          isDrawerOpen: isManualUploadDrawerOpen,
-          setIsDrawerOpen: setIsManualUploadDrawerOpen,
+    <ALink href={`/reference-manager/${orgSlug}/?project=${projectID}`}>
+      <Box
+        sx={{
+          alignItems: "center",
+          cursor: "pointer",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          maxHeight: 50,
+          px: 2.5,
+          margin: "8px",
+          marginLeft: 0,
+          marginRight: 0,
         }}
-        projectID={projectID}
-        key={`upload-${orgSlug}-${projectName}`}
-      />
-      <ALink href={`/reference-manager/${orgSlug}/?project=${projectID}`}>
+        onMouseDown={(event: SyntheticEvent): void => {
+          event.preventDefault();
+          setIsUploadDrawerOpen(false);
+          setProjectIDRefUploader(null);
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center" }}>
           <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} />
           <Typography
@@ -58,17 +66,34 @@ export default function ReferenceProjectsNavbarEl({
             {projectName}
           </Typography>
         </div>
-      </ALink>
-      <AddCircleOutlineIcon
-        fontSize="small"
-        sx={{
-          marginLeft: "auto",
-          color: "#7C7989",
-        }}
-        onClick={() => {
-          setIsManualUploadDrawerOpen(true);
-        }}
-      />
-    </Box>
+        <ReferenceProjectNavbarElOption
+          onSelectAddNewReference={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(projectID);
+            setIsUploadDrawerOpen(true);
+          }}
+          onSelectCreateSubProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("create_sub_project");
+            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID,  });
+            setIsProjectUpsertModalOpen(true);
+          }}
+          onSelectEditProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("update");
+            setProjectUpsertValue({
+              ...DEFAULT_PROJECT_VALUES,
+              projectID,
+              projectName,
+            });
+            setIsProjectUpsertModalOpen(true);
+          }}
+        />
+      </Box>
+    </ALink>
   );
 }

@@ -1,85 +1,71 @@
 import { customModalStyle } from "./styles/projects_upsert_modal_style";
-import { ID, NullableString } from "~/config/types/root_types";
-import { isEmpty, nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
-import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import {
+  emptyFncWithMsg,
+  nullthrows,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
+import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
+import { ReactElement, SyntheticEvent } from "react";
 import { Typography } from "@mui/material";
 import { upsertReferenceProject } from "./api/upsertReferenceProject";
+import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
 import ReferenceUserInviteInput from "../../form/ReferenceUserInviteInput";
-import { useRouter } from "next/router";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 type ComponentProps = {
-  isModalOpen: boolean;
-  onCloseModal: (event?: SyntheticEvent) => void;
-  onUpsertSuccess: () => void;
-  projectID: ID;
-};
-
-type ProjectValues = {
-  isPublic: boolean;
-  projectID: ID;
-  projectName: NullableString;
+  onCloseModal?: (event?: SyntheticEvent) => void;
+  onUpsertSuccess?: () => void;
 };
 
 export default function ReferenceProjectsUpsertModal({
-  isModalOpen,
   onCloseModal,
   onUpsertSuccess,
-  projectID,
 }: ComponentProps): ReactElement {
-  // TODO: calvinhlee - clean up this mess around organization and other callsites like this
-  const router = useRouter();
-  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
-  const { organization } = router.query;
+  const currentOrg = getCurrentUserCurrentOrg();
+  const {
+    isModalOpen,
+    projectValue,
+    resetContext,
+    setProjectValue,
+    upsertPurpose,
+    resetProjectsFetchTime,
+  } = useReferenceProjectUpsertContext();
 
-  useEffect(() => {
-    if (organization && orgs.length) {
-      // @ts-ignore
-      const curOrg = orgs.find((org) => org.slug === organization);
-      // @ts-ignore
-      setCurrentOrg(curOrg);
-    }
-  }, [organization, orgs]);
-
-  const isUpdate = !isEmpty(projectID);
-  const [projectValues, setProjectValues] = useState<ProjectValues>({
-    isPublic: true,
-    projectID,
-    projectName: null,
-  });
   const handleCloseModal = (event?: SyntheticEvent) => {
-    onCloseModal(event);
-    setProjectValues({
-      isPublic: true,
-      projectID,
-      projectName: null,
-    });
+    onCloseModal && onCloseModal(event);
+    resetContext!();
   };
 
   const handleSubmit = () => {
-    const { projectID, projectName } = projectValues;
+    const { projectID, projectName } = projectValue;
     const formattedPayload = {
       organization: currentOrg?.id,
-      project: isUpdate ? projectID : undefined,
+      project: projectID,
       project_name: nullthrows(projectName, "Project name may not be null"),
     };
     upsertReferenceProject({
       onSuccess: (result) => {
-        onUpsertSuccess();
+        resetProjectsFetchTime();
+        onUpsertSuccess && onUpsertSuccess();
         handleCloseModal();
       },
-      onError: (error) => {
-        console.warn("error: ", error);
-      },
+      onError: emptyFncWithMsg,
       payload: formattedPayload,
+      upsertPurpose,
     });
   };
+
+  const modalTitle =
+    upsertPurpose === "update"
+      ? "Update project"
+      : upsertPurpose === "create"
+      ? "Create a project"
+      : "Add a sub-project";
 
   return (
     <BaseModal
@@ -96,24 +82,24 @@ export default function ReferenceProjectsUpsertModal({
             formID="project-name"
             label="Project name"
             onChange={(projectName: string) => {
-              setProjectValues({ ...projectValues, projectName });
+              setProjectValue({ ...projectValue, projectName });
             }}
             placeholder="Enter project name"
             required
-            value={projectValues.projectName}
+            value={projectValue.projectName}
           />
           <ReferenceSwitchInput
             label={"Make it public"}
-            isChecked={projectValues.isPublic}
+            isChecked={projectValue.isPublic}
             onSwitch={(isPublic: boolean): void => {
-              setProjectValues({ ...projectValues, isPublic });
+              setProjectValue({ ...projectValue, isPublic });
             }}
             required
           />
           <ReferenceUserInviteInput
             label={"Invite collaborators (optional)"}
             onInputChange={silentEmptyFnc}
-            projectID={projectID}
+            projectID={projectValue.projectID}
           />
           <div
             style={{
@@ -168,7 +154,7 @@ export default function ReferenceProjectsUpsertModal({
               }}
             >
               <Typography fontSize="14px" fontWeight="400" color="#fff">
-                {isUpdate ? "Update" : "Create"}
+                {"Submit"}
               </Typography>
             </div>
           </div>
@@ -184,7 +170,7 @@ export default function ReferenceProjectsUpsertModal({
             alignItems: "center",
           }}
         >
-          <div>{`${isUpdate ? "Update" : "Create"} a project`}</div>
+          <div>{modalTitle}</div>
         </div>
       }
       closeModal={handleCloseModal}

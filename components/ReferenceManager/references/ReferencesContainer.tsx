@@ -5,7 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactNode, SyntheticEvent } from "react";
+import { Fragment, useState, ReactElement } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -17,7 +17,7 @@ import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUpl
 
 interface Props {}
 
-export default function ReferencesContainer({}: Props): ReactNode {
+export default function ReferencesContainer({}: Props): ReactElement {
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
@@ -29,7 +29,7 @@ export default function ReferencesContainer({}: Props): ReactNode {
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
 
   if (!userAllowed) {
-    return null;
+    return <Fragment />;
   } else {
     return (
       <Fragment>

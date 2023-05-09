@@ -2,6 +2,7 @@ import { useContext, createContext, useEffect, useState } from "react";
 import numeral from "numeral";
 import { fetchUserOrgs } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
+import { useRouter } from "next/router";
 
 type ContextType = {
   orgs: Org[];
@@ -13,6 +14,7 @@ type ContextType = {
 type Org = {
   id?: number;
   name?: string;
+  slug?: string;
 };
 
 const OrganizationContext = createContext<ContextType>({
@@ -67,4 +69,18 @@ export const OrganizationContextProvider = ({ children, user }) => {
   );
 };
 
+export function getCurrentUserCurrentOrg() {
+  const router = useRouter();
+  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
+  const { organization } = router.query;
+  useEffect(() => {
+    if (organization && orgs.length) {
+      // @ts-ignore
+      const curOrg = orgs.find((org) => org.slug === organization);
+      // @ts-ignore
+      setCurrentOrg(curOrg);
+    }
+  }, [organization, orgs]);
+  return currentOrg;
+}
 export default OrganizationContextProvider;
