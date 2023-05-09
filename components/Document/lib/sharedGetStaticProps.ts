@@ -1,4 +1,5 @@
-import { fetchPaper } from "~/components/Paper/lib/api";
+import { fetchCommentsAPI } from "~/components/Comment/lib/api";
+import { getDocumentByType } from "./getDocumentByType";
 
 const config = {
   revalidateTimeIfNotFound: 1,
@@ -6,18 +7,23 @@ const config = {
   revalidateTimeIfFound: 600,
 };
 
-const getDocumentByType = async ({ documentType, documentId }) => {
-  switch (documentType) {
-    case "paper":
-      return fetchPaper({ paperId: documentId });
+const getCommentFilterByTab = async ({ tabName }) => {
+  switch (tabName) {
+    case "bounties":
+      return "BOUNTY";
+    case "peer-reviews":
+      return "REVIEW";
+    case "conversation":
     default:
       return null;
   }
 };
 
 export default async function sharedGetStaticProps(ctx) {
-  const { documentId, documentType, documentSlug } = ctx.params!;
-  let documentData;
+  const { documentId, documentType, documentSlug, tabName } = ctx.params!;
+  const shouldFetchComments = tabName !== undefined;
+  let documentData: any | null = null;
+  let commentData: any | null = null;
 
   try {
     documentData = await getDocumentByType({ documentType, documentId });
@@ -26,6 +32,8 @@ export default async function sharedGetStaticProps(ctx) {
     return {
       props: {
         errorCode: 500,
+        documentType,
+        commentData,
       },
       // If paper has an error, we want to try again immediately
       revalidate: config.revalidateTimeIfError,
@@ -36,25 +44,40 @@ export default async function sharedGetStaticProps(ctx) {
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
     // in an infinite 301 loop.
-    if (documentData.slug && documentData.slug === documentSlug) {
-      return {
-        props: {
-          documentData,
-        },
-        revalidate: config.revalidateTimeIfFound,
-      };
-    } else {
+    const shouldRedirect =
+      !documentData.slug || documentData.slug !== documentSlug;
+    if (shouldRedirect) {
       return {
         redirect: {
           destination: `/${documentType}/${documentId}/${documentData.slug}`,
           permanent: true,
         },
       };
+    } else {
+      if (shouldFetchComments) {
+        const filter = await getCommentFilterByTab({ tabName });
+        commentData = await fetchCommentsAPI({
+          documentId,
+          documentType,
+          filter,
+        });
+      }
+
+      return {
+        props: {
+          documentData,
+          commentData,
+          documentType,
+        },
+        revalidate: config.revalidateTimeIfFound,
+      };
     }
   } else {
     return {
       props: {
         errorCode: 404,
+        documentType,
+        commentData,
       },
       revalidate: config.revalidateTimeIfNotFound,
     };
