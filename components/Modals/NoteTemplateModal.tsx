@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp } from "@fortawesome/pro-regular-svg-icons";
-import { faChevronDown } from "@fortawesome/pro-regular-svg-icons";
+import { faChevronUp, faChevronDown } from "@fortawesome/pro-regular-svg-icons";
 import { faTrash } from "@fortawesome/pro-solid-svg-icons";
 import API from "~/config/api";
 import BaseModal from "~/components/Modals/BaseModal";
@@ -8,12 +7,15 @@ import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
-
+import Cookies from "js-cookie";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { createNewNote, createNoteContent } from "~/config/fetch";
-import { fetchOrgTemplates } from "~/config/fetch";
+import {
+  createNewNote,
+  createNoteContent,
+  fetchOrgTemplates,
+} from "~/config/fetch";
 import { useAlert } from "react-alert";
 import {
   ReactElement,
@@ -198,7 +200,7 @@ export default function NoteTemplateModal({
                   Authorization:
                     "Token " +
                     (typeof window !== "undefined"
-                      ? window.localStorage[AUTH_TOKEN]
+                      ? Cookies.get(AUTH_TOKEN)
                       : ""),
                 },
               },

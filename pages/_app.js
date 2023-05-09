@@ -183,6 +183,7 @@ MyApp.getInitialProps = async (appContext) => {
     "/hubs/[slug]/live",
     "/paper/[paperId]/[paperName]",
     "/post/[documentId]/[title]",
+    "/notebook",
   ];
 
   const cookies = nookies.get(appContext.ctx);
@@ -193,7 +194,6 @@ MyApp.getInitialProps = async (appContext) => {
   // and the other part of it in RootLeftSidebar.tsx
   // cookies[LEFT_SIDEBAR_FORCE_MIN_KEY] ===
   // "true"; /* intentional string literal */
-
   if (
     process.browser ||
     !staticOrServerSidePropsPaths.includes(appContext.router.route)

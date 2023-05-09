@@ -69,6 +69,8 @@ class BaseModal extends Component {
    * closes the modal on button click
    */
   closeModal = () => {
+    if (this.props?.persistent) return;
+
     this.setState({ reveal: false }, () => {
       setTimeout(() => {
         this.setState({
