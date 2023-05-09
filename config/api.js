@@ -1,5 +1,5 @@
-import { API } from "@quantfive/js-web-config";
-
+// import { API } from "@quantfive/js-web-config";
+import { API } from "./api/index";
 import { AUTH_TOKEN } from "../config/constants";
 import {
   isNullOrUndefined,

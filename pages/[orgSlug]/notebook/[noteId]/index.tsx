@@ -6,10 +6,10 @@ import { useRouter } from "next/router";
 import { fetchNote } from "~/config/fetch";
 import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
-import { captureEvent } from "~/config/utils/events";
 import NextError from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
-import API from "~/config/api";
+import ensureAuthenticated from "~/config/auth/ensureAuthenticated";
+
 
 interface Props {
   errorCode?: number;
@@ -38,35 +38,32 @@ const Index = ({ errorCode, errorText }: Props) => {
 };
 
 export async function getServerSideProps(ctx) {
+
+  const authResponse = await ensureAuthenticated({ nextPageContext: ctx });
+  if (!authResponse.isAuthenticated) {
+    return authResponse.redirectResponse;
+  }
+  else if (authResponse.errorResponse) {
+    return authResponse.errorResponse;
+  }
+  
+  // Precondition: User is logged in
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-console.log('authToken', authToken)
-
-  let authResponse: Response;
+  let response: Response;
   try {
-    authResponse = await fetch(API.USER({}), API.GET_CONFIG(authToken))
+    response = await fetchNote({ noteId: ctx.params.noteId }, authToken)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
   }
-  catch(error:any) {
-    console.log('error', error)
-    return;
-  }
-
-  console.log('authResponse', authResponse)
-
-  let response: Response;
-  try {
-    response = await fetchNote({ noteId: ctx.params.noteId }, authToken);
-  }
   catch (error: any) {
-    if (error?.response?.status === 401) {
+    if (error?.response?.status === 403 || error?.response?.status === 401) {
       return {
-        redirect: {
-          destination: `/login?redirect=${ctx.req.url}`,
-          permanent: false,
-        },
-      };
+        props: {
+          errorCode: 403,
+          errorText: "You do not have permission to view this page",
+        },        
+      }
     }
     else {
       return {
@@ -77,46 +74,9 @@ console.log('authToken', authToken)
     }
   }
 
-
-
-  const isAuthError = response.status === 401 || response.status === 403;
-  if (isAuthError) {
-    if (authToken) {
-
-      
-
-
-      return {
-        props: {
-          errorCode: 403,
-          errorText: "You do not have permission to view this page",
-        },        
-      }
-    }
-    else {
-      return {
-        redirect: {
-          destination: `/login?redirect=${ctx.req.url}`,
-          permanent: false,
-        },      
-      }
-    }
-  }
-  
-  const isOtherError = response.status > 400;
-  if (isOtherError) {
-    return {
-      props: {
-        errorCode: response.status,
-      },
-    }    
-  }
-
   return {
     props: {},
   };
-
-
 }
 
 export default Index;

@@ -8,7 +8,7 @@ import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
-
+import Cookies from "js-cookie";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
@@ -198,7 +198,7 @@ export default function NoteTemplateModal({
                   Authorization:
                     "Token " +
                     (typeof window !== "undefined"
-                      ? window.localStorage[AUTH_TOKEN]
+                      ? Cookies.get(AUTH_TOKEN)
                       : ""),
                 },
               },

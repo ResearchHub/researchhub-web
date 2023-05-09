@@ -61,6 +61,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
   if (!dispatchFetching) {
     dispatch({ type: AuthConstants.FETCHING_USER, isFetchingUser: true });
   }
+
   var config = API.GET_CONFIG();
   return fetch(API.USER({}), config)
     .then(Helpers.checkStatus)
@@ -68,10 +69,6 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .then((json) => {
       if (json.results[0]) {
         dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
-      }
-
-      if (window.localStorage[AUTH_TOKEN]) {
-        saveToLocalStorage(AUTH_TOKEN, window.localStorage[AUTH_TOKEN]);
       }
 
       if (json.results.length > 0) {
@@ -93,7 +90,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     })
     .catch((error) => {
       Sentry.captureException(error);
-      window.localStorage.removeItem(AUTH_TOKEN);
+      Cookies.remove(AUTH_TOKEN);
       dispatch({
         type: AuthConstants.GOT_USER,
         isFetchingUser: false,
@@ -117,7 +114,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(AUTH_TOKEN, json.token);
+          Cookies.set(AUTH_TOKEN, json.token);
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -161,7 +158,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key);
 
           return dispatch({
             type: AuthConstants.REGISTER,
@@ -199,7 +196,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key);
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -245,7 +242,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key);
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -277,7 +274,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(AUTH_TOKEN, json.key);
+          Cookies.set(AUTH_TOKEN, json.key);
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -302,7 +299,7 @@ export const AuthActions = {
    */
   orcidLogin: (params) => {
     return (dispatch) => {
-      saveToLocalStorage(AUTH_TOKEN, params["token"]);
+      Cookies.set(AUTH_TOKEN, params["token"]);
       return dispatch({
         type: AuthConstants.LOGIN,
         isLoggedIn: true,
@@ -364,7 +361,6 @@ export const AuthActions = {
           } catch (error) {
             console.error(error);
           }
-          window.localStorage.removeItem(AUTH_TOKEN);
           window.location.replace("/");
           Cookies.remove(AUTH_TOKEN);
         });
