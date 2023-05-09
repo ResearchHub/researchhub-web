@@ -1,14 +1,18 @@
 import { Box } from "@mui/system";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import {
   emptyFncWithMsg,
   isEmpty,
   nullthrows,
 } from "~/config/utils/nullchecks";
+import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
+import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
+import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
+import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
+import ALink from "~/components/ALink";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Divider from "@mui/material/Divider";
@@ -19,16 +23,12 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
+import ReferenceProjectsNavbarEl from "../references/reference_organizer/ReferenceProjectsNavbarEl";
+import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { useRouter } from "next/router";
-import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
-import ReferenceProjectsNavbarEl from "../references/reference_organizer/ReferenceProjectsNavbarEl";
-import ALink from "~/components/ALink";
-import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
+import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -81,53 +81,39 @@ export default function BasicTogglableNavbarLeft({
   navWidth,
   theme,
 }: Props) {
-  const user = getCurrentUser();
-  // TODO: calvinhlee - clean up this mess around organization and other callsites like this
-  const router = useRouter();
   const {
-    projectID,
     setIsDrawerOpen: isUploadDrawerOpen,
     setProjectID: setProjectIDForDrawer,
   } = useReferenceUploadDrawerContext();
-  const { orgs, setCurrentOrg, currentOrg } = useOrgs();
-  const { organization } = router.query;
-  useEffect(() => {
-    if (organization && orgs.length) {
-      // @ts-ignore
-      const curOrg = orgs.find((org) => org.slug === organization);
-      // @ts-ignore
-      setCurrentOrg(curOrg);
-    }
-  }, [organization, orgs]);
-  const currentOrgID = currentOrg?.id ?? null;
-  // @ts-ignore
-  const currentOrgSlug = currentOrg?.slug ?? null;
-  const [isProjectsUpsertModalOpen, setIsProjectsUpsertModalOpen] =
-    useState<boolean>(false);
+  const { projectsFetchTime } = useReferenceProjectUpsertContext();
+  const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
+    useReferenceProjectUpsertContext();
+  const currentOrg = getCurrentUserCurrentOrg();
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
-  const [projectsFetchTime, setProjectsFetchTime] = useState(Date.now());
+
+  const currentOrgID = currentOrg?.id ?? null;
+  const currentOrgSlug = currentOrg?.slug ?? null;
+
   useEffect((): void => {
-    fetchReferenceProjects({
-      onError: emptyFncWithMsg,
-      onSuccess: (result): void => {
-        setCurrentOrgProjects(result);
-      },
-      payload: {
-        organization: currentOrgID,
-      },
-    });
+    if (!isEmpty(currentOrgID)) {
+      fetchReferenceProjects({
+        onError: emptyFncWithMsg,
+        onSuccess: (result): void => {
+          setCurrentOrgProjects(result);
+        },
+        payload: {
+          organization: currentOrgID,
+        },
+      });
+    }
   }, [currentOrgID, projectsFetchTime]);
 
   const refProjectsNavbarEls = currentOrgProjects?.map(
-    (refProject, elIndex) => {
-      return (
-        <ReferenceProjectsNavbarEl
-          key={`ref-project-${refProject?.id}-${elIndex}`}
-          orgSlug={nullthrows(currentOrgSlug, "Org must be present")}
-          projectID={refProject?.id}
-          projectName={refProject?.project_name}
-        />
-      );
+    (referenceProject, elIndex) => {
+      return renderNestedReferenceProjectsNavbarEl({
+        currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
+        referenceProject,
+      });
     }
   );
 
@@ -137,15 +123,7 @@ export default function BasicTogglableNavbarLeft({
       width={navWidth}
       sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
     >
-      <ReferenceProjectsUpsertModal
-        isModalOpen={isProjectsUpsertModalOpen}
-        onCloseModal={(event?: SyntheticEvent): void => {
-          event?.preventDefault();
-          setIsProjectsUpsertModalOpen(false);
-        }}
-        onUpsertSuccess={() => setProjectsFetchTime(Date.now())}
-        projectID={undefined}
-      />
+      <ReferenceProjectsUpsertModal />
       <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
         <Box
           sx={{

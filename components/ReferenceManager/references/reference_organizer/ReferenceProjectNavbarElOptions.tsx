@@ -8,16 +8,17 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 
 type Props = {
   onSelectAddNewReference: (event: SyntheticEvent) => void;
   onSelectCreateSubProject: (event: SyntheticEvent) => void;
+  onSelectEditProject: (event: SyntheticEvent) => void;
 };
 
 export default function ReferenceProjectNavbarElOption({
   onSelectAddNewReference,
   onSelectCreateSubProject,
+  onSelectEditProject,
 }: Props): ReactElement {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -47,14 +48,7 @@ export default function ReferenceProjectNavbarElOption({
       >
         <MenuItem
           onClick={(event: MouseEvent): void => {
-            onSelectCreateSubProject(event);
-            handleClose;
-          }}
-        >
-          {"Edit"}
-        </MenuItem>
-        <MenuItem
-          onClick={(event: MouseEvent): void => {
+            event.preventDefault();
             onSelectAddNewReference(event);
             handleClose();
           }}
@@ -63,11 +57,21 @@ export default function ReferenceProjectNavbarElOption({
         </MenuItem>
         <MenuItem
           onClick={(event: MouseEvent): void => {
+            event.preventDefault();
             onSelectCreateSubProject(event);
-            handleClose;
+            handleClose();
           }}
         >
           {"Add a sub-project"}
+        </MenuItem>
+        <MenuItem
+          onClick={(event: MouseEvent): void => {
+            event.preventDefault();
+            onSelectEditProject(event);
+            handleClose();
+          }}
+        >
+          {"Edit"}
         </MenuItem>
       </Menu>
     </Fragment>
