@@ -10,6 +10,7 @@ import { NullableString } from "~/config/types/root_types";
 import SuggestUsers from "~/components/SearchSuggestion/SuggestUsers";
 import { Cancelable } from "@mui/utils/debounce";
 import { event } from "react-ga";
+import ReferenceItemRhUserLookupInputTag from "./ReferenceItemRhUserLookupInputTag";
 
 export type InputProps = {
   disabled?: boolean;
@@ -86,18 +87,18 @@ export default function ReferenceItemRhUserLookupInput({
     <Autocomplete
       // onSelect={handleSelect}
       disableCloseOnSelect
-      inputValue={inputValue}
-      renderOption={(props, userOption: SuggestedUser, state): ReactNode => {
-        if (userOption.id === -1) {
-          return <div>LOADING</div>;
-        } else {
-          return <div>HI</div>;
-        }
-      }}
-      onInputChange={handleInputChange}
-      options={isLoading ? [LOADING_SUGGESTION] : suggestedUsers}
       fullWidth
-      size="small"
+      getOptionDisabled={() => true}
+      getOptionLabel={
+        /* Utilizing renderOption instead. Keeping this to avoid MUI errors */
+        (option: SuggestedUser): string => option.firstName
+      }
+      inputValue={inputValue}
+      loading={isLoading}
+      loadingText={"Looking for users ..."}
+      noOptionsText={isEmpty(inputValue) ? null : "No users found"}
+      onInputChange={handleInputChange}
+      options={suggestedUsers}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -106,8 +107,20 @@ export default function ReferenceItemRhUserLookupInput({
             ...params.InputProps,
             type: "search",
           }}
+          label={label}
+          placeholder={placeholder}
         />
       )}
+      renderOption={(_props, userOption: SuggestedUser, _state): ReactNode => {
+        return (
+          <ReferenceItemRhUserLookupInputTag
+            isSelectable
+            key={`RhUserLookup-Input-User-${userOption.id}`}
+            user={userOption}
+          />
+        );
+      }}
+      size="small"
     />
   );
 }

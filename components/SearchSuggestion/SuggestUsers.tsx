@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import debounce from "lodash.debounce";
-import { StyleSheet, css } from "aphrodite";
-import AuthorAvatar from "../AuthorAvatar";
-import { SuggestedUser } from "./lib/types";
-import colors from "~/config/themes/colors";
 import { fetchUserSuggestions } from "./lib/api";
+import { StyleSheet, css } from "aphrodite";
+import { SuggestedUser } from "./lib/types";
+import AuthorAvatar from "../AuthorAvatar";
+import colors from "~/config/themes/colors";
+import debounce from "lodash.debounce";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 
 type Args = {
   onSelect: Function;
