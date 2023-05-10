@@ -1,13 +1,13 @@
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchReferenceCitationTypes } from "./api/fetchReferenceCitationTypes";
 import { NullableString } from "~/config/types/root_types";
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
+import { snakeCaseToNormalCase } from "~/config/utils/string";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
-import { snakeCaseToNormalCase } from "~/config/utils/string";
 
 type Props = {
   formID: string;

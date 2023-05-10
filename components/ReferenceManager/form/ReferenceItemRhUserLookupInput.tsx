@@ -1,13 +1,7 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import { fetchUserSuggestions } from "~/components/SearchSuggestion/lib/api";
 import { ID, NullableString } from "~/config/types/root_types";
-import {
-  Fragment,
-  ReactElement,
-  ReactNode,
-  SyntheticEvent,
-  useState,
-} from "react";
+import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Autocomplete from "@mui/material/Autocomplete";
 import ReferenceItemRhUserLookupInputTag from "./ReferenceItemRhUserLookupInputTag";
@@ -82,8 +76,6 @@ export default function ReferenceItemRhUserLookupInput({
       clearOnEscape
       clearOnBlur
       blurOnSelect
-      selectOnFocus
-      getOptionDisabled={() => true}
       getOptionLabel={
         /* Utilizing renderOption instead. Keeping this to avoid MUI errors */
         (option: SuggestedUser): string => option.firstName
@@ -91,9 +83,7 @@ export default function ReferenceItemRhUserLookupInput({
       inputValue={inputValue}
       loading={isLoading}
       loadingText={"Looking for users ..."}
-      noOptionsText={
-        isEmpty(inputValue) ? "Enter user name" : "No user(s) found"
-      }
+      noOptionsText={isEmpty(inputValue) ? "" : "No user(s) found"}
       onInputChange={handleInputChange}
       options={isEmpty(inputValue) ? [] : suggestedUsers}
       renderInput={(params) => (
