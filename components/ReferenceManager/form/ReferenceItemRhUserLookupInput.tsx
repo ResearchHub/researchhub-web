@@ -1,18 +1,7 @@
 import { ReactElement } from "react";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Autocomplete from "@mui/material/Autocomplete";
-import ReferenceItemFieldInput from "./ReferenceItemFieldInput";
-
-const top100Films = [
-  { label: "The Shawshank Redemption", year: 1994 },
-  { label: "The Godfather", year: 1972 },
-  { label: "The Godfather: Part II", year: 1974 },
-  { label: "The Dark Knight", year: 2008 },
-  { label: "12 Angry Men", year: 1957 },
-  { label: "Schindler's List", year: 1993 },
-  { label: "Pulp Fiction", year: 1994 },
-];
-
-type User = any;
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 export type InputProps = {
   disabled?: boolean;
@@ -21,8 +10,8 @@ export type InputProps = {
   onInputChange?: (value: any) => void;
   placeholder?: string;
   required?: boolean;
-  onUserSelect?: (user: User) => void;
-  selectedUser?: User;
+  onUserSelect?: (user: SuggestedUser) => void;
+  selectedUser?: SuggestedUser;
 };
 
 export default function ReferenceItemRhUserLookupInput({
@@ -33,23 +22,27 @@ export default function ReferenceItemRhUserLookupInput({
   onUserSelect,
   placeholder,
   required,
-  selectedUser,
 }: InputProps): ReactElement {
   return (
     <Autocomplete
       disablePortal
+      onSelect={onUserSelect}
       options={top100Films}
-      sx={{ width: 300 }}
-      renderInput={(params) => (
-        <ReferenceItemFieldInput
-          disabled={disabled}
-          formID={formID}
-          label={label}
-          onChange={onInputChange}
-          placeholder={placeholder}
-          required={required}
-        />
-      )}
+      fullWidth
+      size="small"
+      // handleClick={() => {}}
+      renderInput={(params) => {
+        return (
+          <OutlinedInput
+            {...params}
+            disabled={disabled}
+            label={label}
+            onChange={onInputChange}
+            placeholder={placeholder}
+            required={required}
+          />
+        );
+      }}
     />
   );
 }

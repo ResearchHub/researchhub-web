@@ -1,29 +1,30 @@
 import { ChangeEvent, ReactElement, SyntheticEvent, useState } from "react";
 import { ClipLoader } from "react-spinners";
+import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID, NullableString } from "~/config/types/root_types";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { isValidEmail } from "~/config/utils/validation";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import ReferenceItemRhUserLookupInput from "../../form/ReferenceItemRhUserLookupInput";
 import Typography from "@mui/material/Typography";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
-import { isValidEmail } from "~/config/utils/validation";
 
-type Invitee = { userID?: ID; userEmail?: string };
 type Props = {
-  // initialInviteList: Invitee[];
+  initialInviteList?: SuggestedUser[];
   label: string;
   onInputChange: (string: NullableString) => void;
   projectID: ID;
 };
 
-export default function ReferenceUserInviteInput({
+export default function ReferenceUserInviteSection({
   label,
   onInputChange,
   projectID,
 }: Props): ReactElement {
   const [inviteeEmail, setInviteeEmail] = useState<NullableString>(null);
-  const [inviteList, setInviteList] = useState<Invitee[]>([]);
+  const [inviteList, setInviteList] = useState<SuggestedUser[]>([]);
   const [isSendingInvitation, setisSendingInvitation] =
     useState<boolean>(false);
   const _initialInviteList =
@@ -45,10 +46,7 @@ export default function ReferenceUserInviteInput({
   const inviteeEls = inviteList.map(({ userEmail }: Invitee) => {
     return (
       <div style={{ display: "flex", width: "100%", alignItems: "center" }}>
-        <FontAwesomeIcon
-          icon={faCircleUser}
-          style={{ marginRight: 8 }}
-        ></FontAwesomeIcon>
+        <FontAwesomeIcon icon={faCircleUser} style={{ marginRight: 8 }} />
         {userEmail}
       </div>
     );
@@ -81,25 +79,16 @@ export default function ReferenceUserInviteInput({
           justifyContent: "space-between",
         }}
       >
-        <OutlinedInput
+        <ReferenceItemRhUserLookupInput
           disabled={isSendingInvitation}
-          fullWidth
-          onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+          onInputChange={(event: ChangeEvent<HTMLInputElement>): void => {
             const stringValue = event?.target?.value ?? "";
             setInviteeEmail(stringValue);
             onInputChange(stringValue);
           }}
-          onKeyDown={(event): void => {
-            if (event.key === "Enter" || event?.keyCode === 13) {
-              sendInvitation();
-            }
-          }}
-          placeholder="Enter collaborator's email"
-          size="small"
-          value={inviteeEmail}
-          sx={{
-            background: "#fff",
-          }}
+          placeholder="Look up ResearchHub user(s)"
+          formID={"user-invite"}
+          label={""} // value={inviteeEmail}
         />
         <Box
           sx={{
