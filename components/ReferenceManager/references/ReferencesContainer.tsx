@@ -19,12 +19,21 @@ import api, { generateApiUrl } from "~/config/api";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
+import withWebSocket from "~/components/withWebSocket";
 
 interface Props {
   showMessage: ({ show, load }) => void;
+  wsResponse: {};
+  wsConnected: boolean;
 }
 
-function ReferencesContainer({ showMessage }: Props): ReactNode {
+function ReferencesContainer({
+  showMessage,
+  wsResponse,
+  wsConnected,
+}: Props): ReactNode {
+  console.log(wsConnected);
+  console.log(wsResponse);
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
@@ -184,4 +193,6 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(null, mapDispatchToProps)(ReferencesContainer);
+export default withWebSocket(
+  connect(null, mapDispatchToProps)(ReferencesContainer)
+);

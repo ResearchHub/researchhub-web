@@ -101,6 +101,8 @@ export default function withWebSocket(
         const isAllowed = ALLOWED_ORIGINS.some((value, i) => {
           return value === origin.hostname;
         });
+
+        debugger;
         if (isAllowed) {
           setResponse(e.data);
         } else {

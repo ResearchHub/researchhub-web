@@ -4,6 +4,7 @@ export const ROUTES = {
   NOTE: (orgSlug) => `${BASE_URL}${orgSlug}/notebook/`,
   NOTIFICATIONS: (userId) => `${BASE_URL}notifications/${userId}/`,
   PAPER_SUBMISSION: (userID) => `${BASE_URL}${userID}/paper_submissions/`,
+  CITATION_ENTRY: (userID) => `${BASE_URL}citation_entry/${userID}/`,
 };
 
 function setBaseUrl() {
