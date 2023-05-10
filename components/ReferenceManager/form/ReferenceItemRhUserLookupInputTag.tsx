@@ -23,7 +23,7 @@ export default function ReferenceItemRhUserLookupInputTag({
       onClick={isSelectable ? onSelect : undefined}
     >
       <AuthorAvatar author={authorProfile} size={20} trueSize />
-      <div style={{ marginLeft: 8, lineHeight: 16, fontSize: 16 }}>
+      <div style={{ marginLeft: 8, fontSize: 16 }}>
         <span>{`${firstName} ${lastName}`}</span>
         <span>{" • "}</span>
         <span>{`${reputation} Rep`} </span>
@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: "36px",
+    minHeight: "36px",
+    maxHeight: "36px",
+    width: "100%",
     justifyContent: "flex-start",
     padding: "0 12px",
   },

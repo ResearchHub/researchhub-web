@@ -1,7 +1,13 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import { fetchUserSuggestions } from "~/components/SearchSuggestion/lib/api";
 import { ID, NullableString } from "~/config/types/root_types";
-import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
+import {
+  Fragment,
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useState,
+} from "react";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Autocomplete from "@mui/material/Autocomplete";
 import ReferenceItemRhUserLookupInputTag from "./ReferenceItemRhUserLookupInputTag";
@@ -30,6 +36,9 @@ const getDebouncedHandleInputChange = ({
     onInputChange(queryString);
     if (!isEmpty(onLoad) && !isEmpty(queryString)) {
       onLoad(queryString);
+    } else if (isEmpty(queryString)) {
+      onFetchSucess([]);
+      debounceRef && clearTimeout(debounceRef);
     }
     debounceRef && clearTimeout(debounceRef);
     debounceRef = setTimeout(async () => {
@@ -72,6 +81,8 @@ export default function ReferenceItemRhUserLookupInput({
       fullWidth
       clearOnEscape
       clearOnBlur
+      blurOnSelect
+      selectOnFocus
       getOptionDisabled={() => true}
       getOptionLabel={
         /* Utilizing renderOption instead. Keeping this to avoid MUI errors */
@@ -80,7 +91,9 @@ export default function ReferenceItemRhUserLookupInput({
       inputValue={inputValue}
       loading={isLoading}
       loadingText={"Looking for users ..."}
-      noOptionsText={isEmpty(inputValue) ? null : "No users found"}
+      noOptionsText={
+        isEmpty(inputValue) ? "Enter user name" : "No user(s) found"
+      }
       onInputChange={handleInputChange}
       options={isEmpty(inputValue) ? [] : suggestedUsers}
       renderInput={(params) => (
@@ -103,10 +116,11 @@ export default function ReferenceItemRhUserLookupInput({
       renderOption={(_props, userOption: SuggestedUser, _state): ReactNode => {
         const { id, firstName, lastName, reputation } = userOption;
         return (
+          // Wrapping in Fragment allows proper mouse behaviors for MUI components
           <ReferenceItemRhUserLookupInputTag
             isSelectable
             onSelect={(event: SyntheticEvent): void => {
-              // event.preventDefault();
+              event.preventDefault();
               handleSelect(userOption);
             }}
             key={`RhUserLookup-Input-User-${id}-${firstName}-${lastName}-${reputation}`}

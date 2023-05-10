@@ -98,7 +98,6 @@ export default function ReferenceProjectsUpsertModal({
           />
           <ReferenceCollaboratorsSection
             label={"Invite collaborators (optional)"}
-            projectID={projectValue.projectID}
           />
           <div
             style={{
