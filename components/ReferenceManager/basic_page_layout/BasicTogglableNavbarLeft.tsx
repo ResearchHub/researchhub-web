@@ -85,7 +85,7 @@ export default function BasicTogglableNavbarLeft({
     setIsDrawerOpen: isUploadDrawerOpen,
     setProjectID: setProjectIDForDrawer,
   } = useReferenceUploadDrawerContext();
-  const { projectsFetchTime } = useReferenceProjectUpsertContext();
+  const { projectsFetchTime, isModalOpen } = useReferenceProjectUpsertContext();
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
@@ -129,15 +129,7 @@ export default function BasicTogglableNavbarLeft({
         minHeight: "calc(100vh - 68px)",
       }}
     >
-      <ReferenceProjectsUpsertModal
-        isModalOpen={isProjectsUpsertModalOpen}
-        onCloseModal={(event?: SyntheticEvent): void => {
-          event?.preventDefault();
-          setIsProjectsUpsertModalOpen(false);
-        }}
-        onUpsertSuccess={() => setProjectsFetchTime(Date.now())}
-        projectID={undefined}
-      />
+      <ReferenceProjectsUpsertModal />
       <Box className="LeftNavbarUserSection">
         <Box
           sx={{

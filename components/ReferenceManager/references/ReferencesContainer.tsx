@@ -5,11 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-<<<<<<< HEAD
-import { Fragment, useState, ReactElement } from "react";
-=======
 import { Fragment, useState, ReactNode } from "react";
->>>>>>> 338d065b1 (adding data for dois)
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
