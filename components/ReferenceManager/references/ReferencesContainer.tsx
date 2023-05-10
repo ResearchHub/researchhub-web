@@ -43,6 +43,8 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
+  const router = useRouter();
+  const currentProjectName = router.query.project_name;
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<[]>([]);
@@ -51,7 +53,6 @@ function ReferencesContainer({
     useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const { currentOrg } = useOrgs();
-  const router = useRouter();
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -118,30 +119,27 @@ function ReferencesContainer({
             handleFileDrop={handleFileDrop}
             accept=".pdf"
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                padding: "32px 32px",
-                width: "100%",
-                overflow: "auto",
-                boxSizing: "border-box",
-                flex: 1,
-              }}
-              className={"references-section"}
-            >
-              <div style={{ marginBottom: 32 }}>
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                  {"All References"}
-                </Typography>
-              </div>
-              <Box className="ReferencesContainerMain">
-                <Box
-                  className="ReferencesContainerTitleSection"
-                  sx={{
-                    alignItems: "center",
-                    display: "flex",
-                    justifyContent: "space-between",
+            <div style={{ marginBottom: 32 }}>
+              <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                {currentProjectName ?? "All References"}
+              </Typography>
+            </div>
+            <Box className="ReferencesContainerMain">
+              <Box
+                className="ReferencesContainerTitleSection"
+                sx={{
+                  alignItems: "center",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  height: 44,
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  className="ReferenceContainerSearchFieldWrap"
+                  style={{
+                    maxWidth: 400,
                     width: "100%",
                     height: 44,
                     marginBottom: "20px",

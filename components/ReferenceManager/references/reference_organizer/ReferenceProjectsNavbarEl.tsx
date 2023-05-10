@@ -32,7 +32,9 @@ export default function ReferenceProjectsNavbarEl({
   } = useReferenceProjectUpsertContext();
 
   return (
-    <ALink href={`/reference-manager/${orgSlug}/?project=${projectID}`}>
+    <ALink
+      href={`/reference-manager/${orgSlug}/?project=${projectID}&project_name=${projectName}`}
+    >
       <Box
         sx={{
           alignItems: "center",
@@ -77,7 +79,7 @@ export default function ReferenceProjectsNavbarEl({
             setProjectIDRefUploader(null);
             setIsUploadDrawerOpen(false);
             setProjectUpsertPurpose("create_sub_project");
-            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID,  });
+            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
             setIsProjectUpsertModalOpen(true);
           }}
           onSelectEditProject={(event: SyntheticEvent): void => {
