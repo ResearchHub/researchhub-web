@@ -7,7 +7,8 @@ import Box from "@mui/material/Box";
 import ReferenceItemRhUserLookupInput from "../../form/ReferenceItemRhUserLookupInput";
 import Typography from "@mui/material/Typography";
 import ReferenceItemRhUserLookupInputTag from "../../form/ReferenceItemRhUserLookupInputTag";
-
+import ClearIcon from "@mui/icons-material/Clear";
+import { debug } from "webpack";
 type Props = {
   initialInviteList?: SuggestedUser[];
   label: string;
@@ -24,8 +25,34 @@ export default function ReferenceUserInviteSection({
   const [isSendingInvitation, setisSendingInvitation] =
     useState<boolean>(false);
 
-  const inviteeEls = invitees.map((invitee: SuggestedUser) => {
-    return <ReferenceItemRhUserLookupInputTag user={invitee} />;
+  const inviteeEls = invitees.map((targetInvitee: SuggestedUser) => {
+    return (
+      <div
+        style={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+        key={`RefUserInviteSection-Invitee-${targetInvitee.id}`}
+      >
+        <span style={{ marginLeft: -12 }}>
+          <ReferenceItemRhUserLookupInputTag user={targetInvitee} />
+        </span>
+        <ClearIcon
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setInvitees(
+              invitees.filter(
+                (invitee: SuggestedUser): boolean =>
+                  targetInvitee.id !== invitee.id
+              )
+            );
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+      </div>
+    );
   });
 
   return (
