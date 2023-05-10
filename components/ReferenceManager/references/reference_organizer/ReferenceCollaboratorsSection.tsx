@@ -1,31 +1,48 @@
-import { ReactElement, SyntheticEvent, useState } from "react";
 import { ClipLoader } from "react-spinners";
-import { ID, NullableString } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { ReactElement, SyntheticEvent, useEffect } from "react";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import Box from "@mui/material/Box";
-import ReferenceItemRhUserLookupInput from "../../form/ReferenceItemRhUserLookupInput";
-import Typography from "@mui/material/Typography";
-import ReferenceItemRhUserLookupInputTag from "../../form/ReferenceItemRhUserLookupInputTag";
 import ClearIcon from "@mui/icons-material/Clear";
-import { debug } from "webpack";
+import ReferenceItemRhUserLookupInput from "../../form/ReferenceItemRhUserLookupInput";
+import ReferenceItemRhUserLookupInputTag from "../../form/ReferenceItemRhUserLookupInputTag";
+import Typography from "@mui/material/Typography";
+
 type Props = {
-  initialInviteList?: SuggestedUser[];
   label: string;
-  onInputChange: (string: NullableString) => void;
-  projectID: ID;
+  disabled?: boolean;
 };
 
-export default function ReferenceUserInviteSection({
-  label,
-  onInputChange,
-  projectID,
-}: Props): ReactElement {
-  const [invitees, setInvitees] = useState<SuggestedUser[]>([]);
-  const [isSendingInvitation, setisSendingInvitation] =
-    useState<boolean>(false);
+const useEffectParseCollaborators = ({ projectID, setCollaborators }) => {
+  useEffect((): void => {
+    if (!isEmpty(projectID)) {
+      // TODO: calvinhlee - resolve this once permissions is finished in BE
+    }
+  }, [projectID, setCollaborators]);
+};
 
-  const inviteeEls = invitees.map((targetInvitee: SuggestedUser) => {
+export default function ReferenceCollaboratorsSection({
+  label,
+  disabled,
+}: Props): ReactElement {
+  const {
+    projectValue: { projectID, collaborators = [] },
+    projectValue,
+    setProjectValue,
+  } = useReferenceProjectUpsertContext();
+
+  const setCollaborators = (newCollaborators: SuggestedUser[]): void => {
+    setProjectValue({
+      ...projectValue,
+      collaborators: newCollaborators,
+    });
+  };
+
+  useEffectParseCollaborators({ projectID, setCollaborators });
+
+  const inviteeEls = collaborators.map((targetInvitee: SuggestedUser) => {
     return (
       <div
         style={{
@@ -42,8 +59,8 @@ export default function ReferenceUserInviteSection({
         <ClearIcon
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
-            setInvitees(
-              invitees.filter(
+            setCollaborators(
+              collaborators.filter(
                 (invitee: SuggestedUser): boolean =>
                   targetInvitee.id !== invitee.id
               )
@@ -84,15 +101,15 @@ export default function ReferenceUserInviteSection({
         }}
       >
         <ReferenceItemRhUserLookupInput
-          disabled={isSendingInvitation}
+          disabled={disabled}
           label={""}
           onUserSelect={(selectedUser: SuggestedUser): void => {
-            setInvitees([...invitees, selectedUser]);
+            setCollaborators([...collaborators, selectedUser]);
           }}
           placeholder="Look up ResearchHub user(s)"
           shouldClearOnSelect
-          filterUserIDs={invitees.map(
-            (invitees: SuggestedUser): ID => invitees.id
+          filterUserIDs={collaborators.map(
+            (collaborators: SuggestedUser): ID => collaborators.id
           )}
         />
         <Box
@@ -113,14 +130,14 @@ export default function ReferenceUserInviteSection({
             // sendInvitation();
           }}
         >
-          {isSendingInvitation ? (
+          {disabled ? (
             <ClipLoader color={"#fff"} size={14} />
           ) : (
             <div style={{ color: "#fff", fontSize: 14 }}>{"Invite"}</div>
           )}
         </Box>
       </Box>
-      {!isEmpty(invitees) ? (
+      {!isEmpty(collaborators) ? (
         <Box
           sx={{
             display: "flex",

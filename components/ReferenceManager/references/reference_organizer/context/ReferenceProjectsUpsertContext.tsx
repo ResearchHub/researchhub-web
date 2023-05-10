@@ -1,10 +1,12 @@
 import { createContext, useContext, useState } from "react";
 import { ID, NullableString } from "~/config/types/root_types";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import type { Context } from "react";
 
 export type UpsertPurpose = "create" | "create_sub_project" | "update";
 export type ProjectValue = {
+  collaborators: SuggestedUser[];
   isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
@@ -21,6 +23,7 @@ export type ReferenceProjectsUpsertContextValueType = {
   upsertPurpose: UpsertPurpose;
 };
 export const DEFAULT_PROJECT_VALUES = {
+  collaborators: [],
   isPublic: true,
   projectID: undefined,
   projectName: undefined,

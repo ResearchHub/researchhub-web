@@ -11,9 +11,9 @@ import { upsertReferenceProject } from "./api/upsertReferenceProject";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
+import ReferenceCollaboratorsSection from "./ReferenceCollaboratorsSection";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import ReferenceSwitchInput from "../../form/ReferenceSwitchInput";
-import ReferenceUserInviteSection from "./ReferenceUserInviteSection";
 
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
@@ -96,9 +96,8 @@ export default function ReferenceProjectsUpsertModal({
             }}
             required
           />
-          <ReferenceUserInviteSection
+          <ReferenceCollaboratorsSection
             label={"Invite collaborators (optional)"}
-            onInputChange={silentEmptyFnc}
             projectID={projectValue.projectID}
           />
           <div
