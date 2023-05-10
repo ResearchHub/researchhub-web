@@ -1,15 +1,12 @@
-import { ChangeEvent, ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { ClipLoader } from "react-spinners";
-import { faCircleUser } from "@fortawesome/pro-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID, NullableString } from "~/config/types/root_types";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { isValidEmail } from "~/config/utils/validation";
+import { isEmpty } from "~/config/utils/nullchecks";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Box from "@mui/material/Box";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import ReferenceItemRhUserLookupInput from "../../form/ReferenceItemRhUserLookupInput";
 import Typography from "@mui/material/Typography";
+import ReferenceItemRhUserLookupInputTag from "../../form/ReferenceItemRhUserLookupInputTag";
 
 type Props = {
   initialInviteList?: SuggestedUser[];
@@ -23,34 +20,14 @@ export default function ReferenceUserInviteSection({
   onInputChange,
   projectID,
 }: Props): ReactElement {
-  const [inviteeEmail, setInviteeEmail] = useState<NullableString>(null);
-  const [inviteList, setInviteList] = useState<SuggestedUser[]>([]);
+  const [invitees, setInvitees] = useState<SuggestedUser[]>([]);
   const [isSendingInvitation, setisSendingInvitation] =
     useState<boolean>(false);
-  const _initialInviteList =
-    []; /* TODO: calvinhlee -  move this to a api call + useEffect */
-  const sendInvitation = () => {
-    if (isValidEmail(inviteeEmail)) {
-      setInviteList([
-        ...inviteList,
-        {
-          userEmail: nullthrows(
-            inviteeEmail,
-            "inviteeEmail should not be null"
-          ),
-        },
-      ]);
-    }
-  };
 
-  const inviteeEls = inviteList.map(({ userEmail }: Invitee) => {
-    return (
-      <div style={{ display: "flex", width: "100%", alignItems: "center" }}>
-        <FontAwesomeIcon icon={faCircleUser} style={{ marginRight: 8 }} />
-        {userEmail}
-      </div>
-    );
+  const inviteeEls = invitees.map((invitee: SuggestedUser) => {
+    return <ReferenceItemRhUserLookupInputTag user={invitee} />;
   });
+
   return (
     <Box
       sx={{
@@ -81,14 +58,15 @@ export default function ReferenceUserInviteSection({
       >
         <ReferenceItemRhUserLookupInput
           disabled={isSendingInvitation}
-          onInputChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            const stringValue = event?.target?.value ?? "";
-            setInviteeEmail(stringValue);
-            onInputChange(stringValue);
+          label={""}
+          onUserSelect={(selectedUser: SuggestedUser): void => {
+            setInvitees([...invitees, selectedUser]);
           }}
           placeholder="Look up ResearchHub user(s)"
-          formID={"user-invite"}
-          label={""} // value={inviteeEmail}
+          shouldClearOnSelect
+          filterUserIDs={invitees.map(
+            (invitees: SuggestedUser): ID => invitees.id
+          )}
         />
         <Box
           sx={{
@@ -105,7 +83,7 @@ export default function ReferenceUserInviteSection({
           }}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
-            sendInvitation();
+            // sendInvitation();
           }}
         >
           {isSendingInvitation ? (
@@ -115,7 +93,7 @@ export default function ReferenceUserInviteSection({
           )}
         </Box>
       </Box>
-      {!isEmpty(inviteList) ? (
+      {!isEmpty(invitees) ? (
         <Box
           sx={{
             display: "flex",

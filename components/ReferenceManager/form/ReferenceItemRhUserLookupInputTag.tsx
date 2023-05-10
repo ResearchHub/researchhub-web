@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, SyntheticEvent } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -6,9 +6,11 @@ import colors from "~/config/themes/colors";
 
 export default function ReferenceItemRhUserLookupInputTag({
   isSelectable,
-  user: { firstName, lastName, reputation, authorProfile },
+  onSelect,
+  user: { firstName, lastName, reputation, authorProfile, id },
 }: {
   isSelectable?: boolean;
+  onSelect?: (event: SyntheticEvent) => void;
   user: SuggestedUser;
 }): ReactElement {
   return (
@@ -17,9 +19,11 @@ export default function ReferenceItemRhUserLookupInputTag({
         styles.referenceItemRhUserLookupInputTag,
         isSelectable && styles.selectable,
       ])}
+      key={`ReferenceItemRhUserLookupInputTag-${id}-${firstName}-${lastName}-${reputation}`}
+      onClick={isSelectable ? onSelect : undefined}
     >
       <AuthorAvatar author={authorProfile} size={20} trueSize />
-      <div style={{ marginLeft: 8, lineHeight: 16, fontSize: 16}}>
+      <div style={{ marginLeft: 8, lineHeight: 16, fontSize: 16 }}>
         <span>{`${firstName} ${lastName}`}</span>
         <span>{" • "}</span>
         <span>{`${reputation} Rep`} </span>

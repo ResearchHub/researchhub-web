@@ -1,6 +1,6 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import { fetchUserSuggestions } from "~/components/SearchSuggestion/lib/api";
-import { NullableString } from "~/config/types/root_types";
+import { ID, NullableString } from "~/config/types/root_types";
 import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 
 export type InputProps = {
   disabled?: boolean;
+  filterUserIDs: ID[];
   label?: NullableString;
   onUserSelect?: (user: SuggestedUser) => void;
   placeholder?: string;
@@ -55,8 +56,8 @@ export default function ReferenceItemRhUserLookupInput({
   label,
   onUserSelect,
   placeholder,
-  required,
   shouldClearOnSelect,
+  filterUserIDs,
 }: InputProps): ReactElement {
   const [inputValue, setInputValue] = useState<string>("");
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
@@ -76,14 +77,14 @@ export default function ReferenceItemRhUserLookupInput({
 
   const handleSelect = (selectedUser: SuggestedUser): void => {
     onUserSelect && onUserSelect(selectedUser);
-    shouldClearOnSelect;
+    shouldClearOnSelect && setInputValue("");
   };
 
   return (
     <Autocomplete
-      // onSelect={handleSelect}
-      disableCloseOnSelect
       fullWidth
+      clearOnEscape
+      clearOnBlur
       getOptionDisabled={() => true}
       getOptionLabel={
         /* Utilizing renderOption instead. Keeping this to avoid MUI errors */
@@ -94,7 +95,7 @@ export default function ReferenceItemRhUserLookupInput({
       loadingText={"Looking for users ..."}
       noOptionsText={isEmpty(inputValue) ? null : "No users found"}
       onInputChange={handleInputChange}
-      options={suggestedUsers}
+      options={isEmpty(inputValue) ? [] : suggestedUsers}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -107,11 +108,21 @@ export default function ReferenceItemRhUserLookupInput({
           placeholder={placeholder}
         />
       )}
+      filterOptions={(options: SuggestedUser[]): SuggestedUser[] => {
+        return options.filter((option: SuggestedUser): boolean =>
+          !filterUserIDs.includes(option.id)
+        );
+      }}
       renderOption={(_props, userOption: SuggestedUser, _state): ReactNode => {
+        const { id, firstName, lastName, reputation } = userOption;
         return (
           <ReferenceItemRhUserLookupInputTag
             isSelectable
-            key={`RhUserLookup-Input-User-${userOption.id}`}
+            onSelect={(event: SyntheticEvent): void => {
+              // event.preventDefault();
+              handleSelect(userOption);
+            }}
+            key={`RhUserLookup-Input-User-${id}-${firstName}-${lastName}-${reputation}`}
             user={userOption}
           />
         );
