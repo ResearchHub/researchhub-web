@@ -1,5 +1,5 @@
-// import { API } from "@quantfive/js-web-config";
-import { API } from "./api/index";
+import { API } from "@quantfive/js-web-config";
+
 import { AUTH_TOKEN } from "../config/constants";
 import {
   isNullOrUndefined,
@@ -12,7 +12,8 @@ import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/conve
 export const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
-  dev: "localhost:8000",
+  dev: "localhost:8000" /* localhost */,
+  // dev: "127.0.0.1:8000" /* localhost */,
 };
 
 const prepFilters = (filters) => {
