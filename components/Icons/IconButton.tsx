@@ -28,11 +28,11 @@ const styles = StyleSheet.create({
     userSelect: "none",
     alignItems: "center",
     columnGap: "5px",
+    borderRadius: 3,
   },
   withAnimation: {
     ":hover": {
       background: colors.LIGHTER_GREY(),
-      borderRadius: 3,
       transition: "0.3s",
     },
   },

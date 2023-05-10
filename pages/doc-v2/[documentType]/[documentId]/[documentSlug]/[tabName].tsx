@@ -41,7 +41,7 @@ const DocumentPage: NextPage<Args> = ({
   try {
     document = getDocumentFromRaw({ raw: documentData, type: documentType });
   }
-  catch (error) {
+  catch (error:any) {
     captureEvent({ error, msg: "[Document] Could not parse", data: { documentData, documentType } });
     return <Error statusCode={500} />;
   }

@@ -18,20 +18,17 @@ const DocumentBadges = ({ document }: Props) => {
       <ContentBadge
         contentType={document.documentType}
         label={document.documentType}
-        size={"large"}
       />
       {openBountyAmount > 0 &&
         <ContentBadge
           contentType={"bounty"}
           label={`${formatBountyAmount({amount: openBountyAmount})} RSC Bounty`}
-          size={"large"}
         />      
       }
       {tippedAmount > 0 &&
         <ContentBadge
           contentType={"award"}
           label={`${formatBountyAmount({amount: openBountyAmount})} Tipped`}
-          size={"large"}
         />      
       }      
     </div>

@@ -84,10 +84,10 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     cursor: "pointer",
     ":active": {
-      color: colors.PURPLE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover": {
-      color: colors.PURPLE(),
+      color: colors.NEW_BLUE(),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
     },
   },
   tabSelected: {
-    color: colors.PURPLE(),
+    color: colors.NEW_BLUE(),
     borderBottom: "solid 3px",
-    borderColor: colors.PURPLE(),
+    borderColor: colors.NEW_BLUE(),
   },
 });
 

@@ -78,6 +78,7 @@ export class Paper implements TopLevelDocument {
   _isOpenAccess: boolean;
   _documentType: RhDocumentType;
   _apiDocumentType: ApiDocumentType;
+  _originalTitle: string;
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw);
@@ -96,6 +97,7 @@ export class Paper implements TopLevelDocument {
     this._journal = raw.external_source;
     this._documentType = "paper";
     this._apiDocumentType = "paper";
+    this._originalTitle = raw.paper_title;
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote);
@@ -200,6 +202,10 @@ export class Paper implements TopLevelDocument {
   get documentType(): RhDocumentType {
     return this._documentType;
   }  
+
+  get originalTitle(): String {
+    return this._originalTitle;
+  }    
 
   get apiDocumentType(): ApiDocumentType {
     return this._apiDocumentType;
