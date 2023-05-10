@@ -44,6 +44,7 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
     onChange(inputRef.current.textContent);
   }, [userSuggestions, inputRef?.current?.textContent]);
 
+  // NOTE: calvinhlee - this way of debouncing looks off. Need to look into this
   const debouncedHandleInputChange = useCallback(
     debounce(handleInputChange, 250),
     [handleInputChange]

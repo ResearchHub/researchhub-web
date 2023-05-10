@@ -13,9 +13,7 @@ import { event } from "react-ga";
 
 export type InputProps = {
   disabled?: boolean;
-  formID: string;
-  label: string;
-  onInputChange?: (value: any) => void;
+  label?: NullableString;
   onUserSelect?: (user: SuggestedUser) => void;
   placeholder?: string;
   required?: boolean;
@@ -49,18 +47,15 @@ const getDebouncedHandleInputChange = ({
     if (!isEmpty(onLoad) && !isEmpty(queryString)) {
       onLoad(queryString);
     }
-    // debounceRef && debounceRef.clear();
+    debounceRef && clearTimeout(debounceRef);
     debounceRef = setTimeout(async () => {
-      debugger;
       onFetchSucess(await fetchUserSuggestions(queryString));
     }, debounceTime);
   };
 };
 export default function ReferenceItemRhUserLookupInput({
   disabled,
-  formID,
   label,
-  onInputChange,
   onUserSelect,
   placeholder,
   required,
@@ -69,16 +64,18 @@ export default function ReferenceItemRhUserLookupInput({
   const [inputValue, setInputValue] = useState<string>("");
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // NOTE: calvinhlee - this way of debouncing looks off. Need to look into this
+
   const handleInputChange = getDebouncedHandleInputChange({
     debounceTime: 500,
     onInputChange: setInputValue,
-    onFetchSucess: setSuggestedUsers,
+    onFetchSucess: (suggestedUsers: SuggestedUser[]) => {
+      setIsLoading(false);
+      setSuggestedUsers(suggestedUsers);
+    },
     onLoad: (_queryString: string) => {
       setIsLoading(true);
     },
   });
-  console.warn("handleInputChange: ", handleInputChange);
 
   const handleSelect = (selectedUser: SuggestedUser): void => {
     onUserSelect && onUserSelect(selectedUser);
@@ -90,16 +87,21 @@ export default function ReferenceItemRhUserLookupInput({
       // onSelect={handleSelect}
       disableCloseOnSelect
       inputValue={inputValue}
-      renderOption={(props, option: SuggestedUser, state): ReactNode => {
-        return <div>HI</div>;
+      renderOption={(props, userOption: SuggestedUser, state): ReactNode => {
+        if (userOption.id === -1) {
+          return <div>LOADING</div>;
+        } else {
+          return <div>HI</div>;
+        }
       }}
       onInputChange={handleInputChange}
-      options={suggestedUsers}
+      options={isLoading ? [LOADING_SUGGESTION] : suggestedUsers}
       fullWidth
       size="small"
       renderInput={(params) => (
         <TextField
           {...params}
+          disabled={disabled}
           InputProps={{
             ...params.InputProps,
             type: "search",
