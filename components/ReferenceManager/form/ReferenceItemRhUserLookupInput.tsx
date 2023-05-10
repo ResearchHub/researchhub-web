@@ -1,16 +1,11 @@
+import { isEmpty } from "~/config/utils/nullchecks";
+import { fetchUserSuggestions } from "~/components/SearchSuggestion/lib/api";
+import { NullableString } from "~/config/types/root_types";
 import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Autocomplete from "@mui/material/Autocomplete";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import TextField from "@mui/material/TextField";
-import { debounce } from "@mui/material";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
-import { fetchUserSuggestions } from "~/components/SearchSuggestion/lib/api";
-import { NullableString } from "~/config/types/root_types";
-import SuggestUsers from "~/components/SearchSuggestion/SuggestUsers";
-import { Cancelable } from "@mui/utils/debounce";
-import { event } from "react-ga";
 import ReferenceItemRhUserLookupInputTag from "./ReferenceItemRhUserLookupInputTag";
+import TextField from "@mui/material/TextField";
 
 export type InputProps = {
   disabled?: boolean;
