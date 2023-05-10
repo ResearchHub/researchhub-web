@@ -20,12 +20,19 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
+import { useRouter } from "next/router";
 
 interface Props {
   showMessage: ({ show, load }) => void;
   wsResponse: {};
   wsConnected: boolean;
 }
+
+type Preload = {
+  citation_type: string;
+  id: string;
+  created: boolean;
+};
 
 function ReferencesContainer({
   showMessage,
@@ -44,6 +51,7 @@ function ReferencesContainer({
     useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const { currentOrg } = useOrgs();
+  const router = useRouter();
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -51,9 +59,9 @@ function ReferencesContainer({
       formData.append("pdfs[]", file);
     });
     formData.append("organization_id", currentOrg.id);
-    // formData.append('project_id', )
+    formData.append("project_id", router.query.project);
     const url = generateApiUrl("citation_entry/pdf_uploads");
-    const preload = [];
+    const preload: Array<Preload> = [];
 
     acceptedFiles.map(() => {
       const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
@@ -76,7 +84,6 @@ function ReferencesContainer({
         return reference.citation_type === "LOADING";
       });
       const createdCitationJson = JSON.parse(wsResponse).created_citation;
-      createdCitationJson.created = true;
       newReferences[ind] = createdCitationJson;
       setCreatedReferences(newReferences);
     }

@@ -39,23 +39,7 @@ function DroppableZone({
           <section className={css(styles.fullCanvas)}>
             <div {...getRootProps()} className={css(styles.dropzone)}>
               <input {...getInputProps()} required={true} />
-              <>
-                {children}
-                {/* <img
-                  className={css(styles.uploadImage)}
-                  src={"/static/background/homepage-empty-state.png"}
-                  alt="Drag N Drop Icon"
-                />
-                <div className={css(styles.instructions)}>
-                  {"Drag & drop \n"}
-                  <span className={css(styles.subtext)}>
-                    {"your file here, or "}
-                    <span className={css(styles.browse)} id={"browse"}>
-                      {"browse"}
-                    </span>
-                  </span>
-                </div> */}
-              </>
+              <>{children}</>
             </div>
           </section>
         )}
