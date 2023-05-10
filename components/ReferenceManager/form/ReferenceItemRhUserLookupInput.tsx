@@ -103,10 +103,13 @@ export default function ReferenceItemRhUserLookupInput({
           (option: SuggestedUser): boolean => !filterUserIDs.includes(option.id)
         );
       }}
-      renderOption={(_props, userOption: SuggestedUser, _state): ReactNode => {
+      renderOption={(
+        _props,
+        userOption: SuggestedUser,
+        _state
+      ): ReactElement<typeof ReferenceItemRhUserLookupInputTag> => {
         const { id, firstName, lastName, reputation } = userOption;
         return (
-          // Wrapping in Fragment allows proper mouse behaviors for MUI components
           <ReferenceItemRhUserLookupInputTag
             isSelectable
             onSelect={(event: SyntheticEvent): void => {
