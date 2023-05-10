@@ -18,19 +18,6 @@ export type InputProps = {
   shouldClearOnSelect?: boolean;
 };
 
-const LOADING_SUGGESTION: SuggestedUser = {
-  firstName: "loading",
-  lastName: "loading",
-  id: -1,
-  reputation: 0,
-  authorProfile: {
-    isClaimed: false,
-    url: "",
-    description: "",
-    headline: "",
-  },
-};
-
 const getDebouncedHandleInputChange = ({
   debounceTime = 500,
   onLoad,
@@ -109,8 +96,8 @@ export default function ReferenceItemRhUserLookupInput({
         />
       )}
       filterOptions={(options: SuggestedUser[]): SuggestedUser[] => {
-        return options.filter((option: SuggestedUser): boolean =>
-          !filterUserIDs.includes(option.id)
+        return options.filter(
+          (option: SuggestedUser): boolean => !filterUserIDs.includes(option.id)
         );
       }}
       renderOption={(_props, userOption: SuggestedUser, _state): ReactNode => {
