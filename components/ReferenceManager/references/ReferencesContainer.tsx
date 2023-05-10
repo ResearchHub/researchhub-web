@@ -5,7 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactNode } from "react";
+import { Fragment, useState, ReactNode, useEffect } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -32,8 +32,6 @@ function ReferencesContainer({
   wsResponse,
   wsConnected,
 }: Props): ReactNode {
-  console.log(wsConnected);
-  console.log(wsResponse);
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
@@ -62,15 +60,27 @@ function ReferencesContainer({
       preload.push({
         citation_type: "LOADING",
         id: uuid,
+        created: true,
       });
     });
 
     setCreatedReferences(preload);
-    const resp = await fetch(url, api.POST_FILE_CONFIG(formData));
-    const json = await resp.json();
+    const resp = fetch(url, api.POST_FILE_CONFIG(formData));
     setLoading(false);
-    setCreatedReferences(json.created);
   };
+
+  useEffect(() => {
+    if (wsResponse) {
+      const newReferences = [...createdReferences];
+      const ind = newReferences.findIndex((reference) => {
+        return reference.citation_type === "LOADING";
+      });
+      const createdCitationJson = JSON.parse(wsResponse).created_citation;
+      createdCitationJson.created = true;
+      newReferences[ind] = createdCitationJson;
+      setCreatedReferences(newReferences);
+    }
+  }, [wsResponse]);
 
   if (!userAllowed) {
     return <Fragment />;

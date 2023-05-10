@@ -19,6 +19,9 @@ function ReferencesRoot({
   isLoggedIn,
   currentUserID,
 }: Props): ReactElement {
+  const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
+  console.log(wsUrl);
+
   if (!killswitch("reference-manager")) {
     return <Fragment />;
   } else
@@ -30,9 +33,7 @@ function ReferencesRoot({
               title={"ResearchHub Reference Manager"}
             ></HeadComponent>
             {isLoggedIn || !authChecked ? (
-              <ReferencesContainer
-                wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
-              />
+              <ReferencesContainer wsUrl={wsUrl} wsAuth />
             ) : (
               <LoginModal
                 isOpen={true}

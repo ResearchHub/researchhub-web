@@ -63,31 +63,32 @@ export default function ReferencesTable({ createdReferences }) {
     referencesFetchTime,
   });
 
+  function combineAndDeduplicate(arr1, arr2) {
+    const combinedArray = [...arr1, ...arr2];
+    const result = [];
+    const seenIds = new Set();
+    for (const item of combinedArray) {
+      if (!seenIds.has(item.id)) {
+        result.push(item);
+        seenIds.add(item.id);
+      }
+    }
+    return result;
+  }
+
   useEffect(() => {
-    let loadReferences = false;
-    createdReferences.forEach((reference) => {
-      if (reference.citation_type === "LOADING") {
-        loadReferences = true;
+    const originalReferenceTable = [];
+
+    referenceTableRowData.forEach((ref) => {
+      if (!ref.created) {
+        originalReferenceTable.push(ref);
       }
     });
+    const newReferences = combineAndDeduplicate(
+      createdReferences,
+      originalReferenceTable
+    );
 
-    let newReferences = [...createdReferences, ...referenceTableRowData];
-
-    if (!loadReferences) {
-      let count = 0;
-      newReferences = referenceTableRowData.map((reference) => {
-        if (
-          reference.citation_type === "LOADING" &&
-          count < createdReferences.length
-        ) {
-          const ref = createdReferences[count];
-          count += 1;
-          return ref;
-        } else {
-          return reference;
-        }
-      });
-    }
     setReferenceTableRowData(newReferences);
   }, [createdReferences]);
 

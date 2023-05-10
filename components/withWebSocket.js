@@ -48,7 +48,9 @@ export default function withWebSocket(
     const [response, setResponse] = useState(null);
     const [stopped, setStopped] = useState(false);
 
-    useEffect(configureWebSocket, [url, connected]);
+    useEffect(() => {
+      if (url) configureWebSocket();
+    }, [url, connected]);
     useEffect(startingListening, [ws]);
     useEffect(stopConnectAttempts, [connectAttempts]);
 
@@ -102,7 +104,6 @@ export default function withWebSocket(
           return value === origin.hostname;
         });
 
-        debugger;
         if (isAllowed) {
           setResponse(e.data);
         } else {
