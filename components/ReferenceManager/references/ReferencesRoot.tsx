@@ -38,6 +38,7 @@ function ReferencesRoot({
                 isOpen={true}
                 handleClose={undefined}
                 loginCallback={undefined}
+                persistent={undefined}
               />
             )}
           </ReferenceProjectsUpsertContextProvider>
