@@ -20,7 +20,6 @@ function ReferencesRoot({
   currentUserID,
 }: Props): ReactElement {
   const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
-  console.log(wsUrl);
 
   if (!killswitch("reference-manager")) {
     return <Fragment />;

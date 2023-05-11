@@ -182,10 +182,7 @@ function ReferencesContainer({
                       }}
                       endAdornment={
                         <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            edge="end"
-                          >
+                          <IconButton edge="end">
                             <i
                               className="fa-regular fa-magnifying-glass"
                               style={{ fontSize: 16 }}
