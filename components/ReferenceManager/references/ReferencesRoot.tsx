@@ -6,16 +6,21 @@ import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
 import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import { connect } from "react-redux";
 
 type Props = {
   authChecked: boolean;
   isLoggedIn: boolean;
 };
 
-export default function ReferencesRoot({
+function ReferencesRoot({
   authChecked,
   isLoggedIn,
+  currentUserID,
 }: Props): ReactElement {
+  const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
+
   if (!killswitch("reference-manager")) {
     return <Fragment />;
   } else
@@ -27,7 +32,7 @@ export default function ReferencesRoot({
               title={"ResearchHub Reference Manager"}
             ></HeadComponent>
             {isLoggedIn || !authChecked ? (
-              <ReferencesContainer />
+              <ReferencesContainer wsUrl={wsUrl} wsAuth />
             ) : (
               <LoginModal
                 isOpen={true}
@@ -44,4 +49,7 @@ export default function ReferencesRoot({
 const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
   authChecked: state.auth.authChecked,
+  currentUserID: state.auth.user.id,
 });
+
+export default connect(mapStateToProps)(ReferencesRoot);

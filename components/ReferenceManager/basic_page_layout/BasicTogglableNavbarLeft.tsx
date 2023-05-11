@@ -85,7 +85,7 @@ export default function BasicTogglableNavbarLeft({
     setIsDrawerOpen: isUploadDrawerOpen,
     setProjectID: setProjectIDForDrawer,
   } = useReferenceUploadDrawerContext();
-  const { projectsFetchTime } = useReferenceProjectUpsertContext();
+  const { projectsFetchTime, isModalOpen } = useReferenceProjectUpsertContext();
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
@@ -121,10 +121,16 @@ export default function BasicTogglableNavbarLeft({
     <Box
       flexDirection="column"
       width={navWidth}
-      sx={{ borderLeft: "1px solid #e8e8ef", zIndex: 4 }}
+      sx={{
+        borderLeft: "1px solid #e8e8ef",
+        zIndex: 4,
+        background: "#FAFAFC",
+        height: "100%",
+        minHeight: "calc(100vh - 68px)",
+      }}
     >
       <ReferenceProjectsUpsertModal />
-      <Box className="LeftNavbarUserSection" sx={{ background: "#FAFAFC" }}>
+      <Box className="LeftNavbarUserSection">
         <Box
           sx={{
             alignItems: "center",
@@ -220,7 +226,7 @@ export default function BasicTogglableNavbarLeft({
           background: "#FAFAFC",
           display: "flex",
           flexDirection: "column",
-          height: "100vh",
+          height: "100%",
         }}
       >
         <ListItem
