@@ -1,10 +1,10 @@
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { StyleSheet, css } from "aphrodite";
-import { TopLevelDocument } from "~/config/types/root_types";
 import ContentBadge from "../ContentBadge";
+import { GenericDocument } from "./lib/types";
 
 type Props =  {
-  document: TopLevelDocument;
+  document: GenericDocument;
 }
 
 const DocumentBadges = ({ document }: Props) => {
@@ -16,8 +16,8 @@ const DocumentBadges = ({ document }: Props) => {
   return (
     <div className={css(styles.badges)}>
       <ContentBadge
-        contentType={document.documentType}
-        label={document.documentType}
+        contentType={document.type}
+        label={document.type}
       />
       {openBountyAmount > 0 &&
         <ContentBadge

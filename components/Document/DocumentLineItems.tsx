@@ -1,5 +1,4 @@
 import { StyleSheet, css } from "aphrodite";
-import { TopLevelDocument } from "~/config/types/root_types";
 import AuthorList from "../Author/AuthorList";
 import ALink, { styles as linkStyles } from "../ALink";
 import AuthorClaimModal from "../AuthorClaimModal/AuthorClaimModal";
@@ -8,16 +7,18 @@ import { useState } from "react";
 import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown, faLongArrowUp } from "@fortawesome/pro-regular-svg-icons";
+import { GenericDocument, Paper, isPaper } from "./lib/types";
 
-const DocumentLineItems = ({ document }: { document: TopLevelDocument }) => {
+const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
   const auth = useSelector((state: any) => state.auth);
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] = useState<boolean>(false);
   const [isShowingAllMetadata, setIsShowingAllMetadata] = useState<boolean>(false);
 
+
   const lineItems = [
-    ...(document.originalTitle !== document.title
-      ? [{ title: "Title", value: document.originalTitle }]
+    ...(document.title !== document.title
+      ? [{ title: "Title", value: document.title }]
       : []), {
       title: "Authors",
       value: (
@@ -26,13 +27,20 @@ const DocumentLineItems = ({ document }: { document: TopLevelDocument }) => {
           <span style={{ marginLeft: 5, }} className={css(linkStyles.linkThemeSolidPrimary)} onClick={() => setIsAuthorClaimModalOpen(true)}>Are you the author?</span>
         </>
       )
-    }, {
+    },
+    ...(isPaper(document) && document.journal ? [{
       title: "Journal",
       value: document.journal,
-    }, {
+    }] : []),    
+  
+    ...(isPaper(document) && document.publishedDate ? [{
       title: "Published",
-      value: document.datePublished
-    },  ...(document.doi
+      value: document.publishedDate,
+    }] : []),    
+    
+    
+    
+    ...(document.doi
       ? [{
         title: "DOI",
         value: (

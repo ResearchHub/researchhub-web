@@ -1,4 +1,3 @@
-import { TopLevelDocument } from "~/config/types/root_types";
 import { StyleSheet, css } from "aphrodite";
 import DocumentBadges from "./DocumentBadges";
 import DocumentLineItems from "./DocumentLineItems";
@@ -9,10 +8,11 @@ import Image from "next/image";
 import { faArrowDownToBracket } from "@fortawesome/pro-solid-svg-icons";
 import {  faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { GenericDocument, Paper } from "./lib/types";
 
 
 interface Props {
-  document: TopLevelDocument;
+  document: GenericDocument;
 }
 
 const DocumentHeader = ({ document }: Props) => {

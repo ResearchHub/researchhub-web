@@ -1,31 +1,22 @@
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { useRouter } from "next/router";
-import Error from "next/error";
 import { getTabs } from "./tabbedNavigation";
 import { StyleSheet, css } from "aphrodite";
 import DocumentHeader from "../DocumentHeaderV2";
-import { TopLevelDocument } from "~/config/types/root_types";
-import globalColors from "~/config/themes/colors";
+import config from "~/components/Document/lib/config";
+import { GenericDocument } from "./types";
 
 interface Args {
-  document: TopLevelDocument;
+  document: GenericDocument;
   errorCode?: number;
   documentType: string;
   tabName?: string;
   children?: any;
 }
 
-const config = {
-  width: 868,
-  background: "#FCFCFC",
-  border: globalColors.GREY_LINE(1.0),
-}
+
 
 const SharedDocumentPage = ({ document, documentType, tabName, children, errorCode }: Args) => {
-
-  console.log('document', document)
-  console.log('documentType', documentType)
-  console.log('tabName', tabName)
 
   const router = useRouter();
   const tabs = getTabs({ router });
@@ -36,7 +27,9 @@ const SharedDocumentPage = ({ document, documentType, tabName, children, errorCo
         <div className={css(styles.headerWrapper)}>
           <div className={css(styles.headerContentWrapper)}>
             <DocumentHeader document={document} />
-            <HorizontalTabBar tabs={tabs} />
+            <div style={{ marginLeft: -10 }}>
+              <HorizontalTabBar tabs={tabs} />
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +57,7 @@ const styles = StyleSheet.create({
     borderBottom: `2px solid ${config.border}`,
   },
   headerContentWrapper: {
-    width: config.width,
+    width: config.maxWidth,
   },
   bodyArea: {
     display: "flex",
@@ -72,7 +65,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   bodyContentWrapper: {
-    width: config.width,
+    width: config.maxWidth,
   }
 });
 

@@ -1,13 +1,10 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
-import API from "~/config/api";
-import CommentFeed from "~/components/Comment/CommentFeed";
 import { useState } from "react";
-import { TopLevelDocument } from "~/config/types/root_types";
 import { captureEvent } from "~/config/utils/events";
 import { parseComment } from "~/components/Comment/lib/types";
-import getDocumentFromRaw from "~/components/Document/lib/types";
+import getDocumentFromRaw, { GenericDocument } from "~/components/Document/lib/types";
 import Error from "next/error";
 import { useRouter } from "next/router";
 
@@ -37,7 +34,7 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={errorCode} />;
   }
 
-  let document: TopLevelDocument;
+  let document: GenericDocument;
   try {
     document = getDocumentFromRaw({ raw: documentData, type: documentType });
   }
@@ -61,7 +58,7 @@ const DocumentPage: NextPage<Args> = ({
       tabName={tabName}
       errorCode={errorCode}
     >
-      <CommentFeed
+      {/* <CommentFeed
         initialComments={parsedComments}
         document={document}
         onCommentCreate={() => {
@@ -77,7 +74,7 @@ const DocumentPage: NextPage<Args> = ({
           alert('implement me');
         }}
         totalCommentCount={commentData.count}
-      />
+      /> */}
     </SharedDocumentPage>
   );
 };
