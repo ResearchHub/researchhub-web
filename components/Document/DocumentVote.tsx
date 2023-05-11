@@ -1,31 +1,24 @@
-import { useContext, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
-import { RhDocumentType, ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
-import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
 import VoteWidget from "../VoteWidget";
 import { StyleSheet } from "aphrodite";
-import colors from "./lib/colors";
-import { voteForComment } from "./lib/api";
 import { Vote } from "~/config/types/vote";
-import { CommentTreeContext } from "./lib/contexts";
 import { MessageActions } from "~/redux/message";
+import { GenericDocument } from "./lib/types";
+import { voteForDocument } from "./api/voteForDocument";
+
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
-  score: number;
-  userVote: Vote | null;
-  document: TopLevelDocument;
+  document: GenericDocument;
 };
 
 const DocumentVote = ({
   document,
-  score,
-  userVote,
 }: Args) => {
-  const [_score, _setScore] = useState<number>(score);
-  const [_userVote, _setUserVote] = useState(userVote);
+  const [_score, _setScore] = useState<number>(document.score);
+  const [_userVote, _setUserVote] = useState(document.userVote);
   const dispatch = useDispatch();
 
   const handleVoteSuccess = ({ userVote }: { userVote: Vote }) => {
@@ -61,10 +54,9 @@ const DocumentVote = ({
   return (
     <VoteWidget
       score={_score}
-      horizontalView={true}
       onUpvote={async () => {
         try {
-          const userVote = await voteForComment({
+          const userVote = await voteForDocument({
             voteType: "upvote",
             documentId: document.id,
             documentType: document.apiDocumentType,
@@ -80,7 +72,7 @@ const DocumentVote = ({
       // @ts-ignore
       onNeutralVote={async () => {
         try {
-          const userVote = await voteForComment({
+          const userVote = await voteForDocument({
             voteType: "neutralvote",
             documentId: document.id,
             documentType: document.apiDocumentType,
@@ -95,9 +87,8 @@ const DocumentVote = ({
       }}
       onDownvote={async () => {
         try {
-          const userVote = await voteForComment({
+          const userVote = await voteForDocument({
             voteType: "downvote",
-            commentId: comment.id,
             documentId: document.id,
             documentType: document.apiDocumentType,
           });
@@ -124,13 +115,11 @@ const styles = StyleSheet.create({
   downvote: {
     fontSize: 16,
     marginLeft: 2,
-    color: colors.secondary.text,
   },
   upvote: {
     fontSize: 16,
     marginRight: 2,
     marginLeft: -1,
-    color: colors.secondary.text,
   },
   pill: {
     background: "unset",

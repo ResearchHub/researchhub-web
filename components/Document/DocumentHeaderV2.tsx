@@ -8,7 +8,8 @@ import Image from "next/image";
 import { faArrowDownToBracket } from "@fortawesome/pro-solid-svg-icons";
 import {  faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GenericDocument, Paper } from "./lib/types";
+import { GenericDocument } from "./lib/types";
+import DocumentVote from "./DocumentVote";
 
 
 interface Props {
@@ -21,16 +22,16 @@ const DocumentHeader = ({ document }: Props) => {
       <div className={css(styles.badgesWrapper)}>
         <DocumentBadges document={document} />
       </div>
-      <h1>{document.title}</h1>
+      <div className={css(styles.titleWrapper)}>
+        <div className={css(styles.voteWrapper)}>
+          <DocumentVote document={document} />
+        </div>
+        <h1>{document.title}</h1>
+      </div>
       <DocumentLineItems document={document} />
       <div className={css(styles.btnWrapper)}>
         <IconButton overrideStyle={styles.btn} onClick={() => null}>
-          <Image
-            src="/static/icons/tip.png"
-            height={21}
-            width={21}
-            alt="Tip"
-          />
+          <ResearchCoinIcon version={6} width={21} height={21} />
           <span>Tip</span>
         </IconButton>
         <IconButton overrideStyle={styles.btn} onClick={() => null}>
@@ -39,8 +40,7 @@ const DocumentHeader = ({ document }: Props) => {
         </IconButton>
         <IconButton overrideStyle={styles.btnDots} onClick={() => null}>
           <FontAwesomeIcon icon={faEllipsis} />
-        </IconButton>        
-        
+        </IconButton>
       </div>
     </div>
   )
@@ -50,6 +50,14 @@ const styles = StyleSheet.create({
   badgesWrapper: {
     marginBottom: 10,
     alignItems: "center",
+  },
+  titleWrapper: {
+    position: "relative",
+  },
+  voteWrapper: {
+    position: "absolute",
+    left: -48,
+    top: -28,
   },
   btn: {
     display: "inline-flex",

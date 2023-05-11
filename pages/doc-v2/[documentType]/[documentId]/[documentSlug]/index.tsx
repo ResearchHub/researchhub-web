@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import getDocumentFromRaw, { GenericDocument } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
+import DocumentViewer from "~/components/Document/DocumentViewer";
 
 interface Args {
   documentData?: any;
@@ -40,7 +41,9 @@ const DocumentPage: NextPage<Args> = ({
       document={document}
       errorCode={errorCode}
       documentType={documentType}
-    />
+    >
+      <DocumentViewer document={document} />
+    </SharedDocumentPage>
   );
 };
 

@@ -56,7 +56,6 @@ export interface Props {
 }
 
 export const parsePaper = (raw:any):Paper => {
-  console.log('raw', raw)
   const parsed:Paper = {
     id: raw.id,
     authors: parsePaperAuthors(raw),

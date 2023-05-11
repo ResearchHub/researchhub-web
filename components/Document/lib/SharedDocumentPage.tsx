@@ -14,8 +14,6 @@ interface Args {
   children?: any;
 }
 
-
-
 const SharedDocumentPage = ({ document, documentType, tabName, children, errorCode }: Args) => {
 
   const router = useRouter();
@@ -27,7 +25,7 @@ const SharedDocumentPage = ({ document, documentType, tabName, children, errorCo
         <div className={css(styles.headerWrapper)}>
           <div className={css(styles.headerContentWrapper)}>
             <DocumentHeader document={document} />
-            <div style={{ marginLeft: -10 }}>
+            <div>
               <HorizontalTabBar tabs={tabs} />
             </div>
           </div>
@@ -46,10 +44,10 @@ const styles = StyleSheet.create({
   pageWrapper: {
     height: "100%",
     background: config.background,
-    paddingTop: 25,
   },
   topArea: {
     background: "white",
+    paddingTop: 25,
   },
   headerWrapper: {
     display: "flex",
