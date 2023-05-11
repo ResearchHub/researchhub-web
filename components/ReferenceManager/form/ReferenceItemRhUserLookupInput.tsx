@@ -20,7 +20,7 @@ export type InputProps = {
 
 const getDebouncedHandleInputChange = ({
   debounceTime = 500,
-  onLoad,
+  onFetchLoad,
   onInputChange,
   onFetchSucess,
 }) => {
@@ -28,8 +28,8 @@ const getDebouncedHandleInputChange = ({
   return async (event: SyntheticEvent, queryString: string) => {
     event.preventDefault();
     onInputChange(queryString);
-    if (!isEmpty(onLoad) && !isEmpty(queryString)) {
-      onLoad(queryString);
+    if (!isEmpty(onFetchLoad) && !isEmpty(queryString)) {
+      onFetchLoad(queryString);
     } else if (isEmpty(queryString)) {
       onFetchSucess([]);
       debounceRef && clearTimeout(debounceRef);
@@ -51,17 +51,17 @@ export default function ReferenceItemRhUserLookupInput({
 }: InputProps): ReactElement {
   const [inputValue, setInputValue] = useState<string>("");
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLookupLoading, setIsLookupLoading] = useState<boolean>(false);
 
   const handleInputChange = getDebouncedHandleInputChange({
     debounceTime: 500,
     onInputChange: setInputValue,
     onFetchSucess: (suggestedUsers: SuggestedUser[]) => {
-      setIsLoading(false);
+      setIsLookupLoading(false);
       setSuggestedUsers(suggestedUsers);
     },
-    onLoad: (_queryString: string) => {
-      setIsLoading(true);
+    onFetchLoad: (_queryString: string) => {
+      setIsLookupLoading(true);
     },
   });
 
@@ -81,7 +81,7 @@ export default function ReferenceItemRhUserLookupInput({
         (option: SuggestedUser): string => option.firstName
       }
       inputValue={inputValue}
-      loading={isLoading}
+      loading={isLookupLoading}
       loadingText={"Looking for users ..."}
       noOptionsText={isEmpty(inputValue) ? "" : "No user(s) found"}
       onInputChange={handleInputChange}
