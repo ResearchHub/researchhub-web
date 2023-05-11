@@ -5,22 +5,22 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { connect } from "react-redux";
 import { Fragment, useState, ReactNode, useEffect } from "react";
-import { MessageActions } from "~/redux/message";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { useRouter } from "next/router";
-import api, { generateApiUrl } from "~/config/api";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import DroppableZone from "~/components/DroppableZone";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
-import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
+import DroppableZone from "~/components/DroppableZone";
+import api, { generateApiUrl } from "~/config/api";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { connect } from "react-redux";
+import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
+import { useRouter } from "next/router";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -34,6 +34,7 @@ type Preload = {
   created: boolean;
 };
 
+// TODO: @@lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
   wsResponse,
@@ -43,26 +44,25 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
+  const { currentOrg } = useOrgs();
   const router = useRouter();
-  const currentProjectName = router.query.project_name;
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
-    useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
-  const { currentOrg } = useOrgs();
+  const currentProjectName = router.query.project_name;
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
     acceptedFiles.forEach((file) => {
       formData.append("pdfs[]", file);
     });
-    formData.append("organization_id", currentOrg?.id);
-    formData.append("project_id", router?.query?.project);
+    formData.append("organization_id", currentOrg.id);
+    formData.append("project_id", router.query.project);
     const url = generateApiUrl("citation_entry/pdf_uploads");
     const preload: Array<Preload> = [];
+
     acceptedFiles.map(() => {
       const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
       preload.push({
@@ -94,7 +94,6 @@ function ReferencesContainer({
   } else {
     return (
       <Fragment>
-        {/* TODO: calvinhlee - move this to context */}
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
@@ -102,7 +101,6 @@ function ReferencesContainer({
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
-            // theme={theme}
           />
           <DroppableZone
             multiple
@@ -110,27 +108,30 @@ function ReferencesContainer({
             handleFileDrop={handleFileDrop}
             accept=".pdf"
           >
-            <div style={{ marginBottom: 32 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                {currentProjectName ?? "All References"}
-              </Typography>
-            </div>
-            <Box className="ReferencesContainerMain">
-              <Box
-                className="ReferencesContainerTitleSection"
-                sx={{
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  height: 44,
-                  marginBottom: "20px",
-                }}
-              >
-                <div
-                  className="ReferenceContainerSearchFieldWrap"
-                  style={{
-                    maxWidth: 400,
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "32px 32px",
+                width: "100%",
+                overflow: "auto",
+                boxSizing: "border-box",
+                flex: 1,
+              }}
+              className={"references-section"}
+            >
+              <div style={{ marginBottom: 32 }}>
+                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                  {currentProjectName ?? "All References"}
+                </Typography>
+              </div>
+              <Box className="ReferencesContainerMain">
+                <Box
+                  className="ReferencesContainerTitleSection"
+                  sx={{
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "space-between",
                     width: "100%",
                     height: 44,
                     marginBottom: "20px",
@@ -181,8 +182,8 @@ function ReferencesContainer({
                       }
                     />
                   </div>
-                  <ReferencesTable createdReferences={createdReferences} />
-                </div>
+                </Box>
+                <ReferencesTable createdReferences={createdReferences} />
               </Box>
             </Box>
           </DroppableZone>
