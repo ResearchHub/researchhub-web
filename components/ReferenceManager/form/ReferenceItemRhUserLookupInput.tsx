@@ -1,7 +1,7 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import { fetchUserSuggestions } from "~/components/SearchSuggestion/lib/api";
 import { ID, NullableString } from "~/config/types/root_types";
-import { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import Autocomplete from "@mui/material/Autocomplete";
 import ReferenceItemRhUserLookupInputTag from "./ReferenceItemRhUserLookupInputTag";
