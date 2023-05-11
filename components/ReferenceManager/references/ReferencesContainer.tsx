@@ -5,22 +5,22 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
+import { connect } from "react-redux";
 import { Fragment, useState, ReactNode, useEffect } from "react";
+import { MessageActions } from "~/redux/message";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useRouter } from "next/router";
+import api, { generateApiUrl } from "~/config/api";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
-import ReferencesTable from "./reference_table/ReferencesTable";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 import DroppableZone from "~/components/DroppableZone";
-import api, { generateApiUrl } from "~/config/api";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { connect } from "react-redux";
-import { MessageActions } from "~/redux/message";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
+import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
+import ReferencesTable from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
-import { useRouter } from "next/router";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -59,11 +59,10 @@ function ReferencesContainer({
     acceptedFiles.forEach((file) => {
       formData.append("pdfs[]", file);
     });
-    formData.append("organization_id", currentOrg.id);
-    formData.append("project_id", router.query.project);
+    formData.append("organization_id", currentOrg?.id);
+    formData.append("project_id", router?.query?.project);
     const url = generateApiUrl("citation_entry/pdf_uploads");
     const preload: Array<Preload> = [];
-
     acceptedFiles.map(() => {
       const uuid = window.URL.createObjectURL(new Blob([])).substring(31);
       preload.push({
@@ -96,21 +95,13 @@ function ReferencesContainer({
     return (
       <Fragment>
         {/* TODO: calvinhlee - move this to context */}
-        <ReferenceManualUploadDrawer
-          drawerProps={{
-            isDrawerOpen: isManualUploadDrawerOpen,
-            setIsDrawerOpen: setIsManualUploadDrawerOpen,
-          }}
-          key="root-nav"
-        />
-
+        <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
-            setIsManualUploadDrawerOpen={setIsManualUploadDrawerOpen}
             // theme={theme}
           />
           <DroppableZone
@@ -190,8 +181,8 @@ function ReferencesContainer({
                       }
                     />
                   </div>
-                </Box>
-                <ReferencesTable createdReferences={createdReferences} />
+                  <ReferencesTable createdReferences={createdReferences} />
+                </div>
               </Box>
             </Box>
           </DroppableZone>
