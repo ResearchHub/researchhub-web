@@ -12,13 +12,6 @@ export function renderNestedReferenceProjectsNavbarEl({
   referenceProject,
 }: Args) {
   const hasChildren = !isEmpty(referenceProject.children);
-  console.warn(
-    "yo",
-    (referenceProject?.editors ?? []).map((rawUser: any) =>
-      parseUserSuggestion(rawUser)
-    )
-  );
-
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <ReferenceProjectsNavbarEl
