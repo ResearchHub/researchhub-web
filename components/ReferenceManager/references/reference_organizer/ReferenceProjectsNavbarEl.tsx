@@ -11,6 +11,7 @@ import ALink from "~/components/ALink";
 import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+import colors from "~/config/themes/colors";
 
 type Props = {
   admins: SuggestedUser[];
@@ -19,6 +20,7 @@ type Props = {
   projectID: ID;
   projectName: string;
   isPublic: boolean;
+  active: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
@@ -27,6 +29,7 @@ export default function ReferenceProjectsNavbarEl({
   projectID,
   projectName,
   isPublic,
+  active,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -48,11 +51,11 @@ export default function ReferenceProjectsNavbarEl({
         justifyContent: "space-between",
         maxHeight: 50,
         px: 2.5,
+        background: active ? colors.GREY(0.2) : "",
         margin: "8px",
-        marginLeft: 0,
-        marginRight: 0,
+        borderRadius: "4px",
+        padding: "8px",
         boxSizing: "border-box",
-        width: "100%",
       }}
     >
       <ALink

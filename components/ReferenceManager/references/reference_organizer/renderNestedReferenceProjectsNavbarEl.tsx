@@ -5,11 +5,13 @@ import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 type Args = {
   currentOrgSlug: string;
   referenceProject: any;
+  active: boolean;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
   currentOrgSlug,
   referenceProject,
+  active,
 }: Args) {
   const hasChildren = !isEmpty(referenceProject.children);
   return (
@@ -22,6 +24,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         collaborators={(referenceProject?.editors ?? []).map((rawUser: any) =>
           parseUserSuggestion(rawUser)
         )}
+        active={active}
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}

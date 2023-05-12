@@ -29,6 +29,7 @@ import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
 import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
+import { useRouter } from "next/router";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -90,6 +91,7 @@ export default function BasicTogglableNavbarLeft({
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
+  const router = useRouter();
 
   const currentOrgID = currentOrg?.id ?? null;
   const currentOrgSlug = currentOrg?.slug ?? null;
@@ -112,6 +114,7 @@ export default function BasicTogglableNavbarLeft({
       return renderNestedReferenceProjectsNavbarEl({
         currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
         referenceProject,
+        active: router.query.project_name === referenceProject.project_name,
       });
     }
   );
