@@ -17,7 +17,7 @@ interface Args {
 const SharedDocumentPage = ({ document, documentType, tabName, children, errorCode }: Args) => {
 
   const router = useRouter();
-  const tabs = getTabs({ router });
+  const tabs = getTabs({ router, document });
 
   return (
     <div className={css(styles.pageWrapper)}>

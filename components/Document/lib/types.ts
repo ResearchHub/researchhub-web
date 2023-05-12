@@ -16,6 +16,11 @@ export type DocumentType =
   | "post"
   | "question"
 
+export type ReviewSummary = {
+  count: number;
+  averageRating: number;
+}
+
 export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
 
 export interface GenericDocument {
@@ -32,7 +37,8 @@ export interface GenericDocument {
   type: DocumentType;
   apiDocumentType: ApiDocumentType;
   doi?: string;
-  purchases: Purchase[];  
+  purchases: Purchase[];
+  reviewSummary: ReviewSummary;
   raw: any; // Strictly for legacy purposes
 }
 
@@ -58,6 +64,13 @@ export interface Props {
   type: string;
 }
 
+export const parseReviewSummary = (raw:any):ReviewSummary => {
+  return {
+    count: raw.count,
+    averageRating: raw.avg,
+  }
+}
+
 export const parsePaper = (raw:any):Paper => {
   const parsed:Paper = {
     id: raw.id,
@@ -79,7 +92,9 @@ export const parsePaper = (raw:any):Paper => {
     publishedDate: formatDateStandard(raw.paper_publish_date),
     externalUrl: raw.url,
     tipAmount: raw.boost_amount,
+    reviewSummary: parseReviewSummary(raw.unified_document.reviews),
     ...(raw.file && { formats: [{ type: "pdf", url: raw.file }] }),
+
     raw,
   }
 

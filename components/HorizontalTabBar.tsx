@@ -4,8 +4,17 @@ import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import { HTMLAttributes, AnchorHTMLAttributes } from "react";
 
+export type Tab = {
+  label: string;
+  value: string;
+  href?: string;
+  isSelected?: boolean;
+  icon: React.ReactNode;
+  pillContent?: React.ReactNode | string;
+}
+
 interface Props {
-  tabs: Array<any>;
+  tabs: Array<Tab>;
   onClick?: Function;
   containerStyle?: any;
 }
@@ -24,7 +33,10 @@ const HorizontalTabBar = ({ tabs, onClick, containerStyle = null }: Props) => {
 
     return (
       <_WrapperElement type={tabType} props={props} key={tab.value}>
-        {label}
+        <div className={css(styles.tabContentWrapper)}>
+          {tab.icon}
+          {label}
+        </div>
       </_WrapperElement>
     );
   };
@@ -96,6 +108,11 @@ const styles = StyleSheet.create({
       padding: 16,
       fontSize: 16,
     },
+  },
+  tabContentWrapper: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: "8px",
   },
   tabSelected: {
     color: colors.NEW_BLUE(),
