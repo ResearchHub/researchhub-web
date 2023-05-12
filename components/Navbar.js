@@ -82,6 +82,12 @@ const Navbar = (props) => {
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
   const { open, close } = useWeb3Modal();
 
+  const unstickyNavbar = router.pathname.includes(
+    "/paper/[paperId]/[paperName]",
+    "/doc-v2/[documentType]/[documentId]/[documentSlug]",
+    "/hubs"
+  );
+
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook")
     ? "Lab Notebook"
@@ -152,9 +158,7 @@ const Navbar = (props) => {
         ref={navbarRef}
         className={`${css(
           styles.navbarContainer,
-          (router.route === "/paper/[paperId]/[paperName]" ||
-            router.route === "/hubs") &&
-            styles.unstickyNavbar
+          unstickyNavbar && styles.unstickyNavbar
         )} navbar`}
       >
         <div className={css(styles.logoContainer)}>
