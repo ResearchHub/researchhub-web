@@ -25,6 +25,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}
+        isPublic={referenceProject?.is_public}
       />
       {hasChildren && (
         <div

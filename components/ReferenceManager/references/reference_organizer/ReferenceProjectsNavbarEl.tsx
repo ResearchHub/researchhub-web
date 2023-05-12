@@ -18,6 +18,7 @@ type Props = {
   orgSlug: string;
   projectID: ID;
   projectName: string;
+  isPublic: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
@@ -25,6 +26,7 @@ export default function ReferenceProjectsNavbarEl({
   orgSlug,
   projectID,
   projectName,
+  isPublic,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -105,6 +107,7 @@ export default function ReferenceProjectsNavbarEl({
             collaborators,
             projectID,
             projectName,
+            isPublic,
           });
           setIsProjectUpsertModalOpen(true);
         }}
