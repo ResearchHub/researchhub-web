@@ -10,14 +10,18 @@ import { useReferenceUploadDrawerContext } from "../reference_uploader/context/R
 import ALink from "~/components/ALink";
 import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 
 type Props = {
+  admins: SuggestedUser[];
+  collaborators: SuggestedUser[];
   orgSlug: string;
   projectID: ID;
   projectName: string;
 };
 
 export default function ReferenceProjectsNavbarEl({
+  collaborators,
   orgSlug,
   projectID,
   projectName,
@@ -98,6 +102,7 @@ export default function ReferenceProjectsNavbarEl({
           setProjectUpsertPurpose("update");
           setProjectUpsertValue({
             ...DEFAULT_PROJECT_VALUES,
+            collaborators,
             projectID,
             projectName,
           });

@@ -15,14 +15,6 @@ type Props = {
   disabled?: boolean;
 };
 
-const useEffectParseCollaborators = ({ projectID, setCollaborators }) => {
-  useEffect((): void => {
-    if (!isEmpty(projectID)) {
-      // TODO: calvinhlee - resolve this once permissions is finished in BE
-    }
-  }, [projectID, setCollaborators]);
-};
-
 export default function ReferenceCollaboratorsSection({
   label,
   disabled,
@@ -39,8 +31,6 @@ export default function ReferenceCollaboratorsSection({
       collaborators: newCollaborators,
     });
   };
-
-  useEffectParseCollaborators({ projectID, setCollaborators });
 
   const inviteeEls = collaborators.map((targetInvitee: SuggestedUser) => {
     return (

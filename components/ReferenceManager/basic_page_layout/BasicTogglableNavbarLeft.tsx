@@ -93,7 +93,6 @@ export default function BasicTogglableNavbarLeft({
 
   const currentOrgID = currentOrg?.id ?? null;
   const currentOrgSlug = currentOrg?.slug ?? null;
-
   useEffect((): void => {
     if (!isEmpty(currentOrgID)) {
       fetchReferenceProjects({

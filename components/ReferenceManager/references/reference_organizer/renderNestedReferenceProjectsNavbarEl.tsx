@@ -1,5 +1,6 @@
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
+import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 
 type Args = {
   currentOrgSlug: string;
@@ -11,10 +12,23 @@ export function renderNestedReferenceProjectsNavbarEl({
   referenceProject,
 }: Args) {
   const hasChildren = !isEmpty(referenceProject.children);
+  console.warn(
+    "yo",
+    (referenceProject?.editors ?? []).map((rawUser: any) =>
+      parseUserSuggestion(rawUser)
+    )
+  );
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <ReferenceProjectsNavbarEl
         key={`ref-project-${referenceProject?.id}`}
+        admins={(referenceProject?.admins ?? []).map((rawUser: any) =>
+          parseUserSuggestion(rawUser)
+        )}
+        collaborators={(referenceProject?.editors ?? []).map((rawUser: any) =>
+          parseUserSuggestion(rawUser)
+        )}
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}

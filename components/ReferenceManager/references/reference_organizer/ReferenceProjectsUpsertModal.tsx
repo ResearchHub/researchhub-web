@@ -5,6 +5,7 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
+import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent } from "react";
 import { Typography } from "@mui/material";
 import { upsertReferenceProject } from "./api/upsertReferenceProject";
@@ -42,11 +43,13 @@ export default function ReferenceProjectsUpsertModal({
   };
 
   const handleSubmit = () => {
-    const { projectID, projectName } = projectValue;
+    const { collaborators, isPublic, projectID, projectName } = projectValue;
     const formattedPayload = {
+      collaborators: collaborators.map((collaborator): ID => collaborator.id),
+      is_public: isPublic,
       organization: currentOrg?.id,
-      project: projectID,
       project_name: nullthrows(projectName, "Project name may not be null"),
+      project: projectID,
     };
     upsertReferenceProject({
       onSuccess: (result) => {
