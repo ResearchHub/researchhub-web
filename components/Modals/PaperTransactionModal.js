@@ -864,7 +864,7 @@ class PaperTransactionModal extends Component {
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={`Support ${isPaper ? "Paper" : "Post"}`}
+        title={`Tip Authors`}
       >
         {this.renderContent(isPaper)}
       </BaseModal>

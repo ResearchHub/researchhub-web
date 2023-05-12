@@ -2,7 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
 type Args = {
-  onClick: Function;
+  onClick?: Function;
   children?: any;
   overrideStyle?: any;
 };
@@ -11,7 +11,7 @@ const IconButton = ({ onClick, children, overrideStyle }: Args) => {
   return (
     <div
       className={css(styles.root, styles.withAnimation, overrideStyle)}
-      onClick={(e) => onClick(e)}
+      onClick={(e) => onClick && onClick(e)}
     >
       {children}
     </div>

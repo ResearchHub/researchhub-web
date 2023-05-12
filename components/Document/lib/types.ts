@@ -1,4 +1,5 @@
 import { Hub, parseHub } from "~/config/types/hub";
+import { Purchase } from "~/config/types/purchase";
 import { AuthorProfile, ID, RHUser, UnifiedDocument, parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
 import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
@@ -31,6 +32,8 @@ export interface GenericDocument {
   type: DocumentType;
   apiDocumentType: ApiDocumentType;
   doi?: string;
+  purchases: Purchase[];  
+  raw: any; // Strictly for legacy purposes
 }
 
 export type Paper = GenericDocument & {
@@ -75,7 +78,9 @@ export const parsePaper = (raw:any):Paper => {
     laymanTitle: raw.title,
     publishedDate: formatDateStandard(raw.paper_publish_date),
     externalUrl: raw.url,
+    tipAmount: raw.boost_amount,
     ...(raw.file && { formats: [{ type: "pdf", url: raw.file }] }),
+    raw,
   }
 
   return parsed;

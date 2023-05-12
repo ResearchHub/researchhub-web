@@ -10,13 +10,22 @@ import {  faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GenericDocument } from "./lib/types";
 import DocumentVote from "./DocumentVote";
-
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
+import { ModalActions } from "~/redux/modals";
+import { useDispatch } from "react-redux";
+import dynamic from "next/dynamic";
+const PaperTransactionModal = dynamic(() =>
+  import("~/components/Modals/PaperTransactionModal")
+);
 
 interface Props {
   document: GenericDocument;
 }
 
 const DocumentHeader = ({ document }: Props) => {
+
+  const dispatch = useDispatch();
+
   return (
     <div>
       <div className={css(styles.badgesWrapper)}>
@@ -30,10 +39,19 @@ const DocumentHeader = ({ document }: Props) => {
       </div>
       <DocumentLineItems document={document} />
       <div className={css(styles.btnWrapper)}>
-        <IconButton overrideStyle={styles.btn} onClick={() => null}>
-          <ResearchCoinIcon version={6} width={21} height={21} />
-          <span>Tip</span>
-        </IconButton>
+
+        <PermissionNotificationWrapper
+          modalMessage="edit document"
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          onClick={() => dispatch(ModalActions.openPaperTransactionModal(true))}
+          hideRipples={true}
+        >
+          <IconButton overrideStyle={styles.btn}>
+            <ResearchCoinIcon version={6} width={21} height={21} />
+            <span>Tip Authors</span>
+          </IconButton>
+        </PermissionNotificationWrapper>      
         <IconButton overrideStyle={styles.btn} onClick={() => null}>
           <FontAwesomeIcon icon={faArrowDownToBracket} />
           <span>PDF</span>
@@ -42,6 +60,12 @@ const DocumentHeader = ({ document }: Props) => {
           <FontAwesomeIcon icon={faEllipsis} />
         </IconButton>
       </div>
+      <PaperTransactionModal
+        // @ts-ignore 
+        paper={document.raw}
+        // @ts-ignore
+        updatePaperState={() => alert("Implement me")}
+      />
     </div>
   )
 }
