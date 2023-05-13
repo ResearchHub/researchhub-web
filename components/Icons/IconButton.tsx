@@ -5,12 +5,13 @@ type Args = {
   onClick?: Function;
   children?: any;
   overrideStyle?: any;
+  variant?: "round";
 };
 
-const IconButton = ({ onClick, children, overrideStyle }: Args) => {
+const IconButton = ({ onClick, children, overrideStyle, variant }: Args) => {
   return (
     <div
-      className={css(styles.root, styles.withAnimation, overrideStyle)}
+      className={css(styles.root, styles.withAnimation, variant && styles[`variant-${variant}`], overrideStyle)}
       onClick={(e) => onClick && onClick(e)}
     >
       {children}
@@ -30,6 +31,17 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     borderRadius: 3,
   },
+  [`variant-round`]: {
+    display: "inline-flex",
+    fontWeight: 500,
+    columnGap: "7px",
+    alignItems: "center",
+    padding: "6px 12px",
+    height: 36,
+    boxSizing: "border-box",
+    borderRadius: "50px",
+    border: `1px solid ${colors.LIGHT_GREY()}`
+  },  
   withAnimation: {
     ":hover": {
       background: colors.LIGHTER_GREY(),
