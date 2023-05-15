@@ -1,19 +1,22 @@
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
+import { NullableString } from "~/config/types/root_types";
 
 type Args = {
   currentOrgSlug: string;
   referenceProject: any;
-  active: boolean;
+  activeProjectName: NullableString;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
   currentOrgSlug,
   referenceProject,
-  active,
+  activeProjectName,
 }: Args) {
   const hasChildren = !isEmpty(referenceProject.children);
+  const isActive = activeProjectName === referenceProject.project_name;
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <ReferenceProjectsNavbarEl
@@ -24,7 +27,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         collaborators={(referenceProject?.editors ?? []).map((rawUser: any) =>
           parseUserSuggestion(rawUser)
         )}
-        active={active}
+        active={isActive}
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}
@@ -38,6 +41,7 @@ export function renderNestedReferenceProjectsNavbarEl({
             return renderNestedReferenceProjectsNavbarEl({
               currentOrgSlug,
               referenceProject: childReferenceProject,
+              activeProjectName,
             });
           })}
         </div>

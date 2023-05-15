@@ -6,69 +6,69 @@ import {
 } from "~/config/utils/nullchecks";
 import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
-import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
+import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import { useRouter } from "next/router";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
-import ALink from "~/components/ALink";
-import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import BasicTogglableNavbarButton from "./BasicTogglableNavbarButton";
 import Divider from "@mui/material/Divider";
-import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
+import HailIcon from "@mui/icons-material/Hail";
+import HomeIcon from "@mui/icons-material/Home";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
-import ReferenceProjectsNavbarEl from "../references/reference_organizer/ReferenceProjectsNavbarEl";
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
-import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import Typography from "@mui/material/Typography";
-import ViewDayOutlinedIcon from "@mui/icons-material/ViewDayOutlined";
-import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
-import { useRouter } from "next/router";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
 
-const HOME_NAV_BUTTON_CONFIG: {
-  icon: ReactNode;
-  id?: string;
-  label: string;
-  path?: string;
-}[] = [
-  {
-    label: "All References",
-    icon: <ViewDayOutlinedIcon fontSize="small" sx={{ color: "#7C7989" }} />,
-  },
-  {
-    label: "Recently Added",
-    icon: <AccessTimeOutlinedIcon fontSize="small" sx={{ color: "#7C7989" }} />,
-  },
-  {
-    label: "Recent Read",
-    icon: (
-      <BookmarkBorderOutlinedIcon fontSize="small" sx={{ color: "#7C7989" }} />
-    ),
-  },
-  {
-    label: "Favorites",
-    icon: (
-      <StarOutlineOutlinedIcon fontSize="small" sx={{ color: "#7C7989" }} />
-    ),
-  },
-  {
-    label: "Recent Activities",
-    icon: <HistoryOutlinedIcon fontSize="small" sx={{ color: "#7C7989" }} />,
-  },
-  {
-    label: "Trash",
-    icon: <DeleteOutlinedIcon fontSize="small" sx={{ color: "#7C7989" }} />,
-  },
-];
+{
+  /* <Box sx={{ padding: "16px", paddingBottom: 0 }}>
+  <ALink href={`/reference-manager/${currentOrgSlug}/`}>
+    <Box
+      sx={{
+        alignItems: "center",
+        border: "1px solid #3971FF",
+        borderRadius: "4px",
+        boxSizing: "border-box",
+        cursor: "pointer",
+        display: "flex",
+        height: isOpen ? "48px" : "28px",
+        justifyContent: "center",
+        padding: "0 8px",
+        position: "sticky",
+        textTransform: "none",
+        width: isOpen ? "100%" : "28px",
+      }}
+      onClick={(): void => {
+        setProjectIDForDrawer(null);
+        isUploadDrawerOpen(true);
+      }}
+    >
+      <AddSharpIcon fontSize="small" color="primary" />
+      {isOpen && (
+        <Typography
+          color="#3971FF"
+          component="div"
+          fontSize={14}
+          fontWeight={500}
+          letterSpacing={"1.2px"}
+          noWrap
+          variant="h6"
+          ml={"6px"}
+        >
+          {"Upload reference"}
+        </Typography>
+      )}
+    </Box>
+  </ALink>
+</Box>; */
+}
 
 type Props = {
   isOpen: boolean;
@@ -95,6 +95,7 @@ export default function BasicTogglableNavbarLeft({
 
   const currentOrgID = currentOrg?.id ?? null;
   const currentOrgSlug = currentOrg?.slug ?? null;
+
   useEffect((): void => {
     if (!isEmpty(currentOrgID)) {
       fetchReferenceProjects({
@@ -114,7 +115,7 @@ export default function BasicTogglableNavbarLeft({
       return renderNestedReferenceProjectsNavbarEl({
         currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
         referenceProject,
-        active: parseInt(router.query.project, 10) === referenceProject.id,
+        activeProjectName: router.query.project_name ?? "",
       });
     }
   );
@@ -146,22 +147,31 @@ export default function BasicTogglableNavbarLeft({
         >
           <OrganizationPopover isReferenceManager={true} />
         </Box>
-        <Box sx={{ padding: "16px", paddingBottom: 0 }}>
-          <ALink href={`/reference-manager/${currentOrgSlug}/`}>
+      </Box>
+      <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
+        <BasicTogglableNavbarButton
+          isActive={
+            isEmpty(router.query?.project_name) &&
+            isEmpty(router.query?.my_refs)
+          }
+          icon={
+            <HomeIcon
+              fontSize="small"
+              sx={{ color: "#7C7989", marginRight: "8px" }}
+            />
+          }
+          key="public-references"
+          label="Public references"
+          link={`/reference-manager/${currentOrgSlug}`}
+          option={
             <Box
               sx={{
                 alignItems: "center",
-                border: "1px solid #3971FF",
-                borderRadius: "4px",
-                boxSizing: "border-box",
                 cursor: "pointer",
                 display: "flex",
-                height: isOpen ? "48px" : "28px",
+                height: "40px",
                 justifyContent: "center",
-                padding: "0 8px",
-                position: "sticky",
-                textTransform: "none",
-                width: isOpen ? "100%" : "28px",
+                width: "40px",
               }}
               onClick={(): void => {
                 setProjectIDForDrawer(null);
@@ -169,58 +179,39 @@ export default function BasicTogglableNavbarLeft({
               }}
             >
               <AddSharpIcon fontSize="small" color="primary" />
-              {isOpen && (
-                <Typography
-                  color="#3971FF"
-                  component="div"
-                  fontSize={14}
-                  fontWeight={500}
-                  letterSpacing={"1.2px"}
-                  noWrap
-                  variant="h6"
-                  ml={"6px"}
-                >
-                  {"Upload reference"}
-                </Typography>
-              )}
             </Box>
-          </ALink>
-        </Box>
-      </Box>
-      <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
-        {HOME_NAV_BUTTON_CONFIG.map((navbuttonObjs, index) => {
-          const { label, icon } = navbuttonObjs;
-          return (
-            <ALink
-              href={`/reference-manager/${currentOrgSlug}`}
-              key={`ref-org-link-${index}-${currentOrgSlug}`}
+          }
+        />
+        <BasicTogglableNavbarButton
+          icon={
+            <HailIcon
+              fontSize="small"
+              sx={{ color: "#7C7989", marginRight: "8px" }}
+            />
+          }
+          isActive={!isEmpty(router.query?.my_refs)}
+          key="my-references"
+          label="My references"
+          link={`/reference-manager/${currentOrgSlug}?my_refs=true`}
+          option={
+            <Box
+              sx={{
+                alignItems: "center",
+                cursor: "pointer",
+                display: "flex",
+                height: "40px",
+                justifyContent: "center",
+                width: "40px",
+              }}
+              onClick={(): void => {
+                setProjectIDForDrawer(null);
+                isUploadDrawerOpen(true);
+              }}
             >
-              <ListItem key={label} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: isOpen ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: isOpen ? 1 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={label}
-                    sx={{ opacity: isOpen ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            </ALink>
-          );
-        })}
+              <AddSharpIcon fontSize="small" color="primary" />
+            </Box>
+          }
+        />
       </List>
       <Divider />
       <List
