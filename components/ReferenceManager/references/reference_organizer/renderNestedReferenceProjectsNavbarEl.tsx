@@ -6,7 +6,7 @@ import { NullableString } from "~/config/types/root_types";
 type Args = {
   currentOrgSlug: string;
   referenceProject: any;
-  activeProjectName: NullableString;
+  activeProjectName: NullableString | string[];
 };
 
 export function renderNestedReferenceProjectsNavbarEl({

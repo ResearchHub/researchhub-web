@@ -4,6 +4,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "~/config/types/root_types";
 
 type Args = {
+  getCurrentUserCitation?: boolean;
   onError: (error: Error) => void;
   onSuccess: (response: any) => void;
   organizationID: ID;
@@ -11,6 +12,7 @@ type Args = {
 };
 
 export const fetchCurrentUserReferenceCitations = ({
+  getCurrentUserCitation,
   onError,
   onSuccess,
   organizationID,
@@ -19,10 +21,13 @@ export const fetchCurrentUserReferenceCitations = ({
   const apiJson = { apiPath: "citation_entry/user_citations", queryString: "" };
   // TODO: calvinhlee - clean this up
   if (organizationID) {
-    apiJson.queryString = `?organization_id=${organizationID}`;
+    apiJson.queryString += `?organization_id=${organizationID}`;
+  }
+  if (getCurrentUserCitation) {
+    apiJson.queryString += `&get_current_user_citations=1`;
   }
   if (projectID) {
-    apiJson.queryString = `?organization_id=${organizationID}&project_id=${projectID}`;
+    apiJson.queryString += `&project_id=${projectID}`;
   }
 
   fetch(buildApiUri(apiJson), API.GET_CONFIG())

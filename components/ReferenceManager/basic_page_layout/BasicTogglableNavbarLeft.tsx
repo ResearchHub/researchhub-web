@@ -23,52 +23,20 @@ import ListItemButton from "@mui/material/ListItemButton";
 import OrganizationPopover from "~/components/Tooltips/Organization/OrganizationPopover";
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import Typography from "@mui/material/Typography";
+import colors from "~/config/themes/colors";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
-
-{
-  /* <Box sx={{ padding: "16px", paddingBottom: 0 }}>
-  <ALink href={`/reference-manager/${currentOrgSlug}/`}>
-    <Box
-      sx={{
-        alignItems: "center",
-        border: "1px solid #3971FF",
-        borderRadius: "4px",
-        boxSizing: "border-box",
-        cursor: "pointer",
-        display: "flex",
-        height: isOpen ? "48px" : "28px",
-        justifyContent: "center",
-        padding: "0 8px",
-        position: "sticky",
-        textTransform: "none",
-        width: isOpen ? "100%" : "28px",
-      }}
-      onClick={(): void => {
-        setProjectIDForDrawer(null);
-        isUploadDrawerOpen(true);
-      }}
-    >
-      <AddSharpIcon fontSize="small" color="primary" />
-      {isOpen && (
-        <Typography
-          color="#3971FF"
-          component="div"
-          fontSize={14}
-          fontWeight={500}
-          letterSpacing={"1.2px"}
-          noWrap
-          variant="h6"
-          ml={"6px"}
-        >
-          {"Upload reference"}
-        </Typography>
-      )}
-    </Box>
-  </ALink>
-</Box>; */
-}
+const OPTION_BOTTON_STYLE = {
+  alignItems: "center",
+  borderRadius: "4px",
+  cursor: "pointer",
+  display: "flex",
+  height: "32px",
+  justifyContent: "center",
+  minWidth: "32px",
+  ":hover": { background: colors.BLUE(0.2) },
+};
 
 type Props = {
   isOpen: boolean;
@@ -165,14 +133,7 @@ export default function BasicTogglableNavbarLeft({
           link={`/reference-manager/${currentOrgSlug}`}
           option={
             <Box
-              sx={{
-                alignItems: "center",
-                cursor: "pointer",
-                display: "flex",
-                height: "40px",
-                justifyContent: "center",
-                width: "40px",
-              }}
+              sx={OPTION_BOTTON_STYLE}
               onClick={(): void => {
                 setProjectIDForDrawer(null);
                 isUploadDrawerOpen(true);
@@ -195,14 +156,7 @@ export default function BasicTogglableNavbarLeft({
           link={`/reference-manager/${currentOrgSlug}?my_refs=true`}
           option={
             <Box
-              sx={{
-                alignItems: "center",
-                cursor: "pointer",
-                display: "flex",
-                height: "40px",
-                justifyContent: "center",
-                width: "40px",
-              }}
+              sx={OPTION_BOTTON_STYLE}
               onClick={(): void => {
                 setProjectIDForDrawer(null);
                 isUploadDrawerOpen(true);
