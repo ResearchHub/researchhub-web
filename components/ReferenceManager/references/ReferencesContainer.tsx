@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
 import { useRouter } from "next/router";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -122,7 +123,10 @@ function ReferencesContainer({
             >
               <div style={{ marginBottom: 32 }}>
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                  {currentProjectName ?? "All References"}
+                  {currentProjectName ??
+                    (!isEmpty(router.query?.my_refs)
+                      ? "My references"
+                      : `Public references`)}
                 </Typography>
               </div>
               <Box className="ReferencesContainerMain">
