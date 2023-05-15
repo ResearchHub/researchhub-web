@@ -228,7 +228,7 @@ export default function BasicTogglableNavbarLeft({
           background: "#FAFAFC",
           display: "flex",
           flexDirection: "column",
-          height: "100%",
+          paddingBottom: "16px",
         }}
       >
         <ListItem
