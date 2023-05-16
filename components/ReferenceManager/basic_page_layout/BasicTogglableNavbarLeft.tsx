@@ -114,7 +114,7 @@ export default function BasicTogglableNavbarLeft({
       return renderNestedReferenceProjectsNavbarEl({
         currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
         referenceProject,
-        active: router.query.project_name === referenceProject.project_name,
+        active: parseInt(router.query.project, 10) === referenceProject.id,
       });
     }
   );

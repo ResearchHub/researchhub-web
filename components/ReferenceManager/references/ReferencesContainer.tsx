@@ -59,7 +59,9 @@ function ReferencesContainer({
       formData.append("pdfs[]", file);
     });
     formData.append("organization_id", currentOrg.id);
-    formData.append("project_id", router.query.project);
+    if (router.query.project) {
+      formData.append("project_id", router.query.project);
+    }
     const url = generateApiUrl("citation_entry/pdf_uploads");
     const preload: Array<Preload> = [];
 
