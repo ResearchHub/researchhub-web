@@ -10,13 +10,26 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     forceSwcTransforms: true,
+    modern: true,
+    modularize: true,
+    css: true,
+    dynamicImports: true,
+    esmExternals: 'loose'
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  // experimental: {
-  //   runtime: "experimental-edge", // 'node.js' (default) | 'experimental-edge'
-  // },
+  modularizeImports: {
+    '@gorazdo/tomui': {
+      transform: '@gorazdo/tomui/{{member}}',
+    },
+    '@mui/material': {
+      transform: '@mui/material/{{member}}',
+    },
+    '@mui/icons-material/?(((\\w*)?/?)*)': {
+      transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
+    },
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -55,7 +68,30 @@ const nextConfig = {
     // Load Markdown Configuration
     config.module.rules.push({
       test: /\.md$/,
-      use: "raw-loader",
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [['next/babel', {'preset-env': {modules: 'commonjs'}}]],
+            plugins: ['babel-plugin-module-resolver'],
+            compact: false
+          }
+        },
+        {
+          loader: 'swc_plugin',
+          options: {
+            jsc: {
+              parser: {
+                  syntax: 'ecmascript',
+                  jsx: true
+              },
+              transform: {
+                  react: true
+              }
+            }
+          }
+        }
+      ]
     });
 
     config.resolve.fallback = {
