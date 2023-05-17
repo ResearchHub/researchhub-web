@@ -11,6 +11,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import QuickModal from "../../menu/QuickModal";
+import { removeReferenceProject } from "./api/removeReferenceProject";
+import { useRouter } from "next/router";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 
 type Props = {
   onSelectAddNewReference: (event: SyntheticEvent) => void;
@@ -27,6 +31,8 @@ export default function ReferenceProjectNavbarElOption({
   projectID,
   projectName,
 }: Props): ReactElement {
+  const router = useRouter();
+  const { resetProjectsFetchTime } = useReferenceProjectUpsertContext();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -69,7 +75,15 @@ export default function ReferenceProjectNavbarElOption({
         }
         modalWidth="300px"
         onPrimaryButtonClick={(): void => {
-          setIsDeleteModalOpen(false);
+          removeReferenceProject({
+            projectID,
+            onSuccess: () => {
+              setIsDeleteModalOpen(false);
+              resetProjectsFetchTime();
+              router.push("/reference-manager");
+            },
+            onError: emptyFncWithMsg,
+          });
         }}
         onSecondaryButtonClick={(): void => {
           setIsDeleteModalOpen(false);
