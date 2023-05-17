@@ -12,11 +12,14 @@ const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: GenericDocument;
+  isHorizontal?: boolean;
 };
 
 const DocumentVote = ({
   document,
+  isHorizontal = false,
 }: Args) => {
+
   const [_score, _setScore] = useState<number>(document.score);
   const [_userVote, _setUserVote] = useState(document.userVote);
   const dispatch = useDispatch();
@@ -54,6 +57,7 @@ const DocumentVote = ({
   return (
     <VoteWidget
       score={_score}
+      horizontalView={isHorizontal}
       onUpvote={async () => {
         try {
           const userVote = await voteForDocument({

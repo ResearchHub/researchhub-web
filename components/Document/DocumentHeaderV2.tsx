@@ -18,6 +18,13 @@ import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
+import DocumentStickyHeader from "./DocumentStickyHeader";
+import { isPaper } from "./lib/types";
+import Link from "next/link";
+import GenericMenu from "../shared/GenericMenu";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
+
 
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
@@ -27,23 +34,27 @@ interface Props {
   document: GenericDocument;
 }
 
-const DocumentHeader = ({ document }: Props) => {
+const DocumentHeader = ({ document:doc }: Props) => {
 
   const router = useRouter();
   const dispatch = useDispatch();
   const headerWrapperRef = useRef<HTMLDivElement>(null);
-  const [stickyVisible, setStickyVisible] = useState(false);
-  const tabs = getTabs({ router, document });
+  const [stickyVisible, setStickyVisible] = useState<boolean>(false);
+  const [stickyOffset, setStickyOffset] = useState<number>(0);
+  const tabs = getTabs({ router, document: doc });
 
-  useEffect(() => {
+  useEffect(() => {    
     const handleScroll = () => {
+      const sidebarEl = document.querySelector(".root-left-sidebar")
+      const offset = sidebarEl?.getBoundingClientRect().right || 0;
+      setStickyOffset(offset);
+
       const headerWrapperBottom = headerWrapperRef.current?.getBoundingClientRect().bottom;
       if (headerWrapperBottom !== undefined && headerWrapperBottom <= 0) {
         setStickyVisible(true);
-        console.log('sticky')
       } else {
-        console.log('hide sticky')
         setStickyVisible(false);
+        console.log('hide sticky')
       }
     };
 
@@ -53,23 +64,45 @@ const DocumentHeader = ({ document }: Props) => {
     };
   }, []);
 
+  const options = [{
+    label: "Flag content",
+    value: "flag",
+    html: (
+      <FlagButtonV2
+        modalHeaderText="Flagging"
+        flagIconOverride={styles.flagButton}
+        onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
+          flagGrmContent({
+            contentID: doc.id,
+            contentType: doc.apiDocumentType,
+            flagReason,
+            onError: renderErrorMsg,
+            onSuccess: renderSuccessMsg,
+          });
+        }}
+      />      
+    )
+  }]
+
+  const pdfUrl = isPaper(doc) && doc.formats.find((f) => f.type === "pdf")?.url;
   return (
-    <div ref={headerWrapperRef} style={{ width: "100%" }}>
-      <div className={css(styles.stickyHeader, stickyVisible && styles.stickyVisible)}>
+    <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
+      <div className={css(styles.stickyHeader, stickyVisible && styles.stickyVisible)} style={{ width: `calc(100% - ${stickyOffset}px)` }}>
+        <DocumentStickyHeader document={doc} />
       </div>
       <div className={css(styles.headerWrapper)} >
         <div className={css(styles.headerContentWrapper)} >
           <div>
             <div className={css(styles.badgesWrapper)}>
-              <DocumentBadges document={document} />
+              <DocumentBadges document={doc} />
             </div>
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
-                <DocumentVote document={document} />
+                <DocumentVote document={doc} />
               </div>
-              <h1>{document.title}</h1>
+              <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
-            <DocumentLineItems document={document} />
+            <DocumentLineItems document={doc} />
             <div className={css(styles.btnWrapper)}>
 
               <PermissionNotificationWrapper
@@ -84,13 +117,19 @@ const DocumentHeader = ({ document }: Props) => {
                   <span>Tip Authors</span>
                 </IconButton>
               </PermissionNotificationWrapper>
-              <IconButton overrideStyle={styles.btn} onClick={() => null}>
-                <FontAwesomeIcon icon={faArrowDownToBracket} />
-                <span>PDF</span>
-              </IconButton>
-              <IconButton overrideStyle={styles.btnDots} onClick={() => null}>
-                <FontAwesomeIcon icon={faEllipsis} />
-              </IconButton>
+              {pdfUrl && 
+                <Link href={pdfUrl} download={true} target="_blank" style={{textDecoration: "none"}}> 
+                  <IconButton overrideStyle={styles.btn}>
+                    <FontAwesomeIcon icon={faArrowDownToBracket} />
+                    <span>PDF</span>
+                  </IconButton>
+                </Link>
+              }
+                <GenericMenu options={options}>
+                  <IconButton overrideStyle={styles.btnDots}>
+                    <FontAwesomeIcon icon={faEllipsis} />
+                  </IconButton>
+                </GenericMenu>
             </div>
             <div>
               <HorizontalTabBar tabs={tabs} />
@@ -101,7 +140,7 @@ const DocumentHeader = ({ document }: Props) => {
 
         <PaperTransactionModal
           // @ts-ignore 
-          paper={document.raw}
+          paper={doc.raw}
           // @ts-ignore
           updatePaperState={() => alert("Implement me")}
         />
@@ -111,6 +150,12 @@ const DocumentHeader = ({ document }: Props) => {
 }
 
 const styles = StyleSheet.create({
+  headerRoot: {
+    width: "100%",
+  },
+  title: {
+    textTransform: "capitalize",
+  },
   headerWrapper: {
     display: "flex",
     justifyContent: "center",
@@ -130,11 +175,10 @@ const styles = StyleSheet.create({
     position: "fixed",
     display: "none",
     top: 0,
-    width: "100%",
     zIndex: 100,
-    minHeight: 75,
-    background: "red",
-    transition: "opacity 0.5s ease-in-out",
+    background: "linear-gradient(to top,rgba(255,255,255,.75) 50%,#fff)",
+    borderBottom: `1px solid #E9EAEF`,
+    boxShadow: `0px 3px 4px rgba(0, 0, 0, 0.02)`,
   },
   stickyVisible: {
     display: "block",

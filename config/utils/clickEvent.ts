@@ -15,6 +15,7 @@ type useEffectHandleClickArgs = {
 
 export function isOutsideClick({ el, clickedEl, exclude = [] }: IsOutsideClickArgs){
   if (!el) {
+    console.log('[isOutsideClick] el is not defined')
     return false;
   }
 
@@ -28,7 +29,6 @@ export function isOutsideClick({ el, clickedEl, exclude = [] }: IsOutsideClickAr
 }
 
 export function useEffectHandleClick({ el, exclude = [], onOutsideClick, onInsideClick }: useEffectHandleClickArgs) {
-
   useEffect(() => {
     const _handleClick = (e) => {
       const _isOutsideClick = isOutsideClick({

@@ -17,16 +17,17 @@ interface Props {
   tabs: Array<Tab>;
   onClick?: Function;
   containerStyle?: any;
+  tabStyle?: any;
 }
 
-const HorizontalTabBar = ({ tabs, onClick, containerStyle = null }: Props) => {
+const HorizontalTabBar = ({ tabs, onClick, containerStyle, tabStyle }: Props) => {
   const renderTab = (tab, index) => {
     const { isSelected, label } = tab;
     const tabType = tab.href ? "link" : "div";
 
     const props = {
       key: tab.value,
-      className: css(styles.tab, isSelected && styles.tabSelected),
+      className: css(styles.tab, isSelected && styles.tabSelected, tabStyle),
       ...(tab.href && { href: tab.href }),
       ...(onClick && { onClick: () => onClick(tab, index) }),
     };
