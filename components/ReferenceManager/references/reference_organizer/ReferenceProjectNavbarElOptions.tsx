@@ -15,8 +15,10 @@ import { removeReferenceProject } from "./api/removeReferenceProject";
 import { useRouter } from "next/router";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
+import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 
 type Props = {
+  isCurrentUserAdmin: boolean;
   onSelectAddNewReference: (event: SyntheticEvent) => void;
   onSelectCreateSubProject: (event: SyntheticEvent) => void;
   onSelectEditProject: (event: SyntheticEvent) => void;
@@ -25,6 +27,7 @@ type Props = {
 };
 
 export default function ReferenceProjectNavbarElOption({
+  isCurrentUserAdmin,
   onSelectAddNewReference,
   onSelectCreateSubProject,
   onSelectEditProject,
@@ -32,6 +35,7 @@ export default function ReferenceProjectNavbarElOption({
   projectName,
 }: Props): ReactElement {
   const router = useRouter();
+  const { currentOrg } = getCurrentUserCurrentOrg();
   const { resetProjectsFetchTime } = useReferenceProjectUpsertContext();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -80,7 +84,7 @@ export default function ReferenceProjectNavbarElOption({
             onSuccess: () => {
               setIsDeleteModalOpen(false);
               resetProjectsFetchTime();
-              router.push("/reference-manager");
+              router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
             },
             onError: emptyFncWithMsg,
           });
@@ -139,16 +143,18 @@ export default function ReferenceProjectNavbarElOption({
         >
           {"Edit"}
         </MenuItem>
-        <MenuItem
-          key="remove"
-          onClick={(event: MouseEvent): void => {
-            event.preventDefault();
-            setIsDeleteModalOpen(true);
-            handleMenuClose();
-          }}
-        >
-          <Typography color="red">{"Remove"}</Typography>
-        </MenuItem>
+        {isCurrentUserAdmin && (
+          <MenuItem
+            key="remove"
+            onClick={(event: MouseEvent): void => {
+              event.preventDefault();
+              setIsDeleteModalOpen(true);
+              handleMenuClose();
+            }}
+          >
+            <Typography color="red">{"Remove"}</Typography>
+          </MenuItem>
+        )}
       </Menu>
     </Fragment>
   );

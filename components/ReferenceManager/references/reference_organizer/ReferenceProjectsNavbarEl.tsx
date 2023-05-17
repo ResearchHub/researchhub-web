@@ -14,22 +14,23 @@ import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 
 type Props = {
-  admins: SuggestedUser[];
+  active: boolean;
   collaborators: SuggestedUser[];
+  isCurrentUserAdmin: boolean;
+  isPublic: boolean;
   orgSlug: string;
   projectID: ID;
   projectName: string;
-  isPublic: boolean;
-  active: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
+  active,
   collaborators,
+  isCurrentUserAdmin,
+  isPublic,
   orgSlug,
   projectID,
   projectName,
-  isPublic,
-  active,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -90,6 +91,7 @@ export default function ReferenceProjectsNavbarEl({
         </Box>
       </ALink>
       <ReferenceProjectNavbarElOption
+        isCurrentUserAdmin={isCurrentUserAdmin}
         projectID={projectID}
         projectName={projectName}
         onSelectAddNewReference={(event: SyntheticEvent): void => {
