@@ -11,7 +11,7 @@ export type Tab = {
   isSelected?: boolean;
   icon: React.ReactNode;
   pillContent?: React.ReactNode | string;
-}
+};
 
 interface Props {
   tabs: Array<Tab>;
@@ -20,7 +20,12 @@ interface Props {
   tabStyle?: any;
 }
 
-const HorizontalTabBar = ({ tabs, onClick, containerStyle, tabStyle }: Props) => {
+const HorizontalTabBar = ({
+  tabs,
+  onClick,
+  containerStyle,
+  tabStyle,
+}: Props) => {
   const renderTab = (tab, index) => {
     const { isSelected, label } = tab;
     const tabType = tab.href ? "link" : "div";

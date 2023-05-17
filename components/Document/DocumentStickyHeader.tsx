@@ -20,9 +20,7 @@ const DocumentStickyHeader = ({ document }: Props) => {
     <div className={css(styles.stickyWrapper)}>
       <div className={css(styles.titleWrapper)}>
         <DocumentVote document={document} isHorizontal={true} />
-        <div className={css(styles.title)}>
-          {document.title}
-        </div>
+        <div className={css(styles.title)}>{document.title}</div>
       </div>
       <div className={css(styles.actionWrapper)}>
         <IconButton overrideStyle={styles.btn}>
@@ -35,8 +33,8 @@ const DocumentStickyHeader = ({ document }: Props) => {
         </IconButton>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   titleWrapper: {
@@ -50,8 +48,8 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
       cursor: "pointer",
-    }
-  },  
+    },
+  },
   stickyWrapper: {
     display: "flex",
     alignItems: "center",
@@ -83,8 +81,8 @@ const styles = StyleSheet.create({
     height: 36,
     boxSizing: "border-box",
     borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`
-  },  
-})
+    border: `1px solid ${colors.LIGHT_GREY()}`,
+  },
+});
 
-export default DocumentStickyHeader
+export default DocumentStickyHeader;

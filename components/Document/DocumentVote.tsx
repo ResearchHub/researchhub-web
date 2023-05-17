@@ -15,11 +15,7 @@ type Args = {
   isHorizontal?: boolean;
 };
 
-const DocumentVote = ({
-  document,
-  isHorizontal = false,
-}: Args) => {
-
+const DocumentVote = ({ document, isHorizontal = false }: Args) => {
   const [_score, _setScore] = useState<number>(document.score);
   const [_userVote, _setUserVote] = useState(document.userVote);
   const dispatch = useDispatch();

@@ -11,17 +11,20 @@ interface Args {
   children?: any;
 }
 
-const SharedDocumentPage = ({ document, documentType, tabName, children, errorCode }: Args) => {
-
+const SharedDocumentPage = ({
+  document,
+  documentType,
+  tabName,
+  children,
+  errorCode,
+}: Args) => {
   return (
     <div className={css(styles.pageWrapper)}>
       <div className={css(styles.topArea)}>
         <DocumentHeader document={document} />
       </div>
       <div className={css(styles.bodyArea)}>
-        <div className={css(styles.bodyContentWrapper)}>
-          {children}
-        </div>
+        <div className={css(styles.bodyContentWrapper)}>{children}</div>
       </div>
     </div>
   );
@@ -43,7 +46,7 @@ const styles = StyleSheet.create({
   },
   bodyContentWrapper: {
     width: config.maxWidth,
-  }
+  },
 });
 
 export default SharedDocumentPage;

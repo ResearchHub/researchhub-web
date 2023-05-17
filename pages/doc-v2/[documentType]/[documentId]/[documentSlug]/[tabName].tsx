@@ -4,7 +4,9 @@ import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 import { useState } from "react";
 import { captureEvent } from "~/config/utils/events";
 import { parseComment } from "~/components/Comment/lib/types";
-import getDocumentFromRaw, { GenericDocument } from "~/components/Document/lib/types";
+import getDocumentFromRaw, {
+  GenericDocument,
+} from "~/components/Document/lib/types";
 import Error from "next/error";
 import { useRouter } from "next/router";
 
@@ -37,9 +39,12 @@ const DocumentPage: NextPage<Args> = ({
   let document: GenericDocument;
   try {
     document = getDocumentFromRaw({ raw: documentData, type: documentType });
-  }
-  catch (error:any) {
-    captureEvent({ error, msg: "[Document] Could not parse", data: { documentData, documentType } });
+  } catch (error: any) {
+    captureEvent({
+      error,
+      msg: "[Document] Could not parse",
+      data: { documentData, documentType },
+    });
     return <Error statusCode={500} />;
   }
 
@@ -47,9 +52,9 @@ const DocumentPage: NextPage<Args> = ({
   let parsedComments = [];
   if (commentData) {
     const { comments } = commentData;
-    parsedComments = comments.map(c => parseComment({raw: c}));
+    parsedComments = comments.map((c) => parseComment({ raw: c }));
     displayCommentsFeed = true;
-  }  
+  }
 
   return (
     <SharedDocumentPage

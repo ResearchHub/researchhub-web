@@ -11,7 +11,12 @@ type Args = {
 const IconButton = ({ onClick, children, overrideStyle, variant }: Args) => {
   return (
     <div
-      className={css(styles.root, styles.withAnimation, variant && styles[`variant-${variant}`], overrideStyle)}
+      className={css(
+        styles.root,
+        styles.withAnimation,
+        variant && styles[`variant-${variant}`],
+        overrideStyle
+      )}
       onClick={(e) => onClick && onClick(e)}
     >
       {children}
@@ -40,8 +45,8 @@ const styles = StyleSheet.create({
     height: 36,
     boxSizing: "border-box",
     borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`
-  },  
+    border: `1px solid ${colors.LIGHT_GREY()}`,
+  },
   withAnimation: {
     ":hover": {
       background: colors.LIGHTER_GREY(),

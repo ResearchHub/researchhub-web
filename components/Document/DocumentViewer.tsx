@@ -7,12 +7,8 @@ interface Props {
 }
 
 const DocumentViewer = ({ document }: Props) => {
-  return (
-    <div className={css(styles.container)}>
-
-    </div>    
-  )
-}
+  return <div className={css(styles.container)}></div>;
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -21,7 +17,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     minHeight: 1500,
     background: "white",
-  }
-})
+  },
+});
 
 export default DocumentViewer;

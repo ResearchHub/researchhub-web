@@ -13,9 +13,7 @@ export const voteForDocument = async ({
   documentType: ApiDocumentType;
   documentId: ID;
 }): Promise<Vote> => {
-  const url = generateApiUrl(
-    `${documentType}/${documentId}/${voteType}`
-  );
+  const url = generateApiUrl(`${documentType}/${documentId}/${voteType}`);
 
   try {
     const response = await fetch(url, API.POST_CONFIG())
@@ -25,7 +23,7 @@ export const voteForDocument = async ({
     return parseVote(response);
   } catch (error: any) {
     if (error.response.status === 401 || error.response.status === 403) {
-      throw "Cannot vote on own's post";  
+      throw "Cannot vote on own's post";
     } else {
       throw "Unexpected error while casting vote";
     }

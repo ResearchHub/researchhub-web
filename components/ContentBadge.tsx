@@ -3,8 +3,8 @@ import {
   faStar,
   faLayerGroup,
   faComments,
+  faCheck,
 } from "@fortawesome/pro-solid-svg-icons";
-import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";

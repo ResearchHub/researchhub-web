@@ -1,6 +1,14 @@
 import { Hub, parseHub } from "~/config/types/hub";
 import { Purchase } from "~/config/types/purchase";
-import { AuthorProfile, ID, RHUser, UnifiedDocument, parseAuthorProfile, parseUnifiedDocument, parseUser } from "~/config/types/root_types";
+import {
+  AuthorProfile,
+  ID,
+  RHUser,
+  UnifiedDocument,
+  parseAuthorProfile,
+  parseUnifiedDocument,
+  parseUser,
+} from "~/config/types/root_types";
 import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
@@ -10,16 +18,12 @@ export type PaperFormat = {
   url: string;
 };
 
-export type DocumentType =
-  | "hypothesis"
-  | "paper"
-  | "post"
-  | "question"
+export type DocumentType = "hypothesis" | "paper" | "post" | "question";
 
 export type ReviewSummary = {
   count: number;
   averageRating: number;
-}
+};
 
 export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
 
@@ -49,34 +53,34 @@ export type Paper = GenericDocument & {
   publishedDate?: string;
   externalUrl?: string;
   formats: PaperFormat[];
-}
+};
 
 export type Post = GenericDocument & {
   // FIXME: TBD
-}
+};
 
 export type Hypothesis = GenericDocument & {
   // FIXME: TBD
-}
+};
 
 export interface Props {
   raw: any;
   type: string;
 }
 
-export const parseReviewSummary = (raw:any):ReviewSummary => {
+export const parseReviewSummary = (raw: any): ReviewSummary => {
   return {
     count: raw.count,
     averageRating: raw.avg,
-  }
-}
+  };
+};
 
-export const parsePaper = (raw:any):Paper => {
-  const parsed:Paper = {
+export const parsePaper = (raw: any): Paper => {
+  const parsed: Paper = {
     id: raw.id,
     authors: parsePaperAuthors(raw),
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
-    hubs: (raw.hubs || []).map((h:any) => parseHub(h)),
+    hubs: (raw.hubs || []).map((h: any) => parseHub(h)),
     score: raw.score,
     createdDate: formatDateStandard(raw.created_date),
     discussionCount: raw.discussion_count || 0,
@@ -96,40 +100,43 @@ export const parsePaper = (raw:any):Paper => {
     ...(raw.file && { formats: [{ type: "pdf", url: raw.file }] }),
 
     raw,
-  }
+  };
 
   return parsed;
-}
+};
 
-export const getConcreteDocument = (document:GenericDocument):Paper|Hypothesis|Post => {
+export const getConcreteDocument = (
+  document: GenericDocument
+): Paper | Hypothesis | Post => {
   if (document.type === "paper") {
     return document as Paper;
-  }
-  else if (document.type === "post") {
+  } else if (document.type === "post") {
     return document as Post;
-  }
-  else if (document.type === "hypothesis") {
+  } else if (document.type === "hypothesis") {
     return document as Hypothesis;
   }
 
   throw new Error(`Invalid document type. Type was ${document.type}`);
-}
+};
 
-export const isPaper = (document:GenericDocument):document is Paper => {
+export const isPaper = (document: GenericDocument): document is Paper => {
   return (document as Paper).type === "paper";
-}
+};
 
-const getDocumentFromRaw = ({raw, type}: Props):Paper|Post|Hypothesis => {
+const getDocumentFromRaw = ({
+  raw,
+  type,
+}: Props): Paper | Post | Hypothesis => {
   if (type === "paper") {
     return parsePaper(raw);
   } else if (type === "post") {
     // return new Post(raw);
-  } else if (type === "hypothesis") {    
+  } else if (type === "hypothesis") {
     // return new Hypothesis(raw);
   }
 
   throw new Error(`Invalid document type. Type was ${type}`);
-}
+};
 
 export const parsePaperAuthors = (rawPaper: any): Array<AuthorProfile> => {
   const rawAuthors = rawPaper.raw_authors || [];

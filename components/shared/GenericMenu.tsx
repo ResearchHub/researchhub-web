@@ -21,8 +21,12 @@ interface MenuProps {
   options: MenuOption[];
 }
 
-
-const Menu = ({ children, options, width = 200, id = `menu-${genClientId()}` }: MenuProps) => {
+const Menu = ({
+  children,
+  options,
+  width = 200,
+  id = `menu-${genClientId()}`,
+}: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -38,18 +42,29 @@ const Menu = ({ children, options, width = 200, id = `menu-${genClientId()}` }: 
 
   return (
     <div className={css(styles.genericMenuWrapper)}>
-      <div className={css(styles.trigger) + ` trigger-for-${id}`} onClick={() => {
-        setIsOpen(!isOpen);
-      }}>
+      <div
+        className={css(styles.trigger) + ` trigger-for-${id}`}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
+      >
         {children}
       </div>
       {isOpen && (
-        <div className={css(styles.menu) + ` ${id}`} ref={menuRef} style={{ width }}>
+        <div
+          className={css(styles.menu) + ` ${id}`}
+          ref={menuRef}
+          style={{ width }}
+        >
           {options.map((option, index) => {
             const { label, icon, href, onClick, value, html } = option;
 
             const content = (
-              <div key={`${id}-${index}`} className={css(styles.menuItem)} onClick={(event) => onClick && onClick(option, event)}>
+              <div
+                key={`${id}-${index}`}
+                className={css(styles.menuItem)}
+                onClick={(event) => onClick && onClick(option, event)}
+              >
                 {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
                 {html ? html : label}
               </div>
@@ -97,7 +112,7 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.LIGHTER_GREY(1.0),
       transition: "0.2s",
-    },    
+    },
   },
   menuItemIcon: {
     marginRight: "10px",

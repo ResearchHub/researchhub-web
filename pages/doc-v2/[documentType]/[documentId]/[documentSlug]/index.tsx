@@ -2,7 +2,9 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 import { useRouter } from "next/router";
-import getDocumentFromRaw, { GenericDocument } from "~/components/Document/lib/types";
+import getDocumentFromRaw, {
+  GenericDocument,
+} from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
 import DocumentViewer from "~/components/Document/DocumentViewer";
@@ -30,9 +32,12 @@ const DocumentPage: NextPage<Args> = ({
   let document: GenericDocument;
   try {
     document = getDocumentFromRaw({ raw: documentData, type: documentType });
-  }
-  catch (error:any) {
-    captureEvent({ error, msg: "[Document] Could not parse", data: { documentData, documentType } });
+  } catch (error: any) {
+    captureEvent({
+      error,
+      msg: "[Document] Could not parse",
+      data: { documentData, documentType },
+    });
     return <Error statusCode={500} />;
   }
 

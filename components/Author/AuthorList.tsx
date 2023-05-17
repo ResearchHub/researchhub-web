@@ -13,8 +13,7 @@ const Author = ({ author }: { author: AuthorProfile }) => {
     <span className={css(styles.author)}>
       {author.id ? (
         <span>
-          <ALink href={`/user/${author.id}/overview`}
-          >
+          <ALink href={`/user/${author.id}/overview`}>
             {author.firstName} {author.lastName}
           </ALink>
         </span>
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
     ":first-child": {
       marginLeft: 0,
     },
-  },  
-})
+  },
+});
 
 export default AuthorList;

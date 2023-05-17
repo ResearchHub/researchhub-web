@@ -86,7 +86,9 @@ export class Paper implements TopLevelDocument {
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
     this._createdDate = raw.created_date;
-    this._createdBy = isEmpty(raw.uploaded_by) ? undefined : parseUser(raw.uploaded_by);
+    this._createdBy = isEmpty(raw.uploaded_by)
+      ? undefined
+      : parseUser(raw.uploaded_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
     this._title = raw.title;
     this._formats = [];
@@ -201,17 +203,17 @@ export class Paper implements TopLevelDocument {
 
   get documentType(): RhDocumentType {
     return this._documentType;
-  }  
+  }
 
-  get originalTitle(): String {
+  get originalTitle(): string {
     return this._originalTitle;
-  }    
+  }
 
   get apiDocumentType(): ApiDocumentType {
     return this._apiDocumentType;
-  }    
+  }
 
   set discussionCount(count) {
     this._discussionCount = count;
-  }  
+  }
 }

@@ -32,7 +32,7 @@ export interface TopLevelDocument {
   id: ID;
   isOpenAccess?: boolean;
   bounties?: Bounty[];
-  originalTitle?: String;
+  originalTitle?: string;
   documentType: RhDocumentType;
   apiDocumentType: ApiDocumentType;
 }
