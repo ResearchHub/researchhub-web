@@ -14,41 +14,12 @@ interface Props {
 const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [numPages, setNumPages] = useState(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  // PDFJS needs explicit width to render properly
-  const [viewerWidth, setViewerWidth] = useState<number>(maxWidth);
-
-  console.log("viewerWidth", viewerWidth);
-
-  useEffect(() => {
-    function resizeHandler() {
-      setViewerWidth(Math.min(maxWidth, window.outerWidth));
-    }
-
-    resizeHandler();
-    window.addEventListener("resize", resizeHandler);
-    return () => {
-      window.removeEventListener("resize", resizeHandler);
-    };
-  }, []);
-
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
-
+  const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [pagesRendered, setPagesRendered] = useState(1); // Start by rendering one page
+  const observer = useRef(null); // Observe the last rendered page to see if it's in view, if not, load more pages
   const [searchText, setSearchText] = useState("");
-
-  function removeTextLayerOffset() {
-    const textLayers = document.querySelectorAll(
-      ".react-pdf__Page__textContent"
-    );
-    textLayers.forEach((layer) => {
-      const { style } = layer;
-      style.top = "0";
-      style.left = "0";
-      style.transform = "";
-    });
-  }
-
+  
   useEffect(() => {
     function keydownHandler(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
@@ -65,33 +36,22 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     };
   }, []);
 
-  // const [elWidth, setElWidth] = useState<number>(0);
-  // const elRef = useRef(null);
+  useEffect(() => {
+    function resizeHandler() {
+      setViewerWidth(Math.min(maxWidth, window.outerWidth));
+    }
 
-  // useEffect(() => {
+    resizeHandler();
+    window.addEventListener("resize", resizeHandler);
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, []);
 
-  //   const _setSize = () => {
-  //     setElWidth(elRef.current.clientWidth);
-  //     console.log('elWidth', elWidth)
-  //   }
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }  
 
-  //   const _handleResize = () => {
-  //     if (!elRef.current) return;
-  //     _setSize();
-  //   }
-
-  //   _setSize();
-
-  //   window.addEventListener("resize", _handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", _handleResize);
-  //   }
-  // }, []);
-
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [pagesRendered, setPagesRendered] = useState(1); // Start by rendering one page
-  const observer = useRef(null);
 
   const lastPageRef = useCallback(
     (node) => {

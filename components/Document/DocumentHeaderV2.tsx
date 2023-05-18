@@ -162,13 +162,15 @@ const DocumentHeader = ({ document: doc }: Props) => {
 
 const styles = StyleSheet.create({
   headerRoot: {
-    width: "100%",
+
   },
   title: {
     textTransform: "capitalize",
   },
   headerWrapper: {
+    width: "100%",
     display: "flex",
+    boxSizing: "border-box",
     justifyContent: "center",
     borderBottom: `2px solid ${config.border}`,
     [`@media (max-width: ${config.maxWidth}px)`]: {
@@ -176,7 +178,10 @@ const styles = StyleSheet.create({
       paddingRight: 15,
     },
   },
-  headerContentWrapper: {},
+  headerContentWrapper: {
+    maxWidth: config.maxWidth,
+    width: "100%",
+  },
   badgesWrapper: {
     marginBottom: 10,
     alignItems: "center",
