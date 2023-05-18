@@ -7,7 +7,7 @@ import getDocumentFromRaw, {
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
-import DocumentViewer from "~/components/Document/DocumentViewer";
+import PDFViewer from "~/components/Document/PDFViewer";
 
 interface Args {
   documentData?: any;
@@ -47,7 +47,7 @@ const DocumentPage: NextPage<Args> = ({
       errorCode={errorCode}
       documentType={documentType}
     >
-      <DocumentViewer document={document} />
+      <PDFViewer document={document} />
     </SharedDocumentPage>
   );
 };
