@@ -171,10 +171,12 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     borderBottom: `2px solid ${config.border}`,
+    [`@media (max-width: ${config.maxWidth}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
   },
-  headerContentWrapper: {
-    width: config.maxWidth,
-  },
+  headerContentWrapper: {},
   badgesWrapper: {
     marginBottom: 10,
     alignItems: "center",

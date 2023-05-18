@@ -8,11 +8,28 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 interface Props {
   pdfUrl?: string;
+  maxWidth?: number;
 }
 
-const PDFViewer = ({ pdfUrl }: Props) => {
+const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [numPages, setNumPages] = useState(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  // PDFJS needs explicit width to render properly
+  const [viewerWidth, setViewerWidth] = useState<number>(maxWidth);
+
+  console.log("viewerWidth", viewerWidth);
+
+  useEffect(() => {
+    function resizeHandler() {
+      setViewerWidth(Math.min(maxWidth, window.outerWidth));
+    }
+
+    resizeHandler();
+    window.addEventListener("resize", resizeHandler);
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, []);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -34,7 +51,7 @@ const PDFViewer = ({ pdfUrl }: Props) => {
 
   useEffect(() => {
     function keydownHandler(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
         e.preventDefault();
         if (inputRef.current) {
           inputRef.current.focus();
@@ -42,9 +59,9 @@ const PDFViewer = ({ pdfUrl }: Props) => {
       }
     }
 
-    document.addEventListener('keydown', keydownHandler);
+    document.addEventListener("keydown", keydownHandler);
     return () => {
-      document.removeEventListener('keydown', keydownHandler);
+      document.removeEventListener("keydown", keydownHandler);
     };
   }, []);
 
@@ -107,7 +124,6 @@ const PDFViewer = ({ pdfUrl }: Props) => {
   );
 
   const handleInputChange = useCallback(async () => {
-    console.log("input has changed", searchText);
     setSearchText(inputRef?.current?.value || "");
   }, []);
 
@@ -127,10 +143,7 @@ const PDFViewer = ({ pdfUrl }: Props) => {
           onChange={debouncedHandleSearchInputChange}
         />
       </div>
-      <Document
-        file={pdfUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
+      <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
         {/* <Outline onItemClick={onItemClick} /> */}
         {/* <Page key={`page_1`} pageNumber={1} customTextRenderer={textRenderer} onLoadSuccess={removeTextLayerOffset} width={900}/> */}
         {/* <button onClick={() => {
@@ -144,7 +157,7 @@ const PDFViewer = ({ pdfUrl }: Props) => {
           >
             <Page
               pageNumber={index + 1}
-              width={900}
+              width={viewerWidth}
               customTextRenderer={textRenderer}
             />
           </div>

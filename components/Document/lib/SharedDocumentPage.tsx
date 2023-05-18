@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   bodyContentWrapper: {
-    width: config.maxWidth,
+    maxWidth: config.maxWidth,
   },
 });
 
