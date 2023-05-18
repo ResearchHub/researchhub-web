@@ -32,6 +32,22 @@ const PDFViewer = ({ pdfUrl }: Props) => {
     });
   }
 
+  useEffect(() => {
+    function keydownHandler(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', keydownHandler);
+    return () => {
+      document.removeEventListener('keydown', keydownHandler);
+    };
+  }, []);
+
   // const [elWidth, setElWidth] = useState<number>(0);
   // const elRef = useRef(null);
 
@@ -112,9 +128,7 @@ const PDFViewer = ({ pdfUrl }: Props) => {
         />
       </div>
       <Document
-        file={
-          "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/papers/2021/08/25/2020.11.16.385385v1.pdf?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=MV7YhVlcApr5Vj%2FoZem%2FHKiP%2B%2BE%3D&Expires=1684956823"
-        }
+        file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}
       >
         {/* <Outline onItemClick={onItemClick} /> */}

@@ -47,7 +47,7 @@ const DocumentPage: NextPage<Args> = ({
       errorCode={errorCode}
       documentType={documentType}
     >
-      <PDFViewer document={document} />
+      <PDFViewer pdfUrl="https://researchhub-paper-dev1.s3.amazonaws.com/uploads/papers/2021/08/25/2020.11.16.385385v1.pdf?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=MV7YhVlcApr5Vj%2FoZem%2FHKiP%2B%2BE%3D&Expires=1684956823" />
     </SharedDocumentPage>
   );
 };
