@@ -1,5 +1,6 @@
 import { fetchCommentsAPI } from "~/components/Comment/lib/api";
 import { getDocumentByType } from "./getDocumentByType";
+import isEmpty from "lodash/isEmpty";
 
 const config = {
   revalidateTimeIfNotFound: 1,
@@ -22,7 +23,7 @@ const getCommentFilterByTab = async ({ tabName }) => {
 export default async function sharedGetStaticProps(ctx) {
   const { documentId, documentType, documentSlug } = ctx.params!;
   const tabName = ctx.params?.tabName || null;
-  const shouldFetchComments = tabName !== undefined;
+  const shouldFetchComments = !isEmpty(tabName);
   let documentData: any | null = null;
   let commentData: any | null = null;
 
@@ -43,12 +44,12 @@ export default async function sharedGetStaticProps(ctx) {
   }
 
   if (documentData) {
-    console.log("documentdata", documentData);
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
     // in an infinite 301 loop.
     const shouldRedirect =
       !documentData.slug || documentData.slug !== documentSlug;
+
     if (shouldRedirect) {
       return {
         redirect: {

@@ -1,12 +1,12 @@
 import { Helpers } from "@quantfive/js-web-config";
-import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
+import { captureEvent } from "~/config/utils/events";
 
-type Args = {
+interface Props {
   paperId: string;
-};
+}
 
-export const fetchPaper = ({ paperId }: Args): Promise<any> => {
+const fetchPaper = ({ paperId }: Props): Promise<any> => {
   return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
@@ -14,7 +14,13 @@ export const fetchPaper = ({ paperId }: Args): Promise<any> => {
       return resp;
     })
     .catch((error) => {
-      Sentry.captureException({ error, paperId });
+      captureEvent({
+        data: { paperId },
+        error,
+        msg: `Error fetching paper: ${paperId}`,
+      });
       throw error;
     });
 };
+
+export default fetchPaper;

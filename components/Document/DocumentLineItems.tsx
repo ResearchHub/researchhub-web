@@ -10,7 +10,7 @@ import {
   faLongArrowDown,
   faLongArrowUp,
 } from "@fortawesome/pro-regular-svg-icons";
-import { GenericDocument, Paper, isPaper } from "./lib/types";
+import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
 
 const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
   const auth = useSelector((state: any) => state.auth);
@@ -29,13 +29,15 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       value: (
         <>
           <AuthorList authors={document.authors} />
-          <span
-            style={{ marginLeft: 5 }}
-            className={css(linkStyles.linkThemeSolidPrimary)}
-            onClick={() => setIsAuthorClaimModalOpen(true)}
-          >
-            Are you the author?
-          </span>
+          {isPaper(document) && (
+            <span
+              style={{ marginLeft: 5 }}
+              className={css(linkStyles.linkThemeSolidPrimary)}
+              onClick={() => setIsAuthorClaimModalOpen(true)}
+            >
+              Are you the author?
+            </span>
+          )}
         </>
       ),
     },
