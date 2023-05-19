@@ -2,7 +2,7 @@ import { Document, Outline, Page, pdfjs } from "react-pdf";
 import { useCallback, useEffect, useRef, useState } from "react";
 import config from "./lib/config";
 import { StyleSheet, css } from "aphrodite";
-import debounce from "lodash.debounce";
+import debounce from "lodash/debounce";
 import DocumentPlaceholder from "./DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";

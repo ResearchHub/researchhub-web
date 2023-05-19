@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import { StyleSheet, css } from 'aphrodite';
 import AuthorAvatar from '../AuthorAvatar';
 import { SuggestedUser } from './lib/types';
