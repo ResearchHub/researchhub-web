@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import getDocumentFromRaw, {
   GenericDocument,
   isPaper,
+  isPost,
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
@@ -14,6 +15,7 @@ import { StyleSheet, css } from "aphrodite";
 
 interface Args {
   documentData?: any;
+  postHtml?: TrustedHTML | string;
   documentType: string;
   errorCode?: number;
 }
@@ -21,6 +23,7 @@ interface Args {
 const DocumentPage: NextPage<Args> = ({
   documentData,
   documentType,
+  postHtml = "",
   errorCode,
 }) => {
   const router = useRouter();
@@ -63,6 +66,12 @@ const DocumentPage: NextPage<Args> = ({
             </div>
           )}
         </div>
+      )}
+      {isPost(document) && (
+        <div
+          className={css(styles.bodyWrapper)}
+          dangerouslySetInnerHTML={{ __html: postHtml }}
+        />
       )}
     </SharedDocumentPage>
   );

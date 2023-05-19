@@ -1,6 +1,7 @@
 import { fetchCommentsAPI } from "~/components/Comment/lib/api";
 import { getDocumentByType } from "./getDocumentByType";
 import isEmpty from "lodash/isEmpty";
+import fetchPostFromS3 from "../api/fetchPostFromS3";
 
 const config = {
   revalidateTimeIfNotFound: 1,
@@ -26,6 +27,7 @@ export default async function sharedGetStaticProps(ctx) {
   const shouldFetchComments = !isEmpty(tabName);
   let documentData: any | null = null;
   let commentData: any | null = null;
+  let postHtml: any | null = null;
 
   try {
     documentData = await getDocumentByType({ documentType, documentId });
@@ -36,6 +38,7 @@ export default async function sharedGetStaticProps(ctx) {
         errorCode: 500,
         documentType,
         commentData,
+        postHtml,
         tabName,
       },
       // If paper has an error, we want to try again immediately
@@ -58,6 +61,26 @@ export default async function sharedGetStaticProps(ctx) {
         },
       };
     } else {
+      // console.log("documentData", documentData);
+
+      if (documentType === "post") {
+        try {
+          postHtml = await fetchPostFromS3({ s3Url: documentData.post_src });
+        } catch (error) {
+          console.log("Failed to fetch post html from S3", error);
+          return {
+            props: {
+              errorCode: 404,
+              documentType,
+              commentData,
+              postHtml,
+              tabName,
+            },
+            revalidate: config.revalidateTimeIfNotFound,
+          };
+        }
+      }
+
       if (shouldFetchComments) {
         const filter = await getCommentFilterByTab({ tabName });
         commentData = await fetchCommentsAPI({
@@ -72,6 +95,7 @@ export default async function sharedGetStaticProps(ctx) {
           documentData,
           commentData,
           documentType,
+          postHtml,
           tabName,
         },
         revalidate: config.revalidateTimeIfFound,
@@ -82,6 +106,7 @@ export default async function sharedGetStaticProps(ctx) {
       props: {
         errorCode: 404,
         documentType,
+        postHtml,
         commentData,
         tabName,
       },
