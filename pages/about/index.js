@@ -9,7 +9,6 @@ import Head from "~/components/Head";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import colors from "~/config/themes/colors";
 
-import { NavigationArrow } from "~/components/HorizontalTabBar";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { createRef, Component, Fragment, useState } from "react";
@@ -349,24 +348,6 @@ class Index extends Component {
             <div className={css(styles.pointCardList)}>
               <ScrollMenu
                 data={this.points}
-                arrowLeft={
-                  <NavigationArrow
-                    icon={
-                      <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
-                    }
-                    direction={"left"}
-                    customStyles={styles.navArrow}
-                  />
-                }
-                arrowRight={
-                  <NavigationArrow
-                    icon={
-                      <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
-                    }
-                    direction={"right"}
-                    customStyles={styles.navArrow}
-                  />
-                }
                 menuStyle={{
                   justifyContent: "center",
                   width: "100%",
