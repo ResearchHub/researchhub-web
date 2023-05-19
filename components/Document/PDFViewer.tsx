@@ -11,7 +11,6 @@ import { faCircleExclamation } from "@fortawesome/pro-light-svg-icons";
 // Needs to set up a custom webpack config to do this.
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-
 interface Props {
   pdfUrl?: string;
   maxWidth?: number;
@@ -66,7 +65,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     setHasLoadError(true);
   }
 
-
   const lastPageRef = useCallback(
     (node: HTMLDivElement | null) => {
       // @ts-ignore
@@ -111,11 +109,23 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
   if (hasLoadError) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", height: "100%", alignItems: "center", rowGap: "15px", justifyContent: "center", marginTop: "30%" }}>
-          <FontAwesomeIcon icon={faCircleExclamation} style={{fontSize: 44}} />
-          <span style={{ fontSize: 22}}>There was an error loading the PDF.</span>
-        </div>
-    )
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          alignItems: "center",
+          rowGap: "15px",
+          justifyContent: "center",
+          marginTop: "30%",
+        }}
+      >
+        <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
+        <span style={{ fontSize: 22 }}>
+          There was an error loading the PDF.
+        </span>
+      </div>
+    );
   }
 
   return (
@@ -130,7 +140,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
           onChange={debouncedHandleSearchInputChange}
         />
       </div>
-
 
       <Document
         file={pdfUrl}
@@ -161,12 +170,8 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   );
 };
 
-
-
 const styles = StyleSheet.create({
-  container: {
-
-  },
+  container: {},
 });
 
 export default PDFViewer;

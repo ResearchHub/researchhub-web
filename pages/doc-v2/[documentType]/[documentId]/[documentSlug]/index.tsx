@@ -3,7 +3,8 @@ import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps
 import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 import { useRouter } from "next/router";
 import getDocumentFromRaw, {
-  GenericDocument, isPaper,
+  GenericDocument,
+  isPaper,
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
@@ -43,7 +44,8 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  const pdfUrl = isPaper(document) && document.formats.find((f) => f.type === "pdf")?.url;
+  const pdfUrl =
+    isPaper(document) && document.formats.find((f) => f.type === "pdf")?.url;
   return (
     <SharedDocumentPage
       document={document}
@@ -52,16 +54,15 @@ const DocumentPage: NextPage<Args> = ({
     >
       {isPaper(document) && (
         <div className={css(styles.bodyWrapper)}>
-          {pdfUrl
-            ? (
-              <PDFViewer pdfUrl={pdfUrl} />
-            ) : (
-              <div>
-                <h2>Abstract</h2>
-                <p>{document.abstract}</p>
-              </div>
+          {pdfUrl ? (
+            <PDFViewer pdfUrl={pdfUrl} />
+          ) : (
+            <div>
+              <h2>Abstract</h2>
+              <p>{document.abstract}</p>
+            </div>
           )}
-        </div>        
+        </div>
       )}
     </SharedDocumentPage>
   );
@@ -75,10 +76,9 @@ const styles = StyleSheet.create({
     minHeight: 800,
     padding: "15px",
     background: "white",
-    width: "100%"
+    width: "100%",
   },
 });
-
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   return sharedGetStaticProps(ctx);

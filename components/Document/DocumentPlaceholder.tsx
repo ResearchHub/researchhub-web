@@ -7,13 +7,10 @@ type Args = {
 
 const getRandomRowWidth = () => {
   const [min, max] = [50, 100];
-  return (Math.floor(Math.random() * max - min + 1) + min) + "%";;  
-}
+  return Math.floor(Math.random() * max - min + 1) + min + "%";
+};
 
-const DocumentPlaceholder = ({
-  repeatCount = 15,
-}: Args) => {
-  
+const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
   return (
     <div style={{ width: "100%" }}>
       {Array.from(new Array(repeatCount)).map((_, idx) => {
@@ -23,7 +20,7 @@ const DocumentPlaceholder = ({
             key={`placeholder-${idx}`}
             className={css(styles.wrapper) + " show-loading-animation"}
           >
-            <div className={css(styles.section)}>    
+            <div className={css(styles.section)}>
               <RectShape
                 color={globalColors.PLACEHOLDER_CARD_BACKGROUND}
                 style={{ width: "100%", height: "1em" }}
@@ -43,15 +40,14 @@ const DocumentPlaceholder = ({
               <RectShape
                 color={globalColors.PLACEHOLDER_CARD_BACKGROUND}
                 style={{ width: "95%", height: "1em" }}
-              />              
+              />
               <RectShape
                 color={globalColors.PLACEHOLDER_CARD_BACKGROUND}
                 style={{ width: rowWidth, height: "1em" }}
-              />                                          
+              />
             </div>
-
           </div>
-        )
+        );
       })}
     </div>
   );
@@ -71,7 +67,7 @@ const styles = StyleSheet.create({
     rowGap: 8,
     ":first-child": {
       marginTop: 0,
-    }
+    },
   },
 });
 
