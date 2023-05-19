@@ -40,12 +40,12 @@ const styles = StyleSheet.create({
     paddingTop: 25,
   },
   bodyArea: {
-    display: "flex",
-    justifyContent: "center",
+    display: "block",
     marginTop: 25,
   },
   bodyContentWrapper: {
     maxWidth: config.maxWidth,
+    margin: "0 auto",
   },
 });
 

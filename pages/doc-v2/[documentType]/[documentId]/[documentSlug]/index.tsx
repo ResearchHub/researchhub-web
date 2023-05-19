@@ -3,11 +3,13 @@ import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps
 import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 import { useRouter } from "next/router";
 import getDocumentFromRaw, {
-  GenericDocument,
+  GenericDocument, isPaper,
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
 import PDFViewer from "~/components/Document/PDFViewer";
+import config from "~/components/Document/lib/config";
+import { StyleSheet, css } from "aphrodite";
 
 interface Args {
   documentData?: any;
@@ -41,16 +43,42 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
+  const pdfUrl = isPaper(document) && document.formats.find((f) => f.type === "pdf")?.url;
   return (
     <SharedDocumentPage
       document={document}
       errorCode={errorCode}
       documentType={documentType}
     >
-      <PDFViewer pdfUrl="https://researchhub-paper-dev1.s3.amazonaws.com/uploads/papers/2021/08/25/2020.11.16.385385v1.pdf?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=MV7YhVlcApr5Vj%2FoZem%2FHKiP%2B%2BE%3D&Expires=1684956823" />
+      {isPaper(document) && (
+        <div className={css(styles.bodyWrapper)}>
+          {pdfUrl
+            ? (
+              <PDFViewer pdfUrl={pdfUrl} />
+            ) : (
+              <div>
+                <h2>Abstract</h2>
+                <p>{document.abstract}</p>
+              </div>
+          )}
+        </div>        
+      )}
     </SharedDocumentPage>
   );
 };
+
+const styles = StyleSheet.create({
+  bodyWrapper: {
+    borderRadius: "4px",
+    border: `1px solid ${config.border}`,
+    marginTop: 15,
+    minHeight: 800,
+    padding: "15px",
+    background: "white",
+    width: "100%"
+  },
+});
+
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   return sharedGetStaticProps(ctx);
