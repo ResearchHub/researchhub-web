@@ -132,6 +132,7 @@ function FeedCard({
   user: currentUser,
   withSidePadding,
 }: FeedCardProps) {
+  const router = useRouter();
   /**
    * Whether or not THIS PaperPDFModal is open.
    * There may be many PaperPDFModal components on the page, but
@@ -152,11 +153,13 @@ function FeedCard({
   );
 
   // const bounty = bounties?.[0];
-  const feDocUrl = `/${
+  let feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
       : formattedDocType
   }/${id}/${slug ?? "new"}`;
+  // FIXME: Pseudo feature-flag for testing content on prod
+  feDocUrl = router.query.docv3 ? `/doc-v2${feDocUrl}` : feDocUrl;
 
   const dispatch = useDispatch();
 
