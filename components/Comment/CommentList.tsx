@@ -1,4 +1,4 @@
-import { TopLevelDocument } from "~/config/types/root_types";
+import { GenericDocument } from "../Document/lib/types";
 import { Comment as CommentType } from "./lib/types";
 import Comment from "./Comment";
 import { css, StyleSheet } from "aphrodite";
@@ -11,7 +11,7 @@ import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 type Args = {
   parentComment?: CommentType;
   comments?: Array<CommentType>;
-  document: TopLevelDocument;
+  document: GenericDocument;
   isRootList?: boolean;
   isFetching?: boolean;
   totalCount: number;

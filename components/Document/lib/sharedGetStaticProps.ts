@@ -62,7 +62,6 @@ export default async function sharedGetStaticProps(ctx) {
       };
     } else {
       // console.log("documentData", documentData);
-
       if (documentType === "post") {
         try {
           postHtml = await fetchPostFromS3({ s3Url: documentData.post_src });
@@ -85,7 +84,7 @@ export default async function sharedGetStaticProps(ctx) {
         const filter = await getCommentFilterByTab({ tabName });
         commentData = await fetchCommentsAPI({
           documentId,
-          documentType,
+          documentType: (documentType === "post" ? "researchhub_post" : documentType),
           filter,
         });
       }

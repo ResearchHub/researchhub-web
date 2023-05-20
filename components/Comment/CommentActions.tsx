@@ -2,7 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
-import { TopLevelDocument, parseUser } from "~/config/types/root_types";
+import { parseUser } from "~/config/types/root_types";
+import { GenericDocument } from "../Document/lib/types";
 import { Comment } from "./lib/types";
 import Image from "next/image";
 import IconButton from "../Icons/IconButton";
@@ -27,7 +28,7 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   toggleReply: Function;
   comment: Comment;
-  document: TopLevelDocument;
+  document: GenericDocument;
 };
 
 const CommentActions = ({ comment, document, toggleReply }: Args) => {

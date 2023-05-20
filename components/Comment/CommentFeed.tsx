@@ -7,7 +7,7 @@ import { CommentTreeContext } from "./lib/contexts";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { ID, parseUser } from "~/config/types/root_types";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
 import { Purchase } from "~/config/types/purchase";
@@ -27,10 +27,11 @@ import findComment from "./lib/findComment";
 import React, { useEffect, useState } from "react";
 import removeComment from "./lib/removeComment";
 import replaceComment from "./lib/replaceComment";
+import { GenericDocument } from "../Document/lib/types";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
-  document: TopLevelDocument;
+  document: GenericDocument;
   context?: "sidebar" | "drawer" | null;
   onCommentCreate?: Function;
   onCommentRemove?: Function;
@@ -313,8 +314,7 @@ const CommentFeed = ({
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
-    (document.isReady && rootLevelCommentCount === 0) ||
-    (selectedFilterValue !== null && comments.length === 0);
+    rootLevelCommentCount === 0 || (selectedFilterValue !== null && comments.length === 0);
   const WrapperEl =
     context === "sidebar"
       ? CommentSidebar
@@ -419,7 +419,7 @@ const CommentFeed = ({
               <CommentEmptyState
                 height={context === "sidebar" ? "60%" : "300px"}
                 forSection={selectedFilterValue}
-                documentType={document.documentType}
+                documentType={document.type}
               />
             )}
           </>

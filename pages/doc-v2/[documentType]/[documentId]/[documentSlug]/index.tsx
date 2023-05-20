@@ -83,9 +83,10 @@ const styles = StyleSheet.create({
     border: `1px solid ${config.border}`,
     marginTop: 15,
     minHeight: 800,
-    padding: "15px",
+    padding: "25px",
     background: "white",
     width: "100%",
+    boxSizing: "border-box",
   },
 });
 

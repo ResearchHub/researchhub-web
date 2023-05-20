@@ -9,6 +9,9 @@ import getDocumentFromRaw, {
 } from "~/components/Document/lib/types";
 import Error from "next/error";
 import { useRouter } from "next/router";
+import CommentFeed from "~/components/Comment/CommentFeed";
+import API from "~/config/api";
+
 
 interface Args {
   documentData?: any;
@@ -56,6 +59,8 @@ const DocumentPage: NextPage<Args> = ({
     displayCommentsFeed = true;
   }
 
+  console.log('displayCommentsFeed', displayCommentsFeed)
+
   return (
     <SharedDocumentPage
       document={document}
@@ -63,7 +68,7 @@ const DocumentPage: NextPage<Args> = ({
       tabName={tabName}
       errorCode={errorCode}
     >
-      {/* <CommentFeed
+      <CommentFeed
         initialComments={parsedComments}
         document={document}
         onCommentCreate={() => {
@@ -79,7 +84,7 @@ const DocumentPage: NextPage<Args> = ({
           alert('implement me');
         }}
         totalCommentCount={commentData.count}
-      /> */}
+      />
     </SharedDocumentPage>
   );
 };

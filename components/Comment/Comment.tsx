@@ -1,3 +1,4 @@
+import { GenericDocument } from "../Document/lib/types";
 import CommentHeader from "./CommentHeader";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
@@ -5,7 +6,7 @@ import CommentActions from "./CommentActions";
 import { Comment as CommentType } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { ID, parseUser } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import {
   getOpenBounties,
@@ -36,7 +37,7 @@ const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
   comment: CommentType;
-  document: TopLevelDocument;
+  document: GenericDocument;
 };
 
 const Comment = ({ comment, document }: CommentArgs) => {
