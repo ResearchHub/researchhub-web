@@ -206,11 +206,6 @@ export default function RscBalanceHistoryDropContent({
             closeDropdown();
           }}
         >
-          {/* <img
-            className={css(styles.uniswapLogo)}
-            src={"/static/icons/uniswap.svg"}
-            height={25}
-          /> */}
           {"Trade RSC"}
           <div className={css(styles.arrowOut)}>
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
