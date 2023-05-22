@@ -44,7 +44,7 @@ function setOrcidRedirect() {
   } else if (process.env.NODE_ENV === "production") {
     return "https://backend.researchhub.com/api/auth/orcid/login/callback/";
   } else {
-    return "http://84.32.128.216:3306/api/auth/orcid/login/callback/";
+    return "http://localhost:8000/api/auth/orcid/login/callback/";
   }
 }
 

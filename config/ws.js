@@ -13,6 +13,6 @@ function setBaseUrl() {
   } else if (process.env.NODE_ENV === "production") {
     return "wss://ws.researchhub.com/ws/";
   } else {
-    return "ws://84.32.128.216:3306/ws/";
+    return "ws://localhost:8000/ws/";
   }
 }
