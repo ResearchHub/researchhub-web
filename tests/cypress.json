@@ -4,6 +4,6 @@
   "baseUrl": "http://localhost:3000",
   "pageLoadTimeout": 30000,
   "env": {
-    "serverBaseUrl": "http://localhost:8000"
+    "serverBaseUrl": "http://84.32.128.216:3306"
   }
 }

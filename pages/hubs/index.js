@@ -61,7 +61,7 @@ class Index extends Component {
   };
 
   openAddHubModal = () => {
-    this.props.openAddHubModal(true);
+    this.props.openAddHubModal(true)
   };
 
   closeEditHubModal = () => {

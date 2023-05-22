@@ -37,14 +37,14 @@ if (process.env.ELASTIC_APM_URL) {
       process.env.REACT_APP_ENV === "staging"
         ? "researchhub-staging-web"
         : process.env.NODE_ENV === "production"
-        ? "researchhub-production-web"
-        : "researchhub-development-web",
+          ? "researchhub-production-web"
+          : "researchhub-development-web",
     environment:
       process.env.REACT_APP_ENV === "staging"
         ? "staging"
         : process.env.NODE_ENV === "production"
-        ? "production"
-        : "development",
+          ? "production"
+          : "development",
     // Set custom APM Server URL (default: http://localhost:8200)
     serverUrl: process.env.ELASTIC_APM_URL,
 
@@ -60,13 +60,19 @@ const MyApp = ({
   store,
   appProps,
 }) => {
+
   const router = useRouter();
   const [prevPath, setPrevPath] = useState(router.asPath);
 
   const showLoader = useRef();
-
+  const startTimeRef = useRef(performance.now());
+  const res = 123;
   // Scroll to top on page change
   useEffect(() => {
+
+    const endTime = performance.now();
+    console.log(`Render time: ${endTime - startTimeRef.current} ms`);
+
     if (prevPath !== router.pathname) {
       window.scroll({
         top: 0,

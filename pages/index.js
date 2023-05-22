@@ -1,5 +1,6 @@
 import HubPage from "~/components/Hubs/HubPage";
 
+
 function Page(props) {
   return <HubPage home={true} {...props} />;
 }

@@ -318,7 +318,7 @@ class HubPage extends Component {
       initialHubList,
       leaderboardFeed,
       loggedIn,
-    } = this.props;
+    } = this.props
 
     if (auth.user.moderator && filterOptions.length < 5) {
       filterOptions.push(
@@ -340,7 +340,7 @@ class HubPage extends Component {
       );
     }
 
-    const carouselElements = getEducationalCarouselElements();
+    const carouselElements = getEducationalCarouselElements()
 
     return (
       <div className={css(styles.rhHomeContainer)}>

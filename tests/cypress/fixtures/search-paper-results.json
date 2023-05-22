@@ -1,6 +1,6 @@
 {
   "count": 912,
-  "next": "http://localhost:8000/api/search/paper/?external_source=true&facet=hubs&limit=10&offset=10",
+  "next": "http://84.32.128.216:3306/api/search/paper/?external_source=true&facet=hubs&limit=10&offset=10",
   "previous": null,
   "facets": {
     "_filter_hubs": {

@@ -1,7 +1,7 @@
 {
   "name": "researchhub",
   "scripts": {
-    "dev": "HOST=localhost:3000 next dev",
+    "dev": "next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",

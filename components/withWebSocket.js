@@ -5,8 +5,8 @@ import Cookies from "js-cookie";
 
 const ALLOWED_ORIGINS = [
   "localhost",
-  "localhost:8000",
-  "ws://localhost:8000",
+  "84.32.128.216:3306",
+  "ws://84.32.128.216:3306",
   "ws://localhost:8000/",
   "staging-ws.researchhub.com",
   "wss://staging-ws.researchhub.com",
