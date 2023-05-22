@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import "@uniswap/widgets/fonts.css";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -19,6 +20,7 @@ import { AuthActions } from "~/redux/auth";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import TokenList from "~/config/uniswap/tokens.json";
 
 import colors from "~/config/themes/colors";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
@@ -32,6 +34,10 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { partyPopper } from "~/config/themes/icons";
 
 const DepositScreen = dynamic(() => import("../Ethereum/DepositScreen"));
+
+const SwapWidget = dynamic(() =>
+  import("@uniswap/widgets").then((mod) => mod.SwapWidget)
+);
 
 const GOERLY_CHAIN_ID = "5";
 const MAINNET_CHAIN_ID = "1";
@@ -103,6 +109,7 @@ class WithdrawalModal extends Component {
         !this.state.transactionFee && this.getTransactionFee();
         this.setState({
           depositScreen: this.props.modals.depositScreen,
+          tradeScreen: this.props.modals.tradeScreen,
         });
       }
       if (
@@ -506,7 +513,20 @@ class WithdrawalModal extends Component {
   };
 
   renderTransactionScreen = () => {
-    const { transactionHash, depositScreen } = this.state;
+    const { transactionHash, depositScreen, tradeScreen } = this.state;
+
+    if (tradeScreen) {
+      return (
+        <div style={{ marginTop: 16 }}>
+          <SwapWidget
+            tokenList={"http://localhost:3000/uniswap/tokens.json"}
+            defaultOutputTokenAddress={
+              "0xD101dCC414F310268c37eEb4cD376CcFA507F571"
+            }
+          />
+        </div>
+      );
+    }
 
     if (depositScreen) {
       return (
@@ -692,18 +712,20 @@ class WithdrawalModal extends Component {
   };
 
   renderTabs = () => {
-    const { depositScreen } = this.state;
+    const { depositScreen, tradeScreen } = this.state;
 
     return (
       <div className={css(styles.tabBar)}>
         <div
           className={css(
             styles.tab,
-            !depositScreen && styles.tabActive
+            !depositScreen && !tradeScreen && styles.tabActive
             // styles.oneTab
           )}
           onClick={() =>
-            this.transitionScreen(() => this.setState({ depositScreen: false }))
+            this.transitionScreen(() =>
+              this.setState({ depositScreen: false, tradeScreen: false })
+            )
           }
         >
           Withdraw
@@ -711,17 +733,30 @@ class WithdrawalModal extends Component {
         <div
           className={css(styles.tab, depositScreen && styles.tabActive)}
           onClick={() =>
-            this.transitionScreen(() => this.setState({ depositScreen: true }))
+            this.transitionScreen(() =>
+              this.setState({ depositScreen: true, tradeScreen: false })
+            )
           }
         >
           Deposit
+        </div>
+        <div
+          className={css(styles.tab, tradeScreen && styles.tabActive)}
+          onClick={() =>
+            this.transitionScreen(() =>
+              this.setState({ tradeScreen: true, depositScreen: false })
+            )
+          }
+        >
+          Trade
         </div>
       </div>
     );
   };
 
   renderContent = () => {
-    const { connectedMetaMask, networkVersion, transactionHash } = this.state;
+    const { connectedMetaMask, networkVersion, transactionHash, tradeScreen } =
+      this.state;
 
     if (transactionHash) {
       return this.renderSuccessScreen();
@@ -731,7 +766,8 @@ class WithdrawalModal extends Component {
       <Fragment>
         {this.renderTabs()}
         <div className={css(styles.content)}>
-          {this.renderToggleContainer(css(styles.toggleContainer))}
+          {!tradeScreen &&
+            this.renderToggleContainer(css(styles.toggleContainer))}
           {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}

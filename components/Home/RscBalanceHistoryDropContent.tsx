@@ -195,6 +195,17 @@ export default function RscBalanceHistoryDropContent({
           {"Deposit RSC"}
         </div>
         <div
+          className={css(styles.depositButton, styles.trade)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            closeDropdown();
+            dispatch(ModalActions.openWithdrawalModal(true, false, true));
+          }}
+        >
+          {"Trade RSC"}
+        </div>
+
+        <div
           style={{
             padding: 16,
             marginTop: 16,
@@ -312,6 +323,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: "10px 15px",
     borderTop: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+  },
+  trade: {
+    borderColor: "rgb(251, 17, 142)",
+    color: "rgb(251, 17, 142)",
   },
   depositButton: {
     alignItems: "center",
