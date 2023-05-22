@@ -21,9 +21,6 @@ export function renderNestedReferenceProjectsNavbarEl({
     <div style={{ display: "flex", flexDirection: "column" }}>
       <ReferenceProjectsNavbarEl
         key={`ref-project-${referenceProject?.id}`}
-        admins={(referenceProject?.admins ?? []).map((rawUser: any) =>
-          parseUserSuggestion(rawUser)
-        )}
         collaborators={(referenceProject?.editors ?? []).map((rawUser: any) =>
           parseUserSuggestion(rawUser)
         )}
@@ -31,6 +28,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}
         projectName={referenceProject?.project_name}
+        isCurrentUserAdmin={referenceProject?.current_user_is_admin ?? false}
         isPublic={referenceProject?.is_public}
       />
       {hasChildren && (
