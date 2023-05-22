@@ -15,7 +15,7 @@ const DocumentBadges = ({ document }: Props) => {
   return (
     <div className={css(styles.badges)}>
       <ContentBadge contentType={document.type} label={document.type} />
-      {openBountyAmount > 0 && (
+      {/* {openBountyAmount > 0 && (
         <ContentBadge
           contentType={"bounty"}
           label={`${formatBountyAmount({
@@ -28,7 +28,7 @@ const DocumentBadges = ({ document }: Props) => {
           contentType={"award"}
           label={`${formatBountyAmount({ amount: openBountyAmount })} Tipped`}
         />
-      )}
+      )} */}
     </div>
   );
 };

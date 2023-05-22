@@ -140,14 +140,14 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
 const styles = StyleSheet.create({
   wrapper: {
     fontSize: 15,
-    lineHeight: "1.5em",
+    lineHeight: "1.6em",
   },
   item: {
     display: "flex",
   },
   title: {
-    width: "100px",
-    color: colors.MEDIUM_GREY(),
+    minWidth: "100px",
+    color: colors.BLACK(0.6),
   },
   value: {},
   showMore: {

@@ -2,7 +2,10 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
-import { HTMLAttributes, AnchorHTMLAttributes } from "react";
+import { HTMLAttributes, AnchorHTMLAttributes, useRef, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+
 
 export type Tab = {
   label: string;
@@ -26,6 +29,24 @@ const HorizontalTabBar = ({
   containerStyle,
   tabStyle,
 }: Props) => {
+  const tabContainerEl = useRef<HTMLDivElement>(null);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollLeft, clientWidth, scrollWidth } = tabContainerEl.current as HTMLDivElement;
+      setShowRightArrow(scrollLeft + clientWidth < scrollWidth);
+    };
+
+    if (tabContainerEl?.current) {
+      tabContainerEl.current.addEventListener('scroll', handleScroll);
+      return () => {
+        tabContainerEl.current?.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, [tabContainerEl]);
+
+
   const renderTab = (tab, index) => {
     const { isSelected, label } = tab;
     const tabType = tab.href ? "link" : "div";
@@ -47,9 +68,23 @@ const HorizontalTabBar = ({
     );
   };
 
+
+  const handleArrowClick = (event) => {
+    (tabContainerEl.current as HTMLDivElement).scrollBy({ left: 250, behavior: 'smooth' });
+  };
+
   return (
     <div className={css(styles.container, containerStyle)}>
-      <div className={css(styles.tabContainer)}>{tabs.map(renderTab)}</div>
+      <div className={css(styles.arrowWrapper)}>
+        <div className={css(styles.tabContainer)} ref={tabContainerEl}>
+          {tabs.map(renderTab)}
+        </div>
+        {showRightArrow && (
+          <div className={css(styles.rightArrow)} onClick={handleArrowClick}>
+            <FontAwesomeIcon icon={faChevronRight} style={{ color: colors.BLACK(0.7)}} />
+          </div>
+        )}      
+      </div>
     </div>
   );
 };
@@ -72,6 +107,22 @@ function _WrapperElement({ children, type, props = {} }): JSX.Element {
 }
 
 const styles = StyleSheet.create({
+  arrowWrapper: {
+    position: 'relative',
+    overflow: 'hidden',
+    width: "100%",
+  },
+  rightArrow: {
+    position: 'absolute',
+    right: 0,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    cursor: 'pointer',
+    fontSize: 20,
+    zIndex: 5,
+    padding: "8px 15px 7px 24px",
+    background: "linear-gradient(90deg, rgba(255, 255, 255, 0) 0px, rgb(255, 255, 255) 50%)"
+  },
   container: {
     display: "flex",
     justifyContent: "flex-start",

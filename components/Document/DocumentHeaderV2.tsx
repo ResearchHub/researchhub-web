@@ -23,6 +23,7 @@ import Link from "next/link";
 import GenericMenu from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { breakpoints } from "~/config/themes/screen";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -108,42 +109,52 @@ const DocumentHeader = ({ document: doc }: Props) => {
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
-            <DocumentLineItems document={doc} />
-            <div className={css(styles.btnWrapper)}>
-              <PermissionNotificationWrapper
-                modalMessage="edit document"
-                permissionKey="UpdatePaper"
-                loginRequired={true}
-                onClick={() =>
-                  dispatch(ModalActions.openPaperTransactionModal(true))
-                }
-                hideRipples={true}
-              >
-                <IconButton overrideStyle={styles.btn}>
-                  <ResearchCoinIcon version={6} width={21} height={21} />
-                  <span>Tip Authors</span>
-                </IconButton>
-              </PermissionNotificationWrapper>
-              {pdfUrl && (
-                <Link
-                  href={pdfUrl}
-                  download={true}
-                  target="_blank"
-                  style={{ textDecoration: "none" }}
-                >
-                  <IconButton overrideStyle={styles.btn}>
-                    <FontAwesomeIcon icon={faArrowDownToBracket} />
-                    <span>PDF</span>
-                  </IconButton>
-                </Link>
-              )}
-              <GenericMenu options={options}>
-                <IconButton overrideStyle={styles.btnDots}>
-                  <FontAwesomeIcon icon={faEllipsis} />
-                </IconButton>
-              </GenericMenu>
+            <div className={css(styles.lineItemsWrapper)}>
+              <DocumentLineItems document={doc} />
             </div>
-            <div>
+            <div className={css(styles.btnsWrapper)}>
+              <div className={css(styles.voteWrapperForSmallScreen)}>
+                <IconButton variant="round">
+                  <DocumentVote document={doc} isHorizontal={true} />
+                </IconButton>
+              </div>
+
+              <div className={css(styles.btnGroup)}>
+                <PermissionNotificationWrapper
+                  modalMessage="edit document"
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  onClick={() =>
+                    dispatch(ModalActions.openPaperTransactionModal(true))
+                  }
+                  hideRipples={true}
+                >
+                  <IconButton variant="round">
+                    <ResearchCoinIcon version={6} width={21} height={21} />
+                    <span>Tip Authors</span>
+                  </IconButton>
+                </PermissionNotificationWrapper>
+                {/* {pdfUrl && (
+                  <Link
+                    href={pdfUrl}
+                    download={true}
+                    target="_blank"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <IconButton overrideStyle={styles.btn}>
+                      <FontAwesomeIcon icon={faArrowDownToBracket} />
+                      <span>PDF</span>
+                    </IconButton>
+                  </Link>
+                )} */}
+                <GenericMenu options={options}>
+                  <IconButton overrideStyle={styles.btnDots}>
+                    <FontAwesomeIcon icon={faEllipsis} />
+                  </IconButton>
+                </GenericMenu>
+              </div>
+            </div>
+            <div className={css(styles.tabsWrapper)}>
               <HorizontalTabBar tabs={tabs} />
             </div>
           </div>
@@ -173,6 +184,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "center",
     borderBottom: `2px solid ${config.border}`,
+  },
+  lineItemsWrapper: {
     [`@media (max-width: ${config.maxWidth}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
@@ -186,8 +199,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     position: "relative",
+    [`@media (max-width: ${config.maxWidth}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },    
   },
-  titleWrapper: {},
+  tabsWrapper: {
+    borderTop: `1px solid #E9EAEF`,
+  },
+  titleWrapper: {
+    [`@media (max-width: ${config.maxWidth}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },    
+  },
   stickyHeader: {
     position: "fixed",
     display: "none",
@@ -205,22 +230,25 @@ const styles = StyleSheet.create({
     left: -48,
     top: -28,
   },
-  btn: {
-    display: "inline-flex",
-    fontWeight: 500,
-    columnGap: "7px",
-    alignItems: "center",
-    padding: "6px 12px",
-    height: 36,
-    boxSizing: "border-box",
-    borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`,
+  voteWrapperForSmallScreen: {
+    display: "none",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    }
   },
-  btnWrapper: {
-    marginTop: 15,
+  btnGroup: {
     display: "flex",
     columnGap: "10px",
-    justifyContent: "flex-end",
+  },
+  btnsWrapper: {
+    marginTop: 15,
+    marginBottom: 15,
+    display: "flex",
+    columnGap: "15px",
+    [`@media (max-width: ${config.maxWidth}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },        
   },
   btnDots: {
     border: "none",

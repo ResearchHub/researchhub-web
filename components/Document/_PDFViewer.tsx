@@ -30,6 +30,7 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
   const observer = useRef(null); // Observe the last rendered page to see if it's in view, if not, load more pages
   const [searchText, setSearchText] = useState<string>("");
 
+  
   useEffect(() => {
     function keydownHandler(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
@@ -108,7 +109,7 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
     debounce(handleInputChange, 500),
     [handleInputChange]
   );
-
+  console.log('viewerWidth', viewerWidth)
   return (
     <div className={css(styles.container)}>
       <div>
