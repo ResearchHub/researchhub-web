@@ -69,7 +69,7 @@ export default function BasicTogglableNavbarLeft({
       fetchReferenceProjects({
         onError: emptyFncWithMsg,
         onSuccess: (payload): void => {
-          setCurrentOrgProjects(payload?.results ?? []);
+          setCurrentOrgProjects(payload ?? []);
         },
         payload: {
           organization: currentOrgID,

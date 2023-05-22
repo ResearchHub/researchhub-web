@@ -22,7 +22,7 @@ export const fetchReferenceProjects = ({
 }: Args): void => {
   fetch(
     buildApiUri({
-      apiPath: `citation_project/?organization=${organization}`,
+      apiPath: `citation_project/get_projects/${organization}`,
     }),
     API.GET_CONFIG()
   )
