@@ -226,6 +226,7 @@ export default function BasicTogglableNavbarLeft({
     </Box>
   );
 }
+
 // type DrawerProps = {
 //   isOpen: boolean;
 //   navWidth: number;
