@@ -1,7 +1,7 @@
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import {
   formatReferenceRowData,
@@ -34,6 +34,7 @@ function useEffectFetchReferenceCitations({
         organizationID: currentOrg?.id,
         // @ts-ignore
         projectID: router.query?.project,
+        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
       });
     }
   }, [
@@ -41,7 +42,7 @@ function useEffectFetchReferenceCitations({
     user?.id,
     referencesFetchTime,
     currentOrg,
-    router.query?.project,
+    router.query,
   ]);
 }
 

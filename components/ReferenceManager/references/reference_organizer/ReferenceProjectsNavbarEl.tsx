@@ -6,30 +6,31 @@ import {
 import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent } from "react";
 import { StyleSheet } from "aphrodite";
+import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
+import colors from "~/config/themes/colors";
 import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
-import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
-import colors from "~/config/themes/colors";
 
 type Props = {
-  admins: SuggestedUser[];
+  active: boolean;
   collaborators: SuggestedUser[];
+  isCurrentUserAdmin: boolean;
+  isPublic: boolean;
   orgSlug: string;
   projectID: ID;
   projectName: string;
-  isPublic: boolean;
-  active: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
+  active,
   collaborators,
+  isCurrentUserAdmin,
+  isPublic,
   orgSlug,
   projectID,
   projectName,
-  isPublic,
-  active,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -53,6 +54,9 @@ export default function ReferenceProjectsNavbarEl({
         px: 2.5,
         background: active ? colors.GREY(0.2) : "",
         margin: "8px",
+        // marginLeft: "16px",
+        marginBottom: "0px",
+        marginTop: "0px",
         borderRadius: "4px",
         padding: "8px",
         boxSizing: "border-box",
@@ -87,6 +91,9 @@ export default function ReferenceProjectsNavbarEl({
         </Box>
       </ALink>
       <ReferenceProjectNavbarElOption
+        isCurrentUserAdmin={isCurrentUserAdmin}
+        projectID={projectID}
+        projectName={projectName}
         onSelectAddNewReference={(event: SyntheticEvent): void => {
           event.preventDefault();
           setProjectIDRefUploader(projectID);

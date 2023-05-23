@@ -26,10 +26,10 @@ export const upsertReferenceProject = ({
   upsertPurpose,
 }: Args): void => {
   const isUpdate = upsertPurpose === "update";
-  const requestConfig = API.POST_CONFIG;
+  const requestConfig = isUpdate ? API.PUT_CONFIG : API.POST_CONFIG;
   fetch(
     buildApiUri({
-      apiPath: `citation_project/${isUpdate ? payload.project : 0}/upsert`,
+      apiPath: `citation_project${isUpdate ? `/${payload.project}` : ""}`,
     }),
     requestConfig(
       !isUpdate && !isEmpty(payload.project)

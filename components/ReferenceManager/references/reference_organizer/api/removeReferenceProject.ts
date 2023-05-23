@@ -2,29 +2,27 @@ import API from "~/config/api";
 import { buildApiUri } from "~/config/utils/buildApiUri";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID, NullableString } from "~/config/types/root_types";
-import { isEmpty } from "~/config/utils/nullchecks";
-
-type Payload = {
-  // TODO: calvinhlee - expand this as more privacy features are added
-  organization: ID;
-};
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 
 type Args = {
   onError: (error: Error) => void;
   onSuccess: (response: any) => void;
-  payload: Payload;
+  projectID: ID;
 };
 
-export const fetchReferenceProjects = ({
+export const removeReferenceProject = ({
   onError,
   onSuccess,
-  payload: { organization },
+  projectID,
 }: Args): void => {
   fetch(
     buildApiUri({
-      apiPath: `citation_project/get_projects/${organization}`,
+      apiPath: `citation_project/${nullthrows(
+        projectID,
+        "projectID cannot be empty"
+      )}/remove`,
     }),
-    API.GET_CONFIG()
+    API.POST_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
