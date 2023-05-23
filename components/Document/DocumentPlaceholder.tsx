@@ -12,7 +12,7 @@ const getRandomRowWidth = () => {
 
 const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", background: "white", padding: 15, boxSizing: "border-box" }}>
       {Array.from(new Array(repeatCount)).map((_, idx) => {
         const rowWidth = getRandomRowWidth();
         return (

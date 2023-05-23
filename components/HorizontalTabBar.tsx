@@ -30,7 +30,7 @@ const HorizontalTabBar = ({
   tabStyle,
 }: Props) => {
   const tabContainerEl = useRef<HTMLDivElement>(null);
-  const [showRightArrow, setShowRightArrow] = useState(true);
+  const [showRightArrow, setShowRightArrow] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,11 +39,13 @@ const HorizontalTabBar = ({
     };
 
     if (tabContainerEl?.current) {
+      handleScroll();
       tabContainerEl.current.addEventListener('scroll', handleScroll);
       return () => {
         tabContainerEl.current?.removeEventListener('scroll', handleScroll);
       };
     }
+
   }, [tabContainerEl]);
 
 

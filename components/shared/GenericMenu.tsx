@@ -7,7 +7,7 @@ import colors from "~/config/themes/colors";
 
 interface MenuOption {
   label: string;
-  value: string;
+  value: any;
   html?: React.ReactElement;
   icon?: React.ReactElement;
   href?: string;
@@ -17,6 +17,7 @@ interface MenuOption {
 interface MenuProps {
   id?: string;
   width?: number;
+  onSelect?: Function;
   children: React.ReactElement;
   options: MenuOption[];
 }
@@ -25,13 +26,15 @@ const Menu = ({
   children,
   options,
   width = 200,
+  onSelect,
   id = `menu-${genClientId()}`,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const handleTriggerClick = (event: MouseEvent) => {
+  const handleSelect = (option:MenuOption) => {
     setIsOpen(!isOpen);
+    onSelect && onSelect(option);
   };
 
   useEffectHandleClick({
@@ -63,7 +66,7 @@ const Menu = ({
               <div
                 key={`${id}-${index}`}
                 className={css(styles.menuItem)}
-                onClick={(event) => onClick && onClick(option, event)}
+                onClick={() => handleSelect(option)}
               >
                 {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
                 {html ? html : label}
@@ -107,6 +110,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: "10px",
     cursor: "pointer",
+    boxSizing: "border-box",
     fontSize: 14,
     width: "100%",
     ":hover": {

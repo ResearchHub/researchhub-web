@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     borderTop: `1px solid #E9EAEF`,
   },
   titleWrapper: {
+    position: "relative",
     [`@media (max-width: ${config.maxWidth}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
@@ -216,11 +217,10 @@ const styles = StyleSheet.create({
   stickyHeader: {
     position: "fixed",
     display: "none",
-    top: 0,
+    bottom: 0,
     zIndex: 100,
-    background: "linear-gradient(to top,rgba(255,255,255,.75) 50%,#fff)",
-    borderBottom: `1px solid #E9EAEF`,
-    boxShadow: `0px 3px 4px rgba(0, 0, 0, 0.02)`,
+    background: "rgb(249, 249, 252)",
+    // borderTop: `1px solid #E9EAEF`,
   },
   stickyVisible: {
     display: "block",
@@ -245,7 +245,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     display: "flex",
     columnGap: "15px",
+    justifyContent: "flex-end",
     [`@media (max-width: ${config.maxWidth}px)`]: {
+      justifyContent: "flex-start",
       paddingLeft: 15,
       paddingRight: 15,
     },        

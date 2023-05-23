@@ -16,16 +16,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 interface Props {
   pdfUrl?: string;
-  maxWidth?: number;
+  viewerWidth?: number;
+  showWhenLoading?: any;
   onLoadSuccess: () => void;
   onLoadError: () => void;
 }
 
-const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props) => {
+const PDFViewer = ({ pdfUrl, showWhenLoading, onLoadSuccess, onLoadError, viewerWidth = 900 }: Props) => {
   const [numPages, setNumPages] = useState<null | number>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [pagesRendered, setPagesRendered] = useState<number>(1); // Start by rendering one page
   const observer = useRef(null); // Observe the last rendered page to see if it's in view, if not, load more pages
   const [searchText, setSearchText] = useState<string>("");
@@ -44,18 +43,6 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
     document.addEventListener("keydown", keydownHandler);
     return () => {
       document.removeEventListener("keydown", keydownHandler);
-    };
-  }, []);
-
-  useEffect(() => {
-    function resizeHandler() {
-      setViewerWidth(Math.min(maxWidth, window.outerWidth));
-    }
-
-    resizeHandler();
-    window.addEventListener("resize", resizeHandler);
-    return () => {
-      window.removeEventListener("resize", resizeHandler);
     };
   }, []);
 
@@ -109,10 +96,11 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
     debounce(handleInputChange, 500),
     [handleInputChange]
   );
-  console.log('viewerWidth', viewerWidth)
+
+  // style={{ position: "fixed", top: 0, overflowY: "scroll", height: "100vh"}}
   return (
-    <div className={css(styles.container)}>
-      <div>
+    <div style={{ width: viewerWidth - 2, overflow: "hidden", margin: "0 auto" }}>
+      {/* <div>
         <label htmlFor="search">Search:</label>
         <input
           ref={inputRef}
@@ -120,19 +108,16 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
           id="search"
           onChange={debouncedHandleSearchInputChange}
         />
-      </div>
+      </div> */}
 
       <Document
         file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}
         onLoadError={onDocumentLoadError}
+        loading={showWhenLoading || "Loading..."}
       >
         {/* <Outline onItemClick={onItemClick} /> */}
         {/* <Page key={`page_1`} pageNumber={1} customTextRenderer={textRenderer} onLoadSuccess={removeTextLayerOffset} width={900}/> */}
-        {/* <button onClick={() => {
-          alert(isExpanded)
-          setIsExpanded(!isExpanded);
-        }}>Expand</button> */}
 
         {Array.from(new Array(pagesRendered), (el, index) => (
           <div
@@ -143,6 +128,7 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
               pageNumber={index + 1}
               width={viewerWidth}
               customTextRenderer={textRenderer}
+              loading={showWhenLoading || "Loading..."}
             />
           </div>
         ))}
@@ -152,7 +138,8 @@ const PDFViewer = ({ pdfUrl, onLoadSuccess, onLoadError, maxWidth = 900 }: Props
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+  },
 });
 
 export default PDFViewer;

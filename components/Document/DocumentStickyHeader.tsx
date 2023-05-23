@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+    fontWeight: 500,
     textTransform: "capitalize",
     ":hover": {
       textDecoration: "underline",
@@ -81,7 +82,8 @@ const styles = StyleSheet.create({
     height: 36,
     boxSizing: "border-box",
     borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`,
+    color: colors.BLACK(0.7),
+    border: `1px solid ${colors.BLACK(0.7)}`,
   },
 });
 

@@ -244,9 +244,10 @@ const styles = StyleSheet.create({
   },
   medium: {},
   large: {
-    fontSize: 16,
-    padding: "10px 14px 6px",
-    height: 37,
+    fontSize: 15,
+    padding: "8px 14px 0px",
+    height: 34,
+    lineHeight: "18px",
   },
   withTooltip: {
     cursor: "default",
@@ -262,6 +263,9 @@ const styles = StyleSheet.create({
   },
   iconSmall: {
     height: 14,
+  },
+  iconLarge: {
+    fontSize: 18
   },
   wrapper: {
     display: "flex",

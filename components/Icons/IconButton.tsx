@@ -1,26 +1,32 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import ReactTooltip from "react-tooltip";
 
 type Args = {
   onClick?: Function;
   children?: any;
   overrideStyle?: any;
   variant?: "round";
+  tooltip?: string;
 };
 
-const IconButton = ({ onClick, children, overrideStyle, variant }: Args) => {
+const IconButton = ({ onClick, children, overrideStyle, variant, tooltip }: Args) => {
   return (
-    <div
-      className={css(
-        styles.root,
-        styles.withAnimation,
-        variant && styles[`variant-${variant}`],
-        overrideStyle
-      )}
-      onClick={(e) => onClick && onClick(e)}
-    >
-      {children}
-    </div>
+    <>
+      <ReactTooltip />
+      <div
+        data-tip={tooltip}
+        className={css(
+          styles.root,
+          styles.withAnimation,
+          variant && styles[`variant-${variant}`],
+          overrideStyle
+        )}
+        onClick={(e) => onClick && onClick(e)}
+      >
+        {children}
+      </div>
+    </>
   );
 };
 
