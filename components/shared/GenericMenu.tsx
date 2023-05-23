@@ -32,7 +32,7 @@ const Menu = ({
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const handleSelect = (option:MenuOption) => {
+  const handleSelect = (option: MenuOption) => {
     setIsOpen(!isOpen);
     onSelect && onSelect(option);
   };

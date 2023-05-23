@@ -1,8 +1,8 @@
 /*
-* Important Note: Do not use this component directly.
-* Use PDFViewer component instead since it is capable of properly loading it.
-* Failure to do so, will result in a very large bundle size.
-*/
+ * Important Note: Do not use this component directly.
+ * Use PDFViewer component instead since it is capable of properly loading it.
+ * Failure to do so, will result in a very large bundle size.
+ */
 
 import { Document, Outline, Page, pdfjs } from "react-pdf";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,7 +13,6 @@ import debounce from "lodash/debounce";
 // Needs to set up a custom webpack config to do this.
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-
 interface Props {
   pdfUrl?: string;
   viewerWidth?: number;
@@ -22,14 +21,19 @@ interface Props {
   onLoadError: () => void;
 }
 
-const PDFViewer = ({ pdfUrl, showWhenLoading, onLoadSuccess, onLoadError, viewerWidth = 900 }: Props) => {
+const PDFViewer = ({
+  pdfUrl,
+  showWhenLoading,
+  onLoadSuccess,
+  onLoadError,
+  viewerWidth = 900,
+}: Props) => {
   const [numPages, setNumPages] = useState<null | number>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [pagesRendered, setPagesRendered] = useState<number>(1); // Start by rendering one page
   const observer = useRef(null); // Observe the last rendered page to see if it's in view, if not, load more pages
   const [searchText, setSearchText] = useState<string>("");
 
-  
   useEffect(() => {
     function keydownHandler(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
@@ -99,7 +103,9 @@ const PDFViewer = ({ pdfUrl, showWhenLoading, onLoadSuccess, onLoadError, viewer
 
   // style={{ position: "fixed", top: 0, overflowY: "scroll", height: "100vh"}}
   return (
-    <div style={{ width: viewerWidth - 2, overflow: "hidden", margin: "0 auto" }}>
+    <div
+      style={{ width: viewerWidth - 2, overflow: "hidden", margin: "0 auto" }}
+    >
       {/* <div>
         <label htmlFor="search">Search:</label>
         <input
@@ -138,8 +144,7 @@ const PDFViewer = ({ pdfUrl, showWhenLoading, onLoadSuccess, onLoadError, viewer
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
 });
 
 export default PDFViewer;

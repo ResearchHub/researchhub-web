@@ -10,7 +10,13 @@ type Args = {
   tooltip?: string;
 };
 
-const IconButton = ({ onClick, children, overrideStyle, variant, tooltip }: Args) => {
+const IconButton = ({
+  onClick,
+  children,
+  overrideStyle,
+  variant,
+  tooltip,
+}: Args) => {
   return (
     <>
       <ReactTooltip />

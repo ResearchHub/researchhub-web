@@ -14,7 +14,11 @@ const DocumentBadges = ({ document }: Props) => {
 
   return (
     <div className={css(styles.badges)}>
-      <ContentBadge size="large" contentType={document.type} label={document.type} />
+      <ContentBadge
+        size="large"
+        contentType={document.type}
+        label={document.type}
+      />
       {/* {openBountyAmount > 0 && (
         <ContentBadge
           contentType={"bounty"}

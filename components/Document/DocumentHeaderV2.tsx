@@ -172,9 +172,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  headerRoot: {
-
-  },
+  headerRoot: {},
   title: {
     textTransform: "capitalize",
   },
@@ -202,7 +200,7 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${config.maxWidth}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
-    },    
+    },
   },
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${config.maxWidth}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
-    },    
+    },
   },
   stickyHeader: {
     position: "fixed",
@@ -234,7 +232,7 @@ const styles = StyleSheet.create({
     display: "none",
     [`@media (max-width: ${breakpoints.small.str})`]: {
       display: "block",
-    }
+    },
   },
   btnGroup: {
     display: "flex",
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
       paddingLeft: 15,
       paddingRight: 15,
-    },        
+    },
   },
   btnDots: {
     border: "none",

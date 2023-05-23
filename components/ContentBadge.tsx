@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     height: 14,
   },
   iconLarge: {
-    fontSize: 18
+    fontSize: 18,
   },
   wrapper: {
     display: "flex",
