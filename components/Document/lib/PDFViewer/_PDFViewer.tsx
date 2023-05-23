@@ -5,9 +5,8 @@
  */
 
 import { Document, Outline, Page, pdfjs } from "react-pdf";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import debounce from "lodash/debounce";
 
 // FIXME: Replace with local worker.
 // Needs to set up a custom webpack config to do this.
@@ -17,6 +16,7 @@ interface Props {
   pdfUrl?: string;
   viewerWidth?: number;
   showWhenLoading?: any;
+  searchText?: string;
   onLoadSuccess: () => void;
   onLoadError: () => void;
 }
@@ -24,31 +24,14 @@ interface Props {
 const PDFViewer = ({
   pdfUrl,
   showWhenLoading,
+  searchText = "",
   onLoadSuccess,
   onLoadError,
   viewerWidth = 900,
 }: Props) => {
   const [numPages, setNumPages] = useState<null | number>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [pagesRendered, setPagesRendered] = useState<number>(1); // Start by rendering one page
   const observer = useRef(null); // Observe the last rendered page to see if it's in view, if not, load more pages
-  const [searchText, setSearchText] = useState<string>("");
-
-  useEffect(() => {
-    function keydownHandler(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
-        e.preventDefault();
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }
-    }
-
-    document.addEventListener("keydown", keydownHandler);
-    return () => {
-      document.removeEventListener("keydown", keydownHandler);
-    };
-  }, []);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -66,7 +49,6 @@ const PDFViewer = ({
       // @ts-ignore
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && pagesRendered < (numPages ?? 0)) {
-          console.log("load more pages");
           setPagesRendered((prev) => prev + 1);
         }
       });
@@ -92,30 +74,10 @@ const PDFViewer = ({
     [searchText]
   );
 
-  const handleInputChange = useCallback(async () => {
-    setSearchText(inputRef?.current?.value || "");
-  }, []);
-
-  const debouncedHandleSearchInputChange = useCallback(
-    debounce(handleInputChange, 500),
-    [handleInputChange]
-  );
-
-  // style={{ position: "fixed", top: 0, overflowY: "scroll", height: "100vh"}}
   return (
     <div
       style={{ width: viewerWidth - 2, overflow: "hidden", margin: "0 auto" }}
     >
-      {/* <div>
-        <label htmlFor="search">Search:</label>
-        <input
-          ref={inputRef}
-          type="search"
-          id="search"
-          onChange={debouncedHandleSearchInputChange}
-        />
-      </div> */}
-
       <Document
         file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}

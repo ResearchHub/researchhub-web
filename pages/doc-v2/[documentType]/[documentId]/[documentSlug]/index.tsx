@@ -9,7 +9,7 @@ import getDocumentFromRaw, {
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
-import PDFViewer from "~/components/Document/PDFViewer";
+import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 

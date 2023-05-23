@@ -1,20 +1,19 @@
 import { useEffect, useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
-import DocumentPlaceholder from "./DocumentPlaceholder";
+import DocumentPlaceholder from "../../DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleExclamation,
-  faMaximize,
   faXmark,
   faMinus,
   faPlus,
   faChevronDown,
-  faSearch,
 } from "@fortawesome/pro-light-svg-icons";
 import dynamic from "next/dynamic";
-import IconButton from "../Icons/IconButton";
+import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
-import GenericMenu from "../shared/GenericMenu";
+import GenericMenu from "../../../shared/GenericMenu";
+import PDFViewerStickyNav from "./PDFViewerStickyNav";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
@@ -52,6 +51,9 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [selectedZoom, setSelectedZoom] = useState<number>(1.25);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
+  const [stickyNav, searchText] = PDFViewerStickyNav({
+    handleFullScreen: () => setIsExpanded(true),
+  });
 
   useEffect(() => {
     function resizeHandler() {
@@ -128,6 +130,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
           <_PDFViewer
             pdfUrl={pdfUrl}
             viewerWidth={viewerWidth * selectedZoom}
+            searchText={searchText}
             onLoadSuccess={onLoadSuccess}
             onLoadError={onLoadError}
             showWhenLoading={<DocumentPlaceholder />}
@@ -140,27 +143,10 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   return (
     <div className={css(styles.container)}>
       {fullScreenViewer}
-      <div className={css(styles.stickyDocNav)}>
-        <div onClick={() => setIsExpanded(true)} style={{}}>
-          <IconButton tooltip="Fullscreen mode">
-            <FontAwesomeIcon icon={faSearch} style={{ fontSize: 20 }} />
-          </IconButton>
-        </div>
-        <div
-          style={{
-            borderRight: `2px solid ${colors.BLACK(0.5)}`,
-            height: "20px",
-            marginTop: 5,
-          }}
-        ></div>
-        <div onClick={() => setIsExpanded(true)} style={{}}>
-          <IconButton tooltip="Fullscreen mode">
-            <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
-          </IconButton>
-        </div>
-      </div>
+      <div className={css(styles.stickyDocNavWrapper)}>{stickyNav}</div>
       <_PDFViewer
         pdfUrl={pdfUrl}
+        searchText={searchText}
         viewerWidth={viewerWidth}
         onLoadSuccess={onLoadSuccess}
         onLoadError={onLoadError}
@@ -176,13 +162,13 @@ const styles = StyleSheet.create({
     position: "relative",
     boxSizing: "border-box",
   },
-  stickyDocNav: {
+  stickyDocNavWrapper: {
     position: "sticky",
-    zIndex: 2,
+    zIndex: 99,
     right: 0,
-    top: 0,
-    marginRight: 5,
-    marginTop: -18,
+    top: 10,
+    marginRight: 10,
+    marginTop: -10,
     display: "flex",
     columnGap: "10px",
     justifyContent: "flex-end",
