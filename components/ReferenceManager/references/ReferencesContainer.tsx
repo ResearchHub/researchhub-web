@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
 import { useRouter } from "next/router";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -34,6 +35,7 @@ type Preload = {
   created: boolean;
 };
 
+// TODO: @@lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
   wsResponse,
@@ -43,15 +45,14 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
+  const { currentOrg } = useOrgs();
+  const router = useRouter();
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isManualUploadDrawerOpen, setIsManualUploadDrawerOpen] =
-    useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
-  const { currentOrg } = useOrgs();
-  const router = useRouter();
+  const currentProjectName = router.query.project_name;
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -59,7 +60,9 @@ function ReferencesContainer({
       formData.append("pdfs[]", file);
     });
     formData.append("organization_id", currentOrg.id);
-    formData.append("project_id", router.query.project);
+    if (router.query.project) {
+      formData.append("project_id", router.query.project);
+    }
     const url = generateApiUrl("citation_entry/pdf_uploads");
     const preload: Array<Preload> = [];
 
@@ -94,23 +97,13 @@ function ReferencesContainer({
   } else {
     return (
       <Fragment>
-        {/* TODO: calvinhlee - move this to context */}
-        <ReferenceManualUploadDrawer
-          drawerProps={{
-            isDrawerOpen: isManualUploadDrawerOpen,
-            setIsDrawerOpen: setIsManualUploadDrawerOpen,
-          }}
-          key="root-nav"
-        />
-
+        <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
-            setIsManualUploadDrawerOpen={setIsManualUploadDrawerOpen}
-            // theme={theme}
           />
           <DroppableZone
             multiple
@@ -132,7 +125,10 @@ function ReferencesContainer({
             >
               <div style={{ marginBottom: 32 }}>
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                  {"All References"}
+                  {currentProjectName ??
+                    (!isEmpty(router.query?.my_refs)
+                      ? "My references"
+                      : `Public references`)}
                 </Typography>
               </div>
               <Box className="ReferencesContainerMain">

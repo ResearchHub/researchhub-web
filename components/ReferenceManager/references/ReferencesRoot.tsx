@@ -1,17 +1,19 @@
+import { connect } from "react-redux";
 import { Fragment, ReactElement } from "react";
+import { ID } from "~/config/types/root_types";
 import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/reference_item/context/ReferenceItemDrawerContext";
 import { ReferenceProjectsUpsertContextProvider } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
 import { ReferenceUploadDrawerContextProvider } from "./reference_uploader/context/ReferenceUploadDrawerContext";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
 import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
 import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
-import { ROUTES as WS_ROUTES } from "~/config/ws";
-import { connect } from "react-redux";
 
 type Props = {
   authChecked: boolean;
   isLoggedIn: boolean;
+  currentUserID?: ID;
 };
 
 function ReferencesRoot({
@@ -38,6 +40,7 @@ function ReferencesRoot({
                 isOpen={true}
                 handleClose={undefined}
                 loginCallback={undefined}
+                persistent={undefined}
               />
             )}
           </ReferenceProjectsUpsertContextProvider>
