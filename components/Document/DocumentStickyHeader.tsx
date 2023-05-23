@@ -9,34 +9,62 @@ import config from "./lib/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
-import { Icon } from "../TextEditor/ToolBar";
+import Link from "next/link";
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 
 interface Props {
   document: GenericDocument;
+  handleTip: Function;
 }
 
-const DocumentStickyHeader = ({ document }: Props) => {
+const DocumentStickyHeader = ({ document, handleTip }: Props) => {
+  const router = useRouter();
+  const basePath = `/doc-v2/${router.query.documentType}/${router.query.documentId}/${router.query.documentSlug}`
+  const isRootDocPage = basePath === router.asPath; 
+
   return (
     <div className={css(styles.stickyWrapper)}>
       <div className={css(styles.titleWrapper)}>
         <DocumentVote document={document} isHorizontal={true} />
-        <div className={css(styles.title)}>{document.title}</div>
+        <div className={css(styles.title)}>
+          {isRootDocPage
+          ? (
+            <span onClick={() => window.scroll(0,0)}>{document.title}</span>
+          ) : (
+            <Link style={{ color: "black", textDecoration: "none"}} href={basePath}>
+              {document.title}
+            </Link>            
+          )}
+
+        </div>
       </div>
       <div className={css(styles.actionWrapper)}>
         <IconButton
           variant="round"
           overrideStyle={[styles.smallScreenVote, styles.btn]}
-        >
+          >
           <DocumentVote document={document} isHorizontal={true} />
         </IconButton>
-        <IconButton variant="round" overrideStyle={styles.btn}>
-          <ResearchCoinIcon version={6} width={21} height={21} />
-          <span>Tip</span>
-        </IconButton>
-        <IconButton variant="round" overrideStyle={styles.btn}>
-          <FontAwesomeIcon icon={faComments} />
-          <span>{document.discussionCount}</span>
-        </IconButton>
+        <PermissionNotificationWrapper
+          modalMessage="edit document"
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          onClick={() =>
+            handleTip()
+          }
+          hideRipples={true}
+        >
+          <IconButton variant="round" overrideStyle={styles.btn}>
+            <ResearchCoinIcon version={6} width={21} height={21} />
+            <span>Tip</span>
+          </IconButton>
+        </PermissionNotificationWrapper>
+        <Link href={basePath + "/conversation"}>
+          <IconButton variant="round" overrideStyle={styles.btn}>
+            <FontAwesomeIcon icon={faComments} />
+            <span>{document.discussionCount}</span>
+          </IconButton>
+        </Link>        
       </div>
     </div>
   );

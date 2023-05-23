@@ -95,7 +95,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
         )}
         style={{ width: `calc(100% - ${stickyOffset}px)` }}
       >
-        <DocumentStickyHeader document={doc} />
+        <DocumentStickyHeader document={doc} handleTip={() => dispatch(ModalActions.openPaperTransactionModal(true))} />
       </div>
       <div className={css(styles.headerWrapper)}>
         <div className={css(styles.headerContentWrapper)}>

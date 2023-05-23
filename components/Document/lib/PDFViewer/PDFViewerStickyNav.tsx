@@ -83,7 +83,6 @@ const PDFViewerStickyNav = ({
               inputRef.current.focus();
             }
           }}
-          tooltip="Search document"
         >
           <FontAwesomeIcon icon={faSearch} style={{ fontSize: 20 }} />
         </IconButton>
@@ -96,7 +95,7 @@ const PDFViewerStickyNav = ({
         }}
       ></div>
       <div onClick={() => handleFullScreen()} style={{}}>
-        <IconButton tooltip="Fullscreen mode">
+        <IconButton>
           <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
         </IconButton>
       </div>
