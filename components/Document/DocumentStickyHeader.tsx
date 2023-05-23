@@ -8,14 +8,14 @@ import colors from "~/config/themes/colors";
 import config from "./lib/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import { breakpoints } from "~/config/themes/screen";
+import { Icon } from "../TextEditor/ToolBar";
 
 interface Props {
   document: GenericDocument;
 }
 
 const DocumentStickyHeader = ({ document }: Props) => {
-  const router = useRouter();
-
   return (
     <div className={css(styles.stickyWrapper)}>
       <div className={css(styles.titleWrapper)}>
@@ -23,11 +23,17 @@ const DocumentStickyHeader = ({ document }: Props) => {
         <div className={css(styles.title)}>{document.title}</div>
       </div>
       <div className={css(styles.actionWrapper)}>
-        <IconButton overrideStyle={styles.btn}>
+        <IconButton
+          variant="round"
+          overrideStyle={[styles.smallScreenVote, styles.btn]}
+        >
+          <DocumentVote document={document} isHorizontal={true} />
+        </IconButton>
+        <IconButton variant="round" overrideStyle={styles.btn}>
           <ResearchCoinIcon version={6} width={21} height={21} />
           <span>Tip</span>
         </IconButton>
-        <IconButton overrideStyle={styles.btn}>
+        <IconButton variant="round" overrideStyle={styles.btn}>
           <FontAwesomeIcon icon={faComments} />
           <span>{document.discussionCount}</span>
         </IconButton>
@@ -41,6 +47,10 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "15px",
     alignItems: "center",
+    width: "100%",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   title: {
     fontSize: 18,
@@ -55,9 +65,12 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     maxWidth: config.maxWidth,
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     margin: "0 auto",
-    padding: "15px 0px",
+    padding: "15px 15px",
+    [`@media (min-width: ${config.maxWidth})`]: {
+      padding: "15px 0px",
+    },
   },
   tabsWrapper: {
     marginLeft: "25px",
@@ -72,18 +85,21 @@ const styles = StyleSheet.create({
   actionWrapper: {
     display: "flex",
     columnGap: "10px",
+    justifyContent: "flex-end",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "center",
+      width: "100%",
+    },
+  },
+  smallScreenVote: {
+    display: "none",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      display: "flex",
+    },
   },
   btn: {
-    display: "inline-flex",
-    fontWeight: 500,
-    columnGap: "7px",
-    alignItems: "center",
-    padding: "6px 12px",
-    height: 36,
-    boxSizing: "border-box",
-    borderRadius: "50px",
-    color: colors.BLACK(0.7),
-    border: `1px solid ${colors.BLACK(0.7)}`,
+    color: colors.BLACK(0.45),
+    border: `1px solid ${colors.BLACK(0.45)}`,
   },
 });
 

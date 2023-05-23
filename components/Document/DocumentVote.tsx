@@ -103,7 +103,7 @@ const DocumentVote = ({ document, isHorizontal = false }: Args) => {
       selected={_userVote ? _userVote.voteType : null}
       isPaper={document.apiDocumentType === "paper"}
       type={document.apiDocumentType}
-      // pillClass={styles.pill}
+      pillClass={isHorizontal && styles.pill}
       downvoteStyleClass={styles.downvote}
       upvoteStyleClass={styles.upvote}
       styles={[styles.voteWidgetWrapper]}
@@ -123,8 +123,6 @@ const styles = StyleSheet.create({
   },
   pill: {
     background: "unset",
-    minWidth: 15,
-    width: "auto",
   },
   voteWidgetWrapper: {
     marginRight: 0,
