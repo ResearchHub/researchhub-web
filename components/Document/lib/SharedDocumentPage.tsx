@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import DocumentHeader from "../DocumentHeaderV2";
 import config from "~/components/Document/lib/config";
 import { GenericDocument } from "./types";
+import Head from 'next/head'
 
 interface Args {
   document: GenericDocument;
@@ -10,6 +11,8 @@ interface Args {
   tabName?: string;
   children?: any;
 }
+
+<meta name="description" content="This is an example of a meta description for this page" />
 
 const SharedDocumentPage = ({
   document,
@@ -20,6 +23,13 @@ const SharedDocumentPage = ({
 }: Args) => {
   return (
     <div className={css(styles.pageWrapper)}>
+      <Head>
+        {/*
+          Need to disable pinch zoom for the entire page because it interferes with PDF.js zoom.
+          If we enable pinch zoom, then every element including the pdf is going to change scale as user zooms in/out.
+        */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+      </Head>
       <div className={css(styles.topArea)}>
         <DocumentHeader document={document} />
       </div>

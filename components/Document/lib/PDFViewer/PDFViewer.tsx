@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPlaceholder from "../../DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -54,6 +54,62 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [stickyNav, searchText] = PDFViewerStickyNav({
     handleFullScreen: () => setIsExpanded(true),
   });
+  const containerRef = useRef(null);
+
+
+
+
+  useEffect(() => {
+    let initialDistance;
+
+    const handleTouchStart = (event) => {
+      console.log('here')
+      if(event.touches.length === 2) { // two fingers touched
+        initialDistance = getDistance(event);
+      }
+    };
+
+    const handleTouchMove = (event) => {
+      console.log('move')
+      if(event.touches.length === 2) { // two fingers moved
+        const currentDistance = getDistance(event);
+        if(currentDistance !== initialDistance) {
+          if(currentDistance > initialDistance) {
+            // zoom in action, increase scale
+            console.log("Pinch Zoom In");
+            alert('increase scale')
+          } else {
+            // zoom out action, decrease scale
+            console.log("Pinch Zoom Out");
+            alert('decrease scale')
+          }
+          initialDistance = currentDistance;
+        }
+      }
+    };
+
+    const getDistance = (event) => {
+      const { clientX: x1, clientY: y1 } = event.touches[0];
+      const { clientX: x2, clientY: y2 } = event.touches[1];
+      const xDiff = x2 - x1;
+      const yDiff = y2 - y1;
+      return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    };
+
+    const pinchZoomArea = containerRef.current;
+    console.log('pinchZoomArea', pinchZoomArea)
+    pinchZoomArea.addEventListener("touchstart", handleTouchStart, false);
+    pinchZoomArea.addEventListener("touchmove", handleTouchMove, false);
+
+    return () => {
+      // Cleanup the event listeners
+      pinchZoomArea.removeEventListener("touchstart", handleTouchStart);
+      pinchZoomArea.removeEventListener("touchmove", handleTouchMove);
+    };
+
+  }, []);
+
+
 
   useEffect(() => {
     function resizeHandler() {
@@ -141,7 +197,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   }, [isExpanded, selectedZoom, viewerWidth]);
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
       <div className={css(styles.stickyDocNavWrapper)}>{stickyNav}</div>
       <_PDFViewer
