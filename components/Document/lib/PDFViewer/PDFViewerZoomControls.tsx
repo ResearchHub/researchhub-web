@@ -19,16 +19,14 @@ interface Props {
 
 const PDFViewerZoomControls = ({ currentZoom, zoomOptions, handleZoomIn, handleZoomOut, handleZoomSelection }: Props) => {
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <IconButton onClick={handleZoomOut}>
         <FontAwesomeIcon icon={faMinus} style={{ fontSize: 24 }} />
-      </IconButton>
-      <IconButton onClick={handleZoomIn}>
-        <FontAwesomeIcon icon={faPlus} style={{ fontSize: 24 }} />
       </IconButton>
       <GenericMenu
         options={zoomOptions}
         width={100}
+        direction="top-center"
         onSelect={(option) => handleZoomSelection(option.value)}
       >
         <IconButton>
@@ -36,12 +34,11 @@ const PDFViewerZoomControls = ({ currentZoom, zoomOptions, handleZoomIn, handleZ
             zoomOptions.find((option) => option.value === currentZoom)
               ?.label
           }
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            style={{ fontSize: 24 }}
-          />
         </IconButton>
       </GenericMenu>
+      <IconButton onClick={handleZoomIn}>
+        <FontAwesomeIcon icon={faPlus} style={{ fontSize: 24 }} />
+      </IconButton>      
     </div>  
   )
 }

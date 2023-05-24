@@ -11,6 +11,7 @@ interface MenuOption {
   html?: React.ReactElement;
   icon?: React.ReactElement;
   href?: string;
+  isVisible?: boolean;
   onClick?: Function;
 }
 
@@ -20,13 +21,17 @@ interface MenuProps {
   onSelect?: Function;
   children: React.ReactElement;
   options: MenuOption[];
+  triggerHeight?: number;
+  direction: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "top-center";
 }
 
 const Menu = ({
   children,
   options,
   width = 200,
+  triggerHeight = 40,
   onSelect,
+  direction = "bottom-left",
   id = `menu-${genClientId()}`,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,9 +44,14 @@ const Menu = ({
 
   useEffectHandleClick({
     el: menuRef.current,
-    exclude: [`.${id}`],
+    exclude: [`.trigger-for-${id}`],
     onOutsideClick: () => setIsOpen(false),
   });
+
+  const directionStyles = {
+    ...(direction === "bottom-left" && { top: triggerHeight, right: 0 }),
+    ...(direction === "top-center" && { transform: "translateX(-25%)", bottom: triggerHeight }),
+  }
 
   return (
     <div className={css(styles.genericMenuWrapper)}>
@@ -57,9 +67,9 @@ const Menu = ({
         <div
           className={css(styles.menu) + ` ${id}`}
           ref={menuRef}
-          style={{ width }}
+          style={{ width, ...directionStyles }}
         >
-          {options.map((option, index) => {
+          {options.filter((o) => o.isVisible).map((option, index) => {
             const { label, icon, href, onClick, value, html } = option;
 
             const content = (

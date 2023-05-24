@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
   },
   btn: {
     color: colors.BLACK(0.45),
-    border: `1px solid ${colors.BLACK(0.45)}`,
   },
 });
 

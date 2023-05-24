@@ -13,32 +13,43 @@ import dynamic from "next/dynamic";
 import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
 import GenericMenu from "../../../shared/GenericMenu";
-import PDFViewerStickyNav from "./PDFViewerStickyNav";
+import PDFViewerControls from "./PDFViewerControls";
 import PDFViewerZoomControls from "./PDFViewerZoomControls";
-
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
+const _zoomOptions = Array.from({ length: 100 }, (_, i) => ({
+  label: `${i + 100}%`,
+  value: (i + 100) / 100,
+  isVisible: false,
+}));
+
 const zoomOptions = [
+  ..._zoomOptions,
   {
     label: "100%",
     value: 1,
+    isVisible: true,
   },
   {
     label: "120%",
     value: 1.25,
+    isVisible: true,
   },
   {
     label: "150%",
     value: 1.5,
+    isVisible: true,
   },
   {
     label: "170%",
     value: 1.75,
+    isVisible: true,
   },
   {
     label: "200%",
     value: 2,
+    isVisible: true,
   },
 ];
 
@@ -54,7 +65,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] = useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
-  const [stickyNav, searchText] = PDFViewerStickyNav({
+  const [stickyNav, searchText] = PDFViewerControls({
     handleFullScreen: () => {
       setIsExpanded(true)
     },
@@ -66,6 +77,25 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   });
   const containerRef = useRef(null);
 
+  const [isSticky, setIsSticky] = useState<boolean>(false);
+console.log('containerRef.current', containerRef.current)
+  useEffect(() => {
+    const scrollHandler = () => {
+      if (containerRef.current.getBoundingClientRect().top < 0) {
+        console.log('sticky')
+        setIsSticky(true);
+      } else {
+        console.log('no sticky')
+        setIsSticky(false);
+      }
+    }
+
+    window.addEventListener('scroll', scrollHandler);
+
+    return () => {
+      window.removeEventListener('scroll', scrollHandler);
+    }
+  }, []);
 
   function handleZoomIn () {
     const currentIdx = zoomOptions.findIndex((option) => option.value === selectedZoom);
@@ -83,7 +113,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     }
     setSelectedZoom(zoomOptions[currentIdx-1].value);
   }
-
 
   useEffect(() => {
     let initialDistance;
@@ -206,16 +235,16 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   return (
     <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
-      <div className={css(styles.stickyDocNavWrapper)}>{stickyNav}</div>
+      <div className={css(styles.controls, isSticky && styles.controlsSticky)}>{stickyNav}</div>
       <div style={{ overflowX: "scroll" }}>
-      <_PDFViewer
-        pdfUrl={pdfUrl}
-        searchText={searchText}
-        viewerWidth={viewerWidth * selectedZoom}
-        onLoadSuccess={onLoadSuccess}
-        onLoadError={onLoadError}
-        showWhenLoading={<DocumentPlaceholder />}
-      />
+        <_PDFViewer
+          pdfUrl={pdfUrl}
+          searchText={searchText}
+          viewerWidth={viewerWidth * selectedZoom}
+          onLoadSuccess={onLoadSuccess}
+          onLoadError={onLoadError}
+          showWhenLoading={<DocumentPlaceholder />}
+        />
       </div>
     </div>
   );
@@ -228,8 +257,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     maxWidth: "100vw",
   },
-  stickyDocNavWrapper: {
-    position: "sticky",
+  controls: {
+    position: "absolute",
     zIndex: 99,
     right: 0,
     top: 50,
@@ -238,7 +267,24 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "10px",
     justifyContent: "flex-end",
+    background: "white",
   },
+  controlsSticky: {
+    position: "fixed",
+    left: "50%",
+    top: "unset",
+    right: "unset",
+    zIndex: 99,
+    bottom: 50,
+    display: "flex",
+    columnGap: "10px",
+    justifyContent: "flex-end",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
+    userSelect: "none",
+    padding: "10px 12px",
+    borderRadius: "42px",
+  },
+
   expandedOn: {
     display: "block",
   },

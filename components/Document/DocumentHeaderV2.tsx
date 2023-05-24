@@ -53,7 +53,6 @@ const DocumentHeader = ({ document: doc }: Props) => {
         setStickyVisible(true);
       } else {
         setStickyVisible(false);
-        console.log("hide sticky");
       }
     };
 

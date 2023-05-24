@@ -11,7 +11,7 @@ import colors from "~/config/themes/colors";
 import debounce from "lodash/debounce";
 import PDFViewerZoomControls from "./PDFViewerZoomControls";
 
-interface StickyNavProps {
+interface Props {
   handleFullScreen: Function;
   handleZoomIn: Function;
   handleZoomOut: Function;
@@ -20,7 +20,7 @@ interface StickyNavProps {
   currentZoom: number;
 }
 
-const PDFViewerStickyNav = ({
+const PDFViewerControls = ({
   handleFullScreen,
   handleZoomIn,
   handleZoomOut,
@@ -28,7 +28,7 @@ const PDFViewerStickyNav = ({
   zoomOptions,
   currentZoom,
 
-}: StickyNavProps): [ReactElement, string] => {
+}: Props): [ReactElement, string] => {
   const [searchText, setSearchText] = useState<string>("");
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -68,7 +68,7 @@ const PDFViewerStickyNav = ({
     <>
       {isSearchOpen && (
         <div className={css(styles.search)}>
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <input
               type="text"
               ref={inputRef}
@@ -99,26 +99,21 @@ const PDFViewerStickyNav = ({
           <FontAwesomeIcon icon={faSearch} style={{ fontSize: 20 }} />
         </IconButton>
       )}
-      <div
-        style={{
-          borderRight: `2px solid ${colors.BLACK(0.5)}`,
-          height: "20px",
-          marginTop: 5,
-        }}
-      ></div>
+      <div className={css(styles.divider)} />
       <PDFViewerZoomControls
         zoomOptions={zoomOptions}
         currentZoom={currentZoom}
         handleZoomIn={handleZoomIn}
         handleZoomOut={handleZoomOut}
         handleZoomSelection={(option) => handleZoomSelection(option.value)}
-      />
+        />
+      <div className={css(styles.divider)} />        
       <IconButton onClick={() => handleFullScreen()}>
         <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
       </IconButton>
     </>
   );
-
+  
   return [el, searchText];
 };
 
@@ -128,6 +123,11 @@ const styles = StyleSheet.create({
     padding: "0px 8px",
     background: "white",
   },
+  divider: {
+    borderRight: `1px solid ${colors.BLACK(0.6)}`,
+    height: "20px",
+    marginTop: 7,
+  }
 });
 
-export default PDFViewerStickyNav;
+export default PDFViewerControls;
