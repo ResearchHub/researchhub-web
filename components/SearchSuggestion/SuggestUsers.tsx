@@ -9,15 +9,17 @@ import { fetchUserSuggestions } from './lib/api';
 type Args = {
   onSelect: Function;
   onChange: Function;
-}
+};
 
 const MIN_LENGTH_TO_FETCH_RESULTS = 2;
 
 const SuggestUsers = ({ onSelect, onChange }: Args) => {
   const [isActive, setIsActive] = useState(true);
-  const inputRef = useRef<HTMLDivElement| null>(null);
+  const inputRef = useRef<HTMLDivElement | null>(null);
   const [userSuggestions, setUserSuggestions] = useState<SuggestedUser[]>([]);
-  const [focusedChoice, setFocusedChoice] = useState<SuggestedUser | null>(null);
+  const [focusedChoice, setFocusedChoice] = useState<SuggestedUser | null>(
+    null
+  );
 
   useEffect(() => {
     if (inputRef.current) {
@@ -27,19 +29,18 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
 
   const handleInputChange = useCallback(async () => {
     if (!inputRef.current) return;
-    
-    const textContent = inputRef.current?.textContent || ""
+
+    const textContent = inputRef.current?.textContent || "";
 
     if (textContent.length >= MIN_LENGTH_TO_FETCH_RESULTS) {
       const suggestions = await fetchUserSuggestions(textContent);
       setUserSuggestions(suggestions);
       setFocusedChoice(suggestions[0]);
-    }
-    else {
+    } else {
       setUserSuggestions([]);
       setFocusedChoice(null);
     }
-    
+
     onChange(inputRef.current.textContent);
   }, [userSuggestions, inputRef?.current?.textContent]);
 
@@ -60,21 +61,25 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
 
     if (downKey) {
       e.preventDefault();
-      const currentIdx = userSuggestions.findIndex(u => u.id === focusedChoice?.id);
-      const nextIdx = currentIdx + 1 > userSuggestions.length - 1 ? 0 : currentIdx + 1;
+      const currentIdx = userSuggestions.findIndex(
+        (u) => u.id === focusedChoice?.id
+      );
+      const nextIdx =
+        currentIdx + 1 > userSuggestions.length - 1 ? 0 : currentIdx + 1;
       setFocusedChoice(userSuggestions[nextIdx]);
-    }
-    else if (upKey) {
+    } else if (upKey) {
       e.preventDefault();
-      const currentIdx = userSuggestions.findIndex(u => u.id === focusedChoice?.id);
-      const nextIdx = currentIdx - 1 < 0 ? userSuggestions.length - 1 : currentIdx - 1;
+      const currentIdx = userSuggestions.findIndex(
+        (u) => u.id === focusedChoice?.id
+      );
+      const nextIdx =
+        currentIdx - 1 < 0 ? userSuggestions.length - 1 : currentIdx - 1;
       setFocusedChoice(userSuggestions[nextIdx]);
-    }
-    else if (enterKey) {
+    } else if (enterKey) {
       e.preventDefault();
       onSelect(focusedChoice);
     }
-  }
+  };
 
   return (
     <div className={css(styles.container)}>
@@ -87,43 +92,54 @@ const SuggestUsers = ({ onSelect, onChange }: Args) => {
             onInput={debouncedHandleInputChange}
             className={css(styles.input)}
           />
-          {userSuggestions.length === 0 &&
-            <div className={css(styles.userDropdown, styles.userDropdownEmpty)}>Search for user to mention...</div>
-          }
-          {userSuggestions.length > 0 &&
+          {userSuggestions.length === 0 && (
+            <div className={css(styles.userDropdown, styles.userDropdownEmpty)}>
+              Search for user to mention...
+            </div>
+          )}
+          {userSuggestions.length > 0 && (
             <div className={css(styles.userDropdown)}>
               <div>
                 {userSuggestions.map((user, index) => (
                   <div
                     key={index}
                     onMouseEnter={() => setFocusedChoice(user)}
-                    className={css(styles.userRow, focusedChoice?.id === user.id && styles.userRowFocused)}
+                    className={css(
+                      styles.userRow,
+                      focusedChoice?.id === user.id && styles.userRowFocused
+                    )}
                     onClick={() => handleUserRowClick(user)}
                   >
                     <div className={css(styles.userRowContent)}>
-                      <AuthorAvatar author={user.authorProfile} size={25} trueSize />
+                      <AuthorAvatar
+                        author={user.authorProfile}
+                        size={25}
+                        trueSize
+                      />
                       <div className={css(styles.userRowDetatils)}>
-                        <span className={css(styles.fullName)}>{user.firstName} {user.lastName}</span>
+                        <span className={css(styles.fullName)}>
+                          {user.firstName} {user.lastName}
+                        </span>
                         <span className={css(styles.dot)}>•</span>
-                        <span className={css(styles.rep)}>{user.reputation} Rep</span>
+                        <span className={css(styles.rep)}>
+                          {user.reputation} Rep
+                        </span>
                       </div>
                     </div>
-                    
                   </div>
                 ))}
               </div>
             </div>
-          }
+          )}
         </>
       ) : null}
     </div>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
+    position: "relative",
     display: "inline-block",
   },
   input: {
@@ -135,24 +151,25 @@ const styles = StyleSheet.create({
     outline: "none",
   },
   userDropdown: {
-    position: 'absolute',
+    position: "absolute",
     width: "auto",
     left: -15,
     zIndex: 1,
-    boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
-    ':nth-child(1n) > div': {
-      backgroundColor: 'white',
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+    ":nth-child(1n) > div": {
+      backgroundColor: "white",
     },
   },
   userDropdownEmpty: {
-    padding: '6px 10px',
-    backgroundColor: 'white',
+    padding: "6px 10px",
+    backgroundColor: "white",
     whiteSpace: "pre",
   },
   userRow: {
-    padding: '6px 10px',
+    padding: "6px 10px",
     fontSize: 14,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   fullName: {
     fontWeight: 500,
@@ -162,17 +179,17 @@ const styles = StyleSheet.create({
   },
   rep: {
     color: colors.MEDIUM_GREY2(),
-    fontSize: 13
+    fontSize: 13,
   },
   userRowContent: {
     display: "flex",
     columnGap: "8px",
-    alignItems: 'center',
+    alignItems: "center",
   },
   userRowDetatils: {
     display: "flex",
     columnGap: "8px",
-    alignItems: 'center',
+    alignItems: "center",
     whiteSpace: "pre",
   },
   userRowFocused: {
@@ -181,7 +198,7 @@ const styles = StyleSheet.create({
   profileImg: {
     width: 40,
     height: 40,
-    borderRadius: '50%',
+    borderRadius: "50%",
     marginRight: 8,
   },
 });

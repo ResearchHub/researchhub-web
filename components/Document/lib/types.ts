@@ -99,7 +99,8 @@ export const parsePaper = (raw: any): Paper => {
     tipAmount: raw.boost_amount,
     abstract: raw.abstract,
     reviewSummary: parseReviewSummary(raw.unified_document.reviews),
-    ...(raw.file && { formats: [{ type: "pdf", url: raw.file }] }),
+    // @ts-ignore
+    formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
 
     raw,
   };

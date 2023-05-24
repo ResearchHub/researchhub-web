@@ -20,6 +20,8 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import ReputationTooltip from "~/components/ReputationTooltip";
 import ReactTooltip from "react-tooltip";
 import { useExchangeRate } from "../contexts/ExchangeRateContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRightFromSquare } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = { closeDropdown: () => void };
 
@@ -194,6 +196,22 @@ export default function RscBalanceHistoryDropContent({
         >
           {"Deposit RSC"}
         </div>
+        <a
+          className={css(styles.depositButton, styles.trade)}
+          target="_blank"
+          href={
+            "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xd101dcc414f310268c37eeb4cd376ccfa507f571"
+          }
+          onClick={(event: SyntheticEvent): void => {
+            closeDropdown();
+          }}
+        >
+          {"Trade RSC"}
+          <div className={css(styles.arrowOut)}>
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          </div>
+        </a>
+
         <div
           style={{
             padding: 16,
@@ -312,6 +330,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: "10px 15px",
     borderTop: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+  },
+  trade: {
+    borderColor: "rgb(251, 17, 142)",
+    color: "rgb(251, 17, 142)",
+    textDecoration: "none",
+    position: "relative",
+  },
+  arrowOut: {
+    position: "absolute",
+    right: 16,
+    top: "50%",
+    transform: "translateY(-50%)",
+  },
+  uniswapLogo: {
+    position: "absolute",
+    left: 16,
+    top: "50%",
+    transform: "translateY(-50%)",
   },
   depositButton: {
     alignItems: "center",
