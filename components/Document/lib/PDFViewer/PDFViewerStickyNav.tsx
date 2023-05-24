@@ -9,13 +9,25 @@ import {
 import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
 import debounce from "lodash/debounce";
+import PDFViewerZoomControls from "./PDFViewerZoomControls";
 
 interface StickyNavProps {
   handleFullScreen: Function;
+  handleZoomIn: Function;
+  handleZoomOut: Function;
+  handleZoomSelection: Function;
+  zoomOptions: Array<{ label: string; value: number }>
+  currentZoom: number;
 }
 
 const PDFViewerStickyNav = ({
   handleFullScreen,
+  handleZoomIn,
+  handleZoomOut,
+  handleZoomSelection,
+  zoomOptions,
+  currentZoom,
+
 }: StickyNavProps): [ReactElement, string] => {
   const [searchText, setSearchText] = useState<string>("");
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -94,11 +106,16 @@ const PDFViewerStickyNav = ({
           marginTop: 5,
         }}
       ></div>
-      <div onClick={() => handleFullScreen()} style={{}}>
-        <IconButton>
-          <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
-        </IconButton>
-      </div>
+      <PDFViewerZoomControls
+        zoomOptions={zoomOptions}
+        currentZoom={currentZoom}
+        handleZoomIn={handleZoomIn}
+        handleZoomOut={handleZoomOut}
+        handleZoomSelection={(option) => handleZoomSelection(option.value)}
+      />
+      <IconButton onClick={() => handleFullScreen()}>
+        <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
+      </IconButton>
     </>
   );
 

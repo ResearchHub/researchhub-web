@@ -14,6 +14,8 @@ import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
 import GenericMenu from "../../../shared/GenericMenu";
 import PDFViewerStickyNav from "./PDFViewerStickyNav";
+import PDFViewerZoomControls from "./PDFViewerZoomControls";
+
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
@@ -49,14 +51,38 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [selectedZoom, setSelectedZoom] = useState<number>(1.25);
+  const [fullScreenSelectedZoom, setFullScreenSelectedZoom] = useState<number>(1.25);
+  const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
   const [stickyNav, searchText] = PDFViewerStickyNav({
-    handleFullScreen: () => setIsExpanded(true),
+    handleFullScreen: () => {
+      setIsExpanded(true)
+    },
+    zoomOptions,
+    currentZoom: selectedZoom,
+    handleZoomIn,
+    handleZoomOut,
+    handleZoomSelection: (option) => setSelectedZoom(option.value)
   });
   const containerRef = useRef(null);
 
 
+  function handleZoomIn () {
+    const currentIdx = zoomOptions.findIndex((option) => option.value === selectedZoom);
+    const isLastOption = currentIdx === zoomOptions.length - 1
+    if (isLastOption) {
+      return;
+    }
+    setSelectedZoom(zoomOptions[currentIdx+1].value);
+  }
+  function handleZoomOut() {
+    const currentIdx = zoomOptions.findIndex((option) => option.value === selectedZoom);
+    const isFirstOption = currentIdx === 0
+    if (isFirstOption) {
+      return;
+    }
+    setSelectedZoom(zoomOptions[currentIdx-1].value);
+  }
 
 
   useEffect(() => {
@@ -157,35 +183,18 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
               <FontAwesomeIcon icon={faXmark} style={{ fontSize: 24 }} />
             </IconButton>
           </div>
-          <div style={{ display: "flex" }}>
-            <IconButton>
-              <FontAwesomeIcon icon={faMinus} style={{ fontSize: 24 }} />
-            </IconButton>
-            <IconButton>
-              <FontAwesomeIcon icon={faPlus} style={{ fontSize: 24 }} />
-            </IconButton>
-            <GenericMenu
-              options={zoomOptions}
-              width={100}
-              onSelect={(option) => setSelectedZoom(option.value)}
-            >
-              <IconButton>
-                {
-                  zoomOptions.find((option) => option.value === selectedZoom)
-                    ?.label
-                }
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  style={{ fontSize: 24 }}
-                />
-              </IconButton>
-            </GenericMenu>
-          </div>
+          <PDFViewerZoomControls
+            zoomOptions={zoomOptions}
+            currentZoom={selectedZoom}
+            handleZoomIn={handleZoomIn}
+            handleZoomOut={handleZoomOut}
+            handleZoomSelection={(option) => setSelectedZoom(option.value)}
+          />
         </div>
         <div style={{ overflowY: "scroll", height: "100vh" }}>
           <_PDFViewer
             pdfUrl={pdfUrl}
-            viewerWidth={viewerWidth * selectedZoom}
+            viewerWidth={viewerWidth * fullScreenSelectedZoom}
             searchText={searchText}
             onLoadSuccess={onLoadSuccess}
             onLoadError={onLoadError}
@@ -203,7 +212,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       <_PDFViewer
         pdfUrl={pdfUrl}
         searchText={searchText}
-        viewerWidth={viewerWidth}
+        viewerWidth={viewerWidth * selectedZoom}
         onLoadSuccess={onLoadSuccess}
         onLoadError={onLoadError}
         showWhenLoading={<DocumentPlaceholder />}
@@ -217,6 +226,8 @@ const styles = StyleSheet.create({
     padding: "25px 0",
     position: "relative",
     boxSizing: "border-box",
+    maxWidth: "100vw",
+    overflowX: "scroll",
   },
   stickyDocNavWrapper: {
     position: "sticky",
