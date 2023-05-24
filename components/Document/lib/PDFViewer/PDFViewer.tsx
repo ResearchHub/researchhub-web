@@ -102,12 +102,10 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
         if(currentDistance !== initialDistance) {
           if(currentDistance > initialDistance) {
             // zoom in action, increase scale
-            console.log("Pinch Zoom In");
-            alert('increase scale')
+            handleZoomIn()
           } else {
             // zoom out action, decrease scale
-            console.log("Pinch Zoom Out");
-            alert('decrease scale')
+            handleZoomOut()
           }
           initialDistance = currentDistance;
         }
@@ -209,6 +207,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
       <div className={css(styles.stickyDocNavWrapper)}>{stickyNav}</div>
+      <div style={{ overflowX: "scroll" }}>
       <_PDFViewer
         pdfUrl={pdfUrl}
         searchText={searchText}
@@ -217,23 +216,23 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
         onLoadError={onLoadError}
         showWhenLoading={<DocumentPlaceholder />}
       />
+      </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: "25px 0",
+    padding: "10px 0",
     position: "relative",
     boxSizing: "border-box",
     maxWidth: "100vw",
-    overflowX: "scroll",
   },
   stickyDocNavWrapper: {
     position: "sticky",
     zIndex: 99,
     right: 0,
-    top: 10,
+    top: 50,
     marginRight: 10,
     marginTop: -10,
     display: "flex",

@@ -11,6 +11,8 @@ import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
+import HorizontalTabBar from "../HorizontalTabBar";
+import { getTabs } from "./lib/tabbedNavigation";
 
 interface Props {
   document: GenericDocument;
@@ -21,12 +23,16 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
   const router = useRouter();
   const basePath = `/doc-v2/${router.query.documentType}/${router.query.documentId}/${router.query.documentSlug}`
   const isRootDocPage = basePath === router.asPath; 
+  const tabs = getTabs({ router, document });
 
   return (
     <div className={css(styles.stickyWrapper)}>
       <div className={css(styles.titleWrapper)}>
         <DocumentVote document={document} isHorizontal={true} />
-        <div className={css(styles.title)}>
+        <div className={css(styles.tabsWrapper)}>
+          <HorizontalTabBar tabs={tabs} />
+        </div>        
+        {/* <div className={css(styles.title)}>
           {isRootDocPage
           ? (
             <span onClick={() => window.scroll(0,0)}>{document.title}</span>
@@ -36,15 +42,15 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
             </Link>            
           )}
 
-        </div>
+        </div> */}
       </div>
       <div className={css(styles.actionWrapper)}>
-        <IconButton
+        {/* <IconButton
           variant="round"
           overrideStyle={[styles.smallScreenVote, styles.btn]}
           >
           <DocumentVote document={document} isHorizontal={true} />
-        </IconButton>
+        </IconButton> */}
         <PermissionNotificationWrapper
           modalMessage="edit document"
           permissionKey="UpdatePaper"
@@ -59,12 +65,12 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
             <span>Tip</span>
           </IconButton>
         </PermissionNotificationWrapper>
-        <Link href={basePath + "/conversation"}>
+        {/* <Link href={basePath + "/conversation"}>
           <IconButton variant="round" overrideStyle={styles.btn}>
             <FontAwesomeIcon icon={faComments} />
             <span>{document.discussionCount}</span>
           </IconButton>
-        </Link>        
+        </Link>         */}
       </div>
     </div>
   );
@@ -95,7 +101,7 @@ const styles = StyleSheet.create({
     maxWidth: config.maxWidth,
     // justifyContent: "space-between",
     margin: "0 auto",
-    padding: "15px 15px",
+    // padding: "15px 15px",
     [`@media (min-width: ${config.maxWidth})`]: {
       padding: "15px 0px",
     },

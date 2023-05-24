@@ -215,9 +215,14 @@ const styles = StyleSheet.create({
   stickyHeader: {
     position: "fixed",
     display: "none",
-    bottom: 0,
+    // bottom: 0,
     zIndex: 100,
-    background: "rgb(249, 249, 252)",
+    paddingBottom: 1,
+    top: 0,
+    // background: "rgb(249, 249, 252)",
+    background: "white",
+    boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 6px",
+    borderBottom: `1px solid #E9EAEF`,
     // borderTop: `1px solid #E9EAEF`,
   },
   stickyVisible: {
