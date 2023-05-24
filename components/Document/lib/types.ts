@@ -53,7 +53,6 @@ export type Paper = GenericDocument & {
   publishedDate?: string;
   externalUrl?: string;
   formats: PaperFormat[];
-  abstract?: string;
 };
 
 export type Post = GenericDocument & {
@@ -97,7 +96,6 @@ export const parsePaper = (raw: any): Paper => {
     publishedDate: formatDateStandard(raw.paper_publish_date),
     externalUrl: raw.url,
     tipAmount: raw.boost_amount,
-    abstract: raw.abstract,
     reviewSummary: parseReviewSummary(raw.unified_document.reviews),
     ...(raw.file && { formats: [{ type: "pdf", url: raw.file }] }),
 

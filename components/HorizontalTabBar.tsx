@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     },
     ":hover": {
       color: colors.MEDIUM_GREY(),
-      borderBottom: `solid 3px ${colors.GREY()}`,
+      borderBottom: `solid 2px ${colors.GREY()}`,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
   tabSelected: {
     color: colors.NEW_BLUE(),
-    borderBottom: "solid 3px",
+    borderBottom: "solid 2px",
     borderColor: colors.NEW_BLUE(),
   },
 });
