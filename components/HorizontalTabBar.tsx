@@ -4,27 +4,45 @@ import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import { HTMLAttributes, AnchorHTMLAttributes } from "react";
 
+export type Tab = {
+  label: string;
+  value: string;
+  href?: string;
+  isSelected?: boolean;
+  icon: React.ReactNode;
+  pillContent?: React.ReactNode | string;
+};
+
 interface Props {
-  tabs: Array<any>;
+  tabs: Array<Tab>;
   onClick?: Function;
   containerStyle?: any;
+  tabStyle?: any;
 }
 
-const HorizontalTabBar = ({ tabs, onClick, containerStyle = null }: Props) => {
+const HorizontalTabBar = ({
+  tabs,
+  onClick,
+  containerStyle,
+  tabStyle,
+}: Props) => {
   const renderTab = (tab, index) => {
     const { isSelected, label } = tab;
     const tabType = tab.href ? "link" : "div";
 
     const props = {
       key: tab.value,
-      className: css(styles.tab, isSelected && styles.tabSelected),
+      className: css(styles.tab, isSelected && styles.tabSelected, tabStyle),
       ...(tab.href && { href: tab.href }),
       ...(onClick && { onClick: () => onClick(tab, index) }),
     };
 
     return (
       <_WrapperElement type={tabType} props={props} key={tab.value}>
-        {label}
+        <div className={css(styles.tabContentWrapper)}>
+          {tab.icon}
+          {label}
+        </div>
       </_WrapperElement>
     );
   };
@@ -58,6 +76,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     boxSizing: "border-box",
+    marginBottom: -1,
   },
   tabContainer: {
     display: "flex",
@@ -76,27 +95,35 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     display: "block",
     padding: "1rem",
-    marginRight: 8,
+    paddingRight: "10px",
+    paddingLeft: "10px",
+    marginRight: "8px",
     whiteSpace: "nowrap",
     textTransform: "unset",
     fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",
     ":active": {
-      color: colors.PURPLE(),
+      color: colors.NEW_BLUE(),
     },
     ":hover": {
-      color: colors.PURPLE(),
+      color: colors.MEDIUM_GREY(),
+      borderBottom: `solid 2px ${colors.GREY()}`,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
       fontSize: 16,
     },
   },
+  tabContentWrapper: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: "8px",
+  },
   tabSelected: {
-    color: colors.PURPLE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.PURPLE(),
+    color: colors.NEW_BLUE(),
+    borderBottom: "solid 2px",
+    borderColor: colors.NEW_BLUE(),
   },
 });
 

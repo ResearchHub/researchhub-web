@@ -1,6 +1,7 @@
 import { CitationConsensus } from "./hypothesis";
 import { Hub } from "./hub";
 import Bounty from "./bounty";
+import { Purchase } from "./purchase";
 
 export type ID = string | number | null | undefined;
 export type KeyOf<ObjectType> = keyof ObjectType;
@@ -31,6 +32,7 @@ export interface TopLevelDocument {
   id: ID;
   isOpenAccess?: boolean;
   bounties?: Bounty[];
+  originalTitle?: string;
   documentType: RhDocumentType;
   apiDocumentType: ApiDocumentType;
 }

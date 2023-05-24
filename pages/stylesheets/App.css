@@ -317,10 +317,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 30px;
   margin-top: 0;
   margin-bottom: 0.5em;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.25px;
   line-height: 1.2em;
 }

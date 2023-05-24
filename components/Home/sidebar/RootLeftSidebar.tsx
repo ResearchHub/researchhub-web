@@ -179,7 +179,7 @@ function RootLeftSidebar({
       "live",
       "referral",
       "user",
-      "doc-v2"
+      "doc-v2",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {
@@ -260,7 +260,7 @@ function RootLeftSidebar({
   return (
     <motion.div
       animate={growMinimized ? "minimized" : "full"}
-      className={formattedRootLeftSidebar}
+      className={formattedRootLeftSidebar + " root-left-sidebar"}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
         ["hubs", "user", "reference-manager", "live"].includes(

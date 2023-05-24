@@ -78,6 +78,7 @@ export class Paper implements TopLevelDocument {
   _isOpenAccess: boolean;
   _documentType: RhDocumentType;
   _apiDocumentType: ApiDocumentType;
+  _originalTitle: string;
 
   constructor(raw: any) {
     this._authors = parsePaperAuthors(raw);
@@ -85,7 +86,9 @@ export class Paper implements TopLevelDocument {
     this._score = raw.score;
     this._discussionCount = raw.discussion_count || 0;
     this._createdDate = raw.created_date;
-    this._createdBy = isEmpty(raw.uploaded_by) ? undefined : parseUser(raw.uploaded_by);
+    this._createdBy = isEmpty(raw.uploaded_by)
+      ? undefined
+      : parseUser(raw.uploaded_by);
     this._hubs = (raw.hubs || []).map((h) => parseHub(h));
     this._title = raw.title;
     this._formats = [];
@@ -96,6 +99,7 @@ export class Paper implements TopLevelDocument {
     this._journal = raw.external_source;
     this._documentType = "paper";
     this._apiDocumentType = "paper";
+    this._originalTitle = raw.paper_title;
 
     if (raw.user_vote) {
       this._userVote = userVoteToConstant(raw.user_vote);
@@ -199,13 +203,17 @@ export class Paper implements TopLevelDocument {
 
   get documentType(): RhDocumentType {
     return this._documentType;
-  }  
+  }
+
+  get originalTitle(): string {
+    return this._originalTitle;
+  }
 
   get apiDocumentType(): ApiDocumentType {
     return this._apiDocumentType;
-  }    
+  }
 
   set discussionCount(count) {
     this._discussionCount = count;
-  }  
+  }
 }

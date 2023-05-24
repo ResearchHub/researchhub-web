@@ -47,7 +47,7 @@ const ALink: FunctionComponent<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   ALink: {
     color: colors.BLACK(),
     fontWeight: 400,
@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
   },
   linkThemeDefault: {},
   linkThemeSolidPrimary: {
+    cursor: "pointer",
+    textDecoration: "none",
     color: colors.NEW_BLUE(),
     ":hover": {
       color: colors.NEW_BLUE(),
