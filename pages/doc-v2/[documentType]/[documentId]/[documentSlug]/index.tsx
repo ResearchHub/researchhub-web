@@ -4,10 +4,13 @@ import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 import { useRouter } from "next/router";
 import getDocumentFromRaw, {
   GenericDocument,
+  isPaper,
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
-import DocumentViewer from "~/components/Document/DocumentViewer";
+import PDFViewer from "~/components/Document/PDFViewer";
+import config from "~/components/Document/lib/config";
+import { StyleSheet, css } from "aphrodite";
 
 interface Args {
   documentData?: any;
@@ -41,16 +44,41 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
+  const pdfUrl =
+    isPaper(document) && document.formats.find((f) => f.type === "pdf")?.url;
   return (
     <SharedDocumentPage
       document={document}
       errorCode={errorCode}
       documentType={documentType}
     >
-      <DocumentViewer document={document} />
+      {isPaper(document) && (
+        <div className={css(styles.bodyWrapper)}>
+          {pdfUrl ? (
+            <PDFViewer pdfUrl={pdfUrl} />
+          ) : (
+            <div>
+              <h2>Abstract</h2>
+              <p>{document.abstract}</p>
+            </div>
+          )}
+        </div>
+      )}
     </SharedDocumentPage>
   );
 };
+
+const styles = StyleSheet.create({
+  bodyWrapper: {
+    borderRadius: "4px",
+    border: `1px solid ${config.border}`,
+    marginTop: 15,
+    minHeight: 800,
+    padding: "15px",
+    background: "white",
+    width: "100%",
+  },
+});
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   return sharedGetStaticProps(ctx);
