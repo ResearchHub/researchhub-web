@@ -24,7 +24,7 @@ import GenericMenu from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
-import { DocumentContext } from "./lib/documentContext";
+import { DocumentContext } from "./lib/DocumentContext";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 
 const PaperTransactionModal = dynamic(
