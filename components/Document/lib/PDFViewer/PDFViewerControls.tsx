@@ -15,6 +15,7 @@ interface Props {
   handleFullScreen: Function;
   handleZoomIn: Function;
   handleZoomOut: Function;
+  handleSearchClick?: Function;
   handleZoomSelection: Function;
   zoomOptions: Array<{ label: string; value: number }>
   currentZoom: number;
@@ -25,6 +26,7 @@ const PDFViewerControls = ({
   handleZoomIn,
   handleZoomOut,
   handleZoomSelection,
+  handleSearchClick,
   zoomOptions,
   currentZoom,
 
@@ -68,7 +70,7 @@ const PDFViewerControls = ({
     <>
       {isSearchOpen && (
         <div className={css(styles.search)}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around",  }}>
             <input
               type="text"
               ref={inputRef}
@@ -78,11 +80,12 @@ const PDFViewerControls = ({
             <IconButton
               onClick={() => {
                 setSearchText("");
-                inputRef!.current!.value = "";
                 setIsSearchOpen(false);
+                handleSearchClick && handleSearchClick(false);
+                inputRef!.current!.value = "";
               }}
             >
-              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
+              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20,  }} />
             </IconButton>
           </div>
         </div>
@@ -91,6 +94,7 @@ const PDFViewerControls = ({
         <IconButton
           onClick={() => {
             setIsSearchOpen(true);
+            handleSearchClick && handleSearchClick(true);
             if (inputRef.current) {
               inputRef.current.focus();
             }
@@ -120,8 +124,9 @@ const PDFViewerControls = ({
 const styles = StyleSheet.create({
   search: {
     border: `1px solid ${colors.BLACK(0.3)}`,
-    padding: "0px 8px",
+    padding: "0px 15px",
     background: "white",
+    width: 150,
   },
   divider: {
     borderRight: `1px solid ${colors.BLACK(0.6)}`,

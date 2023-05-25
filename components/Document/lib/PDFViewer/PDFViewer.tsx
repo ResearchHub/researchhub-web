@@ -68,12 +68,14 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
   const [wrapperWidth, setWrapperWidth] = useState<string>("100vw"); // The Wrapper of PDF.js
+  const [isSearchOpen, setSearchOpen] = useState<boolean>(false);
   const [stickyNav, searchText] = PDFViewerControls({
     handleFullScreen: () => {
       setIsExpanded(true)
     },
     zoomOptions,
     currentZoom: selectedZoom,
+    handleSearchClick: (isSearchOpen) => setSearchOpen(isSearchOpen),
     handleZoomIn,
     handleZoomOut,
     handleZoomSelection: (option) => setSelectedZoom(option.value)
@@ -117,53 +119,53 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     setSelectedZoom(zoomOptions[currentIdx-1].value);
   }
 
-  useEffect(() => {
-    let initialDistance;
+  // useEffect(() => {
+  //   let initialDistance;
 
-    const handleTouchStart = (event) => {
-      console.log('here')
-      if(event.touches.length === 2) { // two fingers touched
-        initialDistance = getDistance(event);
-      }
-    };
+  //   const handleTouchStart = (event) => {
+  //     console.log('here')
+  //     if(event.touches.length === 2) { // two fingers touched
+  //       initialDistance = getDistance(event);
+  //     }
+  //   };
 
-    const handleTouchMove = (event) => {
-      console.log('move')
-      if(event.touches.length === 2) { // two fingers moved
-        const currentDistance = getDistance(event);
-        if(currentDistance !== initialDistance) {
-          if(currentDistance > initialDistance) {
-            // zoom in action, increase scale
-            handleZoomIn()
-          } else {
-            // zoom out action, decrease scale
-            handleZoomOut()
-          }
-          initialDistance = currentDistance;
-        }
-      }
-    };
+  //   const handleTouchMove = (event) => {
+  //     console.log('move')
+  //     if(event.touches.length === 2) { // two fingers moved
+  //       const currentDistance = getDistance(event);
+  //       if(currentDistance !== initialDistance) {
+  //         if(currentDistance > initialDistance) {
+  //           // zoom in action, increase scale
+  //           handleZoomIn()
+  //         } else {
+  //           // zoom out action, decrease scale
+  //           handleZoomOut()
+  //         }
+  //         initialDistance = currentDistance;
+  //       }
+  //     }
+  //   };
 
-    const getDistance = (event) => {
-      const { clientX: x1, clientY: y1 } = event.touches[0];
-      const { clientX: x2, clientY: y2 } = event.touches[1];
-      const xDiff = x2 - x1;
-      const yDiff = y2 - y1;
-      return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-    };
+  //   const getDistance = (event) => {
+  //     const { clientX: x1, clientY: y1 } = event.touches[0];
+  //     const { clientX: x2, clientY: y2 } = event.touches[1];
+  //     const xDiff = x2 - x1;
+  //     const yDiff = y2 - y1;
+  //     return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+  //   };
 
-    const pinchZoomArea = containerRef.current;
-    console.log('pinchZoomArea', pinchZoomArea)
-    pinchZoomArea.addEventListener("touchstart", handleTouchStart, false);
-    pinchZoomArea.addEventListener("touchmove", handleTouchMove, false);
+  //   const pinchZoomArea = containerRef.current;
+  //   console.log('pinchZoomArea', pinchZoomArea)
+  //   pinchZoomArea.addEventListener("touchstart", handleTouchStart, false);
+  //   pinchZoomArea.addEventListener("touchmove", handleTouchMove, false);
 
-    return () => {
-      // Cleanup the event listeners
-      pinchZoomArea.removeEventListener("touchstart", handleTouchStart);
-      pinchZoomArea.removeEventListener("touchmove", handleTouchMove);
-    };
+  //   return () => {
+  //     // Cleanup the event listeners
+  //     pinchZoomArea.removeEventListener("touchstart", handleTouchStart);
+  //     pinchZoomArea.removeEventListener("touchmove", handleTouchMove);
+  //   };
 
-  }, []);
+  // }, []);
 
 
 
@@ -243,11 +245,11 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       </div>
     );
   }, [isExpanded, selectedZoom, viewerWidth]);
-
+console.log('isSearchOpen', isSearchOpen)
   return (
     <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
-      <div className={css(styles.controls, isSticky && styles.controlsSticky)}>{stickyNav}</div>
+      <div className={css(styles.controls, isSticky && styles.controlsSticky, isSticky && isSearchOpen && styles.controlsStickySearchOpen)}>{stickyNav}</div>
       <div style={{ overflowX: "scroll", width: wrapperWidth }}>
         <_PDFViewer
           pdfUrl={pdfUrl}
@@ -302,7 +304,14 @@ const styles = StyleSheet.create({
       left: `calc(50% - ${config.controlsWidth / 2}px)`,
     }
   },
+  controlsStickySearchOpen: {
+    left: `calc(50% - 60px)`,
 
+    [`@media (max-width: 1100px)`]: {
+      transform: "unset",
+      left: `calc(50% - ${config.controlsWidthExpanded / 2}px)`,
+    }    
+  },
   expandedOn: {
     display: "block",
   },
