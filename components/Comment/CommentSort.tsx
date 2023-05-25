@@ -12,9 +12,14 @@ import { CommentTreeContext } from "./lib/contexts";
 type Args = {
   selectedSortValue: NullableString;
   handleSelect: Function;
+  dropdownDirection?: "bottom-left" | "bottom-right";
 };
 
-const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
+const CommentSort = ({
+  selectedSortValue,
+  handleSelect,
+  dropdownDirection = "bottom-left",
+}: Args) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const commentTreeState = useContext(CommentTreeContext);
   const dropdownRef = useRef(null);
@@ -23,6 +28,11 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
   const isNarrowWidthContext =
     commentTreeState.context === "sidebar" ||
     commentTreeState.context === "drawer";
+
+  const directionStyles = {
+    ...(dropdownDirection === "bottom-left" && { left: -5, right: "unset" }),
+    ...(dropdownDirection === "bottom-right" && { right: 0, left: "unset" }),
+  };
 
   useEffectHandleClick({
     el: dropdownRef.current,
@@ -53,6 +63,7 @@ const CommentSort = ({ selectedSortValue, handleSelect }: Args) => {
       <div
         ref={dropdownRef}
         className={css(styles.dropdown, isOpen && styles.dropdownOpen)}
+        style={{ ...directionStyles }}
       >
         {sortOpts.map((s) => (
           <div
@@ -91,14 +102,15 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     padding: "6px 10px 6px 10px",
     fontSize: 16,
+    border: `1px solid ${colors.border}`,
+    background: "white",
   },
   trigger: {},
   dropdown: {
     display: "none",
     position: "absolute",
     top: 30,
-    zIndex: 2,
-    right: 0,
+    zIndex: 10,
     height: "auto",
     width: 150,
     background: "white",

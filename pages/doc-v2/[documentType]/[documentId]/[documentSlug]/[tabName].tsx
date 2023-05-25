@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import API from "~/config/api";
 
-
 interface Args {
   documentData?: any;
   commentData?: any;
@@ -59,7 +58,7 @@ const DocumentPage: NextPage<Args> = ({
     displayCommentsFeed = true;
   }
 
-  console.log('displayCommentsFeed', displayCommentsFeed)
+  console.log("displayCommentsFeed", displayCommentsFeed);
 
   return (
     <SharedDocumentPage
@@ -71,6 +70,7 @@ const DocumentPage: NextPage<Args> = ({
       <CommentFeed
         initialComments={parsedComments}
         document={document}
+        showFilters={false}
         onCommentCreate={() => {
           fetch(
             "/api/revalidate",
@@ -81,7 +81,7 @@ const DocumentPage: NextPage<Args> = ({
           setCommentCount(commentCount + 1);
         }}
         onCommentRemove={() => {
-          alert('implement me');
+          alert("implement me");
         }}
         totalCommentCount={commentData.count}
       />

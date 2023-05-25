@@ -37,6 +37,7 @@ type Args = {
   onCommentRemove?: Function;
   totalCommentCount: number;
   initialComments?: CommentType[] | undefined;
+  showFilters?: boolean;
 };
 
 const CommentFeed = ({
@@ -46,6 +47,7 @@ const CommentFeed = ({
   totalCommentCount,
   initialComments = undefined,
   context = null,
+  showFilters = true,
 }: Args) => {
   const hasInitialComments = initialComments !== undefined;
   const [comments, setComments] = useState<CommentType[]>(
@@ -314,7 +316,8 @@ const CommentFeed = ({
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
-    rootLevelCommentCount === 0 || (selectedFilterValue !== null && comments.length === 0);
+    rootLevelCommentCount === 0 ||
+    (selectedFilterValue !== null && comments.length === 0);
   const WrapperEl =
     context === "sidebar"
       ? CommentSidebar
@@ -377,19 +380,24 @@ const CommentFeed = ({
             </div>
 
             <div className={css(styles.filtersWrapper)}>
-              <CommentFilters
-                selectedFilterValue={selectedFilterValue}
-                hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
-                handleSelect={(fval) => {
-                  resetFeed();
-                  setIsFetching(true);
-                  setSelectedFilterValue(fval);
-                  handleFetch({ filter: fval, sort: selectedSortValue });
-                }}
-              />
+              {showFilters && (
+                <CommentFilters
+                  selectedFilterValue={selectedFilterValue}
+                  hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
+                  handleSelect={(fval) => {
+                    resetFeed();
+                    setIsFetching(true);
+                    setSelectedFilterValue(fval);
+                    handleFetch({ filter: fval, sort: selectedSortValue });
+                  }}
+                />
+              )}
               <div className={css(styles.sortWrapper)}>
                 <CommentSort
                   selectedSortValue={selectedSortValue}
+                  dropdownDirection={
+                    showFilters ? "bottom-right" : "bottom-left"
+                  }
                   handleSelect={(sval) => {
                     setSelectedSortValue(sval);
                     setIsFetching(true);
@@ -435,12 +443,13 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingBottom: 15,
     borderBottom: `1px solid ${colors.filters.divider}`,
+    justifyContent: "space-between",
   },
   roundedEditor: {
     borderRadius: "14px",
   },
   sortWrapper: {
-    marginLeft: "auto",
+    // marginLeft: "auto",
   },
   editorWrapper: {
     marginBottom: 25,
