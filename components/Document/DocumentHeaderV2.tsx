@@ -46,6 +46,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
       const sidebarEl = document.querySelector(".root-left-sidebar");
       const offset = sidebarEl?.getBoundingClientRect().right || 0;
       setStickyOffset(offset);
+      console.log(offset)
 
       const headerWrapperBottom =
         headerWrapperRef.current?.getBoundingClientRect().bottom;

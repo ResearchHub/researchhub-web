@@ -21,8 +21,6 @@ interface Props {
 
 const DocumentStickyHeader = ({ document, handleTip }: Props) => {
   const router = useRouter();
-  const basePath = `/doc-v2/${router.query.documentType}/${router.query.documentId}/${router.query.documentSlug}`
-  const isRootDocPage = basePath === router.asPath; 
   const tabs = getTabs({ router, document });
 
   return (
@@ -31,26 +29,7 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
       <div className={css(styles.tabsWrapper)}>
         <HorizontalTabBar tabs={tabs} />
       </div>        
-      <div className={css(styles.titleWrapper)}>
-        {/* <div className={css(styles.title)}>
-          {isRootDocPage
-          ? (
-            <span onClick={() => window.scroll(0,0)}>{document.title}</span>
-          ) : (
-            <Link style={{ color: "black", textDecoration: "none"}} href={basePath}>
-              {document.title}
-            </Link>            
-          )}
-
-        </div> */}
-      </div>
       <div className={css(styles.actionWrapper)}>
-        {/* <IconButton
-          variant="round"
-          overrideStyle={[styles.smallScreenVote, styles.btn]}
-          >
-          <DocumentVote document={document} isHorizontal={true} />
-        </IconButton> */}
         <PermissionNotificationWrapper
           modalMessage="edit document"
           permissionKey="UpdatePaper"
@@ -65,12 +44,6 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
             <span>Tip</span>
           </IconButton>
         </PermissionNotificationWrapper>
-        {/* <Link href={basePath + "/conversation"}>
-          <IconButton variant="round" overrideStyle={styles.btn}>
-            <FontAwesomeIcon icon={faComments} />
-            <span>{document.discussionCount}</span>
-          </IconButton>
-        </Link>         */}
       </div>
     </div>
   );
@@ -109,7 +82,7 @@ const styles = StyleSheet.create({
   },
   tabsWrapper: {
     marginLeft: "25px",
-    overflowX: "scroll"
+    overflowX: "scroll",
   },
   tab: {
     paddingTop: "1.2rem",
@@ -121,6 +94,7 @@ const styles = StyleSheet.create({
   actionWrapper: {
     display: "flex",
     columnGap: "10px",
+    marginLeft: "auto",
     justifyContent: "flex-end",
     [`@media (max-width: ${breakpoints.small.str})`]: {
       display: "none"

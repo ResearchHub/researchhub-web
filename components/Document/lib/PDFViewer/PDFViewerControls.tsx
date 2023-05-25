@@ -51,12 +51,6 @@ const PDFViewerControls = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (isSearchOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isSearchOpen, inputRef]);
-
   const handleInputChange = useCallback(async () => {
     setSearchText(inputRef?.current?.value || "");
   }, []);

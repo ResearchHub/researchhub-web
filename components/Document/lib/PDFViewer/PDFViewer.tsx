@@ -86,11 +86,10 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
   useEffect(() => {
     const scrollHandler = () => {
-      if (containerRef.current.getBoundingClientRect().top < 0) {
-        console.log('sticky')
+      const pdfInView = containerRef.current.getBoundingClientRect().top < 0;
+      if (pdfInView || window.outerHeight < config.maxWidth) {
         setIsSticky(true);
       } else {
-        console.log('no sticky')
         setIsSticky(false);
       }
     }
@@ -245,7 +244,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       </div>
     );
   }, [isExpanded, selectedZoom, viewerWidth]);
-console.log('isSearchOpen', isSearchOpen)
+
   return (
     <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
