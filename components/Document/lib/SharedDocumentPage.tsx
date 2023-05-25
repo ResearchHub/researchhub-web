@@ -5,7 +5,7 @@ import { DocumentMetadata, GenericDocument, DocumentType } from "./types";
 import Head from "next/head";
 import fetchDocumentMetadata from "../api/fetchDocumentMetadata";
 import { useEffect, useState } from "react";
-import { DocumentContext } from "./documentContext";
+import { DocumentContext } from "./DocumentContext";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
 
