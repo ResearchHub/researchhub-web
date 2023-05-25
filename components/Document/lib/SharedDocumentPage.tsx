@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       maxWidth: `100vw`,
-    }
+    },
   },
   topArea: {
     background: "white",
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
       paddingLeft: 15,
       paddingRight: 15,
       boxSizing: "border-box",
-    }    
+    },
   },
   bodyContentWrapper: {
     maxWidth: config.maxWidth,

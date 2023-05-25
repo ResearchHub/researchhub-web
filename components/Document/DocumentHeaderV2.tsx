@@ -184,7 +184,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
   );
 };
 
-const VOTE_DISTANCE_FROM_LEFT = 50
+const VOTE_DISTANCE_FROM_LEFT = 50;
 const styles = StyleSheet.create({
   headerRoot: {},
   title: {
@@ -253,7 +253,9 @@ const styles = StyleSheet.create({
   },
   voteWrapperForSmallScreen: {
     display: "none",
-    [`@media (max-width: ${config.maxWidth + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${
+      config.maxWidth + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
+    }px)`]: {
       display: "block",
     },
   },

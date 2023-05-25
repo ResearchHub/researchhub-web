@@ -17,7 +17,6 @@ import PDFViewerControls from "./PDFViewerControls";
 import PDFViewerZoomControls from "./PDFViewerZoomControls";
 import config from "../config";
 
-
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
 // const _zoomOptions = Array.from({ length: 100 }, (_, i) => ({
@@ -64,21 +63,22 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [fullScreenSelectedZoom, setFullScreenSelectedZoom] = useState<number>(1.25);
+  const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
+    useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
   const [wrapperWidth, setWrapperWidth] = useState<string>("100vw"); // The Wrapper of PDF.js
   const [isSearchOpen, setSearchOpen] = useState<boolean>(false);
   const [stickyNav, searchText] = PDFViewerControls({
     handleFullScreen: () => {
-      setIsExpanded(true)
+      setIsExpanded(true);
     },
     zoomOptions,
     currentZoom: selectedZoom,
     handleSearchClick: (isSearchOpen) => setSearchOpen(isSearchOpen),
     handleZoomIn,
     handleZoomOut,
-    handleZoomSelection: (option) => setSelectedZoom(option.value)
+    handleZoomSelection: (option) => setSelectedZoom(option.value),
   });
   const containerRef = useRef<HTMLElement>(null);
 
@@ -94,30 +94,34 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       } else {
         setIsSticky(false);
       }
-    }
+    };
 
-    window.addEventListener('scroll', scrollHandler);
+    window.addEventListener("scroll", scrollHandler);
 
     return () => {
-      window.removeEventListener('scroll', scrollHandler);
-    }
+      window.removeEventListener("scroll", scrollHandler);
+    };
   }, [containerRef]);
 
-  function handleZoomIn () {
-    const currentIdx = zoomOptions.findIndex((option) => option.value === selectedZoom);
-    const isLastOption = currentIdx === zoomOptions.length - 1
+  function handleZoomIn() {
+    const currentIdx = zoomOptions.findIndex(
+      (option) => option.value === selectedZoom
+    );
+    const isLastOption = currentIdx === zoomOptions.length - 1;
     if (isLastOption) {
       return;
     }
-    setSelectedZoom(zoomOptions[currentIdx+1].value);
+    setSelectedZoom(zoomOptions[currentIdx + 1].value);
   }
   function handleZoomOut() {
-    const currentIdx = zoomOptions.findIndex((option) => option.value === selectedZoom);
-    const isFirstOption = currentIdx === 0
+    const currentIdx = zoomOptions.findIndex(
+      (option) => option.value === selectedZoom
+    );
+    const isFirstOption = currentIdx === 0;
     if (isFirstOption) {
       return;
     }
-    setSelectedZoom(zoomOptions[currentIdx-1].value);
+    setSelectedZoom(zoomOptions[currentIdx - 1].value);
   }
 
   // useEffect(() => {
@@ -168,8 +172,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
   // }, []);
 
-
-
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -178,8 +180,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
       if (window.outerWidth > config.maxWidth) {
         setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
-      }
-      else {
+      } else {
         setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
       }
     }
@@ -250,7 +251,15 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   return (
     <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
-      <div className={css(styles.controls, isSticky && styles.controlsSticky, isSticky && isSearchOpen && styles.controlsStickySearchOpen)}>{stickyNav}</div>
+      <div
+        className={css(
+          styles.controls,
+          isSticky && styles.controlsSticky,
+          isSticky && isSearchOpen && styles.controlsStickySearchOpen
+        )}
+      >
+        {stickyNav}
+      </div>
       <div style={{ overflowX: "scroll", width: wrapperWidth }}>
         <_PDFViewer
           pdfUrl={pdfUrl}
@@ -298,12 +307,11 @@ const styles = StyleSheet.create({
     userSelect: "none",
     padding: "10px 12px",
     borderRadius: "42px",
-    
-    
+
     [`@media (max-width: 1100px)`]: {
       transform: "unset",
       left: `calc(50% - ${config.controlsWidth / 2}px)`,
-    }
+    },
   },
   controlsStickySearchOpen: {
     left: `calc(50% - 60px)`,
@@ -311,7 +319,7 @@ const styles = StyleSheet.create({
     [`@media (max-width: 1100px)`]: {
       transform: "unset",
       left: `calc(50% - ${config.controlsWidthExpanded / 2}px)`,
-    }    
+    },
   },
   expandedOn: {
     display: "block",
