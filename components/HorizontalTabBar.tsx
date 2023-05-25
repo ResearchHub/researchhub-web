@@ -11,7 +11,6 @@ import {
 } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
-import { LEFT_SIDEBAR_MIN_WIDTH } from "./Home/sidebar/RootLeftSidebar";
 
 export type Tab = {
   label: string;
@@ -40,8 +39,9 @@ const HorizontalTabBar = ({
 
   useEffect(() => {
     const handleScroll = () => {
-      const { scrollLeft, clientWidth, scrollWidth } =
-        tabContainerEl.current as HTMLDivElement;
+      const el = tabContainerEl.current as HTMLDivElement;
+      const { scrollLeft, clientWidth, scrollWidth } = el;
+
       setShowRightArrow(scrollLeft + clientWidth < scrollWidth);
     };
 

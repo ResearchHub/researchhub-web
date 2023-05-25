@@ -5,6 +5,7 @@ import { useState } from "react";
 import { captureEvent } from "~/config/utils/events";
 import { parseComment } from "~/components/Comment/lib/types";
 import getDocumentFromRaw, {
+  DocumentType,
   GenericDocument,
 } from "~/components/Document/lib/types";
 import Error from "next/error";
@@ -16,7 +17,7 @@ interface Args {
   documentData?: any;
   commentData?: any;
   errorCode?: number;
-  documentType: string;
+  documentType: DocumentType;
   tabName?: string;
 }
 
@@ -71,6 +72,7 @@ const DocumentPage: NextPage<Args> = ({
         initialComments={parsedComments}
         document={document}
         showFilters={false}
+        allowCommentTypeSelection={false}
         onCommentCreate={() => {
           fetch(
             "/api/revalidate",

@@ -3,6 +3,7 @@ import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps
 import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
 import { useRouter } from "next/router";
 import getDocumentFromRaw, {
+  DocumentType,
   GenericDocument,
   isPaper,
   isPost,
@@ -16,7 +17,7 @@ import { StyleSheet, css } from "aphrodite";
 interface Args {
   documentData?: any;
   postHtml?: TrustedHTML | string;
-  documentType: string;
+  documentType: DocumentType;
   errorCode?: number;
 }
 

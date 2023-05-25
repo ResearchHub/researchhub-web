@@ -38,6 +38,7 @@ type Args = {
   totalCommentCount: number;
   initialComments?: CommentType[] | undefined;
   showFilters?: boolean;
+  allowCommentTypeSelection?: boolean;
 };
 
 const CommentFeed = ({
@@ -48,6 +49,7 @@ const CommentFeed = ({
   initialComments = undefined,
   context = null,
   showFilters = true,
+  allowCommentTypeSelection = true,
 }: Args) => {
   const hasInitialComments = initialComments !== undefined;
   const [comments, setComments] = useState<CommentType[]>(
@@ -372,7 +374,9 @@ const CommentFeed = ({
                 allowBounty={true}
                 author={currentUser?.authorProfile}
                 previewModeAsDefault={context ? true : false}
-                allowCommentTypeSelection={!isQuestion}
+                allowCommentTypeSelection={
+                  allowCommentTypeSelection && !isQuestion
+                }
                 editorStyleOverride={
                   context === "drawer" ? styles.roundedEditor : null
                 }
