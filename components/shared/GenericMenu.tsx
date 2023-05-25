@@ -22,7 +22,7 @@ interface MenuProps {
   children: React.ReactElement;
   options: MenuOption[];
   triggerHeight?: number;
-  direction: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "top-center";
+  direction?: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "top-center";
 }
 
 const Menu = ({

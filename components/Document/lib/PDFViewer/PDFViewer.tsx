@@ -198,7 +198,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
   // }, []);
 
-  console.log('223222')
   useEffect(() => {
     if (!containerRef.current) return;
 

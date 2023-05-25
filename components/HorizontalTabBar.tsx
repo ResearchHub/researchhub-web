@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     boxSizing: "border-box",
+    marginBottom: -1,
   },
   tabContainer: {
     display: "flex",
