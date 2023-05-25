@@ -19,14 +19,7 @@ import config from "../config";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
-// const _zoomOptions = Array.from({ length: 100 }, (_, i) => ({
-//   label: `${i + 100}%`,
-//   value: (i + 100) / 100,
-//   isVisible: false,
-// }));
-
 const zoomOptions = [
-  // ..._zoomOptions,
   {
     label: "100%",
     value: 1,

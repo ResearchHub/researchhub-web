@@ -28,15 +28,13 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
       <DocumentVote document={document} isHorizontal={true} />
       <div className={css(styles.tabsWrapper)}>
         <HorizontalTabBar tabs={tabs} />
-      </div>        
+      </div>
       <div className={css(styles.actionWrapper)}>
         <PermissionNotificationWrapper
           modalMessage="edit document"
           permissionKey="UpdatePaper"
           loginRequired={true}
-          onClick={() =>
-            handleTip()
-          }
+          onClick={() => handleTip()}
           hideRipples={true}
         >
           <IconButton variant="round" overrideStyle={styles.btn}>
@@ -72,9 +70,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     maxWidth: config.maxWidth,
-    // justifyContent: "space-between",
     margin: "0 auto",
-    // padding: "20px 15px",
     [`@media (max-width: ${config.maxWidth}px)`]: {
       padding: "5px 5px 0px 10px",
       maxWidth: "100vw",
@@ -97,7 +93,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     justifyContent: "flex-end",
     [`@media (max-width: ${breakpoints.small.str})`]: {
-      display: "none"
+      display: "none",
     },
   },
   smallScreenVote: {

@@ -23,8 +23,6 @@ const fetchPostFromS3 = async ({ s3Url }: Props): Promise<any> => {
       "<p>$4"
     );
 
-    console.log("htmlWithoutIntroWhitespace1", htmlWithoutIntroWhitespace);
-
     return htmlWithoutIntroWhitespace;
   } catch (error) {
     captureEvent({

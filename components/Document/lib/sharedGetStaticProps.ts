@@ -32,7 +32,7 @@ export default async function sharedGetStaticProps(ctx) {
   try {
     documentData = await getDocumentByType({ documentType, documentId });
   } catch (err) {
-    console.log("error", err);
+    console.log("Error getting document", err);
     return {
       props: {
         errorCode: 500,
@@ -62,7 +62,6 @@ export default async function sharedGetStaticProps(ctx) {
         },
       };
     } else {
-      // console.log("documentData", documentData);
       if (documentType === "post") {
         try {
           postHtml = await fetchPostFromS3({ s3Url: documentData.post_src });

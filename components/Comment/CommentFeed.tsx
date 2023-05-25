@@ -453,7 +453,6 @@ const styles = StyleSheet.create({
     borderRadius: "14px",
   },
   sortWrapper: {
-    // marginLeft: "auto",
   },
   editorWrapper: {
     marginBottom: 25,
