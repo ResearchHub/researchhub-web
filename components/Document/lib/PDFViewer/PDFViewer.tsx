@@ -15,17 +15,19 @@ import colors from "~/config/themes/colors";
 import GenericMenu from "../../../shared/GenericMenu";
 import PDFViewerControls from "./PDFViewerControls";
 import PDFViewerZoomControls from "./PDFViewerZoomControls";
+import config from "../config";
+
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
-const _zoomOptions = Array.from({ length: 100 }, (_, i) => ({
-  label: `${i + 100}%`,
-  value: (i + 100) / 100,
-  isVisible: false,
-}));
+// const _zoomOptions = Array.from({ length: 100 }, (_, i) => ({
+//   label: `${i + 100}%`,
+//   value: (i + 100) / 100,
+//   isVisible: false,
+// }));
 
 const zoomOptions = [
-  ..._zoomOptions,
+  // ..._zoomOptions,
   {
     label: "100%",
     value: 1,
@@ -65,6 +67,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] = useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
+  const [wrapperWidth, setWrapperWidth] = useState<string>("100vw"); // The Wrapper of PDF.js
   const [stickyNav, searchText] = PDFViewerControls({
     handleFullScreen: () => {
       setIsExpanded(true)
@@ -78,7 +81,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const containerRef = useRef(null);
 
   const [isSticky, setIsSticky] = useState<boolean>(false);
-console.log('containerRef.current', containerRef.current)
+
   useEffect(() => {
     const scrollHandler = () => {
       if (containerRef.current.getBoundingClientRect().top < 0) {
@@ -166,7 +169,16 @@ console.log('containerRef.current', containerRef.current)
 
   useEffect(() => {
     function resizeHandler() {
-      setViewerWidth(Math.min(maxWidth, window.outerWidth));
+      const sidebarElWidth = document.querySelector(".root-left-sidebar")?.getBoundingClientRect()?.width || 0;
+      setViewerWidth(Math.min(maxWidth, window.outerWidth - sidebarElWidth));
+
+      if (window.outerWidth > config.maxWidth) {
+        const borderWidth = 2;
+        setWrapperWidth(`${config.maxWidth - borderWidth}px`);
+      }
+      else {
+        setWrapperWidth(`calc(100vw - ${sidebarElWidth}px)`);
+      }
     }
 
     resizeHandler();
@@ -236,7 +248,7 @@ console.log('containerRef.current', containerRef.current)
     <div className={css(styles.container)} ref={containerRef}>
       {fullScreenViewer}
       <div className={css(styles.controls, isSticky && styles.controlsSticky)}>{stickyNav}</div>
-      <div style={{ overflowX: "scroll" }}>
+      <div style={{ overflowX: "scroll", width: wrapperWidth }}>
         <_PDFViewer
           pdfUrl={pdfUrl}
           searchText={searchText}
@@ -261,7 +273,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 99,
     right: 0,
-    top: 50,
+    top: 25,
     marginRight: 10,
     marginTop: -10,
     display: "flex",
@@ -271,7 +283,7 @@ const styles = StyleSheet.create({
   },
   controlsSticky: {
     position: "fixed",
-    left: "50%",
+    left: `calc(50%)`,
     top: "unset",
     right: "unset",
     zIndex: 99,
@@ -283,6 +295,12 @@ const styles = StyleSheet.create({
     userSelect: "none",
     padding: "10px 12px",
     borderRadius: "42px",
+    
+    
+    [`@media (max-width: 1100px)`]: {
+      transform: "unset",
+      left: `calc(50% - ${config.controlsWidth / 2}px)`,
+    }
   },
 
   expandedOn: {
