@@ -14,6 +14,7 @@ import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
+import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 
 interface Args {
   documentData?: any;
@@ -30,8 +31,7 @@ const DocumentPage: NextPage<Args> = ({
 }) => {
   const router = useRouter();
   if (router.isFallback) {
-    // Fixme: Show loading screen
-    return <div style={{ fontSize: 48 }}>Loading...</div>;
+    return <DocumentPagePlaceholder />;
   }
   if (errorCode) {
     return <Error statusCode={errorCode} />;
@@ -60,7 +60,9 @@ const DocumentPage: NextPage<Args> = ({
       {isPaper(document) && (
         <div className={css(styles.bodyWrapper)}>
           {pdfUrl ? (
-            <PDFViewer pdfUrl={pdfUrl} />
+            <div className={css(styles.viewerWrapper)}>
+              <PDFViewer pdfUrl={pdfUrl} />
+            </div>
           ) : (
             <div className={css(styles.body)}>
               {document.abstract ? (
@@ -95,6 +97,9 @@ const styles = StyleSheet.create({
     background: "white",
     width: "100%",
     boxSizing: "border-box",
+  },
+  viewerWrapper: {
+    minHeight: 500,
   },
   body: {
     padding: 25,

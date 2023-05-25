@@ -16,7 +16,6 @@ const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
       style={{
         width: "100%",
         background: "white",
-        padding: 15,
         boxSizing: "border-box",
       }}
     >

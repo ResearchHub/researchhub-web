@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useMemo, ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
-import DocumentPlaceholder from "../../DocumentPlaceholder";
+import DocumentPlaceholder from "../Placeholders/DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleExclamation,

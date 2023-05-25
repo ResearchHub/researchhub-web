@@ -12,6 +12,7 @@ import Error from "next/error";
 import { useRouter } from "next/router";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import API from "~/config/api";
+import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 
 interface Args {
   documentData?: any;
@@ -32,8 +33,7 @@ const DocumentPage: NextPage<Args> = ({
   const [commentCount, setCommentCount] = useState(commentData?.count || 0);
 
   if (router.isFallback) {
-    // Fixme: Show loading screen
-    return <div style={{ fontSize: 48 }}>Loading...</div>;
+    return <DocumentPagePlaceholder />;
   }
   if (errorCode) {
     return <Error statusCode={errorCode} />;

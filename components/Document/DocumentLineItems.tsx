@@ -72,6 +72,15 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
         ]
       : []),
 
+    ...(isPaper(document) && !document.publishedDate
+      ? [
+          {
+            title: "Uploaded",
+            value: document.createdDate,
+          },
+        ]
+      : []),
+
     ...(isPaper(document) && document?.createdBy?.authorProfile
       ? [
           {
@@ -85,15 +94,6 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
                 {document.createdBy.authorProfile.lastName}
               </ALink>
             ),
-          },
-        ]
-      : []),
-
-    ...(isPaper(document) && !document.publishedDate
-      ? [
-          {
-            title: "Uploaded",
-            value: document.createdDate,
           },
         ]
       : []),
