@@ -1,3 +1,4 @@
+import Bounty, { parseBountyList } from "~/config/types/bounty";
 import { Hub, parseHub } from "~/config/types/hub";
 import { Purchase, parsePurchase } from "~/config/types/purchase";
 import {
@@ -17,15 +18,39 @@ export type DocumentFormat = {
   type: "pdf" | "latex";
   url: string;
 };
-
 export type DocumentType = "hypothesis" | "paper" | "post" | "question";
+
+export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
+
+export type DocumentMetadata = {
+  unifiedDocumentId: ID;
+  bounties: Bounty[];
+  purchases: Purchase[];
+  userVote: Vote | null;
+  reviewSummary: ReviewSummary;
+  discussionCount: number;
+  reviewCount: number;
+  summaryCount: number;
+};
+
+export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
+  return {
+    unifiedDocumentId: raw.id,
+    bounties: parseBountyList(raw.bounties || []),
+    purchases: (raw.purchases || []).map((p: any) => parsePurchase(p)),
+    userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
+    reviewSummary: parseReviewSummary(raw.reviews),
+    discussionCount:
+      raw.documents?.discussion_aggregates?.discussion_count || 0,
+    reviewCount: raw.documents?.discussion_aggregates?.review_count || 0,
+    summaryCount: raw.documents?.discussion_aggregates?.summary_count || 0,
+  };
+};
 
 export type ReviewSummary = {
   count: number;
   averageRating: number;
 };
-
-export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
 
 export interface GenericDocument {
   id: ID;
@@ -42,7 +67,6 @@ export interface GenericDocument {
   type: DocumentType;
   apiDocumentType: ApiDocumentType;
   doi?: string;
-  purchases: Purchase[];
   reviewSummary: ReviewSummary;
   formats: DocumentFormat[];
   raw: any; // Strictly for legacy purposes
@@ -93,7 +117,6 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     doi: raw.doi,
     publishedDate: formatDateStandard(raw.created_date),
     reviewSummary: parseReviewSummary(raw.unified_document.reviews),
-    purchases: (raw.purchases || []).map((p: any) => parsePurchase(p)),
     // @ts-ignore
     formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
     raw, // For legacy compatibility purposes

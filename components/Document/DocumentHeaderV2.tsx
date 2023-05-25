@@ -15,7 +15,7 @@ import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import { ModalActions } from "~/redux/modals";
 import { useDispatch } from "react-redux";
 import dynamic from "next/dynamic";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
@@ -24,6 +24,7 @@ import GenericMenu from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
+import { DocumentContext } from "./lib/documentContext";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -34,19 +35,25 @@ interface Props {
 }
 
 const DocumentHeader = ({ document: doc }: Props) => {
+  const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState<boolean>(false);
   const [stickyOffset, setStickyOffset] = useState<number>(0);
-  const tabs = getTabs({ router, document: doc });
+
+  const tabs = getTabs({
+    router,
+    document: doc,
+    metadata: documentContext.metadata,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
       const sidebarEl = document.querySelector(".root-left-sidebar");
       const offset = sidebarEl?.getBoundingClientRect().right || 0;
       setStickyOffset(offset);
-      console.log(offset)
+      console.log(offset);
 
       const headerWrapperBottom =
         headerWrapperRef.current?.getBoundingClientRect().bottom;
@@ -95,7 +102,12 @@ const DocumentHeader = ({ document: doc }: Props) => {
         )}
         style={{ width: `calc(100% - ${stickyOffset}px)` }}
       >
-        <DocumentStickyHeader document={doc} handleTip={() => dispatch(ModalActions.openPaperTransactionModal(true))} />
+        <DocumentStickyHeader
+          document={doc}
+          handleTip={() =>
+            dispatch(ModalActions.openPaperTransactionModal(true))
+          }
+        />
       </div>
       <div className={css(styles.headerWrapper)}>
         <div className={css(styles.headerContentWrapper)}>
@@ -207,7 +219,7 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${config.maxWidth}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
-    }
+    },
   },
   titleWrapper: {
     position: "relative",

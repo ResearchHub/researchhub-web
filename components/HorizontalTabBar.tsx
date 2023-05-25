@@ -59,7 +59,11 @@ const HorizontalTabBar = ({
 
     const props = {
       key: tab.value,
-      className: css(styles.tab, isSelected && styles.tabSelected, tabStyle),
+      className: css(
+        styles.tab,
+        isSelected ? styles.tabSelected : styles.tabNotSelected,
+        tabStyle
+      ),
       ...(tab.href && { href: tab.href }),
       ...(onClick && { onClick: () => onClick(tab, index) }),
     };
@@ -69,6 +73,9 @@ const HorizontalTabBar = ({
         <div className={css(styles.tabContentWrapper)}>
           {tab.icon}
           {label}
+          {tab.pillContent !== undefined && (
+            <div className={css(styles.pillContent)}>{tab.pillContent}</div>
+          )}
         </div>
       </_WrapperElement>
     );
@@ -123,6 +130,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     width: "100%",
   },
+  pillContent: {
+    background: "#F5F5F9",
+    borderRadius: "5px",
+    padding: "2px 10px",
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+  },
   rightArrow: {
     position: "absolute",
     right: 0,
@@ -165,12 +179,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",
+    borderBottom: `solid 3px transparent`,
     ":active": {
       color: colors.NEW_BLUE(),
-    },
-    ":hover": {
-      color: colors.MEDIUM_GREY(),
-      borderBottom: `solid 3px ${colors.GREY()}`,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
@@ -181,6 +192,13 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     columnGap: "8px",
+  },
+  tabNotSelected: {
+    ":hover": {
+      color: colors.MEDIUM_GREY(),
+      borderBottom: `solid 3px ${colors.GREY()}`,
+      transition: "all 0.2s ease-in-out",
+    },
   },
   tabSelected: {
     color: colors.NEW_BLUE(),

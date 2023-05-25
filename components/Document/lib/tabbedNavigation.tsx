@@ -5,7 +5,7 @@ import { faComments, faStar } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
-import { GenericDocument } from "./types";
+import { DocumentMetadata, GenericDocument } from "./types";
 
 export const tabs: Array<Tab> = [
   {
@@ -41,16 +41,20 @@ export const tabs: Array<Tab> = [
 export const getTabs = ({
   router,
   document,
+  metadata,
 }: {
   router: NextRouter;
   document: GenericDocument;
+  metadata?: DocumentMetadata;
 }) => {
   const { tabName } = router.query;
 
   let _tabs = tabs;
   _tabs = withHref({ tabs: _tabs, router });
   _tabs = withSelected({ tabs: _tabs, tabName: tabName as string });
-  _tabs = withPillContent({ tabs: _tabs, document });
+  // if (metadata) {
+  _tabs = withPillContent({ tabs: _tabs, document, metadata });
+  // }
 
   return _tabs;
 };
@@ -58,9 +62,11 @@ export const getTabs = ({
 const withPillContent = ({
   tabs,
   document,
+  metadata,
 }: {
   tabs: Array<Tab>;
   document: GenericDocument;
+  metadata: DocumentMetadata;
 }) => {
   const finalTabs: Array<Tab> = [];
   for (let i = 0; i < tabs.length; i++) {
@@ -71,18 +77,17 @@ const withPillContent = ({
     } else if (tab.value === "conversation") {
       finalTabs.push({
         ...tab,
-        pillContent: document.discussionCount,
+        pillContent: 2, // metadata.discussionCount || undefined,
       });
     } else if (tab.value === "bounties") {
       finalTabs.push({
         ...tab,
-        // FIXME: Use actual bounties
-        pillContent: 4,
+        pillContent: undefined, // metadata.bounties.length || undefined,
       });
     } else if (tab.value === "peer-reviews") {
       finalTabs.push({
         ...tab,
-        pillContent: document.reviewSummary.count,
+        pillContent: 4, // metadata.reviewCount || undefined,
       });
     }
   }
