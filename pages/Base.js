@@ -17,6 +17,23 @@ import Script from "next/script";
 import { ExchangeRateContextProvider } from "~/components/contexts/ExchangeRateContext";
 import OrganizationContextProvider from "~/components/contexts/OrganizationContext";
 import CustomHead from "../components/Head";
+import { WagmiConfig, createConfig, configureChains } from "wagmi";
+import { createPublicClient, http } from "viem";
+import { mainnet, goerli } from "wagmi/chains";
+import {
+  EthereumClient,
+  w3mConnectors,
+  w3mProvider,
+} from "@web3modal/ethereum";
+import { Web3Modal } from "@web3modal/react";
+
+const config = createConfig({
+  autoConnect: true,
+  publicClient: createPublicClient({
+    chain: mainnet,
+    transport: http(),
+  }),
+});
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -27,6 +44,17 @@ const DynamicAlertTemplate = dynamic(() =>
 );
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 export const NavbarContext = createContext();
+
+const chains = [mainnet, goerli];
+const projectId = "a3e8904e258fe256bf772b764d3acfab";
+
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors: w3mConnectors({ projectId, version: 1, chains }),
+  publicClient,
+});
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 function Base({
   auth,
@@ -105,29 +133,32 @@ function Base({
       )}
       <OrganizationContextProvider user={auth.user}>
         <ExchangeRateContextProvider>
-          <NavbarContext.Provider
-            value={{ numNavInteractions, setNumNavInteractions }}
-          >
-            <NewPostButtonContext.Provider
-              value={{
-                values: newPostButtonValues,
-                setValues: setNewPostButtonValues,
-              }}
+          <WagmiConfig config={config}>
+            <NavbarContext.Provider
+              value={{ numNavInteractions, setNumNavInteractions }}
             >
-              {isDevEnv() && SPEC__reloadClientSideData()}
-              <div className={css(styles.pageWrapper)}>
-                <DynamicPermissionNotification />
-                <DynamicMessage />
-                <RootLeftSidebar
-                  rootLeftSidebarForceMin={rootLeftSidebarForceMin}
-                />
-                <div className={css(styles.main)}>
-                  <DynamicNavbar />
-                  <Component {...pageProps} {...appProps} />
+              <NewPostButtonContext.Provider
+                value={{
+                  values: newPostButtonValues,
+                  setValues: setNewPostButtonValues,
+                }}
+              >
+                {isDevEnv() && SPEC__reloadClientSideData()}
+                <div className={css(styles.pageWrapper)}>
+                  <DynamicPermissionNotification />
+                  <DynamicMessage />
+                  <RootLeftSidebar
+                    rootLeftSidebarForceMin={rootLeftSidebarForceMin}
+                  />
+                  <div className={css(styles.main)}>
+                    <DynamicNavbar />
+                    <Component {...pageProps} {...appProps} />
+                  </div>
                 </div>
-              </div>
-            </NewPostButtonContext.Provider>
-          </NavbarContext.Provider>
+              </NewPostButtonContext.Provider>
+            </NavbarContext.Provider>
+          </WagmiConfig>
+          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
         </ExchangeRateContextProvider>
       </OrganizationContextProvider>
     </AlertProvider>
