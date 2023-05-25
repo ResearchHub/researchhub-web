@@ -1,5 +1,5 @@
 import { NextRouter } from "next/router";
-import { PaperIcon } from "~/config/themes/icons";
+import { PaperIcon, QuestionIcon, PostIcon } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments, faStar } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
@@ -8,12 +8,6 @@ import colors from "~/config/themes/colors";
 import { DocumentMetadata, GenericDocument } from "./types";
 
 export const tabs: Array<Tab> = [
-  {
-    label: "Paper",
-    value: "",
-    // @ts-ignore
-    icon: <PaperIcon height={18} width={18} />,
-  },
   {
     icon: <FontAwesomeIcon icon={faComments} />,
     label: "Conversation",
@@ -50,6 +44,8 @@ export const getTabs = ({
   const { tabName } = router.query;
 
   let _tabs = tabs;
+
+  _tabs = withDocTypeTab({ tabs: _tabs, document });
   _tabs = withHref({ tabs: _tabs, router });
   _tabs = withSelected({ tabs: _tabs, tabName: tabName as string });
   // if (metadata) {
@@ -57,6 +53,42 @@ export const getTabs = ({
   // }
 
   return _tabs;
+};
+
+const withDocTypeTab = ({
+  tabs,
+  document,
+}: {
+  tabs: Array<Tab>;
+  document: GenericDocument;
+}) => {
+  const { type } = document;
+
+  let docTab;
+  if (type === "question") {
+    docTab = {
+      // @ts-ignore
+      icon: <QuestionIcon height={18} width={18} />,
+      label: "Question",
+      value: "",
+    };
+  } else if (type === "post") {
+    docTab = {
+      // @ts-ignore
+      icon: <PaperIcon height={18} width={18} />,
+      label: "Post",
+      value: "",
+    };
+  } else {
+    docTab = {
+      // @ts-ignore
+      icon: <PaperIcon height={18} width={18} />,
+      label: "Paper",
+      value: "",
+    };
+  }
+
+  return [docTab, ...tabs];
 };
 
 const withPillContent = ({

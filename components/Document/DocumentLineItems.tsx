@@ -50,7 +50,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
         ]
       : []),
 
-    ...(isPaper(document) && document.publishedDate
+    ...(document.publishedDate
       ? [
           {
             title: "Published",
@@ -71,7 +71,8 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
           },
         ]
       : []),
-    ...(document?.createdBy?.authorProfile
+
+    ...(isPaper(document) && document?.createdBy?.authorProfile
       ? [
           {
             title: "Posted by",
@@ -84,6 +85,15 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
                 {document.createdBy.authorProfile.lastName}
               </ALink>
             ),
+          },
+        ]
+      : []),
+
+    ...(isPaper(document) && !document.publishedDate
+      ? [
+          {
+            title: "Uploaded",
+            value: document.createdDate,
           },
         ]
       : []),

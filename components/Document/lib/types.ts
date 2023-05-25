@@ -109,13 +109,13 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
     hubs: (raw.hubs || []).map((h: any) => parseHub(h)),
     score: raw.score,
-    createdDate: formatDateStandard(raw.created_date),
+    createdDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     discussionCount: raw.discussion_count || 0,
     userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
     title: raw.title,
     createdBy: parseUser(raw.uploaded_by || raw.created_by),
     doi: raw.doi,
-    publishedDate: formatDateStandard(raw.created_date),
+    publishedDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     reviewSummary: parseReviewSummary(raw.unified_document.reviews),
     // @ts-ignore
     formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
@@ -134,7 +134,7 @@ export const parsePaper = (raw: any): Paper => {
     journal: raw.external_source,
     isOpenAccess: Boolean(raw.is_open_access),
     laymanTitle: raw.title,
-    publishedDate: formatDateStandard(raw.paper_publish_date),
+    publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
     externalUrl: raw.url,
     abstract: raw.abstract,
     type: "paper",
@@ -148,7 +148,6 @@ export const parsePost = (raw: any): Post => {
   const commonAttributes = parseGenericDocument(raw);
   const parsed: Post = {
     ...commonAttributes,
-    publishedDate: formatDateStandard(raw.paper_publish_date),
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
     apiDocumentType: "researchhub_post",
