@@ -203,6 +203,10 @@ const styles = StyleSheet.create({
   },
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
+    [`@media (max-width: ${config.maxWidth}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    }
   },
   titleWrapper: {
     position: "relative",
