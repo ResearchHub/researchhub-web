@@ -1,11 +1,20 @@
 export const DATA_GRID_STYLE_OVERRIDE = {
   border: "1px solid #E9EAEF",
+  // minHeight: "300px",
   "&	.MuiDataGrid-overlayWrapper": {
     zIndex: 2,
   },
   "& .MuiDataGrid-columnHeaders": {
     // border: "1px solid #E9EAEF",
     background: "#FAFAFC",
+  },
+
+  ".empty-data-grid& .MuiDataGrid-virtualScroller": {
+    minHeight: "200px",
+  },
+
+  ".empty-data-grid& .MuiDataGrid-overlayWrapperInner": {
+    minHeight: "200px",
   },
 
   "& .MuiDataGrid-columnHeader:focus": {

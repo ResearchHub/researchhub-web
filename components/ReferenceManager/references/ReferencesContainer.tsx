@@ -22,6 +22,10 @@ import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
 import { useRouter } from "next/router";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import colors from "~/config/themes/colors";
+import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -53,6 +57,8 @@ function ReferencesContainer({
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
+
+  const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -123,13 +129,36 @@ function ReferencesContainer({
               }}
               className={"references-section"}
             >
-              <div style={{ marginBottom: 32 }}>
+              <div
+                style={{
+                  marginBottom: 32,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                   {currentProjectName ??
-                    (!isEmpty(router.query?.my_refs)
-                      ? "My references"
-                      : `Public references`)}
+                    (!isEmpty(router.query?.org_refs)
+                      ? "Organization References"
+                      : `My References`)}
                 </Typography>
+                <div
+                  style={{
+                    marginLeft: 16,
+                    background: colors.NEW_BLUE(),
+                    borderRadius: "50%",
+                    height: 30,
+                    color: "#fff",
+                    width: 30,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setIsDrawerOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
+                </div>
               </div>
               <Box className="ReferencesContainerMain">
                 <Box
