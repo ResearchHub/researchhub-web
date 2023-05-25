@@ -7,12 +7,14 @@ type Args = {
   onError: (error: Error) => void;
   onSuccess: () => void;
   paperPayload: any;
+  revalidateUrl?: string;
 };
 
 export function postUpdatePaperAbstract({
   onError,
   onSuccess,
   paperPayload,
+  revalidateUrl,
 }: Args): void {
   fetch(
     buildApiUri({
@@ -27,7 +29,8 @@ export function postUpdatePaperAbstract({
       return fetch(
         "/api/revalidate",
         API.POST_CONFIG({
-          path: `/paper/${paperPayload.id}/${paperPayload.slug}`,
+          path:
+            revalidateUrl || `/paper/${paperPayload.id}/${paperPayload.slug}`,
         })
       );
     })

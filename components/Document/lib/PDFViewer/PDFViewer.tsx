@@ -234,7 +234,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
             handleZoomSelection={(option) => setSelectedZoom(option.value)}
           />
         </div>
-        <div style={{ overflowY: "scroll", height: "100vh" }}>
+        <div style={{ overflowY: "scroll", height: "100vh", paddingTop: 60 }}>
           <_PDFViewer
             pdfUrl={pdfUrl}
             viewerWidth={viewerWidth * fullScreenSelectedZoom}
@@ -276,7 +276,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: "10px 0",
+    padding: "25px 0",
     position: "relative",
     boxSizing: "border-box",
     maxWidth: "100vw",
@@ -292,6 +292,8 @@ const styles = StyleSheet.create({
     columnGap: "10px",
     justifyContent: "flex-end",
     background: "white",
+    paddingLeft: 15,
+    paddingBottom: 15,
   },
   controlsSticky: {
     position: "fixed",

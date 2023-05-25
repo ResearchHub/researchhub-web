@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/pro-solid-svg-icons";
-import { faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faFile, faPencil } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import dynamic from "next/dynamic";
 import { ReactElement, useEffect, useState } from "react";
@@ -19,6 +18,7 @@ import {
 import { postUpdatePaperAbstract } from "./api/postUpdatePaperAbstract";
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 import { htmlStringToPlainString } from "~/config/utils/htmlStringToPlainString";
+import { useRouter } from "next/router";
 
 const SimpleEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -72,12 +72,13 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffectParseAbstract({ paper, setAbstractSrc, setHasNoAbstract });
   useEffectPaperFetching({ paper, setIsFetching });
 
   return (
-    (<div className={css(styles.paperPageAbstractSection)}>
+    <div className={css(styles.paperPageAbstractSection)}>
       {isFetching && <AbstractPlaceholder color="#EFEFEF" />}
       <div style={{ visibility: isFetching ? "hidden" : "visible" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -128,6 +129,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                   event.preventDefault();
                   setIsUpdatingAbstract(true);
                   postUpdatePaperAbstract({
+                    revalidateUrl: router.asPath,
                     onError: (error: Error): void => {
                       emptyFncWithMsg(error);
                       setIsEditMode(false);
@@ -202,7 +204,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
           </div>
         )}
       </div>
-    </div>)
+    </div>
   );
 }
 

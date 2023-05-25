@@ -13,6 +13,7 @@ import Error from "next/error";
 import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
+import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 
 interface Args {
   documentData?: any;
@@ -61,18 +62,26 @@ const DocumentPage: NextPage<Args> = ({
           {pdfUrl ? (
             <PDFViewer pdfUrl={pdfUrl} />
           ) : (
-            <div>
-              <h2>Abstract</h2>
-              <p>{document.abstract}</p>
+            <div className={css(styles.body)}>
+              {document.abstract ? (
+                <>
+                  <h2>Abstract</h2>
+                  <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
+                </>
+              ) : (
+                <PaperPageAbstractSection paper={document.raw} />
+              )}
             </div>
           )}
         </div>
       )}
       {isPost(document) && (
-        <div
-          className={css(styles.bodyWrapper)}
-          dangerouslySetInnerHTML={{ __html: postHtml }}
-        />
+        <div className={css(styles.bodyWrapper)}>
+          <div
+            className={css(styles.body)}
+            dangerouslySetInnerHTML={{ __html: postHtml }}
+          />
+        </div>
       )}
     </SharedDocumentPage>
   );
@@ -86,6 +95,10 @@ const styles = StyleSheet.create({
     background: "white",
     width: "100%",
     boxSizing: "border-box",
+  },
+  body: {
+    padding: 25,
+    minHeight: 200,
   },
 });
 
