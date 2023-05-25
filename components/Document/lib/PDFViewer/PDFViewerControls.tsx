@@ -39,9 +39,6 @@ const PDFViewerControls = ({
     function keydownHandler(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
         e.preventDefault();
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
       }
     }
 
@@ -50,6 +47,12 @@ const PDFViewerControls = ({
       document.removeEventListener("keydown", keydownHandler);
     };
   }, []);
+
+  useEffect(() => {
+    if (isSearchOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isSearchOpen, inputRef]);
 
   const handleInputChange = useCallback(async () => {
     setSearchText(inputRef?.current?.value || "");
@@ -89,9 +92,6 @@ const PDFViewerControls = ({
           onClick={() => {
             setIsSearchOpen(true);
             handleSearchClick && handleSearchClick(true);
-            if (inputRef.current) {
-              inputRef.current.focus();
-            }
           }}
         >
           <FontAwesomeIcon icon={faSearch} style={{ fontSize: 20 }} />

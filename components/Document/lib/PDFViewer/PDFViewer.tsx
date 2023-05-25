@@ -104,24 +104,50 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   }, [containerRef]);
 
   function handleZoomIn() {
-    const currentIdx = zoomOptions.findIndex(
-      (option) => option.value === selectedZoom
-    );
-    const isLastOption = currentIdx === zoomOptions.length - 1;
-    if (isLastOption) {
-      return;
+
+    if (isExpanded) {
+      const currentIdx = zoomOptions.findIndex(
+        (option) => option.value === fullScreenSelectedZoom
+      );
+      const isLastOption = currentIdx === zoomOptions.length - 1;
+      if (isLastOption) {
+        return;
+      }
+
+      setFullScreenSelectedZoom(zoomOptions[currentIdx + 1].value);
     }
-    setSelectedZoom(zoomOptions[currentIdx + 1].value);
+    else {
+      const currentIdx = zoomOptions.findIndex(
+        (option) => option.value === selectedZoom
+      );
+      const isLastOption = currentIdx === zoomOptions.length - 1;
+      if (isLastOption) {
+        return;
+      }
+      setSelectedZoom(zoomOptions[currentIdx + 1].value);
+    }
   }
   function handleZoomOut() {
-    const currentIdx = zoomOptions.findIndex(
-      (option) => option.value === selectedZoom
-    );
-    const isFirstOption = currentIdx === 0;
-    if (isFirstOption) {
-      return;
+    if (isExpanded) {
+      const currentIdx = zoomOptions.findIndex(
+        (option) => option.value === fullScreenSelectedZoom
+      );
+      const isFirstOption = currentIdx === 0;
+      if (isFirstOption) {
+        return;
+      }
+      setFullScreenSelectedZoom(zoomOptions[currentIdx - 1].value);
     }
-    setSelectedZoom(zoomOptions[currentIdx - 1].value);
+    else {
+      const currentIdx = zoomOptions.findIndex(
+        (option) => option.value === selectedZoom
+      );
+      const isFirstOption = currentIdx === 0;
+      if (isFirstOption) {
+        return;
+      }
+      setSelectedZoom(zoomOptions[currentIdx - 1].value);
+    }
   }
 
   // useEffect(() => {
@@ -172,6 +198,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
   // }, []);
 
+  console.log('223222')
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -226,13 +253,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
               <FontAwesomeIcon icon={faXmark} style={{ fontSize: 24 }} />
             </IconButton>
           </div>
-          <PDFViewerZoomControls
-            zoomOptions={zoomOptions}
-            currentZoom={selectedZoom}
-            handleZoomIn={handleZoomIn}
-            handleZoomOut={handleZoomOut}
-            handleZoomSelection={(option) => setSelectedZoom(option.value)}
-          />
         </div>
         <div style={{ overflowY: "scroll", height: "100vh", paddingTop: 60 }}>
           <_PDFViewer
@@ -246,7 +266,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
         </div>
       </div>
     );
-  }, [isExpanded, selectedZoom, viewerWidth]);
+  }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom, searchText]);
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
@@ -254,8 +274,9 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       <div
         className={css(
           styles.controls,
-          isSticky && styles.controlsSticky,
-          isSticky && isSearchOpen && styles.controlsStickySearchOpen
+          styles.controlsSticky,
+          isSearchOpen && styles.controlsStickySearchOpen,
+          isExpanded && styles.controlsStickyExpanded
         )}
       >
         {stickyNav}
@@ -294,13 +315,14 @@ const styles = StyleSheet.create({
     background: "white",
     paddingLeft: 15,
     paddingBottom: 15,
+    border: "1px solid #aeaeae",
   },
   controlsSticky: {
     position: "fixed",
     left: `calc(50%)`,
     top: "unset",
     right: "unset",
-    zIndex: 99,
+    zIndex: 9999999,
     bottom: 50,
     display: "flex",
     columnGap: "10px",
@@ -322,6 +344,10 @@ const styles = StyleSheet.create({
       transform: "unset",
       left: `calc(50% - ${config.controlsWidthExpanded / 2}px)`,
     },
+  },
+  controlsStickyExpanded: {
+    left: `50%`,
+    transform: "translateX(-50%)",
   },
   expandedOn: {
     display: "block",
