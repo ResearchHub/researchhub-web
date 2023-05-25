@@ -27,11 +27,11 @@ const DocumentStickyHeader = ({ document, handleTip }: Props) => {
 
   return (
     <div className={css(styles.stickyWrapper)}>
+      <DocumentVote document={document} isHorizontal={true} />
+      <div className={css(styles.tabsWrapper)}>
+        <HorizontalTabBar tabs={tabs} />
+      </div>        
       <div className={css(styles.titleWrapper)}>
-        <DocumentVote document={document} isHorizontal={true} />
-        <div className={css(styles.tabsWrapper)}>
-          <HorizontalTabBar tabs={tabs} />
-        </div>        
         {/* <div className={css(styles.title)}>
           {isRootDocPage
           ? (
@@ -101,13 +101,15 @@ const styles = StyleSheet.create({
     maxWidth: config.maxWidth,
     // justifyContent: "space-between",
     margin: "0 auto",
-    // padding: "15px 15px",
-    [`@media (min-width: ${config.maxWidth})`]: {
-      padding: "15px 0px",
+    // padding: "20px 15px",
+    [`@media (max-width: ${config.maxWidth}px)`]: {
+      padding: "5px 5px 0px 10px",
+      maxWidth: "100vw",
     },
   },
   tabsWrapper: {
     marginLeft: "25px",
+    overflowX: "scroll"
   },
   tab: {
     paddingTop: "1.2rem",
@@ -121,8 +123,7 @@ const styles = StyleSheet.create({
     columnGap: "10px",
     justifyContent: "flex-end",
     [`@media (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "center",
-      width: "100%",
+      display: "none"
     },
   },
   smallScreenVote: {
