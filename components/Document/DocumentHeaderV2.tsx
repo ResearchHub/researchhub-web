@@ -25,6 +25,7 @@ import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
 import { DocumentContext } from "./lib/documentContext";
+import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -183,6 +184,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
   );
 };
 
+const VOTE_DISTANCE_FROM_LEFT = 50
 const styles = StyleSheet.create({
   headerRoot: {},
   title: {
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
     borderBottom: `2px solid ${config.border}`,
   },
   lineItemsWrapper: {
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -209,21 +211,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     position: "relative",
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   titleWrapper: {
     position: "relative",
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -246,12 +248,12 @@ const styles = StyleSheet.create({
   },
   voteWrapper: {
     position: "absolute",
-    left: -48,
+    left: -VOTE_DISTANCE_FROM_LEFT,
     top: -28,
   },
   voteWrapperForSmallScreen: {
     display: "none",
-    [`@media (max-width: ${breakpoints.small.str})`]: {
+    [`@media (max-width: ${config.maxWidth + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       display: "block",
     },
   },

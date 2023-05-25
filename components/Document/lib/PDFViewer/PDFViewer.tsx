@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo, ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPlaceholder from "../../DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -80,13 +80,15 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     handleZoomOut,
     handleZoomSelection: (option) => setSelectedZoom(option.value)
   });
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement>(null);
 
   const [isSticky, setIsSticky] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!containerRef.current) return;
+
     const scrollHandler = () => {
-      const pdfInView = containerRef.current.getBoundingClientRect().top < 0;
+      const pdfInView = containerRef!.current!.getBoundingClientRect().top < 0;
       if (pdfInView || window.outerHeight < config.maxWidth) {
         setIsSticky(true);
       } else {
@@ -99,7 +101,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     return () => {
       window.removeEventListener('scroll', scrollHandler);
     }
-  }, []);
+  }, [containerRef]);
 
   function handleZoomIn () {
     const currentIdx = zoomOptions.findIndex((option) => option.value === selectedZoom);
@@ -169,16 +171,16 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
 
   useEffect(() => {
+    if (!containerRef.current) return;
+
     function resizeHandler() {
-      const sidebarElWidth = document.querySelector(".root-left-sidebar")?.getBoundingClientRect()?.width || 0;
-      setViewerWidth(Math.min(maxWidth, window.outerWidth - sidebarElWidth));
+      setViewerWidth(Math.min(maxWidth, containerRef!.current!.offsetWidth));
 
       if (window.outerWidth > config.maxWidth) {
-        const borderWidth = 2;
-        setWrapperWidth(`${config.maxWidth - borderWidth}px`);
+        setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
       }
       else {
-        setWrapperWidth(`calc(100vw - ${sidebarElWidth}px)`);
+        setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
       }
     }
 
@@ -187,7 +189,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
     return () => {
       window.removeEventListener("resize", resizeHandler);
     };
-  }, []);
+  }, [containerRef]);
 
   function onLoadSuccess() {
     setIsLoading(false);

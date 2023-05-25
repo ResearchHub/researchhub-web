@@ -11,6 +11,7 @@ import {
 } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
+import { LEFT_SIDEBAR_MIN_WIDTH } from "./Home/sidebar/RootLeftSidebar";
 
 export type Tab = {
   label: string;
