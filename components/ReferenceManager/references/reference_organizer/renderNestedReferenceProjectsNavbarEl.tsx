@@ -44,6 +44,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         referenceProject={referenceProject}
         child={child}
         depth={depth}
+        isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
       />
       {hasChildren && childrenOpenMap[referenceProject?.id] && (

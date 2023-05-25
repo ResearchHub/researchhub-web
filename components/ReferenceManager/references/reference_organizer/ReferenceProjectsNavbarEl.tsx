@@ -26,7 +26,7 @@ type Props = {
   child: boolean;
   depth: number;
   referenceProject: any;
-  addChildrenOpen: ({ key, value }) => void;
+  isOpen: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
@@ -40,7 +40,7 @@ export default function ReferenceProjectsNavbarEl({
   child,
   depth,
   addChildrenOpen,
-  referenceProject,
+  isOpen,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -51,8 +51,6 @@ export default function ReferenceProjectsNavbarEl({
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
-
-  const [projectOpen, setProjectOpen] = useState(false);
 
   return (
     <Box
@@ -89,14 +87,13 @@ export default function ReferenceProjectsNavbarEl({
           <div style={{ display: "flex", alignItems: "center" }}>
             {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
             <FontAwesomeIcon
-              icon={projectOpen ? faAngleDown : faAngleRight}
+              icon={isOpen ? faAngleDown : faAngleRight}
               color={"rgba(55, 53, 47, 0.35)"}
               className={css(styles.arrowIcon)}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                addChildrenOpen({ key: projectID, value: !projectOpen });
-                setProjectOpen(!projectOpen);
+                addChildrenOpen({ key: projectID, value: !isOpen });
                 const projectIdsOpen =
                   window.localStorage.getItem("projectIdsOpen") || "";
 
