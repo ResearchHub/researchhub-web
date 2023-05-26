@@ -9,23 +9,28 @@ import { useRouter } from "next/router";
 import { faArrowDownToBracket } from "@fortawesome/pro-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GenericDocument, isPaper } from "./lib/types";
+import { GenericDocument, isPaper, isPost } from "./lib/types";
 import DocumentVote from "./DocumentVote";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import { ModalActions } from "~/redux/modals";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import { useState, useEffect, useRef, useContext } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
 import Link from "next/link";
-import GenericMenu from "../shared/GenericMenu";
+import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
 import { DocumentContext } from "./lib/DocumentContext";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
+import { faPen } from "@fortawesome/pro-solid-svg-icons";
+import { parseUser } from "~/config/types/root_types";
+import { RootState } from "~/redux";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -42,6 +47,9 @@ const DocumentHeader = ({ document: doc }: Props) => {
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState<boolean>(false);
   const [stickyOffset, setStickyOffset] = useState<number>(0);
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
 
   const tabs = getTabs({
     router,
@@ -70,14 +78,28 @@ const DocumentHeader = ({ document: doc }: Props) => {
     };
   }, []);
 
-  const options = [
+  const options:Array<MenuOption> = [
+    ...(isPaper(doc) ? [{
+      label: "Edit metadata",
+      icon: <FontAwesomeIcon icon={faPen} />,
+      value: "edit-metadata",
+      onClick: () => {
+        alert('implement me')
+      }
+    }] : []),
+    ...(isPost(doc) && doc.authors.some(author => author.id === currentUser?.authorProfile.id) ? [{
+      label: "Edit",
+      icon: <FontAwesomeIcon icon={faPen} />,
+      value: "edit-content",
+      onClick: () => {
+        alert('implement me')
+      }
+    }] : []),    
     {
-      label: "Flag content",
       value: "flag",
+      preventDefault: true,
       html: (
         <FlagButtonV2
-          modalHeaderText="Flagging"
-          flagIconOverride={styles.flagButton}
           onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
             flagGrmContent({
               contentID: doc.id,
@@ -87,7 +109,13 @@ const DocumentHeader = ({ document: doc }: Props) => {
               onSuccess: renderSuccessMsg,
             });
           }}
-        />
+        >
+          <div style={{display: "flex"}}>
+            <div style={{width: 30, boxSizing: "border-box"}}><FontAwesomeIcon icon={faFlag} /></div>
+            
+            <div>Flag content</div>
+          </div>
+        </FlagButtonV2>
       ),
     },
   ];
@@ -159,7 +187,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
                     </IconButton>
                   </Link>
                 )} */}
-                <GenericMenu options={options}>
+                <GenericMenu options={options} width={150}>
                   <IconButton overrideStyle={styles.btnDots}>
                     <FontAwesomeIcon icon={faEllipsis} />
                   </IconButton>
@@ -279,7 +307,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     borderRadius: "50px",
     color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
     padding: "6px 12px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s"
+    }
   },
 });
 

@@ -36,7 +36,7 @@ export type DocumentMetadata = {
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
   return {
     unifiedDocumentId: raw.id,
-    bounties: parseBountyList(raw.bounties || []),
+    bounties: parseBountyList(raw.documents?.bounties || []),
     purchases: (raw.purchases || []).map((p: any) => parsePurchase(p)),
     userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
     reviewSummary: parseReviewSummary(raw.reviews),

@@ -5,14 +5,13 @@ import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { genClientId } from "~/config/utils/id";
 import colors from "~/config/themes/colors";
 
-interface MenuOption {
-  label: string;
+export interface MenuOption {
+  label?: string;
   value: any;
   html?: React.ReactElement;
   icon?: React.ReactElement;
   href?: string;
-  isVisible?: boolean;
-  onClick?: Function;
+  preventDefault?: boolean;
 }
 
 interface MenuProps {
@@ -29,7 +28,7 @@ const Menu = ({
   children,
   options,
   width = 200,
-  triggerHeight = 40,
+  triggerHeight = 45,
   onSelect,
   direction = "bottom-left",
   id = `menu-${genClientId()}`,
@@ -45,7 +44,9 @@ const Menu = ({
   useEffectHandleClick({
     el: menuRef.current,
     exclude: [`.trigger-for-${id}`],
-    onOutsideClick: () => setIsOpen(false),
+    onOutsideClick: () => {
+      setIsOpen(false)
+    },
   });
 
   const directionStyles = {
@@ -69,14 +70,17 @@ const Menu = ({
           ref={menuRef}
           style={{ width, ...directionStyles }}
         >
-          {options.filter((o) => o.isVisible).map((option, index) => {
-            const { label, icon, href, onClick, value, html } = option;
+          {options.map((option, index) => {
+            const { label, icon, href, value, html, preventDefault } = option;
 
             const content = (
               <div
                 key={`${id}-${index}`}
                 className={css(styles.menuItem)}
-                onClick={() => handleSelect(option)}
+                onClick={(e) => {
+                  preventDefault && e.preventDefault();
+                  handleSelect(option)
+                }}
               >
                 {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
                 {html ? html : label}
@@ -107,29 +111,36 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 100,
     backgroundColor: "#fff",
-    border: "1px solid #ccc",
+    border: "1px solid rgb(222 222 222)",
     borderRadius: "4px",
-    padding: "10px",
+    padding: "8px",
     boxShadow:
       "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
   menuItem: {
     display: "flex",
-    columnGap: "7px",
-    padding: "7px 12px",
+    padding: "8px 12px",
     alignItems: "center",
     marginBottom: "10px",
     cursor: "pointer",
     boxSizing: "border-box",
     fontSize: 14,
+    color: colors.BLACK_TEXT(),
+    borderRadius: 4,
+    fontWeight: 400,
     width: "100%",
     ":hover": {
       background: colors.LIGHTER_GREY(1.0),
       transition: "0.2s",
     },
+    ":last-child": {
+      marginBottom: 0,
+    }
   },
   menuItemIcon: {
-    marginRight: "10px",
+    width: 30,
+    boxSizing: "border-box",
+    color: colors.BLACK_TEXT(),
   },
   trigger: {
     cursor: "pointer",
