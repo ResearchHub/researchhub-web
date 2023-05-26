@@ -22,7 +22,7 @@ import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { MessageActions } from "~/redux/message";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faExclamationCircle, faTimes, faPlus } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
 import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
@@ -33,6 +33,7 @@ import { isEmpty as isInputEmpty } from "~/config/utils/nullchecks";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
+import globalColors from "~/config/themes/colors";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -208,7 +209,53 @@ const CommentEditor = ({
             <FontAwesomeIcon icon={faTimes} />
           </IconButton>
         )}
-        {author && (
+
+        {allowBounty && (
+          <>
+            {interimBounty ? (
+              <div
+                className={css(styles.bountyPreview)}
+                onClick={() => setInterimBounty(null)}
+              >
+                <ResearchCoinIcon height={18} width={18} />
+                <span>{interimBounty.formattedAmount} RSC Bounty</span>
+                <FontAwesomeIcon
+                  style={{ color: colors.gray }}
+                  icon={faTimes}
+                />
+              </div>
+            ) : (
+              <div className={css(styles.bountyBtnWrapper)}>
+                <CreateBountyBtn
+                  onBountyAdd={(bounty) => {
+                    setInterimBounty(bounty);
+                  }}
+                  withPreview={true}
+                >
+                  <div>
+                    <Button
+                      fullWidth
+                      size="small"
+                      customButtonStyle={styles.addBountyBtn}
+                    >
+                      <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                      Add Bounty
+                    </Button>
+                  </div>
+                </CreateBountyBtn>
+                <div className={css(styles.bountyInfo)}>
+                  <FontAwesomeIcon
+                    className={css(styles.bountyInfoIcon)}
+                    icon={faExclamationCircle}
+                  />
+                  Offer award amount in ResearchCoin
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {author && !allowBounty && (
           <div
             className={css(styles.authorRow, isPreviewMode && styles.hidden)}
           >
@@ -281,34 +328,9 @@ const CommentEditor = ({
             }
             hideRipples={true}
             onClick={() => _handleSubmit()}
-            disabled={isSubmitting || isEmpty}
+            disabled={isSubmitting || isEmpty || (allowBounty && !interimBounty)}
           />
         </div>
-        {allowBounty && (
-          <>
-            {interimBounty ? (
-              <div
-                className={css(styles.bountyPreview)}
-                onClick={() => setInterimBounty(null)}
-              >
-                <ResearchCoinIcon height={18} width={18} />
-                <span>{interimBounty.formattedAmount} RSC Bounty</span>
-                <FontAwesomeIcon
-                  style={{ color: colors.gray }}
-                  icon={faTimes}
-                />
-              </div>
-            ) : (
-              // @ts-ignore
-              <CreateBountyBtn
-                onBountyAdd={(bounty) => {
-                  setInterimBounty(bounty);
-                }}
-                withPreview={true}
-              />
-            )}
-          </>
-        )}
       </div>
     </div>
   );
@@ -317,7 +339,7 @@ const CommentEditor = ({
 const styles = StyleSheet.create({
   commentEditor: {
     display: "flex",
-    padding: "15px",
+    padding: "10px",
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
     backgroundColor: "white",
     borderRadius: 4,
@@ -361,18 +383,40 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   bountyPreview: {
+    marginBottom: 15,
     alignItems: "center",
-    display: "flex",
+    display: "inline-flex",
     cursor: "pointer",
     columnGap: "10px",
     background: colors.bounty.background,
-    padding: "6px 12px",
+    padding: "12px 15px",
     borderRadius: "4px",
     fontSize: 14,
     lineHeight: "10px",
     color: colors.bounty.text,
     fontWeight: 500,
   },
+  bountyBtnWrapper: {
+    marginBottom: 15,
+    background: colors.bounty.background,
+    display: "inline-flex",
+    alignItems: "center",
+    columnGap: "10px",
+    padding: "7px 20px 7px 7px",
+    borderRadius: "4px"
+  },
+  bountyInfo: {
+    fontSize: 14,
+    color: globalColors.BLACK_TEXT(1.0),
+  },
+  bountyInfoIcon: {
+    marginRight: 5,
+    fontSize: 16,
+  },
+  addBountyBtn: {
+    background: colors.bounty.contributeBtn,
+    border: "none",
+  }
 });
 
 export default CommentEditor;
