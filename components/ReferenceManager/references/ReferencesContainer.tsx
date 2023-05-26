@@ -227,7 +227,7 @@ function ReferencesContainer({
                 </div>
                 {!isEmpty(router.query.project) && (
                   <Button
-                    variant="text"
+                    variant="outlined"
                     fontSize="small"
                     size="small"
                     customButtonStyle={styles.shareButton}
