@@ -3,16 +3,29 @@ import { StyleSheet, css } from "aphrodite";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors from "~/config/themes/colors";
+import DropdownMenu from "../menu/DropdownMenu";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+
+export type Role = "EDITOR" | "VIEWER";
+export type LookupSuggestedUser = SuggestedUser & {
+  role?: Role;
+};
+
+type ComponentProps = {
+  isSelectable?: boolean;
+  onSelect?: (event: SyntheticEvent) => void;
+  onUserRoleChange: (rold: Role) => void;
+  showRoleDrop?: boolean;
+  user: LookupSuggestedUser;
+};
 
 export default function ReferenceItemRhUserLookupInputTag({
   isSelectable,
   onSelect,
-  user: { firstName, lastName, reputation, authorProfile, id },
-}: {
-  isSelectable?: boolean;
-  onSelect?: (event: SyntheticEvent) => void;
-  user: SuggestedUser;
-}): ReactElement {
+  onUserRoleChange,
+  showRoleDrop,
+  user: { firstName, lastName, reputation, authorProfile, id, role },
+}: ComponentProps): ReactElement {
   return (
     <div
       className={css([
@@ -22,12 +35,52 @@ export default function ReferenceItemRhUserLookupInputTag({
       key={`ReferenceItemRhUserLookupInputTag-${id}-${firstName}-${lastName}-${reputation}`}
       onClick={isSelectable ? onSelect : undefined}
     >
-      <AuthorAvatar author={authorProfile} size={20} trueSize />
-      <div style={{ marginLeft: 8, fontSize: 16 }}>
-        <span>{`${firstName} ${lastName}`}</span>
-        <span>{" • "}</span>
-        <span>{`${reputation} Rep`} </span>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          justifyContent: "flex-start",
+        }}
+      >
+        <AuthorAvatar author={authorProfile} size={20} trueSize />
+        <div style={{ marginLeft: 8, fontSize: 16 }}>
+          <span>{`${firstName} ${lastName}`}</span>
+          <span>{" • "}</span>
+          <span>{`${reputation} Rep`} </span>
+        </div>
       </div>
+      {showRoleDrop && (
+        <DropdownMenu
+          menuItemProps={[
+            {
+              itemLabel: "Viewer",
+              onClick: () => {
+                onUserRoleChange("VIEWER");
+              },
+            },
+            {
+              itemLabel: "Editor",
+              onClick: () => {
+                onUserRoleChange("EDITOR");
+              },
+            },
+          ]}
+          menuLabel={
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ExpandMore fontSize="medium" sx={{ color: "#AAA8B4" }} />
+              {role === "EDITOR" ? "Editor" : "Viewer"}
+            </div>
+          }
+          size={"medium"}
+        />
+      )}
     </div>
   );
 }
@@ -37,11 +90,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: "36px",
-    minHeight: "36px",
+    justifyContent: "space-between",
     maxHeight: "36px",
-    width: "100%",
-    justifyContent: "flex-start",
+    minHeight: "36px",
     padding: "0 12px",
+    width: "100%",
   },
   selectable: {
     cursor: "pointer",

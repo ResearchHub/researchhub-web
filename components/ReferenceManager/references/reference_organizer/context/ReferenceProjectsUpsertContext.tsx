@@ -1,12 +1,12 @@
 import { createContext, useContext, useState } from "react";
 import { ID, NullableString } from "~/config/types/root_types";
+import { LookupSuggestedUser } from "~/components/ReferenceManager/form/ReferenceItemRhUserLookupInputTag";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
-import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import type { Context } from "react";
 
 export type UpsertPurpose = "create" | "create_sub_project" | "update";
 export type ProjectValue = {
-  collaborators: SuggestedUser[];
+  collaborators: LookupSuggestedUser[];
   isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
