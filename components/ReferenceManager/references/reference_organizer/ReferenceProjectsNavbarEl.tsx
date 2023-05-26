@@ -4,20 +4,19 @@ import {
   useReferenceProjectUpsertContext,
 } from "./context/ReferenceProjectsUpsertContext";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+import { LookupSuggestedUser } from "../../form/ReferenceItemRhUserLookupInputTag";
 import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleRight } from "@fortawesome/pro-light-svg-icons";
 
 type Props = {
   active: boolean;
-  collaborators: SuggestedUser[];
+  collaborators: LookupSuggestedUser[];
   isCurrentUserAdmin: boolean;
   isPublic: boolean;
   orgSlug: string;
