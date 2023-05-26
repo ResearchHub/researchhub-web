@@ -117,12 +117,12 @@ const withPillContent = ({
     } else if (tab.value === "conversation") {
       finalTabs.push({
         ...tab,
-        pillContent: metadata.discussionCount || undefined,
+        pillContent: 3 //metadata.discussionCount || undefined,
       });
     } else if (tab.value === "bounties") {
       finalTabs.push({
         ...tab,
-        pillContent: metadata.bounties.length || undefined,
+        pillContent: 2 //metadata.bounties.length || undefined,
       });
     } else if (tab.value === "peer-reviews") {
       finalTabs.push({

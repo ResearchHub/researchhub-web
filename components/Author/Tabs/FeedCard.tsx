@@ -159,7 +159,7 @@ function FeedCard({
       : formattedDocType
   }/${id}/${slug ?? "new"}`;
   // FIXME: Pseudo feature-flag for testing content on prod
-  feDocUrl = router.query.docv3 ? `/doc-v2${feDocUrl}` : feDocUrl;
+  feDocUrl = `/doc-v2${feDocUrl}`;
 
   const dispatch = useDispatch();
 
