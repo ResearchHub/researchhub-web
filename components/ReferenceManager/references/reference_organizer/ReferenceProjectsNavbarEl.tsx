@@ -4,14 +4,16 @@ import {
   useReferenceProjectUpsertContext,
 } from "./context/ReferenceProjectsUpsertContext";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent } from "react";
-import { StyleSheet } from "aphrodite";
+import { ReactElement, SyntheticEvent, useState } from "react";
+import { StyleSheet, css } from "aphrodite";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faAngleRight } from "@fortawesome/pro-light-svg-icons";
 
 type Props = {
   active: boolean;
@@ -21,6 +23,10 @@ type Props = {
   orgSlug: string;
   projectID: ID;
   projectName: string;
+  child: boolean;
+  depth: number;
+  referenceProject: any;
+  isOpen: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
@@ -31,6 +37,10 @@ export default function ReferenceProjectsNavbarEl({
   orgSlug,
   projectID,
   projectName,
+  child,
+  depth,
+  addChildrenOpen,
+  isOpen,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -54,12 +64,12 @@ export default function ReferenceProjectsNavbarEl({
         px: 2.5,
         background: active ? colors.GREY(0.2) : "",
         margin: "8px",
-        // marginLeft: "16px",
         marginBottom: "0px",
         marginTop: "0px",
         borderRadius: "4px",
         padding: "8px",
         boxSizing: "border-box",
+        marginLeft: child ? `${12 * depth}px` : "8px",
       }}
     >
       <ALink
@@ -75,7 +85,24 @@ export default function ReferenceProjectsNavbarEl({
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
-            <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} />
+            {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
+            <FontAwesomeIcon
+              icon={isOpen ? faAngleDown : faAngleRight}
+              color={"rgba(55, 53, 47, 0.35)"}
+              className={css(styles.arrowIcon)}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                addChildrenOpen({ key: projectID, value: !isOpen });
+                const projectIdsOpen =
+                  window.localStorage.getItem("projectIdsOpen") || "";
+
+                window.localStorage.setItem(
+                  "projectIdsOpen",
+                  projectIdsOpen + `${projectID},`
+                );
+              }}
+            />
             <Typography
               component="div"
               fontSize={14}
@@ -129,5 +156,13 @@ export default function ReferenceProjectsNavbarEl({
 const styles = StyleSheet.create({
   linkOverride: {
     width: "100%",
+  },
+  arrowIcon: {
+    fontSize: 16,
+    padding: 8,
+
+    ":hover": {
+      background: "#ddd",
+    },
   },
 });

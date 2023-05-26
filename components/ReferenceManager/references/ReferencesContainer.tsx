@@ -22,6 +22,11 @@ import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
 import { useRouter } from "next/router";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import colors from "~/config/themes/colors";
+import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -38,6 +43,7 @@ type Preload = {
 // TODO: @@lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
+  setMessage,
   wsResponse,
   wsConnected,
 }: Props): ReactNode {
@@ -53,6 +59,8 @@ function ReferencesContainer({
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
+
+  const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -86,8 +94,34 @@ function ReferencesContainer({
       const ind = newReferences.findIndex((reference) => {
         return reference.citation_type === "LOADING";
       });
-      const createdCitationJson = JSON.parse(wsResponse).created_citation;
-      newReferences[ind] = createdCitationJson;
+      const wsJson = JSON.parse(wsResponse);
+      const createdCitationJson = wsJson.created_citation;
+
+      if (wsJson.dupe_citation) {
+        newReferences.splice(ind, 1);
+        toast(
+          <div style={{ fontSize: 16, textAlign: "center" }}>
+            Citation for <br />
+            <br />
+            <strong style={{ fontWeight: 600 }}>
+              {createdCitationJson.fields.title}
+            </strong>{" "}
+            <br />
+            <br />
+            already exists!
+          </div>,
+          {
+            position: "top-center",
+            autoClose: true,
+            autoClose: 5000,
+            progressStyle: { background: colors.NEW_BLUE() },
+            hideProgressBar: false,
+          }
+        );
+      } else {
+        newReferences[ind] = createdCitationJson;
+      }
+
       setCreatedReferences(newReferences);
     }
   }, [wsResponse]);
@@ -96,7 +130,7 @@ function ReferencesContainer({
     return <Fragment />;
   } else {
     return (
-      <Fragment>
+      <>
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
@@ -123,13 +157,36 @@ function ReferencesContainer({
               }}
               className={"references-section"}
             >
-              <div style={{ marginBottom: 32 }}>
+              <div
+                style={{
+                  marginBottom: 32,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                   {currentProjectName ??
-                    (!isEmpty(router.query?.my_refs)
-                      ? "My references"
-                      : `Public references`)}
+                    (!isEmpty(router.query?.org_refs)
+                      ? "Organization References"
+                      : `My References`)}
                 </Typography>
+                <div
+                  style={{
+                    marginLeft: 16,
+                    background: colors.NEW_BLUE(),
+                    borderRadius: "50%",
+                    height: 30,
+                    color: "#fff",
+                    width: 30,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setIsDrawerOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
+                </div>
               </div>
               <Box className="ReferencesContainerMain">
                 <Box
@@ -189,18 +246,32 @@ function ReferencesContainer({
                     />
                   </div>
                 </Box>
-                <ReferencesTable createdReferences={createdReferences} />
+                <ReferencesTable
+                  createdReferences={createdReferences}
+                  handleFileDrop={handleFileDrop}
+                />
               </Box>
             </Box>
           </DroppableZone>
         </Box>
-      </Fragment>
+        {/* <ToastContainer
+          autoClose={true}
+          closeOnClick
+          hideProgressBar={false}
+          newestOnTop
+          containerId={"reference-toast"}
+          position="top-center"
+          autoClose={5000}
+          progressStyle={{ background: colors.NEW_BLUE() }}
+        ></ToastContainer> */}
+      </>
     );
   }
 }
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
 };
 
 export default withWebSocket(

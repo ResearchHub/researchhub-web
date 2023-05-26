@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
+import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 
 function useEffectFetchReferenceCitations({
   onError,
@@ -34,7 +35,7 @@ function useEffectFetchReferenceCitations({
         organizationID: currentOrg?.id,
         // @ts-ignore
         projectID: router.query?.project,
-        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
+        getCurrentUserCitation: isEmpty(router.query?.org_refs),
       });
     }
   }, [
@@ -46,7 +47,7 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
-export default function ReferencesTable({ createdReferences }) {
+export default function ReferencesTable({ createdReferences, handleFileDrop }) {
   const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -104,6 +105,15 @@ export default function ReferencesTable({ createdReferences }) {
         checkboxSelection
         columns={columnsFormat}
         hideFooter
+        className={formattedReferenceRows.length === 0 ? "empty-data-grid" : ""}
+        localeText={{
+          noRowsLabel: (
+            <UploadFileDragAndDrop
+              handleFileDrop={handleFileDrop}
+              accept={".pdf"}
+            />
+          ),
+        }}
         initialState={{
           columns: {
             columnVisibilityModel: {
