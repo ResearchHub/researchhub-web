@@ -32,9 +32,18 @@ export function renderNestedReferenceProjectsNavbarEl({
     <div style={{ display: "flex", flexDirection: "column" }}>
       <ReferenceProjectsNavbarEl
         key={`ref-project-${referenceProject?.id}`}
-        collaborators={(referenceProject?.editors ?? []).map((rawUser: any) =>
-          parseUserSuggestion(rawUser)
-        )}
+        collaborators={[
+          ...(referenceProject?.collaborators ?? []).editors.map(
+            (rawUser: any) => {
+              return { ...parseUserSuggestion(rawUser), role: "EDITOR" };
+            }
+          ),
+          ...(referenceProject?.collaborators ?? []).viewers.map(
+            (rawUser: any) => {
+              return { ...parseUserSuggestion(rawUser), role: "VIEWER" };
+            }
+          ),
+        ]}
         active={isActive}
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}
