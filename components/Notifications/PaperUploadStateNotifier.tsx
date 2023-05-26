@@ -165,7 +165,6 @@ function PaperUploadStateNotifier({
           uploaderContextValues,
         });
 
-        debugger;
         if (Boolean(bodyResult[0]) && toastType !== bodyResult[0]) {
           toast(bodyResult[1], {
             onClose: markAsRead,
