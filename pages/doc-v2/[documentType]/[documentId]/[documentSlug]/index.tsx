@@ -80,7 +80,7 @@ const DocumentPage: NextPage<Args> = ({
       {isPost(document) && (
         <div className={css(styles.bodyWrapper)}>
           <div
-            className={css(styles.body)}
+            className={css(styles.body) + " rh-post"}
             dangerouslySetInnerHTML={{ __html: postHtml }}
           />
         </div>

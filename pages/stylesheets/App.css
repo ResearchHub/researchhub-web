@@ -387,3 +387,15 @@ input[type="number"] {
 .react-pdf__Page__svg {
   margin: 0 auto;
 }
+
+.rh-post {
+  word-break: break-word;
+}
+
+.rh-post figure {
+  margin: 0 auto;
+}
+
+.rh-post figure img {
+  width: 100%;
+}
