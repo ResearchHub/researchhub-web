@@ -123,7 +123,7 @@ export default function ReferenceCollaboratorsSection({
           {disabled ? (
             <ClipLoader color={"#fff"} size={14} />
           ) : (
-            <div style={{ color: "#fff", fontSize: 14 }}>{"Invite"}</div>
+            <div style={{ color: "#fff", fontSize: 14 }}>{"Add"}</div>
           )}
         </Box>
       </Box>
