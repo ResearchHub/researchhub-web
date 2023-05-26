@@ -55,13 +55,13 @@ export default function ReferenceItemRhUserLookupInputTag({
           menuItemProps={[
             {
               itemLabel: "Viewer",
-              onClick: () => {
+              onClick: (): void => {
                 onUserRoleChange("VIEWER");
               },
             },
             {
               itemLabel: "Editor",
-              onClick: () => {
+              onClick: (): void => {
                 onUserRoleChange("EDITOR");
               },
             },
@@ -70,12 +70,14 @@ export default function ReferenceItemRhUserLookupInputTag({
             <div
               style={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
+                width: "80px",
+                padding: "0 8px 0 0",
               }}
             >
               <ExpandMore fontSize="medium" sx={{ color: "#AAA8B4" }} />
-              {role === "EDITOR" ? "Editor" : "Viewer"}
+              {role ?? "VIEWER"}
             </div>
           }
           size={"medium"}
