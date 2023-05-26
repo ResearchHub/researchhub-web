@@ -38,7 +38,6 @@ import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
 import Button from "~/components/Form/Button";
-import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListIcon from "@mui/icons-material/List";
@@ -47,6 +46,10 @@ import QuickModal from "../menu/QuickModal";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { ID } from "~/config/types/root_types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import colors from "~/config/themes/colors";
+import TableChartIcon from "@mui/icons-material/TableChart";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -405,6 +408,51 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
+                  <DropdownMenu
+                    disabled={isEmpty(selectedReferenceIDs)}
+                    menuItemProps={[
+                      {
+                        itemLabel: `Delete reference${
+                          selectedReferenceIDs.length > 1 ? "s" : ""
+                        }`,
+                        onClick: () => {
+                          removeReferenceCitations({
+                            onError: emptyFncWithMsg,
+                            onSuccess: (): void => {
+                              setReferencesFetchTime(Date.now());
+                            },
+                            payload: {
+                              citation_entry_ids: selectedReferenceIDs,
+                            },
+                          });
+                        },
+                      },
+                    ]}
+                    menuLabel={
+                      <div
+                        style={{
+                          alignItems: "center",
+                          color: "rgba(170, 168, 180, 1)",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: 68,
+                          height: 36,
+                          padding: 6,
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <TableChartIcon
+                          fontSize="medium"
+                          sx={{ color: "#7C7989" }}
+                        />
+                        <ExpandMore
+                          fontSize="medium"
+                          sx={{ color: "#AAA8B4" }}
+                        />
+                      </div>
+                    }
+                    size="medium"
+                  />
                   <div
                     style={
                       isEmpty(selectedReferenceIDs)

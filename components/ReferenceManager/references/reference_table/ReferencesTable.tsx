@@ -20,6 +20,12 @@ type Props = {
   setSelectedReferenceIDs: (refs: any[]) => void;
 };
 
+type Props = {
+  createdReferences: any[];
+  handleFileDrop: () => void;
+  setSelectedReferenceIDs: (refs: any[]) => void;
+};
+
 function useEffectFetchReferenceCitations({
   onError,
   onSuccess,
