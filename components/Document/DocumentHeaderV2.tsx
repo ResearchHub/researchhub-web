@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     display: "none",
     // bottom: 0,
     zIndex: 100,
-    paddingBottom: 1,
+    paddingBottom: 0,
     top: 0,
     // background: "rgb(249, 249, 252)",
     background: "white",

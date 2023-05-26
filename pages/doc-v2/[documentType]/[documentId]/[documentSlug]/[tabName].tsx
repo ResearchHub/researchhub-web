@@ -70,6 +70,7 @@ const DocumentPage: NextPage<Args> = ({
         initialComments={parsedComments}
         document={document}
         showFilters={false}
+        allowBounty={tabName === "bounties"}
         allowCommentTypeSelection={false}
         onCommentCreate={() => {
           fetch(

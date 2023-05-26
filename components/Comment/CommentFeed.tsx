@@ -41,6 +41,7 @@ type Args = {
   initialFilter?: string;
   showFilters?: boolean;
   allowCommentTypeSelection?: boolean;
+  allowBounty?: boolean;
 };
 
 const CommentFeed = ({
@@ -53,6 +54,7 @@ const CommentFeed = ({
   context = null,
   showFilters = true,
   allowCommentTypeSelection = true,
+  allowBounty = false,
 }: Args) => {
   const router = useRouter();
   const hasInitialComments = initialComments !== undefined;
@@ -382,7 +384,7 @@ const CommentFeed = ({
               <CommentEditor
                 editorId="new-thread"
                 handleSubmit={handleCommentCreate}
-                allowBounty={true}
+                allowBounty={allowBounty}
                 author={currentUser?.authorProfile}
                 previewModeAsDefault={context ? true : false}
                 allowCommentTypeSelection={

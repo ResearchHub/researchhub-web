@@ -39,7 +39,7 @@ const SharedDocumentPage = ({
   }, [document.id]);
 
   return (
-    <div className={css(styles.pageWrapper)}>
+    <div className={css(styles.pageWrapper, tabName !== undefined && styles.pageWrapperAlternate)}>
       <DocumentContext.Provider value={{ metadata, documentType, tabName }}>
         <Head>
           {/*
@@ -73,6 +73,9 @@ const styles = StyleSheet.create({
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       maxWidth: `100vw`,
     },
+  },
+  pageWrapperAlternate: {
+    background: "white",
   },
   topArea: {
     background: "white",
