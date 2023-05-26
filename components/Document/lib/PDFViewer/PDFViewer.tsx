@@ -8,6 +8,7 @@ import {
   faMinus,
   faPlus,
   faChevronDown,
+  faFileArrowDown
 } from "@fortawesome/pro-light-svg-icons";
 import dynamic from "next/dynamic";
 import IconButton from "../../../Icons/IconButton";
@@ -62,39 +63,8 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
   const [wrapperWidth, setWrapperWidth] = useState<string>("100vw"); // The Wrapper of PDF.js
   const [isSearchOpen, setSearchOpen] = useState<boolean>(false);
-  const [stickyNav, searchText] = PDFViewerControls({
-    handleFullScreen: () => {
-      setIsExpanded(true);
-    },
-    zoomOptions,
-    currentZoom: selectedZoom,
-    handleSearchClick: (isSearchOpen) => setSearchOpen(isSearchOpen),
-    handleZoomIn,
-    handleZoomOut,
-    handleZoomSelection: (option) => setSelectedZoom(option.value),
-  });
+  const [searchText, setSearchText] = useState<string>("");
   const containerRef = useRef<HTMLElement>(null);
-
-  const [isSticky, setIsSticky] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const scrollHandler = () => {
-      const pdfInView = containerRef!.current!.getBoundingClientRect().top < 0;
-      if (pdfInView || window.outerHeight < config.maxWidth) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
-
-    window.addEventListener("scroll", scrollHandler);
-
-    return () => {
-      window.removeEventListener("scroll", scrollHandler);
-    };
-  }, [containerRef]);
 
   function handleZoomIn() {
 
@@ -237,12 +207,20 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
         className={css(styles.expandedWrapper, isExpanded && styles.expandedOn)}
       >
         <div className={css(styles.expandedNav)}>
+        <div
+            onClick={() => setIsExpanded(false)}
+            className={css(styles.downloadBtn)}
+          >
+            <IconButton overrideStyle={styles.viewerNavBtn}>
+              <FontAwesomeIcon icon={faFileArrowDown} style={{ fontSize: 20 }} />
+            </IconButton>
+          </div>          
           <div
             onClick={() => setIsExpanded(false)}
             className={css(styles.closeBtn)}
           >
-            <IconButton>
-              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 24 }} />
+            <IconButton overrideStyle={styles.viewerNavBtn}>
+              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
             </IconButton>
           </div>
         </div>
@@ -271,7 +249,23 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
           isExpanded && styles.controlsStickyExpanded
         )}
       >
-        {stickyNav}
+
+        <PDFViewerControls
+          handleFullScreen={() => {
+            setIsExpanded(true);
+          }}
+          zoomOptions={zoomOptions}
+          currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
+          handleSearchClick={(isSearchOpen) => setSearchOpen(isSearchOpen)}
+          handleZoomIn={handleZoomIn}
+          handleZoomOut={handleZoomOut}
+          handleSearchChange={(searchText) => setSearchText(searchText)}
+          searchText={searchText}
+          showExpand={isExpanded ? false : true}
+          handleZoomSelection={(option) => setSelectedZoom(option.value)}
+        />
+
+
       </div>
       <div style={{ overflowX: "scroll", width: wrapperWidth }}>
         <_PDFViewer
@@ -356,8 +350,13 @@ const styles = StyleSheet.create({
   closeBtn: {
     position: "absolute",
     right: 10,
-    top: 2,
+    top: 3,
   },
+  downloadBtn: {
+    position: "absolute",
+    right: 48,
+    top: 3,
+  },  
   expandedNav: {
     position: "fixed",
     height: 40,
@@ -377,6 +376,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "30%",
   },
+  viewerNavBtn: {
+    background: "white",
+    border: "1px solid #aeaeae",
+    height: 33,
+    width: 33,
+    boxSizing: "border-box",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
+  }
 });
 
 export default PDFViewer;

@@ -18,6 +18,7 @@ interface Props {
 }
 
 const PDFViewerZoomControls = ({ currentZoom, zoomOptions, handleZoomIn, handleZoomOut, handleZoomSelection }: Props) => {
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <IconButton onClick={handleZoomOut}>

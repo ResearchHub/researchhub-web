@@ -84,7 +84,9 @@ const PDFViewer = ({
         onLoadError={onDocumentLoadError}
         loading={showWhenLoading || "Loading..."}
       >
-        {/* <Outline onItemClick={onItemClick} /> */}
+        {/* <div className="outline">
+          <Outline onItemClick={() => null} />
+        </div> */}
         {/* <Page key={`page_1`} pageNumber={1} customTextRenderer={textRenderer} onLoadSuccess={removeTextLayerOffset} width={900}/> */}
 
         {Array.from(new Array(pagesRendered), (el, index) => (

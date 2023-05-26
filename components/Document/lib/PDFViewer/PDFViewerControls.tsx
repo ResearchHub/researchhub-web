@@ -16,9 +16,12 @@ interface Props {
   handleZoomIn: Function;
   handleZoomOut: Function;
   handleSearchClick?: Function;
+  handleSearchChange: Function;
   handleZoomSelection: Function;
   zoomOptions: Array<{ label: string; value: number }>
+  searchText: string;
   currentZoom: number;
+  showExpand: boolean;
 }
 
 const PDFViewerControls = ({
@@ -27,14 +30,14 @@ const PDFViewerControls = ({
   handleZoomOut,
   handleZoomSelection,
   handleSearchClick,
+  handleSearchChange,
   zoomOptions,
   currentZoom,
-
-}: Props): [ReactElement, string] => {
-  const [searchText, setSearchText] = useState<string>("");
+  showExpand = true,
+  searchText,
+}: Props) => {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   useEffect(() => {
     function keydownHandler(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
@@ -55,7 +58,7 @@ const PDFViewerControls = ({
   }, [isSearchOpen, inputRef]);
 
   const handleInputChange = useCallback(async () => {
-    setSearchText(inputRef?.current?.value || "");
+    handleSearchChange(inputRef?.current?.value || "");
   }, []);
 
   const debouncedHandleSearchInputChange = useCallback(
@@ -63,7 +66,7 @@ const PDFViewerControls = ({
     [handleInputChange]
   );
 
-  const el = (
+  return (
     <>
       {isSearchOpen && (
         <div className={css(styles.search)}>
@@ -76,13 +79,14 @@ const PDFViewerControls = ({
             />
             <IconButton
               onClick={() => {
-                setSearchText("");
+                handleSearchChange("");
                 setIsSearchOpen(false);
                 handleSearchClick && handleSearchClick(false);
                 inputRef!.current!.value = "";
               }}
+              overrideStyle={styles.closeBtn}
             >
-              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20,  }} />
+              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20  }} />
             </IconButton>
           </div>
         </div>
@@ -105,27 +109,35 @@ const PDFViewerControls = ({
         handleZoomOut={handleZoomOut}
         handleZoomSelection={(option) => handleZoomSelection(option.value)}
         />
-      <div className={css(styles.divider)} />        
-      <IconButton onClick={() => handleFullScreen()}>
-        <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
-      </IconButton>
+      {showExpand && (
+        <>
+          <div className={css(styles.divider)} />        
+          <IconButton onClick={() => handleFullScreen()}>
+            <FontAwesomeIcon icon={faMaximize} style={{ fontSize: 20 }} />
+          </IconButton>
+        </>
+      )}  
     </>
   );
   
-  return [el, searchText];
 };
 
 const styles = StyleSheet.create({
   search: {
     border: `1px solid ${colors.BLACK(0.3)}`,
-    padding: "0px 15px",
+    padding: "0px 18px",
     background: "white",
     width: 150,
+    borderRadius: "50px",
   },
   divider: {
     borderRight: `1px solid ${colors.BLACK(0.6)}`,
     height: "20px",
     marginTop: 7,
+  },
+  closeBtn: {
+    borderRadius: 50,
+    padding: 7,
   }
 });
 
