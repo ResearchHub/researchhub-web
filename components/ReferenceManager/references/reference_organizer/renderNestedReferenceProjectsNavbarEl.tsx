@@ -33,6 +33,7 @@ export function renderNestedReferenceProjectsNavbarEl({
       <ReferenceProjectsNavbarEl
         key={`ref-project-${referenceProject?.id}`}
         collaborators={[
+          // TODO: calvinhlee - clean this up from backend
           ...(referenceProject?.collaborators ?? []).editors.map(
             (rawUser: any) => {
               return { ...parseUserSuggestion(rawUser), role: "EDITOR" };
