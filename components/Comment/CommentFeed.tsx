@@ -28,6 +28,7 @@ import React, { useEffect, useState } from "react";
 import removeComment from "./lib/removeComment";
 import replaceComment from "./lib/replaceComment";
 import { GenericDocument } from "../Document/lib/types";
+import { useRouter } from "next/router";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -37,6 +38,7 @@ type Args = {
   onCommentRemove?: Function;
   totalCommentCount: number;
   initialComments?: CommentType[] | undefined;
+  initialFilter?: string;
   showFilters?: boolean;
   allowCommentTypeSelection?: boolean;
 };
@@ -47,10 +49,12 @@ const CommentFeed = ({
   onCommentRemove,
   totalCommentCount,
   initialComments = undefined,
+  initialFilter = undefined,
   context = null,
   showFilters = true,
   allowCommentTypeSelection = true,
 }: Args) => {
+  const router = useRouter();
   const hasInitialComments = initialComments !== undefined;
   const [comments, setComments] = useState<CommentType[]>(
     initialComments || []
@@ -69,7 +73,7 @@ const CommentFeed = ({
     sortOpts[0].value
   );
   const [selectedFilterValue, setSelectedFilterValue] = useState<string | null>(
-    filterOpts[0].value
+    initialFilter || filterOpts[0].value
   );
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -90,7 +94,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: sort || sort === null ? sort : selectedSortValue,
-        filter: filter || filter === null ? filter : selectedFilterValue,
+        filter: filter || (filter === null ? filter : selectedFilterValue),
       });
 
       const parsedComments = comments.map((raw: any) => parseComment({ raw }));
@@ -106,6 +110,7 @@ const CommentFeed = ({
       setIsInitialFetchDone(true);
     }
   };
+
 
   const onCreate = ({
     comment,
@@ -311,10 +316,16 @@ const CommentFeed = ({
     const documentHasChanged = document.id && document.id !== currentDocumentId;
     if (documentHasChanged && !hasInitialComments) {
       resetFeed();
-      handleFetch({});
+      handleFetch({ filter: selectedFilterValue });
       setCurrentDocumentId(document.id);
     }
   }, [document.id, currentDocumentId, hasInitialComments]);
+
+  useEffect(() => {
+    if (hasInitialComments) {
+      setComments(initialComments);
+    }
+  }, [router?.query?.tabName]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =

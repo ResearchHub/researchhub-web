@@ -22,6 +22,14 @@ export const tabs: Array<Tab> = [
         width={18}
       />
     ),
+    selectedIcon: (
+      <ResearchCoinIcon
+        version={4}
+        color={colors.NEW_BLUE(1.0)}
+        height={18}
+        width={18}
+      />
+    ),    
     label: "Bounties",
     value: "bounties",
   },
@@ -48,9 +56,9 @@ export const getTabs = ({
   _tabs = withDocTypeTab({ tabs: _tabs, document });
   _tabs = withHref({ tabs: _tabs, router });
   _tabs = withSelected({ tabs: _tabs, tabName: tabName as string });
-  // if (metadata) {
+  if (metadata) {
   _tabs = withPillContent({ tabs: _tabs, document, metadata });
-  // }
+  }
 
   return _tabs;
 };
@@ -109,17 +117,17 @@ const withPillContent = ({
     } else if (tab.value === "conversation") {
       finalTabs.push({
         ...tab,
-        pillContent: 2, // metadata.discussionCount || undefined,
+        pillContent: metadata.discussionCount || undefined,
       });
     } else if (tab.value === "bounties") {
       finalTabs.push({
         ...tab,
-        pillContent: undefined, // metadata.bounties.length || undefined,
+        pillContent: metadata.bounties.length || undefined,
       });
     } else if (tab.value === "peer-reviews") {
       finalTabs.push({
         ...tab,
-        pillContent: 4, // metadata.reviewCount || undefined,
+        pillContent: metadata.reviewCount || undefined,
       });
     }
   }

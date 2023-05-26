@@ -11,6 +11,7 @@ import {
   faLongArrowUp,
 } from "@fortawesome/pro-regular-svg-icons";
 import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
+import { toTitleCase } from "~/config/utils/string";
 
 const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
   const auth = useSelector((state: any) => state.auth);
@@ -43,66 +44,85 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
     },
     ...(isPaper(document) && document.journal
       ? [
-          {
-            title: "Journal",
-            value: document.journal,
-          },
-        ]
+        {
+          title: "Journal",
+          value: document.journal,
+        },
+      ]
       : []),
 
     ...(document.publishedDate
       ? [
-          {
-            title: "Published",
-            value: document.publishedDate,
-          },
-        ]
+        {
+          title: "Published",
+          value: document.publishedDate,
+        },
+      ]
+      : []),
+
+    ...(document.hubs
+      ? [
+        {
+          title: "Hubs",
+          value: document.hubs.map((h, index) => (
+            <div key={index}>
+              <ALink
+                key={`/hubs/${h.slug ?? ""}-index`}
+                href={`/hubs/${h.slug}`}
+              >
+                {toTitleCase(h.name)}
+              </ALink>
+              {index < document.hubs?.length - 1 ? "," : ""}
+            </div>
+          )),
+        }
+      ]
       : []),
 
     ...(document.doi
       ? [
-          {
-            title: "DOI",
-            value: (
-              <ALink href={`https://` + document.doi} target="blank">
-                {document.doi}
-              </ALink>
-            ),
-          },
-        ]
+        {
+          title: "DOI",
+          value: (
+            <ALink href={`https://` + document.doi} target="blank">
+              {document.doi}
+            </ALink>
+          ),
+        },
+      ]
       : []),
 
     ...(isPaper(document) && !document.publishedDate
       ? [
-          {
-            title: "Uploaded",
-            value: document.createdDate,
-          },
-        ]
+        {
+          title: "Uploaded",
+          value: document.createdDate,
+        },
+      ]
       : []),
 
     ...(isPaper(document) && document?.createdBy?.authorProfile
       ? [
-          {
-            title: "Posted by",
-            value: (
-              <ALink
-                href={`/user/${document.createdBy.authorProfile?.id}/overview`}
-                key={`/user/${document.createdBy.authorProfile?.id}/overview-key`}
-              >
-                {document.createdBy.authorProfile.firstName}{" "}
-                {document.createdBy.authorProfile.lastName}
-              </ALink>
-            ),
-          },
-        ]
+        {
+          title: "Posted by",
+          value: (
+            <ALink
+              href={`/user/${document.createdBy.authorProfile?.id}/overview`}
+              key={`/user/${document.createdBy.authorProfile?.id}/overview-key`}
+            >
+              {document.createdBy.authorProfile.firstName}{" "}
+              {document.createdBy.authorProfile.lastName}
+            </ALink>
+          ),
+        },
+      ]
       : []),
   ];
 
   const lineItemsToShow = isShowingAllMetadata
     ? lineItems
-    : lineItems.slice(0, 3);
-  const hasMoreMetadata = lineItems.length > 3;
+    : lineItems.slice(0, 4);
+  const hasMoreMetadata = lineItems.length > 4;
   return (
     <div>
       <div className={css(styles.wrapper)}>

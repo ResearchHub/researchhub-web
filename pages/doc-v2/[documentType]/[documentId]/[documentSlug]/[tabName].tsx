@@ -59,8 +59,6 @@ const DocumentPage: NextPage<Args> = ({
     displayCommentsFeed = true;
   }
 
-  console.log("displayCommentsFeed", displayCommentsFeed);
-
   return (
     <SharedDocumentPage
       document={document}
@@ -83,6 +81,12 @@ const DocumentPage: NextPage<Args> = ({
           setCommentCount(commentCount + 1);
         }}
         onCommentRemove={() => {
+          fetch(
+            "/api/revalidate",
+            API.POST_CONFIG({
+              path: router.asPath,
+            })
+          );          
           alert("implement me");
         }}
         totalCommentCount={commentData.count}

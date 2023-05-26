@@ -17,7 +17,7 @@ const getCommentFilterByTab = async ({ tabName }) => {
       return "REVIEW";
     case "conversation":
     default:
-      return null;
+      return "DISCUSSION";
   }
 };
 

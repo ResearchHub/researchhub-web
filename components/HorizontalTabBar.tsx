@@ -18,6 +18,7 @@ export type Tab = {
   href?: string;
   isSelected?: boolean;
   icon: React.ReactNode;
+  selectedIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
 };
 
@@ -54,28 +55,28 @@ const HorizontalTabBar = ({
     }
   }, [tabContainerEl]);
 
-  const renderTab = (tab, index) => {
-    const { isSelected, label } = tab;
-    const tabType = tab.href ? "link" : "div";
+  const renderTab = (tab:Tab, index) => {
+    const { isSelected, value, label, icon, selectedIcon, pillContent, href } = tab;
+    const tabType = href ? "link" : "div";
 
     const props = {
-      key: tab.value,
+      key: value,
       className: css(
         styles.tab,
         isSelected ? styles.tabSelected : styles.tabNotSelected,
         tabStyle
       ),
-      ...(tab.href && { href: tab.href }),
+      ...(href && { href }),
       ...(onClick && { onClick: () => onClick(tab, index) }),
     };
 
     return (
-      <_WrapperElement type={tabType} props={props} key={tab.value}>
+      <_WrapperElement type={tabType} props={props} key={value}>
         <div className={css(styles.tabContentWrapper)}>
-          {tab.icon}
+          {isSelected && selectedIcon ? selectedIcon : icon}
           {label}
-          {tab.pillContent !== undefined && (
-            <div className={css(styles.pillContent)}>{tab.pillContent}</div>
+          {pillContent !== undefined && (
+            <div className={css(styles.pillContent)}>{pillContent}</div>
           )}
         </div>
       </_WrapperElement>
