@@ -6,7 +6,10 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { NewPostButtonContext, NewPostButtonContextValues } from "../contexts/NewPostButtonContext";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextValues,
+} from "../contexts/NewPostButtonContext";
 import { NextRouter, useRouter } from "next/router";
 import { PaperSubmissionStatus } from "../Paper/UploadWizard/types/PaperUploadWizardTypes";
 import {
@@ -161,8 +164,13 @@ function PaperUploadStateNotifier({
           setUploaderContextValues,
           uploaderContextValues,
         });
+
+        debugger;
         if (Boolean(bodyResult[0]) && toastType !== bodyResult[0]) {
-          toast(bodyResult[1], { onClose: markAsRead });
+          toast(bodyResult[1], {
+            onClose: markAsRead,
+            containerId: "paper-upload-toast",
+          });
           setToastType(bodyResult[0]);
         }
       }
@@ -185,6 +193,7 @@ function PaperUploadStateNotifier({
       onClick={markAsRead}
       position="bottom-right"
       rtl={false}
+      containerId="paper-upload-toast"
     />
   );
 }

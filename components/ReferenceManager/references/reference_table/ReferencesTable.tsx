@@ -47,7 +47,7 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
-export default function ReferencesTable({ createdReferences }) {
+export default function ReferencesTable({ createdReferences, handleFileDrop }) {
   const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -106,7 +106,14 @@ export default function ReferencesTable({ createdReferences }) {
         columns={columnsFormat}
         hideFooter
         className={formattedReferenceRows.length === 0 ? "empty-data-grid" : ""}
-        localeText={{ noRowsLabel: <UploadFileDragAndDrop /> }}
+        localeText={{
+          noRowsLabel: (
+            <UploadFileDragAndDrop
+              handleFileDrop={handleFileDrop}
+              accept={".pdf"}
+            />
+          ),
+        }}
         initialState={{
           columns: {
             columnVisibilityModel: {

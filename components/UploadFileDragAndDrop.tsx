@@ -3,14 +3,14 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import colors from "~/config/themes/colors";
 
-function UploadFileDragAndDrop({ handleFileDrop }) {
+function UploadFileDragAndDrop({ handleFileDrop, accept }) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
     <div className={css(styles.dropzoneContainer)}>
       <Dropzone
-        accept=".json,.csv,"
-        multiple={false}
+        accept={accept}
+        multiple={true}
         onDragEnter={(): void => setIsFileDragged(true)}
         onDragLeave={(): void => setIsFileDragged(false)}
         onDrop={handleFileDrop}
