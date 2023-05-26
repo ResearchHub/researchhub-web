@@ -409,7 +409,7 @@ function ReferencesContainer({
                   }}
                 >
                   <DropdownMenu
-                    disabled={isEmpty(selectedReferenceIDs)}
+                    // disabled={isEmpty(selectedReferenceIDs)}
                     menuItemProps={[
                       {
                         itemLabel: `Delete reference${
