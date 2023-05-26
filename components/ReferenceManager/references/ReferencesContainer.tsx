@@ -32,6 +32,14 @@ import TableChartIcon from "@mui/icons-material/TableChart";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { removeReferenceCitations } from "./api/removeReferenceCitations";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
+import Button from "~/components/Form/Button";
+import {
+  DEFAULT_PROJECT_VALUES,
+  useReferenceProjectUpsertContext,
+} from "./reference_organizer/context/ReferenceProjectsUpsertContext";
+import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
+import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
+import { StyleSheet } from "aphrodite";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -57,8 +65,15 @@ function ReferencesContainer({
     shouldRedirect: true,
   });
   const { setReferencesFetchTime } = useReferenceTabContext();
+  const {
+    projectsFetchTime,
+    setIsModalOpen: setIsProjectUpsertModalOpen,
+    setProjectValue: setProjectUpsertValue,
+    setUpsertPurpose: setProjectUpsertPurpose,
+  } = useReferenceProjectUpsertContext();
   const { currentOrg } = useOrgs();
   const router = useRouter();
+  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
@@ -68,6 +83,21 @@ function ReferencesContainer({
   const currentProjectName = router.query.project_name;
 
   const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
+  const currentOrgID = currentOrg?.id ?? null;
+
+  useEffect((): void => {
+    if (!isEmpty(currentOrgID)) {
+      fetchReferenceOrgProjects({
+        onError: emptyFncWithMsg,
+        onSuccess: (payload): void => {
+          setCurrentOrgProjects(payload ?? []);
+        },
+        payload: {
+          organization: currentOrgID,
+        },
+      });
+    }
+  }, [currentOrgID, projectsFetchTime]);
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -142,6 +172,7 @@ function ReferencesContainer({
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
+            currentOrgProjects={currentOrgProjects}
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
@@ -194,6 +225,52 @@ function ReferencesContainer({
                 >
                   <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
                 </div>
+                {!isEmpty(router.query.project) && (
+                  <Button
+                    variant="text"
+                    fontSize="small"
+                    size="small"
+                    customButtonStyle={styles.shareButton}
+                    onClick={(): void => {
+                      // TODO: calvinhlee - clean this up from backend
+                      const targetProject = currentOrgProjects.find(
+                        (proj) => proj.id === parseInt(router.query.project)
+                      );
+                      const { id, collaborators, project_name, is_public } =
+                        targetProject ?? {};
+                      setProjectUpsertPurpose("update");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        collaborators: [
+                          ...(collaborators ?? []).editors.map(
+                            (rawUser: any) => {
+                              return {
+                                ...parseUserSuggestion(rawUser),
+                                role: "EDITOR",
+                              };
+                            }
+                          ),
+                          ...(collaborators ?? []).viewers.map(
+                            (rawUser: any) => {
+                              return {
+                                ...parseUserSuggestion(rawUser),
+                                role: "VIEWER",
+                              };
+                            }
+                          ),
+                        ],
+                        projectID: id,
+                        projectName: project_name,
+                        isPublic: is_public,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <Typography variant="h6" fontSize={"16px"}>
+                      {"Share"}
+                    </Typography>
+                  </Button>
+                )}
               </div>
               <Box className="ReferencesContainerMain">
                 <Box
@@ -208,7 +285,7 @@ function ReferencesContainer({
                   }}
                 >
                   <DropdownMenu
-                    disabled={isEmpty(selectedReferenceIDs)}
+                    // disabled={isEmpty(selectedReferenceIDs)}
                     menuItemProps={[
                       {
                         itemLabel: `Delete reference${
@@ -321,6 +398,12 @@ function ReferencesContainer({
     );
   }
 }
+
+const styles = StyleSheet.create({
+  shareButton: {
+    marginLeft: "auto",
+  },
+});
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
