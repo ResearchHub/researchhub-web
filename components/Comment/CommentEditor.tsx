@@ -56,7 +56,7 @@ type CommentEditorArgs = {
 const CommentEditor = ({
   editorId,
   commentId,
-  placeholder = "Add a comment or start a bounty",
+  placeholder = "Add a comment about this paper...",
   handleSubmit,
   content = {},
   allowBounty = false,

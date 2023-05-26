@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   pageWrapper: {
     height: "100%",
     background: config.background,
-
+    paddingBottom: 50,
     [`@media (max-width: ${config.maxWidth}px)`]: {
       maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH})`,
     },
