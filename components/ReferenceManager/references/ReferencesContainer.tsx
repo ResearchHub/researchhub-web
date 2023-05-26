@@ -21,12 +21,17 @@ import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
 import { useRouter } from "next/router";
-import { isEmpty } from "~/config/utils/nullchecks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import DropdownMenu from "../menu/DropdownMenu";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { removeReferenceCitations } from "./api/removeReferenceCitations";
+import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -51,11 +56,13 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
+  const { setReferencesFetchTime } = useReferenceTabContext();
   const { currentOrg } = useOrgs();
   const router = useRouter();
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
-  const [createdReferences, setCreatedReferences] = useState<[]>([]);
+  const [createdReferences, setCreatedReferences] = useState<any[]>([]);
+  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
@@ -200,6 +207,51 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
+                  <DropdownMenu
+                    disabled={isEmpty(selectedReferenceIDs)}
+                    menuItemProps={[
+                      {
+                        itemLabel: `Delete reference${
+                          selectedReferenceIDs.length > 1 ? "s" : ""
+                        }`,
+                        onClick: () => {
+                          removeReferenceCitations({
+                            onError: emptyFncWithMsg,
+                            onSuccess: (): void => {
+                              setReferencesFetchTime(Date.now());
+                            },
+                            payload: {
+                              citation_entry_ids: selectedReferenceIDs,
+                            },
+                          });
+                        },
+                      },
+                    ]}
+                    menuLabel={
+                      <div
+                        style={{
+                          alignItems: "center",
+                          color: "rgba(170, 168, 180, 1)",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: 68,
+                          height: 36,
+                          padding: 6,
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        <TableChartIcon
+                          fontSize="medium"
+                          sx={{ color: "#7C7989" }}
+                        />
+                        <ExpandMore
+                          fontSize="medium"
+                          sx={{ color: "#AAA8B4" }}
+                        />
+                      </div>
+                    }
+                    size="medium"
+                  />
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
@@ -249,6 +301,7 @@ function ReferencesContainer({
                 <ReferencesTable
                   createdReferences={createdReferences}
                   handleFileDrop={handleFileDrop}
+                  setSelectedReferenceIDs={setSelectedReferenceIDs}
                 />
               </Box>
             </Box>

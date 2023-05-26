@@ -15,6 +15,12 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 
+type Props = {
+  createdReferences: any[];
+  handleFileDrop: () => void;
+  setSelectedReferenceIDs: (refs: any[]) => void;
+};
+
 function useEffectFetchReferenceCitations({
   onError,
   onSuccess,
@@ -47,7 +53,11 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
-export default function ReferencesTable({ createdReferences, handleFileDrop }) {
+export default function ReferencesTable({
+  createdReferences,
+  handleFileDrop,
+  setSelectedReferenceIDs,
+}: Props) {
   const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -133,6 +143,9 @@ export default function ReferencesTable({ createdReferences, handleFileDrop }) {
           if (params.field !== "__check__") {
             setIsDrawerOpen(true);
           }
+        }}
+        onRowSelectionModelChange={(selectedReferenceIDs) => {
+          setSelectedReferenceIDs(selectedReferenceIDs);
         }}
         slots={{
           cell: (cell) => {

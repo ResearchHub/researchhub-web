@@ -1,4 +1,10 @@
-import { MouseEvent, ReactElement, ReactNode, useState } from "react";
+import {
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useState,
+} from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,16 +12,18 @@ import type { MenuItemProps } from "@mui/material/MenuItem";
 
 type DropdownMenuItemProps = {
   itemLabel: ReactNode;
-  onClick: (event: MouseEvent) => void;
+  onClick: (event: SyntheticEvent) => void;
 } & MenuItemProps;
 
 type ComponentProps = {
+  disabled?: boolean;
   menuItemProps: DropdownMenuItemProps[];
   menuLabel: ReactNode;
   size: "small" | "medium" | "large";
 };
 
 export default function DropdownMenu({
+  disabled,
   menuItemProps,
   menuLabel,
   size,
@@ -33,7 +41,7 @@ export default function DropdownMenu({
       return (
         <MenuItem
           key={`dropdown-menu-item-${itemLabel}-${index}`}
-          onClick={(event: MouseEvent): void => {
+          onClick={(event: SyntheticEvent): void => {
             onClick(event);
             handleClose();
           }}
@@ -49,6 +57,9 @@ export default function DropdownMenu({
       <Button
         aria-expanded={open ? "true" : undefined}
         onClick={(event: MouseEvent<HTMLElement>): void => {
+          if (disabled) {
+            return;
+          }
           setAnchorEl(event.currentTarget);
         }}
         size={size}
