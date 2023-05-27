@@ -27,7 +27,7 @@ const zoomOptions = [
     isVisible: true,
   },
   {
-    label: "120%",
+    label: "125%",
     value: 1.25,
     isVisible: true,
   },
@@ -51,9 +51,17 @@ const zoomOptions = [
 interface Props {
   pdfUrl?: string;
   maxWidth?: number;
+  onZoomOut?: Function;
+  onZoomIn?: Function;
 }
 
-const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
+type ZoomAction = {
+  size: "full-screen" | "normal";
+  zoom: number;
+  newWidth: number;
+}
+
+const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -77,7 +85,13 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
         return;
       }
 
-      setFullScreenSelectedZoom(zoomOptions[currentIdx + 1].value);
+      const newZoom = zoomOptions[currentIdx + 1].value
+      setFullScreenSelectedZoom(newZoom);
+      onZoomIn && onZoomIn({
+        size: "full-screen",
+        zoom: newZoom,
+        newWidth: viewerWidth * newZoom
+      } as ZoomAction);      
     }
     else {
       const currentIdx = zoomOptions.findIndex(
@@ -87,7 +101,14 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       if (isLastOption) {
         return;
       }
-      setSelectedZoom(zoomOptions[currentIdx + 1].value);
+
+      const newZoom = zoomOptions[currentIdx + 1].value;
+      setSelectedZoom(newZoom);
+      onZoomIn && onZoomIn({
+        size: "normal",
+        zoom: newZoom,
+        newWidth: viewerWidth * newZoom
+      } as ZoomAction);
     }
   }
   function handleZoomOut() {
@@ -99,7 +120,13 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       if (isFirstOption) {
         return;
       }
-      setFullScreenSelectedZoom(zoomOptions[currentIdx - 1].value);
+      const newZoom = zoomOptions[currentIdx - 1].value
+      setFullScreenSelectedZoom(newZoom);
+      onZoomOut && onZoomOut({
+        size: "full-screen",
+        zoom: newZoom,
+        newWidth: viewerWidth * newZoom
+      } as ZoomAction);      
     }
     else {
       const currentIdx = zoomOptions.findIndex(
@@ -109,7 +136,13 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
       if (isFirstOption) {
         return;
       }
-      setSelectedZoom(zoomOptions[currentIdx - 1].value);
+      const newZoom = zoomOptions[currentIdx - 1].value;
+      setSelectedZoom(newZoom);
+      onZoomOut && onZoomOut({
+        size: "normal",
+        zoom: newZoom,
+        newWidth: viewerWidth * newZoom
+      } as ZoomAction);
     }
   }
 
@@ -267,7 +300,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900 }: Props) => {
 
 
       </div>
-      <div style={{ overflowX: "scroll", width: wrapperWidth }}>
+      <div style={{ overflowX: "scroll" }}>
         <_PDFViewer
           pdfUrl={pdfUrl}
           searchText={searchText}

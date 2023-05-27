@@ -15,6 +15,7 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
+import { useState } from "react";
 
 interface Args {
   documentData?: any;
@@ -30,6 +31,8 @@ const DocumentPage: NextPage<Args> = ({
   errorCode,
 }) => {
   const router = useRouter();
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
+
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
   }
@@ -57,34 +60,36 @@ const DocumentPage: NextPage<Args> = ({
       errorCode={errorCode}
       documentType={documentType}
     >
-      {isPaper(document) && (
-        <div className={css(styles.bodyWrapper)}>
-          {pdfUrl ? (
-            <div className={css(styles.viewerWrapper)}>
-              <PDFViewer pdfUrl={pdfUrl} />
-            </div>
-          ) : (
-            <div className={css(styles.body)}>
-              {document.abstract ? (
-                <>
-                  <h2>Abstract</h2>
-                  <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
-                </>
-              ) : (
-                <PaperPageAbstractSection paper={document.raw} />
-              )}
-            </div>
-          )}
-        </div>
-      )}
-      {isPost(document) && (
-        <div className={css(styles.bodyWrapper)}>
-          <div
-            className={css(styles.body) + " rh-post"}
-            dangerouslySetInnerHTML={{ __html: postHtml }}
-          />
-        </div>
-      )}
+      <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>      
+        {isPaper(document) && (
+          <div className={css(styles.bodyWrapper)}>
+            {pdfUrl ? (
+              <div className={css(styles.viewerWrapper)}>
+                <PDFViewer pdfUrl={pdfUrl} onZoomIn={(zoom) => setViewerWidth(zoom.newWidth)} onZoomOut={(zoom) => setViewerWidth(zoom.newWidth)} />
+              </div>
+            ) : (
+              <div className={css(styles.body)}>
+                {document.abstract ? (
+                  <>
+                    <h2>Abstract</h2>
+                    <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
+                  </>
+                ) : (
+                  <PaperPageAbstractSection paper={document.raw} />
+                )}
+              </div>
+            )}
+          </div>
+        )}
+        {isPost(document) && (
+          <div className={css(styles.bodyWrapper)}>
+            <div
+              className={css(styles.body) + " rh-post"}
+              dangerouslySetInnerHTML={{ __html: postHtml }}
+            />
+          </div>
+        )}
+      </div>
     </SharedDocumentPage>
   );
 };
@@ -105,6 +110,9 @@ const styles = StyleSheet.create({
     padding: 25,
     minHeight: 200,
   },
+  bodyContentWrapper: {
+    margin: "0 auto",
+  },  
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

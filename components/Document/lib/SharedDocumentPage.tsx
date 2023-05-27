@@ -55,7 +55,7 @@ const SharedDocumentPage = ({
           <DocumentHeader document={document} />
         </div>
         <div className={css(styles.bodyArea)}>
-          <div className={css(styles.bodyContentWrapper)}>{children}</div>
+          {children}
         </div>
       </DocumentContext.Provider>
     </div>
@@ -89,10 +89,6 @@ const styles = StyleSheet.create({
       paddingRight: 15,
       boxSizing: "border-box",
     },
-  },
-  bodyContentWrapper: {
-    maxWidth: config.maxWidth,
-    margin: "0 auto",
   },
 });
 
