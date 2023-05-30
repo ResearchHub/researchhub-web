@@ -40,6 +40,7 @@ import {
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import { StyleSheet } from "aphrodite";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -84,6 +85,11 @@ function ReferencesContainer({
 
   const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
   const currentOrgID = currentOrg?.id ?? null;
+
+  const targetProject = currentOrgProjects.find(
+    (proj) => proj.id === parseInt(router.query.project)
+  );
+  const { id, collaborators, project_name, is_public } = targetProject ?? {};
 
   useEffect((): void => {
     if (!isEmpty(currentOrgID)) {
@@ -226,50 +232,68 @@ function ReferencesContainer({
                   <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
                 </div>
                 {!isEmpty(router.query.project) && (
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={(): void => {
-                      // TODO: calvinhlee - clean this up from backend
-                      const targetProject = currentOrgProjects.find(
-                        (proj) => proj.id === parseInt(router.query.project)
-                      );
-                      const { id, collaborators, project_name, is_public } =
-                        targetProject ?? {};
-                      setProjectUpsertPurpose("update");
-                      setProjectUpsertValue({
-                        ...DEFAULT_PROJECT_VALUES,
-                        collaborators: [
-                          ...(collaborators ?? []).editors.map(
-                            (rawUser: any) => {
-                              return {
-                                ...parseUserSuggestion(rawUser),
-                                role: "EDITOR",
-                              };
-                            }
-                          ),
-                          ...(collaborators ?? []).viewers.map(
-                            (rawUser: any) => {
-                              return {
-                                ...parseUserSuggestion(rawUser),
-                                role: "VIEWER",
-                              };
-                            }
-                          ),
-                        ],
-                        projectID: id,
-                        projectName: project_name,
-                        isPublic: is_public,
-                      });
-                      setIsProjectUpsertModalOpen(true);
+                  <div
+                    style={{
+                      marginLeft: "auto",
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {"Share"}
-                    </Typography>
-                  </Button>
+                    <AuthorFacePile
+                      horizontal
+                      margin={-10}
+                      authorProfiles={(collaborators ?? {}).viewers?.map(
+                        (collaborator) => {
+                          collaborator.author_profile.user = collaborator;
+                          return collaborator.author_profile;
+                        }
+                      )}
+                    />
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={(): void => {
+                        // TODO: calvinhlee - clean this up from backend
+                        const targetProject = currentOrgProjects.find(
+                          (proj) => proj.id === parseInt(router.query.project)
+                        );
+                        const { id, collaborators, project_name, is_public } =
+                          targetProject ?? {};
+                        setProjectUpsertPurpose("update");
+                        setProjectUpsertValue({
+                          ...DEFAULT_PROJECT_VALUES,
+                          collaborators: [
+                            ...(collaborators ?? []).editors.map(
+                              (rawUser: any) => {
+                                return {
+                                  ...parseUserSuggestion(rawUser),
+                                  role: "EDITOR",
+                                };
+                              }
+                            ),
+                            ...(collaborators ?? []).viewers.map(
+                              (rawUser: any) => {
+                                return {
+                                  ...parseUserSuggestion(rawUser),
+                                  role: "VIEWER",
+                                };
+                              }
+                            ),
+                          ],
+                          projectID: id,
+                          projectName: project_name,
+                          isPublic: is_public,
+                        });
+                        setIsProjectUpsertModalOpen(true);
+                      }}
+                    >
+                      <Typography variant="h6" fontSize={"16px"}>
+                        {"Share"}
+                      </Typography>
+                    </Button>
+                  </div>
                 )}
               </div>
               <Box className="ReferencesContainerMain">
@@ -401,7 +425,10 @@ function ReferencesContainer({
 
 const styles = StyleSheet.create({
   shareButton: {
-    marginLeft: "auto",
+    marginLeft: 16,
+    color: colors.BLACK(),
+    border: "none",
+    background: "unset",
   },
 });
 

@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useMemo } from "react";
 import colors from "~/config/themes/colors";
 import AuthorAvatar from "../AuthorAvatar";
+import UserTooltip from "../Tooltips/User/UserTooltip";
 
 type Props = {
   authorProfiles: Object[];
@@ -26,7 +27,7 @@ export default function AuthorFacePile({
   withTooltip = false,
   fontSize,
   overrideStyle,
-  border = `2px solid white`
+  border = `2px solid white`,
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
     () =>
@@ -38,20 +39,42 @@ export default function AuthorFacePile({
               marginBottom: !Boolean(horizontal) ? 8 : 0,
             }}
           >
-            <AuthorAvatar
-              author={author}
-              border={border}
-              key={`avatar-${index}`}
-              onClick={(event: SyntheticEvent) => {
-                event.stopPropagation();
-                event.preventDefault();
-              }}
-              margin
-              size={imgSize}
-              fontSize={fontSize}
-              spacing={labelSpacing}
-              withAuthorName={withAuthorName}
-            />
+            {author.user ? (
+              <UserTooltip
+                createdBy={author.user}
+                targetContent={
+                  <AuthorAvatar
+                    author={author}
+                    border={border}
+                    key={`avatar-${index}`}
+                    onClick={(event: SyntheticEvent) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+                    }}
+                    margin
+                    size={imgSize}
+                    fontSize={fontSize}
+                    spacing={labelSpacing}
+                    withAuthorName={withAuthorName}
+                  />
+                }
+              />
+            ) : (
+              <AuthorAvatar
+                author={author}
+                border={border}
+                key={`avatar-${index}`}
+                onClick={(event: SyntheticEvent) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                }}
+                margin
+                size={imgSize}
+                fontSize={fontSize}
+                spacing={labelSpacing}
+                withAuthorName={withAuthorName}
+              />
+            )}
           </span>
         );
       }),
