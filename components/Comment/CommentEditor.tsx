@@ -33,6 +33,7 @@ import { isEmpty as isInputEmpty } from "~/config/utils/nullchecks";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
+import AnonymousToggle from "./CommentAnonymously";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -67,6 +68,7 @@ const CommentEditor = ({
   handleClose,
   editorStyleOverride,
 }: CommentEditorArgs) => {
+  const [anonymous, setAnonymous] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
@@ -172,6 +174,7 @@ const CommentEditor = ({
         ...(commentId && { id: commentId }),
         ...(!commentId && { commentType: _commentType }),
         ...(interimBounty && { bountyAmount: interimBounty.amount }),
+        anonymous,
       });
 
       dangerouslySetContent({});
@@ -284,6 +287,11 @@ const CommentEditor = ({
             disabled={isSubmitting || isEmpty}
           />
         </div>
+        <AnonymousToggle
+          id={commentId as string}
+          anonymous={anonymous}
+          onToggle={() => setAnonymous(!anonymous)}
+        />
         {allowBounty && (
           <>
             {interimBounty ? (
