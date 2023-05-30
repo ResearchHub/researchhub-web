@@ -50,6 +50,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
 import TableChartIcon from "@mui/icons-material/TableChart";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -206,6 +207,24 @@ function ReferencesContainer({
     setActiveProject,
     isFetchingProjects,
   });
+  const targetProject = currentOrgProjects.find(
+    (proj) => proj.id === parseInt(router.query.project)
+  );
+  const { id, collaborators, project_name, is_public } = targetProject ?? {};
+
+  // useEffect((): void => {
+  //   if (!isEmpty(currentOrgID)) {
+  //     fetchReferenceOrgProjects({
+  //       onError: emptyFncWithMsg,
+  //       onSuccess: (payload): void => {
+  //         setCurrentOrgProjects(payload ?? []);
+  //       },
+  //       payload: {
+  //         organization: currentOrgID,
+  //       },
+  //     });
+  //   }
+  // }, [currentOrgID, projectsFetchTime]);
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -376,24 +395,42 @@ function ReferencesContainer({
                   <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
                 </div>
                 {!isEmpty(router.query.project) && (
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={(): void => {
-                      setProjectUpsertPurpose("update");
-                      setProjectUpsertValue({
-                        ...DEFAULT_PROJECT_VALUES,
-                        ...activeProject,
-                      });
-                      setIsProjectUpsertModalOpen(true);
+                  <div
+                    style={{
+                      marginLeft: "auto",
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {"Share"}
-                    </Typography>
-                  </Button>
+                    <AuthorFacePile
+                      horizontal
+                      margin={-10}
+                      authorProfiles={(collaborators ?? {}).viewers?.map(
+                        (collaborator) => {
+                          collaborator.author_profile.user = collaborator;
+                          return collaborator.author_profile;
+                        }
+                      )}
+                    />
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={(): void => {
+                        setProjectUpsertPurpose("update");
+                        setProjectUpsertValue({
+                          ...DEFAULT_PROJECT_VALUES,
+                          ...activeProject,
+                        });
+                        setIsProjectUpsertModalOpen(true);
+                      }}
+                    >
+                      <Typography variant="h6" fontSize={"16px"}>
+                        {"Share"}
+                      </Typography>
+                    </Button>
+                  </div>
                 )}
               </div>
               <Box className="ReferencesContainerMain">
@@ -580,7 +617,10 @@ function ReferencesContainer({
 
 const styles = StyleSheet.create({
   shareButton: {
-    marginLeft: "auto",
+    marginLeft: 16,
+    color: colors.BLACK(),
+    border: "none",
+    background: "unset",
   },
 });
 
