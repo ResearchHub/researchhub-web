@@ -176,7 +176,7 @@ export const fetchOrgNotes = ({ orgId, slug, orgSlug }, authToken) => {
   return fetch(API.NOTE({ orgId, slug, orgSlug }), API.GET_CONFIG(authToken));
 };
 
-export const fetchUserOrgs = ({ user, url }, authToken) => {
+export const fetchUserOrgs = ({ user = null, url }, authToken) => {
   return fetch(
     url ? url : API.ORGANIZATION({ userId: user?.id }),
     API.GET_CONFIG(authToken)

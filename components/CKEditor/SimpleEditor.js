@@ -3,6 +3,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
+import Cookies from "js-cookie";
 
 export default function SimpleEditor(props) {
   const {
@@ -37,9 +38,7 @@ export default function SimpleEditor(props) {
       headers: {
         Authorization:
           "Token " +
-          (typeof window !== "undefined"
-            ? window.localStorage[AUTH_TOKEN]
-            : ""),
+          (typeof window !== "undefined" ? Cookies.get(AUTH_TOKEN) : ""),
       },
     },
   };

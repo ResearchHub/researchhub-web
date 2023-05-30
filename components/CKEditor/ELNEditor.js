@@ -19,6 +19,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { unescapeHtmlString } from "~/config/utils/unescapeHtmlString";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
+import Cookies from "js-cookie";
 
 const saveData = async ({
   editor,
@@ -182,7 +183,7 @@ const ELNEditor = ({
                     "Authorization",
                     "Token " +
                       (typeof window !== "undefined"
-                        ? window.localStorage[AUTH_TOKEN]
+                        ? Cookies.get(AUTH_TOKEN)
                         : "")
                   );
                   xhr.send();
@@ -230,7 +231,7 @@ const ELNEditor = ({
                     Authorization:
                       "Token " +
                       (typeof window !== "undefined"
-                        ? window.localStorage[AUTH_TOKEN]
+                        ? Cookies.get(AUTH_TOKEN)
                         : ""),
                   },
                 },

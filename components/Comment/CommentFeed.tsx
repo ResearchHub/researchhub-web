@@ -1,4 +1,8 @@
-import { Comment as CommentType, COMMENT_TYPES } from "./lib/types";
+import {
+  Comment as CommentType,
+  COMMENT_TYPES,
+  parseComment,
+} from "./lib/types";
 import { CommentTreeContext } from "./lib/contexts";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
@@ -27,10 +31,11 @@ const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: TopLevelDocument;
-  context: "sidebar" | "drawer" | null;
+  context?: "sidebar" | "drawer" | null;
   onCommentCreate?: Function;
   onCommentRemove?: Function;
   totalCommentCount: number;
+  initialComments?: CommentType[] | undefined;
 };
 
 const CommentFeed = ({
@@ -38,13 +43,23 @@ const CommentFeed = ({
   onCommentCreate,
   onCommentRemove,
   totalCommentCount,
+  initialComments = undefined,
   context = null,
 }: Args) => {
-  const [comments, setComments] = useState<CommentType[]>([]);
-  const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(0);
+  const hasInitialComments = initialComments !== undefined;
+  const [comments, setComments] = useState<CommentType[]>(
+    initialComments || []
+  );
+  const [isFetching, setIsFetching] = useState<boolean>(
+    hasInitialComments ? false : true
+  );
+  const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
+    initialComments?.length || 0
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(
+    hasInitialComments ? true : false
+  );
   const [selectedSortValue, setSelectedSortValue] = useState<string | null>(
     sortOpts[0].value
   );
@@ -66,15 +81,17 @@ const CommentFeed = ({
   }) => {
     setIsFetching(true);
     try {
-      const response = await fetchCommentsAPI({
+      const { comments, count } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: sort || sort === null ? sort : selectedSortValue,
         filter: filter || filter === null ? filter : selectedFilterValue,
       });
 
-      setComments(response.comments);
-      setRootLevelCommentCount(response.count);
+      const parsedComments = comments.map((raw: any) => parseComment({ raw }));
+
+      setComments(parsedComments);
+      setRootLevelCommentCount(count);
     } catch (error) {
       console.log("error", error);
       // FIXME: Implement error handling
@@ -255,7 +272,7 @@ const CommentFeed = ({
     setIsFetching(true);
     try {
       const nextPage = currentPage + 1;
-      const response = await fetchCommentsAPI({
+      const { comments } = await fetchCommentsAPI({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: selectedSortValue,
@@ -263,9 +280,11 @@ const CommentFeed = ({
         page: nextPage,
       });
 
+      const parsedComments = comments.map((raw: any) => parseComment({ raw }));
+
       setCurrentPage(nextPage);
       onFetchMore({
-        fetchedComments: response.comments,
+        fetchedComments: parsedComments,
       });
     } catch (error) {
       console.log("error", error);
@@ -284,12 +303,13 @@ const CommentFeed = ({
   };
 
   useEffect(() => {
-    if (document.id && document.id !== currentDocumentId) {
+    const documentHasChanged = document.id && document.id !== currentDocumentId;
+    if (documentHasChanged && !hasInitialComments) {
       resetFeed();
       handleFetch({});
       setCurrentDocumentId(document.id);
     }
-  }, [document.id, currentDocumentId]);
+  }, [document.id, currentDocumentId, hasInitialComments]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =

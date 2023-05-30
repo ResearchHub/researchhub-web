@@ -71,7 +71,11 @@ function Index(props) {
             </div>
           </div>
         ) : (
-          <LoginModal isOpen={true} />
+          <LoginModal
+            isOpen={true}
+            handleClose={undefined}
+            loginCallback={undefined}
+          />
         )}
       </>
     );

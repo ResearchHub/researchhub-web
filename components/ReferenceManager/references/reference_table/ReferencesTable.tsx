@@ -1,7 +1,7 @@
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-import { DataGrid } from "@mui/x-data-grid";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import {
   formatReferenceRowData,
@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
+import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 
 function useEffectFetchReferenceCitations({
   onError,
@@ -34,6 +35,7 @@ function useEffectFetchReferenceCitations({
         organizationID: currentOrg?.id,
         // @ts-ignore
         projectID: router.query?.project,
+        getCurrentUserCitation: isEmpty(router.query?.org_refs),
       });
     }
   }, [
@@ -41,11 +43,11 @@ function useEffectFetchReferenceCitations({
     user?.id,
     referencesFetchTime,
     currentOrg,
-    router.query?.project,
+    router.query,
   ]);
 }
 
-export default function ReferencesTable() {
+export default function ReferencesTable({ createdReferences, handleFileDrop }) {
   const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -63,6 +65,35 @@ export default function ReferencesTable() {
     referencesFetchTime,
   });
 
+  function combineAndDeduplicate(arr1, arr2) {
+    const combinedArray = [...arr1, ...arr2];
+    const result = [];
+    const seenIds = new Set();
+    for (const item of combinedArray) {
+      if (!seenIds.has(item.id)) {
+        result.push(item);
+        seenIds.add(item.id);
+      }
+    }
+    return result;
+  }
+
+  useEffect(() => {
+    const originalReferenceTable = [];
+
+    referenceTableRowData.forEach((ref) => {
+      if (!ref.created) {
+        originalReferenceTable.push(ref);
+      }
+    });
+    const newReferences = combineAndDeduplicate(
+      createdReferences,
+      originalReferenceTable
+    );
+
+    setReferenceTableRowData(newReferences);
+  }, [createdReferences]);
+
   const formattedReferenceRows = !isLoading
     ? nullthrows(formatReferenceRowData(referenceTableRowData))
     : [];
@@ -74,6 +105,15 @@ export default function ReferencesTable() {
         checkboxSelection
         columns={columnsFormat}
         hideFooter
+        className={formattedReferenceRows.length === 0 ? "empty-data-grid" : ""}
+        localeText={{
+          noRowsLabel: (
+            <UploadFileDragAndDrop
+              handleFileDrop={handleFileDrop}
+              accept={".pdf"}
+            />
+          ),
+        }}
         initialState={{
           columns: {
             columnVisibilityModel: {
@@ -83,18 +123,29 @@ export default function ReferencesTable() {
           },
         }}
         loading={isLoading}
-        onCellClick={(params, event, _details): void => {
+        onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemDrawerData({
             ...nullthrows(
               referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),
           });
-          setIsDrawerOpen(true);
+          if (params.field !== "__check__") {
+            setIsDrawerOpen(true);
+          }
         }}
-        // onRowClick={(params, event, details) => {
-        //   event.stopPropagation();
-        // }}
+        slots={{
+          cell: (cell) => {
+            if (cell.value === "load") {
+              return (
+                <div className="data-grid-loader">
+                  <GridSkeletonCell {...cell} />
+                </div>
+              );
+            }
+            return <GridCell {...cell} />;
+          },
+        }}
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
       />

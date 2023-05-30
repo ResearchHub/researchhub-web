@@ -41,7 +41,9 @@ const LoginModal = ({
   setMessage,
   showMessage,
   loginCallback,
+  title = `Log in or sign up`,
   modals,
+  persistent,
 }) => {
   const router = useRouter();
   const currentUser = getCurrentUser();
@@ -267,6 +269,7 @@ const LoginModal = ({
   return (
     <BaseModal
       offset={"0px"}
+      persistent={persistent}
       closeModal={_handleClose}
       isOpen={isOpen}
       hideClose={true}
@@ -296,19 +299,21 @@ const LoginModal = ({
                 {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
               </IconButton>
             )}
-            <IconButton
-              overrideStyle={styles.closeBtn}
-              size={20}
-              onClick={(e) => {
-                e.stopPropagation();
-                resetErrors();
-                _handleClose();
-              }}
-            >
-              {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
-            </IconButton>
+            {!persistent &&
+              <IconButton
+                overrideStyle={styles.closeBtn}
+                size={20}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetErrors();
+                  _handleClose();
+                }}
+              >
+                {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
+              </IconButton>
+            }
             {step === "SELECT_PROVIDER"
-              ? `Log in or sign up`
+              ? title
               : step === "LOGIN_WITH_EMAIL_FORM"
               ? `Log in`
               : step === "SIGNUP_FORM"
@@ -407,6 +412,7 @@ const LoginModal = ({
               customLabel={`Continue with Google`}
               isLoggedIn={false}
               disabled={false}
+              loginCallback={loginCallback}
             />
           </div>
         ) : step === "LOGIN_WITH_EMAIL_FORM" ? (

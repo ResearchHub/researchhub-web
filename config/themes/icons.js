@@ -310,7 +310,8 @@ export const PaperIcon = ({
 }) => {
   return (
     <span
-      onClick={onClick}
+      onClick={(e) => onClick && onClick(e)}
+      style={{ display: "inline-flex" }}
       className={css(
         withAnimation && styles.withAnimation,
         overrideStyle && overrideStyle

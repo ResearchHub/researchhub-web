@@ -1,13 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap } from "@fortawesome/pro-solid-svg-icons";
-import { faEdit } from "@fortawesome/pro-solid-svg-icons";
-import { faUser } from "@fortawesome/pro-solid-svg-icons";
-import { faUserSlash } from "@fortawesome/pro-solid-svg-icons";
-import { faUserPlus } from "@fortawesome/pro-solid-svg-icons";
-import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
-import { faArrowRight } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faGraduationCap,
+  faEdit,
+  faUser,
+  faUserSlash,
+  faUserPlus,
+  faArrowRight,
+} from "@fortawesome/pro-solid-svg-icons";
+import {
+  faFacebookF,
+  faTwitter,
+  faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -152,27 +156,27 @@ function AuthorPage(props) {
         {
           href: "overview",
           label: "Overview",
-          name: "Overview",
+          value: "overview",
         },
         {
           href: "bounties",
           label: "Bounties",
-          name: "Bounties",
+          value: "bounties",
         },
         {
           href: "discussions",
           label: "Comments",
-          name: "Comments",
+          value: "comments",
         },
         {
           href: "submissions",
           label: "Submissions",
-          name: "Submissions",
+          value: "submissions",
         },
         {
           href: "authored-papers",
           label: "Authored Papers",
-          name: "Authored Papers",
+          value: "authored-papers",
         },
       ];
 
@@ -180,7 +184,7 @@ function AuthorPage(props) {
         tabs.push({
           href: "rsc",
           label: "RSC",
-          name: "RSC",
+          value: "rsc",
         });
       }
     } else {
@@ -193,10 +197,20 @@ function AuthorPage(props) {
       ];
     }
 
-    return tabs.map((t) => {
-      t.isSelected = t.href === router.query.tabName ? true : false;
-      return t;
-    });
+    const tabsWithSelected = tabs.map((tab) =>
+      tab.href === router.query.tabName ? { ...tab, isSelected: true } : tab
+    );
+    const tabsWithHref = tabsWithSelected.map((tab) => ({
+      ...tab,
+      href: `/user/${author.id}/${tab.href}`,
+    }));
+
+    const hasSelected = Boolean(tabsWithHref.find((t) => t.isSelected));
+    if (!hasSelected) {
+      tabsWithHref[0].isSelected = true;
+    }
+
+    return tabsWithHref;
   };
 
   const handleTabClick = (tab) => {

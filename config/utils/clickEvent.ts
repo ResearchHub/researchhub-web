@@ -1,34 +1,46 @@
 import { useEffect } from "react";
 
 type IsOutsideClickArgs = {
-  el: Element | null | undefined,
-  clickedEl: Element,
-  exclude?: Array<String>,
-}
+  el: Element | null | undefined;
+  clickedEl: Element;
+  exclude?: Array<string>;
+};
 
 type useEffectHandleClickArgs = {
-  el: Element | null | undefined,
-  exclude?: Array<String>,
-  onOutsideClick?: Function,
-  onInsideClick?: Function
-}
+  el: Element | null | undefined;
+  exclude?: Array<string>;
+  onOutsideClick?: Function;
+  onInsideClick?: Function;
+};
 
-export function isOutsideClick({ el, clickedEl, exclude = [] }: IsOutsideClickArgs){
+export function isOutsideClick({
+  el,
+  clickedEl,
+  exclude = [],
+}: IsOutsideClickArgs) {
   if (!el) {
+    console.log("[isOutsideClick] el is not defined");
     return false;
   }
 
   const isWithin = el === clickedEl || el?.contains(clickedEl);
   const clickOnExcluded = exclude.reduce(
-    (prev, selector) => Boolean(prev || clickedEl.closest(selector as keyof HTMLElementTagNameMap)),
+    (prev, selector) =>
+      Boolean(
+        prev || clickedEl.closest(selector as keyof HTMLElementTagNameMap)
+      ),
     false
   );
 
   return !(isWithin || clickOnExcluded);
 }
 
-export function useEffectHandleClick({ el, exclude = [], onOutsideClick, onInsideClick }: useEffectHandleClickArgs) {
-
+export function useEffectHandleClick({
+  el,
+  exclude = [],
+  onOutsideClick,
+  onInsideClick,
+}: useEffectHandleClickArgs) {
   useEffect(() => {
     const _handleClick = (e) => {
       const _isOutsideClick = isOutsideClick({
@@ -40,8 +52,7 @@ export function useEffectHandleClick({ el, exclude = [], onOutsideClick, onInsid
       const _isInsideClick = el && el.contains(e.target);
       if (_isOutsideClick) {
         onOutsideClick && onOutsideClick();
-      }
-      else if (_isInsideClick) {
+      } else if (_isInsideClick) {
         onInsideClick && onInsideClick();
       }
     };
@@ -51,8 +62,5 @@ export function useEffectHandleClick({ el, exclude = [], onOutsideClick, onInsid
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [el]);  
+  }, [el]);
 }
-
-
-

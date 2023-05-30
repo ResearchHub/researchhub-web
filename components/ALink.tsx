@@ -17,6 +17,7 @@ interface Props {
   children?: ReactNode;
   overrideStyle?: any;
   target?: string;
+  disableTextDeco?: boolean;
 }
 
 const ALink: FunctionComponent<Props> = ({
@@ -26,12 +27,18 @@ const ALink: FunctionComponent<Props> = ({
   theme = themes.default,
   overrideStyle = null,
   target = null,
+  disableTextDeco = false,
 }): ReactElement => {
   return (
     <Link
       href={href}
       as={as}
-      className={css(styles.ALink, styles[themes[theme]], overrideStyle)}
+      className={css(
+        styles.ALink,
+        styles[themes[theme]],
+        disableTextDeco && styles.disableTextDeco,
+        overrideStyle
+      )}
       target={target || undefined}
       onClick={(e) => e.stopPropagation()}
     >
@@ -40,7 +47,7 @@ const ALink: FunctionComponent<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   ALink: {
     color: colors.BLACK(),
     fontWeight: 400,
@@ -51,6 +58,8 @@ const styles = StyleSheet.create({
   },
   linkThemeDefault: {},
   linkThemeSolidPrimary: {
+    cursor: "pointer",
+    textDecoration: "none",
     color: colors.NEW_BLUE(),
     ":hover": {
       color: colors.NEW_BLUE(),
@@ -68,6 +77,14 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.NEW_GREEN(),
       textDecoration: "underline",
+    },
+  },
+  disableTextDeco: {
+    color: "inherit",
+    textDecoration: "none",
+    ":hover": {
+      color: "inherit",
+      textDecoration: "none",
     },
   },
 });

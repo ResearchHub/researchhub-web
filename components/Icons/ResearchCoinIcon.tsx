@@ -1,4 +1,5 @@
 import { css } from "aphrodite";
+import Image from "next/image";
 
 type Args = {
   onClick?: Function;
@@ -20,6 +21,7 @@ const ResearchCoinIcon = ({
   return (
     <span
       onClick={(event) => onClick && onClick(event)}
+      style={{ display: "inline-flex" }}
       className={css(overrideStyle && overrideStyle)}
     >
       {version === 1 ? (
@@ -110,7 +112,14 @@ const ResearchCoinIcon = ({
           width={width}
           height={height}
         />
-      )  : null}
+      ) : version === 6 ? (
+        <Image
+          src="/static/icons/tip.png"
+          height={height}
+          width={width}
+          alt="Tip"
+        />
+      ) : null}
     </span>
   );
 };

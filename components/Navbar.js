@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/pro-light-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { useWeb3Modal, Web3Modal } from "@web3modal/react";
-import { useAccount, configureChains, createClient, WagmiConfig } from "wagmi";
+import { useAccount } from "wagmi";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
@@ -15,12 +15,6 @@ import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
-import { mainnet, goerli } from "wagmi/chains";
 
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
@@ -59,20 +53,6 @@ export const NAVBAR_HEIGHT = 68;
 
 const isProduction = process.env.REACT_APP_ENV === "production";
 
-const chains = [isProduction ? mainnet : goerli];
-const projectId = "a3e8904e258fe256bf772b764d3acfab";
-
-// Wagmi client
-const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors: w3mConnectors({ version: 1, chains, projectId }),
-  provider,
-});
-
-// Web3Modal Ethereum Client
-const ethereumClient = new EthereumClient(wagmiClient, chains);
-
 const Navbar = (props) => {
   const { address, isConnected } = useAccount();
 
@@ -81,6 +61,12 @@ const Navbar = (props) => {
   const { isLoggedIn, user, auth, updateUser } = props;
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
   const { open, close } = useWeb3Modal();
+
+  const unstickyNavbar = router.pathname.includes(
+    "/paper/[paperId]/[paperName]",
+    "/doc-v2/[documentType]/[documentId]/[documentSlug]",
+    "/hubs"
+  );
 
   const pathname = router?.pathname ?? "";
   const headerLabel = pathname.includes("notebook")
@@ -135,26 +121,17 @@ const Navbar = (props) => {
       <PromotionInfoModal />
       <ReCaptchaPrompt />
       <UploadPaperModal />
-      <WagmiConfig client={wagmiClient}>
-        <WithdrawalModal
-          openWeb3ReactModal={open}
-          closeWeb3ReactModal={close}
-          address={address}
-          isConnected={isConnected}
-        />
-        <Web3Modal
-          projectId="a3e8904e258fe256bf772b764d3acfab"
-          ethereumClient={ethereumClient}
-        />
-      </WagmiConfig>
-
+      <WithdrawalModal
+        openWeb3ReactModal={open}
+        closeWeb3ReactModal={close}
+        address={address}
+        isConnected={isConnected}
+      />
       <div
         ref={navbarRef}
         className={`${css(
           styles.navbarContainer,
-          (router.route === "/paper/[paperId]/[paperName]" ||
-            router.route === "/hubs") &&
-            styles.unstickyNavbar
+          unstickyNavbar && styles.unstickyNavbar
         )} navbar`}
       >
         <div className={css(styles.logoContainer)}>
@@ -242,7 +219,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     left: 0,
     padding: "0 28px",
-    position: "sticky",
+    // position: "sticky",
     top: 0,
     width: "100%",
     zIndex: 5,

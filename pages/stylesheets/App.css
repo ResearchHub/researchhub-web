@@ -17,6 +17,19 @@ img {
   /* image-rendering: pixelated; */
 }
 
+.data-grid-loader div {
+  display: flex;
+  align-items: center !important;
+  padding: 10px !important;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(224, 224, 224, 1);
+  height: 100%;
+}
+
+.data-grid-loader div span {
+  width: 100%;
+}
+
 .main {
   display: flex;
   position: absolute;
@@ -304,10 +317,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 30px;
   margin-top: 0;
   margin-bottom: 0.5em;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.25px;
   line-height: 1.2em;
 }
@@ -369,4 +382,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.react-pdf__Page__svg {
+  margin: 0 auto;
 }

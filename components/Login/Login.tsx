@@ -1,30 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthActions } from "~/redux/auth";
 import { connect } from "react-redux";
 import LoginModal from "./LoginModal";
 
+
 type Props = {
   loginCallback?: Function;
   children?: any;
+  persistent?: boolean;
+  title?: string;
 };
 
-const Login = ({ children, loginCallback }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Login = ({ children, loginCallback, title, persistent = false }: Props) => {
+  const [isOpen, setIsOpen] = useState(persistent);
 
   return (
     <div style={{ width: "100%" }}>
       <div
         onClick={(e) => {
           e.stopPropagation();
-          setIsOpen(true);
+          if (persistent) return;
+          else setIsOpen(true);
         }}
       >
         {children}
       </div>
 
       <LoginModal
+        persistent={persistent}
         isOpen={isOpen}
-        handleClose={() => setIsOpen(false)}
+        title={title}
+        handleClose={() => {
+          if (persistent) return;
+          else setIsOpen(false);
+        }}
         loginCallback={loginCallback}
       />
     </div>

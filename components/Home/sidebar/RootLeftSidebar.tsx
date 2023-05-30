@@ -71,7 +71,6 @@ export const getLeftSidebarItemAttrs = ({
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
   const isLoggedIn = !isEmpty(id);
-
   return filterNull([
     {
       icon: <FontAwesomeIcon icon={faHouse}></FontAwesomeIcon>,
@@ -98,7 +97,7 @@ export const getLeftSidebarItemAttrs = ({
       label: "Notebook",
       isMinimized,
       isActive: pathname.includes("notebook"),
-      href: `/${organization_slug}/notebook`,
+      href: `/notebook`,
       onClick: (event: SyntheticEvent): void => {
         if (!isLoggedIn) {
           event.preventDefault();
@@ -180,6 +179,7 @@ function RootLeftSidebar({
       "live",
       "referral",
       "user",
+      "doc-v2",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {
@@ -260,7 +260,7 @@ function RootLeftSidebar({
   return (
     <motion.div
       animate={growMinimized ? "minimized" : "full"}
-      className={formattedRootLeftSidebar}
+      className={formattedRootLeftSidebar + " root-left-sidebar"}
       style={
         ["notebook"].includes(pathname.split("/")[2]) ||
         ["hubs", "user", "reference-manager", "live"].includes(

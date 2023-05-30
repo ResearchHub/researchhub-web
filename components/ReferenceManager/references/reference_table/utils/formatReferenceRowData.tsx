@@ -28,6 +28,8 @@ function formatAuthors(
 function referenceFormatSwitchMap(datum: any): ReferenceTableRowDataType {
   const { citation_type } = datum ?? {};
   switch (citation_type) {
+    case "LOADING":
+      return formatLoading(datum);
     case "ARTWORK":
       return formatArtwork(datum);
     case "MANUSCRIPT":
@@ -82,6 +84,20 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     hubs: "",
     published_date: date ?? access_date,
     published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
+  };
+}
+
+function formatLoading(datum) {
+  return {
+    added_date: "load",
+    id: datum.id,
+    citation_type: "load",
+    title: "load",
+    authors: "load",
+    last_author: "load",
+    hubs: "load",
+    published_date: "load",
+    published_year: "load",
   };
 }
 

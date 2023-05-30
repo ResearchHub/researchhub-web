@@ -16,6 +16,8 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import "react-quill/dist/quill.snow.css";
 import "react-tagsinput/react-tagsinput.css";
 import "~/components/Comment/lib/quill.css";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 import { Analytics } from "@vercel/analytics/react";
 import { configureStore } from "~/redux/configureStore";
 import { init as initApm } from "@elastic/apm-rum";
@@ -182,9 +184,11 @@ MyApp.getInitialProps = async (appContext) => {
     "/hubs/[slug]",
     "/hubs/[slug]/live",
     "/paper/[paperId]/[paperName]",
+    "/doc-v2/[documentType]/[documentId]/[documentSlug]",
+    "/doc-v2/[documentType]/[documentId]/[documentSlug]/[tabName]",
     "/post/[documentId]/[title]",
+    "/notebook",
   ];
-
   const cookies = nookies.get(appContext.ctx);
   const rootLeftSidebarForceMin = false;
 

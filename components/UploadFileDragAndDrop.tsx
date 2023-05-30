@@ -3,15 +3,14 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import colors from "~/config/themes/colors";
 
-function UploadFileDragAndDrop({}) {
+function UploadFileDragAndDrop({ handleFileDrop, accept }) {
   const [isFileDragged, setIsFileDragged] = useState(false);
-  const handleFileDrop = () => {};
 
   return (
     <div className={css(styles.dropzoneContainer)}>
       <Dropzone
-        accept=".json,.csv,"
-        multiple={false}
+        accept={accept}
+        multiple={true}
         onDragEnter={(): void => setIsFileDragged(true)}
         onDragLeave={(): void => setIsFileDragged(false)}
         onDrop={handleFileDrop}
@@ -32,7 +31,7 @@ function UploadFileDragAndDrop({}) {
                 <div className={css(styles.instructions)}>
                   {"Drag & drop \n"}
                   <span className={css(styles.subtext)}>
-                    {"your file here, or "}
+                    {"your PDF here, or "}
                     <span className={css(styles.browse)} id={"browse"}>
                       {"browse"}
                     </span>
@@ -70,7 +69,8 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#F7F7FB",
     cursor: "pointer",
-    borderRadius: 3,
+    height: "100%",
+    // borderRadius: 3,
     border: `1px dashed ${colors.BLUE()}`,
     outline: "none",
     ":hover": {

@@ -3,8 +3,8 @@ import {
   faStar,
   faLayerGroup,
   faComments,
+  faCheck,
 } from "@fortawesome/pro-solid-svg-icons";
-import { faCheck } from "@fortawesome/pro-solid-svg-icons";
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import colors, { bountyColors } from "~/config/themes/colors";
@@ -22,7 +22,7 @@ import { useExchangeRate } from "./contexts/ExchangeRateContext";
 
 type Args = {
   contentType: string;
-  size?: "small" | "medium";
+  size?: "small" | "medium" | "large";
   label: string | ReactElement;
   onClick?: null | Function;
   rscContentOverride?: any;
@@ -242,10 +242,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
+  medium: {},
+  large: {
+    fontSize: 16,
+    padding: "10px 14px 6px",
+    height: 37,
+  },
   withTooltip: {
     cursor: "default",
   },
-  medium: {},
   icon: {
     marginRight: 6,
     fontSize: 13,
@@ -304,7 +309,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     color: colors.BLACK(0.5),
-    background: colors.LIGHT_GREY(1.0),
+    background: colors.LIGHTER_GREY(1.0),
     display: "flex",
     padding: "4px 10px 1px 10px",
     textTransform: "capitalize",

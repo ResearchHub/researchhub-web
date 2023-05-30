@@ -22,12 +22,12 @@ export const fetchReferenceProjects = ({
 }: Args): void => {
   fetch(
     buildApiUri({
-      apiPath: `citation_project/?organization=${organization}`,
+      apiPath: `citation_project/get_projects/${organization}`,
     }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((payload: any): void => onSuccess(payload?.results))
+    .then((payload: any): void => onSuccess(payload))
     .catch(onError);
 };
