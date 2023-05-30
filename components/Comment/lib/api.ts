@@ -1,9 +1,4 @@
-import {
-  ID,
-  RHUser,
-  RhDocumentType,
-  parseUser,
-} from "~/config/types/root_types";
+import { ID, RhDocumentType } from "~/config/types/root_types";
 import { Comment, parseComment, COMMENT_TYPES } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -11,6 +6,13 @@ import config from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
 import uniqBy from "lodash/uniqBy";
+import { buildApiUri } from "~/config/utils/buildApiUri";
+
+type AnonArgs = {
+  id: string;
+  // eslint-disable-next-line no-unused-vars
+  onError: (error: Error) => void;
+};
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -99,7 +101,9 @@ export const fetchSingleCommentAPI = async ({
   return parseComment({ raw: response, parent: parentComment });
 };
 
+//TODO: This needs to send the anonymity to backend to verify whether the post must get encrypted or not.
 export const createCommentAPI = async ({
+  anonymity,
   content,
   commentType = COMMENT_TYPES.DISCUSSION,
   documentType,
@@ -108,6 +112,7 @@ export const createCommentAPI = async ({
   bountyAmount,
   mentions = [],
 }: {
+  anonymity: boolean;
   content: any;
   commentType?: COMMENT_TYPES;
   documentType: RhDocumentType;
@@ -118,7 +123,8 @@ export const createCommentAPI = async ({
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
-      (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment")
+      (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment") +
+      (anonymity ? "/anonymous" : "")
   );
   const response = await fetch(
     _url,
@@ -292,3 +298,17 @@ export const getFileUrl = ({ fileString, type }) => {
       return res;
     });
 };
+
+export function toggleUserAnonymity({ onError, id }: AnonArgs): void {
+  fetch(
+    buildApiUri({
+      apiPath: `annonymize/${id}/`,
+    }),
+    API.POST_CONFIG({})
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .catch((error: any): void => {
+      onError(error);
+    });
+}
