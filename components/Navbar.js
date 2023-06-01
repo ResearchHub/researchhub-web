@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     left: 0,
     padding: "0 28px",
-    // position: "sticky",
+    position: "sticky",
     top: 0,
     width: "100%",
     zIndex: 5,
