@@ -284,51 +284,6 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
-                  <DropdownMenu
-                    // disabled={isEmpty(selectedReferenceIDs)}
-                    menuItemProps={[
-                      {
-                        itemLabel: `Delete reference${
-                          selectedReferenceIDs.length > 1 ? "s" : ""
-                        }`,
-                        onClick: () => {
-                          removeReferenceCitations({
-                            onError: emptyFncWithMsg,
-                            onSuccess: (): void => {
-                              setReferencesFetchTime(Date.now());
-                            },
-                            payload: {
-                              citation_entry_ids: selectedReferenceIDs,
-                            },
-                          });
-                        },
-                      },
-                    ]}
-                    menuLabel={
-                      <div
-                        style={{
-                          alignItems: "center",
-                          color: "rgba(170, 168, 180, 1)",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: 68,
-                          height: 36,
-                          padding: 6,
-                          boxSizing: "border-box",
-                        }}
-                      >
-                        <TableChartIcon
-                          fontSize="medium"
-                          sx={{ color: "#7C7989" }}
-                        />
-                        <ExpandMore
-                          fontSize="medium"
-                          sx={{ color: "#AAA8B4" }}
-                        />
-                      </div>
-                    }
-                    size="medium"
-                  />
                   <div
                     style={
                       isEmpty(selectedReferenceIDs)
@@ -380,7 +335,7 @@ function ReferencesContainer({
                       }
                       size="medium"
                     />
-                  </div>
+                  </div>{" "}
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
