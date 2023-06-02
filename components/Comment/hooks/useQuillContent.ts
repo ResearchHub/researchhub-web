@@ -3,6 +3,7 @@ import Quill from "quill";
 import { isEmpty } from "~/config/utils/nullchecks";
 import debounce from "lodash/debounce";
 import UserBlot from "../lib/quill/UserBlot";
+import Delta from "quill-delta";
 
 type Args = {
   quill: Quill | undefined;
@@ -10,11 +11,18 @@ type Args = {
   notifyOnContentChangeRate: number;
 };
 
-const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Args) => {
+const useQuillContent = ({
+  quill,
+  notifyOnContentChangeRate,
+  content = {},
+}: Args) => {
   const [_content, setContent] = useState<any>(content);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
-  const debouncedSetContent = useCallback(debounce((c) => setContent(c), notifyOnContentChangeRate), [_content])
+  const debouncedSetContent = useCallback(
+    debounce((c) => setContent(c), notifyOnContentChangeRate),
+    [_content]
+  );
 
   useEffect(() => {
     if (quill) {
@@ -25,26 +33,41 @@ const useQuillContent = ({ quill, notifyOnContentChangeRate, content = {} }: Arg
         }
       });
 
+      quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node) => {
+        if (node.tagName === "IMG") {
+          return new Delta().insert({ image: node.getAttribute("src") });
+        }
+
+        const newDelta = new Delta();
+
+        const text = node.textContent;
+        newDelta.insert(text);
+
+        return newDelta;
+      });
+
       // This keybinding fixes a known issue in quill which that the space key is sometimes "stuck"
       // right after inserting an embed element like "Mentions"
       // @ts-ignore
-      quill.keyboard.addBinding(
-        {
-          key: ' ',
-          handler: (range, context) => {
-            const [leaf] = quill.getLeaf(range.index - 1);
-            const userBlot = leaf.domNode.parentElement.querySelector('.ql-user');
-            const isPrevElementUserBlot = context?.prefix === "" && userBlot;
+      quill.keyboard.addBinding({
+        key: " ",
+        handler: (range, context) => {
+          const [leaf] = quill.getLeaf(range.index - 1);
+          const userBlot = leaf.domNode.parentElement.querySelector(".ql-user");
+          const isPrevElementUserBlot = context?.prefix === "" && userBlot;
 
-            if (isPrevElementUserBlot) {
-              // Fix to avoid space not working if prev element is custom blot.
-              // @ts-ignore
-              setTimeout(() => quill.setSelection(quill.getSelection().index + 1, 0), 0)
-            }
-            
-            return true
+          if (isPrevElementUserBlot) {
+            // Fix to avoid space not working if prev element is custom blot.
+            // @ts-ignore
+            setTimeout(
+              () => quill.setSelection(quill.getSelection().index + 1, 0),
+              0
+            );
           }
-        } as any);
+
+          return true;
+        },
+      } as any);
     }
   }, [quill]);
 
