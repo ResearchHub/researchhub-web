@@ -24,6 +24,7 @@ type Props = {
   onSelectEditProject: (event: SyntheticEvent) => void;
   projectID: ID;
   projectName: string;
+  setShouldShowOptions: (flag: boolean) => void;
 };
 
 export default function ReferenceProjectNavbarElOption({
@@ -33,6 +34,7 @@ export default function ReferenceProjectNavbarElOption({
   onSelectEditProject,
   projectID,
   projectName,
+  setShouldShowOptions,
 }: Props): ReactElement {
   const router = useRouter();
   const { currentOrg } = getCurrentUserCurrentOrg();
@@ -46,6 +48,7 @@ export default function ReferenceProjectNavbarElOption({
   };
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
+    setShouldShowOptions(false);
   };
 
   return (

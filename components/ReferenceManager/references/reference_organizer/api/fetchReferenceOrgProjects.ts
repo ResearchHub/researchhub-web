@@ -15,7 +15,7 @@ type Args = {
   payload: Payload;
 };
 
-export const fetchReferenceProjects = ({
+export const fetchReferenceOrgProjects = ({
   onError,
   onSuccess,
   payload: { organization },

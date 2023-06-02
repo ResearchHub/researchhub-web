@@ -5,28 +5,40 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
+import {
+  DEFAULT_PROJECT_VALUES,
+  useReferenceProjectUpsertContext,
+} from "./reference_organizer/context/ReferenceProjectsUpsertContext";
 import { Fragment, useState, ReactNode, useEffect } from "react";
+import { connect } from "react-redux";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
+import { MessageActions } from "~/redux/message";
+import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
+import { removeReferenceCitations } from "./api/removeReferenceCitations";
+import { StyleSheet } from "aphrodite";
+import { toast } from "react-toastify";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
+import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
+import { useRouter } from "next/router";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
-import ReferencesTable from "./reference_table/ReferencesTable";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
-import DroppableZone from "~/components/DroppableZone";
 import api, { generateApiUrl } from "~/config/api";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { connect } from "react-redux";
-import { MessageActions } from "~/redux/message";
-import withWebSocket from "~/components/withWebSocket";
-import { useRouter } from "next/router";
-import { isEmpty } from "~/config/utils/nullchecks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import AddIcon from "@mui/icons-material/Add";
+import DroppableZone from "~/components/DroppableZone";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
+import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
+import ReferencesTable from "./reference_table/ReferencesTable";
+import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
-import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
-import { ToastContainer, toast } from "react-toastify";
+import DropdownMenu from "../menu/DropdownMenu";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import ListIcon from "@mui/icons-material/List";
+import withWebSocket from "~/components/withWebSocket";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -51,16 +63,40 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
+  const { setReferencesFetchTime } = useReferenceTabContext();
+  const {
+    projectsFetchTime,
+    setIsModalOpen: setIsProjectUpsertModalOpen,
+    setProjectValue: setProjectUpsertValue,
+    setUpsertPurpose: setProjectUpsertPurpose,
+  } = useReferenceProjectUpsertContext();
   const { currentOrg } = useOrgs();
   const router = useRouter();
+  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
-  const [createdReferences, setCreatedReferences] = useState<[]>([]);
+  const [createdReferences, setCreatedReferences] = useState<any[]>([]);
+  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
 
   const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
+  const currentOrgID = currentOrg?.id ?? null;
+
+  useEffect((): void => {
+    if (!isEmpty(currentOrgID)) {
+      fetchReferenceOrgProjects({
+        onError: emptyFncWithMsg,
+        onSuccess: (payload): void => {
+          setCurrentOrgProjects(payload ?? []);
+        },
+        payload: {
+          organization: currentOrgID,
+        },
+      });
+    }
+  }, [currentOrgID, projectsFetchTime]);
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -135,6 +171,7 @@ function ReferencesContainer({
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
           <BasicTogglableNavbarLeft
+            currentOrgProjects={currentOrgProjects}
             isOpen={isLeftNavOpen}
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
@@ -172,12 +209,12 @@ function ReferencesContainer({
                 </Typography>
                 <div
                   style={{
-                    marginLeft: 16,
-                    background: colors.NEW_BLUE(),
+                    marginLeft: 8,
+                    background: colors.GREY(0.7),
                     borderRadius: "50%",
-                    height: 30,
+                    height: 24,
                     color: "#fff",
-                    width: 30,
+                    width: 24,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -185,8 +222,54 @@ function ReferencesContainer({
                   }}
                   onClick={() => setIsDrawerOpen(true)}
                 >
-                  <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
+                  <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
                 </div>
+                {!isEmpty(router.query.project) && (
+                  <Button
+                    variant="outlined"
+                    fontSize="small"
+                    size="small"
+                    customButtonStyle={styles.shareButton}
+                    onClick={(): void => {
+                      // TODO: calvinhlee - clean this up from backend
+                      const targetProject = currentOrgProjects.find(
+                        (proj) => proj.id === parseInt(router.query.project)
+                      );
+                      const { id, collaborators, project_name, is_public } =
+                        targetProject ?? {};
+                      setProjectUpsertPurpose("update");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        collaborators: [
+                          ...(collaborators ?? []).editors.map(
+                            (rawUser: any) => {
+                              return {
+                                ...parseUserSuggestion(rawUser),
+                                role: "EDITOR",
+                              };
+                            }
+                          ),
+                          ...(collaborators ?? []).viewers.map(
+                            (rawUser: any) => {
+                              return {
+                                ...parseUserSuggestion(rawUser),
+                                role: "VIEWER",
+                              };
+                            }
+                          ),
+                        ],
+                        projectID: id,
+                        projectName: project_name,
+                        isPublic: is_public,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <Typography variant="h6" fontSize={"16px"}>
+                      {"Share"}
+                    </Typography>
+                  </Button>
+                )}
               </div>
               <Box className="ReferencesContainerMain">
                 <Box
@@ -200,6 +283,58 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
+                  <div
+                    style={
+                      isEmpty(selectedReferenceIDs)
+                        ? { visibility: "hidden" }
+                        : undefined
+                    }
+                  >
+                    <DropdownMenu
+                      menuItemProps={[
+                        {
+                          itemLabel: `Delete reference${
+                            selectedReferenceIDs.length > 1 ? "s" : ""
+                          }`,
+                          onClick: () => {
+                            removeReferenceCitations({
+                              onError: emptyFncWithMsg,
+                              onSuccess: (): void => {
+                                setReferencesFetchTime(Date.now());
+                              },
+                              payload: {
+                                citation_entry_ids: selectedReferenceIDs,
+                              },
+                            });
+                          },
+                        },
+                      ]}
+                      menuLabel={
+                        <div
+                          style={{
+                            alignItems: "center",
+                            color: "rgba(170, 168, 180, 1)",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: 68,
+                            height: 36,
+                            padding: 6,
+                            boxSizing: "border-box",
+                          }}
+                        >
+                          <ListIcon
+                            fontSize="medium"
+                            sx={{ color: "#AAA8B4" }}
+                          />
+                          <ExpandMore
+                            fontSize="medium"
+                            sx={{ color: "#AAA8B4" }}
+                          />
+                        </div>
+                      }
+                      size="medium"
+                    />
+                  </div>{" "}
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
@@ -249,6 +384,7 @@ function ReferencesContainer({
                 <ReferencesTable
                   createdReferences={createdReferences}
                   handleFileDrop={handleFileDrop}
+                  setSelectedReferenceIDs={setSelectedReferenceIDs}
                 />
               </Box>
             </Box>
@@ -268,6 +404,12 @@ function ReferencesContainer({
     );
   }
 }
+
+const styles = StyleSheet.create({
+  shareButton: {
+    marginLeft: "auto",
+  },
+});
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,

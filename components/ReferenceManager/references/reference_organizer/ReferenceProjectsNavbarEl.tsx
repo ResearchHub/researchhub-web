@@ -3,21 +3,20 @@ import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./context/ReferenceProjectsUpsertContext";
+import { faAngleDown, faAngleRight } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "~/config/types/root_types";
+import { LookupSuggestedUser } from "../../form/ReferenceItemRhUserLookupInputTag";
 import { ReactElement, SyntheticEvent, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faAngleRight } from "@fortawesome/pro-light-svg-icons";
 
 type Props = {
   active: boolean;
-  collaborators: SuggestedUser[];
+  collaborators: LookupSuggestedUser[];
   isCurrentUserAdmin: boolean;
   isPublic: boolean;
   orgSlug: string;
@@ -51,9 +50,15 @@ export default function ReferenceProjectsNavbarEl({
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
-
+  const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
   return (
     <Box
+      onMouseEnter={(): void => {
+        setShouldShowOptions(true);
+      }}
+      onMouseLeave={(): void => {
+        setShouldShowOptions(false);
+      }}
       sx={{
         alignItems: "center",
         cursor: "pointer",
@@ -117,38 +122,41 @@ export default function ReferenceProjectsNavbarEl({
           </div>
         </Box>
       </ALink>
-      <ReferenceProjectNavbarElOption
-        isCurrentUserAdmin={isCurrentUserAdmin}
-        projectID={projectID}
-        projectName={projectName}
-        onSelectAddNewReference={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          setProjectIDRefUploader(projectID);
-          setIsUploadDrawerOpen(true);
-        }}
-        onSelectCreateSubProject={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          setProjectIDRefUploader(null);
-          setIsUploadDrawerOpen(false);
-          setProjectUpsertPurpose("create_sub_project");
-          setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
-          setIsProjectUpsertModalOpen(true);
-        }}
-        onSelectEditProject={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          setProjectIDRefUploader(null);
-          setIsUploadDrawerOpen(false);
-          setProjectUpsertPurpose("update");
-          setProjectUpsertValue({
-            ...DEFAULT_PROJECT_VALUES,
-            collaborators,
-            projectID,
-            projectName,
-            isPublic,
-          });
-          setIsProjectUpsertModalOpen(true);
-        }}
-      />
+      {shouldShowOptions && (
+        <ReferenceProjectNavbarElOption
+          isCurrentUserAdmin={isCurrentUserAdmin}
+          projectID={projectID}
+          projectName={projectName}
+          onSelectAddNewReference={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(projectID);
+            setIsUploadDrawerOpen(true);
+          }}
+          onSelectCreateSubProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("create_sub_project");
+            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+            setIsProjectUpsertModalOpen(true);
+          }}
+          onSelectEditProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("update");
+            setProjectUpsertValue({
+              ...DEFAULT_PROJECT_VALUES,
+              collaborators,
+              projectID,
+              projectName,
+              isPublic,
+            });
+            setIsProjectUpsertModalOpen(true);
+          }}
+          setShouldShowOptions={setShouldShowOptions}
+        />
+      )}
     </Box>
   );
 }

@@ -1,10 +1,5 @@
 import { Box } from "@mui/system";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  nullthrows,
-} from "~/config/utils/nullchecks";
-import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -43,22 +38,22 @@ type Props = {
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
   theme?: Theme;
+  currentOrgProjects: any[];
 };
 
 export default function BasicTogglableNavbarLeft({
   isOpen,
   navWidth,
   theme,
+  currentOrgProjects,
 }: Props) {
   const {
     setIsDrawerOpen: isUploadDrawerOpen,
     setProjectID: setProjectIDForDrawer,
   } = useReferenceUploadDrawerContext();
-  const { projectsFetchTime, isModalOpen } = useReferenceProjectUpsertContext();
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
-  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -80,23 +75,7 @@ export default function BasicTogglableNavbarLeft({
     setChildrenOpenMap(map);
   };
 
-  const currentOrgID = currentOrg?.id ?? null;
   const currentOrgSlug = currentOrg?.slug ?? null;
-
-  useEffect((): void => {
-    if (!isEmpty(currentOrgID)) {
-      fetchReferenceProjects({
-        onError: emptyFncWithMsg,
-        onSuccess: (payload): void => {
-          setCurrentOrgProjects(payload ?? []);
-        },
-        payload: {
-          organization: currentOrgID,
-        },
-      });
-    }
-  }, [currentOrgID, projectsFetchTime]);
-
   const refProjectsNavbarEls = currentOrgProjects?.map(
     (referenceProject, elIndex) => {
       return renderNestedReferenceProjectsNavbarEl({

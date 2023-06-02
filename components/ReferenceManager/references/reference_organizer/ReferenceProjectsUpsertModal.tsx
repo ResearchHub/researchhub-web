@@ -1,6 +1,7 @@
 import { customModalStyle } from "./styles/projects_upsert_modal_style";
 import {
   emptyFncWithMsg,
+  filterNull,
   nullthrows,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
@@ -45,7 +46,22 @@ export default function ReferenceProjectsUpsertModal({
   const handleSubmit = () => {
     const { collaborators, isPublic, projectID, projectName } = projectValue;
     const formattedPayload = {
-      collaborators: collaborators.map((collaborator): ID => collaborator.id),
+      collaborators: {
+        editors: filterNull(
+          collaborators.map((collaborator): ID => {
+            if (collaborator.role === "EDITOR") {
+              return collaborator.id;
+            }
+          })
+        ),
+        viewers: filterNull(
+          collaborators.map((collaborator): ID => {
+            if (collaborator.role !== "EDITOR") {
+              return collaborator.id;
+            }
+          })
+        ),
+      },
       is_public: isPublic,
       organization: currentOrg?.id,
       project_name: nullthrows(projectName, "Project name may not be null"),
