@@ -5,41 +5,41 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactNode, useEffect } from "react";
-import BasicTogglableNavbarLeft, {
-  LEFT_MAX_NAV_WIDTH,
-  LEFT_MIN_NAV_WIDTH,
-} from "../basic_page_layout/BasicTogglableNavbarLeft";
-import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
-import ReferencesTable from "./reference_table/ReferencesTable";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
-import DroppableZone from "~/components/DroppableZone";
-import api, { generateApiUrl } from "~/config/api";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { connect } from "react-redux";
-import { MessageActions } from "~/redux/message";
-import withWebSocket from "~/components/withWebSocket";
-import { useRouter } from "next/router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-light-svg-icons";
-import colors from "~/config/themes/colors";
-import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
-import { toast } from "react-toastify";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
-import DropdownMenu from "../menu/DropdownMenu";
-import TableChartIcon from "@mui/icons-material/TableChart";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { removeReferenceCitations } from "./api/removeReferenceCitations";
-import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
-import Button from "~/components/Form/Button";
 import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
+import { Fragment, useState, ReactNode, useEffect } from "react";
+import { connect } from "react-redux";
+import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { MessageActions } from "~/redux/message";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
+import { removeReferenceCitations } from "./api/removeReferenceCitations";
 import { StyleSheet } from "aphrodite";
+import { toast } from "react-toastify";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
+import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
+import { useRouter } from "next/router";
+import BasicTogglableNavbarLeft, {
+  LEFT_MAX_NAV_WIDTH,
+  LEFT_MIN_NAV_WIDTH,
+} from "../basic_page_layout/BasicTogglableNavbarLeft";
+import api, { generateApiUrl } from "~/config/api";
+import DroppableZone from "~/components/DroppableZone";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
+import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
+import ReferencesTable from "./reference_table/ReferencesTable";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
+import DropdownMenu from "../menu/DropdownMenu";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import ListIcon from "@mui/icons-material/List";
+import withWebSocket from "~/components/withWebSocket";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -284,51 +284,58 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
-                  <DropdownMenu
-                    // disabled={isEmpty(selectedReferenceIDs)}
-                    menuItemProps={[
-                      {
-                        itemLabel: `Delete reference${
-                          selectedReferenceIDs.length > 1 ? "s" : ""
-                        }`,
-                        onClick: () => {
-                          removeReferenceCitations({
-                            onError: emptyFncWithMsg,
-                            onSuccess: (): void => {
-                              setReferencesFetchTime(Date.now());
-                            },
-                            payload: {
-                              citation_entry_ids: selectedReferenceIDs,
-                            },
-                          });
-                        },
-                      },
-                    ]}
-                    menuLabel={
-                      <div
-                        style={{
-                          alignItems: "center",
-                          color: "rgba(170, 168, 180, 1)",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: 68,
-                          height: 36,
-                          padding: 6,
-                          boxSizing: "border-box",
-                        }}
-                      >
-                        <TableChartIcon
-                          fontSize="medium"
-                          sx={{ color: "#7C7989" }}
-                        />
-                        <ExpandMore
-                          fontSize="medium"
-                          sx={{ color: "#AAA8B4" }}
-                        />
-                      </div>
+                  <div
+                    style={
+                      isEmpty(selectedReferenceIDs)
+                        ? { visibility: "hidden" }
+                        : undefined
                     }
-                    size="medium"
-                  />
+                  >
+                    <DropdownMenu
+                      menuItemProps={[
+                        {
+                          itemLabel: `Delete reference${
+                            selectedReferenceIDs.length > 1 ? "s" : ""
+                          }`,
+                          onClick: () => {
+                            removeReferenceCitations({
+                              onError: emptyFncWithMsg,
+                              onSuccess: (): void => {
+                                setReferencesFetchTime(Date.now());
+                              },
+                              payload: {
+                                citation_entry_ids: selectedReferenceIDs,
+                              },
+                            });
+                          },
+                        },
+                      ]}
+                      menuLabel={
+                        <div
+                          style={{
+                            alignItems: "center",
+                            color: "rgba(170, 168, 180, 1)",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: 68,
+                            height: 36,
+                            padding: 6,
+                            boxSizing: "border-box",
+                          }}
+                        >
+                          <ListIcon
+                            fontSize="medium"
+                            sx={{ color: "#7C7989" }}
+                          />
+                          <ExpandMore
+                            fontSize="medium"
+                            sx={{ color: "#AAA8B4" }}
+                          />
+                        </div>
+                      }
+                      size="medium"
+                    />
+                  </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
