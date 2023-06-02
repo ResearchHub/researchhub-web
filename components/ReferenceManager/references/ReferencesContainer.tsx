@@ -12,9 +12,7 @@ import {
 import { Fragment, useState, ReactNode, useEffect } from "react";
 import { connect } from "react-redux";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
-import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MessageActions } from "~/redux/message";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import { removeReferenceCitations } from "./api/removeReferenceCitations";
@@ -29,6 +27,7 @@ import BasicTogglableNavbarLeft, {
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
 import api, { generateApiUrl } from "~/config/api";
+import AddIcon from "@mui/icons-material/Add";
 import DroppableZone from "~/components/DroppableZone";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
@@ -210,12 +209,12 @@ function ReferencesContainer({
                 </Typography>
                 <div
                   style={{
-                    marginLeft: 16,
-                    background: colors.NEW_BLUE(),
+                    marginLeft: 8,
+                    background: colors.GREY(0.7),
                     borderRadius: "50%",
-                    height: 30,
+                    height: 24,
                     color: "#fff",
-                    width: 30,
+                    width: 24,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -223,7 +222,7 @@ function ReferencesContainer({
                   }}
                   onClick={() => setIsDrawerOpen(true)}
                 >
-                  <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
+                  <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
                 </div>
                 {!isEmpty(router.query.project) && (
                   <Button
@@ -325,7 +324,7 @@ function ReferencesContainer({
                         >
                           <ListIcon
                             fontSize="medium"
-                            sx={{ color: "#7C7989" }}
+                            sx={{ color: "#AAA8B4" }}
                           />
                           <ExpandMore
                             fontSize="medium"
