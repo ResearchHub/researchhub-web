@@ -307,7 +307,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
           viewerWidth={viewerWidth * selectedZoom}
           onLoadSuccess={onLoadSuccess}
           onLoadError={onLoadError}
-          showWhenLoading={<div style={{ padding: 20 }}><DocumentPlaceholder /></div>}
+          showWhenLoading={<div style={{ padding: "0px 20px" }}><DocumentPlaceholder /></div>}
         />
       </div>
     </div>

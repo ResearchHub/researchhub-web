@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
 import globalColors from "~/config/themes/colors";
+
 type Args = {
   repeatCount?: number;
 };
@@ -10,7 +11,7 @@ const getRandomRowWidth = () => {
   return Math.floor(Math.random() * max - min + 1) + min + "%";
 };
 
-const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
+const DocumentPlaceholder = ({ repeatCount = 8 }: Args) => {
   return (
     <div
       style={{
