@@ -53,6 +53,8 @@ interface Props {
   maxWidth?: number;
   onZoomOut?: Function;
   onZoomIn?: Function;
+  onLoadPDFSuccess?: Function,
+  onLoadPDFError?: Function,
 }
 
 type ZoomAction = {
@@ -61,17 +63,13 @@ type ZoomAction = {
   newWidth: number;
 }
 
-const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
+const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn, onLoadPDFSuccess, onLoadPDFError }: Props) => {  
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
   const [wrapperWidth, setWrapperWidth] = useState<string>("100vw"); // The Wrapper of PDF.js
-  const [isSearchOpen, setSearchOpen] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string>("");
   const containerRef = useRef<HTMLElement>(null);
 
   function handleZoomIn() {
@@ -215,23 +213,11 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
   }, [containerRef]);
 
   function onLoadSuccess() {
-    setIsLoading(false);
+    onLoadPDFSuccess && onLoadPDFSuccess();
   }
 
   function onLoadError() {
-    setIsLoading(false);
-    setHasLoadError(true);
-  }
-
-  if (hasLoadError) {
-    return (
-      <div className={css(styles.error)}>
-        <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
-        <span style={{ fontSize: 22 }}>
-          There was an error loading the PDF.
-        </span>
-      </div>
-    );
+    onLoadPDFError && onLoadPDFError();
   }
 
   const fullScreenViewer = useMemo(() => {
@@ -260,16 +246,14 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
         <div style={{ overflowY: "scroll", height: "100vh", paddingTop: 60 }}>
           <_PDFViewer
             pdfUrl={pdfUrl}
-            viewerWidth={viewerWidth * fullScreenSelectedZoom}
-            searchText={searchText}
             onLoadSuccess={onLoadSuccess}
             onLoadError={onLoadError}
-            showWhenLoading={<DocumentPlaceholder />}
+            showWhenLoading={<div style={{ padding: "0px 20px" }}><DocumentPlaceholder /></div>}
           />
         </div>
       </div>
     );
-  }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom, searchText]);
+  }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom]);
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
@@ -278,7 +262,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
         className={css(
           styles.controls,
           styles.controlsSticky,
-          isSearchOpen && styles.controlsStickySearchOpen,
           isExpanded && styles.controlsStickyExpanded
         )}
       >
@@ -289,11 +272,8 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
           }}
           zoomOptions={zoomOptions}
           currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-          handleSearchClick={(isSearchOpen) => setSearchOpen(isSearchOpen)}
           handleZoomIn={handleZoomIn}
           handleZoomOut={handleZoomOut}
-          handleSearchChange={(searchText) => setSearchText(searchText)}
-          searchText={searchText}
           showExpand={isExpanded ? false : true}
           handleZoomSelection={(option) => setSelectedZoom(option.value)}
         />
@@ -303,8 +283,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
       <div style={{ overflowX: "scroll" }}>
         <_PDFViewer
           pdfUrl={pdfUrl}
-          searchText={searchText}
-          viewerWidth={viewerWidth * selectedZoom}
           onLoadSuccess={onLoadSuccess}
           onLoadError={onLoadError}
           showWhenLoading={<div style={{ padding: "0px 20px" }}><DocumentPlaceholder /></div>}
@@ -356,14 +334,6 @@ const styles = StyleSheet.create({
       left: `calc(50% - ${config.controlsWidth / 2}px)`,
     },
   },
-  controlsStickySearchOpen: {
-    left: `calc(50% - 60px)`,
-
-    [`@media (max-width: 1100px)`]: {
-      transform: "unset",
-      left: `calc(50% - ${config.controlsWidthExpanded / 2}px)`,
-    },
-  },
   controlsStickyExpanded: {
     left: `50%`,
     transform: "translateX(-50%)",
@@ -399,15 +369,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     padding: "0 25px",
     boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-  },
-  error: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    alignItems: "center",
-    rowGap: "15px",
-    justifyContent: "center",
-    marginTop: "30%",
   },
   viewerNavBtn: {
     background: "white",

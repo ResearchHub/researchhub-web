@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getDocument, GlobalWorkerOptions, version } from 'pdfjs-dist/build/pdf';
 import { PDFPageView, EventBus, TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleExclamation,
+} from "@fortawesome/pro-light-svg-icons";
+import { StyleSheet, css } from "aphrodite";
 
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
 
@@ -8,17 +13,20 @@ interface Props {
   pdfUrl: string | undefined,
   showWhenLoading: null | React.ReactNode,
   scale: number,
+  onLoadSuccess?: Function,
+  onLoadError?: Function,
 }
 
-function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0 }: Props) {
-  const containerRef = useRef();
+function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0, onLoadSuccess, onLoadError }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState<boolean>(false); 
   const [numPages, setNumPages] = useState<number>(0);
   const [pdfDocument, setPdfDocument] = useState(null);
   const [nextPage, setNextPage] = useState<number>(1); 
   const [pagesLoaded, setPagesLoaded] = useState<number[]>([]);
   const [pagesLoading, setPagesLoading] = useState<number[]>([]);
-  const observer = useRef(null); 
+  const observer = useRef<HTMLDivElement>(null); 
+  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const eventBus = new EventBus();
 
   const loadPage = useCallback(async (pageNum) => {
@@ -49,7 +57,10 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0 }: Props) {
         containerRef.current.appendChild(pageContainer);
       }
 
-      if (!isReady) setIsReady(true);
+      if (!isReady) {
+        setIsReady(true);
+        onLoadSuccess && onLoadSuccess();
+      }
       
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
@@ -68,10 +79,18 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0 }: Props) {
 
   useEffect(() => {
     const loadDocument = async () => {
-      const loadingTask = getDocument(pdfUrl);
-      const pdfDocument = await loadingTask.promise;
-      setPdfDocument(pdfDocument);
-      setNumPages(pdfDocument.numPages);
+      let pdfDocument;
+      try {
+        const loadingTask = getDocument(pdfUrl);
+        pdfDocument = await loadingTask.promise;
+        setPdfDocument(pdfDocument);
+        setNumPages(pdfDocument.numPages);
+      }
+      catch(error) {
+        onLoadError && onLoadError(error);
+        setHasLoadError(true);
+        console.log('error loading pdf', error)
+      }
     };
 
     loadDocument();
@@ -83,6 +102,17 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0 }: Props) {
     }
   }, [nextPage, loadPage, pdfDocument, numPages]); 
 
+  if (hasLoadError) {
+    return (
+      <div className={css(styles.error)}>
+        <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
+        <span style={{ fontSize: 22 }}>
+          There was an error loading the PDF.
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div style={{ position: "relative" }}>
       <div ref={containerRef} style={{ overflow: "hidden" }}></div>
@@ -90,5 +120,17 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0 }: Props) {
     </div>
   );
 }
+
+const styles = StyleSheet.create({
+  error: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    alignItems: "center",
+    rowGap: "15px",
+    justifyContent: "center",
+    marginTop: "20%",
+  },  
+})
 
 export default PdfViewer;
