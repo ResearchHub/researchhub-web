@@ -5,7 +5,7 @@ import {
   Typography,
   OutlinedInput,
 } from "@mui/material";
-import { Fragment, useState, ReactNode, useEffect } from "react";
+import { Fragment, useState, ReactNode, useEffect, useRef } from "react";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
@@ -22,7 +22,7 @@ import { MessageActions } from "~/redux/message";
 import withWebSocket from "~/components/withWebSocket";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import colors from "~/config/themes/colors";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { toast } from "react-toastify";
@@ -80,6 +80,7 @@ function ReferencesContainer({
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [files, setFiles] = useState<any[]>([]);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
 
@@ -90,6 +91,7 @@ function ReferencesContainer({
     (proj) => proj.id === parseInt(router.query.project)
   );
   const { id, collaborators, project_name, is_public } = targetProject ?? {};
+  const inputRef = useRef();
 
   useEffect((): void => {
     if (!isEmpty(currentOrgID)) {
@@ -214,22 +216,40 @@ function ReferencesContainer({
                       ? "Organization References"
                       : `My References`)}
                 </Typography>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept=".pdf"
+                  multiple
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    handleFileDrop(Array.from(e.target.files));
+                  }}
+                />
                 <div
                   style={{
                     marginLeft: 16,
+                    padding: 16,
                     background: colors.NEW_BLUE(),
-                    borderRadius: "50%",
-                    height: 30,
+                    borderRadius: 4,
+                    // height: 30,
                     color: "#fff",
-                    width: 30,
+                    // width: 30,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     cursor: "pointer",
+                    fontWeight: 500,
                   }}
-                  onClick={() => setIsDrawerOpen(true)}
+                  onClick={() => inputRef.current.click()}
                 >
-                  <FontAwesomeIcon icon={faPlus} color="#fff" fontSize="20px" />
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    color="#fff"
+                    fontSize="20px"
+                    style={{ marginRight: 8 }}
+                  />
+                  Add a Citation
                 </div>
                 {!isEmpty(router.query.project) && (
                   <div
