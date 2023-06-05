@@ -68,6 +68,7 @@ const CommentEditor = ({
   handleClose,
   editorStyleOverride,
 }: CommentEditorArgs) => {
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
@@ -83,7 +84,6 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
-
 
 
   const { quill, quillRef, isReady } = useQuill({

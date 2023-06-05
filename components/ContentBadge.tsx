@@ -245,8 +245,7 @@ const styles = StyleSheet.create({
   medium: {},
   large: {
     fontSize: 15,
-    padding: "8px 14px 0px",
-    height: 34,
+    padding: "8px 14px 8px",
     lineHeight: "18px",
   },
   withTooltip: {
@@ -255,7 +254,7 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 6,
     fontSize: 13,
-    height: 21,
+    height: 18,
   },
   rscIcon: {
     height: "16px",

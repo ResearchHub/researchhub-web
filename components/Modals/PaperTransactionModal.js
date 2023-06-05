@@ -42,6 +42,7 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 // Constants
 import { ContentTypes, ChainStatus } from "./constants/SupportContent";
 import { getEtherscanLink } from "~/config/utils/crypto";
+import { parsePurchase } from "~/config/types/purchase";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -133,7 +134,7 @@ class PaperTransactionModal extends Component {
   };
 
   signTransaction = async (item) => {
-    let { setMessage, showMessage, paper, updatePaperState } = this.props;
+    let { setMessage, showMessage, paper, onTransactionCreate } = this.props;
     let { purchase_hash, id } = item;
     let allow = true;
 
@@ -194,7 +195,6 @@ class PaperTransactionModal extends Component {
             let promoted = paper.promoted ? paper.promoted : 0;
             let updatedPaper = { ...papers };
             updatedPaper.promoted = promoted + Number(this.state.value);
-            updatePaperState && updatePaperState(updatedPaper);
             this.setState({ finish: true });
           });
         })
@@ -293,15 +293,8 @@ class PaperTransactionModal extends Component {
   };
 
   sendTransaction = () => {
-    const {
-      showMessage,
-      setMessage,
-      updatePaperState,
-      updatePostState,
-      paper,
-      post,
-      user,
-    } = this.props;
+    const { showMessage, setMessage, onTransactionCreate, paper, post, user } =
+      this.props;
     showMessage({ show: true, load: true });
 
     const isPaper = !isNullOrUndefined(paper);
@@ -361,16 +354,18 @@ class PaperTransactionModal extends Component {
               const promoted = !isNullOrUndefined(res.source.promoted)
                 ? res.source.promoted
                 : null;
-              const updatedPaper = { ...paper, promoted };
-              updatePaperState(updatedPaper);
             } else {
               const promoted = !isNullOrUndefined(res.source.promoted)
                 ? res.source.promoted
                 : null;
-              const updatedPost = { ...post, promoted };
-              updatePostState(updatedPost);
             }
             this.updateBalance();
+
+            const purchase = parsePurchase({
+              amount: res.amount,
+              user: this.props.user,
+            });
+            onTransactionCreate && onTransactionCreate(purchase);
           });
         }
       })

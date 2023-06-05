@@ -3,11 +3,11 @@ import DocumentHeader from "../DocumentHeaderV2";
 import config from "~/components/Document/lib/config";
 import { DocumentMetadata, GenericDocument, DocumentType } from "./types";
 import Head from "next/head";
-import fetchDocumentMetadata from "../api/fetchDocumentMetadata";
 import { useEffect, useState } from "react";
 import { DocumentContext } from "./DocumentContext";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
+
 
 interface Args {
   document: GenericDocument;
@@ -15,49 +15,36 @@ interface Args {
   documentType: DocumentType;
   tabName?: string;
   children?: any;
+  metadata: DocumentMetadata | undefined;
 }
 
 const SharedDocumentPage = ({
   document,
+  metadata,
   documentType,
   tabName,
   children,
   errorCode,
 }: Args) => {
-  const [metadata, setMetadata] = useState<DocumentMetadata | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    const fetchMetadata = async () => {
-      const metadata = await fetchDocumentMetadata({
-        unifiedDocId: document.unifiedDocument.id,
-      });
-      setMetadata(metadata);
-    };
-    fetchMetadata();
-  }, [document.id]);
 
   return (
     <div className={css(styles.pageWrapper, tabName !== undefined && styles.pageWrapperAlternate)}>
-      <DocumentContext.Provider value={{ metadata, documentType, tabName }}>
-        <Head>
-          {/*
-            Need to disable pinch zoom for the entire page because it interferes with PDF.js zoom.
-            If we enable pinch zoom, then every element including the pdf is going to change scale as user zooms in/out.
-          */}
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-          />
-        </Head>
-        <div className={css(styles.topArea)}>
-          <DocumentHeader document={document} />
-        </div>
-        <div className={css(styles.bodyArea)}>
-          {children}
-        </div>
-      </DocumentContext.Provider>
+      <Head>
+        {/*
+          Need to disable pinch zoom for the entire page because it interferes with PDF.js zoom.
+          If we enable pinch zoom, then every element including the pdf is going to change scale as user zooms in/out.
+        */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </Head>
+      <div className={css(styles.topArea)}>
+        <DocumentHeader document={document} metadata={metadata} />
+      </div>
+      <div className={css(styles.bodyArea)}>
+        {children}
+      </div>
     </div>
   );
 };

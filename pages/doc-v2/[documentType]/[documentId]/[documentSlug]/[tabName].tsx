@@ -1,9 +1,9 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { captureEvent } from "~/config/utils/events";
-import { parseComment } from "~/components/Comment/lib/types";
+import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import getDocumentFromRaw, {
   DocumentType,
   GenericDocument,
@@ -13,13 +13,28 @@ import { useRouter } from "next/router";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import API from "~/config/api";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
+import { DocumentContext } from "~/components/Document/lib/DocumentContext";
+import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
+
+
+const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
+  switch(tabName) {
+    case 'peer-reviews':
+      return COMMENT_TYPES.REVIEW;
+    case 'bounties':
+    case 'conversation':
+    default:
+      return COMMENT_TYPES.DISCUSSION;
+  }
+}
+
 
 interface Args {
   documentData?: any;
   commentData?: any;
   errorCode?: number;
   documentType: DocumentType;
-  tabName?: string;
+  tabName: string;
 }
 
 const DocumentPage: NextPage<Args> = ({
@@ -30,7 +45,16 @@ const DocumentPage: NextPage<Args> = ({
   errorCode,
 }) => {
   const router = useRouter();
-  const [commentCount, setCommentCount] = useState(commentData?.count || 0);
+  const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
+
+  const revalidatePageCache = () => {
+    return fetch(
+      "/api/revalidate",
+      API.POST_CONFIG({
+        path: router.asPath,
+      })
+    );
+  }
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -51,6 +75,7 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
+
   let displayCommentsFeed = false;
   let parsedComments = [];
   if (commentData) {
@@ -60,39 +85,55 @@ const DocumentPage: NextPage<Args> = ({
   }
 
   return (
-    <SharedDocumentPage
-      document={document}
-      documentType={documentType}
-      tabName={tabName}
-      errorCode={errorCode}
-    >
-      <CommentFeed
-        initialComments={parsedComments}
+    <DocumentContext.Provider value={{ metadata, documentType, tabName, updateMetadata }}>
+      <SharedDocumentPage
         document={document}
-        showFilters={false}
-        allowBounty={tabName === "bounties"}
-        allowCommentTypeSelection={false}
-        onCommentCreate={() => {
-          fetch(
-            "/api/revalidate",
-            API.POST_CONFIG({
-              path: router.asPath,
-            })
-          );
-          setCommentCount(commentCount + 1);
-        }}
-        onCommentRemove={() => {
-          fetch(
-            "/api/revalidate",
-            API.POST_CONFIG({
-              path: router.asPath,
-            })
-          );          
-          alert("implement me");
-        }}
-        totalCommentCount={commentData.count}
-      />
-    </SharedDocumentPage>
+        documentType={documentType}
+        tabName={tabName}
+        errorCode={errorCode}
+        metadata={metadata}
+      >
+        <CommentFeed
+          initialComments={parsedComments}
+          document={document}
+          showFilters={false}
+          editorType={getEditorTypeFromTabName(tabName)}
+          allowBounty={tabName === "bounties"}
+          allowCommentTypeSelection={false}
+          onCommentCreate={(comment) => {
+            revalidatePageCache();
+
+            if (!metadata) return;
+            if (comment.bounties.length > 0) {
+              updateMetadata({
+                ...metadata,
+                bounties: [comment.bounties[0], ...metadata.bounties],
+              });              
+            }
+            else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+              updateMetadata({
+                ...metadata,
+                reviewCount: metadata.reviewCount + 1,
+              });
+            }
+            else {
+              updateMetadata({
+                ...metadata,
+                discussionCount: metadata.discussionCount + 1,
+              });
+            }
+
+          }}
+          onCommentUpdate={() => {
+            revalidatePageCache();
+          }}
+          onCommentRemove={(comment) => {
+            revalidatePageCache();
+          }}
+          totalCommentCount={0}
+        />
+      </SharedDocumentPage>
+    </DocumentContext.Provider>
   );
 };
 

@@ -36,8 +36,8 @@ type Props = {
   originalBounty?: Bounty;
   handleBountyAdded: Function;
   addBtnLabel?: string;
-  relatedItemId: ID;
-  relatedItemContentType: string;
+  relatedItemId?: ID;
+  relatedItemContentType?: string;
   showMessage: Function;
   setMessage: Function;
 };

@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { faArrowDownToBracket } from "@fortawesome/pro-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GenericDocument, isPaper, isPost } from "./lib/types";
+import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./lib/types";
 import DocumentVote from "./DocumentVote";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import { ModalActions } from "~/redux/modals";
@@ -24,13 +24,14 @@ import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
-import { DocumentContext } from "./lib/DocumentContext";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import { faPen } from "@fortawesome/pro-solid-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { Purchase } from "~/config/types/purchase";
+import { DocumentContext } from "./lib/DocumentContext";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -38,9 +39,10 @@ const PaperTransactionModal = dynamic(
 
 interface Props {
   document: GenericDocument;
+  metadata: DocumentMetadata | undefined;
 }
 
-const DocumentHeader = ({ document: doc }: Props) => {
+const DocumentHeader = ({ document: doc, metadata }: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -54,7 +56,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
   const tabs = getTabs({
     router,
     document: doc,
-    metadata: documentContext.metadata,
+    metadata,
   });
 
   useEffect(() => {
@@ -141,7 +143,7 @@ const DocumentHeader = ({ document: doc }: Props) => {
         <div className={css(styles.headerContentWrapper)}>
           <div>
             <div className={css(styles.badgesWrapper)}>
-              <DocumentBadges document={doc} />
+              <DocumentBadges document={doc} metadata={metadata} />
             </div>
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
@@ -174,19 +176,6 @@ const DocumentHeader = ({ document: doc }: Props) => {
                     <span>Tip Authors</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                {/* {pdfUrl && (
-                  <Link
-                    href={pdfUrl}
-                    download={true}
-                    target="_blank"
-                    style={{ textDecoration: "none" }}
-                  >
-                    <IconButton overrideStyle={styles.btn}>
-                      <FontAwesomeIcon icon={faArrowDownToBracket} />
-                      <span>PDF</span>
-                    </IconButton>
-                  </Link>
-                )} */}
                 <GenericMenu options={options} width={150}>
                   <IconButton overrideStyle={styles.btnDots}>
                     <FontAwesomeIcon icon={faEllipsis} />
@@ -204,7 +193,13 @@ const DocumentHeader = ({ document: doc }: Props) => {
           // @ts-ignore
           paper={doc.raw}
           // @ts-ignore
-          updatePaperState={() => alert("Implement me")}
+          onTransactionCreate={(purchase:Purchase) => {
+            // @ts-ignore
+            documentContext.updateMetadata({
+              ...metadata,
+              purchases: [...metadata!.purchases, purchase],
+            })
+          }}
         />
       </div>
     </div>

@@ -16,6 +16,8 @@ import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { useState } from "react";
+import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
+import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 
 interface Args {
   documentData?: any;
@@ -32,6 +34,7 @@ const DocumentPage: NextPage<Args> = ({
 }) => {
   const router = useRouter();
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
+  const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -54,43 +57,47 @@ const DocumentPage: NextPage<Args> = ({
 
   const pdfUrl =
     isPaper(document) && document.formats.find((f) => f.type === "pdf")?.url;
+
   return (
-    <SharedDocumentPage
-      document={document}
-      errorCode={errorCode}
-      documentType={documentType}
-    >
-      <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>      
-        {isPaper(document) && (
-          <div className={css(styles.bodyWrapper)}>
-            {pdfUrl ? (
-              <div className={css(styles.viewerWrapper)}>
-                <PDFViewer pdfUrl={pdfUrl} onZoomIn={(zoom) => setViewerWidth(zoom.newWidth)} onZoomOut={(zoom) => setViewerWidth(zoom.newWidth)} />
-              </div>
-            ) : (
-              <div className={css(styles.body)}>
-                {document.abstract ? (
-                  <>
-                    <h2>Abstract</h2>
-                    <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
-                  </>
-                ) : (
-                  <PaperPageAbstractSection paper={document.raw} />
-                )}
-              </div>
-            )}
-          </div>
-        )}
-        {isPost(document) && (
-          <div className={css(styles.bodyWrapper)}>
-            <div
-              className={css(styles.body) + " rh-post"}
-              dangerouslySetInnerHTML={{ __html: postHtml }}
-            />
-          </div>
-        )}
-      </div>
-    </SharedDocumentPage>
+    <DocumentContext.Provider value={{ metadata, documentType, updateMetadata }}>
+      <SharedDocumentPage
+        document={document}
+        errorCode={errorCode}
+        metadata={metadata}
+        documentType={documentType}
+      >
+        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>      
+          {isPaper(document) && (
+            <div className={css(styles.bodyWrapper)}>
+              {pdfUrl ? (
+                <div className={css(styles.viewerWrapper)}>
+                  <PDFViewer pdfUrl={pdfUrl} onZoomIn={(zoom) => setViewerWidth(zoom.newWidth)} onZoomOut={(zoom) => setViewerWidth(zoom.newWidth)} />
+                </div>
+              ) : (
+                <div className={css(styles.body)}>
+                  {document.abstract ? (
+                    <>
+                      <h2>Abstract</h2>
+                      <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
+                    </>
+                  ) : (
+                    <PaperPageAbstractSection paper={document.raw} />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {isPost(document) && (
+            <div className={css(styles.bodyWrapper)}>
+              <div
+                className={css(styles.body) + " rh-post"}
+                dangerouslySetInnerHTML={{ __html: postHtml }}
+              />
+            </div>
+          )}
+        </div>
+      </SharedDocumentPage>
+    </DocumentContext.Provider>
   );
 };
 

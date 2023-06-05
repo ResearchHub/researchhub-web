@@ -35,10 +35,12 @@ type Args = {
   document: GenericDocument;
   context?: "sidebar" | "drawer" | null;
   onCommentCreate?: Function;
+  onCommentUpdate?: Function;
   onCommentRemove?: Function;
   totalCommentCount: number;
   initialComments?: CommentType[] | undefined;
   initialFilter?: string;
+  editorType?: COMMENT_TYPES;
   showFilters?: boolean;
   allowCommentTypeSelection?: boolean;
   allowBounty?: boolean;
@@ -48,6 +50,7 @@ const CommentFeed = ({
   document,
   onCommentCreate,
   onCommentRemove,
+  onCommentUpdate,
   totalCommentCount,
   initialComments = undefined,
   initialFilter = undefined,
@@ -55,6 +58,7 @@ const CommentFeed = ({
   showFilters = true,
   allowCommentTypeSelection = true,
   allowBounty = false,
+  editorType = COMMENT_TYPES.DISCUSSION,
 }: Args) => {
   const router = useRouter();
   const hasInitialComments = initialComments !== undefined;
@@ -135,8 +139,9 @@ const CommentFeed = ({
     } else {
       setComments([comment, ...comments]);
     }
-
+    
     typeof onCommentCreate === "function" && onCommentCreate(comment);
+
   };
 
   const onUpdate = ({ comment }: { comment: CommentType }) => {
@@ -149,6 +154,7 @@ const CommentFeed = ({
       });
       const updatedComments = [...comments];
       setComments(updatedComments);
+      onCommentUpdate && onCommentUpdate({ old: found, new: comment });
     } else {
       localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -382,7 +388,9 @@ const CommentFeed = ({
               )}
             >
               <CommentEditor
-                editorId="new-thread"
+                key={`${editorType}-new-thread`}
+                editorId={`${editorType}-new-thread`}
+                commentType={editorType}
                 handleSubmit={handleCommentCreate}
                 allowBounty={allowBounty}
                 author={currentUser?.authorProfile}

@@ -15,10 +15,10 @@ import { isEmpty } from "~/config/utils/nullchecks";
 type Args = {
   withPreview: boolean;
   onBountyAdd: Function;
-  relatedItemId: ID,
-  relatedItemContentType: string,
+  relatedItemId?: ID,
+  relatedItemContentType?: string,
   children: any,
-  originalBounty: Bounty,
+  originalBounty?: Bounty,
 }
 
 function CreateBountyBtn({

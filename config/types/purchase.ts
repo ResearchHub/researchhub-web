@@ -8,6 +8,6 @@ export type Purchase = {
 export const parsePurchase = (raw:any):Purchase => {
   return {
     createdBy: parseUser(raw.user),
-    amount: raw.amount,
+    amount: Number(raw.amount),
   }
 }
