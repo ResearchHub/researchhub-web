@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getDocument, GlobalWorkerOptions, version } from 'pdfjs-dist/build/pdf';
 import { PDFPageView, EventBus, TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,49 +17,62 @@ interface Props {
   onLoadError?: Function,
 }
 
+interface Page {
+  pdfPageView: PDFPageView,
+  pageNumber: number,
+  pageContainer: HTMLDivElement,
+}
+
 function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0, onLoadSuccess, onLoadError }: Props) {
+  const [viewerWidth, setViewerWidth] = useState<number>(0); // The width of the container 
+  const [currentScale, setCurrentScale] = useState<number>(scale);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isReady, setIsReady] = useState<boolean>(false); 
+  const [isReadyToRender, setIsReadyToRender] = useState<boolean>(false); 
   const [numPages, setNumPages] = useState<number>(0);
-  const [pdfDocument, setPdfDocument] = useState(null);
+  const [pdfDocument, setPdfDocument] = useState<any>(null);
   const [nextPage, setNextPage] = useState<number>(1); 
-  const [pagesLoaded, setPagesLoaded] = useState<number[]>([]);
+  const [pagesLoaded, setPagesLoaded] = useState<Page[]>([]);
   const [pagesLoading, setPagesLoading] = useState<number[]>([]);
   const observer = useRef<HTMLDivElement>(null); 
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const eventBus = new EventBus();
 
-  const loadPage = useCallback(async (pageNum) => {
-    const isAlreadyLoadingOrLoaded = pagesLoading.includes(pageNum) || pagesLoaded.includes(pageNum);
 
-    if (pdfDocument && pageNum <= numPages && !isAlreadyLoadingOrLoaded) {
-      setPagesLoading([...pagesLoading, pageNum]);
-
-      const page = await pdfDocument.getPage(pageNum);
-      const viewport = page.getViewport({ scale });
   
+  const loadPage = useCallback(async (pageNum) => {
+    const isAlreadyLoadingOrLoaded = pagesLoading.includes(pageNum) || pagesLoaded.filter(p => p.pageNumber == pageNum).length > 0;
+
+    if (pdfDocument && pageNum <= numPages && isReadyToRender && !isAlreadyLoadingOrLoaded) {
+      setPagesLoading([...pagesLoading, pageNum]);
+    
+      const page = await pdfDocument.getPage(pageNum);
+      
+      // Get viewport with scale 1 to find original page size
+      const unscaledViewport = page.getViewport({ scale: 1 });
+      // Calculate the new scale
+      const _scale = viewerWidth / unscaledViewport.width;
+      // Get the scaled viewport
+      const viewport = page.getViewport({ scale: _scale });
+      
       const pageContainer = document.createElement('div');
       pageContainer.style.position = 'relative';
-  
+      
       const pdfPageView = new PDFPageView({
         container: pageContainer,
         id: pageNum,
-        scale,
+        scale: _scale,
         defaultViewport: viewport,
         eventBus,
         textLayerMode: 2,
       });
   
       pdfPageView.setPdfPage(page);
+      pdfPageView.div.className = css(styles.page);
       await pdfPageView.draw();
+  
   
       if (containerRef.current) {
         containerRef.current.appendChild(pageContainer);
-      }
-
-      if (!isReady) {
-        setIsReady(true);
-        onLoadSuccess && onLoadSuccess();
       }
       
       if (observer.current) observer.current.disconnect();
@@ -72,10 +85,14 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0, onLoadSuccess,
       });
       observer.current.observe(pageContainer);
 
-      setPagesLoaded([...pagesLoaded, pageNum]);
+      setPagesLoaded([...pagesLoaded, {
+        pdfPageView,
+        pageNumber: pageNum,
+        pageContainer,
+      }]);
       setPagesLoading(pagesLoading.filter((page) => page !== pageNum));      
     }
-  }, [pdfDocument, numPages, scale, eventBus]);
+  }, [pdfDocument, numPages, scale, eventBus, isReadyToRender]);
 
   useEffect(() => {
     const loadDocument = async () => {
@@ -96,11 +113,50 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0, onLoadSuccess,
     loadDocument();
   }, [pdfUrl]);
 
+  
+  useLayoutEffect(() => {
+    function updateWidth() {
+      const clientWidth = Number(containerRef.current?.clientWidth);
+      if (clientWidth > 0) {
+        setViewerWidth(clientWidth);
+        setIsReadyToRender(true);
+      }
+    }
+
+    window.addEventListener('resize', updateWidth);
+    updateWidth();
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   useEffect(() => {
     if (pdfDocument && nextPage <= numPages) {
+      
       loadPage(nextPage);
     }
-  }, [nextPage, loadPage, pdfDocument, numPages]); 
+  }, [nextPage, loadPage, pdfDocument, numPages, viewerWidth, currentScale]); 
+
+
+
+
+
+
+
+
+
+  // useEffect(() => {
+  //   if (scale !== currentScale) {
+  //     setCurrentScale(scale);
+  
+  //     const _pagesLoading = [...pagesLoaded.map(p => p.pageNumber)];
+  //     setPagesLoading(_pagesLoading);
+
+  //     pagesLoaded.forEach(async (page:Page) => {
+  //       page.pdfPageView.update({ scale });
+  //       await page.pdfPageView.draw();
+  //     });
+  //   }
+  // }, [scale]);
+  
 
   if (hasLoadError) {
     return (
@@ -115,8 +171,8 @@ function PdfViewer({ pdfUrl, showWhenLoading = null, scale = 1.0, onLoadSuccess,
 
   return (
     <div style={{ position: "relative" }}>
-      <div ref={containerRef} style={{ overflow: "hidden" }}></div>
-      {(pagesLoading.length > 0 || !isReady) && showWhenLoading}
+      <div ref={containerRef} style={{  width: 898, overflow: "hidden", boxSizing: "border-box" }}></div>
+      {(pagesLoading.length > 0 || !isReadyToRender) && showWhenLoading}
     </div>
   );
 }
@@ -131,6 +187,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "20%",
   },  
+  page: {
+    margin: "0 auto"
+  }
 })
 
 export default PdfViewer;

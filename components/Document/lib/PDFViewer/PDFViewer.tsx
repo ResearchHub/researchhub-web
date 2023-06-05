@@ -282,6 +282,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn, onLoadPDFSucce
       </div>
       <div style={{ overflowX: "scroll" }}>
         <_PDFViewer
+          scale={selectedZoom}
           pdfUrl={pdfUrl}
           onLoadSuccess={onLoadSuccess}
           onLoadError={onLoadError}
