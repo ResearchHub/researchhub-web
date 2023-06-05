@@ -9,7 +9,7 @@ import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
-import { Fragment, useState, ReactNode, useEffect } from "react";
+import { Fragment, useState, ReactNode, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import {
   emptyFncWithMsg,
@@ -211,6 +211,7 @@ function ReferencesContainer({
     (proj) => proj.id === parseInt(router.query.project)
   );
   const { id, collaborators, project_name, is_public } = targetProject ?? {};
+  const inputRef = useRef();
 
   // useEffect((): void => {
   //   if (!isEmpty(currentOrgID)) {
@@ -377,22 +378,40 @@ function ReferencesContainer({
                       ? "Organization References"
                       : `My References`)}
                 </Typography>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept=".pdf"
+                  multiple
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    handleFileDrop(Array.from(e.target.files));
+                  }}
+                />
                 <div
                   style={{
-                    marginLeft: 8,
-                    background: colors.GREY(0.7),
-                    borderRadius: "50%",
-                    height: 24,
+                    marginLeft: 16,
+                    padding: 16,
+                    background: colors.NEW_BLUE(),
+                    borderRadius: 4,
+                    // height: 30,
                     color: "#fff",
-                    width: 24,
+                    // width: 30,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     cursor: "pointer",
+                    fontWeight: 500,
                   }}
-                  onClick={() => setIsRefUploadDrawerOpen(true)}
+                  onClick={() => inputRef.current.click()}
                 >
-                  <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    color="#fff"
+                    fontSize="20px"
+                    style={{ marginRight: 8 }}
+                  />
+                  Add a Citation
                 </div>
                 {!isEmpty(router.query.project) && (
                   <div
