@@ -130,7 +130,7 @@ export default function PaperPageAbstractSection({ paper, onUpdate }: Props): Re
                       setIsUpdatingAbstract(false);
                       setAbstractSrc(abstractSrc);
                       setHasNoAbstract(isEmpty(abstractSrc));
-                      onUpdate && onUpdate(response);
+                      onUpdate && onUpdate(abstractSrc);
                     },
                     paperPayload: {
                       /* NOTE: Manually overriding legacy "abstract" field since it's being used as a preview text in home feed
@@ -184,7 +184,7 @@ export default function PaperPageAbstractSection({ paper, onUpdate }: Props): Re
           </div>
         ) : (
           <div>
-            <p dangerouslySetInnerHTML={{ __html: paper.abstract }} />
+            <p dangerouslySetInnerHTML={{ __html: paper.abstract_src_markdown }} />
           </div>
         )}
       </div>

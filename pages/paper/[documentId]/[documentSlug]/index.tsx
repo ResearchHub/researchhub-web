@@ -84,11 +84,10 @@ const DocumentIndexPage: NextPage<Args> = ({
               <div className={css(styles.body)}>
                 <PaperPageAbstractSection
                   paper={document.raw}
-                  onUpdate={(response) => {
+                  onUpdate={(updated) => {
                     setRawDocumentData({
                       ...rawDocumentData,
-                      abstract: response.abstract,
-                      abstract_src: response.abstract_src,
+                      abstract_src_markdown: updated,
                     });
                     revalidatePage();
                   }}
