@@ -161,9 +161,9 @@ const withHref = ({
   tabs: Array<Tab>;
   router: NextRouter;
 }) => {
-  const { documentType, documentId, documentSlug, tabName } = router.query;
-  // FIXME: Remove "doc-v2"
-  const basePath = `/doc-v2/${documentType}/${documentId}/${documentSlug}`;
-
+  const { documentId, documentSlug, tabName } = router.query;
+  const documentType = router.asPath.split("/")[1];
+  const basePath = `/${documentType}/${documentId}/${documentSlug}`;
   return tabs.map((t) => ({ ...t, href: `${basePath}/${t.value}` }));
 };
+

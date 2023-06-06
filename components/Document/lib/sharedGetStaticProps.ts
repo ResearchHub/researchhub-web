@@ -3,6 +3,9 @@ import { getDocumentByType } from "./getDocumentByType";
 import isEmpty from "lodash/isEmpty";
 import fetchPostFromS3 from "../api/fetchPostFromS3";
 import getCommentFilterByTab from "./getCommentFilterByTab";
+import {
+  DocumentType,
+} from "~/components/Document/lib/types";
 
 const config = {
   revalidateTimeIfNotFound: 1,
@@ -10,8 +13,16 @@ const config = {
   revalidateTimeIfFound: 600,
 };
 
-export default async function sharedGetStaticProps(ctx) {
-  const { documentId, documentType, documentSlug } = ctx.params!;
+interface Props {
+  ctx: any;
+  documentType: DocumentType;
+}
+
+export default async function sharedGetStaticProps({ ctx, documentType }: Props) {
+
+console.log('documentType', documentType)
+
+  const { documentId, documentSlug } = ctx.params!;
   const tabName = ctx.params?.tabName || null;
   const shouldFetchComments = !isEmpty(tabName);
   let documentData: any | null = null;

@@ -1,12 +1,9 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
-import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
+import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useRouter } from "next/router";
 import getDocumentFromRaw, {
-  DocumentType,
-  GenericDocument,
-  isPaper,
-  isPost,
+  Paper,
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
@@ -22,16 +19,14 @@ import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 interface Args {
   documentData?: any;
   postHtml?: TrustedHTML | string;
-  documentType: DocumentType;
   errorCode?: number;
 }
 
-const DocumentPage: NextPage<Args> = ({
+const DocumentIndexPage: NextPage<Args> = ({
   documentData,
-  documentType,
-  postHtml = "",
   errorCode,
 }) => {
+  const documentType = "paper";
   const router = useRouter();
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
   const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
@@ -43,9 +38,9 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={errorCode} />;
   }
 
-  let document: GenericDocument;
+  let document: Paper;
   try {
-    document = getDocumentFromRaw({ raw: documentData, type: documentType });
+    document = getDocumentFromRaw({ raw: documentData, type: documentType }) as Paper;
   } catch (error: any) {
     captureEvent({
       error,
@@ -55,48 +50,37 @@ const DocumentPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-  const pdfUrl =
-    isPaper(document) && document.formats.find((f) => f.type === "pdf")?.url;
+  const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
 
   return (
     <DocumentContext.Provider value={{ metadata, documentType, updateMetadata }}>
-      <SharedDocumentPage
+      <DocumentPageLayout
         document={document}
         errorCode={errorCode}
         metadata={metadata}
         documentType={documentType}
       >
         <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
-          {isPaper(document) && (
-            <div className={css(styles.bodyWrapper)}>
-              {pdfUrl ? (
-                <div className={css(styles.viewerWrapper)}>
-                  <PDFViewer pdfUrl={pdfUrl} onZoomIn={(zoom) => setViewerWidth(zoom.newWidth)} onZoomOut={(zoom) => setViewerWidth(zoom.newWidth)} />
-                </div>
-              ) : (
-                <div className={css(styles.body)}>
-                  {document.abstract ? (
-                    <>
-                      <h2>Abstract</h2>
-                      <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
-                    </>
-                  ) : (
-                    <PaperPageAbstractSection paper={document.raw} />
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-          {isPost(document) && (
-            <div className={css(styles.bodyWrapper)}>
-              <div
-                className={css(styles.body) + " rh-post"}
-                dangerouslySetInnerHTML={{ __html: postHtml }}
-              />
-            </div>
-          )}
+          <div className={css(styles.bodyWrapper)}>
+            {pdfUrl ? (
+              <div className={css(styles.viewerWrapper)}>
+                <PDFViewer pdfUrl={pdfUrl} onZoomIn={(zoom) => setViewerWidth(zoom.newWidth)} onZoomOut={(zoom) => setViewerWidth(zoom.newWidth)} />
+              </div>
+            ) : (
+              <div className={css(styles.body)}>
+                {document.abstract ? (
+                  <>
+                    <h2>Abstract</h2>
+                    <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
+                  </>
+                ) : (
+                  <PaperPageAbstractSection paper={document.raw} />
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </SharedDocumentPage>
+      </DocumentPageLayout>
     </DocumentContext.Provider>
   );
 };
@@ -123,7 +107,7 @@ const styles = StyleSheet.create({
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  return sharedGetStaticProps(ctx);
+  return sharedGetStaticProps({ ctx, documentType: "paper" });
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -133,4 +117,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export default DocumentPage;
+export default DocumentIndexPage;

@@ -8,7 +8,6 @@ import "~/components/Paper/Tabs/stylesheets/custom-editor.css";
 import "~/components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/SearchSuggestion/authorinput.css";
 import "~/components/TextEditor/stylesheets/QuillTextEditor.css";
-import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
 import "isomorphic-unfetch";
 import "katex/dist/katex.min.css";
@@ -183,10 +182,10 @@ MyApp.getInitialProps = async (appContext) => {
     "/[orgSlug]/notebook",
     "/hubs/[slug]",
     "/hubs/[slug]/live",
-    "/paper/[paperId]/[paperName]",
-    "/doc-v2/[documentType]/[documentId]/[documentSlug]",
-    "/doc-v2/[documentType]/[documentId]/[documentSlug]/[tabName]",
-    "/post/[documentId]/[title]",
+    "/paper/[documentId]/[documentSlug]",
+    "/paper/[documentId]/[documentSlug]/[tabName]",
+    "/post/[documentId]/[documentSlug]",
+    "/post/[documentId]/[documentSlug]/[tabName]",
     "/notebook",
   ];
   const cookies = nookies.get(appContext.ctx);

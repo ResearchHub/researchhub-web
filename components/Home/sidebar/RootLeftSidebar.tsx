@@ -179,7 +179,6 @@ function RootLeftSidebar({
       "live",
       "referral",
       "user",
-      "doc-v2",
     ].includes(pathname.split("/")[1]);
 
     if (onSpecficHubPage) {

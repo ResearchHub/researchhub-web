@@ -1,6 +1,5 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
-import SharedDocumentPage from "~/components/Document/lib/SharedDocumentPage";
+import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useContext, useState } from "react";
 import { captureEvent } from "~/config/utils/events";
 import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
@@ -38,7 +37,7 @@ interface Args {
   tabName: string;
 }
 
-const DocumentPage: NextPage<Args> = ({
+const DocumentCommentsPage: NextPage<Args> = ({
   documentData,
   commentData,
   documentType,
@@ -90,7 +89,7 @@ const DocumentPage: NextPage<Args> = ({
 
   return (
     <DocumentContext.Provider value={{ metadata, documentType, tabName, updateMetadata }}>
-      <SharedDocumentPage
+      <DocumentPageLayout
         document={document}
         documentType={documentType}
         tabName={tabName}
@@ -141,29 +140,9 @@ const DocumentPage: NextPage<Args> = ({
             totalCommentCount={commentCount}
           />
         </div>
-      </SharedDocumentPage>
+      </DocumentPageLayout>
     </DocumentContext.Provider>
   );
-};
-
-export const getStaticProps: GetStaticProps = async (ctx) => {
-  return sharedGetStaticProps(ctx);
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [
-      //   {
-      //   params: {
-      //     documentType: 'paper',
-      //     documentId: '1276082',
-      //     documentSlug: 'boundary-vector-cells-in-the-goldfish-central-telencephalon-encode-spatial-information',
-      //     tabName: 'conversation',
-      //   },
-      // },
-    ],
-    fallback: true,
-  };
 };
 
 const styles = StyleSheet.create({
@@ -172,4 +151,4 @@ const styles = StyleSheet.create({
   },  
 });
 
-export default DocumentPage;
+export default DocumentCommentsPage;

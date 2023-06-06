@@ -158,8 +158,6 @@ function FeedCard({
       ? "post"
       : formattedDocType
   }/${id}/${slug ?? "new"}`;
-  // FIXME: Pseudo feature-flag for testing content on prod
-  feDocUrl = `/doc-v2${feDocUrl}`;
 
   const dispatch = useDispatch();
 
