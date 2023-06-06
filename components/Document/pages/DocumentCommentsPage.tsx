@@ -47,7 +47,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
   const router = useRouter();
   const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
-
+console.log('metadata', metadata)
   const revalidatePageCache = () => {
     return fetch(
       "/api/revalidate",

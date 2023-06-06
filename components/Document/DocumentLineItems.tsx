@@ -60,7 +60,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       ]
       : []),
 
-    ...(document.hubs
+    ...(document.hubs && document.hubs.length > 0
       ? [
         {
           title: "Hubs",
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     minWidth: "100px",
     color: colors.BLACK(0.6),
   },
-  value: {},
+  value: { display: "flex", columnGap: "5px", flexWrap: "wrap"},
   showMore: {
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),
