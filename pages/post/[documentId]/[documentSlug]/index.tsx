@@ -85,12 +85,8 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
   },
-  viewerWrapper: {
-    minHeight: 500,
-  },
   body: {
-    padding: 25,
-    minHeight: 200,
+    padding: 45,
   },
   bodyContentWrapper: {
     margin: "0 auto",

@@ -80,7 +80,9 @@ export type Paper = GenericDocument & {
   abstract?: string;
 };
 
-export type Post = GenericDocument & {};
+export type Post = GenericDocument & {
+  postType?: "publication" | "question";
+};
 
 export type Hypothesis = GenericDocument & {
   // FIXME: TBD
@@ -151,6 +153,7 @@ export const parsePost = (raw: any): Post => {
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
     apiDocumentType: "researchhub_post",
+    postType: raw.unified_document.document_type === "QUESTION" ? "question" : "publication"
   };
 
   return parsed;

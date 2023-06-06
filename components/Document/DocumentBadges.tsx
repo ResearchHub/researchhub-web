@@ -1,7 +1,7 @@
 import Bounty, { formatBountyAmount } from "~/config/types/bounty";
 import { StyleSheet, css } from "aphrodite";
 import ContentBadge from "../ContentBadge";
-import { DocumentMetadata, GenericDocument } from "./lib/types";
+import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./lib/types";
 
 type Props = {
   document: GenericDocument;
@@ -12,13 +12,14 @@ const DocumentBadges = ({ document, metadata }: Props) => {
 
   const openBountyAmount = (metadata?.bounties || []).reduce((total, bounty) => bounty.amount + total , 0);
   const tippedAmount = (metadata?.purchases || []).reduce((total, tip) => tip.amount + total, 0);
+  const type = isPaper(document) ? "paper" : isPost(document) && document.postType === "question" ? "question" : "post" ;
 
   return (
     <div className={css(styles.badges)}>
       <ContentBadge
         size="large"
-        contentType={document.type}
-        label={document.type}
+        contentType={type}
+        label={type}
       />
       {openBountyAmount > 0 && (
         <ContentBadge

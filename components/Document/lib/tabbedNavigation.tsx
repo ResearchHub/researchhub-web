@@ -5,7 +5,7 @@ import { faComments, faStar } from "@fortawesome/pro-solid-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import { Tab } from "~/components/HorizontalTabBar";
 import colors from "~/config/themes/colors";
-import { DocumentMetadata, GenericDocument } from "./types";
+import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./types";
 
 export const tabs: Array<Tab> = [
   {
@@ -53,6 +53,10 @@ export const getTabs = ({
 
   let _tabs = tabs;
 
+  if (isPost(document) && document.postType === "question") {
+    _tabs = _tabs.filter((tab) => tab.value !== "reviews")
+  }
+
   _tabs = withDocTypeTab({ tabs: _tabs, document });
   _tabs = withHref({ tabs: _tabs, router });
   _tabs = withSelected({ tabs: _tabs, tabName: tabName as string });
@@ -70,9 +74,9 @@ const withDocTypeTab = ({
   tabs: Array<Tab>;
   document: GenericDocument;
 }) => {
-  const { type } = document;
+  const type = isPaper(document) ? "paper" : isPost(document) && document.postType === "question" ? "question" : "post" ;
+  let docTab: Tab;
 
-  let docTab;
   if (type === "question") {
     docTab = {
       // @ts-ignore

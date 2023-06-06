@@ -6,7 +6,6 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { useRouter } from "next/router";
-import { faArrowDownToBracket } from "@fortawesome/pro-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./lib/types";
@@ -122,7 +121,6 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
     },
   ];
 
-  const pdfUrl = isPaper(doc) && doc.formats.find((f) => f.type === "pdf")?.url;
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
       <div
