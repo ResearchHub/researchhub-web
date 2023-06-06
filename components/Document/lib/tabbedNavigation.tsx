@@ -36,7 +36,7 @@ export const tabs: Array<Tab> = [
   {
     icon: <FontAwesomeIcon icon={faStar} />,
     label: "Peer Reviews",
-    value: "peer-reviews",
+    value: "reviews",
   },
 ];
 
@@ -124,7 +124,7 @@ const withPillContent = ({
         ...tab,
         pillContent: metadata.bounties.length || undefined,
       });
-    } else if (tab.value === "peer-reviews") {
+    } else if (tab.value === "reviews") {
       finalTabs.push({
         ...tab,
         pillContent: metadata.reviewCount || undefined,

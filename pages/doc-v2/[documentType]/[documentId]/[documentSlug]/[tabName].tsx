@@ -15,11 +15,12 @@ import API from "~/config/api";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
+import getCommentFilterByTab from "~/components/Document/lib/getCommentFilterByTab";
 
 
 const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
   switch(tabName) {
-    case 'peer-reviews':
+    case 'reviews':
       return COMMENT_TYPES.REVIEW;
     case 'bounties':
     case 'conversation':
@@ -27,7 +28,6 @@ const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
       return COMMENT_TYPES.DISCUSSION;
   }
 }
-
 
 interface Args {
   documentData?: any;
@@ -78,8 +78,10 @@ const DocumentPage: NextPage<Args> = ({
 
   let displayCommentsFeed = false;
   let parsedComments = [];
+  let commentCount = 0;
   if (commentData) {
-    const { comments } = commentData;
+    const { comments, count } = commentData;
+    commentCount = count;
     parsedComments = comments.map((c) => parseComment({ raw: c }));
     displayCommentsFeed = true;
   }
@@ -97,9 +99,12 @@ const DocumentPage: NextPage<Args> = ({
           initialComments={parsedComments}
           document={document}
           showFilters={false}
+          initialFilter={getCommentFilterByTab(tabName)}
           editorType={getEditorTypeFromTabName(tabName)}
           allowBounty={tabName === "bounties"}
           allowCommentTypeSelection={false}
+          // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
+          // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
           onCommentCreate={(comment) => {
             revalidatePageCache();
 
@@ -130,7 +135,7 @@ const DocumentPage: NextPage<Args> = ({
           onCommentRemove={(comment) => {
             revalidatePageCache();
           }}
-          totalCommentCount={0}
+          totalCommentCount={commentCount}
         />
       </SharedDocumentPage>
     </DocumentContext.Provider>

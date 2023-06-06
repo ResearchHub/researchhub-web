@@ -2,23 +2,12 @@ import { fetchCommentsAPI } from "~/components/Comment/lib/api";
 import { getDocumentByType } from "./getDocumentByType";
 import isEmpty from "lodash/isEmpty";
 import fetchPostFromS3 from "../api/fetchPostFromS3";
+import getCommentFilterByTab from "./getCommentFilterByTab";
 
 const config = {
   revalidateTimeIfNotFound: 1,
   revalidateTimeIfError: 10,
   revalidateTimeIfFound: 600,
-};
-
-const getCommentFilterByTab = async ({ tabName }) => {
-  switch (tabName) {
-    case "bounties":
-      return "BOUNTY";
-    case "peer-reviews":
-      return "REVIEW";
-    case "conversation":
-    default:
-      return "DISCUSSION";
-  }
 };
 
 export default async function sharedGetStaticProps(ctx) {
@@ -47,7 +36,6 @@ export default async function sharedGetStaticProps(ctx) {
   }
 
   if (documentData) {
-    console.log("documentdata", documentData);
     // If slug is not present or does not match paper's, we want to redirect
     // DANGER ZONE: Be careful when updating this. Could result
     // in an infinite 301 loop.
@@ -81,7 +69,7 @@ export default async function sharedGetStaticProps(ctx) {
       }
 
       if (shouldFetchComments) {
-        const filter = await getCommentFilterByTab({ tabName });
+        const filter = getCommentFilterByTab(tabName);
         commentData = await fetchCommentsAPI({
           documentId,
           documentType: (documentType === "post" ? "researchhub_post" : documentType),

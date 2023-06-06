@@ -25,7 +25,6 @@ export const fetchCommentsAPI = async ({
   filter?: string | null;
   page?: number;
 }): Promise<{ comments: any[]; count: number }> => {
-  
   const query = {
     ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),

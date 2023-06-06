@@ -69,7 +69,7 @@ const CommentFeed = ({
     hasInitialComments ? false : true
   );
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
-    initialComments?.length || 0
+    totalCommentCount || 0
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(
@@ -316,7 +316,7 @@ const CommentFeed = ({
     setComments([]);
     setCurrentPage(1);
     setSelectedSortValue(sortOpts[0].value);
-    setSelectedFilterValue(filterOpts[0].value);
+    setSelectedFilterValue(initialFilter || filterOpts[0].value);
     setRootLevelCommentCount(0);
   };
 
@@ -329,10 +329,13 @@ const CommentFeed = ({
     }
   }, [document.id, currentDocumentId, hasInitialComments]);
 
+  // This hook is used to reset the feed when tab changes. 
+  // In such a case, the comments will be loaded when the page is statically rendered.
   useEffect(() => {
-    if (hasInitialComments) {
-      setComments(initialComments);
-    }
+      setCurrentPage(1);
+      setRootLevelCommentCount(totalCommentCount || 0);
+      setComments(initialComments || []);
+      setSelectedFilterValue(initialFilter || filterOpts[0].value);
   }, [router?.query?.tabName]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
