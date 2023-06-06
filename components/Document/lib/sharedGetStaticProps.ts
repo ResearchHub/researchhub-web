@@ -20,8 +20,6 @@ interface Props {
 
 export default async function sharedGetStaticProps({ ctx, documentType }: Props) {
 
-console.log('documentType', documentType)
-
   const { documentId, documentSlug } = ctx.params!;
   const tabName = ctx.params?.tabName || null;
   const shouldFetchComments = !isEmpty(tabName);

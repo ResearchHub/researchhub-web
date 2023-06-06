@@ -192,11 +192,11 @@ function PaperTab(props) {
                 alt="Empty State"
               />
               <div className={css(styles.emptyPlaceholderText)}>
-                This academic paper hasn't been uploaded yet. If it's open
-                access, upload the pdf!
+                This PDF hasn't been uploaded yet.
               </div>
               <div style={{ opacity: 0.5, fontSize: 14, marginBottom: 16 }}>
-                Do not upload any copyrighted content to the site
+                Do not upload any copyrighted content to the site, only
+                open-access content.
               </div>
               <div className={css(styles.emptyStateButtonContainer)}>
                 {paperUrl && renderExternalLink()}
@@ -280,7 +280,7 @@ function PaperTab(props) {
       {renderState && (
         <div className={css(styles.headerContainer)} ref={paperPdfRef}>
           <div className={css(styles.titleContainer)}>
-            <h3 className={css(styles.title)}>Paper PDF</h3>
+            <h2>Paper PDF</h2>
             {file && renderDownloadPdf()}
           </div>
           {file && (isModerator || isEditorOfHubs) && (
@@ -323,15 +323,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    // padding: 25,
-    // backgroundColor: "#FFF",
-    // marginTop: 30,
-    // border: "1.5px solid #F0F0F0",
-    // boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
-      padding: 25,
-    },
   },
   downloadIcon: {
     color: "#FFF",

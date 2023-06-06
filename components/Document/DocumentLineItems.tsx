@@ -123,6 +123,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
     ? lineItems
     : lineItems.slice(0, 4);
   const hasMoreMetadata = lineItems.length > 4;
+  
   return (
     <div>
       <div className={css(styles.wrapper)}>

@@ -12,9 +12,12 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
+import PaperTab from "~/components/Paper/Tabs/PaperTab";
+import { breakpoints } from "~/config/themes/screen";
+import useCacheControl from "~/config/hooks/useCacheControl";
 
 interface Args {
   documentData?: any;
@@ -30,6 +33,17 @@ const DocumentIndexPage: NextPage<Args> = ({
   const router = useRouter();
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
   const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
+  const [rawDocumentData, setRawDocumentData] = useState<undefined|null|any>(documentData); 
+  const [revalidatePage] = useCacheControl();
+
+  // This hook is used to purely update the rawDocumentData when the documentData changes
+  // Reason being is that documentData is initially empty. Furthermore, the state variable is
+  // needed because certain operations like abstract updating will cause the documentData to change
+  useEffect(() => {
+    if (documentData?.id !== rawDocumentData?.id) {
+      setRawDocumentData(documentData);
+    }
+  }, [documentData]);
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -40,12 +54,12 @@ const DocumentIndexPage: NextPage<Args> = ({
 
   let document: Paper;
   try {
-    document = getDocumentFromRaw({ raw: documentData, type: documentType }) as Paper;
+    document = getDocumentFromRaw({ raw: rawDocumentData || documentData, type: documentType }) as Paper;
   } catch (error: any) {
     captureEvent({
       error,
       msg: "[Document] Could not parse",
-      data: { documentData, documentType },
+      data: { rawDocumentData, documentType },
     });
     return <Error statusCode={500} />;
   }
@@ -60,7 +74,7 @@ const DocumentIndexPage: NextPage<Args> = ({
         metadata={metadata}
         documentType={documentType}
       >
-        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
+        <div className={css(styles.bodyContentWrapper)} style={{ maxWidth: viewerWidth }}>
           <div className={css(styles.bodyWrapper)}>
             {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
@@ -68,17 +82,28 @@ const DocumentIndexPage: NextPage<Args> = ({
               </div>
             ) : (
               <div className={css(styles.body)}>
-                {document.abstract ? (
-                  <>
-                    <h2>Abstract</h2>
-                    <p dangerouslySetInnerHTML={{ __html: document.abstract }} />
-                  </>
-                ) : (
-                  <PaperPageAbstractSection paper={document.raw} />
-                )}
+                <PaperPageAbstractSection
+                  paper={document.raw}
+                  onUpdate={(response) => {
+                    setRawDocumentData({
+                      ...rawDocumentData,
+                      abstract: response.abstract,
+                      abstract_src: response.abstract_src,
+                    });
+                    revalidatePage();
+                  }}
+                />
               </div>
             )}
           </div>
+
+          <div className={css(styles.uploadPdfWrapper)}>
+            <PaperTab
+              paper={document.raw}
+              paperId={document.id}
+            />
+          </div>
+
         </div>
       </DocumentPageLayout>
     </DocumentContext.Provider>
@@ -98,8 +123,19 @@ const styles = StyleSheet.create({
     minHeight: 500,
   },
   body: {
-    padding: 25,
-    minHeight: 200,
+    padding: 45,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 25,  
+    }
+  },
+  uploadPdfWrapper: {
+    marginTop: 25,
+    background: "white",
+    padding: 45,
+    border: `1px solid ${config.border}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 25,  
+    }    
   },
   bodyContentWrapper: {
     margin: "0 auto",

@@ -5,16 +5,14 @@ import { nullthrows } from "~/config/utils/nullchecks";
 
 type Args = {
   onError: (error: Error) => void;
-  onSuccess: () => void;
+  onSuccess: (response) => void;
   paperPayload: any;
-  revalidateUrl?: string;
 };
 
 export function postUpdatePaperAbstract({
   onError,
   onSuccess,
   paperPayload,
-  revalidateUrl,
 }: Args): void {
   fetch(
     buildApiUri({
@@ -24,15 +22,6 @@ export function postUpdatePaperAbstract({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then(({ results }: any): void => onSuccess && onSuccess())
-    .then(() => {
-      return fetch(
-        "/api/revalidate",
-        API.POST_CONFIG({
-          path:
-            revalidateUrl || `/paper/${paperPayload.id}/${paperPayload.slug}`,
-        })
-      );
-    })
+    .then((response: any): void => onSuccess && onSuccess(response))
     .catch((error: any): void => onError && onError(error));
 }

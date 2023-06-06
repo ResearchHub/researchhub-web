@@ -4,7 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 import dynamic from "next/dynamic";
 import { ReactElement, useEffect, useState } from "react";
 import Button from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
 
@@ -19,6 +18,7 @@ import { postUpdatePaperAbstract } from "./api/postUpdatePaperAbstract";
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 import { htmlStringToPlainString } from "~/config/utils/htmlStringToPlainString";
 import { useRouter } from "next/router";
+import { ClipLoader } from "react-spinners";
 
 const SimpleEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -29,6 +29,7 @@ const DynamicCKEditor = dynamic(
 
 type Props = {
   paper: any;
+  onUpdate?: Function;
 };
 
 const useEffectParseAbstract = ({
@@ -54,60 +55,50 @@ const useEffectParseAbstract = ({
   );
 };
 
-const useEffectPaperFetching = ({
-  paper,
-  setIsFetching,
-}: {
-  paper: any;
-  setIsFetching: Function;
-}) => {
-  useEffect(() => {
-    paper?.id && setIsFetching(false);
-  }, [paper]);
-};
-
-export default function PaperPageAbstractSection({ paper }): ReactElement {
+export default function PaperPageAbstractSection({ paper, onUpdate }: Props): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
-  const [isFetching, setIsFetching] = useState<boolean>(true);
   const router = useRouter();
 
   useEffectParseAbstract({ paper, setAbstractSrc, setHasNoAbstract });
-  useEffectPaperFetching({ paper, setIsFetching });
 
   return (
     <div className={css(styles.paperPageAbstractSection)}>
-      {isFetching && <AbstractPlaceholder color="#EFEFEF" />}
-      <div style={{ visibility: isFetching ? "hidden" : "visible" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <h2 style={{ margin: 0 }}>{"Abstract"}</h2>
-          {(!isEditMode || hasNoAbstract) && (
-            <PermissionNotificationWrapper
-              modalMessage="propose abstract edit"
-              onClick={(): void => setIsEditMode(true)}
-              loginRequired
-            >
-              <span className={css(styles.pencilIcon)}>
-                {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
-              </span>
-            </PermissionNotificationWrapper>
-          )}
+      <div>
+        <div style={{ position: "relative", display: "inline-flex",  }}>
+          <h2 style={{ display: "inline"}}>{"Abstract"}</h2>
+          <div style={{ position: "absolute", right: -30, top: 5 }}>
+            {(!isEditMode || hasNoAbstract) && (
+              <PermissionNotificationWrapper
+                modalMessage="propose abstract edit"
+                onClick={(): void => setIsEditMode(true)}
+                loginRequired
+              >
+                <span className={css(styles.pencilIcon)}>
+                  {<FontAwesomeIcon icon={faPencil}></FontAwesomeIcon>}
+                </span>
+              </PermissionNotificationWrapper>
+            )}
+          </div>
         </div>
 
         {isEditMode ? (
           <div className={css(styles.editorWrap)}>
-            <DynamicCKEditor
-              editing
-              initialData={abstractSrc}
-              onChange={(_, editorSrcValue: string): void => {
-                setAbstractSrc(editorSrcValue);
-              }}
-            />
+            <div style={{ minHeight: 300 }}>
+              <DynamicCKEditor
+                editing
+                initialData={abstractSrc}
+                onChange={(_, editorSrcValue: string): void => {
+                  setAbstractSrc(editorSrcValue);
+                }}
+              />
+            </div>
             <div className={css(styles.editButtonRow)}>
               <Button
                 isWhite
+                variant={"text"}
                 label={"Cancel"}
                 onClick={(): void => setIsEditMode(false)}
                 size={"small"}
@@ -115,7 +106,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
               <Button
                 label={
                   isUpdatingAbstract ? (
-                    <Loader
+                    <ClipLoader
                       color={colors.LIGHT_GREY()}
                       key="abstract-submit-loader"
                       loading
@@ -129,22 +120,22 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                   event.preventDefault();
                   setIsUpdatingAbstract(true);
                   postUpdatePaperAbstract({
-                    revalidateUrl: router.asPath,
                     onError: (error: Error): void => {
                       emptyFncWithMsg(error);
                       setIsEditMode(false);
                       setIsUpdatingAbstract(false);
                     },
-                    onSuccess: (): void => {
+                    onSuccess: (response): void => {
                       setIsEditMode(false);
                       setIsUpdatingAbstract(false);
                       setAbstractSrc(abstractSrc);
                       setHasNoAbstract(isEmpty(abstractSrc));
+                      onUpdate && onUpdate(response);
                     },
                     paperPayload: {
                       /* NOTE: Manually overriding legacy "abstract" field since it's being used as a preview text in home feed
                       All proceeding updates make changes to abstract_src */
-                      ...paper,
+                      id: paper.id,
                       hubs: paper?.hubs.map((hub) => hub.id),
                       abstract_src: abstractSrc,
                       abstract: htmlStringToPlainString(abstractSrc, 2000),
@@ -180,7 +171,7 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
                 textAlign: "center",
               }}
             >
-              {"Be the first person to add an abstract to this paper."}
+              {"Help us improve the quality of this page by adding an abstract."}
             </div>
             <PermissionNotificationWrapper
               loginRequired
@@ -192,15 +183,8 @@ export default function PaperPageAbstractSection({ paper }): ReactElement {
             </PermissionNotificationWrapper>
           </div>
         ) : (
-          <div className={css(styles.editorWrapReadOnly)}>
-            <SimpleEditor
-              initialData={abstractSrc}
-              isBalloonEditor /* removes toolbar */
-              noBorder
-              noTitle
-              onChange={silentEmptyFnc}
-              readOnly
-            />
+          <div>
+            <p dangerouslySetInnerHTML={{ __html: paper.abstract }} />
           </div>
         )}
       </div>
@@ -213,9 +197,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     flexDirection: "column",
-    "@media only screen and (max-width: 500px)": {
-      marginTop: 15,
-    },
   },
   button: {
     background: colors.NEW_BLUE(1),
@@ -258,14 +239,14 @@ const styles = StyleSheet.create({
     },
   },
 
-  editorWrap: { marginTop: 12 },
-  editorWrapReadOnly: {
-    marginLeft: -12 /* matching ck editor padding */,
+  editorWrap: {
+    marginTop: 12,
   },
   editButtonRow: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     marginTop: 10,
+    columnGap: "15px",
   },
   noSummaryTitle: {
     color: colors.BLACK(1),

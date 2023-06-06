@@ -10,13 +10,14 @@ import getDocumentFromRaw, {
 import Error from "next/error";
 import { useRouter } from "next/router";
 import CommentFeed from "~/components/Comment/CommentFeed";
-import API from "~/config/api";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
 import getCommentFilterByTab from "~/components/Document/lib/getCommentFilterByTab";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
+import useCacheControl from "~/config/hooks/useCacheControl";
+
 
 const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
   switch(tabName) {
@@ -47,15 +48,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
   const router = useRouter();
   const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
-console.log('metadata', metadata)
-  const revalidatePageCache = () => {
-    return fetch(
-      "/api/revalidate",
-      API.POST_CONFIG({
-        path: router.asPath,
-      })
-    );
-  }
+  const [revalidatePage] = useCacheControl();
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -108,7 +101,7 @@ console.log('metadata', metadata)
             // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
             // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
             onCommentCreate={(comment) => {
-              revalidatePageCache();
+              revalidatePage();
 
               if (!metadata) return;
               if (comment.bounties.length > 0) {
@@ -132,10 +125,10 @@ console.log('metadata', metadata)
 
             }}
             onCommentUpdate={() => {
-              revalidatePageCache();
+              revalidatePage();
             }}
             onCommentRemove={(comment) => {
-              revalidatePageCache();
+              revalidatePage();
             }}
             totalCommentCount={commentCount}
           />

@@ -3,8 +3,6 @@ import DocumentHeader from "../DocumentHeaderV2";
 import config from "~/components/Document/lib/config";
 import { DocumentMetadata, GenericDocument, DocumentType } from "../lib/types";
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import { DocumentContext } from "../lib/DocumentContext";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
 
