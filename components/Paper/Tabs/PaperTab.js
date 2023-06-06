@@ -38,6 +38,7 @@ function PaperTab(props) {
     isModerator,
     updatePaperState,
     isEditorOfHubs,
+    onUpdate,
   } = props;
   const alert = useAlert();
   const dispatch = useDispatch();
@@ -132,6 +133,7 @@ function PaperTab(props) {
     dispatch(PaperActions.clearPostedPaper());
     dispatch(PaperActions.removePaperFromState());
     setPaperFile({});
+    onUpdate && onUpdate(paperFile);
   };
 
   function checkUserFirstTime() {

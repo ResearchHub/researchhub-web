@@ -15,7 +15,7 @@ import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/Docu
 import { useEffect, useState } from "react";
 import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
-import PaperTab from "~/components/Paper/Tabs/PaperTab";
+import UploadPDF from "~/components/Paper/Tabs/PaperTab";
 import { breakpoints } from "~/config/themes/screen";
 import useCacheControl from "~/config/hooks/useCacheControl";
 
@@ -97,13 +97,21 @@ const DocumentIndexPage: NextPage<Args> = ({
             )}
           </div>
 
-          <div className={css(styles.uploadPdfWrapper)}>
-            <PaperTab
-              paper={document.raw}
-              paperId={document.id}
-            />
-          </div>
-
+          {!pdfUrl && (
+            <div className={css(styles.uploadPdfWrapper)}>
+              <UploadPDF
+                paper={document.raw}
+                paperId={document.id}
+                onUpdate={(paperFile) => {
+                  setRawDocumentData({
+                    ...rawDocumentData,
+                    file: paperFile,
+                  });                
+                  revalidatePage();
+                }}
+              />
+            </div>
+          )}
         </div>
       </DocumentPageLayout>
     </DocumentContext.Provider>
