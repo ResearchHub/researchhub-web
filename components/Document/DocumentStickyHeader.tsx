@@ -1,4 +1,4 @@
-import { GenericDocument } from "./lib/types";
+import { DocumentMetadata, GenericDocument } from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import DocumentVote from "./DocumentVote";
@@ -17,11 +17,12 @@ import { getTabs } from "./lib/tabbedNavigation";
 interface Props {
   document: GenericDocument;
   handleTip: Function;
+  metadata: DocumentMetadata | undefined;
 }
 
-const DocumentStickyHeader = ({ document, handleTip }: Props) => {
+const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
   const router = useRouter();
-  const tabs = getTabs({ router, document });
+  const tabs = getTabs({ router, document, metadata });
 
   return (
     <div className={css(styles.stickyWrapper)}>

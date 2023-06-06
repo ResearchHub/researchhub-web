@@ -16,7 +16,8 @@ import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/Docu
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
 import getCommentFilterByTab from "~/components/Document/lib/getCommentFilterByTab";
-
+import config from "~/components/Document/lib/config";
+import { StyleSheet, css } from "aphrodite";
 
 const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
   switch(tabName) {
@@ -46,6 +47,7 @@ const DocumentPage: NextPage<Args> = ({
 }) => {
   const router = useRouter();
   const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
 
   const revalidatePageCache = () => {
     return fetch(
@@ -95,48 +97,50 @@ const DocumentPage: NextPage<Args> = ({
         errorCode={errorCode}
         metadata={metadata}
       >
-        <CommentFeed
-          initialComments={parsedComments}
-          document={document}
-          showFilters={false}
-          initialFilter={getCommentFilterByTab(tabName)}
-          editorType={getEditorTypeFromTabName(tabName)}
-          allowBounty={tabName === "bounties"}
-          allowCommentTypeSelection={false}
-          // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
-          // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
-          onCommentCreate={(comment) => {
-            revalidatePageCache();
+        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
+          <CommentFeed
+            initialComments={parsedComments}
+            document={document}
+            showFilters={false}
+            initialFilter={getCommentFilterByTab(tabName)}
+            editorType={getEditorTypeFromTabName(tabName)}
+            allowBounty={tabName === "bounties"}
+            allowCommentTypeSelection={false}
+            // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
+            // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
+            onCommentCreate={(comment) => {
+              revalidatePageCache();
 
-            if (!metadata) return;
-            if (comment.bounties.length > 0) {
-              updateMetadata({
-                ...metadata,
-                bounties: [comment.bounties[0], ...metadata.bounties],
-              });              
-            }
-            else if (comment.commentType === COMMENT_TYPES.REVIEW) {
-              updateMetadata({
-                ...metadata,
-                reviewCount: metadata.reviewCount + 1,
-              });
-            }
-            else {
-              updateMetadata({
-                ...metadata,
-                discussionCount: metadata.discussionCount + 1,
-              });
-            }
+              if (!metadata) return;
+              if (comment.bounties.length > 0) {
+                updateMetadata({
+                  ...metadata,
+                  bounties: [comment.bounties[0], ...metadata.bounties],
+                });
+              }
+              else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                updateMetadata({
+                  ...metadata,
+                  reviewCount: metadata.reviewCount + 1,
+                });
+              }
+              else {
+                updateMetadata({
+                  ...metadata,
+                  discussionCount: metadata.discussionCount + 1,
+                });
+              }
 
-          }}
-          onCommentUpdate={() => {
-            revalidatePageCache();
-          }}
-          onCommentRemove={(comment) => {
-            revalidatePageCache();
-          }}
-          totalCommentCount={commentCount}
-        />
+            }}
+            onCommentUpdate={() => {
+              revalidatePageCache();
+            }}
+            onCommentRemove={(comment) => {
+              revalidatePageCache();
+            }}
+            totalCommentCount={commentCount}
+          />
+        </div>
       </SharedDocumentPage>
     </DocumentContext.Provider>
   );
@@ -161,5 +165,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: true,
   };
 };
+
+const styles = StyleSheet.create({
+  bodyContentWrapper: {
+    margin: "0 auto",
+  },  
+});
 
 export default DocumentPage;

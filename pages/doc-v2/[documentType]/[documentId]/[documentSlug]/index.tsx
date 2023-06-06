@@ -66,7 +66,7 @@ const DocumentPage: NextPage<Args> = ({
         metadata={metadata}
         documentType={documentType}
       >
-        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>      
+        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
           {isPaper(document) && (
             <div className={css(styles.bodyWrapper)}>
               {pdfUrl ? (

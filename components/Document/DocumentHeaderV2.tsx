@@ -134,6 +134,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
       >
         <DocumentStickyHeader
           document={doc}
+          metadata={metadata}
           handleTip={() =>
             dispatch(ModalActions.openPaperTransactionModal(true))
           }
