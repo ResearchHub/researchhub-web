@@ -34,6 +34,8 @@ export default class MyDocument extends Document {
             async
             defer
           ></script>
+          <script src="path/to/citation.js" type="text/javascript"></script>
+
           {/* Google one tap */}
           <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
           <link

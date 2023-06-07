@@ -42,8 +42,9 @@ import withWebSocket from "~/components/withWebSocket";
 
 interface Props {
   showMessage: ({ show, load }) => void;
-  wsResponse: {};
+  wsResponse: string;
   wsConnected: boolean;
+  setMessage?: any;
 }
 
 type Preload = {
@@ -103,8 +104,10 @@ function ReferencesContainer({
     acceptedFiles.forEach((file) => {
       formData.append("pdfs[]", file);
     });
+    // @ts-ignore TODO: fix
     formData.append("organization_id", currentOrg.id);
     if (router.query.project) {
+      // @ts-ignore TODO: fix
       formData.append("project_id", router.query.project);
     }
     const url = generateApiUrl("citation_entry/pdf_uploads");
@@ -148,7 +151,6 @@ function ReferencesContainer({
           </div>,
           {
             position: "top-center",
-            autoClose: true,
             autoClose: 5000,
             progressStyle: { background: colors.NEW_BLUE() },
             hideProgressBar: false,
@@ -233,6 +235,7 @@ function ReferencesContainer({
                     onClick={(): void => {
                       // TODO: calvinhlee - clean this up from backend
                       const targetProject = currentOrgProjects.find(
+                        // TODO: calvinhlee - clean this up from backend
                         (proj) => proj.id === parseInt(router.query.project)
                       );
                       const { id, collaborators, project_name, is_public } =
@@ -383,6 +386,7 @@ function ReferencesContainer({
                 </Box>
                 <ReferencesTable
                   createdReferences={createdReferences}
+                  // @ts-ignore TODO: @@lightninglu10 - fix TS.
                   handleFileDrop={handleFileDrop}
                   setSelectedReferenceIDs={setSelectedReferenceIDs}
                 />
@@ -417,5 +421,6 @@ const mapDispatchToProps = {
 };
 
 export default withWebSocket(
+  // @ts-ignore - faulty legacy connect hook
   connect(null, mapDispatchToProps)(ReferencesContainer)
 );

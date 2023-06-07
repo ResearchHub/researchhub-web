@@ -11,15 +11,15 @@ import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
 
 type Props = {
-  authChecked: boolean;
-  isLoggedIn: boolean;
+  authChecked?: boolean;
   currentUserID?: ID;
+  isLoggedIn: boolean;
 };
 
 function ReferencesRoot({
   authChecked,
-  isLoggedIn,
   currentUserID,
+  isLoggedIn,
 }: Props): ReactElement {
   const wsUrl = currentUserID ? WS_ROUTES.CITATION_ENTRY(currentUserID) : "";
 
@@ -34,6 +34,7 @@ function ReferencesRoot({
               title={"ResearchHub Reference Manager"}
             ></HeadComponent>
             {isLoggedIn || !authChecked ? (
+              // @ts-ignore - faulty legacy connect hook
               <ReferencesContainer wsUrl={wsUrl} wsAuth />
             ) : (
               <LoginModal
