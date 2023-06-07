@@ -41,14 +41,18 @@ export default function ReferencesBibliographyModal({
         )
         .map((selected) => {
           const fields = selected.fields ?? {};
-          return {
+          const result = {
             ...fields,
+            year: fields?.date?.split("-")[2],
             author: fields.creators.map((creator): { name: string } => {
               return { name: creator.first_name + " " + creator.last_name };
             }),
             identifier: [{ type: "doi", id: fields.DOI ?? fields.doi }],
             journal: { name: fields.journal_abbreviation },
           };
+          delete result.date;
+          delete result.access_date;
+          return result;
         });
 
       setFormattedBibliography(
