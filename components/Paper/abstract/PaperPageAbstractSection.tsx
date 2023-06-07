@@ -184,7 +184,7 @@ export default function PaperPageAbstractSection({ paper, onUpdate }: Props): Re
           </div>
         ) : (
           <div>
-            <p dangerouslySetInnerHTML={{ __html: paper.abstract_src_markdown }} />
+            <p dangerouslySetInnerHTML={{ __html: paper.abstract_src_markdown || paper.abstract }} />
           </div>
         )}
       </div>

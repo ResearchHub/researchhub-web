@@ -29,7 +29,10 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       title: "Authors",
       value: (
         <>
-          <AuthorList authors={document.authors} />
+          {document.authors.length > 0
+            ? <AuthorList authors={document.authors} />
+            : <span>Not available</span>
+          }
           {isPaper(document) && (
             <span
               style={{ marginLeft: 5 }}

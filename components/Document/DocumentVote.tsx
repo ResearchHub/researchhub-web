@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
 import VoteWidget from "../VoteWidget";
@@ -7,27 +7,29 @@ import { Vote } from "~/config/types/vote";
 import { MessageActions } from "~/redux/message";
 import { voteForDocument } from "./api/voteForDocument";
 import { ID } from "~/config/types/root_types";
-import { ApiDocumentType } from "./lib/types";
+import { ApiDocumentType, DocumentMetadata } from "./lib/types";
+import useCacheControl from "~/config/hooks/useCacheControl";
+import { DocumentContext } from "./lib/DocumentContext";
 
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   id: ID;
   score: number;
-  userVote: Vote;
+  userVote: Vote|null;
+  metadata: DocumentMetadata;
   apiDocumentType: ApiDocumentType;
   isHorizontal?: boolean;
 };
 
-const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = false, }: Args) => {
-  const [_score, _setScore] = useState<number>(score);
-  const [_userVote, _setUserVote] = useState<Vote|null>(userVote);
+const DocumentVote = ({ id, metadata, score, userVote, apiDocumentType, isHorizontal = false, }: Args) => {
+  const documentContext = useContext(DocumentContext);
   const dispatch = useDispatch();
+  const [revalidatePage] = useCacheControl();
 
-  const handleVoteSuccess = ({ userVote }: { userVote: Vote }) => {
-    const newUserVote = userVote;
-    const currentUserVote = _userVote;
-    let newScore = _score;
+  const handleVoteSuccess = ({ newUserVote }: { newUserVote: Vote }) => {
+    const currentUserVote = userVote;
+    let newScore = score;
     if (newUserVote.voteType === NEUTRALVOTE) {
       if (currentUserVote?.voteType === UPVOTE) {
         newScore -= 1;
@@ -50,13 +52,21 @@ const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = fal
       }
     }
 
-    _setScore(newScore);
-    _setUserVote(newUserVote);
+    console.log('newScore', newScore)
+    console.log('newUserVote', newUserVote)
+    console.log('currentUserVote', currentUserVote)
+
+    documentContext?.updateMetadata({
+      ...metadata,
+      score: newScore,
+      userVote: newUserVote,
+    });
+    revalidatePage();
   };
 
   return (
     <VoteWidget
-      score={_score}
+      score={score}
       horizontalView={isHorizontal}
       onUpvote={async () => {
         try {
@@ -65,7 +75,7 @@ const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = fal
             documentId: id,
             documentType: apiDocumentType,
           });
-          handleVoteSuccess({ userVote });
+          handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
           // @ts-ignore
           dispatch(setMessage(error));
@@ -81,7 +91,7 @@ const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = fal
             documentId: id,
             documentType: apiDocumentType,
           });
-          handleVoteSuccess({ userVote });
+          handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
           // @ts-ignore
           dispatch(setMessage(error));
@@ -96,7 +106,7 @@ const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = fal
             documentId: id,
             documentType: apiDocumentType,
           });
-          handleVoteSuccess({ userVote });
+          handleVoteSuccess({ newUserVote: userVote });
         } catch (error) {
           // @ts-ignore
           dispatch(setMessage(error));
@@ -104,7 +114,7 @@ const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = fal
           dispatch(showMessage({ show: true, error: true }));
         }
       }}
-      selected={_userVote ? _userVote.voteType : null}
+      selected={userVote ? userVote.voteType : null}
       isPaper={apiDocumentType === "paper"}
       type={apiDocumentType}
       pillClass={isHorizontal && styles.pill}

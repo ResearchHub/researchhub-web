@@ -38,7 +38,7 @@ const PaperTransactionModal = dynamic(
 
 interface Props {
   document: GenericDocument;
-  metadata: DocumentMetadata | undefined;
+  metadata: DocumentMetadata;
 }
 
 const DocumentHeader = ({ document: doc, metadata }: Props) => {
@@ -146,7 +146,13 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             </div>
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
-                {/* <DocumentVote document={doc} /> */}
+                <DocumentVote
+                  id={doc.id}
+                  metadata={metadata}
+                  score={metadata.score}
+                  apiDocumentType={doc.apiDocumentType}
+                  userVote={metadata.userVote}
+                />
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
@@ -156,7 +162,14 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             <div className={css(styles.btnsWrapper)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
                 <IconButton variant="round">
-                  {/* <DocumentVote document={doc} isHorizontal={true} /> */}
+                  <DocumentVote
+                    id={doc.id}
+                    score={metadata.score}
+                    metadata={metadata}
+                    apiDocumentType={doc.apiDocumentType}
+                    userVote={metadata.userVote}
+                    isHorizontal={true}
+                  />
                 </IconButton>
               </div>
 

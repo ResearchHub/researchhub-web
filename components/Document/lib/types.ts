@@ -31,6 +31,7 @@ export type DocumentMetadata = {
   discussionCount: number;
   reviewCount: number;
   summaryCount: number;
+  score: number;
 };
 
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
@@ -40,12 +41,13 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     unifiedDocumentId: raw.id,
     bounties: parseBountyList(document?.bounties || []).filter(b => !b.isExpiredOrClosed),
     purchases: (document.purchases || []).map((p: any) => parsePurchase(p)),
-    userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
+    userVote: document?.user_vote ? parseVote(document.user_vote) : null,
     reviewSummary: parseReviewSummary(raw.reviews),
     discussionCount:
       document?.discussion_aggregates?.discussion_count || 0,
     reviewCount: document?.discussion_aggregates?.review_count || 0,
     summaryCount: document?.discussion_aggregates?.summary_count || 0,
+    score: raw.score,
   };
 };
 
@@ -80,6 +82,7 @@ export type Paper = GenericDocument & {
   laymanTitle: string;
   externalUrl?: string;
   abstract?: string;
+  abstractHtml?: TrustedHTML;
 };
 
 export type Post = GenericDocument & {
@@ -141,6 +144,7 @@ export const parsePaper = (raw: any): Paper => {
     publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
     externalUrl: raw.url,
     abstract: raw.abstract,
+    abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",
   };
