@@ -47,9 +47,10 @@ export default function ReferencesBibliographyModal({
               return { name: creator.first_name + " " + creator.last_name };
             }),
             identifier: [{ type: "doi", id: fields.DOI ?? fields.doi }],
-            journal: fields.journal_abbreviation,
+            journal: { name: fields.journal_abbreviation },
           };
         });
+
       setFormattedBibliography(
         selectedItems.map((item): string => {
           cite.set(item);
