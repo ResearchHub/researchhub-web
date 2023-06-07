@@ -58,10 +58,6 @@ const PDFViewer = ({
     [pagesRendered, numPages]
   );
 
-  // function onItemClick({ pageNumber: itemPageNumber }) {
-  //   setPageNumber(itemPageNumber);
-  // }
-
   function highlightPattern(text, pattern) {
     const words = pattern.split(" ");
     const regexPattern = words.join("|");
@@ -74,9 +70,14 @@ const PDFViewer = ({
     [searchText]
   );
 
+  const BORDER_WIDTH = 2;
   return (
     <div
-      style={{ width: viewerWidth - 2, overflow: "hidden", margin: "0 auto" }}
+      style={{
+        width: viewerWidth - BORDER_WIDTH,
+        overflow: "hidden",
+        margin: "0 auto",
+      }}
     >
       <Document
         file={pdfUrl}
@@ -84,11 +85,6 @@ const PDFViewer = ({
         onLoadError={onDocumentLoadError}
         loading={showWhenLoading || "Loading..."}
       >
-        {/* <div className="outline">
-          <Outline onItemClick={() => null} />
-        </div> */}
-        {/* <Page key={`page_1`} pageNumber={1} customTextRenderer={textRenderer} onLoadSuccess={removeTextLayerOffset} width={900}/> */}
-
         {Array.from(new Array(pagesRendered), (el, index) => (
           <div
             ref={index + 1 === pagesRendered ? lastPageRef : null}

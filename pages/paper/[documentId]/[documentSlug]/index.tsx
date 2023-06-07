@@ -15,8 +15,14 @@ import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import UploadPDF from "~/components/Paper/Tabs/PaperTab";
 import { breakpoints } from "~/config/themes/screen";
 import useCacheControl from "~/config/hooks/useCacheControl";
-import { useDocument, useDocumentMetadata } from "~/components/Document/lib/useHooks";
-import { LEFT_SIDEBAR_MAX_WIDTH, LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
+import {
+  useDocument,
+  useDocumentMetadata,
+} from "~/components/Document/lib/useHooks";
+import {
+  LEFT_SIDEBAR_MAX_WIDTH,
+  LEFT_SIDEBAR_MIN_WIDTH,
+} from "~/components/Home/sidebar/RootLeftSidebar";
 
 interface Args {
   documentData?: any;
@@ -33,9 +39,17 @@ const DocumentIndexPage: NextPage<Args> = ({
   const documentType = "paper";
   const router = useRouter();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.width);
-  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
-  const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType }) as [Paper|null, Function];
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(
+    config.width
+  );
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
+    rawMetadata: metadata,
+    unifiedDocumentId: documentData?.unified_document?.id,
+  });
+  const [document, setDocument] = useDocument({
+    rawDocumentData: documentData,
+    documentType,
+  }) as [Paper | null, Function];
   const [revalidatePage] = useCacheControl();
 
   if (router.isFallback) {
@@ -55,24 +69,31 @@ const DocumentIndexPage: NextPage<Args> = ({
 
   const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
   return (
-    <DocumentContext.Provider value={{ metadata: documentMetadata, documentType, updateMetadata: setDocumentMetadata }}>
+    <DocumentContext.Provider
+      value={{
+        metadata: documentMetadata,
+        documentType,
+        updateMetadata: setDocumentMetadata,
+      }}
+    >
       <DocumentPageLayout
         document={document}
         errorCode={errorCode}
         metadata={documentMetadata}
         documentType={documentType}
       >
-        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }} ref={wrapperRef}>
+        <div
+          className={css(styles.bodyContentWrapper)}
+          style={{ width: viewerWidth }}
+          ref={wrapperRef}
+        >
           <div className={css(styles.bodyWrapper)}>
             {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
                 <PDFViewer
                   pdfUrl={pdfUrl}
-                  onZoomIn={(zoom) => {
-                    setViewerWidth(zoom.newWidth)
-                  }}
-                  onZoomOut={(zoom) => {
-                    setViewerWidth(zoom.newWidth)
+                  onZoom={(zoom) => {
+                    setViewerWidth(zoom.newWidth);
                   }}
                 />
               </div>
@@ -104,11 +125,13 @@ const DocumentIndexPage: NextPage<Args> = ({
                 onUpdate={(paperFile) => {
                   setDocument({
                     ...document,
-                    formats: [{
-                      type: "pdf",
-                      url: paperFile,
-                    }] 
-                  });                
+                    formats: [
+                      {
+                        type: "pdf",
+                        url: paperFile,
+                      },
+                    ],
+                  });
                   revalidatePage();
                 }}
               />
@@ -135,8 +158,8 @@ const styles = StyleSheet.create({
   body: {
     padding: 45,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 25,  
-    }
+      padding: 25,
+    },
   },
   uploadPdfWrapper: {
     marginTop: 25,
@@ -144,20 +167,19 @@ const styles = StyleSheet.create({
     padding: 45,
     border: `1px solid ${config.border}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 25,  
-    }    
+      padding: 25,
+    },
   },
   bodyContentWrapper: {
     margin: "0 auto",
     maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MAX_WIDTH}px)`,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`
+      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      maxWidth: `calc(100vw - 30px)`
-    }
-  },  
-
+      maxWidth: `calc(100vw - 30px)`,
+    },
+  },
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

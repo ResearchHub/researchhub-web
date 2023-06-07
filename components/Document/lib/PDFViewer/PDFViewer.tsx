@@ -1,81 +1,46 @@
-import { useRef, useEffect, useState, useMemo, ReactElement } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPlaceholder from "../Placeholders/DocumentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleExclamation,
   faXmark,
-  faMinus,
-  faPlus,
-  faChevronDown,
-  faFileArrowDown
+  faFileArrowDown,
 } from "@fortawesome/pro-light-svg-icons";
 import dynamic from "next/dynamic";
 import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
-import GenericMenu from "../../../shared/GenericMenu";
 import PDFViewerControls from "./PDFViewerControls";
-import PDFViewerZoomControls from "./PDFViewerZoomControls";
 import config from "../config";
+import { zoomOptions } from "./config";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
-const zoomOptions = [
-  {
-    label: "100%",
-    value: 1,
-    isVisible: true,
-  },
-  {
-    label: "125%",
-    value: 1.25,
-    isVisible: true,
-  },
-  {
-    label: "150%",
-    value: 1.5,
-    isVisible: true,
-  },
-  {
-    label: "170%",
-    value: 1.75,
-    isVisible: true,
-  },
-  {
-    label: "200%",
-    value: 2,
-    isVisible: true,
-  },
-];
-
 interface Props {
   pdfUrl?: string;
-  maxWidth?: number;
-  onZoomOut?: Function;
-  onZoomIn?: Function;
+  // PDFJS needs explicit width to render properly.
+  // This width should be considered as initial width since user can zoom in/out.
+  width?: number;
+  onZoom?: Function;
 }
 
 type ZoomAction = {
   size: "full-screen" | "normal";
   zoom: number;
   newWidth: number;
-}
+};
 
-const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
+const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
-  const [viewerWidth, setViewerWidth] = useState<number>(maxWidth); // PDFJS needs explicit width to render properly
-  const [wrapperWidth, setWrapperWidth] = useState<string>("100vw"); // The Wrapper of PDF.js
-  const [isSearchOpen, setSearchOpen] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string>("");
-  const containerRef = useRef<HTMLElement>(null);
+  const [viewerWidth, setViewerWidth] = useState<number>(width);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   function handleZoomIn() {
-
     if (isExpanded) {
       const currentIdx = zoomOptions.findIndex(
         (option) => option.value === fullScreenSelectedZoom
@@ -85,15 +50,15 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
         return;
       }
 
-      const newZoom = zoomOptions[currentIdx + 1].value
+      const newZoom = zoomOptions[currentIdx + 1].value;
       setFullScreenSelectedZoom(newZoom);
-      onZoomIn && onZoomIn({
-        size: "full-screen",
-        zoom: newZoom,
-        newWidth: viewerWidth * newZoom
-      } as ZoomAction);      
-    }
-    else {
+      onZoom &&
+        onZoom({
+          size: "full-screen",
+          zoom: newZoom,
+          newWidth: viewerWidth * newZoom,
+        } as ZoomAction);
+    } else {
       const currentIdx = zoomOptions.findIndex(
         (option) => option.value === selectedZoom
       );
@@ -104,11 +69,12 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
 
       const newZoom = zoomOptions[currentIdx + 1].value;
       setSelectedZoom(newZoom);
-      onZoomIn && onZoomIn({
-        size: "normal",
-        zoom: newZoom,
-        newWidth: viewerWidth * newZoom
-      } as ZoomAction);
+      onZoom &&
+        onZoom({
+          size: "normal",
+          zoom: newZoom,
+          newWidth: viewerWidth * newZoom,
+        } as ZoomAction);
     }
   }
   function handleZoomOut() {
@@ -120,15 +86,15 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
       if (isFirstOption) {
         return;
       }
-      const newZoom = zoomOptions[currentIdx - 1].value
+      const newZoom = zoomOptions[currentIdx - 1].value;
       setFullScreenSelectedZoom(newZoom);
-      onZoomOut && onZoomOut({
-        size: "full-screen",
-        zoom: newZoom,
-        newWidth: viewerWidth * newZoom
-      } as ZoomAction);      
-    }
-    else {
+      onZoom &&
+        onZoom({
+          size: "full-screen",
+          zoom: newZoom,
+          newWidth: viewerWidth * newZoom,
+        } as ZoomAction);
+    } else {
       const currentIdx = zoomOptions.findIndex(
         (option) => option.value === selectedZoom
       );
@@ -138,14 +104,54 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
       }
       const newZoom = zoomOptions[currentIdx - 1].value;
       setSelectedZoom(newZoom);
-      onZoomOut && onZoomOut({
-        size: "normal",
-        zoom: newZoom,
-        newWidth: viewerWidth * newZoom
-      } as ZoomAction);
+      onZoom &&
+        onZoom({
+          size: "normal",
+          zoom: newZoom,
+          newWidth: viewerWidth * newZoom,
+        } as ZoomAction);
     }
   }
 
+  function handleZoomSelection(zoomOption: any) {
+    const newZoom = zoomOptions.find(
+      (z) => z.value === zoomOption.value
+    )!.value;
+    if (isExpanded) {
+      onZoom &&
+        onZoom({
+          size: "full-screen",
+          zoom: newZoom,
+          newWidth: viewerWidth * newZoom,
+        } as ZoomAction);
+      setFullScreenSelectedZoom(newZoom);
+    } else {
+      onZoom &&
+        onZoom({
+          size: "normal",
+          zoom: newZoom,
+          newWidth: viewerWidth * newZoom,
+        } as ZoomAction);
+      setSelectedZoom(newZoom);
+    }
+  }
+
+  function downloadPDF(pdfUrl) {
+    // Create a link for our script to click
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.target = "_blank";
+    link.download = "download.pdf";
+
+    // Trigger the click
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+  }
+
+  // Note: This will be turned on. Needs a bit of work to get "pinch zoom" to work properly
   // useEffect(() => {
   //   let initialDistance;
 
@@ -198,13 +204,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
     if (!containerRef.current) return;
 
     function resizeHandler() {
-      setViewerWidth(Math.min(maxWidth, containerRef!.current!.offsetWidth));
-
-      if (window.outerWidth > config.width) {
-        setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
-      } else {
-        setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
-      }
+      setViewerWidth(Math.min(width, containerRef!.current!.offsetWidth));
     }
 
     resizeHandler();
@@ -240,14 +240,17 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
         className={css(styles.expandedWrapper, isExpanded && styles.expandedOn)}
       >
         <div className={css(styles.expandedNav)}>
-        <div
-            onClick={() => setIsExpanded(false)}
+          <div
+            onClick={() => downloadPDF(pdfUrl)}
             className={css(styles.downloadBtn)}
           >
             <IconButton overrideStyle={styles.viewerNavBtn}>
-              <FontAwesomeIcon icon={faFileArrowDown} style={{ fontSize: 20 }} />
+              <FontAwesomeIcon
+                icon={faFileArrowDown}
+                style={{ fontSize: 20 }}
+              />
             </IconButton>
-          </div>          
+          </div>
           <div
             onClick={() => setIsExpanded(false)}
             className={css(styles.closeBtn)}
@@ -261,7 +264,6 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
           <_PDFViewer
             pdfUrl={pdfUrl}
             viewerWidth={viewerWidth * fullScreenSelectedZoom}
-            searchText={searchText}
             onLoadSuccess={onLoadSuccess}
             onLoadError={onLoadError}
             showWhenLoading={<DocumentPlaceholder />}
@@ -269,7 +271,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
         </div>
       </div>
     );
-  }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom, searchText]);
+  }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom]);
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
@@ -278,36 +280,31 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
         className={css(
           styles.controls,
           styles.controlsSticky,
-          isSearchOpen && styles.controlsStickySearchOpen,
           isExpanded && styles.controlsStickyExpanded
         )}
       >
-
         <PDFViewerControls
           handleFullScreen={() => {
             setIsExpanded(true);
           }}
-          zoomOptions={zoomOptions}
           currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-          handleSearchClick={(isSearchOpen) => setSearchOpen(isSearchOpen)}
           handleZoomIn={handleZoomIn}
           handleZoomOut={handleZoomOut}
-          handleSearchChange={(searchText) => setSearchText(searchText)}
-          searchText={searchText}
           showExpand={isExpanded ? false : true}
-          handleZoomSelection={(option) => setSelectedZoom(option.value)}
+          handleZoomSelection={handleZoomSelection}
         />
-
-
       </div>
       <div style={{ overflowX: "scroll" }}>
         <_PDFViewer
           pdfUrl={pdfUrl}
-          searchText={searchText}
           viewerWidth={viewerWidth * selectedZoom}
           onLoadSuccess={onLoadSuccess}
           onLoadError={onLoadError}
-          showWhenLoading={<div style={{ padding: 20 }}><DocumentPlaceholder /></div>}
+          showWhenLoading={
+            <div style={{ padding: 20 }}>
+              <DocumentPlaceholder />
+            </div>
+          }
         />
       </div>
     </div>
@@ -348,20 +345,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
     userSelect: "none",
-    padding: "10px 12px",
+    padding: "10px 18px",
     borderRadius: "42px",
 
     [`@media (max-width: 1100px)`]: {
       transform: "unset",
       left: `calc(50% - ${config.controlsWidth / 2}px)`,
-    },
-  },
-  controlsStickySearchOpen: {
-    left: `calc(50% - 60px)`,
-
-    [`@media (max-width: 1100px)`]: {
-      transform: "unset",
-      left: `calc(50% - ${config.controlsWidthExpanded / 2}px)`,
     },
   },
   controlsStickyExpanded: {
@@ -389,7 +378,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 48,
     top: 3,
-  },  
+  },
   expandedNav: {
     position: "fixed",
     height: 40,
@@ -416,7 +405,7 @@ const styles = StyleSheet.create({
     width: 33,
     boxSizing: "border-box",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
-  }
+  },
 });
 
 export default PDFViewer;
