@@ -1,11 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import { ID, NullableString } from "~/config/types/root_types";
-import { ReactElement, useEffect, useMemo, useState } from "react";
 import { isEmpty, silentEmptyFnc } from "~/config/utils/nullchecks";
+import { ReactElement, useEffect, useMemo, useState } from "react";
+import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
+import CheckIcon from "@mui/icons-material/Check";
+import Cite from "citation-js";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import QuickModal from "../../menu/QuickModal";
-import Cite from "citation-js";
-import CheckIcon from "@mui/icons-material/Check";
+import { ReferenceTableRowDataType } from "../reference_table/utils/formatReferenceRowData";
 
 type Props = {
   isOpen: boolean;
@@ -18,6 +20,7 @@ export default function ReferencesBibliographyModal({
   onClose,
   selectedReferenceIDs,
 }: Props): ReactElement {
+  const { referenceTableRowData } = useReferencesTableContext();
   const [formattedBibliography, setFormattedBibliography] = useState<
     NullableString[]
   >([]);
@@ -27,16 +30,45 @@ export default function ReferencesBibliographyModal({
   const cite = useMemo(() => new Cite(), []);
 
   useEffect((): void => {
+    cite.reset();
     if (isEmpty(selectedReferenceIDs)) {
       setFormattedBibliography([]);
-      cite.reset();
     } else {
+      const selectedIDSet = new Set(selectedReferenceIDs);
+      const selectedItems = referenceTableRowData
+        .filter((rowData: ReferenceTableRowDataType): boolean =>
+          selectedIDSet.has(rowData.id)
+        )
+        .map((selected) => {
+          const fields = selected.fields ?? {};
+          return {
+            ...fields,
+            author: fields.creators.map((creator): { name: string } => {
+              return { name: creator.first_name + " " + creator.last_name };
+            }),
+            identifier: [{ type: "doi", id: fields.DOI ?? fields.doi }],
+            journal: fields.journal_abbreviation,
+          };
+        });
+      setFormattedBibliography(
+        selectedItems.map((item): string => {
+          cite.set(item);
+          return cite.format("bibliography", {
+            format: "text",
+            template: "apa",
+          });
+        })
+      );
     }
   }, [selectedReferenceIDs]);
 
   const bibliographyList = formattedBibliography.map(
     (biblio: NullableString, elIndex: number) => (
-      <Typography key={elIndex} variant="subtitle2">
+      <Typography
+        key={elIndex}
+        variant="subtitle2"
+        sx={{ marginBottom: "16px" }}
+      >
         {biblio}
       </Typography>
     )
@@ -60,7 +92,7 @@ export default function ReferencesBibliographyModal({
     <QuickModal
       isOpen={isOpen}
       modalContent={
-        <Box sx={{ marginBottom: "16px", height: "120px" }}>
+        <Box sx={{ marginBottom: "16px" }}>
           <Box
             sx={{
               display: "flex",
@@ -75,7 +107,6 @@ export default function ReferencesBibliographyModal({
           </Box>
           <Box
             sx={{
-              background: "red",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",

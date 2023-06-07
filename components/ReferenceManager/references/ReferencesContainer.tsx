@@ -55,7 +55,7 @@ type Preload = {
   created: boolean;
 };
 
-// TODO: @@lightninglu10 - fix TS.
+// TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
   setMessage,

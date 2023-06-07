@@ -51,6 +51,7 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
+// TODO: @lightninglu10 - ReferenceTableRowDataType became worthless after updating this component. We need to address this
 export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
