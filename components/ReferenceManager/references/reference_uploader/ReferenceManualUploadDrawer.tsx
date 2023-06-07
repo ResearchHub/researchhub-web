@@ -26,9 +26,6 @@ import ReferenceTypeSelect from "../../form/ReferenceTypeSelect";
 import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import dynamic from "next/dynamic";
-
-// const Cite = dynamic(() => import("citation-js"), { ssr: true });
 
 const CALCULATED_LEFT_MARGIN =
   240 /* LOCAL_LEFT_NAV_WIDTH */ +
@@ -205,9 +202,6 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
           <Box sx={{ borderBottom: `1px solid #E9EAEF` }} mb="14px">
             <ReferenceDoiSearchInput
               onSearchSuccess={(doiMetaData: any): void => {
-                // const example = new Cite(doiMetaData);
-                // console.warn(example.data);
-
                 setSelectedReferenceType(
                   // ReferenceTypeSelect will sanity check for us
                   doiMetaData?.type.replace("-", "_")?.toUpperCase()

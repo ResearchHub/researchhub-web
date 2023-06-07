@@ -80,7 +80,7 @@ const nextConfig = {
     }
 
     config.resolve.alias["~"] = path.resolve(__dirname);
-    config.resolve.extensions = [".ts", ".tsx", ".js"];
+    config.resolve.extensions = [".js", ".json", ".ts", ".tsx"];
     return config;
   },
   async redirects() {

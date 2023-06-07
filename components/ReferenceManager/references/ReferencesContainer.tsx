@@ -296,6 +296,22 @@ function ReferencesContainer({
                     <DropdownMenu
                       menuItemProps={[
                         {
+                          itemLabel: `Export reference${
+                            selectedReferenceIDs.length > 1 ? "s" : ""
+                          }`,
+                          onClick: () => {
+                            removeReferenceCitations({
+                              onError: emptyFncWithMsg,
+                              onSuccess: (): void => {
+                                setReferencesFetchTime(Date.now());
+                              },
+                              payload: {
+                                citation_entry_ids: selectedReferenceIDs,
+                              },
+                            });
+                          },
+                        },
+                        {
                           itemLabel: `Delete reference${
                             selectedReferenceIDs.length > 1 ? "s" : ""
                           }`,

@@ -58,7 +58,7 @@ export default function ReferencesTable({
   handleFileDrop,
   setSelectedReferenceIDs,
 }: Props) {
-  const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
+  const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [referenceTableRowData, setReferenceTableRowData] = useState<
@@ -135,7 +135,7 @@ export default function ReferencesTable({
         loading={isLoading}
         onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
-          setReferenceItemDrawerData({
+          setReferenceItemDatum({
             ...nullthrows(
               referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),
