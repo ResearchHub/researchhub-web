@@ -210,7 +210,11 @@ function ReferencesContainer({
           onClose={(): void => setIsRemoveRefModalOpen(false)}
           primaryButtonConfig={{ label: "Remove" }}
         />
-        <ReferencesBibliographyModal isOpen={isBibModalOpen} />
+        <ReferencesBibliographyModal
+          isOpen={isBibModalOpen}
+          onClose={(): void => setIsBibModalOpen(false)}
+          selectedReferenceIDs={selectedReferenceIDs}
+        />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
