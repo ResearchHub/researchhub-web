@@ -81,7 +81,7 @@ export default function ReferencesBibliographyModal({
 
   const onCopyClick = (): void => {
     navigator.clipboard
-      .writeText(formattedBibliography.join(" • "))
+      .writeText("• " + formattedBibliography.join(" • "))
       .then(() => {
         setCopyButtonStatus("copied");
         setTimeout((): void => {
