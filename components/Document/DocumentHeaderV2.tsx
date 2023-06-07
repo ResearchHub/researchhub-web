@@ -93,7 +93,9 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
       icon: <FontAwesomeIcon icon={faPen} />,
       value: "edit-content",
       onClick: () => {
-        router.push(`/${doc.note.organization.slug}/notebook/${doc.note.id}`)
+        if (doc.note) {
+          router.push(`/${doc.note.organization.slug}/notebook/${doc.note.id}`)
+        }
       }
     }] : []),    
     {
@@ -204,7 +206,9 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
 
         <PaperTransactionModal
           // @ts-ignore
-          paper={doc.raw}
+          paper={isPaper(doc) ? doc.raw : undefined}
+          // @ts-ignore
+          post={isPost(doc) ? doc.raw : undefined}          
           // @ts-ignore
           onTransactionCreate={(purchase:Purchase) => {
             // @ts-ignore
@@ -233,34 +237,34 @@ const styles = StyleSheet.create({
     borderBottom: `2px solid ${config.border}`,
   },
   lineItemsWrapper: {
-    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   headerContentWrapper: {
-    maxWidth: config.maxWidth,
+    maxWidth: config.width,
     width: "100%",
   },
   badgesWrapper: {
     marginBottom: 10,
     alignItems: "center",
     position: "relative",
-    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
-    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   titleWrapper: {
     position: "relative",
-    [`@media (max-width: ${config.maxWidth + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -289,7 +293,7 @@ const styles = StyleSheet.create({
   voteWrapperForSmallScreen: {
     display: "none",
     [`@media (max-width: ${
-      config.maxWidth + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
+      config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
     }px)`]: {
       display: "block",
     },
@@ -304,7 +308,7 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "15px",
     justifyContent: "flex-end",
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.width}px)`]: {
       justifyContent: "flex-start",
       paddingLeft: 15,
       paddingRight: 15,

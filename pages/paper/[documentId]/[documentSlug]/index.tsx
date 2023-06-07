@@ -10,12 +10,13 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import UploadPDF from "~/components/Paper/Tabs/PaperTab";
 import { breakpoints } from "~/config/themes/screen";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { useDocument, useDocumentMetadata } from "~/components/Document/lib/useHooks";
+import { LEFT_SIDEBAR_MAX_WIDTH, LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 
 interface Args {
   documentData?: any;
@@ -31,8 +32,8 @@ const DocumentIndexPage: NextPage<Args> = ({
 }) => {
   const documentType = "paper";
   const router = useRouter();
-  
-  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.width);
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
   const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType }) as [Paper|null, Function];
   const [revalidatePage] = useCacheControl();
@@ -61,11 +62,19 @@ const DocumentIndexPage: NextPage<Args> = ({
         metadata={documentMetadata}
         documentType={documentType}
       >
-        <div className={css(styles.bodyContentWrapper)} style={{ maxWidth: viewerWidth }}>
+        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }} ref={wrapperRef}>
           <div className={css(styles.bodyWrapper)}>
             {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
-                <PDFViewer pdfUrl={pdfUrl} onZoomIn={(zoom) => setViewerWidth(zoom.newWidth)} onZoomOut={(zoom) => setViewerWidth(zoom.newWidth)} />
+                <PDFViewer
+                  pdfUrl={pdfUrl}
+                  onZoomIn={(zoom) => {
+                    setViewerWidth(zoom.newWidth)
+                  }}
+                  onZoomOut={(zoom) => {
+                    setViewerWidth(zoom.newWidth)
+                  }}
+                />
               </div>
             ) : (
               <div className={css(styles.body)}>
@@ -140,7 +149,15 @@ const styles = StyleSheet.create({
   },
   bodyContentWrapper: {
     margin: "0 auto",
+    maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MAX_WIDTH}px)`,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxWidth: `calc(100vw - 30px)`
+    }
   },  
+
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

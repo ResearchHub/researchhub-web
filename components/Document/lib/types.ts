@@ -90,7 +90,7 @@ export type Paper = GenericDocument & {
 
 export type Post = GenericDocument & {
   postType?: "publication" | "question";
-  note: Note;
+  note?: Note;
 };
 
 export type Hypothesis = GenericDocument & {
@@ -176,8 +176,11 @@ export const parsePost = (raw: any): Post => {
     type: "post",
     apiDocumentType: "researchhub_post",
     postType: raw.unified_document.document_type === "QUESTION" ? "question" : "publication",
-    note: parseNote(raw.note),
   };
+
+  if (raw.note) {
+    parsed.note = parseNote(raw.note);
+  }
 
   return parsed;
 };

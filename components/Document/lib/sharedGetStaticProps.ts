@@ -35,8 +35,6 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
       unifiedDocId: documentData.unified_document.id,
     });
 
-    console.log('documentData', documentData)
-
   } catch (err) {
     console.log("Error getting document", err);
     return {

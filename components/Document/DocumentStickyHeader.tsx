@@ -70,9 +70,9 @@ const styles = StyleSheet.create({
   stickyWrapper: {
     display: "flex",
     alignItems: "center",
-    maxWidth: config.maxWidth,
+    maxWidth: config.width,
     margin: "0 auto",
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.width}px)`]: {
       padding: "5px 5px 0px 10px",
       maxWidth: "100vw",
     },

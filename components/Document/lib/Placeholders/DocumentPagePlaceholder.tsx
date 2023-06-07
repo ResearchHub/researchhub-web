@@ -19,10 +19,10 @@ const DocumentPagePlaceholder = () => {
 const styles = StyleSheet.create({
   container: {
     margin: "0 auto",
-    maxWidth: config.maxWidth,
+    maxWidth: config.width,
     width: "100%",
     [`@media only screen and (max-width: ${
-      config.maxWidth + LEFT_MIN_NAV_WIDTH
+      config.width + LEFT_MIN_NAV_WIDTH
     }px)`]: {
       width: `calc(100vw - ${LEFT_MIN_NAV_WIDTH + 30}px)`,
       paddingLeft: 30,

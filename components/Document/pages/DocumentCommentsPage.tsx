@@ -49,7 +49,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
   errorCode,
 }) => {
   const router = useRouter();
-  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.width);
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
   const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType });
   const [revalidatePage] = useCacheControl();

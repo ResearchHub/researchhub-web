@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: "4px",
     padding: "8px",
     boxShadow:
-      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
+      "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
   },
   menuItem: {
     display: "flex",

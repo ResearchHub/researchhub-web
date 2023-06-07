@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     height: "100%",
     background: config.background,
     paddingBottom: 50,
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.width}px)`]: {
       maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH})`,
     },
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   bodyArea: {
     display: "block",
     marginTop: 25,
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+    [`@media (max-width: ${config.width}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
       boxSizing: "border-box",

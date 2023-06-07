@@ -200,7 +200,7 @@ const PDFViewer = ({ pdfUrl, maxWidth = 900, onZoomOut, onZoomIn }: Props) => {
     function resizeHandler() {
       setViewerWidth(Math.min(maxWidth, containerRef!.current!.offsetWidth));
 
-      if (window.outerWidth > config.maxWidth) {
+      if (window.outerWidth > config.width) {
         setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
       } else {
         setWrapperWidth(`${containerRef!.current!.offsetWidth}px`);
