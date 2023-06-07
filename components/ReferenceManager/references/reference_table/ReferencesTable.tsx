@@ -7,6 +7,9 @@ import {
   formatReferenceRowData,
   ReferenceTableRowDataType,
 } from "./utils/formatReferenceRowData";
+import { setChonkyDefaults, FullFileBrowser } from "chonky";
+import { ChonkyIconFA } from "chonky-icon-fontawesome";
+
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
@@ -20,6 +23,37 @@ type Props = {
   handleFileDrop: () => void;
   setSelectedReferenceIDs: (refs: any[]) => void;
 };
+
+setChonkyDefaults({ iconComponent: ChonkyIconFA });
+
+function smartTrim(string, maxLength) {
+  if (!string) return string;
+  if (maxLength < 1) return string;
+  if (string.length <= maxLength) return string;
+  if (maxLength == 1) return string.substring(0, 1) + "...";
+
+  const midpoint = Math.ceil(string.length / 2);
+  const toremove = string.length - maxLength;
+  const lstrip = Math.ceil(toremove / 2);
+  const rstrip = toremove - lstrip;
+  return (
+    string.substring(0, midpoint - lstrip) +
+    "..." +
+    string.substring(midpoint + rstrip)
+  );
+}
+
+function transformResToFiles(results) {
+  return results.map((citation) => {
+    return {
+      id: citation.id,
+      name: smartTrim(citation.fields.title, 45),
+      thumbnailUrl: citation.paper?.first_preview?.file,
+      modDate: citation.updated_at,
+      color: "#fff",
+    };
+  });
+}
 
 function useEffectFetchReferenceCitations({
   onError,
@@ -68,7 +102,8 @@ export default function ReferencesTable({
   useEffectFetchReferenceCitations({
     setIsLoading,
     onSuccess: (payload: any) => {
-      setReferenceTableRowData(payload?.results);
+      console.log(payload.results);
+      setReferenceTableRowData(transformResToFiles(payload?.results));
       setIsLoading(false);
     },
     onError: emptyFncWithMsg,
@@ -104,13 +139,18 @@ export default function ReferencesTable({
     setReferenceTableRowData(newReferences);
   }, [createdReferences]);
 
-  const formattedReferenceRows = !isLoading
-    ? nullthrows(formatReferenceRowData(referenceTableRowData))
-    : [];
+  // const formattedReferenceRows = !isLoading
+  //   ? nullthrows(formatReferenceRowData(referenceTableRowData))
+  //   : [];
 
   return (
-    <div style={{ width: "100%" }}>
-      <DataGrid
+    <div style={{ width: "100%", height: "100%" }}>
+      <FullFileBrowser
+        files={referenceTableRowData}
+        // folderChain={folderChain}
+      />
+
+      {/* <DataGrid
         autoHeight
         checkboxSelection
         columns={columnsFormat}
@@ -161,7 +201,7 @@ export default function ReferencesTable({
         }}
         sx={DATA_GRID_STYLE_OVERRIDE}
         rows={formattedReferenceRows}
-      />
+      /> */}
       {/* <div
         style={{
           width: "100%",

@@ -26,6 +26,26 @@ img {
   height: 100%;
 }
 
+.chonky-fileThumbnail {
+  box-shadow: 0px 0px 10px 0px #00000026;
+  background-size: cover;
+}
+
+.chonky-gridContainer div {
+  /* width: 100%!important; */
+}
+
+.chonky-toolbarContainer {
+  padding-left: 3px;
+}
+
+.chonky-chonkyRoot {
+  font-family: Roboto !important;
+  border: 1px solid rgb(232, 232, 239) !important;
+  padding: 16px !important;
+  border-radius: 4px !important;
+}
+
 .data-grid-loader div span {
   width: 100%;
 }
