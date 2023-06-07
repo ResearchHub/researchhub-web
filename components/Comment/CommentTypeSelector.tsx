@@ -20,7 +20,7 @@ const CommentTypeSelector = ({ selectedType, handleSelect }: Args) => {
   const dropdownRef = useRef(null);
 
   useEffectHandleClick({
-    el: dropdownRef.current,
+    ref: dropdownRef,
     exclude: [".comment-type-dropdown"],
     onOutsideClick: () => setIsOpen(false),
   });

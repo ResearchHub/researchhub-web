@@ -93,7 +93,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
       icon: <FontAwesomeIcon icon={faPen} />,
       value: "edit-content",
       onClick: () => {
-        alert('implement me')
+        router.push(`/${doc.note.organization.slug}/notebook/${doc.note.id}`)
       }
     }] : []),    
     {
@@ -101,6 +101,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
       preventDefault: true,
       html: (
         <FlagButtonV2
+          modalHeaderText="Flag content"
           onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
             flagGrmContent({
               contentID: doc.id,
@@ -111,7 +112,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             });
           }}
         >
-          <div style={{display: "flex"}}>
+          <div style={{display: "flex", width: "100%"}} >
             <div style={{width: 30, boxSizing: "border-box"}}><FontAwesomeIcon icon={faFlag} /></div>
             
             <div>Flag content</div>
@@ -188,7 +189,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip Authors</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <GenericMenu options={options} width={150}>
+                <GenericMenu softHide={true} options={options} width={150} id="header-more-options">
                   <IconButton overrideStyle={styles.btnDots}>
                     <FontAwesomeIcon icon={faEllipsis} />
                   </IconButton>

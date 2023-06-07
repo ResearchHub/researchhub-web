@@ -91,15 +91,15 @@ function FlagButtonV2({
   return (
     (<Fragment>
       {children ? (
-        <div onClick={(event): void => {
-          setIsModalOpen(!isModalOpen);
+        <div style={{ width: "100%" }} onClick={(event): void => {
+          setIsModalOpen(true);
         }}>
           {children}
         </div>
       ) : (
         <div
           onClick={(event): void => {
-            setIsModalOpen(!isModalOpen);
+            setIsModalOpen(true);
           }}
           className={css(styles.flagIcon, flagIconOverride)}
         >
@@ -127,17 +127,17 @@ function FlagButtonV2({
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
-              <Button
-                label={primaryButtonLabel}
-                size="small"
-                onClick={handleSubmit}
-              />
               <div
                 className={css(styles.cancelButton)}
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
-              </div>
+              </div>              
+              <Button
+                label={primaryButtonLabel}
+                size="small"
+                onClick={handleSubmit}
+              />
             </div>
           </div>
         }

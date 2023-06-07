@@ -9,6 +9,9 @@ export type ValueOf<ObjectType> = ObjectType[keyof ObjectType];
 export type NullableString = string | null | undefined;
 export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
 
+/**
+ * @deprecated use GenericDocument instead
+ */
 export interface TopLevelDocument {
   authors: Array<AuthorProfile>;
   score: number;
@@ -64,7 +67,9 @@ export type RhDocumentType =
 export type VoteType = "downvote" | "neutralvote" | "upvote";
 export type VoteEnumType = 0 /* nuetral */ | 1 /* upvote */ | 2; /* downvote */
 
-// TODO: remove this type once comment modules are migrated.
+/**
+ * @deprecated refer to comment/types.ts instead
+ */
 export type CommentType = "comment" | "reply" | "thread";
 
 export type UnifiedDocument = {
@@ -87,8 +92,9 @@ export type AuthorProfile = {
   headline: string;
 };
 
-// TODO: Deprecate this in favor of RHUser
-// NOTE: Avoid using this type
+/**
+ * @deprecated use RHUser instead
+ */
 export type User = {
   agreed_to_terms: boolean;
   author_profile: {
@@ -179,6 +185,20 @@ export type RHUser = {
   raw: any;
   balance?: number;
 };
+
+export type Organization = {
+  id: ID;
+  name: string;
+  slug: string;
+}
+
+export const parseOrganization = (raw: any): Organization => {
+  return {
+    id: raw.id,
+    name: raw.name,
+    slug: raw.slug,
+  }
+}
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof raw !== "object") {

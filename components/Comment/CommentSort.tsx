@@ -35,7 +35,7 @@ const CommentSort = ({
   };
 
   useEffectHandleClick({
-    el: dropdownRef.current,
+    ref: dropdownRef,
     exclude: [".comment-sort-trigger"],
     onOutsideClick: () => setIsOpen(false),
   });

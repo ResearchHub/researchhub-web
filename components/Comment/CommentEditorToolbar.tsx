@@ -16,7 +16,7 @@ const CommentEditorToolbar = ({ editorId }: Args) => {
   const toolbarRef = useRef(null);
 
   useEffectHandleClick({
-    el: toolbarRef.current,
+    ref: toolbarRef,
     exclude: [".ql-full-editor-visible"],
     onOutsideClick: () => setIsOpen(false),
   });

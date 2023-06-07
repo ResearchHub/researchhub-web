@@ -54,6 +54,9 @@ type Args = {
   setHasBounties: (boolean) => void;
 };
 
+/**
+ * @deprecated Use DocumentHeaderV2 instead
+ */
 function DocumentHeader({
   document,
   onDocumentRemove,

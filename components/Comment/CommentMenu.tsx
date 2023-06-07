@@ -34,7 +34,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
   const commentTreeState = useContext(CommentTreeContext);
 
   useEffectHandleClick({
-    el: dropdownRef.current,
+    ref: dropdownRef,
     exclude: [".comment-menu-trigger"],
     onOutsideClick: () => setIsOpen(false),
     onInsideClick: () => setIsOpen(false),

@@ -4,15 +4,18 @@ import { Purchase, parsePurchase } from "~/config/types/purchase";
 import {
   AuthorProfile,
   ID,
+  Organization,
   RHUser,
   UnifiedDocument,
   parseAuthorProfile,
+  parseOrganization,
   parseUnifiedDocument,
   parseUser,
 } from "~/config/types/root_types";
 import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+
 
 export type DocumentFormat = {
   type: "pdf" | "latex";
@@ -87,6 +90,7 @@ export type Paper = GenericDocument & {
 
 export type Post = GenericDocument & {
   postType?: "publication" | "question";
+  note: Note;
 };
 
 export type Hypothesis = GenericDocument & {
@@ -97,6 +101,18 @@ export interface Props {
   raw: any;
   type: string;
 }
+
+export type Note = {
+  id: ID;
+  organization: Organization;
+} 
+
+export const parseNote = (raw:any): Note => {
+  return {
+    id: raw.id,
+    organization: parseOrganization(raw.organization),
+  }
+} 
 
 export const parseReviewSummary = (raw: any): ReviewSummary => {
   return {
@@ -159,7 +175,8 @@ export const parsePost = (raw: any): Post => {
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
     apiDocumentType: "researchhub_post",
-    postType: raw.unified_document.document_type === "QUESTION" ? "question" : "publication"
+    postType: raw.unified_document.document_type === "QUESTION" ? "question" : "publication",
+    note: parseNote(raw.note),
   };
 
   return parsed;

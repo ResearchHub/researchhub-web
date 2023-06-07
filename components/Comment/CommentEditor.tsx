@@ -110,7 +110,7 @@ const CommentEditor = ({
 
   if (previewModeAsDefault) {
     useEffectHandleClick({
-      el: editorRef.current,
+      ref: editorRef,
       onInsideClick: () => {
         setIsPreviewMode(false);
         isPreviewModeRef.current = false;

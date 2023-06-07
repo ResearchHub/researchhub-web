@@ -1,8 +1,7 @@
-import { useState, MouseEvent, useRef } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { useEffectHandleClick } from "~/config/utils/clickEvent";
-import { genClientId } from "~/config/utils/id";
 import colors from "~/config/themes/colors";
 
 export interface MenuOption {
@@ -11,27 +10,31 @@ export interface MenuOption {
   html?: React.ReactElement;
   icon?: React.ReactElement;
   href?: string;
+  onClick?: Function;
+  softHide?: boolean;
   preventDefault?: boolean;
 }
 
 interface MenuProps {
-  id?: string;
+  id: string;
   width?: number;
   onSelect?: Function;
   children: React.ReactElement;
   options: MenuOption[];
   triggerHeight?: number;
+  softHide?: boolean;
   direction?: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "top-center";
 }
 
 const Menu = ({
+  id,
   children,
   options,
   width = 200,
   triggerHeight = 45,
   onSelect,
   direction = "bottom-left",
-  id = `menu-${genClientId()}`,
+  softHide = false,
 }: MenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -39,14 +42,18 @@ const Menu = ({
   const handleSelect = (option: MenuOption) => {
     setIsOpen(!isOpen);
     onSelect && onSelect(option);
+    option.onClick && option.onClick(option);
   };
 
   useEffectHandleClick({
-    el: menuRef.current,
+    ref: menuRef,
     exclude: [`.trigger-for-${id}`],
     onOutsideClick: () => {
-      setIsOpen(false)
+      setIsOpen(false);
     },
+    onInsideClick: () => {
+      setIsOpen(false);
+    }
   });
 
   const directionStyles = {
@@ -64,9 +71,9 @@ const Menu = ({
       >
         {children}
       </div>
-      {isOpen && (
+      {(isOpen || softHide) && (
         <div
-          className={css(styles.menu) + ` ${id}`}
+          className={css(styles.menu, softHide && isOpen && styles.softHideOpen, softHide && !isOpen && styles.softHideClosed) + ` ${id}`}
           ref={menuRef}
           style={{ width, ...directionStyles }}
         >
@@ -77,10 +84,7 @@ const Menu = ({
               <div
                 key={`${id}-${index}`}
                 className={css(styles.menuItem)}
-                onClick={(e) => {
-                  preventDefault && e.preventDefault();
-                  handleSelect(option)
-                }}
+                onClick={preventDefault ? undefined : () => handleSelect(option)}
               >
                 {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
                 {html ? html : label}
@@ -136,6 +140,12 @@ const styles = StyleSheet.create({
     ":last-child": {
       marginBottom: 0,
     }
+  },
+  softHideClosed: {
+    visibility: "hidden",
+  },
+  softHideOpen: {
+    visibility: "visible",
   },
   menuItemIcon: {
     width: 30,
