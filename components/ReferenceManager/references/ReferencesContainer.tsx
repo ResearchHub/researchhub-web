@@ -79,8 +79,9 @@ function ReferencesContainer({
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
-  const [isDeleteRefModalOpen, setIsDeleteRefModalOpen] =
+  const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
+  const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
@@ -173,7 +174,7 @@ function ReferencesContainer({
     return (
       <>
         <QuickModal
-          isOpen={isDeleteRefModalOpen}
+          isOpen={isRemoveRefModalOpen}
           modalContent={
             <Box sx={{ height: "80px" }}>
               <Box
@@ -181,11 +182,10 @@ function ReferencesContainer({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  // marginBottom: "38px",
                 }}
               >
                 <Typography id="modal-modal-title" variant="h6">
-                  {`Are you sure you want to delete selected reference${
+                  {`Are you sure you want to remove selected reference${
                     selectedReferenceIDs.length > 1 ? "s" : ""
                   }?`}
                 </Typography>
@@ -198,16 +198,16 @@ function ReferencesContainer({
               onError: emptyFncWithMsg,
               onSuccess: (): void => {
                 setReferencesFetchTime(Date.now());
-                setIsDeleteRefModalOpen(false);
+                setIsRemoveRefModalOpen(false);
               },
               payload: {
                 citation_entry_ids: selectedReferenceIDs,
               },
             });
           }}
-          onSecondaryButtonClick={(): void => setIsDeleteRefModalOpen(false)}
-          onClose={(): void => setIsDeleteRefModalOpen(false)}
-          primaryButtonConfig={{ label: "Delete" }}
+          onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
+          onClose={(): void => setIsRemoveRefModalOpen(false)}
+          primaryButtonConfig={{ label: "Remove" }}
         />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
@@ -339,26 +339,16 @@ function ReferencesContainer({
                           itemLabel: `Export reference${
                             selectedReferenceIDs.length > 1 ? "s" : ""
                           }`,
-                          onClick: () => {
-                            removeReferenceCitations({
-                              onError: emptyFncWithMsg,
-                              onSuccess: (): void => {
-                                setReferencesFetchTime(Date.now());
-                              },
-                              payload: {
-                                citation_entry_ids: selectedReferenceIDs,
-                              },
-                            });
-                          },
+                          onClick: () => {},
                         },
                         {
                           itemLabel: (
-                            <Typography color="red">{`Delete reference${
+                            <Typography color="red">{`Remove reference${
                               selectedReferenceIDs.length > 1 ? "s" : ""
                             }`}</Typography>
                           ),
                           onClick: () => {
-                            setIsDeleteRefModalOpen(true);
+                            setIsRemoveRefModalOpen(true);
                           },
                         },
                       ]}
@@ -387,7 +377,7 @@ function ReferencesContainer({
                       }
                       size="medium"
                     />
-                  </div>{" "}
+                  </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
