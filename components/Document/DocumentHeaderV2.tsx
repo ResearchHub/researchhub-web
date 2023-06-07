@@ -146,7 +146,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             </div>
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
-                <DocumentVote document={doc} />
+                {/* <DocumentVote document={doc} /> */}
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
@@ -156,7 +156,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             <div className={css(styles.btnsWrapper)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
                 <IconButton variant="round">
-                  <DocumentVote document={doc} isHorizontal={true} />
+                  {/* <DocumentVote document={doc} isHorizontal={true} /> */}
                 </IconButton>
               </div>
 

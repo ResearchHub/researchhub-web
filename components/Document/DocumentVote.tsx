@@ -5,19 +5,23 @@ import VoteWidget from "../VoteWidget";
 import { StyleSheet } from "aphrodite";
 import { Vote } from "~/config/types/vote";
 import { MessageActions } from "~/redux/message";
-import { GenericDocument } from "./lib/types";
 import { voteForDocument } from "./api/voteForDocument";
+import { ID } from "~/config/types/root_types";
+import { ApiDocumentType } from "./lib/types";
 
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
-  document: GenericDocument;
+  id: ID;
+  score: number;
+  userVote: Vote;
+  apiDocumentType: ApiDocumentType;
   isHorizontal?: boolean;
 };
 
-const DocumentVote = ({ document, isHorizontal = false }: Args) => {
-  const [_score, _setScore] = useState<number>(document.score);
-  const [_userVote, _setUserVote] = useState(document.userVote);
+const DocumentVote = ({ id, score, userVote, apiDocumentType, isHorizontal = false, }: Args) => {
+  const [_score, _setScore] = useState<number>(score);
+  const [_userVote, _setUserVote] = useState<Vote|null>(userVote);
   const dispatch = useDispatch();
 
   const handleVoteSuccess = ({ userVote }: { userVote: Vote }) => {
@@ -58,8 +62,8 @@ const DocumentVote = ({ document, isHorizontal = false }: Args) => {
         try {
           const userVote = await voteForDocument({
             voteType: "upvote",
-            documentId: document.id,
-            documentType: document.apiDocumentType,
+            documentId: id,
+            documentType: apiDocumentType,
           });
           handleVoteSuccess({ userVote });
         } catch (error) {
@@ -74,8 +78,8 @@ const DocumentVote = ({ document, isHorizontal = false }: Args) => {
         try {
           const userVote = await voteForDocument({
             voteType: "neutralvote",
-            documentId: document.id,
-            documentType: document.apiDocumentType,
+            documentId: id,
+            documentType: apiDocumentType,
           });
           handleVoteSuccess({ userVote });
         } catch (error) {
@@ -89,8 +93,8 @@ const DocumentVote = ({ document, isHorizontal = false }: Args) => {
         try {
           const userVote = await voteForDocument({
             voteType: "downvote",
-            documentId: document.id,
-            documentType: document.apiDocumentType,
+            documentId: id,
+            documentType: apiDocumentType,
           });
           handleVoteSuccess({ userVote });
         } catch (error) {
@@ -101,8 +105,8 @@ const DocumentVote = ({ document, isHorizontal = false }: Args) => {
         }
       }}
       selected={_userVote ? _userVote.voteType : null}
-      isPaper={document.apiDocumentType === "paper"}
-      type={document.apiDocumentType}
+      isPaper={apiDocumentType === "paper"}
+      type={apiDocumentType}
       pillClass={isHorizontal && styles.pill}
       downvoteStyleClass={styles.downvote}
       upvoteStyleClass={styles.upvote}

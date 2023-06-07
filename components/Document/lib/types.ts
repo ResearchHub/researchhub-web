@@ -34,16 +34,18 @@ export type DocumentMetadata = {
 };
 
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
+
+  const document = Array.isArray(raw.documents) ? raw.documents[0] : raw.documents;
   return {
     unifiedDocumentId: raw.id,
-    bounties: parseBountyList(raw.documents?.bounties || []).filter(b => !b.isExpiredOrClosed),
-    purchases: (raw.documents.purchases || []).map((p: any) => parsePurchase(p)),
+    bounties: parseBountyList(document?.bounties || []).filter(b => !b.isExpiredOrClosed),
+    purchases: (document.purchases || []).map((p: any) => parsePurchase(p)),
     userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
     reviewSummary: parseReviewSummary(raw.reviews),
     discussionCount:
-      raw.documents?.discussion_aggregates?.discussion_count || 0,
-    reviewCount: raw.documents?.discussion_aggregates?.review_count || 0,
-    summaryCount: raw.documents?.discussion_aggregates?.summary_count || 0,
+      document?.discussion_aggregates?.discussion_count || 0,
+    reviewCount: document?.discussion_aggregates?.review_count || 0,
+    summaryCount: document?.discussion_aggregates?.summary_count || 0,
   };
 };
 

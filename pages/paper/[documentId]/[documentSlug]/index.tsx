@@ -2,9 +2,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useRouter } from "next/router";
-import getDocumentFromRaw, {
-  Paper,
-} from "~/components/Document/lib/types";
+import { Paper } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
 import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
@@ -12,38 +10,32 @@ import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useEffect, useState } from "react";
-import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
+import { useState } from "react";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import UploadPDF from "~/components/Paper/Tabs/PaperTab";
 import { breakpoints } from "~/config/themes/screen";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import { useDocument, useDocumentMetadata } from "~/components/Document/lib/useHooks";
 
 interface Args {
   documentData?: any;
+  metadata?: any;
   postHtml?: TrustedHTML | string;
   errorCode?: number;
 }
 
 const DocumentIndexPage: NextPage<Args> = ({
   documentData,
+  metadata,
   errorCode,
 }) => {
   const documentType = "paper";
   const router = useRouter();
+  
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
-  const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
-  const [rawDocumentData, setRawDocumentData] = useState<undefined|null|any>(documentData); 
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
+  const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType }) as [Paper|null, Function];
   const [revalidatePage] = useCacheControl();
-
-  // This hook is used to purely update the rawDocumentData when the documentData changes
-  // Reason being is that documentData is initially empty. Furthermore, the state variable is
-  // needed because certain operations like abstract updating will cause the documentData to change
-  useEffect(() => {
-    if (documentData?.id !== rawDocumentData?.id) {
-      setRawDocumentData(documentData);
-    }
-  }, [documentData]);
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -52,26 +44,21 @@ const DocumentIndexPage: NextPage<Args> = ({
     return <Error statusCode={errorCode} />;
   }
 
-  let document: Paper;
-  try {
-    document = getDocumentFromRaw({ raw: rawDocumentData || documentData, type: documentType }) as Paper;
-  } catch (error: any) {
+  if (!document || !documentMetadata) {
     captureEvent({
-      error,
       msg: "[Document] Could not parse",
-      data: { rawDocumentData, documentType },
+      data: { document, documentType, documentMetadata },
     });
     return <Error statusCode={500} />;
   }
 
   const pdfUrl = document.formats.find((f) => f.type === "pdf")?.url;
-
   return (
-    <DocumentContext.Provider value={{ metadata, documentType, updateMetadata }}>
+    <DocumentContext.Provider value={{ metadata: documentMetadata, documentType, updateMetadata: setDocumentMetadata }}>
       <DocumentPageLayout
         document={document}
         errorCode={errorCode}
-        metadata={metadata}
+        metadata={documentMetadata}
         documentType={documentType}
       >
         <div className={css(styles.bodyContentWrapper)} style={{ maxWidth: viewerWidth }}>
@@ -85,9 +72,13 @@ const DocumentIndexPage: NextPage<Args> = ({
                 <PaperPageAbstractSection
                   paper={document.raw}
                   onUpdate={(updated) => {
-                    setRawDocumentData({
-                      ...rawDocumentData,
-                      abstract_src_markdown: updated,
+                    setDocument({
+                      ...document,
+                      abstract: updated,
+                      raw: {
+                        ...document.raw,
+                        abstract_src_markdown: updated,
+                      },
                     });
                     revalidatePage();
                   }}
@@ -102,9 +93,12 @@ const DocumentIndexPage: NextPage<Args> = ({
                 paper={document.raw}
                 paperId={document.id}
                 onUpdate={(paperFile) => {
-                  setRawDocumentData({
-                    ...rawDocumentData,
-                    file: paperFile,
+                  setDocument({
+                    ...document,
+                    formats: [{
+                      type: "pdf",
+                      url: paperFile,
+                    }] 
                   });                
                   revalidatePage();
                 }}

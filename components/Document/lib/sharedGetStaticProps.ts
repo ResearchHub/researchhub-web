@@ -6,6 +6,7 @@ import getCommentFilterByTab from "./getCommentFilterByTab";
 import {
   DocumentType,
 } from "~/components/Document/lib/types";
+import fetchDocumentMetadata from "../api/fetchDocumentMetadata";
 
 const config = {
   revalidateTimeIfNotFound: 1,
@@ -26,9 +27,16 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
   let documentData: any | null = null;
   let commentData: any | null = null;
   let postHtml: any | null = null;
+  let metadata: any | null = null;
 
   try {
     documentData = await getDocumentByType({ documentType, documentId });
+    metadata = await fetchDocumentMetadata({
+      unifiedDocId: documentData.unified_document.id,
+    });
+
+    console.log("metadata", metadata.documents[0].purchases)
+
   } catch (err) {
     console.log("Error getting document", err);
     return {
@@ -38,6 +46,7 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
         commentData,
         postHtml,
         tabName,
+        metadata,
       },
       // If paper has an error, we want to try again immediately
       revalidate: config.revalidateTimeIfError,
@@ -71,6 +80,7 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
               commentData,
               postHtml,
               tabName,
+              metadata,
             },
             revalidate: config.revalidateTimeIfNotFound,
           };
@@ -93,6 +103,7 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
           documentType,
           postHtml,
           tabName,
+          metadata,
         },
         revalidate: config.revalidateTimeIfFound,
       };
@@ -105,6 +116,7 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
         postHtml,
         commentData,
         tabName,
+        metadata,
       },
       revalidate: config.revalidateTimeIfNotFound,
     };

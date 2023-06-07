@@ -3,38 +3,35 @@ import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useRouter } from "next/router";
 import getDocumentFromRaw, {
-  DocumentType,
-  GenericDocument,
   Post,
-  isPaper,
-  isPost,
 } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
-import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
-import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { useState } from "react";
-import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
+import { useDocument, useDocumentMetadata } from "~/components/Document/lib/useHooks";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 
 interface Args {
   documentData?: any;
+  metadata?: any;
   postHtml?: TrustedHTML | string;
   errorCode?: number;
 }
 
 const DocumentIndexPage: NextPage<Args> = ({
   documentData,
+  metadata,
   postHtml = "",
   errorCode,
 }) => {
   const documentType = "post";
   const router = useRouter();
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
-  const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
+  const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType }) as [Post|null, Function];
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -43,24 +40,20 @@ const DocumentIndexPage: NextPage<Args> = ({
     return <Error statusCode={errorCode} />;
   }
 
-  let document: Post;
-  try {
-    document = getDocumentFromRaw({ raw: documentData, type: documentType }) as Post;
-  } catch (error: any) {
+  if (!document || !documentMetadata) {
     captureEvent({
-      error,
       msg: "[Document] Could not parse",
-      data: { documentData, documentType },
+      data: { document, documentType, documentMetadata },
     });
     return <Error statusCode={500} />;
   }
 
   return (
-    <DocumentContext.Provider value={{ metadata, documentType, updateMetadata }}>
+    <DocumentContext.Provider value={{ metadata: documentMetadata, documentType, updateMetadata: setDocumentMetadata }}>
       <DocumentPageLayout
         document={document}
         errorCode={errorCode}
-        metadata={metadata}
+        metadata={documentMetadata}
         documentType={documentType}
       >
         <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>

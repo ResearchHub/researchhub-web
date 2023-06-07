@@ -6,17 +6,18 @@ import { COMMENT_TYPES, parseComment } from "~/components/Comment/lib/types";
 import getDocumentFromRaw, {
   DocumentType,
   GenericDocument,
+  Post,
 } from "~/components/Document/lib/types";
 import Error from "next/error";
 import { useRouter } from "next/router";
 import CommentFeed from "~/components/Comment/CommentFeed";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
-import useDocumentMetadata from "~/components/Document/lib/useDocumentMetadata";
 import getCommentFilterByTab from "~/components/Document/lib/getCommentFilterByTab";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import { useDocument, useDocumentMetadata } from "../lib/useHooks";
 
 
 const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
@@ -33,6 +34,7 @@ const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
 interface Args {
   documentData?: any;
   commentData?: any;
+  metadata?: any;
   errorCode?: number;
   documentType: DocumentType;
   tabName: string;
@@ -43,11 +45,13 @@ const DocumentCommentsPage: NextPage<Args> = ({
   commentData,
   documentType,
   tabName,
+  metadata,
   errorCode,
 }) => {
   const router = useRouter();
-  const [metadata, updateMetadata] = useDocumentMetadata({ id: documentData?.unified_document?.id });
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.maxWidth);
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
+  const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType });
   const [revalidatePage] = useCacheControl();
 
   if (router.isFallback) {
@@ -57,14 +61,10 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={errorCode} />;
   }
 
-  let document: GenericDocument;
-  try {
-    document = getDocumentFromRaw({ raw: documentData, type: documentType });
-  } catch (error: any) {
+  if (!document || !documentMetadata) {
     captureEvent({
-      error,
       msg: "[Document] Could not parse",
-      data: { documentData, documentType },
+      data: { document, documentType, documentMetadata },
     });
     return <Error statusCode={500} />;
   }
@@ -80,14 +80,15 @@ const DocumentCommentsPage: NextPage<Args> = ({
     displayCommentsFeed = true;
   }
 
+
   return (
-    <DocumentContext.Provider value={{ metadata, documentType, tabName, updateMetadata }}>
+    <DocumentContext.Provider value={{ metadata: documentMetadata, documentType, tabName, updateMetadata: setDocumentMetadata }}>
       <DocumentPageLayout
         document={document}
         documentType={documentType}
         tabName={tabName}
         errorCode={errorCode}
-        metadata={metadata}
+        metadata={documentMetadata}
       >
         <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
           <CommentFeed
@@ -103,23 +104,23 @@ const DocumentCommentsPage: NextPage<Args> = ({
             onCommentCreate={(comment) => {
               revalidatePage();
 
-              if (!metadata) return;
+              if (!documentMetadata) return;
               if (comment.bounties.length > 0) {
-                updateMetadata({
-                  ...metadata,
-                  bounties: [comment.bounties[0], ...metadata.bounties],
+                setDocumentMetadata({
+                  ...documentMetadata,
+                  bounties: [comment.bounties[0], ...documentMetadata.bounties],
                 });
               }
               else if (comment.commentType === COMMENT_TYPES.REVIEW) {
-                updateMetadata({
-                  ...metadata,
-                  reviewCount: metadata.reviewCount + 1,
+                setDocumentMetadata({
+                  ...documentMetadata,
+                  reviewCount: documentMetadata.reviewCount + 1,
                 });
               }
               else {
-                updateMetadata({
-                  ...metadata,
-                  discussionCount: metadata.discussionCount + 1,
+                setDocumentMetadata({
+                  ...documentMetadata,
+                  discussionCount: documentMetadata.discussionCount + 1,
                 });
               }
 

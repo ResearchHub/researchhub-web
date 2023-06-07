@@ -7,6 +7,7 @@ interface Args {
   commentData?: any;
   errorCode?: number;
   tabName: string;
+  metadata?: any;
 }
 
 const TabPage: NextPage<Args> = ({
@@ -14,11 +15,13 @@ const TabPage: NextPage<Args> = ({
   commentData,
   tabName,
   errorCode,
+  metadata
 }) => {
   return (
     <DocumentCommentsPage
       documentData={documentData}
       documentType="paper"
+      metadata={metadata}
       tabName={tabName}
       commentData={commentData}
       errorCode={errorCode}

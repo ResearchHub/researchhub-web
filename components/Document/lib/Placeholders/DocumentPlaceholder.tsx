@@ -5,10 +5,6 @@ type Args = {
   repeatCount?: number;
 };
 
-const getRandomRowWidth = () => {
-  const [min, max] = [50, 100];
-  return Math.floor(Math.random() * max - min + 1) + min + "%";
-};
 
 const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
   return (
@@ -20,7 +16,6 @@ const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
       }}
     >
       {Array.from(new Array(repeatCount)).map((_, idx) => {
-        const rowWidth = getRandomRowWidth();
         return (
           <div
             key={`placeholder-${idx}`}
@@ -49,7 +44,7 @@ const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
               />
               <RectShape
                 color={globalColors.PLACEHOLDER_CARD_BACKGROUND}
-                style={{ width: rowWidth, height: "1em" }}
+                style={{ width: "55%", height: "1em" }}
               />
             </div>
           </div>
