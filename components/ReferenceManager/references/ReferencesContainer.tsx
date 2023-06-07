@@ -39,11 +39,14 @@ import DropdownMenu from "../menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListIcon from "@mui/icons-material/List";
 import withWebSocket from "~/components/withWebSocket";
+import QuickModal from "../menu/QuickModal";
+import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
-  wsResponse: {};
+  wsResponse: string;
   wsConnected: boolean;
+  setMessage?: any;
 }
 
 type Preload = {
@@ -52,7 +55,7 @@ type Preload = {
   created: boolean;
 };
 
-// TODO: @@lightninglu10 - fix TS.
+// TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
   setMessage,
@@ -77,6 +80,9 @@ function ReferencesContainer({
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
+  const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
+    useState<boolean>(false);
+  const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
@@ -103,8 +109,10 @@ function ReferencesContainer({
     acceptedFiles.forEach((file) => {
       formData.append("pdfs[]", file);
     });
+    // @ts-ignore TODO: fix
     formData.append("organization_id", currentOrg.id);
     if (router.query.project) {
+      // @ts-ignore TODO: fix
       formData.append("project_id", router.query.project);
     }
     const url = generateApiUrl("citation_entry/pdf_uploads");
@@ -148,7 +156,6 @@ function ReferencesContainer({
           </div>,
           {
             position: "top-center",
-            autoClose: true,
             autoClose: 5000,
             progressStyle: { background: colors.NEW_BLUE() },
             hideProgressBar: false,
@@ -167,6 +174,47 @@ function ReferencesContainer({
   } else {
     return (
       <>
+        <QuickModal
+          isOpen={isRemoveRefModalOpen}
+          modalContent={
+            <Box sx={{ height: "80px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6">
+                  {`Are you sure you want to remove selected reference${
+                    selectedReferenceIDs.length > 1 ? "s" : ""
+                  }?`}
+                </Typography>
+              </Box>
+            </Box>
+          }
+          modalWidth="300px"
+          onPrimaryButtonClick={(): void => {
+            removeReferenceCitations({
+              onError: emptyFncWithMsg,
+              onSuccess: (): void => {
+                setReferencesFetchTime(Date.now());
+                setIsRemoveRefModalOpen(false);
+              },
+              payload: {
+                citation_entry_ids: selectedReferenceIDs,
+              },
+            });
+          }}
+          onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
+          onClose={(): void => setIsRemoveRefModalOpen(false)}
+          primaryButtonConfig={{ label: "Remove" }}
+        />
+        <ReferencesBibliographyModal
+          isOpen={isBibModalOpen}
+          onClose={(): void => setIsBibModalOpen(false)}
+          selectedReferenceIDs={selectedReferenceIDs}
+        />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
@@ -233,6 +281,7 @@ function ReferencesContainer({
                     onClick={(): void => {
                       // TODO: calvinhlee - clean this up from backend
                       const targetProject = currentOrgProjects.find(
+                        // TODO: calvinhlee - clean this up from backend
                         (proj) => proj.id === parseInt(router.query.project)
                       );
                       const { id, collaborators, project_name, is_public } =
@@ -293,19 +342,21 @@ function ReferencesContainer({
                     <DropdownMenu
                       menuItemProps={[
                         {
-                          itemLabel: `Delete reference${
+                          itemLabel: `Export reference${
                             selectedReferenceIDs.length > 1 ? "s" : ""
                           }`,
                           onClick: () => {
-                            removeReferenceCitations({
-                              onError: emptyFncWithMsg,
-                              onSuccess: (): void => {
-                                setReferencesFetchTime(Date.now());
-                              },
-                              payload: {
-                                citation_entry_ids: selectedReferenceIDs,
-                              },
-                            });
+                            setIsBibModalOpen(true);
+                          },
+                        },
+                        {
+                          itemLabel: (
+                            <Typography color="red">{`Remove reference${
+                              selectedReferenceIDs.length > 1 ? "s" : ""
+                            }`}</Typography>
+                          ),
+                          onClick: () => {
+                            setIsRemoveRefModalOpen(true);
                           },
                         },
                       ]}
@@ -334,7 +385,7 @@ function ReferencesContainer({
                       }
                       size="medium"
                     />
-                  </div>{" "}
+                  </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
@@ -383,6 +434,7 @@ function ReferencesContainer({
                 </Box>
                 <ReferencesTable
                   createdReferences={createdReferences}
+                  // @ts-ignore TODO: @@lightninglu10 - fix TS.
                   handleFileDrop={handleFileDrop}
                   setSelectedReferenceIDs={setSelectedReferenceIDs}
                 />
@@ -417,5 +469,6 @@ const mapDispatchToProps = {
 };
 
 export default withWebSocket(
+  // @ts-ignore - faulty legacy connect hook
   connect(null, mapDispatchToProps)(ReferencesContainer)
 );

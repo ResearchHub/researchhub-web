@@ -2,7 +2,6 @@ import { Box, Button, Modal } from "@mui/material";
 import { Fragment, ReactElement, ReactNode } from "react";
 
 type ButtonConfig = {
-  variant?: "text" | "outlined" | "contained";
   color?:
     | "inherit"
     | "primary"
@@ -11,8 +10,10 @@ type ButtonConfig = {
     | "error"
     | "info"
     | "warning";
-  size?: "small" | "medium" | "large";
   label?: ReactNode;
+  remove?: boolean;
+  size?: "small" | "medium" | "large";
+  variant?: "text" | "outlined" | "contained";
 };
 
 type Props = {
@@ -62,15 +63,17 @@ export default function QuickModal({
             alignItems: "center",
           }}
         >
-          <Button
-            variant="text"
-            color="info"
-            {...secondaryButtonConfig}
-            sx={{ marginRight: "16px" }}
-            onClick={onSecondaryButtonClick}
-          >
-            {secondaryButtonConfig?.label ?? "Cancel"}
-          </Button>
+          {!secondaryButtonConfig?.remove && (
+            <Button
+              variant="text"
+              color="info"
+              {...secondaryButtonConfig}
+              sx={{ marginRight: "16px" }}
+              onClick={onSecondaryButtonClick}
+            >
+              {secondaryButtonConfig?.label ?? "Cancel"}
+            </Button>
+          )}
           <Button
             variant="contained"
             {...primaryButtonConfig}

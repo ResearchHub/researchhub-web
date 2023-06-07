@@ -50,6 +50,10 @@ export default function ReferenceProjectNavbarElOption({
     setMenuAnchorEl(null);
     setShouldShowOptions(false);
   };
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+    handleMenuClose();
+  };
 
   return (
     <Fragment>
@@ -85,19 +89,15 @@ export default function ReferenceProjectNavbarElOption({
           removeReferenceProject({
             projectID,
             onSuccess: () => {
-              setIsDeleteModalOpen(false);
               resetProjectsFetchTime();
+              handleDeleteModalClose();
               router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
             },
             onError: emptyFncWithMsg,
           });
         }}
-        onSecondaryButtonClick={(): void => {
-          setIsDeleteModalOpen(false);
-        }}
-        onClose={(): void => {
-          setIsDeleteModalOpen(false);
-        }}
+        onSecondaryButtonClick={handleDeleteModalClose}
+        onClose={handleDeleteModalClose}
         primaryButtonConfig={{ label: "Delete" }}
       />
       <span
@@ -152,7 +152,6 @@ export default function ReferenceProjectNavbarElOption({
             onClick={(event: MouseEvent): void => {
               event.preventDefault();
               setIsDeleteModalOpen(true);
-              handleMenuClose();
             }}
           >
             <Typography color="red">{"Remove"}</Typography>

@@ -61,29 +61,29 @@ const ReferenceItemDrawerButton = ({
 export default function ReferenceItemDrawer({}: Props): ReactElement {
   const {
     isDrawerOpen,
-    referenceItemDrawerData,
+    referenceItemDatum,
     setIsDrawerOpen,
     setReferencesFetchTime,
   } = useReferenceTabContext();
-  const { citation_type, id: citation_id } = referenceItemDrawerData ?? {};
+  const { citation_type, id: citation_id } = referenceItemDatum ?? {};
   const [localReferenceFields, setLocalReferenceFields] = useState(
-    referenceItemDrawerData?.fields ?? {}
+    referenceItemDatum?.fields ?? {}
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const hasAttachment = !isEmpty(referenceItemDrawerData?.attachment);
+  const hasAttachment = !isEmpty(referenceItemDatum?.attachment);
   const _requiredFieldsSet = useMemo(
     // NOTE: calvinhlee - this needs to be improved from BE
-    () => new Set(referenceItemDrawerData?.required_fields ?? []),
-    [referenceItemDrawerData?.id]
+    () => new Set(referenceItemDatum?.required_fields ?? []),
+    [referenceItemDatum?.id]
   );
   useEffect((): void => {
-    if (isEmpty(referenceItemDrawerData?.id) || !isDrawerOpen) {
+    if (isEmpty(referenceItemDatum?.id) || !isDrawerOpen) {
       setLocalReferenceFields({});
     } else {
       setLocalReferenceFields(
         {
-          ...referenceItemDrawerData?.fields,
-          creators: referenceItemDrawerData?.fields?.creators
+          ...referenceItemDatum?.fields,
+          creators: referenceItemDatum?.fields?.creators
             .map((creator): string => {
               return `${creator.first_name} ${creator.last_name}`;
             })
@@ -91,7 +91,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
         } ?? {}
       );
     }
-  }, [referenceItemDrawerData?.id, isDrawerOpen]);
+  }, [referenceItemDatum?.id, isDrawerOpen]);
 
   const tabInputItems = filterNull(
     sortSchemaFieldKeys(Object.keys(localReferenceFields)).map(
@@ -211,7 +211,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           >
             <iframe
               height={"100%"}
-              src={convertHttpToHttps(referenceItemDrawerData?.attachment)}
+              src={convertHttpToHttps(referenceItemDatum?.attachment)}
               width={"100%"}
             />
           </div>

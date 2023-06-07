@@ -3,10 +3,7 @@ import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
-import {
-  formatReferenceRowData,
-  ReferenceTableRowDataType,
-} from "./utils/formatReferenceRowData";
+import { formatReferenceRowData } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
@@ -14,6 +11,7 @@ import { useReferenceTabContext } from "../reference_item/context/ReferenceItemD
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
+import { useReferencesTableContext } from "./context/ReferencesTableContext";
 
 type Props = {
   createdReferences: any[];
@@ -53,17 +51,17 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
+// TODO: @lightninglu10 - ReferenceTableRowDataType became worthless after updating this component. We need to address this
 export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
   setSelectedReferenceIDs,
 }: Props) {
-  const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
+  const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
+  const { referenceTableRowData, setReferenceTableRowData } =
+    useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [referenceTableRowData, setReferenceTableRowData] = useState<
-    ReferenceTableRowDataType[]
-  >([]);
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -135,7 +133,7 @@ export default function ReferencesTable({
         loading={isLoading}
         onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
-          setReferenceItemDrawerData({
+          setReferenceItemDatum({
             ...nullthrows(
               referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),

@@ -2,25 +2,25 @@ import { createContext, useContext, useState } from "react";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import type { Context } from "react";
 
-export type ReferenceItemDrawerData = any; // schema for ReferenceItemDrawerData comes from the backend.
+export type referenceItemDatum = any; // schema for referenceItemDatum comes from the backend.
 
 export type ReferenceItemDrawerContextValueType = {
   isDrawerOpen: boolean;
-  referenceItemDrawerData: ReferenceItemDrawerData;
+  referenceItemDatum: referenceItemDatum;
   referencesFetchTime: number;
   setIsDrawerOpen: (flag: boolean) => void;
-  setReferenceItemDrawerData: (data: ReferenceItemDrawerData) => void;
+  setReferenceItemDatum: (data: referenceItemDatum) => void;
   setReferencesFetchTime: (time: number) => void;
 };
 
-export const DEFAULT_REFERENCE_ITEM_DRAWER_DATA: ReferenceItemDrawerData = {};
+export const DEFAULT_REFERENCE_ITEM_DRAWER_DATA: referenceItemDatum = {};
 
 export const DEFAULT_REFERENCE_ITEM_DRAWER_CONTEXT_VALUE: ReferenceItemDrawerContextValueType =
   {
     isDrawerOpen: false,
-    referenceItemDrawerData: DEFAULT_REFERENCE_ITEM_DRAWER_DATA,
+    referenceItemDatum: DEFAULT_REFERENCE_ITEM_DRAWER_DATA,
     setIsDrawerOpen: emptyFncWithMsg,
-    setReferenceItemDrawerData: emptyFncWithMsg,
+    setReferenceItemDatum: emptyFncWithMsg,
     referencesFetchTime: Date.now(),
     setReferencesFetchTime: emptyFncWithMsg,
   };
@@ -37,18 +37,18 @@ export const useReferenceTabContext =
 
 export function ReferenceItemDrawerContextProvider({ children }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [referenceItemDrawerData, setReferenceItemDrawerData] =
-    useState<ReferenceItemDrawerData>(DEFAULT_REFERENCE_ITEM_DRAWER_DATA);
+  const [referenceItemDatum, setReferenceItemDatum] =
+    useState<referenceItemDatum>(DEFAULT_REFERENCE_ITEM_DRAWER_DATA);
   const [referencesFetchTime, setReferencesFetchTime] = useState(Date.now());
 
   return (
     <ReferencesTabContext.Provider
       value={{
         isDrawerOpen,
-        referenceItemDrawerData,
+        referenceItemDatum,
         referencesFetchTime,
         setIsDrawerOpen,
-        setReferenceItemDrawerData,
+        setReferenceItemDatum,
         setReferencesFetchTime,
       }}
     >
