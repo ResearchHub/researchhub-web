@@ -40,6 +40,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListIcon from "@mui/icons-material/List";
 import withWebSocket from "~/components/withWebSocket";
 import QuickModal from "../menu/QuickModal";
+import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -209,6 +210,7 @@ function ReferencesContainer({
           onClose={(): void => setIsRemoveRefModalOpen(false)}
           primaryButtonConfig={{ label: "Remove" }}
         />
+        <ReferencesBibliographyModal isOpen={isBibModalOpen} />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
@@ -339,7 +341,9 @@ function ReferencesContainer({
                           itemLabel: `Export reference${
                             selectedReferenceIDs.length > 1 ? "s" : ""
                           }`,
-                          onClick: () => {},
+                          onClick: () => {
+                            setIsBibModalOpen(true);
+                          },
                         },
                         {
                           itemLabel: (

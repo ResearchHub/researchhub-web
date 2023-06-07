@@ -3,13 +3,13 @@ import { Fragment, ReactElement } from "react";
 import { ID } from "~/config/types/root_types";
 import { ReferenceItemDrawerContextProvider } from "~/components/ReferenceManager/references/reference_item/context/ReferenceItemDrawerContext";
 import { ReferenceProjectsUpsertContextProvider } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
+import { ReferencesTableContextProvider } from "./reference_table/context/ReferencesTableContext";
 import { ReferenceUploadDrawerContextProvider } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
 import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
-import { ReferencesTableContextProvider } from "./reference_table/context/ReferencesTableContext";
 
 type Props = {
   authChecked?: boolean;
