@@ -39,6 +39,7 @@ import DropdownMenu from "../menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListIcon from "@mui/icons-material/List";
 import withWebSocket from "~/components/withWebSocket";
+import QuickModal from "../menu/QuickModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -78,6 +79,8 @@ function ReferencesContainer({
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
+  const [isDeleteRefModalOpen, setIsDeleteRefModalOpen] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = router.query.project_name;
@@ -169,6 +172,43 @@ function ReferencesContainer({
   } else {
     return (
       <>
+        <QuickModal
+          isOpen={isDeleteRefModalOpen}
+          modalContent={
+            <Box sx={{ height: "80px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // marginBottom: "38px",
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6">
+                  {`Are you sure you want to delete selected reference${
+                    selectedReferenceIDs.length > 1 ? "s" : ""
+                  }?`}
+                </Typography>
+              </Box>
+            </Box>
+          }
+          modalWidth="300px"
+          onPrimaryButtonClick={(): void => {
+            removeReferenceCitations({
+              onError: emptyFncWithMsg,
+              onSuccess: (): void => {
+                setReferencesFetchTime(Date.now());
+                setIsDeleteRefModalOpen(false);
+              },
+              payload: {
+                citation_entry_ids: selectedReferenceIDs,
+              },
+            });
+          }}
+          onSecondaryButtonClick={(): void => setIsDeleteRefModalOpen(false)}
+          onClose={(): void => setIsDeleteRefModalOpen(false)}
+          primaryButtonConfig={{ label: "Delete" }}
+        />
         <ReferenceManualUploadDrawer key="root-nav" />
         <ReferenceItemDrawer />
         <Box flexDirection="row" display="flex" maxWidth={"calc(100vw - 79px)"}>
@@ -312,19 +352,13 @@ function ReferencesContainer({
                           },
                         },
                         {
-                          itemLabel: `Delete reference${
-                            selectedReferenceIDs.length > 1 ? "s" : ""
-                          }`,
+                          itemLabel: (
+                            <Typography color="red">{`Delete reference${
+                              selectedReferenceIDs.length > 1 ? "s" : ""
+                            }`}</Typography>
+                          ),
                           onClick: () => {
-                            removeReferenceCitations({
-                              onError: emptyFncWithMsg,
-                              onSuccess: (): void => {
-                                setReferencesFetchTime(Date.now());
-                              },
-                              payload: {
-                                citation_entry_ids: selectedReferenceIDs,
-                              },
-                            });
+                            setIsDeleteRefModalOpen(true);
                           },
                         },
                       ]}
