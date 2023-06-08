@@ -23,6 +23,8 @@ import removeMd from "remove-markdown";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import Button from "~/components/Form/Button";
+import { LEFT_SIDEBAR_MAX_WIDTH, LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
+import { breakpoints } from "~/config/themes/screen";
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {
@@ -182,6 +184,13 @@ const styles = StyleSheet.create({
   },
   bodyContentWrapper: {
     margin: "0 auto",
+    maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MAX_WIDTH}px)`,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      maxWidth: `calc(100vw - 30px)`,
+    },
   },
   editButtonRow: {
     display: "flex",
