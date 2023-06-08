@@ -92,6 +92,7 @@ export type Paper = GenericDocument & {
 export type Post = GenericDocument & {
   postType?: "publication" | "question";
   note?: Note;
+  srcUrl: string;
 };
 
 export type Hypothesis = GenericDocument & {
@@ -176,6 +177,7 @@ export const parsePost = (raw: any): Post => {
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
     apiDocumentType: "researchhub_post",
+    srcUrl: raw.post_src,
     postType:
       raw.unified_document.document_type === "QUESTION"
         ? "question"

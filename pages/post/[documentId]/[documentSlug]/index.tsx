@@ -8,12 +8,40 @@ import Error from "next/error";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useDocument,
   useDocumentMetadata,
 } from "~/components/Document/lib/useHooks";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
+import dynamic from "next/dynamic";
+import fetchPostFromS3 from "~/components/Document/api/fetchPostFromS3";
+const DynamicCKEditor = dynamic(
+  () => import("~/components/CKEditor/SimpleEditor")
+);
+import removeMd from "remove-markdown";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import Button from "~/components/Form/Button";
+
+const savePostApi = ({ id, postHtml }) => {
+  const _toPlaintext = (text) => {
+    return removeMd(text).replace(/&nbsp;/g, " ");
+  };
+
+  const params = {
+    post_id: id,
+    full_src: postHtml,
+    renderable_text: _toPlaintext(postHtml),
+  };
+
+  return fetch(API.RESEARCHHUB_POST({}), API.POST_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .catch((error) => {
+      alert("Something went wrong. Please try again later.");
+    });
+};
 
 interface Args {
   documentData?: any;
@@ -30,9 +58,11 @@ const DocumentIndexPage: NextPage<Args> = ({
 }) => {
   const documentType = "post";
   const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
+  const [_postHtml, setPostHtml] = useState<TrustedHTML | string>(postHtml);
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -41,6 +71,10 @@ const DocumentIndexPage: NextPage<Args> = ({
     rawDocumentData: documentData,
     documentType,
   }) as [Post | null, Function];
+
+  useEffect(() => {
+    setPostHtml(postHtml);
+  }, [postHtml]);
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -63,6 +97,18 @@ const DocumentIndexPage: NextPage<Args> = ({
         metadata: documentMetadata,
         documentType,
         updateMetadata: setDocumentMetadata,
+        editDocument: () => {
+          // Post
+          if (document.note) {
+            router.push(
+              `/${document.note.organization.slug}/notebook/${document.note.id}`
+            );
+          }
+          // Question
+          else {
+            setIsEditing(true);
+          }
+        },
       }}
     >
       <DocumentPageLayout
@@ -76,10 +122,42 @@ const DocumentIndexPage: NextPage<Args> = ({
           style={{ width: viewerWidth }}
         >
           <div className={css(styles.bodyWrapper)}>
-            <div
-              className={css(styles.body) + " rh-post"}
-              dangerouslySetInnerHTML={{ __html: postHtml }}
-            />
+            {isEditing ? (
+              <div className={css(styles.editor)}>
+                <DynamicCKEditor
+                  editing
+                  id="editPostBody"
+                  initialData={_postHtml}
+                  noTitle={true}
+                  onChange={(id, editorData) => setPostHtml(editorData)}
+                  readOnly={false}
+                />
+
+                <div className={css(styles.editButtonRow)}>
+                  <Button
+                    isWhite
+                    variant={"text"}
+                    label={"Cancel"}
+                    onClick={(): void => setIsEditing(false)}
+                    size={"small"}
+                  />
+                  <Button
+                    variant={"contained"}
+                    label={"Save"}
+                    onClick={(): void => {
+                      savePostApi({ id: document.id, postHtml: _postHtml });
+                      setIsEditing(false);
+                    }}
+                    size={"small"}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div
+                className={css(styles.body) + " rh-post"}
+                dangerouslySetInnerHTML={{ __html: _postHtml }}
+              />
+            )}
           </div>
         </div>
       </DocumentPageLayout>
@@ -99,8 +177,18 @@ const styles = StyleSheet.create({
   body: {
     padding: 45,
   },
+  editor: {
+    padding: 45,
+  },
   bodyContentWrapper: {
     margin: "0 auto",
+  },
+  editButtonRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 15,
+    columnGap: "15px",
   },
 });
 

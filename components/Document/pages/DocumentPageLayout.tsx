@@ -12,7 +12,7 @@ interface Args {
   documentType: DocumentType;
   tabName?: string;
   children?: any;
-  metadata: DocumentMetadata | undefined;
+  metadata: DocumentMetadata;
 }
 
 const DocumentPageLayout = ({

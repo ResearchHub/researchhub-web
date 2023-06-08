@@ -6,11 +6,13 @@ type DocumentContext = {
   documentType: DocumentType | undefined;
   tabName?: string | undefined;
   updateMetadata: Function;
+  editDocument?: Function;
 };
 
 export const DocumentContext = createContext<DocumentContext>({
   metadata: undefined,
   documentType: undefined,
   tabName: undefined,
-  updateMetadata: Function,
+  updateMetadata: () => null,
+  editDocument: () => null,
 });

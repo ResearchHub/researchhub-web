@@ -104,11 +104,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             icon: <FontAwesomeIcon icon={faPen} />,
             value: "edit-content",
             onClick: () => {
-              if (doc.note) {
-                router.push(
-                  `/${doc.note.organization.slug}/notebook/${doc.note.id}`
-                );
-              }
+              documentContext.editDocument && documentContext.editDocument();
             },
           },
         ]
