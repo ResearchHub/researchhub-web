@@ -1,35 +1,34 @@
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
+import { isEmpty } from "~/config/utils/nullchecks";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
-import { NullableString } from "~/config/types/root_types";
-import { useState } from "react";
+import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
+import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
 
 type Args = {
-  currentOrgSlug: string;
-  referenceProject: any;
-  activeProjectName: NullableString | string[];
-  child: boolean;
-  depth: number;
-  childrenOpen: boolean;
   addChildrenOpen: ({ key, value }) => void;
+  child?: boolean;
   childrenOpenMap: {};
+  currentOrgSlug: string;
+  depth?: number;
+  referenceProject: any;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
-  currentOrgSlug,
-  referenceProject,
-  activeProjectName,
-  child,
-  childrenOpen,
-  depth = 0,
   addChildrenOpen,
+  child,
   childrenOpenMap,
+  currentOrgSlug,
+  depth = 0,
+  referenceProject,
 }: Args) {
+  const { activeProject } = useReferenceActiveProjectContext();
   const hasChildren = !isEmpty(referenceProject.children);
-  const isActive = activeProjectName === referenceProject.project_name;
+  const isActive = activeProject?.projectID === referenceProject.id;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column" }}
+      key={`ref-project-${referenceProject?.id}-wrap`}
+    >
       <ReferenceProjectsNavbarEl
         key={`ref-project-${referenceProject?.id}`}
         collaborators={[
@@ -52,7 +51,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         isCurrentUserAdmin={referenceProject?.current_user_is_admin ?? false}
         isPublic={referenceProject?.is_public}
         referenceProject={referenceProject}
-        child={child}
+        child={Boolean(child)}
         depth={depth}
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
@@ -65,7 +64,6 @@ export function renderNestedReferenceProjectsNavbarEl({
             return renderNestedReferenceProjectsNavbarEl({
               currentOrgSlug,
               referenceProject: childReferenceProject,
-              activeProjectName,
               child: true,
               depth: depth + 1,
               addChildrenOpen,
