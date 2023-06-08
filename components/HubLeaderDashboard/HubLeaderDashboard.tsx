@@ -118,11 +118,13 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
     [hubs, filters]
   );
 
+  console.log(filters);
+
   return (
     <div className={css(styles.dashboard)}>
       <LeaderDashboardNavbar
         currentFilters={filters}
-        headerLabel="Hub Leaders"
+        headerLabel={`Top Hubs`}
         onFilterChange={(updatedFilters: EditorDashFilters): void => {
           setFilters({ ...updatedFilters });
           setIsLoading(true);

@@ -31,11 +31,11 @@ export default function HubLeaderDashboardCard({
   supportCount,
 }: Props) {
   return (
-    (<Link
+    <Link
       href={"/hubs/[slug]"}
       as={`/hubs/${buildSlug(name)}`}
-      className={css(styles.link)}>
-
+      className={css(styles.link)}
+    >
       <div className={css(styles.container, index === 0 && styles.borderTop)}>
         <div className={css(styles.row)}>
           <div className={css(styles.nameSection)}>
@@ -73,21 +73,16 @@ export default function HubLeaderDashboardCard({
             </div>
             <div className={css(styles.countLabel, styles.supportLabel)}>
               <span className={css(styles.mobileLabel)}>Supports</span>
-              <span className={css(styles.countResponse)}>
-                {supportCount}
-              </span>
+              <span className={css(styles.countResponse)}>{supportCount}</span>
             </div>
             <div className={css(styles.countLabel)}>
               <span className={css(styles.mobileLabel)}>Comments</span>
-              <span className={css(styles.countResponse)}>
-                {commentCount}
-              </span>
+              <span className={css(styles.countResponse)}>{commentCount}</span>
             </div>
           </div>
         </div>
       </div>
-
-    </Link>)
+    </Link>
   );
 }
 
@@ -233,7 +228,7 @@ const styles = StyleSheet.create({
   },
   name: {
     marginLeft: 16,
-    fontWeight: 500,
+    // fontWeight: 500,
   },
   hubName: {
     marginTop: 4,

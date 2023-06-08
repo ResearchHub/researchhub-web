@@ -155,7 +155,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     <div className={css(styles.dashboard)}>
       <LeaderDashboardNavbar
         currentFilters={filters}
-        headerLabel="Editor Dashboard"
+        headerLabel="Top Editors"
         onFilterChange={(updatedFilters: EditorDashFilters): void => {
           setFilters({ ...updatedFilters });
           setIsLoading(true);
@@ -221,7 +221,7 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     minHeight: "100vh",
-    padding: "0 32px",
+    padding: "0 50px",
     width: "100%",
     [`@media only screen and (max-width: 767px})`]: {
       maxWidth: "unset",
