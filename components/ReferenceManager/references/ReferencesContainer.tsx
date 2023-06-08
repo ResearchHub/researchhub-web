@@ -388,39 +388,41 @@ function ReferencesContainer({
                     handleFileDrop(Array.from(e.target.files));
                   }}
                 />
+
                 <div
                   style={{
-                    marginLeft: 16,
-                    padding: 16,
-                    background: colors.NEW_BLUE(),
-                    borderRadius: 4,
-                    // height: 30,
-                    color: "#fff",
-                    // width: 30,
+                    marginLeft: "auto",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    fontWeight: 500,
                   }}
-                  onClick={() => inputRef.current.click()}
                 >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    color="#fff"
-                    fontSize="20px"
-                    style={{ marginRight: 8 }}
-                  />
-                  Add a Citation
-                </div>
-                {!isEmpty(router.query.project) && (
                   <div
                     style={{
-                      marginLeft: "auto",
+                      marginRight: 16,
+                      padding: 16,
+                      background: colors.NEW_BLUE(),
+                      borderRadius: 4,
+                      // height: 30,
+                      color: "#fff",
+                      // width: 30,
                       display: "flex",
                       alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      fontWeight: 500,
                     }}
+                    onClick={() => inputRef.current.click()}
                   >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      color="#fff"
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    Add a Citation
+                  </div>
+
+                  {collaborators && (
                     <AuthorFacePile
                       horizontal
                       margin={-10}
@@ -431,26 +433,26 @@ function ReferencesContainer({
                         }
                       )}
                     />
-                    <Button
-                      variant="outlined"
-                      fontSize="small"
-                      size="small"
-                      customButtonStyle={styles.shareButton}
-                      onClick={(): void => {
-                        setProjectUpsertPurpose("update");
-                        setProjectUpsertValue({
-                          ...DEFAULT_PROJECT_VALUES,
-                          ...activeProject,
-                        });
-                        setIsProjectUpsertModalOpen(true);
-                      }}
-                    >
-                      <Typography variant="h6" fontSize={"16px"}>
-                        {"Share"}
-                      </Typography>
-                    </Button>
-                  </div>
-                )}
+                  )}
+                  <Button
+                    variant="outlined"
+                    fontSize="small"
+                    size="small"
+                    customButtonStyle={styles.shareButton}
+                    onClick={(): void => {
+                      setProjectUpsertPurpose("update");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        ...activeProject,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <Typography variant="h6" fontSize={"16px"}>
+                      {"Share"}
+                    </Typography>
+                  </Button>
+                </div>
               </div>
               <Box className="ReferencesContainerMain">
                 <Box
