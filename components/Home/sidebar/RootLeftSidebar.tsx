@@ -115,16 +115,6 @@ export const getLeftSidebarItemAttrs = ({
         // event.preventDefault();
       },
     },
-    {
-      icon: <FontAwesomeIcon icon={faChartSimple}></FontAwesomeIcon>,
-      label: "Leaderboard",
-      isMinimized,
-      isActive: pathname.includes("leaderboard"),
-      href: "/leaderboard/users",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
-    },
     killswitch("reference-manager")
       ? {
           icon: <FontAwesomeIcon icon={faTableTree} />,
@@ -360,12 +350,6 @@ function RootLeftSidebar({
                 </span>
               </InviteButton>
             </span>
-            {/* <ALink
-              href="/leaderboard/users"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {"Leaderboard"}
-            </ALink> */}
             <ALink
               href="https://docs.researchhub.com"
               target="_blank"
@@ -378,6 +362,12 @@ function RootLeftSidebar({
               overrideStyle={formattedFooterTxtItem}
             >
               {"Jobs"}
+            </ALink>
+            <ALink
+              href="/leaderboard/users"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {isMinimized ? "Top" : "Leaderboard"}
             </ALink>
           </div>
           <div className={css(styles.footer)}>

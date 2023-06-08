@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontFamily: "Roboto",
     fontSize: "30px",
-    fontWeight: 500,
+    // fontWeight: 500,
 
     "@media only screen and (max-width: 767px)": {
       textAlign: "center",

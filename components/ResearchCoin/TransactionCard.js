@@ -77,6 +77,20 @@ const TransactionCard = (props) => {
         ? "Withdrawal"
         : "";
 
+    if (transaction.source?.distribution_type?.includes("RhCOMMENT")) {
+      return transaction.source?.distribution_type
+        .replaceAll("_", " ")
+        .replaceAll("RhCOMMENT", "Comment")
+        .toLocaleLowerCase();
+    }
+
+    if (transaction.source?.distribution_type?.includes("RhBOUNTY")) {
+      return transaction.source?.distribution_type
+        .replaceAll("_", " ")
+        .replaceAll("RhBOUNTY", "Bounty")
+        .toLocaleLowerCase();
+    }
+
     if (transaction.readable_content_type === "bounty") {
       title = `Bounty #${transaction.source.id}: ${transaction.source.status}`;
     } else if (transaction.readable_content_type === "bountyfee") {
