@@ -11,7 +11,11 @@ import {
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
 import { Fragment, useState, ReactNode, useEffect } from "react";
 import { connect } from "react-redux";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  isNullOrUndefined,
+} from "~/config/utils/nullchecks";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
 import { MessageActions } from "~/redux/message";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
@@ -41,6 +45,8 @@ import ListIcon from "@mui/icons-material/List";
 import withWebSocket from "~/components/withWebSocket";
 import QuickModal from "../menu/QuickModal";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
+import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
+import { ID } from "~/config/types/root_types";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -55,6 +61,91 @@ type Preload = {
   created: boolean;
 };
 
+const useEffectFetchOrgProjects = ({
+  fetchTime,
+  onError,
+  onSuccess,
+  orgID,
+  setIsFethingProjects,
+}) => {
+  useEffect((): void => {
+    if (!isEmpty(orgID)) {
+      setIsFethingProjects(true);
+      fetchReferenceOrgProjects({
+        onError,
+        onSuccess,
+        payload: {
+          organization: orgID,
+        },
+      });
+    }
+  }, [orgID, fetchTime]);
+};
+
+const useEffectSetActiveProject = ({
+  currentOrgProjects,
+  isFetchingProjects,
+  router,
+  setActiveProject,
+}): void => {
+  const urlProjectID = parseInt(router.query.project);
+  const findNestedTargetProject = (allProjects: any[], targetProjectID: ID) => {
+    for (const project of allProjects) {
+      if (project.id === targetProjectID) {
+        return project;
+      }
+      const projectChildren = project.children;
+      if (!isEmpty(projectChildren)) {
+        const childTarget = findNestedTargetProject(
+          projectChildren,
+          targetProjectID
+        );
+        if (!isNullOrUndefined(childTarget)) {
+          return childTarget;
+        }
+      }
+    }
+  };
+
+  useEffect((): void => {
+    if (!isFetchingProjects) {
+      const activeProject = findNestedTargetProject(
+        currentOrgProjects,
+        urlProjectID
+      );
+      if (isNullOrUndefined(activeProject)) {
+        setActiveProject({ DEFAULT_PROJECT_VALUES });
+      } else {
+        const {
+          collaborators: { editors, viewers },
+          id,
+          project_name,
+          is_public,
+        } = activeProject ?? { collaborators: { editors: [], viewers: [] } };
+        setActiveProject({
+          collaborators: [
+            ...editors.map((rawUser: any) => {
+              return {
+                ...parseUserSuggestion(rawUser),
+                role: "EDITOR",
+              };
+            }),
+            ...viewers.map((rawUser: any) => {
+              return {
+                ...parseUserSuggestion(rawUser),
+                role: "VIEWER",
+              };
+            }),
+          ],
+          projectID: id,
+          projectName: project_name,
+          isPublic: is_public,
+        });
+      }
+    }
+  }, [urlProjectID, isFetchingProjects]);
+};
+
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
@@ -66,6 +157,11 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
+  const { currentOrg } = useOrgs();
+  const router = useRouter();
+
+  const { activeProject, setActiveProject } =
+    useReferenceActiveProjectContext();
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
     projectsFetchTime,
@@ -73,9 +169,11 @@ function ReferencesContainer({
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
-  const { currentOrg } = useOrgs();
-  const router = useRouter();
+  const { setIsDrawerOpen: setIsRefUploadDrawerOpen } =
+    useReferenceUploadDrawerContext();
+
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
+  const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string | null>(null);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
@@ -84,25 +182,27 @@ function ReferencesContainer({
     useState<boolean>(false);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
-  const currentProjectName = router.query.project_name;
 
-  const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
+  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
+  const currentProjectName = activeProject?.projectName ?? null;
   const currentOrgID = currentOrg?.id ?? null;
 
-  useEffect((): void => {
-    if (!isEmpty(currentOrgID)) {
-      fetchReferenceOrgProjects({
-        onError: emptyFncWithMsg,
-        onSuccess: (payload): void => {
-          setCurrentOrgProjects(payload ?? []);
-        },
-        payload: {
-          organization: currentOrgID,
-        },
-      });
-    }
-  }, [currentOrgID, projectsFetchTime]);
+  useEffectFetchOrgProjects({
+    fetchTime: projectsFetchTime,
+    onError: emptyFncWithMsg,
+    onSuccess: (payload): void => {
+      setCurrentOrgProjects(payload ?? []);
+      setIsFethingProjects(false);
+    },
+    orgID: currentOrgID,
+    setIsFethingProjects,
+  });
+  useEffectSetActiveProject({
+    currentOrgProjects,
+    router,
+    setActiveProject,
+    isFetchingProjects,
+  });
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -268,7 +368,7 @@ function ReferencesContainer({
                     justifyContent: "center",
                     cursor: "pointer",
                   }}
-                  onClick={() => setIsDrawerOpen(true)}
+                  onClick={() => setIsRefUploadDrawerOpen(true)}
                 >
                   <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
                 </div>
@@ -279,37 +379,10 @@ function ReferencesContainer({
                     size="small"
                     customButtonStyle={styles.shareButton}
                     onClick={(): void => {
-                      // TODO: calvinhlee - clean this up from backend
-                      const targetProject = currentOrgProjects.find(
-                        // TODO: calvinhlee - clean this up from backend
-                        (proj) => proj.id === parseInt(router.query.project)
-                      );
-                      const { id, collaborators, project_name, is_public } =
-                        targetProject ?? {};
                       setProjectUpsertPurpose("update");
                       setProjectUpsertValue({
                         ...DEFAULT_PROJECT_VALUES,
-                        collaborators: [
-                          ...(collaborators ?? []).editors.map(
-                            (rawUser: any) => {
-                              return {
-                                ...parseUserSuggestion(rawUser),
-                                role: "EDITOR",
-                              };
-                            }
-                          ),
-                          ...(collaborators ?? []).viewers.map(
-                            (rawUser: any) => {
-                              return {
-                                ...parseUserSuggestion(rawUser),
-                                role: "VIEWER",
-                              };
-                            }
-                          ),
-                        ],
-                        projectID: id,
-                        projectName: project_name,
-                        isPublic: is_public,
+                        ...activeProject,
                       });
                       setIsProjectUpsertModalOpen(true);
                     }}
