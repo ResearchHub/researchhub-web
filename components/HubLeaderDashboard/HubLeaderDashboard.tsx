@@ -118,8 +118,6 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
     [hubs, filters]
   );
 
-  console.log(filters);
-
   return (
     <div className={css(styles.dashboard)}>
       <LeaderDashboardNavbar
