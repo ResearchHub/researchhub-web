@@ -3,24 +3,29 @@ import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./context/ReferenceProjectsUpsertContext";
+import { faAngleDown, faAngleRight } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent } from "react";
-import { StyleSheet } from "aphrodite";
-import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+import { LookupSuggestedUser } from "../../form/ReferenceItemRhUserLookupInputTag";
+import { ReactElement, SyntheticEvent, useState } from "react";
+import { StyleSheet, css } from "aphrodite";
 import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
-import FolderIcon from "@mui/icons-material/Folder";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 
 type Props = {
   active: boolean;
-  collaborators: SuggestedUser[];
+  collaborators: LookupSuggestedUser[];
   isCurrentUserAdmin: boolean;
   isPublic: boolean;
   orgSlug: string;
   projectID: ID;
   projectName: string;
+  child: boolean;
+  depth: number;
+  referenceProject: any;
+  isOpen: boolean;
 };
 
 export default function ReferenceProjectsNavbarEl({
@@ -31,6 +36,10 @@ export default function ReferenceProjectsNavbarEl({
   orgSlug,
   projectID,
   projectName,
+  child,
+  depth,
+  addChildrenOpen,
+  isOpen,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -41,9 +50,15 @@ export default function ReferenceProjectsNavbarEl({
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
-
+  const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
   return (
     <Box
+      onMouseEnter={(): void => {
+        setShouldShowOptions(true);
+      }}
+      onMouseLeave={(): void => {
+        setShouldShowOptions(false);
+      }}
       sx={{
         alignItems: "center",
         cursor: "pointer",
@@ -54,12 +69,12 @@ export default function ReferenceProjectsNavbarEl({
         px: 2.5,
         background: active ? colors.GREY(0.2) : "",
         margin: "8px",
-        // marginLeft: "16px",
         marginBottom: "0px",
         marginTop: "0px",
         borderRadius: "4px",
         padding: "8px",
         boxSizing: "border-box",
+        marginLeft: child ? `${12 * depth}px` : "8px",
       }}
     >
       <ALink
@@ -75,7 +90,24 @@ export default function ReferenceProjectsNavbarEl({
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
-            <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} />
+            {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
+            <FontAwesomeIcon
+              icon={isOpen ? faAngleDown : faAngleRight}
+              color={"rgba(55, 53, 47, 0.35)"}
+              className={css(styles.arrowIcon)}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                addChildrenOpen({ key: projectID, value: !isOpen });
+                const projectIdsOpen =
+                  window.localStorage.getItem("projectIdsOpen") || "";
+
+                window.localStorage.setItem(
+                  "projectIdsOpen",
+                  projectIdsOpen + `${projectID},`
+                );
+              }}
+            />
             <Typography
               component="div"
               fontSize={14}
@@ -90,38 +122,41 @@ export default function ReferenceProjectsNavbarEl({
           </div>
         </Box>
       </ALink>
-      <ReferenceProjectNavbarElOption
-        isCurrentUserAdmin={isCurrentUserAdmin}
-        projectID={projectID}
-        projectName={projectName}
-        onSelectAddNewReference={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          setProjectIDRefUploader(projectID);
-          setIsUploadDrawerOpen(true);
-        }}
-        onSelectCreateSubProject={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          setProjectIDRefUploader(null);
-          setIsUploadDrawerOpen(false);
-          setProjectUpsertPurpose("create_sub_project");
-          setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
-          setIsProjectUpsertModalOpen(true);
-        }}
-        onSelectEditProject={(event: SyntheticEvent): void => {
-          event.preventDefault();
-          setProjectIDRefUploader(null);
-          setIsUploadDrawerOpen(false);
-          setProjectUpsertPurpose("update");
-          setProjectUpsertValue({
-            ...DEFAULT_PROJECT_VALUES,
-            collaborators,
-            projectID,
-            projectName,
-            isPublic,
-          });
-          setIsProjectUpsertModalOpen(true);
-        }}
-      />
+      {shouldShowOptions && (
+        <ReferenceProjectNavbarElOption
+          isCurrentUserAdmin={isCurrentUserAdmin}
+          projectID={projectID}
+          projectName={projectName}
+          onSelectAddNewReference={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(projectID);
+            setIsUploadDrawerOpen(true);
+          }}
+          onSelectCreateSubProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("create_sub_project");
+            setProjectUpsertValue({ ...DEFAULT_PROJECT_VALUES, projectID });
+            setIsProjectUpsertModalOpen(true);
+          }}
+          onSelectEditProject={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            setProjectIDRefUploader(null);
+            setIsUploadDrawerOpen(false);
+            setProjectUpsertPurpose("update");
+            setProjectUpsertValue({
+              ...DEFAULT_PROJECT_VALUES,
+              collaborators,
+              projectID,
+              projectName,
+              isPublic,
+            });
+            setIsProjectUpsertModalOpen(true);
+          }}
+          setShouldShowOptions={setShouldShowOptions}
+        />
+      )}
     </Box>
   );
 }
@@ -129,5 +164,13 @@ export default function ReferenceProjectsNavbarEl({
 const styles = StyleSheet.create({
   linkOverride: {
     width: "100%",
+  },
+  arrowIcon: {
+    fontSize: 16,
+    padding: 8,
+
+    ":hover": {
+      background: "#ddd",
+    },
   },
 });

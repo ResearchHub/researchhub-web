@@ -4,6 +4,7 @@ import { fetchUserOrgs } from "~/config/fetch";
 import { generateApiUrl } from "~/config/api";
 import nookies from "nookies";
 import ReferencesRoot from "~/components/ReferenceManager/references/ReferencesRoot";
+import dynamic from "next/dynamic";
 
 function Index(props) {
   const { isLoggedIn, authChecked } = props;

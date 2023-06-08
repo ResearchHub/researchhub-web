@@ -24,6 +24,7 @@ type Props = {
   onSelectEditProject: (event: SyntheticEvent) => void;
   projectID: ID;
   projectName: string;
+  setShouldShowOptions: (flag: boolean) => void;
 };
 
 export default function ReferenceProjectNavbarElOption({
@@ -33,6 +34,7 @@ export default function ReferenceProjectNavbarElOption({
   onSelectEditProject,
   projectID,
   projectName,
+  setShouldShowOptions,
 }: Props): ReactElement {
   const router = useRouter();
   const { currentOrg } = getCurrentUserCurrentOrg();
@@ -46,6 +48,11 @@ export default function ReferenceProjectNavbarElOption({
   };
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
+    setShouldShowOptions(false);
+  };
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+    handleMenuClose();
   };
 
   return (
@@ -82,19 +89,15 @@ export default function ReferenceProjectNavbarElOption({
           removeReferenceProject({
             projectID,
             onSuccess: () => {
-              setIsDeleteModalOpen(false);
               resetProjectsFetchTime();
+              handleDeleteModalClose();
               router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
             },
             onError: emptyFncWithMsg,
           });
         }}
-        onSecondaryButtonClick={(): void => {
-          setIsDeleteModalOpen(false);
-        }}
-        onClose={(): void => {
-          setIsDeleteModalOpen(false);
-        }}
+        onSecondaryButtonClick={handleDeleteModalClose}
+        onClose={handleDeleteModalClose}
         primaryButtonConfig={{ label: "Delete" }}
       />
       <span
@@ -149,7 +152,6 @@ export default function ReferenceProjectNavbarElOption({
             onClick={(event: MouseEvent): void => {
               event.preventDefault();
               setIsDeleteModalOpen(true);
-              handleMenuClose();
             }}
           >
             <Typography color="red">{"Remove"}</Typography>

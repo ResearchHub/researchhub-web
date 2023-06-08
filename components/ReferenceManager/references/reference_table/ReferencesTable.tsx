@@ -3,16 +3,21 @@ import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
-import {
-  formatReferenceRowData,
-  ReferenceTableRowDataType,
-} from "./utils/formatReferenceRowData";
+import { formatReferenceRowData } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
+import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
+import { useReferencesTableContext } from "./context/ReferencesTableContext";
+
+type Props = {
+  createdReferences: any[];
+  handleFileDrop: () => void;
+  setSelectedReferenceIDs: (refs: any[]) => void;
+};
 
 function useEffectFetchReferenceCitations({
   onError,
@@ -34,7 +39,7 @@ function useEffectFetchReferenceCitations({
         organizationID: currentOrg?.id,
         // @ts-ignore
         projectID: router.query?.project,
-        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
+        getCurrentUserCitation: isEmpty(router.query?.org_refs),
       });
     }
   }, [
@@ -46,13 +51,17 @@ function useEffectFetchReferenceCitations({
   ]);
 }
 
-export default function ReferencesTable({ createdReferences }) {
-  const { setIsDrawerOpen, setReferenceItemDrawerData, referencesFetchTime } =
+// TODO: @lightninglu10 - ReferenceTableRowDataType became worthless after updating this component. We need to address this
+export default function ReferencesTable({
+  createdReferences,
+  handleFileDrop,
+  setSelectedReferenceIDs,
+}: Props) {
+  const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
+  const { referenceTableRowData, setReferenceTableRowData } =
+    useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [referenceTableRowData, setReferenceTableRowData] = useState<
-    ReferenceTableRowDataType[]
-  >([]);
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -104,6 +113,15 @@ export default function ReferencesTable({ createdReferences }) {
         checkboxSelection
         columns={columnsFormat}
         hideFooter
+        className={formattedReferenceRows.length === 0 ? "empty-data-grid" : ""}
+        localeText={{
+          noRowsLabel: (
+            <UploadFileDragAndDrop
+              handleFileDrop={handleFileDrop}
+              accept={".pdf"}
+            />
+          ),
+        }}
         initialState={{
           columns: {
             columnVisibilityModel: {
@@ -115,7 +133,7 @@ export default function ReferencesTable({ createdReferences }) {
         loading={isLoading}
         onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
-          setReferenceItemDrawerData({
+          setReferenceItemDatum({
             ...nullthrows(
               referenceTableRowData.find((item) => item.id === params?.row?.id)
             ),
@@ -123,6 +141,9 @@ export default function ReferencesTable({ createdReferences }) {
           if (params.field !== "__check__") {
             setIsDrawerOpen(true);
           }
+        }}
+        onRowSelectionModelChange={(selectedReferenceIDs) => {
+          setSelectedReferenceIDs(selectedReferenceIDs);
         }}
         slots={{
           cell: (cell) => {

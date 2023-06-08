@@ -1,13 +1,14 @@
 import { ClipLoader } from "react-spinners";
 import { ID } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { ReactElement, SyntheticEvent, useEffect } from "react";
-import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
+import { ReactElement, SyntheticEvent } from "react";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import Box from "@mui/material/Box";
 import ClearIcon from "@mui/icons-material/Clear";
 import ReferenceItemRhUserLookupInput from "../../form/ReferenceItemRhUserLookupInput";
-import ReferenceItemRhUserLookupInputTag from "../../form/ReferenceItemRhUserLookupInputTag";
+import ReferenceItemRhUserLookupInputTag, {
+  LookupSuggestedUser,
+} from "../../form/ReferenceItemRhUserLookupInputTag";
 import Typography from "@mui/material/Typography";
 
 type Props = {
@@ -25,14 +26,14 @@ export default function ReferenceCollaboratorsSection({
     setProjectValue,
   } = useReferenceProjectUpsertContext();
 
-  const setCollaborators = (newCollaborators: SuggestedUser[]): void => {
+  const setCollaborators = (newCollaborators: LookupSuggestedUser[]): void => {
     setProjectValue({
       ...projectValue,
       collaborators: newCollaborators,
     });
   };
 
-  const inviteeEls = collaborators.map((targetInvitee: SuggestedUser) => {
+  const inviteeEls = collaborators.map((targetInvitee: LookupSuggestedUser) => {
     return (
       <div
         style={{
@@ -43,15 +44,30 @@ export default function ReferenceCollaboratorsSection({
         }}
         key={`RefUserInviteSection-Invitee-${targetInvitee.id}`}
       >
-        <span style={{ marginLeft: -12 }}>
-          <ReferenceItemRhUserLookupInputTag user={targetInvitee} />
+        <span style={{ marginLeft: -12, width: "92%" }}>
+          <ReferenceItemRhUserLookupInputTag
+            user={targetInvitee}
+            showRoleDrop
+            onUserRoleChange={(role): void => {
+              setCollaborators(
+                collaborators.map(
+                  (collaborator: LookupSuggestedUser): LookupSuggestedUser => {
+                    if (collaborator.id === targetInvitee.id) {
+                      return { ...collaborator, role };
+                    }
+                    return collaborator;
+                  }
+                )
+              );
+            }}
+          />
         </span>
         <ClearIcon
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
             setCollaborators(
               collaborators.filter(
-                (invitee: SuggestedUser): boolean =>
+                (invitee: LookupSuggestedUser): boolean =>
                   targetInvitee.id !== invitee.id
               )
             );
@@ -93,13 +109,13 @@ export default function ReferenceCollaboratorsSection({
         <ReferenceItemRhUserLookupInput
           disabled={disabled}
           label={""}
-          onUserSelect={(selectedUser: SuggestedUser): void => {
+          onUserSelect={(selectedUser: LookupSuggestedUser): void => {
             setCollaborators([...collaborators, selectedUser]);
           }}
           placeholder="Look up ResearchHub user(s)"
           shouldClearOnSelect
           filterUserIDs={collaborators.map(
-            (collaborators: SuggestedUser): ID => collaborators.id
+            (collaborators: LookupSuggestedUser): ID => collaborators.id
           )}
         />
         <Box
@@ -123,7 +139,7 @@ export default function ReferenceCollaboratorsSection({
           {disabled ? (
             <ClipLoader color={"#fff"} size={14} />
           ) : (
-            <div style={{ color: "#fff", fontSize: 14 }}>{"Invite"}</div>
+            <div style={{ color: "#fff", fontSize: 14 }}>{"Add"}</div>
           )}
         </Box>
       </Box>

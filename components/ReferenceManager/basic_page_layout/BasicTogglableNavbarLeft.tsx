@@ -1,10 +1,5 @@
 import { Box } from "@mui/system";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  nullthrows,
-} from "~/config/utils/nullchecks";
-import { fetchReferenceProjects } from "../references/reference_organizer/api/fetchReferenceProjects";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -12,11 +7,8 @@ import { Theme } from "@mui/material/styles";
 import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
-import AddSharpIcon from "@mui/icons-material/AddSharp";
 import BasicTogglableNavbarButton from "./BasicTogglableNavbarButton";
 import Divider from "@mui/material/Divider";
-import HailIcon from "@mui/icons-material/Hail";
-import HomeIcon from "@mui/icons-material/Home";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -24,6 +16,9 @@ import OrganizationPopover from "~/components/Tooltips/Organization/Organization
 import ReferenceProjectsUpsertModal from "../references/reference_organizer/ReferenceProjectsUpsertModal";
 import Typography from "@mui/material/Typography";
 import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import { faSitemap, faUser } from "@fortawesome/pro-regular-svg-icons";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -43,47 +38,52 @@ type Props = {
   navWidth: number;
   setIsOpen: (flag: boolean) => void;
   theme?: Theme;
+  currentOrgProjects: any[];
 };
 
 export default function BasicTogglableNavbarLeft({
   isOpen,
   navWidth,
   theme,
+  currentOrgProjects,
 }: Props) {
   const {
     setIsDrawerOpen: isUploadDrawerOpen,
     setProjectID: setProjectIDForDrawer,
   } = useReferenceUploadDrawerContext();
-  const { projectsFetchTime, isModalOpen } = useReferenceProjectUpsertContext();
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
-  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>();
   const router = useRouter();
+  const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
-  const currentOrgID = currentOrg?.id ?? null;
-  const currentOrgSlug = currentOrg?.slug ?? null;
-
-  useEffect((): void => {
-    if (!isEmpty(currentOrgID)) {
-      fetchReferenceProjects({
-        onError: emptyFncWithMsg,
-        onSuccess: (payload): void => {
-          setCurrentOrgProjects(payload ?? []);
-        },
-        payload: {
-          organization: currentOrgID,
-        },
+  useEffect(() => {
+    const idsOpen = window.localStorage.getItem("projectIdsOpen");
+    if (idsOpen) {
+      const idsOpenToArray = idsOpen.split(",");
+      const childrenOpenMap = {};
+      idsOpenToArray.forEach((id) => {
+        childrenOpenMap[id] = true;
       });
+      setChildrenOpenMap(childrenOpenMap);
     }
-  }, [currentOrgID, projectsFetchTime]);
+  }, []);
 
+  const addChildrenOpen = ({ key, value }) => {
+    const map = { ...childrenOpenMap };
+    map[key] = value;
+    setChildrenOpenMap(map);
+  };
+
+  const currentOrgSlug = currentOrg?.slug ?? null;
   const refProjectsNavbarEls = currentOrgProjects?.map(
     (referenceProject, elIndex) => {
       return renderNestedReferenceProjectsNavbarEl({
         currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
         referenceProject,
         activeProjectName: router.query.project_name ?? "",
+        addChildrenOpen,
+        childrenOpenMap,
       });
     }
   );
@@ -118,53 +118,34 @@ export default function BasicTogglableNavbarLeft({
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         <BasicTogglableNavbarButton
+          icon={
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ marginLeft: 2, marginRight: 10, color: "#7C7989" }}
+            />
+          }
+          isActive={
+            isEmpty(router.query?.org_refs) &&
+            isEmpty(router.query?.project_name)
+          }
+          key="my-references"
+          label="My References"
+          link={`/reference-manager/${currentOrgSlug}`}
+        />
+        <BasicTogglableNavbarButton
           isActive={
             isEmpty(router.query?.project_name) &&
-            isEmpty(router.query?.my_refs)
+            !isEmpty(router.query?.org_refs)
           }
           icon={
-            <HomeIcon
-              fontSize="small"
-              sx={{ color: "#7C7989", marginRight: "8px" }}
+            <FontAwesomeIcon
+              icon={faSitemap}
+              style={{ marginRight: 8, color: "#7C7989" }}
             />
           }
           key="public-references"
-          label="Public references"
-          link={`/reference-manager/${currentOrgSlug}`}
-          option={
-            <Box
-              sx={OPTION_BOTTON_STYLE}
-              onClick={(): void => {
-                setProjectIDForDrawer(null);
-                isUploadDrawerOpen(true);
-              }}
-            >
-              <AddSharpIcon fontSize="small" color="primary" />
-            </Box>
-          }
-        />
-        <BasicTogglableNavbarButton
-          icon={
-            <HailIcon
-              fontSize="small"
-              sx={{ color: "#7C7989", marginRight: "8px" }}
-            />
-          }
-          isActive={!isEmpty(router.query?.my_refs)}
-          key="my-references"
-          label="My references"
-          link={`/reference-manager/${currentOrgSlug}?my_refs=true`}
-          option={
-            <Box
-              sx={OPTION_BOTTON_STYLE}
-              onClick={(): void => {
-                setProjectIDForDrawer(null);
-                isUploadDrawerOpen(true);
-              }}
-            >
-              <AddSharpIcon fontSize="small" color="primary" />
-            </Box>
-          }
+          label="Organization References"
+          link={`/reference-manager/${currentOrgSlug}?org_refs=true`}
         />
       </List>
       <Divider />
@@ -202,13 +183,19 @@ export default function BasicTogglableNavbarLeft({
             justifyContent: isOpen ? "initial" : "center",
             px: 2.5,
             maxHeight: 50,
+            paddingLeft: "16px",
+            paddingRight: "16px",
           }}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
             setIsProjectsUpsertModalOpen(true);
           }}
         >
-          <AddSharpIcon fontSize="small" color="primary" />
+          <FontAwesomeIcon
+            icon={faPlus}
+            color="rgb(57, 113, 255)"
+            style={{ fontSize: 14 }}
+          />
           <Typography
             color="#3971FF"
             component="div"
@@ -226,68 +213,3 @@ export default function BasicTogglableNavbarLeft({
     </Box>
   );
 }
-
-// type DrawerProps = {
-//   isOpen: boolean;
-//   navWidth: number;
-//   theme: Theme;
-// };
-
-/* <Drawer
-        isOpen={isOpen}
-        navWidth={navWidth}
-        theme={theme}
-        variant="permanent"
-      > */
-
-// const openedMixin = (theme: Theme, navWidth: number): CSSObject => ({
-//   transition: theme.transitions.create("width", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.enteringScreen,
-//   }),
-//   overflowX: "hidden",
-//   width: navWidth,
-// });
-
-// const closedMixin = (theme: Theme): CSSObject => ({
-//   transition: theme.transitions.create("width", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen,
-//   }),
-//   overflowX: "hidden",
-//   width: `calc(${theme.spacing(7)} + 1px)`,
-//   [theme.breakpoints.up("sm")]: {
-//     width: `calc(${theme.spacing(8)} + 1px)`,
-//   },
-// });
-
-// const doNotPassProps = new Set(["isOpen", "navWidth"]);
-// const Drawer = styled(MuiDrawer, {
-//   shouldForwardProp: (propName: string): boolean =>
-//     !doNotPassProps.has(propName),
-// })(({ theme, isOpen, navWidth }: DrawerProps) => ({
-//   background: "#FAFAFC",
-//   boxSizing: "border-box",
-//   flexShrink: 0,
-//   position: "sticky",
-//   top: 0,
-//   whiteSpace: "nowrap",
-//   width: navWidth,
-//   ...(isOpen && {
-//     ...openedMixin(theme, navWidth),
-//     "& .MuiDrawer-paper": openedMixin(theme, navWidth),
-//   }),
-//   ...(!isOpen && {
-//     ...closedMixin(theme),
-//     "& .MuiDrawer-paper": closedMixin(theme),
-//   }),
-// }));
-
-// const DrawerHeader = styled("div")(({ theme }: { theme: Theme }) => ({
-//   alignItems: "center",
-//   display: "flex",
-//   padding: theme.spacing(0, 1),
-//   // necessary for content to be below app bar
-//   ...theme.mixins.toolbar,
-//   justifyContent: "flex-end",
-// }));

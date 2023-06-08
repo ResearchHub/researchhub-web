@@ -4,7 +4,7 @@ import { contractABI, stagingContractABI } from "./contractAbi";
 import {
   useContractWrite,
   usePrepareContractWrite,
-  useSigner,
+  useWalletClient,
   useSwitchNetwork,
   useNetwork,
   useContractRead,
@@ -45,7 +45,7 @@ export function DepositScreen(props) {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const [amount, setAmount] = useState(0);
-  const { data: signer } = useSigner({ chainId: CHAIN_ID });
+  const { data: signer } = useWalletClient({ chainId: CHAIN_ID });
 
   const { config } = usePrepareContractWrite({
     address: RSCContractAddress,
