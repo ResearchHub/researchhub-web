@@ -351,12 +351,6 @@ function RootLeftSidebar({
               </InviteButton>
             </span>
             <ALink
-              href="/leaderboard/users"
-              overrideStyle={formattedFooterTxtItem}
-            >
-              {isMinimized ? "Top" : "Leaderboard"}
-            </ALink>
-            <ALink
               href="https://docs.researchhub.com"
               target="_blank"
               overrideStyle={formattedFooterTxtItem}
@@ -368,6 +362,12 @@ function RootLeftSidebar({
               overrideStyle={formattedFooterTxtItem}
             >
               {"Jobs"}
+            </ALink>
+            <ALink
+              href="/leaderboard/users"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {isMinimized ? "Top" : "Leaderboard"}
             </ALink>
           </div>
           <div className={css(styles.footer)}>
