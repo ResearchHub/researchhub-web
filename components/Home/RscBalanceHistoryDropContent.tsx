@@ -211,34 +211,6 @@ export default function RscBalanceHistoryDropContent({
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
           </div>
         </a>
-
-        <div
-          style={{
-            padding: 16,
-            marginTop: 16,
-            borderTop: "1px solid #eee",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ marginBottom: 8 }}>
-            <a
-              className={css(styles.text)}
-              href={"https://docs.researchhub.com/researchcoin/token-overview"}
-              target="_blank"
-            >
-              What is ResearchCoin?
-            </a>
-          </div>
-          <a
-            className={css(styles.text)}
-            href={
-              "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xd101dcc414f310268c37eeb4cd376ccfa507f571"
-            }
-            target="_blank"
-          >
-            ResearchCoin is on Uniswap
-          </a>
-        </div>
       </div>
     </div>
   );
@@ -291,7 +263,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   ctaWrapper: {
-    padding: "8px 15px",
+    padding: "16px 15px",
     borderTop: `2px solid ${colors.LIGHT_GREY_BORDER}`,
   },
   rscBalanceHistoryDropContentCard: {
