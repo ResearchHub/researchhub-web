@@ -55,6 +55,27 @@ type Preload = {
   created: boolean;
 };
 
+const useEffectFetchOrgProjects = ({
+  fetchTime,
+  onError,
+  onSuccess,
+  orgID,
+}) => {
+  useEffect((): void => {
+    if (!isEmpty(orgID)) {
+      fetchReferenceOrgProjects({
+        onError,
+        onSuccess,
+        payload: {
+          organization: orgID,
+        },
+      });
+    }
+  }, [orgID, fetchTime]);
+};
+
+useEffectSetActiveProject({})
+
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
@@ -90,19 +111,15 @@ function ReferencesContainer({
   const { setIsDrawerOpen, setProjectID } = useReferenceUploadDrawerContext();
   const currentOrgID = currentOrg?.id ?? null;
 
-  useEffect((): void => {
-    if (!isEmpty(currentOrgID)) {
-      fetchReferenceOrgProjects({
-        onError: emptyFncWithMsg,
-        onSuccess: (payload): void => {
-          setCurrentOrgProjects(payload ?? []);
-        },
-        payload: {
-          organization: currentOrgID,
-        },
-      });
-    }
-  }, [currentOrgID, projectsFetchTime]);
+  useEffectFetchOrgProjects({
+    fetchTime: projectsFetchTime,
+    onError: emptyFncWithMsg,
+    onSuccess: (payload): void => {
+      setCurrentOrgProjects(payload ?? []);
+    },
+    orgID: currentOrgID,
+  });
+  useEffectSetActiveProject({})
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -280,12 +297,16 @@ function ReferencesContainer({
                     customButtonStyle={styles.shareButton}
                     onClick={(): void => {
                       // TODO: calvinhlee - clean this up from backend
+                      console.warn("currentOrgProjects: ", currentOrgProjects);
+
                       const targetProject = currentOrgProjects.find(
                         // TODO: calvinhlee - clean this up from backend
                         (proj) => proj.id === parseInt(router.query.project)
                       );
                       const { id, collaborators, project_name, is_public } =
                         targetProject ?? {};
+                      console.warn("targetProject: ", targetProject);
+
                       setProjectUpsertPurpose("update");
                       setProjectUpsertValue({
                         ...DEFAULT_PROJECT_VALUES,
