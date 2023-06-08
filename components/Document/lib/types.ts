@@ -16,7 +16,6 @@ import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-
 export type DocumentFormat = {
   type: "pdf" | "latex";
   url: string;
@@ -38,16 +37,18 @@ export type DocumentMetadata = {
 };
 
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
-
-  const document = Array.isArray(raw.documents) ? raw.documents[0] : raw.documents;
+  const document = Array.isArray(raw.documents)
+    ? raw.documents[0]
+    : raw.documents;
   return {
     unifiedDocumentId: raw.id,
-    bounties: parseBountyList(document?.bounties || []).filter(b => !b.isExpiredOrClosed),
+    bounties: parseBountyList(document?.bounties || []).filter(
+      (b) => !b.isExpiredOrClosed
+    ),
     purchases: (document.purchases || []).map((p: any) => parsePurchase(p)),
     userVote: document?.user_vote ? parseVote(document.user_vote) : null,
     reviewSummary: parseReviewSummary(raw.reviews),
-    discussionCount:
-      document?.discussion_aggregates?.discussion_count || 0,
+    discussionCount: document?.discussion_aggregates?.discussion_count || 0,
     reviewCount: document?.discussion_aggregates?.review_count || 0,
     summaryCount: document?.discussion_aggregates?.summary_count || 0,
     score: raw.score,
@@ -105,14 +106,14 @@ export interface Props {
 export type Note = {
   id: ID;
   organization: Organization;
-} 
+};
 
-export const parseNote = (raw:any): Note => {
+export const parseNote = (raw: any): Note => {
   return {
     id: raw.id,
     organization: parseOrganization(raw.organization),
-  }
-} 
+  };
+};
 
 export const parseReviewSummary = (raw: any): ReviewSummary => {
   return {
@@ -175,7 +176,10 @@ export const parsePost = (raw: any): Post => {
     authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
     type: "post",
     apiDocumentType: "researchhub_post",
-    postType: raw.unified_document.document_type === "QUESTION" ? "question" : "publication",
+    postType:
+      raw.unified_document.document_type === "QUESTION"
+        ? "question"
+        : "publication",
   };
 
   if (raw.note) {

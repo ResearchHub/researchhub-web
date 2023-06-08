@@ -23,7 +23,8 @@ export function isOutsideClick({
     return false;
   }
 
-  const isWithin = ref.current === clickedEl || ref.current?.contains(clickedEl);
+  const isWithin =
+    ref.current === clickedEl || ref.current?.contains(clickedEl);
   const clickOnExcluded = exclude.reduce(
     (prev, selector) =>
       Boolean(

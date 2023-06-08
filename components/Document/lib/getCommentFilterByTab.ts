@@ -10,5 +10,4 @@ const getCommentFilterByTab = (tabName) => {
   }
 };
 
-
 export default getCommentFilterByTab;

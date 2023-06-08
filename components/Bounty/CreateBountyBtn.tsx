@@ -15,11 +15,11 @@ import { isEmpty } from "~/config/utils/nullchecks";
 type Args = {
   withPreview: boolean;
   onBountyAdd: Function;
-  relatedItemId?: ID,
-  relatedItemContentType?: string,
-  children: any,
-  originalBounty?: Bounty,
-}
+  relatedItemId?: ID;
+  relatedItemContentType?: string;
+  children: any;
+  originalBounty?: Bounty;
+};
 
 function CreateBountyBtn({
   withPreview = false,
@@ -27,7 +27,7 @@ function CreateBountyBtn({
   relatedItemId,
   relatedItemContentType,
   originalBounty,
-  children
+  children,
 }: Args): ReactElement {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,9 +39,12 @@ function CreateBountyBtn({
       className={css(styles.createBountyBtn)}
       onClick={() => {
         if (!isLoggedIn) {
-          dispatch(ModalActions.openLoginModal(true, "Please Sign in to continue."))
+          dispatch(
+            ModalActions.openLoginModal(true, "Please Sign in to continue.")
+          );
         }
-      }}>
+      }}
+    >
       {/* @ts-ignore */}
       <BountyModal
         isOpen={isModalOpen}
@@ -55,9 +58,13 @@ function CreateBountyBtn({
         originalBounty={originalBounty}
       />
       {children ? (
-        <div onClick={() => {
-          isLoggedIn && setIsModalOpen(true);
-        }}>{children}</div>
+        <div
+          onClick={() => {
+            isLoggedIn && setIsModalOpen(true);
+          }}
+        >
+          {children}
+        </div>
       ) : (
         <IconButton
           onClick={() => {
@@ -87,7 +94,6 @@ function CreateBountyBtn({
   );
 }
 
-
 const styles = StyleSheet.create({
   removeBounty: {
     color: colors.DARKER_GREY(),
@@ -110,7 +116,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginRight: 5,
-    columnGap: "3px"
+    columnGap: "3px",
   },
   desktop: {
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {

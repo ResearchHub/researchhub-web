@@ -29,7 +29,7 @@ export const tabs: Array<Tab> = [
         height={18}
         width={18}
       />
-    ),    
+    ),
     label: "Bounties",
     value: "bounties",
   },
@@ -54,14 +54,14 @@ export const getTabs = ({
   let _tabs = tabs;
 
   if (isPost(document) && document.postType === "question") {
-    _tabs = _tabs.filter((tab) => tab.value !== "reviews")
+    _tabs = _tabs.filter((tab) => tab.value !== "reviews");
   }
 
   _tabs = withDocTypeTab({ tabs: _tabs, document });
   _tabs = withHref({ tabs: _tabs, router });
   _tabs = withSelected({ tabs: _tabs, tabName: tabName as string });
   if (metadata) {
-  _tabs = withPillContent({ tabs: _tabs, document, metadata });
+    _tabs = withPillContent({ tabs: _tabs, document, metadata });
   }
 
   return _tabs;
@@ -74,7 +74,11 @@ const withDocTypeTab = ({
   tabs: Array<Tab>;
   document: GenericDocument;
 }) => {
-  const type = isPaper(document) ? "paper" : isPost(document) && document.postType === "question" ? "question" : "post" ;
+  const type = isPaper(document)
+    ? "paper"
+    : isPost(document) && document.postType === "question"
+    ? "question"
+    : "post";
   let docTab: Tab;
 
   if (type === "question") {
@@ -170,4 +174,3 @@ const withHref = ({
   const basePath = `/${documentType}/${documentId}/${documentSlug}`;
   return tabs.map((t) => ({ ...t, href: `${basePath}/${t.value}` }));
 };
-

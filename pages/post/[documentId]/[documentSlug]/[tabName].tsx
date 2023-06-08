@@ -26,9 +26,8 @@ const TabPage: NextPage<Args> = ({
       commentData={commentData}
       errorCode={errorCode}
     />
-  )
-}
-
+  );
+};
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   return sharedGetStaticProps({ ctx, documentType: "post" });
@@ -49,6 +48,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: true,
   };
 };
-
 
 export default TabPage;

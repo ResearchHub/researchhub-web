@@ -7,9 +7,7 @@ interface Props {
   unifiedDocId: ID;
 }
 
-const fetchDocumentMetadata = ({
-  unifiedDocId,
-}: Props): Promise<any> => {
+const fetchDocumentMetadata = ({ unifiedDocId }: Props): Promise<any> => {
   const url = generateApiUrl(
     `researchhub_unified_document/${unifiedDocId}/get_document_metadata`
   );

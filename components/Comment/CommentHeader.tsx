@@ -1,7 +1,4 @@
-import {
-  AuthorProfile,
-  RHUser,
-} from "~/config/types/root_types";
+import { AuthorProfile, RHUser } from "~/config/types/root_types";
 import { GenericDocument } from "../Document/lib/types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";

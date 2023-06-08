@@ -3,9 +3,7 @@ import { getDocumentByType } from "./getDocumentByType";
 import isEmpty from "lodash/isEmpty";
 import fetchPostFromS3 from "../api/fetchPostFromS3";
 import getCommentFilterByTab from "./getCommentFilterByTab";
-import {
-  DocumentType,
-} from "~/components/Document/lib/types";
+import { DocumentType } from "~/components/Document/lib/types";
 import fetchDocumentMetadata from "../api/fetchDocumentMetadata";
 
 const config = {
@@ -19,8 +17,10 @@ interface Props {
   documentType: DocumentType;
 }
 
-export default async function sharedGetStaticProps({ ctx, documentType }: Props) {
-
+export default async function sharedGetStaticProps({
+  ctx,
+  documentType,
+}: Props) {
   const { documentId, documentSlug } = ctx.params!;
   const tabName = ctx.params?.tabName || null;
   const shouldFetchComments = !isEmpty(tabName);
@@ -34,7 +34,6 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
     metadata = await fetchDocumentMetadata({
       unifiedDocId: documentData.unified_document.id,
     });
-
   } catch (err) {
     console.log("Error getting document", err);
     return {
@@ -89,7 +88,8 @@ export default async function sharedGetStaticProps({ ctx, documentType }: Props)
         const filter = getCommentFilterByTab(tabName);
         commentData = await fetchCommentsAPI({
           documentId,
-          documentType: (documentType === "post" ? "researchhub_post" : documentType),
+          documentType:
+            documentType === "post" ? "researchhub_post" : documentType,
           filter,
         });
       }

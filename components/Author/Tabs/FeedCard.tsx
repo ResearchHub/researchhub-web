@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments } from "@fortawesome/pro-solid-svg-icons";
-import { faCommentAltLines } from "@fortawesome/pro-solid-svg-icons";
-import { faCheck } from "@fortawesome/pro-solid-svg-icons";
-import { faQuestion } from "@fortawesome/pro-solid-svg-icons";
-import { faLightbulb } from "@fortawesome/pro-regular-svg-icons";
-import { faPenSquare } from "@fortawesome/pro-solid-svg-icons";
-import { faFileLines } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faComments,
+  faCommentAltLines,
+  faCheck,
+  faQuestion,
+  faPenSquare,
+} from "@fortawesome/pro-solid-svg-icons";
+import { faLightbulb, faFileLines } from "@fortawesome/pro-regular-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -153,7 +154,7 @@ function FeedCard({
   );
 
   // const bounty = bounties?.[0];
-  let feDocUrl = `/${
+  const feDocUrl = `/${
     RESEARCHHUB_POST_DOCUMENT_TYPES.includes(formattedDocType ?? "")
       ? "post"
       : formattedDocType

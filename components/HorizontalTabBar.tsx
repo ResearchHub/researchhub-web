@@ -55,8 +55,9 @@ const HorizontalTabBar = ({
     }
   }, [tabContainerEl]);
 
-  const renderTab = (tab:Tab, index) => {
-    const { isSelected, value, label, icon, selectedIcon, pillContent, href } = tab;
+  const renderTab = (tab: Tab, index) => {
+    const { isSelected, value, label, icon, selectedIcon, pillContent, href } =
+      tab;
     const tabType = href ? "link" : "div";
 
     const props = {

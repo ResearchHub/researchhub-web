@@ -5,7 +5,6 @@ type Args = {
   repeatCount?: number;
 };
 
-
 const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
   return (
     <div

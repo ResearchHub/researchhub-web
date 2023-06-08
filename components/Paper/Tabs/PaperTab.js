@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowToBottom } from "@fortawesome/pro-solid-svg-icons";
-import { faExternalLinkAlt } from "@fortawesome/pro-solid-svg-icons";
-import { faUpload } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faArrowToBottom,
+  faExternalLinkAlt,
+  faUpload,
+} from "@fortawesome/pro-solid-svg-icons";
 import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules

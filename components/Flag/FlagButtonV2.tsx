@@ -33,7 +33,7 @@ type Props = {
   successMsgText?: string;
   subHeaderText?: string;
   primaryButtonLabel?: string;
-  children?: any
+  children?: any;
 };
 
 function FlagButtonV2({
@@ -89,11 +89,14 @@ function FlagButtonV2({
   };
 
   return (
-    (<Fragment>
+    <Fragment>
       {children ? (
-        <div style={{ width: "100%" }} onClick={(event): void => {
-          setIsModalOpen(true);
-        }}>
+        <div
+          style={{ width: "100%" }}
+          onClick={(event): void => {
+            setIsModalOpen(true);
+          }}
+        >
           {children}
         </div>
       ) : (
@@ -132,7 +135,7 @@ function FlagButtonV2({
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
-              </div>              
+              </div>
               <Button
                 label={primaryButtonLabel}
                 size="small"
@@ -147,7 +150,7 @@ function FlagButtonV2({
         title={modalHeaderText}
         titleStyle={customModalStyle.modalHeaderText}
       />
-    </Fragment>)
+    </Fragment>
   );
 }
 

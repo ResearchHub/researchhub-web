@@ -23,7 +23,12 @@ interface MenuProps {
   options: MenuOption[];
   triggerHeight?: number;
   softHide?: boolean;
-  direction?: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "top-center";
+  direction?:
+    | "bottom-right"
+    | "bottom-left"
+    | "top-right"
+    | "top-left"
+    | "top-center";
 }
 
 const Menu = ({
@@ -53,13 +58,16 @@ const Menu = ({
     },
     onInsideClick: () => {
       setIsOpen(false);
-    }
+    },
   });
 
   const directionStyles = {
     ...(direction === "bottom-left" && { top: triggerHeight, right: 0 }),
-    ...(direction === "top-center" && { transform: "translateX(-25%)", bottom: triggerHeight }),
-  }
+    ...(direction === "top-center" && {
+      transform: "translateX(-25%)",
+      bottom: triggerHeight,
+    }),
+  };
 
   return (
     <div className={css(styles.genericMenuWrapper)}>
@@ -73,7 +81,13 @@ const Menu = ({
       </div>
       {(isOpen || softHide) && (
         <div
-          className={css(styles.menu, softHide && isOpen && styles.softHideOpen, softHide && !isOpen && styles.softHideClosed) + ` ${id}`}
+          className={
+            css(
+              styles.menu,
+              softHide && isOpen && styles.softHideOpen,
+              softHide && !isOpen && styles.softHideClosed
+            ) + ` ${id}`
+          }
           ref={menuRef}
           style={{ width, ...directionStyles }}
         >
@@ -84,7 +98,9 @@ const Menu = ({
               <div
                 key={`${id}-${index}`}
                 className={css(styles.menuItem)}
-                onClick={preventDefault ? undefined : () => handleSelect(option)}
+                onClick={
+                  preventDefault ? undefined : () => handleSelect(option)
+                }
               >
                 {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
                 {html ? html : label}
@@ -118,8 +134,7 @@ const styles = StyleSheet.create({
     border: "1px solid rgb(222 222 222)",
     borderRadius: "4px",
     padding: "8px",
-    boxShadow:
-      "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
+    boxShadow: "rgba(129, 148, 167, 0.2) 0px 3px 10px 0px",
   },
   menuItem: {
     display: "flex",
@@ -139,7 +154,7 @@ const styles = StyleSheet.create({
     },
     ":last-child": {
       marginBottom: 0,
-    }
+    },
   },
   softHideClosed: {
     visibility: "hidden",

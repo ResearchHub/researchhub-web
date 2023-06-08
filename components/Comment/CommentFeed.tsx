@@ -117,7 +117,6 @@ const CommentFeed = ({
     }
   };
 
-
   const onCreate = ({
     comment,
     parent,
@@ -139,9 +138,8 @@ const CommentFeed = ({
     } else {
       setComments([comment, ...comments]);
     }
-    
-    typeof onCommentCreate === "function" && onCommentCreate(comment);
 
+    typeof onCommentCreate === "function" && onCommentCreate(comment);
   };
 
   const onUpdate = ({ comment }: { comment: CommentType }) => {
@@ -329,13 +327,13 @@ const CommentFeed = ({
     }
   }, [document.id, currentDocumentId, hasInitialComments]);
 
-  // This hook is used to reset the feed when tab changes. 
+  // This hook is used to reset the feed when tab changes.
   // In such a case, the comments will be loaded when the page is statically rendered.
   useEffect(() => {
-      setCurrentPage(1);
-      setRootLevelCommentCount(totalCommentCount || 0);
-      setComments(initialComments || []);
-      setSelectedFilterValue(initialFilter || filterOpts[0].value);
+    setCurrentPage(1);
+    setRootLevelCommentCount(totalCommentCount || 0);
+    setComments(initialComments || []);
+    setSelectedFilterValue(initialFilter || filterOpts[0].value);
   }, [router?.query?.tabName]);
 
   const isQuestion = document?.unifiedDocument?.documentType === "question";
@@ -476,8 +474,7 @@ const styles = StyleSheet.create({
   roundedEditor: {
     borderRadius: "14px",
   },
-  sortWrapper: {
-  },
+  sortWrapper: {},
   editorWrapper: {
     marginBottom: 25,
   },

@@ -10,9 +10,9 @@ const useCacheControl = () => {
         path: router.asPath,
       })
     );
-  }
+  };
 
   return [revalidatePage];
-}
+};
 
 export default useCacheControl;

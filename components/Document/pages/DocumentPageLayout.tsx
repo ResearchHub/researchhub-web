@@ -6,7 +6,6 @@ import Head from "next/head";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
 
-
 interface Args {
   document: GenericDocument;
   errorCode?: number;
@@ -24,9 +23,13 @@ const DocumentPageLayout = ({
   children,
   errorCode,
 }: Args) => {
-
   return (
-    <div className={css(styles.pageWrapper, tabName !== undefined && styles.pageWrapperAlternate)}>
+    <div
+      className={css(
+        styles.pageWrapper,
+        tabName !== undefined && styles.pageWrapperAlternate
+      )}
+    >
       <Head>
         {/*
           Need to disable pinch zoom for the entire page because it interferes with PDF.js zoom.
@@ -40,9 +43,7 @@ const DocumentPageLayout = ({
       <div className={css(styles.topArea)}>
         <DocumentHeader document={document} metadata={metadata} />
       </div>
-      <div className={css(styles.bodyArea)}>
-        {children}
-      </div>
+      <div className={css(styles.bodyArea)}>{children}</div>
     </div>
   );
 };

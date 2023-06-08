@@ -22,7 +22,11 @@ import { useEffectHandleClick } from "~/config/utils/clickEvent";
 import { MessageActions } from "~/redux/message";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle, faTimes, faPlus } from "@fortawesome/pro-light-svg-icons";
+import {
+  faExclamationCircle,
+  faTimes,
+  faPlus,
+} from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentReviewCategorySelector from "./CommentReviewCategorySelector";
 import useEffectForCommentTypeChange from "./hooks/useEffectForCommentTypeChange";
@@ -68,7 +72,6 @@ const CommentEditor = ({
   handleClose,
   editorStyleOverride,
 }: CommentEditorArgs) => {
-
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
@@ -84,7 +87,6 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
-
 
   const { quill, quillRef, isReady } = useQuill({
     options: {
@@ -238,7 +240,10 @@ const CommentEditor = ({
                       size="small"
                       customButtonStyle={styles.addBountyBtn}
                     >
-                      <FontAwesomeIcon icon={faPlus} style={{ marginRight: 4 }} />
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        style={{ marginRight: 4 }}
+                      />
                       Add Bounty
                     </Button>
                   </div>
@@ -328,7 +333,9 @@ const CommentEditor = ({
             }
             hideRipples={true}
             onClick={() => _handleSubmit()}
-            disabled={isSubmitting || isEmpty || (allowBounty && !interimBounty)}
+            disabled={
+              isSubmitting || isEmpty || (allowBounty && !interimBounty)
+            }
           />
         </div>
       </div>
@@ -403,7 +410,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: "10px",
     padding: "7px 20px 7px 7px",
-    borderRadius: "4px"
+    borderRadius: "4px",
   },
   bountyInfo: {
     fontSize: 14,
@@ -416,7 +423,7 @@ const styles = StyleSheet.create({
   addBountyBtn: {
     background: colors.bounty.contributeBtn,
     border: "none",
-  }
+  },
 });
 
 export default CommentEditor;

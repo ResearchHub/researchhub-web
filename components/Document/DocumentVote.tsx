@@ -16,13 +16,20 @@ const { setMessage, showMessage } = MessageActions;
 type Args = {
   id: ID;
   score: number;
-  userVote: Vote|null;
+  userVote: Vote | null;
   metadata: DocumentMetadata;
   apiDocumentType: ApiDocumentType;
   isHorizontal?: boolean;
 };
 
-const DocumentVote = ({ id, metadata, score, userVote, apiDocumentType, isHorizontal = false, }: Args) => {
+const DocumentVote = ({
+  id,
+  metadata,
+  score,
+  userVote,
+  apiDocumentType,
+  isHorizontal = false,
+}: Args) => {
   const documentContext = useContext(DocumentContext);
   const dispatch = useDispatch();
   const [revalidatePage] = useCacheControl();
@@ -52,9 +59,9 @@ const DocumentVote = ({ id, metadata, score, userVote, apiDocumentType, isHorizo
       }
     }
 
-    console.log('newScore', newScore)
-    console.log('newUserVote', newUserVote)
-    console.log('currentUserVote', currentUserVote)
+    console.log("newScore", newScore);
+    console.log("newUserVote", newUserVote);
+    console.log("currentUserVote", currentUserVote);
 
     documentContext?.updateMetadata({
       ...metadata,

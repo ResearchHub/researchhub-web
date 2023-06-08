@@ -8,7 +8,12 @@ import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { useRouter } from "next/router";
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DocumentMetadata, GenericDocument, isPaper, isPost } from "./lib/types";
+import {
+  DocumentMetadata,
+  GenericDocument,
+  isPaper,
+  isPost,
+} from "./lib/types";
 import DocumentVote from "./DocumentVote";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import { ModalActions } from "~/redux/modals";
@@ -24,11 +29,10 @@ import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
-import { faPen } from "@fortawesome/pro-solid-svg-icons";
+import { faPen, faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { faFlag } from "@fortawesome/pro-solid-svg-icons";
 import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 
@@ -79,25 +83,36 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
     };
   }, []);
 
-  const options:Array<MenuOption> = [
-    ...(isPaper(doc) ? [{
-      label: "Edit metadata",
-      icon: <FontAwesomeIcon icon={faPen} />,
-      value: "edit-metadata",
-      onClick: () => {
-        alert('implement me')
-      }
-    }] : []),
-    ...(isPost(doc) && doc.authors.some(author => author.id === currentUser?.authorProfile.id) ? [{
-      label: "Edit",
-      icon: <FontAwesomeIcon icon={faPen} />,
-      value: "edit-content",
-      onClick: () => {
-        if (doc.note) {
-          router.push(`/${doc.note.organization.slug}/notebook/${doc.note.id}`)
-        }
-      }
-    }] : []),    
+  const options: Array<MenuOption> = [
+    ...(isPaper(doc)
+      ? [
+          {
+            label: "Edit metadata",
+            icon: <FontAwesomeIcon icon={faPen} />,
+            value: "edit-metadata",
+            onClick: () => {
+              alert("implement me");
+            },
+          },
+        ]
+      : []),
+    ...(isPost(doc) &&
+    doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
+      ? [
+          {
+            label: "Edit",
+            icon: <FontAwesomeIcon icon={faPen} />,
+            value: "edit-content",
+            onClick: () => {
+              if (doc.note) {
+                router.push(
+                  `/${doc.note.organization.slug}/notebook/${doc.note.id}`
+                );
+              }
+            },
+          },
+        ]
+      : []),
     {
       value: "flag",
       preventDefault: true,
@@ -114,9 +129,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             });
           }}
         >
-          <div style={{display: "flex", width: "100%"}} >
-            <div style={{width: 30, boxSizing: "border-box"}}><FontAwesomeIcon icon={faFlag} /></div>
-            
+          <div style={{ display: "flex", width: "100%" }}>
+            <div style={{ width: 30, boxSizing: "border-box" }}>
+              <FontAwesomeIcon icon={faFlag} />
+            </div>
+
             <div>Flag content</div>
           </div>
         </FlagButtonV2>
@@ -191,7 +208,12 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip Authors</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <GenericMenu softHide={true} options={options} width={150} id="header-more-options">
+                <GenericMenu
+                  softHide={true}
+                  options={options}
+                  width={150}
+                  id="header-more-options"
+                >
                   <IconButton overrideStyle={styles.btnDots}>
                     <FontAwesomeIcon icon={faEllipsis} />
                   </IconButton>
@@ -208,14 +230,14 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
           // @ts-ignore
           paper={isPaper(doc) ? doc.raw : undefined}
           // @ts-ignore
-          post={isPost(doc) ? doc.raw : undefined}          
+          post={isPost(doc) ? doc.raw : undefined}
           // @ts-ignore
-          onTransactionCreate={(purchase:Purchase) => {
+          onTransactionCreate={(purchase: Purchase) => {
             // @ts-ignore
             documentContext.updateMetadata({
               ...metadata,
               purchases: [...metadata!.purchases, purchase],
-            })
+            });
           }}
         />
       </div>
@@ -323,8 +345,8 @@ const styles = StyleSheet.create({
     padding: "6px 12px",
     ":hover": {
       background: colors.DARKER_GREY(0.2),
-      transition: "0.2s"
-    }
+      transition: "0.2s",
+    },
   },
 });
 

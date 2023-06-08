@@ -55,7 +55,10 @@ const useEffectParseAbstract = ({
   );
 };
 
-export default function PaperPageAbstractSection({ paper, onUpdate }: Props): ReactElement {
+export default function PaperPageAbstractSection({
+  paper,
+  onUpdate,
+}: Props): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -67,8 +70,8 @@ export default function PaperPageAbstractSection({ paper, onUpdate }: Props): Re
   return (
     <div className={css(styles.paperPageAbstractSection)}>
       <div>
-        <div style={{ position: "relative", display: "inline-flex",  }}>
-          <h2 style={{ display: "inline"}}>{"Abstract"}</h2>
+        <div style={{ position: "relative", display: "inline-flex" }}>
+          <h2 style={{ display: "inline" }}>{"Abstract"}</h2>
           <div style={{ position: "absolute", right: -30, top: 5 }}>
             {(!isEditMode || hasNoAbstract) && (
               <PermissionNotificationWrapper
@@ -171,7 +174,9 @@ export default function PaperPageAbstractSection({ paper, onUpdate }: Props): Re
                 textAlign: "center",
               }}
             >
-              {"Help us improve the quality of this page by adding an abstract."}
+              {
+                "Help us improve the quality of this page by adding an abstract."
+              }
             </div>
             <PermissionNotificationWrapper
               loginRequired
@@ -184,7 +189,11 @@ export default function PaperPageAbstractSection({ paper, onUpdate }: Props): Re
           </div>
         ) : (
           <div>
-            <p dangerouslySetInnerHTML={{ __html: paper.abstract_src_markdown || paper.abstract }} />
+            <p
+              dangerouslySetInnerHTML={{
+                __html: paper.abstract_src_markdown || paper.abstract,
+              }}
+            />
           </div>
         )}
       </div>

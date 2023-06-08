@@ -190,15 +190,15 @@ export type Organization = {
   id: ID;
   name: string;
   slug: string;
-}
+};
 
 export const parseOrganization = (raw: any): Organization => {
   return {
     id: raw.id,
     name: raw.name,
     slug: raw.slug,
-  }
-}
+  };
+};
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof raw !== "object") {

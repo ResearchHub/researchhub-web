@@ -29,10 +29,11 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       title: "Authors",
       value: (
         <>
-          {document.authors.length > 0
-            ? <AuthorList authors={document.authors} />
-            : <span>Not available</span>
-          }
+          {document.authors.length > 0 ? (
+            <AuthorList authors={document.authors} />
+          ) : (
+            <span>Not available</span>
+          )}
           {isPaper(document) && (
             <span
               style={{ marginLeft: 5 }}
@@ -47,78 +48,78 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
     },
     ...(isPaper(document) && document.journal
       ? [
-        {
-          title: "Journal",
-          value: document.journal,
-        },
-      ]
+          {
+            title: "Journal",
+            value: document.journal,
+          },
+        ]
       : []),
 
     ...(document.publishedDate
       ? [
-        {
-          title: "Published",
-          value: document.publishedDate,
-        },
-      ]
+          {
+            title: "Published",
+            value: document.publishedDate,
+          },
+        ]
       : []),
 
     ...(document.hubs && document.hubs.length > 0
       ? [
-        {
-          title: "Hubs",
-          value: document.hubs.map((h, index) => (
-            <div key={index}>
-              <ALink
-                key={`/hubs/${h.slug ?? ""}-index`}
-                href={`/hubs/${h.slug}`}
-              >
-                {toTitleCase(h.name)}
-              </ALink>
-              {index < document.hubs?.length - 1 ? "," : ""}
-            </div>
-          )),
-        }
-      ]
+          {
+            title: "Hubs",
+            value: document.hubs.map((h, index) => (
+              <div key={index}>
+                <ALink
+                  key={`/hubs/${h.slug ?? ""}-index`}
+                  href={`/hubs/${h.slug}`}
+                >
+                  {toTitleCase(h.name)}
+                </ALink>
+                {index < document.hubs?.length - 1 ? "," : ""}
+              </div>
+            )),
+          },
+        ]
       : []),
 
     ...(document.doi
       ? [
-        {
-          title: "DOI",
-          value: (
-            <ALink href={`https://` + document.doi} target="blank">
-              {document.doi}
-            </ALink>
-          ),
-        },
-      ]
+          {
+            title: "DOI",
+            value: (
+              <ALink href={`https://` + document.doi} target="blank">
+                {document.doi}
+              </ALink>
+            ),
+          },
+        ]
       : []),
 
     ...(isPaper(document) && !document.publishedDate
       ? [
-        {
-          title: "Uploaded",
-          value: document.createdDate,
-        },
-      ]
+          {
+            title: "Uploaded",
+            value: document.createdDate,
+          },
+        ]
       : []),
 
     ...(isPaper(document) && document?.createdBy?.authorProfile
       ? [
-        {
-          title: "Posted by",
-          value: (
-            <ALink
-              href={`/user/${document.createdBy.authorProfile?.id}/overview`}
-              key={`/user/${document.createdBy.authorProfile?.id}/overview-key`}
-            >
-              {document.createdBy.authorProfile.firstName}{" "}
-              {document.createdBy.authorProfile.lastName}
-            </ALink>
-          ),
-        },
-      ]
+          {
+            title: "Posted by",
+            value: (
+              <ALink
+                href={`/user/${document.createdBy.authorProfile?.id}/overview`}
+                key={`/user/${document.createdBy.authorProfile?.id}/overview-key`}
+              >
+                {document.createdBy.authorProfile.firstName}{" "}
+                {document.createdBy.authorProfile.lastName}
+              </ALink>
+            ),
+          },
+        ]
       : []),
   ];
 
@@ -126,7 +127,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
     ? lineItems
     : lineItems.slice(0, 4);
   const hasMoreMetadata = lineItems.length > 4;
-  
+
   return (
     <div>
       <div className={css(styles.wrapper)}>
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
     minWidth: "100px",
     color: colors.BLACK(0.6),
   },
-  value: { display: "flex", columnGap: "5px", flexWrap: "wrap"},
+  value: { display: "flex", columnGap: "5px", flexWrap: "wrap" },
   showMore: {
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),

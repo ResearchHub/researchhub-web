@@ -19,17 +19,16 @@ import { StyleSheet, css } from "aphrodite";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import { useDocument, useDocumentMetadata } from "../lib/useHooks";
 
-
-const getEditorTypeFromTabName = (tabName: string):COMMENT_TYPES => {
-  switch(tabName) {
-    case 'reviews':
+const getEditorTypeFromTabName = (tabName: string): COMMENT_TYPES => {
+  switch (tabName) {
+    case "reviews":
       return COMMENT_TYPES.REVIEW;
-    case 'bounties':
-    case 'conversation':
+    case "bounties":
+    case "conversation":
     default:
       return COMMENT_TYPES.DISCUSSION;
   }
-}
+};
 
 interface Args {
   documentData?: any;
@@ -49,9 +48,17 @@ const DocumentCommentsPage: NextPage<Args> = ({
   errorCode,
 }) => {
   const router = useRouter();
-  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.width);
-  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
-  const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType });
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(
+    config.width
+  );
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
+    rawMetadata: metadata,
+    unifiedDocumentId: documentData?.unified_document?.id,
+  });
+  const [document, setDocument] = useDocument({
+    rawDocumentData: documentData,
+    documentType,
+  });
   const [revalidatePage] = useCacheControl();
 
   if (router.isFallback) {
@@ -69,7 +76,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
     return <Error statusCode={500} />;
   }
 
-
   let displayCommentsFeed = false;
   let parsedComments = [];
   let commentCount = 0;
@@ -80,9 +86,15 @@ const DocumentCommentsPage: NextPage<Args> = ({
     displayCommentsFeed = true;
   }
 
-
   return (
-    <DocumentContext.Provider value={{ metadata: documentMetadata, documentType, tabName, updateMetadata: setDocumentMetadata }}>
+    <DocumentContext.Provider
+      value={{
+        metadata: documentMetadata,
+        documentType,
+        tabName,
+        updateMetadata: setDocumentMetadata,
+      }}
+    >
       <DocumentPageLayout
         document={document}
         documentType={documentType}
@@ -90,7 +102,10 @@ const DocumentCommentsPage: NextPage<Args> = ({
         errorCode={errorCode}
         metadata={documentMetadata}
       >
-        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
+        <div
+          className={css(styles.bodyContentWrapper)}
+          style={{ width: viewerWidth }}
+        >
           <CommentFeed
             initialComments={parsedComments}
             document={document}
@@ -110,20 +125,17 @@ const DocumentCommentsPage: NextPage<Args> = ({
                   ...documentMetadata,
                   bounties: [comment.bounties[0], ...documentMetadata.bounties],
                 });
-              }
-              else if (comment.commentType === COMMENT_TYPES.REVIEW) {
+              } else if (comment.commentType === COMMENT_TYPES.REVIEW) {
                 setDocumentMetadata({
                   ...documentMetadata,
                   reviewCount: documentMetadata.reviewCount + 1,
                 });
-              }
-              else {
+              } else {
                 setDocumentMetadata({
                   ...documentMetadata,
                   discussionCount: documentMetadata.discussionCount + 1,
                 });
               }
-
             }}
             onCommentUpdate={() => {
               revalidatePage();
@@ -142,7 +154,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
 const styles = StyleSheet.create({
   bodyContentWrapper: {
     margin: "0 auto",
-  },  
+  },
 });
 
 export default DocumentCommentsPage;

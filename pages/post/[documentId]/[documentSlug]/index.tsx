@@ -2,16 +2,17 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useRouter } from "next/router";
-import getDocumentFromRaw, {
-  Post,
-} from "~/components/Document/lib/types";
+import getDocumentFromRaw, { Post } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { useState } from "react";
-import { useDocument, useDocumentMetadata } from "~/components/Document/lib/useHooks";
+import {
+  useDocument,
+  useDocumentMetadata,
+} from "~/components/Document/lib/useHooks";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 
 interface Args {
@@ -29,9 +30,17 @@ const DocumentIndexPage: NextPage<Args> = ({
 }) => {
   const documentType = "post";
   const router = useRouter();
-  const [viewerWidth, setViewerWidth] = useState<number | undefined>(config.width);
-  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({ rawMetadata: metadata, unifiedDocumentId: documentData?.unified_document?.id });
-  const [document, setDocument] = useDocument({ rawDocumentData: documentData, documentType }) as [Post|null, Function];
+  const [viewerWidth, setViewerWidth] = useState<number | undefined>(
+    config.width
+  );
+  const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
+    rawMetadata: metadata,
+    unifiedDocumentId: documentData?.unified_document?.id,
+  });
+  const [document, setDocument] = useDocument({
+    rawDocumentData: documentData,
+    documentType,
+  }) as [Post | null, Function];
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -49,14 +58,23 @@ const DocumentIndexPage: NextPage<Args> = ({
   }
 
   return (
-    <DocumentContext.Provider value={{ metadata: documentMetadata, documentType, updateMetadata: setDocumentMetadata }}>
+    <DocumentContext.Provider
+      value={{
+        metadata: documentMetadata,
+        documentType,
+        updateMetadata: setDocumentMetadata,
+      }}
+    >
       <DocumentPageLayout
         document={document}
         errorCode={errorCode}
         metadata={documentMetadata}
         documentType={documentType}
       >
-        <div className={css(styles.bodyContentWrapper)} style={{ width: viewerWidth }}>
+        <div
+          className={css(styles.bodyContentWrapper)}
+          style={{ width: viewerWidth }}
+        >
           <div className={css(styles.bodyWrapper)}>
             <div
               className={css(styles.body) + " rh-post"}
@@ -83,7 +101,7 @@ const styles = StyleSheet.create({
   },
   bodyContentWrapper: {
     margin: "0 auto",
-  },  
+  },
 });
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
