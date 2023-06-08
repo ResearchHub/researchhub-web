@@ -93,7 +93,9 @@ const DocumentIndexPage: NextPage<Args> = ({
                 <PDFViewer
                   pdfUrl={pdfUrl}
                   onZoom={(zoom) => {
-                    setViewerWidth(zoom.newWidth);
+                    if (!zoom.isExpanded) {
+                      setViewerWidth(zoom.newWidth);
+                    }
                   }}
                 />
               </div>
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`,
     },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       maxWidth: `calc(100vw - 30px)`,
     },
   },

@@ -104,7 +104,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
       >
         <div
           className={css(styles.bodyContentWrapper)}
-          style={{ width: viewerWidth }}
+          style={{ maxWidth: viewerWidth }}
         >
           <CommentFeed
             initialComments={parsedComments}

@@ -84,18 +84,18 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
   }, []);
 
   const options: Array<MenuOption> = [
-    ...(isPaper(doc)
-      ? [
-          {
-            label: "Edit metadata",
-            icon: <FontAwesomeIcon icon={faPen} />,
-            value: "edit-metadata",
-            onClick: () => {
-              alert("implement me");
-            },
-          },
-        ]
-      : []),
+    // ...(isPaper(doc)
+    //   ? [
+    //       {
+    //         label: "Edit metadata",
+    //         icon: <FontAwesomeIcon icon={faPen} />,
+    //         value: "edit-metadata",
+    //         onClick: () => {
+    //           alert("implement me");
+    //         },
+    //       },
+    //     ]
+    //   : []),
     ...(isPost(doc) &&
     doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
       ? [

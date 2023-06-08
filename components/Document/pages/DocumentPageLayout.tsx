@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     background: config.background,
     paddingBottom: 50,
     [`@media (max-width: ${config.width}px)`]: {
-      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH})`,
+      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH}px)`,
     },
     [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       maxWidth: `100vw`,

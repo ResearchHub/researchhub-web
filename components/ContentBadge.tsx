@@ -242,11 +242,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
-  medium: {},
+  medium: {
+    fontSize: 14,
+    padding: "6px 11px 6px",
+    lineHeight: "18px",    
+  },
   large: {
     fontSize: 15,
     padding: "8px 14px 8px",
     lineHeight: "18px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+      padding: "6px 11px 6px",
+      lineHeight: "18px",        
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 12,
+      padding: "4px 8px 4px",
+      lineHeight: "18px",          
+    }
   },
   withTooltip: {
     cursor: "default",

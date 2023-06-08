@@ -69,9 +69,6 @@ const styles = StyleSheet.create({
     color: colors.NEW_BLUE(1.0),
     padding: "5px 8px",
     transition: ".3s ease-in-out",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      margin: "0px 6px 6px 0",
-    },
   },
   badgeWithOnClick: {
     ":hover": {

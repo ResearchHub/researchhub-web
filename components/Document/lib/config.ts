@@ -3,8 +3,7 @@ import globalColors from "~/config/themes/colors";
 const config = {
   width: 900,
   background: "#FCFCFC",
-  controlsWidth: 240,
-  controlsWidthExpanded: 365,
+  controlsWidth: 200,
   border: globalColors.GREY_LINE(1.0),
 };
 

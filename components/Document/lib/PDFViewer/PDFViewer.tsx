@@ -25,7 +25,7 @@ interface Props {
 }
 
 type ZoomAction = {
-  size: "full-screen" | "normal";
+  isExpanded: boolean;
   zoom: number;
   newWidth: number;
 };
@@ -54,7 +54,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
       setFullScreenSelectedZoom(newZoom);
       onZoom &&
         onZoom({
-          size: "full-screen",
+          isExpanded: true,
           zoom: newZoom,
           newWidth: viewerWidth * newZoom,
         } as ZoomAction);
@@ -71,7 +71,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
       setSelectedZoom(newZoom);
       onZoom &&
         onZoom({
-          size: "normal",
+          isExpanded: false,
           zoom: newZoom,
           newWidth: viewerWidth * newZoom,
         } as ZoomAction);
@@ -90,7 +90,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
       setFullScreenSelectedZoom(newZoom);
       onZoom &&
         onZoom({
-          size: "full-screen",
+          isExpanded: true,
           zoom: newZoom,
           newWidth: viewerWidth * newZoom,
         } as ZoomAction);
@@ -106,7 +106,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
       setSelectedZoom(newZoom);
       onZoom &&
         onZoom({
-          size: "normal",
+          isExpanded: false,
           zoom: newZoom,
           newWidth: viewerWidth * newZoom,
         } as ZoomAction);
@@ -120,7 +120,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
     if (isExpanded) {
       onZoom &&
         onZoom({
-          size: "full-screen",
+          isExpanded: true,
           zoom: newZoom,
           newWidth: viewerWidth * newZoom,
         } as ZoomAction);
@@ -128,7 +128,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
     } else {
       onZoom &&
         onZoom({
-          size: "normal",
+          isExpanded: false,
           zoom: newZoom,
           newWidth: viewerWidth * newZoom,
         } as ZoomAction);
@@ -356,6 +356,10 @@ const styles = StyleSheet.create({
   controlsStickyExpanded: {
     left: `50%`,
     transform: "translateX(-50%)",
+    [`@media (max-width: 1100px)`]: {
+      left: `50%`,
+      transform: "translateX(-50%)",      
+    }
   },
   expandedOn: {
     display: "block",
