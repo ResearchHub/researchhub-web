@@ -113,31 +113,35 @@ const useEffectSetActiveProject = ({
         currentOrgProjects,
         urlProjectID
       );
-      const {
-        collaborators: { editors, viewers },
-        id,
-        project_name,
-        is_public,
-      } = activeProject ?? { collaborators: { editors: [], viewers: [] } };
-      setActiveProject({
-        collaborators: [
-          ...editors.map((rawUser: any) => {
-            return {
-              ...parseUserSuggestion(rawUser),
-              role: "EDITOR",
-            };
-          }),
-          ...viewers.map((rawUser: any) => {
-            return {
-              ...parseUserSuggestion(rawUser),
-              role: "VIEWER",
-            };
-          }),
-        ],
-        projectID: id,
-        projectName: project_name,
-        isPublic: is_public,
-      });
+      if (isNullOrUndefined(activeProject)) {
+        setActiveProject({ DEFAULT_PROJECT_VALUES });
+      } else {
+        const {
+          collaborators: { editors, viewers },
+          id,
+          project_name,
+          is_public,
+        } = activeProject ?? { collaborators: { editors: [], viewers: [] } };
+        setActiveProject({
+          collaborators: [
+            ...editors.map((rawUser: any) => {
+              return {
+                ...parseUserSuggestion(rawUser),
+                role: "EDITOR",
+              };
+            }),
+            ...viewers.map((rawUser: any) => {
+              return {
+                ...parseUserSuggestion(rawUser),
+                role: "VIEWER",
+              };
+            }),
+          ],
+          projectID: id,
+          projectName: project_name,
+          isPublic: is_public,
+        });
+      }
     }
   }, [urlProjectID, isFetchingProjects]);
 };
@@ -178,9 +182,9 @@ function ReferencesContainer({
     useState<boolean>(false);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
-  const currentProjectName = router.query.project_name;
 
+  const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
+  const currentProjectName = activeProject?.projectName ?? null;
   const currentOrgID = currentOrg?.id ?? null;
 
   useEffectFetchOrgProjects({
