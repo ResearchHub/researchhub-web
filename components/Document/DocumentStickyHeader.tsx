@@ -17,7 +17,7 @@ import { getTabs } from "./lib/tabbedNavigation";
 interface Props {
   document: GenericDocument;
   handleTip: Function;
-  metadata: DocumentMetadata | undefined;
+  metadata: DocumentMetadata;
 }
 
 const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
@@ -26,7 +26,14 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
 
   return (
     <div className={css(styles.stickyWrapper)}>
-      <DocumentVote document={document} isHorizontal={true} />
+      <DocumentVote
+        id={document.id}
+        metadata={metadata}
+        score={metadata.score}
+        apiDocumentType={document.apiDocumentType}
+        userVote={metadata.userVote}
+        isHorizontal={true}
+      />
       <div className={css(styles.tabsWrapper)}>
         <HorizontalTabBar tabs={tabs} />
       </div>

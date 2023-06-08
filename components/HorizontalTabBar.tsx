@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
-    color: colors.BLACK(0.5),
+    color: colors.MEDIUM_GREY(1.0),
     textDecoration: "none",
     display: "block",
     padding: "1rem",

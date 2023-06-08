@@ -180,8 +180,8 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                 <IconButton variant="round">
                   <DocumentVote
                     id={doc.id}
-                    score={metadata.score}
                     metadata={metadata}
+                    score={metadata.score}
                     apiDocumentType={doc.apiDocumentType}
                     userVote={metadata.userVote}
                     isHorizontal={true}

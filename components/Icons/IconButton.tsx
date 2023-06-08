@@ -39,7 +39,7 @@ const IconButton = ({
 const styles = StyleSheet.create({
   root: {
     padding: "5px",
-    color: colors.BLACK(0.5),
+    color: colors.MEDIUM_GREY(1.0),
     cursor: "pointer",
     justifyContent: "center",
     display: "inline-flex",
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     height: 36,
     boxSizing: "border-box",
     borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`,
+    border: `1px solid ${colors.GREY_LINE()}`,
   },
   withAnimation: {
     ":hover": {

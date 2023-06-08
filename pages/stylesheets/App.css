@@ -407,4 +407,10 @@ input[type="number"] {
 
 .rh-post figure img {
   width: 100%;
+  border-radius: 4px;
+}
+
+.rh-post img {
+  max-width: 100%;
+  border-radius: 4px;
 }
