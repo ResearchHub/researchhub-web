@@ -50,7 +50,7 @@ const DocumentIndexPage: NextPage<Args> = ({
     rawDocumentData: documentData,
     documentType,
   }) as [Paper | null, Function];
-  const [revalidatePage] = useCacheControl();
+  const { revalidateDocument } = useCacheControl();
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -112,7 +112,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                         abstract_src_markdown: updated,
                       },
                     });
-                    revalidatePage();
+                    revalidateDocument();
                   }}
                 />
               </div>
@@ -134,7 +134,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                       },
                     ],
                   });
-                  revalidatePage();
+                  revalidateDocument();
                 }}
               />
             </div>

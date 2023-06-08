@@ -13,6 +13,7 @@ import colors from "~/config/themes/colors";
 import PDFViewerControls from "./PDFViewerControls";
 import config from "../config";
 import { zoomOptions } from "./config";
+import { breakpoints } from "~/config/themes/screen";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
@@ -39,6 +40,12 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(width);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.innerWidth < breakpoints.small.int) {
+      setFullScreenSelectedZoom(1.0);
+    }
+  }, []);
 
   function handleZoomIn() {
     if (isExpanded) {
@@ -358,8 +365,8 @@ const styles = StyleSheet.create({
     transform: "translateX(-50%)",
     [`@media (max-width: 1100px)`]: {
       left: `50%`,
-      transform: "translateX(-50%)",      
-    }
+      transform: "translateX(-50%)",
+    },
   },
   expandedOn: {
     display: "block",

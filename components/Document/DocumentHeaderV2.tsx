@@ -35,6 +35,7 @@ import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
+import useCacheControl from "~/config/hooks/useCacheControl";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -49,6 +50,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
   const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
+  const { revalidateDocument } = useCacheControl();
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState<boolean>(false);
   const [stickyOffset, setStickyOffset] = useState<number>(0);
@@ -234,6 +236,8 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               ...metadata,
               purchases: [...metadata!.purchases, purchase],
             });
+
+            revalidateDocument();
           }}
         />
       </div>

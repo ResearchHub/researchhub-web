@@ -59,7 +59,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
     rawDocumentData: documentData,
     documentType,
   });
-  const [revalidatePage] = useCacheControl();
+  const { revalidateDocument } = useCacheControl();
 
   if (router.isFallback) {
     return <DocumentPagePlaceholder />;
@@ -117,7 +117,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
             // The primary reason for these callbacks is to "optimistically" update the metadata on the page and refresh the cache.
             // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
             onCommentCreate={(comment) => {
-              revalidatePage();
+              revalidateDocument();
 
               if (!documentMetadata) return;
               if (comment.bounties.length > 0) {
@@ -138,10 +138,10 @@ const DocumentCommentsPage: NextPage<Args> = ({
               }
             }}
             onCommentUpdate={() => {
-              revalidatePage();
+              revalidateDocument();
             }}
             onCommentRemove={(comment) => {
-              revalidatePage();
+              revalidateDocument();
             }}
             totalCommentCount={commentCount}
           />

@@ -32,7 +32,7 @@ const DocumentVote = ({
 }: Args) => {
   const documentContext = useContext(DocumentContext);
   const dispatch = useDispatch();
-  const [revalidatePage] = useCacheControl();
+  const { revalidateDocument } = useCacheControl();
 
   const handleVoteSuccess = ({ newUserVote }: { newUserVote: Vote }) => {
     const currentUserVote = userVote;
@@ -68,7 +68,7 @@ const DocumentVote = ({
       score: newScore,
       userVote: newUserVote,
     });
-    revalidatePage();
+    revalidateDocument();
   };
 
   return (
