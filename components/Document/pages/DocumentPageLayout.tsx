@@ -1,10 +1,20 @@
 import { StyleSheet, css } from "aphrodite";
 import DocumentHeader from "../DocumentHeaderV2";
 import config from "~/components/Document/lib/config";
-import { DocumentMetadata, GenericDocument, DocumentType } from "../lib/types";
-import Head from "next/head";
+import {
+  DocumentMetadata,
+  GenericDocument,
+  DocumentType,
+  isPaper,
+  isPost,
+} from "../lib/types";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
+import removeMd from "remove-markdown";
+import { truncateText } from "~/config/utils/string";
+import buildOpenGraphData, { OpenGraphData } from "../lib/buildOpenGraphData";
+import HeadComponent from "~/components/Head";
+import { useRouter } from "next/router";
 
 interface Args {
   document: GenericDocument;
@@ -15,6 +25,10 @@ interface Args {
   metadata: DocumentMetadata;
 }
 
+const toPlaintext = (text) => {
+  return removeMd(text).replace(/&nbsp;/g, " ");
+};
+
 const DocumentPageLayout = ({
   document,
   metadata,
@@ -23,6 +37,23 @@ const DocumentPageLayout = ({
   children,
   errorCode,
 }: Args) => {
+  const router = useRouter();
+
+  let openGraphData: OpenGraphData = { meta: {}, graph: [] };
+  try {
+    openGraphData = buildOpenGraphData({
+      document,
+      description: isPost(document)
+        ? truncateText(toPlaintext(document.postHtml), 200)
+        : isPaper(document)
+        ? truncateText(toPlaintext(document.abstract), 200)
+        : "",
+      url: router.asPath,
+    });
+  } catch (e) {
+    console.log("Error building open graph data", e);
+  }
+
   return (
     <div
       className={css(
@@ -30,16 +61,13 @@ const DocumentPageLayout = ({
         tabName !== undefined && styles.pageWrapperAlternate
       )}
     >
-      <Head>
-        {/*
-          Need to disable pinch zoom for the entire page because it interferes with PDF.js zoom.
-          If we enable pinch zoom, then every element including the pdf is going to change scale as user zooms in/out.
-        */}
+      <HeadComponent {...openGraphData.meta} graph={openGraphData.graph}>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-      </Head>
+      </HeadComponent>
+
       <div className={css(styles.topArea)}>
         <DocumentHeader document={document} metadata={metadata} />
       </div>

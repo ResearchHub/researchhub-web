@@ -124,7 +124,7 @@ const ContentBadgeBase = ({
         ) : contentType === "rsc_support" ? (
           <>
             <span className={css(styles.icon, styles.rscIcon)}>
-              <ResearchCoinIcon version={4} height={16} width={16} />
+              <ResearchCoinIcon version={4} height={15} width={15} />
               {` `}
             </span>
             <span className={css(styles.rscContent)}>{label}</span>
@@ -135,8 +135,8 @@ const ContentBadgeBase = ({
               <ResearchCoinIcon
                 color="rgb(232, 181, 4)"
                 version={4}
-                height={16}
-                width={16}
+                height={15}
+                width={15}
               />
               {` `}
             </span>
@@ -154,8 +154,8 @@ const ContentBadgeBase = ({
               >
                 <ResearchCoinIcon
                   version={4}
-                  height={size === "small" ? 14 : 16}
-                  width={size === "small" ? 14 : 16}
+                  height={size === "small" ? 14 : 15}
+                  width={size === "small" ? 14 : 15}
                 />
                 {` `}
               </span>
@@ -245,22 +245,12 @@ const styles = StyleSheet.create({
   medium: {
     fontSize: 14,
     padding: "6px 11px 6px",
-    lineHeight: "18px",    
+    lineHeight: "16px",
   },
   large: {
     fontSize: 15,
     padding: "8px 14px 8px",
     lineHeight: "18px",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 14,
-      padding: "6px 11px 6px",
-      lineHeight: "18px",        
-    },
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      fontSize: 12,
-      padding: "4px 8px 4px",
-      lineHeight: "18px",          
-    }
   },
   withTooltip: {
     cursor: "default",

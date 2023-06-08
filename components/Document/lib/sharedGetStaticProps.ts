@@ -94,6 +94,8 @@ export default async function sharedGetStaticProps({
         });
       }
 
+      documentData["postHtml"] = postHtml;
+
       return {
         props: {
           documentData,

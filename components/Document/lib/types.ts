@@ -24,6 +24,11 @@ export type DocumentType = "hypothesis" | "paper" | "post" | "question";
 
 export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
 
+export type DocumentImage = {
+  url: string;
+  type: "figure" | "preview" | "misc";
+};
+
 export type DocumentMetadata = {
   unifiedDocumentId: ID;
   bounties: Bounty[];
@@ -78,6 +83,7 @@ export interface GenericDocument {
   reviewSummary: ReviewSummary;
   formats: DocumentFormat[];
   raw: any; // Strictly for legacy purposes
+  images: DocumentImage[];
 }
 
 export type Paper = GenericDocument & {
@@ -93,6 +99,7 @@ export type Post = GenericDocument & {
   postType?: "publication" | "question";
   note?: Note;
   srcUrl: string;
+  postHtml: TrustedHTML;
 };
 
 export type Hypothesis = GenericDocument & {
@@ -145,6 +152,7 @@ export const parseGenericDocument = (raw: any): GenericDocument => {
     // @ts-ignore
     formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
     raw, // For legacy compatibility purposes
+    images: [],
   };
 
   return parsed;
@@ -167,6 +175,13 @@ export const parsePaper = (raw: any): Paper => {
     apiDocumentType: "paper",
   };
 
+  if (raw.first_preview) {
+    parsed.images.push({
+      url: raw?.first_preview?.file,
+      type: "preview",
+    });
+  }
+
   return parsed;
 };
 
@@ -178,6 +193,7 @@ export const parsePost = (raw: any): Post => {
     type: "post",
     apiDocumentType: "researchhub_post",
     srcUrl: raw.post_src,
+    postHtml: raw.postHtml || "",
     postType:
       raw.unified_document.document_type === "QUESTION"
         ? "question"

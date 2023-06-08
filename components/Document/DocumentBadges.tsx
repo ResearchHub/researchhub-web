@@ -22,18 +22,11 @@ const DocumentBadges = ({ document, metadata }: Props) => {
     (total, tip) => tip.amount + total,
     0
   );
-  const type = isPaper(document)
-    ? "paper"
-    : isPost(document) && document.postType === "question"
-    ? "question"
-    : "post";
-
   return (
     <div className={css(styles.badges)}>
-      <ContentBadge size="large" contentType={type} label={type} />
       {openBountyAmount > 0 && (
         <ContentBadge
-          size="large"
+          size="medium"
           contentType={"bounty"}
           bountyAmount={openBountyAmount}
           label={`${formatBountyAmount({
@@ -44,7 +37,7 @@ const DocumentBadges = ({ document, metadata }: Props) => {
       {tippedAmount > 0 && (
         <ContentBadge
           tooltip="ResearchCoin awarded to authors of this paper"
-          size="large"
+          size="medium"
           contentType={"award"}
           label={`${formatBountyAmount({ amount: tippedAmount })} Tipped`}
         />
