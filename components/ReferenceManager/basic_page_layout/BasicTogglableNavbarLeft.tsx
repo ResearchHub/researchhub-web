@@ -108,8 +108,7 @@ export default function BasicTogglableNavbarLeft({
             />
           }
           isActive={
-            isEmpty(router.query?.org_refs) &&
-            isEmpty(router.query?.project_name)
+            isEmpty(router.query?.org_refs) && isEmpty(router.query?.project)
           }
           key="my-references"
           label="My References"
@@ -117,8 +116,7 @@ export default function BasicTogglableNavbarLeft({
         />
         <BasicTogglableNavbarButton
           isActive={
-            isEmpty(router.query?.project_name) &&
-            !isEmpty(router.query?.org_refs)
+            isEmpty(router.query?.project) && !isEmpty(router.query?.org_refs)
           }
           icon={
             <FontAwesomeIcon
