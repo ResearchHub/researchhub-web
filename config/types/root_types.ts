@@ -266,28 +266,42 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
 };
 
 export const parseUser = (raw: any): RHUser => {
-  if (raw.first_name && !raw.author_profile?.first_name) {
-    raw.author_profile.first_name = raw.first_name;
+  let _raw = raw;
+  if (!raw) {
+    _raw = {
+      id: 0,
+      first_name: "User",
+      last_name: " N/A",
+      author_profile: {
+        id: 0,
+        first_name: "User",
+        last_name: "N/A",
+      },
+    };
   }
-  if (raw.last_name && !raw.author_profile?.last_name) {
-    raw.author_profile.last_name = raw.last_name;
+
+  if (_raw.first_name && !_raw.author_profile?.first_name) {
+    _raw.author_profile.first_name = _raw.first_name;
   }
-  if (!raw.first_name && raw.author_profile?.first_name) {
-    raw.first_name = raw.author_profile.first_name;
+  if (_raw.last_name && !_raw.author_profile?.last_name) {
+    _raw.author_profile.last_name = _raw.last_name;
   }
-  if (!raw.last_name && raw.author_profile?.last_name) {
-    raw.last_name = raw.author_profile.last_name;
+  if (!_raw.first_name && _raw.author_profile?.first_name) {
+    _raw.first_name = _raw.author_profile.first_name;
+  }
+  if (!_raw.last_name && _raw.author_profile?.last_name) {
+    _raw.last_name = _raw.author_profile.last_name;
   }
 
   const mapped = {
-    id: raw.id,
-    firstName: raw.first_name,
-    lastName: raw.last_name,
-    authorProfile: parseAuthorProfile(raw.author_profile),
-    editorOf: raw.editor_of,
-    reputation: raw.reputation,
-    createdAt: raw.created_date,
-    balance: raw.balance,
+    id: _raw.id,
+    firstName: _raw.first_name,
+    lastName: _raw.last_name,
+    authorProfile: parseAuthorProfile(_raw.author_profile),
+    editorOf: _raw.editor_of,
+    reputation: _raw.reputation,
+    createdAt: _raw.created_date,
+    balance: _raw.balance,
     // Used for legacy components
     raw,
   };

@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     top: "unset",
     right: "unset",
     zIndex: 9999999,
-    bottom: 50,
+    bottom: 40,
     display: "flex",
     columnGap: "10px",
     justifyContent: "flex-end",
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
     [`@media (max-width: 1100px)`]: {
       transform: "unset",
       left: `calc(50% - ${config.controlsWidth / 2}px)`,
+      bottom: 30,
     },
   },
   controlsStickyExpanded: {

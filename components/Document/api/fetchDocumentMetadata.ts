@@ -11,6 +11,7 @@ const fetchDocumentMetadata = ({ unifiedDocId }: Props): Promise<any> => {
   const url = generateApiUrl(
     `researchhub_unified_document/${unifiedDocId}/get_document_metadata`
   );
+
   return fetch(url, API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

@@ -175,9 +175,40 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
             <div className={css(styles.lineItemsWrapper)}>
-              <DocumentLineItems document={doc} />
+              <div className={css(styles.lineItems)}>
+                <DocumentLineItems document={doc} />
+              </div>
+
+              <div
+                className={css(styles.actionWrapper, styles.largeScreenActions)}
+              >
+                <PermissionNotificationWrapper
+                  modalMessage="edit document"
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  onClick={() =>
+                    dispatch(ModalActions.openPaperTransactionModal(true))
+                  }
+                  hideRipples={true}
+                >
+                  <IconButton variant="round">
+                    <ResearchCoinIcon version={6} width={21} height={21} />
+                    <span>Tip</span>
+                  </IconButton>
+                </PermissionNotificationWrapper>
+                <GenericMenu
+                  softHide={true}
+                  options={options}
+                  width={150}
+                  id="header-more-options"
+                >
+                  <IconButton overrideStyle={styles.btnDots}>
+                    <FontAwesomeIcon icon={faEllipsis} />
+                  </IconButton>
+                </GenericMenu>
+              </div>
             </div>
-            <div className={css(styles.btnsWrapper)}>
+            <div className={css(styles.smallScreenActions)}>
               <div className={css(styles.voteWrapperForSmallScreen)}>
                 <IconButton variant="round">
                   <DocumentVote
@@ -190,8 +221,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                   />
                 </IconButton>
               </div>
-
-              <div className={css(styles.btnGroup)}>
+              <div className={css(styles.actionWrapper)}>
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"
@@ -203,7 +233,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                 >
                   <IconButton variant="round">
                     <ResearchCoinIcon version={6} width={21} height={21} />
-                    <span>Tip Authors</span>
+                    <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
                 <GenericMenu
@@ -246,11 +276,14 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
 };
 
 const VOTE_DISTANCE_FROM_LEFT = 50;
+const BUFFER = 40;
+const SMALL_SCREEN_BREAKPOINT = config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER ;
 const styles = StyleSheet.create({
   headerRoot: {},
   title: {
     textTransform: "capitalize",
   },
+  lineItems: {},
   headerWrapper: {
     width: "100%",
     display: "flex",
@@ -259,7 +292,9 @@ const styles = StyleSheet.create({
     borderBottom: `2px solid ${config.border}`,
   },
   lineItemsWrapper: {
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    display: "flex",
+    justifyContent: "space-between",
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -272,21 +307,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     position: "relative",
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    marginTop: 20,
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   titleWrapper: {
     position: "relative",
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -311,37 +347,43 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: -VOTE_DISTANCE_FROM_LEFT,
     top: -28,
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
+      display: "none",
+    }
   },
   voteWrapperForSmallScreen: {
-    display: "none",
-    [`@media (max-width: ${
-      config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
-    }px)`]: {
-      display: "block",
-    },
   },
-  btnGroup: {
+  actionWrapper: {
     display: "flex",
     columnGap: "10px",
+    alignItems: "flex-end",
   },
-  btnsWrapper: {
+  smallScreenActions: {
     marginTop: 15,
-    marginBottom: 15,
-    display: "flex",
-    columnGap: "15px",
+    columnGap: "10px",
     justifyContent: "flex-end",
-    [`@media (max-width: ${config.width}px)`]: {
+    display: "none",
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
+      display: "flex",
       justifyContent: "flex-start",
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
+  largeScreenActions: {
+    display: "flex",
+    [`@media (max-width: ${
+      SMALL_SCREEN_BREAKPOINT
+    }px)`]: {
+      display: "none",
+    },
+  },
   btnDots: {
-    border: "none",
     fontSize: 22,
     borderRadius: "50px",
     color: colors.BLACK(1.0),
     background: colors.LIGHTER_GREY(),
+    border: `1px solid ${colors.LIGHTER_GREY()}`,
     padding: "6px 12px",
     ":hover": {
       background: colors.DARKER_GREY(0.2),
