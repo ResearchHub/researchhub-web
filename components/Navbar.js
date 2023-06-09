@@ -62,8 +62,12 @@ const Navbar = (props) => {
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
   const { open, close } = useWeb3Modal();
 
+  const isDocumentPage = ["paper", "post"].includes(
+    router.pathname.split("/")[1]
+  );
   const unstickyNavbar = router.pathname.includes(
-    "/paper/[paperId]/[paperName]",
+    "/paper/[documentId]/[documentSlug]",
+    "/post/[documentId]/[documentSlug]",
     "/[documentType]/[documentId]/[documentSlug]",
     "/hubs"
   );
@@ -77,7 +81,9 @@ const Navbar = (props) => {
     ? "Reference Manager"
     : pathname.includes("live")
     ? "Live Activity"
-    : deSlug(router?.query?.slug ?? "");
+    : isDocumentPage
+    ? null
+    : "Explore ResearchHub";
 
   useEffect(() => {
     setShouldShowSlider(false);
@@ -88,7 +94,6 @@ const Navbar = (props) => {
       <div className={css(styles.xsmallUpTitle)}>
         {formatMainHeader({
           label: headerLabel,
-          isHomePage: !Boolean(headerLabel),
         })}
       </div>
       <div className={css(styles.xsmallDownTitle)}>

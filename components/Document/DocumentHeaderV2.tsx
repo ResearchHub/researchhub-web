@@ -276,6 +276,8 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
 };
 
 const VOTE_DISTANCE_FROM_LEFT = 50;
+const BUFFER = 40;
+const SMALL_SCREEN_BREAKPOINT = config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER ;
 const styles = StyleSheet.create({
   headerRoot: {},
   title: {
@@ -292,7 +294,7 @@ const styles = StyleSheet.create({
   lineItemsWrapper: {
     display: "flex",
     justifyContent: "space-between",
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -305,7 +307,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     position: "relative",
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -313,14 +315,14 @@ const styles = StyleSheet.create({
   tabsWrapper: {
     borderTop: `1px solid #E9EAEF`,
     marginTop: 20,
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   titleWrapper: {
     position: "relative",
-    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -345,14 +347,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: -VOTE_DISTANCE_FROM_LEFT,
     top: -28,
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
+      display: "none",
+    }
   },
   voteWrapperForSmallScreen: {
-    display: "none",
-    [`@media (max-width: ${
-      config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
-    }px)`]: {
-      display: "flex",
-    },
   },
   actionWrapper: {
     display: "flex",
@@ -364,7 +363,7 @@ const styles = StyleSheet.create({
     columnGap: "10px",
     justifyContent: "flex-end",
     display: "none",
-    [`@media (max-width: ${config.width}px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       display: "flex",
       justifyContent: "flex-start",
       paddingLeft: 15,
@@ -374,7 +373,7 @@ const styles = StyleSheet.create({
   largeScreenActions: {
     display: "flex",
     [`@media (max-width: ${
-      config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
+      SMALL_SCREEN_BREAKPOINT
     }px)`]: {
       display: "none",
     },

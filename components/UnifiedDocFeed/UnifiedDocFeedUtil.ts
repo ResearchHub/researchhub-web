@@ -11,6 +11,7 @@ export function formatMainHeader({
   isHomePage,
   isLiveFeed,
 }: FormatMainHeaderArgs): string | null {
+  console.log('isHomePage || isLiveFeed')
   return isHomePage || isLiveFeed
     ? `Explore ResearchHub`
     : label
