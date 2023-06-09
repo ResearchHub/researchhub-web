@@ -398,11 +398,12 @@ function ReferencesContainer({
                 >
                   <div
                     style={{
-                      marginRight: 16,
+                      marginRight: 26,
                       padding: 16,
                       background: colors.NEW_BLUE(),
                       borderRadius: 4,
-                      // height: 30,
+                      boxSizing: "border-box",
+                      height: 40,
                       color: "#fff",
                       // width: 30,
                       display: "flex",
