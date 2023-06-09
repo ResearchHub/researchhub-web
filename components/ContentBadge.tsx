@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   medium: {
     fontSize: 14,
     padding: "6px 11px 6px",
-    lineHeight: "16px",
+    lineHeight: "18px",
   },
   large: {
     fontSize: 15,
