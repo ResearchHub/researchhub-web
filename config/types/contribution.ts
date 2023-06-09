@@ -355,7 +355,7 @@ export const getContributionUrl = (entry: Contribution): string => {
   switch (contentType.name) {
     case "comment":
       item = item as CommentContributionItem;
-      return getUrlToUniDoc(item.unifiedDocument) + "#comments";
+      return getUrlToUniDoc(item.unifiedDocument) + "/conversation";
     case "rsc_support":
       item = item as RscSupportContributionItem;
       return getUrlToUniDoc(item?.source.unifiedDocument);

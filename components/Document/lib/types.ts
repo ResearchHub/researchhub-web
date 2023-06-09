@@ -46,7 +46,8 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
   const document = Array.isArray(raw.documents)
     ? raw.documents[0]
     : raw.documents;
-  return {
+
+  const parsed = {
     unifiedDocumentId: raw.id,
     bounties: parseBountyList(document?.bounties || []).filter(
       (b) => !b.isExpiredOrClosed
@@ -60,6 +61,8 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     score: raw.score,
     id: raw.id,
   };
+
+  return parsed;
 };
 
 export type ReviewSummary = {
