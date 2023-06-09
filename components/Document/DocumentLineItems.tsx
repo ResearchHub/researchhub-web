@@ -96,6 +96,15 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
         ]
       : []),
 
+    ...(isPaper(document) && document.license
+      ? [
+          {
+            title: "License",
+            value: document.license,
+          },
+        ]
+      : []),
+
     ...(isPaper(document) && !document.publishedDate
       ? [
           {

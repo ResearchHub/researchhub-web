@@ -95,6 +95,7 @@ export type Paper = GenericDocument & {
   externalUrl?: string;
   abstract?: string;
   abstractHtml?: TrustedHTML;
+  license?: string;
 };
 
 export type Post = GenericDocument & {
@@ -175,6 +176,7 @@ export const parsePaper = (raw: any): Paper => {
     abstractHtml: raw.abstract_src_markdown,
     type: "paper",
     apiDocumentType: "paper",
+    ...(raw.pdf_license && { license: raw.pdf_license }),
   };
 
   if (raw.first_preview) {
