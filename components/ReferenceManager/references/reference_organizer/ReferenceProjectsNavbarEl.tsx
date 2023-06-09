@@ -7,7 +7,7 @@ import { faAngleDown, faAngleRight } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "~/config/types/root_types";
 import { LookupSuggestedUser } from "../../form/ReferenceItemRhUserLookupInputTag";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useReferenceUploadDrawerContext } from "../reference_uploader/context/ReferenceUploadDrawerContext";
 import ALink from "~/components/ALink";
@@ -16,6 +16,7 @@ import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 
 type Props = {
   active: boolean;
+  addChildrenOpen: ({ key, value }) => void;
   collaborators: LookupSuggestedUser[];
   isCurrentUserAdmin: boolean;
   isPublic: boolean;
@@ -30,16 +31,16 @@ type Props = {
 
 export default function ReferenceProjectsNavbarEl({
   active,
+  addChildrenOpen,
+  child,
   collaborators,
+  depth,
   isCurrentUserAdmin,
+  isOpen,
   isPublic,
   orgSlug,
   projectID,
   projectName,
-  child,
-  depth,
-  addChildrenOpen,
-  isOpen,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -51,6 +52,7 @@ export default function ReferenceProjectsNavbarEl({
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
   const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
+
   return (
     <Box
       onMouseEnter={(): void => {
@@ -78,7 +80,7 @@ export default function ReferenceProjectsNavbarEl({
       }}
     >
       <ALink
-        href={`/reference-manager/${orgSlug}/?project=${projectID}&project_name=${projectName}`}
+        href={`/reference-manager/${orgSlug}/?project=${projectID}`}
         overrideStyle={styles.linkOverride}
       >
         <Box

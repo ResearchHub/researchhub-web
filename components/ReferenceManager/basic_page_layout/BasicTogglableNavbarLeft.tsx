@@ -22,16 +22,6 @@ import { faSitemap, faUser } from "@fortawesome/pro-regular-svg-icons";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
-const OPTION_BOTTON_STYLE = {
-  alignItems: "center",
-  borderRadius: "4px",
-  cursor: "pointer",
-  display: "flex",
-  height: "32px",
-  justifyContent: "center",
-  minWidth: "32px",
-  ":hover": { background: colors.BLUE(0.2) },
-};
 
 type Props = {
   isOpen: boolean;
@@ -47,10 +37,6 @@ export default function BasicTogglableNavbarLeft({
   theme,
   currentOrgProjects,
 }: Props) {
-  const {
-    setIsDrawerOpen: isUploadDrawerOpen,
-    setProjectID: setProjectIDForDrawer,
-  } = useReferenceUploadDrawerContext();
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
@@ -76,17 +62,14 @@ export default function BasicTogglableNavbarLeft({
   };
 
   const currentOrgSlug = currentOrg?.slug ?? null;
-  const refProjectsNavbarEls = currentOrgProjects?.map(
-    (referenceProject, elIndex) => {
-      return renderNestedReferenceProjectsNavbarEl({
-        currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
-        referenceProject,
-        activeProjectName: router.query.project_name ?? "",
-        addChildrenOpen,
-        childrenOpenMap,
-      });
-    }
-  );
+  const refProjectsNavbarEls = currentOrgProjects?.map((referenceProject) => {
+    return renderNestedReferenceProjectsNavbarEl({
+      currentOrgSlug: nullthrows(currentOrgSlug, "Org must be present"),
+      referenceProject,
+      addChildrenOpen,
+      childrenOpenMap,
+    });
+  });
 
   return (
     <Box
@@ -125,8 +108,7 @@ export default function BasicTogglableNavbarLeft({
             />
           }
           isActive={
-            isEmpty(router.query?.org_refs) &&
-            isEmpty(router.query?.project_name)
+            isEmpty(router.query?.org_refs) && isEmpty(router.query?.project)
           }
           key="my-references"
           label="My References"
@@ -134,8 +116,7 @@ export default function BasicTogglableNavbarLeft({
         />
         <BasicTogglableNavbarButton
           isActive={
-            isEmpty(router.query?.project_name) &&
-            !isEmpty(router.query?.org_refs)
+            isEmpty(router.query?.project) && !isEmpty(router.query?.org_refs)
           }
           icon={
             <FontAwesomeIcon

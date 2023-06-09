@@ -10,6 +10,7 @@ import HeadComponent from "~/components/Head";
 import killswitch from "~/config/killswitch/killswitch";
 import LoginModal from "~/components/Login/LoginModal";
 import ReferencesContainer from "~/components/ReferenceManager/references/ReferencesContainer";
+import { ReferenceActiveProjectContextProvider } from "./reference_organizer/context/ReferenceActiveProjectContext";
 
 type Props = {
   authChecked?: boolean;
@@ -30,24 +31,26 @@ function ReferencesRoot({
     return (
       <ReferenceItemDrawerContextProvider>
         <ReferenceUploadDrawerContextProvider>
-          <ReferenceProjectsUpsertContextProvider>
-            <ReferencesTableContextProvider>
-              <HeadComponent
-                title={"ResearchHub Reference Manager"}
-              ></HeadComponent>
-              {isLoggedIn || !authChecked ? (
-                // @ts-ignore - faulty legacy connect hook
-                <ReferencesContainer wsUrl={wsUrl} wsAuth />
-              ) : (
-                <LoginModal
-                  isOpen={true}
-                  handleClose={undefined}
-                  loginCallback={undefined}
-                  persistent={undefined}
-                />
-              )}
-            </ReferencesTableContextProvider>
-          </ReferenceProjectsUpsertContextProvider>
+          <ReferenceActiveProjectContextProvider>
+            <ReferenceProjectsUpsertContextProvider>
+              <ReferencesTableContextProvider>
+                <HeadComponent
+                  title={"ResearchHub Reference Manager"}
+                ></HeadComponent>
+                {isLoggedIn || !authChecked ? (
+                  // @ts-ignore - faulty legacy connect hook
+                  <ReferencesContainer wsUrl={wsUrl} wsAuth />
+                ) : (
+                  <LoginModal
+                    isOpen={true}
+                    handleClose={undefined}
+                    loginCallback={undefined}
+                    persistent={undefined}
+                  />
+                )}
+              </ReferencesTableContextProvider>
+            </ReferenceProjectsUpsertContextProvider>
+          </ReferenceActiveProjectContextProvider>
         </ReferenceUploadDrawerContextProvider>
       </ReferenceItemDrawerContextProvider>
     );
