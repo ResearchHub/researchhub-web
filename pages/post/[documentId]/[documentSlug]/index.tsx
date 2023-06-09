@@ -178,9 +178,15 @@ const styles = StyleSheet.create({
   },
   body: {
     padding: 45,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 15,
+    }
   },
   editor: {
     padding: 45,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 15,
+    }    
   },
   bodyContentWrapper: {
     margin: "0 auto",
