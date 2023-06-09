@@ -20,7 +20,7 @@ import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchRefere
 import { MessageActions } from "~/redux/message";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import { removeReferenceCitations } from "./api/removeReferenceCitations";
-import { StyleSheet } from "aphrodite";
+import { StyleSheet, css } from "aphrodite";
 import { toast } from "react-toastify";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
@@ -47,7 +47,11 @@ import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibl
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { ID } from "~/config/types/root_types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import {
+  faFolderPlus,
+  faMagnifyingGlass,
+  faPlus,
+} from "@fortawesome/pro-light-svg-icons";
 import colors from "~/config/themes/colors";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
@@ -396,33 +400,6 @@ function ReferencesContainer({
                     alignItems: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      marginRight: 26,
-                      padding: 16,
-                      background: colors.NEW_BLUE(),
-                      borderRadius: 4,
-                      boxSizing: "border-box",
-                      height: 40,
-                      color: "#fff",
-                      // width: 30,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      fontWeight: 500,
-                    }}
-                    onClick={() => inputRef.current.click()}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      color="#fff"
-                      fontSize="20px"
-                      style={{ marginRight: 8 }}
-                    />
-                    Add a Citation
-                  </div>
-
                   {collaborators && (
                     <AuthorFacePile
                       horizontal
@@ -461,7 +438,6 @@ function ReferencesContainer({
                   sx={{
                     alignItems: "center",
                     display: "flex",
-                    justifyContent: "space-between",
                     width: "100%",
                     height: 44,
                     marginBottom: "20px",
@@ -526,6 +502,7 @@ function ReferencesContainer({
                     style={{
                       maxWidth: 400,
                       width: "100%",
+                      marginLeft: "auto",
                     }}
                   >
                     <OutlinedInput
@@ -557,14 +534,35 @@ function ReferencesContainer({
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton edge="end">
-                            <i
-                              className="fa-regular fa-magnifying-glass"
-                              style={{ fontSize: 16 }}
-                            ></i>
+                            <FontAwesomeIcon
+                              icon={faMagnifyingGlass}
+                              fontSize="16px"
+                            />
                           </IconButton>
                         </InputAdornment>
                       }
                     />
+                  </div>
+                  <div className={css(styles.button, styles.secondary)}>
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      color={colors.NEW_BLUE(1)}
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    Create Folder
+                  </div>
+                  <div
+                    className={css(styles.button)}
+                    onClick={() => inputRef.current.click()}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      color="#fff"
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    Add a Citation
                   </div>
                 </Box>
                 <ReferencesTable
@@ -598,6 +596,26 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     border: "none",
     background: "unset",
+  },
+  button: {
+    marginLeft: 16,
+    padding: 16,
+    background: colors.NEW_BLUE(),
+    borderRadius: 4,
+    boxSizing: "border-box",
+    height: 40,
+    color: "#fff",
+    // width: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    fontWeight: 500,
+  },
+  secondary: {
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    background: "#fff",
+    color: colors.NEW_BLUE(),
   },
 });
 

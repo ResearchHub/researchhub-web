@@ -56,7 +56,7 @@ export function renderNestedReferenceProjectsNavbarEl({
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
       />
-      {hasChildren && childrenOpenMap[referenceProject?.id] && (
+      {/* {hasChildren && childrenOpenMap[referenceProject?.id] && (
         <div
           style={{ marginLeft: 8, display: "flex", flexDirection: "column" }}
         >
@@ -71,7 +71,7 @@ export function renderNestedReferenceProjectsNavbarEl({
             });
           })}
         </div>
-      )}
+      )} */}
     </div>
   );
 }
