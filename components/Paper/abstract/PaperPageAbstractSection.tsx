@@ -233,8 +233,6 @@ const styles = StyleSheet.create({
   },
   emptyStateSummary: {
     alignItems: "center",
-    backgroundColor: colors.LIGHTER_GREY_BACKGROUND,
-    border: `1px solid #F0F0F0`,
     borderRadius: 3,
     boxSizing: "border-box",
     cursor: "pointer",

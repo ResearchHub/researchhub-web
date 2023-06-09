@@ -39,6 +39,7 @@ export type DocumentMetadata = {
   reviewCount: number;
   summaryCount: number;
   score: number;
+  id: ID;
 };
 
 export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
@@ -57,6 +58,7 @@ export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
     reviewCount: document?.discussion_aggregates?.review_count || 0,
     summaryCount: document?.discussion_aggregates?.summary_count || 0,
     score: raw.score,
+    id: raw.id,
   };
 };
 

@@ -38,6 +38,7 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
+import CommentEditorPlaceholder from "./CommentEditorPlaceholder";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -191,152 +192,158 @@ const CommentEditor = ({
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
-    <div
-      ref={editorRef}
-      className={`${css(
-        styles.commentEditor,
-        editorStyleOverride
-      )} CommentEditor`}
-      onClick={() => {
-        if (!isLoggedIn) {
-          dispatch(
-            ModalActions.openLoginModal(true, "Please Sign in to continue.")
-          );
-        }
-      }}
-    >
-      <div>
-        {handleClose && (
-          <IconButton overrideStyle={styles.closeBtn} onClick={handleClose}>
-            <FontAwesomeIcon icon={faTimes} />
-          </IconButton>
-        )}
-
-        {allowBounty && (
-          <>
-            {interimBounty ? (
-              <div
-                className={css(styles.bountyPreview)}
-                onClick={() => setInterimBounty(null)}
-              >
-                <ResearchCoinIcon height={18} width={18} />
-                <span>{interimBounty.formattedAmount} RSC Bounty</span>
-                <FontAwesomeIcon
-                  style={{ color: colors.gray }}
-                  icon={faTimes}
-                />
-              </div>
-            ) : (
-              <div className={css(styles.bountyBtnWrapper)}>
-                <CreateBountyBtn
-                  onBountyAdd={(bounty) => {
-                    setInterimBounty(bounty);
-                  }}
-                  withPreview={true}
-                >
-                  <div>
-                    <Button
-                      fullWidth
-                      size="small"
-                      customButtonStyle={styles.addBountyBtn}
-                    >
-                      <FontAwesomeIcon
-                        icon={faPlus}
-                        style={{ marginRight: 4 }}
-                      />
-                      Add Bounty
-                    </Button>
-                  </div>
-                </CreateBountyBtn>
-                <div className={css(styles.bountyInfo)}>
-                  <FontAwesomeIcon
-                    className={css(styles.bountyInfoIcon)}
-                    icon={faExclamationCircle}
-                  />
-                  Offer award amount in ResearchCoin
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {author && !allowBounty && (
-          <div
-            className={css(styles.authorRow, isPreviewMode && styles.hidden)}
-          >
-            <div className={css(styles.nameRow)}>
-              {currentUser && (
-                <CommentAvatars
-                  size={25}
-                  withTooltip={false}
-                  people={[currentUser]}
-                />
-              )}
-              <div>
-                {author.firstName} {author.lastName}
-              </div>
-            </div>
-            {allowCommentTypeSelection && (
-              <span style={{ marginTop: -5 }}>
-                <CommentTypeSelector
-                  handleSelect={_setCommentType}
-                  selectedType={_commentType}
-                />
-              </span>
-            )}
-          </div>
-        )}
-        <div className={css(styles.editor)}>
-          <div ref={quillRef} />
-          {_commentType === COMMENT_TYPES.REVIEW && (
-            <div className={css(styles.reviewCategoryContainer)}>
-              <CommentReviewCategorySelector
-                handleSelect={(category) => {
-                  insertReviewCategory({ category, quill, quillRef });
-                }}
-              />
-            </div>
-          )}
-          <div
-            className={css(
-              styles.toolbarContainer,
-              (isPreviewMode || !isReady) && styles.hidden
-            )}
-          >
-            <CommentEditorToolbar editorId={editorId} />
-          </div>
-        </div>
+    <div>
+      <div className={css(isReady && styles.hidden)}>
+        <CommentEditorPlaceholder />
       </div>
-      <div className={css(styles.actions)}>
-        <div style={{ width: 70 }}>
-          <Button
-            fullWidth
-            label={
-              isSubmitting ? (
+      <div
+        ref={editorRef}
+        className={`${css(
+          styles.commentEditor,
+          editorStyleOverride,
+          !isReady && styles.hidden
+        )} CommentEditor`}
+        onClick={() => {
+          if (!isLoggedIn) {
+            dispatch(
+              ModalActions.openLoginModal(true, "Please Sign in to continue.")
+            );
+          }
+        }}
+      >
+        <div>
+          {handleClose && (
+            <IconButton overrideStyle={styles.closeBtn} onClick={handleClose}>
+              <FontAwesomeIcon icon={faTimes} />
+            </IconButton>
+          )}
+
+          {allowBounty && (
+            <>
+              {interimBounty ? (
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    minHeight: "28px",
-                  }}
+                  className={css(styles.bountyPreview)}
+                  onClick={() => setInterimBounty(null)}
                 >
-                  <ClipLoader
-                    sizeUnit={"px"}
-                    size={18}
-                    color={"#fff"}
-                    loading={true}
+                  <ResearchCoinIcon height={18} width={18} />
+                  <span>{interimBounty.formattedAmount} RSC Bounty</span>
+                  <FontAwesomeIcon
+                    style={{ color: colors.gray }}
+                    icon={faTimes}
                   />
                 </div>
               ) : (
-                <>{`Post`}</>
-              )
-            }
-            hideRipples={true}
-            onClick={() => _handleSubmit()}
-            disabled={
-              isSubmitting || isEmpty || (allowBounty && !interimBounty)
-            }
-          />
+                <div className={css(styles.bountyBtnWrapper)}>
+                  <CreateBountyBtn
+                    onBountyAdd={(bounty) => {
+                      setInterimBounty(bounty);
+                    }}
+                    withPreview={true}
+                  >
+                    <div>
+                      <Button
+                        fullWidth
+                        size="small"
+                        customButtonStyle={styles.addBountyBtn}
+                      >
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          style={{ marginRight: 4 }}
+                        />
+                        Add Bounty
+                      </Button>
+                    </div>
+                  </CreateBountyBtn>
+                  <div className={css(styles.bountyInfo)}>
+                    <FontAwesomeIcon
+                      className={css(styles.bountyInfoIcon)}
+                      icon={faExclamationCircle}
+                    />
+                    Offer award amount in ResearchCoin
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {author && !allowBounty && (
+            <div
+              className={css(styles.authorRow, isPreviewMode && styles.hidden)}
+            >
+              <div className={css(styles.nameRow)}>
+                {currentUser && (
+                  <CommentAvatars
+                    size={25}
+                    withTooltip={false}
+                    people={[currentUser]}
+                  />
+                )}
+                <div>
+                  {author.firstName} {author.lastName}
+                </div>
+              </div>
+              {allowCommentTypeSelection && (
+                <span style={{ marginTop: -5 }}>
+                  <CommentTypeSelector
+                    handleSelect={_setCommentType}
+                    selectedType={_commentType}
+                  />
+                </span>
+              )}
+            </div>
+          )}
+          <div className={css(styles.editor)}>
+            <div ref={quillRef} />
+            {_commentType === COMMENT_TYPES.REVIEW && (
+              <div className={css(styles.reviewCategoryContainer)}>
+                <CommentReviewCategorySelector
+                  handleSelect={(category) => {
+                    insertReviewCategory({ category, quill, quillRef });
+                  }}
+                />
+              </div>
+            )}
+            <div
+              className={css(
+                styles.toolbarContainer,
+                isPreviewMode && styles.hidden
+              )}
+            >
+              <CommentEditorToolbar editorId={editorId} />
+            </div>
+          </div>
+        </div>
+        <div className={css(styles.actions)}>
+          <div style={{ width: 70 }}>
+            <Button
+              fullWidth
+              label={
+                isSubmitting ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      minHeight: "28px",
+                    }}
+                  >
+                    <ClipLoader
+                      sizeUnit={"px"}
+                      size={18}
+                      color={"#fff"}
+                      loading={true}
+                    />
+                  </div>
+                ) : (
+                  <>{`Post`}</>
+                )
+              }
+              hideRipples={true}
+              onClick={() => _handleSubmit()}
+              disabled={
+                isSubmitting || isEmpty || (allowBounty && !interimBounty)
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

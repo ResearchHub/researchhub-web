@@ -14,7 +14,9 @@ export const useDocument = ({
   const [document, setDocument] = useState<null | GenericDocument>(null);
 
   useEffect(() => {
-    if (rawDocumentData && isEmpty(document)) {
+    const documentRouteChange = rawDocumentData?.id !== document?.id;
+    const documentReady = rawDocumentData && isEmpty(document);
+    if (documentReady || documentRouteChange) {
       const _document = getDocumentFromRaw({
         raw: rawDocumentData,
         type: documentType,
@@ -44,7 +46,9 @@ export const useDocumentMetadata = ({
   const [metadata, setMetadata] = useState<DocumentMetadata | null>(null);
 
   useEffect(() => {
-    if (rawMetadata && isEmpty(metadata)) {
+    const documentRouteChange = rawMetadata?.id !== metadata?.id;
+    const metadataReady = rawMetadata && isEmpty(metadata);
+    if (metadataReady || documentRouteChange) {
       const _metadata = parseDocumentMetadata(rawMetadata);
       setMetadata(_metadata);
     }
