@@ -159,7 +159,12 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
       <div className={css(styles.headerWrapper)}>
         <div className={css(styles.headerContentWrapper)}>
           <div>
-            <div className={css(styles.badgesWrapper)}>
+            <div
+              className={css(
+                styles.badgesWrapper,
+                styles.voteWrapperForSmallScreen
+              )}
+            >
               <DocumentBadges document={doc} metadata={metadata} />
             </div>
             <div className={css(styles.titleWrapper)}>
@@ -189,6 +194,9 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     isHorizontal={true}
                   />
                 </IconButton>
+              </div>
+              <div className={css(styles.badgesWrapper, styles.desktopOnly)}>
+                <DocumentBadges document={doc} metadata={metadata} />
               </div>
 
               <div className={css(styles.btnGroup)}>
@@ -269,7 +277,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   badgesWrapper: {
-    marginBottom: 10,
     alignItems: "center",
     position: "relative",
     [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
@@ -310,7 +317,14 @@ const styles = StyleSheet.create({
   voteWrapper: {
     position: "absolute",
     left: -VOTE_DISTANCE_FROM_LEFT,
-    top: -28,
+    top: 0,
+  },
+  desktopOnly: {
+    [`@media (max-width: ${
+      config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
+    }px)`]: {
+      display: "none",
+    },
   },
   voteWrapperForSmallScreen: {
     display: "none",
@@ -322,6 +336,7 @@ const styles = StyleSheet.create({
   },
   btnGroup: {
     display: "flex",
+    marginLeft: "auto",
     columnGap: "10px",
   },
   btnsWrapper: {
@@ -329,7 +344,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     display: "flex",
     columnGap: "15px",
-    justifyContent: "flex-end",
+    alignItems: "center",
     [`@media (max-width: ${config.width}px)`]: {
       justifyContent: "flex-start",
       paddingLeft: 15,
