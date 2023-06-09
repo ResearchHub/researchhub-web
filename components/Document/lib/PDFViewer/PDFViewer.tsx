@@ -23,6 +23,8 @@ interface Props {
   // This width should be considered as initial width since user can zoom in/out.
   width?: number;
   onZoom?: Function;
+  expanded?: boolean;
+  pdfClose?: (e) => void;
 }
 
 type ZoomAction = {
@@ -31,10 +33,16 @@ type ZoomAction = {
   newWidth: number;
 };
 
-const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
+const PDFViewer = ({
+  pdfUrl,
+  width = config.width,
+  onZoom,
+  expanded,
+  pdfClose,
+}: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(expanded);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
@@ -84,6 +92,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
         } as ZoomAction);
     }
   }
+
   function handleZoomOut() {
     if (isExpanded) {
       const currentIdx = zoomOptions.findIndex(
@@ -230,6 +239,11 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
     setHasLoadError(true);
   }
 
+  function onFullScreenClose(e) {
+    pdfClose && pdfClose(e);
+    setIsExpanded(false);
+  }
+
   if (hasLoadError) {
     return (
       <div className={css(styles.error)}>
@@ -258,10 +272,7 @@ const PDFViewer = ({ pdfUrl, width = config.width, onZoom }: Props) => {
               />
             </IconButton>
           </div>
-          <div
-            onClick={() => setIsExpanded(false)}
-            className={css(styles.closeBtn)}
-          >
+          <div onClick={onFullScreenClose} className={css(styles.closeBtn)}>
             <IconButton overrideStyle={styles.viewerNavBtn}>
               <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
             </IconButton>

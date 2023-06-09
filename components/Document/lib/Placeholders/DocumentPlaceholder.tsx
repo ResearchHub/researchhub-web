@@ -12,6 +12,7 @@ const DocumentPlaceholder = ({ repeatCount = 15 }: Args) => {
         width: "100%",
         background: "white",
         boxSizing: "border-box",
+        padding: 50,
       }}
     >
       {Array.from(new Array(repeatCount)).map((_, idx) => {
