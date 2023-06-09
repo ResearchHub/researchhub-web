@@ -7,7 +7,12 @@ import {
 } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import { PostIcon, PaperIcon, HypothesisIcon, QuestionIcon } from "~/config/themes/icons";
+import {
+  PostIcon,
+  PaperIcon,
+  HypothesisIcon,
+  QuestionIcon,
+} from "~/config/themes/icons";
 import {
   ReactElement,
   useState,
@@ -104,22 +109,6 @@ export const getModalOptionItems = ({
     },
     icon: (
       <PostIcon
-        height={40}
-        onClick={silentEmptyFnc}
-        width={40}
-        color={`#aeaeae`}
-        withAnimation={false}
-      />
-    ),
-  },
-  {
-    key: "hypothesis",
-    header: "Create a Meta-Study",
-    description:
-      "Aggregate a collection of papers that support a particular scientific theory.",
-    route: "/hypothesis/create",
-    icon: (
-      <HypothesisIcon
         height={40}
         onClick={silentEmptyFnc}
         width={40}
