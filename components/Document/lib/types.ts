@@ -165,7 +165,7 @@ export const parsePaper = (raw: any): Paper => {
   const commonAttributes = parseGenericDocument(raw);
   const parsed: Paper = {
     ...commonAttributes,
-    title: raw.paper_title,
+    title: raw.paper_title || raw.title,
     authors: parsePaperAuthors(raw),
     journal: raw.external_source,
     isOpenAccess: Boolean(raw.is_open_access),
