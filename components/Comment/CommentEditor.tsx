@@ -39,6 +39,7 @@ import Bounty from "~/config/types/bounty";
 import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
 import CommentEditorPlaceholder from "./CommentEditorPlaceholder";
+import { breakpoints } from "~/config/themes/screen";
 
 const { setMessage, showMessage } = MessageActions;
 
@@ -259,7 +260,12 @@ const CommentEditor = ({
                       className={css(styles.bountyInfoIcon)}
                       icon={faExclamationCircle}
                     />
-                    Offer award amount in ResearchCoin
+                    <span className={css(styles.largeBountyText)}>
+                      Offer award amount in ResearchCoin
+                    </span>
+                    <span className={css(styles.smallBountyText)}>
+                      Offer ResearchCoin
+                    </span>                    
                   </div>
                 </div>
               )}
@@ -431,6 +437,18 @@ const styles = StyleSheet.create({
     background: colors.bounty.contributeBtn,
     border: "none",
   },
+  largeBountyText: {
+    display: "inline-block",
+    [`@media (max-width: ${breakpoints.xsmall.str})`]: {    
+      display: "none",
+    }
+  },
+  smallBountyText: {
+    display: "none",
+    [`@media (max-width: ${breakpoints.xsmall.str})`]: {    
+      display: "inline-block",
+    }
+  }  
 });
 
 export default CommentEditor;
