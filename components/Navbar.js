@@ -64,7 +64,7 @@ const Navbar = (props) => {
 
   const unstickyNavbar = router.pathname.includes(
     "/paper/[paperId]/[paperName]",
-    "/doc-v2/[documentType]/[documentId]/[documentSlug]",
+    "/[documentType]/[documentId]/[documentSlug]",
     "/hubs"
   );
 

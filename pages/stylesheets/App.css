@@ -317,10 +317,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 28px;
   margin-top: 0;
   margin-bottom: 0.5em;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.25px;
   line-height: 1.2em;
 }
@@ -333,7 +333,7 @@ h2 {
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 22px;
   margin-top: 0;
   margin-bottom: 0.5em;
   font-weight: 600;
@@ -361,8 +361,17 @@ ul {
 }
 
 @media only screen and (max-width: 768px) {
+  p,
+  ol,
+  ul {
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+}
+
+@media only screen and (max-width: 768px) {
   h1 {
-    font-size: 28px;
+    font-size: 26px;
   }
   h2 {
     font-size: 22px;
@@ -386,4 +395,22 @@ input[type="number"] {
 
 .react-pdf__Page__svg {
   margin: 0 auto;
+}
+
+.rh-post {
+  word-break: break-word;
+}
+
+.rh-post figure {
+  margin: 0 auto;
+}
+
+.rh-post figure img {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.rh-post img {
+  max-width: 100%;
+  border-radius: 4px;
 }

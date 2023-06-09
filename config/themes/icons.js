@@ -1,5 +1,4 @@
 import { faChevronUp, faChevronDown } from "@fortawesome/pro-regular-svg-icons";
-import { faQuestionCircle } from "@fortawesome/pro-duotone-svg-icons";
 import {
   faComment,
   faVideoPlus,
@@ -17,6 +16,7 @@ import {
   faDown,
   faCircleExclamation,
   faH2,
+  faQuestionCircle,
 } from "@fortawesome/pro-solid-svg-icons";
 import colors, { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
@@ -373,7 +373,7 @@ export const QuestionIcon = ({
   color = "currentColor",
   onClick,
   overrideStyle = null,
-  size = 16,
+  size = 18,
   withAnimation = true,
 }) => {
   return (

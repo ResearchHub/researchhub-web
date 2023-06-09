@@ -124,7 +124,7 @@ const ContentBadgeBase = ({
         ) : contentType === "rsc_support" ? (
           <>
             <span className={css(styles.icon, styles.rscIcon)}>
-              <ResearchCoinIcon version={4} height={16} width={16} />
+              <ResearchCoinIcon version={4} height={15} width={15} />
               {` `}
             </span>
             <span className={css(styles.rscContent)}>{label}</span>
@@ -135,8 +135,8 @@ const ContentBadgeBase = ({
               <ResearchCoinIcon
                 color="rgb(232, 181, 4)"
                 version={4}
-                height={16}
-                width={16}
+                height={15}
+                width={15}
               />
               {` `}
             </span>
@@ -154,8 +154,8 @@ const ContentBadgeBase = ({
               >
                 <ResearchCoinIcon
                   version={4}
-                  height={size === "small" ? 14 : 16}
-                  width={size === "small" ? 14 : 16}
+                  height={size === "small" ? 14 : 15}
+                  width={size === "small" ? 14 : 15}
                 />
                 {` `}
               </span>
@@ -242,11 +242,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: "3px 6px 1px",
   },
-  medium: {},
+  medium: {
+    fontSize: 14,
+    padding: "6px 11px 6px",
+    lineHeight: "18px",
+  },
   large: {
-    fontSize: 16,
-    padding: "10px 14px 6px",
-    height: 37,
+    fontSize: 15,
+    padding: "8px 14px 8px",
+    lineHeight: "18px",
   },
   withTooltip: {
     cursor: "default",
@@ -254,7 +258,7 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 6,
     fontSize: 13,
-    height: 21,
+    height: 18,
   },
   rscIcon: {
     height: "16px",
@@ -262,6 +266,9 @@ const styles = StyleSheet.create({
   },
   iconSmall: {
     height: 14,
+  },
+  iconLarge: {
+    fontSize: 18,
   },
   wrapper: {
     display: "flex",

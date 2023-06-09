@@ -1,0 +1,26 @@
+import { Helpers } from "@quantfive/js-web-config";
+import API from "~/config/api";
+import { captureEvent } from "~/config/utils/events";
+
+interface Props {
+  paperId: string;
+}
+
+const fetchPaper = ({ paperId }: Props): Promise<any> => {
+  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      return resp;
+    })
+    .catch((error) => {
+      captureEvent({
+        data: { paperId },
+        error,
+        msg: `Error fetching paper: ${paperId}`,
+      });
+      throw error;
+    });
+};
+
+export default fetchPaper;

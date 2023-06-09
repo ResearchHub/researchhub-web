@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     border: `1px solid transparent`,
     ":hover": {
       background: iconColors.BACKGROUND,
+      color: colors.BLACK(),
       borderRadius: 3,
       transition: "0.3s",
     },

@@ -18,6 +18,7 @@ function useEffectForCommentTypeChange ({ commentType, quill, quillRef, isReady 
 
       quillRef.current.classList.add("peer-review");      
 
+      console.log('insertReviewCategory')
       insertReviewCategory({
         category: reviewCategories.overall,
         index: 0,
@@ -51,7 +52,7 @@ function useEffectForCommentTypeChange ({ commentType, quill, quillRef, isReady 
     }
 
     focusEditor({ quill });
-  }, [commentType])
+  }, [commentType, isReady, quill])
 }
 
 

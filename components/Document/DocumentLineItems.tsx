@@ -10,7 +10,8 @@ import {
   faLongArrowDown,
   faLongArrowUp,
 } from "@fortawesome/pro-regular-svg-icons";
-import { GenericDocument, Paper, isPaper } from "./lib/types";
+import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
+import { toTitleCase } from "~/config/utils/string";
 
 const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
   const auth = useSelector((state: any) => state.auth);
@@ -28,14 +29,20 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       title: "Authors",
       value: (
         <>
-          <AuthorList authors={document.authors} />
-          <span
-            style={{ marginLeft: 5 }}
-            className={css(linkStyles.linkThemeSolidPrimary)}
-            onClick={() => setIsAuthorClaimModalOpen(true)}
-          >
-            Are you the author?
-          </span>
+          {document.authors.length > 0 ? (
+            <AuthorList authors={document.authors} />
+          ) : (
+            <span>Not available</span>
+          )}
+          {isPaper(document) && (
+            <span
+              style={{ marginLeft: 5 }}
+              className={css(linkStyles.linkThemeSolidPrimary)}
+              onClick={() => setIsAuthorClaimModalOpen(true)}
+            >
+              Are you the author?
+            </span>
+          )}
         </>
       ),
     },
@@ -48,11 +55,30 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
         ]
       : []),
 
-    ...(isPaper(document) && document.publishedDate
+    ...(document.publishedDate
       ? [
           {
             title: "Published",
             value: document.publishedDate,
+          },
+        ]
+      : []),
+
+    ...(document.hubs && document.hubs.length > 0
+      ? [
+          {
+            title: "Hubs",
+            value: document.hubs.map((h, index) => (
+              <div key={index}>
+                <ALink
+                  key={`/hubs/${h.slug ?? ""}-index`}
+                  href={`/hubs/${h.slug}`}
+                >
+                  {toTitleCase(h.name)}
+                </ALink>
+                {index < document.hubs?.length - 1 ? "," : ""}
+              </div>
+            )),
           },
         ]
       : []),
@@ -69,7 +95,26 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
           },
         ]
       : []),
-    ...(document?.createdBy?.authorProfile
+
+    ...(isPaper(document) && document.license
+      ? [
+          {
+            title: "License",
+            value: document.license,
+          },
+        ]
+      : []),
+
+    ...(isPaper(document) && !document.publishedDate
+      ? [
+          {
+            title: "Uploaded",
+            value: document.createdDate,
+          },
+        ]
+      : []),
+
+    ...(isPaper(document) && document?.createdBy?.authorProfile
       ? [
           {
             title: "Posted by",
@@ -89,8 +134,9 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
 
   const lineItemsToShow = isShowingAllMetadata
     ? lineItems
-    : lineItems.slice(0, 3);
-  const hasMoreMetadata = lineItems.length > 3;
+    : lineItems.slice(0, 4);
+  const hasMoreMetadata = lineItems.length > 4;
+
   return (
     <div>
       <div className={css(styles.wrapper)}>
@@ -138,16 +184,16 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
 const styles = StyleSheet.create({
   wrapper: {
     fontSize: 15,
-    lineHeight: "1.5em",
+    lineHeight: "1.6em",
   },
   item: {
     display: "flex",
   },
   title: {
-    width: "100px",
-    color: colors.MEDIUM_GREY(),
+    minWidth: "100px",
+    color: colors.BLACK(0.6),
   },
-  value: {},
+  value: { display: "flex", columnGap: "5px", flexWrap: "wrap" },
   showMore: {
     cursor: "pointer",
     color: colors.MEDIUM_GREY(),

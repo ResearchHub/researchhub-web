@@ -7,7 +7,7 @@ import { CommentTreeContext } from "./lib/contexts";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
-import { ID, parseUser, TopLevelDocument } from "~/config/types/root_types";
+import { ID, parseUser } from "~/config/types/root_types";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
 import { Purchase } from "~/config/types/purchase";
@@ -27,25 +27,40 @@ import findComment from "./lib/findComment";
 import React, { useEffect, useState } from "react";
 import removeComment from "./lib/removeComment";
 import replaceComment from "./lib/replaceComment";
+import { GenericDocument } from "../Document/lib/types";
+import { useRouter } from "next/router";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
-  document: TopLevelDocument;
+  document: GenericDocument;
   context?: "sidebar" | "drawer" | null;
   onCommentCreate?: Function;
+  onCommentUpdate?: Function;
   onCommentRemove?: Function;
   totalCommentCount: number;
   initialComments?: CommentType[] | undefined;
+  initialFilter?: string;
+  editorType?: COMMENT_TYPES;
+  showFilters?: boolean;
+  allowCommentTypeSelection?: boolean;
+  allowBounty?: boolean;
 };
 
 const CommentFeed = ({
   document,
   onCommentCreate,
   onCommentRemove,
+  onCommentUpdate,
   totalCommentCount,
   initialComments = undefined,
+  initialFilter = undefined,
   context = null,
+  showFilters = true,
+  allowCommentTypeSelection = true,
+  allowBounty = false,
+  editorType = COMMENT_TYPES.DISCUSSION,
 }: Args) => {
+  const router = useRouter();
   const hasInitialComments = initialComments !== undefined;
   const [comments, setComments] = useState<CommentType[]>(
     initialComments || []
@@ -54,7 +69,7 @@ const CommentFeed = ({
     hasInitialComments ? false : true
   );
   const [rootLevelCommentCount, setRootLevelCommentCount] = useState<number>(
-    initialComments?.length || 0
+    totalCommentCount || 0
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(
@@ -64,7 +79,7 @@ const CommentFeed = ({
     sortOpts[0].value
   );
   const [selectedFilterValue, setSelectedFilterValue] = useState<string | null>(
-    filterOpts[0].value
+    initialFilter || filterOpts[0].value
   );
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -85,7 +100,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: sort || sort === null ? sort : selectedSortValue,
-        filter: filter || filter === null ? filter : selectedFilterValue,
+        filter: filter || (filter === null ? filter : selectedFilterValue),
       });
 
       const parsedComments = comments.map((raw: any) => parseComment({ raw }));
@@ -137,6 +152,7 @@ const CommentFeed = ({
       });
       const updatedComments = [...comments];
       setComments(updatedComments);
+      onCommentUpdate && onCommentUpdate({ old: found, new: comment });
     } else {
       localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -298,7 +314,7 @@ const CommentFeed = ({
     setComments([]);
     setCurrentPage(1);
     setSelectedSortValue(sortOpts[0].value);
-    setSelectedFilterValue(filterOpts[0].value);
+    setSelectedFilterValue(initialFilter || filterOpts[0].value);
     setRootLevelCommentCount(0);
   };
 
@@ -306,14 +322,23 @@ const CommentFeed = ({
     const documentHasChanged = document.id && document.id !== currentDocumentId;
     if (documentHasChanged && !hasInitialComments) {
       resetFeed();
-      handleFetch({});
+      handleFetch({ filter: selectedFilterValue });
       setCurrentDocumentId(document.id);
     }
   }, [document.id, currentDocumentId, hasInitialComments]);
 
+  // This hook is used to reset the feed when tab changes.
+  // In such a case, the comments will be loaded when the page is statically rendered.
+  useEffect(() => {
+    setCurrentPage(1);
+    setRootLevelCommentCount(totalCommentCount || 0);
+    setComments(initialComments || []);
+    setSelectedFilterValue(initialFilter || filterOpts[0].value);
+  }, [router?.query?.tabName]);
+
   const isQuestion = document?.unifiedDocument?.documentType === "question";
   const noResults =
-    (document.isReady && rootLevelCommentCount === 0) ||
+    rootLevelCommentCount === 0 ||
     (selectedFilterValue !== null && comments.length === 0);
   const WrapperEl =
     context === "sidebar"
@@ -364,12 +389,16 @@ const CommentFeed = ({
               )}
             >
               <CommentEditor
-                editorId="new-thread"
+                key={`${editorType}-new-thread`}
+                editorId={`${editorType}-new-thread`}
+                commentType={editorType}
                 handleSubmit={handleCommentCreate}
-                allowBounty={true}
+                allowBounty={allowBounty}
                 author={currentUser?.authorProfile}
                 previewModeAsDefault={context ? true : false}
-                allowCommentTypeSelection={!isQuestion}
+                allowCommentTypeSelection={
+                  allowCommentTypeSelection && !isQuestion
+                }
                 editorStyleOverride={
                   context === "drawer" ? styles.roundedEditor : null
                 }
@@ -377,19 +406,24 @@ const CommentFeed = ({
             </div>
 
             <div className={css(styles.filtersWrapper)}>
-              <CommentFilters
-                selectedFilterValue={selectedFilterValue}
-                hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
-                handleSelect={(fval) => {
-                  resetFeed();
-                  setIsFetching(true);
-                  setSelectedFilterValue(fval);
-                  handleFetch({ filter: fval, sort: selectedSortValue });
-                }}
-              />
+              {showFilters && (
+                <CommentFilters
+                  selectedFilterValue={selectedFilterValue}
+                  hideOptions={isQuestion ? [COMMENT_TYPES.REVIEW] : []}
+                  handleSelect={(fval) => {
+                    resetFeed();
+                    setIsFetching(true);
+                    setSelectedFilterValue(fval);
+                    handleFetch({ filter: fval, sort: selectedSortValue });
+                  }}
+                />
+              )}
               <div className={css(styles.sortWrapper)}>
                 <CommentSort
                   selectedSortValue={selectedSortValue}
+                  dropdownDirection={
+                    showFilters ? "bottom-right" : "bottom-left"
+                  }
                   handleSelect={(sval) => {
                     setSelectedSortValue(sval);
                     setIsFetching(true);
@@ -419,7 +453,7 @@ const CommentFeed = ({
               <CommentEmptyState
                 height={context === "sidebar" ? "60%" : "300px"}
                 forSection={selectedFilterValue}
-                documentType={document.documentType}
+                documentType={document.type}
               />
             )}
           </>
@@ -435,13 +469,12 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingBottom: 15,
     borderBottom: `1px solid ${colors.filters.divider}`,
+    justifyContent: "space-between",
   },
   roundedEditor: {
     borderRadius: "14px",
   },
-  sortWrapper: {
-    marginLeft: "auto",
-  },
+  sortWrapper: {},
   editorWrapper: {
     marginBottom: 25,
   },

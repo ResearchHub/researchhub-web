@@ -4,47 +4,20 @@ import Head from "next/head";
 import { COMPANY_NAME, METATAG_DEFAULT_IMAGE_URL } from "../config/constants";
 
 const HeadComponent = (props) => {
-  // const router = useRouter();
   const { noindex } = props;
   const title = props.title || `${COMPANY_NAME} | Open Science Community`;
-
-  // TODO: What url can we use when rendered server side?
-  // const url =
-  //   props.url || `https://www.researchhub.com${router && router.asPath}`;
-
-  const url = "";
   const description =
     props.description ||
     `We're a community seeking to improve prioritization, collaboration, reproducibility, and funding of scientific research. Discuss and discover academic research on ${COMPANY_NAME}`;
   const socialImageUrl = props.socialImageUrl || METATAG_DEFAULT_IMAGE_URL;
-
-  const formatBreadCrumb = () => {
-    let { parentPaths } = props;
-
-    let itemListElement = [];
-    parentPaths.forEach((path, i) => {
-      let item = {
-        "@type": "ListItem",
-        position: i + 1,
-        name: path.name,
-        item: path.item,
-      };
-
-      itemListElement.push(item);
-    });
-
-    let body = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement,
-    };
-
-    return <script type="application/ld+json">{`${body}`}</script>;
-  };
+  const url = props.url;
 
   return (
     <Head>
       <title>{title}</title>
+      {props.graph && (
+        <script type="application/ld+json">{`${props.graph}`}</script>
+      )}
       {/* {props.parentPaths && props.parentPaths.length > 0 && formatBreadCrumb()} */}
       <meta key="description" name="description" content={description} />
       {props.canonical && <link rel="canonical" href={props.canonical} />}
@@ -56,7 +29,7 @@ const HeadComponent = (props) => {
       <meta property="og:image:secure_url" content={socialImageUrl} />
       <meta property="og:image:type" content={"image/png"} />
       <meta property="og:title" content={title} />
-      <meta property="og:type" content={"article"} />
+      <meta property="og:type" content={"Article"} />
       <meta property="og:site_name" content={COMPANY_NAME} />
       <meta property="og:url" content={url} />
       {/* Facebook */}

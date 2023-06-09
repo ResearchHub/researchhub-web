@@ -9,7 +9,7 @@ const MINUTES_IN_A_DAY = 1440;
 
 export const timeAgo = new TimeAgo("en-US");
 
-export function formatDateStandard(inputDate) {
+export function formatDateStandard(inputDate, overrideFormat) {
   if (!inputDate) {
     return null;
   }
@@ -18,6 +18,10 @@ export function formatDateStandard(inputDate) {
   if (typeof inputDate === "string") {
     date = moment(inputDate);
   }
+  if (overrideFormat) {
+    return date.format(overrideFormat);
+  }
+
   return date.format("MMM D, YYYY h:mma");
 }
 

@@ -1,4 +1,4 @@
-import { GenericDocument } from "./lib/types";
+import { DocumentMetadata, GenericDocument } from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import DocumentVote from "./DocumentVote";
@@ -8,29 +8,48 @@ import colors from "~/config/themes/colors";
 import config from "./lib/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/pro-solid-svg-icons";
+import { breakpoints } from "~/config/themes/screen";
+import Link from "next/link";
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
+import HorizontalTabBar from "../HorizontalTabBar";
+import { getTabs } from "./lib/tabbedNavigation";
 
 interface Props {
   document: GenericDocument;
+  handleTip: Function;
+  metadata: DocumentMetadata;
 }
 
-const DocumentStickyHeader = ({ document }: Props) => {
+const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
   const router = useRouter();
+  const tabs = getTabs({ router, document, metadata });
 
   return (
     <div className={css(styles.stickyWrapper)}>
-      <div className={css(styles.titleWrapper)}>
-        <DocumentVote document={document} isHorizontal={true} />
-        <div className={css(styles.title)}>{document.title}</div>
+      <DocumentVote
+        id={document.id}
+        metadata={metadata}
+        score={metadata.score}
+        apiDocumentType={document.apiDocumentType}
+        userVote={metadata.userVote}
+        isHorizontal={true}
+      />
+      <div className={css(styles.tabsWrapper)}>
+        <HorizontalTabBar tabs={tabs} />
       </div>
       <div className={css(styles.actionWrapper)}>
-        <IconButton overrideStyle={styles.btn}>
-          <ResearchCoinIcon version={6} width={21} height={21} />
-          <span>Tip</span>
-        </IconButton>
-        <IconButton overrideStyle={styles.btn}>
-          <FontAwesomeIcon icon={faComments} />
-          <span>{document.discussionCount}</span>
-        </IconButton>
+        <PermissionNotificationWrapper
+          modalMessage="edit document"
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          onClick={() => handleTip()}
+          hideRipples={true}
+        >
+          <IconButton variant="round" overrideStyle={styles.btn}>
+            <ResearchCoinIcon version={6} width={21} height={21} />
+            <span>Tip</span>
+          </IconButton>
+        </PermissionNotificationWrapper>
       </div>
     </div>
   );
@@ -41,9 +60,14 @@ const styles = StyleSheet.create({
     display: "flex",
     columnGap: "15px",
     alignItems: "center",
+    width: "100%",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   title: {
     fontSize: 18,
+    fontWeight: 500,
     textTransform: "capitalize",
     ":hover": {
       textDecoration: "underline",
@@ -53,13 +77,16 @@ const styles = StyleSheet.create({
   stickyWrapper: {
     display: "flex",
     alignItems: "center",
-    maxWidth: config.maxWidth,
-    justifyContent: "space-between",
+    maxWidth: config.width,
     margin: "0 auto",
-    padding: "15px 0px",
+    [`@media (max-width: ${config.width}px)`]: {
+      padding: "5px 5px 0px 10px",
+      maxWidth: "100vw",
+    },
   },
   tabsWrapper: {
     marginLeft: "25px",
+    overflowX: "scroll",
   },
   tab: {
     paddingTop: "1.2rem",
@@ -71,17 +98,20 @@ const styles = StyleSheet.create({
   actionWrapper: {
     display: "flex",
     columnGap: "10px",
+    marginLeft: "auto",
+    justifyContent: "flex-end",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  smallScreenVote: {
+    display: "none",
+    [`@media (max-width: ${breakpoints.small.str})`]: {
+      display: "flex",
+    },
   },
   btn: {
-    display: "inline-flex",
-    fontWeight: 500,
-    columnGap: "7px",
-    alignItems: "center",
-    padding: "6px 12px",
-    height: 36,
-    boxSizing: "border-box",
-    borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`,
+    color: colors.BLACK(0.45),
   },
 });
 

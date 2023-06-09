@@ -29,6 +29,9 @@ const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
 );
 
+/**
+ * @deprecated Do not use
+ */
 class PostPageCard extends Component {
   constructor(props) {
     super(props);

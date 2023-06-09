@@ -9,18 +9,19 @@ import colors from "./lib/colors";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/redux";
-import { TopLevelDocument, parseUser } from "~/config/types/root_types";
+import { parseUser } from "~/config/types/root_types";
 import { Comment } from "./lib/types";
 import { deleteCommentAPI, flagComment } from "./lib/api";
 import { MessageActions } from "~/redux/message";
 import { CommentTreeContext } from "./lib/contexts";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { GenericDocument } from "../Document/lib/types";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   comment: Comment;
   handleEdit: Function;
-  document: TopLevelDocument;
+  document: GenericDocument;
 };
 
 const CommentMenu = ({ comment, handleEdit, document }: Args) => {
@@ -33,7 +34,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
   const commentTreeState = useContext(CommentTreeContext);
 
   useEffectHandleClick({
-    el: dropdownRef.current,
+    ref: dropdownRef,
     exclude: [".comment-menu-trigger"],
     onOutsideClick: () => setIsOpen(false),
     onInsideClick: () => setIsOpen(false),

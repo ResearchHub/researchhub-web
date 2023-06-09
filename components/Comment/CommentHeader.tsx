@@ -1,8 +1,5 @@
-import {
-  AuthorProfile,
-  RHUser,
-  TopLevelDocument,
-} from "~/config/types/root_types";
+import { AuthorProfile, RHUser } from "~/config/types/root_types";
+import { GenericDocument } from "../Document/lib/types";
 import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
@@ -23,7 +20,7 @@ type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
   handleEdit: Function;
-  document: TopLevelDocument;
+  document: GenericDocument;
 };
 
 const CommentHeader = ({

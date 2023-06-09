@@ -1,8 +1,9 @@
 import globalColors from "~/config/themes/colors";
 
 const config = {
-  maxWidth: 900,
+  width: 900,
   background: "#FCFCFC",
+  controlsWidth: 200,
   border: globalColors.GREY_LINE(1.0),
 };
 

@@ -6,23 +6,36 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { useRouter } from "next/router";
-import { faArrowDownToBracket } from "@fortawesome/pro-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GenericDocument, isPaper } from "./lib/types";
+import {
+  DocumentMetadata,
+  GenericDocument,
+  isPaper,
+  isPost,
+} from "./lib/types";
 import DocumentVote from "./DocumentVote";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import { ModalActions } from "~/redux/modals";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
 import Link from "next/link";
-import GenericMenu from "../shared/GenericMenu";
+import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { breakpoints } from "~/config/themes/screen";
+import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
+import { faPen, faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { parseUser } from "~/config/types/root_types";
+import { RootState } from "~/redux";
+import { isEmpty } from "~/config/utils/nullchecks";
+import { Purchase } from "~/config/types/purchase";
+import { DocumentContext } from "./lib/DocumentContext";
+import useCacheControl from "~/config/hooks/useCacheControl";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -30,15 +43,26 @@ const PaperTransactionModal = dynamic(
 
 interface Props {
   document: GenericDocument;
+  metadata: DocumentMetadata;
 }
 
-const DocumentHeader = ({ document: doc }: Props) => {
+const DocumentHeader = ({ document: doc, metadata }: Props) => {
+  const documentContext = useContext(DocumentContext);
   const router = useRouter();
   const dispatch = useDispatch();
+  const { revalidateDocument } = useCacheControl();
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState<boolean>(false);
   const [stickyOffset, setStickyOffset] = useState<number>(0);
-  const tabs = getTabs({ router, document: doc });
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
+
+  const tabs = getTabs({
+    router,
+    document: doc,
+    metadata,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,7 +76,6 @@ const DocumentHeader = ({ document: doc }: Props) => {
         setStickyVisible(true);
       } else {
         setStickyVisible(false);
-        console.log("hide sticky");
       }
     };
 
@@ -62,14 +85,38 @@ const DocumentHeader = ({ document: doc }: Props) => {
     };
   }, []);
 
-  const options = [
+  const options: Array<MenuOption> = [
+    // ...(isPaper(doc)
+    //   ? [
+    //       {
+    //         label: "Edit metadata",
+    //         icon: <FontAwesomeIcon icon={faPen} />,
+    //         value: "edit-metadata",
+    //         onClick: () => {
+    //           alert("implement me");
+    //         },
+    //       },
+    //     ]
+    //   : []),
+    ...(isPost(doc) &&
+    doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
+      ? [
+          {
+            label: "Edit",
+            icon: <FontAwesomeIcon icon={faPen} />,
+            value: "edit-content",
+            onClick: () => {
+              documentContext.editDocument && documentContext.editDocument();
+            },
+          },
+        ]
+      : []),
     {
-      label: "Flag content",
       value: "flag",
+      preventDefault: true,
       html: (
         <FlagButtonV2
-          modalHeaderText="Flagging"
-          flagIconOverride={styles.flagButton}
+          modalHeaderText="Flag content"
           onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
             flagGrmContent({
               contentID: doc.id,
@@ -79,12 +126,19 @@ const DocumentHeader = ({ document: doc }: Props) => {
               onSuccess: renderSuccessMsg,
             });
           }}
-        />
+        >
+          <div style={{ display: "flex", width: "100%" }}>
+            <div style={{ width: 30, boxSizing: "border-box" }}>
+              <FontAwesomeIcon icon={faFlag} />
+            </div>
+
+            <div>Flag content</div>
+          </div>
+        </FlagButtonV2>
       ),
     },
   ];
 
-  const pdfUrl = isPaper(doc) && doc.formats.find((f) => f.type === "pdf")?.url;
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
       <div
@@ -94,56 +148,77 @@ const DocumentHeader = ({ document: doc }: Props) => {
         )}
         style={{ width: `calc(100% - ${stickyOffset}px)` }}
       >
-        <DocumentStickyHeader document={doc} />
+        <DocumentStickyHeader
+          document={doc}
+          metadata={metadata}
+          handleTip={() =>
+            dispatch(ModalActions.openPaperTransactionModal(true))
+          }
+        />
       </div>
       <div className={css(styles.headerWrapper)}>
         <div className={css(styles.headerContentWrapper)}>
           <div>
             <div className={css(styles.badgesWrapper)}>
-              <DocumentBadges document={doc} />
+              <DocumentBadges document={doc} metadata={metadata} />
             </div>
             <div className={css(styles.titleWrapper)}>
               <div className={css(styles.voteWrapper)}>
-                <DocumentVote document={doc} />
+                <DocumentVote
+                  id={doc.id}
+                  metadata={metadata}
+                  score={metadata.score}
+                  apiDocumentType={doc.apiDocumentType}
+                  userVote={metadata.userVote}
+                />
               </div>
               <h1 className={css(styles.title)}>{doc.title}</h1>
             </div>
-            <DocumentLineItems document={doc} />
-            <div className={css(styles.btnWrapper)}>
-              <PermissionNotificationWrapper
-                modalMessage="edit document"
-                permissionKey="UpdatePaper"
-                loginRequired={true}
-                onClick={() =>
-                  dispatch(ModalActions.openPaperTransactionModal(true))
-                }
-                hideRipples={true}
-              >
-                <IconButton overrideStyle={styles.btn}>
-                  <ResearchCoinIcon version={6} width={21} height={21} />
-                  <span>Tip Authors</span>
-                </IconButton>
-              </PermissionNotificationWrapper>
-              {pdfUrl && (
-                <Link
-                  href={pdfUrl}
-                  download={true}
-                  target="_blank"
-                  style={{ textDecoration: "none" }}
-                >
-                  <IconButton overrideStyle={styles.btn}>
-                    <FontAwesomeIcon icon={faArrowDownToBracket} />
-                    <span>PDF</span>
-                  </IconButton>
-                </Link>
-              )}
-              <GenericMenu options={options}>
-                <IconButton overrideStyle={styles.btnDots}>
-                  <FontAwesomeIcon icon={faEllipsis} />
-                </IconButton>
-              </GenericMenu>
+            <div className={css(styles.lineItemsWrapper)}>
+              <DocumentLineItems document={doc} />
             </div>
-            <div>
+            <div className={css(styles.btnsWrapper)}>
+              <div className={css(styles.voteWrapperForSmallScreen)}>
+                <IconButton variant="round">
+                  <DocumentVote
+                    id={doc.id}
+                    metadata={metadata}
+                    score={metadata.score}
+                    apiDocumentType={doc.apiDocumentType}
+                    userVote={metadata.userVote}
+                    isHorizontal={true}
+                  />
+                </IconButton>
+              </div>
+
+              <div className={css(styles.btnGroup)}>
+                <PermissionNotificationWrapper
+                  modalMessage="edit document"
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  onClick={() =>
+                    dispatch(ModalActions.openPaperTransactionModal(true))
+                  }
+                  hideRipples={true}
+                >
+                  <IconButton variant="round">
+                    <ResearchCoinIcon version={6} width={21} height={21} />
+                    <span>Tip Authors</span>
+                  </IconButton>
+                </PermissionNotificationWrapper>
+                <GenericMenu
+                  softHide={true}
+                  options={options}
+                  width={150}
+                  id="header-more-options"
+                >
+                  <IconButton overrideStyle={styles.btnDots}>
+                    <FontAwesomeIcon icon={faEllipsis} />
+                  </IconButton>
+                </GenericMenu>
+              </div>
+            </div>
+            <div className={css(styles.tabsWrapper)}>
               <HorizontalTabBar tabs={tabs} />
             </div>
           </div>
@@ -151,19 +226,28 @@ const DocumentHeader = ({ document: doc }: Props) => {
 
         <PaperTransactionModal
           // @ts-ignore
-          paper={doc.raw}
+          paper={isPaper(doc) ? doc.raw : undefined}
           // @ts-ignore
-          updatePaperState={() => alert("Implement me")}
+          post={isPost(doc) ? doc.raw : undefined}
+          // @ts-ignore
+          onTransactionCreate={(purchase: Purchase) => {
+            // @ts-ignore
+            documentContext.updateMetadata({
+              ...metadata,
+              purchases: [...metadata!.purchases, purchase],
+            });
+
+            revalidateDocument();
+          }}
         />
       </div>
     </div>
   );
 };
 
+const VOTE_DISTANCE_FROM_LEFT = 50;
 const styles = StyleSheet.create({
-  headerRoot: {
-
-  },
+  headerRoot: {},
   title: {
     textTransform: "capitalize",
   },
@@ -173,61 +257,96 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "center",
     borderBottom: `2px solid ${config.border}`,
-    [`@media (max-width: ${config.maxWidth}px)`]: {
+  },
+  lineItemsWrapper: {
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
       paddingLeft: 15,
       paddingRight: 15,
     },
   },
   headerContentWrapper: {
-    maxWidth: config.maxWidth,
+    maxWidth: config.width,
     width: "100%",
   },
   badgesWrapper: {
     marginBottom: 10,
     alignItems: "center",
     position: "relative",
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
   },
-  titleWrapper: {},
+  tabsWrapper: {
+    borderTop: `1px solid #E9EAEF`,
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
+  },
+  titleWrapper: {
+    position: "relative",
+    [`@media (max-width: ${config.width + LEFT_SIDEBAR_MIN_WIDTH}px)`]: {
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
+  },
   stickyHeader: {
     position: "fixed",
     display: "none",
-    top: 0,
+    // bottom: 0,
     zIndex: 100,
-    background: "linear-gradient(to top,rgba(255,255,255,.75) 50%,#fff)",
+    paddingBottom: 0,
+    top: 0,
+    // background: "rgb(249, 249, 252)",
+    background: "white",
+    boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 6px",
     borderBottom: `1px solid #E9EAEF`,
-    boxShadow: `0px 3px 4px rgba(0, 0, 0, 0.02)`,
+    // borderTop: `1px solid #E9EAEF`,
   },
   stickyVisible: {
     display: "block",
   },
   voteWrapper: {
     position: "absolute",
-    left: -48,
+    left: -VOTE_DISTANCE_FROM_LEFT,
     top: -28,
   },
-  btn: {
-    display: "inline-flex",
-    fontWeight: 500,
-    columnGap: "7px",
-    alignItems: "center",
-    padding: "6px 12px",
-    height: 36,
-    boxSizing: "border-box",
-    borderRadius: "50px",
-    border: `1px solid ${colors.LIGHT_GREY()}`,
+  voteWrapperForSmallScreen: {
+    display: "none",
+    [`@media (max-width: ${
+      config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH
+    }px)`]: {
+      display: "block",
+    },
   },
-  btnWrapper: {
-    marginTop: 15,
+  btnGroup: {
     display: "flex",
     columnGap: "10px",
+  },
+  btnsWrapper: {
+    marginTop: 15,
+    marginBottom: 15,
+    display: "flex",
+    columnGap: "15px",
     justifyContent: "flex-end",
+    [`@media (max-width: ${config.width}px)`]: {
+      justifyContent: "flex-start",
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
   },
   btnDots: {
     border: "none",
     fontSize: 22,
     borderRadius: "50px",
     color: colors.BLACK(1.0),
+    background: colors.LIGHTER_GREY(),
     padding: "6px 12px",
+    ":hover": {
+      background: colors.DARKER_GREY(0.2),
+      transition: "0.2s",
+    },
   },
 });
 

@@ -36,8 +36,8 @@ type Props = {
   originalBounty?: Bounty;
   handleBountyAdded: Function;
   addBtnLabel?: string;
-  relatedItemId: ID;
-  relatedItemContentType: string;
+  relatedItemId?: ID;
+  relatedItemContentType?: string;
   showMessage: Function;
   setMessage: Function;
 };
@@ -320,14 +320,13 @@ function BountyModal({
                     )}
                   >
                     <span className={css(infoSectionStyles.infoIcon)}>
-                      {
-                        <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
-                      }
+                      {<FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>}
                     </span>{" "}
-                    The bounty creator will be able to award the full bounty amount including your contribution to a solution they pick.
+                    The bounty creator will be able to award the full bounty
+                    amount including your contribution to a solution they pick.
                   </div>
                 )}
-                {!originalBounty &&
+                {!originalBounty && (
                   <div className={css(infoSectionStyles.infoRow)}>
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {<FontAwesomeIcon icon={faClock}></FontAwesomeIcon>}
@@ -337,16 +336,16 @@ function BountyModal({
                       solution
                     </span>
                   </div>
-                }
-                {!originalBounty &&
+                )}
+                {!originalBounty && (
                   <div className={css(infoSectionStyles.infoRow)}>
                     <span className={css(infoSectionStyles.infoIcon)}>
                       {<FontAwesomeIcon icon={faUndo}></FontAwesomeIcon>}
                     </span>{" "}
-                    If no solution satisfies your request, the full bounty amount
-                    (excluding platform fee) will be refunded to you
+                    If no solution satisfies your request, the full bounty
+                    amount (excluding platform fee) will be refunded to you
                   </div>
-                }
+                )}
               </div>
 
               <div className={css(styles.addBountyContainer)}>
@@ -438,8 +437,7 @@ const alertStyles = StyleSheet.create({
 });
 
 const infoSectionStyles = StyleSheet.create({
-  specialInfoRow: {
-  },
+  specialInfoRow: {},
   bountyInfo: {
     textAlign: "left",
     fontSize: 16,

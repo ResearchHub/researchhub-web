@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUp } from "@fortawesome/pro-solid-svg-icons";
-import { faComments } from "@fortawesome/pro-light-svg-icons";
-import { faBolt } from "@fortawesome/pro-solid-svg-icons";
+import { faUp, faBolt } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faComments,
+  faHeartRate,
+  faGlobe,
+} from "@fortawesome/pro-light-svg-icons";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { faFireAlt } from "@fortawesome/pro-duotone-svg-icons";
-import { faHeartRate } from "@fortawesome/pro-light-svg-icons";
-import { faGlobe } from "@fortawesome/pro-light-svg-icons";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 
 export const topLevelFilters = {
@@ -58,10 +59,6 @@ export const feedTypeOpts = {
     value: "question",
     label: "Questions",
   },
-  "meta-study": {
-    value: "meta-study",
-    label: "Meta-Studies",
-  },
   bounty: {
     value: "bounty",
     label: "Bounties",
@@ -80,7 +77,6 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["meta-study"].value,
     ],
   },
   most_rsc: {
@@ -117,7 +113,6 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["meta-study"].value,
       feedTypeOpts["bounty"].value,
     ],
   },
@@ -132,7 +127,6 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["meta-study"].value,
       feedTypeOpts["bounty"].value,
     ],
   },
@@ -147,7 +141,6 @@ export const sortOpts = {
       feedTypeOpts["paper"].value,
       feedTypeOpts["post"].value,
       feedTypeOpts["question"].value,
-      feedTypeOpts["meta-study"].value,
       feedTypeOpts["bounty"].value,
     ],
   },

@@ -13,10 +13,15 @@ import Router from "next/router";
 import { Comment } from "~/components/Comment/lib/types";
 
 
-export function formatBountyAmount({ amount, withPrecision = true }) {
+export function formatBountyAmount({ amount, shortValue = false, withPrecision = true }) {
   if (withPrecision) {
     return numeral(amount).format("0,0.[0000000000]");
   } else {
+    if (shortValue) {
+      return amount > 1000
+        ? (amount / 1000).toFixed(0) + "k"
+        : amount.toFixed(0);
+    }
     return Number(parseFloat(amount).toFixed(0)).toLocaleString();
   }
 }

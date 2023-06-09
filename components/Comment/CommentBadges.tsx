@@ -47,11 +47,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
     );
   }
 
-  if (comment.commentType === COMMENT_TYPES.REVIEW) {
-    badges.push(<ContentBadge contentType={COMMENT_TYPES.REVIEW} label="" />);
-  } else if (comment.commentType === COMMENT_TYPES.SUMMARY) {
-    badges.push(<ContentBadge contentType={COMMENT_TYPES.SUMMARY} label="" />);
-  } else if (comment.isAcceptedAnswer) {
+  if (comment.isAcceptedAnswer) {
     badges.push(
       <ContentBadge
         tooltip={`Selected by poster (${comment.createdBy.firstName} ${comment.createdBy.lastName})`}

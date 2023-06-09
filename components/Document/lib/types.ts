@@ -1,11 +1,14 @@
+import Bounty, { parseBountyList } from "~/config/types/bounty";
 import { Hub, parseHub } from "~/config/types/hub";
-import { Purchase } from "~/config/types/purchase";
+import { Purchase, parsePurchase } from "~/config/types/purchase";
 import {
   AuthorProfile,
   ID,
+  Organization,
   RHUser,
   UnifiedDocument,
   parseAuthorProfile,
+  parseOrganization,
   parseUnifiedDocument,
   parseUser,
 } from "~/config/types/root_types";
@@ -13,27 +16,65 @@ import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard } from "~/config/utils/dates";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
-export type PaperFormat = {
+export type DocumentFormat = {
   type: "pdf" | "latex";
   url: string;
 };
-
 export type DocumentType = "hypothesis" | "paper" | "post" | "question";
+
+export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
+
+export type DocumentImage = {
+  url: string;
+  type: "figure" | "preview" | "misc";
+};
+
+export type DocumentMetadata = {
+  unifiedDocumentId: ID;
+  bounties: Bounty[];
+  purchases: Purchase[];
+  userVote: Vote | null;
+  reviewSummary: ReviewSummary;
+  discussionCount: number;
+  reviewCount: number;
+  summaryCount: number;
+  score: number;
+  id: ID;
+};
+
+export const parseDocumentMetadata = (raw: any): DocumentMetadata => {
+  const document = Array.isArray(raw.documents)
+    ? raw.documents[0]
+    : raw.documents;
+  return {
+    unifiedDocumentId: raw.id,
+    bounties: parseBountyList(document?.bounties || []).filter(
+      (b) => !b.isExpiredOrClosed
+    ),
+    purchases: (document.purchases || []).map((p: any) => parsePurchase(p)),
+    userVote: document?.user_vote ? parseVote(document.user_vote) : null,
+    reviewSummary: parseReviewSummary(raw.reviews),
+    discussionCount: document?.discussion_aggregates?.discussion_count || 0,
+    reviewCount: document?.discussion_aggregates?.review_count || 0,
+    summaryCount: document?.discussion_aggregates?.summary_count || 0,
+    score: raw.score,
+    id: raw.id,
+  };
+};
 
 export type ReviewSummary = {
   count: number;
   averageRating: number;
 };
 
-export type ApiDocumentType = "researchhub_post" | "paper" | "hypothesis";
-
 export interface GenericDocument {
   id: ID;
-  authors: AuthorProfile[];
   unifiedDocument: UnifiedDocument;
+  authors: AuthorProfile[];
   hubs: Hub[];
   score: number;
   createdDate: string;
+  publishedDate?: string;
   discussionCount: number;
   userVote: Vote | null;
   title: string;
@@ -41,23 +82,27 @@ export interface GenericDocument {
   type: DocumentType;
   apiDocumentType: ApiDocumentType;
   doi?: string;
-  purchases: Purchase[];
   reviewSummary: ReviewSummary;
+  formats: DocumentFormat[];
   raw: any; // Strictly for legacy purposes
+  images: DocumentImage[];
 }
 
 export type Paper = GenericDocument & {
   journal?: string;
   isOpenAccess: boolean;
   laymanTitle: string;
-  publishedDate?: string;
   externalUrl?: string;
-  formats: PaperFormat[];
   abstract?: string;
+  abstractHtml?: TrustedHTML;
+  license?: string;
 };
 
 export type Post = GenericDocument & {
-  // FIXME: TBD
+  postType?: "publication" | "question";
+  note?: Note;
+  srcUrl: string;
+  postHtml: TrustedHTML;
 };
 
 export type Hypothesis = GenericDocument & {
@@ -69,6 +114,18 @@ export interface Props {
   type: string;
 }
 
+export type Note = {
+  id: ID;
+  organization: Organization;
+};
+
+export const parseNote = (raw: any): Note => {
+  return {
+    id: raw.id,
+    organization: parseOrganization(raw.organization),
+  };
+};
+
 export const parseReviewSummary = (raw: any): ReviewSummary => {
   return {
     count: raw.count,
@@ -76,34 +133,80 @@ export const parseReviewSummary = (raw: any): ReviewSummary => {
   };
 };
 
-export const parsePaper = (raw: any): Paper => {
-  const parsed: Paper = {
+export const parseGenericDocument = (raw: any): GenericDocument => {
+  const parsed: GenericDocument = {
+    // @ts-ignore
+    type: undefined, // Will be defined in concrete types
+    // @ts-ignore
+    apiDocumentType: undefined, // Will be defined in concrete types
     id: raw.id,
-    authors: parsePaperAuthors(raw),
+    authors: [], // Will be overriden by specific document type
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
     hubs: (raw.hubs || []).map((h: any) => parseHub(h)),
     score: raw.score,
-    createdDate: formatDateStandard(raw.created_date),
+    createdDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     discussionCount: raw.discussion_count || 0,
     userVote: raw.user_vote ? parseVote(raw.user_vote) : null,
-    title: raw.paper_title,
-    createdBy: parseUser(raw.uploaded_by),
-    type: "paper",
-    apiDocumentType: "paper",
+    title: raw.title,
+    createdBy: parseUser(raw.uploaded_by || raw.created_by),
     doi: raw.doi,
-    journal: raw.external_source,
-    isOpenAccess: Boolean(raw.is_open_access),
-    laymanTitle: raw.title,
-    publishedDate: formatDateStandard(raw.paper_publish_date),
-    externalUrl: raw.url,
-    tipAmount: raw.boost_amount,
-    abstract: raw.abstract,
+    publishedDate: formatDateStandard(raw.created_date, "MMM D, YYYY"),
     reviewSummary: parseReviewSummary(raw.unified_document.reviews),
     // @ts-ignore
     formats: [...(raw.file ? [{ type: "pdf", url: raw.file }] : [])],
-
-    raw,
+    raw, // For legacy compatibility purposes
+    images: [],
   };
+
+  return parsed;
+};
+
+export const parsePaper = (raw: any): Paper => {
+  const commonAttributes = parseGenericDocument(raw);
+  const parsed: Paper = {
+    ...commonAttributes,
+    title: raw.paper_title,
+    authors: parsePaperAuthors(raw),
+    journal: raw.external_source,
+    isOpenAccess: Boolean(raw.is_open_access),
+    laymanTitle: raw.title,
+    publishedDate: formatDateStandard(raw.paper_publish_date, "MMM D, YYYY"),
+    externalUrl: raw.url,
+    abstract: raw.abstract,
+    abstractHtml: raw.abstract_src_markdown,
+    type: "paper",
+    apiDocumentType: "paper",
+    ...(raw.pdf_license && { license: raw.pdf_license }),
+  };
+
+  if (raw.first_preview) {
+    parsed.images.push({
+      url: raw?.first_preview?.file,
+      type: "preview",
+    });
+  }
+
+  return parsed;
+};
+
+export const parsePost = (raw: any): Post => {
+  const commonAttributes = parseGenericDocument(raw);
+  const parsed: Post = {
+    ...commonAttributes,
+    authors: (raw.authors || []).map((a: any) => parseAuthorProfile(a)),
+    type: "post",
+    apiDocumentType: "researchhub_post",
+    srcUrl: raw.post_src,
+    postHtml: raw.postHtml || "",
+    postType:
+      raw.unified_document.document_type === "QUESTION"
+        ? "question"
+        : "publication",
+  };
+
+  if (raw.note) {
+    parsed.note = parseNote(raw.note);
+  }
 
   return parsed;
 };
@@ -115,15 +218,16 @@ export const getConcreteDocument = (
     return document as Paper;
   } else if (document.type === "post") {
     return document as Post;
-  } else if (document.type === "hypothesis") {
-    return document as Hypothesis;
   }
-
   throw new Error(`Invalid document type. Type was ${document.type}`);
 };
 
 export const isPaper = (document: GenericDocument): document is Paper => {
   return (document as Paper).type === "paper";
+};
+
+export const isPost = (document: GenericDocument): document is Post => {
+  return (document as Post).type === "post";
 };
 
 const getDocumentFromRaw = ({
@@ -133,7 +237,7 @@ const getDocumentFromRaw = ({
   if (type === "paper") {
     return parsePaper(raw);
   } else if (type === "post") {
-    // return new Post(raw);
+    return parsePost(raw);
   } else if (type === "hypothesis") {
     // return new Hypothesis(raw);
   }
