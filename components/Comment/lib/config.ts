@@ -18,7 +18,7 @@ const config = {
     width: 500,
   },
   default: {
-    previewMaxChars: 1500,
+    previewMaxChars: 0,
     previewMaxImages: 2,
   },
   liveFeed: {
