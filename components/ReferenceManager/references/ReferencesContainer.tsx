@@ -405,14 +405,9 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
-                  <div
-                    style={
-                      isEmpty(selectedReferenceIDs)
-                        ? { visibility: "hidden" }
-                        : undefined
-                    }
-                  >
+                  <div style={{ display: "flex", alignItems: "center" }}>
                     <DropdownMenu
+                      disabled={isEmpty(selectedReferenceIDs)}
                       menuItemProps={[
                         {
                           itemLabel: `Export reference${
@@ -458,6 +453,7 @@ function ReferencesContainer({
                       }
                       size="medium"
                     />
+                    <Typography sx={{marginLeft: "8px"}}>{`${selectedReferenceIDs.length} selected`}</Typography>
                   </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
@@ -466,7 +462,7 @@ function ReferencesContainer({
                       width: "100%",
                     }}
                   >
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       fullWidth
                       label={searchText && "Search"}
                       onChange={(
@@ -502,7 +498,7 @@ function ReferencesContainer({
                           </IconButton>
                         </InputAdornment>
                       }
-                    />
+                    /> */}
                   </div>
                 </Box>
                 <ReferencesTable

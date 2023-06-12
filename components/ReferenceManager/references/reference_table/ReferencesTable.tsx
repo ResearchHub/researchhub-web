@@ -66,7 +66,7 @@ export default function ReferencesTable({
   useEffectFetchReferenceCitations({
     setIsLoading,
     onSuccess: (payload: any) => {
-      setReferenceTableRowData(payload?.results);
+      setReferenceTableRowData(payload);
       setIsLoading(false);
     },
     onError: emptyFncWithMsg,
