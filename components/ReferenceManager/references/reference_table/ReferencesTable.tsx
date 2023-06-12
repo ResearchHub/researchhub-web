@@ -131,17 +131,36 @@ export default function ReferencesTable({
           },
         }}
         loading={isLoading}
-        onCellDoubleClick={(params, event, _details): void => {
-          event.stopPropagation();
-          setReferenceItemDatum({
-            ...nullthrows(
-              referenceTableRowData.find((item) => item.id === params?.row?.id)
-            ),
-          });
+        onCellClick={(params, event, _details): void => {
           if (params.field !== "__check__") {
+            event.stopPropagation();
+            setReferenceItemDatum({
+              ...nullthrows(
+                referenceTableRowData.find(
+                  (item) => item.id === params?.row?.id
+                )
+              ),
+            });
             setIsDrawerOpen(true);
+          } else {
+            setSelectedReferenceIDs(params.id);
           }
         }}
+        // onCellDoubleClick={}
+        // onRowClick={(params, event, _details): void => {
+        //   event.stopPropagation();
+        //   if (params.field !== "__check__") {
+        //     setReferenceItemDatum({
+        //       ...nullthrows(
+        //         referenceTableRowData.find(
+        //           (item) => item.id === params?.row?.id
+        //         )
+        //       ),
+        //     });
+        //     setIsDrawerOpen(true);
+        //   } else {
+        //   }
+        // }}
         onRowSelectionModelChange={(selectedReferenceIDs) => {
           setSelectedReferenceIDs(selectedReferenceIDs);
         }}

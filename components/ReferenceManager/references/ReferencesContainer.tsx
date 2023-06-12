@@ -453,7 +453,9 @@ function ReferencesContainer({
                       }
                       size="medium"
                     />
-                    <Typography sx={{marginLeft: "8px"}}>{`${selectedReferenceIDs.length} selected`}</Typography>
+                    <Typography
+                      sx={{ marginLeft: "8px" }}
+                    >{`${selectedReferenceIDs.length} selected`}</Typography>
                   </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
