@@ -11,7 +11,7 @@ export type KillswitchApp = typeof KillSwitchApps[number];
 const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   "reference-manager": {
     development: true,
-    production: false,
+    production: true,
     staging: true,
   },
 };
