@@ -15,6 +15,7 @@ import {
   emptyFncWithMsg,
   isEmpty,
   isNullOrUndefined,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
 import { MessageActions } from "~/redux/message";
@@ -47,6 +48,8 @@ import QuickModal from "../menu/QuickModal";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { ID } from "~/config/types/root_types";
+import ManageOrgUsers from "~/components/Org/ManageOrgUsers";
+import ManageOrgModal from "~/components/Org/ManageOrgModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -157,7 +160,7 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
-  const { currentOrg } = useOrgs();
+  const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
   const { activeProject, setActiveProject } =
@@ -174,7 +177,7 @@ function ReferencesContainer({
 
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string | null>(null);
+  const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
@@ -186,23 +189,19 @@ function ReferencesContainer({
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = activeProject?.projectName ?? null;
   const currentOrgID = currentOrg?.id ?? null;
-
-  useEffectFetchOrgProjects({
-    fetchTime: projectsFetchTime,
-    onError: emptyFncWithMsg,
-    onSuccess: (payload): void => {
-      setCurrentOrgProjects(payload ?? []);
-      setIsFethingProjects(false);
-    },
-    orgID: currentOrgID,
-    setIsFethingProjects,
-  });
-  useEffectSetActiveProject({
-    currentOrgProjects,
-    router,
-    setActiveProject,
-    isFetchingProjects,
-  });
+  const isOnOrgTab = !isEmpty(router.query?.org_refs);
+  const onOrgUpdate = (): void => {
+    refetchOrgs();
+    setIsOrgModalOpen(false);
+  };
+  const onShareClick = (): void => {
+    setProjectUpsertPurpose("update");
+    setProjectUpsertValue({
+      ...DEFAULT_PROJECT_VALUES,
+      ...activeProject,
+    });
+    setIsProjectUpsertModalOpen(true);
+  };
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -231,6 +230,23 @@ function ReferencesContainer({
     const resp = fetch(url, api.POST_FILE_CONFIG(formData));
     setLoading(false);
   };
+
+  useEffectFetchOrgProjects({
+    fetchTime: projectsFetchTime,
+    onError: emptyFncWithMsg,
+    onSuccess: (payload): void => {
+      setCurrentOrgProjects(payload ?? []);
+      setIsFethingProjects(false);
+    },
+    orgID: currentOrgID,
+    setIsFethingProjects,
+  });
+  useEffectSetActiveProject({
+    currentOrgProjects,
+    router,
+    setActiveProject,
+    isFetchingProjects,
+  });
 
   useEffect(() => {
     if (wsResponse) {
@@ -274,6 +290,12 @@ function ReferencesContainer({
   } else {
     return (
       <>
+        <ManageOrgModal
+          org={currentOrg}
+          isOpen={isOrgModalOpen}
+          closeModal={(): void => setIsOrgModalOpen(false)}
+          onOrgChange={onOrgUpdate}
+        />
         <QuickModal
           isOpen={isRemoveRefModalOpen}
           modalContent={
@@ -351,9 +373,7 @@ function ReferencesContainer({
               >
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                   {currentProjectName ??
-                    (!isEmpty(router.query?.org_refs)
-                      ? "Organization References"
-                      : `My References`)}
+                    (isOnOrgTab ? "Organization References" : `My References`)}
                 </Typography>
                 <div
                   style={{
@@ -372,23 +392,18 @@ function ReferencesContainer({
                 >
                   <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
                 </div>
-                {!isEmpty(router.query.project) && (
+                {(isOnOrgTab || !isEmpty(router.query.project)) && (
                   <Button
                     variant="outlined"
                     fontSize="small"
                     size="small"
                     customButtonStyle={styles.shareButton}
-                    onClick={(): void => {
-                      setProjectUpsertPurpose("update");
-                      setProjectUpsertValue({
-                        ...DEFAULT_PROJECT_VALUES,
-                        ...activeProject,
-                      });
-                      setIsProjectUpsertModalOpen(true);
-                    }}
+                    onClick={
+                      isOnOrgTab ? () => setIsOrgModalOpen(true) : onShareClick
+                    }
                   >
                     <Typography variant="h6" fontSize={"16px"}>
-                      {"Share"}
+                      {isOnOrgTab ? "Update Organization" : "Share"}
                     </Typography>
                   </Button>
                 )}
