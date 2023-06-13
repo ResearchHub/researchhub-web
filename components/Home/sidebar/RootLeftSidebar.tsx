@@ -119,13 +119,15 @@ export const getLeftSidebarItemAttrs = ({
         // event.preventDefault();
       },
     },
-    killswitch("reference-manager") && refManagerGateKeeper
+    killswitch("reference-manager")
       ? {
           icon: <FontAwesomeIcon icon={faTableTree} />,
           label: "Reference Manager",
           isActive: pathname.includes("reference-manager"),
           isMinimized,
-          href: "/reference-manager",
+          href: refManagerGateKeeper
+            ? "/reference-manager"
+            : "https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform?usp=sharing",
           onClick: (event: SyntheticEvent): void => {
             // event.preventDefault();
           },
