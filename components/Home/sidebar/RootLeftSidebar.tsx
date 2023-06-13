@@ -44,6 +44,7 @@ import { connect } from "react-redux";
 import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
 import killswitch from "~/config/killswitch/killswitch";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
 type Props = {
   openLoginModal: any;
@@ -61,16 +62,19 @@ export const getLeftSidebarItemAttrs = ({
   isMinimized,
   router,
   openLoginModal,
+  refManagerGateKeeper,
 }: /* intentional string literal */
 {
   currentUser: any;
   isMinimized: boolean;
   router: NextRouter;
   openLoginModal: any;
+  refManagerGateKeeper: boolean;
 }): RootLeftSidebarItemProps[] => {
   const { pathname = "" } = router ?? {};
   const { organization_slug = "", id } = currentUser ?? {};
   const isLoggedIn = !isEmpty(id);
+
   return filterNull([
     {
       icon: <FontAwesomeIcon icon={faHouse}></FontAwesomeIcon>,
@@ -115,7 +119,7 @@ export const getLeftSidebarItemAttrs = ({
         // event.preventDefault();
       },
     },
-    killswitch("reference-manager")
+    killswitch("reference-manager") && refManagerGateKeeper
       ? {
           icon: <FontAwesomeIcon icon={faTableTree} />,
           label: "Reference Manager",
@@ -147,6 +151,10 @@ function RootLeftSidebar({
     useState<boolean>(isForceMinimized);
   const [growMinimized, setGrowMinimized] = useState<boolean>(isForceMinimized);
   const [didMount, setDidMount] = useState<boolean>(false);
+  const refManagerGateKeeper = gateKeepCurrentUser({
+    application: "REFERENCE_MANAGER",
+    shouldRedirect: false,
+  });
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void => {
@@ -207,8 +215,9 @@ function RootLeftSidebar({
         isMinimized,
         router,
         openLoginModal,
+        refManagerGateKeeper,
       }),
-    [currentUser?.id, router.pathname, isMinimized]
+    [currentUser?.id, router.pathname, isMinimized, refManagerGateKeeper]
   );
 
   const leftSidebarItems = leftSidebarItemAttrs.map(
