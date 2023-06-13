@@ -146,7 +146,6 @@ export default function ReferencesTable({
             setSelectedReferenceIDs(params.id);
           }
         }}
-        // onCellDoubleClick={}
         // onRowClick={(params, event, _details): void => {
         //   event.stopPropagation();
         //   if (params.field !== "__check__") {
