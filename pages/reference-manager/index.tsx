@@ -33,7 +33,7 @@ export async function getServerSideProps(ctx) {
 
   return {
     redirect: {
-      destination: `/reference-manager/${org.slug}/`,
+      destination: `/reference-manager/${org.slug}/?org_refs=true`,
       permanent: false,
     },
   };

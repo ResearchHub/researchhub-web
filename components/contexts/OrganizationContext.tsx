@@ -9,6 +9,7 @@ type ContextType = {
   currentOrg: Org | undefined;
   setCurrentOrg: null | ((org: Org) => void);
   fetchAndSetUserOrgs: null | (() => void);
+  refetchOrgs: () => void;
 };
 
 type Org = {
@@ -22,6 +23,7 @@ const OrganizationContext = createContext<ContextType>({
   setCurrentOrg: () => null,
   currentOrg: {},
   fetchAndSetUserOrgs: null,
+  refetchOrgs: () => null,
 });
 
 export const useOrgs = () => useContext(OrganizationContext);
@@ -29,7 +31,7 @@ export const useOrgs = () => useContext(OrganizationContext);
 export const OrganizationContextProvider = ({ children, user }) => {
   const [orgs, setOrgs] = useState([]);
   const [currentOrg, setCurrentOrg] = useState({});
-
+  const [fetchTime, setFetchTime] = useState(Date.now());
   const fetchAndSetUserOrgs = async () => {
     let userOrgs;
 
@@ -53,7 +55,7 @@ export const OrganizationContextProvider = ({ children, user }) => {
     if (user?.id) {
       fetchAndSetUserOrgs();
     }
-  }, [user]);
+  }, [user, fetchTime]);
 
   return (
     <OrganizationContext.Provider
@@ -62,6 +64,7 @@ export const OrganizationContextProvider = ({ children, user }) => {
         currentOrg,
         setCurrentOrg,
         fetchAndSetUserOrgs,
+        refetchOrgs: (): void => setFetchTime(Date.now()),
       }}
     >
       {children}
