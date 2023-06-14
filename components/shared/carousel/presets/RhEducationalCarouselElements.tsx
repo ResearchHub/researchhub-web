@@ -43,7 +43,7 @@ export const getEducationalCarouselElements = () => [
         <span style={{ marginRight: 8, marginTop: 3 }}>
           <RSC style={styles.RSC} />
         </span>
-        {" What is ResearchCoin (RSC)?"}
+        {" What is ResearchCoin (RSC)"}
       </div>
     ),
     body: (
