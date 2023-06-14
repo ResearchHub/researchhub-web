@@ -214,32 +214,28 @@ function ReferencesContainer({
 
   const getPresignedUrl = async (fileName, organizationID, projectID) => {
     const url = generateApiUrl("citation_entry/pdf_uploads");
-    const resp = await fetch(url, api.POST_CONFIG({"filename": fileName, "organization_id": organizationID, "project_id": projectID}));
+    const resp = await fetch(
+      url,
+      api.POST_CONFIG({
+        "filename": fileName,
+        "organization_id": organizationID,
+        "project_id": projectID
+      })
+    );
 
     return await resp.json();
   }
 
   const handleFileDrop = async (acceptedFiles) => {
-    const formData = new FormData();
-    const fileFormData = new FormData();
     const fileNames = [];
     acceptedFiles.forEach(async (file) => {
-      fileFormData.append("pdfs[]", file)
-
-      const preSignedUrl = await getPresignedUrl(file.name, currentOrg.id, router.query.project);
+      const preSignedUrl = await getPresignedUrl(file.name, currentOrg.id, activeProject.projectID);
       const fileBlob = new Blob([await file.arrayBuffer()], { type: "application/pdf" });
       const result = fetch(preSignedUrl, {
         method: "PUT",
         body: fileBlob
       });
     });
-    // @ts-ignore TODO: fix
-    formData.append("organization_id", currentOrg.id);
-    if (router.query.project) {
-      // @ts-ignore TODO: fix
-      formData.append("project_id", router.query.project);
-    }
-    const url = generateApiUrl("citation_entry/pdf_uploads");
     const preload: Array<Preload> = [];
 
     acceptedFiles.map(() => {

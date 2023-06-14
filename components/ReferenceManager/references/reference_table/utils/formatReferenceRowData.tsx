@@ -104,5 +104,5 @@ export function formatReferenceRowData(
   data: any[]
 ): ReferenceTableRowDataType[] {
   // NOTE: each returned-object is logically ordered. Displayed in ReferenceItemTab
-  return filterNull(data.results.map((datum: any) => referenceFormatSwitchMap(datum)));
+  return filterNull(data.map((datum: any) => referenceFormatSwitchMap(datum)));
 }
