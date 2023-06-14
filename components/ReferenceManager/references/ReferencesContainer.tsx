@@ -212,9 +212,9 @@ function ReferencesContainer({
   };
   const inputRef = useRef();
 
-  const getPresignedUrl = async (fileName) => {
+  const getPresignedUrl = async (fileName, organizationID, projectID) => {
     const url = generateApiUrl("citation_entry/pdf_uploads");
-    const resp = await fetch(url, api.POST_CONFIG({"filename": fileName}));
+    const resp = await fetch(url, api.POST_CONFIG({"filename": fileName, "organization_id": organizationID, "project_id": projectID}));
 
     return await resp.json();
   }
@@ -226,7 +226,7 @@ function ReferencesContainer({
     acceptedFiles.forEach(async (file) => {
       fileFormData.append("pdfs[]", file)
 
-      const preSignedUrl = await getPresignedUrl(file.name);
+      const preSignedUrl = await getPresignedUrl(file.name, currentOrg.id, router.query.project);
       const fileBlob = new Blob([await file.arrayBuffer()], { type: "application/pdf" });
       const result = fetch(preSignedUrl, {
         method: "PUT",
