@@ -108,6 +108,16 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
 
   return (
     <div className={css(formStyles.formWrapper)}>
+      <FormInput
+        label="Title"
+        placeholder="Original title of the paper"
+        containerStyle={formStyles.container}
+        inputStyle={formStyles.inputStyle}
+        error={errors["title"]}
+        value={fields.title}
+        id="title"
+        onChange={handleChange}
+      />
       <FormSelect
         containerStyle={formStyles.container}
         error={errors["hubs"]}
@@ -125,16 +135,6 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
         placeholder="Search Hubs"
         value={selectedHubs}
       />      
-      <FormInput
-        label="Title"
-        placeholder="Original title of the paper"
-        containerStyle={formStyles.container}
-        inputStyle={formStyles.inputStyle}
-        error={errors["title"]}
-        value={fields.title}
-        id="title"
-        onChange={handleChange}
-      />
       <div style={{ display: "flex", columnGap: 25 }}>
         <FormInput
           label="DOI"
