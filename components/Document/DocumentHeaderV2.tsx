@@ -11,8 +11,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   DocumentMetadata,
   GenericDocument,
+  Paper,
   isPaper,
   isPost,
+  parsePaper,
 } from "./lib/types";
 import DocumentVote from "./DocumentVote";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
@@ -36,6 +38,9 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import PaperMetadataModal from "./PaperMetadataModal";
+import fetchPaper from "./api/fetchPaper";
+
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -182,6 +187,30 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
+                {/* <PermissionNotificationWrapper
+                  modalMessage="edit document"
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  onClick={() =>
+                    dispatch(ModalActions.openPaperTransactionModal(true))
+                  }
+                  hideRipples={true}
+                > */}
+                  <IconButton variant="round">
+                    <PaperMetadataModal paper={doc as Paper} onUpdate={() =>{
+                      fetchPaper({ paperId: doc.id }).then((rawPaper) => {
+                        const paper = parsePaper(rawPaper);
+                        documentContext.updateDocument(paper);
+                      })
+                    }}>
+                      <span>Edit</span>
+                    </PaperMetadataModal>
+                  </IconButton>
+                {/* </PermissionNotificationWrapper> */}
+
+
+
+
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"

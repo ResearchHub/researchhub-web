@@ -74,6 +74,7 @@ const DocumentIndexPage: NextPage<Args> = ({
         metadata: documentMetadata,
         documentType,
         updateMetadata: setDocumentMetadata,
+        updateDocument: setDocument,
       }}
     >
       <DocumentPageLayout
