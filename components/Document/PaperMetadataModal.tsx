@@ -12,11 +12,10 @@ import { useDispatch } from "react-redux";
 import colors from "~/config/themes/colors";
 import API, { generateApiUrl } from "~/config/api";
 import Helpers from "~/config/api/helpers";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { ID } from "~/config/types/root_types";
 import useCacheControl from "~/config/hooks/useCacheControl";
 const { setMessage, showMessage } = MessageActions;
-
 
 export const updatePaperMetadataAPI = async ({
   id,
@@ -49,23 +48,25 @@ interface Props {
 }
 
 interface FormProps {
-  paper: Paper;  
+  paper: Paper;
 }
 
-const tabs:Array<Tab> = [{
-  label: 'Metadata',
-  value: 'metadata',
-}, {
-  label: 'Abstract',
-  value: 'abstract',
-}]
-
+const tabs: Array<Tab> = [
+  {
+    label: "Metadata",
+    value: "metadata",
+  },
+  {
+    label: "Abstract",
+    value: "abstract",
+  },
+];
 
 const PaperMetadataForm = ({ paper }: FormProps) => {
   const [fields, setFields] = useState({
-    doi: paper.doi || '',
+    doi: paper.doi || "",
     publishedDate: formatDateStandard(paper.publishedDate, "MM/DD/YYYY"),
-    title: paper.title || ''
+    title: paper.title || "",
   });
   const [editedFields, setEditedFields] = useState(new Set());
   const [errors, setErrors] = useState({});
@@ -74,22 +75,23 @@ const PaperMetadataForm = ({ paper }: FormProps) => {
 
   const validate = (name, value) => {
     if (name === "title") {
-      return value.length >= 10
-    }
-    else if (name === "doi") {
+      return value.length >= 10;
+    } else if (name === "doi") {
       return value.length > 0;
+    } else if (name === "publishedDate") {
+      const parsedDate = dayjs(value, "MM/DD/YYYY");
+      return parsedDate.isValid() && value === parsedDate.format("MM/DD/YYYY");
     }
-    else if (name === "publishedDate") {
-      const parsedDate = dayjs(value, 'MM/DD/YYYY');
-      return parsedDate.isValid() && value === parsedDate.format('MM/DD/YYYY');
-    }
-  }
+  };
   const handleSubmit = (e) => {
-    const errors = {}
+    const errors = {};
     if (editedFields.has("title") && !validate("title", fields["title"])) {
       errors["title"] = "Title must be at least 10 characters";
     }
-    if (editedFields.has("publishedDate") && !validate("publishedDate", fields["publishedDate"])) {
+    if (
+      editedFields.has("publishedDate") &&
+      !validate("publishedDate", fields["publishedDate"])
+    ) {
       errors["publishedDate"] = "Enter a valid date in the format MM/DD/YYYY";
     }
     if (editedFields.has("doi") && !validate("doi", fields["doi"])) {
@@ -105,35 +107,34 @@ const PaperMetadataForm = ({ paper }: FormProps) => {
       id: paper.id,
       title: fields.title,
       doi: fields.doi,
-      publishedDate: fields.publishedDate
+      publishedDate: fields.publishedDate,
     }).then(() => {
       revalidateDocument();
       dispatch(setMessage("Paper updated"));
       // @ts-ignore
-      dispatch(showMessage({ show: true, error: false }));      
-    })
-  }
+      dispatch(showMessage({ show: true, error: false }));
+    });
+  };
 
   const handleChange = (name, value) => {
     if (!editedFields.has(name)) {
-      setEditedFields(prev => new Set(prev).add(name));
+      setEditedFields((prev) => new Set(prev).add(name));
     }
 
     if (errors[name]) {
       if (validate(name, value)) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
-          [name]: null
+          [name]: null,
         }));
       }
     }
 
-    setFields(prev => ({
+    setFields((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
-
 
   return (
     <div className={css(formStyles.formWrapper)}>
@@ -166,25 +167,22 @@ const PaperMetadataForm = ({ paper }: FormProps) => {
         value={fields.publishedDate}
         id="publishedDate"
         onChange={handleChange}
-      />      
-
-      <Button
-        onClick={handleSubmit}
-        label="Save changes"
-        type="submit"
       />
+
+      <Button onClick={handleSubmit} label="Save changes" type="submit" />
     </div>
-  )
-}
+  );
+};
 
-
-
-const PaperMetadataModal = ({ paper, children, onUpdate }: Props ) => {
+const PaperMetadataModal = ({ paper, children, onUpdate }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0].value);
-  const _tabs = tabs.map(tab => ({...tab, isSelected: tab.value === activeTab}));
+  const _tabs = tabs.map((tab) => ({
+    ...tab,
+    isSelected: tab.value === activeTab,
+  }));
   const dispatch = useDispatch();
-  
+
   return (
     <div>
       <BaseModal
@@ -197,9 +195,17 @@ const PaperMetadataModal = ({ paper, children, onUpdate }: Props ) => {
       >
         <div className={css(modalStyles.bodyWrapper)}>
           <div className={css(modalStyles.tabsWrapper)}>
-            <HorizontalTabBar tabs={_tabs} onClick={(tab) => setActiveTab(tab.value)} />
+            <HorizontalTabBar
+              tabs={_tabs}
+              onClick={(tab) => setActiveTab(tab.value)}
+            />
           </div>
-          <div className={css(modalStyles.tabContentWrapper, activeTab === "abstract" && modalStyles.tabContentWrapperActive)}>
+          <div
+            className={css(
+              modalStyles.tabContentWrapper,
+              activeTab === "abstract" && modalStyles.tabContentWrapperActive
+            )}
+          >
             <PaperPageAbstractSection
               paper={paper.raw}
               permanentEdit={true}
@@ -212,20 +218,27 @@ const PaperMetadataModal = ({ paper, children, onUpdate }: Props ) => {
               }}
             />
           </div>
-          <div className={css(modalStyles.tabContentWrapper, activeTab === "metadata" && modalStyles.tabContentWrapperActive)}>
+          <div
+            className={css(
+              modalStyles.tabContentWrapper,
+              activeTab === "metadata" && modalStyles.tabContentWrapperActive
+            )}
+          >
             <PaperMetadataForm paper={paper} />
           </div>
         </div>
       </BaseModal>
-      <div onClick={() => {
-        setActiveTab(tabs[0].value);
-        setIsOpen(true);
-      }}>
+      <div
+        onClick={() => {
+          setActiveTab(tabs[0].value);
+          setIsOpen(true);
+        }}
+      >
         {children}
       </div>
     </div>
-  )
-}
+  );
+};
 
 const formStyles = StyleSheet.create({
   container: {
@@ -242,8 +255,8 @@ const formStyles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       textDecoration: "underline",
-    },    
-  }
+    },
+  },
 });
 
 const modalStyles = StyleSheet.create({
@@ -266,7 +279,7 @@ const modalStyles = StyleSheet.create({
   tabsWrapper: {
     // width: "100%",
     borderBottom: "2px solid #E5E5E5",
-  }
-})
+  },
+});
 
 export default PaperMetadataModal;

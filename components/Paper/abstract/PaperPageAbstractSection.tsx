@@ -63,7 +63,9 @@ export default function PaperPageAbstractSection({
 }: Props): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(false);
-  const [_isEditMode, setIsEditMode] = useState<boolean>(isEditMode || permanentEdit);
+  const [_isEditMode, setIsEditMode] = useState<boolean>(
+    isEditMode || permanentEdit
+  );
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
   const router = useRouter();
 
@@ -73,9 +75,7 @@ export default function PaperPageAbstractSection({
     <div className={css(styles.paperPageAbstractSection)}>
       <div>
         <div style={{ position: "relative", display: "inline-flex" }}>
-          {!_isEditMode && 
-            <h2 style={{ display: "inline" }}>{"Abstract"}</h2>
-          }
+          {!_isEditMode && <h2 style={{ display: "inline" }}>{"Abstract"}</h2>}
           <div style={{ position: "absolute", right: -30, top: 5 }}>
             {(!_isEditMode || hasNoAbstract) && (
               <PermissionNotificationWrapper
@@ -139,7 +139,7 @@ export default function PaperPageAbstractSection({
                     onSuccess: (response): void => {
                       if (!permanentEdit) {
                         setIsEditMode(false);
-                      }                      
+                      }
                       setIsUpdatingAbstract(false);
                       setAbstractSrc(abstractSrc);
                       setHasNoAbstract(isEmpty(abstractSrc));
