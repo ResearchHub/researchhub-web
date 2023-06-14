@@ -407,12 +407,12 @@ function ReferencesContainer({
                     <AuthorFacePile
                       horizontal
                       margin={-10}
-                      authorProfiles={(
-                        activeProject?.collaborators ?? {}
-                      ).viewers?.map((collaborator) => {
-                        collaborator.author_profile.user = collaborator;
-                        return collaborator.author_profile;
-                      })}
+                      authorProfiles={(activeProject?.collaborators ?? {})?.map(
+                        (collaborator) => {
+                          collaborator.authorProfile.user = collaborator;
+                          return collaborator.authorProfile;
+                        }
+                      )}
                     />
                   )}
                   {(isOnOrgTab || !isEmpty(router.query.project)) && (
