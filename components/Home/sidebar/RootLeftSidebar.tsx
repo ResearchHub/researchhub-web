@@ -22,7 +22,7 @@ import {
   getCurrMediaWidth,
   useEffectOnScreenResize,
 } from "~/config/utils/useEffectOnScreenResize";
-import { filterNull, isEmpty } from "~/config/utils/nullchecks";
+import { filterNull, isEmpty, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { NextRouter, useRouter } from "next/router";
 import {
   ReactElement,
@@ -83,9 +83,7 @@ export const getLeftSidebarItemAttrs = ({
       isActive: ["", "/"].includes(pathname),
       isMinimized,
       href: "/",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
+      onClick: silentEmptyFnc,
     },
     {
       icon: <FontAwesomeIcon icon={faWavePulse}></FontAwesomeIcon>,
@@ -93,9 +91,7 @@ export const getLeftSidebarItemAttrs = ({
       isMinimized,
       isActive: pathname.includes("live"),
       href: "/live",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
+      onClick: silentEmptyFnc,
     },
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
@@ -116,9 +112,7 @@ export const getLeftSidebarItemAttrs = ({
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
       href: "/hubs",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
+      onClick: silentEmptyFnc,
     },
     killswitch("reference-manager")
       ? {
@@ -156,9 +150,7 @@ export const getLeftSidebarItemAttrs = ({
             ? "/reference-manager"
             : "https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform?usp=sharing",
           target: refManagerGateKeeper ? undefined : "__blank",
-          onClick: (event: SyntheticEvent): void => {
-            // event.preventDefault();
-          },
+          onClick: silentEmptyFnc,
         }
       : null,
   ]);
