@@ -210,13 +210,28 @@ function ReferencesContainer({
     });
     setIsProjectUpsertModalOpen(true);
   };
-
   const inputRef = useRef();
+
+  const getPresignedUrl = async (fileName) => {
+    const url = generateApiUrl("citation_entry/pdf_uploads");
+    const resp = await fetch(url, api.POST_CONFIG({"filename": fileName}));
+
+    return await resp.json();
+  }
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
-    acceptedFiles.forEach((file) => {
-      formData.append("pdfs[]", file);
+    const fileFormData = new FormData();
+    const fileNames = [];
+    acceptedFiles.forEach(async (file) => {
+      fileFormData.append("pdfs[]", file)
+
+      const preSignedUrl = await getPresignedUrl(file.name);
+      const fileBlob = new Blob([await file.arrayBuffer()], { type: "application/pdf" });
+      const result = fetch(preSignedUrl, {
+        method: "PUT",
+        body: fileBlob
+      });
     });
     // @ts-ignore TODO: fix
     formData.append("organization_id", currentOrg.id);
@@ -237,7 +252,6 @@ function ReferencesContainer({
     });
 
     setCreatedReferences(preload);
-    const resp = fetch(url, api.POST_FILE_CONFIG(formData));
     setLoading(false);
   };
 
