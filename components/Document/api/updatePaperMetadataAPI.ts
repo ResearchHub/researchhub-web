@@ -8,11 +8,13 @@ export const updatePaperMetadataAPI = async ({
   title,
   doi,
   publishedDate,
+  hubs,
 }: {
   id: ID;
   title?: string;
   doi?: string;
   publishedDate: string;
+  hubs: Array<ID>;
 }) => {
   const url = generateApiUrl(`paper/${id}`);
   const response = await fetch(
@@ -21,6 +23,7 @@ export const updatePaperMetadataAPI = async ({
       ...(title && { title }),
       ...(title && { paper_title: title }),
       ...(doi && { doi }),
+      ...(hubs && { hubs }),
       ...(publishedDate && {
         paper_publish_date: dayjs(publishedDate).format("YYYY-MM-DD"),
       }),

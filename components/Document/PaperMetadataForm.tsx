@@ -9,6 +9,9 @@ import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import updatePaperMetadataAPI from "./api/updatePaperMetadataAPI";
 import colors from "~/config/themes/colors";
+import FormSelect from "../Form/FormSelect";
+import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
+import { parseHub } from "~/config/types/hub";
 const { setMessage, showMessage } = MessageActions;
 
 interface FormProps {
@@ -21,10 +24,13 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
     doi: paper.doi || "",
     publishedDate: formatDateStandard(paper.publishedDate, "MM/DD/YYYY"),
     title: paper.title || "",
+    hubs: (paper.hubs || []).map(h => h.id),
   });
   const [editedFields, setEditedFields] = useState(new Set());
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
+  useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const validate = (name, value) => {
     if (name === "title") {
@@ -61,12 +67,14 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
       title: fields.title,
       doi: fields.doi,
       publishedDate: fields.publishedDate,
+      hubs: fields.hubs,
     }).then(() => {
       onUpdate &&
         onUpdate({
           title: fields.title,
           publishedDate: fields.publishedDate,
           doi: fields.doi,
+          hubs: suggestedHubs.filter((hub) => fields.hubs.includes(hub.id)).map(h => parseHub(h)),
         });
       dispatch(setMessage("Paper updated"));
 
@@ -95,8 +103,28 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
     }));
   };
 
+  
+  const selectedHubs = (suggestedHubs || []).filter((hub) => fields.hubs.includes(hub.id));
+
   return (
     <div className={css(formStyles.formWrapper)}>
+      <FormSelect
+        containerStyle={formStyles.container}
+        error={errors["hubs"]}
+        id="hubs"
+        isMulti
+        label="Hubs"
+        inputStyle={formStyles.inputStyle}
+        onChange={(field, value) => {
+          setFields((prev) => ({
+            ...prev,
+            hubs: (value || []).map((v) => v.id),
+          }));
+        }}
+        options={suggestedHubs}
+        placeholder="Search Hubs"
+        value={selectedHubs}
+      />      
       <FormInput
         label="Title"
         placeholder="Original title of the paper"
