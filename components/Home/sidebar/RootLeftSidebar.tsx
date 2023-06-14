@@ -379,6 +379,12 @@ function RootLeftSidebar({
             >
               {isMinimized ? "Top" : "Leaderboard"}
             </ALink>
+            <ALink
+              href="https://researchhub.foundation"
+              overrideStyle={formattedFooterTxtItem}
+            >
+              {isMinimized ? "Comm.." : "Community"}
+            </ALink>
           </div>
           <div className={css(styles.footer)}>
             <div className={formattedFooterItemsButtonRow}>
