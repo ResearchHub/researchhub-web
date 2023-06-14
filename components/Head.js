@@ -16,7 +16,10 @@ const HeadComponent = (props) => {
     <Head>
       <title>{title}</title>
       {props.graph && (
-        <script type="application/ld+json">{`${props.graph}`}</script>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(props.graph) }}
+        />
       )}
       {/* {props.parentPaths && props.parentPaths.length > 0 && formatBreadCrumb()} */}
       <meta key="description" name="description" content={description} />

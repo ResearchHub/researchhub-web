@@ -206,30 +206,31 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                <PermissionNotificationWrapper
-                  modalMessage="edit document"
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  hideRipples={true}
-                >
-                  <PaperMetadataModal
-                    paper={doc as Paper}
-                    onUpdate={(updatedFields) => {
-                      const updated = { ...doc, ...updatedFields };
-                      documentContext.updateDocument(updated);
-                      revalidateDocument();
-                    }}
+                {isPaper(doc) && (
+                  <PermissionNotificationWrapper
+                    modalMessage="edit document"
+                    permissionKey="UpdatePaper"
+                    loginRequired={true}
+                    hideRipples={true}
                   >
-                    <IconButton variant="round">
-                      <FontAwesomeIcon
-                        icon={faPen}
-                        style={{ marginRight: 3 }}
-                      />
-                      <span>Edit</span>
-                    </IconButton>
-                  </PaperMetadataModal>
-                </PermissionNotificationWrapper>
-
+                    <PaperMetadataModal
+                      paper={doc as Paper}
+                      onUpdate={(updatedFields) => {
+                        const updated = { ...doc, ...updatedFields };
+                        documentContext.updateDocument(updated);
+                        revalidateDocument();
+                      }}
+                    >
+                      <IconButton variant="round">
+                        <FontAwesomeIcon
+                          icon={faPen}
+                          style={{ marginRight: 3 }}
+                        />
+                        <span>Edit</span>
+                      </IconButton>
+                    </PaperMetadataModal>
+                  </PermissionNotificationWrapper>
+                )}
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"

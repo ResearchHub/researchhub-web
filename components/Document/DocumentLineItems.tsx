@@ -79,7 +79,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
     document.reviewSummary.count > 0
       ? [
           {
-            title: "Rating",
+            title: "Peer Review",
             value: (
               <Link
                 className={

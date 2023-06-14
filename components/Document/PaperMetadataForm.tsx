@@ -135,28 +135,32 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
         id="title"
         onChange={handleChange}
       />
-      <FormInput
-        label="DOI"
-        placeholder="Unique DOI identifier"
-        containerStyle={formStyles.container}
-        inputStyle={formStyles.inputStyle}
-        error={errors["doi"]}
-        value={fields.doi}
-        id="doi"
-        onChange={handleChange}
-      />
-      <FormInput
-        label="Published Date (MM/DD/YYYY)"
-        placeholder="Date which paper was published"
-        error={errors["publishedDate"]}
-        containerStyle={formStyles.container}
-        inputStyle={formStyles.inputStyle}
-        value={fields.publishedDate}
-        id="publishedDate"
-        onChange={handleChange}
-      />
+      <div style={{ display: "flex", columnGap: 25 }}>
+        <FormInput
+          label="DOI"
+          placeholder="Unique DOI identifier"
+          containerStyle={formStyles.container}
+          inputStyle={formStyles.inputStyle}
+          error={errors["doi"]}
+          value={fields.doi}
+          id="doi"
+          onChange={handleChange}
+        />
+        <FormInput
+          label="Published Date (MM/DD/YYYY)"
+          placeholder="Date which paper was published"
+          error={errors["publishedDate"]}
+          containerStyle={formStyles.container}
+          inputStyle={formStyles.inputStyle}
+          value={fields.publishedDate}
+          id="publishedDate"
+          onChange={handleChange}
+        />
+      </div>
 
-      <Button onClick={handleSubmit} label="Save changes" type="submit" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button onClick={handleSubmit} label="Save changes" type="submit" />
+      </div>
     </div>
   );
 };
