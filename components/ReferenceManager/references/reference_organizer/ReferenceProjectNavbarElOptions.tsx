@@ -134,7 +134,7 @@ export default function ReferenceProjectNavbarElOption({
             handleMenuClose();
           }}
         >
-          {"Add a sub-project"}
+          {"Add a folder"}
         </MenuItem>
         <MenuItem
           key="edit"

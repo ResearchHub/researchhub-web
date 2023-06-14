@@ -543,7 +543,18 @@ function ReferencesContainer({
                       }
                     />
                   </div>
-                  <div className={css(styles.button, styles.secondary)}>
+                  <div
+                    className={css(styles.button, styles.secondary)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectUpsertPurpose("create_sub_project");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        projectID: activeProject.id,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
                     <FontAwesomeIcon
                       icon={faFolderPlus}
                       color={colors.NEW_BLUE(1)}

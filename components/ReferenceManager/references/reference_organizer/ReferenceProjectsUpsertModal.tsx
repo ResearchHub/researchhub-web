@@ -84,7 +84,7 @@ export default function ReferenceProjectsUpsertModal({
       ? "Update project"
       : upsertPurpose === "create"
       ? "Create a project"
-      : "Add a sub-project";
+      : "Add a folder";
 
   return (
     <BaseModal
@@ -158,7 +158,8 @@ export default function ReferenceProjectsUpsertModal({
                 handleSubmit();
               }}
               style={{
-                width: "88px",
+                // width: "88px",
+                padding: "0px 16px",
                 marginLeft: "16px",
                 background: colors.NEW_BLUE(),
                 alignItems: "center",
@@ -171,7 +172,11 @@ export default function ReferenceProjectsUpsertModal({
               }}
             >
               <Typography fontSize="14px" fontWeight="400" color="#fff">
-                {"Submit"}
+                {upsertPurpose === "update"
+                  ? "Update Project"
+                  : upsertPurpose === "create"
+                  ? "Create Project"
+                  : "Create Folder"}
               </Typography>
             </div>
           </div>

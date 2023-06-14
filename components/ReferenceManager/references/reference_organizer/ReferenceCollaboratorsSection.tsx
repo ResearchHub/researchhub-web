@@ -10,6 +10,7 @@ import ReferenceItemRhUserLookupInputTag, {
   LookupSuggestedUser,
 } from "../../form/ReferenceItemRhUserLookupInputTag";
 import Typography from "@mui/material/Typography";
+import colors from "~/config/themes/colors";
 
 type Props = {
   label: string;
@@ -121,7 +122,8 @@ export default function ReferenceCollaboratorsSection({
         <Box
           sx={{
             alignItems: "center",
-            background: "#3971FF",
+            background: "#fff",
+            border: `1px solid ${colors.NEW_BLUE()}`,
             cursor: "pointer",
             display: "flex",
             flexDirection: "row",
@@ -139,7 +141,14 @@ export default function ReferenceCollaboratorsSection({
           {disabled ? (
             <ClipLoader color={"#fff"} size={14} />
           ) : (
-            <div style={{ color: "#fff", fontSize: 14 }}>{"Add"}</div>
+            <div
+              style={{
+                color: colors.NEW_BLUE(1),
+                fontSize: 14,
+              }}
+            >
+              {"Add"}
+            </div>
           )}
         </Box>
       </Box>
