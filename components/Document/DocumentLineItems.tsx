@@ -56,11 +56,17 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
       ? [
           {
             title: "Journal",
-            value: document.journal,
+            value:
+              isPaper(document) && document.externalUrl ? (
+                <ALink href={document.externalUrl} target="blank">
+                  {document.journal}
+                </ALink>
+              ) : (
+                document.journal
+              ),
           },
         ]
       : []),
-
     ...(document.publishedDate
       ? [
           {
@@ -120,7 +126,14 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
           {
             title: "DOI",
             value: (
-              <ALink href={`https://` + document.doi} target="blank">
+              <ALink
+                href={
+                  isPaper(document) && document.externalUrl
+                    ? document.externalUrl
+                    : `https://` + document.doi
+                }
+                target="blank"
+              >
                 {document.doi}
               </ALink>
             ),

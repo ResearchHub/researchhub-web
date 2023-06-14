@@ -156,7 +156,6 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             <div style={{ width: 30, boxSizing: "border-box" }}>
               <FontAwesomeIcon icon={faFlag} />
             </div>
-
             <div>Flag content</div>
           </div>
         </FlagButtonV2>
