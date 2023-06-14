@@ -147,8 +147,8 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
           onChange={handleChange}
         />
         <FormInput
-          label="Published Date (MM/DD/YYYY)"
-          placeholder="Date which paper was published"
+          label="Published Date"
+          placeholder="Date of publication (MM/DD/YYYY)"
           error={errors["publishedDate"]}
           containerStyle={formStyles.container}
           inputStyle={formStyles.inputStyle}
