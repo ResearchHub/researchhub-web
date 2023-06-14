@@ -59,7 +59,7 @@ export default function PaperPageAbstractSection({
   paper,
   onUpdate,
   isEditMode = false,
-  permanentEdit = true,
+  permanentEdit = false,
 }: Props): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(false);

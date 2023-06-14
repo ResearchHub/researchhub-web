@@ -166,12 +166,8 @@ const PaperMetadataForm = ({ paper, onUpdate }: FormProps) => {
 };
 
 const formStyles = StyleSheet.create({
-  container: {
-    // width: "100%",
-  },
-  inputStyle: {
-    // width: "100%",
-  },
+  container: {},
+  inputStyle: {},
   formWrapper: {
     width: "100%",
   },

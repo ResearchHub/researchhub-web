@@ -419,18 +419,3 @@ input[type="number"] {
   pointer-events: none;
   cursor: default;
 }
-
-.react-tagsinput-tag {
-  background-color: rgba(57, 113, 255, 0.2) !important;
-  color: black !important;
-  border: none !important;
-}
-
-.react-tagsinput-input {
-  box-sizing: border-box !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  min-height: auto !important;
-  margin-bottom: 0 !important;
-  margin-left: 10px !important;
-}

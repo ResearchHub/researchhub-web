@@ -131,7 +131,6 @@ const modalStyles = StyleSheet.create({
     display: "block",
   },
   tabsWrapper: {
-    // width: "100%",
     borderBottom: "2px solid #E5E5E5",
   },
 });
