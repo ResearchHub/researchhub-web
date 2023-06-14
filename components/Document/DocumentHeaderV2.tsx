@@ -14,7 +14,6 @@ import {
   Paper,
   isPaper,
   isPost,
-  parsePaper,
 } from "./lib/types";
 import DocumentVote from "./DocumentVote";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
@@ -25,13 +24,12 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
-import Link from "next/link";
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
-import { faPen, faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { faPen, faFlag } from "@fortawesome/pro-light-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -39,7 +37,6 @@ import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import PaperMetadataModal from "./PaperMetadataModal";
-import fetchPaper from "./api/fetchPaper";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -90,18 +87,42 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
   }, []);
 
   const options: Array<MenuOption> = [
-    // ...(isPaper(doc)
-    //   ? [
-    //       {
-    //         label: "Edit metadata",
-    //         icon: <FontAwesomeIcon icon={faPen} />,
-    //         value: "edit-metadata",
-    //         onClick: () => {
-    //           alert("implement me");
-    //         },
-    //       },
-    //     ]
-    //   : []),
+    ...(isPaper(doc)
+      ? [
+          {
+            label: "Edit paper",
+            html: (
+              <PermissionNotificationWrapper
+                modalMessage="edit document"
+                permissionKey="UpdatePaper"
+                loginRequired={true}
+                hideRipples={true}
+              >
+                <PaperMetadataModal
+                  paper={doc as Paper}
+                  onUpdate={(updatedFields) => {
+                    const updated = { ...doc, ...updatedFields };
+                    documentContext.updateDocument(updated);
+                    revalidateDocument();
+                  }}
+                >
+                  <div style={{ display: "flex", width: 140 }}>
+                    <div style={{ width: 30, boxSizing: "border-box" }}>
+                      <FontAwesomeIcon
+                        icon={faPen}
+                        style={{ marginRight: 3 }}
+                      />
+                    </div>
+
+                    <div>Edit</div>
+                  </div>
+                </PaperMetadataModal>
+              </PermissionNotificationWrapper>
+            ),
+            value: "edit-paper",
+          },
+        ]
+      : []),
     ...(isPost(doc) &&
     doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
       ? [
@@ -186,29 +207,29 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {/* <PermissionNotificationWrapper
+                <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"
                   loginRequired={true}
-                  onClick={() =>
-                    dispatch(ModalActions.openPaperTransactionModal(true))
-                  }
                   hideRipples={true}
-                > */}
-                <IconButton variant="round">
+                >
                   <PaperMetadataModal
                     paper={doc as Paper}
-                    onUpdate={() => {
-                      fetchPaper({ paperId: doc.id }).then((rawPaper) => {
-                        const paper = parsePaper(rawPaper);
-                        documentContext.updateDocument(paper);
-                      });
+                    onUpdate={(updatedFields) => {
+                      const updated = { ...doc, ...updatedFields };
+                      documentContext.updateDocument(updated);
+                      revalidateDocument();
                     }}
                   >
-                    <span>Edit</span>
+                    <IconButton variant="round">
+                      <FontAwesomeIcon
+                        icon={faPen}
+                        style={{ marginRight: 3 }}
+                      />
+                      <span>Edit</span>
+                    </IconButton>
                   </PaperMetadataModal>
-                </IconButton>
-                {/* </PermissionNotificationWrapper> */}
+                </PermissionNotificationWrapper>
 
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
