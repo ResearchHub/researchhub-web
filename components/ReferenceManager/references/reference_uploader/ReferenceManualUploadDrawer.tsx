@@ -26,6 +26,7 @@ import ReferenceTypeSelect from "../../form/ReferenceTypeSelect";
 import ReferenceUploadAttachments from "../../form/ReferenceUploadAttachments";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
 
 const CALCULATED_LEFT_MARGIN =
   240 /* LOCAL_LEFT_NAV_WIDTH */ +
@@ -44,7 +45,8 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
     setReferenceSchemaValueSet,
     setSelectedReferenceType,
   } = useReferenceUploadDrawerContext();
-
+  const { projectID: activeProjectID } =
+    useReferenceActiveProjectContext()?.activeProject ?? {};
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { currentOrg } = useOrgs();
@@ -256,7 +258,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
                   setIsSubmitting,
                   setReferencesFetchTime,
                   organizationID: currentOrg?.id,
-                  projectID,
+                  projectID: projectID ?? activeProjectID,
                 })
               }
               size="large"

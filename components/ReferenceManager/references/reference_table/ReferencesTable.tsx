@@ -75,7 +75,7 @@ export default function ReferencesTable({
   useEffectFetchReferenceCitations({
     setIsLoading,
     onSuccess: (payload: any) => {
-      setReferenceTableRowData(payload?.results);
+      setReferenceTableRowData(payload);
       setIsLoading(false);
     },
     onError: emptyFncWithMsg,
@@ -154,6 +154,35 @@ export default function ReferencesTable({
           //   setIsDrawerOpen(true);
           // }
         }}
+        onCellClick={(params, event, _details): void => {
+          if (params.field !== "__check__") {
+            event.stopPropagation();
+            setReferenceItemDatum({
+              ...nullthrows(
+                referenceTableRowData.find(
+                  (item) => item.id === params?.row?.id
+                )
+              ),
+            });
+            setIsDrawerOpen(true);
+          } else {
+            setSelectedReferenceIDs(params.id);
+          }
+        }}
+        // onRowClick={(params, event, _details): void => {
+        //   event.stopPropagation();
+        //   if (params.field !== "__check__") {
+        //     setReferenceItemDatum({
+        //       ...nullthrows(
+        //         referenceTableRowData.find(
+        //           (item) => item.id === params?.row?.id
+        //         )
+        //       ),
+        //     });
+        //     setIsDrawerOpen(true);
+        //   } else {
+        //   }
+        // }}
         onRowSelectionModelChange={(selectedReferenceIDs) => {
           setSelectedReferenceIDs(selectedReferenceIDs);
         }}

@@ -40,7 +40,9 @@ export default function BountiesSidebarItem({
         style={{ textDecoration: "none" }}
         href={`/${
           documentType === "question" ? "post" : documentType
-        }/${relatedDocID}/${slug ?? ""}${isCommentBounty ? "#comments" : ""}`}
+        }/${relatedDocID}/${slug ?? ""}${
+          isCommentBounty ? "/conversation" : ""
+        }`}
       >
         <div className={css(styles.bountiesSidebarItem)}>
           <div className={css(styles.bountiesSidebarItemHeader)}>

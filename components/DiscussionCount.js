@@ -11,7 +11,7 @@ const DiscussionCount = ({ docType, count, id, slug }) => {
 
   return (
     <Link
-      href={`/${docType}/${id}/${slug}#comments`}
+      href={`/${docType}/${id}/${slug}/conversation`}
       className={css(styles.link)}
       onClick={(e) => {
         e.stopPropagation();

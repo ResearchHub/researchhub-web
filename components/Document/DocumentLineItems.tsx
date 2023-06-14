@@ -12,14 +12,19 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { GenericDocument, Paper, isPaper, isPost } from "./lib/types";
 import { toTitleCase } from "~/config/utils/string";
+import StarInput from "../Form/StarInput";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
+  const router = useRouter();
   const auth = useSelector((state: any) => state.auth);
   const claimableAuthors = document.authors.filter((a) => !a.isClaimed);
   const [isAuthorClaimModalOpen, setIsAuthorClaimModalOpen] =
     useState<boolean>(false);
   const [isShowingAllMetadata, setIsShowingAllMetadata] =
     useState<boolean>(false);
+  const basePath = `/${document.type}/${router.query.documentId}/${router.query.documentSlug}`;
 
   const lineItems = [
     ...(document.title !== document.title
@@ -46,6 +51,7 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
         </>
       ),
     },
+
     ...(isPaper(document) && document.journal
       ? [
           {
@@ -60,6 +66,51 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
           {
             title: "Published",
             value: document.publishedDate,
+          },
+        ]
+      : []),
+    ...((isPaper(document) || isPost(document)) &&
+    document.reviewSummary.count > 0
+      ? [
+          {
+            title: "Rating",
+            value: (
+              <Link
+                className={
+                  router.asPath === basePath + "/reviews" ? "disabled-link" : ""
+                }
+                href={basePath + "/reviews"}
+                style={{ display: "flex", textDecoration: "none" }}
+              >
+                <StarInput
+                  value={document.reviewSummary.averageRating}
+                  size="small"
+                  readOnly
+                />
+                <span style={{ color: colors.BLACK_TEXT() }}>
+                  ({document.reviewSummary.count})
+                </span>
+              </Link>
+            ),
+          },
+        ]
+      : []),
+
+    ...(document.hubs && document.hubs.length > 0
+      ? [
+          {
+            title: "Hubs",
+            value: document.hubs.map((h, index) => (
+              <div key={index}>
+                <ALink
+                  key={`/hubs/${h.slug ?? ""}-index`}
+                  href={`/hubs/${h.slug}`}
+                >
+                  {toTitleCase(h.name)}
+                </ALink>
+                {index < document.hubs?.length - 1 ? "," : ""}
+              </div>
+            )),
           },
         ]
       : []),

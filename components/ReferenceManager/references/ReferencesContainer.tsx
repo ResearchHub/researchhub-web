@@ -15,6 +15,7 @@ import {
   emptyFncWithMsg,
   isEmpty,
   isNullOrUndefined,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
 import { MessageActions } from "~/redux/message";
@@ -55,6 +56,8 @@ import {
 import colors from "~/config/themes/colors";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
+import ManageOrgUsers from "~/components/Org/ManageOrgUsers";
+import ManageOrgModal from "~/components/Org/ManageOrgModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -165,7 +168,7 @@ function ReferencesContainer({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
   });
-  const { currentOrg } = useOrgs();
+  const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
   const { activeProject, setActiveProject } =
@@ -182,7 +185,7 @@ function ReferencesContainer({
 
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string | null>(null);
+  const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
@@ -194,42 +197,21 @@ function ReferencesContainer({
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const currentProjectName = activeProject?.projectName ?? null;
   const currentOrgID = currentOrg?.id ?? null;
+  const isOnOrgTab = !isEmpty(router.query?.org_refs);
+  const onOrgUpdate = (): void => {
+    refetchOrgs();
+    setIsOrgModalOpen(false);
+  };
+  const onShareClick = (): void => {
+    setProjectUpsertPurpose("update");
+    setProjectUpsertValue({
+      ...DEFAULT_PROJECT_VALUES,
+      ...activeProject,
+    });
+    setIsProjectUpsertModalOpen(true);
+  };
 
-  useEffectFetchOrgProjects({
-    fetchTime: projectsFetchTime,
-    onError: emptyFncWithMsg,
-    onSuccess: (payload): void => {
-      setCurrentOrgProjects(payload ?? []);
-      setIsFethingProjects(false);
-    },
-    orgID: currentOrgID,
-    setIsFethingProjects,
-  });
-  useEffectSetActiveProject({
-    currentOrgProjects,
-    router,
-    setActiveProject,
-    isFetchingProjects,
-  });
-  const targetProject = currentOrgProjects.find(
-    (proj) => proj.id === parseInt(router.query.project)
-  );
-  const { id, collaborators, project_name, is_public } = targetProject ?? {};
   const inputRef = useRef();
-
-  // useEffect((): void => {
-  //   if (!isEmpty(currentOrgID)) {
-  //     fetchReferenceOrgProjects({
-  //       onError: emptyFncWithMsg,
-  //       onSuccess: (payload): void => {
-  //         setCurrentOrgProjects(payload ?? []);
-  //       },
-  //       payload: {
-  //         organization: currentOrgID,
-  //       },
-  //     });
-  //   }
-  // }, [currentOrgID, projectsFetchTime]);
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -258,6 +240,23 @@ function ReferencesContainer({
     const resp = fetch(url, api.POST_FILE_CONFIG(formData));
     setLoading(false);
   };
+
+  useEffectFetchOrgProjects({
+    fetchTime: projectsFetchTime,
+    onError: emptyFncWithMsg,
+    onSuccess: (payload): void => {
+      setCurrentOrgProjects(payload ?? []);
+      setIsFethingProjects(false);
+    },
+    orgID: currentOrgID,
+    setIsFethingProjects,
+  });
+  useEffectSetActiveProject({
+    currentOrgProjects,
+    router,
+    setActiveProject,
+    isFetchingProjects,
+  });
 
   useEffect(() => {
     if (wsResponse) {
@@ -301,6 +300,12 @@ function ReferencesContainer({
   } else {
     return (
       <>
+        <ManageOrgModal
+          org={currentOrg}
+          isOpen={isOrgModalOpen}
+          closeModal={(): void => setIsOrgModalOpen(false)}
+          onOrgChange={onOrgUpdate}
+        />
         <QuickModal
           isOpen={isRemoveRefModalOpen}
           modalContent={
@@ -378,9 +383,7 @@ function ReferencesContainer({
               >
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                   {currentProjectName ??
-                    (!isEmpty(router.query?.org_refs)
-                      ? "Organization References"
-                      : `My References`)}
+                    (isOnOrgTab ? "Organization References" : `My References`)}
                 </Typography>
                 <input
                   ref={inputRef}
@@ -400,36 +403,35 @@ function ReferencesContainer({
                     alignItems: "center",
                   }}
                 >
-                  {collaborators && (
+                  {activeProject?.collaborators && (
                     <AuthorFacePile
                       horizontal
                       margin={-10}
-                      authorProfiles={(collaborators ?? {}).viewers?.map(
-                        (collaborator) => {
-                          collaborator.author_profile.user = collaborator;
-                          return collaborator.author_profile;
-                        }
-                      )}
+                      authorProfiles={(
+                        activeProject?.collaborators ?? {}
+                      ).viewers?.map((collaborator) => {
+                        collaborator.author_profile.user = collaborator;
+                        return collaborator.author_profile;
+                      })}
                     />
                   )}
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={(): void => {
-                      setProjectUpsertPurpose("update");
-                      setProjectUpsertValue({
-                        ...DEFAULT_PROJECT_VALUES,
-                        ...activeProject,
-                      });
-                      setIsProjectUpsertModalOpen(true);
-                    }}
-                  >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {"Share"}
-                    </Typography>
-                  </Button>
+                  {(isOnOrgTab || !isEmpty(router.query.project)) && (
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={
+                        isOnOrgTab
+                          ? () => setIsOrgModalOpen(true)
+                          : onShareClick
+                      }
+                    >
+                      <Typography variant="h6" fontSize={"16px"}>
+                        {isOnOrgTab ? "Update Organization" : "Share"}
+                      </Typography>
+                    </Button>
+                  )}
                 </div>
               </div>
               <Box className="ReferencesContainerMain">
@@ -443,59 +445,61 @@ function ReferencesContainer({
                     marginBottom: "20px",
                   }}
                 >
-                  <div
-                    style={
-                      isEmpty(selectedReferenceIDs)
-                        ? { visibility: "hidden" }
-                        : undefined
-                    }
-                  >
-                    <DropdownMenu
-                      menuItemProps={[
-                        {
-                          itemLabel: `Export reference${
-                            selectedReferenceIDs.length > 1 ? "s" : ""
-                          }`,
-                          onClick: () => {
-                            setIsBibModalOpen(true);
-                          },
-                        },
-                        {
-                          itemLabel: (
-                            <Typography color="red">{`Remove reference${
-                              selectedReferenceIDs.length > 1 ? "s" : ""
-                            }`}</Typography>
-                          ),
-                          onClick: () => {
-                            setIsRemoveRefModalOpen(true);
-                          },
-                        },
-                      ]}
-                      menuLabel={
-                        <div
-                          style={{
-                            alignItems: "center",
-                            color: "rgba(170, 168, 180, 1)",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: 68,
-                            height: 36,
-                            padding: 6,
-                            boxSizing: "border-box",
-                          }}
-                        >
-                          <ListIcon
-                            fontSize="medium"
-                            sx={{ color: "#AAA8B4" }}
-                          />
-                          <ExpandMore
-                            fontSize="medium"
-                            sx={{ color: "#AAA8B4" }}
-                          />
-                        </div>
-                      }
-                      size="medium"
-                    />
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {!isEmpty(selectedReferenceIDs) && (
+                      <>
+                        <DropdownMenu
+                          disabled={isEmpty(selectedReferenceIDs)}
+                          menuItemProps={[
+                            {
+                              itemLabel: `Export reference${
+                                selectedReferenceIDs.length > 1 ? "s" : ""
+                              }`,
+                              onClick: () => {
+                                setIsBibModalOpen(true);
+                              },
+                            },
+                            {
+                              itemLabel: (
+                                <Typography color="red">{`Remove reference${
+                                  selectedReferenceIDs.length > 1 ? "s" : ""
+                                }`}</Typography>
+                              ),
+                              onClick: () => {
+                                setIsRemoveRefModalOpen(true);
+                              },
+                            },
+                          ]}
+                          menuLabel={
+                            <div
+                              style={{
+                                alignItems: "center",
+                                color: "rgba(170, 168, 180, 1)",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                width: 68,
+                                height: 36,
+                                padding: 6,
+                                boxSizing: "border-box",
+                              }}
+                            >
+                              <ListIcon
+                                fontSize="medium"
+                                sx={{ color: "#AAA8B4" }}
+                              />
+                              <ExpandMore
+                                fontSize="medium"
+                                sx={{ color: "#AAA8B4" }}
+                              />
+                            </div>
+                          }
+                          size="medium"
+                        />
+                        <Typography
+                          sx={{ marginLeft: "8px" }}
+                        >{`${selectedReferenceIDs.length} selected`}</Typography>
+                      </>
+                    )}
                   </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
@@ -505,7 +509,7 @@ function ReferencesContainer({
                       marginLeft: "auto",
                     }}
                   >
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       fullWidth
                       label={searchText && "Search"}
                       onChange={(
@@ -541,7 +545,7 @@ function ReferencesContainer({
                           </IconButton>
                         </InputAdornment>
                       }
-                    />
+                    /> */}
                   </div>
                   <div
                     className={css(styles.button, styles.secondary)}

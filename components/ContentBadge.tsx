@@ -130,18 +130,29 @@ const ContentBadgeBase = ({
             <span className={css(styles.rscContent)}>{label}</span>
           </>
         ) : contentType === "award" ? (
-          <>
-            <span className={css(styles.icon)}>
-              <ResearchCoinIcon
-                color="rgb(232, 181, 4)"
-                version={4}
-                height={15}
-                width={15}
-              />
-              {` `}
-            </span>
-            <span>{label}</span>
-          </>
+          <div>
+            <div className={css(styles.row)}>
+              <span className={css(styles.icon)}>
+                <ResearchCoinIcon
+                  color="rgb(232, 181, 4)"
+                  version={4}
+                  height={15}
+                  width={15}
+                />
+                {` `}
+              </span>
+              <span>{label}</span>
+            </div>
+            <div
+              className={css(
+                styles.usdAmount,
+                badgeHovered && styles.transitionOpacity
+              )}
+            >
+              {" "}
+              ≈ {rscToUSDDisplay(bountyAmount || 0)}
+            </div>
+          </div>
         ) : contentType === "bounty" ? (
           <div>
             <div className={css(styles.row)}>
@@ -206,8 +217,12 @@ const ContentBadge = (props) => {
       className={css(styles.badgeContainer, props.badgeContainerOverride)}
       onMouseMove={() => {
         if (!mouseLeaveTimeout.current) {
-          setBadgeHovered(props.contentType === "bounty");
-          setKeepPositionAbsolute(props.contentType === "bounty");
+          setBadgeHovered(
+            props.contentType === "bounty" || props.contentType === "award"
+          );
+          setKeepPositionAbsolute(
+            props.contentType === "bounty" || props.contentType === "award"
+          );
         }
       }}
       onMouseLeave={() => {

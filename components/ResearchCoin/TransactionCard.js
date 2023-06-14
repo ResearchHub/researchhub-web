@@ -53,11 +53,11 @@ const TransactionCard = (props) => {
   const commentSlug =
     comment &&
     (comment.paper_slug
-      ? `/paper/${comment.paper}/${comment.paper_slug}#comments`
+      ? `/paper/${comment.paper}/${comment.paper_slug}/conversation`
       : comment.hypothesis_slug
-      ? `/hypothesis/${comment.hypothesis}/${comment.hypothesis_slug}#comments`
+      ? `/hypothesis/${comment.hypothesis}/${comment.hypothesis_slug}/conversation`
       : comment.post_slug &&
-        `/post/${comment.post}/${comment.post_slug}#comments`);
+        `/post/${comment.post}/${comment.post_slug}/conversation`);
 
   const etherscanLink = getEtherscanLink(transaction.source?.transaction_hash);
 

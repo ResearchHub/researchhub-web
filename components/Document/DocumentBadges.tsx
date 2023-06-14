@@ -39,6 +39,7 @@ const DocumentBadges = ({ document, metadata }: Props) => {
           tooltip="ResearchCoin awarded to authors of this paper"
           size="medium"
           contentType={"award"}
+          bountyAmount={tippedAmount}
           label={`${formatBountyAmount({ amount: tippedAmount })} Tipped`}
         />
       )}
