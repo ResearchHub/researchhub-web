@@ -81,8 +81,6 @@ const Navbar = (props) => {
     ? "Reference Manager"
     : pathname.includes("live")
     ? "Live Activity"
-    : isDocumentPage
-    ? null
     : "Explore ResearchHub";
 
   useEffect(() => {
