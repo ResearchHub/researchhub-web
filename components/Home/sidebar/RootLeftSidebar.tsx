@@ -121,9 +121,13 @@ export const getLeftSidebarItemAttrs = ({
               width="28px"
               height="16px"
               tagLabel="Beta"
-              backgroundColor={colors.ORANGE(0.8)}
+              style={{
+                fontVariant: "all-small-caps",
+              }}
+              textColor={"grey"}
+              backgroundColor={"transparent"}
               fontSize="10px"
-              tagPosition={{ right: "-24px", top: "-6px" }}
+              tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
             >
               <FontAwesomeIcon icon={faTableTree} />
             </RhTextTag>
@@ -137,7 +141,15 @@ export const getLeftSidebarItemAttrs = ({
               width="32px"
               height="20px"
               tagLabel="Beta"
-              backgroundColor={colors.ORANGE(0.8)}
+              textTransform={"small-caps"}
+              backgroundColor={"transparent"}
+              textColor={"grey"}
+              style={{
+                fontVariant: "all-small-caps",
+                top: "unset",
+                bottom: -10,
+                // right: 0,
+              }}
               fontSize="12px"
               tagPosition={{ right: "-28px", top: "-10px" }}
             >

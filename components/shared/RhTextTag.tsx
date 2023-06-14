@@ -15,6 +15,8 @@ type Props = {
   };
   textColor?: string;
   width: string;
+  textTransform?: string;
+  style?: unknown;
 };
 
 export default function RhTextTag({
@@ -26,11 +28,12 @@ export default function RhTextTag({
   tagPosition,
   textColor,
   width,
+  textTransform,
+  style,
 }: Props): ReactElement {
   return (
     <div id="RhTextTag-Wrap" style={{ position: "relative" }}>
       <div
-        id="RhTextTag-Wrap"
         style={{
           alignItems: "center",
           background: backgroundColor ?? "black",
@@ -38,6 +41,7 @@ export default function RhTextTag({
           color: textColor ?? "#fff",
           display: "flex",
           fontSize: fontSize ?? "inherit",
+          textTransform: textTransform,
           height: height ?? width,
           justifyContent: "center",
           position: "absolute",
@@ -46,6 +50,7 @@ export default function RhTextTag({
           top: 0,
           width,
           ...(tagPosition ?? {}),
+          ...(style ?? {}),
         }}
       >
         {tagLabel}
