@@ -128,6 +128,7 @@ export const getLeftSidebarItemAttrs = ({
           href: refManagerGateKeeper
             ? "/reference-manager"
             : "https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform?usp=sharing",
+          target: refManagerGateKeeper ? undefined : "__blank",
           onClick: (event: SyntheticEvent): void => {
             // event.preventDefault();
           },

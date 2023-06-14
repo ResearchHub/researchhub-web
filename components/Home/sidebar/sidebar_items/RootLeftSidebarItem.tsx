@@ -11,25 +11,27 @@ import {
 import colors from "~/config/themes/colors";
 
 export type Props = {
+  href: string;
   icon: ReactNode;
   isActive?: boolean;
   isMinimized: boolean;
   label: string;
-  href: string;
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
+  target?: undefined | "__blank";
 };
 
 export const ITEM_FADE_DURATION = 0.3;
 
 export default function RootLeftSidebarItem({
+  href,
   icon,
   isActive = false,
   isMinimized,
   label,
   onClick,
-  href,
   subItems,
+  target,
 }: Props): ReactElement {
   const [didMount, setDidMount] = useState<boolean>(false);
   const [isMinimizedLocal, setIsMinimizedLocal] = useState<boolean>(false);
@@ -60,6 +62,7 @@ export default function RootLeftSidebarItem({
         isActive && styles.rootLeftSidebarItemActive
       )}
       onClick={onClick}
+      target={target}
     >
       <div
         className={css(

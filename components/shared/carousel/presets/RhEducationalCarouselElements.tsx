@@ -15,23 +15,23 @@ export const getEducationalCarouselElements = () => [
           src="/static/beaker.svg"
           style={{ marginRight: 6, marginTop: -3, height: 20 }}
         />
-        {" What is ResearchHub?"}
+        {"About ResearchCoin (RSC)"}
       </div>
     ),
     body: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
         {
-          "A tool for the open publication and discussion of scientific research. ResearchHub’s users are rewarded with ResearchCoin (RSC) for publishing, reviewing, criticizing, and collaborating in the open."
+          "RSC is a reward token users earn for posting great content. Holding RSC gives users the ability to create bounties, tip authors, and vote in community governance."
         }
 
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
           <ALink
             theme="solidPrimary"
             overrideStyle={[DEFAULT_ITEM_STYLE.link]}
-            href="https://docs.researchhub.com/welcome/what-is-researchhub"
+            href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xd101dcc414f310268c37eeb4cd376ccfa507f571"
             target="_blank"
           >
-            Learn more about ResearchHub
+            {"Click to trade RSC on Uniswap."}
           </ALink>
         </div>
       </div>
@@ -43,7 +43,7 @@ export const getEducationalCarouselElements = () => [
         <span style={{ marginRight: 8, marginTop: 3 }}>
           <RSC style={styles.RSC} />
         </span>
-        {" About ResearchCoin (RSC)"}
+        {" What is ResearchCoin (RSC)?"}
       </div>
     ),
     body: (
