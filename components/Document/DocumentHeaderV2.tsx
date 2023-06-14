@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   voteWrapper: {
     position: "absolute",
     left: -VOTE_DISTANCE_FROM_LEFT,
-    top: -28,
+    top: 0,
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       display: "none",
     },
