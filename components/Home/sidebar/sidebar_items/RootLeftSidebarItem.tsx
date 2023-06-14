@@ -15,7 +15,7 @@ export type Props = {
   icon: ReactNode;
   isActive?: boolean;
   isMinimized: boolean;
-  label: string;
+  label: ReactNode;
   onClick: (event: SyntheticEvent) => void;
   subItems?: ReactElement[];
   target?: undefined | "__blank";

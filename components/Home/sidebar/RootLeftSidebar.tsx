@@ -22,7 +22,7 @@ import {
   getCurrMediaWidth,
   useEffectOnScreenResize,
 } from "~/config/utils/useEffectOnScreenResize";
-import { filterNull, isEmpty } from "~/config/utils/nullchecks";
+import { filterNull, isEmpty, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { NextRouter, useRouter } from "next/router";
 import {
   ReactElement,
@@ -45,6 +45,7 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
 import killswitch from "~/config/killswitch/killswitch";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import RhTextTag from "~/components/shared/RhTextTag";
 
 type Props = {
   openLoginModal: any;
@@ -82,9 +83,7 @@ export const getLeftSidebarItemAttrs = ({
       isActive: ["", "/"].includes(pathname),
       isMinimized,
       href: "/",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
+      onClick: silentEmptyFnc,
     },
     {
       icon: <FontAwesomeIcon icon={faWavePulse}></FontAwesomeIcon>,
@@ -92,9 +91,7 @@ export const getLeftSidebarItemAttrs = ({
       isMinimized,
       isActive: pathname.includes("live"),
       href: "/live",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
+      onClick: silentEmptyFnc,
     },
     {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
@@ -115,23 +112,57 @@ export const getLeftSidebarItemAttrs = ({
       isActive: ["/hubs"].includes(pathname),
       isMinimized,
       href: "/hubs",
-      onClick: (event: SyntheticEvent): void => {
-        // event.preventDefault();
-      },
+      onClick: silentEmptyFnc,
     },
     killswitch("reference-manager")
       ? {
-          icon: <FontAwesomeIcon icon={faTableTree} />,
-          label: "Reference Manager",
+          icon: isMinimized ? (
+            <RhTextTag
+              width="28px"
+              height="16px"
+              tagLabel="Beta"
+              style={{
+                fontVariant: "all-small-caps",
+              }}
+              textColor={"grey"}
+              backgroundColor={"transparent"}
+              fontSize="10px"
+              tagPosition={{ right: "-20px", bottom: "-10px", top: "unset" }}
+            >
+              <FontAwesomeIcon icon={faTableTree} />
+            </RhTextTag>
+          ) : (
+            <FontAwesomeIcon icon={faTableTree} />
+          ),
+          label: isMinimized ? (
+            "Reference Manager"
+          ) : (
+            <RhTextTag
+              width="32px"
+              height="20px"
+              tagLabel="Beta"
+              textTransform={"small-caps"}
+              backgroundColor={"transparent"}
+              textColor={"grey"}
+              style={{
+                fontVariant: "all-small-caps",
+                top: "unset",
+                bottom: -10,
+                // right: 0,
+              }}
+              fontSize="12px"
+              tagPosition={{ right: "-28px", top: "-10px" }}
+            >
+              {"Reference Manager"}
+            </RhTextTag>
+          ),
           isActive: pathname.includes("reference-manager"),
           isMinimized,
           href: refManagerGateKeeper
             ? "/reference-manager"
             : "https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform?usp=sharing",
           target: refManagerGateKeeper ? undefined : "__blank",
-          onClick: (event: SyntheticEvent): void => {
-            // event.preventDefault();
-          },
+          onClick: silentEmptyFnc,
         }
       : null,
   ]);
