@@ -45,6 +45,7 @@ import ResearchCoinIcon from "~/components/Icons/ResearchCoinIcon";
 import InviteButton from "~/components/Referral/InviteButton";
 import killswitch from "~/config/killswitch/killswitch";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import RhTextTag from "~/components/shared/RhTextTag";
 
 type Props = {
   openLoginModal: any;
@@ -121,8 +122,34 @@ export const getLeftSidebarItemAttrs = ({
     },
     killswitch("reference-manager")
       ? {
-          icon: <FontAwesomeIcon icon={faTableTree} />,
-          label: "Reference Manager",
+          icon: isMinimized ? (
+            <RhTextTag
+              width="28px"
+              height="16px"
+              tagLabel="Beta"
+              backgroundColor={colors.ORANGE(0.8)}
+              fontSize="10px"
+              tagPosition={{ right: "-24px", top: "-6px" }}
+            >
+              <FontAwesomeIcon icon={faTableTree} />
+            </RhTextTag>
+          ) : (
+            <FontAwesomeIcon icon={faTableTree} />
+          ),
+          label: isMinimized ? (
+            "Reference Manager"
+          ) : (
+            <RhTextTag
+              width="32px"
+              height="20px"
+              tagLabel="Beta"
+              backgroundColor={colors.ORANGE(0.8)}
+              fontSize="12px"
+              tagPosition={{ right: "-28px", top: "-10px" }}
+            >
+              {"Reference Manager"}
+            </RhTextTag>
+          ),
           isActive: pathname.includes("reference-manager"),
           isMinimized,
           href: refManagerGateKeeper
