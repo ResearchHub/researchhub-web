@@ -27,6 +27,7 @@ const nextConfig = {
       "researchhub-paper-prod.s3.amazonaws.com",
       "researchhub.com",
       "lh3.googleusercontent.com",
+      "lh5.googleusercontent.com",
     ],
   },
   sentry: {

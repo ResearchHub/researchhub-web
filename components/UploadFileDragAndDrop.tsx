@@ -3,7 +3,7 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import colors from "~/config/themes/colors";
 
-function UploadFileDragAndDrop({ handleFileDrop, accept }) {
+function UploadFileDragAndDrop({ handleFileDrop, accept, children }) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
@@ -22,22 +22,26 @@ function UploadFileDragAndDrop({ handleFileDrop, accept }) {
               className={css(styles.dropzone, isFileDragged && styles.dragged)}
             >
               <input {...getInputProps()} required={true} />
-              <>
-                <img
-                  className={css(styles.uploadImage)}
-                  src={"/static/background/homepage-empty-state.png"}
-                  alt="Drag N Drop Icon"
-                />
-                <div className={css(styles.instructions)}>
-                  {"Drag & drop \n"}
-                  <span className={css(styles.subtext)}>
-                    {"your PDF here, or "}
-                    <span className={css(styles.browse)} id={"browse"}>
-                      {"browse"}
+              {children ? (
+                children
+              ) : (
+                <>
+                  <img
+                    className={css(styles.uploadImage)}
+                    src={"/static/background/homepage-empty-state.png"}
+                    alt="Drag N Drop Icon"
+                  />
+                  <div className={css(styles.instructions)}>
+                    {"Drag & drop \n"}
+                    <span className={css(styles.subtext)}>
+                      {"your PDF here, or "}
+                      <span className={css(styles.browse)} id={"browse"}>
+                        {"browse"}
+                      </span>
                     </span>
-                  </span>
-                </div>
-              </>
+                  </div>
+                </>
+              )}
             </div>
           </section>
         )}

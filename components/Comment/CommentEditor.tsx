@@ -265,7 +265,7 @@ const CommentEditor = ({
                     </span>
                     <span className={css(styles.smallBountyText)}>
                       Offer ResearchCoin
-                    </span>                    
+                    </span>
                   </div>
                 </div>
               )}
@@ -439,16 +439,16 @@ const styles = StyleSheet.create({
   },
   largeBountyText: {
     display: "inline-block",
-    [`@media (max-width: ${breakpoints.xsmall.str})`]: {    
+    [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       display: "none",
-    }
+    },
   },
   smallBountyText: {
     display: "none",
-    [`@media (max-width: ${breakpoints.xsmall.str})`]: {    
+    [`@media (max-width: ${breakpoints.xsmall.str})`]: {
       display: "inline-block",
-    }
-  }  
+    },
+  },
 });
 
 export default CommentEditor;

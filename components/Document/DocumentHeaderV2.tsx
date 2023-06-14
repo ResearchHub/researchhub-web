@@ -277,7 +277,8 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
 
 const VOTE_DISTANCE_FROM_LEFT = 50;
 const BUFFER = 40;
-const SMALL_SCREEN_BREAKPOINT = config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER ;
+const SMALL_SCREEN_BREAKPOINT =
+  config.width + VOTE_DISTANCE_FROM_LEFT + LEFT_SIDEBAR_MIN_WIDTH + BUFFER;
 const styles = StyleSheet.create({
   headerRoot: {},
   title: {
@@ -349,10 +350,9 @@ const styles = StyleSheet.create({
     top: -28,
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       display: "none",
-    }
+    },
   },
-  voteWrapperForSmallScreen: {
-  },
+  voteWrapperForSmallScreen: {},
   actionWrapper: {
     display: "flex",
     columnGap: "10px",
@@ -372,9 +372,7 @@ const styles = StyleSheet.create({
   },
   largeScreenActions: {
     display: "flex",
-    [`@media (max-width: ${
-      SMALL_SCREEN_BREAKPOINT
-    }px)`]: {
+    [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       display: "none",
     },
   },

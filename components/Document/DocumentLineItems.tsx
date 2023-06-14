@@ -115,6 +115,25 @@ const DocumentLineItems = ({ document }: { document: GenericDocument }) => {
         ]
       : []),
 
+    ...(document.hubs && document.hubs.length > 0
+      ? [
+          {
+            title: "Hubs",
+            value: document.hubs.map((h, index) => (
+              <div key={index}>
+                <ALink
+                  key={`/hubs/${h.slug ?? ""}-index`}
+                  href={`/hubs/${h.slug}`}
+                >
+                  {toTitleCase(h.name)}
+                </ALink>
+                {index < document.hubs?.length - 1 ? "," : ""}
+              </div>
+            )),
+          },
+        ]
+      : []),
+
     ...(document.doi
       ? [
           {

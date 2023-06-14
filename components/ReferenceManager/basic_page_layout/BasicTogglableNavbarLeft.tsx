@@ -166,6 +166,9 @@ export default function BasicTogglableNavbarLeft({
             maxHeight: 50,
             paddingLeft: "16px",
             paddingRight: "16px",
+            ":hover": {
+              background: "unset",
+            },
           }}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();

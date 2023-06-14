@@ -9,7 +9,7 @@ import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
-import { Fragment, useState, ReactNode, useEffect } from "react";
+import { Fragment, useState, ReactNode, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import {
   emptyFncWithMsg,
@@ -21,7 +21,7 @@ import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchRefere
 import { MessageActions } from "~/redux/message";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import { removeReferenceCitations } from "./api/removeReferenceCitations";
-import { StyleSheet } from "aphrodite";
+import { StyleSheet, css } from "aphrodite";
 import { toast } from "react-toastify";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
@@ -39,7 +39,6 @@ import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 import ReferencesTable from "./reference_table/ReferencesTable";
 import Button from "~/components/Form/Button";
-import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListIcon from "@mui/icons-material/List";
@@ -48,6 +47,15 @@ import QuickModal from "../menu/QuickModal";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { ID } from "~/config/types/root_types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFolderPlus,
+  faMagnifyingGlass,
+  faPlus,
+} from "@fortawesome/pro-light-svg-icons";
+import colors from "~/config/themes/colors";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import ManageOrgUsers from "~/components/Org/ManageOrgUsers";
 import ManageOrgModal from "~/components/Org/ManageOrgModal";
 
@@ -202,6 +210,8 @@ function ReferencesContainer({
     });
     setIsProjectUpsertModalOpen(true);
   };
+
+  const inputRef = useRef();
 
   const handleFileDrop = async (acceptedFiles) => {
     const formData = new FormData();
@@ -375,38 +385,54 @@ function ReferencesContainer({
                   {currentProjectName ??
                     (isOnOrgTab ? "Organization References" : `My References`)}
                 </Typography>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept=".pdf"
+                  multiple
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    handleFileDrop(Array.from(e.target.files));
+                  }}
+                />
+
                 <div
                   style={{
-                    marginLeft: 8,
-                    background: colors.GREY(0.7),
-                    borderRadius: "50%",
-                    height: 24,
-                    color: "#fff",
-                    width: 24,
+                    marginLeft: "auto",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
                   }}
-                  onClick={() => setIsRefUploadDrawerOpen(true)}
                 >
-                  <AddIcon fontSize="small" sx={{ color: "AAA8B4" }} />
+                  {activeProject?.collaborators && (
+                    <AuthorFacePile
+                      horizontal
+                      margin={-10}
+                      authorProfiles={(
+                        activeProject?.collaborators ?? {}
+                      ).viewers?.map((collaborator) => {
+                        collaborator.author_profile.user = collaborator;
+                        return collaborator.author_profile;
+                      })}
+                    />
+                  )}
+                  {(isOnOrgTab || !isEmpty(router.query.project)) && (
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={
+                        isOnOrgTab
+                          ? () => setIsOrgModalOpen(true)
+                          : onShareClick
+                      }
+                    >
+                      <Typography variant="h6" fontSize={"16px"}>
+                        {isOnOrgTab ? "Update Organization" : "Share"}
+                      </Typography>
+                    </Button>
+                  )}
                 </div>
-                {(isOnOrgTab || !isEmpty(router.query.project)) && (
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={
-                      isOnOrgTab ? () => setIsOrgModalOpen(true) : onShareClick
-                    }
-                  >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {isOnOrgTab ? "Update Organization" : "Share"}
-                    </Typography>
-                  </Button>
-                )}
               </div>
               <Box className="ReferencesContainerMain">
                 <Box
@@ -414,69 +440,73 @@ function ReferencesContainer({
                   sx={{
                     alignItems: "center",
                     display: "flex",
-                    justifyContent: "space-between",
                     width: "100%",
                     height: 44,
                     marginBottom: "20px",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <DropdownMenu
-                      disabled={isEmpty(selectedReferenceIDs)}
-                      menuItemProps={[
-                        {
-                          itemLabel: `Export reference${
-                            selectedReferenceIDs.length > 1 ? "s" : ""
-                          }`,
-                          onClick: () => {
-                            setIsBibModalOpen(true);
-                          },
-                        },
-                        {
-                          itemLabel: (
-                            <Typography color="red">{`Remove reference${
-                              selectedReferenceIDs.length > 1 ? "s" : ""
-                            }`}</Typography>
-                          ),
-                          onClick: () => {
-                            setIsRemoveRefModalOpen(true);
-                          },
-                        },
-                      ]}
-                      menuLabel={
-                        <div
-                          style={{
-                            alignItems: "center",
-                            color: "rgba(170, 168, 180, 1)",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: 68,
-                            height: 36,
-                            padding: 6,
-                            boxSizing: "border-box",
-                          }}
-                        >
-                          <ListIcon
-                            fontSize="medium"
-                            sx={{ color: "#AAA8B4" }}
-                          />
-                          <ExpandMore
-                            fontSize="medium"
-                            sx={{ color: "#AAA8B4" }}
-                          />
-                        </div>
-                      }
-                      size="medium"
-                    />
-                    <Typography
-                      sx={{ marginLeft: "8px" }}
-                    >{`${selectedReferenceIDs.length} selected`}</Typography>
+                    {!isEmpty(selectedReferenceIDs) && (
+                      <>
+                        <DropdownMenu
+                          disabled={isEmpty(selectedReferenceIDs)}
+                          menuItemProps={[
+                            {
+                              itemLabel: `Export reference${
+                                selectedReferenceIDs.length > 1 ? "s" : ""
+                              }`,
+                              onClick: () => {
+                                setIsBibModalOpen(true);
+                              },
+                            },
+                            {
+                              itemLabel: (
+                                <Typography color="red">{`Remove reference${
+                                  selectedReferenceIDs.length > 1 ? "s" : ""
+                                }`}</Typography>
+                              ),
+                              onClick: () => {
+                                setIsRemoveRefModalOpen(true);
+                              },
+                            },
+                          ]}
+                          menuLabel={
+                            <div
+                              style={{
+                                alignItems: "center",
+                                color: "rgba(170, 168, 180, 1)",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                width: 68,
+                                height: 36,
+                                padding: 6,
+                                boxSizing: "border-box",
+                              }}
+                            >
+                              <ListIcon
+                                fontSize="medium"
+                                sx={{ color: "#AAA8B4" }}
+                              />
+                              <ExpandMore
+                                fontSize="medium"
+                                sx={{ color: "#AAA8B4" }}
+                              />
+                            </div>
+                          }
+                          size="medium"
+                        />
+                        <Typography
+                          sx={{ marginLeft: "8px" }}
+                        >{`${selectedReferenceIDs.length} selected`}</Typography>
+                      </>
+                    )}
                   </div>
                   <div
                     className="ReferenceContainerSearchFieldWrap"
                     style={{
                       maxWidth: 400,
                       width: "100%",
+                      marginLeft: "auto",
                     }}
                   >
                     {/* <OutlinedInput
@@ -508,14 +538,46 @@ function ReferencesContainer({
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton edge="end">
-                            <i
-                              className="fa-regular fa-magnifying-glass"
-                              style={{ fontSize: 16 }}
-                            ></i>
+                            <FontAwesomeIcon
+                              icon={faMagnifyingGlass}
+                              fontSize="16px"
+                            />
                           </IconButton>
                         </InputAdornment>
                       }
                     /> */}
+                  </div>
+                  <div
+                    className={css(styles.button, styles.secondary)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectUpsertPurpose("create_sub_project");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        projectID: activeProject.id,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      color={colors.NEW_BLUE(1)}
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    Create Folder
+                  </div>
+                  <div
+                    className={css(styles.button)}
+                    onClick={() => inputRef.current.click()}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      color="#fff"
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    Add a Citation
                   </div>
                 </Box>
                 <ReferencesTable
@@ -545,7 +607,30 @@ function ReferencesContainer({
 
 const styles = StyleSheet.create({
   shareButton: {
-    marginLeft: "auto",
+    marginLeft: 16,
+    color: colors.BLACK(),
+    border: "none",
+    background: "unset",
+  },
+  button: {
+    marginLeft: 16,
+    padding: 16,
+    background: colors.NEW_BLUE(),
+    borderRadius: 4,
+    boxSizing: "border-box",
+    height: 40,
+    color: "#fff",
+    // width: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    fontWeight: 500,
+  },
+  secondary: {
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    background: "#fff",
+    color: colors.NEW_BLUE(),
   },
 });
 

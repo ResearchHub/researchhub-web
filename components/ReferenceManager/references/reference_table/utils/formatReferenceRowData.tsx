@@ -12,7 +12,7 @@ export type ReferenceTableRowDataType = {
   hubs: NullableString;
   last_author: NullableString;
   published_date: NullableString;
-  published_year: NullableString;
+  raw_data?: any;
 };
 
 function formatAuthors(
@@ -60,7 +60,7 @@ function formatArtwork(datum: any): ReferenceTableRowDataType {
     }`,
     hubs: "",
     published_date: date ?? access_date,
-    published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
+    raw_data: datum,
   };
 }
 
@@ -83,11 +83,11 @@ function formatManuscript(datum: any): ReferenceTableRowDataType {
     }`,
     hubs: "",
     published_date: date ?? access_date,
-    published_year: date.split("-")[2] ?? access_date.split("-")[2] ?? "",
+    raw_data: datum,
   };
 }
 
-function formatLoading(datum) {
+function formatLoading(datum): ReferenceTableRowDataType {
   return {
     added_date: "load",
     id: datum.id,
@@ -97,7 +97,6 @@ function formatLoading(datum) {
     last_author: "load",
     hubs: "load",
     published_date: "load",
-    published_year: "load",
   };
 }
 

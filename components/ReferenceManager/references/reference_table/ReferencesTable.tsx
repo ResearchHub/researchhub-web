@@ -12,6 +12,13 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import { useReferencesTableContext } from "./context/ReferencesTableContext";
+import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
+
+type Props = {
+  createdReferences: any[];
+  handleFileDrop: () => void;
+  setSelectedReferenceIDs: (refs: any[]) => void;
+};
 
 type Props = {
   createdReferences: any[];
@@ -62,6 +69,8 @@ export default function ReferencesTable({
   const { referenceTableRowData, setReferenceTableRowData } =
     useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [pdfIsOpen, setPDFIsOpen] = useState<boolean>(false);
+  const [pdfUrl, setPdfUrl] = useState<string>("");
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -131,6 +140,20 @@ export default function ReferencesTable({
           },
         }}
         loading={isLoading}
+        onCellDoubleClick={(params, event, _details): void => {
+          event.stopPropagation();
+          setReferenceItemDatum({
+            ...nullthrows(
+              referenceTableRowData.find((item) => item.id === params?.row?.id)
+            ),
+          });
+          setPDFIsOpen(true);
+          setPdfUrl(params.row.raw_data.attachment);
+          // console.log(params);
+          // if (params.field !== "__check__") {
+          //   setIsDrawerOpen(true);
+          // }
+        }}
         onCellClick={(params, event, _details): void => {
           if (params.field !== "__check__") {
             event.stopPropagation();
@@ -172,7 +195,7 @@ export default function ReferencesTable({
                 </div>
               );
             }
-            return <GridCell {...cell} />;
+            return <GridCell {...cell} onClick={(e) => e.stopPropagation()} />;
           },
         }}
         sx={DATA_GRID_STYLE_OVERRIDE}
@@ -188,6 +211,19 @@ export default function ReferencesTable({
       >
         {"Infinite pagination!!!!!"}
       </div> */}
+      {pdfIsOpen && (
+        <PDFViewer
+          pdfUrl={pdfUrl}
+          expanded={true}
+          pdfClose={() => {
+            setPDFIsOpen(false);
+            setPdfUrl("");
+          }}
+          onZoom={(zoom) => {
+            // setViewerWidth(zoom.newWidth);
+          }}
+        />
+      )}
     </div>
   );
 }
