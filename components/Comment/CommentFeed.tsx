@@ -4,7 +4,7 @@ import {
   parseComment,
 } from "./lib/types";
 import { CommentTreeContext } from "./lib/contexts";
-import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
+import { createCommentAPI, createPeerReview, fetchCommentsAPI } from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
 import { ID, parseUser } from "~/config/types/root_types";
@@ -29,6 +29,8 @@ import removeComment from "./lib/removeComment";
 import replaceComment from "./lib/replaceComment";
 import { GenericDocument } from "../Document/lib/types";
 import { useRouter } from "next/router";
+import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
+import { captureEvent } from "~/config/utils/events";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -197,6 +199,45 @@ const CommentFeed = ({
     bountyAmount?: number;
     mentions?: Array<string>;
   }) => {
+
+    if (commentType === COMMENT_TYPES.REVIEW) {
+      const reviewScore = getReviewCategoryScore({
+        quillContents: content,
+        category: "overall",
+      });
+
+      if (reviewScore === 0) {
+        dispatch(setMessage("Review score need to be greater than 0"));
+        // @ts-ignore
+        dispatch(showMessage({ show: true, error: true }));
+        return false;
+      }
+  
+      let reviewResponse;
+      try {
+        reviewResponse = await createPeerReview({
+          unifiedDocumentId: document.unifiedDocument.id,
+          review: { score: reviewScore },
+        });
+      } catch (error:any) {
+        captureEvent({
+          error,
+          msg: "Failed to save review",
+          data: { reviewScore, content },
+        });
+        dispatch(setMessage("Failed to save review. This error was logged."));
+        // @ts-ignore
+        dispatch(showMessage({ show: true, error: true }));
+        return false;
+      }
+  
+      // param["review"] = reviewResponse.id;
+    }
+
+
+
+
+
     try {
       const isRootComment = !parentId;
       let parentComment: CommentType | undefined;

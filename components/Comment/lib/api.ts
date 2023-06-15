@@ -99,6 +99,22 @@ export const fetchSingleCommentAPI = async ({
   return parseComment({ raw: response, parent: parentComment });
 };
 
+export const createPeerReview = ({ unifiedDocumentId, review }) => {
+  let config = API.POST_CONFIG(review);
+
+  return fetch(API.REVIEW({ unifiedDocumentId, reviewId: review?.id }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const updatePeerReview = ({ unifiedDocumentId, review }) => {
+  let config = API.PATCH_CONFIG(review);
+
+  return fetch(API.REVIEW({ unifiedDocumentId, reviewId: review?.id }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const createCommentAPI = async ({
   content,
   commentType = COMMENT_TYPES.DISCUSSION,
@@ -120,6 +136,7 @@ export const createCommentAPI = async ({
     `${documentType}/${documentId}/comments/` +
       (bountyAmount ? "create_comment_with_bounty" : "create_rh_comment")
   );
+
   const response = await fetch(
     _url,
     API.POST_CONFIG({
