@@ -11,10 +11,9 @@ export const getEducationalCarouselElements = () => [
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
-        <img
-          src="/static/beaker.svg"
-          style={{ marginRight: 6, marginTop: -3, height: 20 }}
-        />
+        <span style={{ marginRight: 8, marginTop: 3 }}>
+          <RSC style={styles.RSC} />
+        </span>
         {"About ResearchCoin (RSC)"}
       </div>
     ),
