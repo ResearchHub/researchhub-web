@@ -94,6 +94,14 @@ export const getLeftSidebarItemAttrs = ({
       onClick: silentEmptyFnc,
     },
     {
+      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
+      label: "Hubs",
+      isActive: ["/hubs"].includes(pathname),
+      isMinimized,
+      href: "/hubs",
+      onClick: silentEmptyFnc,
+    },
+    {
       icon: <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>,
       label: "Notebook",
       isMinimized,
@@ -105,14 +113,6 @@ export const getLeftSidebarItemAttrs = ({
           openLoginModal(true, "Please Sign in with Google to continue.");
         }
       },
-    },
-    {
-      icon: <FontAwesomeIcon icon={faGrid2}></FontAwesomeIcon>,
-      label: "Hubs",
-      isActive: ["/hubs"].includes(pathname),
-      isMinimized,
-      href: "/hubs",
-      onClick: silentEmptyFnc,
     },
     killswitch("reference-manager")
       ? {
