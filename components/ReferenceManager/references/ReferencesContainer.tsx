@@ -213,7 +213,7 @@ function ReferencesContainer({
   const inputRef = useRef();
 
   const getPresignedUrl = async (fileName, organizationID, projectID) => {
-    const url = generateApiUrl("citation_entry/pdf_uploads");
+    const url = generateApiUrl("citation_entry/upload_pdfs");
     const resp = await fetch(
       url,
       api.POST_CONFIG({
