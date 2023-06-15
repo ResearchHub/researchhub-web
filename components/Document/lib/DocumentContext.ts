@@ -7,6 +7,7 @@ type DocumentContext = {
   tabName?: string | undefined;
   updateMetadata: Function;
   editDocument?: Function;
+  updateDocument: Function;
 };
 
 export const DocumentContext = createContext<DocumentContext>({
@@ -15,4 +16,5 @@ export const DocumentContext = createContext<DocumentContext>({
   tabName: undefined,
   updateMetadata: () => null,
   editDocument: () => null,
+  updateDocument: () => null,
 });

@@ -21,9 +21,10 @@ const AuthorInput = (props) => {
 
   function renderTag(props) {
     let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;
+
     return (
       <span key={key} {...other}>
-        {`${tag.first_name} ${tag.last_name}`}
+        {`${tag.first_name || tag.firstName} ${tag.last_name || tag.lastName}`}
         {!disabled && (
           <a className={classNameRemove} onClick={(e) => onRemove(key)} />
         )}

@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   DocumentMetadata,
   GenericDocument,
+  Paper,
   isPaper,
   isPost,
 } from "./lib/types";
@@ -23,19 +24,19 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
-import Link from "next/link";
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { flagGrmContent } from "../Flag/api/postGrmFlag";
 import FlagButtonV2 from "../Flag/FlagButtonV2";
 import { breakpoints } from "~/config/themes/screen";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
-import { faPen, faFlag } from "@fortawesome/pro-solid-svg-icons";
+import { faPen, faFlag } from "@fortawesome/pro-light-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
+import PaperMetadataModal from "./PaperMetadataModal";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -86,18 +87,42 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
   }, []);
 
   const options: Array<MenuOption> = [
-    // ...(isPaper(doc)
-    //   ? [
-    //       {
-    //         label: "Edit metadata",
-    //         icon: <FontAwesomeIcon icon={faPen} />,
-    //         value: "edit-metadata",
-    //         onClick: () => {
-    //           alert("implement me");
-    //         },
-    //       },
-    //     ]
-    //   : []),
+    ...(isPaper(doc)
+      ? [
+          {
+            label: "Edit paper",
+            html: (
+              <PermissionNotificationWrapper
+                modalMessage="edit document"
+                permissionKey="UpdatePaper"
+                loginRequired={true}
+                hideRipples={true}
+              >
+                <PaperMetadataModal
+                  paper={doc as Paper}
+                  onUpdate={(updatedFields) => {
+                    const updated = { ...doc, ...updatedFields };
+                    documentContext.updateDocument(updated);
+                    revalidateDocument();
+                  }}
+                >
+                  <div style={{ display: "flex", width: 140 }}>
+                    <div style={{ width: 30, boxSizing: "border-box" }}>
+                      <FontAwesomeIcon
+                        icon={faPen}
+                        style={{ marginRight: 3 }}
+                      />
+                    </div>
+
+                    <div>Edit</div>
+                  </div>
+                </PaperMetadataModal>
+              </PermissionNotificationWrapper>
+            ),
+            value: "edit-paper",
+          },
+        ]
+      : []),
     ...(isPost(doc) &&
     doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
       ? [
@@ -131,7 +156,6 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
             <div style={{ width: 30, boxSizing: "border-box" }}>
               <FontAwesomeIcon icon={faFlag} />
             </div>
-
             <div>Flag content</div>
           </div>
         </FlagButtonV2>
@@ -182,6 +206,31 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
+                {isPaper(doc) && (
+                  <PermissionNotificationWrapper
+                    modalMessage="edit document"
+                    permissionKey="UpdatePaper"
+                    loginRequired={true}
+                    hideRipples={true}
+                  >
+                    <PaperMetadataModal
+                      paper={doc as Paper}
+                      onUpdate={(updatedFields) => {
+                        const updated = { ...doc, ...updatedFields };
+                        documentContext.updateDocument(updated);
+                        revalidateDocument();
+                      }}
+                    >
+                      <IconButton variant="round">
+                        <FontAwesomeIcon
+                          icon={faPen}
+                          style={{ marginRight: 3 }}
+                        />
+                        <span>Edit</span>
+                      </IconButton>
+                    </PaperMetadataModal>
+                  </PermissionNotificationWrapper>
+                )}
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
                   permissionKey="UpdatePaper"
@@ -347,7 +396,7 @@ const styles = StyleSheet.create({
   voteWrapper: {
     position: "absolute",
     left: -VOTE_DISTANCE_FROM_LEFT,
-    top: -28,
+    top: 0,
     [`@media (max-width: ${SMALL_SCREEN_BREAKPOINT}px)`]: {
       display: "none",
     },

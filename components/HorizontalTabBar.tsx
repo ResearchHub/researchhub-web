@@ -17,7 +17,7 @@ export type Tab = {
   value: string;
   href?: string;
   isSelected?: boolean;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   selectedIcon?: React.ReactNode;
   pillContent?: React.ReactNode | string;
 };

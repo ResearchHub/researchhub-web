@@ -20,9 +20,6 @@ import { htmlStringToPlainString } from "~/config/utils/htmlStringToPlainString"
 import { useRouter } from "next/router";
 import { ClipLoader } from "react-spinners";
 
-const SimpleEditor = dynamic(
-  () => import("~/components/CKEditor/SimpleEditor")
-);
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
 );
@@ -30,6 +27,9 @@ const DynamicCKEditor = dynamic(
 type Props = {
   paper: any;
   onUpdate?: Function;
+  isEditMode?: boolean;
+  // Always show "edit" mode. Useful in some contexts
+  permanentEdit?: boolean;
 };
 
 const useEffectParseAbstract = ({
@@ -58,10 +58,14 @@ const useEffectParseAbstract = ({
 export default function PaperPageAbstractSection({
   paper,
   onUpdate,
+  isEditMode = false,
+  permanentEdit = false,
 }: Props): ReactElement {
   const [abstractSrc, setAbstractSrc] = useState<NullableString>(null);
   const [hasNoAbstract, setHasNoAbstract] = useState<boolean>(false);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [_isEditMode, setIsEditMode] = useState<boolean>(
+    isEditMode || permanentEdit
+  );
   const [isUpdatingAbstract, setIsUpdatingAbstract] = useState<boolean>(false);
   const router = useRouter();
 
@@ -71,9 +75,9 @@ export default function PaperPageAbstractSection({
     <div className={css(styles.paperPageAbstractSection)}>
       <div>
         <div style={{ position: "relative", display: "inline-flex" }}>
-          <h2 style={{ display: "inline" }}>{"Abstract"}</h2>
+          {!_isEditMode && <h2 style={{ display: "inline" }}>{"Abstract"}</h2>}
           <div style={{ position: "absolute", right: -30, top: 5 }}>
-            {(!isEditMode || hasNoAbstract) && (
+            {(!_isEditMode || hasNoAbstract) && (
               <PermissionNotificationWrapper
                 modalMessage="propose abstract edit"
                 onClick={(): void => setIsEditMode(true)}
@@ -87,7 +91,7 @@ export default function PaperPageAbstractSection({
           </div>
         </div>
 
-        {isEditMode ? (
+        {_isEditMode ? (
           <div className={css(styles.editorWrap)}>
             <div style={{ minHeight: 300 }}>
               <DynamicCKEditor
@@ -99,13 +103,15 @@ export default function PaperPageAbstractSection({
               />
             </div>
             <div className={css(styles.editButtonRow)}>
-              <Button
-                isWhite
-                variant={"text"}
-                label={"Cancel"}
-                onClick={(): void => setIsEditMode(false)}
-                size={"small"}
-              />
+              {!permanentEdit && (
+                <Button
+                  isWhite
+                  variant={"text"}
+                  label={"Cancel"}
+                  onClick={(): void => setIsEditMode(false)}
+                  size={"small"}
+                />
+              )}
               <Button
                 label={
                   isUpdatingAbstract ? (
@@ -125,11 +131,15 @@ export default function PaperPageAbstractSection({
                   postUpdatePaperAbstract({
                     onError: (error: Error): void => {
                       emptyFncWithMsg(error);
-                      setIsEditMode(false);
+                      if (!permanentEdit) {
+                        setIsEditMode(false);
+                      }
                       setIsUpdatingAbstract(false);
                     },
                     onSuccess: (response): void => {
-                      setIsEditMode(false);
+                      if (!permanentEdit) {
+                        setIsEditMode(false);
+                      }
                       setIsUpdatingAbstract(false);
                       setAbstractSrc(abstractSrc);
                       setHasNoAbstract(isEmpty(abstractSrc));

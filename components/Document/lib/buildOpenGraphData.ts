@@ -1,4 +1,5 @@
-import { GenericDocument } from "./types";
+import dayjs from "dayjs";
+import { GenericDocument, isPaper } from "./types";
 
 export type OpenGraphData = {
   meta: any;
@@ -19,14 +20,18 @@ export default function buildOpenGraphData({
     "@graph": [
       {
         "@type": "Article",
-        "@id": document.unifiedDocument.id,
-        name: document.title,
-        datePublished: document.createdDate,
-        author: document.authors.map((author) => ({
-          givenName: author.firstName,
-          familyName: author.lastName,
+        "headline": document.title,
+        "name": document.title,
+        "image": document?.images[0]?.url,
+        "datePublished": dayjs(document.createdDate).format("YYYY-MM-DD"),
+        "author": document.authors.map((author) => ({
           "@type": "Person",
+          "name": author.firstName + " " + author.lastName,
         })),
+        "publisher": {
+          "@type": "Organization",
+          "name": isPaper(document) ? document.journal : "ResearchHub",
+        },
       },
     ],
   };
