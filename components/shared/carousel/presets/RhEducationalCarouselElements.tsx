@@ -40,17 +40,28 @@ export const getEducationalCarouselElements = () => [
   {
     title: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemTitle)}>
-        <span style={{ marginRight: 8, marginTop: 3 }}>
+        {/* <span style={{ marginRight: 8, marginTop: 3 }}>
           <RSC style={styles.RSC} />
-        </span>
-        {" What is ResearchCoin (RSC)"}
+        </span> */}
+        {" ResearchHub Reference Manager"}
       </div>
     ),
     body: (
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
-        {
-          "ResearchCoin empowers the ResearchHub community. With ResearchCoin, users have the ability to create bounties, tip authors, and gain voting rights for community decision making."
-        }
+        Introducing ResearchHub's all-new reference manager: your ultimate
+        partner in scholarly research. Streamline your academic workflow with
+        its multiplayer features, effortlessly organizing and citing references
+        across various formats.
+        <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
+          <ALink
+            theme="solidPrimary"
+            overrideStyle={[DEFAULT_ITEM_STYLE.link]}
+            href="https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform"
+            target="_blank"
+          >
+            {"Click to join the waitlist."}
+          </ALink>
+        </div>
       </div>
     ),
   },
@@ -68,15 +79,17 @@ export const getEducationalCarouselElements = () => [
       <div className={css(DEFAULT_ITEM_STYLE.rhCarouselItemBody)}>
         <span>
           {
-            "We’re a collection of skeptical, yet optimistic individuals who want to accelerate the pace of science. We think the incentives of scientific funding and publishing are broken, and that blockchain can help. If you'd like, "
+            "We’re a collection of skeptical, yet optimistic individuals who want to accelerate the pace of science. We think the incentives of scientific funding and publishing are broken, and that blockchain can help."
           }
-          <ALink
-            target="__blank"
-            theme="solidPrimary"
-            href="https://discord.gg/researchhub"
-          >
-            <span style={{ textDecoration: "underline" }}> Join us.</span>
-          </ALink>
+          <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
+            <ALink
+              target="__blank"
+              theme="solidPrimary"
+              href="https://discord.gg/researchhub"
+            >
+              <span> Click to join us on Discord.</span>
+            </ALink>
+          </div>
         </span>
       </div>
     ),
