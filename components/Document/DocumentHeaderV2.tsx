@@ -87,37 +87,30 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
   }, []);
 
   const options: Array<MenuOption> = [
-    ...(isPaper(doc)
+    ...(isPaper(doc) && currentUser
       ? [
           {
             label: "Edit paper",
             html: (
-              <PermissionNotificationWrapper
-                modalMessage="edit document"
-                permissionKey="UpdatePaper"
-                loginRequired={true}
-                hideRipples={true}
+              <PaperMetadataModal
+                paper={doc as Paper}
+                onUpdate={(updatedFields) => {
+                  const updated = { ...doc, ...updatedFields };
+                  documentContext.updateDocument(updated);
+                  revalidateDocument();
+                }}
               >
-                <PaperMetadataModal
-                  paper={doc as Paper}
-                  onUpdate={(updatedFields) => {
-                    const updated = { ...doc, ...updatedFields };
-                    documentContext.updateDocument(updated);
-                    revalidateDocument();
-                  }}
-                >
-                  <div style={{ display: "flex", width: 140 }}>
-                    <div style={{ width: 30, boxSizing: "border-box" }}>
-                      <FontAwesomeIcon
-                        icon={faPen}
-                        style={{ marginRight: 3 }}
-                      />
-                    </div>
-
-                    <div>Edit</div>
+                <div style={{ display: "flex", width: 140 }}>
+                  <div style={{ width: 30, boxSizing: "border-box" }}>
+                    <FontAwesomeIcon
+                      icon={faPen}
+                      style={{ marginRight: 3 }}
+                    />
                   </div>
-                </PaperMetadataModal>
-              </PermissionNotificationWrapper>
+
+                  <div>Edit</div>
+                </div>
+              </PaperMetadataModal>
             ),
             value: "edit-paper",
           },
@@ -206,30 +199,23 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               <div
                 className={css(styles.actionWrapper, styles.largeScreenActions)}
               >
-                {isPaper(doc) && (
-                  <PermissionNotificationWrapper
-                    modalMessage="edit document"
-                    permissionKey="UpdatePaper"
-                    loginRequired={true}
-                    hideRipples={true}
+                {isPaper(doc) && currentUser && (
+                  <PaperMetadataModal
+                    paper={doc as Paper}
+                    onUpdate={(updatedFields) => {
+                      const updated = { ...doc, ...updatedFields };
+                      documentContext.updateDocument(updated);
+                      revalidateDocument();
+                    }}
                   >
-                    <PaperMetadataModal
-                      paper={doc as Paper}
-                      onUpdate={(updatedFields) => {
-                        const updated = { ...doc, ...updatedFields };
-                        documentContext.updateDocument(updated);
-                        revalidateDocument();
-                      }}
-                    >
-                      <IconButton variant="round">
-                        <FontAwesomeIcon
-                          icon={faPen}
-                          style={{ marginRight: 3 }}
-                        />
-                        <span>Edit</span>
-                      </IconButton>
-                    </PaperMetadataModal>
-                  </PermissionNotificationWrapper>
+                    <IconButton variant="round">
+                      <FontAwesomeIcon
+                        icon={faPen}
+                        style={{ marginRight: 3 }}
+                      />
+                      <span>Edit</span>
+                    </IconButton>
+                  </PaperMetadataModal>
                 )}
                 <PermissionNotificationWrapper
                   modalMessage="edit document"
