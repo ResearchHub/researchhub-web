@@ -4,10 +4,14 @@ import {
   parseComment,
 } from "./lib/types";
 import { CommentTreeContext } from "./lib/contexts";
-import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
+import {
+  createCommentAPI,
+  createPeerReview,
+  fetchCommentsAPI,
+} from "./lib/api";
 import { css, StyleSheet } from "aphrodite";
 import { filterOpts, sortOpts } from "./lib/options";
-import { ID, parseUser } from "~/config/types/root_types";
+import { ID, Review, parseReview, parseUser } from "~/config/types/root_types";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
 import { Purchase } from "~/config/types/purchase";
@@ -29,6 +33,8 @@ import removeComment from "./lib/removeComment";
 import replaceComment from "./lib/replaceComment";
 import { GenericDocument } from "../Document/lib/types";
 import { useRouter } from "next/router";
+import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
+import { captureEvent } from "~/config/utils/events";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -56,7 +62,7 @@ const CommentFeed = ({
   initialFilter = undefined,
   context = null,
   showFilters = true,
-  allowCommentTypeSelection = true,
+  allowCommentTypeSelection = false,
   allowBounty = false,
   editorType = COMMENT_TYPES.DISCUSSION,
 }: Args) => {
@@ -184,56 +190,67 @@ const CommentFeed = ({
     }
   };
 
-  const handleCommentCreate = async ({
+  const handleReviewCreate = async ({
+    content,
+    commentId,
+  }: {
+    content: object;
+    commentId: ID;
+  }): Promise<Review | boolean> => {
+    const reviewScore = getReviewCategoryScore({
+      quillContents: content,
+      category: "overall",
+    });
+
+    try {
+      const reviewResponse = await createPeerReview({
+        unifiedDocumentId: document.unifiedDocument.id,
+        commentId,
+        score: reviewScore,
+      });
+
+      return parseReview(reviewResponse);
+    } catch (error: any) {
+      captureEvent({
+        error,
+        msg: "Failed to create review",
+        data: { reviewScore, commentId, document, content },
+      });
+      return false;
+    }
+  };
+
+  const handleRootCommentCreate = async ({
     content,
     commentType,
-    parentId,
     bountyAmount,
     mentions,
   }: {
     content: object;
     commentType: COMMENT_TYPES;
-    parentId: ID;
     bountyAmount?: number;
     mentions?: Array<string>;
   }) => {
+    let comment: CommentType;
     try {
-      const isRootComment = !parentId;
-      let parentComment: CommentType | undefined;
-      if (parentId) {
-        parentComment = findComment({
-          id: parentId,
-          comments: comments,
-        })?.comment;
-
-        if (!parentComment) {
-          localWarn(
-            `Could not find parent comment ${parentId}. This should not happen. Aborting create.`
-          );
-          return false;
-        }
-      }
-
-      const comment: CommentType = await createCommentAPI({
+      comment = await createCommentAPI({
         content,
         commentType,
         documentId: document.id,
         documentType: document.apiDocumentType,
-        parentComment,
         bountyAmount,
         mentions,
       });
 
-      onCreate({ comment, parent: parentComment });
-      if (isRootComment) {
-        setRootLevelCommentCount(rootLevelCommentCount + 1);
-      }
+      setRootLevelCommentCount(rootLevelCommentCount + 1);
     } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
       // @ts-ignore
       dispatch(showMessage({ show: true, error: true }));
       throw error;
     }
+
+    return comment;
   };
 
   const onFetchMore = ({
@@ -392,13 +409,34 @@ const CommentFeed = ({
                 key={`${editorType}-new-thread`}
                 editorId={`${editorType}-new-thread`}
                 commentType={editorType}
-                handleSubmit={handleCommentCreate}
+                handleSubmit={async (props) => {
+                  try {
+                    let comment = (await handleRootCommentCreate(
+                      props
+                    )) as CommentType;
+                    if (comment.commentType === COMMENT_TYPES.REVIEW) {
+                      const review = await handleReviewCreate({
+                        commentId: comment.id,
+                        content: comment.content,
+                      });
+
+                      comment = { ...comment, review: review as Review };
+                    }
+                    onCreate({ comment });
+                  } catch (error: any) {
+                    captureEvent({
+                      error,
+                      msg: `Failed to create ${props.commentType}`,
+                      data: {
+                        props,
+                      },
+                    });
+                  }
+                }}
                 allowBounty={allowBounty}
                 author={currentUser?.authorProfile}
                 previewModeAsDefault={context ? true : false}
-                allowCommentTypeSelection={
-                  allowCommentTypeSelection && !isQuestion
-                }
+                allowCommentTypeSelection={allowCommentTypeSelection}
                 editorStyleOverride={
                   context === "drawer" ? styles.roundedEditor : null
                 }

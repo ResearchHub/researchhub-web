@@ -1,6 +1,12 @@
 import Bounty, { parseBountyList, RelatedItem } from "~/config/types/bounty";
 import { parsePurchase, Purchase } from "~/config/types/purchase";
-import { RHUser, parseUser, ID } from "~/config/types/root_types";
+import {
+  RHUser,
+  parseUser,
+  ID,
+  Review,
+  parseReview,
+} from "~/config/types/root_types";
 import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -31,6 +37,7 @@ export type Comment = {
   childrenCount: number;
   tips: Purchase[];
   isAcceptedAnswer: boolean;
+  review?: Review;
 };
 
 type parseCommentArgs = {
@@ -39,7 +46,7 @@ type parseCommentArgs = {
 };
 
 export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
-  const parsed:Comment = {
+  const parsed: Comment = {
     id: raw.id,
     threadId: raw.thread,
     createdDate: formatDateStandard(raw.created_date),
@@ -56,14 +63,15 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     children: [] as Comment[],
     childrenCount: raw.children_count || 0,
     ...(parent && { parent }),
-    tips: (raw.purchases || []).map((p:any) => parsePurchase(p)),
+    tips: (raw.purchases || []).map((p: any) => parsePurchase(p)),
     isAcceptedAnswer: Boolean(raw.is_accepted_answer),
+    ...(raw.review && { review: parseReview(raw.review) }),
   };
 
-  const relatedItem:RelatedItem = {
+  const relatedItem: RelatedItem = {
     type: "comment",
     object: parsed,
-  }
+  };
 
   parsed.children = (raw.children ?? [])
     .filter((child: any) => !isEmpty(child))

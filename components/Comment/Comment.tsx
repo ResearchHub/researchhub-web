@@ -6,7 +6,7 @@ import CommentActions from "./CommentActions";
 import { Comment as CommentType } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
-import { ID, parseUser } from "~/config/types/root_types";
+import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import {
   getOpenBounties,
@@ -22,6 +22,7 @@ import {
   createCommentAPI,
   fetchSingleCommentAPI,
   updateCommentAPI,
+  updatePeerReview,
 } from "./lib/api";
 import { CommentTreeContext } from "./lib/contexts";
 import { getConfigForContext } from "./lib/config";
@@ -33,6 +34,8 @@ import { timeTo } from "~/config/utils/dates";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
+import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
+import { captureEvent } from "~/config/utils/events";
 const { setMessage, showMessage } = MessageActions;
 
 type CommentArgs = {
@@ -140,7 +143,39 @@ const Comment = ({ comment, document }: CommentArgs) => {
       mentions,
     });
 
-    commentTreeState.onUpdate({ comment });
+    return comment;
+  };
+
+  const handleReviewUpdate = async ({
+    content,
+    commentId,
+    reviewId,
+  }: {
+    content: object;
+    commentId: ID;
+    reviewId: ID;
+  }): Promise<Review | boolean> => {
+    const reviewScore = getReviewCategoryScore({
+      quillContents: content,
+      category: "overall",
+    });
+
+    try {
+      const reviewResponse = await updatePeerReview({
+        reviewId,
+        unifiedDocumentId: document.unifiedDocument.id,
+        score: reviewScore,
+      });
+
+      return parseReview(reviewResponse);
+    } catch (error: any) {
+      captureEvent({
+        error,
+        msg: "Failed to update review",
+        data: { reviewScore, reviewId, commentId, document, content },
+      });
+      return false;
+    }
   };
 
   const hasOpenBounties = openBounties.length > 0;
@@ -171,16 +206,39 @@ const Comment = ({ comment, document }: CommentArgs) => {
           </div>
           {isEditMode ? (
             <CommentEditor
-              handleSubmit={async (args) => {
-                await handleCommentUpdate(args);
-                setIsEditMode(false);
+              handleSubmit={async (props) => {
+                try {
+                  let comment = (await handleCommentUpdate(
+                    props
+                  )) as CommentType;
+                  console.log(comment);
+                  if (comment.review) {
+                    const review = await handleReviewUpdate({
+                      commentId: comment.id,
+                      content: comment.content,
+                      reviewId: comment.review?.id as ID,
+                    });
+                    comment = { ...comment, review: review as Review };
+                  }
+                  commentTreeState.onUpdate({ comment });
+                } catch (error: any) {
+                  captureEvent({
+                    error,
+                    msg: `Failed to create ${props.commentType}`,
+                    data: {
+                      props,
+                    },
+                  });
+                } finally {
+                  setIsEditMode(false);
+                }
               }}
               commentType={comment.commentType}
               content={comment.content}
               commentId={comment.id}
               author={currentUser?.authorProfile}
               editorId={`edit-${comment.id}`}
-              allowCommentTypeSelection={!isQuestion}
+              allowCommentTypeSelection={false}
               handleClose={() => _handleCloseEdit()}
             />
           ) : (

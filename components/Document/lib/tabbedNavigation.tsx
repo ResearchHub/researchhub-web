@@ -135,7 +135,7 @@ const withPillContent = ({
     } else if (tab.value === "reviews") {
       finalTabs.push({
         ...tab,
-        pillContent: metadata.reviewCount || undefined,
+        pillContent: metadata.reviewSummary.count || undefined,
       });
     }
   }

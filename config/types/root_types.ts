@@ -192,6 +192,18 @@ export type Organization = {
   slug: string;
 };
 
+export type Review = {
+  id: ID;
+  score: number;
+};
+
+export const parseReview = (raw: any): Review => {
+  return {
+    id: raw.id,
+    score: raw.score,
+  };
+};
+
 export const parseOrganization = (raw: any): Organization => {
   return {
     id: raw.id,

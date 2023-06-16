@@ -199,9 +199,7 @@ export const deleteCommentAPI = async ({
   );
 
   try {
-    await fetch(url, API.PUT_CONFIG({ })).then(
-      Helpers.checkStatus
-    );
+    await fetch(url, API.PUT_CONFIG({})).then(Helpers.checkStatus);
   } catch (error: any) {
     const isExpectedError = error.response.status < 500;
     if (isExpectedError) {
@@ -291,4 +289,45 @@ export const getFileUrl = ({ fileString, type }) => {
     .then((res) => {
       return res;
     });
+};
+
+export const createPeerReview = ({
+  unifiedDocumentId,
+  commentId,
+  score,
+}: {
+  unifiedDocumentId: ID;
+  commentId: ID;
+  score: number;
+}) => {
+  const payload = {
+    score,
+    object_id: commentId,
+    content_type: "rhcommentmodel",
+  };
+
+  return fetch(API.REVIEW({ unifiedDocumentId }), API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const updatePeerReview = ({
+  unifiedDocumentId,
+  reviewId,
+  score,
+}: {
+  unifiedDocumentId: ID;
+  reviewId: ID;
+  score: number;
+}) => {
+  const payload = {
+    score,
+  };
+
+  return fetch(
+    API.REVIEW({ reviewId, unifiedDocumentId }),
+    API.PATCH_CONFIG(payload)
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
 };

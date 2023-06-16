@@ -93,6 +93,7 @@ const DocumentCommentsPage: NextPage<Args> = ({
         documentType,
         tabName,
         updateMetadata: setDocumentMetadata,
+        updateDocument: setDocument,
       }}
     >
       <DocumentPageLayout
@@ -118,7 +119,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
             // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
             onCommentCreate={(comment) => {
               revalidateDocument();
-
               if (!documentMetadata) return;
               if (comment.bounties.length > 0) {
                 setDocumentMetadata({
