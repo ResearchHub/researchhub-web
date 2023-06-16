@@ -324,8 +324,6 @@ export const updatePeerReview = ({
     score,
   };
 
-  console.log("reviewId", reviewId);
-
   return fetch(
     API.REVIEW({ reviewId, unifiedDocumentId }),
     API.PATCH_CONFIG(payload)

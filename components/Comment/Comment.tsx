@@ -218,9 +218,7 @@ const Comment = ({ comment, document }: CommentArgs) => {
                       content: comment.content,
                       reviewId: comment.review?.id as ID,
                     });
-                    if (review) {
-                      comment = { ...comment, review: review as Review };
-                    }
+                    comment = { ...comment, review: review as Review };
                   }
                   commentTreeState.onUpdate({ comment });
                 } catch (error: any) {

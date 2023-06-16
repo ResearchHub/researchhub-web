@@ -419,9 +419,8 @@ const CommentFeed = ({
                         commentId: comment.id,
                         content: comment.content,
                       });
-                      if (review) {
-                        comment = { ...comment, review: review as Review };
-                      }
+
+                      comment = { ...comment, review: review as Review };
                     }
                     onCreate({ comment });
                   } catch (error: any) {

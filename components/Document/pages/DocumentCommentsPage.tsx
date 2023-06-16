@@ -119,8 +119,6 @@ const DocumentCommentsPage: NextPage<Args> = ({
             // Not every use case is taken into account since many scenarios are uncommon. For those, a page refresh will be required.
             onCommentCreate={(comment) => {
               revalidateDocument();
-              console.log("comment", comment);
-              return;
               if (!documentMetadata) return;
               if (comment.bounties.length > 0) {
                 setDocumentMetadata({
