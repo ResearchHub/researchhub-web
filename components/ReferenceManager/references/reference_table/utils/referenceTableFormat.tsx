@@ -1,8 +1,28 @@
-import { GridColDef } from "@mui/x-data-grid";
+import { GridCell, GridColDef } from "@mui/x-data-grid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolder, faFolders } from "@fortawesome/pro-solid-svg-icons";
 
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
-  { field: "title", headerName: "Title", width: 320 },
+  {
+    field: "title",
+    headerName: "Title",
+    width: 320,
+    renderCell: (cell) => {
+      if (cell.row.id.toString().includes("folder") && cell.value) {
+        return (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <FontAwesomeIcon
+              icon={faFolders}
+              style={{ marginRight: 8 }}
+              color={"#7BD3F9"}
+            />
+            {cell.value}
+          </div>
+        );
+      }
+    },
+  },
   { field: "authors", headerName: "Authors", sortable: false, width: 320 },
   { field: "last_author", headerName: "Last Author", width: 200 },
   // {

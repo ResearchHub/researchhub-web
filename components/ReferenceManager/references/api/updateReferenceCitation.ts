@@ -16,7 +16,7 @@ export const updateReferenceCitation = ({
   const formattedPayload = payload;
   fetch(
     buildApiUri({ apiPath: `citation_entry/${payload?.citation_id}` }),
-    API.PUT_CONFIG(formattedPayload)
+    API.PATCH_CONFIG(formattedPayload)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

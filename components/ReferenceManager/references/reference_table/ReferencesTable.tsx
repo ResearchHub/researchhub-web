@@ -1,18 +1,30 @@
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridCell,
+  GridRow,
+  GridSkeletonCell,
+  useGridApiContext,
+  useGridApiEventHandler,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import { formatReferenceRowData } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useRouter } from "next/router";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import { useReferencesTableContext } from "./context/ReferencesTableContext";
 import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
+import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
+import Link from "next/link";
+import { updateReferenceCitation } from "../api/updateReferenceCitation";
+import colors from "~/config/themes/colors";
 
 type Props = {
   createdReferences: any[];
@@ -71,6 +83,44 @@ export default function ReferencesTable({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pdfIsOpen, setPDFIsOpen] = useState<boolean>(false);
   const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [dragStarted, setDragStarted] = useState(false);
+  const [rowDraggedOver, setRowDraggedOver] = useState();
+  const [rowDragged, setRowDragged] = useState();
+
+  const router = useRouter();
+  const apiRef = useGridApiRef();
+
+  const moveCitationToFolder = ({ moveToProjectId }) => {
+    const newReferenceData = referenceTableRowData.filter((data) => {
+      return data.id !== rowDragged;
+    });
+    setReferenceTableRowData(newReferenceData);
+    updateReferenceCitation({
+      payload: {
+        citation_id: rowDragged,
+        // TODO: calvinhlee - create utily functions to format these
+        project: parseInt(moveToProjectId, 10),
+      },
+      onSuccess: () => {
+        setRowDraggedOver();
+      },
+      onError: () => {},
+    });
+  };
+
+  const rowDropped = (params) => {
+    setDragStarted(false);
+
+    const stringId = params.id.toString();
+    if (stringId.includes("folder")) {
+      moveCitationToFolder({
+        moveToProjectId: stringId.split("-folder")[0],
+      });
+    }
+  };
+
+  const { activeProject, setActiveProject } =
+    useReferenceActiveProjectContext();
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -112,13 +162,26 @@ export default function ReferencesTable({
   }, [createdReferences]);
 
   const formattedReferenceRows = !isLoading
-    ? nullthrows(formatReferenceRowData(referenceTableRowData))
+    ? nullthrows(
+        formatReferenceRowData(
+          referenceTableRowData,
+          activeProject.children?.map((child) => {
+            return {
+              ...child,
+              title: child.project_name,
+              id: `${child.id}-folder`,
+            };
+          })
+        )
+      )
     : [];
 
   return (
     <div style={{ width: "100%" }}>
       <DataGrid
+        apiRef={apiRef}
         autoHeight
+        disableRowSelectionOnClick
         checkboxSelection
         columns={columnsFormat}
         hideFooter
@@ -154,9 +217,23 @@ export default function ReferencesTable({
           //   setIsDrawerOpen(true);
           // }
         }}
+        rowReordering
+        // onRowClick={(params) => {
+        //   console.log(params);
+        //   const projectIdString = params.id.toString();
+
+        //   if (projectIdString.includes("folder")) {
+        //     const projectId = projectIdString.split("-folder")[0];
+        //     router.push(
+        //       `/reference-manager/${router.query.organization}?project=${projectId}`
+        //     );
+        //   }
+        // }}
         onCellClick={(params, event, _details): void => {
+          console.log("CELL CLICKED");
           if (params.field !== "__check__") {
-            event.stopPropagation();
+            event.defaultMuiPrevented = true;
+            // event.stopPropagation();
             setReferenceItemDatum({
               ...nullthrows(
                 referenceTableRowData.find(
@@ -164,13 +241,51 @@ export default function ReferencesTable({
                 )
               ),
             });
-            setIsDrawerOpen(true);
+
+            const projectIdString = params.id.toString();
+
+            if (projectIdString.includes("folder")) {
+              const projectId = projectIdString.split("-folder")[0];
+              router.push(
+                `/reference-manager/${router.query.organization}?project=${projectId}`
+              );
+            } else {
+              setIsDrawerOpen(true);
+            }
+          } else {
+            setSelectedReferenceIDs(params.id);
           }
         }}
         onRowSelectionModelChange={(selectedReferenceIDs) => {
           setSelectedReferenceIDs(selectedReferenceIDs);
         }}
         slots={{
+          row: (row) => {
+            let folderRow = false;
+            const stringId = row.row.id.toString();
+            if (stringId.includes("folder")) {
+              folderRow = true;
+            }
+            return (
+              <GridRow
+                {...row}
+                draggable={true}
+                style={{
+                  background: rowDraggedOver === row.row.id && "#3971FF",
+                  color: rowDraggedOver === row.row.id && "#fff",
+                }}
+                onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
+                onDragLeave={() => folderRow && setRowDraggedOver()}
+                onDragStart={() => {
+                  if (!folderRow) {
+                    setDragStarted(true);
+                    setRowDragged(row.row.id);
+                  }
+                }}
+                onDrop={() => folderRow && rowDropped(row.row)}
+              />
+            );
+          },
           cell: (cell) => {
             if (cell.value === "load") {
               return (
@@ -179,7 +294,28 @@ export default function ReferencesTable({
                 </div>
               );
             }
-            return <GridCell {...cell} onClick={(e) => e.stopPropagation()} />;
+
+            const projectIdString = cell.rowId.toString();
+
+            if (projectIdString.includes("folder")) {
+              const projectId = projectIdString.split("-folder")[0];
+              return (
+                <div style={{ cursor: "pointer" }}>
+                  <GridCell {...cell} />
+                </div>
+              );
+            } else {
+              return (
+                <div
+                  style={{
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <GridCell {...cell} onClick={(e) => e.stopPropagation()} />
+                </div>
+              );
+            }
           },
         }}
         sx={DATA_GRID_STYLE_OVERRIDE}

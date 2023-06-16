@@ -101,8 +101,12 @@ function formatLoading(datum): ReferenceTableRowDataType {
 }
 
 export function formatReferenceRowData(
-  data: any[]
+  data: any[],
+  projects: any[]
 ): ReferenceTableRowDataType[] {
   // NOTE: each returned-object is logically ordered. Displayed in ReferenceItemTab
-  return filterNull(data.map((datum: any) => referenceFormatSwitchMap(datum)));
+  return filterNull([
+    ...(projects ?? []),
+    ...data.map((datum: any) => referenceFormatSwitchMap(datum)),
+  ]);
 }

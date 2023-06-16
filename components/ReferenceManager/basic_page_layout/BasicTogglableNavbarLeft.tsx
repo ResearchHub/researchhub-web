@@ -101,20 +101,6 @@ export default function BasicTogglableNavbarLeft({
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         <BasicTogglableNavbarButton
-          isActive={
-            isEmpty(router.query?.project) && !isEmpty(router.query?.org_refs)
-          }
-          icon={
-            <FontAwesomeIcon
-              icon={faSitemap}
-              style={{ marginRight: 8, color: "#7C7989" }}
-            />
-          }
-          key="public-references"
-          label="Organization References"
-          link={`/reference-manager/${currentOrgSlug}?org_refs=true`}
-        />
-        <BasicTogglableNavbarButton
           icon={
             <FontAwesomeIcon
               icon={faUser}
@@ -127,6 +113,20 @@ export default function BasicTogglableNavbarLeft({
           key="my-references"
           label="My References"
           link={`/reference-manager/${currentOrgSlug}`}
+        />
+        <BasicTogglableNavbarButton
+          isActive={
+            isEmpty(router.query?.project) && !isEmpty(router.query?.org_refs)
+          }
+          icon={
+            <FontAwesomeIcon
+              icon={faSitemap}
+              style={{ marginRight: 8, color: "#7C7989" }}
+            />
+          }
+          key="public-references"
+          label="Org References"
+          link={`/reference-manager/${currentOrgSlug}?org_refs=true`}
         />
       </List>
       <Divider />

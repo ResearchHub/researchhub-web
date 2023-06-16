@@ -121,6 +121,7 @@ const useEffectSetActiveProject = ({
           is_public,
         } = activeProject ?? { collaborators: { editors: [], viewers: [] } };
         setActiveProject({
+          ...activeProject,
           collaborators: [
             ...editors.map((rawUser: any) => {
               return {

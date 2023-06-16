@@ -9,6 +9,10 @@ export const DATA_GRID_STYLE_OVERRIDE = {
     background: "#FAFAFC",
   },
 
+  "& .MuiDataGrid-cell": {
+    outline: "none !important",
+  },
+
   ".empty-data-grid& .MuiDataGrid-virtualScroller": {
     minHeight: "200px",
   },

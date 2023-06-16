@@ -35,6 +35,7 @@ import PrimaryButton from "../../form/PrimaryButton";
 import ReferenceItemFieldInput from "../../form/ReferenceItemFieldInput";
 import Stack from "@mui/material/Stack";
 import ReferenceItemFieldCreatorTagInput from "../../form/ReferenceItemFieldCreatorTagInput";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
 
 type Props = {};
 
@@ -76,6 +77,8 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
     () => new Set(referenceItemDatum?.required_fields ?? []),
     [referenceItemDatum?.id]
   );
+
+  const { currentOrg } = useOrgs();
   useEffect((): void => {
     if (isEmpty(referenceItemDatum?.id) || !isDrawerOpen) {
       setLocalReferenceFields({});
@@ -260,7 +263,7 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
                   },
                   citation_id,
                   citation_type,
-                  organization: 1,
+                  organization: currentOrg.id,
                 },
                 onSuccess: () => {
                   setReferencesFetchTime(Date.now());
