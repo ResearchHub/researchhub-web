@@ -161,6 +161,15 @@ export default function ReferencesTable({
     setReferenceTableRowData(newReferences);
   }, [createdReferences]);
 
+  const parentProject = activeProject.parent_data
+    ? {
+        ...activeProject.parent_data,
+        parentFolder: true,
+        title: activeProject.parent_data.project_name,
+        id: `${activeProject.parent_data.id}-folder-parent`,
+      }
+    : null;
+
   const formattedReferenceRows = !isLoading
     ? nullthrows(
         formatReferenceRowData(
@@ -171,7 +180,8 @@ export default function ReferencesTable({
               title: child.project_name,
               id: `${child.id}-folder`,
             };
-          })
+          }),
+          parentProject
         )
       )
     : [];
@@ -230,10 +240,7 @@ export default function ReferencesTable({
         //   }
         // }}
         onCellClick={(params, event, _details): void => {
-          console.log("CELL CLICKED");
           if (params.field !== "__check__") {
-            event.defaultMuiPrevented = true;
-            // event.stopPropagation();
             setReferenceItemDatum({
               ...nullthrows(
                 referenceTableRowData.find(
@@ -246,9 +253,14 @@ export default function ReferencesTable({
 
             if (projectIdString.includes("folder")) {
               const projectId = projectIdString.split("-folder")[0];
-              router.push(
-                `/reference-manager/${router.query.organization}?project=${projectId}`
-              );
+
+              const url = `/reference-manager/${router.query.organization}?project=${projectId}&root_project=${router.query.root_project}`;
+
+              if (event.metaKey) {
+                window.open(url, "_blank");
+              } else {
+                router.push(url);
+              }
             } else {
               setIsDrawerOpen(true);
             }
@@ -271,12 +283,13 @@ export default function ReferencesTable({
                 {...row}
                 draggable={true}
                 style={{
-                  background: rowDraggedOver === row.row.id && "#3971FF",
+                  background:
+                    rowDraggedOver === row.row.id && colors.NEW_BLUE(1),
                   color: rowDraggedOver === row.row.id && "#fff",
                 }}
                 onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
                 onDragLeave={() => folderRow && setRowDraggedOver()}
-                onDragStart={() => {
+                onDrag={() => {
                   if (!folderRow) {
                     setDragStarted(true);
                     setRowDragged(row.row.id);

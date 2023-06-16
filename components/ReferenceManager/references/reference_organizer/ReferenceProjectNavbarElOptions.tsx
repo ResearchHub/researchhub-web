@@ -70,7 +70,7 @@ export default function ReferenceProjectNavbarElOption({
               }}
             >
               <Typography id="modal-modal-title" variant="subtitle2">
-                {`Are you sure you want to remove project?`}
+                {`Are you sure you want to remove this project?`}
               </Typography>
             </Box>
             <Box
@@ -91,7 +91,9 @@ export default function ReferenceProjectNavbarElOption({
             onSuccess: () => {
               resetProjectsFetchTime();
               handleDeleteModalClose();
-              router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              if (projectID === parseInt(router.query.project)) {
+                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              }
             },
             onError: emptyFncWithMsg,
           });

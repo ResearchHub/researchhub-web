@@ -1,6 +1,10 @@
-import { GridCell, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolder, faFolders } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faArrowTurnUp,
+  faFolders,
+  faTurnUp,
+} from "@fortawesome/pro-solid-svg-icons";
 
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
@@ -9,13 +13,14 @@ export const columnsFormat: GridColDef[] = [
     headerName: "Title",
     width: 320,
     renderCell: (cell) => {
-      if (cell.row.id.toString().includes("folder") && cell.value) {
+      const idString = cell.row.id.toString();
+      if (idString.includes("folder") && cell.value) {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <FontAwesomeIcon
-              icon={faFolders}
+              icon={idString.includes("parent") ? faArrowTurnUp : faFolders}
               style={{ marginRight: 8 }}
-              color={"#7BD3F9"}
+              color={idString.includes("parent") ? "#7C7989" : "#7BD3F9"}
             />
             {cell.value}
           </div>

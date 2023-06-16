@@ -80,7 +80,7 @@ export default function ReferenceProjectsNavbarEl({
       }}
     >
       <ALink
-        href={`/reference-manager/${orgSlug}/?project=${projectID}`}
+        href={`/reference-manager/${orgSlug}/?project=${projectID}&root_project=${projectID}`}
         overrideStyle={styles.linkOverride}
       >
         <Box

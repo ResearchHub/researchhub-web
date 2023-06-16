@@ -26,16 +26,13 @@ export const upsertReferenceProject = ({
   upsertPurpose,
 }: Args): void => {
   const isUpdate = upsertPurpose === "update";
-  const requestConfig = isUpdate ? API.PUT_CONFIG : API.POST_CONFIG;
+  const requestConfig = isUpdate ? API.PATCH_CONFIG : API.POST_CONFIG;
+  debugger;
   fetch(
     buildApiUri({
       apiPath: `citation_project${isUpdate ? `/${payload.project}` : ""}`,
     }),
-    requestConfig(
-      !isUpdate && !isEmpty(payload.project)
-        ? { ...payload, parent: payload.project }
-        : payload
-    )
+    requestConfig(payload)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

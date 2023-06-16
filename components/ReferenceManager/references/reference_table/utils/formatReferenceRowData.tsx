@@ -1,5 +1,6 @@
 import { filterNull } from "~/config/utils/nullchecks";
 import { ID, NullableString } from "~/config/types/root_types";
+import { ProjectValue } from "../../reference_organizer/context/ReferenceProjectsUpsertContext";
 
 export type ReferenceTableRowDataType = {
   // NOTE: Logical ordering for display reason
@@ -102,11 +103,16 @@ function formatLoading(datum): ReferenceTableRowDataType {
 
 export function formatReferenceRowData(
   data: any[],
-  projects: any[]
+  projects: any[],
+  parent: ProjectValue
 ): ReferenceTableRowDataType[] {
   // NOTE: each returned-object is logically ordered. Displayed in ReferenceItemTab
-  return filterNull([
+
+  const formatted = [
+    parent,
     ...(projects ?? []),
     ...data.map((datum: any) => referenceFormatSwitchMap(datum)),
-  ]);
+  ];
+
+  return filterNull(formatted);
 }

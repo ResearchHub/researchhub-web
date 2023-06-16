@@ -1,7 +1,7 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
-import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
 import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
+import { useRouter } from "next/router";
 
 type Args = {
   addChildrenOpen: ({ key, value }) => void;
@@ -20,9 +20,10 @@ export function renderNestedReferenceProjectsNavbarEl({
   depth = 0,
   referenceProject,
 }: Args) {
-  const { activeProject } = useReferenceActiveProjectContext();
+  const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
-  const isActive = activeProject?.projectID === referenceProject.id;
+  const isActive =
+    parseInt(router.query.root_project, 10) === referenceProject.id;
 
   return (
     <div
