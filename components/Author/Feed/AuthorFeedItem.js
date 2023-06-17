@@ -16,6 +16,8 @@ import {
 import { getFEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import ContentBadge from "~/components/ContentBadge";
 import { formatBountyAmount } from "~/config/types/bounty";
+import { parseComment } from "~/components/Comment/lib/types";
+import CommentReadOnly from "~/components/Comment/CommentReadOnly";
 
 const AuthorFeedItem = ({
   author,
@@ -69,21 +71,10 @@ const AuthorFeedItem = ({
           data.paper = data?.paper?.id;
         }
 
+        const comment = parseComment({ raw: data });
         html = (
           <div className={css(styles.discussionEntryCard)}>
-            <DiscussionEntry
-              key={`thread-${doc.id}-${item.id}`}
-              data={data}
-              hostname={process.env.HOST}
-              currentAuthor={author}
-              path={url}
-              mobileView={false}
-              documentType={docType}
-              paper={doc.id}
-              hypothesis={doc}
-              post={doc}
-              context="AUTHOR_PROFILE"
-            />
+            <CommentReadOnly content={comment.content} />
           </div>
         );
         break;
