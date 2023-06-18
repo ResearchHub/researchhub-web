@@ -24,14 +24,14 @@ export const getEducationalCarouselElements = () => [
         }
 
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
-          You{" "}
+          You can{" "}
           <ALink
             theme="solidPrimary"
             overrideStyle={[DEFAULT_ITEM_STYLE.link]}
             href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xd101dcc414f310268c37eeb4cd376ccfa507f571"
             target="_blank"
           >
-            {"can trade RSC on Uniswap"}
+            {"trade RSC on Uniswap"}
           </ALink>{" "}
           and other exchanges.
         </div>
