@@ -24,14 +24,16 @@ export const getEducationalCarouselElements = () => [
         }
 
         <div className={css(DEFAULT_ITEM_STYLE.learnMore)}>
+          You{" "}
           <ALink
             theme="solidPrimary"
             overrideStyle={[DEFAULT_ITEM_STYLE.link]}
             href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xd101dcc414f310268c37eeb4cd376ccfa507f571"
             target="_blank"
           >
-            {"Click to trade RSC on Uniswap."}
-          </ALink>
+            {"can trade RSC on Uniswap"}
+          </ALink>{" "}
+          and other exchanges.
         </div>
       </div>
     ),
@@ -58,7 +60,7 @@ export const getEducationalCarouselElements = () => [
             href="https://docs.google.com/forms/d/e/1FAIpQLSc51K8cm7QrAwzTknDspqJ7MQ6k6GYBImehEgp8-ajRvQaa7A/viewform"
             target="_blank"
           >
-            {"Click to join the waitlist."}
+            {"Join the waitlist."}
           </ALink>
         </div>
       </div>
