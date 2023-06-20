@@ -12,11 +12,27 @@ import { formatDateStandard, timeSince } from "~/config/utils/dates";
 import { isEmpty } from "~/config/utils/nullchecks";
 
 export enum COMMENT_TYPES {
-  DISCUSSION = "GENERIC_COMMENT",
+  DISCUSSION = "DISCUSSION",
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
   ANSWER = "ANSWER",
+  INLINE_DISCUSSION = "INLINE_DISCUSSION",
 }
+
+type SerializedPosition = {
+  startContainerPath: string;
+  startOffset: number;
+  endContainerPath: string;
+  endOffset: number;
+  collapsed: boolean;
+  textContent: string;
+  page?: number;
+};
+
+export type PositionAnchor = {
+  type: "text";
+  position: SerializedPosition;
+};
 
 export type Comment = {
   id: ID;
@@ -38,11 +54,27 @@ export type Comment = {
   tips: Purchase[];
   isAcceptedAnswer: boolean;
   review?: Review;
+  anchor?: PositionAnchor;
 };
 
 type parseCommentArgs = {
   raw: any;
   parent?: Comment;
+};
+
+export const parseAnchor = (raw: any): PositionAnchor => {
+  return {
+    type: "text",
+    position: {
+      startContainerPath: raw.startContainerPath,
+      startOffset: raw.startOffset,
+      endContainerPath: raw.endContainerPath,
+      endOffset: raw.endOffset,
+      collapsed: raw.collapsed,
+      textContent: raw.textContent,
+      page: raw.page || null,
+    },
+  };
 };
 
 export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
@@ -67,6 +99,10 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     isAcceptedAnswer: Boolean(raw.is_accepted_answer),
     ...(raw.review && { review: parseReview(raw.review) }),
   };
+
+  if (raw.anchor) {
+    parsed.anchor = parseAnchor(raw.anchor);
+  }
 
   const relatedItem: RelatedItem = {
     type: "comment",

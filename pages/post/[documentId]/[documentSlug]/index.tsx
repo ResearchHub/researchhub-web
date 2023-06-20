@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
@@ -8,7 +9,7 @@ import Error from "next/error";
 import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   useDocument,
   useDocumentMetadata,
@@ -23,8 +24,14 @@ import removeMd from "remove-markdown";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import Button from "~/components/Form/Button";
-import { LEFT_SIDEBAR_MAX_WIDTH, LEFT_SIDEBAR_MIN_WIDTH } from "~/components/Home/sidebar/RootLeftSidebar";
+import {
+  LEFT_SIDEBAR_MAX_WIDTH,
+  LEFT_SIDEBAR_MIN_WIDTH,
+} from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
+import useSelection from "~/components/Comment/hooks/useSelection";
+import { isEmpty } from "~/config/utils/nullchecks";
+import InlineCommentCanvas from "~/components/Comment/InlineCommentCanvas";
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {
@@ -73,6 +80,8 @@ const DocumentIndexPage: NextPage<Args> = ({
     rawDocumentData: documentData,
     documentType,
   }) as [Post | null, Function];
+  const contentRef = useRef(null);
+  const { xrange } = useSelection({ ref: contentRef });
 
   useEffect(() => {
     setPostHtml(postHtml);
@@ -94,76 +103,86 @@ const DocumentIndexPage: NextPage<Args> = ({
   }
 
   return (
-    <DocumentContext.Provider
-      value={{
-        metadata: documentMetadata,
-        documentType,
-        updateMetadata: setDocumentMetadata,
-        editDocument: () => {
-          // Post
-          if (document.note) {
-            router.push(
-              `/${document.note.organization.slug}/notebook/${document.note.id}`
-            );
-          }
-          // Question
-          else {
-            setIsEditing(true);
-          }
-        },
-      }}
-    >
-      <DocumentPageLayout
-        document={document}
-        errorCode={errorCode}
-        metadata={documentMetadata}
-        documentType={documentType}
+    <div>
+      <DocumentContext.Provider
+        value={{
+          metadata: documentMetadata,
+          documentType,
+          updateDocument: () => null,
+          updateMetadata: setDocumentMetadata,
+          editDocument: () => {
+            // Post
+            if (document.note) {
+              router.push(
+                `/${document.note.organization.slug}/notebook/${document.note.id}`
+              );
+            }
+            // Question
+            else {
+              setIsEditing(true);
+            }
+          },
+        }}
       >
-        <div
-          className={css(styles.bodyContentWrapper)}
-          style={{ width: viewerWidth }}
+        <DocumentPageLayout
+          document={document}
+          errorCode={errorCode}
+          metadata={documentMetadata}
+          documentType={documentType}
         >
-          <div className={css(styles.bodyWrapper)}>
-            {isEditing ? (
-              <div className={css(styles.editor)}>
-                <DynamicCKEditor
-                  editing
-                  id="editPostBody"
-                  initialData={_postHtml}
-                  noTitle={true}
-                  onChange={(id, editorData) => setPostHtml(editorData)}
-                  readOnly={false}
-                />
-
-                <div className={css(styles.editButtonRow)}>
-                  <Button
-                    isWhite
-                    variant={"text"}
-                    label={"Cancel"}
-                    onClick={(): void => setIsEditing(false)}
-                    size={"small"}
+          <div
+            className={css(styles.bodyContentWrapper)}
+            style={{ width: viewerWidth }}
+          >
+            <div className={css(styles.bodyWrapper)}>
+              {isEditing ? (
+                <div className={css(styles.editor)}>
+                  <DynamicCKEditor
+                    editing
+                    id="editPostBody"
+                    initialData={_postHtml}
+                    noTitle={true}
+                    onChange={(id, editorData) => setPostHtml(editorData)}
+                    readOnly={false}
                   />
-                  <Button
-                    variant={"contained"}
-                    label={"Save"}
-                    onClick={(): void => {
-                      savePostApi({ id: document.id, postHtml: _postHtml });
-                      setIsEditing(false);
-                    }}
-                    size={"small"}
+
+                  <div className={css(styles.editButtonRow)}>
+                    <Button
+                      isWhite
+                      variant={"text"}
+                      label={"Cancel"}
+                      onClick={(): void => setIsEditing(false)}
+                      size={"small"}
+                    />
+                    <Button
+                      variant={"contained"}
+                      label={"Save"}
+                      onClick={(): void => {
+                        savePostApi({ id: document.id, postHtml: _postHtml });
+                        setIsEditing(false);
+                      }}
+                      size={"small"}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div style={{ position: "relative" }}>
+                  <InlineCommentCanvas
+                    document={document}
+                    relativeRef={contentRef}
+                  />
+                  <div
+                    ref={contentRef}
+                    className={css(styles.body) + " rh-post"}
+                    dangerouslySetInnerHTML={{ __html: _postHtml }}
                   />
                 </div>
-              </div>
-            ) : (
-              <div
-                className={css(styles.body) + " rh-post"}
-                dangerouslySetInnerHTML={{ __html: _postHtml }}
-              />
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </DocumentPageLayout>
-    </DocumentContext.Provider>
+        </DocumentPageLayout>
+      </DocumentContext.Provider>
+    </div>
   );
 };
 
@@ -180,13 +199,13 @@ const styles = StyleSheet.create({
     padding: 45,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 15,
-    }
+    },
   },
   editor: {
     padding: 45,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 15,
-    }    
+    },
   },
   bodyContentWrapper: {
     margin: "0 auto",
