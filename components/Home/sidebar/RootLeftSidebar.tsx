@@ -400,7 +400,7 @@ function RootLeftSidebar({
               {"About"}
             </ALink>
             <ALink
-              href="https://www.notion.so/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
+              href="https://researchhub.notion.site/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049"
               overrideStyle={formattedFooterTxtItem}
             >
               {"Jobs"}
