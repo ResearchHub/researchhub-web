@@ -46,7 +46,6 @@ const nextConfig = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID,
     ORCID_KID: process.env.ORCID_KID,
-    WEB3_INFURA_PROJECT_ID: process.env.WEB3_INFURA_PROJECT_ID,
     RECAPTCHA_CLIENT_KEY: process.env.RECAPTCHA_CLIENT_KEY,
     SIFT_BEACON_KEY: process.env.SIFT_BEACON_KEY,
     ELASTIC_APM_URL: process.env.ELASTIC_APM_URL,
