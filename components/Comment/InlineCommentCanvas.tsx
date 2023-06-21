@@ -5,7 +5,7 @@ import { fetchInlineCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import { isEmpty } from "~/config/utils/nullchecks";
-
+import { createPortal } from "react-dom";
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
   document: GenericDocument;
@@ -19,7 +19,8 @@ export type CommentWithRange = {
 export type RenderedComment = {
   comment: Comment;
   xrange: any;
-  coordinates: Array<{ x: number; y: number; width: number; height: number }>;
+  anchorCoordinates: Array<{ x: number; y: number; width: number; height: number }>;
+  commentCoordinates: { x: number; y: number; };
 };
 
 interface DrawProps {
@@ -47,10 +48,12 @@ const drawHighlightsOnCanvas = ({
     highlightCoords.forEach(({ x, y, width, height }) => {
       ctx.fillRect(x, y, width, height);
     });
+
     _renderedComments.push({
       xrange,
-      coordinates: highlightCoords,
+      anchorCoordinates: highlightCoords,
       comment: commentWithRange.comment,
+      commentCoordinates: { x: 0, y: highlightCoords[0].y },
     });
   });
 
@@ -122,7 +125,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
       for (let i = 0; i < renderedComments.length; i++) {
         const highlight = renderedComments[i];
 
-        const isClickWithinHighlight = highlight.coordinates.some(
+        const isClickWithinHighlight = highlight.anchorCoordinates.some(
           ({ x, y, width, height }) => {
             return (
               clickedX >= x &&
@@ -171,12 +174,30 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     }
   }, [relativeRef, canvasRef]);
 
+
+
   return (
-    <canvas
-      ref={canvasRef}
-      id="overlay"
-      className={css(styles.canvas)}
-    ></canvas>
+    <div>
+      {renderedComments.length > 0 && 
+        <div className={css(styles.commentSidebar)} style={{ position: "absolute", right: -510, top: 0, width: 500 }}>
+          {renderedComments.map((_rc) => (
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: "red",
+                left: _rc.commentCoordinates.x,
+                top: _rc.commentCoordinates.y,
+              }}
+              key={_rc.comment.id}>This is a test</div>
+          ))}
+        </div>
+      }
+      <canvas
+        ref={canvasRef}
+        id="overlay"
+        className={css(styles.canvas)}
+      />
+    </div>
   );
 };
 
@@ -187,6 +208,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
+  commentSidebar: {
+    
+  }
 });
 
 export default InlineCommentCanvas;
