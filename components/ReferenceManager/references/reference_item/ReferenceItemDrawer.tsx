@@ -100,6 +100,9 @@ export default function ReferenceItemDrawer({}: Props): ReactElement {
           value = localReferenceFields[field_key],
           isRequired = false;
         // isRequired = requiredFieldsSet.has(field_key);
+        if (field_key === "raw_oa_json") {
+          return null;
+        }
         if (field_key === "creators") {
           return (
             <ReferenceItemFieldCreatorTagInput
