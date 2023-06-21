@@ -19,8 +19,13 @@ export type CommentWithRange = {
 export type RenderedComment = {
   comment: Comment;
   xrange: any;
-  anchorCoordinates: Array<{ x: number; y: number; width: number; height: number }>;
-  commentCoordinates: { x: number; y: number; };
+  anchorCoordinates: Array<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  commentCoordinates: { x: number; y: number };
 };
 
 interface DrawProps {
@@ -174,12 +179,13 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     }
   }, [relativeRef, canvasRef]);
 
-
-
   return (
     <div>
-      {renderedComments.length > 0 && 
-        <div className={css(styles.commentSidebar)} style={{ position: "absolute", right: -510, top: 0, width: 500 }}>
+      {renderedComments.length > 0 && (
+        <div
+          className={css(styles.commentSidebar)}
+          style={{ position: "absolute", right: -510, top: 0, width: 500 }}
+        >
           {renderedComments.map((_rc) => (
             <div
               style={{
@@ -188,15 +194,14 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                 left: _rc.commentCoordinates.x,
                 top: _rc.commentCoordinates.y,
               }}
-              key={_rc.comment.id}>This is a test</div>
+              key={_rc.comment.id}
+            >
+              This is a test
+            </div>
           ))}
         </div>
-      }
-      <canvas
-        ref={canvasRef}
-        id="overlay"
-        className={css(styles.canvas)}
-      />
+      )}
+      <canvas ref={canvasRef} id="overlay" className={css(styles.canvas)} />
     </div>
   );
 };
@@ -208,9 +213,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  commentSidebar: {
-    
-  }
+  commentSidebar: {},
 });
 
 export default InlineCommentCanvas;
