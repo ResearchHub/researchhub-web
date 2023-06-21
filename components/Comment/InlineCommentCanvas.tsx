@@ -56,13 +56,13 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
 
   useEffect(() => {
     if (
-      inlineComments.length > 0 &&
+      (inlineComments.length > 0 || newCommentAnnotation)  &&
       canvasDimensions.width > 0 &&
       canvasDimensions.height > 0
     ) {
-      _drawHighlights();
+      _drawAnnotations();
     }
-  }, [canvasDimensions, inlineComments]);
+  }, [canvasDimensions, inlineComments, newCommentAnnotation]);
 
   // The canvas element has no pointer-events because we want the user to be able to select text
   // in the content layer beneath. As a result, we can't detect click events on the canvas so
@@ -140,7 +140,8 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     };
   };
 
-  const _drawHighlights = () => {
+  const _drawAnnotations = () => {
+    console.log('drawing highlights')
     const unrenderedAnnotations = inlineComments
       .map((comment): UnrenderedAnnotation => {
         const _xrange =
@@ -148,6 +149,10 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
         return { comment: { ...comment }, xrange: _xrange };
       })
       .filter((c) => !isEmpty(c.xrange));
+
+    if (newCommentAnnotation) {
+      unrenderedAnnotations.push(newCommentAnnotation);
+    }
 
     drawAnnotationsOnCanvas({
       unrenderedAnnotations,
@@ -157,7 +162,6 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   };
 
   const _displayCommentEditor = () => {
-    console.log("1");
     if (!selectionXRange) {
       return console.error("No selected range. This should not happen.");
     }
@@ -166,8 +170,6 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
       isNew: true,
       xrange: selectionXRange,
     });
-
-    console.log("new yip");
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
@@ -213,7 +215,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                 {annotation.comment && (
                   <Comment document={document} comment={annotation!.comment} />
                 )}
-                {annotation.isNew && <div>NEW</div>}
+                {annotation.isNew && <CommentEditor editorId="new-inline-comment" handleSubmit={() => null} />}
               </div>
             );
           })}
