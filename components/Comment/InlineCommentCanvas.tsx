@@ -13,6 +13,8 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import Comment from "./Comment";
 import colors from "./lib/colors";
 import drawHighlightsOnCanvas from "./lib/drawHighlightsOnCanvas";
+import TextSelectionMenu from "./TextSelectionMenu";
+import useSelection from "~/components/Comment/hooks/useSelection";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -31,7 +33,8 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   }>({ width: 0, height: 0 });
   const [selectedInlineComment, setSelectedInlineComment] =
     useState<RenderedInlineComment | null>(null);
-
+  const { xrange, selectionPosition } = useSelection({ ref: relativeRef });
+  console.log("selectionPosition", selectionPosition);
   useEffect(() => {
     const _fetch = async () => {
       const { comments: rawComments } = await fetchInlineCommentsAPI({
@@ -135,6 +138,22 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
 
   return (
     <div>
+      {selectionPosition && (
+        <div
+          style={{
+            position: "absolute",
+            top: window.scrollY - selectionPosition?.y,
+            background: "red",
+            width: 50,
+            zIndex: 5,
+          }}
+        >
+          <TextSelectionMenu
+            onCommentClick={undefined}
+            onLinkClick={undefined}
+          />
+        </div>
+      )}
       {renderedComments.length > 0 && (
         <div
           className={css(styles.commentSidebar)}

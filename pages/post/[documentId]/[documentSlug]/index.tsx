@@ -29,7 +29,6 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import useSelection from "~/components/Comment/hooks/useSelection";
 import { isEmpty } from "~/config/utils/nullchecks";
 import InlineCommentCanvas from "~/components/Comment/InlineCommentCanvas";
 
@@ -81,7 +80,6 @@ const DocumentIndexPage: NextPage<Args> = ({
     documentType,
   }) as [Post | null, Function];
   const contentRef = useRef(null);
-  const { xrange } = useSelection({ ref: contentRef });
 
   useEffect(() => {
     setPostHtml(postHtml);
