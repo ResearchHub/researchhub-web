@@ -1,23 +1,26 @@
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
-import { Comment, parseComment } from "./lib/types";
+import { Comment as CommentModel, parseComment } from "./lib/types";
 import { fetchInlineCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { createPortal } from "react-dom";
+import Comment from "./Comment";
+import colors from "./lib/colors";
+
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
   document: GenericDocument;
 }
 
 export type CommentWithRange = {
-  comment: Comment;
+  comment: CommentModel;
   xrange: any | null;
 };
 
 export type RenderedComment = {
-  comment: Comment;
+  comment: CommentModel;
   xrange: any;
   anchorCoordinates: Array<{
     x: number;
@@ -67,7 +70,7 @@ const drawHighlightsOnCanvas = ({
 
 const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [inlineComments, setInlineComments] = useState<Comment[]>([]);
+  const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
   const [renderedComments, setRenderedComments] = useState<RenderedComment[]>(
     []
   );
@@ -190,13 +193,15 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
             <div
               style={{
                 position: "absolute",
-                backgroundColor: "red",
+                background: "white",
+                padding: 10,
+                border: `1px solid ${colors.border}`,
                 left: _rc.commentCoordinates.x,
                 top: _rc.commentCoordinates.y,
               }}
               key={_rc.comment.id}
             >
-              This is a test
+              <Comment document={document} comment={_rc.comment} />
             </div>
           ))}
         </div>
