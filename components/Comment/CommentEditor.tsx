@@ -45,9 +45,9 @@ const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
   editorId: string;
+  handleSubmit: Function;
   commentId?: ID;
   placeholder?: string;
-  handleSubmit: Function;
   content?: object;
   allowBounty?: boolean;
   commentType?: COMMENT_TYPES;

@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   Comment as CommentModel,
   parseComment,
-  CommentWithRange,
-  RenderedInlineComment,
+  UnrenderedAnnotation,
+  RenderedAnnotation,
 } from "./lib/types";
 import { fetchInlineCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
@@ -12,10 +12,11 @@ import XRange from "./lib/xrange/XRange";
 import { isEmpty } from "~/config/utils/nullchecks";
 import Comment from "./Comment";
 import colors from "./lib/colors";
-import drawHighlightsOnCanvas from "./lib/drawHighlightsOnCanvas";
+import drawAnnotationsOnCanvas from "./lib/drawAnnotationsOnCanvas";
 import TextSelectionMenu from "./TextSelectionMenu";
 import useSelection from "~/components/Comment/hooks/useSelection";
 import config from "./lib/config";
+import CommentEditor from "./CommentEditor";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -25,15 +26,15 @@ interface Props {
 const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
-  const [renderedComments, setRenderedComments] = useState<
-    RenderedInlineComment[]
+  const [renderedAnnotations, setRenderedAnnotations] = useState<
+    RenderedAnnotation[]
   >([]);
   const [canvasDimensions, setCanvasDimensions] = useState<{
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
-  const [selectedInlineComment, setSelectedInlineComment] =
-    useState<RenderedInlineComment | null>(null);
+  const [selectedAnnotation, setSelectedAnnotation] =
+    useState<RenderedAnnotation | null>(null);
   const { selectionXRange, initialSelectionPosition } = useSelection({
     ref: relativeRef,
   });
@@ -52,18 +53,18 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   }, []);
 
   const _drawHighlights = () => {
-    const commentsWithRanges = inlineComments
-      .map((comment): CommentWithRange => {
+    const unrenderedAnnotations = inlineComments
+      .map((comment): UnrenderedAnnotation => {
         const _xrange =
           XRange.createFromSerialized(comment.anchor?.position) || null;
         return { comment: { ...comment }, xrange: _xrange };
       })
       .filter((c) => !isEmpty(c.xrange));
 
-    drawHighlightsOnCanvas({
-      commentsWithRange: commentsWithRanges,
+    drawAnnotationsOnCanvas({
+      unrenderedAnnotations,
       canvasRef,
-      onRender: setRenderedComments,
+      onRender: setRenderedAnnotations,
     });
   };
 
@@ -87,8 +88,8 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
       const clickedX = event.clientX - rect.left;
       const clickedY = event.clientY - rect.top;
 
-      for (let i = 0; i < renderedComments.length; i++) {
-        const highlight = renderedComments[i];
+      for (let i = 0; i < renderedAnnotations.length; i++) {
+        const highlight = renderedAnnotations[i];
 
         const isClickWithinHighlight = highlight.anchorCoordinates.some(
           ({ x, y, width, height }) => {
@@ -102,7 +103,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
         );
 
         if (isClickWithinHighlight) {
-          setSelectedInlineComment(renderedComments[i]);
+          setSelectedAnnotation(renderedAnnotations[i]);
         }
       }
     };
@@ -118,7 +119,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
         contentEl.removeEventListener("click", handleCanvasClick);
       }
     };
-  }, [relativeRef, canvasRef, renderedComments]);
+  }, [relativeRef, canvasRef, renderedAnnotations]);
 
   // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
   // and redraw the highlights in the correct position.
@@ -155,9 +156,10 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
+  const showSelectionMenu = selectionXRange && initialSelectionPosition;
   return (
     <div>
-      {selectionXRange && initialSelectionPosition && (
+      {showSelectionMenu && (
         <div
           style={{
             position: "absolute",
@@ -174,26 +176,31 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
           />
         </div>
       )}
-      {renderedComments.length > 0 && (
+      {renderedAnnotations.length > 0 && (
         <div
           className={css(styles.commentSidebar)}
           style={{ position: "absolute", right: -510, top: 0, width: 500 }}
         >
-          {renderedComments.map((_rc) => (
-            <div
-              style={{
-                position: "absolute",
-                background: "white",
-                padding: 10,
-                border: `1px solid ${colors.border}`,
-                left: _rc.commentCoordinates.x,
-                top: _rc.commentCoordinates.y,
-              }}
-              key={_rc.comment.id}
-            >
-              <Comment document={document} comment={_rc.comment} />
-            </div>
-          ))}
+          {renderedAnnotations.map((annotation, idx) => {
+            return (
+              <div
+                style={{
+                  position: "absolute",
+                  background: "white",
+                  padding: 10,
+                  border: `1px solid ${colors.border}`,
+                  left: annotation.commentCoordinates.x,
+                  top: annotation.commentCoordinates.y,
+                }}
+                key={`annotation-${idx}`}
+              >
+                {annotation.comment && (
+                  <Comment document={document} comment={annotation!.comment} />
+                )}
+                {annotation.isNew && <div>NEW</div>}
+              </div>
+            );
+          })}
         </div>
       )}
       <canvas ref={canvasRef} id="overlay" className={css(styles.canvas)} />

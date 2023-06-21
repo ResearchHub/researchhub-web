@@ -1,13 +1,13 @@
-import { CommentWithRange, RenderedInlineComment } from "./types";
+import { UnrenderedAnnotation, RenderedAnnotation } from "./types";
 
 interface DrawProps {
-  commentsWithRange: CommentWithRange[];
+  unrenderedAnnotations: UnrenderedAnnotation[];
   canvasRef: any;
   onRender?: Function;
 }
 
-const drawHighlightsOnCanvas = ({
-  commentsWithRange,
+const drawAnnotationsOnCanvas = ({
+  unrenderedAnnotations,
   canvasRef,
   onRender,
 }: DrawProps) => {
@@ -16,9 +16,9 @@ const drawHighlightsOnCanvas = ({
   ctx.fillStyle = "rgba(255, 255, 0, 0.5)";
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  const _renderedComments: RenderedInlineComment[] = [];
-  commentsWithRange.forEach((commentWithRange) => {
-    const { xrange } = commentWithRange;
+  const _renderedAnnotations: RenderedAnnotation[] = [];
+  unrenderedAnnotations.forEach((unrenderedAnnotation) => {
+    const { xrange } = unrenderedAnnotation;
     const highlightCoords = xrange.getCoordinates({
       relativeEl: canvasRef.current,
     });
@@ -26,15 +26,14 @@ const drawHighlightsOnCanvas = ({
       ctx.fillRect(x, y, width, height);
     });
 
-    _renderedComments.push({
-      xrange,
+    _renderedAnnotations.push({
+      ...unrenderedAnnotation,
       anchorCoordinates: highlightCoords,
-      comment: commentWithRange.comment,
       commentCoordinates: { x: 0, y: highlightCoords[0].y },
     });
   });
 
-  onRender && onRender(_renderedComments);
+  onRender && onRender(_renderedAnnotations);
 };
 
-export default drawHighlightsOnCanvas;
+export default drawAnnotationsOnCanvas;

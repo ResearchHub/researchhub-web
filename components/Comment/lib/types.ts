@@ -57,13 +57,15 @@ export type Comment = {
   anchor?: PositionAnchor;
 };
 
-export type CommentWithRange = {
-  comment: Comment;
+export type UnrenderedAnnotation = {
+  comment?: Comment;
   xrange: any | null;
+  isNew?: boolean;
 };
 
-export type RenderedInlineComment = {
-  comment: Comment;
+export type RenderedAnnotation = {
+  comment?: Comment;
+  isNew?: boolean;
   xrange: any;
   anchorCoordinates: Array<{
     x: number;
