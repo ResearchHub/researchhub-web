@@ -8,13 +8,7 @@ const useSelection = ({ ref }) => {
   >(null);
 
   useEffect(() => {
-    const handleSelectionStart = () => {
-      // clear existing selection and position
-      setSelectionXRange(null);
-      setInitialSelectionPosition(null);
-    };
-
-    const handleSelectionEnd = () => {
+    const handleSelection = (e) => {
       // setTimeout 0 is required to ensure synchronicity between selection object and click events. Without it,
       // the state of getSelection may not be accurate.
       setTimeout(() => {
@@ -30,6 +24,7 @@ const useSelection = ({ ref }) => {
           const range = selection.getRangeAt(0);
           const rect = range.getBoundingClientRect();
           const position = { x: rect.x, y: rect.y };
+
           setInitialSelectionPosition(position);
           setSelectionXRange(newRange);
         } else {
@@ -39,22 +34,12 @@ const useSelection = ({ ref }) => {
       }, 0);
     };
 
-    document.addEventListener("mousedown", handleSelectionStart);
-    document.addEventListener("touchstart", handleSelectionStart);
-    document.addEventListener("mouseup", handleSelectionEnd);
-    document.addEventListener("touchend", handleSelectionEnd);
-    document.addEventListener("keyup", handleSelectionEnd);
-    document.addEventListener("keydown", handleSelectionEnd);
+    document.addEventListener("click", handleSelection);
 
     return () => {
-      document.removeEventListener("mousedown", handleSelectionStart);
-      document.removeEventListener("touchstart", handleSelectionStart);
-      document.removeEventListener("mouseup", handleSelectionEnd);
-      document.removeEventListener("touchend", handleSelectionEnd);
-      document.removeEventListener("keyup", handleSelectionEnd);
-      document.removeEventListener("keydown", handleSelectionEnd);
+      document.removeEventListener("click", handleSelection);
     };
-  }, [ref]); // Recreate the effect if the ref changes
+  }, [ref]);
 
   return { selectionXRange, initialSelectionPosition };
 };

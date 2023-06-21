@@ -38,6 +38,8 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   const { selectionXRange, initialSelectionPosition } = useSelection({
     ref: relativeRef,
   });
+  const [newCommentAnnotation, setNewCommentAnnotation] =
+    useState<UnrenderedAnnotation | null>(null);
 
   useEffect(() => {
     const _fetch = async () => {
@@ -51,22 +53,6 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
 
     _fetch();
   }, []);
-
-  const _drawHighlights = () => {
-    const unrenderedAnnotations = inlineComments
-      .map((comment): UnrenderedAnnotation => {
-        const _xrange =
-          XRange.createFromSerialized(comment.anchor?.position) || null;
-        return { comment: { ...comment }, xrange: _xrange };
-      })
-      .filter((c) => !isEmpty(c.xrange));
-
-    drawAnnotationsOnCanvas({
-      unrenderedAnnotations,
-      canvasRef,
-      onRender: setRenderedAnnotations,
-    });
-  };
 
   useEffect(() => {
     if (
@@ -150,9 +136,38 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
       y:
         window.scrollY -
         containerElemOffset +
-        (initialSelectionPosition?.y || 0) +
-        config.textSelectionMenu.height / 2,
+        (initialSelectionPosition?.y || 0),
     };
+  };
+
+  const _drawHighlights = () => {
+    const unrenderedAnnotations = inlineComments
+      .map((comment): UnrenderedAnnotation => {
+        const _xrange =
+          XRange.createFromSerialized(comment.anchor?.position) || null;
+        return { comment: { ...comment }, xrange: _xrange };
+      })
+      .filter((c) => !isEmpty(c.xrange));
+
+    drawAnnotationsOnCanvas({
+      unrenderedAnnotations,
+      canvasRef,
+      onRender: setRenderedAnnotations,
+    });
+  };
+
+  const _displayCommentEditor = () => {
+    console.log("1");
+    if (!selectionXRange) {
+      return console.error("No selected range. This should not happen.");
+    }
+
+    setNewCommentAnnotation({
+      isNew: true,
+      xrange: selectionXRange,
+    });
+
+    console.log("new yip");
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
@@ -161,6 +176,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     <div>
       {showSelectionMenu && (
         <div
+          id="textSelectionMenu"
           style={{
             position: "absolute",
             top: menuPosY,
@@ -171,7 +187,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
           }}
         >
           <TextSelectionMenu
-            onCommentClick={undefined}
+            onCommentClick={_displayCommentEditor}
             onLinkClick={undefined}
           />
         </div>
