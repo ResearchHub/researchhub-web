@@ -32,6 +32,10 @@ const config = {
     placeholderCount: 8,
     minLength: 15,
   },
+  textSelectionMenu: {
+    height: 100,
+    width: 50,
+  },
 };
 
 export const getConfigForContext = (

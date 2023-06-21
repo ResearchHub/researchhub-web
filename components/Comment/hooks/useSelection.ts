@@ -1,48 +1,62 @@
 import { useEffect, useState } from "react";
 import XRange from "../lib/xrange/XRange";
 
-export const useSelection = ({ ref }) => {
-  const [xrange, setXRange] = useState<null | any>(null);
-  const [selectionPosition, setSelectionPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
+const useSelection = ({ ref }) => {
+  const [selectionXRange, setSelectionXRange] = useState<null | any>(null);
+  const [initialSelectionPosition, setInitialSelectionPosition] = useState<
+    null | any
+  >(null);
 
   useEffect(() => {
     const handleSelectionStart = () => {
-      document.addEventListener("mousemove", handleSelectionChange);
-    };
-
-    const handleSelectionChange = () => {
-      const selection = window.getSelection();
-
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-
-        setSelectionPosition({ x: rect.left, y: rect.top });
-
-        const xrange = XRange.createFromSelection();
-        setXRange(xrange);
-      }
+      // clear existing selection and position
+      setSelectionXRange(null);
+      setInitialSelectionPosition(null);
     };
 
     const handleSelectionEnd = () => {
-      document.removeEventListener("mousemove", handleSelectionChange);
+      // setTimeout 0 is required to ensure synchronicity between selection object and click events. Without it,
+      // the state of getSelection may not be accurate.
+      setTimeout(() => {
+        const selection = window.getSelection();
+        const isValidSelection =
+          selection &&
+          selection.rangeCount > 0 &&
+          !selection.isCollapsed &&
+          selection.toString().trim() !== "";
+
+        if (isValidSelection) {
+          const newRange = XRange.createFromSelection();
+          const range = selection.getRangeAt(0);
+          const rect = range.getBoundingClientRect();
+          const position = { x: rect.x, y: rect.y };
+          setInitialSelectionPosition(position);
+          setSelectionXRange(newRange);
+        } else {
+          setSelectionXRange(null);
+          setInitialSelectionPosition(null);
+        }
+      }, 0);
     };
 
     document.addEventListener("mousedown", handleSelectionStart);
+    document.addEventListener("touchstart", handleSelectionStart);
     document.addEventListener("mouseup", handleSelectionEnd);
+    document.addEventListener("touchend", handleSelectionEnd);
+    document.addEventListener("keyup", handleSelectionEnd);
+    document.addEventListener("keydown", handleSelectionEnd);
 
-    // Clean up event listeners on unmount
     return () => {
       document.removeEventListener("mousedown", handleSelectionStart);
+      document.removeEventListener("touchstart", handleSelectionStart);
       document.removeEventListener("mouseup", handleSelectionEnd);
-      document.removeEventListener("mousemove", handleSelectionChange);
+      document.removeEventListener("touchend", handleSelectionEnd);
+      document.removeEventListener("keyup", handleSelectionEnd);
+      document.removeEventListener("keydown", handleSelectionEnd);
     };
-  }, [ref]);
+  }, [ref]); // Recreate the effect if the ref changes
 
-  return { xrange, selectionPosition };
+  return { selectionXRange, initialSelectionPosition };
 };
 
 export default useSelection;

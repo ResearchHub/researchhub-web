@@ -15,6 +15,7 @@ import colors from "./lib/colors";
 import drawHighlightsOnCanvas from "./lib/drawHighlightsOnCanvas";
 import TextSelectionMenu from "./TextSelectionMenu";
 import useSelection from "~/components/Comment/hooks/useSelection";
+import config from "./lib/config";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -33,8 +34,10 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   }>({ width: 0, height: 0 });
   const [selectedInlineComment, setSelectedInlineComment] =
     useState<RenderedInlineComment | null>(null);
-  const { xrange, selectionPosition } = useSelection({ ref: relativeRef });
-  console.log("selectionPosition", selectionPosition);
+  const { selectionXRange, initialSelectionPosition } = useSelection({
+    ref: relativeRef,
+  });
+
   useEffect(() => {
     const _fetch = async () => {
       const { comments: rawComments } = await fetchInlineCommentsAPI({
@@ -136,16 +139,33 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     }
   }, [relativeRef, canvasRef]);
 
+  const _calcTextSelectionMenuPos = () => {
+    if (!relativeRef.current) return { x: 0, y: 0 };
+
+    const containerElemOffset =
+      window.scrollY + relativeRef.current.getBoundingClientRect().y;
+    return {
+      x: 0 - config.textSelectionMenu.width / 2,
+      y:
+        window.scrollY -
+        containerElemOffset +
+        (initialSelectionPosition?.y || 0) +
+        config.textSelectionMenu.height / 2,
+    };
+  };
+
+  const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   return (
     <div>
-      {selectionPosition && (
+      {selectionXRange && initialSelectionPosition && (
         <div
           style={{
             position: "absolute",
-            top: window.scrollY - selectionPosition?.y,
-            background: "red",
+            top: menuPosY,
+            right: menuPosX,
             width: 50,
             zIndex: 5,
+            height: config.textSelectionMenu.height,
           }}
         >
           <TextSelectionMenu
