@@ -1,85 +1,36 @@
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
-import { Comment as CommentModel, parseComment } from "./lib/types";
+import {
+  Comment as CommentModel,
+  parseComment,
+  CommentWithRange,
+  RenderedInlineComment,
+} from "./lib/types";
 import { fetchInlineCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { createPortal } from "react-dom";
 import Comment from "./Comment";
 import colors from "./lib/colors";
+import drawHighlightsOnCanvas from "./lib/drawHighlightsOnCanvas";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
   document: GenericDocument;
 }
 
-export type CommentWithRange = {
-  comment: CommentModel;
-  xrange: any | null;
-};
-
-export type RenderedComment = {
-  comment: CommentModel;
-  xrange: any;
-  anchorCoordinates: Array<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>;
-  commentCoordinates: { x: number; y: number };
-};
-
-interface DrawProps {
-  commentsWithRange: CommentWithRange[];
-  canvasRef: any;
-  onRender?: Function;
-}
-
-const drawHighlightsOnCanvas = ({
-  commentsWithRange,
-  canvasRef,
-  onRender,
-}: DrawProps) => {
-  // Clear previous highlights
-  const ctx = canvasRef.current.getContext("2d");
-  ctx.fillStyle = "rgba(255, 255, 0, 0.5)";
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-  const _renderedComments: RenderedComment[] = [];
-  commentsWithRange.forEach((commentWithRange) => {
-    const { xrange } = commentWithRange;
-    const highlightCoords = xrange.getCoordinates({
-      relativeEl: canvasRef.current,
-    });
-    highlightCoords.forEach(({ x, y, width, height }) => {
-      ctx.fillRect(x, y, width, height);
-    });
-
-    _renderedComments.push({
-      xrange,
-      anchorCoordinates: highlightCoords,
-      comment: commentWithRange.comment,
-      commentCoordinates: { x: 0, y: highlightCoords[0].y },
-    });
-  });
-
-  onRender && onRender(_renderedComments);
-};
-
 const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
-  const [renderedComments, setRenderedComments] = useState<RenderedComment[]>(
-    []
-  );
+  const [renderedComments, setRenderedComments] = useState<
+    RenderedInlineComment[]
+  >([]);
   const [canvasDimensions, setCanvasDimensions] = useState<{
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
   const [selectedInlineComment, setSelectedInlineComment] =
-    useState<RenderedComment | null>(null);
+    useState<RenderedInlineComment | null>(null);
 
   useEffect(() => {
     const _fetch = async () => {

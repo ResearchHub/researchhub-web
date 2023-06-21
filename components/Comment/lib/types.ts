@@ -57,6 +57,23 @@ export type Comment = {
   anchor?: PositionAnchor;
 };
 
+export type CommentWithRange = {
+  comment: Comment;
+  xrange: any | null;
+};
+
+export type RenderedInlineComment = {
+  comment: Comment;
+  xrange: any;
+  anchorCoordinates: Array<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  commentCoordinates: { x: number; y: number };
+};
+
 type parseCommentArgs = {
   raw: any;
   parent?: Comment;
