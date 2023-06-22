@@ -259,6 +259,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
       unrenderedAnnotations,
       canvasRef,
       onRender: setRenderedAnnotations,
+      selectedAnnotation,
     });
   };
 
