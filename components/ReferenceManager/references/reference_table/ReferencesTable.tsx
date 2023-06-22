@@ -1,33 +1,42 @@
-import { columnsFormat } from "./utils/referenceTableFormat";
-import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
+import { useEffect, useState } from "react";
 import {
   DataGrid,
   GridCell,
   GridRow,
   GridRowId,
   GridSkeletonCell,
-  useGridApiContext,
-  useGridApiEventHandler,
   useGridApiRef,
 } from "@mui/x-data-grid";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
+
+// Utils
+import { columnsFormat } from "./utils/referenceTableFormat";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import { formatReferenceRowData } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
-import { useEffect, useRef, useState } from "react";
-import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { useRouter } from "next/router";
-import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
-import { useReferencesTableContext } from "./context/ReferencesTableContext";
-import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
-import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
-import Link from "next/link";
-import { updateReferenceCitation } from "../api/updateReferenceCitation";
+import {
+  isNullOrUndefined,
+  nullthrows,
+  emptyFncWithMsg,
+  isEmpty,
+} from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
+import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { upsertReferenceProject } from "../reference_organizer/api/upsertReferenceProject";
 import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
+
+// Effects
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useReferencesTableContext } from "./context/ReferencesTableContext";
+import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
+
+// Styles
+import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
+
+// Components
+import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
+import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
+import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 
 type Props = {
   createdReferences: any[];
@@ -287,7 +296,23 @@ export default function ReferencesTable({
             if (projectIdString.includes("folder")) {
               const projectId = projectIdString.split("-folder")[0];
 
-              const url = `/reference-manager/${router.query.organization}?project=${projectId}&root_project=${router.query.root_project}`;
+              let url = `/reference-manager/${
+                router.query.organization
+              }/${router.query.slug.join("/")}/${
+                params.row.title
+              }?project=${projectId}&root_project=${router.query.root_project}`;
+
+              if (projectIdString.includes("parent")) {
+                url = `/reference-manager/${
+                  router.query.organization
+                }/${router.query.slug
+                  ?.slice(0, router.query.slug.length - 2)
+                  .join("/")}/${
+                  params.row.title
+                }?project=${projectId}&root_project=${
+                  router.query.root_project
+                }`;
+              }
 
               if (event.metaKey) {
                 window.open(url, "_blank");

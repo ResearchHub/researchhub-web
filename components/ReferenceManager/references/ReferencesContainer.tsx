@@ -51,6 +51,8 @@ import colors from "~/config/themes/colors";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import ManageOrgModal from "~/components/Org/ManageOrgModal";
 import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
+import { pluralize } from "~/config/utils/misc";
+import Link from "next/link";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -196,7 +198,6 @@ function ReferencesContainer({
   const [loading, setLoading] = useState<boolean>(false);
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
-  const currentProjectName = activeProject?.projectName ?? null;
   const currentOrgID = currentOrg?.id ?? null;
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
   const onOrgUpdate = (): void => {
@@ -278,10 +279,6 @@ function ReferencesContainer({
     setActiveProject,
     isFetchingProjects,
   });
-
-  const pluralize = ({ text, length }) => {
-    return `${text}${length > 1 ? "s" : ""}`;
-  };
 
   useEffect(() => {
     if (wsResponse) {
@@ -432,9 +429,48 @@ function ReferencesContainer({
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                  {currentProjectName ??
-                    (isOnOrgTab ? "Organization References" : `My References`)}
+                <Typography variant="h5">
+                  {router.query.slug ? (
+                    <Box sx={{ display: "flex" }}>
+                      {router.query.slug.map((name, index) => {
+                        const slugsTilNow = router.query.slug?
+                          .slice(0, index + 1)
+                          .join("/");
+
+                        const isActiveProject =
+                          index + 1 === router.query.slug?.length;
+                        return (
+                          <div>
+                            <Link
+                              href={`/reference-manager/${
+                                currentOrg.slug
+                              }/${slugsTilNow}`}
+                              className={css(
+                                styles.projectLink,
+                                isActiveProject && styles.activeProjectLink
+                              )}
+                            >
+                              {name}
+                            </Link>
+                            {index !== router.query.slug?.length - 1 && (
+                              <span
+                                style={{
+                                  margin: 8,
+                                  color: "rgb(115, 108, 100)",
+                                }}
+                              >
+                                /
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </Box>
+                  ) : isOnOrgTab ? (
+                    "Organization References"
+                  ) : (
+                    `My References`
+                  )}
                 </Typography>
                 <input
                   ref={inputRef}
@@ -620,6 +656,19 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     border: "none",
     background: "unset",
+  },
+  projectLink: {
+    textDecoration: "none",
+    color: "rgb(115, 108, 100)",
+
+    ":hover": {
+      color: colors.BLACK(),
+      textDecoration: "underline",
+    },
+  },
+  activeProjectLink: {
+    color: colors.BLACK(),
+    fontWeight: 500,
   },
   button: {
     alignItems: "center",

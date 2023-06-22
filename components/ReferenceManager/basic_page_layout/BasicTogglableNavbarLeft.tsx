@@ -5,7 +5,6 @@ import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_o
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
-import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
 import BasicTogglableNavbarButton from "./BasicTogglableNavbarButton";
 import Divider from "@mui/material/Divider";
@@ -68,6 +67,7 @@ export default function BasicTogglableNavbarLeft({
       referenceProject,
       addChildrenOpen,
       childrenOpenMap,
+      slug: `${encodeURIComponent(referenceProject.project_name)}`,
     });
   });
 

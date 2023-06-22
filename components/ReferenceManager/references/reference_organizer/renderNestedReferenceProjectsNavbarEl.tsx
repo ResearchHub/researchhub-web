@@ -10,6 +10,7 @@ type Args = {
   currentOrgSlug: string;
   depth?: number;
   referenceProject: any;
+  slug: string;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
@@ -19,6 +20,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   currentOrgSlug,
   depth = 0,
   referenceProject,
+  slug,
 }: Args) {
   const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
@@ -56,8 +58,9 @@ export function renderNestedReferenceProjectsNavbarEl({
         depth={depth}
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
+        slug={slug}
       />
-      {/* {hasChildren && childrenOpenMap[referenceProject?.id] && (
+      {hasChildren && childrenOpenMap[referenceProject?.id] && (
         <div
           style={{ marginLeft: 8, display: "flex", flexDirection: "column" }}
         >
@@ -69,10 +72,13 @@ export function renderNestedReferenceProjectsNavbarEl({
               depth: depth + 1,
               addChildrenOpen,
               childrenOpenMap,
+              slug: `${slug}/${encodeURIComponent(
+                childReferenceProject.project_name
+              )}`,
             });
           })}
         </div>
-      )} */}
+      )}
     </div>
   );
 }
