@@ -6,13 +6,21 @@ import { ProjectValue } from "./ReferenceProjectsUpsertContext";
 
 // Utils
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
-import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  isNullOrUndefined,
+} from "~/config/utils/nullchecks";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { fetchReferenceOrgProjects } from "../api/fetchReferenceOrgProjects";
 
 export type ReferenceActiveProjectContextValueType = {
   activeProject: ProjectValue | null;
   setActiveProject: (proj: ProjectValue) => void;
   currentOrgProjects: ProjectValue[];
   setCurrentOrgProjects: (projects: ProjectValue[]) => void;
+  setIsFetchingProjects: (bool: boolean) => void;
+  isFetchingProjects: boolean;
 };
 
 export const DEFAULT_VALUE = {
@@ -34,8 +42,11 @@ export function ReferenceActiveProjectContextProvider({ children }) {
   const [currentOrgProjects, setCurrentOrgProjects] = useState<ProjectValue[]>(
     []
   );
+  const [isFetchingProjects, setIsFetchingProjects] = useState<boolean>(true);
+  const { currentOrg, refetchOrgs } = useOrgs();
 
   const router = useRouter();
+  const orgID = currentOrg?.id;
 
   const findNestedTargetProject = (
     allProjects: any[],
@@ -58,14 +69,28 @@ export function ReferenceActiveProjectContextProvider({ children }) {
     }
   };
 
-  useEffect(() => {
+  useEffect((): void => {
+    if (!isEmpty(orgID)) {
+      setIsFetchingProjects(true);
+      fetchReferenceOrgProjects({
+        onError: emptyFncWithMsg,
+        onSuccess: (payload): void => {
+          setCurrentOrgProjects(payload ?? []);
+          findActiveProjects(payload);
+          setIsFetchingProjects(false);
+        },
+        payload: {
+          organization: orgID,
+        },
+      });
+    }
+  }, [orgID]);
+
+  const findActiveProjects = (allProjects) => {
     const activeSlugName = router.query.slug
       ? router.query.slug[router.query.slug.length - 1]
       : null;
-    const activeProj = findNestedTargetProject(
-      currentOrgProjects,
-      activeSlugName
-    );
+    const activeProj = findNestedTargetProject(allProjects, activeSlugName);
     const {
       collaborators: { editors, viewers },
       id,
@@ -95,7 +120,11 @@ export function ReferenceActiveProjectContextProvider({ children }) {
       projectName: project_name,
       isPublic: is_public,
     });
-  }, [router.query.slug]);
+  };
+
+  useEffect(() => {
+    findActiveProjects(currentOrgProjects);
+  }, [router.query.slug, currentOrgProjects]);
 
   return (
     <ReferenceActiveProjectContext.Provider
@@ -104,6 +133,8 @@ export function ReferenceActiveProjectContextProvider({ children }) {
         setActiveProject,
         currentOrgProjects,
         setCurrentOrgProjects,
+        isFetchingProjects,
+        setIsFetchingProjects,
       }}
     >
       {children}

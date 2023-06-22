@@ -103,12 +103,20 @@ export default function ReferenceProjectsNavbarEl({
                 e.stopPropagation();
                 e.preventDefault();
                 addChildrenOpen({ key: projectID, value: !isOpen });
-                const projectIdsOpen =
-                  window.localStorage.getItem("projectIdsOpen") || "";
+                const projectIdsOpenv2 =
+                  window.localStorage.getItem("projectIdsOpenv2") || "{}";
+
+                const projectIdsJson = JSON.parse(projectIdsOpenv2);
+
+                if (isOpen) {
+                  projectIdsJson[projectID] = false;
+                } else {
+                  projectIdsJson[projectID] = true;
+                }
 
                 window.localStorage.setItem(
-                  "projectIdsOpen",
-                  projectIdsOpen + `${projectID},`
+                  "projectIdsOpenv2",
+                  JSON.stringify(projectIdsJson)
                 );
               }}
             />

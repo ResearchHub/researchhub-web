@@ -43,15 +43,9 @@ export default function BasicTogglableNavbarLeft({
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
   useEffect(() => {
-    const idsOpen = window.localStorage.getItem("projectIdsOpen");
-    if (idsOpen) {
-      const idsOpenToArray = idsOpen.split(",");
-      const childrenOpenMap = {};
-      idsOpenToArray.forEach((id) => {
-        childrenOpenMap[id] = true;
-      });
-      setChildrenOpenMap(childrenOpenMap);
-    }
+    const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
+    const childrenOpenMap = JSON.parse(idsOpen);
+    setChildrenOpenMap(childrenOpenMap);
   }, []);
 
   const addChildrenOpen = ({ key, value }) => {

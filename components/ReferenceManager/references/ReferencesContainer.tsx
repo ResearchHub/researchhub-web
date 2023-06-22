@@ -67,27 +67,6 @@ type Preload = {
   created: boolean;
 };
 
-const useEffectFetchOrgProjects = ({
-  fetchTime,
-  onError,
-  onSuccess,
-  orgID,
-  setIsFethingProjects,
-}) => {
-  useEffect((): void => {
-    if (!isEmpty(orgID)) {
-      setIsFethingProjects(true);
-      fetchReferenceOrgProjects({
-        onError,
-        onSuccess,
-        payload: {
-          organization: orgID,
-        },
-      });
-    }
-  }, [orgID, fetchTime]);
-};
-
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
@@ -104,9 +83,7 @@ function ReferencesContainer({
 
   const {
     activeProject,
-    setActiveProject,
     currentOrgProjects,
-    setCurrentOrgProjects,
   } = useReferenceActiveProjectContext();
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
@@ -121,7 +98,6 @@ function ReferencesContainer({
     setProjectID: setProjectIDForUploadDrawer,
   } = useReferenceUploadDrawerContext();
 
-  const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
@@ -197,17 +173,6 @@ function ReferencesContainer({
     setCreatedReferences(preload);
     setLoading(false);
   };
-
-  useEffectFetchOrgProjects({
-    fetchTime: projectsFetchTime,
-    onError: emptyFncWithMsg,
-    onSuccess: (payload): void => {
-      setCurrentOrgProjects(payload ?? []);
-      setIsFethingProjects(false);
-    },
-    orgID: currentOrgID,
-    setIsFethingProjects,
-  });
 
   useEffect(() => {
     if (wsResponse) {

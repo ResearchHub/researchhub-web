@@ -53,12 +53,13 @@ function useEffectFetchReferenceCitations({
 }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
-  const { activeProject } = useReferenceActiveProjectContext();
+  const { activeProject, isFetchingProjects } =
+    useReferenceActiveProjectContext();
 
   const { currentOrg } = useOrgs();
   const router = useRouter();
   useEffect(() => {
-    if (!isNullOrUndefined(user?.id) && currentOrg?.id) {
+    if (!isNullOrUndefined(user?.id) && currentOrg?.id && !isFetchingProjects) {
       setIsLoading(true);
       fetchCurrentUserReferenceCitations({
         onSuccess,
@@ -75,6 +76,7 @@ function useEffectFetchReferenceCitations({
     referencesFetchTime,
     currentOrg,
     activeProject?.projectID,
+    isFetchingProjects,
     router.query.org_refs,
   ]);
 }
@@ -163,8 +165,12 @@ export default function ReferencesTable({
     }
   };
 
-  const { activeProject, setActiveProject, setCurrentOrgProjects } =
-    useReferenceActiveProjectContext();
+  const {
+    activeProject,
+    setActiveProject,
+    setCurrentOrgProjects,
+    isFetchingProjects,
+  } = useReferenceActiveProjectContext();
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -256,7 +262,7 @@ export default function ReferencesTable({
             },
           },
         }}
-        loading={isLoading}
+        loading={isLoading || isFetchingProjects}
         onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemDatum({
