@@ -113,7 +113,7 @@ function AuthorClaimPromptEmail({
         },
         userID,
         targetAuthorName: targetAuthor.name,
-        targetPaperId: router.query.paperId,
+        targetPaperId: router.query.documentId,
       });
     }
   };
