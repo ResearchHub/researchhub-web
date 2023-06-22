@@ -46,7 +46,10 @@ export function createAuthorClaimCase({
       eduEmail,
       "EduEmail must be present to create AuthorClaimCase"
     ),
-    target_paper_id: targetPaperId,
+    target_paper_id: nullthrows(
+      targetPaperId,
+      "paperID must be present to create AuthorClaimCase"
+    ),
     target_author_name: targetAuthorName
   };
 
