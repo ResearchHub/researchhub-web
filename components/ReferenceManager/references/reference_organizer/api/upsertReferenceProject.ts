@@ -27,7 +27,6 @@ export const upsertReferenceProject = ({
 }: Args): void => {
   const isUpdate = upsertPurpose === "update";
   const requestConfig = isUpdate ? API.PATCH_CONFIG : API.POST_CONFIG;
-  debugger;
   fetch(
     buildApiUri({
       apiPath: `citation_project${isUpdate ? `/${payload.project}` : ""}`,

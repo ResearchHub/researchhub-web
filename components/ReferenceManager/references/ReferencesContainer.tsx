@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import ReactTooltip from "react-tooltip";
 import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
@@ -21,30 +22,34 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
-import { faFolderPlus, faPlus } from "@fortawesome/pro-light-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ID } from "~/config/types/root_types";
-import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import api, { generateApiUrl } from "~/config/api";
-import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import Button from "~/components/Form/Button";
-import colors from "~/config/themes/colors";
 import DropdownMenu from "../menu/DropdownMenu";
 import DroppableZone from "~/components/DroppableZone";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import ListIcon from "@mui/icons-material/List";
-import ManageOrgModal from "~/components/Org/ManageOrgModal";
-import QuickModal from "../menu/QuickModal";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable from "./reference_table/ReferencesTable";
+import Button from "~/components/Form/Button";
 import withWebSocket from "~/components/withWebSocket";
+import QuickModal from "../menu/QuickModal";
+import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
+import { ID } from "~/config/types/root_types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUpFromBracket,
+  faFolderPlus,
+  faPlus,
+  faTrashXmark,
+} from "@fortawesome/pro-light-svg-icons";
+
+import colors from "~/config/themes/colors";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
+import ManageOrgModal from "~/components/Org/ManageOrgModal";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -201,6 +206,10 @@ function ReferencesContainer({
     setIsProjectUpsertModalOpen(true);
   };
   const inputRef = useRef();
+
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  }, [selectedReferenceIDs]);
 
   const getPresignedUrl = async (fileName, organizationID, projectID) => {
     const url = generateApiUrl("citation_entry/upload_pdfs");
@@ -449,120 +458,92 @@ function ReferencesContainer({
                     display: "flex",
                     flexDirection: "row",
                     height: 44,
-                    justifyContent: "space-between",
                     marginBottom: "20px",
                     width: "100%",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {!isEmpty(selectedReferenceIDs) && (
-                      <>
-                        <DropdownMenu
-                          disabled={isEmpty(selectedReferenceIDs)}
-                          menuItemProps={[
-                            {
-                              itemLabel: `Export reference${
-                                selectedReferenceIDs.length > 1 ? "s" : ""
-                              }`,
-                              onClick: () => {
-                                setIsBibModalOpen(true);
-                              },
-                            },
-                            {
-                              itemLabel: (
-                                <Typography color="red">{`Remove reference${
-                                  selectedReferenceIDs.length > 1 ? "s" : ""
-                                }`}</Typography>
-                              ),
-                              onClick: () => {
-                                setIsRemoveRefModalOpen(true);
-                              },
-                            },
-                          ]}
-                          menuLabel={
-                            <div
-                              style={{
-                                alignItems: "center",
-                                color: "rgba(170, 168, 180, 1)",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                width: 68,
-                                height: 36,
-                                padding: 6,
-                                boxSizing: "border-box",
-                              }}
-                            >
-                              <ListIcon
-                                fontSize="medium"
-                                sx={{ color: "#AAA8B4" }}
-                              />
-                              <ExpandMore
-                                fontSize="medium"
-                                sx={{ color: "#AAA8B4" }}
-                              />
-                            </div>
-                          }
-                          size="medium"
+                  <DropdownMenu
+                    menuItemProps={[
+                      {
+                        itemLabel: "Import PDF(s)",
+                        onClick: (): void =>
+                          // @ts-ignore unnecessary never handling
+                          nullthrows(inputRef?.current).click(),
+                      },
+                      {
+                        itemLabel: "Manual upload",
+                        onClick: (): void => {
+                          setProjectIDForUploadDrawer(
+                            activeProject?.projectID ?? null
+                          );
+                          setIsRefUploadDrawerOpen(true);
+                        },
+                      },
+                    ]}
+                    menuLabel={
+                      <div className={css(styles.button)}>
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          color="#fff"
+                          fontSize="20px"
+                          style={{ marginRight: 8 }}
                         />
-                        <Typography
-                          sx={{ marginLeft: "8px" }}
-                        >{`${selectedReferenceIDs.length} selected`}</Typography>
-                      </>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <div
-                      className={css(styles.button, styles.secondary)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setProjectUpsertPurpose("create_sub_project");
-                        setProjectUpsertValue({
-                          ...DEFAULT_PROJECT_VALUES,
-                          projectID: activeProject?.projectID,
-                        });
-                        setIsProjectUpsertModalOpen(true);
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faFolderPlus}
-                        color={colors.NEW_BLUE(1)}
-                        fontSize="20px"
-                        style={{ marginRight: 8 }}
-                      />
-                      {"Add a project"}
-                    </div>
-                    <DropdownMenu
-                      menuItemProps={[
-                        {
-                          itemLabel: "Import PDF(s)",
-                          onClick: (): void =>
-                            // @ts-ignore unnecessary never handling
-                            nullthrows(inputRef?.current).click(),
-                        },
-                        {
-                          itemLabel: "Manual upload",
-                          onClick: (): void => {
-                            setProjectIDForUploadDrawer(
-                              activeProject?.projectID ?? null
-                            );
-                            setIsRefUploadDrawerOpen(true);
-                          },
-                        },
-                      ]}
-                      menuLabel={
-                        <div className={css(styles.button)}>
-                          <FontAwesomeIcon
-                            icon={faPlus}
-                            color="#fff"
-                            fontSize="20px"
-                            style={{ marginRight: 8 }}
-                          />
-                          {"Add a reference"}
-                        </div>
-                      }
-                      size={"small"}
+                        Add a Reference
+                      </div>
+                    }
+                    size={"small"}
+                  />
+
+                  <div
+                    className={css(styles.button, styles.secondary)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectUpsertPurpose("create_sub_project");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        projectID: activeProject.id,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      color={colors.NEW_BLUE(1)}
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
                     />
+                    Create Folder
                   </div>
+                  {!isEmpty(selectedReferenceIDs) && (
+                    <>
+                      <div
+                        className={css(styles.trashContainer)}
+                        data-for="button-tooltips"
+                        data-tip={`Remove Reference${
+                          selectedReferenceIDs.length > 1 ? "s" : ""
+                        }`}
+                        onClick={() => setIsRemoveRefModalOpen(true)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrashXmark}
+                          style={{ fontSize: 18 }}
+                        />
+                      </div>
+                      <div
+                        className={css(styles.trashContainer)}
+                        onClick={() => setIsBibModalOpen(true)}
+                        data-tip={`Export Reference${
+                          selectedReferenceIDs.length > 1 ? "s" : ""
+                        }`}
+                        data-for="button-tooltips"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowUpFromBracket}
+                          style={{ fontSize: 18 }}
+                        />
+                      </div>
+                    </>
+                  )}
                 </Box>
                 <ReferencesTable
                   createdReferences={createdReferences}
@@ -573,6 +554,7 @@ function ReferencesContainer({
               </Box>
             </Box>
           </DroppableZone>
+          <ReactTooltip effect="solid" id="button-tooltips" />
         </Box>
         {/* <ToastContainer
           autoClose={true}
@@ -598,6 +580,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
+    padding: 16,
     background: colors.NEW_BLUE(),
     borderRadius: 4,
     boxSizing: "border-box",
@@ -608,13 +591,26 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     height: 40,
     justifyContent: "center",
-    marginLeft: 16,
-    padding: 16,
   },
   secondary: {
     border: `1px solid ${colors.NEW_BLUE()}`,
     background: "#fff",
     color: colors.NEW_BLUE(),
+    marginRight: 8,
+    marginLeft: 16,
+  },
+  trashContainer: {
+    height: 40,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    width: 40,
+    borderRadius: 4,
+
+    ":hover": {
+      background: "#F1F5FF",
+    },
   },
 });
 
