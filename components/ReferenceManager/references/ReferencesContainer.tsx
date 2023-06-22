@@ -88,71 +88,6 @@ const useEffectFetchOrgProjects = ({
   }, [orgID, fetchTime]);
 };
 
-const useEffectSetActiveProject = ({
-  currentOrgProjects,
-  isFetchingProjects,
-  router,
-  setActiveProject,
-}): void => {
-  const urlProjectID = parseInt(router.query.project);
-  const findNestedTargetProject = (allProjects: any[], targetProjectID: ID) => {
-    for (const project of allProjects) {
-      if (project.id === targetProjectID) {
-        return project;
-      }
-      const projectChildren = project.children;
-      if (!isEmpty(projectChildren)) {
-        const childTarget = findNestedTargetProject(
-          projectChildren,
-          targetProjectID
-        );
-        if (!isNullOrUndefined(childTarget)) {
-          return childTarget;
-        }
-      }
-    }
-  };
-
-  useEffect((): void => {
-    if (!isFetchingProjects) {
-      const activeProject = findNestedTargetProject(
-        currentOrgProjects,
-        urlProjectID
-      );
-      if (isNullOrUndefined(activeProject)) {
-        setActiveProject({ DEFAULT_PROJECT_VALUES });
-      } else {
-        const {
-          collaborators: { editors, viewers },
-          id,
-          project_name,
-          is_public,
-        } = activeProject ?? { collaborators: { editors: [], viewers: [] } };
-        setActiveProject({
-          ...activeProject,
-          collaborators: [
-            ...editors.map((rawUser: any) => {
-              return {
-                ...parseUserSuggestion(rawUser),
-                role: "EDITOR",
-              };
-            }),
-            ...viewers.map((rawUser: any) => {
-              return {
-                ...parseUserSuggestion(rawUser),
-                role: "VIEWER",
-              };
-            }),
-          ],
-          projectID: id,
-          projectName: project_name,
-          isPublic: is_public,
-        });
-      }
-    }
-  }, [urlProjectID, isFetchingProjects]);
-};
-
 // TODO: @lightninglu10 - fix TS.
 function ReferencesContainer({
   showMessage,
@@ -272,12 +207,6 @@ function ReferencesContainer({
     },
     orgID: currentOrgID,
     setIsFethingProjects,
-  });
-  useEffectSetActiveProject({
-    currentOrgProjects,
-    router,
-    setActiveProject,
-    isFetchingProjects,
   });
 
   useEffect(() => {
@@ -503,7 +432,7 @@ function ReferencesContainer({
                       )}
                     />
                   )}
-                  {(isOnOrgTab || !isEmpty(router.query.project)) && (
+                  {(isOnOrgTab || !isEmpty(router.query.slug)) && (
                     <Button
                       variant="outlined"
                       fontSize="small"
@@ -573,7 +502,7 @@ function ReferencesContainer({
                       setProjectUpsertPurpose("create_sub_project");
                       setProjectUpsertValue({
                         ...DEFAULT_PROJECT_VALUES,
-                        projectID: activeProject.id,
+                        projectID: activeProject.projectID,
                       });
                       setIsProjectUpsertModalOpen(true);
                     }}

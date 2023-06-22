@@ -53,6 +53,7 @@ function useEffectFetchReferenceCitations({
 }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
+  const { activeProject } = useReferenceActiveProjectContext();
 
   const { currentOrg } = useOrgs();
   const router = useRouter();
@@ -64,7 +65,7 @@ function useEffectFetchReferenceCitations({
         onError,
         organizationID: currentOrg?.id,
         // @ts-ignore
-        projectID: router.query?.project,
+        projectID: activeProject.projectID,
         getCurrentUserCitation: isEmpty(router.query?.org_refs),
       });
     }
@@ -73,7 +74,8 @@ function useEffectFetchReferenceCitations({
     user?.id,
     referencesFetchTime,
     currentOrg,
-    router.query,
+    activeProject?.projectID,
+    router.query.org_refs,
   ]);
 }
 
@@ -264,23 +266,8 @@ export default function ReferencesTable({
           });
           setPDFIsOpen(true);
           setPdfUrl(params.row.raw_data.attachment);
-          // console.log(params);
-          // if (params.field !== "__check__") {
-          //   setIsDrawerOpen(true);
-          // }
         }}
         rowReordering
-        // onRowClick={(params) => {
-        //   console.log(params);
-        //   const projectIdString = params.id.toString();
-
-        //   if (projectIdString.includes("folder")) {
-        //     const projectId = projectIdString.split("-folder")[0];
-        //     router.push(
-        //       `/reference-manager/${router.query.organization}?project=${projectId}`
-        //     );
-        //   }
-        // }}
         onCellClick={(params, event, _details): void => {
           if (params.field !== "__check__") {
             setReferenceItemDatum({
@@ -298,20 +285,14 @@ export default function ReferencesTable({
 
               let url = `/reference-manager/${
                 router.query.organization
-              }/${router.query.slug.join("/")}/${
-                params.row.title
-              }?project=${projectId}&root_project=${router.query.root_project}`;
+              }/${router.query.slug.join("/")}/${params.row.title}`;
 
               if (projectIdString.includes("parent")) {
                 url = `/reference-manager/${
                   router.query.organization
                 }/${router.query.slug
                   ?.slice(0, router.query.slug.length - 2)
-                  .join("/")}/${
-                  params.row.title
-                }?project=${projectId}&root_project=${
-                  router.query.root_project
-                }`;
+                  .join("/")}/${params.row.title}`;
               }
 
               if (event.metaKey) {
