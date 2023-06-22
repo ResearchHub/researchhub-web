@@ -9,7 +9,7 @@ import {
   faBolt,
   faArrowAltUp,
 } from "@fortawesome/pro-light-svg-icons";
-import { COMMENT_TYPES } from "./types";
+import { COMMENT_FILTERS, COMMENT_TYPES } from "./types";
 
 export const commentTypes = [
   {
@@ -17,6 +17,7 @@ export const commentTypes = [
     value: COMMENT_TYPES.DISCUSSION,
     isDefault: true,
     group: "contribute",
+    // @ts-ignore
     icon: <FontAwesomeIcon icon={faComments} />,
     placeholder: "Add a comment or start a bounty",
   },
@@ -25,6 +26,7 @@ export const commentTypes = [
     value: COMMENT_TYPES.REVIEW,
     isDefault: false,
     placeholder: "What are your overall impressions of this paper?",
+    // @ts-ignore
     icon: <FontAwesomeIcon icon={faStar} />,
   },
   {
@@ -32,6 +34,7 @@ export const commentTypes = [
     value: COMMENT_TYPES.SUMMARY,
     isDefault: false,
     placeholder: "Share a summary of this paper with the community",
+    // @ts-ignore
     icon: <FontAwesomeIcon icon={faLayerGroup} />,
   },
 ];
@@ -43,11 +46,11 @@ export const filterOpts = [
   },
   {
     label: "Bounties",
-    value: "BOUNTY",
+    value: COMMENT_FILTERS.BOUNTY,
   },
   {
     label: "Peer reviews",
-    value: "REVIEW",
+    value: COMMENT_FILTERS.REVIEW,
   },
 ];
 

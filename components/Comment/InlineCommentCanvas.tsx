@@ -5,8 +5,10 @@ import {
   parseComment,
   UnrenderedAnnotation,
   RenderedAnnotation,
+  COMMENT_FILTERS,
+  COMMENT_TYPES,
 } from "./lib/types";
-import { fetchInlineCommentsAPI } from "./lib/api";
+import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -17,6 +19,7 @@ import TextSelectionMenu from "./TextSelectionMenu";
 import useSelection from "~/components/Comment/hooks/useSelection";
 import config from "./lib/config";
 import CommentEditor from "./CommentEditor";
+import { captureEvent } from "~/config/utils/events";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -44,8 +47,9 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
 
   useEffect(() => {
     const _fetch = async () => {
-      const { comments: rawComments } = await fetchInlineCommentsAPI({
+      const { comments: rawComments } = await fetchCommentsAPI({
         documentId: document.id,
+        filter: COMMENT_FILTERS.INNER_CONTENT_COMMENT,
         documentType: document.apiDocumentType,
       });
       const comments = rawComments.map((raw) => parseComment({ raw }));
@@ -84,11 +88,12 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   // we need to detect click events on the content layer and compare to the canvas highlight coordinates to
   // see if there is a match.
   useEffect(() => {
-    const handleCanvasClick = (event) => {
+    const handleClick = (event) => {
       const rect = canvasRef!.current!.getBoundingClientRect();
       const clickedX = event.clientX - rect.left;
       const clickedY = event.clientY - rect.top;
 
+      let highlightClickedOn: RenderedAnnotation | null = null;
       for (let i = 0; i < renderedAnnotations.length; i++) {
         const highlight = renderedAnnotations[i];
 
@@ -104,20 +109,28 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
         );
 
         if (isClickWithinHighlight) {
-          setSelectedAnnotation(renderedAnnotations[i]);
+          highlightClickedOn = highlight;
+          continue;
         }
+      }
+
+      if (highlightClickedOn) {
+        setSelectedAnnotation(highlightClickedOn);
+      } else {
+        // Clicked outside of any highlight. Let's dismiss current selected.
+        setSelectedAnnotation(null);
       }
     };
 
     const contentEl = relativeRef.current;
     const canvasEl = canvasRef.current;
     if (contentEl && canvasEl) {
-      contentEl.addEventListener("click", handleCanvasClick);
+      window.addEventListener("click", handleClick);
     }
 
     return () => {
       if (contentEl && canvasEl) {
-        contentEl.removeEventListener("click", handleCanvasClick);
+        window.removeEventListener("click", handleClick);
       }
     };
   }, [relativeRef, canvasRef, renderedAnnotations]);
@@ -242,7 +255,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   };
 
   const _drawAnnotations = () => {
-    console.log("yooooo, drawing");
+    console.log("Drawing annotations...");
     const unrenderedAnnotations = inlineComments
       .map((comment): UnrenderedAnnotation => {
         const _xrange =
@@ -322,7 +335,32 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                 {annotation.isNew && (
                   <CommentEditor
                     editorId="new-inline-comment"
-                    handleSubmit={() => null}
+                    handleSubmit={async (props) => {
+                      try {
+                        const comment = await createCommentAPI({
+                          ...props,
+                          documentId: document.id,
+                          documentType: document.apiDocumentType,
+                          commentType: COMMENT_TYPES.INNER_CONTENT_COMMENT,
+                          anchor: {
+                            type: "text",
+                            position: annotation.xrange!.serialize(),
+                          },
+                        });
+
+                        setNewCommentAnnotation(null);
+                        setInlineComments([...inlineComments, comment]);
+                      } catch (error) {
+                        captureEvent({
+                          msg: "Failed to create inline comment",
+                          data: {
+                            document,
+                            error,
+                            position: annotation.xrange!.serialize(),
+                          },
+                        });
+                      }
+                    }}
                   />
                 )}
               </div>

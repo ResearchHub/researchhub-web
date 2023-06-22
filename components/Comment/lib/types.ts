@@ -12,11 +12,17 @@ import { formatDateStandard, timeSince } from "~/config/utils/dates";
 import { isEmpty } from "~/config/utils/nullchecks";
 
 export enum COMMENT_TYPES {
-  DISCUSSION = "DISCUSSION",
+  DISCUSSION = "GENERIC_COMMENT",
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
   ANSWER = "ANSWER",
-  INLINE_DISCUSSION = "INLINE_DISCUSSION",
+  INNER_CONTENT_COMMENT = "INNER_CONTENT_COMMENT",
+}
+
+export enum COMMENT_FILTERS {
+  BOUNTY = "BOUNTY",
+  REVIEW = "REVIEW",
+  INNER_CONTENT_COMMENT = "INNER_CONTENT_COMMENT",
 }
 
 type SerializedPosition = {
@@ -83,15 +89,15 @@ type parseCommentArgs = {
 
 export const parseAnchor = (raw: any): PositionAnchor => {
   return {
-    type: "text",
+    type: raw.type,
     position: {
-      startContainerPath: raw.startContainerPath,
-      startOffset: raw.startOffset,
-      endContainerPath: raw.endContainerPath,
-      endOffset: raw.endOffset,
-      collapsed: raw.collapsed,
-      textContent: raw.textContent,
-      page: raw.page || null,
+      startContainerPath: raw.position?.startContainerPath,
+      startOffset: raw.position?.startOffset,
+      endContainerPath: raw.position?.endContainerPath,
+      endOffset: raw.position?.endOffset,
+      collapsed: raw.position?.collapsed,
+      textContent: raw.position?.textContent,
+      page: raw.position?.page || null,
     },
   };
 };
@@ -119,8 +125,8 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     ...(raw.review && { review: parseReview(raw.review) }),
   };
 
-  if (raw.anchor) {
-    parsed.anchor = parseAnchor(raw.anchor);
+  if (raw.thread.anchor) {
+    parsed.anchor = parseAnchor(raw.thread.anchor);
   }
 
   const relatedItem: RelatedItem = {

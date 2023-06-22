@@ -14,7 +14,7 @@ import {
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
-import { COMMENT_TYPES } from "./lib/types";
+import { COMMENT_TYPES, PositionAnchor } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
