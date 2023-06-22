@@ -4,6 +4,7 @@ import {
   DataGrid,
   GridCell,
   GridRow,
+  GridRowId,
   GridSkeletonCell,
   useGridApiContext,
   useGridApiEventHandler,
@@ -25,17 +26,14 @@ import { useReferenceActiveProjectContext } from "../reference_organizer/context
 import Link from "next/link";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import colors from "~/config/themes/colors";
+import { upsertReferenceProject } from "../reference_organizer/api/upsertReferenceProject";
+import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
 
 type Props = {
   createdReferences: any[];
   handleFileDrop: () => void;
   setSelectedReferenceIDs: (refs: any[]) => void;
-};
-
-type Props = {
-  createdReferences: any[];
-  handleFileDrop: () => void;
-  setSelectedReferenceIDs: (refs: any[]) => void;
+  setSelectedFolderIds: (refs: any[]) => void;
 };
 
 function useEffectFetchReferenceCitations({
@@ -75,6 +73,7 @@ export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
   setSelectedReferenceIDs,
+  setSelectedFolderIds,
 }: Props) {
   const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
@@ -86,11 +85,12 @@ export default function ReferencesTable({
   const [dragStarted, setDragStarted] = useState(false);
   const [rowDraggedOver, setRowDraggedOver] = useState();
   const [rowDragged, setRowDragged] = useState();
+  const { currentOrg } = useOrgs();
 
   const router = useRouter();
   const apiRef = useGridApiRef();
 
-  const moveCitationToFolder = ({ moveToProjectId }) => {
+  const moveCitationToFolder = ({ moveToFolderId }) => {
     const newReferenceData = referenceTableRowData.filter((data) => {
       return data.id !== rowDragged;
     });
@@ -99,7 +99,7 @@ export default function ReferencesTable({
       payload: {
         citation_id: rowDragged,
         // TODO: calvinhlee - create utily functions to format these
-        project: parseInt(moveToProjectId, 10),
+        project: parseInt(moveToFolderId, 10),
       },
       onSuccess: () => {
         setRowDraggedOver();
@@ -108,18 +108,51 @@ export default function ReferencesTable({
     });
   };
 
+  const moveFolderToFolder = ({ moveToFolderId }) => {
+    const intId = parseInt(rowDragged?.split("-folder")[0], 10);
+    const newChildren = activeProject?.children.filter((data) => {
+      return data.id !== intId;
+    });
+    const newActiveProject = { ...activeProject };
+    newActiveProject.children = newChildren;
+    setActiveProject(newActiveProject);
+
+    upsertReferenceProject({
+      upsertPurpose: "update",
+      onSuccess: () => {
+        fetchReferenceOrgProjects({
+          onSuccess: (payload) => {
+            setCurrentOrgProjects(payload);
+          },
+          payload: {
+            organization: currentOrg.id,
+          },
+        });
+      },
+      payload: {
+        project: intId,
+        parent: parseInt(moveToFolderId, 10),
+      },
+    });
+  };
+
   const rowDropped = (params) => {
     setDragStarted(false);
 
     const stringId = params.id.toString();
     if (stringId.includes("folder")) {
-      moveCitationToFolder({
-        moveToProjectId: stringId.split("-folder")[0],
-      });
+      const moveToFolderId = stringId.split("-folder")[0];
+      if (rowDragged?.toString().includes("folder")) {
+        moveFolderToFolder({ moveToFolderId });
+      } else {
+        moveCitationToFolder({
+          moveToFolderId,
+        });
+      }
     }
   };
 
-  const { activeProject, setActiveProject } =
+  const { activeProject, setActiveProject, setCurrentOrgProjects } =
     useReferenceActiveProjectContext();
 
   useEffectFetchReferenceCitations({
@@ -264,12 +297,21 @@ export default function ReferencesTable({
             } else {
               setIsDrawerOpen(true);
             }
-          } else {
-            setSelectedReferenceIDs(params.id);
           }
         }}
         onRowSelectionModelChange={(selectedReferenceIDs) => {
-          setSelectedReferenceIDs(selectedReferenceIDs);
+          const folderIds: GridRowId[] = [];
+          const referenceIds: GridRowId[] = [];
+          selectedReferenceIDs.forEach((referenceId) => {
+            const projectIdString = referenceId.toString();
+            if (projectIdString.includes("folder")) {
+              folderIds.push(referenceId);
+            } else {
+              referenceIds.push(referenceId);
+            }
+          });
+          setSelectedFolderIds(folderIds);
+          setSelectedReferenceIDs(referenceIds);
         }}
         slots={{
           row: (row) => {
@@ -290,10 +332,8 @@ export default function ReferencesTable({
                 onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
                 onDragLeave={() => folderRow && setRowDraggedOver()}
                 onDrag={() => {
-                  if (!folderRow) {
-                    setDragStarted(true);
-                    setRowDragged(row.row.id);
-                  }
+                  setDragStarted(true);
+                  setRowDragged(row.row.id);
                 }}
                 onDrop={() => folderRow && rowDropped(row.row)}
               />

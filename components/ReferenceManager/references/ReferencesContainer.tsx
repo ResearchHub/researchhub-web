@@ -50,6 +50,7 @@ import {
 import colors from "~/config/themes/colors";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import ManageOrgModal from "~/components/Org/ManageOrgModal";
+import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -164,10 +165,15 @@ function ReferencesContainer({
   const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
-  const { activeProject, setActiveProject } =
-    useReferenceActiveProjectContext();
+  const {
+    activeProject,
+    setActiveProject,
+    currentOrgProjects,
+    setCurrentOrgProjects,
+  } = useReferenceActiveProjectContext();
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
+    resetProjectsFetchTime,
     projectsFetchTime,
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
@@ -178,12 +184,12 @@ function ReferencesContainer({
     setProjectID: setProjectIDForUploadDrawer,
   } = useReferenceUploadDrawerContext();
 
-  const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
   const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
   const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
+  const [selectedFolderIds, setSelectedFolderIds] = useState<any[]>([]);
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
@@ -273,6 +279,10 @@ function ReferencesContainer({
     isFetchingProjects,
   });
 
+  const pluralize = ({ text, length }) => {
+    return `${text}${length > 1 ? "s" : ""}`;
+  };
+
   useEffect(() => {
     if (wsResponse) {
       const newReferences = [...createdReferences];
@@ -310,6 +320,22 @@ function ReferencesContainer({
     }
   }, [wsResponse]);
 
+  const refRemoveModalText = () => {
+    if (!selectedFolderIds.length) {
+      return `Are you sure you want to remove the selected reference${
+        selectedReferenceIDs.length > 1 ? "s" : ""
+      }?`;
+    }
+
+    if (!selectedReferenceIDs.length) {
+      return `Are you sure you want to remove the selected folders${
+        selectedFolderIds.length > 1 ? "s" : ""
+      }?`;
+    }
+
+    return `Are you sure you want to remove the selected items?`;
+  };
+
   if (!userAllowed) {
     return <Fragment />;
   } else {
@@ -333,9 +359,7 @@ function ReferencesContainer({
                 }}
               >
                 <Typography id="modal-modal-title" variant="h6">
-                  {`Are you sure you want to remove selected reference${
-                    selectedReferenceIDs.length > 1 ? "s" : ""
-                  }?`}
+                  {refRemoveModalText()}
                 </Typography>
               </Box>
             </Box>
@@ -351,6 +375,18 @@ function ReferencesContainer({
               payload: {
                 citation_entry_ids: selectedReferenceIDs,
               },
+            });
+
+            selectedFolderIds.forEach((projectId) => {
+              const intId = parseInt(projectId.split("-folder")[0], 10);
+              removeReferenceProject({
+                projectID: intId,
+                onSuccess: () => {
+                  resetProjectsFetchTime();
+                  setIsRemoveRefModalOpen(false);
+                },
+                onError: emptyFncWithMsg,
+              });
             });
           }}
           onSecondaryButtonClick={(): void => setIsRemoveRefModalOpen(false)}
@@ -422,13 +458,13 @@ function ReferencesContainer({
                     <AuthorFacePile
                       horizontal
                       margin={-10}
+                      imgSize={40}
                       authorProfiles={(activeProject?.collaborators ?? {})?.map(
                         (collaborator) => {
                           collaborator.authorProfile.user = collaborator;
                           return collaborator.authorProfile;
                         }
                       )}
-                      imgSize={""}
                     />
                   )}
                   {(isOnOrgTab || !isEmpty(router.query.project)) && (
@@ -465,13 +501,13 @@ function ReferencesContainer({
                   <DropdownMenu
                     menuItemProps={[
                       {
-                        itemLabel: "Import PDF(s)",
+                        itemLabel: "Upload PDF(s)",
                         onClick: (): void =>
                           // @ts-ignore unnecessary never handling
                           nullthrows(inputRef?.current).click(),
                       },
                       {
-                        itemLabel: "Manual upload",
+                        itemLabel: "Manual Entry",
                         onClick: (): void => {
                           setProjectIDForUploadDrawer(
                             activeProject?.projectID ?? null
@@ -514,13 +550,19 @@ function ReferencesContainer({
                     />
                     Create Folder
                   </div>
-                  {!isEmpty(selectedReferenceIDs) && (
+                  {(!isEmpty(selectedReferenceIDs) ||
+                    !isEmpty(selectedFolderIds)) && (
                     <>
                       <div
                         className={css(styles.trashContainer)}
                         data-for="button-tooltips"
-                        data-tip={`Remove Reference${
-                          selectedReferenceIDs.length > 1 ? "s" : ""
+                        data-tip={`Remove ${
+                          selectedFolderIds.length
+                            ? "Items"
+                            : pluralize({
+                                text: "Reference",
+                                length: selectedReferenceIDs.length,
+                              })
                         }`}
                         onClick={() => setIsRemoveRefModalOpen(true)}
                       >
@@ -550,6 +592,7 @@ function ReferencesContainer({
                   // @ts-ignore TODO: @@lightninglu10 - fix TS.
                   handleFileDrop={handleFileDrop}
                   setSelectedReferenceIDs={setSelectedReferenceIDs}
+                  setSelectedFolderIds={setSelectedFolderIds}
                 />
               </Box>
             </Box>

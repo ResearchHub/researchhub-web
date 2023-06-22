@@ -35,6 +35,6 @@ export const upsertReferenceProject = ({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((result: any): void => onSuccess(result))
+    .then((result: any): void => onSuccess && onSuccess(result))
     .catch(onError);
 };

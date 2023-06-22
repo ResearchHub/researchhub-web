@@ -34,6 +34,7 @@ export default function AuthorFacePile({
       authorProfiles.map((author: any, index: number): ReactElement<"span"> => {
         return (
           <span
+            key={`face-pile-${index}-${author.id}`}
             style={{
               marginRight: margin,
               marginBottom: !Boolean(horizontal) ? 8 : 0,
