@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import {
   Comment as CommentModel,
   parseComment,
@@ -40,6 +40,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   });
   const [newCommentAnnotation, setNewCommentAnnotation] =
     useState<UnrenderedAnnotation | null>(null);
+  const [annotationRefs, setAnnotationRefs] = useState<any[]>([]);
 
   useEffect(() => {
     const _fetch = async () => {
@@ -54,15 +55,29 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     _fetch();
   }, []);
 
+  // Create a ref for each annotation so that we can observe it for dimension changes
+  useEffect(() => {
+    setAnnotationRefs((refs) =>
+      Array(renderedAnnotations.length)
+        .fill(null)
+        .map((_, i) => refs[i] || createRef())
+    );
+  }, [renderedAnnotations]);
+
   useEffect(() => {
     if (
-      (inlineComments.length > 0 || newCommentAnnotation)  &&
+      (inlineComments.length > 0 || newCommentAnnotation) &&
       canvasDimensions.width > 0 &&
       canvasDimensions.height > 0
     ) {
       _drawAnnotations();
     }
-  }, [canvasDimensions, inlineComments, newCommentAnnotation]);
+  }, [
+    canvasDimensions,
+    inlineComments,
+    newCommentAnnotation,
+    selectedAnnotation,
+  ]);
 
   // The canvas element has no pointer-events because we want the user to be able to select text
   // in the content layer beneath. As a result, we can't detect click events on the canvas so
@@ -107,6 +122,92 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     };
   }, [relativeRef, canvasRef, renderedAnnotations]);
 
+  const _calcCommentPositions = () => {
+    const _udpatedRenderedAnnotations: Array<RenderedAnnotation> = [];
+    let hasChanged = false;
+    for (let i = 0; i < renderedAnnotations.length; i++) {
+      const prevRef = annotationRefs[i - 1];
+      const currentRef = annotationRefs[i];
+      const prevAnnotation = renderedAnnotations[i - 1];
+      const currentAnnotation = { ...renderedAnnotations[i] };
+
+      if (prevRef?.current && currentRef?.current) {
+        const prevRect = prevRef.current.getBoundingClientRect();
+        const currentRect = currentRef.current.getBoundingClientRect();
+        const prevRectBottom =
+          prevAnnotation.commentCoordinates.y + prevRect.height;
+
+        if (prevRectBottom > currentAnnotation.commentCoordinates.y) {
+          const newPosY = prevRectBottom + 10;
+          if (newPosY !== currentAnnotation.commentCoordinates.y) {
+            currentAnnotation.commentCoordinates.y = newPosY;
+            hasChanged = true; // A change occurred
+            console.log(
+              "hasChanged",
+              hasChanged,
+              "newPosY",
+              newPosY,
+              "prevRectBottom",
+              prevRectBottom,
+              "currentAnnotation.commentCoordinates.y",
+              currentAnnotation.commentCoordinates.y
+            );
+          }
+        }
+      }
+
+      if (
+        currentAnnotation &&
+        selectedAnnotation?.comment?.id === currentAnnotation?.comment?.id &&
+        !currentAnnotation.isNew
+      ) {
+        if (currentAnnotation.commentCoordinates.x !== -30) {
+          currentAnnotation.commentCoordinates.x = -30;
+          hasChanged = true; // A change occurred
+        }
+      }
+
+      _udpatedRenderedAnnotations.push(currentAnnotation);
+    }
+
+    if (hasChanged) {
+      setRenderedAnnotations(_udpatedRenderedAnnotations);
+    }
+  };
+
+  useEffect(() => {
+    // Create a new ResizeObserver that will update your layout or state
+    const resizeObserver = new ResizeObserver((entries) => {
+      // Iterate over all entries
+      for (const entry of entries) {
+        const rect = entry.target.getBoundingClientRect();
+        console.log("Element:", entry.target, "Size", {
+          height: rect.height,
+          width: rect.width,
+        });
+
+        // Here you can trigger a re-render or update some state as needed
+        _calcCommentPositions();
+      }
+    });
+
+    // Observe each comment
+    annotationRefs.forEach((ref) => {
+      if (ref.current) {
+        resizeObserver.observe(ref.current);
+      }
+    });
+
+    // Clean up by unobserving all elements when the component unmounts
+    return () => {
+      annotationRefs.forEach((ref) => {
+        if (ref.current) {
+          resizeObserver.unobserve(ref.current);
+        }
+      });
+    };
+  }, [annotationRefs]); // Re-run effect when commentRefs changes
+
   // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
   // and redraw the highlights in the correct position.
   useEffect(() => {
@@ -141,7 +242,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
   };
 
   const _drawAnnotations = () => {
-    console.log('drawing highlights')
+    console.log("yooooo, drawing");
     const unrenderedAnnotations = inlineComments
       .map((comment): UnrenderedAnnotation => {
         const _xrange =
@@ -202,6 +303,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
           {renderedAnnotations.map((annotation, idx) => {
             return (
               <div
+                ref={annotationRefs[idx]}
                 style={{
                   position: "absolute",
                   background: "white",
@@ -209,13 +311,19 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                   border: `1px solid ${colors.border}`,
                   left: annotation.commentCoordinates.x,
                   top: annotation.commentCoordinates.y,
+                  width: config.annotations.commentWidth,
                 }}
                 key={`annotation-${idx}`}
               >
                 {annotation.comment && (
                   <Comment document={document} comment={annotation!.comment} />
                 )}
-                {annotation.isNew && <CommentEditor editorId="new-inline-comment" handleSubmit={() => null} />}
+                {annotation.isNew && (
+                  <CommentEditor
+                    editorId="new-inline-comment"
+                    handleSubmit={() => null}
+                  />
+                )}
               </div>
             );
           })}

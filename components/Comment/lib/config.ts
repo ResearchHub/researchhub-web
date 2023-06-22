@@ -36,6 +36,9 @@ const config = {
     height: 100,
     width: 50,
   },
+  annotations: {
+    commentWidth: 300,
+  },
 };
 
 export const getConfigForContext = (
