@@ -56,6 +56,7 @@ export default function DropdownMenu({
     <div>
       <Button
         aria-expanded={open ? "true" : undefined}
+        autoCapitalize="false"
         onClick={(event: MouseEvent<HTMLElement>): void => {
           if (disabled) {
             return;

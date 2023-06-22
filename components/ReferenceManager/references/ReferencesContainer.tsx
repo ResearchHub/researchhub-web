@@ -15,6 +15,7 @@ import {
   emptyFncWithMsg,
   isEmpty,
   isNullOrUndefined,
+  nullthrows,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
@@ -180,8 +181,10 @@ function ReferencesContainer({
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
-  const { setIsDrawerOpen: setIsRefUploadDrawerOpen } =
-    useReferenceUploadDrawerContext();
+  const {
+    setIsDrawerOpen: setIsRefUploadDrawerOpen,
+    setProjectID: setProjectIDForUploadDrawer,
+  } = useReferenceUploadDrawerContext();
 
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
@@ -217,23 +220,29 @@ function ReferencesContainer({
     const resp = await fetch(
       url,
       api.POST_CONFIG({
-        "filename": fileName,
-        "organization_id": organizationID,
-        "project_id": projectID
+        filename: fileName,
+        organization_id: organizationID,
+        project_id: projectID,
       })
     );
 
     return await resp.json();
-  }
+  };
 
   const handleFileDrop = async (acceptedFiles) => {
     const fileNames = [];
     acceptedFiles.forEach(async (file) => {
-      const preSignedUrl = await getPresignedUrl(file.name, currentOrg.id, activeProject.projectID);
-      const fileBlob = new Blob([await file.arrayBuffer()], { type: "application/pdf" });
+      const preSignedUrl = await getPresignedUrl(
+        file.name,
+        currentOrg.id,
+        activeProject.projectID
+      );
+      const fileBlob = new Blob([await file.arrayBuffer()], {
+        type: "application/pdf",
+      });
       const result = fetch(preSignedUrl, {
         method: "PUT",
-        body: fileBlob
+        body: fileBlob,
       });
     });
     const preload: Array<Preload> = [];
@@ -564,7 +573,7 @@ function ReferencesContainer({
                       setProjectUpsertPurpose("create_sub_project");
                       setProjectUpsertValue({
                         ...DEFAULT_PROJECT_VALUES,
-                        projectID: activeProject.id,
+                        projectID: activeProject?.projectID,
                       });
                       setIsProjectUpsertModalOpen(true);
                     }}
@@ -575,20 +584,39 @@ function ReferencesContainer({
                       fontSize="20px"
                       style={{ marginRight: 8 }}
                     />
-                    Create Folder
+                    {"Create a folder"}
                   </div>
-                  <div
-                    className={css(styles.button)}
-                    onClick={() => inputRef.current.click()}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      color="#fff"
-                      fontSize="20px"
-                      style={{ marginRight: 8 }}
-                    />
-                    Add a Citation
-                  </div>
+                  <DropdownMenu
+                    menuItemProps={[
+                      {
+                        itemLabel: "Import PDF(s)",
+                        onClick: (): void =>
+                          // @ts-ignore unnecessary never handling
+                          nullthrows(inputRef?.current).click(),
+                      },
+                      {
+                        itemLabel: "Manual upload",
+                        onClick: (): void => {
+                          setProjectIDForUploadDrawer(
+                            activeProject?.projectID ?? null
+                          );
+                          setIsRefUploadDrawerOpen(true);
+                        },
+                      },
+                    ]}
+                    menuLabel={
+                      <div className={css(styles.button)}>
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          color="#fff"
+                          fontSize="20px"
+                          style={{ marginRight: 8 }}
+                        />
+                        {"Add a reference"}
+                      </div>
+                    }
+                    size={"small"}
+                  />
                 </Box>
                 <ReferencesTable
                   createdReferences={createdReferences}
