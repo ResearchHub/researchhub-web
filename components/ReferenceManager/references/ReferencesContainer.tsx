@@ -1,10 +1,4 @@
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  Typography,
-  OutlinedInput,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
@@ -15,7 +9,7 @@ import {
   emptyFncWithMsg,
   isEmpty,
   isNullOrUndefined,
-  silentEmptyFnc,
+  nullthrows,
 } from "~/config/utils/nullchecks";
 import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
 import { MessageActions } from "~/redux/message";
@@ -27,37 +21,30 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
+import { faFolderPlus, faPlus } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ID } from "~/config/types/root_types";
+import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
+import api, { generateApiUrl } from "~/config/api";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import api, { generateApiUrl } from "~/config/api";
-import AddIcon from "@mui/icons-material/Add";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
+import DropdownMenu from "../menu/DropdownMenu";
 import DroppableZone from "~/components/DroppableZone";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import ListIcon from "@mui/icons-material/List";
+import ManageOrgModal from "~/components/Org/ManageOrgModal";
+import QuickModal from "../menu/QuickModal";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
-import ReferencesTable from "./reference_table/ReferencesTable";
-import Button from "~/components/Form/Button";
-import DropdownMenu from "../menu/DropdownMenu";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import ListIcon from "@mui/icons-material/List";
-import withWebSocket from "~/components/withWebSocket";
-import QuickModal from "../menu/QuickModal";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
-import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
-import { ID } from "~/config/types/root_types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFolderPlus,
-  faMagnifyingGlass,
-  faPlus,
-} from "@fortawesome/pro-light-svg-icons";
-import colors from "~/config/themes/colors";
-import TableChartIcon from "@mui/icons-material/TableChart";
-import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import ManageOrgUsers from "~/components/Org/ManageOrgUsers";
-import ManageOrgModal from "~/components/Org/ManageOrgModal";
+import ReferencesTable from "./reference_table/ReferencesTable";
+import withWebSocket from "~/components/withWebSocket";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -180,8 +167,10 @@ function ReferencesContainer({
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
-  const { setIsDrawerOpen: setIsRefUploadDrawerOpen } =
-    useReferenceUploadDrawerContext();
+  const {
+    setIsDrawerOpen: setIsRefUploadDrawerOpen,
+    setProjectID: setProjectIDForUploadDrawer,
+  } = useReferenceUploadDrawerContext();
 
   const [currentOrgProjects, setCurrentOrgProjects] = useState<any[]>([]);
   const [isFetchingProjects, setIsFethingProjects] = useState<boolean>(false);
@@ -217,23 +206,29 @@ function ReferencesContainer({
     const resp = await fetch(
       url,
       api.POST_CONFIG({
-        "filename": fileName,
-        "organization_id": organizationID,
-        "project_id": projectID
+        filename: fileName,
+        organization_id: organizationID,
+        project_id: projectID,
       })
     );
 
     return await resp.json();
-  }
+  };
 
   const handleFileDrop = async (acceptedFiles) => {
     const fileNames = [];
     acceptedFiles.forEach(async (file) => {
-      const preSignedUrl = await getPresignedUrl(file.name, currentOrg.id, activeProject.projectID);
-      const fileBlob = new Blob([await file.arrayBuffer()], { type: "application/pdf" });
+      const preSignedUrl = await getPresignedUrl(
+        file.name,
+        nullthrows(currentOrg).id,
+        nullthrows(activeProject).projectID
+      );
+      const fileBlob = new Blob([await file.arrayBuffer()], {
+        type: "application/pdf",
+      });
       const result = fetch(preSignedUrl, {
         method: "PUT",
-        body: fileBlob
+        body: fileBlob,
       });
     });
     const preload: Array<Preload> = [];
@@ -423,6 +418,7 @@ function ReferencesContainer({
                           return collaborator.authorProfile;
                         }
                       )}
+                      imgSize={""}
                     />
                   )}
                   {(isOnOrgTab || !isEmpty(router.query.project)) && (
@@ -450,9 +446,11 @@ function ReferencesContainer({
                   sx={{
                     alignItems: "center",
                     display: "flex",
-                    width: "100%",
+                    flexDirection: "row",
                     height: 44,
+                    justifyContent: "space-between",
                     marginBottom: "20px",
+                    width: "100%",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
@@ -511,83 +509,58 @@ function ReferencesContainer({
                       </>
                     )}
                   </div>
-                  <div
-                    className="ReferenceContainerSearchFieldWrap"
-                    style={{
-                      maxWidth: 400,
-                      width: "100%",
-                      marginLeft: "auto",
-                    }}
-                  >
-                    {/* <OutlinedInput
-                      fullWidth
-                      label={searchText && "Search"}
-                      onChange={(
-                        event: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        // TODO: calvinhlee - create a MUI convenience function for handling target values
-                        setSearchText(event.target.value);
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      className={css(styles.button, styles.secondary)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setProjectUpsertPurpose("create_sub_project");
+                        setProjectUpsertValue({
+                          ...DEFAULT_PROJECT_VALUES,
+                          projectID: activeProject?.projectID,
+                        });
+                        setIsProjectUpsertModalOpen(true);
                       }}
-                      placeholder="Search..."
-                      size="small"
-                      sx={{
-                        borderColor: "#E9EAEF",
-                        background: "rgba(250, 250, 252, 1)",
-                        "&:hover": {
-                          borderColor: "#E9EAEF",
+                    >
+                      <FontAwesomeIcon
+                        icon={faFolderPlus}
+                        color={colors.NEW_BLUE(1)}
+                        fontSize="20px"
+                        style={{ marginRight: 8 }}
+                      />
+                      {"Add a project"}
+                    </div>
+                    <DropdownMenu
+                      menuItemProps={[
+                        {
+                          itemLabel: "Import PDF(s)",
+                          onClick: (): void =>
+                            // @ts-ignore unnecessary never handling
+                            nullthrows(inputRef?.current).click(),
                         },
-                      }}
-                      inputProps={{
-                        sx: {
-                          border: "0px !important",
-                          "&:hover": {
-                            border: "0px",
+                        {
+                          itemLabel: "Manual upload",
+                          onClick: (): void => {
+                            setProjectIDForUploadDrawer(
+                              activeProject?.projectID ?? null
+                            );
+                            setIsRefUploadDrawerOpen(true);
                           },
                         },
-                      }}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton edge="end">
-                            <FontAwesomeIcon
-                              icon={faMagnifyingGlass}
-                              fontSize="16px"
-                            />
-                          </IconButton>
-                        </InputAdornment>
+                      ]}
+                      menuLabel={
+                        <div className={css(styles.button)}>
+                          <FontAwesomeIcon
+                            icon={faPlus}
+                            color="#fff"
+                            fontSize="20px"
+                            style={{ marginRight: 8 }}
+                          />
+                          {"Add a reference"}
+                        </div>
                       }
-                    /> */}
-                  </div>
-                  <div
-                    className={css(styles.button, styles.secondary)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setProjectUpsertPurpose("create_sub_project");
-                      setProjectUpsertValue({
-                        ...DEFAULT_PROJECT_VALUES,
-                        projectID: activeProject.id,
-                      });
-                      setIsProjectUpsertModalOpen(true);
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faFolderPlus}
-                      color={colors.NEW_BLUE(1)}
-                      fontSize="20px"
-                      style={{ marginRight: 8 }}
+                      size={"small"}
                     />
-                    Create Folder
-                  </div>
-                  <div
-                    className={css(styles.button)}
-                    onClick={() => inputRef.current.click()}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      color="#fff"
-                      fontSize="20px"
-                      style={{ marginRight: 8 }}
-                    />
-                    Add a Citation
                   </div>
                 </Box>
                 <ReferencesTable
@@ -623,19 +596,19 @@ const styles = StyleSheet.create({
     background: "unset",
   },
   button: {
-    marginLeft: 16,
-    padding: 16,
+    alignItems: "center",
     background: colors.NEW_BLUE(),
     borderRadius: 4,
     boxSizing: "border-box",
-    height: 40,
     color: "#fff",
-    // width: 30,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     cursor: "pointer",
+    display: "flex",
+    fontSize: 14,
     fontWeight: 500,
+    height: 40,
+    justifyContent: "center",
+    marginLeft: 16,
+    padding: 16,
   },
   secondary: {
     border: `1px solid ${colors.NEW_BLUE()}`,

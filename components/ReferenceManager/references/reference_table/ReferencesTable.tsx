@@ -165,24 +165,8 @@ export default function ReferencesTable({
               ),
             });
             setIsDrawerOpen(true);
-          } else {
-            setSelectedReferenceIDs(params.id);
           }
         }}
-        // onRowClick={(params, event, _details): void => {
-        //   event.stopPropagation();
-        //   if (params.field !== "__check__") {
-        //     setReferenceItemDatum({
-        //       ...nullthrows(
-        //         referenceTableRowData.find(
-        //           (item) => item.id === params?.row?.id
-        //         )
-        //       ),
-        //     });
-        //     setIsDrawerOpen(true);
-        //   } else {
-        //   }
-        // }}
         onRowSelectionModelChange={(selectedReferenceIDs) => {
           setSelectedReferenceIDs(selectedReferenceIDs);
         }}
