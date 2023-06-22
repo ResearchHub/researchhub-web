@@ -135,14 +135,29 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     };
   }, [relativeRef, canvasRef, renderedAnnotations]);
 
+  const _sortAnnotations = (annotations: RenderedAnnotation[]) => {
+    console.log("Sorting annotations:", annotations);
+
+    const sorted = annotations.sort((a, b) => {
+      const aY = a.anchorCoordinates[a.anchorCoordinates.length - 1].y;
+      const bY = b.anchorCoordinates[b.anchorCoordinates.length - 1].y;
+      return aY - bY;
+    });
+
+    console.log("Sorting results:", sorted);
+    return sorted;
+  };
+
   const _calcCommentPositions = () => {
+    const _renderedAnnotations = _sortAnnotations(renderedAnnotations);
+
     const _udpatedRenderedAnnotations: Array<RenderedAnnotation> = [];
     let hasChanged = false;
-    for (let i = 0; i < renderedAnnotations.length; i++) {
+    for (let i = 0; i < _renderedAnnotations.length; i++) {
       const prevRef = annotationRefs[i - 1];
       const currentRef = annotationRefs[i];
-      const prevAnnotation = renderedAnnotations[i - 1];
-      const currentAnnotation = { ...renderedAnnotations[i] };
+      const prevAnnotation = _renderedAnnotations[i - 1];
+      const currentAnnotation = { ..._renderedAnnotations[i] };
 
       if (prevRef?.current && currentRef?.current) {
         const prevRect = prevRef.current.getBoundingClientRect();
