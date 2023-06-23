@@ -4,6 +4,7 @@ import { NullableString } from "~/config/types/root_types";
 import colors from "./lib/colors";
 import { CommentTreeContext } from "./lib/contexts";
 import { filterOpts } from "./lib/options";
+import { COMMENT_CONTEXTS } from "./lib/types";
 
 type Args = {
   selectedFilterValue: NullableString;
@@ -21,8 +22,8 @@ const CommentFilters = ({
     filterOpts.find((f) => f.value === selectedFilterValue) || filterOpts[0];
   const _filterOpts = filterOpts.filter((f) => !hideOptions.includes(f.value));
   const isNarrowWidthContext =
-    commentTreeState.context === "sidebar" ||
-    commentTreeState.context === "drawer";
+    commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
+    commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
 
   return (
     <div

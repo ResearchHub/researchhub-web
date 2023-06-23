@@ -17,7 +17,7 @@ import colors from "./lib/colors";
 import drawAnnotationsOnCanvas from "./lib/drawAnnotationsOnCanvas";
 import TextSelectionMenu from "./TextSelectionMenu";
 import useSelection from "~/components/Comment/hooks/useSelection";
-import config from "./lib/config";
+import config, { contextConfig } from "./lib/config";
 import CommentEditor from "./CommentEditor";
 import { captureEvent } from "~/config/utils/events";
 
@@ -26,7 +26,7 @@ interface Props {
   document: GenericDocument;
 }
 
-const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
+const AnnotationCanvas = ({ relativeRef, document }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
   const [renderedAnnotations, setRenderedAnnotations] = useState<
@@ -49,7 +49,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
     const _fetch = async () => {
       const { comments: rawComments } = await fetchCommentsAPI({
         documentId: document.id,
-        filter: COMMENT_FILTERS.INNER_CONTENT_COMMENT,
+        filter: COMMENT_FILTERS.ANNOTATION,
         documentType: document.apiDocumentType,
       });
       const comments = rawComments.map((raw) => parseComment({ raw }));
@@ -341,7 +341,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                     : `1px solid ${colors.border}`,
                   left: annotation.commentCoordinates.x,
                   top: annotation.commentCoordinates.y,
-                  width: config.annotations.commentWidth,
+                  width: contextConfig.annotation.commentWidth,
                 }}
                 key={`annotation-${idx}`}
               >
@@ -357,7 +357,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                           ...props,
                           documentId: document.id,
                           documentType: document.apiDocumentType,
-                          commentType: COMMENT_TYPES.INNER_CONTENT_COMMENT,
+                          commentType: COMMENT_TYPES.ANNOTATION,
                           anchor: {
                             type: "text",
                             position: annotation.xrange!.serialize(),
@@ -399,4 +399,4 @@ const styles = StyleSheet.create({
   commentSidebar: {},
 });
 
-export default InlineCommentCanvas;
+export default AnnotationCanvas;

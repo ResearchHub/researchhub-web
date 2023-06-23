@@ -1,10 +1,10 @@
 import { breakpoints } from "~/config/themes/screen";
+import { COMMENT_CONTEXTS } from "./types";
 
-const config = {
-  feed: {
-    rootLevelPageSize: 15,
-    childPageSize: 9,
-    repliesPageSize: 7,
+export const contextConfig = {
+  generic: {
+    previewMaxChars: 1500,
+    previewMaxImages: 2,
   },
   drawer: {
     displayForBreakpoint: breakpoints.small.int,
@@ -17,13 +17,20 @@ const config = {
     fixedPosMaxWidth: 1550,
     width: 500,
   },
-  default: {
-    previewMaxChars: 1500,
-    previewMaxImages: 2,
-  },
-  liveFeed: {
+  feed: {
     previewMaxChars: 500,
     previewMaxImages: 1,
+  },
+  annotation: {
+    commentWidth: 300,
+  },
+}
+
+const config = {
+  feed: {
+    rootLevelPageSize: 15,
+    childPageSize: 9,
+    repliesPageSize: 7,
   },
   toggle: {
     width: 75,
@@ -36,16 +43,13 @@ const config = {
     height: 100,
     width: 50,
   },
-  annotations: {
-    commentWidth: 300,
-  },
 };
 
 export const getConfigForContext = (
-  context: "sidebar" | "default" | "drawer" | undefined | null
+  context: COMMENT_CONTEXTS
 ) => {
-  const _config = config[context || "default"];
-  return _config || config["default"];
+  const _config = contextConfig[(context || "").toLowerCase() || "generic"];
+  return _config || contextConfig["generic"];
 };
 
 export default config;

@@ -6,8 +6,9 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { createPortal } from "react-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import { CommentTreeContext } from "./lib/contexts";
-import config from "./lib/config";
+import config, { contextConfig } from "./lib/config";
 import { breakpoints } from "~/config/themes/screen";
+import { COMMENT_CONTEXTS } from "./lib/types";
 
 type Args = {
   setIsOpen: Function;
@@ -41,7 +42,7 @@ const CommentToggle = ({
     }
   }, []);
 
-  if (commentTreeState.context === "sidebar") {
+  if (commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR) {
     useEffect(() => {
       const _handleScroll = () => {
         if (window.scrollY > prevScrollYPos.current && isVisibleRef.current) {
@@ -74,7 +75,7 @@ const CommentToggle = ({
             className={css(
               styles.toggle,
               isVisible ? styles.visibleToggle : styles.hiddenToggle,
-              commentTreeState.context === "sidebar" &&
+              commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR &&
                 isOpen &&
                 styles.sidebarOpen
             )}
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
       background: colors.hover.background,
     },
 
-    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+    [`@media only screen and (max-width: ${contextConfig.sidebar.fixedPosMaxWidth}px)`]:
       {
         left: `calc(50% + ${config.toggle.width / 2}px)`,
       },
@@ -180,9 +181,9 @@ const styles = StyleSheet.create({
     },
   },
   sidebarOpen: {
-    [`@media only screen and (min-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+    [`@media only screen and (min-width: ${contextConfig.sidebar.fixedPosMaxWidth}px)`]:
       {
-        left: `calc(50% - ${config.sidebar.width / 2 - 75 / 2}px)`,
+        left: `calc(50% - ${contextConfig.sidebar.width / 2 - 75 / 2}px)`,
       },
   },
   item: {

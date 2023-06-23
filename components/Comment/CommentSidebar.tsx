@@ -5,7 +5,7 @@ import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
 import CommentToggle from "./CommentToggle";
 import { useEffect, useState } from "react";
-import config from "./lib/config";
+import config, { contextConfig } from "./lib/config";
 import colors from "~/config/themes/colors";
 
 type Args = {
@@ -24,14 +24,14 @@ const CommentSidebar = ({
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= config.sidebar.fixedPosMaxWidth) {
+      if (window.innerWidth <= contextConfig.sidebar.fixedPosMaxWidth) {
         setIsInFixedPosRange(true);
       } else {
         setIsInFixedPosRange(false);
       }
     };
 
-    if (window.innerWidth <= config.sidebar.fixedPosMaxWidth) {
+    if (window.innerWidth <= contextConfig.sidebar.fixedPosMaxWidth) {
       setIsInFixedPosRange(true);
       setIsOpen(false);
     }
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     top: 0,
     boxSizing: "border-box",
     padding: "25px 0px",
-    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+    [`@media only screen and (max-width: ${contextConfig.sidebar.fixedPosMaxWidth}px)`]:
       {
         display: "none",
       },
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     paddingBottom: "10vh",
   },
   sidebarOpen: {
-    width: config.sidebar.width,
+    width: contextConfig.sidebar.width,
   },
   discussionCount: {
     background: colors.LIGHTER_GREY(),
@@ -131,10 +131,10 @@ const styles = StyleSheet.create({
     width: 0,
   },
   sidebarFixedOpen: {
-    [`@media only screen and (max-width: ${config.sidebar.fixedPosMaxWidth}px)`]:
+    [`@media only screen and (max-width: ${contextConfig.sidebar.fixedPosMaxWidth}px)`]:
       {
         display: "block",
-        width: config.sidebar.width,
+        width: contextConfig.sidebar.width,
         position: "fixed",
         right: 0,
         top: 0,

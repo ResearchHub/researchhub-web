@@ -1,9 +1,8 @@
-import { createPortal } from "react-dom";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import sharedGetStaticProps from "~/components/Document/lib/sharedGetStaticProps";
 import DocumentPageLayout from "~/components/Document/pages/DocumentPageLayout";
 import { useRouter } from "next/router";
-import getDocumentFromRaw, { Post } from "~/components/Document/lib/types";
+import { Post } from "~/components/Document/lib/types";
 import { captureEvent } from "~/config/utils/events";
 import Error from "next/error";
 import config from "~/components/Document/lib/config";
@@ -16,7 +15,6 @@ import {
 } from "~/components/Document/lib/useHooks";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import dynamic from "next/dynamic";
-import fetchPostFromS3 from "~/components/Document/api/fetchPostFromS3";
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
 );
@@ -29,8 +27,7 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import { isEmpty } from "~/config/utils/nullchecks";
-import InlineCommentCanvas from "~/components/Comment/InlineCommentCanvas";
+import AnnotationCanvas from "~/components/Comment/AnnotationCanvas";
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {
@@ -165,7 +162,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                 </div>
               ) : (
                 <div style={{ position: "relative" }}>
-                  <InlineCommentCanvas
+                  <AnnotationCanvas
                     document={document}
                     relativeRef={contentRef}
                   />

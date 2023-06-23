@@ -12,6 +12,8 @@ import {
   quillDeltaToHtml,
 } from "./lib/quill";
 import { CommentTreeContext } from "./lib/contexts";
+import { contextConfig } from "./lib/config";
+import { COMMENT_CONTEXTS } from "./lib/types";
 
 type Args = {
   content: any;
@@ -21,8 +23,8 @@ type Args = {
 
 const CommentReadOnly = ({
   content,
-  previewMaxCharLength = config.default.previewMaxChars,
-  previewMaxImageLength = config.default.previewMaxImages,
+  previewMaxCharLength = contextConfig.generic.previewMaxChars,
+  previewMaxImageLength = contextConfig.generic.previewMaxImages,
 }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [previewHtml, setPreviewHtml] = useState<any>(null);
@@ -51,8 +53,8 @@ const CommentReadOnly = ({
   }, []);
 
   const isNarrowWidthContext =
-    commentTreeState.context === "sidebar" ||
-    commentTreeState.context === "drawer";
+    commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
+    commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   return (
     <div>

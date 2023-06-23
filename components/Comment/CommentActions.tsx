@@ -15,14 +15,13 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import {
   findOpenRootBounties,
   getOpenBounties,
-  getUserOpenBounties,
 } from "./lib/bounty";
 import { CommentTreeContext } from "./lib/contexts";
 import { useContext } from "react";
 import Bounty, { tallyAmounts } from "~/config/types/bounty";
 import { MessageActions } from "~/redux/message";
 import { markAsAcceptedAnswerAPI } from "./lib/api";
-import findComment, { findAllComments } from "./lib/findComment";
+import { findAllComments } from "./lib/findComment";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {

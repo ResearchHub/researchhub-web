@@ -3,7 +3,7 @@ import CommentHeader from "./CommentHeader";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
-import { Comment as CommentType } from "./lib/types";
+import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
@@ -11,7 +11,6 @@ import colors from "./lib/colors";
 import {
   getOpenBounties,
   getUserOpenBounties,
-  hasOpenBounties,
 } from "./lib/bounty";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +30,6 @@ import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { timeTo } from "~/config/utils/dates";
-import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
@@ -184,8 +182,8 @@ const Comment = ({ comment, document }: CommentArgs) => {
     commentTreeState.context
   ).previewMaxChars;
   const isNarrowWidthContext =
-    commentTreeState.context === "sidebar" ||
-    commentTreeState.context === "drawer";
+    commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
+    commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
   return (
     <div>
       <div>

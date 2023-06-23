@@ -1,9 +1,7 @@
 import { useContext, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { DOWNVOTE, NEUTRALVOTE, UPVOTE } from "~/config/constants";
-import { RhDocumentType, ID, parseUser } from "~/config/types/root_types";
-import { RootState } from "~/redux";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { RhDocumentType, ID } from "~/config/types/root_types";
 import VoteWidget from "../VoteWidget";
 import { Comment } from "./lib/types";
 import { StyleSheet } from "aphrodite";
