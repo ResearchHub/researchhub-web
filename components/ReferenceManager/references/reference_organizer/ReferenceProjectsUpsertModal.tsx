@@ -21,7 +21,7 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 type ComponentProps = {
   onCloseModal?: (event?: SyntheticEvent) => void;
-  onUpsertSuccess?: () => void;
+  onUpsertSuccess?: (result) => void;
 };
 
 export default function ReferenceProjectsUpsertModal({
@@ -76,7 +76,7 @@ export default function ReferenceProjectsUpsertModal({
     upsertReferenceProject({
       onSuccess: (result) => {
         resetProjectsFetchTime();
-        onUpsertSuccess && onUpsertSuccess();
+        onUpsertSuccess && onUpsertSuccess(result);
         handleCloseModal();
       },
       onError: emptyFncWithMsg,

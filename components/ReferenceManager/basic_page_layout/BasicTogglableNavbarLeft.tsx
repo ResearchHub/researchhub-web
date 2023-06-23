@@ -4,7 +4,10 @@ import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationCont
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
-import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
+import {
+  ProjectValue,
+  useReferenceProjectUpsertContext,
+} from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
 import { useRouter } from "next/router";
 import BasicTogglableNavbarButton from "./BasicTogglableNavbarButton";
 import Divider from "@mui/material/Divider";
@@ -18,6 +21,7 @@ import colors from "~/config/themes/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { faSitemap, faUser } from "@fortawesome/pro-regular-svg-icons";
+import { useReferenceActiveProjectContext } from "../references/reference_organizer/context/ReferenceActiveProjectContext";
 
 export const LEFT_MAX_NAV_WIDTH = 240;
 export const LEFT_MIN_NAV_WIDTH = 65;
@@ -39,6 +43,7 @@ export default function BasicTogglableNavbarLeft({
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
+  const { setCurrentOrgProjects } = useReferenceActiveProjectContext();
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -52,6 +57,21 @@ export default function BasicTogglableNavbarLeft({
     const map = { ...childrenOpenMap };
     map[key] = value;
     setChildrenOpenMap(map);
+  };
+
+  const addFolderToChildren = (result) => {
+    let newOrgProjects: ProjectValue[] = [...currentOrgProjects];
+    if (!result.parent) {
+      newOrgProjects.push(result);
+    } else {
+      newOrgProjects = currentOrgProjects.map((proj) => {
+        if (proj.id === result.parent) {
+          proj.children = [...proj.children, result];
+        }
+        return proj;
+      });
+    }
+    setCurrentOrgProjects(newOrgProjects);
   };
 
   const currentOrgSlug = currentOrg?.slug ?? null;
@@ -77,7 +97,7 @@ export default function BasicTogglableNavbarLeft({
         minHeight: "calc(100vh - 68px)",
       }}
     >
-      <ReferenceProjectsUpsertModal />
+      <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />
       <Box className="LeftNavbarUserSection">
         <Box
           sx={{
