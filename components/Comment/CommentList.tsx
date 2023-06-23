@@ -84,8 +84,6 @@ const styles = StyleSheet.create({
   commentListWrapper: {},
   childrenList: {
     marginLeft: -7,
-    // paddingLeft: 15,
-    // borderLeft: `3px solid ${colors.border}`,
   },
   loadMoreWrapper: {
     marginTop: 15,
@@ -102,7 +100,6 @@ const styles = StyleSheet.create({
     },
   },
   rootCommentWrapper: {
-    // borderBottom: `1px solid ${colors.border}`,
     paddingBottom: 25,
   },
 });
