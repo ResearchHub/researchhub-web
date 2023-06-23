@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   nameWrapper: {
-    marginLeft: 7,
+    marginLeft: 6,
     width: "100%",
   },
   nameRow: {

@@ -20,6 +20,7 @@ type Args = {
   documentType: RhDocumentType;
   documentID: ID;
   comment: Comment;
+  isHorizontal?: boolean;
 };
 
 const CommentVote = ({
@@ -28,6 +29,7 @@ const CommentVote = ({
   userVote,
   documentType,
   documentID,
+  isHorizontal = false,
 }: Args) => {
   const commentTreeState = useContext(CommentTreeContext);
   const [_score, _setScore] = useState<number>(score);
@@ -69,7 +71,7 @@ const CommentVote = ({
   return (
     <VoteWidget
       score={_score}
-      horizontalView={true}
+      horizontalView={isHorizontal}
       onUpvote={async () => {
         try {
           const userVote = await voteForComment({

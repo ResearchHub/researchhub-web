@@ -172,6 +172,7 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
             comment={comment}
             score={comment.score}
             userVote={comment.userVote}
+            isHorizontal={true}
             documentType={document.apiDocumentType}
             documentID={document.id}
           />

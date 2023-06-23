@@ -204,162 +204,164 @@ const Comment = ({ comment, document }: CommentArgs) => {
               handleEdit={() => setIsEditMode(!isEditMode)}
             />
           </div>
-          {isEditMode ? (
-            <CommentEditor
-              handleSubmit={async (props) => {
-                try {
-                  let comment = (await handleCommentUpdate(
-                    props
-                  )) as CommentType;
-                  console.log(comment);
-                  if (comment.review) {
-                    const review = await handleReviewUpdate({
-                      commentId: comment.id,
-                      content: comment.content,
-                      reviewId: comment.review?.id as ID,
+          <div className={css(styles.contentWrapper)}>
+            {isEditMode ? (
+              <CommentEditor
+                handleSubmit={async (props) => {
+                  try {
+                    let comment = (await handleCommentUpdate(
+                      props
+                    )) as CommentType;
+                    console.log(comment);
+                    if (comment.review) {
+                      const review = await handleReviewUpdate({
+                        commentId: comment.id,
+                        content: comment.content,
+                        reviewId: comment.review?.id as ID,
+                      });
+                      comment = { ...comment, review: review as Review };
+                    }
+                    commentTreeState.onUpdate({ comment });
+                  } catch (error: any) {
+                    captureEvent({
+                      error,
+                      msg: `Failed to create ${props.commentType}`,
+                      data: {
+                        props,
+                      },
                     });
-                    comment = { ...comment, review: review as Review };
+                  } finally {
+                    setIsEditMode(false);
                   }
-                  commentTreeState.onUpdate({ comment });
-                } catch (error: any) {
-                  captureEvent({
-                    error,
-                    msg: `Failed to create ${props.commentType}`,
-                    data: {
-                      props,
-                    },
-                  });
-                } finally {
-                  setIsEditMode(false);
-                }
-              }}
-              commentType={comment.commentType}
-              content={comment.content}
-              commentId={comment.id}
-              author={currentUser?.authorProfile}
-              editorId={`edit-${comment.id}`}
-              allowCommentTypeSelection={false}
-              handleClose={() => _handleCloseEdit()}
-            />
-          ) : (
-            <div
-              className={css(
-                styles.commentReadOnlyWrapper,
-                hasOpenBounties && styles.commentReadOnlyWrapperForBounty
-              )}
-            >
-              <CommentReadOnly
+                }}
+                commentType={comment.commentType}
                 content={comment.content}
-                previewMaxCharLength={previewMaxChars}
+                commentId={comment.id}
+                author={currentUser?.authorProfile}
+                editorId={`edit-${comment.id}`}
+                allowCommentTypeSelection={false}
+                handleClose={() => _handleCloseEdit()}
               />
-              {hasOpenBounties && (
-                <div className={css(styles.contributeWrapper)}>
-                  <div className={css(styles.contributeDetails)}>
-                    <span style={{ fontWeight: 500 }}>
-                      <FontAwesomeIcon
-                        style={{ fontSize: 13, marginRight: 5 }}
-                        icon={faClock}
-                      />
-                      {`Bounty expiring in ` +
-                        timeTo(openBounties[0].expiration_date) +
-                        `.  `}
-                    </span>
-                    <span>
-                      <>{`Reply to this ${
-                        isQuestion ? "question" : "thread"
-                      } to be eligible for bounty award.`}</>
-                    </span>
-                  </div>
-                  <CreateBountyBtn
-                    onBountyAdd={(bounty) => {
-                      const updatedComment = Object.assign({}, comment);
-                      comment.bounties[0].appendChild(bounty);
-                      updatedComment.bounties.push(bounty);
-                      commentTreeState.onUpdate({ comment: updatedComment });
-                    }}
-                    withPreview={false}
-                    relatedItemId={comment.id}
-                    relatedItemContentType={"rhcommentmodel"}
-                    originalBounty={comment.bounties[0]}
-                  >
-                    <Button
-                      customButtonStyle={styles.contributeBtn}
-                      customLabelStyle={styles.contributeBtnLabel}
-                      hideRipples={true}
-                      size="small"
+            ) : (
+              <div
+                className={css(
+                  styles.commentReadOnlyWrapper,
+                  hasOpenBounties && styles.commentReadOnlyWrapperForBounty
+                )}
+              >
+                <CommentReadOnly
+                  content={comment.content}
+                  previewMaxCharLength={previewMaxChars}
+                />
+                {hasOpenBounties && (
+                  <div className={css(styles.contributeWrapper)}>
+                    <div className={css(styles.contributeDetails)}>
+                      <span style={{ fontWeight: 500 }}>
+                        <FontAwesomeIcon
+                          style={{ fontSize: 13, marginRight: 5 }}
+                          icon={faClock}
+                        />
+                        {`Bounty expiring in ` +
+                          timeTo(openBounties[0].expiration_date) +
+                          `.  `}
+                      </span>
+                      <span>
+                        <>{`Reply to this ${
+                          isQuestion ? "question" : "thread"
+                        } to be eligible for bounty award.`}</>
+                      </span>
+                    </div>
+                    <CreateBountyBtn
+                      onBountyAdd={(bounty) => {
+                        const updatedComment = Object.assign({}, comment);
+                        comment.bounties[0].appendChild(bounty);
+                        updatedComment.bounties.push(bounty);
+                        commentTreeState.onUpdate({ comment: updatedComment });
+                      }}
+                      withPreview={false}
+                      relatedItemId={comment.id}
+                      relatedItemContentType={"rhcommentmodel"}
+                      originalBounty={comment.bounties[0]}
                     >
-                      <div>
-                        <FontAwesomeIcon icon={faPlus} />
-                        {` `}
-                        {currentUserIsOpenBountyCreator ? (
-                          <>
-                            Add RSC
-                            <span
-                              className={css(
-                                styles.bountyBtnText,
-                                isNarrowWidthContext &&
-                                  styles.hideForNarrowWidthContexts
-                              )}
-                            >
-                              {" "}
-                              to bounty
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            Contribute
-                            <span
-                              className={css(
-                                styles.bountyBtnText,
-                                isNarrowWidthContext &&
-                                  styles.hideForNarrowWidthContexts
-                              )}
-                            >
-                              {" "}
-                              to bounty
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </Button>
-                  </CreateBountyBtn>
-                </div>
-              )}
+                      <Button
+                        customButtonStyle={styles.contributeBtn}
+                        customLabelStyle={styles.contributeBtnLabel}
+                        hideRipples={true}
+                        size="small"
+                      >
+                        <div>
+                          <FontAwesomeIcon icon={faPlus} />
+                          {` `}
+                          {currentUserIsOpenBountyCreator ? (
+                            <>
+                              Add RSC
+                              <span
+                                className={css(
+                                  styles.bountyBtnText,
+                                  isNarrowWidthContext &&
+                                    styles.hideForNarrowWidthContexts
+                                )}
+                              >
+                                {" "}
+                                to bounty
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              Contribute
+                              <span
+                                className={css(
+                                  styles.bountyBtnText,
+                                  isNarrowWidthContext &&
+                                    styles.hideForNarrowWidthContexts
+                                )}
+                              >
+                                {" "}
+                                to bounty
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </Button>
+                    </CreateBountyBtn>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className={css(styles.actionsWrapper)}>
+              <CommentActions
+                toggleReply={() => _handleToggleReply()}
+                document={document}
+                comment={comment}
+              />
             </div>
-          )}
-        </div>
-        <div className={css(styles.actionsWrapper)}>
-          <CommentActions
-            toggleReply={() => _handleToggleReply()}
-            document={document}
-            comment={comment}
-          />
+
+            {isReplyOpen && (
+              <div className={css(styles.editorWrapper)}>
+                <CommentEditor
+                  focusOnMount={true}
+                  handleClose={() => _handleToggleReply()}
+                  handleSubmit={async ({ content, mentions }) => {
+                    await handleReplyCreate({ content, mentions });
+                    setIsReplyOpen(false);
+                  }}
+                  editorId={`reply-to-${comment.id}`}
+                  author={currentUser?.authorProfile}
+                  placeholder={`Enter reply to this comment`}
+                />
+              </div>
+            )}
+            <CommentList
+              parentComment={comment}
+              totalCount={comment.childrenCount}
+              comments={comment.children}
+              document={document}
+              isFetching={isFetchingMore}
+              handleFetchMore={handleFetchMoreReplies}
+            />
+          </div>
         </div>
       </div>
-      {isReplyOpen && (
-        <div className={css(styles.editorWrapper)}>
-          <CommentEditor
-            focusOnMount={true}
-            handleClose={() => _handleToggleReply()}
-            handleSubmit={async ({ content, mentions }) => {
-              await handleReplyCreate({ content, mentions });
-              setIsReplyOpen(false);
-            }}
-            editorId={`reply-to-${comment.id}`}
-            author={currentUser?.authorProfile}
-            placeholder={`Enter reply to this comment`}
-          />
-        </div>
-      )}
-
-      <CommentList
-        parentComment={comment}
-        totalCount={comment.childrenCount}
-        comments={comment.children}
-        document={document}
-        isFetching={isFetchingMore}
-        handleFetchMore={handleFetchMoreReplies}
-      />
     </div>
   );
 };
@@ -376,6 +378,11 @@ const styles = StyleSheet.create({
   },
   actionsWrapper: {},
   mainWrapper: {},
+  contentWrapper: {
+    paddingLeft: 22,
+    borderLeft: `3px solid ${colors.border}`,
+    marginLeft: 15,
+  },
   mainWrapperForBounty: {
     // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
     // borderRadius: 10,
