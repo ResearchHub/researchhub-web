@@ -186,8 +186,7 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
 
       if (
         currentAnnotation &&
-        selectedAnnotation?.comment?.id === currentAnnotation?.comment?.id &&
-        !currentAnnotation.isNew
+        selectedAnnotation?.comment?.id === currentAnnotation?.comment?.id
       ) {
         if (currentAnnotation.commentCoordinates.x !== -30) {
           currentAnnotation.commentCoordinates.x = -30;
@@ -335,9 +334,11 @@ const InlineCommentCanvas = ({ relativeRef, document }: Props) => {
                 ref={annotationRefs[idx]}
                 style={{
                   position: "absolute",
-                  background: "white",
+                  background: annotation.isNew ? "none" : "white",
                   padding: 10,
-                  border: `1px solid ${colors.border}`,
+                  border: annotation.isNew
+                    ? "none"
+                    : `1px solid ${colors.border}`,
                   left: annotation.commentCoordinates.x,
                   top: annotation.commentCoordinates.y,
                   width: config.annotations.commentWidth,
