@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { createRef, useEffect, useMemo, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import {
   Comment as CommentModel,
   parseComment,
@@ -12,8 +12,6 @@ import {
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
-import { isEmpty } from "~/config/utils/nullchecks";
-import Comment from "./Comment";
 import colors from "./lib/colors";
 import drawThreadAnchorsOnCanvas from "./lib/drawThreadAnchorsOnCanvas";
 import TextSelectionMenu from "./TextSelectionMenu";
@@ -384,6 +382,10 @@ const AnnotationCanvas = ({ relativeRef, document }: Props) => {
                       threadId={thread.commentThread?.id}
                       isNew={thread.isNew}
                       comments={thread.comments}
+                      isFocused={
+                        selectedAnnotationThread?.commentThread?.id ===
+                        thread?.commentThread?.id
+                      }
                     />
                   )}
                   {thread.isNew && (

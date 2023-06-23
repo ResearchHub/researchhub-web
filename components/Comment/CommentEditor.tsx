@@ -1,7 +1,7 @@
 import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
@@ -14,7 +14,7 @@ import {
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
-import { COMMENT_TYPES } from "./lib/types";
+import { COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
@@ -89,7 +89,6 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
-
   const { quill, quillRef, isReady } = useQuill({
     options: {
       placeholder,
@@ -319,38 +318,40 @@ const CommentEditor = ({
             </div>
           </div>
         </div>
-        <div className={css(styles.actions)}>
-          <div style={{ width: 70 }}>
-            <Button
-              fullWidth
-              label={
-                isSubmitting ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      minHeight: "28px",
-                    }}
-                  >
-                    <ClipLoader
-                      sizeUnit={"px"}
-                      size={18}
-                      color={"#fff"}
-                      loading={true}
-                    />
-                  </div>
-                ) : (
-                  <>{`Post`}</>
-                )
-              }
-              hideRipples={true}
-              onClick={() => _handleSubmit()}
-              disabled={
-                isSubmitting || isEmpty || (allowBounty && !interimBounty)
-              }
-            />
+        {!isPreviewMode && (
+          <div className={css(styles.actions)}>
+            <div style={{ width: 70 }}>
+              <Button
+                fullWidth
+                label={
+                  isSubmitting ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        minHeight: "28px",
+                      }}
+                    >
+                      <ClipLoader
+                        sizeUnit={"px"}
+                        size={18}
+                        color={"#fff"}
+                        loading={true}
+                      />
+                    </div>
+                  ) : (
+                    <>{`Post`}</>
+                  )
+                }
+                hideRipples={true}
+                onClick={() => _handleSubmit()}
+                disabled={
+                  isSubmitting || isEmpty || (allowBounty && !interimBounty)
+                }
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
