@@ -8,10 +8,7 @@ import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
 import colors from "./lib/colors";
-import {
-  getOpenBounties,
-  getUserOpenBounties,
-} from "./lib/bounty";
+import { getOpenBounties, getUserOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -201,7 +198,13 @@ const Comment = ({ comment, document }: CommentArgs) => {
               handleEdit={() => setIsEditMode(!isEditMode)}
             />
           </div>
-          <div className={css(styles.contentWrapper)}>
+          <div
+            className={css(
+              styles.contentWrapper,
+              commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION &&
+                styles.contentWrapperForAnnotation
+            )}
+          >
             {isEditMode ? (
               <CommentEditor
                 handleSubmit={async (props) => {
@@ -379,6 +382,11 @@ const styles = StyleSheet.create({
     paddingLeft: 22,
     borderLeft: `3px solid ${colors.border}`,
     marginLeft: 15,
+  },
+  contentWrapperForAnnotation: {
+    borderLeft: "none",
+    paddingLeft: 0,
+    marginLeft: 0,
   },
   mainWrapperForBounty: {
     // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",

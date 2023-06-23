@@ -48,6 +48,12 @@ export type PositionAnchor = {
   position: SerializedPosition;
 };
 
+export type CommentThread = {
+  id: ID;
+  threadType: COMMENT_TYPES;
+  anchor?: PositionAnchor | null;
+};
+
 export type Comment = {
   id: ID;
   threadId: ID;
@@ -68,17 +74,19 @@ export type Comment = {
   tips: Purchase[];
   isAcceptedAnswer: boolean;
   review?: Review;
-  anchor?: PositionAnchor;
+  thread: CommentThread;
 };
 
-export type UnrenderedAnnotation = {
-  comment?: Comment;
-  xrange: any | null;
+export type UnrenderedAnnotationThread = {
+  comments: Comment[];
   isNew?: boolean;
+  xrange: any | null;
+  commentThread?: CommentThread;
 };
 
-export type RenderedAnnotation = {
-  comment?: Comment;
+export type RenderedAnnotationThread = {
+  comments: Comment[];
+  commentThread?: CommentThread;
   isNew?: boolean;
   xrange: any;
   anchorCoordinates: Array<{
@@ -87,8 +95,27 @@ export type RenderedAnnotation = {
     width: number;
     height: number;
   }>;
-  commentCoordinates: { x: number; y: number };
+  threadCoordinates: { x: number; y: number };
 };
+
+// export type UnrenderedAnnotation = {
+//   comment?: Comment;
+//   xrange: any | null;
+//   isNew?: boolean;
+// };
+
+// export type RenderedAnnotation = {
+//   comment?: Comment;
+//   isNew?: boolean;
+//   xrange: any;
+//   anchorCoordinates: Array<{
+//     x: number;
+//     y: number;
+//     width: number;
+//     height: number;
+//   }>;
+//   commentCoordinates: { x: number; y: number };
+// };
 
 type parseCommentArgs = {
   raw: any;
@@ -107,6 +134,14 @@ export const parseAnchor = (raw: any): PositionAnchor => {
       textContent: raw.position?.textContent,
       page: raw.position?.page || null,
     },
+  };
+};
+
+export const parseThread = (raw: any): CommentThread => {
+  return {
+    id: raw.id,
+    threadType: raw.thread_type,
+    anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
   };
 };
 
@@ -131,11 +166,8 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     tips: (raw.purchases || []).map((p: any) => parsePurchase(p)),
     isAcceptedAnswer: Boolean(raw.is_accepted_answer),
     ...(raw.review && { review: parseReview(raw.review) }),
+    thread: parseThread(raw.thread),
   };
-
-  if (raw.thread.anchor) {
-    parsed.anchor = parseAnchor(raw.thread.anchor);
-  }
 
   const relatedItem: RelatedItem = {
     type: "comment",
