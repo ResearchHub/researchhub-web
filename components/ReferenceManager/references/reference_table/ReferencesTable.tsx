@@ -128,6 +128,7 @@ export default function ReferencesTable({
     });
     const newActiveProject = { ...activeProject };
     newActiveProject.children = newChildren;
+    debugger;
     setActiveProject(newActiveProject);
 
     upsertReferenceProject({

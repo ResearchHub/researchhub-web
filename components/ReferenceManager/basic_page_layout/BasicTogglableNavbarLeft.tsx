@@ -1,5 +1,9 @@
 import { Box } from "@mui/system";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import {
+  isEmpty,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
 import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_organizer/renderNestedReferenceProjectsNavbarEl";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -43,7 +47,8 @@ export default function BasicTogglableNavbarLeft({
   const { setIsModalOpen: setIsProjectsUpsertModalOpen } =
     useReferenceProjectUpsertContext();
   const currentOrg = getCurrentUserCurrentOrg();
-  const { setCurrentOrgProjects } = useReferenceActiveProjectContext();
+  const { setCurrentOrgProjects, setActiveProject, activeProject } =
+    useReferenceActiveProjectContext();
   const router = useRouter();
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
@@ -59,18 +64,67 @@ export default function BasicTogglableNavbarLeft({
     setChildrenOpenMap(map);
   };
 
+  // const findNestedProjectIndex = ({
+  //   allProjects,
+  //   activeProject,
+  //   indices,
+  // }: {
+  //   allProjects: ProjectValue[];
+  //   activeProject: ProjectValue;
+  //   indices: number[];
+  // }) => {
+  //   for (let index = 0; index < allProjects.length; index++) {
+  //     const project = allProjects[index];
+  //     if (project.id === activeProject.id) {
+  //       return index;
+  //     }
+
+  //     const projectChildren = project.children;
+  //     if (!isEmpty(projectChildren)) {
+  //       indices.push(index);
+  //       const childTarget = findNestedProjectIndex({
+  //         allProjects: projectChildren,
+  //         activeProject,
+  //         indices,
+  //       });
+
+  //       if (!isNullOrUndefined(childTarget)) {
+  //         indices.push(childTarget);
+  //       }
+  //     }
+  //   }
+  // };
+
+  const setNestedProjects = ({ activeProject, allProjects }) => {
+    const newOrgProjects = allProjects.map((proj) => {
+      if (proj.id === activeProject.id) {
+        return activeProject;
+      }
+      proj.children = setNestedProjects({
+        activeProject,
+        allProjects: proj.children,
+      });
+      return proj;
+    });
+
+    return newOrgProjects;
+  };
+
   const addFolderToChildren = (result) => {
     let newOrgProjects: ProjectValue[] = [...currentOrgProjects];
     if (!result.parent) {
       newOrgProjects.push(result);
     } else {
-      newOrgProjects = currentOrgProjects.map((proj) => {
-        if (proj.id === result.parent) {
-          proj.children = [...proj.children, result];
-        }
-        return proj;
+      const newActiveProject = { ...activeProject };
+      newActiveProject.children = [...newActiveProject.children, result];
+      setActiveProject(newActiveProject);
+
+      newOrgProjects = setNestedProjects({
+        activeProject: newActiveProject,
+        allProjects: currentOrgProjects,
       });
     }
+
     setCurrentOrgProjects(newOrgProjects);
   };
 

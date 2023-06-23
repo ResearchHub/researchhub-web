@@ -81,10 +81,8 @@ function ReferencesContainer({
   const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
-  const {
-    activeProject,
-    currentOrgProjects,
-  } = useReferenceActiveProjectContext();
+  const { activeProject, currentOrgProjects } =
+    useReferenceActiveProjectContext();
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
     resetProjectsFetchTime,
@@ -227,6 +225,26 @@ function ReferencesContainer({
     return `Are you sure you want to remove the selected items?`;
   };
 
+  // TODO: needs cleanup
+  const collaborators = [
+    ...(activeProject?.collaborators ?? { editors: [] }).editors.map(
+      (rawUser: any) => {
+        return {
+          ...parseUserSuggestion(rawUser),
+          role: "EDITOR",
+        };
+      }
+    ),
+    ...(activeProject?.collaborators ?? { viewers: [] }).viewers.map(
+      (rawUser: any) => {
+        return {
+          ...parseUserSuggestion(rawUser),
+          role: "VIEWER",
+        };
+      }
+    ),
+  ];
+
   if (!userAllowed) {
     return <Fragment />;
   } else {
@@ -327,7 +345,7 @@ function ReferencesContainer({
                   {router.query.slug ? (
                     <Box sx={{ display: "flex" }}>
                       {router.query.slug.map((name, index) => {
-                        const slugsTilNow = router.query.slug?
+                        const slugsTilNow = router.query.slug
                           .slice(0, index + 1)
                           .join("/");
 
@@ -336,9 +354,7 @@ function ReferencesContainer({
                         return (
                           <div>
                             <Link
-                              href={`/reference-manager/${
-                                currentOrg.slug
-                              }/${slugsTilNow}`}
+                              href={`/reference-manager/${currentOrg.slug}/${slugsTilNow}`}
                               className={css(
                                 styles.projectLink,
                                 isActiveProject && styles.activeProjectLink
@@ -389,12 +405,10 @@ function ReferencesContainer({
                       horizontal
                       margin={-10}
                       imgSize={40}
-                      authorProfiles={(activeProject?.collaborators ?? {})?.map(
-                        (collaborator) => {
-                          collaborator.authorProfile.user = collaborator;
-                          return collaborator.authorProfile;
-                        }
-                      )}
+                      authorProfiles={collaborators.map((collaborator) => {
+                        collaborator.authorProfile.user = collaborator;
+                        return collaborator.authorProfile;
+                      })}
                     />
                   )}
                   {(isOnOrgTab || !isEmpty(router.query.slug)) && (

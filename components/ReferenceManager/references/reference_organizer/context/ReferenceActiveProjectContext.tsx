@@ -102,20 +102,6 @@ export function ReferenceActiveProjectContextProvider({ children }) {
 
     setActiveProject({
       ...activeProj,
-      collaborators: [
-        ...editors.map((rawUser: any) => {
-          return {
-            ...parseUserSuggestion(rawUser),
-            role: "EDITOR",
-          };
-        }),
-        ...viewers.map((rawUser: any) => {
-          return {
-            ...parseUserSuggestion(rawUser),
-            role: "VIEWER",
-          };
-        }),
-      ],
       projectID: id,
       projectName: project_name,
       isPublic: is_public,

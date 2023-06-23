@@ -25,8 +25,13 @@ export function renderNestedReferenceProjectsNavbarEl({
 }: Args) {
   const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
-  const { activeProject } = useReferenceActiveProjectContext();
+  const { activeProject, currentOrgProjects } =
+    useReferenceActiveProjectContext();
   const isActive = activeProject.projectID === referenceProject.id;
+
+  if (!(referenceProject?.collaborators ?? []).editors) {
+    debugger;
+  }
 
   return (
     <div
