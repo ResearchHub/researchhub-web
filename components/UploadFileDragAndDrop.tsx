@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     width: "100%",
-    backgroundColor: "#F7F7FB",
+    backgroundColor: colors.NEW_BLUE(0.07),
     cursor: "pointer",
     height: "100%",
     // borderRadius: 3,
-    border: `1px dashed ${colors.BLUE()}`,
+    border: `1px dashed ${colors.NEW_BLUE()}`,
     outline: "none",
     ":hover": {
       borderStyle: "solid",

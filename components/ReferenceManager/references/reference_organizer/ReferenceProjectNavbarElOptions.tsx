@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import { getCurrentUserCurrentOrg } from "~/components/contexts/OrganizationContext";
+import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
 
 type Props = {
   isCurrentUserAdmin: boolean;
@@ -39,6 +40,7 @@ export default function ReferenceProjectNavbarElOption({
   const router = useRouter();
   const { currentOrg } = getCurrentUserCurrentOrg();
   const { resetProjectsFetchTime } = useReferenceProjectUpsertContext();
+  const { activeProject } = useReferenceActiveProjectContext();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -70,7 +72,7 @@ export default function ReferenceProjectNavbarElOption({
               }}
             >
               <Typography id="modal-modal-title" variant="subtitle2">
-                {`Are you sure you want to remove project?`}
+                {`Are you sure you want to remove this project?`}
               </Typography>
             </Box>
             <Box
@@ -91,7 +93,9 @@ export default function ReferenceProjectNavbarElOption({
             onSuccess: () => {
               resetProjectsFetchTime();
               handleDeleteModalClose();
-              router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              if (projectID === activeProject.projectID) {
+                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              }
             },
             onError: emptyFncWithMsg,
           });

@@ -183,7 +183,7 @@ export default function ReferenceManualUploadDrawer(): ReactElement {
             zIndex: 4,
           }}
         >
-          <Typography variant="h6">{"Upload reference"}</Typography>
+          <Typography variant="h6">{"Manual Entry"}</Typography>
           <CloseOutlinedIcon
             fontSize="small"
             color="disabled"

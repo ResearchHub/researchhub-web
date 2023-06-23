@@ -1,7 +1,8 @@
 import { isEmpty } from "~/config/utils/nullchecks";
 import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
-import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
 import ReferenceProjectsNavbarEl from "./ReferenceProjectsNavbarEl";
+import { useRouter } from "next/router";
+import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
 
 type Args = {
   addChildrenOpen: ({ key, value }) => void;
@@ -10,6 +11,7 @@ type Args = {
   currentOrgSlug: string;
   depth?: number;
   referenceProject: any;
+  slug: string;
 };
 
 export function renderNestedReferenceProjectsNavbarEl({
@@ -19,10 +21,12 @@ export function renderNestedReferenceProjectsNavbarEl({
   currentOrgSlug,
   depth = 0,
   referenceProject,
+  slug,
 }: Args) {
-  const { activeProject } = useReferenceActiveProjectContext();
+  const router = useRouter();
   const hasChildren = !isEmpty(referenceProject.children);
-  const isActive = activeProject?.projectID === referenceProject.id;
+  const { activeProject } = useReferenceActiveProjectContext();
+  const isActive = activeProject.projectID === referenceProject.id;
 
   return (
     <div
@@ -55,8 +59,9 @@ export function renderNestedReferenceProjectsNavbarEl({
         depth={depth}
         isOpen={childrenOpenMap[referenceProject?.id]}
         addChildrenOpen={addChildrenOpen}
+        slug={slug}
       />
-      {/* {hasChildren && childrenOpenMap[referenceProject?.id] && (
+      {hasChildren && childrenOpenMap[referenceProject?.id] && (
         <div
           style={{ marginLeft: 8, display: "flex", flexDirection: "column" }}
         >
@@ -68,10 +73,13 @@ export function renderNestedReferenceProjectsNavbarEl({
               depth: depth + 1,
               addChildrenOpen,
               childrenOpenMap,
+              slug: `${slug}/${encodeURIComponent(
+                childReferenceProject.project_name
+              )}`,
             });
           })}
         </div>
-      )} */}
+      )}
     </div>
   );
 }

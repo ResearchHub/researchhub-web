@@ -65,8 +65,14 @@ export default function ReferenceProjectsUpsertModal({
       is_public: isPublic,
       organization: currentOrg?.id,
       project_name: nullthrows(projectName, "Project name may not be null"),
-      project: projectID,
     };
+
+    if (upsertPurpose === "update") {
+      formattedPayload.project = projectID;
+    } else {
+      formattedPayload.parent = projectID;
+    }
+
     upsertReferenceProject({
       onSuccess: (result) => {
         resetProjectsFetchTime();
@@ -84,7 +90,7 @@ export default function ReferenceProjectsUpsertModal({
       ? "Update project"
       : upsertPurpose === "create"
       ? "Create a project"
-      : "Add a folder";
+      : "Create folder";
 
   return (
     <BaseModal
@@ -99,7 +105,11 @@ export default function ReferenceProjectsUpsertModal({
         >
           <ReferenceItemFieldInput
             formID="project-name"
-            label="Project name"
+            label={
+              upsertPurpose === "create_sub_project"
+                ? "Folder name"
+                : "Project name"
+            }
             onChange={(projectName: string) => {
               setProjectValue({ ...projectValue, projectName });
             }}

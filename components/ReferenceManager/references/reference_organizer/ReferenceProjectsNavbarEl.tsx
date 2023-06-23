@@ -13,6 +13,7 @@ import { useReferenceUploadDrawerContext } from "../reference_uploader/context/R
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
+import { faFolders } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = {
   active: boolean;
@@ -41,6 +42,7 @@ export default function ReferenceProjectsNavbarEl({
   orgSlug,
   projectID,
   projectName,
+  slug,
 }: Props): ReactElement {
   const {
     setIsDrawerOpen: setIsUploadDrawerOpen,
@@ -76,11 +78,11 @@ export default function ReferenceProjectsNavbarEl({
         borderRadius: "4px",
         padding: "8px",
         boxSizing: "border-box",
-        marginLeft: child ? `${12 * depth}px` : "8px",
+        marginLeft: child ? `${16 * depth}px` : "8px",
       }}
     >
       <ALink
-        href={`/reference-manager/${orgSlug}/?project=${projectID}`}
+        href={`/reference-manager/${orgSlug}/${slug}`}
         overrideStyle={styles.linkOverride}
       >
         <Box
@@ -93,7 +95,7 @@ export default function ReferenceProjectsNavbarEl({
         >
           <div style={{ display: "flex", alignItems: "center" }}>
             {/* <FolderIcon fontSize="small" sx={{ color: "#7C7989" }} /> */}
-            {/* <FontAwesomeIcon
+            <FontAwesomeIcon
               icon={isOpen ? faAngleDown : faAngleRight}
               color={"rgba(55, 53, 47, 0.35)"}
               className={css(styles.arrowIcon)}
@@ -101,18 +103,33 @@ export default function ReferenceProjectsNavbarEl({
                 e.stopPropagation();
                 e.preventDefault();
                 addChildrenOpen({ key: projectID, value: !isOpen });
-                const projectIdsOpen =
-                  window.localStorage.getItem("projectIdsOpen") || "";
+                const projectIdsOpenv2 =
+                  window.localStorage.getItem("projectIdsOpenv2") || "{}";
+
+                const projectIdsJson = JSON.parse(projectIdsOpenv2);
+
+                if (isOpen) {
+                  projectIdsJson[projectID] = false;
+                } else {
+                  projectIdsJson[projectID] = true;
+                }
 
                 window.localStorage.setItem(
-                  "projectIdsOpen",
-                  projectIdsOpen + `${projectID},`
+                  "projectIdsOpenv2",
+                  JSON.stringify(projectIdsJson)
                 );
               }}
-            /> */}
+            />
+            {/* {depth !== 0 && (
+              <FontAwesomeIcon
+                icon={faFolders}
+                color="#7BD3F9"
+                style={{ fontSize: 14 }}
+              />
+            )} */}
             <Typography
               component="div"
-              fontSize={14}
+              fontSize={child ? 13 : 14}
               letterSpacing={"1.2px"}
               noWrap
               variant="h6"
@@ -169,7 +186,8 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     fontSize: 16,
-    padding: 8,
+    padding: 4,
+    borderRadius: 4,
 
     ":hover": {
       background: "#ddd",

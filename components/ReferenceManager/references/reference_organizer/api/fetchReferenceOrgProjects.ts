@@ -28,6 +28,6 @@ export const fetchReferenceOrgProjects = ({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((payload: any): void => onSuccess(payload))
+    .then((payload: any): void => onSuccess && onSuccess(payload))
     .catch(onError);
 };

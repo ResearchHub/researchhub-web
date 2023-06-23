@@ -5,7 +5,6 @@ import { renderNestedReferenceProjectsNavbarEl } from "../references/reference_o
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Theme } from "@mui/material/styles";
 import { useReferenceProjectUpsertContext } from "../references/reference_organizer/context/ReferenceProjectsUpsertContext";
-import { useReferenceUploadDrawerContext } from "../references/reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
 import BasicTogglableNavbarButton from "./BasicTogglableNavbarButton";
 import Divider from "@mui/material/Divider";
@@ -44,15 +43,9 @@ export default function BasicTogglableNavbarLeft({
   const [childrenOpenMap, setChildrenOpenMap] = useState({});
 
   useEffect(() => {
-    const idsOpen = window.localStorage.getItem("projectIdsOpen");
-    if (idsOpen) {
-      const idsOpenToArray = idsOpen.split(",");
-      const childrenOpenMap = {};
-      idsOpenToArray.forEach((id) => {
-        childrenOpenMap[id] = true;
-      });
-      setChildrenOpenMap(childrenOpenMap);
-    }
+    const idsOpen = window.localStorage.getItem("projectIdsOpenv2") || "{}";
+    const childrenOpenMap = JSON.parse(idsOpen);
+    setChildrenOpenMap(childrenOpenMap);
   }, []);
 
   const addChildrenOpen = ({ key, value }) => {
@@ -68,6 +61,7 @@ export default function BasicTogglableNavbarLeft({
       referenceProject,
       addChildrenOpen,
       childrenOpenMap,
+      slug: `${encodeURIComponent(referenceProject.project_name)}`,
     });
   });
 
@@ -101,8 +95,22 @@ export default function BasicTogglableNavbarLeft({
       </Box>
       <List sx={{ background: "#FAFAFC", color: "rgba(36, 31, 58, 1)" }}>
         <BasicTogglableNavbarButton
+          icon={
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ marginLeft: 2, marginRight: 10, color: "#7C7989" }}
+            />
+          }
           isActive={
-            isEmpty(router.query?.project) && !isEmpty(router.query?.org_refs)
+            isEmpty(router.query?.org_refs) && isEmpty(router.query?.slug)
+          }
+          key="my-references"
+          label="My References"
+          link={`/reference-manager/${currentOrgSlug}`}
+        />
+        <BasicTogglableNavbarButton
+          isActive={
+            isEmpty(router.query?.slug) && !isEmpty(router.query?.org_refs)
           }
           icon={
             <FontAwesomeIcon
@@ -111,22 +119,8 @@ export default function BasicTogglableNavbarLeft({
             />
           }
           key="public-references"
-          label="Organization References"
+          label="Org References"
           link={`/reference-manager/${currentOrgSlug}?org_refs=true`}
-        />
-        <BasicTogglableNavbarButton
-          icon={
-            <FontAwesomeIcon
-              icon={faUser}
-              style={{ marginLeft: 2, marginRight: 10, color: "#7C7989" }}
-            />
-          }
-          isActive={
-            isEmpty(router.query?.org_refs) && isEmpty(router.query?.project)
-          }
-          key="my-references"
-          label="My References"
-          link={`/reference-manager/${currentOrgSlug}`}
         />
       </List>
       <Divider />

@@ -1,5 +1,9 @@
 import { doesNotExist } from "./nullchecks";
 
+export const pluralize = ({ text, length }) => {
+  return `${text}${length > 1 ? "s" : ""}`;
+};
+
 export function getNestedValue(root, nodes, defaultValue = null) {
   const initialValue = root;
 

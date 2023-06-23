@@ -1,29 +1,48 @@
+import { useEffect, useState } from "react";
+import {
+  DataGrid,
+  GridCell,
+  GridRow,
+  GridRowId,
+  GridSkeletonCell,
+  useGridApiRef,
+} from "@mui/x-data-grid";
+import { useRouter } from "next/router";
+
+// Utils
 import { columnsFormat } from "./utils/referenceTableFormat";
-import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-import { DataGrid, GridCell, GridSkeletonCell } from "@mui/x-data-grid";
-import { emptyFncWithMsg, isEmpty } from "~/config/utils/nullchecks";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import { formatReferenceRowData } from "./utils/formatReferenceRowData";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
-import { useEffect, useState } from "react";
-import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
+import {
+  isNullOrUndefined,
+  nullthrows,
+  emptyFncWithMsg,
+  isEmpty,
+} from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
+import { updateReferenceCitation } from "../api/updateReferenceCitation";
+import { upsertReferenceProject } from "../reference_organizer/api/upsertReferenceProject";
+import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
+
+// Effects
 import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { useRouter } from "next/router";
-import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import { useReferencesTableContext } from "./context/ReferencesTableContext";
+import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
+
+// Styles
+import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
+
+// Components
+import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
+import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 
 type Props = {
   createdReferences: any[];
   handleFileDrop: () => void;
   setSelectedReferenceIDs: (refs: any[]) => void;
-};
-
-type Props = {
-  createdReferences: any[];
-  handleFileDrop: () => void;
-  setSelectedReferenceIDs: (refs: any[]) => void;
+  setSelectedFolderIds: (refs: any[]) => void;
 };
 
 function useEffectFetchReferenceCitations({
@@ -34,18 +53,20 @@ function useEffectFetchReferenceCitations({
 }) {
   // NOTE: current we are assuming that citations only belong to users. In the future it may belong to orgs
   const user = getCurrentUser();
+  const { activeProject, isFetchingProjects } =
+    useReferenceActiveProjectContext();
 
   const { currentOrg } = useOrgs();
   const router = useRouter();
   useEffect(() => {
-    if (!isNullOrUndefined(user?.id) && currentOrg?.id) {
+    if (!isNullOrUndefined(user?.id) && currentOrg?.id && !isFetchingProjects) {
       setIsLoading(true);
       fetchCurrentUserReferenceCitations({
         onSuccess,
         onError,
         organizationID: currentOrg?.id,
         // @ts-ignore
-        projectID: router.query?.project,
+        projectID: activeProject.projectID,
         getCurrentUserCitation: isEmpty(router.query?.org_refs),
       });
     }
@@ -54,7 +75,9 @@ function useEffectFetchReferenceCitations({
     user?.id,
     referencesFetchTime,
     currentOrg,
-    router.query,
+    activeProject?.projectID,
+    isFetchingProjects,
+    router.query.org_refs,
   ]);
 }
 
@@ -63,6 +86,7 @@ export default function ReferencesTable({
   createdReferences,
   handleFileDrop,
   setSelectedReferenceIDs,
+  setSelectedFolderIds,
 }: Props) {
   const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
@@ -71,6 +95,82 @@ export default function ReferencesTable({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pdfIsOpen, setPDFIsOpen] = useState<boolean>(false);
   const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [dragStarted, setDragStarted] = useState(false);
+  const [rowDraggedOver, setRowDraggedOver] = useState();
+  const [rowDragged, setRowDragged] = useState();
+  const { currentOrg } = useOrgs();
+
+  const router = useRouter();
+  const apiRef = useGridApiRef();
+
+  const moveCitationToFolder = ({ moveToFolderId }) => {
+    const newReferenceData = referenceTableRowData.filter((data) => {
+      return data.id !== rowDragged;
+    });
+    setReferenceTableRowData(newReferenceData);
+    updateReferenceCitation({
+      payload: {
+        citation_id: rowDragged,
+        // TODO: calvinhlee - create utily functions to format these
+        project: parseInt(moveToFolderId, 10),
+      },
+      onSuccess: () => {
+        setRowDraggedOver();
+      },
+      onError: () => {},
+    });
+  };
+
+  const moveFolderToFolder = ({ moveToFolderId }) => {
+    const intId = parseInt(rowDragged?.split("-folder")[0], 10);
+    const newChildren = activeProject?.children.filter((data) => {
+      return data.id !== intId;
+    });
+    const newActiveProject = { ...activeProject };
+    newActiveProject.children = newChildren;
+    setActiveProject(newActiveProject);
+
+    upsertReferenceProject({
+      upsertPurpose: "update",
+      onSuccess: () => {
+        fetchReferenceOrgProjects({
+          onSuccess: (payload) => {
+            setCurrentOrgProjects(payload);
+          },
+          payload: {
+            organization: currentOrg.id,
+          },
+        });
+      },
+      payload: {
+        project: intId,
+        parent: parseInt(moveToFolderId, 10),
+      },
+    });
+  };
+
+  const rowDropped = (params) => {
+    setDragStarted(false);
+
+    const stringId = params.id.toString();
+    if (stringId.includes("folder")) {
+      const moveToFolderId = stringId.split("-folder")[0];
+      if (rowDragged?.toString().includes("folder")) {
+        moveFolderToFolder({ moveToFolderId });
+      } else {
+        moveCitationToFolder({
+          moveToFolderId,
+        });
+      }
+    }
+  };
+
+  const {
+    activeProject,
+    setActiveProject,
+    setCurrentOrgProjects,
+    isFetchingProjects,
+  } = useReferenceActiveProjectContext();
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -111,14 +211,37 @@ export default function ReferencesTable({
     setReferenceTableRowData(newReferences);
   }, [createdReferences]);
 
+  const parentProject = activeProject.parent_data
+    ? {
+        ...activeProject.parent_data,
+        parentFolder: true,
+        title: activeProject.parent_data.project_name,
+        id: `${activeProject.parent_data.id}-folder-parent`,
+      }
+    : null;
+
   const formattedReferenceRows = !isLoading
-    ? nullthrows(formatReferenceRowData(referenceTableRowData))
+    ? nullthrows(
+        formatReferenceRowData(
+          referenceTableRowData,
+          activeProject.children?.map((child) => {
+            return {
+              ...child,
+              title: child.project_name,
+              id: `${child.id}-folder`,
+            };
+          }),
+          parentProject
+        )
+      )
     : [];
 
   return (
     <div style={{ width: "100%" }}>
       <DataGrid
+        apiRef={apiRef}
         autoHeight
+        disableRowSelectionOnClick
         checkboxSelection
         columns={columnsFormat}
         hideFooter
@@ -139,7 +262,7 @@ export default function ReferencesTable({
             },
           },
         }}
-        loading={isLoading}
+        loading={isLoading || isFetchingProjects}
         onCellDoubleClick={(params, event, _details): void => {
           event.stopPropagation();
           setReferenceItemDatum({
@@ -149,14 +272,10 @@ export default function ReferencesTable({
           });
           setPDFIsOpen(true);
           setPdfUrl(params.row.raw_data.attachment);
-          // console.log(params);
-          // if (params.field !== "__check__") {
-          //   setIsDrawerOpen(true);
-          // }
         }}
+        rowReordering
         onCellClick={(params, event, _details): void => {
           if (params.field !== "__check__") {
-            event.stopPropagation();
             setReferenceItemDatum({
               ...nullthrows(
                 referenceTableRowData.find(
@@ -164,13 +283,74 @@ export default function ReferencesTable({
                 )
               ),
             });
-            setIsDrawerOpen(true);
+
+            const projectIdString = params.id.toString();
+
+            if (projectIdString.includes("folder")) {
+              const projectId = projectIdString.split("-folder")[0];
+
+              let url = `/reference-manager/${
+                router.query.organization
+              }/${router.query.slug.join("/")}/${params.row.title}`;
+
+              if (projectIdString.includes("parent")) {
+                url = `/reference-manager/${
+                  router.query.organization
+                }/${router.query.slug
+                  ?.slice(0, router.query.slug.length - 2)
+                  .join("/")}/${params.row.title}`;
+              }
+
+              if (event.metaKey) {
+                window.open(url, "_blank");
+              } else {
+                router.push(url);
+              }
+            } else {
+              setIsDrawerOpen(true);
+            }
           }
         }}
         onRowSelectionModelChange={(selectedReferenceIDs) => {
-          setSelectedReferenceIDs(selectedReferenceIDs);
+          const folderIds: GridRowId[] = [];
+          const referenceIds: GridRowId[] = [];
+          selectedReferenceIDs.forEach((referenceId) => {
+            const projectIdString = referenceId.toString();
+            if (projectIdString.includes("folder")) {
+              folderIds.push(referenceId);
+            } else {
+              referenceIds.push(referenceId);
+            }
+          });
+          setSelectedFolderIds(folderIds);
+          setSelectedReferenceIDs(referenceIds);
         }}
         slots={{
+          row: (row) => {
+            let folderRow = false;
+            const stringId = row.row.id.toString();
+            if (stringId.includes("folder")) {
+              folderRow = true;
+            }
+            return (
+              <GridRow
+                {...row}
+                draggable={true}
+                style={{
+                  background:
+                    rowDraggedOver === row.row.id && colors.NEW_BLUE(1),
+                  color: rowDraggedOver === row.row.id && "#fff",
+                }}
+                onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
+                onDragLeave={() => folderRow && setRowDraggedOver()}
+                onDrag={() => {
+                  setDragStarted(true);
+                  setRowDragged(row.row.id);
+                }}
+                onDrop={() => folderRow && rowDropped(row.row)}
+              />
+            );
+          },
           cell: (cell) => {
             if (cell.value === "load") {
               return (
@@ -179,7 +359,28 @@ export default function ReferencesTable({
                 </div>
               );
             }
-            return <GridCell {...cell} onClick={(e) => e.stopPropagation()} />;
+
+            const projectIdString = cell.rowId.toString();
+
+            if (projectIdString.includes("folder")) {
+              const projectId = projectIdString.split("-folder")[0];
+              return (
+                <div style={{ cursor: "pointer" }}>
+                  <GridCell {...cell} />
+                </div>
+              );
+            } else {
+              return (
+                <div
+                  style={{
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <GridCell {...cell} onClick={(e) => e.stopPropagation()} />
+                </div>
+              );
+            }
           },
         }}
         sx={DATA_GRID_STYLE_OVERRIDE}

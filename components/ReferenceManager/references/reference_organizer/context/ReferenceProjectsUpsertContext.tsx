@@ -10,6 +10,7 @@ export type ProjectValue = {
   isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
+  children: ProjectValue[];
 };
 export type ReferenceProjectsUpsertContextValueType = {
   isModalOpen: boolean;
