@@ -62,7 +62,8 @@ const AnnotationCanvas = ({ relativeRef, document }: Props) => {
     _fetch();
   }, []);
 
-  // Create a ref for each annotation so that we can observe it for dimension changes
+  // Create a ref for each annotation thread so we can observe it for when it changes dimensions.
+  // If a thread changes dimensions, we need to redraw the annotation sidebar because each thread is absolutely positioned
   useEffect(() => {
     setAnnotationThreadRefs((refs) =>
       Array(renderedAnnotationThreads.length)
@@ -71,13 +72,14 @@ const AnnotationCanvas = ({ relativeRef, document }: Props) => {
     );
   }, [renderedAnnotationThreads]);
 
+  // We want to draw annotations when comments change or when the canvas dimensions change.
   useEffect(() => {
     if (
       (inlineComments.length > 0 || newCommentAnnotation) &&
       canvasDimensions.width > 0 &&
       canvasDimensions.height > 0
     ) {
-      _drawAnnotations();
+      _drawAnchors();
     }
   }, [
     canvasDimensions,
@@ -137,6 +139,58 @@ const AnnotationCanvas = ({ relativeRef, document }: Props) => {
       }
     };
   }, [relativeRef, canvasRef, renderedAnnotationThreads]);
+
+  // When the thread refs are ready, we want to set up observers to watch for changes in thread dimensions
+  // If the thread dimensions change, we need to redraw all relative threads.
+  useEffect(() => {
+    // Create a new ResizeObserver that will update your layout or state
+    const resizeObserver = new ResizeObserver((entries) => {
+      // Iterate over all entries
+      for (const entry of entries) {
+        const rect = entry.target.getBoundingClientRect();
+        console.log("Element:", entry.target, "Size", {
+          height: rect.height,
+          width: rect.width,
+        });
+        _calcAnnotationThreadPositions();
+      }
+    });
+
+    // Observe each annotation for changes in size
+    annotationThreadRefs.forEach((ref) => {
+      if (ref.current) {
+        resizeObserver.observe(ref.current);
+      }
+    });
+
+    // Clean up by unobserving all elements when the component unmounts
+    return () => {
+      annotationThreadRefs.forEach((ref) => {
+        if (ref.current) {
+          resizeObserver.unobserve(ref.current);
+        }
+      });
+    };
+  }, [annotationThreadRefs]);
+
+  // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
+  // and redraw the highlights in the correct position.
+  useEffect(() => {
+    if (canvasRef.current && relativeRef.current) {
+      const observer = new ResizeObserver(() => {
+        canvasRef!.current!.width = relativeRef.current.offsetWidth;
+        canvasRef!.current!.height = relativeRef.current.offsetHeight;
+        setCanvasDimensions({
+          width: canvasRef!.current!.width,
+          height: canvasRef!.current!.height,
+        });
+      });
+
+      observer.observe(relativeRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, [relativeRef, canvasRef]);
 
   const _sortAnnotationThreads = (
     annotationThreads: RenderedAnnotationThread[]
@@ -210,56 +264,6 @@ const AnnotationCanvas = ({ relativeRef, document }: Props) => {
     }
   };
 
-  useEffect(() => {
-    // Create a new ResizeObserver that will update your layout or state
-    const resizeObserver = new ResizeObserver((entries) => {
-      // Iterate over all entries
-      for (const entry of entries) {
-        const rect = entry.target.getBoundingClientRect();
-        console.log("Element:", entry.target, "Size", {
-          height: rect.height,
-          width: rect.width,
-        });
-        _calcAnnotationThreadPositions();
-      }
-    });
-
-    // Observe each annotation for changes in size
-    annotationThreadRefs.forEach((ref) => {
-      if (ref.current) {
-        resizeObserver.observe(ref.current);
-      }
-    });
-
-    // Clean up by unobserving all elements when the component unmounts
-    return () => {
-      annotationThreadRefs.forEach((ref) => {
-        if (ref.current) {
-          resizeObserver.unobserve(ref.current);
-        }
-      });
-    };
-  }, [annotationThreadRefs]);
-
-  // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
-  // and redraw the highlights in the correct position.
-  useEffect(() => {
-    if (canvasRef.current && relativeRef.current) {
-      const observer = new ResizeObserver(() => {
-        canvasRef!.current!.width = relativeRef.current.offsetWidth;
-        canvasRef!.current!.height = relativeRef.current.offsetHeight;
-        setCanvasDimensions({
-          width: canvasRef!.current!.width,
-          height: canvasRef!.current!.height,
-        });
-      });
-
-      observer.observe(relativeRef.current);
-
-      return () => observer.disconnect();
-    }
-  }, [relativeRef, canvasRef]);
-
   const _calcTextSelectionMenuPos = () => {
     if (!relativeRef.current) return { x: 0, y: 0 };
 
@@ -274,8 +278,8 @@ const AnnotationCanvas = ({ relativeRef, document }: Props) => {
     };
   };
 
-  const _drawAnnotations = () => {
-    console.log("Drawing annotations...");
+  const _drawAnchors = () => {
+    console.log("Drawing anchors...");
 
     const commentThreads = groupBy(inlineComments, (c) => c.thread.id);
     const _unrenderedThreads = Object.keys(
