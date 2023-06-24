@@ -26,7 +26,7 @@ const CommentAnnotationThread = ({
       {comments.map((comment) => (
         <Comment key={comment.id} comment={comment} document={document} />
       ))}
-      {isFocused && (
+      {/* {isFocused && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
             previewModeAsDefault={true}
@@ -35,7 +35,7 @@ const CommentAnnotationThread = ({
             editorStyleOverride={styles.editorOverride}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };
