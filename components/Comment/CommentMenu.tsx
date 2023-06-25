@@ -71,6 +71,10 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
     }
   };
 
+  const _handleEdit = (e) => {
+    handleEdit(e);
+  };
+
   return (
     <div className={css(styles.wrapper)}>
       <div className={`${css(styles.trigger)} comment-menu-trigger`}>
@@ -90,7 +94,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
       >
         {currentUser?.id === comment.createdBy.id && (
           <>
-            <div className={css(styles.option)} onClick={() => handleEdit()}>
+            <div className={css(styles.option)} onClick={_handleEdit}>
               <FontAwesomeIcon
                 icon={faPencil}
                 style={{ color: colors.secondary.text, fontSize: 18 }}

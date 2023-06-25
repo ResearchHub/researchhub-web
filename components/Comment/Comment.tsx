@@ -171,6 +171,9 @@ const Comment = ({ comment, document }: CommentArgs) => {
       return false;
     }
   };
+  const handleEdit = () => {
+    setIsEditMode(!isEditMode);
+  };
 
   const hasOpenBounties = openBounties.length > 0;
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
@@ -195,7 +198,7 @@ const Comment = ({ comment, document }: CommentArgs) => {
               authorProfile={comment.createdBy.authorProfile}
               comment={comment}
               document={document}
-              handleEdit={() => setIsEditMode(!isEditMode)}
+              handleEdit={handleEdit}
             />
           </div>
           <div
