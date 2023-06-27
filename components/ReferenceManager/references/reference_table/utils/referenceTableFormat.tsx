@@ -1,10 +1,6 @@
 import { GridColDef } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowTurnUp,
-  faFolders,
-  faTurnUp,
-} from "@fortawesome/pro-solid-svg-icons";
+import { faArrowTurnUp, faFolder } from "@fortawesome/pro-solid-svg-icons";
 
 export const columnsFormat: GridColDef[] = [
   { field: "id", headerName: "", width: 0 },
@@ -18,7 +14,7 @@ export const columnsFormat: GridColDef[] = [
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <FontAwesomeIcon
-              icon={idString.includes("parent") ? faArrowTurnUp : faFolders}
+              icon={idString.includes("parent") ? faArrowTurnUp : faFolder}
               style={{ marginRight: 8 }}
               color={idString.includes("parent") ? "#7C7989" : "#7BD3F9"}
             />
