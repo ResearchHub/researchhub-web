@@ -422,4 +422,5 @@ input[type="number"] {
 
 .linkAnnotation {
   border: none !important;
+  cursor: default !important;
 }
