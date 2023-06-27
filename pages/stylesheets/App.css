@@ -419,3 +419,7 @@ input[type="number"] {
   pointer-events: none;
   cursor: default;
 }
+
+.linkAnnotation {
+  border: none !important;
+}
