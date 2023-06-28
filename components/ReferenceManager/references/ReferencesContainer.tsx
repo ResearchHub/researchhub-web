@@ -347,8 +347,8 @@ function ReferencesContainer({
                       {router.query.slug.map((name, index) => {
                         const slugsTilNow = router.query.slug
                           .slice(0, index + 1)
+                          .map((slug) => encodeURIComponent(slug))
                           .join("/");
-
                         const isActiveProject =
                           index + 1 === router.query.slug?.length;
                         return (

@@ -14,6 +14,7 @@ import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
 import { faFolder, faFolders } from "@fortawesome/pro-solid-svg-icons";
+import { useReferencesTableContext } from "../reference_table/context/ReferencesTableContext";
 
 type Props = {
   active: boolean;
@@ -54,6 +55,9 @@ export default function ReferenceProjectsNavbarEl({
     setUpsertPurpose: setProjectUpsertPurpose,
   } = useReferenceProjectUpsertContext();
   const [shouldShowOptions, setShouldShowOptions] = useState<boolean>(false);
+  const [fileDraggedOver, setFileDraggedOver] = useState<boolean>(false);
+
+  const { rowDropped } = useReferencesTableContext();
 
   return (
     <Box
@@ -63,6 +67,17 @@ export default function ReferenceProjectsNavbarEl({
       onMouseLeave={(): void => {
         setShouldShowOptions(false);
       }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setFileDraggedOver(true);
+      }}
+      onDragLeave={() => {
+        setFileDraggedOver(false);
+      }}
+      onDrop={() => {
+        setFileDraggedOver(false);
+        rowDropped({ id: projectID });
+      }}
       sx={{
         alignItems: "center",
         cursor: "pointer",
@@ -71,7 +86,7 @@ export default function ReferenceProjectsNavbarEl({
         justifyContent: "space-between",
         maxHeight: 50,
         px: 2.5,
-        background: active ? colors.GREY(0.2) : "",
+        background: active || fileDraggedOver ? colors.GREY(0.2) : "",
         margin: "8px",
         marginBottom: "0px",
         marginTop: "0px",

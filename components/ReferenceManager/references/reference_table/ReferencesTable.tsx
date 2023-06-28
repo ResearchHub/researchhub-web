@@ -90,87 +90,23 @@ export default function ReferencesTable({
 }: Props) {
   const { setIsDrawerOpen, setReferenceItemDatum, referencesFetchTime } =
     useReferenceTabContext();
-  const { referenceTableRowData, setReferenceTableRowData } =
-    useReferencesTableContext();
+  const {
+    referenceTableRowData,
+    setReferenceTableRowData,
+    rowDraggedOver,
+    setRowDraggedOver,
+    setRowDragged,
+    rowDropped,
+  } = useReferencesTableContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pdfIsOpen, setPDFIsOpen] = useState<boolean>(false);
   const [pdfUrl, setPdfUrl] = useState<string>("");
-  const [dragStarted, setDragStarted] = useState(false);
-  const [rowDraggedOver, setRowDraggedOver] = useState();
-  const [rowDragged, setRowDragged] = useState();
-  const { currentOrg } = useOrgs();
 
   const router = useRouter();
   const apiRef = useGridApiRef();
 
-  const moveCitationToFolder = ({ moveToFolderId }) => {
-    const newReferenceData = referenceTableRowData.filter((data) => {
-      return data.id !== rowDragged;
-    });
-    setReferenceTableRowData(newReferenceData);
-    updateReferenceCitation({
-      payload: {
-        citation_id: rowDragged,
-        // TODO: calvinhlee - create utily functions to format these
-        project: parseInt(moveToFolderId, 10),
-      },
-      onSuccess: () => {
-        setRowDraggedOver();
-      },
-      onError: () => {},
-    });
-  };
-
-  const moveFolderToFolder = ({ moveToFolderId }) => {
-    const intId = parseInt(rowDragged?.split("-folder")[0], 10);
-    const newChildren = activeProject?.children.filter((data) => {
-      return data.id !== intId;
-    });
-    const newActiveProject = { ...activeProject };
-    newActiveProject.children = newChildren;
-    setActiveProject(newActiveProject);
-
-    upsertReferenceProject({
-      upsertPurpose: "update",
-      onSuccess: () => {
-        fetchReferenceOrgProjects({
-          onSuccess: (payload) => {
-            setCurrentOrgProjects(payload);
-          },
-          payload: {
-            organization: currentOrg.id,
-          },
-        });
-      },
-      payload: {
-        project: intId,
-        parent: parseInt(moveToFolderId, 10),
-      },
-    });
-  };
-
-  const rowDropped = (params) => {
-    setDragStarted(false);
-
-    const stringId = params.id.toString();
-    if (stringId.includes("folder")) {
-      const moveToFolderId = stringId.split("-folder")[0];
-      if (rowDragged?.toString().includes("folder")) {
-        moveFolderToFolder({ moveToFolderId });
-      } else {
-        moveCitationToFolder({
-          moveToFolderId,
-        });
-      }
-    }
-  };
-
-  const {
-    activeProject,
-    setActiveProject,
-    setCurrentOrgProjects,
-    isFetchingProjects,
-  } = useReferenceActiveProjectContext();
+  const { activeProject, isFetchingProjects } =
+    useReferenceActiveProjectContext();
 
   useEffectFetchReferenceCitations({
     setIsLoading,
@@ -216,6 +152,7 @@ export default function ReferencesTable({
         ...activeProject.parent_data,
         parentFolder: true,
         title: activeProject.parent_data.project_name,
+        rawId: activeProject.parent_data.id,
         id: `${activeProject.parent_data.id}-folder-parent`,
       }
     : null;
@@ -229,6 +166,7 @@ export default function ReferencesTable({
               ...child,
               title: child.project_name,
               id: `${child.id}-folder`,
+              rawId: child.id,
             };
           }),
           parentProject
@@ -344,10 +282,12 @@ export default function ReferencesTable({
                 onDragEnter={() => folderRow && setRowDraggedOver(row.row.id)}
                 onDragLeave={() => folderRow && setRowDraggedOver()}
                 onDrag={() => {
-                  setDragStarted(true);
                   setRowDragged(row.row.id);
                 }}
-                onDrop={() => folderRow && rowDropped(row.row)}
+                onDrop={() => {
+                  console.log(row.row);
+                  folderRow && rowDropped({ id: row.row.rawId });
+                }}
               />
             );
           },
