@@ -34,7 +34,7 @@ export enum COMMENT_CONTEXTS {
 }
 
 export type Annotation = {
-  threadId: ID | "new-annotation";
+  threadId: string | "new-annotation";
   serialized: SerializedAnchorPosition;
   anchorCoordinates: Array<{
     x: number;
@@ -86,7 +86,6 @@ export type CommentThread = {
 
 export type Comment = {
   id: ID;
-  threadId: ID;
   createdDate: string;
   updatedDate: string;
   awardedBountyAmount: number;
@@ -134,7 +133,7 @@ export const createAnnotation = ({
 }: {
   xrange: any;
   canvasEl?: any;
-  threadId?: ID | "new-thread";
+  threadId?: string | "new-annotation";
   serializedAnchorPosition?: SerializedAnchorPosition;
 }): Annotation => {
   const highlightCoords = xrange.getCoordinates({
@@ -142,11 +141,11 @@ export const createAnnotation = ({
   });
 
   return {
-    threadId: threadId || "new-thread",
+    threadId: threadId || "new-annotation",
     serialized: xrange.serialize() || serializedAnchorPosition,
     anchorCoordinates: highlightCoords,
     threadCoordinates: {
-      x: highlightCoords[0].x,
+      x: 0,
       y: highlightCoords[0].y, // Initial position on first render before adjustment
     },
     xrange,
@@ -168,7 +167,7 @@ export const parseAnchor = (raw: any): SerializedAnchorPosition => {
 
 export const parseThread = (raw: any): CommentThread => {
   return {
-    id: raw.id,
+    id: String(raw.id),
     threadType: raw.thread_type,
     anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
   };
@@ -183,7 +182,6 @@ export const parseComment = ({
 }): Comment => {
   const parsed: Comment = {
     id: raw.id,
-    threadId: raw.thread,
     createdDate: formatDateStandard(raw.created_date),
     updatedDate: formatDateStandard(raw.updated_date),
     timeAgo: timeSince(raw.created_date),

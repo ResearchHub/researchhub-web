@@ -5,13 +5,13 @@ import colors from "./colors";
 interface DrawProps {
   annotations: Annotation[];
   canvasRef: any;
-  selectedThreadID?: ID | null;
+  selectedThreadId?: ID | null;
 }
 
 const drawAnchorsOnCanvas = ({
   annotations,
   canvasRef,
-  selectedThreadID,
+  selectedThreadId,
 }: DrawProps): void => {
   // Clear previous highlights
   const ctx = canvasRef.current.getContext("2d");
@@ -20,7 +20,7 @@ const drawAnchorsOnCanvas = ({
   annotations.forEach((anchor) => {
     const { anchorCoordinates } = anchor;
     anchorCoordinates.forEach(({ x, y, width, height }) => {
-      if (anchor.threadId === selectedThreadID) {
+      if (anchor.threadId === selectedThreadId) {
         ctx.fillStyle = colors.annotation.selected;
       } else {
         ctx.fillStyle = colors.annotation.unselected;
