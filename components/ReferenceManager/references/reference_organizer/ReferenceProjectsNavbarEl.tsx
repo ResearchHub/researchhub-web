@@ -83,7 +83,6 @@ export default function ReferenceProjectsNavbarEl({
         cursor: "pointer",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
         maxHeight: 50,
         px: 2.5,
         background: active || fileDraggedOver ? colors.GREY(0.2) : "",
@@ -154,7 +153,7 @@ export default function ReferenceProjectsNavbarEl({
           </div>
         </Box>
       </ALink>
-      {shouldShowOptions && (
+      {true && (
         <ReferenceProjectNavbarElOption
           isCurrentUserAdmin={isCurrentUserAdmin}
           projectID={projectID}
@@ -195,7 +194,7 @@ export default function ReferenceProjectsNavbarEl({
 
 const styles = StyleSheet.create({
   linkOverride: {
-    width: "100%",
+    width: "calc(100% - 20px)",
   },
   arrowIcon: {
     fontSize: 16,

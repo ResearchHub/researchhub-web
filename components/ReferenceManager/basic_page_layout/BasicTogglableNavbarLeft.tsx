@@ -147,8 +147,10 @@ export default function BasicTogglableNavbarLeft({
         borderLeft: "1px solid #e8e8ef",
         zIndex: 4,
         background: "#FAFAFC",
-        height: "100%",
-        minHeight: "calc(100vh - 68px)",
+        height: "calc(100vh - 68px)",
+        overflow: "auto",
+        position: "sticky",
+        top: 68,
       }}
     >
       <ReferenceProjectsUpsertModal onUpsertSuccess={addFolderToChildren} />

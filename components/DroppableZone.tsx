@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     boxSizing: "border-box",
-    padding: "20px 0px",
     transition: "all ease-out 0.1s",
   },
   dropzoneContainer: {

@@ -58,7 +58,7 @@ export default function ReferenceProjectNavbarElOption({
   };
 
   return (
-    <Fragment>
+    <>
       <QuickModal
         isOpen={isDeleteModalOpen}
         modalContent={
@@ -106,7 +106,12 @@ export default function ReferenceProjectNavbarElOption({
       />
       <span
         onClick={handleMenuClick}
-        style={{ alignItems: "center", display: "flex", height: "100%" }}
+        style={{
+          alignItems: "center",
+          display: "flex",
+          height: "100%",
+          marginLeft: "auto",
+        }}
       >
         <MoreVertIcon fontSize="small" />
       </span>
@@ -162,6 +167,6 @@ export default function ReferenceProjectNavbarElOption({
           </MenuItem>
         )}
       </Menu>
-    </Fragment>
+    </>
   );
 }

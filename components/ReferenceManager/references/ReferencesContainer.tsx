@@ -336,7 +336,7 @@ function ReferencesContainer({
             >
               <div
                 style={{
-                  marginBottom: 32,
+                  marginBottom: 16,
                   display: "flex",
                   alignItems: "center",
                 }}
