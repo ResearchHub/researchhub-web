@@ -13,7 +13,7 @@ import { useReferenceUploadDrawerContext } from "../reference_uploader/context/R
 import ALink from "~/components/ALink";
 import colors from "~/config/themes/colors";
 import ReferenceProjectNavbarElOption from "./ReferenceProjectNavbarElOptions";
-import { faFolders } from "@fortawesome/pro-solid-svg-icons";
+import { faFolder, faFolders } from "@fortawesome/pro-solid-svg-icons";
 
 type Props = {
   active: boolean;
@@ -120,13 +120,11 @@ export default function ReferenceProjectsNavbarEl({
                 );
               }}
             />
-            {/* {depth !== 0 && (
-              <FontAwesomeIcon
-                icon={faFolders}
-                color="#7BD3F9"
-                style={{ fontSize: 14 }}
-              />
-            )} */}
+            <FontAwesomeIcon
+              icon={faFolder}
+              color="#7BD3F9"
+              style={{ fontSize: 14, paddingLeft: 4 }}
+            />
             <Typography
               component="div"
               fontSize={child ? 13 : 14}
