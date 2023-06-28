@@ -3,17 +3,17 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import {
   Comment as CommentModel,
   parseComment,
-  UnrenderedAnnotationThread,
-  RenderedAnnotationThread,
   COMMENT_FILTERS,
   COMMENT_TYPES,
   COMMENT_CONTEXTS,
+  createAnnotation,
+  Annotation,
 } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "./lib/api";
 import { GenericDocument } from "../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import colors from "./lib/colors";
-import drawThreadAnchorsOnCanvas from "./lib/drawThreadAnchorsOnCanvas";
+import drawAnchorsOnCanvas from "./lib/drawAnchorsOnCanvas";
 import TextSelectionMenu from "./TextSelectionMenu";
 import useSelection from "~/components/Comment/hooks/useSelection";
 import config, { contextConfig } from "./lib/config";
@@ -23,7 +23,7 @@ import { CommentTreeContext } from "./lib/contexts";
 import { sortOpts } from "./lib/options";
 import CommentAnnotationThread from "./CommentAnnotationThread";
 import groupBy from "lodash/groupBy";
-import debounce from "lodash/debounce";
+import { ID } from "~/config/types/root_types";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -31,27 +31,40 @@ interface Props {
 }
 
 const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
-  const [renderedAnnotationThreads, setRenderedAnnotationThreads] = useState<
-    RenderedAnnotationThread[]
+
+  // Anchors (e.g. highlights) will be rendered on top of this canvas
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Sorted List of annotations sorted by order of appearance on the page
+  const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
+    Annotation[]
   >([]);
+
+  // Orphans are annotations that could not be found on page
+  const [orphanThreadIds, setOrphanThreadIds] = useState<ID[]>([]);
+
+  // The XRange position of the selected text. Holds the serialized DOM position.
+  const { selectionXRange, initialSelectionPosition } = useSelection({
+    ref: relativeRef,
+  });
+
+  const [newAnnotation, setNewAnnotation] = useState<Annotation | null>(null);
+  const [selectedThreadId, setSelectedThreadId] = useState<
+    ID | "new-annotation" | null
+  >(null);
   const [canvasDimensions, setCanvasDimensions] = useState<{
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
-  const [selectedAnnotationThread, setSelectedAnnotationThread] =
-    useState<RenderedAnnotationThread | null>(null);
-  const { selectionXRange, initialSelectionPosition } = useSelection({
-    ref: relativeRef,
-  });
-  const [newCommentAnnotation, setNewCommentAnnotation] =
-    useState<UnrenderedAnnotationThread | null>(null);
-  const newCommentAnnotationRef = useRef<UnrenderedAnnotationThread | null>(
-    null
+  const newThreadRef = useRef<any | null>(null);
+  const [threadRefs, setThreadRefs] = useState<any[]>([]);
+  const commentThreads: { [key: string]: Array<CommentModel> } = groupBy(
+    inlineComments,
+    (c: CommentModel) => String(c.thread.id)
   );
-  const [annotationThreadRefs, setAnnotationThreadRefs] = useState<any[]>([]);
 
+  // Fetch comments from API
   useEffect(() => {
     const _fetch = async () => {
       const { comments: rawComments } = await fetchCommentsAPI({
@@ -66,58 +79,84 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     _fetch();
   }, []);
 
-  // Create a ref for each annotation thread so we can observe it for when it changes dimensions.
-  // If a thread changes dimensions, we need to redraw the annotation sidebar because each thread is absolutely positioned
-  useEffect(() => {
-    setAnnotationThreadRefs((refs) =>
-      Array(renderedAnnotationThreads.length)
-        .fill(null)
-        .map((_, i) => refs[i] || createRef())
-    );
-  }, [renderedAnnotationThreads]);
-
-  // useEffect(() => {
-  //   console.log("Inside")
-  //  _calcAnnotationThreadPositions();
-  // }, [renderedAnnotationThreads])
-
-  // We want to draw annotations when comments change or when the canvas dimensions change.
+  // Draw anchors on canvas once canvas is ready
   useEffect(() => {
     if (
-      (inlineComments.length > 0 || newCommentAnnotation) &&
+      (inlineComments.length > 0 || newAnnotation) &&
       canvasDimensions.width > 0 &&
       canvasDimensions.height > 0
     ) {
-      // _debouncedDrawAnchors();
       _drawAnchors();
     }
+  }, [canvasDimensions, inlineComments, newAnnotation, selectedThreadId]);
 
-    // Cleanup function: cancel any trailing throttled call
-    // return () => {
-    //   _debouncedDrawAnchors.cancel();
-    // };
-  }, [
-    canvasDimensions,
-    inlineComments,
-    newCommentAnnotation,
-    selectedAnnotationThread,
-  ]);
+  // Observe dimension changes for each of the threads.
+  // If position has changed, recalculate.
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const rect = entry.target.getBoundingClientRect();
+        // console.log("Element:", entry.target, "Size", {
+        //   height: rect.height,
+        //   width: rect.width,
+        // });
 
+        // TODO: Debounce this calculation
+        _calcThreadPositions();
+      }
+    });
+
+    let focusedThreadRef: any = null;
+    if (newThreadRef?.current) {
+      focusedThreadRef = newThreadRef.current;
+    } else if (selectedThreadId) {
+      focusedThreadRef = threadRefs.find(
+        (ref) =>
+          ref.current &&
+          ref.current.contains(
+            document.getElementById(`thread-${selectedThreadId}`)
+          )
+      );
+    }
+
+    if (focusedThreadRef?.current) {
+      resizeObserver.observe(focusedThreadRef.current);
+    }
+
+    return () => {
+      if (focusedThreadRef?.current) {
+        resizeObserver.unobserve(focusedThreadRef.current);
+      }
+    };
+  }, [threadRefs, selectedThreadId]);
+
+  // Creates list of sorted refs that matches order of annotationsSortedByY
+  // Create a ref for each thread so we can observe it for when it changes dimensions.
+  // If a thread changes dimensions, we need to redraw the comment sidebar because each thread within it is absolutely positioned.
+  useEffect(() => {
+    setThreadRefs((refs) =>
+      Array(annotationsSortedByY.length)
+        .fill(null)
+        .map((_, i) => refs[i] || createRef())
+    );
+  }, [annotationsSortedByY, newAnnotation]);
+
+  // Set up click events.
   // The canvas element has no pointer-events because we want the user to be able to select text
   // in the content layer beneath. As a result, we can't detect click events on the canvas so
   // we need to detect click events on the content layer and compare to the canvas highlight coordinates to
   // see if there is a match.
   useEffect(() => {
-    const handleClick = (event) => {
+    const handleClick = (event): void => {
       const rect = canvasRef!.current!.getBoundingClientRect();
       const clickedX = event.clientX - rect.left;
       const clickedY = event.clientY - rect.top;
 
-      let selectedAnnotationThread: RenderedAnnotationThread | null = null;
-      for (let i = 0; i < renderedAnnotationThreads.length; i++) {
-        const { anchorCoordinates } = renderedAnnotationThreads[i];
+      let selectedAnnotation: Annotation | null = null;
+      for (let i = 0; i < annotationsSortedByY.length; i++) {
+        const { anchorCoordinates } = annotationsSortedByY[i];
 
-        const isClickWithinHighlight = anchorCoordinates.some(
+        const isAnchorClicked = anchorCoordinates.some(
           ({ x, y, width, height }) => {
             return (
               clickedX >= x &&
@@ -128,17 +167,17 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           }
         );
 
-        if (isClickWithinHighlight) {
-          selectedAnnotationThread = renderedAnnotationThreads[i];
+        if (isAnchorClicked) {
+          selectedAnnotation = annotationsSortedByY[i];
           continue;
         }
       }
 
-      if (selectedAnnotationThread) {
-        setSelectedAnnotationThread(selectedAnnotationThread);
+      if (selectedAnnotation) {
+        setSelectedThreadId(selectedAnnotation.threadId);
       } else {
-        // Clicked outside of any highlight. Let's dismiss current selected.
-        setSelectedAnnotationThread(null);
+        // Selected dismissed.
+        setSelectedThreadId(null);
       }
     };
 
@@ -153,79 +192,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         window.removeEventListener("click", handleClick);
       }
     };
-  }, [relativeRef, canvasRef, renderedAnnotationThreads]);
-
-  // When the thread refs are ready, we want to set up observers to watch for changes in thread dimensions
-  // If the thread dimensions change, we need to redraw all relative threads.
-  useEffect(() => {
-    // Create a new ResizeObserver that will update your layout or state
-    const resizeObserver = new ResizeObserver((entries) => {
-      // Iterate over all entries
-
-      for (const entry of entries) {
-        const rect = entry.target.getBoundingClientRect();
-        console.log("Element1:", entry.target, "Size", {
-          height: rect.height,
-          width: rect.width,
-        });
-      }
-      // _debouncedCalcAnnotationThreadPositions();
-    });
-
-    // Observe each annotation for changes in size
-    annotationThreadRefs.forEach((ref) => {
-      if (ref.current) {
-        resizeObserver.observe(ref.current);
-      }
-    });
-
-    // Clean up by unobserving all elements when the component unmounts
-    return () => {
-      annotationThreadRefs.forEach((ref) => {
-        if (ref.current) {
-          resizeObserver.unobserve(ref.current);
-        }
-      });
-    };
-  }, [annotationThreadRefs]);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const rect = entry.target.getBoundingClientRect();
-        console.log("Element:", entry.target, "Size", {
-          height: rect.height,
-          width: rect.width,
-        });
-        _calcAnnotationThreadPositions();
-      }
-    });
-
-    let focusedThreadRef: any = null;
-    if (newCommentAnnotationRef?.current) {
-      focusedThreadRef = newCommentAnnotationRef.current;
-    } else if (selectedAnnotationThread) {
-      focusedThreadRef = annotationThreadRefs.find(
-        (ref) =>
-          ref.current &&
-          ref.current.contains(
-            document.getElementById(
-              `thread-${selectedAnnotationThread?.commentThread?.id}`
-            )
-          )
-      );
-    }
-
-    if (focusedThreadRef?.current) {
-      resizeObserver.observe(focusedThreadRef.current);
-    }
-
-    return () => {
-      if (focusedThreadRef?.current) {
-        resizeObserver.unobserve(focusedThreadRef.current);
-      }
-    };
-  }, [annotationThreadRefs, selectedAnnotationThread]);
+  }, [relativeRef, canvasRef, annotationsSortedByY]);
 
   // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
   // and redraw the highlights in the correct position.
@@ -246,10 +213,10 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     }
   }, [relativeRef, canvasRef]);
 
-  const _sortAnnotationThreads = (
-    annotationThreads: RenderedAnnotationThread[]
-  ) => {
-    const sorted = annotationThreads.sort((a, b) => {
+  const _sortAnnotationsByAppearanceInPage = (
+    annotations: Annotation[]
+  ): Annotation[] => {
+    const sorted = annotations.sort((a, b) => {
       const aY = a.anchorCoordinates[a.anchorCoordinates.length - 1].y;
       const bY = b.anchorCoordinates[b.anchorCoordinates.length - 1].y;
       return aY - bY;
@@ -258,116 +225,102 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     return sorted;
   };
 
-  const _calcAnnotationThreadPositions = () => {
-    const MIN_SPACE_BETWEEN_THREAD = 15;
+  const _calcThreadPositions = (): void => {
     const SELECTED_THREAD_X_OFFSET = 30;
-    const _renderedAnnotationThreads = _sortAnnotationThreads(
-      renderedAnnotationThreads
-    );
-    const focalPointIndex = _renderedAnnotationThreads.findIndex(
-      (thread) =>
-        thread.commentThread?.id ===
-          selectedAnnotationThread?.commentThread?.id || thread.isNew
+    const MIN_SPACE_BETWEEN_THREAD = 15; // Threads will be at least this distance apart
+
+    const focalPointIndex = annotationsSortedByY.findIndex(
+      (pos) =>
+        pos.threadId === selectedThreadId || pos.threadId === "new-annotation"
     );
 
-    const updatedThreads: Array<RenderedAnnotationThread> = [];
-    const beforeFocalPointThreads = _renderedAnnotationThreads.slice(
-      0,
-      focalPointIndex
-    );
-    const focalPointThread = _renderedAnnotationThreads[focalPointIndex];
-    const afterFocalPointThreads = _renderedAnnotationThreads.slice(
-      focalPointIndex + 1
-    );
-
-    const focalPointAndBefore = [...beforeFocalPointThreads].concat(
-      focalPointThread ? [focalPointThread] : []
+    const repositioned: Array<Annotation> = []; // Keep track of threads that have been repositioned.
+    const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
+    const focalPoint = annotationsSortedByY[focalPointIndex];
+    const afterFocalPoint = annotationsSortedByY.slice(focalPointIndex + 1);
+    const focalPointAndBefore = [...beforeFocalPoint].concat(
+      focalPoint ? [focalPoint] : []
     );
     for (let i = focalPointAndBefore.length - 1; i >= 0; i--) {
-      const currentThread = focalPointAndBefore[i];
-      const currentThreadRef = annotationThreadRefs[i];
-      const prevThread = focalPointAndBefore[i - 1];
-      const prevThreadRef = annotationThreadRefs[i - 1];
+      const annotation = focalPointAndBefore[i];
+      const prevAnnotation = annotationsSortedByY[i - 1];
+      const threadRef = threadRefs[i];
+      const prevThreadRef = threadRefs[i - 1];
 
-      if (prevThread && prevThreadRef?.current && currentThreadRef?.current) {
+      if (prevThreadRef?.current && threadRef?.current) {
         const prevRect = prevThreadRef.current.getBoundingClientRect();
-        const prevRectBottom = prevThread.threadCoordinates.y + prevRect.height;
+        const prevRectBottom =
+          prevAnnotation.threadCoordinates.y + prevRect.height;
 
         if (
-          currentThread.threadCoordinates.y <
+          annotation.threadCoordinates.y <
           prevRectBottom + MIN_SPACE_BETWEEN_THREAD
         ) {
           const prevThreadNewPosY =
-            currentThread.threadCoordinates.y -
+            annotation.threadCoordinates.y -
             MIN_SPACE_BETWEEN_THREAD -
             prevRect.height;
-          if (prevThread.threadCoordinates.y !== prevThreadNewPosY) {
+          if (prevAnnotation.threadCoordinates.y !== prevThreadNewPosY) {
             // console.log(`Updating [Before] Position of thread ${i} from ${prevThread.threadCoordinates.y} to: ${prevThreadNewPosY}`);
             // console.log('XXprevThread', prevThread.commentThread?.anchor?.position.textContent)
             // console.log('XXcurrentThread', currentThread.commentThread?.anchor?.position.textContent)
-            prevThread.threadCoordinates.y = prevThreadNewPosY;
-            updatedThreads.push(prevThread);
+            prevAnnotation.threadCoordinates.y = prevThreadNewPosY;
+            repositioned.push(prevAnnotation);
           }
         }
       }
     }
 
-    const focalPointAndAfter = (
-      focalPointThread ? [focalPointThread] : []
-    ).concat([...afterFocalPointThreads]);
+    const focalPointAndAfter = (focalPoint ? [focalPoint] : []).concat([
+      ...afterFocalPoint,
+    ]);
     for (let i = 0; i < focalPointAndAfter.length - 1; i++) {
-      const currentThread = focalPointAndAfter[i];
-      const currentThreadRef = annotationThreadRefs[i];
-      const nextThread = focalPointAndAfter[i + 1];
-      const nextThreadRef = annotationThreadRefs[i + 1];
+      const annotation = focalPointAndAfter[i];
+      const nextAnnotation = annotationsSortedByY[i + 1];
+      const threadRef = threadRefs[i];
+      const nextThreadRef = threadRefs[i + 1];
 
-      if (nextThread && nextThreadRef?.current && currentThreadRef?.current) {
+      if (nextThreadRef?.current && threadRef?.current) {
         const nextRect = nextThreadRef.current.getBoundingClientRect();
-        const currentRect = currentThreadRef.current.getBoundingClientRect();
-        const nextRectTop = nextThread.threadCoordinates.y;
+        const currentRect = threadRef.current.getBoundingClientRect();
+        const nextRectTop = nextAnnotation.threadCoordinates.y;
 
         if (
           nextRectTop <
-          currentThread.threadCoordinates.y +
+          annotation.threadCoordinates.y +
             currentRect.height +
             MIN_SPACE_BETWEEN_THREAD
         ) {
           const nextThreadNewPosY =
-            currentThread.threadCoordinates.y +
+            annotation.threadCoordinates.y +
             currentRect.height +
             MIN_SPACE_BETWEEN_THREAD;
-          if (nextThread.threadCoordinates.y !== nextThreadNewPosY) {
-            console.log(
-              `Updating [After] Position of thread ${i} from ${nextThread.threadCoordinates.y} to: ${nextThreadNewPosY}`
-            );
-            nextThread.threadCoordinates.y = nextThreadNewPosY;
-            updatedThreads.push(currentThread);
+          if (nextAnnotation.threadCoordinates.y !== nextThreadNewPosY) {
+            // console.log(
+            //   `Updating [After] Position of thread ${i} from ${nextAnnotation.threadCoordinates.y} to: ${nextThreadNewPosY}`
+            // );
+            nextAnnotation.threadCoordinates.y = nextThreadNewPosY;
+            repositioned.push(annotation);
           }
         }
       }
     }
 
     // Rconcile updated with current
-    if (updatedThreads.length > 0) {
-      const reconciledThreads = [...renderedAnnotationThreads];
-      for (let i = 0; i < renderedAnnotationThreads.length; i++) {
-        const currentThread = renderedAnnotationThreads[i];
-        const updatedThread = updatedThreads.find(
-          (thread) =>
-            thread.commentThread?.id === currentThread.commentThread?.id
+    if (repositioned.length > 0) {
+      for (let i = 0; i < annotationsSortedByY.length; i++) {
+        const annotation = annotationsSortedByY[i];
+        const repositionedThread: Annotation | undefined = repositioned.find(
+          (thread) => annotation.threadId === annotationsSortedByY[i].threadId
         );
-        if (updatedThread) {
-          reconciledThreads[i] = updatedThread;
+        if (repositionedThread) {
+          annotationsSortedByY[i] = repositionedThread;
         }
       }
 
-      setRenderedAnnotationThreads(reconciledThreads);
+      setAnnotationsSortedByY(annotationsSortedByY);
     }
   };
-  const _debouncedCalcAnnotationThreadPositions = debounce(
-    _calcAnnotationThreadPositions,
-    500
-  );
 
   const _calcTextSelectionMenuPos = () => {
     if (!relativeRef.current) return { x: 0, y: 0 };
@@ -384,51 +337,64 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   };
 
   const _drawAnchors = () => {
-    console.log("Drawing anchors...");
+    const threadIds = Object.keys(commentThreads);
+    console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
 
-    const commentThreads = groupBy(inlineComments, (c) => c.thread.id);
-    const _unrenderedThreads = Object.keys(
-      commentThreads
-    ).map<UnrenderedAnnotationThread>((_threadId) => {
-      const comments = commentThreads[_threadId];
-      const commentThread = comments[0].thread;
-      const xrange =
-        XRange.createFromSerialized(commentThread.anchor?.position) || null;
+    const orphanThreadIds: Array<ID> = [];
+    let foundAnnotations: Array<Annotation> = [];
+    for (let i = 0; i < threadIds.length; i++) {
+      const threadId = String(threadIds[i]);
+      const threadComments = commentThreads[threadId];
+      const thread = commentThreads[threadId][0].thread;
+      const xrange = XRange.createFromSerialized(thread.anchor) || null;
 
-      const _t: UnrenderedAnnotationThread = {
-        comments,
-        commentThread,
-        xrange: xrange,
-        isNew: false,
-      };
-      return _t;
-    });
+      if (!xrange) {
+        console.log(
+          "[Annotation] No xrange found for thread. Orphan thread is:",
+          thread
+        );
+        orphanThreadIds.push(threadId);
+        continue;
+      }
 
-    if (newCommentAnnotation) {
-      _unrenderedThreads.push(newCommentAnnotation);
+      const anchorPos = createAnnotation({
+        xrange,
+        threadId,
+        canvasEl: canvasRef.current,
+        serializedAnchorPosition: threadComments[0].thread.anchor || undefined,
+      });
+
+      foundAnnotations.push(anchorPos);
     }
 
-    drawThreadAnchorsOnCanvas({
-      unrenderedAnnotationThreads: _unrenderedThreads,
+    if (newAnnotation) {
+      foundAnnotations.push(newAnnotation);
+    }
+
+    foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+
+    drawAnchorsOnCanvas({
+      annotations: foundAnnotations,
       canvasRef,
-      onRender: setRenderedAnnotationThreads,
-      selectedAnnotationThread,
+      // selectedAnnotationThread,
     });
+
+    setOrphanThreadIds(orphanThreadIds);
+    setAnnotationsSortedByY(foundAnnotations);
   };
-  // Since there are a bunch of dependencies that can trigger the re-drawing,
-  // we want to debounce so drawing doesn't occur too often.
-  const _debouncedDrawAnchors = debounce(_drawAnchors, 500);
 
   const _displayCommentEditor = () => {
     if (!selectionXRange) {
       return console.error("No selected range. This should not happen.");
     }
 
-    setNewCommentAnnotation({
-      isNew: true,
+    const newAnnotation = createAnnotation({
       xrange: selectionXRange,
-      comments: [],
+      threadId: "new-thread",
+      canvasEl: canvasRef.current,
     });
+
+    setNewAnnotation(newAnnotation);
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
@@ -439,8 +405,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       <canvas ref={canvasRef} id="overlay" className={css(styles.canvas)} />
     );
   }, []);
-
-  const MemoizedCommentAnnotationThread = React.memo(CommentAnnotationThread);
 
   return (
     <div>
@@ -474,79 +438,71 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             />
           </div>
         )}
-        {renderedAnnotationThreads.length > 0 && (
-          <div
-            className={css(styles.commentSidebar)}
-            style={{ position: "absolute", right: -510, top: 0, width: 500 }}
-          >
-            {renderedAnnotationThreads.map((thread, idx) => {
-              const id =
-                `thread-` + thread.commentThread?.id || "new-comment-thread";
+        <div
+          className={css(styles.commentSidebar)}
+          style={{ position: "absolute", right: -510, top: 0, width: 500 }}
+        >
+          {annotationsSortedByY.map((annotation, idx) => {
+            const threadId = String(annotation.threadId);
+            const key = `thread-` + threadId || "new-thread";
 
-              return (
-                <div
-                  id={id}
-                  ref={annotationThreadRefs[idx]}
-                  style={{
-                    position: "absolute",
-                    background: thread.isNew ? "none" : "white",
-                    padding: 10,
-                    border: thread.isNew
-                      ? "none"
-                      : `1px solid ${colors.border}`,
-                    left: thread.threadCoordinates.x,
-                    top: thread.threadCoordinates.y,
-                    width: contextConfig.annotation.commentWidth,
-                  }}
-                  key={id}
-                >
-                  {thread.comments.length > 0 && (
-                    <CommentAnnotationThread
-                      key={`${id}-thread`}
-                      document={doc}
-                      thread={thread}
-                      isFocused={
-                        selectedAnnotationThread?.commentThread?.id ===
-                        thread?.commentThread?.id
+            return (
+              <div
+                id={key}
+                ref={threadRefs[idx]}
+                style={{
+                  position: "absolute",
+                  background: threadId === "new-thread" ? "none" : "white",
+                  padding: 10,
+                  border: threadId ? "none" : `1px solid ${colors.border}`,
+                  left: annotation.threadCoordinates.x,
+                  top: annotation.threadCoordinates.y,
+                  width: contextConfig.annotation.commentWidth,
+                }}
+                key={key}
+              >
+                <CommentAnnotationThread
+                  key={`${key}-thread`}
+                  document={doc}
+                  threadId={threadId}
+                  comments={commentThreads[threadId] || []}
+                  isFocused={selectedThreadId === threadId}
+                />
+                {threadId === "new-thread" && (
+                  <CommentEditor
+                    editorId="new-inline-comment"
+                    handleSubmit={async (props) => {
+                      try {
+                        const comment = await createCommentAPI({
+                          ...props,
+                          documentId: doc.id,
+                          documentType: doc.apiDocumentType,
+                          commentType: COMMENT_TYPES.ANNOTATION,
+                          anchor: {
+                            type: "text",
+                            position: annotation.xrange!.serialize(),
+                          },
+                        });
+
+                        // setNewCommentAnnotation(null);
+                        // setInlineComments([...inlineComments, comment]);
+                      } catch (error) {
+                        captureEvent({
+                          msg: "Failed to create inline comment",
+                          data: {
+                            document,
+                            error,
+                            annotation,
+                          },
+                        });
                       }
-                    />
-                  )}
-                  {thread.isNew && (
-                    <CommentEditor
-                      editorId="new-inline-comment"
-                      handleSubmit={async (props) => {
-                        try {
-                          const comment = await createCommentAPI({
-                            ...props,
-                            documentId: doc.id,
-                            documentType: doc.apiDocumentType,
-                            commentType: COMMENT_TYPES.ANNOTATION,
-                            anchor: {
-                              type: "text",
-                              position: thread.xrange!.serialize(),
-                            },
-                          });
-
-                          setNewCommentAnnotation(null);
-                          setInlineComments([...inlineComments, comment]);
-                        } catch (error) {
-                          captureEvent({
-                            msg: "Failed to create inline comment",
-                            data: {
-                              document,
-                              error,
-                              thread,
-                            },
-                          });
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
         {AnnotationCanvas}
       </CommentTreeContext.Provider>
     </div>

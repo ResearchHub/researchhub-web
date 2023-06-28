@@ -33,7 +33,23 @@ export enum COMMENT_CONTEXTS {
   FEED = "FEED",
 }
 
-type SerializedPosition = {
+export type Annotation = {
+  threadId: ID | "new-annotation";
+  serialized: SerializedAnchorPosition;
+  anchorCoordinates: Array<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  threadCoordinates: {
+    x: number;
+    y: number;
+  };
+  xrange: any;
+};
+
+type SerializedAnchorPosition = {
   startContainerPath: string;
   startOffset: number;
   endContainerPath: string;
@@ -41,17 +57,31 @@ type SerializedPosition = {
   collapsed: boolean;
   textContent: string;
   page?: number;
+  type: "text";
 };
 
-export type PositionAnchor = {
-  type: "text";
-  position: SerializedPosition;
-};
+// export type AnnotationAnchorPosition = {
+//   threadId: ID | "new-thread";
+//   serialized: SerializedAnchorPosition;
+//   anchorCoordinates: Array<{
+//     x: number;
+//     y: number;
+//     width: number;
+//     height: number;
+//   }>;
+//   xrange: any;
+// };
+
+// export type AnnotationThreadPosition = {
+//   threadId: ID | "new-thread";
+//   x: number;
+//   y: number;
+// }
 
 export type CommentThread = {
   id: ID;
   threadType: COMMENT_TYPES;
-  anchor?: PositionAnchor | null;
+  anchor?: SerializedAnchorPosition | null;
 };
 
 export type Comment = {
@@ -77,27 +107,6 @@ export type Comment = {
   thread: CommentThread;
 };
 
-export type UnrenderedAnnotationThread = {
-  comments: Comment[];
-  isNew?: boolean;
-  xrange: any | null;
-  commentThread?: CommentThread;
-};
-
-export type RenderedAnnotationThread = {
-  comments: Comment[];
-  commentThread?: CommentThread;
-  isNew?: boolean;
-  xrange: any;
-  anchorCoordinates: Array<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>;
-  threadCoordinates: { x: number; y: number };
-};
-
 // export type UnrenderedAnnotation = {
 //   comment?: Comment;
 //   xrange: any | null;
@@ -117,23 +126,43 @@ export type RenderedAnnotationThread = {
 //   commentCoordinates: { x: number; y: number };
 // };
 
-type parseCommentArgs = {
-  raw: any;
-  parent?: Comment;
+export const createAnnotation = ({
+  serializedAnchorPosition,
+  xrange,
+  canvasEl,
+  threadId,
+}: {
+  xrange: any;
+  canvasEl?: any;
+  threadId?: ID | "new-thread";
+  serializedAnchorPosition?: SerializedAnchorPosition;
+}): Annotation => {
+  const highlightCoords = xrange.getCoordinates({
+    relativeEl: canvasEl,
+  });
+
+  return {
+    threadId: threadId || "new-thread",
+    serialized: xrange.serialize() || serializedAnchorPosition,
+    anchorCoordinates: highlightCoords,
+    threadCoordinates: {
+      x: highlightCoords[0].x,
+      y: highlightCoords[0].y, // Initial position on first render before adjustment
+    },
+    xrange,
+  };
 };
 
-export const parseAnchor = (raw: any): PositionAnchor => {
+export const parseAnchor = (raw: any): SerializedAnchorPosition => {
   return {
     type: raw.type,
-    position: {
-      startContainerPath: raw.position?.startContainerPath,
-      startOffset: raw.position?.startOffset,
-      endContainerPath: raw.position?.endContainerPath,
-      endOffset: raw.position?.endOffset,
-      collapsed: raw.position?.collapsed,
-      textContent: raw.position?.textContent,
-      page: raw.position?.page || null,
-    },
+    startContainerPath: raw.position?.startContainerPath,
+    startOffset: raw.position?.startOffset,
+    endContainerPath: raw.position?.endContainerPath,
+    endOffset: raw.position?.endOffset,
+    collapsed: raw.position?.collapsed,
+    textContent: raw.position?.textContent,
+    page: raw.position?.page || null,
   };
 };
 
@@ -145,7 +174,13 @@ export const parseThread = (raw: any): CommentThread => {
   };
 };
 
-export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
+export const parseComment = ({
+  raw,
+  parent,
+}: {
+  raw: any;
+  parent?: Comment;
+}): Comment => {
   const parsed: Comment = {
     id: raw.id,
     threadId: raw.thread,

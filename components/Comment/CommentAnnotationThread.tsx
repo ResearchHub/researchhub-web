@@ -1,31 +1,28 @@
 import { GenericDocument } from "../Document/lib/types";
 import CommentEditor from "./CommentEditor";
-import {
-  Comment as CommentModel,
-  RenderedAnnotationThread,
-  CommentThread,
-} from "./lib/types";
 import Comment from "./Comment";
-import { ID } from "~/config/types/root_types";
 import { StyleSheet, css } from "aphrodite";
 import colors from "./lib/colors";
+import { Comment as CommentType } from "./lib/types";
 
 interface Props {
-  thread: RenderedAnnotationThread;
+  threadId: string;
   document: GenericDocument;
   isFocused?: boolean;
+  comments: CommentType[];
 }
 
 const CommentAnnotationThread = ({
-  thread,
+  threadId,
   document,
+  comments,
   isFocused = true,
 }: Props) => {
   console.log("re-render");
 
   return (
     <div>
-      {thread.comments.map((comment) => (
+      {comments.map((comment) => (
         <Comment key={comment.id} comment={comment} document={document} />
       ))}
       {/* {isFocused && (

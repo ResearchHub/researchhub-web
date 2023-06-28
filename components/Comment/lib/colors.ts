@@ -39,6 +39,10 @@ const colors = {
   dot: "rgb(200 200 202)",
   gray: globalColors.BLACK(0.6),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
+  annotation: {
+    selected: "rgb(252, 187, 41, 0.5)",
+    unselected: "rgba(255, 255, 0, 0.5)",
+  },
 };
 
 export default colors;
