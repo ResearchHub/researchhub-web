@@ -1,5 +1,12 @@
 import { StyleSheet, css } from "aphrodite";
-import React, { MutableRefObject, createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  MutableRefObject,
+  createRef,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Comment as CommentModel,
   parseComment,
@@ -102,11 +109,38 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         // });
 
         // TODO: Debounce this calculation
-        _calcThreadPositions();
+        // TODO: Only recalculate if height changes
+
+        setAnnotationsSortedByY((prevAnnotations) => {
+          const repositioned = repositionAnnotations({
+            annotationsSortedByY: prevAnnotations,
+            selectedThreadId,
+          });
+
+          const newAnnotationsSortedByY = [...annotationsSortedByY];
+          if (repositioned.length > 0) {
+            for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
+              const annotation = newAnnotationsSortedByY[i];
+              const repositionedAnnotation: Annotation | undefined =
+                repositioned.find(
+                  (_annotation) => annotation.threadId === _annotation.threadId
+                );
+
+              if (repositionedAnnotation) {
+                // console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
+                // console.log(`next thread ${i + 1}:`, newAnnotationsSortedByY[i + 1]?.serialized.textContent, newAnnotationsSortedByY[i + 1]?.threadCoordinates.y)
+                // console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
+                newAnnotationsSortedByY[i] = repositionedAnnotation;
+              }
+            }
+          }
+
+          return newAnnotationsSortedByY;
+        });
       }
     });
 
-    let focusedThreadRef:any = null;
+    let focusedThreadRef: any = null;
     if (newThreadRef?.current) {
       focusedThreadRef = newThreadRef.current;
     } else if (selectedThreadId) {
@@ -225,7 +259,13 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     return sorted;
   };
 
-  const _calcThreadPositions = (): void => {
+  const repositionAnnotations = ({
+    annotationsSortedByY,
+    selectedThreadId,
+  }: {
+    annotationsSortedByY: Annotation[];
+    selectedThreadId: ID;
+  }): Annotation[] => {
     const SELECTED_THREAD_X_OFFSET = 30;
     const MIN_SPACE_BETWEEN_THREAD = 15; // Threads will be at least this distance apart
 
@@ -233,8 +273,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       (pos) =>
         pos.threadId === selectedThreadId || pos.threadId === "new-annotation"
     );
-
-    console.table(annotationsSortedByY)
 
     const repositioned: Array<Annotation> = []; // Keep track of threads that have been repositioned.
     const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
@@ -266,7 +304,13 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             // console.log('Current annotation:', annotation.serialized.textContent)
             // console.log('Prev annotation:', prevAnnotation.serialized.textContent)
             // console.log(`Updating [Before] Position of thread ${i-1} from ${prevAnnotation.threadCoordinates.y} to: ${prevThreadNewPosY}`);
-            repositioned.push({...prevAnnotation, threadCoordinates: {...prevAnnotation.threadCoordinates, y: prevThreadNewPosY}});
+            repositioned.push({
+              ...prevAnnotation,
+              threadCoordinates: {
+                ...prevAnnotation.threadCoordinates,
+                y: prevThreadNewPosY,
+              },
+            });
           }
         }
       }
@@ -296,39 +340,26 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             currentRect.height +
             MIN_SPACE_BETWEEN_THREAD;
           if (nextAnnotation.threadCoordinates.y !== nextThreadNewPosY) {
-            console.log("annotation.threadCoordinates.y", annotation.threadCoordinates.y)
-            console.log('nextRectTop', nextRectTop)
-            console.log("currentRect.height", currentRect.height)
-            console.log("MIN_SPACE_BETWEEN_THREAD", MIN_SPACE_BETWEEN_THREAD)
-            console.log(
-              `Updating [After] Position of thread from ${nextAnnotation.threadCoordinates.y} to: ${nextThreadNewPosY}`
-            );
-            repositioned.push({...nextAnnotation, threadCoordinates: {...nextAnnotation.threadCoordinates, y: nextThreadNewPosY}});
+            // console.log("annotation.threadCoordinates.y", annotation.threadCoordinates.y)
+            // console.log('nextRectTop', nextRectTop)
+            // console.log("currentRect.height", currentRect.height)
+            // console.log("MIN_SPACE_BETWEEN_THREAD", MIN_SPACE_BETWEEN_THREAD)
+            // console.log(
+            //   `Updating [After] Position of thread from ${nextAnnotation.threadCoordinates.y} to: ${nextThreadNewPosY}`
+            // );
+            repositioned.push({
+              ...nextAnnotation,
+              threadCoordinates: {
+                ...nextAnnotation.threadCoordinates,
+                y: nextThreadNewPosY,
+              },
+            });
           }
         }
       }
     }
 
-    // Rconcile updated with current 
-    if (repositioned.length > 0) {
-      for (let i = 0; i < annotationsSortedByY.length; i++) {
-        const annotation = annotationsSortedByY[i];
-        const repositionedAnnotation: Annotation | undefined = repositioned.find(
-          (_annotation) => annotation.threadId === _annotation.threadId
-        );
-
-        
-        if (repositionedAnnotation) {
-          // console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
-          // console.log(`next thread ${i + 1}:`, annotationsSortedByY[i + 1]?.serialized.textContent, annotationsSortedByY[i + 1]?.threadCoordinates.y)
-          // console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
-          annotationsSortedByY[i] = repositionedAnnotation;
-        }
-      }
-
-      // console.log('annotationsSortedByY', annotationsSortedByY)
-      setAnnotationsSortedByY(annotationsSortedByY);
-    }
+    return repositioned;
   };
 
   const _calcTextSelectionMenuPos = () => {
@@ -385,13 +416,13 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     drawAnchorsOnCanvas({
       annotations: foundAnnotations,
       canvasRef,
-      selectedThreadId
+      selectedThreadId,
       // selectedAnnotationThread,
     });
 
     setOrphanThreadIds(orphanThreadIds);
 
-    setAnnotationsSortedByY( foundAnnotations);
+    setAnnotationsSortedByY(foundAnnotations);
   };
 
   const _displayCommentEditor = () => {
