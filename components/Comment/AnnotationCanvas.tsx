@@ -48,6 +48,8 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     Annotation[]
   >([]);
 
+  const prevAnnotationsSortedByY = useRef(annotationsSortedByY);
+
   // Orphans are annotations that could not be found on page
   const [orphanThreadIds, setOrphanThreadIds] = useState<ID[]>([]);
 
@@ -101,78 +103,54 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   // If position has changed, recalculate.
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const rect = entry.target.getBoundingClientRect();
-        // console.log("Element:", entry.target, "Size", {
-        //   height: rect.height,
-        //   width: rect.width,
-        // });
+      const repositioned = repositionAnnotations({
+        annotationsSortedByY: annotationsSortedByY,
+        selectedThreadId,
+      });
 
-        // TODO: Debounce this calculation
-        // TODO: Only recalculate if height changes
+      replaceAnnotations({ annotationsToReplace: repositioned });
+    });
 
-        const repositioned = repositionAnnotations({
-          annotationsSortedByY: annotationsSortedByY,
-          selectedThreadId,
-        });
-
-        if (repositioned.length > 0) {
-          const newAnnotationsSortedByY = [...annotationsSortedByY];
-          for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
-            const annotation = newAnnotationsSortedByY[i];
-            const repositionedAnnotation: Annotation | undefined =
-              repositioned.find(
-                (_annotation) => annotation.threadId === _annotation.threadId
-              );
-              
-              if (repositionedAnnotation) {
-              console.log('%cRepositioned', 'color: green; font-weight: bold;')
-              console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
-              console.log(`next thread ${i + 1}:`, newAnnotationsSortedByY[i + 1]?.serialized.textContent, newAnnotationsSortedByY[i + 1]?.threadCoordinates.y)
-              console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
-              newAnnotationsSortedByY[i] = repositionedAnnotation;
-            }
-          }
-
-          setAnnotationsSortedByY(newAnnotationsSortedByY);
-        }
+    threadRefs.forEach((t) => {
+      console.log("setting up observer");
+      if (t.current) {
+        resizeObserver.observe(t.current);
       }
     });
 
-    let focusedThreadRef: any = null;
-    if (newThreadRef?.current) {
-      focusedThreadRef = newThreadRef.current;
-    } else if (selectedThreadId) {
-      focusedThreadRef = threadRefs.find(
-        (ref) =>
-          ref.current &&
-          ref.current.contains(
-            document.getElementById(`thread-${selectedThreadId}`)
-          )
-      );
-    }
-
-    if (focusedThreadRef?.current) {
-      resizeObserver.observe(focusedThreadRef.current);
-    }
-
     return () => {
-      if (focusedThreadRef?.current) {
-        resizeObserver.unobserve(focusedThreadRef.current);
-      }
+      threadRefs.forEach((t) => {
+        if (t.current) {
+          resizeObserver.unobserve(t.current);
+        }
+      });
     };
   }, [threadRefs]);
 
-  // Creates list of sorted refs that matches order of annotationsSortedByY
-  // Create a ref for each thread so we can observe it for when it changes dimensions.
-  // If a thread changes dimensions, we need to redraw the comment sidebar because each thread within it is absolutely positioned.
   useEffect(() => {
-    setThreadRefs((refs) =>
-      Array(annotationsSortedByY.length)
-        .fill(null)
-        .map((_, i) => refs[i] || createRef())
-    );
-  }, [annotationsSortedByY, newAnnotation]);
+    if (selectedThreadId) {
+      const repositioned = repositionAnnotations({
+        annotationsSortedByY: annotationsSortedByY,
+        selectedThreadId,
+      });
+
+      replaceAnnotations({ annotationsToReplace: repositioned });
+    }
+  }, [selectedThreadId]);
+
+  useEffect(() => {
+    if (
+      annotationsSortedByY.length !== prevAnnotationsSortedByY?.current?.length
+    ) {
+      prevAnnotationsSortedByY.current = annotationsSortedByY;
+
+      setThreadRefs((refs) =>
+        Array(annotationsSortedByY.length)
+          .fill(null)
+          .map((_, i) => refs[i] || createRef())
+      );
+    }
+  }, [annotationsSortedByY.length]);
 
   // Set up click events.
   // The canvas element has no pointer-events because we want the user to be able to select text
@@ -246,6 +224,30 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     }
   }, [relativeRef, canvasRef]);
 
+  const replaceAnnotations = ({ annotationsToReplace }) => {
+    if (annotationsToReplace.length > 0) {
+      console.log("++++");
+      const newAnnotationsSortedByY = [...annotationsSortedByY];
+      for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
+        const annotation = newAnnotationsSortedByY[i];
+        const repositionedAnnotation: Annotation | undefined =
+          annotationsToReplace.find(
+            (_annotation) => annotation.threadId === _annotation.threadId
+          );
+
+        if (repositionedAnnotation) {
+          // console.log('%cRepositioned', 'color: green; font-weight: bold;')
+          // console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
+          // console.log(`next thread ${i + 1}:`, newAnnotationsSortedByY[i + 1]?.serialized.textContent, newAnnotationsSortedByY[i + 1]?.threadCoordinates.y)
+          // console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
+          newAnnotationsSortedByY[i] = repositionedAnnotation;
+        }
+      }
+
+      setAnnotationsSortedByY(newAnnotationsSortedByY);
+    }
+  };
+
   const _sortAnnotationsByAppearanceInPage = (
     annotations: Annotation[]
   ): Annotation[] => {
@@ -275,7 +277,16 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
     const repositioned: Array<Annotation> = []; // Keep track of threads that have been repositioned.
     const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
-    const focalPoint = annotationsSortedByY[focalPointIndex];
+    const focalPoint =
+      focalPointIndex >= 0
+        ? { ...annotationsSortedByY[focalPointIndex] }
+        : null;
+
+    // If focal point exists, we want to add a constraint that it is positioned right next to its anchor.
+    if (focalPoint) {
+      focalPoint.threadCoordinates.y = focalPoint.anchorCoordinates[0].y;
+    }
+
     const afterFocalPoint = annotationsSortedByY.slice(focalPointIndex + 1);
     const focalPointAndBefore = [...beforeFocalPoint].concat(
       focalPoint ? [focalPoint] : []
@@ -411,17 +422,19 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     }
 
     foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
-
     drawAnchorsOnCanvas({
       annotations: foundAnnotations,
       canvasRef,
       selectedThreadId,
-      // selectedAnnotationThread,
     });
 
     setOrphanThreadIds(orphanThreadIds);
 
-    setAnnotationsSortedByY(foundAnnotations);
+    if (!annotationsSortedByY.length) {
+      // Setting annotation only on first draw, when none exist
+      // TODO: This may not be the best place to do this. consider another location
+      setAnnotationsSortedByY(foundAnnotations);
+    }
   };
 
   const _displayCommentEditor = () => {
