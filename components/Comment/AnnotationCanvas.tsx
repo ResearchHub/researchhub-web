@@ -111,32 +111,31 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         // TODO: Debounce this calculation
         // TODO: Only recalculate if height changes
 
-        setAnnotationsSortedByY((prevAnnotations) => {
-          const repositioned = repositionAnnotations({
-            annotationsSortedByY: prevAnnotations,
-            selectedThreadId,
-          });
+        const repositioned = repositionAnnotations({
+          annotationsSortedByY: annotationsSortedByY,
+          selectedThreadId,
+        });
 
+        if (repositioned.length > 0) {
           const newAnnotationsSortedByY = [...annotationsSortedByY];
-          if (repositioned.length > 0) {
-            for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
-              const annotation = newAnnotationsSortedByY[i];
-              const repositionedAnnotation: Annotation | undefined =
-                repositioned.find(
-                  (_annotation) => annotation.threadId === _annotation.threadId
-                );
-
+          for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
+            const annotation = newAnnotationsSortedByY[i];
+            const repositionedAnnotation: Annotation | undefined =
+              repositioned.find(
+                (_annotation) => annotation.threadId === _annotation.threadId
+              );
+              
               if (repositionedAnnotation) {
-                // console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
-                // console.log(`next thread ${i + 1}:`, newAnnotationsSortedByY[i + 1]?.serialized.textContent, newAnnotationsSortedByY[i + 1]?.threadCoordinates.y)
-                // console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
-                newAnnotationsSortedByY[i] = repositionedAnnotation;
-              }
+              console.log('%cRepositioned', 'color: green; font-weight: bold;')
+              console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
+              console.log(`next thread ${i + 1}:`, newAnnotationsSortedByY[i + 1]?.serialized.textContent, newAnnotationsSortedByY[i + 1]?.threadCoordinates.y)
+              console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
+              newAnnotationsSortedByY[i] = repositionedAnnotation;
             }
           }
 
-          return newAnnotationsSortedByY;
-        });
+          setAnnotationsSortedByY(newAnnotationsSortedByY);
+        }
       }
     });
 
@@ -162,7 +161,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         resizeObserver.unobserve(focusedThreadRef.current);
       }
     };
-  }, [threadRefs, selectedThreadId]);
+  }, [threadRefs]);
 
   // Creates list of sorted refs that matches order of annotationsSortedByY
   // Create a ref for each thread so we can observe it for when it changes dimensions.
