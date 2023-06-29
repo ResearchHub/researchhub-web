@@ -313,7 +313,16 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           if (prevAnnotation.threadCoordinates.y !== prevThreadNewPosY) {
             // console.log('Current annotation:', annotation.serialized.textContent)
             // console.log('Prev annotation:', prevAnnotation.serialized.textContent)
-            // console.log(`Updating [Before] Position of thread ${i-1} from ${prevAnnotation.threadCoordinates.y} to: ${prevThreadNewPosY}`);
+            console.log(
+              `Updating [Before] Position of thread ${i - 1} from ${
+                prevAnnotation.threadCoordinates.y
+              } to: ${prevThreadNewPosY}`
+            );
+
+            // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
+            // has correct value.
+            focalPointAndBefore[i - 1].threadCoordinates.y = prevThreadNewPosY;
+
             repositioned.push({
               ...prevAnnotation,
               threadCoordinates: {
@@ -357,6 +366,11 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             // console.log(
             //   `Updating [After] Position of thread from ${nextAnnotation.threadCoordinates.y} to: ${nextThreadNewPosY}`
             // );
+
+            // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
+            // has correct value.
+            focalPointAndAfter[i + 1].threadCoordinates.y = nextThreadNewPosY;
+
             repositioned.push({
               ...nextAnnotation,
               threadCoordinates: {
