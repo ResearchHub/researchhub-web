@@ -68,10 +68,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   }>({ width: 0, height: 0 });
   const newThreadRef = useRef<any | null>(null);
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
-  const commentThreads: { [key: string]: Array<CommentModel> } = groupBy(
-    inlineComments,
-    (c: CommentModel) => String(c.thread.id)
-  );
+  const commentThreads = useRef<{ [key: string]: Array<CommentModel> }>({});
 
   // Fetch comments from API
   useEffect(() => {
@@ -87,6 +84,12 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
     _fetch();
   }, []);
+
+  useEffect(() => {
+    commentThreads.current = groupBy(inlineComments, (c: CommentModel) =>
+      String(c.thread.id)
+    );
+  }, [inlineComments]);
 
   // Draw anchors on canvas once canvas is ready
   useEffect(() => {
@@ -401,7 +404,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   };
 
   const _drawAnchors = () => {
-    const threadIds = Object.keys(commentThreads);
+    const threadIds = Object.keys(commentThreads.current);
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
 
     const orphanThreadIds: Array<ID> = [];
@@ -409,7 +412,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
     for (let i = 0; i < threadIds.length; i++) {
       const threadId = String(threadIds[i]);
-      const thread = commentThreads[threadId][0].thread;
+      const thread = commentThreads.current[threadId][0].thread;
       const xrange = XRange.createFromSerialized(thread.anchor) || null;
 
       if (!xrange) {
@@ -533,7 +536,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                   key={`${key}-thread`}
                   document={doc}
                   threadId={threadId}
-                  comments={commentThreads[threadId] || []}
+                  comments={commentThreads.current[threadId] || []}
                   isFocused={selectedThreadId === threadId}
                 />
                 {threadId === "new-thread" && (
