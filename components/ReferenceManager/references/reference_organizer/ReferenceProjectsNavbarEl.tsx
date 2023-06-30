@@ -141,7 +141,7 @@ export default function ReferenceProjectsNavbarEl({
           </div>
         </Box>
       </ALink>
-      {shouldShowOptions && (
+      {/* {shouldShowOptions && (
         <ReferenceProjectNavbarElOption
           isCurrentUserAdmin={isCurrentUserAdmin}
           projectID={projectID}
@@ -175,7 +175,7 @@ export default function ReferenceProjectsNavbarEl({
           }}
           setShouldShowOptions={setShouldShowOptions}
         />
-      )}
+      )} */}
     </Box>
   );
 }

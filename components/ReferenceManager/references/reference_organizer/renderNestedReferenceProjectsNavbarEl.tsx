@@ -27,11 +27,7 @@ export function renderNestedReferenceProjectsNavbarEl({
   const hasChildren = !isEmpty(referenceProject.children);
   const { activeProject, currentOrgProjects } =
     useReferenceActiveProjectContext();
-  const isActive = activeProject.projectID === referenceProject.id;
-
-  if (!(referenceProject?.collaborators ?? []).editors) {
-    debugger;
-  }
+  const isActive = activeProject?.projectID === referenceProject.id;
 
   return (
     <div
@@ -40,19 +36,6 @@ export function renderNestedReferenceProjectsNavbarEl({
     >
       <ReferenceProjectsNavbarEl
         key={`ref-project-${referenceProject?.id}`}
-        collaborators={[
-          // TODO: calvinhlee - clean this up from backend
-          ...(referenceProject?.collaborators ?? []).editors.map(
-            (rawUser: any) => {
-              return { ...parseUserSuggestion(rawUser), role: "EDITOR" };
-            }
-          ),
-          ...(referenceProject?.collaborators ?? []).viewers.map(
-            (rawUser: any) => {
-              return { ...parseUserSuggestion(rawUser), role: "VIEWER" };
-            }
-          ),
-        ]}
         active={isActive}
         orgSlug={currentOrgSlug}
         projectID={referenceProject?.id}

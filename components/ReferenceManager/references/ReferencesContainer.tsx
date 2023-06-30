@@ -1,20 +1,22 @@
 import { Box, Typography } from "@mui/material";
-import ReactTooltip from "react-tooltip";
 import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
+import {
+  faArrowUpFromBracket,
+  faFolderPlus,
+  faPlus,
+  faTrashXmark,
+} from "@fortawesome/pro-light-svg-icons";
 import { Fragment, useState, ReactNode, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import {
   emptyFncWithMsg,
   isEmpty,
-  isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
-import { fetchReferenceOrgProjects } from "./reference_organizer/api/fetchReferenceOrgProjects";
 import { MessageActions } from "~/redux/message";
-import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import { removeReferenceCitations } from "./api/removeReferenceCitations";
 import { StyleSheet, css } from "aphrodite";
 import { toast } from "react-toastify";
@@ -22,37 +24,31 @@ import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
-import api, { generateApiUrl } from "~/config/api";
 import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { pluralize } from "~/config/utils/misc";
+import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
+import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
+import api, { generateApiUrl } from "~/config/api";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DropdownMenu from "../menu/DropdownMenu";
 import DroppableZone from "~/components/DroppableZone";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import Link from "next/link";
+import ManageOrgModal from "~/components/Org/ManageOrgModal";
+import QuickModal from "../menu/QuickModal";
+import ReactTooltip from "react-tooltip";
 import ReferenceItemDrawer from "./reference_item/ReferenceItemDrawer";
 import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUploadDrawer";
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable from "./reference_table/ReferencesTable";
-import Button from "~/components/Form/Button";
 import withWebSocket from "~/components/withWebSocket";
-import QuickModal from "../menu/QuickModal";
-import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
-import { ID } from "~/config/types/root_types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpFromBracket,
-  faFolderPlus,
-  faPlus,
-  faTrashXmark,
-} from "@fortawesome/pro-light-svg-icons";
-
-import colors from "~/config/themes/colors";
-import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import ManageOrgModal from "~/components/Org/ManageOrgModal";
-import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
-import { pluralize } from "~/config/utils/misc";
-import Link from "next/link";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -93,15 +89,15 @@ function ReferencesContainer({
     setIsDrawerOpen: setIsRefUploadDrawerOpen,
     setProjectID: setProjectIDForUploadDrawer,
   } = useReferenceUploadDrawerContext();
-
-  const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
-  const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
   const [createdReferences, setCreatedReferences] = useState<any[]>([]);
-  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(true);
+  const [isOrgModalOpen, setIsOrgModalOpen] = useState<boolean>(false);
   const [selectedFolderIds, setSelectedFolderIds] = useState<any[]>([]);
+  const [selectedReferenceIDs, setSelectedReferenceIDs] = useState<any[]>([]);
+  const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
-  const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
   const [_loading, setLoading] = useState<boolean>(false);
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
@@ -230,6 +226,51 @@ function ReferencesContainer({
   } else {
     return (
       <>
+        <QuickModal
+          isOpen={isDeleteModalOpen}
+          modalContent={
+            <Box sx={{ marginBottom: "16px", height: "120px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "38px",
+                }}
+              >
+                <Typography id="modal-modal-title" variant="subtitle2">
+                  {`Are you sure you want to remove this folder?`}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="h6">
+                  {activeProject?.projectName}
+                </Typography>
+              </Box>
+            </Box>
+          }
+          modalWidth="300px"
+          onPrimaryButtonClick={(): void => {
+            removeReferenceProject({
+              projectID: activeProject?.projectID,
+              onSuccess: () => {
+                resetProjectsFetchTime();
+                setIsDeleteModalOpen(false);
+                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
+              },
+              onError: emptyFncWithMsg,
+            });
+          }}
+          onSecondaryButtonClick={(): void => setIsDeleteModalOpen(false)}
+          onClose={(): void => setIsDeleteModalOpen(false)}
+          primaryButtonConfig={{ label: "Delete" }}
+        />
         <ManageOrgModal
           org={currentOrg}
           isOpen={isOrgModalOpen}
@@ -323,7 +364,7 @@ function ReferencesContainer({
               >
                 <Typography variant="h5">
                   {router.query.slug ? (
-                    <Box sx={{ display: "flex" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
                       {router.query.slug.map((name, index) => {
                         const slugsTilNow = router.query.slug
                           .slice(0, index + 1)
@@ -355,6 +396,17 @@ function ReferencesContainer({
                           </div>
                         );
                       })}
+                      <DeleteForeverOutlinedIcon
+                        sx={{
+                          marginLeft: "8px",
+                          cursor: "pointer",
+                          color: colors.GREY(),
+                        }}
+                        onClick={(): void => {
+                          setIsDeleteModalOpen(true);
+                        }}
+                        fontSize="small"
+                      />
                     </Box>
                   ) : isOnOrgTab ? (
                     "Organization References"
