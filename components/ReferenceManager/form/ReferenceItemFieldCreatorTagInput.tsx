@@ -42,7 +42,7 @@ export default function ReferenceItemFieldCreatorTagInput({
         disabled={Boolean(disabled)}
         value={value}
         onChange={onChange}
-        placeHolder={"Press enter to create tags"}
+        placeHolder={"Press enter to add authors"}
       />
     </Box>
   );

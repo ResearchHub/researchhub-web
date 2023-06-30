@@ -38,7 +38,7 @@ export default function ReferenceProjectNavbarElOption({
   setShouldShowOptions,
 }: Props): ReactElement {
   const router = useRouter();
-  const { currentOrg } = getCurrentUserCurrentOrg();
+  const currentOrg = getCurrentUserCurrentOrg();
   const { resetProjectsFetchTime } = useReferenceProjectUpsertContext();
   const { activeProject } = useReferenceActiveProjectContext();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -121,34 +121,14 @@ export default function ReferenceProjectNavbarElOption({
         }}
       >
         <MenuItem
-          key="add-ref"
-          onClick={(event: MouseEvent): void => {
-            event.preventDefault();
-            onSelectAddNewReference(event);
-            handleMenuClose();
-          }}
-        >
-          {"Add a reference"}
-        </MenuItem>
-        <MenuItem
-          key="add-sub-proj"
-          onClick={(event: MouseEvent): void => {
-            event.preventDefault();
-            onSelectCreateSubProject(event);
-            handleMenuClose();
-          }}
-        >
-          {"Add a folder"}
-        </MenuItem>
-        <MenuItem
-          key="edit"
+          key="update"
           onClick={(event: MouseEvent): void => {
             event.preventDefault();
             onSelectEditProject(event);
             handleMenuClose();
           }}
         >
-          {"Edit"}
+          {"Update folder"}
         </MenuItem>
         {isCurrentUserAdmin && (
           <MenuItem

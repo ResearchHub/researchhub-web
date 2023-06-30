@@ -185,14 +185,14 @@ function ReferencesContainer({
         newReferences.splice(ind, 1);
         toast(
           <div style={{ fontSize: 16, textAlign: "center" }}>
-            Citation for <br />
+            {"Citation for "} <br />
             <br />
             <strong style={{ fontWeight: 600 }}>
               {createdCitationJson.fields.title}
             </strong>{" "}
             <br />
             <br />
-            already exists!
+            {"already exists!"}
           </div>,
           {
             position: "top-center",
@@ -354,7 +354,7 @@ function ReferencesContainer({
                         return (
                           <div>
                             <Link
-                              href={`/reference-manager/${currentOrg.slug}/${slugsTilNow}`}
+                              href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
                               className={css(
                                 styles.projectLink,
                                 isActiveProject && styles.activeProjectLink
@@ -424,7 +424,7 @@ function ReferencesContainer({
                       }
                     >
                       <Typography variant="h6" fontSize={"16px"}>
-                        {isOnOrgTab ? "Update Organization" : "Share"}
+                        {isOnOrgTab ? "Update Organization" : "Update Folder"}
                       </Typography>
                     </Button>
                   )}
@@ -468,7 +468,7 @@ function ReferencesContainer({
                           fontSize="20px"
                           style={{ marginRight: 8 }}
                         />
-                        Add a Reference
+                        {"Add a reference"}
                       </div>
                     }
                     size={"small"}
@@ -481,7 +481,7 @@ function ReferencesContainer({
                       setProjectUpsertPurpose("create_sub_project");
                       setProjectUpsertValue({
                         ...DEFAULT_PROJECT_VALUES,
-                        projectID: activeProject.projectID,
+                        projectID: activeProject?.projectID,
                       });
                       setIsProjectUpsertModalOpen(true);
                     }}

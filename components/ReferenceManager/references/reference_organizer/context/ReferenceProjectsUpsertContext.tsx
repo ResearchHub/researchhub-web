@@ -4,26 +4,27 @@ import { LookupSuggestedUser } from "~/components/ReferenceManager/form/Referenc
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import type { Context } from "react";
 
-export type UpsertPurpose = "create" | "create_sub_project" | "update";
+export type UpsertPurpose = "create" | "update";
 export type ProjectValue = {
+  children: ProjectValue[];
   collaborators: LookupSuggestedUser[];
   isPublic: boolean;
   projectID: ID;
   projectName: NullableString;
-  children: ProjectValue[];
 };
 export type ReferenceProjectsUpsertContextValueType = {
   isModalOpen: boolean;
-  projectValue: ProjectValue;
   projectsFetchTime: number;
+  projectValue: ProjectValue;
   resetContext: () => void;
+  resetProjectsFetchTime: () => void;
   setIsModalOpen: (flag: boolean) => void;
   setProjectValue: (value: ProjectValue) => void;
   setUpsertPurpose: (value: UpsertPurpose) => void;
-  resetProjectsFetchTime: () => void;
   upsertPurpose: UpsertPurpose;
 };
-export const DEFAULT_PROJECT_VALUES = {
+export const DEFAULT_PROJECT_VALUES: ProjectValue = {
+  children: [],
   collaborators: [],
   isPublic: true,
   projectID: undefined,

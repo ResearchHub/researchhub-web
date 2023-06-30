@@ -1,18 +1,15 @@
 import { Context, createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-
-// Types
-import { ProjectValue } from "./ReferenceProjectsUpsertContext";
-
-// Utils
-import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import {
   emptyFncWithMsg,
   isEmpty,
   isNullOrUndefined,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { fetchReferenceOrgProjects } from "../api/fetchReferenceOrgProjects";
+import { ProjectValue } from "./ReferenceProjectsUpsertContext";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useRouter } from "next/router";
+import { ID } from "~/config/types/root_types";
 
 export type ReferenceActiveProjectContextValueType = {
   activeProject: ProjectValue | null;
@@ -25,8 +22,12 @@ export type ReferenceActiveProjectContextValueType = {
 
 export const DEFAULT_VALUE = {
   activeProject: null,
-  setActiveProject: (): void => {},
-  // lastFetchedTime: Date.now(),
+  currentOrgProjects: [],
+  isFetchingProjects: false,
+  lastFetchedTime: 0,
+  setActiveProject: silentEmptyFnc,
+  setCurrentOrgProjects: silentEmptyFnc,
+  setIsFetchingProjects: silentEmptyFnc,
 };
 
 export const ReferenceActiveProjectContext: Context<ReferenceActiveProjectContextValueType> =
