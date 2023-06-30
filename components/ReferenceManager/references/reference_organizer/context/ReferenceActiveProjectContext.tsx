@@ -126,7 +126,6 @@ export function ReferenceActiveProjectContextProvider({ children }) {
       findAndSetActiveProjects(currentOrgProjects);
     }
   }, [activeSlugName, orgID, projectsFetchTime]);
-  console.warn("activeProject: ", activeProject);
 
   return (
     <ReferenceActiveProjectContext.Provider
