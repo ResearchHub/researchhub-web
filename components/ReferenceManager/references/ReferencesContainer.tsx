@@ -171,6 +171,7 @@ function ReferencesContainer({
 
   // NOTE: calvinhlee - Using useffect with a socket like this looks glaringly bad. Can we explore
   // if there are better solution? @lightninglu10. There's already an error that loops in log.
+
   useEffect(() => {
     if (wsResponse) {
       const newReferences = [...createdReferences];

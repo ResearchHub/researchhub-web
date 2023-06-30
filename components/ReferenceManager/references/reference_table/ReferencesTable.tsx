@@ -8,8 +8,6 @@ import {
   useGridApiRef,
 } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
-
-// Utils
 import { columnsFormat } from "./utils/referenceTableFormat";
 import { fetchCurrentUserReferenceCitations } from "../api/fetchCurrentUserReferenceCitations";
 import { formatReferenceRowData } from "./utils/formatReferenceRowData";
@@ -20,23 +18,17 @@ import {
   emptyFncWithMsg,
   isEmpty,
 } from "~/config/utils/nullchecks";
-import colors from "~/config/themes/colors";
+import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
+import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
 import { updateReferenceCitation } from "../api/updateReferenceCitation";
 import { upsertReferenceProject } from "../reference_organizer/api/upsertReferenceProject";
-import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
-
-// Effects
 import { useOrgs } from "~/components/contexts/OrganizationContext";
-import { useReferencesTableContext } from "./context/ReferencesTableContext";
 import { useReferenceActiveProjectContext } from "../reference_organizer/context/ReferenceActiveProjectContext";
-
-// Styles
-import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
-
-// Components
+import { useReferencesTableContext } from "./context/ReferencesTableContext";
 import { useReferenceTabContext } from "../reference_item/context/ReferenceItemDrawerContext";
-import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
+import colors from "~/config/themes/colors";
 import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
+import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 
 type Props = {
   createdReferences: any[];
@@ -212,12 +204,13 @@ export default function ReferencesTable({
     setReferenceTableRowData(newReferences);
   }, [createdReferences]);
 
-  const parentProject = activeProject.parent_data
+  // NOTE: calvinhlee - Please check type here @lightninglu10. Assuming parent_data doesn't exist in the type. I have a feeling it's buggy somewhere
+  const parentProject = Boolean(activeProject?.parent_data)
     ? {
-        ...activeProject.parent_data,
+        ...activeProject?.parent_data,
         parentFolder: true,
-        title: activeProject.parent_data.project_name,
-        id: `${activeProject.parent_data.id}-folder-parent`,
+        title: activeProject?.parent_data?.project_name,
+        id: `${activeProject?.parent_data?.id}-folder-parent`,
       }
     : null;
 
@@ -225,7 +218,8 @@ export default function ReferencesTable({
     ? nullthrows(
         formatReferenceRowData(
           referenceTableRowData,
-          activeProject.children?.map((child) => {
+          // NOTE: calvinhlee - Please check type here @lightninglu10. same here.
+          activeProject?.children?.map((child) => {
             return {
               ...child,
               title: child.project_name,
