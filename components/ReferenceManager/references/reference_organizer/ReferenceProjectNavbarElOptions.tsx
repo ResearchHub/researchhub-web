@@ -72,7 +72,7 @@ export default function ReferenceProjectNavbarElOption({
               }}
             >
               <Typography id="modal-modal-title" variant="subtitle2">
-                {`Are you sure you want to remove this project?`}
+                {`Are you sure you want to remove this folder?`}
               </Typography>
             </Box>
             <Box
