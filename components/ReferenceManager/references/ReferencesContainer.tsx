@@ -152,14 +152,15 @@ function ReferencesContainer({
         type: "application/pdf",
       });
 
+      const result = fetch(preSignedUrl, {
+        method: "PUT",
+        body: fileBlob,
+      });
+
       if (isDevelopment) {
         const preSignedUrlParts = preSignedUrl.split("?AWS");
         const path = preSignedUrlParts[0].split(".com/")[1];
-        const result = await fetch(preSignedUrl, {
-          method: "PUT",
-          body: fileBlob,
-        });
-
+        await result;
         const callBackResult = await fetch(
           generateApiUrl("citation_entry/upload_pdfs_callback"),
           api.POST_CONFIG({
@@ -170,12 +171,7 @@ function ReferencesContainer({
             creator_id: currentUser.id
           })
         );
-      } else {
-        const result = fetch(preSignedUrl, {
-          method: "PUT",
-          body: fileBlob,
-        });
-      }
+      };
     });
     const preload: Array<Preload> = [];
 
