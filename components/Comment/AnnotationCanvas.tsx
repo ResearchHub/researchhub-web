@@ -98,9 +98,16 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       canvasDimensions.width > 0 &&
       canvasDimensions.height > 0
     ) {
-      _drawAnchors();
+      _drawAnchors({ threadIdsToDraw: Object.keys(commentThreads.current) });
     }
-  }, [canvasDimensions, inlineComments, newAnnotation, selectedThreadId]);
+  }, [canvasDimensions, inlineComments, newAnnotation]);
+
+  // Draw anchors on canvas once canvas is ready
+  useEffect(() => {
+    if (selectedThreadId) {
+      _drawAnchors({ threadIdsToDraw: [selectedThreadId] });
+    }
+  }, [selectedThreadId]);
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -229,7 +236,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
   const replaceAnnotations = ({ annotationsToReplace }) => {
     if (annotationsToReplace.length > 0) {
-      console.log("++++");
       const newAnnotationsSortedByY = [...annotationsSortedByY];
       for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
         const annotation = newAnnotationsSortedByY[i];
@@ -403,15 +409,15 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     };
   };
 
-  const _drawAnchors = () => {
-    const threadIds = Object.keys(commentThreads.current);
+  const _drawAnchors = ({ threadIdsToDraw }) => {
+    // const startTime = performance.now();
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
 
     const orphanThreadIds: Array<ID> = [];
     let foundAnnotations: Array<Annotation> = [];
 
-    for (let i = 0; i < threadIds.length; i++) {
-      const threadId = String(threadIds[i]);
+    for (let i = 0; i < threadIdsToDraw.length; i++) {
+      const threadId = String(threadIdsToDraw[i]);
       const thread = commentThreads.current[threadId][0].thread;
       const xrange = XRange.createFromSerialized(thread.anchor) || null;
 
@@ -439,6 +445,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     }
 
     foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+
     drawAnchorsOnCanvas({
       annotations: foundAnnotations,
       canvasRef,
@@ -452,6 +459,11 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       // TODO: This may not be the best place to do this. consider another location
       setAnnotationsSortedByY(foundAnnotations);
     }
+
+    // const endTime = performance.now();
+    // const timeTaken = endTime - startTime;
+
+    // console.log(`Time taken: ${timeTaken} milliseconds.`);
   };
 
   const _displayCommentEditor = () => {
@@ -526,10 +538,10 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                   background: threadId === "new-thread" ? "none" : "white",
                   padding: 10,
                   border: threadId ? "none" : `1px solid ${colors.border}`,
-                  left: annotation.threadCoordinates.x,
-                  top: annotation.threadCoordinates.y,
+                  transform: `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`,
                   width: contextConfig.annotation.commentWidth,
                 }}
+                className={css(styles.commentThread)}
                 key={key}
               >
                 <CommentAnnotationThread
@@ -588,6 +600,9 @@ const styles = StyleSheet.create({
     left: 0,
   },
   commentSidebar: {},
+  commentThread: {
+    transition: "transform 0.7s ease",
+  },
 });
 
 export default AnnotationCanvas;

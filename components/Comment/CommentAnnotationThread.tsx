@@ -18,8 +18,6 @@ const CommentAnnotationThread = ({
   comments,
   isFocused = true,
 }: Props) => {
-  console.log("re-render");
-
   return (
     <div>
       {comments.map((comment) => (

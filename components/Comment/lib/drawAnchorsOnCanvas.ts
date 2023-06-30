@@ -15,7 +15,7 @@ const drawAnchorsOnCanvas = ({
 }: DrawProps): void => {
   // Clear previous highlights
   const ctx = canvasRef.current.getContext("2d");
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   annotations.forEach((anchor) => {
     const { anchorCoordinates } = anchor;
