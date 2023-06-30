@@ -170,7 +170,6 @@ function ReferencesContainer({
             creator_id: currentUser.id
           })
         );
-        console.log(callBackResult)
       } else {
         const result = fetch(preSignedUrl, {
           method: "PUT",
