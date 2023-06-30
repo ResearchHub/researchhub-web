@@ -39,8 +39,8 @@ export default function ReferenceProjectNavbarElOption({
 }: Props): ReactElement {
   const router = useRouter();
   const currentOrg = getCurrentUserCurrentOrg();
-  const { resetProjectsFetchTime } = useReferenceProjectUpsertContext();
-  const { activeProject } = useReferenceActiveProjectContext();
+  const { activeProject, resetProjectsFetchTime } =
+    useReferenceActiveProjectContext();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const isMenuOpen = Boolean(menuAnchorEl);

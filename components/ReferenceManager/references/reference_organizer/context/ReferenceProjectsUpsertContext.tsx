@@ -4,7 +4,7 @@ import { LookupSuggestedUser } from "~/components/ReferenceManager/form/Referenc
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import type { Context } from "react";
 
-export type UpsertPurpose = "create" | "update";
+export type UpsertPurpose = "create" | "create_sub_project" | "update";
 export type ProjectValue = {
   children: ProjectValue[];
   collaborators: LookupSuggestedUser[];
@@ -17,7 +17,6 @@ export type ReferenceProjectsUpsertContextValueType = {
   projectsFetchTime: number;
   projectValue: ProjectValue;
   resetContext: () => void;
-  resetProjectsFetchTime: () => void;
   setIsModalOpen: (flag: boolean) => void;
   setProjectValue: (value: ProjectValue) => void;
   setUpsertPurpose: (value: UpsertPurpose) => void;
@@ -36,7 +35,6 @@ export const DEFAULT_REFERENCE_PROJECT_UPSERT_CONTEXT_VALUE: ReferenceProjectsUp
     projectsFetchTime: Date.now(),
     projectValue: DEFAULT_PROJECT_VALUES,
     resetContext: silentEmptyFnc,
-    resetProjectsFetchTime: silentEmptyFnc,
     setIsModalOpen: silentEmptyFnc,
     setProjectValue: silentEmptyFnc,
     setUpsertPurpose: silentEmptyFnc,
@@ -62,7 +60,6 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
   const [projectsFetchTime, setProjectsFetchTime] = useState<number>(
     Date.now()
   );
-  const resetProjectsFetchTime = () => setProjectsFetchTime(Date.now());
   const resetContext = (): void => {
     setIsModalOpen(false);
     setProjectValue(DEFAULT_PROJECT_VALUES);
@@ -76,7 +73,6 @@ export function ReferenceProjectsUpsertContextProvider({ children }) {
         projectsFetchTime,
         projectValue,
         resetContext,
-        resetProjectsFetchTime,
         setIsModalOpen,
         setProjectValue,
         setUpsertPurpose,

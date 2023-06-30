@@ -9,6 +9,7 @@ import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent } from "react";
 import { Typography } from "@mui/material";
 import { upsertReferenceProject } from "./api/upsertReferenceProject";
+import { useReferenceActiveProjectContext } from "./context/ReferenceActiveProjectContext";
 import { useReferenceProjectUpsertContext } from "./context/ReferenceProjectsUpsertContext";
 import colors from "~/config/themes/colors";
 import DropdownMenu from "../../menu/DropdownMenu";
@@ -34,8 +35,8 @@ export default function ReferenceProjectsUpsertModal({
     resetContext,
     setProjectValue,
     upsertPurpose,
-    resetProjectsFetchTime,
   } = useReferenceProjectUpsertContext();
+  const { resetProjectsFetchTime } = useReferenceActiveProjectContext();
 
   const handleCloseModal = (event?: SyntheticEvent) => {
     onCloseModal && onCloseModal(event);
@@ -46,7 +47,7 @@ export default function ReferenceProjectsUpsertModal({
     const { collaborators, isPublic, projectID, projectName } = projectValue;
     const formattedPayload = {
       project: upsertPurpose === "update" ? projectID : undefined,
-      parent: upsertPurpose === "create" ? projectID : undefined,
+      parent: upsertPurpose === "create_sub_project" ? projectID : undefined,
       collaborators: {
         editors: filterNull(
           collaborators.map((collaborator): ID => {
@@ -65,7 +66,7 @@ export default function ReferenceProjectsUpsertModal({
       },
       is_public: isPublic,
       organization: currentOrg?.id,
-      project_name: nullthrows(projectName, "Project name may not be null"),
+      project_name: nullthrows(projectName, "Folder name may not be null"),
     };
 
     upsertReferenceProject({
@@ -81,11 +82,7 @@ export default function ReferenceProjectsUpsertModal({
   };
 
   const modalTitle =
-    upsertPurpose === "update"
-      ? "Update project"
-      : upsertPurpose === "create"
-      ? "Create a project"
-      : "Create folder";
+    upsertPurpose === "update" ? "Update folder" : "Create folder";
 
   return (
     <BaseModal
@@ -100,15 +97,11 @@ export default function ReferenceProjectsUpsertModal({
         >
           <ReferenceItemFieldInput
             formID="project-name"
-            label={
-              upsertPurpose === "create_sub_project"
-                ? "Folder name"
-                : "Project name"
-            }
+            label={"Folder name"}
             onChange={(projectName: string) => {
               setProjectValue({ ...projectValue, projectName });
             }}
-            placeholder="Enter project name"
+            placeholder="Enter folder name"
             required
             value={projectValue.projectName}
           />
@@ -225,11 +218,7 @@ export default function ReferenceProjectsUpsertModal({
               }}
             >
               <Typography fontSize="14px" fontWeight="400" color="#fff">
-                {upsertPurpose === "update"
-                  ? "Update Project"
-                  : upsertPurpose === "create"
-                  ? "Create Project"
-                  : "Create Folder"}
+                {upsertPurpose === "update" ? "Update" : "Create"}
               </Typography>
             </div>
           </div>

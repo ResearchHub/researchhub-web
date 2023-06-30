@@ -81,12 +81,10 @@ function ReferencesContainer({
   const { currentOrg, refetchOrgs } = useOrgs();
   const router = useRouter();
 
-  const { activeProject, currentOrgProjects } =
+  const { activeProject, currentOrgProjects, resetProjectsFetchTime } =
     useReferenceActiveProjectContext();
   const { setReferencesFetchTime } = useReferenceTabContext();
   const {
-    resetProjectsFetchTime,
-    projectsFetchTime,
     setIsModalOpen: setIsProjectUpsertModalOpen,
     setProjectValue: setProjectUpsertValue,
     setUpsertPurpose: setProjectUpsertPurpose,
@@ -104,16 +102,15 @@ function ReferencesContainer({
   const [isRemoveRefModalOpen, setIsRemoveRefModalOpen] =
     useState<boolean>(false);
   const [isBibModalOpen, setIsBibModalOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [_loading, setLoading] = useState<boolean>(false);
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
-  const currentOrgID = currentOrg?.id ?? null;
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
   const onOrgUpdate = (): void => {
     refetchOrgs();
     setIsOrgModalOpen(false);
   };
-  const onShareClick = (): void => {
+  const onUpdateFolderClick = (): void => {
     setProjectUpsertPurpose("update");
     setProjectUpsertValue({
       ...DEFAULT_PROJECT_VALUES,
@@ -172,6 +169,8 @@ function ReferencesContainer({
     setLoading(false);
   };
 
+  // NOTE: calvinhlee - Using useffect with a socket like this looks glaringly bad. Can we explore
+  // if there are better solution? @lightninglu10. There's already an error that loops in log.
   useEffect(() => {
     if (wsResponse) {
       const newReferences = [...createdReferences];
@@ -224,26 +223,6 @@ function ReferencesContainer({
 
     return `Are you sure you want to remove the selected items?`;
   };
-
-  // TODO: needs cleanup
-  const collaborators = [
-    ...(activeProject?.collaborators ?? { editors: [] }).editors.map(
-      (rawUser: any) => {
-        return {
-          ...parseUserSuggestion(rawUser),
-          role: "EDITOR",
-        };
-      }
-    ),
-    ...(activeProject?.collaborators ?? { viewers: [] }).viewers.map(
-      (rawUser: any) => {
-        return {
-          ...parseUserSuggestion(rawUser),
-          role: "VIEWER",
-        };
-      }
-    ),
-  ];
 
   if (!userAllowed) {
     return <Fragment />;
@@ -405,10 +384,12 @@ function ReferencesContainer({
                       horizontal
                       margin={-10}
                       imgSize={40}
-                      authorProfiles={collaborators.map((collaborator) => {
-                        collaborator.authorProfile.user = collaborator;
-                        return collaborator.authorProfile;
-                      })}
+                      authorProfiles={activeProject?.collaborators.map(
+                        (collaborator) => {
+                          collaborator.authorProfile.user = collaborator;
+                          return collaborator.authorProfile;
+                        }
+                      )}
                     />
                   )}
                   {(isOnOrgTab || !isEmpty(router.query.slug)) && (
@@ -420,11 +401,11 @@ function ReferencesContainer({
                       onClick={
                         isOnOrgTab
                           ? () => setIsOrgModalOpen(true)
-                          : onShareClick
+                          : onUpdateFolderClick
                       }
                     >
                       <Typography variant="h6" fontSize={"16px"}>
-                        {isOnOrgTab ? "Update Organization" : "Update Folder"}
+                        {isOnOrgTab ? "Update organization" : "Update folder"}
                       </Typography>
                     </Button>
                   )}
@@ -492,7 +473,7 @@ function ReferencesContainer({
                       fontSize="20px"
                       style={{ marginRight: 8 }}
                     />
-                    Create Folder
+                    {"Create a sub-folder"}
                   </div>
                   {(!isEmpty(selectedReferenceIDs) ||
                     !isEmpty(selectedFolderIds)) && (
