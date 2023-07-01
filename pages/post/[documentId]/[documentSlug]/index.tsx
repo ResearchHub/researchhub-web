@@ -27,7 +27,7 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import AnnotationCanvas from "~/components/Comment/AnnotationCanvas";
+import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {
@@ -162,7 +162,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                 </div>
               ) : (
                 <div style={{ position: "relative" }}>
-                  <AnnotationCanvas
+                  <AnnotationLayer
                     document={document}
                     relativeRef={contentRef}
                   />
