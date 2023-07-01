@@ -128,16 +128,16 @@ export type Comment = {
 export const createAnnotation = ({
   serializedAnchorPosition,
   xrange,
-  canvasEl,
+  relativeEl,
   threadId,
 }: {
   xrange: any;
-  canvasEl?: any;
+  relativeEl?: any;
   threadId?: string | "new-annotation";
   serializedAnchorPosition?: SerializedAnchorPosition;
 }): Annotation => {
   const highlightCoords = xrange.getCoordinates({
-    relativeEl: canvasEl,
+    relativeEl: relativeEl,
   });
 
   return {

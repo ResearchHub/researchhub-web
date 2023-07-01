@@ -37,11 +37,69 @@ interface Props {
   document: GenericDocument;
 }
 
+const AnnotationComponent = ({
+  annotation,
+  focused,
+  handleClick,
+}: {
+  annotation: Annotation;
+  focused: boolean;
+  handleClick: Function;
+}) => {
+  const [canvasRefs, setCanvasRefs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const refs = annotation.anchorCoordinates.map(() =>
+      createRef<HTMLCanvasElement>()
+    );
+    setCanvasRefs(refs);
+  }, []);
+
+  useEffect(() => {
+    canvasRefs.forEach((canvasRef, i) => {
+      const ctx = canvasRef.current.getContext("2d");
+
+      if (ctx) {
+        const { anchorCoordinates } = annotation;
+        const { x, y, width, height } = anchorCoordinates[i];
+        canvasRef.current.width = width;
+        canvasRef.current.height = height;
+        // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        if (focused) {
+          ctx.fillStyle = colors.annotation.selected;
+        } else {
+          ctx.fillStyle = colors.annotation.unselected;
+        }
+
+        ctx.fillRect(0, 0, width, height);
+      }
+    });
+  }, [canvasRefs, focused]);
+
+  return (
+    <>
+      {canvasRefs.map((canvasRef, i) => (
+        <canvas
+          onClick={() => handleClick(annotation.threadId)}
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            // background: "yellow",
+            top: annotation.anchorCoordinates[0].y,
+            left: annotation.anchorCoordinates[0].x,
+          }}
+        />
+      ))}
+    </>
+  );
+};
+
 const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Anchors (e.g. highlights) will be rendered on top of this canvas
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Sorted List of annotations sorted by order of appearance on the page
   const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
@@ -62,10 +120,10 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   const [selectedThreadId, setSelectedThreadId] = useState<
     ID | "new-annotation" | null
   >(null);
-  const [canvasDimensions, setCanvasDimensions] = useState<{
-    width: number;
-    height: number;
-  }>({ width: 0, height: 0 });
+  // const [canvasDimensions, setCanvasDimensions] = useState<{
+  //   width: number;
+  //   height: number;
+  // }>({ width: 0, height: 0 });
   const newThreadRef = useRef<any | null>(null);
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [key: string]: Array<CommentModel> }>({});
@@ -89,25 +147,29 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     commentThreads.current = groupBy(inlineComments, (c: CommentModel) =>
       String(c.thread.id)
     );
+
+    createAndSortAnnotations({
+      threadIdsToDraw: Object.keys(commentThreads.current),
+    });
   }, [inlineComments]);
 
   // Draw anchors on canvas once canvas is ready
-  useEffect(() => {
-    if (
-      (inlineComments.length > 0 || newAnnotation) &&
-      canvasDimensions.width > 0 &&
-      canvasDimensions.height > 0
-    ) {
-      _drawAnchors({ threadIdsToDraw: Object.keys(commentThreads.current) });
-    }
-  }, [canvasDimensions, inlineComments, newAnnotation]);
+  // useEffect(() => {
+  //   if (
+  //     (inlineComments.length > 0 || newAnnotation) &&
+  //     canvasDimensions.width > 0 &&
+  //     canvasDimensions.height > 0
+  //   ) {
+  //     _drawAnchors({ threadIdsToDraw: Object.keys(commentThreads.current) });
+  //   }
+  // }, [canvasDimensions, inlineComments, newAnnotation]);
 
   // Draw anchors on canvas once canvas is ready
-  useEffect(() => {
-    if (selectedThreadId) {
-      _drawAnchors({ threadIdsToDraw: [selectedThreadId] });
-    }
-  }, [selectedThreadId]);
+  // useEffect(() => {
+  //   if (selectedThreadId) {
+  //     _drawAnchors({ threadIdsToDraw: [selectedThreadId] });
+  //   }
+  // }, [selectedThreadId]);
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -167,72 +229,72 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   // in the content layer beneath. As a result, we can't detect click events on the canvas so
   // we need to detect click events on the content layer and compare to the canvas highlight coordinates to
   // see if there is a match.
-  useEffect(() => {
-    const handleClick = (event): void => {
-      const rect = canvasRef!.current!.getBoundingClientRect();
-      const clickedX = event.clientX - rect.left;
-      const clickedY = event.clientY - rect.top;
+  // useEffect(() => {
+  //   const handleClick = (event): void => {
+  //     const rect = canvasRef!.current!.getBoundingClientRect();
+  //     const clickedX = event.clientX - rect.left;
+  //     const clickedY = event.clientY - rect.top;
 
-      let selectedAnnotation: Annotation | null = null;
-      for (let i = 0; i < annotationsSortedByY.length; i++) {
-        const { anchorCoordinates } = annotationsSortedByY[i];
+  //     let selectedAnnotation: Annotation | null = null;
+  //     for (let i = 0; i < annotationsSortedByY.length; i++) {
+  //       const { anchorCoordinates } = annotationsSortedByY[i];
 
-        const isAnchorClicked = anchorCoordinates.some(
-          ({ x, y, width, height }) => {
-            return (
-              clickedX >= x &&
-              clickedX <= x + width &&
-              clickedY >= y &&
-              clickedY <= y + height
-            );
-          }
-        );
+  //       const isAnchorClicked = anchorCoordinates.some(
+  //         ({ x, y, width, height }) => {
+  //           return (
+  //             clickedX >= x &&
+  //             clickedX <= x + width &&
+  //             clickedY >= y &&
+  //             clickedY <= y + height
+  //           );
+  //         }
+  //       );
 
-        if (isAnchorClicked) {
-          selectedAnnotation = annotationsSortedByY[i];
-          continue;
-        }
-      }
+  //       if (isAnchorClicked) {
+  //         selectedAnnotation = annotationsSortedByY[i];
+  //         continue;
+  //       }
+  //     }
 
-      if (selectedAnnotation) {
-        setSelectedThreadId(selectedAnnotation.threadId);
-      } else {
-        // Selected dismissed.
-        setSelectedThreadId(null);
-      }
-    };
+  //     if (selectedAnnotation) {
+  //       setSelectedThreadId(selectedAnnotation.threadId);
+  //     } else {
+  //       // Selected dismissed.
+  //       setSelectedThreadId(null);
+  //     }
+  //   };
 
-    const contentEl = relativeRef.current;
-    const canvasEl = canvasRef.current;
-    if (contentEl && canvasEl) {
-      window.addEventListener("click", handleClick);
-    }
+  //   const contentEl = relativeRef.current;
+  //   const canvasEl = canvasRef.current;
+  //   if (contentEl && canvasEl) {
+  //     window.addEventListener("click", handleClick);
+  //   }
 
-    return () => {
-      if (contentEl && canvasEl) {
-        window.removeEventListener("click", handleClick);
-      }
-    };
-  }, [relativeRef, canvasRef, annotationsSortedByY]);
+  //   return () => {
+  //     if (contentEl && canvasEl) {
+  //       window.removeEventListener("click", handleClick);
+  //     }
+  //   };
+  // }, [relativeRef, canvasRef, annotationsSortedByY]);
 
   // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
   // and redraw the highlights in the correct position.
-  useEffect(() => {
-    if (canvasRef.current && relativeRef.current) {
-      const observer = new ResizeObserver(() => {
-        canvasRef!.current!.width = relativeRef.current.offsetWidth;
-        canvasRef!.current!.height = relativeRef.current.offsetHeight;
-        setCanvasDimensions({
-          width: canvasRef!.current!.width,
-          height: canvasRef!.current!.height,
-        });
-      });
+  // useEffect(() => {
+  //   if (canvasRef.current && relativeRef.current) {
+  //     const observer = new ResizeObserver(() => {
+  //       canvasRef!.current!.width = relativeRef.current.offsetWidth;
+  //       canvasRef!.current!.height = relativeRef.current.offsetHeight;
+  //       setCanvasDimensions({
+  //         width: canvasRef!.current!.width,
+  //         height: canvasRef!.current!.height,
+  //       });
+  //     });
 
-      observer.observe(relativeRef.current);
+  //     observer.observe(relativeRef.current);
 
-      return () => observer.disconnect();
-    }
-  }, [relativeRef, canvasRef]);
+  //     return () => observer.disconnect();
+  //   }
+  // }, [relativeRef, canvasRef]);
 
   const replaceAnnotations = ({ annotationsToReplace }) => {
     if (annotationsToReplace.length > 0) {
@@ -294,6 +356,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     // If focal point exists, we want to add a constraint that it is positioned right next to its anchor.
     if (focalPoint) {
       focalPoint.threadCoordinates.y = focalPoint.anchorCoordinates[0].y;
+      focalPoint.threadCoordinates.x = -SELECTED_THREAD_X_OFFSET;
     }
 
     const afterFocalPoint = annotationsSortedByY.slice(focalPointIndex + 1);
@@ -331,6 +394,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
             // has correct value.
             focalPointAndBefore[i - 1].threadCoordinates.y = prevThreadNewPosY;
+            focalPointAndBefore[i - 1].threadCoordinates.x = 0;
 
             repositioned.push({
               ...prevAnnotation,
@@ -379,6 +443,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
             // has correct value.
             focalPointAndAfter[i + 1].threadCoordinates.y = nextThreadNewPosY;
+            focalPointAndAfter[i + 1].threadCoordinates.x = 0;
 
             repositioned.push({
               ...nextAnnotation,
@@ -409,6 +474,63 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     };
   };
 
+  const createAndSortAnnotations = ({ threadIdsToDraw }) => {
+    // const startTime = performance.now();
+    console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
+
+    const orphanThreadIds: Array<ID> = [];
+    let foundAnnotations: Array<Annotation> = [];
+
+    for (let i = 0; i < threadIdsToDraw.length; i++) {
+      const threadId = String(threadIdsToDraw[i]);
+      const thread = commentThreads.current[threadId][0].thread;
+      const xrange = XRange.createFromSerialized(thread.anchor) || null;
+
+      if (!xrange) {
+        console.log(
+          "[Annotation] No xrange found for thread. Orphan thread is:",
+          thread
+        );
+        orphanThreadIds.push(threadId);
+        continue;
+      }
+
+      const annotation = createAnnotation({
+        xrange,
+        threadId,
+        relativeEl: relativeRef.current,
+        serializedAnchorPosition: thread.anchor || undefined,
+      });
+
+      foundAnnotations.push(annotation);
+    }
+
+    if (newAnnotation) {
+      foundAnnotations.push(newAnnotation);
+    }
+
+    foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+
+    // drawAnchorsOnCanvas({
+    //   annotations: foundAnnotations,
+    //   canvasRef,
+    //   selectedThreadId,
+    // });
+
+    setOrphanThreadIds(orphanThreadIds);
+
+    if (!annotationsSortedByY.length) {
+      // Setting annotation only on first draw, when none exist
+      // TODO: This may not be the best place to do this. consider another location
+      setAnnotationsSortedByY(foundAnnotations);
+    }
+
+    // const endTime = performance.now();
+    // const timeTaken = endTime - startTime;
+
+    // console.log(`Time taken: ${timeTaken} milliseconds.`);
+  };
+
   const _drawAnchors = ({ threadIdsToDraw }) => {
     // const startTime = performance.now();
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
@@ -433,7 +555,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       const annotation = createAnnotation({
         xrange,
         threadId,
-        canvasEl: canvasRef.current,
+        relativeEl: relativeRef.current,
         serializedAnchorPosition: thread.anchor || undefined,
       });
 
@@ -446,11 +568,11 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
     foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
 
-    drawAnchorsOnCanvas({
-      annotations: foundAnnotations,
-      canvasRef,
-      selectedThreadId,
-    });
+    // drawAnchorsOnCanvas({
+    //   annotations: foundAnnotations,
+    //   canvasRef,
+    //   selectedThreadId,
+    // });
 
     setOrphanThreadIds(orphanThreadIds);
 
@@ -474,7 +596,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     const newAnnotation = createAnnotation({
       xrange: selectionXRange,
       threadId: "new-thread",
-      canvasEl: canvasRef.current,
+      relativeEl: relativeRef.current,
     });
 
     setNewAnnotation(newAnnotation);
@@ -483,14 +605,22 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
 
-  const AnnotationCanvas = useMemo(() => {
-    return (
-      <canvas ref={canvasRef} id="overlay" className={css(styles.canvas)} />
-    );
-  }, []);
-
+  // const AnnotationCanvas = useMemo(() => {
+  //   return (
+  //     <canvas ref={canvasRef} id="overlay" className={css(styles.canvas)} />
+  //   );
+  // }, []);
+  console.log("annotationsSortedByY", annotationsSortedByY);
   return (
-    <div>
+    <div style={{ position: "relative" }}>
+      {annotationsSortedByY.map((annotation) => (
+        <AnnotationComponent
+          key={`annotation-${annotation.threadId}`}
+          annotation={annotation}
+          focused={selectedThreadId === annotation.threadId}
+          handleClick={(threadId) => setSelectedThreadId(threadId)}
+        />
+      ))}
       <CommentTreeContext.Provider
         value={{
           sort: sortOpts[0].value,
@@ -586,7 +716,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             );
           })}
         </div>
-        {AnnotationCanvas}
+        {/* {AnnotationCanvas} */}
       </CommentTreeContext.Provider>
     </div>
   );
