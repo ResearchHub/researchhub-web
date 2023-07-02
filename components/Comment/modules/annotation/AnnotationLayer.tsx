@@ -52,12 +52,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     ref: relativeRef,
   });
 
-  const [newAnnotation, setNewAnnotation] = useState<AnnotationType | null>(
-    null
-  );
-  const [selectedThreadId, setSelectedThreadId] = useState<
-    ID | "new-annotation" | null
-  >(null);
+  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   // const [canvasDimensions, setCanvasDimensions] = useState<{
   //   width: number;
   //   height: number;
@@ -123,7 +118,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     });
 
     threadRefs.forEach((t) => {
-      console.log("setting up observer");
       if (t.current) {
         resizeObserver.observe(t.current);
       }
@@ -316,10 +310,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       foundAnnotations.push(annotation);
     }
 
-    if (newAnnotation) {
-      foundAnnotations.push(newAnnotation);
-    }
-
     foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
 
     // drawAnchorsOnCanvas({
@@ -399,29 +389,31 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   //   // console.log(`Time taken: ${timeTaken} milliseconds.`);
   // };
 
-  const _displayCommentEditor = () => {
+  const createNewAnnotation = () => {
     if (!selectionXRange) {
       return console.error("No selected range. This should not happen.");
     }
 
     const newAnnotation = createAnnotation({
       xrange: selectionXRange,
-      threadId: "new-thread",
       relativeEl: relativeRef.current,
+      isNew: true,
     });
 
-    setNewAnnotation(newAnnotation);
+    const _annotationsSortedByY = _sortAnnotationsByAppearanceInPage([
+      ...annotationsSortedByY,
+      newAnnotation,
+    ]);
+    setSelectedThreadId(newAnnotation.threadId);
+    setAnnotationsSortedByY(_annotationsSortedByY);
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
 
-  // const AnnotationCanvas = useMemo(() => {
-  //   return (
-  //     <canvas ref={canvasRef} id="overlay" className={css(styles.canvas)} />
-  //   );
-  // }, []);
-  console.log("annotationsSortedByY", annotationsSortedByY);
+  // console.log('annotationsSortedByY', annotationsSortedByY)
+  // console.log('threadRefs', threadRefs)
+
   return (
     <div style={{ position: "relative" }}>
       {annotationsSortedByY.map((annotation) => (
@@ -457,7 +449,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             }}
           >
             <TextSelectionMenu
-              onCommentClick={_displayCommentEditor}
+              onCommentClick={createNewAnnotation}
               onLinkClick={undefined}
             />
           </div>
@@ -468,7 +460,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         >
           {annotationsSortedByY.map((annotation, idx) => {
             const threadId = String(annotation.threadId);
-            const key = `thread-` + threadId || "new-thread";
+            const key = `thread-` + threadId;
 
             return (
               <div
@@ -476,7 +468,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                 ref={threadRefs[idx]}
                 style={{
                   position: "absolute",
-                  background: threadId === "new-thread" ? "none" : "white",
+                  background: annotation.isNew ? "none" : "white",
                   padding: 10,
                   border: threadId ? "none" : `1px solid ${colors.border}`,
                   transform: `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`,
@@ -492,7 +484,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                   comments={commentThreads.current[threadId] || []}
                   isFocused={selectedThreadId === threadId}
                 />
-                {threadId === "new-thread" && (
+                {annotation.isNew && (
                   <CommentEditor
                     editorId="new-inline-comment"
                     handleSubmit={async (props) => {

@@ -1,6 +1,9 @@
+import { genClientId } from "~/config/utils/id";
+
 export type Annotation = {
   threadId: string | "new-annotation";
   serialized: SerializedAnchorPosition;
+  isNew: boolean;
   anchorCoordinates: Array<{
     x: number;
     y: number;
@@ -30,10 +33,12 @@ export const createAnnotation = ({
   xrange,
   relativeEl,
   threadId,
+  isNew = false,
 }: {
   xrange: any;
+  isNew?: boolean;
   relativeEl?: any;
-  threadId?: string | "new-annotation";
+  threadId?: string;
   serializedAnchorPosition?: SerializedAnchorPosition;
 }): Annotation => {
   const highlightCoords = xrange.getCoordinates({
@@ -41,9 +46,10 @@ export const createAnnotation = ({
   });
 
   return {
-    threadId: threadId || "new-annotation",
+    threadId: threadId || `new-annotation-${genClientId()}`,
     serialized: xrange.serialize() || serializedAnchorPosition,
     anchorCoordinates: highlightCoords,
+    isNew,
     threadCoordinates: {
       x: 0,
       y: highlightCoords[0].y, // Initial position on first render before adjustment

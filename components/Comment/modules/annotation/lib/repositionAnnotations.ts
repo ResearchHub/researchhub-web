@@ -13,29 +13,27 @@ const repositionAnnotations = ({
   const SELECTED_THREAD_X_OFFSET = 30;
   const MIN_SPACE_BETWEEN_THREAD = 15; // Threads will be at least this distance apart
 
+  const _annotationsSortedByY = [...annotationsSortedByY];
   const focalPointIndex = annotationsSortedByY.findIndex(
-    (pos) =>
-      pos.threadId === selectedThreadId || pos.threadId === "new-annotation"
+    (_annotation) => _annotation.threadId === selectedThreadId
   );
 
   const repositioned: Array<AnnotationType> = []; // Keep track of threads that have been repositioned.
-  const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
+  // const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
   const focalPoint =
     focalPointIndex >= 0 ? { ...annotationsSortedByY[focalPointIndex] } : null;
 
   // If focal point exists, we want to add a constraint that it is positioned right next to its anchor.
   if (focalPoint) {
-    focalPoint.threadCoordinates.y = focalPoint.anchorCoordinates[0].y;
-    focalPoint.threadCoordinates.x = -SELECTED_THREAD_X_OFFSET;
+    _annotationsSortedByY[focalPointIndex].threadCoordinates.y =
+      focalPoint.anchorCoordinates[0].y;
+    _annotationsSortedByY[focalPointIndex].threadCoordinates.x =
+      -SELECTED_THREAD_X_OFFSET;
   }
 
-  const afterFocalPoint = annotationsSortedByY.slice(focalPointIndex + 1);
-  const focalPointAndBefore = [...beforeFocalPoint].concat(
-    focalPoint ? [focalPoint] : []
-  );
-  for (let i = focalPointAndBefore.length - 1; i >= 0; i--) {
-    const annotation = focalPointAndBefore[i];
-    const prevAnnotation = focalPointAndBefore[i - 1];
+  for (let i = focalPointIndex; i >= 0; i--) {
+    const annotation = _annotationsSortedByY[i];
+    const prevAnnotation = _annotationsSortedByY[i - 1];
     const threadRef = threadRefs[i];
     const prevThreadRef = threadRefs[i - 1];
 
@@ -63,8 +61,8 @@ const repositionAnnotations = ({
 
           // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
           // has correct value.
-          focalPointAndBefore[i - 1].threadCoordinates.y = prevThreadNewPosY;
-          focalPointAndBefore[i - 1].threadCoordinates.x = 0;
+          _annotationsSortedByY[i - 1].threadCoordinates.y = prevThreadNewPosY;
+          _annotationsSortedByY[i - 1].threadCoordinates.x = 0;
 
           repositioned.push({
             ...prevAnnotation,
@@ -78,18 +76,26 @@ const repositionAnnotations = ({
     }
   }
 
-  const focalPointAndAfter = (focalPoint ? [focalPoint] : []).concat([
-    ...afterFocalPoint,
-  ]);
-  for (let i = 0; i < focalPointAndAfter.length - 1; i++) {
-    const annotation = focalPointAndAfter[i];
-    const nextAnnotation = focalPointAndAfter[i + 1];
+  for (let i = focalPointIndex; i < _annotationsSortedByY.length - 1; i++) {
+    const annotation = _annotationsSortedByY[i];
+    const nextAnnotation = _annotationsSortedByY[i + 1];
     const threadRef = threadRefs[i];
     const nextThreadRef = threadRefs[i + 1];
 
     if (nextThreadRef?.current && threadRef?.current) {
       const currentRect = threadRef.current.getBoundingClientRect();
       const nextRectTop = nextAnnotation.threadCoordinates.y;
+
+      // console.log('--------------------------------------------------------------')
+      // console.log('i', i)
+      // console.log('threadRefs', threadRefs)
+      // console.log('focusPointAndAfter', _annotationsSortedByY)
+      // console.log('threadRef', threadRef)
+      // console.log('current thread:', annotation.serialized.textContent)
+      // console.log("annotation.threadCoordinates.y:", annotation.threadCoordinates.y)
+      // console.log("currentRect.height:", currentRect.height)
+      // console.log('nextRectTop:', nextRectTop)
+      // console.log('next thread:', nextAnnotation.serialized.textContent)
 
       if (
         nextRectTop <
@@ -102,18 +108,10 @@ const repositionAnnotations = ({
           currentRect.height +
           MIN_SPACE_BETWEEN_THREAD;
         if (nextAnnotation.threadCoordinates.y !== nextThreadNewPosY) {
-          // console.log("annotation.threadCoordinates.y", annotation.threadCoordinates.y)
-          // console.log('nextRectTop', nextRectTop)
-          // console.log("currentRect.height", currentRect.height)
-          // console.log("MIN_SPACE_BETWEEN_THREAD", MIN_SPACE_BETWEEN_THREAD)
-          // console.log(
-          //   `Updating [After] Position of thread from ${nextAnnotation.threadCoordinates.y} to: ${nextThreadNewPosY}`
-          // );
-
           // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
           // has correct value.
-          focalPointAndAfter[i + 1].threadCoordinates.y = nextThreadNewPosY;
-          focalPointAndAfter[i + 1].threadCoordinates.x = 0;
+          _annotationsSortedByY[i + 1].threadCoordinates.y = nextThreadNewPosY;
+          _annotationsSortedByY[i + 1].threadCoordinates.x = 0;
 
           repositioned.push({
             ...nextAnnotation,
