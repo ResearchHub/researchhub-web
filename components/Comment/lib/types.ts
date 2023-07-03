@@ -37,6 +37,12 @@ export enum COMMENT_CONTEXTS {
   FEED = "FEED",
 }
 
+export type CommentThreadGroup = {
+  threadId: string;
+  thread: CommentThread;
+  comments: Comment[];
+};
+
 export type CommentThread = {
   id: ID;
   threadType: COMMENT_TYPES;
@@ -113,4 +119,24 @@ export const parseComment = ({
   parsed.bounties = parseBountyList(raw.bounties || [], relatedItem);
 
   return parsed;
+};
+
+export const groupByThread = (
+  comments: Comment[]
+): { [threadId: string]: CommentThreadGroup } => {
+  const threadGroups: { [threadId: string]: CommentThreadGroup } = {};
+  comments.forEach((c) => {
+    if (c.thread.id) {
+      if (!threadGroups[c.thread.id]) {
+        threadGroups[c.thread.id] = {
+          thread: c.thread,
+          comments: [],
+          threadId: String(c.thread.id),
+        };
+      }
+      threadGroups[String(c.thread.id)].comments.push(c);
+    }
+  });
+
+  return threadGroups;
 };

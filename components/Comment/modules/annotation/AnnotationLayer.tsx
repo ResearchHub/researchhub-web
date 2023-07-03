@@ -2,10 +2,12 @@ import { StyleSheet, css } from "aphrodite";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import {
   Comment as CommentModel,
+  CommentThreadGroup,
   parseComment,
   COMMENT_FILTERS,
   COMMENT_TYPES,
   COMMENT_CONTEXTS,
+  groupByThread,
 } from "../../lib/types";
 import { createAnnotation, Annotation as AnnotationType } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
@@ -20,10 +22,9 @@ import { captureEvent } from "~/config/utils/events";
 import { CommentTreeContext } from "../../lib/contexts";
 import { sortOpts } from "../../lib/options";
 import CommentAnnotationThread from "../../CommentAnnotationThread";
-import groupBy from "lodash/groupBy";
-import { ID } from "~/config/types/root_types";
 import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
+import differenceWith from "lodash/differenceWith";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -39,7 +40,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   >([]);
 
   // Orphans are annotations that could not be found on page
-  const [orphanThreadIds, setOrphanThreadIds] = useState<ID[]>([]);
+  const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
 
   // The XRange position of the selected text. Holds the serialized DOM position.
   const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
@@ -49,7 +50,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
-  const commentThreads = useRef<{ [key: string]: Array<CommentModel> }>({});
+  const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
 
   // Fetch comments from API
@@ -68,13 +69,19 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   }, []);
 
   useEffect(() => {
-    commentThreads.current = groupBy(inlineComments, (c: CommentModel) =>
-      String(c.thread.id)
+    // const diff = inlineComments.filter(left => !prevInlineComments.current.some(right => left.id === right.id));
+    const _commentThreads = groupByThread(inlineComments);
+    commentThreads.current = _commentThreads;
+
+    const { foundAnnotations, orphanThreadIds } = _createAnnotationsFromThreads(
+      {
+        threads: _commentThreads,
+      }
     );
 
-    _createAndSortAnnotations({
-      threadIdsToDraw: Object.keys(commentThreads.current),
-    });
+    setOrphanThreadIds(orphanThreadIds);
+    const sorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+    setAnnotationsSortedByY(sorted);
   }, [inlineComments]);
 
   // Observe dimension changes for each of the threads.
@@ -107,7 +114,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   }, [threadRefs]);
 
   useEffect(() => {
-    console.log("%c Creating refs", "color: green");
+    console.log("%c Creating refs1", "color: green");
     console.log("annotationsSortedByY.length", annotationsSortedByY.length);
     setThreadRefs((refs) =>
       Array(annotationsSortedByY.length)
@@ -117,9 +124,18 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   }, [annotationsSortedByY.length]);
 
   useEffect(() => {
+    const repositioned = repositionAnnotations({
+      annotationsSortedByY: annotationsSortedByY,
+      selectedThreadId,
+      threadRefs,
+    });
+
+    _replaceAnnotations({ annotationsToReplace: repositioned });
+  }, [selectedThreadId]);
+
+  useEffect(() => {
     const _handleClick = (event) => {
       const relativeRefRect = relativeRef!.current!.getBoundingClientRect();
-      // const menuRect = textSelectionMenuRef.current!.getBoundingClientRect();
       const relativeClickX = event.clientX - relativeRefRect.left;
       const relativeClickY = event.clientY - relativeRefRect.top;
       const clickX = event.clientX;
@@ -226,45 +242,53 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     };
   };
 
-  const _createAndSortAnnotations = ({ threadIdsToDraw }) => {
+  const _createAnnotationsFromThreads = ({
+    threads,
+  }: {
+    threads: { [key: string]: CommentThreadGroup };
+  }): {
+    orphanThreadIds: Array<string>;
+    foundAnnotations: Array<AnnotationType>;
+  } => {
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
 
-    const orphanThreadIds: Array<ID> = [];
-    let foundAnnotations: Array<AnnotationType> = [];
+    const orphanThreadIds: Array<string> = [];
+    const foundAnnotations: Array<AnnotationType> = [];
 
-    for (let i = 0; i < threadIdsToDraw.length; i++) {
-      const threadId = String(threadIdsToDraw[i]);
-      const thread = commentThreads.current[threadId][0].thread;
-      const xrange = XRange.createFromSerialized(thread.anchor) || null;
+    Object.values(threads).forEach((threadGroup) => {
+      const existingAnnotation = annotationsSortedByY.find(
+        (annotation) => annotation.threadId === threadGroup.threadId
+      );
 
-      if (!xrange) {
-        console.log(
-          "[Annotation] No xrange found for thread. Orphan thread is:",
-          thread
-        );
-        orphanThreadIds.push(threadId);
-        continue;
+      if (existingAnnotation) {
+        foundAnnotations.push(existingAnnotation);
+        return;
       }
 
-      const annotation = createAnnotation({
-        xrange,
-        threadId,
-        relativeEl: relativeRef.current,
-        serializedAnchorPosition: thread.anchor || undefined,
-      });
+      const xrange = XRange.createFromSerialized(threadGroup.thread.anchor);
 
-      foundAnnotations.push(annotation);
-    }
+      if (xrange) {
+        const annotation = createAnnotation({
+          xrange,
+          threadId: threadGroup.threadId,
+          relativeEl: relativeRef.current,
+          serializedAnchorPosition: threadGroup.thread.anchor || undefined,
+        });
 
-    foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+        foundAnnotations.push(annotation);
+      } else {
+        console.log(
+          "[Annotation] No xrange found for thread. Orphan thread is:",
+          threadGroup.thread
+        );
+        orphanThreadIds.push(threadGroup.threadId);
+      }
+    });
 
-    setOrphanThreadIds(orphanThreadIds);
-
-    if (!annotationsSortedByY.length) {
-      // Setting annotation only on first draw, when none exist
-      // TODO: This may not be the best place to do this. consider another location
-      setAnnotationsSortedByY(foundAnnotations);
-    }
+    return {
+      orphanThreadIds,
+      foundAnnotations,
+    };
   };
 
   const _createNewAnnotation = (e) => {
@@ -289,8 +313,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     resetSelectedPos();
   };
 
-  const _handleCancelComment = ({ threadId, event }) => {
-    // setSelectedThreadId(null);
+  const _handleCancelThread = ({ threadId, event }) => {
     setAnnotationsSortedByY((prevAnnotations) => {
       return prevAnnotations.filter(
         (annotation) => annotation.threadId !== threadId
@@ -298,7 +321,55 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     });
   };
 
-  // console.log('annotationsSortedByY', annotationsSortedByY)
+  const _handleCreateThread = async ({
+    annotation,
+    commentProps,
+  }: {
+    annotation: AnnotationType;
+    commentProps: any;
+  }) => {
+    try {
+      const comment = await createCommentAPI({
+        ...commentProps,
+        documentId: doc.id,
+        documentType: doc.apiDocumentType,
+        commentType: COMMENT_TYPES.ANNOTATION,
+        anchor: {
+          type: "text",
+          position: annotation.xrange!.serialize(),
+        },
+      });
+
+      setAnnotationsSortedByY((prevAnnotations) => {
+        return prevAnnotations.filter(
+          (_annotation) => _annotation.threadId !== annotation.threadId
+        );
+      });
+
+      _onCreate({ comment, clientId: annotation.threadId });
+    } catch (error) {
+      captureEvent({
+        msg: "Failed to create inline comment",
+        data: {
+          document,
+          error,
+          annotation,
+        },
+      });
+    }
+  };
+
+  const _onCreate = ({
+    comment,
+    clientId,
+  }: {
+    comment: CommentModel;
+    clientId: string;
+  }) => {
+    setInlineComments([...inlineComments, comment]);
+  };
+
+  console.log("annotationsSortedByY", annotationsSortedByY);
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
@@ -375,39 +446,19 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                   key={`${key}-thread`}
                   document={doc}
                   threadId={threadId}
-                  comments={commentThreads.current[threadId] || []}
+                  comments={commentThreads?.current[threadId]?.comments || []}
                   isFocused={isFocused}
                 />
                 {annotation.isNew && (
                   <CommentEditor
                     handleCancel={(event) =>
-                      _handleCancelComment({ threadId, event })
+                      _handleCancelThread({ threadId, event })
                     }
                     editorStyleOverride={styles.commentEditor}
                     editorId={`${key}-editor`}
-                    handleSubmit={async (props) => {
-                      try {
-                        const comment = await createCommentAPI({
-                          ...props,
-                          documentId: doc.id,
-                          documentType: doc.apiDocumentType,
-                          commentType: COMMENT_TYPES.ANNOTATION,
-                          anchor: {
-                            type: "text",
-                            position: annotation.xrange!.serialize(),
-                          },
-                        });
-                      } catch (error) {
-                        captureEvent({
-                          msg: "Failed to create inline comment",
-                          data: {
-                            document,
-                            error,
-                            annotation,
-                          },
-                        });
-                      }
-                    }}
+                    handleSubmit={(commentProps) =>
+                      _handleCreateThread({ annotation, commentProps })
+                    }
                   />
                 )}
               </div>

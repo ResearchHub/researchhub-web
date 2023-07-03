@@ -4,19 +4,14 @@ import {
   RhDocumentType,
   parseUser,
 } from "~/config/types/root_types";
-import {
-  Comment,
-  parseComment,
-  COMMENT_TYPES,
-  PositionAnchor,
-  COMMENT_FILTERS,
-} from "./types";
+import { Comment, parseComment, COMMENT_TYPES, COMMENT_FILTERS } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import config from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
 import uniqBy from "lodash/uniqBy";
+import { SerializedAnchorPosition } from "../modules/annotation/lib/types";
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -119,7 +114,7 @@ export const createCommentAPI = async ({
   parentComment?: Comment;
   bountyAmount?: number;
   mentions?: Array<string>;
-  anchor?: null | PositionAnchor;
+  anchor?: null | SerializedAnchorPosition;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -337,162 +332,3 @@ export const updatePeerReview = ({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
-
-// export const fetchInlineCommentsAPI = async ({
-//   documentType,
-//   documentId,
-// }: {
-//   documentType: RhDocumentType;
-//   documentId: ID;
-// }): Promise<{ comments: any[]; count: number }> => {
-
-//   // const response = {
-//   //   count: 10,
-//   //   next: null,
-//   //   previous: null,
-//   //   results: [
-//   //     {
-//   //       id: 1213,
-//   //       user_vote: null,
-//   //       awarded_bounty_amount: null,
-//   //       created_by: {
-//   //         id: 8,
-//   //         author_profile: {
-//   //           id: 416,
-//   //           first_name: "Kobe",
-//   //           last_name: "Attias",
-//   //           created_date: "2021-10-25T19:30:17.574486Z",
-//   //           updated_date: "2022-11-09T17:03:27.309030Z",
-//   //           profile_image:
-//   //             "https://lh3.googleusercontent.com/a/AATXAJxMWwF8N8q__74Pl5_Fvp_srsuekx5iNmsB54eBURA=s96-c",
-//   //         },
-//   //         editor_of: [
-//   //           {
-//   //             source: {
-//   //               id: 1,
-//   //               name: "machine learning",
-//   //               hub_image:
-//   //                 "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/hub_images/2020/10/06/art.jpg?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=HI418QOBeIJhEAJcQsHMS60wxj0%3D&Expires=1687879766",
-//   //               slug: "machine-learning",
-//   //             },
-//   //           },
-//   //         ],
-//   //         first_name: "Kobe",
-//   //         last_name: "Attias2",
-//   //       },
-//   //       thread: {
-//   //         thread_type: "INLINE_DISCUSSION",
-//   //         id: 1,
-//   //       },
-//   //       children_count: 0,
-//   //       children: [],
-//   //       purchases: [],
-//   //       bounties: [],
-//   //       review: null,
-//   //       created_date: "2023-04-05T01:34:38.754672Z",
-//   //       updated_date: "2023-04-05T14:15:43.240596Z",
-//   //       is_public: true,
-//   //       is_removed: false,
-//   //       is_removed_date: null,
-//   //       score: 1,
-//   //       context_title: null,
-//   //       comment_content_json: {
-//   //         ops: [
-//   //           {
-//   //             insert: "This is a test. This is a test\n",
-//   //           },
-//   //         ],
-//   //       },
-//   //       comment_content_type: "QUILL_EDITOR",
-//   //       is_accepted_answer: null,
-//   //       legacy_id: null,
-//   //       legacy_model_type: null,
-//   //       updated_by: 8,
-//   //       parent: null,
-//   //       anchor: {
-//   //         startContainerPath:
-//   //           '//*[@id="__next"][1]/div/div[3]/div[3]/div/div[2]/div/div/div/div/ul/li/text()',
-//   //         startOffset: 0,
-//   //         endContainerPath:
-//   //           '//*[@id="__next"][1]/div/div[3]/div[3]/div/div[2]/div/div/div/div/ul/li/text()',
-//   //         endOffset: 121,
-//   //         collapsed: false,
-//   //         textContent:
-//   //           "Psilocybin is a controversial psychedelic compound, which is illegal in the United States, except for Oregon (Segment 1).",
-//   //       },
-//   //     },
-//   //     {
-//   //       id: 1214,
-//   //       user_vote: null,
-//   //       awarded_bounty_amount: null,
-//   //       created_by: {
-//   //         id: 8,
-//   //         author_profile: {
-//   //           id: 416,
-//   //           first_name: "Kobe",
-//   //           last_name: "Attias",
-//   //           created_date: "2021-10-25T19:30:17.574486Z",
-//   //           updated_date: "2022-11-09T17:03:27.309030Z",
-//   //           profile_image:
-//   //             "https://lh3.googleusercontent.com/a/AATXAJxMWwF8N8q__74Pl5_Fvp_srsuekx5iNmsB54eBURA=s96-c",
-//   //         },
-//   //         editor_of: [
-//   //           {
-//   //             source: {
-//   //               id: 1,
-//   //               name: "machine learning",
-//   //               hub_image:
-//   //                 "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/hub_images/2020/10/06/art.jpg?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=HI418QOBeIJhEAJcQsHMS60wxj0%3D&Expires=1687879766",
-//   //               slug: "machine-learning",
-//   //             },
-//   //           },
-//   //         ],
-//   //         first_name: "Kobe",
-//   //         last_name: "Attias2",
-//   //       },
-//   //       thread: {
-//   //         thread_type: "INLINE_DISCUSSION",
-//   //         id: 1,
-//   //       },
-//   //       children_count: 0,
-//   //       children: [],
-//   //       purchases: [],
-//   //       bounties: [],
-//   //       review: null,
-//   //       created_date: "2023-04-05T01:34:38.754672Z",
-//   //       updated_date: "2023-04-05T14:15:43.240596Z",
-//   //       is_public: true,
-//   //       is_removed: false,
-//   //       is_removed_date: null,
-//   //       score: 1,
-//   //       context_title: null,
-//   //       comment_content_json: {
-//   //         ops: [
-//   //           {
-//   //             insert: "This another test. This is yet another test.\n",
-//   //           },
-//   //         ],
-//   //       },
-//   //       comment_content_type: "QUILL_EDITOR",
-//   //       is_accepted_answer: null,
-//   //       legacy_id: null,
-//   //       legacy_model_type: null,
-//   //       updated_by: 8,
-//   //       parent: null,
-//   //       anchor: {
-//   //         startContainerPath:
-//   //           '//*[@id="__next"][1]/div/div[3]/div[3]/div/div[2]/div/div/div/div[2]/ul/li[2]/text()',
-//   //         startOffset: 0,
-//   //         endContainerPath:
-//   //           '//*[@id="__next"][1]/div/div[3]/div[3]/div/div[2]/div/div/div/div[2]/ul/li[2]/text()',
-//   //         endOffset: 135,
-//   //         collapsed: false,
-//   //         textContent:
-//   //           "Psilocybin is converted into psilocin in the gut, which then acts on serotonin, leading to altered states of consciousness (Segment 2).",
-//   //       },
-//   //     },
-//   //   ],
-//   // };
-
-//   return Promise.resolve({ comments: response.results, count: response.count });
-// };
