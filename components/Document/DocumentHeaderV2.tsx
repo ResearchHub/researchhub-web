@@ -102,10 +102,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
               >
                 <div style={{ display: "flex", width: 140 }}>
                   <div style={{ width: 30, boxSizing: "border-box" }}>
-                    <FontAwesomeIcon
-                      icon={faPen}
-                      style={{ marginRight: 3 }}
-                    />
+                    <FontAwesomeIcon icon={faPen} style={{ marginRight: 3 }} />
                   </div>
 
                   <div>Edit</div>
@@ -368,7 +365,7 @@ const styles = StyleSheet.create({
     display: "none",
     // bottom: 0,
     zIndex: 100,
-    paddingBottom: 0,
+    padding: "6.5px 0px",
     top: 0,
     // background: "rgb(249, 249, 252)",
     background: "white",
