@@ -38,8 +38,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     AnnotationType[]
   >([]);
 
-  const prevAnnotationsSortedByY = useRef(annotationsSortedByY);
-
   // Orphans are annotations that could not be found on page
   const [orphanThreadIds, setOrphanThreadIds] = useState<ID[]>([]);
 
@@ -82,6 +80,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
   useEffect(() => {
+    console.log("%c Observing refs", "color: orange");
     const resizeObserver = new ResizeObserver((entries) => {
       const repositioned = repositionAnnotations({
         annotationsSortedByY: annotationsSortedByY,
@@ -89,7 +88,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         threadRefs,
       });
 
-      replaceAnnotations({ annotationsToReplace: repositioned });
+      _replaceAnnotations({ annotationsToReplace: repositioned });
     });
 
     threadRefs.forEach((t) => {
@@ -108,29 +107,13 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   }, [threadRefs]);
 
   useEffect(() => {
-    if (selectedThreadId) {
-      const repositioned = repositionAnnotations({
-        annotationsSortedByY: annotationsSortedByY,
-        selectedThreadId,
-        threadRefs,
-      });
-
-      replaceAnnotations({ annotationsToReplace: repositioned });
-    }
-  }, [selectedThreadId]);
-
-  useEffect(() => {
-    if (
-      annotationsSortedByY.length !== prevAnnotationsSortedByY?.current?.length
-    ) {
-      prevAnnotationsSortedByY.current = annotationsSortedByY;
-
-      setThreadRefs((refs) =>
-        Array(annotationsSortedByY.length)
-          .fill(null)
-          .map((_, i) => refs[i] || createRef())
-      );
-    }
+    console.log("%c Creating refs", "color: green");
+    console.log("annotationsSortedByY.length", annotationsSortedByY.length);
+    setThreadRefs((refs) =>
+      Array(annotationsSortedByY.length)
+        .fill(null)
+        .map((_, i) => refs[i] || createRef())
+    );
   }, [annotationsSortedByY.length]);
 
   useEffect(() => {
@@ -196,33 +179,24 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     };
   }, [annotationsSortedByY]);
 
-  useEffect(() => {
-    console.log("selectedThreadId", selectedThreadId);
-    const repositioned = repositionAnnotations({
-      annotationsSortedByY: annotationsSortedByY,
-      selectedThreadId,
-      threadRefs,
-    });
-
-    replaceAnnotations({ annotationsToReplace: repositioned });
-  }, [selectedThreadId]);
-
-  const replaceAnnotations = ({ annotationsToReplace }) => {
+  const _replaceAnnotations = ({ annotationsToReplace }) => {
     if (annotationsToReplace.length > 0) {
-      const newAnnotationsSortedByY = [...annotationsSortedByY];
-      for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
-        const annotation = newAnnotationsSortedByY[i];
-        const repositionedAnnotation: AnnotationType | undefined =
-          annotationsToReplace.find(
-            (_annotation) => annotation.threadId === _annotation.threadId
-          );
+      setAnnotationsSortedByY((prevAnnotations) => {
+        const newAnnotationsSortedByY = [...prevAnnotations];
+        for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
+          const annotation = newAnnotationsSortedByY[i];
+          const repositionedAnnotation: AnnotationType | undefined =
+            annotationsToReplace.find(
+              (_annotation) => annotation.threadId === _annotation.threadId
+            );
 
-        if (repositionedAnnotation) {
-          newAnnotationsSortedByY[i] = repositionedAnnotation;
+          if (repositionedAnnotation) {
+            newAnnotationsSortedByY[i] = repositionedAnnotation;
+          }
         }
-      }
 
-      setAnnotationsSortedByY(newAnnotationsSortedByY);
+        return newAnnotationsSortedByY;
+      });
     }
   };
 
@@ -293,7 +267,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     }
   };
 
-  const createNewAnnotation = (e) => {
+  const _createNewAnnotation = (e) => {
     e.stopPropagation();
 
     if (!selectionXRange) {
@@ -314,6 +288,17 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     setAnnotationsSortedByY(_annotationsSortedByY);
     resetSelectedPos();
   };
+
+  const _handleCancelComment = ({ threadId, event }) => {
+    // setSelectedThreadId(null);
+    setAnnotationsSortedByY((prevAnnotations) => {
+      return prevAnnotations.filter(
+        (annotation) => annotation.threadId !== threadId
+      );
+    });
+  };
+
+  // console.log('annotationsSortedByY', annotationsSortedByY)
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
@@ -354,7 +339,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             ref={textSelectionMenuRef}
           >
             <TextSelectionMenu
-              onCommentClick={createNewAnnotation}
+              onCommentClick={_createNewAnnotation}
               onLinkClick={undefined}
             />
           </div>
@@ -383,9 +368,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                     : "none",
                   borderRadius: 4,
                 }}
-                // onClick={() => {
-                //   setSelectedThreadId(threadId);
-                // }}
                 className={css(styles.commentThread)}
                 key={key}
               >
@@ -398,9 +380,11 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                 />
                 {annotation.isNew && (
                   <CommentEditor
-                    handleCancel={() => {}}
+                    handleCancel={(event) =>
+                      _handleCancelComment({ threadId, event })
+                    }
                     editorStyleOverride={styles.commentEditor}
-                    editorId={key}
+                    editorId={`${key}-editor`}
                     handleSubmit={async (props) => {
                       try {
                         const comment = await createCommentAPI({
@@ -444,10 +428,12 @@ const styles = StyleSheet.create({
   },
   commentSidebar: {},
   commentThread: {
+    cursor: "pointer",
     transition: "transform 0.4s ease",
   },
   commentEditor: {
     boxShadow: "none",
+    padding: 0,
   },
 });
 

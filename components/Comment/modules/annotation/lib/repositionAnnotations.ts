@@ -10,7 +10,6 @@ const repositionAnnotations = ({
   selectedThreadId: ID;
   threadRefs: any[];
 }): AnnotationType[] => {
-  console.log("sele", selectedThreadId);
   const INITIAL_X_OFFSET = 0;
   const SELECTED_THREAD_X_OFFSET = 30;
   const MIN_SPACE_BETWEEN_THREAD = 15; // Threads will be at least this distance apart
@@ -138,8 +137,6 @@ const repositionAnnotations = ({
       }
     }
   }
-
-  console.log("repositioned", repositioned);
 
   return Object.values(repositioned);
 };
