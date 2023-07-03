@@ -6,6 +6,7 @@ import { updateReferenceCitation } from "../../api/updateReferenceCitation";
 import { upsertReferenceProject } from "../../reference_organizer/api/upsertReferenceProject";
 import { useReferenceActiveProjectContext } from "../../reference_organizer/context/ReferenceActiveProjectContext";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { fetchReferenceOrgProjects } from "../../reference_organizer/api/fetchReferenceOrgProjects";
 
 export type ReferencesTableContextType = {
   referenceTableRowData: ReferenceTableRowDataType[];

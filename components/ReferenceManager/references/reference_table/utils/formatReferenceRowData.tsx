@@ -108,6 +108,8 @@ export function formatReferenceRowData(
 ): ReferenceTableRowDataType[] {
   // NOTE: each returned-object is logically ordered. Displayed in ReferenceItemTab
 
+  console.log(data);
+
   const formatted = [
     parent,
     ...(projects ?? []),

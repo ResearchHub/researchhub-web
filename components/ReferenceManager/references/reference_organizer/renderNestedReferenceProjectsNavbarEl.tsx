@@ -29,10 +29,6 @@ export function renderNestedReferenceProjectsNavbarEl({
     useReferenceActiveProjectContext();
   const isActive = activeProject.projectID === referenceProject.id;
 
-  if (!(referenceProject?.collaborators ?? []).editors) {
-    debugger;
-  }
-
   return (
     <div
       style={{ display: "flex", flexDirection: "column" }}
@@ -42,12 +38,12 @@ export function renderNestedReferenceProjectsNavbarEl({
         key={`ref-project-${referenceProject?.id}`}
         collaborators={[
           // TODO: calvinhlee - clean this up from backend
-          ...(referenceProject?.collaborators ?? []).editors.map(
+          ...(referenceProject?.collaborators ?? { editors: [] }).editors?.map(
             (rawUser: any) => {
               return { ...parseUserSuggestion(rawUser), role: "EDITOR" };
             }
           ),
-          ...(referenceProject?.collaborators ?? []).viewers.map(
+          ...(referenceProject?.collaborators ?? { viewers: [] }).viewers.map(
             (rawUser: any) => {
               return { ...parseUserSuggestion(rawUser), role: "VIEWER" };
             }
