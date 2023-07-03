@@ -1,6 +1,7 @@
 import React, { createRef, useEffect, useState } from "react";
 import { Annotation as AnnotationType } from "./lib/types";
 import colors from "../../lib/colors";
+import { StyleSheet, css } from "aphrodite";
 
 const Annotation = ({
   annotation,
@@ -29,7 +30,6 @@ const Annotation = ({
         const { x, y, width, height } = anchorCoordinates[i];
         canvasRef.current.width = width;
         canvasRef.current.height = height;
-        // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         if (focused) {
           ctx.fillStyle = colors.annotation.selected;
@@ -46,8 +46,9 @@ const Annotation = ({
     <>
       {canvasRefs.map((canvasRef, i) => (
         <canvas
-          onClick={() => handleClick(annotation.threadId)}
+          // onClick={() => handleClick(annotation.threadId)}
           ref={canvasRef}
+          className={css(styles.annotation)}
           style={{
             position: "absolute",
             top: annotation.anchorCoordinates[i].y,
@@ -58,5 +59,11 @@ const Annotation = ({
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  annotation: {
+    pointerEvents: "none",
+  },
+});
 
 export default Annotation;

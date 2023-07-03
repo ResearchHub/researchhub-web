@@ -46,6 +46,7 @@ const { setMessage, showMessage } = MessageActions;
 type CommentEditorArgs = {
   editorId: string;
   handleSubmit: Function;
+  handleCancel?: Function;
   commentId?: ID;
   placeholder?: string;
   content?: object;
@@ -64,6 +65,7 @@ const CommentEditor = ({
   commentId,
   placeholder = "Add a comment about this paper...",
   handleSubmit,
+  handleCancel,
   content = {},
   allowBounty = false,
   commentType,
@@ -323,6 +325,7 @@ const CommentEditor = ({
             <div style={{ width: 70 }}>
               <Button
                 fullWidth
+                size="small"
                 label={
                   isSubmitting ? (
                     <div
@@ -350,6 +353,18 @@ const CommentEditor = ({
                 }
               />
             </div>
+            {handleCancel && (
+              <div style={{ marginLeft: 15 }}>
+                <Button
+                  fullWidth
+                  size="small"
+                  variant="text"
+                  label={`Cancel`}
+                  hideRipples={true}
+                  onClick={() => handleCancel()}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -372,8 +387,6 @@ const styles = StyleSheet.create({
   actions: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row-reverse",
   },
   toolbarContainer: {
     position: "relative",

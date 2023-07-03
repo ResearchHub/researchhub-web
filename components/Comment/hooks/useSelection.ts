@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react";
 import XRange from "../lib/xrange/XRange";
 
-const useSelection = ({ ref }) => {
+const useSelection = ({
+  ref,
+}): {
+  selectionXRange: any;
+  initialSelectionPosition: any;
+  resetSelectedPos: Function;
+} => {
   const [selectionXRange, setSelectionXRange] = useState<null | any>(null);
   const [initialSelectionPosition, setInitialSelectionPosition] = useState<
     null | any
   >(null);
+
+  const resetSelectedPos = () => {
+    setSelectionXRange(null);
+    setInitialSelectionPosition(null);
+  };
 
   useEffect(() => {
     const handleSelection = (e) => {
@@ -41,7 +52,7 @@ const useSelection = ({ ref }) => {
     };
   }, [ref]);
 
-  return { selectionXRange, initialSelectionPosition };
+  return { selectionXRange, initialSelectionPosition, resetSelectedPos };
 };
 
 export default useSelection;

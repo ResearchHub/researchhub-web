@@ -8,7 +8,6 @@ import {
   COMMENT_CONTEXTS,
 } from "../../lib/types";
 import { createAnnotation, Annotation as AnnotationType } from "./lib/types";
-
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
 import { GenericDocument } from "../../../Document/lib/types";
 import XRange from "../../lib/xrange/XRange";
@@ -34,9 +33,6 @@ interface Props {
 const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
-  // Anchors (e.g. highlights) will be rendered on top of this canvas
-  // const canvasRef = useRef<HTMLCanvasElement>(null);
-
   // Sorted List of annotations sorted by order of appearance on the page
   const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
     AnnotationType[]
@@ -48,18 +44,15 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   const [orphanThreadIds, setOrphanThreadIds] = useState<ID[]>([]);
 
   // The XRange position of the selected text. Holds the serialized DOM position.
-  const { selectionXRange, initialSelectionPosition } = useSelection({
-    ref: relativeRef,
-  });
+  const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
+    useSelection({
+      ref: relativeRef,
+    });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
-  // const [canvasDimensions, setCanvasDimensions] = useState<{
-  //   width: number;
-  //   height: number;
-  // }>({ width: 0, height: 0 });
-  const newThreadRef = useRef<any | null>(null);
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [key: string]: Array<CommentModel> }>({});
+  const textSelectionMenuRef = useRef<HTMLDivElement>(null);
 
   // Fetch comments from API
   useEffect(() => {
@@ -81,28 +74,10 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       String(c.thread.id)
     );
 
-    createAndSortAnnotations({
+    _createAndSortAnnotations({
       threadIdsToDraw: Object.keys(commentThreads.current),
     });
   }, [inlineComments]);
-
-  // Draw anchors on canvas once canvas is ready
-  // useEffect(() => {
-  //   if (
-  //     (inlineComments.length > 0 || newAnnotation) &&
-  //     canvasDimensions.width > 0 &&
-  //     canvasDimensions.height > 0
-  //   ) {
-  //     _drawAnchors({ threadIdsToDraw: Object.keys(commentThreads.current) });
-  //   }
-  // }, [canvasDimensions, inlineComments, newAnnotation]);
-
-  // Draw anchors on canvas once canvas is ready
-  // useEffect(() => {
-  //   if (selectedThreadId) {
-  //     _drawAnchors({ threadIdsToDraw: [selectedThreadId] });
-  //   }
-  // }, [selectedThreadId]);
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -158,77 +133,79 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     }
   }, [annotationsSortedByY.length]);
 
-  // Set up click events.
-  // The canvas element has no pointer-events because we want the user to be able to select text
-  // in the content layer beneath. As a result, we can't detect click events on the canvas so
-  // we need to detect click events on the content layer and compare to the canvas highlight coordinates to
-  // see if there is a match.
-  // useEffect(() => {
-  //   const handleClick = (event): void => {
-  //     const rect = canvasRef!.current!.getBoundingClientRect();
-  //     const clickedX = event.clientX - rect.left;
-  //     const clickedY = event.clientY - rect.top;
+  useEffect(() => {
+    const _handleClick = (event) => {
+      const relativeRefRect = relativeRef!.current!.getBoundingClientRect();
+      // const menuRect = textSelectionMenuRef.current!.getBoundingClientRect();
+      const relativeClickX = event.clientX - relativeRefRect.left;
+      const relativeClickY = event.clientY - relativeRefRect.top;
+      const clickX = event.clientX;
+      const clickY = event.clientY;
+      let selectedAnnotation: AnnotationType | null = null;
 
-  //     let selectedAnnotation: Annotation | null = null;
-  //     for (let i = 0; i < annotationsSortedByY.length; i++) {
-  //       const { anchorCoordinates } = annotationsSortedByY[i];
+      for (let i = 0; i < annotationsSortedByY.length; i++) {
+        const { anchorCoordinates } = annotationsSortedByY[i];
+        const isAnchorClicked = anchorCoordinates.some(
+          ({ x, y, width, height }) => {
+            return (
+              relativeClickX >= x &&
+              relativeClickX <= x + width &&
+              relativeClickY >= y &&
+              relativeClickY >= y &&
+              relativeClickY <= y + height
+            );
+          }
+        );
 
-  //       const isAnchorClicked = anchorCoordinates.some(
-  //         ({ x, y, width, height }) => {
-  //           return (
-  //             clickedX >= x &&
-  //             clickedX <= x + width &&
-  //             clickedY >= y &&
-  //             clickedY <= y + height
-  //           );
-  //         }
-  //       );
+        if (isAnchorClicked) {
+          selectedAnnotation = annotationsSortedByY[i];
+          continue;
+        }
+      }
 
-  //       if (isAnchorClicked) {
-  //         selectedAnnotation = annotationsSortedByY[i];
-  //         continue;
-  //       }
-  //     }
+      if (!selectedAnnotation) {
+        for (let i = 0; i < annotationsSortedByY.length; i++) {
+          const ref = threadRefs[i]?.current;
 
-  //     if (selectedAnnotation) {
-  //       setSelectedThreadId(selectedAnnotation.threadId);
-  //     } else {
-  //       // Selected dismissed.
-  //       setSelectedThreadId(null);
-  //     }
-  //   };
+          if (ref) {
+            const rect = ref.getBoundingClientRect();
+            if (
+              clickX >= rect.left &&
+              clickX <= rect.right &&
+              clickY >= rect.top &&
+              clickY <= rect.bottom
+            ) {
+              selectedAnnotation = annotationsSortedByY[i];
+              continue;
+            }
+          }
+        }
+      }
 
-  //   const contentEl = relativeRef.current;
-  //   const canvasEl = canvasRef.current;
-  //   if (contentEl && canvasEl) {
-  //     window.addEventListener("click", handleClick);
-  //   }
+      if (selectedAnnotation) {
+        setSelectedThreadId(selectedAnnotation.threadId);
+      } else {
+        setSelectedThreadId(null);
+      }
+    };
 
-  //   return () => {
-  //     if (contentEl && canvasEl) {
-  //       window.removeEventListener("click", handleClick);
-  //     }
-  //   };
-  // }, [relativeRef, canvasRef, annotationsSortedByY]);
+    document.addEventListener("click", _handleClick);
 
-  // Observe content dimension changes (relativeEl) so that we can resize the canvas accordingly
-  // and redraw the highlights in the correct position.
-  // useEffect(() => {
-  //   if (canvasRef.current && relativeRef.current) {
-  //     const observer = new ResizeObserver(() => {
-  //       canvasRef!.current!.width = relativeRef.current.offsetWidth;
-  //       canvasRef!.current!.height = relativeRef.current.offsetHeight;
-  //       setCanvasDimensions({
-  //         width: canvasRef!.current!.width,
-  //         height: canvasRef!.current!.height,
-  //       });
-  //     });
+    return () => {
+      document.removeEventListener("click", _handleClick);
+    };
+  }, [annotationsSortedByY]);
 
-  //     observer.observe(relativeRef.current);
+  useEffect(() => {
+    console.log("selectedThreadId", selectedThreadId);
+    const repositioned = repositionAnnotations({
+      annotationsSortedByY: annotationsSortedByY,
+      selectedThreadId,
+      threadRefs,
+    });
 
-  //     return () => observer.disconnect();
-  //   }
-  // }, [relativeRef, canvasRef]);
+    replaceAnnotations({ annotationsToReplace: repositioned });
+  }, [selectedThreadId]);
 
   const replaceAnnotations = ({ annotationsToReplace }) => {
     if (annotationsToReplace.length > 0) {
@@ -241,10 +218,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           );
 
         if (repositionedAnnotation) {
-          // console.log('%cRepositioned', 'color: green; font-weight: bold;')
-          // console.log(`reconciling thread ${i}:`, "L: ", annotation.serialized.textContent, "R: ", repositionedAnnotation?.serialized.textContent)
-          // console.log(`next thread ${i + 1}:`, newAnnotationsSortedByY[i + 1]?.serialized.textContent, newAnnotationsSortedByY[i + 1]?.threadCoordinates.y)
-          // console.log(`Before Y:`, annotation.threadCoordinates.y, "After Y: ", repositionedAnnotation?.threadCoordinates.y)
           newAnnotationsSortedByY[i] = repositionedAnnotation;
         }
       }
@@ -279,8 +252,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     };
   };
 
-  const createAndSortAnnotations = ({ threadIdsToDraw }) => {
-    // const startTime = performance.now();
+  const _createAndSortAnnotations = ({ threadIdsToDraw }) => {
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
 
     const orphanThreadIds: Array<ID> = [];
@@ -312,12 +284,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
     foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
 
-    // drawAnchorsOnCanvas({
-    //   annotations: foundAnnotations,
-    //   canvasRef,
-    //   selectedThreadId,
-    // });
-
     setOrphanThreadIds(orphanThreadIds);
 
     if (!annotationsSortedByY.length) {
@@ -325,71 +291,11 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
       // TODO: This may not be the best place to do this. consider another location
       setAnnotationsSortedByY(foundAnnotations);
     }
-
-    // const endTime = performance.now();
-    // const timeTaken = endTime - startTime;
-
-    // console.log(`Time taken: ${timeTaken} milliseconds.`);
   };
 
-  // const _drawAnchors = ({ threadIdsToDraw }) => {
-  //   // const startTime = performance.now();
-  //   console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
+  const createNewAnnotation = (e) => {
+    e.stopPropagation();
 
-  //   const orphanThreadIds: Array<ID> = [];
-  //   let foundAnnotations: Array<AnnotationType> = [];
-
-  //   for (let i = 0; i < threadIdsToDraw.length; i++) {
-  //     const threadId = String(threadIdsToDraw[i]);
-  //     const thread = commentThreads.current[threadId][0].thread;
-  //     const xrange = XRange.createFromSerialized(thread.anchor) || null;
-
-  //     if (!xrange) {
-  //       console.log(
-  //         "[Annotation] No xrange found for thread. Orphan thread is:",
-  //         thread
-  //       );
-  //       orphanThreadIds.push(threadId);
-  //       continue;
-  //     }
-
-  //     const annotation = createAnnotation({
-  //       xrange,
-  //       threadId,
-  //       relativeEl: relativeRef.current,
-  //       serializedAnchorPosition: thread.anchor || undefined,
-  //     });
-
-  //     foundAnnotations.push(annotation);
-  //   }
-
-  //   if (newAnnotation) {
-  //     foundAnnotations.push(newAnnotation);
-  //   }
-
-  //   foundAnnotations = _sortAnnotationsByAppearanceInPage(foundAnnotations);
-
-  //   // drawAnchorsOnCanvas({
-  //   //   annotations: foundAnnotations,
-  //   //   canvasRef,
-  //   //   selectedThreadId,
-  //   // });
-
-  //   setOrphanThreadIds(orphanThreadIds);
-
-  //   if (!annotationsSortedByY.length) {
-  //     // Setting annotation only on first draw, when none exist
-  //     // TODO: This may not be the best place to do this. consider another location
-  //     setAnnotationsSortedByY(foundAnnotations);
-  //   }
-
-  //   // const endTime = performance.now();
-  //   // const timeTaken = endTime - startTime;
-
-  //   // console.log(`Time taken: ${timeTaken} milliseconds.`);
-  // };
-
-  const createNewAnnotation = () => {
     if (!selectionXRange) {
       return console.error("No selected range. This should not happen.");
     }
@@ -406,13 +312,11 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     ]);
     setSelectedThreadId(newAnnotation.threadId);
     setAnnotationsSortedByY(_annotationsSortedByY);
+    resetSelectedPos();
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
-
-  // console.log('annotationsSortedByY', annotationsSortedByY)
-  // console.log('threadRefs', threadRefs)
 
   return (
     <div style={{ position: "relative" }}>
@@ -447,6 +351,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
               zIndex: 5,
               height: config.textSelectionMenu.height,
             }}
+            ref={textSelectionMenuRef}
           >
             <TextSelectionMenu
               onCommentClick={createNewAnnotation}
@@ -461,19 +366,26 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           {annotationsSortedByY.map((annotation, idx) => {
             const threadId = String(annotation.threadId);
             const key = `thread-` + threadId;
-
+            const isFocused = selectedThreadId === threadId;
             return (
               <div
                 id={key}
                 ref={threadRefs[idx]}
                 style={{
                   position: "absolute",
-                  background: annotation.isNew ? "none" : "white",
+                  background: "white",
                   padding: 10,
-                  border: threadId ? "none" : `1px solid ${colors.border}`,
+                  border: isFocused ? "none" : `1px solid ${colors.border}`,
                   transform: `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`,
                   width: contextConfig.annotation.commentWidth,
+                  boxShadow: isFocused
+                    ? "0px 0px 15px rgba(36, 31, 58, 0.2)"
+                    : "none",
+                  borderRadius: 4,
                 }}
+                // onClick={() => {
+                //   setSelectedThreadId(threadId);
+                // }}
                 className={css(styles.commentThread)}
                 key={key}
               >
@@ -482,11 +394,13 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                   document={doc}
                   threadId={threadId}
                   comments={commentThreads.current[threadId] || []}
-                  isFocused={selectedThreadId === threadId}
+                  isFocused={isFocused}
                 />
                 {annotation.isNew && (
                   <CommentEditor
-                    editorId="new-inline-comment"
+                    handleCancel={() => {}}
+                    editorStyleOverride={styles.commentEditor}
+                    editorId={key}
                     handleSubmit={async (props) => {
                       try {
                         const comment = await createCommentAPI({
@@ -499,9 +413,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                             position: annotation.xrange!.serialize(),
                           },
                         });
-
-                        // setNewCommentAnnotation(null);
-                        // setInlineComments([...inlineComments, comment]);
                       } catch (error) {
                         captureEvent({
                           msg: "Failed to create inline comment",
@@ -519,7 +430,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
             );
           })}
         </div>
-        {/* {AnnotationCanvas} */}
       </CommentTreeContext.Provider>
     </div>
   );
@@ -535,6 +445,9 @@ const styles = StyleSheet.create({
   commentSidebar: {},
   commentThread: {
     transition: "transform 0.4s ease",
+  },
+  commentEditor: {
+    boxShadow: "none",
   },
 });
 
