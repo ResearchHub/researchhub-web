@@ -4,6 +4,8 @@ import Comment from "./Comment";
 import { StyleSheet, css } from "aphrodite";
 import colors from "./lib/colors";
 import { Comment as CommentType } from "./lib/types";
+import { useState } from "react";
+import { genClientId } from "~/config/utils/id";
 
 interface Props {
   threadId: string;
@@ -16,23 +18,37 @@ const CommentAnnotationThread = ({
   threadId,
   document,
   comments,
-  isFocused = true,
+  isFocused = false,
 }: Props) => {
+  const [pendingComment, setPendingComment] = useState<{
+    isEmpty: boolean;
+    content: any;
+  }>({ isEmpty: true, content: null });
+  const [clientId, setClientId] = useState<string>(genClientId());
+
   return (
     <div>
       {comments.map((comment) => (
         <Comment key={comment.id} comment={comment} document={document} />
       ))}
-      {/* {isFocused && (
+      {(isFocused || !pendingComment.isEmpty) && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
-            previewModeAsDefault={true}
-            editorId={`editor-for-${isNew ? "new-therad" : threadId}`}
+            key={clientId}
+            minimalMode={true}
+            editorId={clientId}
             handleSubmit={() => null}
             editorStyleOverride={styles.editorOverride}
+            handleCancel={() => {
+              setClientId(genClientId());
+              setPendingComment({ isEmpty: true, content: null });
+            }}
+            onChange={({ content, isEmpty }) =>
+              setPendingComment({ content, isEmpty })
+            }
           />
         </div>
-      )} */}
+      )}
     </div>
   );
 };

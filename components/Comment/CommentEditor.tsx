@@ -53,11 +53,12 @@ type CommentEditorArgs = {
   allowBounty?: boolean;
   commentType?: COMMENT_TYPES;
   author?: AuthorProfile | null;
-  previewModeAsDefault?: boolean;
+  minimalMode?: boolean;
   allowCommentTypeSelection?: boolean;
   handleClose?: Function;
   focusOnMount?: boolean;
   editorStyleOverride?: any;
+  onChange?: Function;
 };
 
 const CommentEditor = ({
@@ -70,18 +71,18 @@ const CommentEditor = ({
   allowBounty = false,
   commentType,
   author,
-  previewModeAsDefault = false,
+  minimalMode = false,
   allowCommentTypeSelection = false,
   focusOnMount = false,
   handleClose,
   editorStyleOverride,
+  onChange,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
-  const [isPreviewMode, setIsPreviewMode] =
-    useState<boolean>(previewModeAsDefault);
-  const isPreviewModeRef = useRef(previewModeAsDefault);
+  const [isMinimalMode, setIsMinimalMode] = useState<boolean>(minimalMode);
+  const isMinimalModeRef = useRef(minimalMode);
   const dispatch = useDispatch();
   const [interimBounty, setInterimBounty] = useState<Bounty | null>(null);
   const currentUser = useSelector((state: RootState) =>
@@ -113,13 +114,16 @@ const CommentEditor = ({
     commentType: _commentType,
   });
 
-  if (previewModeAsDefault) {
+  if (minimalMode) {
     useEffectHandleClick({
       ref: editorRef,
       onInsideClick: () => {
-        setIsPreviewMode(false);
-        isPreviewModeRef.current = false;
+        setIsMinimalMode(false);
+        isMinimalModeRef.current = false;
         quill && !quill.hasFocus() && quill.focus();
+      },
+      onOutsideClick: () => {
+        setIsMinimalMode(true);
       },
     });
   }
@@ -133,6 +137,10 @@ const CommentEditor = ({
           quillRef,
           placeholderText: placeholder,
         });
+      }
+
+      if (onChange) {
+        onChange({ content: _content, isEmpty: _isEmpty });
       }
     }
   }, [_content, isReady]);
@@ -183,9 +191,9 @@ const CommentEditor = ({
       dangerouslySetContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
       setInterimBounty(null);
-      if (previewModeAsDefault) {
-        setIsPreviewMode(true);
-        isPreviewModeRef.current = true;
+      if (minimalMode) {
+        setIsMinimalMode(true);
+        isMinimalModeRef.current = true;
       }
     } finally {
       setIsSubmitting(false);
@@ -275,7 +283,7 @@ const CommentEditor = ({
 
           {author && !allowBounty && (
             <div
-              className={css(styles.authorRow, isPreviewMode && styles.hidden)}
+              className={css(styles.authorRow, isMinimalMode && styles.hidden)}
             >
               <div className={css(styles.nameRow)}>
                 {currentUser && (
@@ -313,14 +321,14 @@ const CommentEditor = ({
             <div
               className={css(
                 styles.toolbarContainer,
-                isPreviewMode && styles.hidden
+                isMinimalMode && styles.hidden
               )}
             >
               <CommentEditorToolbar editorId={editorId} />
             </div>
           </div>
         </div>
-        {!isPreviewMode && (
+        {!isMinimalMode && (
           <div className={css(styles.actions)}>
             <div style={{ width: 70 }}>
               <Button
