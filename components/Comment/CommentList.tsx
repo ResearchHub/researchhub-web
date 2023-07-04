@@ -1,5 +1,5 @@
 import { GenericDocument } from "../Document/lib/types";
-import { Comment as CommentType } from "./lib/types";
+import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
 import Comment from "./Comment";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
@@ -7,6 +7,8 @@ import IconButton from "../Icons/IconButton";
 import CommentPlaceholder from "./CommentPlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
+import { CommentTreeContext } from "./lib/contexts";
+import { useContext } from "react";
 
 type Args = {
   parentComment?: CommentType;
@@ -27,6 +29,7 @@ const CommentList = ({
   isRootList = false,
   isFetching = false,
 }: Args) => {
+  const commentTreeState = useContext(CommentTreeContext);
   const _commentElems = comments.map((c) => (
     <div
       key={c.id}
@@ -47,7 +50,10 @@ const CommentList = ({
       <div
         className={css(
           styles.commentListWrapper,
-          !isRootList && comments.length > 0 && styles.childrenList
+          !isRootList &&
+            comments.length > 0 &&
+            commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION &&
+            styles.childrenList
         )}
       >
         {_commentElems.length > 0 && _commentElems}

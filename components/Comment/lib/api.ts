@@ -102,6 +102,7 @@ export const createCommentAPI = async ({
   commentType = COMMENT_TYPES.DISCUSSION,
   documentType,
   documentId,
+  threadId,
   parentComment,
   bountyAmount,
   mentions = [],
@@ -111,6 +112,7 @@ export const createCommentAPI = async ({
   commentType?: COMMENT_TYPES;
   documentType: RhDocumentType;
   documentId: ID;
+  threadId?: ID;
   parentComment?: Comment;
   bountyAmount?: number;
   mentions?: Array<string>;
@@ -129,6 +131,7 @@ export const createCommentAPI = async ({
       ...(parentComment && { parent_id: parentComment.id }),
       ...(bountyAmount && { amount: bountyAmount }),
       ...(anchor && { anchor }),
+      ...(threadId && { thread_id: threadId }),
     })
   ).then((res): any => Helpers.parseJSON(res));
 

@@ -87,7 +87,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
   useEffect(() => {
-    console.log("%c Observing refs", "color: orange");
     const resizeObserver = new ResizeObserver((entries) => {
       const repositioned = repositionAnnotations({
         annotationsSortedByY: annotationsSortedByY,
@@ -114,8 +113,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
   }, [threadRefs]);
 
   useEffect(() => {
-    console.log("%c Creating refs1", "color: green");
-    console.log("annotationsSortedByY.length", annotationsSortedByY.length);
     setThreadRefs((refs) =>
       Array(annotationsSortedByY.length)
         .fill(null)
@@ -366,10 +363,9 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     comment: CommentModel;
     clientId: string;
   }) => {
+    console.log("comment", comment);
     setInlineComments([...inlineComments, comment]);
   };
-
-  console.log("annotationsSortedByY", annotationsSortedByY);
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
@@ -390,7 +386,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           filter: COMMENT_FILTERS.ANNOTATION,
           comments: inlineComments,
           context: COMMENT_CONTEXTS.ANNOTATION,
-          onCreate: () => alert("Create"),
+          onCreate: _onCreate,
           onUpdate: () => alert("Update"),
           onRemove: () => alert("Remove"),
           onFetchMore: () => alert("Fetch more"),
@@ -442,14 +438,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                 className={css(styles.commentThread)}
                 key={key}
               >
-                <CommentAnnotationThread
-                  key={`${key}-thread`}
-                  document={doc}
-                  threadId={threadId}
-                  comments={commentThreads?.current[threadId]?.comments || []}
-                  isFocused={isFocused}
-                />
-                {annotation.isNew && (
+                {annotation.isNew ? (
                   <CommentEditor
                     handleCancel={(event) =>
                       _handleCancelThread({ threadId, event })
@@ -459,6 +448,14 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
                     handleSubmit={(commentProps) =>
                       _handleCreateThread({ annotation, commentProps })
                     }
+                  />
+                ) : (
+                  <CommentAnnotationThread
+                    key={`${key}-thread`}
+                    document={doc}
+                    threadId={threadId}
+                    comments={commentThreads?.current[threadId]?.comments || []}
+                    isFocused={isFocused}
                   />
                 )}
               </div>

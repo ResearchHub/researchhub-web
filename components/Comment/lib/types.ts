@@ -86,6 +86,10 @@ export const parseComment = ({
   raw: any;
   parent?: Comment;
 }): Comment => {
+  if (!raw.thread) {
+    console.log("raw", raw);
+    console.log("parent", parent);
+  }
   const parsed: Comment = {
     id: raw.id,
     createdDate: formatDateStandard(raw.created_date),
@@ -105,8 +109,12 @@ export const parseComment = ({
     tips: (raw.purchases || []).map((p: any) => parsePurchase(p)),
     isAcceptedAnswer: Boolean(raw.is_accepted_answer),
     ...(raw.review && { review: parseReview(raw.review) }),
-    thread: parseThread(raw.thread),
   };
+
+  // Only parent comments have threads
+  if (raw.thread) {
+    parsed.thread = parseThread(raw.thread);
+  }
 
   const relatedItem: RelatedItem = {
     type: "comment",

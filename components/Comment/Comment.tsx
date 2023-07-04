@@ -205,6 +205,7 @@ const Comment = ({ comment, document }: CommentArgs) => {
             className={css(
               styles.contentWrapper,
               commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION &&
+                !comment.parent &&
                 styles.contentWrapperForAnnotation
             )}
           >

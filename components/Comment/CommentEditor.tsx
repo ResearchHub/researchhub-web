@@ -161,7 +161,10 @@ const CommentEditor = ({
     };
   }, []);
 
-  const _handleSubmit = async () => {
+  const _handleSubmit = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     setIsSubmitting(true);
     try {
       if (quill!.getLength() <= config.comment.minLength) {
@@ -355,7 +358,7 @@ const CommentEditor = ({
                   )
                 }
                 hideRipples={true}
-                onClick={() => _handleSubmit()}
+                onClick={(event) => _handleSubmit(event)}
                 disabled={
                   isSubmitting || isEmpty || (allowBounty && !interimBounty)
                 }
