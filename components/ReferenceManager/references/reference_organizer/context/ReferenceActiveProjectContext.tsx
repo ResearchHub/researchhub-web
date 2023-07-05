@@ -1,32 +1,35 @@
 import { Context, createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-
-// Types
-import { ProjectValue } from "./ReferenceProjectsUpsertContext";
-
-// Utils
-import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
 import {
   emptyFncWithMsg,
   isEmpty,
   isNullOrUndefined,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { useOrgs } from "~/components/contexts/OrganizationContext";
 import { fetchReferenceOrgProjects } from "../api/fetchReferenceOrgProjects";
+import { NullableString } from "~/config/types/root_types";
+import { parseUserSuggestion } from "~/components/SearchSuggestion/lib/types";
+import { ProjectValue } from "./ReferenceProjectsUpsertContext";
+import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useRouter } from "next/router";
 
 export type ReferenceActiveProjectContextValueType = {
   activeProject: ProjectValue | null;
-  setActiveProject: (proj: ProjectValue) => void;
   currentOrgProjects: ProjectValue[];
+  isFetchingProjects: boolean;
+  resetProjectsFetchTime: () => void;
+  setActiveProject: (proj: ProjectValue) => void;
   setCurrentOrgProjects: (projects: ProjectValue[]) => void;
   setIsFetchingProjects: (bool: boolean) => void;
-  isFetchingProjects: boolean;
 };
 
 export const DEFAULT_VALUE = {
   activeProject: null,
-  setActiveProject: (): void => {},
-  // lastFetchedTime: Date.now(),
+  currentOrgProjects: [],
+  isFetchingProjects: false,
+  resetProjectsFetchTime: silentEmptyFnc,
+  setActiveProject: silentEmptyFnc,
+  setCurrentOrgProjects: silentEmptyFnc,
+  setIsFetchingProjects: silentEmptyFnc,
 };
 
 export const ReferenceActiveProjectContext: Context<ReferenceActiveProjectContextValueType> =
@@ -37,38 +40,74 @@ export const useReferenceActiveProjectContext =
     return useContext(ReferenceActiveProjectContext);
   };
 
+const findNestedTargetProject = (
+  allProjects: any[],
+  targetProjectName: NullableString
+) => {
+  for (const project of allProjects) {
+    if (project.project_name === targetProjectName) {
+      return project;
+    }
+    const projectChildren = project.children;
+    if (!isEmpty(projectChildren)) {
+      const childTarget = findNestedTargetProject(
+        projectChildren,
+        targetProjectName
+      );
+      if (!isNullOrUndefined(childTarget)) {
+        return childTarget;
+      }
+    }
+  }
+};
+
 export function ReferenceActiveProjectContextProvider({ children }) {
   const [activeProject, setActiveProject] = useState<ProjectValue | null>(null);
   const [currentOrgProjects, setCurrentOrgProjects] = useState<ProjectValue[]>(
     []
   );
   const [isFetchingProjects, setIsFetchingProjects] = useState<boolean>(true);
-  const { currentOrg, refetchOrgs } = useOrgs();
+  const [projectsFetchTime, setProjectsFetchTime] = useState<number>(
+    Date.now()
+  );
 
+  const { currentOrg } = useOrgs();
   const router = useRouter();
   const orgID = currentOrg?.id;
 
-  const findNestedTargetProject = (
-    allProjects: any[],
-    targetProjectName: ID
-  ) => {
-    for (const project of allProjects) {
-      if (project.project_name === targetProjectName) {
-        return project;
-      }
-      const projectChildren = project.children;
-      if (!isEmpty(projectChildren)) {
-        const childTarget = findNestedTargetProject(
-          projectChildren,
-          targetProjectName
-        );
-        if (!isNullOrUndefined(childTarget)) {
-          return childTarget;
-        }
-      }
-    }
+  const activeSlugName = router.query.slug
+    ? router.query.slug[router.query.slug.length - 1]
+    : null;
+
+  const findAndSetActiveProjects = (allProjects) => {
+    const activeProj = findNestedTargetProject(allProjects, activeSlugName);
+    const { collaborators, id, project_name, is_public } = activeProj ?? {
+      collaborators: { editors: [], viewers: [] },
+    };
+    const flattenedCollaborators = [
+      ...collaborators.editors.map((rawUser: any) => {
+        return {
+          ...parseUserSuggestion(rawUser),
+          role: "EDITOR",
+        };
+      }),
+      ...collaborators.viewers.map((rawUser: any) => {
+        return {
+          ...parseUserSuggestion(rawUser),
+          role: "VIEWER",
+        };
+      }),
+    ];
+    setActiveProject({
+      ...activeProj,
+      collaborators: flattenedCollaborators,
+      isPublic: is_public,
+      projectID: id,
+      projectName: project_name,
+    });
   };
 
+  // Initialize
   useEffect((): void => {
     if (!isEmpty(orgID)) {
       setIsFetchingProjects(true);
@@ -76,50 +115,27 @@ export function ReferenceActiveProjectContextProvider({ children }) {
         onError: emptyFncWithMsg,
         onSuccess: (payload): void => {
           setCurrentOrgProjects(payload ?? []);
-          findActiveProjects(payload);
+          findAndSetActiveProjects(payload);
           setIsFetchingProjects(false);
         },
         payload: {
           organization: orgID,
         },
       });
+    } else {
+      findAndSetActiveProjects(currentOrgProjects);
     }
-  }, [orgID]);
-
-  const findActiveProjects = (allProjects) => {
-    const activeSlugName = router.query.slug
-      ? router.query.slug[router.query.slug.length - 1]
-      : null;
-    const activeProj = findNestedTargetProject(allProjects, activeSlugName);
-    const {
-      collaborators: { editors, viewers },
-      id,
-      project_name,
-      is_public,
-    } = activeProj ?? {
-      collaborators: { editors: [], viewers: [] },
-    };
-
-    setActiveProject({
-      ...activeProj,
-      projectID: id,
-      projectName: project_name,
-      isPublic: is_public,
-    });
-  };
-
-  useEffect(() => {
-    findActiveProjects(currentOrgProjects);
-  }, [router.query.slug, currentOrgProjects]);
+  }, [activeSlugName, orgID, projectsFetchTime]);
 
   return (
     <ReferenceActiveProjectContext.Provider
       value={{
         activeProject,
-        setActiveProject,
         currentOrgProjects,
-        setCurrentOrgProjects,
         isFetchingProjects,
+        resetProjectsFetchTime: (): void => setProjectsFetchTime(Date.now()),
+        setActiveProject,
+        setCurrentOrgProjects,
         setIsFetchingProjects,
       }}
     >

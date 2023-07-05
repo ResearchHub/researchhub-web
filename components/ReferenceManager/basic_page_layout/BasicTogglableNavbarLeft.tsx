@@ -257,7 +257,7 @@ export default function BasicTogglableNavbarLeft({
             variant="h6"
             ml={"6px"}
           >
-            {"Create a new project"}
+            {"Create a new folder"}
           </Typography>
         </ListItemButton>
         {refProjectsNavbarEls}

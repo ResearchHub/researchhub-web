@@ -1,4 +1,5 @@
 import { ClipLoader } from "react-spinners";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { ID } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent } from "react";
@@ -21,6 +22,7 @@ export default function ReferenceCollaboratorsSection({
   label,
   disabled,
 }: Props): ReactElement {
+  const currentUser = getCurrentUser();
   const {
     projectValue: { projectID, collaborators = [] },
     projectValue,
@@ -115,9 +117,12 @@ export default function ReferenceCollaboratorsSection({
           }}
           placeholder="Look up ResearchHub user(s)"
           shouldClearOnSelect
-          filterUserIDs={collaborators.map(
-            (collaborators: LookupSuggestedUser): ID => collaborators.id
-          )}
+          filterUserIDs={[
+            currentUser?.id,
+            ...collaborators.map(
+              (collaborators: LookupSuggestedUser): ID => collaborators.id
+            ),
+          ]}
         />
         <Box
           sx={{

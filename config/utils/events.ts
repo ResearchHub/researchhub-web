@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/nextjs";
 
 type Args = {
   data?: any;
-  error?: Error;
+  error?: Error | any;
   msg?: string | null;
   tags?: any;
 };

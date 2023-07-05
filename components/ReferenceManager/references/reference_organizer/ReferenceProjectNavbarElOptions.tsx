@@ -37,12 +37,7 @@ export default function ReferenceProjectNavbarElOption({
   projectName,
   setShouldShowOptions,
 }: Props): ReactElement {
-  const router = useRouter();
-  const { currentOrg } = getCurrentUserCurrentOrg();
-  const { resetProjectsFetchTime } = useReferenceProjectUpsertContext();
-  const { activeProject } = useReferenceActiveProjectContext();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const isMenuOpen = Boolean(menuAnchorEl);
 
   const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
@@ -52,58 +47,9 @@ export default function ReferenceProjectNavbarElOption({
     setMenuAnchorEl(null);
     setShouldShowOptions(false);
   };
-  const handleDeleteModalClose = () => {
-    setIsDeleteModalOpen(false);
-    handleMenuClose();
-  };
 
   return (
     <Fragment>
-      <QuickModal
-        isOpen={isDeleteModalOpen}
-        modalContent={
-          <Box sx={{ marginBottom: "16px", height: "120px" }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "38px",
-              }}
-            >
-              <Typography id="modal-modal-title" variant="subtitle2">
-                {`Are you sure you want to remove this project?`}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h6">{projectName}</Typography>
-            </Box>
-          </Box>
-        }
-        modalWidth="300px"
-        onPrimaryButtonClick={(): void => {
-          removeReferenceProject({
-            projectID,
-            onSuccess: () => {
-              resetProjectsFetchTime();
-              handleDeleteModalClose();
-              if (projectID === activeProject.projectID) {
-                router.push(`/reference-manager/${currentOrg?.slug ?? ""}`);
-              }
-            },
-            onError: emptyFncWithMsg,
-          });
-        }}
-        onSecondaryButtonClick={handleDeleteModalClose}
-        onClose={handleDeleteModalClose}
-        primaryButtonConfig={{ label: "Delete" }}
-      />
       <span
         onClick={handleMenuClick}
         style={{ alignItems: "center", display: "flex", height: "100%" }}
@@ -120,36 +66,6 @@ export default function ReferenceProjectNavbarElOption({
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem
-          key="add-ref"
-          onClick={(event: MouseEvent): void => {
-            event.preventDefault();
-            onSelectAddNewReference(event);
-            handleMenuClose();
-          }}
-        >
-          {"Add a reference"}
-        </MenuItem>
-        <MenuItem
-          key="add-sub-proj"
-          onClick={(event: MouseEvent): void => {
-            event.preventDefault();
-            onSelectCreateSubProject(event);
-            handleMenuClose();
-          }}
-        >
-          {"Add a folder"}
-        </MenuItem>
-        <MenuItem
-          key="edit"
-          onClick={(event: MouseEvent): void => {
-            event.preventDefault();
-            onSelectEditProject(event);
-            handleMenuClose();
-          }}
-        >
-          {"Edit"}
-        </MenuItem>
         {isCurrentUserAdmin && (
           <MenuItem
             key="remove"
