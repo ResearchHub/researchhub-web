@@ -128,6 +128,66 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     });
 
     _replaceAnnotations({ annotationsToReplace: repositioned });
+
+    if (selectedThreadId) {
+      let isOutOfViewport = false;
+      let selectedThreadRect: any;
+
+      const selectedAnnotation = annotationsSortedByY.find(
+        (annotation, idx) => annotation.threadId === selectedThreadId
+      );
+
+      if (selectedAnnotation) {
+        const relativeElOffsetTop =
+          window.scrollY + relativeRef.current.getBoundingClientRect().y;
+        const anchorOffsetTop =
+          relativeElOffsetTop + selectedAnnotation.anchorCoordinates[0].y;
+
+        console.log("anchorOffsetTop", anchorOffsetTop);
+        console.log("window.scrollY", window.scrollY);
+        console.log("relativeElOffsetTop", relativeElOffsetTop);
+
+        if (
+          window.scrollY > anchorOffsetTop ||
+          window.scrollY + window.innerHeight < anchorOffsetTop
+        ) {
+          isOutOfViewport = true;
+          window.scrollTo({
+            top: anchorOffsetTop - 100,
+            behavior: "smooth",
+          });
+        }
+      }
+    }
+
+    //   annotationsSortedByY.forEach((annotation, idx) => {
+    //     if (annotation.threadId === selectedThreadId) {
+    //       const elemRect = threadRefs[idx].current.getBoundingClientRect();
+
+    //       if (elemRect.top < 0) {
+    //         isOutOfViewport = true;
+    //         selectedThreadRect = elemRect;
+    //       }
+    //     }
+    //   });
+
+    //   const containerElemOffset =
+    //     window.scrollY + relativeRef.current.getBoundingClientRect().y;
+
+    // return {
+    //   x: 0 - config.textSelectionMenu.width / 2,
+    //   y:
+    //     window.scrollY -
+    //     containerElemOffset +
+    //     (initialSelectionPosition?.y || 0),
+    // };
+
+    //   if (isOutOfViewport) {
+    //     console.log('out of viewport')
+    //     console.log('selectedThreadRect', selectedThreadRect)
+    //     window.scroll({top: selectedThreadRect.top, behavior: 'smooth'});
+    //   }
+    // }
   }, [selectedThreadId]);
 
   useEffect(() => {

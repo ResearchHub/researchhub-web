@@ -98,6 +98,12 @@ const CommentEditor = ({
     },
     editorId,
   });
+
+  // if (quill) {
+  //   console.log('quill', quill)
+  //   quill.disable();
+  // }
+
   const {
     content: _content,
     dangerouslySetContent,
@@ -205,7 +211,13 @@ const CommentEditor = ({
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
-    <div>
+    <div
+      onClick={() => {
+        // Quill is disablbed by in order to avoid jumping
+        quill?.enable();
+        quill?.focus();
+      }}
+    >
       <div className={css(isReady && styles.hidden)}>
         <CommentEditorPlaceholder />
       </div>

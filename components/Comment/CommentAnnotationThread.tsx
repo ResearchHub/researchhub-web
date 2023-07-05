@@ -10,6 +10,7 @@ import { createCommentAPI } from "./lib/api";
 import { useDispatch, useSelector } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import { CommentTreeContext } from "./lib/contexts";
+import CommentList from "./CommentList";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -59,11 +60,18 @@ const CommentAnnotationThread = ({
           <Comment key={comment.id} comment={comment} document={document} />
         </div>
       ))}
+      {/* <CommentList
+        document={document}
+        totalCount={100}
+        isRootList={true}
+        comments={comments}
+        handleFetchMore={() => null}
+      /> */}
       {(isFocused || !pendingComment.isEmpty) && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
             key={clientId}
-            // minimalMode={true}
+            minimalMode={true}
             editorId={clientId}
             handleSubmit={async ({ content, mentions }) => {
               await _handleCreateThreadReply({ content, mentions });

@@ -86,10 +86,6 @@ export const parseComment = ({
   raw: any;
   parent?: Comment;
 }): Comment => {
-  if (!raw.thread) {
-    console.log("raw", raw);
-    console.log("parent", parent);
-  }
   const parsed: Comment = {
     id: raw.id,
     createdDate: formatDateStandard(raw.created_date),
