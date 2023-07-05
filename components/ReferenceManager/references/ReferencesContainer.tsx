@@ -49,6 +49,9 @@ import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUpl
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
+import { ID } from "~/config/types/root_types";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
+
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -70,6 +73,9 @@ function ReferencesContainer({
   wsResponse,
   wsConnected,
 }: Props): ReactNode {
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const currentUser = getCurrentUser();
+
   const userAllowed = gateKeepCurrentUser({
     application: "REFERENCE_MANAGER",
     shouldRedirect: true,
@@ -145,10 +151,27 @@ function ReferencesContainer({
       const fileBlob = new Blob([await file.arrayBuffer()], {
         type: "application/pdf",
       });
+
       const result = fetch(preSignedUrl, {
         method: "PUT",
         body: fileBlob,
       });
+
+      if (isDevelopment) {
+        const preSignedUrlParts = preSignedUrl.split("?AWS");
+        const path = preSignedUrlParts[0].split(".com/")[1];
+        await result;
+        const callBackResult = await fetch(
+          generateApiUrl("citation_entry/upload_pdfs_callback"),
+          api.POST_CONFIG({
+            path: path,
+            filename: file.name,
+            organization_id: nullthrows(currentOrg).id,
+            project_id: nullthrows(activeProject).projectID,
+            creator_id: currentUser.id
+          })
+        );
+      };
     });
     const preload: Array<Preload> = [];
 
