@@ -121,8 +121,6 @@ function ReferencesContainer({
   };
 
   const onFileDrop = (acceptedFiles: File[] | any[]): void => {
-    console.warn("calling");
-    debugger;
     setLoading(true);
     postUploadFiles({
       acceptedFiles,
