@@ -9,11 +9,7 @@ import {
   COMMENT_CONTEXTS,
   groupByThread,
 } from "../../lib/types";
-import {
-  createAnnotation,
-  Annotation as AnnotationType,
-  SerializedAnchorPosition,
-} from "./lib/types";
+import { createAnnotation, Annotation as AnnotationType } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
 import { GenericDocument } from "../../../Document/lib/types";
 import XRange from "../../lib/xrange/XRange";
@@ -28,10 +24,7 @@ import { sortOpts } from "../../lib/options";
 import CommentAnnotationThread from "../../CommentAnnotationThread";
 import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
-import differenceWith from "lodash/differenceWith";
-import { useRouter } from "next/router";
-import pick from "lodash/pick";
-import copyTextToClipboard from "~/config/utils/copyTextToClipboard";
+import createShareableLink from "./lib/createShareableLink";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
@@ -62,7 +55,6 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   // Fetch comments from API
   useEffect(() => {
@@ -106,7 +98,6 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   }, [relativeRef]);
 
   useEffect(() => {
-    // const diff = inlineComments.filter(left => !prevInlineComments.current.some(right => left.id === right.id));
     const _commentThreads = groupByThread(inlineComments);
     commentThreads.current = _commentThreads;
 
@@ -168,7 +159,6 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
 
     if (selectedThreadId) {
       let isOutOfViewport = false;
-      let selectedThreadRect: any;
 
       const selectedAnnotation = annotationsSortedByY.find(
         (annotation, idx) => annotation.threadId === selectedThreadId
@@ -431,42 +421,8 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
     setInlineComments([...inlineComments, comment]);
   };
 
-  const _createShareableLink = ({
-    threadId,
-    selectionXRange,
-  }: {
-    threadId?: string;
-    selectionXRange?: any;
-  }) => {
-    const url = new URL(window.location.href);
-    let hash = "";
-    if (threadId) {
-      hash = `#thread=${threadId}`;
-    } else if (selectionXRange) {
-      const serializedAnchor: SerializedAnchorPosition =
-        selectionXRange.serialize();
-      const serialized = encodeURIComponent(
-        JSON.stringify(
-          pick(
-            serializedAnchor,
-            "startContainerPath",
-            "startOffset",
-            "endContainerPath",
-            "endOffset"
-          )
-        )
-      );
-
-      url.hash = `#selection=${serialized}`;
-    }
-
-    copyTextToClipboard(url.href);
-  };
-
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
-
-  console.log("positionFromUrl", positionFromUrl);
 
   return (
     <div style={{ position: "relative" }}>
@@ -513,7 +469,7 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
           >
             <TextSelectionMenu
               onCommentClick={_createNewAnnotation}
-              onLinkClick={() => _createShareableLink({ selectionXRange })}
+              onLinkClick={() => createShareableLink({ selectionXRange })}
             />
           </div>
         )}
