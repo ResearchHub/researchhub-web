@@ -52,7 +52,6 @@ import withWebSocket from "~/components/withWebSocket";
 import { ID } from "~/config/types/root_types";
 import { getCurrentUser } from "~/config/utils/getCurrentUser";
 
-
 interface Props {
   showMessage: ({ show, load }) => void;
   wsResponse: string;
@@ -168,10 +167,10 @@ function ReferencesContainer({
             filename: file.name,
             organization_id: nullthrows(currentOrg).id,
             project_id: nullthrows(activeProject).projectID,
-            creator_id: currentUser.id
+            creator_id: currentUser.id,
           })
         );
-      };
+      }
     });
     const preload: Array<Preload> = [];
 
@@ -549,7 +548,7 @@ function ReferencesContainer({
                       fontSize="20px"
                       style={{ marginRight: 8 }}
                     />
-                    {"Create a sub-folder"}
+                    {isOnOrgTab ? "Create a folder" : "Create a sub-folder"}
                   </div>
                   {(!isEmpty(selectedReferenceIDs) ||
                     !isEmpty(selectedFolderIds)) && (

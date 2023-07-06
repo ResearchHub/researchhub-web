@@ -223,7 +223,7 @@ export default function BasicTogglableNavbarLeft({
             noWrap
             variant="h6"
           >
-            {"PROJECTS"}
+            {"Folders"}
           </Typography>
         </ListItem>
         <ListItemButton
