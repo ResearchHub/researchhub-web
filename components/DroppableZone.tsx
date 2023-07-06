@@ -5,6 +5,7 @@ import colors from "~/config/themes/colors";
 
 type Props = {
   accept?: string;
+  fullWidth?: boolean;
   multiple?: boolean;
   children?: ReactElement;
   noClick?: boolean;
@@ -13,16 +14,21 @@ type Props = {
 
 function DroppableZone({
   accept,
-  multiple,
   children,
-  noClick,
+  fullWidth,
   handleFileDrop,
+  multiple,
+  noClick,
 }: Props) {
   const [isFileDragged, setIsFileDragged] = useState(false);
 
   return (
     <div
-      className={css(styles.dropzoneContainer, isFileDragged && styles.dragged)}
+      className={css(
+        styles.dropzoneContainer,
+        isFileDragged && styles.dragged,
+        fullWidth && styles.fullWidth
+      )}
     >
       <Dropzone
         accept={accept}
@@ -81,6 +87,10 @@ const styles = StyleSheet.create({
     outline: "none",
     marginRight: 4,
     marginBottom: 4,
+  },
+  fullWidth: {
+    width: "100%",
+    minWidth: "100%",
   },
   uploadImage: {
     height: 80,
