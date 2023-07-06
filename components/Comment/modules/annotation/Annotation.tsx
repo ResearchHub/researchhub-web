@@ -7,10 +7,12 @@ const Annotation = ({
   annotation,
   focused,
   handleClick,
+  color,
 }: {
   annotation: AnnotationType;
   focused: boolean;
   handleClick: Function;
+  color?: string;
 }) => {
   const [canvasRefs, setCanvasRefs] = useState<any[]>([]);
 
@@ -31,7 +33,9 @@ const Annotation = ({
         canvasRef.current.width = width;
         canvasRef.current.height = height;
 
-        if (focused) {
+        if (color) {
+          ctx.fillStyle = color;
+        } else if (focused) {
           ctx.fillStyle = colors.annotation.selected;
         } else {
           ctx.fillStyle = colors.annotation.unselected;

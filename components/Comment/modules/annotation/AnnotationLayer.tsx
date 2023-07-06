@@ -9,7 +9,11 @@ import {
   COMMENT_CONTEXTS,
   groupByThread,
 } from "../../lib/types";
-import { createAnnotation, Annotation as AnnotationType } from "./lib/types";
+import {
+  createAnnotation,
+  Annotation as AnnotationType,
+  SerializedAnchorPosition,
+} from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
 import { GenericDocument } from "../../../Document/lib/types";
 import XRange from "../../lib/xrange/XRange";
@@ -25,13 +29,16 @@ import CommentAnnotationThread from "../../CommentAnnotationThread";
 import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
 import differenceWith from "lodash/differenceWith";
+import { useRouter } from "next/router";
+import pick from "lodash/pick";
+import copyTextToClipboard from "~/config/utils/copyTextToClipboard";
 
 interface Props {
   relativeRef: any; // Canvas will be rendered relative to this element
   document: GenericDocument;
 }
 
-const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
+const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
@@ -49,9 +56,13 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
+  const [positionFromUrl, setPositionFromUrl] = useState<AnnotationType | null>(
+    null
+  );
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Fetch comments from API
   useEffect(() => {
@@ -67,6 +78,32 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
 
     _fetch();
   }, []);
+
+  useEffect(() => {
+    // FIXME: This should start working on page load after we use relative xpath instead of absolute
+    if (relativeRef.current && window.location.hash.length > 0) {
+      const hashPairs = window.location.hash.split("&");
+      const selectionIdx = hashPairs.findIndex((pair) =>
+        pair.includes("selection")
+      );
+
+      if (selectionIdx > -1) {
+        const [key, value] = hashPairs[selectionIdx].split("=");
+        const selection = JSON.parse(decodeURIComponent(value));
+        const xrange = XRange.createFromSerialized(selection);
+
+        if (xrange) {
+          const annotation = createAnnotation({
+            xrange,
+            threadId: "position-from-url",
+            relativeEl: relativeRef.current,
+            serializedAnchorPosition: xrange.serialize(),
+          });
+          setPositionFromUrl(annotation);
+        }
+      }
+    }
+  }, [relativeRef]);
 
   useEffect(() => {
     // const diff = inlineComments.filter(left => !prevInlineComments.current.some(right => left.id === right.id));
@@ -143,10 +180,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         const anchorOffsetTop =
           relativeElOffsetTop + selectedAnnotation.anchorCoordinates[0].y;
 
-        console.log("anchorOffsetTop", anchorOffsetTop);
-        console.log("window.scrollY", window.scrollY);
-        console.log("relativeElOffsetTop", relativeElOffsetTop);
-
         if (
           window.scrollY > anchorOffsetTop ||
           window.scrollY + window.innerHeight < anchorOffsetTop
@@ -159,35 +192,6 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
         }
       }
     }
-
-    //   annotationsSortedByY.forEach((annotation, idx) => {
-    //     if (annotation.threadId === selectedThreadId) {
-    //       const elemRect = threadRefs[idx].current.getBoundingClientRect();
-
-    //       if (elemRect.top < 0) {
-    //         isOutOfViewport = true;
-    //         selectedThreadRect = elemRect;
-    //       }
-    //     }
-    //   });
-
-    //   const containerElemOffset =
-    //     window.scrollY + relativeRef.current.getBoundingClientRect().y;
-
-    // return {
-    //   x: 0 - config.textSelectionMenu.width / 2,
-    //   y:
-    //     window.scrollY -
-    //     containerElemOffset +
-    //     (initialSelectionPosition?.y || 0),
-    // };
-
-    //   if (isOutOfViewport) {
-    //     console.log('out of viewport')
-    //     console.log('selectedThreadRect', selectedThreadRect)
-    //     window.scroll({top: selectedThreadRect.top, behavior: 'smooth'});
-    //   }
-    // }
   }, [selectedThreadId]);
 
   useEffect(() => {
@@ -427,8 +431,42 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
     setInlineComments([...inlineComments, comment]);
   };
 
+  const _createShareableLink = ({
+    threadId,
+    selectionXRange,
+  }: {
+    threadId?: string;
+    selectionXRange?: any;
+  }) => {
+    const url = new URL(window.location.href);
+    let hash = "";
+    if (threadId) {
+      hash = `#thread=${threadId}`;
+    } else if (selectionXRange) {
+      const serializedAnchor: SerializedAnchorPosition =
+        selectionXRange.serialize();
+      const serialized = encodeURIComponent(
+        JSON.stringify(
+          pick(
+            serializedAnchor,
+            "startContainerPath",
+            "startOffset",
+            "endContainerPath",
+            "endOffset"
+          )
+        )
+      );
+
+      url.hash = `#selection=${serialized}`;
+    }
+
+    copyTextToClipboard(url.href);
+  };
+
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
+
+  console.log("positionFromUrl", positionFromUrl);
 
   return (
     <div style={{ position: "relative" }}>
@@ -440,6 +478,14 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           handleClick={(threadId) => setSelectedThreadId(threadId)}
         />
       ))}
+      {positionFromUrl && (
+        <Annotation
+          annotation={positionFromUrl}
+          focused={true}
+          color={colors.annotation.sharedViaUrl}
+          handleClick={() => null}
+        />
+      )}
       <CommentTreeContext.Provider
         value={{
           sort: sortOpts[0].value,
@@ -467,7 +513,7 @@ const AnnotationCanvas = ({ relativeRef, document: doc }: Props) => {
           >
             <TextSelectionMenu
               onCommentClick={_createNewAnnotation}
-              onLinkClick={undefined}
+              onLinkClick={() => _createShareableLink({ selectionXRange })}
             />
           </div>
         )}
@@ -545,4 +591,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnnotationCanvas;
+export default AnnotationLayer;

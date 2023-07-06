@@ -99,11 +99,6 @@ const CommentEditor = ({
     editorId,
   });
 
-  // if (quill) {
-  //   console.log('quill', quill)
-  //   quill.disable();
-  // }
-
   const {
     content: _content,
     dangerouslySetContent,
