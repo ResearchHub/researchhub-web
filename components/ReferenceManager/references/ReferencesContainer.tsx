@@ -322,12 +322,6 @@ function ReferencesContainer({
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
           />
-          {/* <DroppableZone
-            multiple
-            noClick
-            handleFileDrop={onFileDrop}
-            accept=".pdf"
-          > */}
           <Box
             sx={{
               display: "flex",
