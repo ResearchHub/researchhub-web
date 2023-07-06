@@ -17,6 +17,7 @@ import {
   nullthrows,
   emptyFncWithMsg,
   isEmpty,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import { DATA_GRID_STYLE_OVERRIDE } from "../styles/ReferencesTableStyles";
 import { fetchReferenceOrgProjects } from "../reference_organizer/api/fetchReferenceOrgProjects";
@@ -32,9 +33,15 @@ import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
 
 type Props = {
   createdReferences: any[];
-  handleFileDrop: () => void;
+  handleFileDrop: any[];
   setSelectedReferenceIDs: (refs: any[]) => void;
   setSelectedFolderIds: (refs: any[]) => void;
+};
+
+export type PreloadRow = {
+  citation_type: string;
+  id: string;
+  created: boolean;
 };
 
 function useEffectFetchReferenceCitations({
@@ -242,10 +249,12 @@ export default function ReferencesTable({
         hideFooter
         className={formattedReferenceRows.length === 0 ? "empty-data-grid" : ""}
         localeText={{
+          // @ts-ignore MUI has typed this to be string. But elements seem to work
           noRowsLabel: (
             <UploadFileDragAndDrop
-              handleFileDrop={handleFileDrop}
+              children={""}
               accept={".pdf"}
+              handleFileDrop={handleFileDrop}
             />
           ),
         }}
