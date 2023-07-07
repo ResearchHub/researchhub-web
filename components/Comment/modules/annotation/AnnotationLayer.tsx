@@ -143,13 +143,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   // If position has changed, recalculate.
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      const repositioned = repositionAnnotations({
-        annotationsSortedByY: annotationsSortedByY,
-        selectedThreadId,
-        threadRefs,
-      });
+      setAnnotationsSortedByY((annotations) => {
+        const repositioned = repositionAnnotations({
+          annotationsSortedByY: annotationsSortedByY,
+          selectedThreadId,
+          threadRefs,
+        });
 
-      _replaceAnnotations({ annotationsToReplace: repositioned });
+        return _replaceAnnotations({
+          existing: annotations,
+          replaceWith: repositioned,
+        });
+      });
     });
 
     threadRefs.forEach((t) => {
@@ -165,7 +170,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         }
       });
     };
-  }, [threadRefs]);
+  }, [threadRefs, selectedThreadId]);
 
   useEffect(() => {
     setThreadRefs((refs) =>
@@ -176,13 +181,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   }, [annotationsSortedByY.length]);
 
   useEffect(() => {
-    const repositioned = repositionAnnotations({
-      annotationsSortedByY: annotationsSortedByY,
-      selectedThreadId,
-      threadRefs,
-    });
+    setAnnotationsSortedByY((annotations) => {
+      const repositioned = repositionAnnotations({
+        annotationsSortedByY: annotationsSortedByY,
+        selectedThreadId,
+        threadRefs,
+      });
 
-    _replaceAnnotations({ annotationsToReplace: repositioned });
+      return _replaceAnnotations({
+        existing: annotations,
+        replaceWith: repositioned,
+      });
+    });
 
     if (selectedThreadId) {
       let isOutOfViewport = false;
@@ -273,25 +283,27 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     };
   }, [annotationsSortedByY]);
 
-  const _replaceAnnotations = ({ annotationsToReplace }) => {
-    if (annotationsToReplace.length > 0) {
-      setAnnotationsSortedByY((prevAnnotations) => {
-        const newAnnotationsSortedByY = [...prevAnnotations];
-        for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
-          const annotation = newAnnotationsSortedByY[i];
-          const repositionedAnnotation: AnnotationType | undefined =
-            annotationsToReplace.find(
-              (_annotation) => annotation.threadId === _annotation.threadId
-            );
+  const _replaceAnnotations = ({
+    existing,
+    replaceWith,
+  }: {
+    existing: AnnotationType[];
+    replaceWith: AnnotationType[];
+  }) => {
+    const newAnnotationsSortedByY = [...existing];
+    for (let i = 0; i < newAnnotationsSortedByY.length; i++) {
+      const annotation = newAnnotationsSortedByY[i];
+      const repositionedAnnotation: AnnotationType | undefined =
+        replaceWith.find(
+          (_annotation) => annotation.threadId === _annotation.threadId
+        );
 
-          if (repositionedAnnotation) {
-            newAnnotationsSortedByY[i] = repositionedAnnotation;
-          }
-        }
-
-        return newAnnotationsSortedByY;
-      });
+      if (repositionedAnnotation) {
+        newAnnotationsSortedByY[i] = repositionedAnnotation;
+      }
     }
+
+    return newAnnotationsSortedByY;
   };
 
   const _sortAnnotationsByAppearanceInPage = (
@@ -449,7 +461,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     comment: CommentModel;
     clientId: string;
   }) => {
-    console.log("comment", comment);
     setInlineComments([...inlineComments, comment]);
   };
 
@@ -463,7 +474,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           key={`annotation-${annotation.threadId}`}
           annotation={annotation}
           focused={selectedThreadId === annotation.threadId}
-          handleClick={(threadId) => setSelectedThreadId(threadId)}
         />
       ))}
       {positionFromUrl && (
@@ -471,7 +481,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           annotation={positionFromUrl}
           focused={true}
           color={colors.annotation.sharedViaUrl}
-          handleClick={() => null}
         />
       )}
       <CommentTreeContext.Provider

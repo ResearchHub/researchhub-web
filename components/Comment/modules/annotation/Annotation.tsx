@@ -6,12 +6,10 @@ import { StyleSheet, css } from "aphrodite";
 const Annotation = ({
   annotation,
   focused,
-  handleClick,
   color,
 }: {
   annotation: AnnotationType;
   focused: boolean;
-  handleClick: Function;
   color?: string;
 }) => {
   const [canvasRefs, setCanvasRefs] = useState<any[]>([]);
@@ -50,7 +48,6 @@ const Annotation = ({
     <>
       {canvasRefs.map((canvasRef, i) => (
         <canvas
-          // onClick={() => handleClick(annotation.threadId)}
           ref={canvasRef}
           className={css(styles.annotation)}
           style={{

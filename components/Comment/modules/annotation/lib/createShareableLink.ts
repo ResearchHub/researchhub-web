@@ -19,8 +19,6 @@ const createShareableLink = ({
     const serializedAnchor: SerializedAnchorPosition =
       selectionXRange.serialize({ ignoreXPathPrefix: contentElXpath });
 
-    console.log("serializedAnchor", serializedAnchor);
-
     const serialized = encodeURIComponent(
       JSON.stringify(
         pick(
