@@ -1,34 +1,31 @@
 import { Box, Typography } from "@mui/material";
+import { connect } from "react-redux";
 import {
   DEFAULT_PROJECT_VALUES,
   useReferenceProjectUpsertContext,
 } from "./reference_organizer/context/ReferenceProjectsUpsertContext";
+import {
+  emptyFncWithMsg,
+  isEmpty,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import {
   faArrowUpFromBracket,
   faFolderPlus,
   faPlus,
   faTrashXmark,
 } from "@fortawesome/pro-light-svg-icons";
-import {
-  Fragment,
-  useState,
-  ReactNode,
-  useEffect,
-  useRef,
-  MutableRefObject,
-  LegacyRef,
-} from "react";
-import { connect } from "react-redux";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  nullthrows,
-} from "~/config/utils/nullchecks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Fragment, useState, ReactNode, useEffect, useRef } from "react";
+import { getCurrentUser } from "~/config/utils/getCurrentUser";
 import { MessageActions } from "~/redux/message";
+import { pluralize } from "~/config/utils/misc";
 import { removeReferenceCitations } from "./api/removeReferenceCitations";
+import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
 import { StyleSheet, css } from "aphrodite";
 import { toast } from "react-toastify";
 import { useOrgs } from "~/components/contexts/OrganizationContext";
+import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import { useReferenceTabContext } from "./reference_item/context/ReferenceItemDrawerContext";
 import { useReferenceUploadDrawerContext } from "./reference_uploader/context/ReferenceUploadDrawerContext";
 import { useRouter } from "next/router";
@@ -36,11 +33,6 @@ import BasicTogglableNavbarLeft, {
   LEFT_MAX_NAV_WIDTH,
   LEFT_MIN_NAV_WIDTH,
 } from "../basic_page_layout/BasicTogglableNavbarLeft";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { pluralize } from "~/config/utils/misc";
-import { removeReferenceProject } from "./reference_organizer/api/removeReferenceProject";
-import { useReferenceActiveProjectContext } from "./reference_organizer/context/ReferenceActiveProjectContext";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
@@ -148,6 +140,7 @@ function ReferencesContainer({
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     ReactTooltip.rebuild();
   }, [selectedReferenceIDs]);
@@ -324,239 +317,235 @@ function ReferencesContainer({
             navWidth={leftNavWidth}
             setIsOpen={setIsLeftNavOpen}
           />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "32px 32px",
-              width: "100%",
-              overflow: "auto",
-              boxSizing: "border-box",
-              flex: 1,
-            }}
-            className={"references-section"}
+          <DroppableZone
+            accept=".pdf"
+            fullWidth
+            handleFileDrop={onFileDrop}
+            multiple
+            noClick
           >
-            <div
-              style={{
-                marginBottom: 32,
+            <Box
+              sx={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: "column",
+                padding: "32px 32px",
+                width: "100%",
+                overflow: "auto",
+                boxSizing: "border-box",
+                flex: 1,
               }}
+              className={"references-section"}
             >
-              <Typography variant="h5">
-                {router.query.slug ? (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {router.query.slug.map((name, index) => {
-                      const slugsTilNow = router.query.slug
-                        .slice(0, index + 1)
-                        .join("/");
-
-                      const isActiveProject =
-                        index + 1 === router.query.slug?.length;
-                      return (
-                        <div>
-                          <Link
-                            href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
-                            className={css(
-                              styles.projectLink,
-                              isActiveProject && styles.activeProjectLink
-                            )}
-                          >
-                            {name}
-                          </Link>
-                          {index !== router.query.slug?.length - 1 && (
-                            <span
-                              style={{
-                                margin: 8,
-                                color: "rgb(115, 108, 100)",
-                              }}
-                            >
-                              /
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                    <DeleteForeverOutlinedIcon
-                      sx={{
-                        marginLeft: "8px",
-                        cursor: "pointer",
-                        color: colors.GREY(),
-                      }}
-                      onClick={(): void => {
-                        setIsDeleteModalOpen(true);
-                      }}
-                      fontSize="small"
-                    />
-                  </Box>
-                ) : isOnOrgTab ? (
-                  "Organization References"
-                ) : (
-                  `My References`
-                )}
-              </Typography>
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".pdf"
-                multiple
-                style={{ display: "none" }}
-                onChange={(event) => {
-                  onFileDrop(Array.from(event?.target?.files ?? []));
-                }}
-              />
-
               <div
                 style={{
-                  marginLeft: "auto",
+                  marginBottom: 32,
                   display: "flex",
                   alignItems: "center",
                 }}
               >
-                {activeProject?.collaborators && (
-                  <AuthorFacePile
-                    horizontal
-                    margin={-10}
-                    imgSize={40}
-                    authorProfiles={activeProject?.collaborators.map(
-                      (collaborator) => {
-                        collaborator.authorProfile.user = collaborator;
-                        return collaborator.authorProfile;
-                      }
-                    )}
-                  />
-                )}
-                {(isOnOrgTab || !isEmpty(router.query.slug)) && (
-                  <Button
-                    variant="outlined"
-                    fontSize="small"
-                    size="small"
-                    customButtonStyle={styles.shareButton}
-                    onClick={
-                      isOnOrgTab
-                        ? () => setIsOrgModalOpen(true)
-                        : onUpdateFolderClick
-                    }
-                  >
-                    <Typography variant="h6" fontSize={"16px"}>
-                      {isOnOrgTab ? "Update organization" : "Update folder"}
-                    </Typography>
-                  </Button>
-                )}
-              </div>
-            </div>
-            <Box className="ReferencesContainerMain">
-              <Box
-                className="ReferencesContainerTitleSection"
-                sx={{
-                  alignItems: "center",
-                  display: "flex",
-                  flexDirection: "row",
-                  height: 44,
-                  marginBottom: "20px",
-                  width: "100%",
-                }}
-              >
-                <DropdownMenu
-                  menuItemProps={[
-                    {
-                      itemLabel: "DOI or URL",
-                      onClick: (): void => {
-                        setProjectIDForUploadDrawer(
-                          activeProject?.projectID ?? null
-                        );
-                        setIsRefUploadDrawerOpen(true);
-                      },
-                    },
-                    {
-                      itemLabel: "Upload PDF(s)",
-                      onClick: (): void =>
-                        // @ts-ignore unnecessary never handling
-                        nullthrows(inputRef?.current).click(),
-                    },
-                  ]}
-                  menuLabel={
-                    <div className={css(styles.button)}>
-                      <FontAwesomeIcon
-                        icon={faPlus}
-                        color="#fff"
-                        fontSize="20px"
-                        style={{ marginRight: 8 }}
-                      />
-                      {"Add a reference"}
-                    </div>
-                  }
-                  size={"small"}
-                />
+                <Typography variant="h5">
+                  {router.query.slug ? (
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      {router.query.slug.map((name, index) => {
+                        const slugsTilNow = router.query.slug
+                          .slice(0, index + 1)
+                          .join("/");
 
+                        const isActiveProject =
+                          index + 1 === router.query.slug?.length;
+                        return (
+                          <div>
+                            <Link
+                              href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
+                              className={css(
+                                styles.projectLink,
+                                isActiveProject && styles.activeProjectLink
+                              )}
+                            >
+                              {name}
+                            </Link>
+                            {index !== router.query.slug?.length - 1 && (
+                              <span
+                                style={{
+                                  margin: 8,
+                                  color: "rgb(115, 108, 100)",
+                                }}
+                              >
+                                /
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                      <DeleteForeverOutlinedIcon
+                        sx={{
+                          marginLeft: "8px",
+                          cursor: "pointer",
+                          color: colors.GREY(),
+                        }}
+                        onClick={(): void => {
+                          setIsDeleteModalOpen(true);
+                        }}
+                        fontSize="small"
+                      />
+                    </Box>
+                  ) : isOnOrgTab ? (
+                    "Organization References"
+                  ) : (
+                    `My References`
+                  )}
+                </Typography>
                 <div
-                  className={css(styles.button, styles.secondary)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setProjectUpsertPurpose("create_sub_project");
-                    setProjectUpsertValue({
-                      ...DEFAULT_PROJECT_VALUES,
-                      projectID: activeProject?.projectID,
-                    });
-                    setIsProjectUpsertModalOpen(true);
+                  style={{
+                    marginLeft: "auto",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
-                  <FontAwesomeIcon
-                    icon={faFolderPlus}
-                    color={colors.NEW_BLUE(1)}
-                    fontSize="20px"
-                    style={{ marginRight: 8 }}
-                  />
-                  {isOnOrgTab || isOnMyRefs
-                    ? "Create a folder"
-                    : "Create a sub-folder"}
+                  {activeProject?.collaborators && (
+                    <AuthorFacePile
+                      horizontal
+                      margin={-10}
+                      imgSize={40}
+                      authorProfiles={activeProject?.collaborators.map(
+                        (collaborator) => {
+                          collaborator.authorProfile.user = collaborator;
+                          return collaborator.authorProfile;
+                        }
+                      )}
+                    />
+                  )}
+                  {(isOnOrgTab || !isEmpty(router.query.slug)) && (
+                    <Button
+                      variant="outlined"
+                      fontSize="small"
+                      size="small"
+                      customButtonStyle={styles.shareButton}
+                      onClick={
+                        isOnOrgTab
+                          ? () => setIsOrgModalOpen(true)
+                          : onUpdateFolderClick
+                      }
+                    >
+                      <Typography variant="h6" fontSize={"16px"}>
+                        {isOnOrgTab ? "Update organization" : "Update folder"}
+                      </Typography>
+                    </Button>
+                  )}
                 </div>
-                {(!isEmpty(selectedReferenceIDs) ||
-                  !isEmpty(selectedFolderIds)) && (
-                  <>
-                    <div
-                      className={css(styles.trashContainer)}
-                      data-for="button-tooltips"
-                      data-tip={`Remove ${
-                        selectedFolderIds.length
-                          ? "Items"
-                          : pluralize({
-                              text: "Reference",
-                              length: selectedReferenceIDs.length,
-                            })
-                      }`}
-                      onClick={() => setIsRemoveRefModalOpen(true)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrashXmark}
-                        style={{ fontSize: 18 }}
-                      />
-                    </div>
-                    <div
-                      className={css(styles.trashContainer)}
-                      onClick={() => setIsBibModalOpen(true)}
-                      data-tip={`Export Reference${
-                        selectedReferenceIDs.length > 1 ? "s" : ""
-                      }`}
-                      data-for="button-tooltips"
-                    >
-                      <FontAwesomeIcon
-                        icon={faArrowUpFromBracket}
-                        style={{ fontSize: 18 }}
-                      />
-                    </div>
-                  </>
-                )}
+              </div>
+              <Box className="ReferencesContainerMain">
+                <Box
+                  className="ReferencesContainerTitleSection"
+                  sx={{
+                    alignItems: "center",
+                    display: "flex",
+                    flexDirection: "row",
+                    height: 44,
+                    marginBottom: "20px",
+                    width: "100%",
+                  }}
+                >
+                  <DropdownMenu
+                    menuItemProps={[
+                      {
+                        itemLabel: "DOI or URL",
+                        onClick: (): void => {
+                          setProjectIDForUploadDrawer(
+                            activeProject?.projectID ?? null
+                          );
+                          setIsRefUploadDrawerOpen(true);
+                        },
+                      },
+                      {
+                        itemLabel: "Upload PDF(s)",
+                        onClick: (): void =>
+                          // @ts-ignore unnecessary never handling
+                          nullthrows(inputRef?.current).click(),
+                      },
+                    ]}
+                    menuLabel={
+                      <div className={css(styles.button)}>
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          color="#fff"
+                          fontSize="20px"
+                          style={{ marginRight: 8 }}
+                        />
+                        {"Add a reference"}
+                      </div>
+                    }
+                    size={"small"}
+                  />
+
+                  <div
+                    className={css(styles.button, styles.secondary)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectUpsertPurpose("create_sub_project");
+                      setProjectUpsertValue({
+                        ...DEFAULT_PROJECT_VALUES,
+                        projectID: activeProject?.projectID,
+                      });
+                      setIsProjectUpsertModalOpen(true);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      color={colors.NEW_BLUE(1)}
+                      fontSize="20px"
+                      style={{ marginRight: 8 }}
+                    />
+                    {isOnOrgTab || isOnMyRefs
+                      ? "Create a folder"
+                      : "Create a sub-folder"}
+                  </div>
+                  {(!isEmpty(selectedReferenceIDs) ||
+                    !isEmpty(selectedFolderIds)) && (
+                    <>
+                      <div
+                        className={css(styles.trashContainer)}
+                        data-for="button-tooltips"
+                        data-tip={`Remove ${
+                          selectedFolderIds.length
+                            ? "Items"
+                            : pluralize({
+                                text: "Reference",
+                                length: selectedReferenceIDs.length,
+                              })
+                        }`}
+                        onClick={() => setIsRemoveRefModalOpen(true)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrashXmark}
+                          style={{ fontSize: 18 }}
+                        />
+                      </div>
+                      <div
+                        className={css(styles.trashContainer)}
+                        onClick={() => setIsBibModalOpen(true)}
+                        data-tip={`Export Reference${
+                          selectedReferenceIDs.length > 1 ? "s" : ""
+                        }`}
+                        data-for="button-tooltips"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowUpFromBracket}
+                          style={{ fontSize: 18 }}
+                        />
+                      </div>
+                    </>
+                  )}
+                </Box>
+                <ReferencesTable
+                  createdReferences={createdReferences}
+                  handleFileDrop={onFileDrop}
+                  setSelectedReferenceIDs={setSelectedReferenceIDs}
+                  setSelectedFolderIds={setSelectedFolderIds}
+                />
               </Box>
-              <ReferencesTable
-                createdReferences={createdReferences}
-                handleFileDrop={onFileDrop}
-                setSelectedReferenceIDs={setSelectedReferenceIDs}
-                setSelectedFolderIds={setSelectedFolderIds}
-              />
             </Box>
-          </Box>
-          {/* </DroppableZone> */}
+          </DroppableZone>
           <ReactTooltip effect="solid" id="button-tooltips" />
         </Box>
         {/* <ToastContainer
