@@ -67,7 +67,7 @@ function useEffectFetchReferenceCitations({
         organizationID: currentOrg?.id,
         // @ts-ignore
         projectID: activeProject.projectID,
-        getCurrentUserCitation: isEmpty(router.query?.org_refs),
+        getCurrentUserCitation: !isEmpty(router.query?.my_refs),
       });
     }
   }, [
