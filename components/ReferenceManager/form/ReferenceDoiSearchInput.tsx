@@ -6,12 +6,14 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { fetchReferenceFromDoi } from "./api/fetchReferenceFromDoi";
+import { isStringURL } from "~/config/utils/isStringURL";
 import { NullableString } from "~/config/types/root_types";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
+import { fetchReferenceFromUrl } from "./api/fetchReferenceFromUrl";
 
 type Props = {
   onSearchSuccess: (searchMetaData: any) => void;
@@ -20,23 +22,38 @@ type Props = {
 export default function ReferenceDoiSearchInput({
   onSearchSuccess,
 }: Props): ReactElement {
-  const [doi, setDoi] = useState<NullableString>(null);
+  const [doiOrUrl, setDoiOrUrl] = useState<NullableString>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const executeSearch = (): void => {
-    if (!isEmpty(doi)) {
+    if (!isEmpty(doiOrUrl)) {
+      const isUrl = isStringURL(doiOrUrl ?? "");
       setIsLoading(true);
-      fetchReferenceFromDoi({
-        doi: nullthrows(doi),
-        onSuccess: (payload) => {
-          onSearchSuccess(payload);
-          setIsLoading(false);
-        },
-        onError: (error) => {
-          emptyFncWithMsg(error);
-          setIsLoading(false);
-        },
-      });
+      if (isUrl) {
+        fetchReferenceFromUrl({
+          onSuccess: (payload) => {
+            onSearchSuccess(payload);
+            setIsLoading(false);
+          },
+          onError: (error) => {
+            emptyFncWithMsg(error);
+            setIsLoading(false);
+          },
+          url: nullthrows(doiOrUrl),
+        });
+      } else {
+        fetchReferenceFromDoi({
+          doi: nullthrows(doiOrUrl),
+          onSuccess: (payload) => {
+            onSearchSuccess(payload);
+            setIsLoading(false);
+          },
+          onError: (error) => {
+            emptyFncWithMsg(error);
+            setIsLoading(false);
+          },
+        });
+      }
     }
   };
 
@@ -59,7 +76,7 @@ export default function ReferenceDoiSearchInput({
         sx={{ background: "transparent" }}
         width="100%"
       >
-        {"Identifiers (doi)"}
+        {"Identifiers (doi or url)"}
       </Typography>
       <Box
         sx={{
@@ -73,7 +90,7 @@ export default function ReferenceDoiSearchInput({
           disabled={isLoading}
           fullWidth
           onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            setDoi(event?.target?.value);
+            setDoiOrUrl(event?.target?.value);
           }}
           onKeyDown={(event): void => {
             if (event.key === "Enter" || event?.keyCode === 13) {
