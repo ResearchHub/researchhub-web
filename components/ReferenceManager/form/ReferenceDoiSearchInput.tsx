@@ -24,6 +24,7 @@ export default function ReferenceDoiSearchInput({
 }: Props): ReactElement {
   const [doiOrUrl, setDoiOrUrl] = useState<NullableString>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchFailMsg, setSearchFailMsg] = useState<NullableString>("yoyoyo");
 
   const executeSearch = (): void => {
     if (!isEmpty(doiOrUrl)) {
@@ -34,9 +35,13 @@ export default function ReferenceDoiSearchInput({
           onSuccess: (payload) => {
             onSearchSuccess(payload);
             setIsLoading(false);
+            setSearchFailMsg(null);
           },
           onError: (error) => {
-            emptyFncWithMsg(error);
+            debugger;
+            setSearchFailMsg(
+              "URL not found. Try different url or update manually below"
+            );
             setIsLoading(false);
           },
           url: nullthrows(doiOrUrl),
@@ -44,13 +49,16 @@ export default function ReferenceDoiSearchInput({
       } else {
         fetchReferenceFromDoi({
           doi: nullthrows(doiOrUrl),
+          onError: (error) => {
+            setSearchFailMsg(
+              "DOI not found. Try different doi or update manually below"
+            );
+            setIsLoading(false);
+          },
           onSuccess: (payload) => {
             onSearchSuccess(payload);
             setIsLoading(false);
-          },
-          onError: (error) => {
-            emptyFncWithMsg(error);
-            setIsLoading(false);
+            setSearchFailMsg(null);
           },
         });
       }
@@ -126,6 +134,11 @@ export default function ReferenceDoiSearchInput({
           )}
         </Box>
       </Box>
+      {!isEmpty(searchFailMsg) && (
+        <div style={{ color: colors.RED(), width: "100%", fontSize: 14 }}>
+          {searchFailMsg}
+        </div>
+      )}
     </Box>
   );
 }
