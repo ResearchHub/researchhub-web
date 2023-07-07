@@ -99,7 +99,7 @@ export default function ReferenceDoiSearchInput({
           }}
           placeholder="Enter identifiers (doi)"
           size="small"
-          value={doi}
+          value={doiOrUrl}
           sx={{
             background: "#fff",
           }}

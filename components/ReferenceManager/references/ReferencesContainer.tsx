@@ -458,19 +458,19 @@ function ReferencesContainer({
                 <DropdownMenu
                   menuItemProps={[
                     {
-                      itemLabel: "Upload PDF(s)",
-                      onClick: (): void =>
-                        // @ts-ignore unnecessary never handling
-                        nullthrows(inputRef?.current).click(),
-                    },
-                    {
-                      itemLabel: "Manual Entry",
+                      itemLabel: "DOI or URL",
                       onClick: (): void => {
                         setProjectIDForUploadDrawer(
                           activeProject?.projectID ?? null
                         );
                         setIsRefUploadDrawerOpen(true);
                       },
+                    },
+                    {
+                      itemLabel: "Upload PDF(s)",
+                      onClick: (): void =>
+                        // @ts-ignore unnecessary never handling
+                        nullthrows(inputRef?.current).click(),
                     },
                   ]}
                   menuLabel={
