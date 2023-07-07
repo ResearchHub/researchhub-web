@@ -76,7 +76,7 @@ export default function ReferenceDoiSearchInput({
         sx={{ background: "transparent" }}
         width="100%"
       >
-        {"Identifiers (doi or url)"}
+        {"Identifiers (doi / url)"}
       </Typography>
       <Box
         sx={{
@@ -97,7 +97,7 @@ export default function ReferenceDoiSearchInput({
               executeSearch();
             }
           }}
-          placeholder="Enter identifiers (doi)"
+          placeholder="Enter identifiers (doi or url)"
           size="small"
           value={doiOrUrl}
           sx={{
