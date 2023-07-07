@@ -180,7 +180,7 @@ export default function BasicTogglableNavbarLeft({
           }
           key="my-references"
           label="My References"
-          link={`/reference-manager/${currentOrgSlug}`}
+          link={`/reference-manager/${currentOrgSlug}?my_refs=true`}
         />
         <BasicTogglableNavbarButton
           isActive={
