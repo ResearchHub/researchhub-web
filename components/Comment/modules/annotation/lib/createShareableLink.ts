@@ -5,9 +5,11 @@ import { SerializedAnchorPosition } from "./types";
 const createShareableLink = ({
   threadId,
   selectionXRange,
+  contentElXpath,
 }: {
   threadId?: string;
   selectionXRange?: any;
+  contentElXpath?: string;
 }) => {
   const url = new URL(window.location.href);
   let hash = "";
@@ -15,7 +17,10 @@ const createShareableLink = ({
     hash = `#thread=${threadId}`;
   } else if (selectionXRange) {
     const serializedAnchor: SerializedAnchorPosition =
-      selectionXRange.serialize();
+      selectionXRange.serialize({ ignoreXPathPrefix: contentElXpath });
+
+    console.log("serializedAnchor", serializedAnchor);
+
     const serialized = encodeURIComponent(
       JSON.stringify(
         pick(

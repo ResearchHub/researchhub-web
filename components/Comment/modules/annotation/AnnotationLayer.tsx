@@ -89,22 +89,37 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       );
 
       if (selectionIdx > -1) {
-        const [key, value] = hashPairs[selectionIdx].split("=");
-        const selection = JSON.parse(decodeURIComponent(value));
-        const xrange = XRange.createFromSerialized(selection);
+        let MAX_ATTEMPTS_REMAINING = 5;
+        const interval = setInterval(() => {
+          if (MAX_ATTEMPTS_REMAINING === 0) {
+            clearInterval(interval);
+            return;
+          }
 
-        if (xrange) {
-          const annotation = createAnnotation({
-            xrange,
-            ignoreXPathPrefix: contentElXpath.current,
-            threadId: "position-from-url",
-            relativeEl: contentRef.current,
-            serializedAnchorPosition: xrange.serialize({
-              ignoreXPathPrefix: contentElXpath.current,
-            }),
+          const [key, value] = hashPairs[selectionIdx].split("=");
+          const serializedSelection = JSON.parse(decodeURIComponent(value));
+
+          const xrange = XRange.createFromSerialized({
+            serialized: serializedSelection,
+            xpathPrefix: contentElXpath.current,
           });
-          setPositionFromUrl(annotation);
-        }
+
+          if (xrange) {
+            const annotation = createAnnotation({
+              xrange,
+              ignoreXPathPrefix: contentElXpath.current,
+              threadId: "position-from-url",
+              relativeEl: contentRef.current,
+              serializedAnchorPosition: xrange.serialize({
+                ignoreXPathPrefix: contentElXpath.current,
+              }),
+            });
+            setPositionFromUrl(annotation);
+            clearInterval(interval);
+          }
+
+          MAX_ATTEMPTS_REMAINING--;
+        }, 1000);
       }
     }
   }, [contentRef]);
@@ -486,7 +501,12 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           >
             <TextSelectionMenu
               onCommentClick={_createNewAnnotation}
-              onLinkClick={() => createShareableLink({ selectionXRange })}
+              onLinkClick={() =>
+                createShareableLink({
+                  selectionXRange,
+                  contentElXpath: contentElXpath.current,
+                })
+              }
             />
           </div>
         )}
