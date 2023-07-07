@@ -30,7 +30,6 @@ import { useReferenceTabContext } from "../reference_item/context/ReferenceItemD
 import colors from "~/config/themes/colors";
 import PDFViewer from "~/components/Document/lib/PDFViewer/PDFViewer";
 import UploadFileDragAndDrop from "~/components/UploadFileDragAndDrop";
-import DroppableZone from "~/components/DroppableZone";
 
 type Props = {
   createdReferences: any[];
@@ -122,29 +121,38 @@ export default function ReferencesTable({
   };
 
   const moveFolderToFolder = ({ moveToFolderId }) => {
-    const intId = parseInt(rowDragged?.split("-folder")[0], 10);
-    const newChildren = activeProject?.children.filter((data) => {
-      return data.id !== intId;
+    const intId = parseInt((rowDragged ?? "")?.split("-folder")[0], 10);
+    const newChildren = activeProject?.children.filter((child) => {
+      return child?.projectID !== intId;
     });
-    const newActiveProject = { ...activeProject };
-    newActiveProject.children = newChildren;
-    setActiveProject(newActiveProject);
+
+    setActiveProject({
+      ...nullthrows(
+        activeProject,
+        "A project was selected. Hence, activeProj must be present"
+      ),
+      children: newChildren ?? [],
+    });
 
     upsertReferenceProject({
       upsertPurpose: "update",
+      onError: emptyFncWithMsg,
       onSuccess: () => {
         fetchReferenceOrgProjects({
           onSuccess: (payload) => {
             setCurrentOrgProjects(payload);
           },
+          onError: emptyFncWithMsg,
           payload: {
-            organization: currentOrg.id,
+            organization: currentOrg?.id,
           },
         });
       },
       payload: {
         project: intId,
         parent: parseInt(moveToFolderId, 10),
+        organization: currentOrg?.id,
+        project_name: activeProject?.projectName ?? "",
       },
     });
   };

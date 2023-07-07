@@ -37,7 +37,8 @@ function DroppableZone({
         onDragEnter={(): void => setIsFileDragged(true)}
         onDragLeave={(): void => setIsFileDragged(false)}
         onDrop={(acceptedFiles, rejectedFiles, event) => {
-          event.stopPropagation()
+          event.stopPropagation();
+          event.preventDefault();
           setIsFileDragged(false);
           handleFileDrop(acceptedFiles);
         }}

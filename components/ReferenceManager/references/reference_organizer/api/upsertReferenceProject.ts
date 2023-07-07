@@ -8,8 +8,9 @@ import { UpsertPurpose } from "../context/ReferenceProjectsUpsertContext";
 type Payload = {
   // TODO: calvinhlee - expand this as more privacy features are added
   organization: ID;
-  project?: ID;
+  parent?: ID;
   project_name: string;
+  project?: ID;
 };
 
 type Args = {

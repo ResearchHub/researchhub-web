@@ -8,6 +8,7 @@ import {
   emptyFncWithMsg,
   isEmpty,
   nullthrows,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import {
   faArrowUpFromBracket,
@@ -59,12 +60,7 @@ interface Props {
 }
 
 // TODO: @lightninglu10 - fix TS.
-function ReferencesContainer({
-  showMessage,
-  setMessage,
-  wsResponse,
-  wsConnected,
-}: Props): ReactNode {
+function ReferencesContainer({ wsResponse }: Props): ReactNode {
   const currentUser = getCurrentUser();
 
   const userAllowed = gateKeepCurrentUser({
@@ -320,7 +316,10 @@ function ReferencesContainer({
           <DroppableZone
             accept=".pdf"
             fullWidth
-            handleFileDrop={onFileDrop}
+            handleFileDrop={(files) => {
+              debugger; // yoyo
+              onFileDrop(files);
+            }}
             multiple
             noClick
           >
@@ -364,7 +363,7 @@ function ReferencesContainer({
                             >
                               {name}
                             </Link>
-                            {index !== router.query.slug?.length - 1 && (
+                            {index !== (router.query.slug?.length ?? 0) - 1 && (
                               <span
                                 style={{
                                   margin: 8,
@@ -458,7 +457,24 @@ function ReferencesContainer({
                         },
                       },
                       {
-                        itemLabel: "Upload PDF(s)",
+                        itemLabel: (
+                          <>
+                            <input
+                              ref={inputRef}
+                              type="file"
+                              accept=".pdf"
+                              multiple
+                              style={{ display: "none" }}
+                              onChange={(event) => {
+                                event.preventDefault();
+                                onFileDrop(
+                                  Array.from(event?.target?.files ?? [])
+                                );
+                              }}
+                            />
+                            {"Upload PDF(s)"}
+                          </>
+                        ),
                         onClick: (): void =>
                           // @ts-ignore unnecessary never handling
                           nullthrows(inputRef?.current).click(),
