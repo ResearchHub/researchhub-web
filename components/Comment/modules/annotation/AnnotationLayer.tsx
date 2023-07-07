@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { createRef, use, useEffect, useRef, useState } from "react";
 import {
   Comment as CommentModel,
   CommentThreadGroup,
@@ -25,13 +25,14 @@ import CommentAnnotationThread from "../../CommentAnnotationThread";
 import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
 import createShareableLink from "./lib/createShareableLink";
+import XPathUtil from "../../lib/xrange/XPathUtil";
 
 interface Props {
-  relativeRef: any; // Canvas will be rendered relative to this element
+  contentRef: any;
   document: GenericDocument;
 }
 
-const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
+const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
@@ -45,7 +46,7 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   // The XRange position of the selected text. Holds the serialized DOM position.
   const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
     useSelection({
-      ref: relativeRef,
+      contentRef: contentRef,
     });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
@@ -55,6 +56,7 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
+  const contentElXpath = useRef<string>("");
 
   // Fetch comments from API
   useEffect(() => {
@@ -72,8 +74,15 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   }, []);
 
   useEffect(() => {
+    if (contentRef.current && contentElXpath.current === "") {
+      contentElXpath.current =
+        XPathUtil.getXPathFromNode(contentRef.current) || "";
+    }
+  }, [contentRef]);
+
+  useEffect(() => {
     // FIXME: This should start working on page load after we use relative xpath instead of absolute
-    if (relativeRef.current && window.location.hash.length > 0) {
+    if (contentRef.current && window.location.hash.length > 0) {
       const hashPairs = window.location.hash.split("&");
       const selectionIdx = hashPairs.findIndex((pair) =>
         pair.includes("selection")
@@ -87,25 +96,28 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
         if (xrange) {
           const annotation = createAnnotation({
             xrange,
+            ignoreXPathPrefix: contentElXpath.current,
             threadId: "position-from-url",
-            relativeEl: relativeRef.current,
-            serializedAnchorPosition: xrange.serialize(),
+            relativeEl: contentRef.current,
+            serializedAnchorPosition: xrange.serialize({
+              ignoreXPathPrefix: contentElXpath.current,
+            }),
           });
           setPositionFromUrl(annotation);
         }
       }
     }
-  }, [relativeRef]);
+  }, [contentRef]);
 
   useEffect(() => {
+    if (inlineComments.length === 0) return;
+
     const _commentThreads = groupByThread(inlineComments);
     commentThreads.current = _commentThreads;
 
-    const { foundAnnotations, orphanThreadIds } = _createAnnotationsFromThreads(
-      {
-        threads: _commentThreads,
-      }
-    );
+    const { foundAnnotations, orphanThreadIds } = _drawAnnotations({
+      threads: _commentThreads,
+    });
 
     setOrphanThreadIds(orphanThreadIds);
     const sorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
@@ -166,7 +178,7 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
 
       if (selectedAnnotation) {
         const relativeElOffsetTop =
-          window.scrollY + relativeRef.current.getBoundingClientRect().y;
+          window.scrollY + contentRef.current.getBoundingClientRect().y;
         const anchorOffsetTop =
           relativeElOffsetTop + selectedAnnotation.anchorCoordinates[0].y;
 
@@ -186,9 +198,9 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
 
   useEffect(() => {
     const _handleClick = (event) => {
-      const relativeRefRect = relativeRef!.current!.getBoundingClientRect();
-      const relativeClickX = event.clientX - relativeRefRect.left;
-      const relativeClickY = event.clientY - relativeRefRect.top;
+      const contentRefRect = contentRef!.current!.getBoundingClientRect();
+      const relativeClickX = event.clientX - contentRefRect.left;
+      const relativeClickY = event.clientY - contentRefRect.top;
       const clickX = event.clientX;
       const clickY = event.clientY;
       let selectedAnnotation: AnnotationType | null = null;
@@ -280,10 +292,10 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
   };
 
   const _calcTextSelectionMenuPos = () => {
-    if (!relativeRef.current) return { x: 0, y: 0 };
+    if (!contentRef.current) return { x: 0, y: 0 };
 
     const containerElemOffset =
-      window.scrollY + relativeRef.current.getBoundingClientRect().y;
+      window.scrollY + contentRef.current.getBoundingClientRect().y;
     return {
       x: 0 - config.textSelectionMenu.width / 2,
       y:
@@ -293,7 +305,7 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
     };
   };
 
-  const _createAnnotationsFromThreads = ({
+  const _drawAnnotations = ({
     threads,
   }: {
     threads: { [key: string]: CommentThreadGroup };
@@ -316,13 +328,16 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
         return;
       }
 
-      const xrange = XRange.createFromSerialized(threadGroup.thread.anchor);
+      const xrange = XRange.createFromSerialized({
+        serialized: threadGroup.thread.anchor,
+        xpathPrefix: contentElXpath.current,
+      });
 
       if (xrange) {
         const annotation = createAnnotation({
           xrange,
           threadId: threadGroup.threadId,
-          relativeEl: relativeRef.current,
+          relativeEl: contentRef.current,
           serializedAnchorPosition: threadGroup.thread.anchor || undefined,
         });
 
@@ -351,7 +366,7 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
 
     const newAnnotation = createAnnotation({
       xrange: selectionXRange,
-      relativeEl: relativeRef.current,
+      relativeEl: contentRef.current,
       isNew: true,
     });
 
@@ -387,7 +402,9 @@ const AnnotationLayer = ({ relativeRef, document: doc }: Props) => {
         commentType: COMMENT_TYPES.ANNOTATION,
         anchor: {
           type: "text",
-          position: annotation.xrange!.serialize(),
+          position: annotation.xrange!.serialize({
+            ignoreXPathPrefix: contentElXpath.current,
+          }),
         },
       });
 

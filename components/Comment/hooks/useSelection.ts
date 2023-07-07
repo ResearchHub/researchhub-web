@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import XRange from "../lib/xrange/XRange";
 
 const useSelection = ({
-  ref,
+  contentRef,
 }): {
   selectionXRange: any;
   initialSelectionPosition: any;
@@ -50,7 +50,7 @@ const useSelection = ({
     return () => {
       document.removeEventListener("click", handleSelection);
     };
-  }, [ref]);
+  }, [contentRef]);
 
   return { selectionXRange, initialSelectionPosition, resetSelectedPos };
 };

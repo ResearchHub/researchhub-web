@@ -164,7 +164,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                 <div style={{ position: "relative" }}>
                   <AnnotationLayer
                     document={document}
-                    relativeRef={contentRef}
+                    contentRef={contentRef}
                   />
                   <div
                     ref={contentRef}

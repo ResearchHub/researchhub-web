@@ -5,7 +5,7 @@ import XPathUtil from "./XPathUtil";
 
 const IS_LOGGING_ON = true;
 
-function log(msg, level) {
+function log(msg: string, level?: string) {
   if (IS_LOGGING_ON) {
     if (level === "warning" && typeof msg === "string") {
       console.log("%c" + msg, "background: yellow; color: black");
@@ -21,12 +21,17 @@ function log(msg, level) {
   }
 }
 
-function XRange(rangyObj) {
+interface props {
+  rangyObj?: any;
+}
+
+function XRange({ rangyObj }: props) {
   if (rangy.initialized === false) {
     rangy.init();
   }
 
   this.rangyObj = rangyObj ? rangyObj.cloneRange() : rangy.createRange();
+
   this.setIndex(0); // Index is zero by default.
 }
 
@@ -64,12 +69,20 @@ XRange.prototype._getDisplayType = function (element) {
 };
 
 XRange.prototype.copy = function () {
-  return new XRange(this.rangyObj.cloneRange());
+  return new XRange({ rangyObj: this.rangyObj.cloneRange() });
 };
 
-XRange.prototype.serialize = function () {
+XRange.prototype.serialize = function ({
+  // Used to ignore a portion of the serialized xpath
+  // Use when you want to serialize a range relative to a node
+  ignoreXPathPrefix,
+}: {
+  ignoreXPathPrefix?: string;
+}) {
+  let serialized: any = {};
+
   try {
-    var serialized = {
+    const serializedAbsolutePos = {
       startContainerPath: XPathUtil.getXPathFromNode(
         this.rangyObj.startContainer
       ),
@@ -80,10 +93,30 @@ XRange.prototype.serialize = function () {
       textContent: this.textContent(),
     };
 
+    serialized = serializedAbsolutePos;
+
+    if (ignoreXPathPrefix) {
+      // Serialized XRange of the content relative to the parent node.
+      // Effectively ignoring xpath prior to the relative node xpath.
+      const serializedEffectivePath = {
+        startContainerPath: serializedAbsolutePos.startContainerPath!.substring(
+          ignoreXPathPrefix.length || 0
+        ),
+        startOffset: serializedAbsolutePos.startOffset,
+        endContainerPath: serializedAbsolutePos.endContainerPath!.substring(
+          ignoreXPathPrefix.length
+        ),
+        endOffset: serializedAbsolutePos.endOffset,
+        collapsed: serializedAbsolutePos.collapsed,
+      };
+
+      serialized = serializedEffectivePath;
+    }
+
     if (this.index) {
       serialized.index = this.index;
     }
-  } catch (error) {
+  } catch (error: any) {
     log(error);
     log("Error serializing xRange object", "error");
     log(JSON.stringify(error), "error");
@@ -147,14 +180,13 @@ XRange.prototype.getNativeRange = function () {
   return this.rangyObj.nativeRange;
 };
 
-// Builder
 XRange.createFromSelection = function () {
   let xr;
 
   try {
     const nativeRange = window.getSelection().getRangeAt(0);
 
-    xr = new XRange();
+    xr = new XRange({});
     xr.setStart(nativeRange.startContainer, nativeRange.startOffset);
     xr.setEnd(nativeRange.endContainer, nativeRange.endOffset);
   } catch (error) {
@@ -168,7 +200,7 @@ XRange.createFromSelection = function () {
 
 XRange.createFromNode = function (node) {
   try {
-    var xr = new XRange();
+    var xr = new XRange({});
     xr.selectNodeContents(node);
   } catch (error) {
     log("Error creating from node", "error");
@@ -179,19 +211,31 @@ XRange.createFromNode = function (node) {
   return xr;
 };
 
-XRange.createFromSerialized = function (serialized) {
+XRange.createFromSerialized = function ({
+  serialized,
+  xpathPrefix = "",
+}: {
+  serialized: any;
+  xpathPrefix?: string;
+}) {
   try {
-    var xr = new XRange();
-    xr._unserialize(serialized);
+    const _serialized = {
+      ...serialized,
+      startContainerPath: xpathPrefix + serialized.startContainerPath,
+      endContainerPath: xpathPrefix + serialized.endContainerPath,
+    };
+
+    var xr = new XRange({});
+    xr._unserialize(_serialized);
 
     if (serialized.index) {
-      xr.setIndex(serialized.index);
+      xr.setIndex(_serialized.index);
     }
 
     if (xr.isAtDocumentStart()) {
       return null;
     }
-  } catch (error) {
+  } catch (error: any) {
     log("Error unserializing range", "error");
     log(JSON.stringify(serialized), "error");
     log(error, "error");
@@ -261,7 +305,7 @@ XRange.prototype.indexOf = function (pattern, ignoreChars) {
     direction: "backwards", // TODO: Direction cannot be static like this
   });
 
-  return isFound ? new XRange(range) : null;
+  return isFound ? new XRange({ rangyObj: range }) : null;
 };
 
 XRange.prototype.getCoordinates = function ({ relativeEl }) {

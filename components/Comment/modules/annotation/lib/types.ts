@@ -30,6 +30,7 @@ export type SerializedAnchorPosition = {
 
 export const createAnnotation = ({
   serializedAnchorPosition,
+  ignoreXPathPrefix,
   xrange,
   relativeEl,
   threadId,
@@ -39,6 +40,7 @@ export const createAnnotation = ({
   isNew?: boolean;
   relativeEl?: any;
   threadId?: string;
+  ignoreXPathPrefix?: string;
   serializedAnchorPosition?: SerializedAnchorPosition;
 }): Annotation => {
   const highlightCoords = xrange.getCoordinates({
@@ -47,7 +49,8 @@ export const createAnnotation = ({
 
   return {
     threadId: threadId || `new-annotation-${genClientId()}`,
-    serialized: xrange.serialize() || serializedAnchorPosition,
+    serialized:
+      xrange.serialize({ ignoreXPathPrefix }) || serializedAnchorPosition,
     anchorCoordinates: highlightCoords,
     isNew,
     threadCoordinates: {
