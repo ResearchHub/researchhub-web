@@ -81,7 +81,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   }, [contentRef]);
 
   useEffect(() => {
-    // FIXME: This should start working on page load after we use relative xpath instead of absolute
     if (contentRef.current && window.location.hash.length > 0) {
       const hashPairs = window.location.hash.split("&");
       const selectionIdx = hashPairs.findIndex((pair) =>
@@ -89,7 +88,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       );
 
       if (selectionIdx > -1) {
-        let MAX_ATTEMPTS_REMAINING = 5;
+        let MAX_ATTEMPTS_REMAINING = 5; // Since the page is in transition, we want to retry x number of times
         const interval = setInterval(() => {
           if (MAX_ATTEMPTS_REMAINING === 0) {
             clearInterval(interval);
@@ -116,6 +115,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
             });
             setPositionFromUrl(annotation);
             clearInterval(interval);
+            scrollToAnnotation({ annotation })          
           }
 
           MAX_ATTEMPTS_REMAINING--;
@@ -195,7 +195,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     });
 
     if (selectedThreadId) {
-      let isOutOfViewport = false;
 
       const selectedAnnotation = annotationsSortedByY.find(
         (annotation, idx) => annotation.threadId === selectedThreadId
@@ -211,7 +210,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           window.scrollY > anchorOffsetTop ||
           window.scrollY + window.innerHeight < anchorOffsetTop
         ) {
-          isOutOfViewport = true;
           window.scrollTo({
             top: anchorOffsetTop - 100,
             behavior: "smooth",
@@ -220,6 +218,20 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       }
     }
   }, [selectedThreadId]);
+
+  const scrollToAnnotation = ({ annotation }: { annotation: AnnotationType } ) => {
+    if (annotation) {
+      const relativeElOffsetTop =
+        window.scrollY + contentRef.current.getBoundingClientRect().y;
+      const anchorOffsetTop =
+        relativeElOffsetTop + annotation.anchorCoordinates[0].y;
+
+      window.scrollTo({
+        top: anchorOffsetTop - 100,
+        behavior: "smooth",
+      });
+    }
+  }
 
   useEffect(() => {
     const _handleClick = (event) => {
@@ -274,6 +286,10 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       } else {
         setSelectedThreadId(null);
       }
+
+      if (positionFromUrl) {
+        setPositionFromUrl(null);
+      }
     };
 
     document.addEventListener("click", _handleClick);
@@ -281,7 +297,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [annotationsSortedByY]);
+  }, [annotationsSortedByY, positionFromUrl]);
 
   const _replaceAnnotations = ({
     existing,

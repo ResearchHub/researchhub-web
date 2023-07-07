@@ -213,9 +213,6 @@ const CommentEditor = ({
         quill?.focus();
       }}
     >
-      <div className={css(isReady && styles.hidden)}>
-        <CommentEditorPlaceholder />
-      </div>
       <div
         ref={editorRef}
         className={`${css(

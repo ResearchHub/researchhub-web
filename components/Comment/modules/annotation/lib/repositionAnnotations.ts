@@ -66,8 +66,6 @@ const repositionAnnotations = ({
           MIN_SPACE_BETWEEN_THREAD -
           prevRect.height;
         if (prevAnnotation.threadCoordinates.y !== prevThreadNewPosY) {
-          // console.log('Current annotation:', annotation.serialized.textContent)
-          // console.log('Prev annotation:', prevAnnotation.serialized.textContent)
           console.log(
             `Updating [Before] Position of thread ${i - 1} from ${
               prevAnnotation.threadCoordinates.y
@@ -100,28 +98,26 @@ const repositionAnnotations = ({
       const currentRect = threadRef.current.getBoundingClientRect();
       const nextRectTop = nextAnnotation.threadCoordinates.y;
 
-      // console.log('--------------------------------------------------------------')
-      // console.log('i', i)
-      // console.log('threadRefs', threadRefs)
-      // console.log('focusPointAndAfter', _annotationsSortedByY)
-      // console.log('threadRef', threadRef)
-      // console.log('current thread:', annotation.serialized.textContent)
-      // console.log("annotation.threadCoordinates.y:", annotation.threadCoordinates.y)
-      // console.log("currentRect.height:", currentRect.height)
-      // console.log('nextRectTop:', nextRectTop)
-      // console.log('next thread:', nextAnnotation.serialized.textContent)
-
       if (
         nextRectTop <
         annotation.threadCoordinates.y +
           currentRect.height +
           MIN_SPACE_BETWEEN_THREAD
       ) {
+        console.log("thread", threadRef.current);
+        console.log("currentRect", currentRect);
+
         const nextThreadNewPosY =
           annotation.threadCoordinates.y +
           currentRect.height +
           MIN_SPACE_BETWEEN_THREAD;
         if (nextAnnotation.threadCoordinates.y !== nextThreadNewPosY) {
+          console.log(
+            `Updating [After] Position of thread ${i + 1} from ${
+              nextAnnotation.threadCoordinates.y
+            } to: ${nextThreadNewPosY}`
+          );
+
           // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
           // has correct value.
           _annotationsSortedByY[i + 1].threadCoordinates.y = nextThreadNewPosY;
