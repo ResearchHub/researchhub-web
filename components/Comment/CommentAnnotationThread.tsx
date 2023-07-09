@@ -11,20 +11,43 @@ import { useDispatch, useSelector } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import { CommentTreeContext } from "./lib/contexts";
 import CommentList from "./CommentList";
+import IconButton from "../Icons/IconButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
   threadId: string;
   document: GenericDocument;
   isFocused?: boolean;
+  rootComment: CommentType;
+}
+
+export function flattenComments(comments: CommentType[]): {
   comments: CommentType[];
+  childCount: number;
+} {
+  const flattenedComments: CommentType[] = [];
+  let childCount = 0;
+
+  function walkThrough(comment: CommentType) {
+    flattenedComments.push(comment);
+
+    if (comment.children) {
+      comment.children.forEach(walkThrough);
+      childCount += comment.children.length;
+    }
+  }
+
+  comments.forEach(walkThrough);
+  return { comments: flattenedComments, childCount };
 }
 
 const CommentAnnotationThread = ({
   threadId,
   document,
-  comments,
   isFocused = false,
+  rootComment,
 }: Props) => {
   const commentTreeState = useContext(CommentTreeContext);
   const [pendingComment, setPendingComment] = useState<{
@@ -33,6 +56,11 @@ const CommentAnnotationThread = ({
   }>({ isEmpty: true, content: null });
   const [clientId, setClientId] = useState<string>(genClientId());
   const dispatch = useDispatch();
+
+  const { comments, childCount } = flattenComments([rootComment]);
+  const commentsToRender = !isFocused ? comments.slice(0, 2) : comments;
+  const remainingComments = childCount + 1 - commentsToRender.length;
+  console.log("commentsToRender", commentsToRender);
 
   const _handleCreateThreadReply = async ({ content, mentions }) => {
     try {
@@ -55,18 +83,35 @@ const CommentAnnotationThread = ({
 
   return (
     <div>
-      {comments.map((comment, idx) => (
+      {commentsToRender.map((comment, idx) => (
         <div key={`${threadId}-${idx}`} className={css(styles.commentWrapper)}>
-          <Comment key={comment.id} comment={comment} document={document} />
+          <Comment
+            key={comment.id}
+            comment={comment}
+            ignoreChildren={true}
+            document={document}
+          />
         </div>
       ))}
-      {/* <CommentList
-        document={document}
-        totalCount={100}
-        isRootList={true}
-        comments={comments}
-        handleFetchMore={() => null}
-      /> */}
+
+      {!isFocused && remainingComments > 0 && (
+        <div className={css(styles.loadMoreWrapper)}>
+          <IconButton>
+            <span
+              style={{
+                color: colors.primary.btn,
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              Load {remainingComments}
+              {" More"}
+              <FontAwesomeIcon icon={faLongArrowDown} />
+            </span>
+          </IconButton>
+        </div>
+      )}
+
       {(isFocused || !pendingComment.isEmpty) && (
         <div className={css(styles.editorWrapper)}>
           <CommentEditor
@@ -92,6 +137,13 @@ const CommentAnnotationThread = ({
 };
 
 const styles = StyleSheet.create({
+  commentListWrapper: {},
+  childrenList: {
+    marginLeft: -7,
+  },
+  loadMoreWrapper: {
+    marginTop: 15,
+  },
   editorWrapper: {
     marginTop: 15,
   },

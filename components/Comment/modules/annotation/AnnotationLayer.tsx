@@ -115,7 +115,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
             });
             setPositionFromUrl(annotation);
             clearInterval(interval);
-            scrollToAnnotation({ annotation })          
+            scrollToAnnotation({ annotation });
           }
 
           MAX_ATTEMPTS_REMAINING--;
@@ -195,7 +195,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     });
 
     if (selectedThreadId) {
-
       const selectedAnnotation = annotationsSortedByY.find(
         (annotation, idx) => annotation.threadId === selectedThreadId
       );
@@ -219,7 +218,11 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     }
   }, [selectedThreadId]);
 
-  const scrollToAnnotation = ({ annotation }: { annotation: AnnotationType } ) => {
+  const scrollToAnnotation = ({
+    annotation,
+  }: {
+    annotation: AnnotationType;
+  }) => {
     if (annotation) {
       const relativeElOffsetTop =
         window.scrollY + contentRef.current.getBoundingClientRect().y;
@@ -231,7 +234,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         behavior: "smooth",
       });
     }
-  }
+  };
 
   useEffect(() => {
     const _handleClick = (event) => {
@@ -578,7 +581,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                     key={`${key}-thread`}
                     document={doc}
                     threadId={threadId}
-                    comments={commentThreads?.current[threadId]?.comments || []}
+                    rootComment={
+                      commentThreads?.current[threadId]?.comments[0] || []
+                    }
                     isFocused={isFocused}
                   />
                 )}

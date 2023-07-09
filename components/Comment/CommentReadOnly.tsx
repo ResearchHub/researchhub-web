@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import config from "./lib/config";
+import config, { contextConfig } from "./lib/config";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import IconButton from "../Icons/IconButton";
@@ -12,7 +12,6 @@ import {
   quillDeltaToHtml,
 } from "./lib/quill";
 import { CommentTreeContext } from "./lib/contexts";
-import { contextConfig } from "./lib/config";
 import { COMMENT_CONTEXTS } from "./lib/types";
 
 type Args = {
@@ -80,6 +79,7 @@ const CommentReadOnly = ({
           overrideStyle={styles.readMoreWrapper}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             setIsPreview(!isPreview);
           }}
         >

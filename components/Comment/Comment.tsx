@@ -36,9 +36,10 @@ const { setMessage, showMessage } = MessageActions;
 type CommentArgs = {
   comment: CommentType;
   document: GenericDocument;
+  ignoreChildren?: boolean;
 };
 
-const Comment = ({ comment, document }: CommentArgs) => {
+const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -205,7 +206,6 @@ const Comment = ({ comment, document }: CommentArgs) => {
             className={css(
               styles.contentWrapper,
               commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION &&
-                !comment.parent &&
                 styles.contentWrapperForAnnotation
             )}
           >
@@ -355,14 +355,16 @@ const Comment = ({ comment, document }: CommentArgs) => {
                 />
               </div>
             )}
-            <CommentList
-              parentComment={comment}
-              totalCount={comment.childrenCount}
-              comments={comment.children}
-              document={document}
-              isFetching={isFetchingMore}
-              handleFetchMore={handleFetchMoreReplies}
-            />
+            {!ignoreChildren && (
+              <CommentList
+                parentComment={comment}
+                totalCount={comment.childrenCount}
+                comments={comment.children}
+                document={document}
+                isFetching={isFetchingMore}
+                handleFetchMore={handleFetchMoreReplies}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -66,11 +66,11 @@ const repositionAnnotations = ({
           MIN_SPACE_BETWEEN_THREAD -
           prevRect.height;
         if (prevAnnotation.threadCoordinates.y !== prevThreadNewPosY) {
-          console.log(
-            `Updating [Before] Position of thread ${i - 1} from ${
-              prevAnnotation.threadCoordinates.y
-            } to: ${prevThreadNewPosY}`
-          );
+          // console.log(
+          //   `Updating [Before] Position of thread ${i - 1} from ${
+          //     prevAnnotation.threadCoordinates.y
+          //   } to: ${prevThreadNewPosY}`
+          // );
 
           // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
           // has correct value.
@@ -104,19 +104,16 @@ const repositionAnnotations = ({
           currentRect.height +
           MIN_SPACE_BETWEEN_THREAD
       ) {
-        console.log("thread", threadRef.current);
-        console.log("currentRect", currentRect);
-
         const nextThreadNewPosY =
           annotation.threadCoordinates.y +
           currentRect.height +
           MIN_SPACE_BETWEEN_THREAD;
         if (nextAnnotation.threadCoordinates.y !== nextThreadNewPosY) {
-          console.log(
-            `Updating [After] Position of thread ${i + 1} from ${
-              nextAnnotation.threadCoordinates.y
-            } to: ${nextThreadNewPosY}`
-          );
+          // console.log(
+          //   `Updating [After] Position of thread ${i + 1} from ${
+          //     nextAnnotation.threadCoordinates.y
+          //   } to: ${nextThreadNewPosY}`
+          // );
 
           // In addition to keeping track of repositioned, we need to update immediately by modifying current list so that the next iteration
           // has correct value.

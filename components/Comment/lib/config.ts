@@ -23,8 +23,9 @@ export const contextConfig = {
   },
   annotation: {
     commentWidth: 300,
+    previewMaxChars: 150,
   },
-}
+};
 
 const config = {
   feed: {
@@ -45,9 +46,7 @@ const config = {
   },
 };
 
-export const getConfigForContext = (
-  context: COMMENT_CONTEXTS
-) => {
+export const getConfigForContext = (context: COMMENT_CONTEXTS) => {
   const _config = contextConfig[(context || "").toLowerCase() || "generic"];
   return _config || contextConfig["generic"];
 };
