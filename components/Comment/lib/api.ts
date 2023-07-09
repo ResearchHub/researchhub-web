@@ -7,7 +7,7 @@ import {
 import { Comment, parseComment, COMMENT_TYPES, COMMENT_FILTERS } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import config from "./config";
+import { apiConfig } from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
 import uniqBy from "lodash/uniqBy";
@@ -19,20 +19,26 @@ export const fetchCommentsAPI = async ({
   sort = sortOpts[0].value,
   filter,
   page,
+  pageSize = apiConfig.feed.pageSize,
+  childPageSize = apiConfig.feed.childPageSize,
+  ascending = false,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
   sort?: string | null;
   filter?: COMMENT_FILTERS | null;
   page?: number;
+  pageSize?: number;
+  childPageSize?: number;
+  ascending?: boolean;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     ...(page && page > 1 && { page: page }),
-    child_count: config.feed.childPageSize,
-    page_size: config.feed.rootLevelPageSize,
-    ascending: "FALSE",
+    child_count: childPageSize,
+    page_size: pageSize,
+    ascending: ascending ? "TRUE" : "FALSE",
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);

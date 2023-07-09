@@ -1,17 +1,17 @@
-import { GenericDocument } from "../Document/lib/types";
-import CommentEditor from "./CommentEditor";
-import Comment from "./Comment";
+import { GenericDocument } from "../../../Document/lib/types";
+import CommentEditor from "../../CommentEditor";
+import Comment from "../../Comment";
 import { StyleSheet, css } from "aphrodite";
-import colors from "./lib/colors";
-import { Comment as CommentType } from "./lib/types";
+import colors from "../../lib/colors";
+import { Comment as CommentType } from "../../lib/types";
 import { useContext, useState } from "react";
 import { genClientId } from "~/config/utils/id";
-import { createCommentAPI } from "./lib/api";
+import { createCommentAPI } from "../../lib/api";
 import { useDispatch, useSelector } from "react-redux";
 import { MessageActions } from "~/redux/message";
-import { CommentTreeContext } from "./lib/contexts";
-import CommentList from "./CommentList";
-import IconButton from "../Icons/IconButton";
+import { CommentTreeContext } from "../../lib/contexts";
+import CommentList from "../../CommentList";
+import IconButton from "../../../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 const { setMessage, showMessage } = MessageActions;
@@ -43,7 +43,7 @@ export function flattenComments(comments: CommentType[]): {
   return { comments: flattenedComments, childCount };
 }
 
-const CommentAnnotationThread = ({
+const AnnotationCommentThread = ({
   threadId,
   document,
   isFocused = false,
@@ -82,7 +82,7 @@ const CommentAnnotationThread = ({
   };
 
   return (
-    <div>
+    <div className={css(styles.commentListWrapper)}>
       {commentsToRender.map((comment, idx) => (
         <div key={`${threadId}-${idx}`} className={css(styles.commentWrapper)}>
           <Comment
@@ -137,7 +137,10 @@ const CommentAnnotationThread = ({
 };
 
 const styles = StyleSheet.create({
-  commentListWrapper: {},
+  commentListWrapper: {
+    maxHeight: 300,
+    overflowY: "scroll",
+  },
   childrenList: {
     marginLeft: -7,
   },
@@ -165,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentAnnotationThread;
+export default AnnotationCommentThread;

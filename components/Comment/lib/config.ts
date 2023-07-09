@@ -22,17 +22,19 @@ export const contextConfig = {
     previewMaxImages: 1,
   },
   annotation: {
-    commentWidth: 300,
     previewMaxChars: 150,
   },
 };
 
-const config = {
+export const apiConfig = {
   feed: {
-    rootLevelPageSize: 15,
+    pageSize: 15,
     childPageSize: 9,
     repliesPageSize: 7,
   },
+};
+
+const config = {
   toggle: {
     width: 75,
   },

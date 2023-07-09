@@ -21,7 +21,7 @@ import CommentEditor from "../../CommentEditor";
 import { captureEvent } from "~/config/utils/events";
 import { CommentTreeContext } from "../../lib/contexts";
 import { sortOpts } from "../../lib/options";
-import CommentAnnotationThread from "../../CommentAnnotationThread";
+import AnnotationCommentThread from "./AnnotationCommentThread";
 import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
 import createShareableLink from "./lib/createShareableLink";
@@ -64,7 +64,12 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       const { comments: rawComments } = await fetchCommentsAPI({
         documentId: doc.id,
         filter: COMMENT_FILTERS.ANNOTATION,
+        sort: "CREATED_DATE",
+        ascending: true,
         documentType: doc.apiDocumentType,
+        // For annotations, we want a very large page size because there is no "load more" UI button
+        childPageSize: 10000,
+        pageSize: 10000,
       });
       const comments = rawComments.map((raw) => parseComment({ raw }));
       setInlineComments(comments);
@@ -485,6 +490,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
+  const renderCommentsAs: "sidebar" | "drawer" | "inline" = "inline";
 
   return (
     <div style={{ position: "relative" }}>
@@ -539,30 +545,46 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           </div>
         )}
         <div
-          className={css(styles.commentSidebar)}
-          style={{ position: "absolute", right: -510, top: 0, width: 500 }}
+          className={css(
+            styles.commentsContainer,
+            renderCommentsAs === "sidebar" && styles.sidebarContainer,
+            renderCommentsAs === "inline" && styles.inlineContainer,
+            renderCommentsAs === "drawer" && styles.drawerContainer
+          )}
         >
           {annotationsSortedByY.map((annotation, idx) => {
             const threadId = String(annotation.threadId);
             const key = `thread-` + threadId;
             const isFocused = selectedThreadId === threadId;
+
+            let coordinateStr = "";
+            if (renderCommentsAs === "inline") {
+              coordinateStr = `translate(${
+                annotation.anchorCoordinates[0].x
+              }px, ${annotation.anchorCoordinates[0].y + 25}px)`;
+            } else if (renderCommentsAs === "sidebar") {
+              coordinateStr = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
+            }
+
+            const visible =
+              (renderCommentsAs === "inline" && isFocused) ||
+              renderCommentsAs === "sidebar";
+
             return (
               <div
                 id={key}
                 ref={threadRefs[idx]}
                 style={{
-                  position: "absolute",
-                  background: "white",
-                  padding: 10,
-                  border: isFocused ? "none" : `1px solid ${colors.border}`,
-                  transform: `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`,
-                  width: contextConfig.annotation.commentWidth,
-                  boxShadow: isFocused
-                    ? "0px 0px 15px rgba(36, 31, 58, 0.2)"
-                    : "none",
-                  borderRadius: 4,
+                  display: visible ? "block" : "none",
+                  transform: coordinateStr,
                 }}
-                className={css(styles.commentThread)}
+                className={css(
+                  styles.commentThread,
+                  isFocused && styles.focusedCommentThread,
+                  renderCommentsAs === "sidebar" && styles.sidebarComment,
+                  renderCommentsAs === "inline" && styles.inlineComment,
+                  renderCommentsAs === "drawer" && styles.drawerComment
+                )}
                 key={key}
               >
                 {annotation.isNew ? (
@@ -577,7 +599,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                     }
                   />
                 ) : (
-                  <CommentAnnotationThread
+                  <AnnotationCommentThread
                     key={`${key}-thread`}
                     document={doc}
                     threadId={threadId}
@@ -597,16 +619,32 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  canvas: {
-    pointerEvents: "none",
+  commentsContainer: {},
+  sidebarContainer: {
     position: "absolute",
-    top: 0,
-    left: 0,
+    right: -15,
   },
-  commentSidebar: {},
+  focusedCommentThread: {
+    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
+  },
+  inlineContainer: {},
+  drawerContainer: {},
+  sidebarComment: {
+    width: 250,
+    position: "absolute",
+  },
+  inlineComment: {
+    width: 450,
+    position: "absolute",
+  },
+  drawerComment: {},
   commentThread: {
+    border: `1px solid ${colors.border}`,
+    borderRadius: 4,
     cursor: "pointer",
     transition: "transform 0.4s ease",
+    padding: 10,
+    background: "white",
   },
   commentEditor: {
     boxShadow: "none",
