@@ -1,11 +1,9 @@
 import { ChangeEvent, ReactElement, SyntheticEvent, useState } from "react";
 import { ClipLoader } from "react-spinners";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  nullthrows,
-} from "~/config/utils/nullchecks";
 import { fetchReferenceFromDoi } from "./api/fetchReferenceFromDoi";
+import { fetchReferenceFromUrl } from "./api/fetchReferenceFromUrl";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { isStringURL } from "~/config/utils/isStringURL";
 import { NullableString } from "~/config/types/root_types";
 import Box from "@mui/material/Box";
 import colors from "~/config/themes/colors";
@@ -20,23 +18,46 @@ type Props = {
 export default function ReferenceDoiSearchInput({
   onSearchSuccess,
 }: Props): ReactElement {
-  const [doi, setDoi] = useState<NullableString>(null);
+  const [doiOrUrl, setDoiOrUrl] = useState<NullableString>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchFailMsg, setSearchFailMsg] = useState<NullableString>(null);
 
   const executeSearch = (): void => {
-    if (!isEmpty(doi)) {
+    if (!isEmpty(doiOrUrl)) {
+      const isUrl = isStringURL(doiOrUrl ?? "");
       setIsLoading(true);
-      fetchReferenceFromDoi({
-        doi: nullthrows(doi),
-        onSuccess: (payload) => {
-          onSearchSuccess(payload);
-          setIsLoading(false);
-        },
-        onError: (error) => {
-          emptyFncWithMsg(error);
-          setIsLoading(false);
-        },
-      });
+      if (isUrl) {
+        fetchReferenceFromUrl({
+          onSuccess: (payload) => {
+            onSearchSuccess(payload);
+            setIsLoading(false);
+            setSearchFailMsg(null);
+          },
+          onError: (error) => {
+            debugger;
+            setSearchFailMsg(
+              "URL not found. Try different url or update manually below"
+            );
+            setIsLoading(false);
+          },
+          url: nullthrows(doiOrUrl),
+        });
+      } else {
+        fetchReferenceFromDoi({
+          doi: nullthrows(doiOrUrl),
+          onError: (error) => {
+            setSearchFailMsg(
+              "DOI not found. Try different doi or update manually below"
+            );
+            setIsLoading(false);
+          },
+          onSuccess: (payload) => {
+            onSearchSuccess(payload);
+            setIsLoading(false);
+            setSearchFailMsg(null);
+          },
+        });
+      }
     }
   };
 
@@ -59,7 +80,7 @@ export default function ReferenceDoiSearchInput({
         sx={{ background: "transparent" }}
         width="100%"
       >
-        {"Identifiers (doi)"}
+        {"Identifiers (doi / url)"}
       </Typography>
       <Box
         sx={{
@@ -73,16 +94,16 @@ export default function ReferenceDoiSearchInput({
           disabled={isLoading}
           fullWidth
           onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            setDoi(event?.target?.value);
+            setDoiOrUrl(event?.target?.value);
           }}
           onKeyDown={(event): void => {
             if (event.key === "Enter" || event?.keyCode === 13) {
               executeSearch();
             }
           }}
-          placeholder="Enter identifiers (doi)"
+          placeholder="Enter identifiers (doi or url)"
           size="small"
-          value={doi}
+          value={doiOrUrl}
           sx={{
             background: "#fff",
           }}
@@ -109,6 +130,11 @@ export default function ReferenceDoiSearchInput({
           )}
         </Box>
       </Box>
+      {!isEmpty(searchFailMsg) && (
+        <div style={{ color: colors.RED(), width: "100%", fontSize: 14 }}>
+          {searchFailMsg}
+        </div>
+      )}
     </Box>
   );
 }

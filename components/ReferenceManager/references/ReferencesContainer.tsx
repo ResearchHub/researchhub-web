@@ -107,6 +107,8 @@ function ReferencesContainer({
 
   const leftNavWidth = isLeftNavOpen ? LEFT_MAX_NAV_WIDTH : LEFT_MIN_NAV_WIDTH;
   const isOnOrgTab = !isEmpty(router.query?.org_refs);
+  const isOnMyRefs = !isEmpty(router.query?.my_refs);
+
   const onOrgUpdate = (): void => {
     refetchOrgs();
     setIsOrgModalOpen(false);
@@ -458,19 +460,19 @@ function ReferencesContainer({
                 <DropdownMenu
                   menuItemProps={[
                     {
-                      itemLabel: "Upload PDF(s)",
-                      onClick: (): void =>
-                        // @ts-ignore unnecessary never handling
-                        nullthrows(inputRef?.current).click(),
-                    },
-                    {
-                      itemLabel: "Manual Entry",
+                      itemLabel: "DOI or URL",
                       onClick: (): void => {
                         setProjectIDForUploadDrawer(
                           activeProject?.projectID ?? null
                         );
                         setIsRefUploadDrawerOpen(true);
                       },
+                    },
+                    {
+                      itemLabel: "Upload PDF(s)",
+                      onClick: (): void =>
+                        // @ts-ignore unnecessary never handling
+                        nullthrows(inputRef?.current).click(),
                     },
                   ]}
                   menuLabel={
@@ -505,7 +507,9 @@ function ReferencesContainer({
                     fontSize="20px"
                     style={{ marginRight: 8 }}
                   />
-                  {isOnOrgTab ? "Create a folder" : "Create a sub-folder"}
+                  {isOnOrgTab || isOnMyRefs
+                    ? "Create a folder"
+                    : "Create a sub-folder"}
                 </div>
                 {(!isEmpty(selectedReferenceIDs) ||
                   !isEmpty(selectedFolderIds)) && (
