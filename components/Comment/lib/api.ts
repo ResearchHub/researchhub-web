@@ -61,7 +61,6 @@ export const fetchSingleCommentAPI = async ({
   parentComment,
   childOffset = 0,
   sort = sortOpts[0].value,
-  filter,
 }: {
   commentId: ID;
   documentType: RhDocumentType;
@@ -69,10 +68,8 @@ export const fetchSingleCommentAPI = async ({
   parentComment?: Comment;
   childOffset: number;
   sort?: string | null;
-  filter?: string | null;
 }): Promise<Comment> => {
   const query = {
-    ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     child_count: config.feed.repliesPageSize,
     child_offset: childOffset,
