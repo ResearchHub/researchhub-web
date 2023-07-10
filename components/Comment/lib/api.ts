@@ -36,7 +36,6 @@ export const fetchCommentsAPI = async ({
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const url = baseFetchUrl + buildQueryString(query);
-  console.log('url', url)
   const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
     Helpers.parseJSON(res)
   );
