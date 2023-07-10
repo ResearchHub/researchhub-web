@@ -46,6 +46,11 @@ const config = {
     height: 100,
     width: 50,
   },
+  annotation: {
+    sidebarBuffer: 15,
+    sidebarCommentWidth: 250,
+    inlineCommentWidth: 450,
+  },
 };
 
 export const getConfigForContext = (context: COMMENT_CONTEXTS) => {

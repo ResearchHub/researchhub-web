@@ -3,52 +3,31 @@ import moduleColors from "~/components/Comment/lib/colors";
 import { css, StyleSheet } from "aphrodite";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../Icons/IconButton";
-import CommentToggle from "./CommentToggle";
 import { useEffect, useState } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import colors from "~/config/themes/colors";
 
 type Args = {
   children: any;
-  isInitialFetchDone: boolean;
-  totalCommentCount: number;
+  isOpen: boolean;
+  handleClose: Function;
 };
 
-const CommentDrawer = ({
-  children,
-  totalCommentCount,
-  isInitialFetchDone,
-}: Args) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+const CommentDrawer = ({ children, isOpen = false, handleClose }: Args) => {
   const [drawerEl, setDrawerEl] = useState<null | HTMLElement>(null);
-  // const openBountyAmount = comments.reduce(
-  //   (total, comment) => total + getBountyAmount({ comment }),
-  //   0
-  // );
 
   useEffect(() => {
     setDrawerEl(document.body);
   }, []);
 
   return (
-    <>
-      {isInitialFetchDone && (
-        <CommentToggle
-          isOpen={isOpen}
-          setIsOpen={(isOpen) => {
-            setIsOpen(isOpen);
-          }}
-          bountyAmount={0}
-          commentCount={totalCommentCount}
-        />
-      )}
-
+    <div onClick={(e) => e.stopPropagation()}>
       <SwipeableDrawer
         container={drawerEl}
         anchor="bottom"
         open={isOpen}
-        onClose={() => setIsOpen(false)}
-        onOpen={() => setIsOpen(true)}
+        onClose={() => handleClose()}
+        onOpen={() => null}
         swipeAreaWidth={50}
         disableSwipeToOpen={false}
         ModalProps={{
@@ -67,15 +46,10 @@ const CommentDrawer = ({
           <div className={css(styles.header)}>
             <div style={{ display: "flex", alignItems: "center" }}>
               Conversation
-              {isInitialFetchDone && (
-                <span className={css(styles.discussionCount)}>
-                  {totalCommentCount}
-                </span>
-              )}
             </div>
             <IconButton
               onClick={() => {
-                setIsOpen(false);
+                handleClose();
               }}
             >
               <FontAwesomeIcon icon={faTimes} />
@@ -85,7 +59,7 @@ const CommentDrawer = ({
           {children}
         </div>
       </SwipeableDrawer>
-    </>
+    </div>
   );
 };
 

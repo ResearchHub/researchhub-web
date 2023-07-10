@@ -26,6 +26,9 @@ import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
 import createShareableLink from "./lib/createShareableLink";
 import XPathUtil from "../../lib/xrange/XPathUtil";
+import CommentDrawer from "../../CommentDrawer";
+import { breakpoints } from "~/config/themes/screen";
+import debounce from "lodash/debounce";
 
 interface Props {
   contentRef: any;
@@ -53,6 +56,12 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const [positionFromUrl, setPositionFromUrl] = useState<AnnotationType | null>(
     null
   );
+
+  // Dictates how the comment should be rendered. Depends on the screen size.
+  const [renderCommentsAs, setRenderCommentsAs] = useState<
+    "sidebar" | "drawer" | "inline"
+  >("inline");
+
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
@@ -120,7 +129,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
             });
             setPositionFromUrl(annotation);
             clearInterval(interval);
-            scrollToAnnotation({ annotation });
+            _scrollToAnnotation({ annotation });
           }
 
           MAX_ATTEMPTS_REMAINING--;
@@ -223,23 +232,38 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     }
   }, [selectedThreadId]);
 
-  const scrollToAnnotation = ({
-    annotation,
-  }: {
-    annotation: AnnotationType;
-  }) => {
-    if (annotation) {
-      const relativeElOffsetTop =
-        window.scrollY + contentRef.current.getBoundingClientRect().y;
-      const anchorOffsetTop =
-        relativeElOffsetTop + annotation.anchorCoordinates[0].y;
+  useEffect(() => {
+    if (!contentRef.current) return;
 
-      window.scrollTo({
-        top: anchorOffsetTop - 100,
-        behavior: "smooth",
-      });
-    }
-  };
+    const _handleResize = debounce(() => {
+      const rect = contentRef.current.getBoundingClientRect();
+      const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
+
+      if (rightMarginWidth >= config.annotation.sidebarCommentWidth) {
+        setRenderCommentsAs("sidebar");
+      } else if (
+        rightMarginWidth < config.annotation.sidebarCommentWidth &&
+        window.innerWidth >= breakpoints.xsmall.int
+      ) {
+        setRenderCommentsAs("inline");
+      } else {
+        setRenderCommentsAs("drawer");
+      }
+
+      _drawAnnotations({
+        threads: commentThreads.current,
+      })
+      console.log("rightMarginWidth", rightMarginWidth);
+    }, 1000);
+
+    _handleResize();
+    window.addEventListener("resize", _handleResize);
+
+    return () => {
+      _handleResize.cancel();
+      window.removeEventListener("resize", _handleResize);
+    };
+  }, [contentRef]);
 
   useEffect(() => {
     const _handleClick = (event) => {
@@ -306,6 +330,24 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       document.removeEventListener("click", _handleClick);
     };
   }, [annotationsSortedByY, positionFromUrl]);
+
+  const _scrollToAnnotation = ({
+    annotation,
+  }: {
+    annotation: AnnotationType;
+  }) => {
+    if (annotation) {
+      const relativeElOffsetTop =
+        window.scrollY + contentRef.current.getBoundingClientRect().y;
+      const anchorOffsetTop =
+        relativeElOffsetTop + annotation.anchorCoordinates[0].y;
+
+      window.scrollTo({
+        top: anchorOffsetTop - 100,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const _replaceAnnotations = ({
     existing,
@@ -490,7 +532,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
-  const renderCommentsAs: "sidebar" | "drawer" | "inline" = "inline";
+
+  const WrapperEl =
+    renderCommentsAs === "drawer" ? CommentDrawer : React.Fragment;
 
   return (
     <div style={{ position: "relative" }}>
@@ -544,75 +588,83 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
             />
           </div>
         )}
-        <div
-          className={css(
-            styles.commentsContainer,
-            renderCommentsAs === "sidebar" && styles.sidebarContainer,
-            renderCommentsAs === "inline" && styles.inlineContainer,
-            renderCommentsAs === "drawer" && styles.drawerContainer
-          )}
+
+        {/* @ts-ignore */}
+        <WrapperEl
+          isOpen={Boolean(selectedThreadId)}
+          handleClose={() => setSelectedThreadId(null)}
         >
-          {annotationsSortedByY.map((annotation, idx) => {
-            const threadId = String(annotation.threadId);
-            const key = `thread-` + threadId;
-            const isFocused = selectedThreadId === threadId;
+          <div
+            className={css(
+              styles.commentsContainer,
+              renderCommentsAs === "sidebar" && styles.sidebarContainer,
+              renderCommentsAs === "inline" && styles.inlineContainer,
+              renderCommentsAs === "drawer" && styles.drawerContainer
+            )}
+          >
+            {annotationsSortedByY.map((annotation, idx) => {
+              const threadId = String(annotation.threadId);
+              const key = `thread-` + threadId;
+              const isFocused = selectedThreadId === threadId;
 
-            let coordinateStr = "";
-            if (renderCommentsAs === "inline") {
-              coordinateStr = `translate(${
-                annotation.anchorCoordinates[0].x
-              }px, ${annotation.anchorCoordinates[0].y + 25}px)`;
-            } else if (renderCommentsAs === "sidebar") {
-              coordinateStr = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
-            }
+              let coordinateStr = "";
+              if (renderCommentsAs === "inline") {
+                coordinateStr = `translate(${
+                  annotation.anchorCoordinates[0].x
+                }px, ${annotation.anchorCoordinates[0].y + 25}px)`;
+              } else if (renderCommentsAs === "sidebar") {
+                coordinateStr = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
+              }
 
-            const visible =
-              (renderCommentsAs === "inline" && isFocused) ||
-              renderCommentsAs === "sidebar";
+              const visible =
+                (renderCommentsAs === "inline" && isFocused) ||
+                (renderCommentsAs === "drawer" && isFocused) ||
+                renderCommentsAs === "sidebar";
 
-            return (
-              <div
-                id={key}
-                ref={threadRefs[idx]}
-                style={{
-                  display: visible ? "block" : "none",
-                  transform: coordinateStr,
-                }}
-                className={css(
-                  styles.commentThread,
-                  isFocused && styles.focusedCommentThread,
-                  renderCommentsAs === "sidebar" && styles.sidebarComment,
-                  renderCommentsAs === "inline" && styles.inlineComment,
-                  renderCommentsAs === "drawer" && styles.drawerComment
-                )}
-                key={key}
-              >
-                {annotation.isNew ? (
-                  <CommentEditor
-                    handleCancel={(event) =>
-                      _handleCancelThread({ threadId, event })
-                    }
-                    editorStyleOverride={styles.commentEditor}
-                    editorId={`${key}-editor`}
-                    handleSubmit={(commentProps) =>
-                      _handleCreateThread({ annotation, commentProps })
-                    }
-                  />
-                ) : (
-                  <AnnotationCommentThread
-                    key={`${key}-thread`}
-                    document={doc}
-                    threadId={threadId}
-                    rootComment={
-                      commentThreads?.current[threadId]?.comments[0] || []
-                    }
-                    isFocused={isFocused}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
+              return (
+                <div
+                  id={key}
+                  ref={threadRefs[idx]}
+                  style={{
+                    display: visible ? "block" : "none",
+                    transform: coordinateStr,
+                  }}
+                  className={css(
+                    styles.commentThread,
+                    isFocused && styles.focusedCommentThread,
+                    renderCommentsAs === "sidebar" && styles.sidebarComment,
+                    renderCommentsAs === "inline" && styles.inlineComment,
+                    renderCommentsAs === "drawer" && styles.drawerComment
+                  )}
+                  key={key}
+                >
+                  {annotation.isNew ? (
+                    <CommentEditor
+                      handleCancel={(event) =>
+                        _handleCancelThread({ threadId, event })
+                      }
+                      editorStyleOverride={styles.commentEditor}
+                      editorId={`${key}-editor`}
+                      handleSubmit={(commentProps) =>
+                        _handleCreateThread({ annotation, commentProps })
+                      }
+                    />
+                  ) : (
+                    <AnnotationCommentThread
+                      key={`${key}-thread`}
+                      document={doc}
+                      threadId={threadId}
+                      rootComment={
+                        commentThreads?.current[threadId]?.comments[0] || []
+                      }
+                      isFocused={isFocused}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </WrapperEl>
       </CommentTreeContext.Provider>
     </div>
   );
@@ -630,11 +682,11 @@ const styles = StyleSheet.create({
   inlineContainer: {},
   drawerContainer: {},
   sidebarComment: {
-    width: 250,
+    width: config.annotation.sidebarCommentWidth,
     position: "absolute",
   },
   inlineComment: {
-    width: 450,
+    width: config.annotation.inlineCommentWidth,
     position: "absolute",
   },
   drawerComment: {},
@@ -645,6 +697,7 @@ const styles = StyleSheet.create({
     transition: "transform 0.4s ease",
     padding: 10,
     background: "white",
+    boxSizing: "border-box",
   },
   commentEditor: {
     boxShadow: "none",
