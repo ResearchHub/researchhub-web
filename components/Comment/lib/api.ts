@@ -36,6 +36,7 @@ export const fetchCommentsAPI = async ({
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
   const url = baseFetchUrl + buildQueryString(query);
+  console.log('url', url)
   const response = await fetch(url, API.GET_CONFIG()).then((res): any =>
     Helpers.parseJSON(res)
   );
@@ -61,7 +62,6 @@ export const fetchSingleCommentAPI = async ({
   parentComment,
   childOffset = 0,
   sort = sortOpts[0].value,
-  filter,
 }: {
   commentId: ID;
   documentType: RhDocumentType;
@@ -69,10 +69,8 @@ export const fetchSingleCommentAPI = async ({
   parentComment?: Comment;
   childOffset: number;
   sort?: string | null;
-  filter?: string | null;
 }): Promise<Comment> => {
   const query = {
-    ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     child_count: config.feed.repliesPageSize,
     child_offset: childOffset,

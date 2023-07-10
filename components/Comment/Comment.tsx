@@ -83,7 +83,6 @@ const Comment = ({ comment, document }: CommentArgs) => {
         documentType: document.apiDocumentType,
         commentId: comment.id,
         sort: commentTreeState.sort,
-        filter: commentTreeState.filter,
         childOffset: comment.children.length,
         parentComment: comment.parent,
       });
