@@ -20,7 +20,7 @@ export default function ReferenceDoiSearchInput({
 }: Props): ReactElement {
   const [doiOrUrl, setDoiOrUrl] = useState<NullableString>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchFailMsg, setSearchFailMsg] = useState<NullableString>("yoyoyo");
+  const [searchFailMsg, setSearchFailMsg] = useState<NullableString>(null);
 
   const executeSearch = (): void => {
     if (!isEmpty(doiOrUrl)) {
