@@ -34,7 +34,6 @@ export default function ReferenceDoiSearchInput({
             setSearchFailMsg(null);
           },
           onError: (error) => {
-            debugger;
             setSearchFailMsg(
               "URL not found. Try different url or update manually below"
             );
