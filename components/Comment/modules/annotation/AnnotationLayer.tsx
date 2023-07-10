@@ -53,6 +53,8 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
+
+  // Holds information about a particular annotation that is shared via URL
   const [positionFromUrl, setPositionFromUrl] = useState<AnnotationType | null>(
     null
   );
@@ -87,57 +89,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     _fetch();
   }, []);
 
-  useEffect(() => {
-    if (contentRef.current && contentElXpath.current === "") {
-      contentElXpath.current =
-        XPathUtil.getXPathFromNode(contentRef.current) || "";
-    }
-  }, [contentRef]);
-
-  useEffect(() => {
-    if (contentRef.current && window.location.hash.length > 0) {
-      const hashPairs = window.location.hash.split("&");
-      const selectionIdx = hashPairs.findIndex((pair) =>
-        pair.includes("selection")
-      );
-
-      if (selectionIdx > -1) {
-        let MAX_ATTEMPTS_REMAINING = 5; // Since the page is in transition, we want to retry x number of times
-        const interval = setInterval(() => {
-          if (MAX_ATTEMPTS_REMAINING === 0) {
-            clearInterval(interval);
-            return;
-          }
-
-          const [key, value] = hashPairs[selectionIdx].split("=");
-          const serializedSelection = JSON.parse(decodeURIComponent(value));
-
-          const xrange = XRange.createFromSerialized({
-            serialized: serializedSelection,
-            xpathPrefix: contentElXpath.current,
-          });
-
-          if (xrange) {
-            const annotation = createAnnotation({
-              xrange,
-              ignoreXPathPrefix: contentElXpath.current,
-              threadId: "position-from-url",
-              relativeEl: contentRef.current,
-              serializedAnchorPosition: xrange.serialize({
-                ignoreXPathPrefix: contentElXpath.current,
-              }),
-            });
-            setPositionFromUrl(annotation);
-            clearInterval(interval);
-            _scrollToAnnotation({ annotation });
-          }
-
-          MAX_ATTEMPTS_REMAINING--;
-        }, 1000);
-      }
-    }
-  }, [contentRef]);
-
+  // Once we have comments, we want to group them by threads and draw them as annotations
   useEffect(() => {
     if (inlineComments.length === 0) return;
 
@@ -152,6 +104,16 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     const sorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
     setAnnotationsSortedByY(sorted);
   }, [inlineComments]);
+
+  // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
+  // instead of an absolute path.
+  useEffect(() => {
+    if (contentRef.current && contentElXpath.current === "") {
+      contentElXpath.current =
+        XPathUtil.getXPathFromNode(contentRef.current) || "";
+    }
+  }, [contentRef]);
+
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -186,6 +148,8 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     };
   }, [threadRefs, selectedThreadId]);
 
+  // Create a sorted list of threads that maps to sorted list of annotations
+  // threadRefs[i] will always map to annotationsSortedByY[i] and vice versa
   useEffect(() => {
     setThreadRefs((refs) =>
       Array(annotationsSortedByY.length)
@@ -194,6 +158,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     );
   }, [annotationsSortedByY.length]);
 
+  // Move things around when a particular annotation is selected.
   useEffect(() => {
     setAnnotationsSortedByY((annotations) => {
       const repositioned = repositionAnnotations({
@@ -232,6 +197,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     }
   }, [selectedThreadId]);
 
+  // When a resize happens, we want to how to render annotations. i.e. drawer, sidebar, inline
   useEffect(() => {
     if (!contentRef.current) return;
 
@@ -265,6 +231,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     };
   }, [contentRef]);
 
+  // Handle click event. 
+  // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
+  // what elment was clicked.
   useEffect(() => {
     const _handleClick = (event) => {
       const contentRefRect = contentRef!.current!.getBoundingClientRect();
@@ -330,6 +299,52 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       document.removeEventListener("click", _handleClick);
     };
   }, [annotationsSortedByY, positionFromUrl]);
+
+  // If a serialized position to an annotation is shared via the URL, we want to unserialize it and scroll
+  // the user to its position.
+  useEffect(() => {
+    if (contentRef.current && window.location.hash.length > 0) {
+      const hashPairs = window.location.hash.split("&");
+      const selectionIdx = hashPairs.findIndex((pair) =>
+        pair.includes("selection")
+      );
+
+      if (selectionIdx > -1) {
+        let MAX_ATTEMPTS_REMAINING = 5; // Since the page is in transition, we want to retry x number of times
+        const interval = setInterval(() => {
+          if (MAX_ATTEMPTS_REMAINING === 0) {
+            clearInterval(interval);
+            return;
+          }
+
+          const [key, value] = hashPairs[selectionIdx].split("=");
+          const serializedSelection = JSON.parse(decodeURIComponent(value));
+
+          const xrange = XRange.createFromSerialized({
+            serialized: serializedSelection,
+            xpathPrefix: contentElXpath.current,
+          });
+
+          if (xrange) {
+            const annotation = createAnnotation({
+              xrange,
+              ignoreXPathPrefix: contentElXpath.current,
+              threadId: "position-from-url",
+              relativeEl: contentRef.current,
+              serializedAnchorPosition: xrange.serialize({
+                ignoreXPathPrefix: contentElXpath.current,
+              }),
+            });
+            setPositionFromUrl(annotation);
+            clearInterval(interval);
+            _scrollToAnnotation({ annotation });
+          }
+
+          MAX_ATTEMPTS_REMAINING--;
+        }, 1000);
+      }
+    }
+  }, [contentRef]);
 
   const _scrollToAnnotation = ({
     annotation,
