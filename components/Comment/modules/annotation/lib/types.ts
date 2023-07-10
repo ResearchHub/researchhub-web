@@ -40,6 +40,7 @@ export const createAnnotation = ({
   isNew?: boolean;
   relativeEl?: any;
   threadId?: string;
+  // Ignore the prefix so we can get a relative xpath to the given relativeNode instead of one that is absolute to the document.
   ignoreXPathPrefix?: string;
   serializedAnchorPosition?: SerializedAnchorPosition;
 }): Annotation => {
@@ -48,9 +49,9 @@ export const createAnnotation = ({
   });
 
   return {
-    threadId: threadId || `new-annotation-${genClientId()}`,
+    threadId: threadId ?? `new-annotation-${genClientId()}`,
     serialized:
-      xrange.serialize({ ignoreXPathPrefix }) || serializedAnchorPosition,
+      xrange.serialize({ ignoreXPathPrefix }) ?? serializedAnchorPosition,
     anchorCoordinates: highlightCoords,
     isNew,
     threadCoordinates: {

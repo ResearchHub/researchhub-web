@@ -1,3 +1,7 @@
+// @ts-nocheck
+// Imported by Kobe from previous project
+// Purpose of this utility is to obtain an xpath string to a particular DOM node or vice versa
+
 function XPathUtil() {}
 
 // Example: "/html/body/div/p[2]" will return "/html/body/div/p[1]"
@@ -115,26 +119,6 @@ XPathUtil.getNodeFromXPath = function (xpath) {
   return found[0];
 };
 
-// // A simple XPath evaluator using jQuery which can evaluate queries of
-// XPathUtil.simpleXPathJQuery = function(relativeRoot) {
-//   let jq = this.map(function() {
-//     let path = '';
-//     let elem = this;
-
-//     while (((elem != null ? elem.nodeType : undefined) === Node.ELEMENT_NODE) && (elem !== relativeRoot)) {
-//       let tagName = elem.tagName.replace(':', '\\:');
-//       let idx = $(elem.parentNode).children(tagName).index(elem) + 1;
-
-//       idx  = `[${idx}]`;
-//       path = `/${elem.tagName.toLowerCase()}${idx}${path}`;
-//       elem = elem.parentNode;
-//     }
-
-//     return path;
-//   });
-
-//   return jq.get();
-// };
 
 // A simple XPath evaluator using only standard DOM methods which can
 // evaluate queries of the form /tag[index]/tag[index].

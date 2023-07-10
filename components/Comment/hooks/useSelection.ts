@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import XRange from "../lib/xrange/XRange";
+import XRange from "../modules/annotation/lib/xrange/XRange";
 
 const useSelection = ({
   contentRef,

@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import React, { createRef, use, useEffect, useRef, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import {
   Comment as CommentModel,
   CommentThreadGroup,
@@ -12,11 +12,11 @@ import {
 import { createAnnotation, Annotation as AnnotationType } from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
 import { GenericDocument } from "../../../Document/lib/types";
-import XRange from "../../lib/xrange/XRange";
+import XRange from "./lib/xrange/XRange";
 import colors from "../../lib/colors";
 import TextSelectionMenu from "../../TextSelectionMenu";
 import useSelection from "~/components/Comment/hooks/useSelection";
-import config, { contextConfig } from "../../lib/config";
+import config from "../../lib/config";
 import CommentEditor from "../../CommentEditor";
 import { captureEvent } from "~/config/utils/events";
 import { CommentTreeContext } from "../../lib/contexts";
@@ -25,7 +25,7 @@ import AnnotationCommentThread from "./AnnotationCommentThread";
 import Annotation from "./Annotation";
 import repositionAnnotations from "./lib/repositionAnnotations";
 import createShareableLink from "./lib/createShareableLink";
-import XPathUtil from "../../lib/xrange/XPathUtil";
+import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
 import debounce from "lodash/debounce";
@@ -252,7 +252,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
       _drawAnnotations({
         threads: commentThreads.current,
-      })
+      });
       console.log("rightMarginWidth", rightMarginWidth);
     }, 1000);
 

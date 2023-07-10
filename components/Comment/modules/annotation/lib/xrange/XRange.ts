@@ -1,3 +1,8 @@
+// @ts-nocheck
+// Imported by Kobe from previous project
+// XRange is a wrapper around rangy's range object. Use it to serialize/unserialize a DOM range.
+// Main use case is for creating annotations on documents.
+
 import rangy from "rangy/lib/rangy-core.js";
 import "rangy/lib/rangy-classapplier.js";
 import "rangy/lib/rangy-textrange.js";
