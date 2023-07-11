@@ -2,6 +2,8 @@ import {
   Comment as CommentType,
   COMMENT_TYPES,
   parseComment,
+  COMMENT_FILTERS,
+  COMMENT_CONTEXTS,
 } from "./lib/types";
 import { CommentTreeContext } from "./lib/contexts";
 import {
@@ -39,7 +41,7 @@ const { setMessage, showMessage } = MessageActions;
 
 type Args = {
   document: GenericDocument;
-  context?: "sidebar" | "drawer" | null;
+  context?: COMMENT_CONTEXTS;
   onCommentCreate?: Function;
   onCommentUpdate?: Function;
   onCommentRemove?: Function;
@@ -60,7 +62,7 @@ const CommentFeed = ({
   totalCommentCount,
   initialComments = undefined,
   initialFilter = undefined,
-  context = null,
+  context = COMMENT_CONTEXTS.GENERIC,
   showFilters = true,
   allowCommentTypeSelection = false,
   allowBounty = false,
@@ -106,6 +108,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: sort || sort === null ? sort : selectedSortValue,
+        // @ts-ignore
         filter: filter || (filter === null ? filter : selectedFilterValue),
       });
 
@@ -309,6 +312,7 @@ const CommentFeed = ({
         documentId: document.id,
         documentType: document.apiDocumentType,
         sort: selectedSortValue,
+        // @ts-ignore
         filter: selectedFilterValue,
         page: nextPage,
       });
@@ -358,12 +362,12 @@ const CommentFeed = ({
     rootLevelCommentCount === 0 ||
     (selectedFilterValue !== null && comments.length === 0);
   const WrapperEl =
-    context === "sidebar"
+    context === COMMENT_CONTEXTS.SIDEBAR
       ? CommentSidebar
-      : context === "drawer"
+      : context === COMMENT_CONTEXTS.DRAWER
       ? CommentDrawer
       : React.Fragment;
-  const isNarrowWidthContext = context === "sidebar" || context === "drawer";
+  const isNarrowWidthContext = context === COMMENT_CONTEXTS.SIDEBAR || context === COMMENT_CONTEXTS.DRAWER;
 
   return (
     <CommentTreeContext.Provider
@@ -438,7 +442,7 @@ const CommentFeed = ({
                 previewModeAsDefault={context ? true : false}
                 allowCommentTypeSelection={allowCommentTypeSelection}
                 editorStyleOverride={
-                  context === "drawer" ? styles.roundedEditor : null
+                  context === COMMENT_CONTEXTS.DRAWER ? styles.roundedEditor : null
                 }
               />
             </div>
@@ -489,7 +493,7 @@ const CommentFeed = ({
 
             {noResults && (
               <CommentEmptyState
-                height={context === "sidebar" ? "60%" : "300px"}
+                height={context === COMMENT_CONTEXTS.SIDEBAR ? "60%" : "300px"}
                 forSection={selectedFilterValue}
                 documentType={document.type}
               />

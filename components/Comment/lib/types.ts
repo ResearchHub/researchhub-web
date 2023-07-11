@@ -10,17 +10,47 @@ import {
 import { parseVote, Vote } from "~/config/types/vote";
 import { formatDateStandard, timeSince } from "~/config/utils/dates";
 import { isEmpty } from "~/config/utils/nullchecks";
+import {
+  parseAnchor,
+  SerializedAnchorPosition,
+} from "../modules/annotation/lib/types";
 
 export enum COMMENT_TYPES {
   DISCUSSION = "GENERIC_COMMENT",
   SUMMARY = "SUMMARY",
   REVIEW = "REVIEW",
   ANSWER = "ANSWER",
+  ANNOTATION = "INNER_CONTENT_COMMENT",
 }
+
+export enum COMMENT_FILTERS {
+  BOUNTY = "BOUNTY",
+  REVIEW = "REVIEW",
+  ANNOTATION = "INNER_CONTENT_COMMENT",
+}
+
+export enum COMMENT_CONTEXTS {
+  GENERIC = "GENERIC",
+  SIDEBAR = "SIDEBAR",
+  DRAWER = "DRAWER",
+  ANNOTATION = "ANNOTATION",
+  FEED = "FEED",
+}
+
+export type CommentThreadGroup = {
+  threadId: string;
+  thread: CommentThread;
+  comments: Comment[];
+};
+
+export type CommentThread = {
+  id: ID;
+  threadType: COMMENT_TYPES;
+  anchor?: SerializedAnchorPosition | null;
+};
 
 export type Comment = {
   id: ID;
-  threadId: ID;
   createdDate: string;
   updatedDate: string;
   awardedBountyAmount: number;
@@ -38,17 +68,26 @@ export type Comment = {
   tips: Purchase[];
   isAcceptedAnswer: boolean;
   review?: Review;
+  thread: CommentThread;
 };
 
-type parseCommentArgs = {
+export const parseThread = (raw: any): CommentThread => {
+  return {
+    id: String(raw.id),
+    threadType: raw.thread_type,
+    anchor: raw.anchor ? parseAnchor(raw.anchor) : null,
+  };
+};
+
+export const parseComment = ({
+  raw,
+  parent,
+}: {
   raw: any;
   parent?: Comment;
-};
-
-export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
+}): Comment => {
   const parsed: Comment = {
     id: raw.id,
-    threadId: raw.thread,
     createdDate: formatDateStandard(raw.created_date),
     updatedDate: formatDateStandard(raw.updated_date),
     timeAgo: timeSince(raw.created_date),
@@ -68,6 +107,11 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
     ...(raw.review && { review: parseReview(raw.review) }),
   };
 
+  // Only parent comments have threads
+  if (raw.thread) {
+    parsed.thread = parseThread(raw.thread);
+  }
+
   const relatedItem: RelatedItem = {
     type: "comment",
     object: parsed,
@@ -79,4 +123,24 @@ export const parseComment = ({ raw, parent }: parseCommentArgs): Comment => {
   parsed.bounties = parseBountyList(raw.bounties || [], relatedItem);
 
   return parsed;
+};
+
+export const groupByThread = (
+  comments: Comment[]
+): { [threadId: string]: CommentThreadGroup } => {
+  const threadGroups: { [threadId: string]: CommentThreadGroup } = {};
+  comments.forEach((c) => {
+    if (c.thread.id) {
+      if (!threadGroups[c.thread.id]) {
+        threadGroups[c.thread.id] = {
+          thread: c.thread,
+          comments: [],
+          threadId: String(c.thread.id),
+        };
+      }
+      threadGroups[String(c.thread.id)].comments.push(c);
+    }
+  });
+
+  return threadGroups;
 };

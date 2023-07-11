@@ -3,11 +3,13 @@ import { useEffect } from "react";
 type IsOutsideClickArgs = {
   ref: any | null | undefined;
   clickedEl: Element;
+  el?: any;
   exclude?: Array<string>;
 };
 
 type useEffectHandleClickArgs = {
-  ref: any | null | undefined;
+  ref?: any | null | undefined;
+  el?: any;
   exclude?: Array<string>;
   onOutsideClick?: Function;
   onInsideClick?: Function;
@@ -16,15 +18,12 @@ type useEffectHandleClickArgs = {
 export function isOutsideClick({
   ref,
   clickedEl,
+  el,
   exclude = [],
 }: IsOutsideClickArgs) {
-  if (!ref.current) {
-    console.log("[isOutsideClick] el is not defined");
-    return false;
-  }
+  const _el = (ref && ref.current) || el;
 
-  const isWithin =
-    ref.current === clickedEl || ref.current?.contains(clickedEl);
+  const isWithin = _el.contains(clickedEl);
   const clickOnExcluded = exclude.reduce(
     (prev, selector) =>
       Boolean(
@@ -38,6 +37,7 @@ export function isOutsideClick({
 
 export function useEffectHandleClick({
   ref,
+  el,
   exclude = [],
   onOutsideClick,
   onInsideClick,
@@ -46,11 +46,14 @@ export function useEffectHandleClick({
     const _handleClick = (e) => {
       const _isOutsideClick = isOutsideClick({
         ref,
+        el,
         clickedEl: e.target,
         exclude,
       });
 
-      const _isInsideClick = ref && ref.current?.contains(e.target);
+      const _el = (ref && ref.current) || el;
+
+      const _isInsideClick = _el?.contains(e.target);
       if (_isOutsideClick) {
         onOutsideClick && onOutsideClick();
       } else if (_isInsideClick) {

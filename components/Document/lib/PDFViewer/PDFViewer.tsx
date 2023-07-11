@@ -14,10 +14,13 @@ import PDFViewerControls from "./PDFViewerControls";
 import config from "../config";
 import { zoomOptions } from "./config";
 import { breakpoints } from "~/config/themes/screen";
+// import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
+import { GenericDocument } from "../types";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
 interface Props {
+  document: GenericDocument;
   pdfUrl?: string;
   // PDFJS needs explicit width to render properly.
   // This width should be considered as initial width since user can zoom in/out.
@@ -38,6 +41,7 @@ const PDFViewer = ({
   width = config.width,
   onZoom,
   expanded,
+  document: doc,
   pdfClose,
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -243,6 +247,10 @@ const PDFViewer = ({
     setIsExpanded(false);
   }
 
+  function onPageRender(pageNum) {
+    console.log("page rendered", pageNum);
+  }
+
   if (hasLoadError) {
     return (
       <div className={css(styles.error)}>
@@ -292,6 +300,7 @@ const PDFViewer = ({
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
+      {/* <AnnotationLayer document={doc} contentRef={containerRef} /> */}
       {fullScreenViewer}
       <div
         className={css(
@@ -317,6 +326,7 @@ const PDFViewer = ({
           viewerWidth={viewerWidth * selectedZoom}
           onLoadSuccess={onLoadSuccess}
           onLoadError={onLoadError}
+          onPageRender={onPageRender}
           showWhenLoading={
             <div style={{ padding: 20 }}>
               <DocumentPlaceholder />

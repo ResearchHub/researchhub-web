@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import config from "./lib/config";
+import config, { contextConfig } from "./lib/config";
 import { css, StyleSheet } from "aphrodite";
 import colors from "./lib/colors";
 import IconButton from "../Icons/IconButton";
@@ -12,6 +12,7 @@ import {
   quillDeltaToHtml,
 } from "./lib/quill";
 import { CommentTreeContext } from "./lib/contexts";
+import { COMMENT_CONTEXTS } from "./lib/types";
 
 type Args = {
   content: any;
@@ -21,8 +22,8 @@ type Args = {
 
 const CommentReadOnly = ({
   content,
-  previewMaxCharLength = config.default.previewMaxChars,
-  previewMaxImageLength = config.default.previewMaxImages,
+  previewMaxCharLength = contextConfig.generic.previewMaxChars,
+  previewMaxImageLength = contextConfig.generic.previewMaxImages,
 }: Args) => {
   const [isPreview, setIsPreview] = useState<boolean>(true);
   const [previewHtml, setPreviewHtml] = useState<any>(null);
@@ -51,8 +52,8 @@ const CommentReadOnly = ({
   }, []);
 
   const isNarrowWidthContext =
-    commentTreeState.context === "sidebar" ||
-    commentTreeState.context === "drawer";
+    commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
+    commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   return (
     <div>
@@ -78,6 +79,7 @@ const CommentReadOnly = ({
           overrideStyle={styles.readMoreWrapper}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             setIsPreview(!isPreview);
           }}
         >

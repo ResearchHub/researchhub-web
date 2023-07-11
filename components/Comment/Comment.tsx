@@ -3,16 +3,12 @@ import CommentHeader from "./CommentHeader";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
-import { Comment as CommentType } from "./lib/types";
+import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
 import { useContext, useState } from "react";
 import CommentEditor from "./CommentEditor";
 import { ID, parseReview, parseUser, Review } from "~/config/types/root_types";
 import colors from "./lib/colors";
-import {
-  getOpenBounties,
-  getUserOpenBounties,
-  hasOpenBounties,
-} from "./lib/bounty";
+import { getOpenBounties, getUserOpenBounties } from "./lib/bounty";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "~/config/utils/nullchecks";
@@ -31,7 +27,6 @@ import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/pro-regular-svg-icons";
 import { timeTo } from "~/config/utils/dates";
-import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
@@ -41,9 +36,10 @@ const { setMessage, showMessage } = MessageActions;
 type CommentArgs = {
   comment: CommentType;
   document: GenericDocument;
+  ignoreChildren?: boolean;
 };
 
-const Comment = ({ comment, document }: CommentArgs) => {
+const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -176,6 +172,9 @@ const Comment = ({ comment, document }: CommentArgs) => {
       return false;
     }
   };
+  const handleEdit = () => {
+    setIsEditMode(!isEditMode);
+  };
 
   const hasOpenBounties = openBounties.length > 0;
   const currentUserIsOpenBountyCreator = userOpenRootBounties.length > 0;
@@ -184,8 +183,8 @@ const Comment = ({ comment, document }: CommentArgs) => {
     commentTreeState.context
   ).previewMaxChars;
   const isNarrowWidthContext =
-    commentTreeState.context === "sidebar" ||
-    commentTreeState.context === "drawer";
+    commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
+    commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
   return (
     <div>
       <div>
@@ -200,10 +199,16 @@ const Comment = ({ comment, document }: CommentArgs) => {
               authorProfile={comment.createdBy.authorProfile}
               comment={comment}
               document={document}
-              handleEdit={() => setIsEditMode(!isEditMode)}
+              handleEdit={handleEdit}
             />
           </div>
-          <div className={css(styles.contentWrapper)}>
+          <div
+            className={css(
+              styles.contentWrapper,
+              commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION &&
+                styles.contentWrapperForAnnotation
+            )}
+          >
             {isEditMode ? (
               <CommentEditor
                 handleSubmit={async (props) => {
@@ -350,14 +355,16 @@ const Comment = ({ comment, document }: CommentArgs) => {
                 />
               </div>
             )}
-            <CommentList
-              parentComment={comment}
-              totalCount={comment.childrenCount}
-              comments={comment.children}
-              document={document}
-              isFetching={isFetchingMore}
-              handleFetchMore={handleFetchMoreReplies}
-            />
+            {!ignoreChildren && (
+              <CommentList
+                parentComment={comment}
+                totalCount={comment.childrenCount}
+                comments={comment.children}
+                document={document}
+                isFetching={isFetchingMore}
+                handleFetchMore={handleFetchMoreReplies}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -381,6 +388,11 @@ const styles = StyleSheet.create({
     paddingLeft: 22,
     borderLeft: `3px solid ${colors.border}`,
     marginLeft: 15,
+  },
+  contentWrapperForAnnotation: {
+    borderLeft: "none",
+    paddingLeft: 0,
+    marginLeft: 0,
   },
   mainWrapperForBounty: {
     // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",

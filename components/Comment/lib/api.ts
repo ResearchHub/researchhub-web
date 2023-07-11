@@ -4,13 +4,14 @@ import {
   RhDocumentType,
   parseUser,
 } from "~/config/types/root_types";
-import { Comment, parseComment, COMMENT_TYPES } from "./types";
+import { Comment, parseComment, COMMENT_TYPES, COMMENT_FILTERS } from "./types";
 import API, { generateApiUrl, buildQueryString } from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import config from "./config";
+import { apiConfig } from "./config";
 import { sortOpts } from "./options";
 import { parseVote, Vote } from "~/config/types/vote";
 import uniqBy from "lodash/uniqBy";
+import { SerializedAnchorPosition } from "../modules/annotation/lib/types";
 
 export const fetchCommentsAPI = async ({
   documentType,
@@ -18,20 +19,26 @@ export const fetchCommentsAPI = async ({
   sort = sortOpts[0].value,
   filter,
   page,
+  pageSize = apiConfig.feed.pageSize,
+  childPageSize = apiConfig.feed.childPageSize,
+  ascending = false,
 }: {
   documentType: RhDocumentType;
   documentId: ID;
   sort?: string | null;
-  filter?: string | null;
+  filter?: COMMENT_FILTERS | null;
   page?: number;
+  pageSize?: number;
+  childPageSize?: number;
+  ascending?: boolean;
 }): Promise<{ comments: any[]; count: number }> => {
   const query = {
     ...(filter && { filtering: filter }),
     ...(sort && { ordering: sort }),
     ...(page && page > 1 && { page: page }),
-    child_count: config.feed.childPageSize,
-    page_size: config.feed.rootLevelPageSize,
-    ascending: "FALSE",
+    child_count: childPageSize,
+    page_size: pageSize,
+    ascending: ascending ? "TRUE" : "FALSE",
   };
 
   const baseFetchUrl = generateApiUrl(`${documentType}/${documentId}/comments`);
@@ -101,17 +108,21 @@ export const createCommentAPI = async ({
   commentType = COMMENT_TYPES.DISCUSSION,
   documentType,
   documentId,
+  threadId,
   parentComment,
   bountyAmount,
   mentions = [],
+  anchor = null,
 }: {
   content: any;
   commentType?: COMMENT_TYPES;
   documentType: RhDocumentType;
   documentId: ID;
+  threadId?: ID;
   parentComment?: Comment;
   bountyAmount?: number;
   mentions?: Array<string>;
+  anchor?: null | SerializedAnchorPosition;
 }): Promise<Comment> => {
   const _url = generateApiUrl(
     `${documentType}/${documentId}/comments/` +
@@ -125,6 +136,8 @@ export const createCommentAPI = async ({
       mentions: uniqBy(mentions),
       ...(parentComment && { parent_id: parentComment.id }),
       ...(bountyAmount && { amount: bountyAmount }),
+      ...(anchor && { anchor }),
+      ...(threadId && { thread_id: threadId }),
     })
   ).then((res): any => Helpers.parseJSON(res));
 

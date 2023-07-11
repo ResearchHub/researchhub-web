@@ -1,7 +1,7 @@
 import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
@@ -14,7 +14,7 @@ import {
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
-import { COMMENT_TYPES } from "./lib/types";
+import { COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
@@ -45,18 +45,20 @@ const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
   editorId: string;
+  handleSubmit: Function;
+  handleCancel?: Function;
   commentId?: ID;
   placeholder?: string;
-  handleSubmit: Function;
   content?: object;
   allowBounty?: boolean;
   commentType?: COMMENT_TYPES;
   author?: AuthorProfile | null;
-  previewModeAsDefault?: boolean;
+  minimalMode?: boolean;
   allowCommentTypeSelection?: boolean;
   handleClose?: Function;
   focusOnMount?: boolean;
   editorStyleOverride?: any;
+  onChange?: Function;
 };
 
 const CommentEditor = ({
@@ -64,22 +66,23 @@ const CommentEditor = ({
   commentId,
   placeholder = "Add a comment about this paper...",
   handleSubmit,
+  handleCancel,
   content = {},
   allowBounty = false,
   commentType,
   author,
-  previewModeAsDefault = false,
+  minimalMode = false,
   allowCommentTypeSelection = false,
   focusOnMount = false,
   handleClose,
   editorStyleOverride,
+  onChange,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
-  const [isPreviewMode, setIsPreviewMode] =
-    useState<boolean>(previewModeAsDefault);
-  const isPreviewModeRef = useRef(previewModeAsDefault);
+  const [isMinimalMode, setIsMinimalMode] = useState<boolean>(minimalMode);
+  const isMinimalModeRef = useRef(minimalMode);
   const dispatch = useDispatch();
   const [interimBounty, setInterimBounty] = useState<Bounty | null>(null);
   const currentUser = useSelector((state: RootState) =>
@@ -89,13 +92,13 @@ const CommentEditor = ({
   const [_commentType, _setCommentType] = useState<COMMENT_TYPES>(
     commentType || commentTypes.find((t) => t.isDefault)!.value
   );
-
   const { quill, quillRef, isReady } = useQuill({
     options: {
       placeholder,
     },
     editorId,
   });
+
   const {
     content: _content,
     dangerouslySetContent,
@@ -112,13 +115,16 @@ const CommentEditor = ({
     commentType: _commentType,
   });
 
-  if (previewModeAsDefault) {
+  if (minimalMode) {
     useEffectHandleClick({
       ref: editorRef,
       onInsideClick: () => {
-        setIsPreviewMode(false);
-        isPreviewModeRef.current = false;
+        setIsMinimalMode(false);
+        isMinimalModeRef.current = false;
         quill && !quill.hasFocus() && quill.focus();
+      },
+      onOutsideClick: () => {
+        setIsMinimalMode(true);
       },
     });
   }
@@ -132,6 +138,10 @@ const CommentEditor = ({
           quillRef,
           placeholderText: placeholder,
         });
+      }
+
+      if (onChange) {
+        onChange({ content: _content, isEmpty: _isEmpty });
       }
     }
   }, [_content, isReady]);
@@ -152,7 +162,10 @@ const CommentEditor = ({
     };
   }, []);
 
-  const _handleSubmit = async () => {
+  const _handleSubmit = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     setIsSubmitting(true);
     try {
       if (quill!.getLength() <= config.comment.minLength) {
@@ -182,9 +195,9 @@ const CommentEditor = ({
       dangerouslySetContent({});
       _setCommentType(commentTypes.find((t) => t.isDefault)!.value);
       setInterimBounty(null);
-      if (previewModeAsDefault) {
-        setIsPreviewMode(true);
-        isPreviewModeRef.current = true;
+      if (minimalMode) {
+        setIsMinimalMode(true);
+        isMinimalModeRef.current = true;
       }
     } finally {
       setIsSubmitting(false);
@@ -193,10 +206,15 @@ const CommentEditor = ({
 
   const isLoggedIn = auth.authChecked && auth.isLoggedIn;
   return (
-    <div>
-      <div className={css(isReady && styles.hidden)}>
-        <CommentEditorPlaceholder />
-      </div>
+    <div
+      onClick={() => {
+        if (!quill?.isEnabled()) {
+          // Quill is disablbed by in order to avoid auto focus on mount. We want to enable it.
+          quill?.enable();
+          quill?.focus();
+        }
+      }}
+    >
       <div
         ref={editorRef}
         className={`${css(
@@ -274,7 +292,7 @@ const CommentEditor = ({
 
           {author && !allowBounty && (
             <div
-              className={css(styles.authorRow, isPreviewMode && styles.hidden)}
+              className={css(styles.authorRow, isMinimalMode && styles.hidden)}
             >
               <div className={css(styles.nameRow)}>
                 {currentUser && (
@@ -312,45 +330,60 @@ const CommentEditor = ({
             <div
               className={css(
                 styles.toolbarContainer,
-                isPreviewMode && styles.hidden
+                isMinimalMode && styles.hidden
               )}
             >
               <CommentEditorToolbar editorId={editorId} />
             </div>
           </div>
         </div>
-        <div className={css(styles.actions)}>
-          <div style={{ width: 70 }}>
-            <Button
-              fullWidth
-              label={
-                isSubmitting ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      minHeight: "28px",
-                    }}
-                  >
-                    <ClipLoader
-                      sizeUnit={"px"}
-                      size={18}
-                      color={"#fff"}
-                      loading={true}
-                    />
-                  </div>
-                ) : (
-                  <>{`Post`}</>
-                )
-              }
-              hideRipples={true}
-              onClick={() => _handleSubmit()}
-              disabled={
-                isSubmitting || isEmpty || (allowBounty && !interimBounty)
-              }
-            />
+        {!isMinimalMode && (
+          <div className={css(styles.actions)}>
+            <div style={{ width: 70 }}>
+              <Button
+                fullWidth
+                size="small"
+                label={
+                  isSubmitting ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        minHeight: "28px",
+                      }}
+                    >
+                      <ClipLoader
+                        sizeUnit={"px"}
+                        size={18}
+                        color={"#fff"}
+                        loading={true}
+                      />
+                    </div>
+                  ) : (
+                    <>{`Post`}</>
+                  )
+                }
+                hideRipples={true}
+                onClick={(event) => _handleSubmit(event)}
+                disabled={
+                  isSubmitting || isEmpty || (allowBounty && !interimBounty)
+                }
+              />
+            </div>
+            {handleCancel && (
+              <div style={{ marginLeft: 15 }}>
+                <Button
+                  fullWidth
+                  size="small"
+                  variant="text"
+                  label={`Cancel`}
+                  hideRipples={true}
+                  onClick={() => handleCancel()}
+                />
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -371,8 +404,6 @@ const styles = StyleSheet.create({
   actions: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row-reverse",
   },
   toolbarContainer: {
     position: "relative",

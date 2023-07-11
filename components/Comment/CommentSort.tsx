@@ -8,6 +8,7 @@ import IconButton from "../Icons/IconButton";
 import colors from "./lib/colors";
 import { sortOpts } from "./lib/options";
 import { CommentTreeContext } from "./lib/contexts";
+import { COMMENT_CONTEXTS } from "./lib/types";
 
 type Args = {
   selectedSortValue: NullableString;
@@ -26,8 +27,8 @@ const CommentSort = ({
   const selectedSort =
     sortOpts.find((s) => s.value === selectedSortValue) || sortOpts[0];
   const isNarrowWidthContext =
-    commentTreeState.context === "sidebar" ||
-    commentTreeState.context === "drawer";
+    commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
+    commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
 
   const directionStyles = {
     ...(dropdownDirection === "bottom-left" && { left: -5, right: "unset" }),

@@ -19,6 +19,7 @@ interface Props {
   searchText?: string;
   onLoadSuccess: () => void;
   onLoadError: () => void;
+  onPageRender: (pageNum) => void;
 }
 
 const PDFViewer = ({
@@ -27,6 +28,7 @@ const PDFViewer = ({
   searchText = "",
   onLoadSuccess,
   onLoadError,
+  onPageRender,
   viewerWidth = 900,
 }: Props) => {
   const [numPages, setNumPages] = useState<null | number>(null);
@@ -94,6 +96,7 @@ const PDFViewer = ({
               pageNumber={index + 1}
               width={viewerWidth}
               customTextRenderer={textRenderer}
+              onRenderSuccess={() => onPageRender(index + 1)}
               loading={showWhenLoading || "Loading..."}
             />
           </div>

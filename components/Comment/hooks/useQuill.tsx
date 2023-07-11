@@ -3,9 +3,7 @@ import Quill, { QuillOptionsStatic } from "quill";
 import { getFileUrl } from "../lib/api";
 import toBase64 from "../lib/toBase64";
 
-export const buildQuillModules = ({
-  editorId,
-}) => {
+export const buildQuillModules = ({ editorId }) => {
   const modules = {
     magicUrl: true,
     mentions: true,
@@ -42,11 +40,10 @@ export const formats = [
   "user",
 ];
 
-
 type Args = {
   options: QuillOptionsStatic;
-  editorId: String;
-}
+  editorId: string;
+};
 
 export const useQuill = ({ options, editorId }: Args) => {
   const quillRef: RefObject<any> = useRef();
@@ -76,26 +73,30 @@ export const useQuill = ({ options, editorId }: Args) => {
       // this part the image is inserted
       // by 'image' option below, you just have to put src(link) of img here.
       quill!.insertEmbed(range!.index, "image", fileUrl);
-    }
+    };
   };
 
   useEffect(() => {
     const quillLibLoaded = Boolean(obj.Quill);
-    const readyToCreateQuillInstance = quillLibLoaded && modulesRegistered && !obj.quill && quillRef && quillRef.current;
+    const readyToCreateQuillInstance =
+      quillLibLoaded &&
+      modulesRegistered &&
+      !obj.quill &&
+      quillRef &&
+      quillRef.current;
 
     const _loadQuillModules = async ({ quillLib }) => {
-      import('../lib/quill/loadQuillModules').then((loadQuillModules) => {
+      import("../lib/quill/loadQuillModules").then((loadQuillModules) => {
         loadQuillModules.default({ quillLib });
         setModulesRegistered(true);
       });
-    }
+    };
 
     if (quillLibLoaded) {
       if (!modulesRegistered) {
         _loadQuillModules({ quillLib: obj.Quill });
       }
-    }
-    else {
+    } else {
       setObj((prev) => ({ ...prev, Quill: require("quill") }));
     }
 
@@ -108,6 +109,10 @@ export const useQuill = ({ options, editorId }: Args) => {
       };
 
       const quill = new obj.Quill(quillRef.current, opts);
+
+      // Disable by default to avoid scroll "jumping"
+      quill.disable();    
+
       setObj((prev) => ({
         ...prev,
         quill,
@@ -116,7 +121,9 @@ export const useQuill = ({ options, editorId }: Args) => {
       }));
 
       // We can only register image upload handler only once quill instance is available
-      quill.getModule("toolbar").addHandler("image", () => handleImageUpload(quill));
+      quill
+        .getModule("toolbar")
+        .addHandler("image", () => handleImageUpload(quill));
     }
 
   }, [obj, options, modulesRegistered]);

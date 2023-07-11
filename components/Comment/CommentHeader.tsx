@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
 import { getClosedBounties, getOpenBounties } from "./lib/bounty";
-import { Comment, COMMENT_TYPES } from "./lib/types";
+import { Comment, COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
 import CommentMenu from "./CommentMenu";
 import CommentBadges from "./CommentBadges";
 import UserTooltip from "../Tooltips/User/UserTooltip";
@@ -73,7 +73,7 @@ const CommentHeader = ({
                 />
                 {hasAnyBounties && bountyContributors.length > 0 && (
                   <>
-                    {commentTreeState.context !== "sidebar" && (
+                    {commentTreeState.context !== COMMENT_CONTEXTS.SIDEBAR && (
                       <div className={css(styles.additionalAuthor)}>
                         {`, `}
                         <UserTooltip

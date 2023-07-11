@@ -15,7 +15,7 @@ import { ReactNode } from "react";
 import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import CommentReadOnly from "~/components/Comment/CommentReadOnly";
-import config from "~/components/Comment/lib/config";
+import { contextConfig } from "~/components/Comment/lib/config";
 import ContributionHeader from "../Contribution/ContributionHeader";
 
 type Args = {
@@ -48,8 +48,8 @@ const ContributionEntry = ({
           <span className={css(styles.commentBody)}>
             <CommentReadOnly
               content={item.content}
-              previewMaxImageLength={config.liveFeed.previewMaxImages}
-              previewMaxCharLength={config.liveFeed.previewMaxChars}
+              previewMaxImageLength={contextConfig.feed.previewMaxImages}
+              previewMaxCharLength={contextConfig.feed.previewMaxChars}
             />
           </span>
         );
@@ -63,8 +63,8 @@ const ContributionEntry = ({
             <span className={css(styles.commentBody)}>
               <CommentReadOnly
                 content={item.source.content}
-                previewMaxImageLength={config.liveFeed.previewMaxImages}
-                previewMaxCharLength={config.liveFeed.previewMaxChars}
+                previewMaxImageLength={contextConfig.feed.previewMaxImages}
+                previewMaxCharLength={contextConfig.feed.previewMaxChars}
               />
             </span>
           );
@@ -89,8 +89,8 @@ const ContributionEntry = ({
             <span className={css(styles.commentBody)}>
               <CommentReadOnly
                 content={item.content}
-                previewMaxImageLength={config.liveFeed.previewMaxImages}
-                previewMaxCharLength={config.liveFeed.previewMaxChars}
+                previewMaxImageLength={contextConfig.feed.previewMaxImages}
+                previewMaxCharLength={contextConfig.feed.previewMaxChars}
               />
             </span>
           );

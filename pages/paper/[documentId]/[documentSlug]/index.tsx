@@ -92,6 +92,7 @@ const DocumentIndexPage: NextPage<Args> = ({
             {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
                 <PDFViewer
+                  document={document}
                   pdfUrl={pdfUrl}
                   onZoom={(zoom) => {
                     if (!zoom.isExpanded) {
