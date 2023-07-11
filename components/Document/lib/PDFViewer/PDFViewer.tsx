@@ -14,7 +14,7 @@ import PDFViewerControls from "./PDFViewerControls";
 import config from "../config";
 import { zoomOptions } from "./config";
 import { breakpoints } from "~/config/themes/screen";
-import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
+// import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
 import { GenericDocument } from "../types";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
@@ -300,7 +300,7 @@ const PDFViewer = ({
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
-      <AnnotationLayer document={doc} contentRef={containerRef} />
+      {/* <AnnotationLayer document={doc} contentRef={containerRef} /> */}
       {fullScreenViewer}
       <div
         className={css(
