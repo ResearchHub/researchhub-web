@@ -48,7 +48,7 @@ const config = {
   },
   annotation: {
     sidebarBuffer: 15,
-    sidebarCommentWidth: 250,
+    sidebarCommentWidth: 260,
     inlineCommentWidth: 450,
   },
 };

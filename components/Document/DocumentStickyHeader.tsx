@@ -79,9 +79,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     maxWidth: config.width,
     margin: "0 auto",
+    [`@media only screen and (max-width: 1650px)`]: {
+      margin: "0 0 0 80px",
+    },
     [`@media (max-width: ${config.width}px)`]: {
       padding: "5px 5px 0px 10px",
       maxWidth: "100vw",
+      margin: "0 auto",
     },
   },
   tabsWrapper: {

@@ -323,6 +323,19 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "center",
     borderBottom: `2px solid ${config.border}`,
+    [`@media only screen and (max-width: 1650px)`]: {
+      margin: "0 0 0 80px",
+      maxWidth: "calc(100% - 80px)",
+      justifyContent: "flex-start",
+    },
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`,
+      margin: "0 auto",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      margin: "0 auto",
+      maxWidth: "100%",
+    },
   },
   lineItemsWrapper: {
     display: "flex",

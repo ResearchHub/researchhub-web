@@ -7,6 +7,7 @@
 import { Document, Outline, Page, pdfjs } from "react-pdf";
 import { useCallback, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
+import config from "../config";
 
 // FIXME: Replace with local worker.
 // Needs to set up a custom webpack config to do this.
@@ -29,7 +30,7 @@ const PDFViewer = ({
   onLoadSuccess,
   onLoadError,
   onPageRender,
-  viewerWidth = 900,
+  viewerWidth = config.width,
 }: Props) => {
   const [numPages, setNumPages] = useState<null | number>(null);
   const [pagesRendered, setPagesRendered] = useState<number>(1); // Start by rendering one page

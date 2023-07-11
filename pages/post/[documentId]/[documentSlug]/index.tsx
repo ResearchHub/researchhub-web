@@ -162,10 +162,10 @@ const DocumentIndexPage: NextPage<Args> = ({
                 </div>
               ) : (
                 <div style={{ position: "relative" }}>
-                  <AnnotationLayer
+                  {/* <AnnotationLayer
                     document={document}
                     contentRef={contentRef}
-                  />
+                  /> */}
                   <div
                     ref={contentRef}
                     className={css(styles.body) + " rh-post"}
@@ -205,11 +205,16 @@ const styles = StyleSheet.create({
   bodyContentWrapper: {
     margin: "0 auto",
     maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MAX_WIDTH}px)`,
+    [`@media only screen and (max-width: 1650px)`]: {
+      margin: "0 0 0 80px",
+    },
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       maxWidth: `calc(100vw - ${LEFT_SIDEBAR_MIN_WIDTH + 40}px)`,
+      margin: "0 auto",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       maxWidth: `calc(100vw - 30px)`,
+      margin: "0 auto",
     },
   },
   editButtonRow: {
