@@ -11,6 +11,9 @@ function useEffectForCommentTypeChange ({ commentType, quill, quillRef, isReady 
     }
 
     if (commentType === COMMENT_TYPES.REVIEW) {
+
+      quill?.enable();
+
       const reviewAlreadySelected = hasQuillContent({ quill, contentType: "peer-review-rating" });
       if (reviewAlreadySelected) {
         return;
@@ -18,7 +21,6 @@ function useEffectForCommentTypeChange ({ commentType, quill, quillRef, isReady 
 
       quillRef.current.classList.add("peer-review");      
 
-      console.log('insertReviewCategory')
       insertReviewCategory({
         category: reviewCategories.overall,
         index: 0,

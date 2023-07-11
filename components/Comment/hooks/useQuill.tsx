@@ -111,7 +111,7 @@ export const useQuill = ({ options, editorId }: Args) => {
       const quill = new obj.Quill(quillRef.current, opts);
 
       // Disable by default to avoid scroll "jumping"
-      quill.disable();
+      quill.disable();    
 
       setObj((prev) => ({
         ...prev,
@@ -125,6 +125,7 @@ export const useQuill = ({ options, editorId }: Args) => {
         .getModule("toolbar")
         .addHandler("image", () => handleImageUpload(quill));
     }
+
   }, [obj, options, modulesRegistered]);
 
   return obj;

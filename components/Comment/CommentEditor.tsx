@@ -208,9 +208,11 @@ const CommentEditor = ({
   return (
     <div
       onClick={() => {
-        // Quill is disablbed by in order to avoid jumping
-        quill?.enable();
-        quill?.focus();
+        if (!quill?.isEnabled()) {
+          // Quill is disablbed by in order to avoid auto focus on mount. We want to enable it.
+          quill?.enable();
+          quill?.focus();
+        }
       }}
     >
       <div
