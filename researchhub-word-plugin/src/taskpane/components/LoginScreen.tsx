@@ -18,22 +18,6 @@ export interface AppProps {
 }
 
 const LoginScreen = ({ setIsLoggedIn, authenticator }) => {
-  const click = async () => {
-    return Word.run(async (context) => {
-      /**
-       * Insert your Word code here
-       */
-
-      // insert a paragraph at the end of the document.
-      const paragraph = context.document.body.insertParagraph("Hello World", Word.InsertLocation.end);
-
-      // change the paragraph color to blue.
-      paragraph.font.color = "blue";
-
-      await context.sync();
-    });
-  };
-
   const loginWithGoogle = () => {
     setIsLoggedIn();
   };
@@ -68,22 +52,7 @@ const LoginScreen = ({ setIsLoggedIn, authenticator }) => {
               window.localStorage.setItem(RESEARCHHUB_AUTH_TOKEN, json.key);
             }
           } catch (e) {
-            Word.run(async (context) => {
-              /**
-               * Insert your Word code here
-               */
-
-              // insert a paragraph at the end of the document.
-              const paragraph = context.document.body.insertParagraph(
-                "ERROR: " + e.toString(),
-                Word.InsertLocation.end
-              );
-
-              // change the paragraph color to blue.
-              paragraph.font.color = "blue";
-
-              await context.sync();
-            });
+            console.log(e);
           }
         }
       })
@@ -101,9 +70,7 @@ const LoginScreen = ({ setIsLoggedIn, authenticator }) => {
           <Input placeholder="Email" className={css(styles.input)} />
         </div>
         <div style={{ marginTop: 16 }}>
-          <DefaultButton className={css(styles.button)} onClick={click}>
-            Continue
-          </DefaultButton>
+          <DefaultButton className={css(styles.button)}>Continue</DefaultButton>
         </div>
         <div
           style={{

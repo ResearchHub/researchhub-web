@@ -7,7 +7,6 @@ import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Authenticator } from "@microsoft/office-js-helpers";
-import { OrganizationContextProvider } from "./Contexts/OrganizationContext";
 
 /* global document, Office, module, require */
 
@@ -27,11 +26,9 @@ authenticator.endpoints.registerGoogleAuth(GOOGLE_CLIENT_ID, {
 const render = (Component) => {
   ReactDOM.render(
     <AppContainer>
-      <OrganizationContextProvider>
-        <ThemeProvider>
-          <Component title={title} isOfficeInitialized={isOfficeInitialized} authenticator={authenticator} />
-        </ThemeProvider>
-      </OrganizationContextProvider>
+      <ThemeProvider>
+        <Component title={title} isOfficeInitialized={isOfficeInitialized} authenticator={authenticator} />
+      </ThemeProvider>
     </AppContainer>,
     document.getElementById("container")
   );

@@ -10,6 +10,16 @@ const CitationScreen = ({}) => {
   const [selectedCitations, setSelectedCitations] = React.useState({});
   const { currentOrg } = useOrgs();
 
+  const resetCitations = (citationList) => {
+    const newCitations = {};
+
+    citationList.forEach((_, index) => {
+      newCitations[index] = false;
+    });
+
+    setSelectedCitations(newCitations);
+  };
+
   React.useEffect(() => {
     const getCitations = async () => {
       const citations = await fetchCurrentUserReferenceCitations({
@@ -17,13 +27,7 @@ const CitationScreen = ({}) => {
         organizationID: currentOrg.id,
       });
 
-      const newCitations = {};
-
-      citations.forEach((_, index) => {
-        newCitations[index] = false;
-      });
-
-      setSelectedCitations(newCitations);
+      resetCitations(citations);
 
       setCitations(citations);
     };
@@ -38,57 +42,71 @@ const CitationScreen = ({}) => {
     setSelectedCitations(newCitations);
   };
 
+  async function addTextAfterSelection(text) {
+    await Word.run(async (context) => {
+      // Create a proxy object for the document.
+      var doc = context.document;
+
+      // Queue a command to get the current selection and then create a proxy range object with the results.
+      var range = doc.getSelection();
+
+      // Synchronize the document state by executing the queued commands,
+      // and return a promise to indicate task completion.
+      await context.sync();
+
+      // Queue a command to insert text at the end of the selection.
+      range.insertText(` ${text}`, Word.InsertLocation.end);
+
+      // Synchronize the document state by executing the queued commands,
+      // and return a promise to indicate task completion.
+      return context.sync().then(function () {
+        console.log("Text added after the selection.");
+      });
+    }).catch(function (error) {
+      console.log("Error: " + JSON.stringify(error));
+      if (error instanceof OfficeExtension.Error) {
+        console.log("Debug info: " + JSON.stringify(error.debugInfo));
+      }
+    });
+  }
+
   const insertCitation = () => {
-    const allSelectedCitations = Object.entries(selectedCitations).filter((_, value) => value);
+    const allSelectedCitations = Object.entries(selectedCitations).filter((entry) => entry[1]);
     const citationObject = new Cite();
     for (let i = 0; i < allSelectedCitations.length; i++) {
       const selectedCitationIndex = parseInt(allSelectedCitations[i][0], 10);
-      citationObject.add(citations[selectedCitationIndex]);
+      citationObject.add(citations[selectedCitationIndex].fields);
     }
 
     const bibliography = citationObject.format("bibliography", {
-      format: "html",
+      format: "text",
       template: "apa",
       lang: "en-US",
     });
 
     const inlineCitation = citationObject.format("citation", {
-      format: "html",
+      format: "text",
       template: "apa",
       lang: "en-US",
     });
 
-    Word.run(async (context) => {
-      /**
-       * Insert your Word code here
-       */
-
-      // insert a paragraph at the end of the document.
-      const paragraph = context.document.body.insertText(bibliography, Word.InsertLocation.end);
-
-      // change the paragraph color to blue.
-      paragraph.font.color = "blue";
-
-      await context.sync();
-    });
+    addTextAfterSelection(inlineCitation);
 
     Word.run(async (context) => {
       /**
        * Insert your Word code here
        */
 
-      // insert a paragraph at the end of the document.
-      const paragraph = context.document.body.insertParagraph(bibliography, Word.InsertLocation.end);
-
-      // change the paragraph color to blue.
-      paragraph.font.color = "blue";
+      context.document.body.insertParagraph(bibliography, Word.InsertLocation.end);
 
       await context.sync();
     });
+
+    resetCitations(citations);
   };
 
   const hasSelectedCitations = React.useMemo(() => {
-    return Object.entries(selectedCitations).filter((_, value) => value).length > 0;
+    return Object.entries(selectedCitations).filter((entry) => entry[1]).length > 0;
   }, [selectedCitations]);
 
   return (

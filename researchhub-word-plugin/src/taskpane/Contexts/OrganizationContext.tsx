@@ -32,7 +32,7 @@ const OrganizationContext = createContext<ContextType>({
 
 export const useOrgs = () => useContext(OrganizationContext);
 
-export const OrganizationContextProvider = ({ children }) => {
+export const OrganizationContextProvider = ({ children, isLoggedIn }) => {
   const [orgs, setOrgs] = useState([]);
   const [currentOrg, setCurrentOrg] = useState({});
   const [fetchTime, setFetchTime] = useState(Date.now());
@@ -54,10 +54,10 @@ export const OrganizationContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (window.localStorage.getItem(RESEARCHHUB_AUTH_TOKEN)) {
+    if (window.localStorage.getItem(RESEARCHHUB_AUTH_TOKEN) && isLoggedIn) {
       fetchAndSetUserOrgs();
     }
-  }, [fetchTime]);
+  }, [fetchTime, isLoggedIn]);
 
   return (
     <OrganizationContext.Provider
