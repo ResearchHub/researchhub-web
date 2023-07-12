@@ -32,7 +32,6 @@ const repositionAnnotations = ({
     (_annotation) => _annotation.threadId === selectedThreadId
   );
 
-  // const beforeFocalPoint = annotationsSortedByY.slice(0, focalPointIndex);
   const focalPoint =
     focalPointIndex >= 0 ? { ..._annotationsSortedByY[focalPointIndex] } : null;
 
