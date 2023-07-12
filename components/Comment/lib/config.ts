@@ -52,7 +52,7 @@ const config = {
     maxPreviewComments: 2,
     sidebarBuffer: 15, // Space between content and comments
     sidebarCommentWidth: 270,
-    inlineCommentWidth: 450,
+    inlineCommentWidth: 400,
   },
 };
 

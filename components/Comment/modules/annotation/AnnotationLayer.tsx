@@ -57,6 +57,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
+  const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
 
   // Holds information about a particular annotation that is shared via URL
   const [positionFromUrl, setPositionFromUrl] = useState<AnnotationType | null>(
@@ -577,7 +578,10 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         <Annotation
           key={`annotation-${annotation.threadId}`}
           annotation={annotation}
-          focused={selectedThreadId === annotation.threadId}
+          focused={
+            selectedThreadId === annotation.threadId ||
+            hoveredThreadId === annotation.threadId
+          }
         />
       ))}
       {positionFromUrl && (
@@ -709,6 +713,8 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                     renderCommentsAs === "inline" && styles.inlineComment,
                     renderCommentsAs === "drawer" && styles.drawerComment
                   )}
+                  onMouseEnter={() => setHoveredThreadId(threadId)}
+                  onMouseLeave={() => setHoveredThreadId(null)}
                   key={key}
                 >
                   {annotation.isNew ? (
@@ -731,6 +737,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                       threadId={threadId}
                       onCancel={() => {
                         setSelectedThreadId(null);
+                        setHoveredThreadId(null);
                       }}
                       rootComment={
                         commentThreads?.current[threadId]?.comments[0] || []
@@ -760,6 +767,9 @@ const styles = StyleSheet.create({
   },
   focusedCommentThread: {
     boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
+    ":hover": {
+      background: "white",
+    },
   },
   inlineContainer: {},
   drawerContainer: {},
@@ -779,6 +789,9 @@ const styles = StyleSheet.create({
     transition: "transform 0.4s ease",
     background: "white",
     boxSizing: "border-box",
+    ":hover": {
+      background: "rgb(250 248 248)",
+    },
   },
   commentEditor: {
     boxShadow: "none",
