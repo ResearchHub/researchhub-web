@@ -93,6 +93,8 @@ const styles = StyleSheet.create({
   },
   topArea: {
     background: "white",
+    position: "relative",
+    zIndex: 3,
     paddingTop: 25,
   },
   bodyArea: {

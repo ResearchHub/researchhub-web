@@ -30,6 +30,9 @@ import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
 import debounce from "lodash/debounce";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import { useDispatch } from "react-redux";
+import { MessageActions } from "~/redux/message";
+const { setMessage, showMessage } = MessageActions;
 
 interface Props {
   contentRef: any;
@@ -69,6 +72,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
   const contentElXpath = useRef<string>("");
+  const dispatch = useDispatch();
 
   // Fetch comments from API
   useEffect(() => {
@@ -475,6 +479,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
     if (!selectionXRange) {
       return console.error("No selected range. This should not happen.");
+    }
+
+    const selectedText = selectionXRange.textContent();
+    if (selectedText.length > config.annotation.maxSelectionChars) {
+      dispatch(
+        setMessage(
+          `Selected text is too long. Select text less than ${config.annotation.maxSelectionChars} characters long.`
+        )
+      );
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true }));
+      return;
     }
 
     const newAnnotation = createAnnotation({

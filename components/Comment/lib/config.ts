@@ -48,6 +48,7 @@ const config = {
     width: 50,
   },
   annotation: {
+    maxSelectionChars: 1000, // Highlighted text greater than this will not be allowed
     maxPreviewComments: 2,
     sidebarBuffer: 15, // Space between content and comments
     sidebarCommentWidth: 270,
