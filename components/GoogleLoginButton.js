@@ -81,6 +81,8 @@ const GoogleLoginButton = (props) => {
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
 
+    debugger;
+
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);

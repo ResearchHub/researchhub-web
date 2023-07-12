@@ -1,6 +1,5 @@
-import { FunctionComponent } from "react";
-
-import { GOOGLE_CLIENT_ID } from "../config/constants";
+// @ts-nocheck
+import { FunctionComponent, ReactElement } from "react";
 
 // Reference:
 // https://gist.github.com/pmckee11/13b1dffbf1d271a782ed7f65480b978f
@@ -10,16 +9,14 @@ export interface GoogleCredentialResponse {
 }
 
 interface GoogleButtonParams {
-  onCredentialResponse: (response: GoogleCredentialResponse) => void;
-  login: (data: any) => void;
-  render: (render: any) => void;
+  onCredentialResponse: (response: GoogleCredentialResponse) => null;
+  login: (data: any) => null;
+  render: (render: any) => ReactElement;
 }
 
-const GoogleLogin: FunctionComponent<GoogleButtonParams> = ({
-  onCredentialResponse,
-  login,
-  render,
-}) => {
+const GOOGLE_CLIENT_ID = "192509748493-5sevdn2gk34kb6i9ehiges3vioui5drm.apps.googleusercontent.com";
+
+const GoogleLogin: FunctionComponent<GoogleButtonParams> = ({ login, render }) => {
   function getAuthCode() {
     const client = (window as any).google.accounts.oauth2.initCodeClient({
       client_id: GOOGLE_CLIENT_ID,

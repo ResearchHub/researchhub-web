@@ -299,7 +299,7 @@ const LoginModal = ({
                 {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
               </IconButton>
             )}
-            {!persistent &&
+            {!persistent && (
               <IconButton
                 overrideStyle={styles.closeBtn}
                 size={20}
@@ -311,7 +311,7 @@ const LoginModal = ({
               >
                 {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
               </IconButton>
-            }
+            )}
             {step === "SELECT_PROVIDER"
               ? title
               : step === "LOGIN_WITH_EMAIL_FORM"
