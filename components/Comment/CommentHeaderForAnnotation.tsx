@@ -12,9 +12,6 @@ import ALink from "../ALink";
 import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/pro-regular-svg-icons";
-import { timeSince, timeTo } from "~/config/utils/dates";
 
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
@@ -67,6 +64,7 @@ const CommentHeader = ({
                     <ALink
                       href={`/user/${authorProfile?.id}/overview`}
                       key={`/user/${authorProfile?.id}/overview-key`}
+                      weight={500}
                     >
                       {authorProfile.firstName} {authorProfile.lastName}
                     </ALink>
@@ -111,7 +109,8 @@ const styles = StyleSheet.create({
   time: {
     color: colors.secondary.text,
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 3,
+    marginLeft: 3,
   },
   details: {
     display: "flex",

@@ -40,7 +40,6 @@ import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
 import CommentEditorPlaceholder from "./CommentEditorPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
-
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {
@@ -208,6 +207,7 @@ const CommentEditor = ({
   return (
     <div
       onClick={() => {
+        // @ts-ignore
         if (!quill?.isEnabled()) {
           // Quill is disablbed by in order to avoid auto focus on mount. We want to enable it.
           quill?.enable();

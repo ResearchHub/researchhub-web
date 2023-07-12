@@ -18,6 +18,7 @@ interface Props {
   overrideStyle?: any;
   target?: string;
   disableTextDeco?: boolean;
+  weight?: number;
 }
 
 const ALink: FunctionComponent<Props> = ({
@@ -28,6 +29,7 @@ const ALink: FunctionComponent<Props> = ({
   overrideStyle = null,
   target = null,
   disableTextDeco = false,
+  weight = 400,
 }): ReactElement => {
   return (
     <Link
@@ -39,6 +41,7 @@ const ALink: FunctionComponent<Props> = ({
         disableTextDeco && styles.disableTextDeco,
         overrideStyle
       )}
+      style={{ fontWeight: weight }}
       target={target || undefined}
       onClick={(e) => e.stopPropagation()}
     >
@@ -50,7 +53,6 @@ const ALink: FunctionComponent<Props> = ({
 export const styles = StyleSheet.create({
   ALink: {
     color: colors.BLACK(),
-    fontWeight: 400,
     textDecoration: "none",
     ":hover": {
       color: colors.NEW_BLUE(),
