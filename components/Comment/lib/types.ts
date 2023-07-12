@@ -31,7 +31,7 @@ export enum COMMENT_FILTERS {
 
 export enum COMMENT_CONTEXTS {
   GENERIC = "GENERIC",
-  SIDEBAR = "SIDEBAR",
+  SIDEBAR = "SIDEBAR", // Deprecated
   DRAWER = "DRAWER",
   ANNOTATION = "ANNOTATION",
   FEED = "FEED",

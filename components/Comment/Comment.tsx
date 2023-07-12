@@ -1,5 +1,6 @@
 import { GenericDocument } from "../Document/lib/types";
 import CommentHeader from "./CommentHeader";
+import CommentHeaderForAnnotation from "./CommentHeaderForAnnotation";
 import CommentReadOnly from "./CommentReadOnly";
 import { css, StyleSheet } from "aphrodite";
 import CommentActions from "./CommentActions";
@@ -56,6 +57,8 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   });
   const commentTreeState = useContext(CommentTreeContext);
   const dispatch = useDispatch();
+  const annotationContext =
+    commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
 
   const _handleToggleReply = () => {
     if (isReplyOpen && confirm("Discard changes?")) {
@@ -196,12 +199,21 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
           )}
         >
           <div className={css(styles.headerWrapper)}>
-            <CommentHeader
-              authorProfile={comment.createdBy.authorProfile}
-              comment={comment}
-              document={document}
-              handleEdit={handleEdit}
-            />
+            {annotationContext ? (
+              <CommentHeaderForAnnotation
+                authorProfile={comment.createdBy.authorProfile}
+                comment={comment}
+                document={document}
+                handleEdit={handleEdit}
+              />
+            ) : (
+              <CommentHeader
+                authorProfile={comment.createdBy.authorProfile}
+                comment={comment}
+                document={document}
+                handleEdit={handleEdit}
+              />
+            )}
           </div>
           <div
             className={css(
