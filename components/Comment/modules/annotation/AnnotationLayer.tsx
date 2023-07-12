@@ -29,6 +29,7 @@ import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
 import debounce from "lodash/debounce";
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 interface Props {
   contentRef: any;
@@ -113,7 +114,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         XPathUtil.getXPathFromNode(contentRef.current) || "";
     }
   }, [contentRef]);
-
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -206,14 +206,14 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
 
       if (rightMarginWidth >= config.annotation.sidebarCommentWidth) {
-        setRenderCommentsAs("sidebar");
+        setRenderCommentsAs("inline");
       } else if (
         rightMarginWidth < config.annotation.sidebarCommentWidth &&
         window.innerWidth >= breakpoints.xsmall.int
       ) {
         setRenderCommentsAs("inline");
       } else {
-        setRenderCommentsAs("drawer");
+        setRenderCommentsAs("inline");
       }
 
       _drawAnnotations({
@@ -231,11 +231,15 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     };
   }, [contentRef]);
 
-  // Handle click event. 
+  // Handle click event.
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
   // what elment was clicked.
   useEffect(() => {
     const _handleClick = (event) => {
+      if (selectionXRange) {
+        return;
+      }
+
       const contentRefRect = contentRef!.current!.getBoundingClientRect();
       const relativeClickX = event.clientX - contentRefRect.left;
       const relativeClickY = event.clientY - contentRefRect.top;
@@ -298,7 +302,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [annotationsSortedByY, positionFromUrl]);
+  }, [annotationsSortedByY, positionFromUrl, selectionXRange]);
 
   // If a serialized position to an annotation is shared via the URL, we want to unserialize it and scroll
   // the user to its position.
@@ -550,7 +554,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const WrapperEl =
     renderCommentsAs === "drawer" ? CommentDrawer : React.Fragment;
-
+  console.log("selectedThreadId", selectedThreadId);
   return (
     <div style={{ position: "relative" }}>
       {annotationsSortedByY.map((annotation) => (
@@ -576,7 +580,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           onCreate: _onCreate,
           onUpdate: () => alert("Update"),
           onRemove: () => alert("Remove"),
-          onFetchMore: () => alert("Fetch more"),
+          onFetchMore: () => null, // Not applicable in this context
         }}
       >
         {showSelectionMenu && (
@@ -609,6 +613,44 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           isOpen={Boolean(selectedThreadId)}
           handleClose={() => setSelectedThreadId(null)}
         >
+          <div className={css(styles.avatarsContainer)}>
+            {annotationsSortedByY.map((annotation, idx) => {
+              const threadId = String(annotation.threadId);
+              const showAvatarAlongBorder =
+                renderCommentsAs === "inline" ? true : false;
+              const avatarPosition = `translate(-25px, ${annotation.anchorCoordinates[0].y}px)`;
+              const isFocused = threadId === selectedThreadId;
+
+              return (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedThreadId(threadId);
+                  }}
+                  key={`avatar-for-` + threadId}
+                  style={{
+                    transform: avatarPosition,
+                    display: isFocused ? "none" : "block",
+                  }}
+                >
+                  {showAvatarAlongBorder && (
+                    <div className={css(styles.avatarWrapper)}>
+                      <AuthorAvatar
+                        author={
+                          commentThreads?.current[threadId]?.comments[0]
+                            .createdBy.authorProfile
+                        }
+                        size={25}
+                        trueSize={true}
+                        disableLink
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
           <div
             className={css(
               styles.commentsContainer,
@@ -622,27 +664,31 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
               const key = `thread-` + threadId;
               const isFocused = selectedThreadId === threadId;
 
-              let coordinateStr = "";
+              let threadPosition = "";
               if (renderCommentsAs === "inline") {
-                coordinateStr = `translate(${
+                threadPosition = `translate(${
                   annotation.anchorCoordinates[0].x
                 }px, ${annotation.anchorCoordinates[0].y + 25}px)`;
               } else if (renderCommentsAs === "sidebar") {
-                coordinateStr = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
+                threadPosition = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
               }
 
-              const visible =
+              const isThreadVisible =
                 (renderCommentsAs === "inline" && isFocused) ||
                 (renderCommentsAs === "drawer" && isFocused) ||
                 renderCommentsAs === "sidebar";
+
+              if (selectedThreadId === threadId) {
+                console.log("selectedThreadId!!!!!", selectedThreadId);
+              }
 
               return (
                 <div
                   id={key}
                   ref={threadRefs[idx]}
                   style={{
-                    display: visible ? "block" : "none",
-                    transform: coordinateStr,
+                    display: isThreadVisible ? "block" : "none",
+                    transform: threadPosition,
                   }}
                   className={css(
                     styles.commentThread,
@@ -687,6 +733,10 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
 const styles = StyleSheet.create({
   commentsContainer: {},
+  avatarsContainer: {
+    position: "absolute",
+    right: -15,
+  },
   sidebarContainer: {
     position: "absolute",
     right: -15,
@@ -717,6 +767,19 @@ const styles = StyleSheet.create({
   commentEditor: {
     boxShadow: "none",
     padding: 0,
+  },
+  avatarWrapper: {
+    position: "absolute",
+    background: "white",
+    padding: 5,
+    borderRadius: "50% 50% 50% 0%",
+    boxShadow: "0px 0px 15px rgba(36, 31, 58, 0.2)",
+    border: `1px solid white`,
+    ":hover": {
+      background: "#EDEDED",
+      transition: "0.2s",
+      border: `1px solid #999`,
+    },
   },
 });
 
