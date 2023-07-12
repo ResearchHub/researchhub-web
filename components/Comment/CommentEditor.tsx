@@ -40,7 +40,6 @@ import { ModalActions } from "~/redux/modals";
 import globalColors from "~/config/themes/colors";
 import CommentEditorPlaceholder from "./CommentEditorPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
-
 const { setMessage, showMessage } = MessageActions;
 
 type CommentEditorArgs = {

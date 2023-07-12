@@ -36,6 +36,7 @@ export const apiConfig = {
 
 const config = {
   toggle: {
+    // Deprecated
     width: 75,
   },
   comment: {
@@ -47,7 +48,8 @@ const config = {
     width: 50,
   },
   annotation: {
-    sidebarBuffer: 15,
+    maxPreviewComments: 2,
+    sidebarBuffer: 15, // Space between content and comments
     sidebarCommentWidth: 270,
     inlineCommentWidth: 450,
   },

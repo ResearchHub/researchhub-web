@@ -54,13 +54,15 @@ const CommentReadOnly = ({
   const isNarrowWidthContext =
     commentTreeState.context === COMMENT_CONTEXTS.SIDEBAR ||
     commentTreeState.context === COMMENT_CONTEXTS.DRAWER;
+  const isAnnotationContext =
+    commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
   return (
     <div>
       <div
         className={`CommentEditor ${
           isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
-        }`}
+        } ${isAnnotationContext ? "CommentEditorForAnnotation" : ""}`}
       >
         <div
           className={

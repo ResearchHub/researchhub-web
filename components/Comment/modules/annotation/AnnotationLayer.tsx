@@ -221,7 +221,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       _drawAnnotations({
         threads: commentThreads.current,
       });
-      console.log("rightMarginWidth", rightMarginWidth);
     }, 1000);
 
     _handleResize();
@@ -556,7 +555,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const WrapperEl =
     renderCommentsAs === "drawer" ? CommentDrawer : React.Fragment;
-  console.log("selectedThreadId", selectedThreadId);
   return (
     <div style={{ position: "relative" }}>
       {annotationsSortedByY.map((annotation) => (
@@ -680,10 +678,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                 (renderCommentsAs === "drawer" && isFocused) ||
                 renderCommentsAs === "sidebar";
 
-              if (selectedThreadId === threadId) {
-                console.log("selectedThreadId!!!!!", selectedThreadId);
-              }
-
               return (
                 <div
                   id={key}
@@ -702,21 +696,26 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                   key={key}
                 >
                   {annotation.isNew ? (
-                    <CommentEditor
-                      handleCancel={(event) =>
-                        _handleCancelThread({ threadId, event })
-                      }
-                      editorStyleOverride={styles.commentEditor}
-                      editorId={`${key}-editor`}
-                      handleSubmit={(commentProps) =>
-                        _handleCreateThread({ annotation, commentProps })
-                      }
-                    />
+                    <div className={css(styles.commentEditorWrapper)}>
+                      <CommentEditor
+                        handleCancel={(event) =>
+                          _handleCancelThread({ threadId, event })
+                        }
+                        editorStyleOverride={styles.commentEditor}
+                        editorId={`${key}-editor`}
+                        handleSubmit={(commentProps) =>
+                          _handleCreateThread({ annotation, commentProps })
+                        }
+                      />
+                    </div>
                   ) : (
                     <AnnotationCommentThread
                       key={`${key}-thread`}
                       document={doc}
                       threadId={threadId}
+                      onCancel={() => {
+                        setSelectedThreadId(null);
+                      }}
                       rootComment={
                         commentThreads?.current[threadId]?.comments[0] || []
                       }
@@ -762,13 +761,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     cursor: "pointer",
     transition: "transform 0.4s ease",
-    padding: 10,
     background: "white",
     boxSizing: "border-box",
   },
   commentEditor: {
     boxShadow: "none",
     padding: 0,
+  },
+  commentEditorWrapper: {
+    padding: 10,
   },
   avatarWrapper: {
     position: "absolute",

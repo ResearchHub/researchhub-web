@@ -198,7 +198,12 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
             hasOpenBounties && styles.mainWrapperForBounty
           )}
         >
-          <div className={css(styles.headerWrapper)}>
+          <div
+            className={css(
+              styles.headerWrapper,
+              annotationContext && styles.headerWrapperAnnotationContext
+            )}
+          >
             {annotationContext ? (
               <CommentHeaderForAnnotation
                 authorProfile={comment.createdBy.authorProfile}
@@ -392,6 +397,9 @@ const styles = StyleSheet.create({
   },
   headerWrapper: {
     marginBottom: 15,
+  },
+  headerWrapperAnnotationContext: {
+    marginBottom: 5,
   },
   editorWrapper: {
     marginTop: 15,

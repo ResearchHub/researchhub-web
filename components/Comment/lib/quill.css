@@ -346,3 +346,7 @@
 .CommentEditor .ql-editor a.ql-user:hover {
   background: rgb(57, 113, 255, 0.2);
 }
+
+.CommentEditorForAnnotation .ql-editor p {
+  font-size: 14px;
+}
