@@ -80,7 +80,10 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
       <div className={`${css(styles.trigger)} comment-menu-trigger`}>
         <IconButton
           overrideStyle={styles.labelWrapper}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
         >
           <FontAwesomeIcon
             icon={faEllipsisH}

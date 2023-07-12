@@ -204,16 +204,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     const _handleResize = debounce(() => {
       const rect = contentRef.current.getBoundingClientRect();
       const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
+      const sidebarWidth =
+        config.annotation.sidebarCommentWidth + config.annotation.sidebarBuffer;
 
-      if (rightMarginWidth >= config.annotation.sidebarCommentWidth) {
-        setRenderCommentsAs("inline");
+      if (rightMarginWidth >= sidebarWidth) {
+        setRenderCommentsAs("sidebar");
       } else if (
-        rightMarginWidth < config.annotation.sidebarCommentWidth &&
+        rightMarginWidth < sidebarWidth &&
         window.innerWidth >= breakpoints.xsmall.int
       ) {
         setRenderCommentsAs("inline");
       } else {
-        setRenderCommentsAs("inline");
+        setRenderCommentsAs("drawer");
       }
 
       _drawAnnotations({
