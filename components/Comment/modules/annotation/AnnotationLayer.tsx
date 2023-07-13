@@ -622,8 +622,14 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
         {/* @ts-ignore */}
         <WrapperEl
-          isOpen={Boolean(selectedThreadId)}
-          handleClose={() => setSelectedThreadId(null)}
+          {...(renderCommentsAs === "drawer"
+            ? { isOpen: Boolean(selectedThreadId) }
+            : {})}
+          {...(renderCommentsAs === "drawer"
+            ? { handleClose: () => setSelectedThreadId(null) }
+            : {})}
+          // isOpen={Boolean(selectedThreadId)}
+          // handleClose={() => setSelectedThreadId(null)}
         >
           {renderCommentsAs === "inline" && (
             <div className={css(styles.avatarsContainer)}>
