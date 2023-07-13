@@ -29,9 +29,10 @@ import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
 import debounce from "lodash/debounce";
-import AuthorAvatar from "~/components/AuthorAvatar";
 import { useDispatch } from "react-redux";
 import { MessageActions } from "~/redux/message";
+import CommentAvatars from "../../CommentAvatars";
+import flattenComments from "../../lib/flattenComments";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -174,7 +175,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       });
     });
 
-    if (selectedThreadId) {
+    if (selectedThreadId && renderCommentsAs === "sidebar") {
       const selectedAnnotation = annotationsSortedByY.find(
         (annotation, idx) => annotation.threadId === selectedThreadId
       );
@@ -628,18 +629,17 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           {...(renderCommentsAs === "drawer"
             ? { handleClose: () => setSelectedThreadId(null) }
             : {})}
-          // isOpen={Boolean(selectedThreadId)}
-          // handleClose={() => setSelectedThreadId(null)}
         >
           {renderCommentsAs === "inline" && (
             <div className={css(styles.avatarsContainer)}>
               {annotationsSortedByY.map((annotation, idx) => {
                 const threadId = String(annotation.threadId);
-                const showAvatarAlongBorder =
-                  renderCommentsAs === "inline" ? true : false;
                 const avatarPosition = `translate(-25px, ${annotation.anchorCoordinates[0].y}px)`;
                 const isFocused = threadId === selectedThreadId;
-
+                const thread = commentThreads?.current[threadId];
+                const { comments: flatComments } = flattenComments(
+                  thread.comments
+                );
                 return (
                   <div
                     onClick={(e) => {
@@ -657,14 +657,12 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                       onMouseEnter={() => setHoveredThreadId(threadId)}
                       onMouseLeave={() => setHoveredThreadId(null)}
                     >
-                      <AuthorAvatar
-                        author={
-                          commentThreads?.current[threadId]?.comments[0]
-                            .createdBy.authorProfile
-                        }
+                      <CommentAvatars
+                        people={flatComments.map((c) => c.createdBy)}
+                        withTooltip={false}
+                        spacing={-20}
                         size={25}
-                        trueSize={true}
-                        disableLink
+                        maxPeople={2}
                       />
                     </div>
                   </div>

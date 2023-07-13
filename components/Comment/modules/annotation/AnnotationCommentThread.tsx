@@ -14,6 +14,7 @@ import { CommentTreeContext } from "../../lib/contexts";
 import IconButton from "../../../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
+import flattenComments from "../../lib/flattenComments";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -23,26 +24,6 @@ interface Props {
   rootComment: CommentType;
   onCancel: Function;
   renderCommentsAs: "inline" | "drawer" | "sidebar";
-}
-
-export function flattenComments(comments: CommentType[]): {
-  comments: CommentType[];
-  childCount: number;
-} {
-  const flattenedComments: CommentType[] = [];
-  let childCount = 0;
-
-  function walkThrough(comment: CommentType) {
-    flattenedComments.push(comment);
-
-    if (comment.children) {
-      comment.children.forEach(walkThrough);
-      childCount += comment.children.length;
-    }
-  }
-
-  comments.forEach(walkThrough);
-  return { comments: flattenedComments, childCount };
 }
 
 const AnnotationCommentThread = ({
