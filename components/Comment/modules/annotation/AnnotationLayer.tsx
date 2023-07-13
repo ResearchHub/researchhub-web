@@ -67,7 +67,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   // Dictates how the comment should be rendered. Depends on the screen size.
   const [renderCommentsAs, setRenderCommentsAs] = useState<
     "sidebar" | "drawer" | "inline"
-  >("inline");
+  >("sidebar");
 
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
@@ -102,13 +102,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     const _commentThreads = groupByThread(inlineComments);
     commentThreads.current = _commentThreads;
 
-    const { foundAnnotations, orphanThreadIds } = _drawAnnotations({
+    _drawAnnotations({
       threads: _commentThreads,
     });
-
-    setOrphanThreadIds(orphanThreadIds);
-    const sorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
-    setAnnotationsSortedByY(sorted);
   }, [inlineComments]);
 
   // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
@@ -207,42 +203,25 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     if (!contentRef.current) return;
 
     const _handleResize = debounce(() => {
-      const rect = contentRef.current.getBoundingClientRect();
-      const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
-      const sidebarWidth =
-        config.annotation.sidebarCommentWidth + config.annotation.sidebarBuffer;
-
-      if (rightMarginWidth >= sidebarWidth) {
-        setRenderCommentsAs("sidebar");
-      } else if (
-        rightMarginWidth < sidebarWidth &&
-        window.innerWidth >= breakpoints.xsmall.int
-      ) {
-        setRenderCommentsAs("inline");
-      } else {
-        setRenderCommentsAs("drawer");
-      }
-
       _drawAnnotations({
         threads: commentThreads.current,
       });
     }, 1000);
 
-    _handleResize();
     window.addEventListener("resize", _handleResize);
 
     return () => {
       _handleResize.cancel();
       window.removeEventListener("resize", _handleResize);
     };
-  }, [contentRef]);
+  }, [contentRef, annotationsSortedByY]);
 
   // Handle click event.
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
   // what elment was clicked.
   useEffect(() => {
     const _handleClick = (event) => {
-      if (selectionXRange) {
+      if (selectionXRange || !window.getSelection()?.isCollapsed) {
         return;
       }
 
@@ -427,11 +406,24 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     threads,
   }: {
     threads: { [key: string]: CommentThreadGroup };
-  }): {
-    orphanThreadIds: Array<string>;
-    foundAnnotations: Array<AnnotationType>;
-  } => {
+  }): void => {
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
+
+    const rect = contentRef.current.getBoundingClientRect();
+    const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
+    const sidebarWidth =
+      config.annotation.sidebarCommentWidth + config.annotation.sidebarBuffer;
+
+    if (rightMarginWidth >= sidebarWidth) {
+      setRenderCommentsAs("sidebar");
+    } else if (
+      rightMarginWidth < sidebarWidth &&
+      window.innerWidth >= breakpoints.xsmall.int
+    ) {
+      setRenderCommentsAs("inline");
+    } else {
+      setRenderCommentsAs("drawer");
+    }
 
     const orphanThreadIds: Array<string> = [];
     const foundAnnotations: Array<AnnotationType> = [];
@@ -441,15 +433,16 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         (annotation) => annotation.threadId === threadGroup.threadId
       );
 
+      // Calculating xrange is a heavy opeartion. We want to avoid if possible.
+      let xrange: any = null;
       if (existingAnnotation) {
-        foundAnnotations.push(existingAnnotation);
-        return;
+        xrange = existingAnnotation.xrange;
+      } else {
+        xrange = XRange.createFromSerialized({
+          serialized: threadGroup.thread.anchor,
+          xpathPrefix: contentElXpath.current,
+        });
       }
-
-      const xrange = XRange.createFromSerialized({
-        serialized: threadGroup.thread.anchor,
-        xpathPrefix: contentElXpath.current,
-      });
 
       if (xrange) {
         const annotation = createAnnotation({
@@ -469,10 +462,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       }
     });
 
-    return {
-      orphanThreadIds,
-      foundAnnotations,
-    };
+    setOrphanThreadIds(orphanThreadIds);
+    const sorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+    setAnnotationsSortedByY(sorted);
   };
 
   const _createNewAnnotation = (e) => {
@@ -633,28 +625,32 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           isOpen={Boolean(selectedThreadId)}
           handleClose={() => setSelectedThreadId(null)}
         >
-          <div className={css(styles.avatarsContainer)}>
-            {annotationsSortedByY.map((annotation, idx) => {
-              const threadId = String(annotation.threadId);
-              const showAvatarAlongBorder =
-                renderCommentsAs === "inline" ? true : false;
-              const avatarPosition = `translate(-25px, ${annotation.anchorCoordinates[0].y}px)`;
-              const isFocused = threadId === selectedThreadId;
+          {renderCommentsAs === "inline" && (
+            <div className={css(styles.avatarsContainer)}>
+              {annotationsSortedByY.map((annotation, idx) => {
+                const threadId = String(annotation.threadId);
+                const showAvatarAlongBorder =
+                  renderCommentsAs === "inline" ? true : false;
+                const avatarPosition = `translate(-25px, ${annotation.anchorCoordinates[0].y}px)`;
+                const isFocused = threadId === selectedThreadId;
 
-              return (
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedThreadId(threadId);
-                  }}
-                  key={`avatar-for-` + threadId}
-                  style={{
-                    transform: avatarPosition,
-                    display: isFocused ? "none" : "block",
-                  }}
-                >
-                  {showAvatarAlongBorder && (
-                    <div className={css(styles.avatarWrapper)}>
+                return (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedThreadId(threadId);
+                    }}
+                    key={`avatar-for-` + threadId}
+                    style={{
+                      transform: avatarPosition,
+                      display: isFocused ? "none" : "block",
+                    }}
+                  >
+                    <div
+                      className={css(styles.avatarWrapper)}
+                      onMouseEnter={() => setHoveredThreadId(threadId)}
+                      onMouseLeave={() => setHoveredThreadId(null)}
+                    >
                       <AuthorAvatar
                         author={
                           commentThreads?.current[threadId]?.comments[0]
@@ -665,11 +661,11 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                         disableLink
                       />
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <div
             className={css(

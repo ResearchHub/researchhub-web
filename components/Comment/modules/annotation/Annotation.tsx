@@ -19,10 +19,11 @@ const Annotation = ({
       createRef<HTMLCanvasElement>()
     );
     setCanvasRefs(refs);
-  }, []);
+  }, [annotation]);
 
   useEffect(() => {
     canvasRefs.forEach((canvasRef, i) => {
+      if (!canvasRef.current) return;
       const ctx = canvasRef.current.getContext("2d");
 
       if (ctx) {
@@ -42,21 +43,26 @@ const Annotation = ({
         ctx.fillRect(0, 0, width, height);
       }
     });
-  }, [canvasRefs, focused]);
+  }, [canvasRefs, focused, annotation]);
 
   return (
     <>
-      {canvasRefs.map((canvasRef, i) => (
-        <canvas
-          ref={canvasRef}
-          className={css(styles.annotation)}
-          style={{
-            position: "absolute",
-            top: annotation.anchorCoordinates[i].y,
-            left: annotation.anchorCoordinates[i].x,
-          }}
-        />
-      ))}
+      {canvasRefs.map((canvasRef, i) => {
+        const rect = annotation.anchorCoordinates[i];
+        if (!rect) return null;
+
+        return (
+          <canvas
+            ref={canvasRef}
+            className={css(styles.annotation)}
+            style={{
+              position: "absolute",
+              top: rect.y,
+              left: rect.x,
+            }}
+          />
+        );
+      })}
     </>
   );
 };
