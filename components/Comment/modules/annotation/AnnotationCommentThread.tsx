@@ -8,7 +8,7 @@ import { Comment as CommentType } from "../../lib/types";
 import { useContext, useState } from "react";
 import { genClientId } from "~/config/utils/id";
 import { createCommentAPI } from "../../lib/api";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import { CommentTreeContext } from "../../lib/contexts";
 import IconButton from "../../../Icons/IconButton";
@@ -22,6 +22,7 @@ interface Props {
   isFocused?: boolean;
   rootComment: CommentType;
   onCancel: Function;
+  renderCommentsAs: "inline" | "drawer" | "sidebar";
 }
 
 export function flattenComments(comments: CommentType[]): {
@@ -50,6 +51,7 @@ const AnnotationCommentThread = ({
   isFocused = false,
   rootComment,
   onCancel,
+  renderCommentsAs,
 }: Props) => {
   const commentTreeState = useContext(CommentTreeContext);
   const [pendingComment, setPendingComment] = useState<{
@@ -86,7 +88,10 @@ const AnnotationCommentThread = ({
 
   return (
     <div
-      className={css(styles.commentListWrapper, isFocused && styles.expanded)}
+      className={css(
+        styles.commentListWrapper,
+        isFocused && renderCommentsAs === "inline" && styles.expanded
+      )}
     >
       {commentsToRender.map((comment, idx) => (
         <div key={`${threadId}-${idx}`} className={css(styles.commentWrapper)}>
@@ -123,7 +128,8 @@ const AnnotationCommentThread = ({
             key={clientId}
             minimalMode={
               comments.length > 0 &&
-              comments.length < config.annotation.maxPreviewComments
+              comments.length < config.annotation.maxPreviewComments &&
+              renderCommentsAs !== "drawer"
             }
             placeholder="Add a comment..."
             editorId={clientId}
