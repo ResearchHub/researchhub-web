@@ -23,6 +23,7 @@ const CommentDrawer = ({ children, isOpen = false, handleClose }: Args) => {
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <SwipeableDrawer
+        // containerStyle={{height: 'calc(100% - 64px)', top: 64}}
         container={drawerEl}
         anchor="bottom"
         open={isOpen}
@@ -35,7 +36,7 @@ const CommentDrawer = ({ children, isOpen = false, handleClose }: Args) => {
         }}
         PaperProps={{
           sx: {
-            top: 35,
+            top: "33%",
             borderTopLeftRadius: "28px",
             borderTopRightRadius: "28px",
           },
@@ -55,8 +56,7 @@ const CommentDrawer = ({ children, isOpen = false, handleClose }: Args) => {
               <FontAwesomeIcon icon={faTimes} />
             </IconButton>
           </div>
-
-          {children}
+          <div className={css(styles.childrenWrapper)}>{children}</div>
         </div>
       </SwipeableDrawer>
     </div>
@@ -104,6 +104,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 25,
     padding: "15px 25px",
+  },
+  childrenWrapper: {
+    padding: "0px 25px",
   },
 });
 

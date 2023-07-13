@@ -736,6 +736,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                     <AnnotationCommentThread
                       key={`${key}-thread`}
                       document={doc}
+                      renderCommentsAs={renderCommentsAs}
                       threadId={threadId}
                       onCancel={() => {
                         setSelectedThreadId(null);
