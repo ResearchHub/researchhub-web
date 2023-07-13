@@ -73,6 +73,7 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
 
   const _handleEdit = (e) => {
     handleEdit(e);
+    setIsOpen(false);
   };
 
   return (
@@ -97,7 +98,13 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
       >
         {currentUser?.id === comment.createdBy.id && (
           <>
-            <div className={css(styles.option)} onClick={_handleEdit}>
+            <div
+              className={css(styles.option)}
+              onClick={(e) => {
+                e.stopPropagation();
+                _handleEdit(e);
+              }}
+            >
               <FontAwesomeIcon
                 icon={faPencil}
                 style={{ color: colors.secondary.text, fontSize: 18 }}
@@ -105,7 +112,14 @@ const CommentMenu = ({ comment, handleEdit, document }: Args) => {
 
               <div className={css(styles.dropdownLabel)}>Edit</div>
             </div>
-            <div className={css(styles.option)} onClick={_handleDelete}>
+            <div
+              className={css(styles.option)}
+              onClick={(e) => {
+                e.stopPropagation();
+                _handleDelete();
+                setIsOpen(false);
+              }}
+            >
               <FontAwesomeIcon
                 icon={faTrashAlt}
                 style={{ color: colors.secondary.text, fontSize: 18 }}

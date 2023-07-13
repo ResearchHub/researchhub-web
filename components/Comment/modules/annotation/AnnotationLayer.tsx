@@ -33,6 +33,10 @@ import { useDispatch } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import CommentAvatars from "../../CommentAvatars";
 import flattenComments from "../../lib/flattenComments";
+import removeComment from "../../lib/removeComment";
+import replaceComment from "../../lib/replaceComment";
+import findComment from "../../lib/findComment";
+import { localWarn } from "~/config/utils/nullchecks";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -531,13 +535,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         },
       });
 
-      setAnnotationsSortedByY((prevAnnotations) => {
-        return prevAnnotations.filter(
-          (_annotation) => _annotation.threadId !== annotation.threadId
-        );
-      });
-
-      _onCreate({ comment, clientId: annotation.threadId });
+      _onCreate({ comment });
     } catch (error) {
       captureEvent({
         msg: "Failed to create inline comment",
@@ -552,12 +550,57 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const _onCreate = ({
     comment,
-    clientId,
+    parent,
   }: {
     comment: CommentModel;
-    clientId: string;
+    parent?: CommentModel;
   }) => {
-    setInlineComments([...inlineComments, comment]);
+    if (parent) {
+      parent.children = [...parent.children, comment];
+
+      replaceComment({
+        prev: parent,
+        next: parent,
+        list: inlineComments,
+      });
+
+      setInlineComments([...inlineComments]);
+    } else {
+      setInlineComments([...inlineComments, comment]);
+    }
+  };
+
+  const _onRemove = ({ comment }: { comment: CommentModel }) => {
+    const found = findComment({ id: comment.id, comments: inlineComments });
+    console.log("found", found);
+    if (found) {
+      removeComment({
+        comment: found.comment,
+        list: inlineComments,
+      });
+
+      setInlineComments([...inlineComments]);
+    } else {
+      localWarn(
+        `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
+      );
+    }
+  };
+
+  const _onUpdate = ({ comment }: { comment: CommentModel }) => {
+    const found = findComment({ id: comment.id, comments: inlineComments });
+    if (found) {
+      replaceComment({
+        prev: found.comment,
+        next: comment,
+        list: inlineComments,
+      });
+      setInlineComments([...inlineComments]);
+    } else {
+      localWarn(
+        `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
+      );
+    }
   };
 
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
@@ -591,8 +634,8 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           comments: inlineComments,
           context: COMMENT_CONTEXTS.ANNOTATION,
           onCreate: _onCreate,
-          onUpdate: () => alert("Update"),
-          onRemove: () => alert("Remove"),
+          onUpdate: _onUpdate,
+          onRemove: _onRemove,
           onFetchMore: () => null, // Not applicable in this context
         }}
       >
