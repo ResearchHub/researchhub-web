@@ -114,19 +114,21 @@ const CommentEditor = ({
     commentType: _commentType,
   });
 
-  if (minimalMode) {
-    useEffectHandleClick({
-      ref: editorRef,
-      onInsideClick: () => {
+  useEffectHandleClick({
+    ref: editorRef,
+    onInsideClick: () => {
+      if (minimalMode) {
         setIsMinimalMode(false);
         isMinimalModeRef.current = false;
         quill && !quill.hasFocus() && quill.focus();
-      },
-      onOutsideClick: () => {
+      }
+    },
+    onOutsideClick: () => {
+      if (minimalMode) {
         setIsMinimalMode(true);
-      },
-    });
-  }
+      }
+    },
+  });
 
   useEffect(() => {
     if (isReady) {

@@ -15,8 +15,8 @@ import {
 } from "~/components/Document/lib/useHooks";
 import { DocumentContext } from "~/components/Document/lib/DocumentContext";
 import dynamic from "next/dynamic";
-const DynamicCKEditor = dynamic(
-  () => import("~/components/CKEditor/SimpleEditor")
+const AnnotationLayer = dynamic(
+  () => import("~/components/Comment/modules/annotation/AnnotationLayer")
 );
 import removeMd from "remove-markdown";
 import API from "~/config/api";
@@ -27,7 +27,6 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {

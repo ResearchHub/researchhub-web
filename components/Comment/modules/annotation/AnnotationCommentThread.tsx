@@ -56,9 +56,10 @@ const AnnotationCommentThread = ({
         documentType: document.apiDocumentType,
         threadId,
         mentions,
+        parentComment: rootComment,
       });
 
-      commentTreeState.onCreate({ comment: _comment });
+      commentTreeState.onCreate({ comment: _comment, parent: rootComment });
     } catch (error) {
       dispatch(setMessage("Could not create a comment at this time"));
       // @ts-ignore
