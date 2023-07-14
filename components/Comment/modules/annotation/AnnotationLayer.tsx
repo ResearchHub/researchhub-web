@@ -55,6 +55,10 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   // Orphans are annotations that could not be found on page
   const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
 
+  // Setting this to true will redraw the annotations on the page.
+  const [needsRedraw, setNeedsRedraw] = useState<boolean>(false);
+  const [needsRepositioning, setNeedsRedpositioning] = useState<boolean>(false);
+
   // The XRange position of the selected text. Holds the serialized DOM position.
   const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
     useSelection({
@@ -68,11 +72,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const [positionFromUrl, setPositionFromUrl] = useState<AnnotationType | null>(
     null
   );
-
-  // Dictates how the comment should be rendered. Depends on the screen size.
-  const [renderCommentsAs, setRenderCommentsAs] = useState<
-    "sidebar" | "drawer" | "inline"
-  >("sidebar");
 
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
@@ -100,17 +99,47 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     _fetch();
   }, []);
 
-  // Once we have comments, we want to group them by threads and draw them as annotations
+  // Once we have comments, we want to group them by threads and draw them on the page
   useEffect(() => {
     if (inlineComments.length === 0) return;
 
     const _commentThreads = groupByThread(inlineComments);
     commentThreads.current = _commentThreads;
 
-    _drawAnnotations({
-      threads: _commentThreads,
-    });
+    setNeedsRedraw(true);
   }, [inlineComments]);
+
+  useEffect(() => {
+    if (needsRedraw) {
+      const { orphanThreadIds, foundAnnotations } = _drawAnnotations({
+        annotationsSortedByY,
+        threads: commentThreads.current,
+      });
+
+      setNeedsRedraw(false);
+      setOrphanThreadIds(orphanThreadIds);
+      setAnnotationsSortedByY(foundAnnotations);
+    }
+  }, [needsRedraw]);
+
+  useEffect(() => {
+    if (needsRepositioning) {
+      console.log("reposition yo!");
+      const repositioned = repositionAnnotations({
+        annotationsSortedByY: annotationsSortedByY,
+        selectedThreadId,
+        threadRefs,
+      });
+
+      const updated = _replaceAnnotations({
+        existing: annotationsSortedByY,
+        replaceWith: repositioned,
+      });
+
+      setNeedsRedpositioning(false);
+      setAnnotationsSortedByY(updated);
+    }
+  }, [needsRepositioning]);
 
   // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
   // instead of an absolute path.
@@ -125,18 +154,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   // If position has changed, recalculate.
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      setAnnotationsSortedByY((annotations) => {
-        const repositioned = repositionAnnotations({
-          annotationsSortedByY: annotationsSortedByY,
-          selectedThreadId,
-          threadRefs,
-        });
-
-        return _replaceAnnotations({
-          existing: annotations,
-          replaceWith: repositioned,
-        });
-      });
+      setNeedsRedpositioning(true);
     });
 
     threadRefs.forEach((t) => {
@@ -152,7 +170,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         }
       });
     };
-  }, [threadRefs, selectedThreadId]);
+  }, [threadRefs]);
 
   // Create a sorted list of threads that maps to sorted list of annotations
   // threadRefs[i] will always map to annotationsSortedByY[i] and vice versa
@@ -179,7 +197,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       });
     });
 
-    if (selectedThreadId && renderCommentsAs === "sidebar") {
+    if (selectedThreadId && renderingMode === "sidebar") {
       const selectedAnnotation = annotationsSortedByY.find(
         (annotation, idx) => annotation.threadId === selectedThreadId
       );
@@ -208,9 +226,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     if (!contentRef.current) return;
 
     const _handleResize = debounce(() => {
-      _drawAnnotations({
-        threads: commentThreads.current,
-      });
+      setNeedsRedraw(true);
     }, 1000);
 
     window.addEventListener("resize", _handleResize);
@@ -409,26 +425,15 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const _drawAnnotations = ({
     threads,
+    annotationsSortedByY,
   }: {
     threads: { [key: string]: CommentThreadGroup };
-  }): void => {
+    annotationsSortedByY: AnnotationType[];
+  }): {
+    orphanThreadIds: Array<string>;
+    foundAnnotations: Array<AnnotationType>;
+  } => {
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
-
-    const rect = contentRef.current.getBoundingClientRect();
-    const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
-    const sidebarWidth =
-      config.annotation.sidebarCommentWidth + config.annotation.sidebarBuffer;
-
-    if (rightMarginWidth >= sidebarWidth) {
-      setRenderCommentsAs("sidebar");
-    } else if (
-      rightMarginWidth < sidebarWidth &&
-      window.innerWidth >= breakpoints.xsmall.int
-    ) {
-      setRenderCommentsAs("inline");
-    } else {
-      setRenderCommentsAs("drawer");
-    }
 
     const orphanThreadIds: Array<string> = [];
     const foundAnnotations: Array<AnnotationType> = [];
@@ -467,9 +472,8 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       }
     });
 
-    setOrphanThreadIds(orphanThreadIds);
-    const sorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
-    setAnnotationsSortedByY(sorted);
+    const foundAndSorted = _sortAnnotationsByAppearanceInPage(foundAnnotations);
+    return { orphanThreadIds, foundAnnotations: foundAndSorted };
   };
 
   const _createNewAnnotation = (e) => {
@@ -603,11 +607,35 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
     }
   };
 
+  const getRenderingMode = ({
+    contentRef,
+  }: {
+    contentRef: any;
+  }): "inline" | "drawer" | "sidebar" => {
+    if (!contentRef.current) return "sidebar";
+
+    const rect = contentRef.current.getBoundingClientRect();
+    const rightMarginWidth = window.innerWidth - (rect.x + rect.width);
+    const sidebarWidth =
+      config.annotation.sidebarCommentWidth + config.annotation.sidebarBuffer;
+
+    if (rightMarginWidth >= sidebarWidth) {
+      return "sidebar";
+    } else if (
+      rightMarginWidth < sidebarWidth &&
+      window.innerWidth >= breakpoints.xsmall.int
+    ) {
+      return "inline";
+    } else {
+      return "drawer";
+    }
+  };
+
   const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
+  const renderingMode = getRenderingMode({ contentRef });
+  const WrapperEl = renderingMode === "drawer" ? CommentDrawer : React.Fragment;
 
-  const WrapperEl =
-    renderCommentsAs === "drawer" ? CommentDrawer : React.Fragment;
   return (
     <div style={{ position: "relative" }}>
       {annotationsSortedByY.map((annotation) => (
@@ -666,14 +694,14 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
         {/* @ts-ignore */}
         <WrapperEl
-          {...(renderCommentsAs === "drawer"
+          {...(renderingMode === "drawer"
             ? { isOpen: Boolean(selectedThreadId) }
             : {})}
-          {...(renderCommentsAs === "drawer"
+          {...(renderingMode === "drawer"
             ? { handleClose: () => setSelectedThreadId(null) }
             : {})}
         >
-          {renderCommentsAs === "inline" && (
+          {renderingMode === "inline" && (
             <div className={css(styles.avatarsContainer)}>
               {annotationsSortedByY.map((annotation, idx) => {
                 const threadId = String(annotation.threadId);
@@ -717,9 +745,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
           <div
             className={css(
               styles.commentsContainer,
-              renderCommentsAs === "sidebar" && styles.sidebarContainer,
-              renderCommentsAs === "inline" && styles.inlineContainer,
-              renderCommentsAs === "drawer" && styles.drawerContainer
+              renderingMode === "sidebar" && styles.sidebarContainer,
+              renderingMode === "inline" && styles.inlineContainer,
+              renderingMode === "drawer" && styles.drawerContainer
             )}
           >
             {annotationsSortedByY.map((annotation, idx) => {
@@ -728,18 +756,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
               const isFocused = selectedThreadId === threadId;
 
               let threadPosition = "";
-              if (renderCommentsAs === "inline") {
+              if (renderingMode === "inline") {
                 threadPosition = `translate(${
                   annotation.anchorCoordinates[0].x
                 }px, ${annotation.anchorCoordinates[0].y + 25}px)`;
-              } else if (renderCommentsAs === "sidebar") {
+              } else if (renderingMode === "sidebar") {
                 threadPosition = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
               }
 
               const isThreadVisible =
-                (renderCommentsAs === "inline" && isFocused) ||
-                (renderCommentsAs === "drawer" && isFocused) ||
-                renderCommentsAs === "sidebar";
+                (renderingMode === "inline" && isFocused) ||
+                (renderingMode === "drawer" && isFocused) ||
+                renderingMode === "sidebar";
 
               return (
                 <div
@@ -752,9 +780,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                   className={css(
                     styles.commentThread,
                     isFocused && styles.focusedCommentThread,
-                    renderCommentsAs === "sidebar" && styles.sidebarComment,
-                    renderCommentsAs === "inline" && styles.inlineComment,
-                    renderCommentsAs === "drawer" && styles.drawerComment
+                    renderingMode === "sidebar" && styles.sidebarComment,
+                    renderingMode === "inline" && styles.inlineComment,
+                    renderingMode === "drawer" && styles.drawerComment
                   )}
                   onMouseEnter={() => setHoveredThreadId(threadId)}
                   onMouseLeave={() => setHoveredThreadId(null)}
@@ -777,7 +805,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
                     <AnnotationCommentThread
                       key={`${key}-thread`}
                       document={doc}
-                      renderCommentsAs={renderCommentsAs}
+                      renderingMode={renderingMode}
                       threadId={threadId}
                       onCancel={() => {
                         setSelectedThreadId(null);
