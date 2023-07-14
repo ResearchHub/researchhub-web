@@ -23,7 +23,7 @@ interface Props {
   isFocused?: boolean;
   rootComment: CommentType;
   onCancel: Function;
-  renderCommentsAs: "inline" | "drawer" | "sidebar";
+  renderingMode: "inline" | "drawer" | "sidebar";
 }
 
 const AnnotationCommentThread = ({
@@ -32,7 +32,7 @@ const AnnotationCommentThread = ({
   isFocused = false,
   rootComment,
   onCancel,
-  renderCommentsAs,
+  renderingMode,
 }: Props) => {
   const commentTreeState = useContext(CommentTreeContext);
   const [pendingComment, setPendingComment] = useState<{
@@ -72,7 +72,7 @@ const AnnotationCommentThread = ({
     <div
       className={css(
         styles.commentListWrapper,
-        isFocused && renderCommentsAs === "inline" && styles.expanded
+        isFocused && renderingMode === "inline" && styles.expanded
       )}
     >
       {commentsToRender.map((comment, idx) => (
@@ -111,7 +111,7 @@ const AnnotationCommentThread = ({
             minimalMode={
               comments.length > 0 &&
               comments.length < config.annotation.maxPreviewComments &&
-              renderCommentsAs !== "drawer"
+              renderingMode !== "drawer"
             }
             placeholder="Add a comment..."
             editorId={clientId}
