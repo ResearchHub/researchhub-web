@@ -10,7 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
-import PDFViewerControls from "./PDFViewerControls";
+import DocumentControls from "../../DocumentControls";
 import config from "../config";
 import { zoomOptions } from "./config";
 import { breakpoints } from "~/config/themes/screen";
@@ -48,7 +48,8 @@ const PDFViewer = ({
   pdfClose,
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isExpanded, setIsExpanded] = useState<boolean>(expanded);
+  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(expanded || false);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
@@ -307,7 +308,7 @@ const PDFViewer = ({
           isExpanded && styles.controlsStickyExpanded
         )}
       >
-        <PDFViewerControls
+        <DocumentControls
           handleFullScreen={() => {
             setIsExpanded(true);
           }}
