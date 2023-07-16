@@ -1,9 +1,9 @@
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMaximize } from "@fortawesome/pro-light-svg-icons";
-import IconButton from "../../../Icons/IconButton";
+import IconButton from "../Icons/IconButton";
 import colors from "~/config/themes/colors";
-import PDFViewerZoomControls from "./PDFViewerZoomControls";
+import DocumentZoomControls from "./lib/DocumentZoomControls";
 
 interface Props {
   handleFullScreen: Function;
@@ -14,7 +14,7 @@ interface Props {
   showExpand: boolean;
 }
 
-const PDFViewerControls = ({
+const DocumentControls = ({
   handleFullScreen,
   handleZoomIn,
   handleZoomOut,
@@ -24,7 +24,7 @@ const PDFViewerControls = ({
 }: Props) => {
   return (
     <>
-      <PDFViewerZoomControls
+      <DocumentZoomControls
         currentZoom={currentZoom}
         handleZoomIn={handleZoomIn}
         handleZoomOut={handleZoomOut}
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PDFViewerControls;
+export default DocumentControls;

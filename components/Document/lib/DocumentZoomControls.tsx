@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/pro-light-svg-icons";
-import IconButton from "../../../Icons/IconButton";
-import GenericMenu from "../../../shared/GenericMenu";
-import { zoomOptions } from "./config";
+import IconButton from "../../Icons/IconButton";
+import GenericMenu from "../../shared/GenericMenu";
+import { zoomOptions } from "./PDFViewer/config";
 
 interface Props {
   currentZoom: number;
@@ -11,7 +11,7 @@ interface Props {
   handleZoomSelection: Function;
 }
 
-const PDFViewerZoomControls = ({
+const DocumentZoomControls = ({
   currentZoom,
   handleZoomIn,
   handleZoomOut,
@@ -43,4 +43,4 @@ const PDFViewerZoomControls = ({
   );
 };
 
-export default PDFViewerZoomControls;
+export default DocumentZoomControls;
