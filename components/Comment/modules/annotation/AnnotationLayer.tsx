@@ -51,13 +51,13 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
     AnnotationType[]
   >([]);
+  const annotationsSortedByYRef = useRef<AnnotationType[]>([]);
 
   // Orphans are annotations that could not be found on page
   const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
 
   // Setting this to true will redraw the annotations on the page.
   const [needsRedraw, setNeedsRedraw] = useState<boolean>(false);
-  const [needsRepositioning, setNeedsRedpositioning] = useState<boolean>(false);
 
   // The XRange position of the selected text. Holds the serialized DOM position.
   const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
@@ -118,28 +118,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
       setNeedsRedraw(false);
       setOrphanThreadIds(orphanThreadIds);
-      setAnnotationsSortedByY(foundAnnotations);
+      _setAnnotations(foundAnnotations);
     }
   }, [needsRedraw]);
-
-  useEffect(() => {
-    if (needsRepositioning) {
-      console.log("reposition yo!");
-      const repositioned = repositionAnnotations({
-        annotationsSortedByY: annotationsSortedByY,
-        selectedThreadId,
-        threadRefs,
-      });
-
-      const updated = _replaceAnnotations({
-        existing: annotationsSortedByY,
-        replaceWith: repositioned,
-      });
-
-      setNeedsRedpositioning(false);
-      setAnnotationsSortedByY(updated);
-    }
-  }, [needsRepositioning]);
 
   // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
   // instead of an absolute path.
@@ -154,7 +135,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   // If position has changed, recalculate.
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      setNeedsRedpositioning(true);
+      const repositioned = repositionAnnotations({
+        annotationsSortedByY: annotationsSortedByYRef.current,
+        selectedThreadId,
+        threadRefs,
+      });
+      console.log("selectedThreadId", selectedThreadId);
+      const updated = _replaceAnnotations({
+        existing: annotationsSortedByYRef.current,
+        replaceWith: repositioned,
+      });
+
+      _setAnnotations(updated);
     });
 
     threadRefs.forEach((t) => {
@@ -170,7 +162,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         }
       });
     };
-  }, [threadRefs]);
+  }, [threadRefs, selectedThreadId]);
 
   // Create a sorted list of threads that maps to sorted list of annotations
   // threadRefs[i] will always map to annotationsSortedByY[i] and vice versa
@@ -184,18 +176,18 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   // Move things around when a particular annotation is selected.
   useEffect(() => {
-    setAnnotationsSortedByY((annotations) => {
-      const repositioned = repositionAnnotations({
-        annotationsSortedByY: annotationsSortedByY,
-        selectedThreadId,
-        threadRefs,
-      });
-
-      return _replaceAnnotations({
-        existing: annotations,
-        replaceWith: repositioned,
-      });
+    const repositioned = repositionAnnotations({
+      annotationsSortedByY: annotationsSortedByY,
+      selectedThreadId,
+      threadRefs,
     });
+
+    const updated = _replaceAnnotations({
+      existing: annotationsSortedByY,
+      replaceWith: repositioned,
+    });
+
+    _setAnnotations(updated);
 
     if (selectedThreadId && renderingMode === "sidebar") {
       const selectedAnnotation = annotationsSortedByY.find(
@@ -426,9 +418,12 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const _drawAnnotations = ({
     threads,
     annotationsSortedByY,
+    drawingMode = "DIFF_ONLY",
   }: {
     threads: { [key: string]: CommentThreadGroup };
     annotationsSortedByY: AnnotationType[];
+    // If the page changes size, chances are xrange would need to be recalculated. In that case, we need ALL
+    drawingMode?: "DIFF_ONLY" | "ALL";
   }): {
     orphanThreadIds: Array<string>;
     foundAnnotations: Array<AnnotationType>;
@@ -443,32 +438,30 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         (annotation) => annotation.threadId === threadGroup.threadId
       );
 
-      // Calculating xrange is a heavy opeartion. We want to avoid if possible.
-      let xrange: any = null;
-      if (existingAnnotation) {
-        xrange = existingAnnotation.xrange;
+      if (existingAnnotation && drawingMode === "DIFF_ONLY") {
+        foundAnnotations.push(existingAnnotation);
       } else {
-        xrange = XRange.createFromSerialized({
+        const xrange = XRange.createFromSerialized({
           serialized: threadGroup.thread.anchor,
           xpathPrefix: contentElXpath.current,
         });
-      }
 
-      if (xrange) {
-        const annotation = createAnnotation({
-          xrange,
-          threadId: threadGroup.threadId,
-          relativeEl: contentRef.current,
-          serializedAnchorPosition: threadGroup.thread.anchor || undefined,
-        });
+        if (xrange) {
+          const annotation = createAnnotation({
+            xrange,
+            threadId: threadGroup.threadId,
+            relativeEl: contentRef.current,
+            serializedAnchorPosition: threadGroup.thread.anchor || undefined,
+          });
 
-        foundAnnotations.push(annotation);
-      } else {
-        console.log(
-          "[Annotation] No xrange found for thread. Orphan thread is:",
-          threadGroup.thread
-        );
-        orphanThreadIds.push(threadGroup.threadId);
+          foundAnnotations.push(annotation);
+        } else {
+          console.log(
+            "[Annotation] No xrange found for thread. Orphan thread is:",
+            threadGroup.thread
+          );
+          orphanThreadIds.push(threadGroup.threadId);
+        }
       }
     });
 
@@ -506,16 +499,21 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
       newAnnotation,
     ]);
     setSelectedThreadId(newAnnotation.threadId);
-    setAnnotationsSortedByY(_annotationsSortedByY);
     resetSelectedPos();
+    _setAnnotations(_annotationsSortedByY);
+  };
+
+  const _setAnnotations = (annotations: AnnotationType[]) => {
+    annotationsSortedByYRef.current = annotations;
+    setAnnotationsSortedByY(annotations);
   };
 
   const _handleCancelThread = ({ threadId, event }) => {
-    setAnnotationsSortedByY((prevAnnotations) => {
-      return prevAnnotations.filter(
-        (annotation) => annotation.threadId !== threadId
-      );
-    });
+    const updated = annotationsSortedByY.filter(
+      (annotation) => annotation.threadId !== threadId
+    );
+
+    _setAnnotations(updated);
   };
 
   const _handleCreateThread = async ({
@@ -576,7 +574,6 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
     const found = findComment({ id: comment.id, comments: inlineComments });
-    console.log("found", found);
     if (found) {
       removeComment({
         comment: found.comment,
