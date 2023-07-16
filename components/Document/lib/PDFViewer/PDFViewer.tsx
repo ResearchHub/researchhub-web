@@ -16,6 +16,7 @@ import { zoomOptions } from "./config";
 import { breakpoints } from "~/config/themes/screen";
 // import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
 import { GenericDocument } from "../types";
+import { captureEvent } from "~/config/utils/events";
 
 const _PDFViewer = dynamic(() => import("./_PDFViewer"), { ssr: false });
 
@@ -28,6 +29,7 @@ interface Props {
   onZoom?: Function;
   expanded?: boolean;
   pdfClose?: (e) => void;
+  handleError?: Function;
 }
 
 type ZoomAction = {
@@ -42,10 +44,10 @@ const PDFViewer = ({
   onZoom,
   expanded,
   document: doc,
+  handleError,
   pdfClose,
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(expanded);
   const [fullScreenSelectedZoom, setFullScreenSelectedZoom] =
     useState<number>(1.25);
@@ -155,6 +157,20 @@ const PDFViewer = ({
     }
   }
 
+  const onError = () => {
+    setIsLoading(false);
+    handleError && handleError();
+
+    captureEvent({
+      msg: "Failed to load PDF ",
+      data: { pdfUrl },
+    });
+  };
+
+  const onSuccess = () => {
+    setIsLoading(false);
+  };
+
   function downloadPDF(pdfUrl) {
     // Create a link for our script to click
     const link = document.createElement("a");
@@ -233,15 +249,6 @@ const PDFViewer = ({
     };
   }, [containerRef]);
 
-  function onLoadSuccess() {
-    setIsLoading(false);
-  }
-
-  function onLoadError() {
-    setIsLoading(false);
-    setHasLoadError(true);
-  }
-
   function onFullScreenClose(e) {
     pdfClose && pdfClose(e);
     setIsExpanded(false);
@@ -249,17 +256,6 @@ const PDFViewer = ({
 
   function onPageRender(pageNum) {
     console.log("page rendered", pageNum);
-  }
-
-  if (hasLoadError) {
-    return (
-      <div className={css(styles.error)}>
-        <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
-        <span style={{ fontSize: 22 }}>
-          There was an error loading the PDF.
-        </span>
-      </div>
-    );
   }
 
   const fullScreenViewer = useMemo(() => {
@@ -289,8 +285,10 @@ const PDFViewer = ({
           <_PDFViewer
             pdfUrl={pdfUrl}
             viewerWidth={viewerWidth * fullScreenSelectedZoom}
-            onLoadSuccess={onLoadSuccess}
-            onLoadError={onLoadError}
+            onLoadSuccess={() => {
+              setIsLoading(false);
+            }}
+            onLoadError={onError}
             showWhenLoading={<DocumentPlaceholder />}
           />
         </div>
@@ -324,8 +322,10 @@ const PDFViewer = ({
         <_PDFViewer
           pdfUrl={pdfUrl}
           viewerWidth={viewerWidth * selectedZoom}
-          onLoadSuccess={onLoadSuccess}
-          onLoadError={onLoadError}
+          onLoadSuccess={() => {
+            setIsLoading(false);
+          }}
+          onLoadError={onError}
           onPageRender={onPageRender}
           showWhenLoading={
             <div style={{ padding: 20 }}>

@@ -42,6 +42,7 @@ const DocumentIndexPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
+  const [pdfLoadError, setPdfLoadError] = useState<boolean>(false);
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -89,9 +90,12 @@ const DocumentIndexPage: NextPage<Args> = ({
           ref={wrapperRef}
         >
           <div className={css(styles.bodyWrapper)}>
-            {pdfUrl ? (
+            {pdfUrl && !pdfLoadError ? (
               <div className={css(styles.viewerWrapper)}>
                 <PDFViewer
+                  handleError={() => {
+                    setPdfLoadError(true);
+                  }}
                   document={document}
                   pdfUrl={pdfUrl}
                   onZoom={(zoom) => {
