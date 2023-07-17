@@ -6,6 +6,7 @@ import colors from "~/config/themes/colors";
 
 export interface MenuOption {
   label?: string;
+  group?: string;
   value: any;
   html?: React.ReactElement;
   icon?: React.ReactElement;
@@ -69,6 +70,7 @@ const Menu = ({
     }),
   };
 
+  let currentOptionGroup: string | undefined = undefined;
   return (
     <div className={css(styles.genericMenuWrapper)}>
       <div
@@ -95,18 +97,26 @@ const Menu = ({
             const { label, icon, href, value, html, preventDefault } = option;
 
             const content = (
-              <div
-                key={`${id}-${index}`}
-                className={css(styles.menuItem)}
-                onClick={
-                  preventDefault ? undefined : () => handleSelect(option)
-                }
-              >
-                {icon && <div className={css(styles.menuItemIcon)}>{icon}</div>}
-                {html ? html : label}
-              </div>
+              <>
+                {option.group !== currentOptionGroup && (
+                  <div>{option.group}</div>
+                )}
+                <div
+                  key={`${id}-${index}`}
+                  className={css(styles.menuItem)}
+                  onClick={
+                    preventDefault ? undefined : () => handleSelect(option)
+                  }
+                >
+                  {icon && (
+                    <div className={css(styles.menuItemIcon)}>{icon}</div>
+                  )}
+                  {html ? html : label}
+                </div>
+              </>
             );
 
+            currentOptionGroup = option.group;
             if (href) {
               return (
                 <Link href={href} key={value}>

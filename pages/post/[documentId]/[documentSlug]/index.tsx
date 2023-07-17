@@ -13,11 +13,10 @@ import {
   useDocument,
   useDocumentMetadata,
 } from "~/components/Document/lib/useHooks";
-import { DocumentContext } from "~/components/Document/lib/DocumentContext";
-import dynamic from "next/dynamic";
-const AnnotationLayer = dynamic(
-  () => import("~/components/Comment/modules/annotation/AnnotationLayer")
-);
+import {
+  DocumentContext,
+  DocumentPreferences,
+} from "~/components/Document/lib/DocumentContext";
 import removeMd from "remove-markdown";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -27,8 +26,9 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
 import { breakpoints } from "~/config/themes/screen";
-import DocumentControls from "~/components/Document/DocumentControls";
-
+import DocumentViewer, {
+  ZoomAction,
+} from "~/components/Document/DocumentViewer";
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {
@@ -68,7 +68,11 @@ const DocumentIndexPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [_postHtml, setPostHtml] = useState<TrustedHTML | string>(postHtml);
+  const [docPreferences, setDocPreferences] = useState<DocumentPreferences>({
+    comments: "all",
+  });
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -77,7 +81,6 @@ const DocumentIndexPage: NextPage<Args> = ({
     rawDocumentData: documentData,
     documentType,
   }) as [Post | null, Function];
-  const contentRef = useRef(null);
 
   useEffect(() => {
     setPostHtml(postHtml);
@@ -104,8 +107,11 @@ const DocumentIndexPage: NextPage<Args> = ({
         value={{
           metadata: documentMetadata,
           documentType,
+          preferences: docPreferences,
           updateDocument: () => null,
           updateMetadata: setDocumentMetadata,
+          setPreference: ({ key, value }) =>
+            setDocPreferences({ ...docPreferences, [key]: value }),
           editDocument: () => {
             // Post
             if (document.note) {
@@ -126,11 +132,11 @@ const DocumentIndexPage: NextPage<Args> = ({
           metadata={documentMetadata}
           documentType={documentType}
         >
-          <div
-            className={css(styles.bodyContentWrapper)}
-            style={{ width: viewerWidth }}
-          >
-            <div className={css(styles.bodyWrapper)}>
+          <div className={css(styles.bodyContentWrapper)}>
+            <div
+              className={css(styles.bodyWrapper)}
+              style={{ maxWidth: viewerWidth, margin: "0 auto" }}
+            >
               {isEditing ? (
                 <div className={css(styles.editor)}>
                   <DynamicCKEditor
@@ -162,18 +168,14 @@ const DocumentIndexPage: NextPage<Args> = ({
                   </div>
                 </div>
               ) : (
-                <div style={{ position: "relative" }}>
-                  <AnnotationLayer
-                    document={document}
-                    contentRef={contentRef}
-                  />
-                  <div
-                    ref={contentRef}
-                    className={css(styles.body) + " rh-post"}
-                    dangerouslySetInnerHTML={{ __html: _postHtml }}
-                  />
-                  <DocumentControls handleFullScreen={undefined} handleZoomIn={undefined} handleZoomOut={undefined} handleZoomSelection={undefined} currentZoom={0} showExpand={false} />
-                </div>
+                <DocumentViewer
+                  postHtml={_postHtml}
+                  document={document}
+                  viewerWidth={config.width}
+                  onZoom={(zoom: ZoomAction) => {
+                    setViewerWidth(zoom.newWidth);
+                  }}
+                />
               )}
             </div>
           </div>
@@ -186,17 +188,11 @@ const DocumentIndexPage: NextPage<Args> = ({
 const styles = StyleSheet.create({
   bodyWrapper: {
     borderRadius: "4px",
-    border: `1px solid ${config.border}`,
     marginTop: 15,
     background: "white",
+    border: `1px solid ${config.border}`,
     width: "100%",
     boxSizing: "border-box",
-  },
-  body: {
-    padding: 45,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 15,
-    },
   },
   editor: {
     padding: 45,

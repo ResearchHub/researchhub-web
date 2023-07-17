@@ -19,7 +19,12 @@ const DocumentZoomControls = ({
 }: Props) => {
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <IconButton onClick={handleZoomOut}>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          handleZoomOut();
+        }}
+      >
         <FontAwesomeIcon icon={faMinus} style={{ fontSize: 24 }} />
       </IconButton>
       <GenericMenu
@@ -28,7 +33,6 @@ const DocumentZoomControls = ({
         width={100}
         direction="top-center"
         onSelect={(option) => {
-          console.log("option", option);
           handleZoomSelection(option);
         }}
       >
@@ -36,7 +40,12 @@ const DocumentZoomControls = ({
           {zoomOptions.find((option) => option.value === currentZoom)?.label}
         </IconButton>
       </GenericMenu>
-      <IconButton onClick={handleZoomIn}>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          handleZoomIn();
+        }}
+      >
         <FontAwesomeIcon icon={faPlus} style={{ fontSize: 24 }} />
       </IconButton>
     </div>
