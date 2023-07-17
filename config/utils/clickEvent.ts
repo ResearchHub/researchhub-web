@@ -22,6 +22,7 @@ export function isOutsideClick({
   exclude = [],
 }: IsOutsideClickArgs) {
   const _el = (ref && ref.current) || el;
+  if (!_el) return;
 
   const isWithin = _el.contains(clickedEl);
   const clickOnExcluded = exclude.reduce(
@@ -52,6 +53,7 @@ export function useEffectHandleClick({
       });
 
       const _el = (ref && ref.current) || el;
+      if (!_el) return;
 
       const _isInsideClick = _el?.contains(e.target);
       if (_isOutsideClick) {
@@ -66,5 +68,5 @@ export function useEffectHandleClick({
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [ref]);
+  }, [ref, el]);
 }

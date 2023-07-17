@@ -29,22 +29,29 @@ import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
 import debounce from "lodash/debounce";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import CommentAvatars from "../../CommentAvatars";
 import flattenComments from "../../lib/flattenComments";
 import removeComment from "../../lib/removeComment";
 import replaceComment from "../../lib/replaceComment";
 import findComment from "../../lib/findComment";
-import { localWarn } from "~/config/utils/nullchecks";
+import { isEmpty, localWarn } from "~/config/utils/nullchecks";
+import { parseUser } from "~/config/types/root_types";
+import { RootState } from "~/redux";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
   contentRef: any;
   document: GenericDocument;
+  displayPreference: "all" | "mine" | "none";
 }
 
-const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
+const AnnotationLayer = ({
+  contentRef,
+  document: doc,
+  displayPreference,
+}: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
@@ -78,6 +85,9 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
   const contentElXpath = useRef<string>("");
   const dispatch = useDispatch();
+  const currentUser = useSelector((state: RootState) =>
+    isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
+  );
 
   // Fetch comments from API
   useEffect(() => {
@@ -103,11 +113,19 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
   useEffect(() => {
     if (inlineComments.length === 0) return;
 
-    const _commentThreads = groupByThread(inlineComments);
+    const _comments = inlineComments.filter((comment) => {
+      if (displayPreference === "all" || !displayPreference) return true;
+      if (displayPreference === "mine") {
+        return comment.createdBy.id === currentUser?.id;
+      }
+      return false;
+    });
+
+    const _commentThreads = groupByThread(_comments);
     commentThreads.current = _commentThreads;
 
     setNeedsRedraw(true);
-  }, [inlineComments]);
+  }, [inlineComments, displayPreference]);
 
   useEffect(() => {
     if (needsRedraw) {
@@ -140,7 +158,7 @@ const AnnotationLayer = ({ contentRef, document: doc }: Props) => {
         selectedThreadId,
         threadRefs,
       });
-      console.log("selectedThreadId", selectedThreadId);
+
       const updated = _replaceAnnotations({
         existing: annotationsSortedByYRef.current,
         replaceWith: repositioned,

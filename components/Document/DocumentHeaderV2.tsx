@@ -25,9 +25,6 @@ import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
 import GenericMenu, { MenuOption } from "../shared/GenericMenu";
-import { flagGrmContent } from "../Flag/api/postGrmFlag";
-import FlagButtonV2 from "../Flag/FlagButtonV2";
-import { breakpoints } from "~/config/themes/screen";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 import { faPen, faFlag } from "@fortawesome/pro-light-svg-icons";
 import { parseUser } from "~/config/types/root_types";
@@ -37,6 +34,7 @@ import { Purchase } from "~/config/types/purchase";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
 import PaperMetadataModal from "./PaperMetadataModal";
+import DocumentOptions from "./DocumentOptions";
 
 const PaperTransactionModal = dynamic(
   () => import("~/components/Modals/PaperTransactionModal")
@@ -85,73 +83,6 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const options: Array<MenuOption> = [
-    ...(isPaper(doc) && currentUser
-      ? [
-          {
-            label: "Edit paper",
-            html: (
-              <PaperMetadataModal
-                paper={doc as Paper}
-                onUpdate={(updatedFields) => {
-                  const updated = { ...doc, ...updatedFields };
-                  documentContext.updateDocument(updated);
-                  revalidateDocument();
-                }}
-              >
-                <div style={{ display: "flex", width: 140 }}>
-                  <div style={{ width: 30, boxSizing: "border-box" }}>
-                    <FontAwesomeIcon icon={faPen} style={{ marginRight: 3 }} />
-                  </div>
-
-                  <div>Edit</div>
-                </div>
-              </PaperMetadataModal>
-            ),
-            value: "edit-paper",
-          },
-        ]
-      : []),
-    ...(isPost(doc) &&
-    doc.authors.some((author) => author.id === currentUser?.authorProfile.id)
-      ? [
-          {
-            label: "Edit",
-            icon: <FontAwesomeIcon icon={faPen} />,
-            value: "edit-content",
-            onClick: () => {
-              documentContext.editDocument && documentContext.editDocument();
-            },
-          },
-        ]
-      : []),
-    {
-      value: "flag",
-      preventDefault: true,
-      html: (
-        <FlagButtonV2
-          modalHeaderText="Flag content"
-          onSubmit={(flagReason, renderErrorMsg, renderSuccessMsg) => {
-            flagGrmContent({
-              contentID: doc.id,
-              contentType: doc.apiDocumentType,
-              flagReason,
-              onError: renderErrorMsg,
-              onSuccess: renderSuccessMsg,
-            });
-          }}
-        >
-          <div style={{ display: "flex", width: "100%" }}>
-            <div style={{ width: 30, boxSizing: "border-box" }}>
-              <FontAwesomeIcon icon={faFlag} />
-            </div>
-            <div>Flag content</div>
-          </div>
-        </FlagButtonV2>
-      ),
-    },
-  ];
 
   return (
     <div ref={headerWrapperRef} className={css(styles.headerRoot)}>
@@ -228,16 +159,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <GenericMenu
-                  softHide={true}
-                  options={options}
-                  width={150}
-                  id="header-more-options"
-                >
-                  <IconButton overrideStyle={styles.btnDots}>
-                    <FontAwesomeIcon icon={faEllipsis} />
-                  </IconButton>
-                </GenericMenu>
+                <DocumentOptions
+                  document={doc}
+                  onPaperEdit={undefined}
+                  handlePostEdit={undefined}
+                />
               </div>
             </div>
             <div className={css(styles.smallScreenActions)}>
@@ -268,16 +194,11 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <GenericMenu
-                  softHide={true}
-                  options={options}
-                  width={150}
-                  id="header-more-options"
-                >
-                  <IconButton overrideStyle={styles.btnDots}>
-                    <FontAwesomeIcon icon={faEllipsis} />
-                  </IconButton>
-                </GenericMenu>
+                <DocumentOptions
+                  document={doc}
+                  onPaperEdit={undefined}
+                  handlePostEdit={undefined}
+                />
               </div>
             </div>
             <div className={css(styles.tabsWrapper)}>
