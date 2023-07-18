@@ -6,12 +6,22 @@ const useSelection = ({
 }): {
   selectionXRange: any;
   initialSelectionPosition: any;
+  mouseCoordinates: { x: number; y: number } | null;
   resetSelectedPos: Function;
 } => {
+  // XRange representation of the current selection. Contains xpath and offset information.
   const [selectionXRange, setSelectionXRange] = useState<null | any>(null);
+
+  // This represents the position near the top of the selection. Useful if multiple rows of text are selected
   const [initialSelectionPosition, setInitialSelectionPosition] = useState<
     null | any
   >(null);
+
+  // Represent
+  const [mouseCoordinates, setMouseCoordinates] = useState<null | {
+    x: number;
+    y: number;
+  }>(null);
 
   const resetSelectedPos = () => {
     setSelectionXRange(null);
@@ -35,12 +45,18 @@ const useSelection = ({
           const range = selection.getRangeAt(0);
           const rect = range.getBoundingClientRect();
           const position = { x: rect.x, y: rect.y };
+          const contentRect = contentRef.current.getBoundingClientRect();
 
           setInitialSelectionPosition(position);
           setSelectionXRange(newRange);
+          setMouseCoordinates({
+            x: rect.x - contentRect.x + rect.width / 2,
+            y: rect.y - contentRect.y - 45,
+          });
         } else {
           setSelectionXRange(null);
           setInitialSelectionPosition(null);
+          setMouseCoordinates(null);
         }
       }, 0);
     };
@@ -52,7 +68,12 @@ const useSelection = ({
     };
   }, [contentRef]);
 
-  return { selectionXRange, initialSelectionPosition, resetSelectedPos };
+  return {
+    selectionXRange,
+    initialSelectionPosition,
+    mouseCoordinates,
+    resetSelectedPos,
+  };
 };
 
 export default useSelection;

@@ -70,10 +70,14 @@ const AnnotationLayer = ({
   >(false);
 
   // The XRange position of the selected text. Holds the serialized DOM position.
-  const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
-    useSelection({
-      contentRef: contentRef,
-    });
+  const {
+    selectionXRange,
+    initialSelectionPosition,
+    resetSelectedPos,
+    mouseCoordinates: selectionMouseCoordinates,
+  } = useSelection({
+    contentRef: contentRef,
+  });
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
@@ -456,20 +460,6 @@ const AnnotationLayer = ({
     return sorted;
   };
 
-  const _calcTextSelectionMenuPos = () => {
-    if (!contentRef.current) return { x: 0, y: 0 };
-
-    const containerElemOffset =
-      window.scrollY + contentRef.current.getBoundingClientRect().y;
-    return {
-      x: 0 - config.textSelectionMenu.width / 2,
-      y:
-        window.scrollY -
-        containerElemOffset +
-        (initialSelectionPosition?.y || 0),
-    };
-  };
-
   const _drawAnnotations = ({
     threads,
     annotationsSortedByY,
@@ -683,11 +673,41 @@ const AnnotationLayer = ({
     }
   };
 
-  const { x: menuPosX, y: menuPosY } = _calcTextSelectionMenuPos();
+  const _calcTextSelectionMenuPos = ({
+    selectionMouseCoordinates,
+    renderingMode,
+  }) => {
+    if (!contentRef.current)
+      return { right: "unset", left: "unset", top: "unset" };
+
+    if (renderingMode === "sidebar") {
+      const containerElemOffset =
+        window.scrollY + contentRef.current.getBoundingClientRect().y;
+      return {
+        right: 0 - config.textSelectionMenu.width / 2,
+        top:
+          window.scrollY -
+          containerElemOffset +
+          (initialSelectionPosition?.y || 0),
+        left: "unset",
+      };
+    } else {
+      return {
+        right: "unset",
+        top: selectionMouseCoordinates?.y || 0,
+        left: selectionMouseCoordinates?.x || 0,
+      };
+    }
+  };
+
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
   const WrapperEl = renderingMode === "drawer" ? CommentDrawer : React.Fragment;
-
+  const {
+    left: menuPosLeft,
+    top: menuPosTop,
+    right: menuPosRight,
+  } = _calcTextSelectionMenuPos({ selectionMouseCoordinates, renderingMode });
   return (
     <div style={{ position: "relative" }}>
       {annotationsSortedByY.map((annotation) => (
@@ -724,15 +744,16 @@ const AnnotationLayer = ({
             id="textSelectionMenu"
             style={{
               position: "absolute",
-              top: menuPosY,
-              right: menuPosX,
+              top: menuPosTop,
+              left: menuPosLeft,
+              right: menuPosRight,
               width: 50,
               zIndex: 5,
-              height: config.textSelectionMenu.height,
             }}
             ref={textSelectionMenuRef}
           >
             <TextSelectionMenu
+              isHorizontal={renderingMode !== "sidebar"}
               onCommentClick={_createNewAnnotation}
               onLinkClick={() =>
                 createShareableLink({
