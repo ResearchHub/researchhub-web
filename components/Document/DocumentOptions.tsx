@@ -20,7 +20,6 @@ import useCacheControl from "~/config/hooks/useCacheControl";
 
 interface Props {
   document: GenericDocument;
-  handlePostEdit: Function;
 }
 
 const DocumentOptions = ({ document: doc }: Props) => {

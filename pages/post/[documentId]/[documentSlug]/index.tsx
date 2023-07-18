@@ -29,6 +29,10 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentViewer, {
   ZoomAction,
 } from "~/components/Document/DocumentViewer";
+import dynamic from "next/dynamic";
+const DynamicCKEditor = dynamic(
+  () => import("~/components/CKEditor/SimpleEditor")
+);
 
 const savePostApi = ({ id, postHtml }) => {
   const _toPlaintext = (text) => {
@@ -171,6 +175,7 @@ const DocumentIndexPage: NextPage<Args> = ({
                 <DocumentViewer
                   postHtml={_postHtml}
                   document={document}
+                  metadata={documentMetadata}
                   viewerWidth={config.width}
                   onZoom={(zoom: ZoomAction) => {
                     setViewerWidth(zoom.newWidth);
