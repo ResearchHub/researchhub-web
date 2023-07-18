@@ -101,9 +101,11 @@ const DocumentOptions = ({ document: doc }: Props) => {
       value: "toggle-visibility",
       group: "Comments",
       preventDefault: true,
+      disableHover: true,
       html: (
         <div style={{ flexDirection: "column", display: "flex" }}>
           <ResearchHubRadioChoices
+            checkboxStyleOverride={styles.checkbox}
             inputOptions={[
               {
                 id: "all",
@@ -124,7 +126,7 @@ const DocumentOptions = ({ document: doc }: Props) => {
                 value: selected,
               });
             }}
-            selectedID={undefined}
+            selectedID={documentContext.preferences.comments}
           />
         </div>
       ),
@@ -136,7 +138,7 @@ const DocumentOptions = ({ document: doc }: Props) => {
       <GenericMenu
         softHide={true}
         options={options}
-        width={150}
+        width={200}
         id="header-more-options"
       >
         <IconButton overrideStyle={styles.btnDots}>
@@ -159,6 +161,10 @@ const styles = StyleSheet.create({
       background: colors.DARKER_GREY(0.2),
       transition: "0.2s",
     },
+  },
+  checkbox: {
+    minHeight: 14,
+    minWidth: 14,
   },
 });
 
