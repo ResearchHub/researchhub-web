@@ -36,6 +36,7 @@ const DocumentControls = ({
         <>
           <div className={css(styles.divider)} />
           <IconButton
+            overrideStyle={styles.icon}
             onClick={(e) => {
               e.stopPropagation();
               handleFullScreen();
@@ -54,13 +55,16 @@ const DocumentControls = ({
 
 const styles = StyleSheet.create({
   divider: {
-    borderRight: `1px solid ${colors.BLACK(0.6)}`,
+    borderRight: `1px solid ${colors.BLACK(1.0)}`,
     height: "20px",
     marginTop: 7,
   },
   closeBtn: {
     borderRadius: 50,
     padding: 7,
+  },
+  icon: {
+    color: colors.BLACK(1.0),
   },
 });
 

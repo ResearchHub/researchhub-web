@@ -2,23 +2,17 @@ import {
   DocumentMetadata,
   GenericDocument,
   isPaper,
-  isPost,
 } from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import DocumentVote from "./DocumentVote";
-import IconButton from "../Icons/IconButton";
-import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import config from "./lib/config";
 import { breakpoints } from "~/config/themes/screen";
-import Link from "next/link";
-import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import HorizontalTabBar from "../HorizontalTabBar";
 import { getTabs } from "./lib/tabbedNavigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
 import BackBtn from "../shared/BackBtn";
+import DocumentOptions from "./DocumentOptions";
 
 interface Props {
   document: GenericDocument;
@@ -48,18 +42,7 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
           <HorizontalTabBar tabs={tabs} />
         </div>
         <div className={css(styles.actionWrapper)}>
-          <PermissionNotificationWrapper
-            modalMessage="edit document"
-            permissionKey="UpdatePaper"
-            loginRequired={true}
-            onClick={() => handleTip()}
-            hideRipples={true}
-          >
-            <IconButton variant="round" overrideStyle={styles.btn}>
-              <ResearchCoinIcon version={6} width={21} height={21} />
-              <span>Tip</span>
-            </IconButton>
-          </PermissionNotificationWrapper>
+          <DocumentOptions document={document} />
         </div>
       </div>
     </div>

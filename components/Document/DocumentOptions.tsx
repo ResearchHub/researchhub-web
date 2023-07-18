@@ -102,14 +102,22 @@ const DocumentOptions = ({ document: doc }: Props) => {
       group: "Comments",
       preventDefault: true,
       disableHover: true,
+      disableStyle: true,
       html: (
-        <div style={{ flexDirection: "column", display: "flex" }}>
+        <div
+          style={{
+            flexDirection: "column",
+            display: "flex",
+            cursor: "pointer",
+          }}
+        >
           <ResearchHubRadioChoices
             checkboxStyleOverride={styles.checkbox}
+            inputWrapStyle={styles.checkboxRowWrapper}
             inputOptions={[
               {
                 id: "all",
-                label: "Show all",
+                label: "All comments",
               },
               {
                 id: "mine",
@@ -117,7 +125,7 @@ const DocumentOptions = ({ document: doc }: Props) => {
               },
               {
                 id: "none",
-                label: "Show none",
+                label: "No comments",
               },
             ]}
             onChange={(selected) => {
@@ -165,6 +173,17 @@ const styles = StyleSheet.create({
   checkbox: {
     minHeight: 14,
     minWidth: 14,
+  },
+  checkboxRowWrapper: {
+    cursor: "pointer",
+    padding: "8px 12px",
+    boxSizing: "border-box",
+    fontSize: 14,
+    borderRadius: 4,
+    ":hover": {
+      background: colors.LIGHTER_GREY(1.0),
+      transition: "0.2s",
+    },
   },
 });
 

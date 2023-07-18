@@ -1,8 +1,10 @@
+import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/pro-light-svg-icons";
 import IconButton from "../../Icons/IconButton";
 import GenericMenu from "../../shared/GenericMenu";
 import { zoomOptions } from "./PDFViewer/config";
+import colors from "~/config/themes/colors";
 
 interface Props {
   currentZoom: number;
@@ -20,6 +22,7 @@ const DocumentZoomControls = ({
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <IconButton
+        overrideStyle={styles.icon}
         onClick={(e) => {
           e.stopPropagation();
           handleZoomOut();
@@ -36,11 +39,12 @@ const DocumentZoomControls = ({
           handleZoomSelection(option);
         }}
       >
-        <IconButton>
+        <IconButton overrideStyle={styles.icon}>
           {zoomOptions.find((option) => option.value === currentZoom)?.label}
         </IconButton>
       </GenericMenu>
       <IconButton
+        overrideStyle={styles.icon}
         onClick={(e) => {
           e.stopPropagation();
           handleZoomIn();
@@ -51,5 +55,11 @@ const DocumentZoomControls = ({
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  icon: {
+    color: colors.BLACK(1.0),
+  },
+});
 
 export default DocumentZoomControls;
