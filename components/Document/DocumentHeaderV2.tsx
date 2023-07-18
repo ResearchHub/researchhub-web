@@ -159,11 +159,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <DocumentOptions
-                  document={doc}
-                  onPaperEdit={undefined}
-                  handlePostEdit={undefined}
-                />
+                <DocumentOptions document={doc} />
               </div>
             </div>
             <div className={css(styles.smallScreenActions)}>
@@ -194,11 +190,7 @@ const DocumentHeader = ({ document: doc, metadata }: Props) => {
                     <span>Tip</span>
                   </IconButton>
                 </PermissionNotificationWrapper>
-                <DocumentOptions
-                  document={doc}
-                  onPaperEdit={undefined}
-                  handlePostEdit={undefined}
-                />
+                <DocumentOptions document={doc} />
               </div>
             </div>
             <div className={css(styles.tabsWrapper)}>

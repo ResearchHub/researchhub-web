@@ -9,16 +9,24 @@ import { breakpoints } from "~/config/themes/screen";
 import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
-import { isPost } from "./lib/types";
 import { DocumentContext } from "./lib/DocumentContext";
+import DocumentHeader from "./DocumentHeaderV2";
+import { DocumentMetadata } from "./lib/types";
 
 export type ZoomAction = {
   isExpanded: boolean;
   zoom: number;
   newWidth: number;
+  metadata: DocumentMetadata;
 };
 
-const DocumentViewer = ({ document: doc, postHtml, onZoom, viewerWidth }) => {
+const DocumentViewer = ({
+  document: doc,
+  postHtml,
+  onZoom,
+  viewerWidth,
+  metadata,
+}) => {
   const documentContext = useContext(DocumentContext);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const contentRef = useRef(null);
@@ -145,21 +153,6 @@ const DocumentViewer = ({ document: doc, postHtml, onZoom, viewerWidth }) => {
     }
   }
 
-  function downloadPDF(pdfUrl) {
-    // Create a link for our script to click
-    const link = document.createElement("a");
-    link.href = pdfUrl;
-    link.target = "_blank";
-    link.download = "download.pdf";
-
-    // Trigger the click
-    document.body.appendChild(link);
-    link.click();
-
-    // Cleanup
-    document.body.removeChild(link);
-  }
-
   // const fullScreenViewer = useMemo(() => {
   //   return (
   //     <div
@@ -205,8 +198,12 @@ const DocumentViewer = ({ document: doc, postHtml, onZoom, viewerWidth }) => {
       )}
     >
       {isExpanded && (
-        <DocumentExpandedNav handleClose={() => setIsExpanded(false)} />
+        <DocumentExpandedNav
+          document={doc}
+          handleClose={() => setIsExpanded(false)}
+        />
       )}
+
       <div
         className={css(styles.main, isExpanded && styles.expandedContent)}
         style={{
@@ -222,10 +219,11 @@ const DocumentViewer = ({ document: doc, postHtml, onZoom, viewerWidth }) => {
         )}
         <div
           ref={contentRef}
-          className={css(styles.body) + " rh-post"}
+          className={css(styles.postBody) + " rh-post"}
           dangerouslySetInnerHTML={{ __html: postHtml }}
-        />
+        ></div>
       </div>
+
       <div
         className={css(
           styles.controls,
@@ -240,6 +238,7 @@ const DocumentViewer = ({ document: doc, postHtml, onZoom, viewerWidth }) => {
           handleZoomSelection={handleZoomSelection}
           currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
           showExpand={true}
+          isExpanded={isExpanded}
         />
       </div>
     </div>
@@ -310,11 +309,21 @@ const styles = StyleSheet.create({
       transform: "translateX(-50%)",
     },
   },
-  body: {
+  postBody: {
     padding: 45,
+    paddingTop: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 15,
     },
+  },
+  postHeader: {
+    marginBottom: 45,
+  },
+  topArea: {
+    background: "white",
+    position: "relative",
+    zIndex: 3,
+    paddingTop: 25,
   },
 });
 

@@ -39,6 +39,7 @@ import findComment from "../../lib/findComment";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
+import { set } from "react-ga";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -64,7 +65,9 @@ const AnnotationLayer = ({
   const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
 
   // Setting this to true will redraw the annotations on the page.
-  const [needsRedraw, setNeedsRedraw] = useState<boolean>(false);
+  const [needsRedraw, setNeedsRedraw] = useState<
+    { drawMode: "DIFF_ONLY" | "ALL" } | false
+  >(false);
 
   // The XRange position of the selected text. Holds the serialized DOM position.
   const { selectionXRange, initialSelectionPosition, resetSelectedPos } =
@@ -124,7 +127,7 @@ const AnnotationLayer = ({
     const _commentThreads = groupByThread(_comments);
     commentThreads.current = _commentThreads;
 
-    setNeedsRedraw(true);
+    setNeedsRedraw({ drawMode: "DIFF_ONLY" });
   }, [inlineComments, displayPreference]);
 
   useEffect(() => {
@@ -132,11 +135,25 @@ const AnnotationLayer = ({
       const { orphanThreadIds, foundAnnotations } = _drawAnnotations({
         annotationsSortedByY,
         threads: commentThreads.current,
+        drawingMode: needsRedraw?.drawMode,
       });
 
       setNeedsRedraw(false);
       setOrphanThreadIds(orphanThreadIds);
       _setAnnotations(foundAnnotations);
+
+      const repositioned = repositionAnnotations({
+        annotationsSortedByY: annotationsSortedByYRef.current,
+        selectedThreadId,
+        threadRefs,
+      });
+
+      const updated = _replaceAnnotations({
+        existing: annotationsSortedByYRef.current,
+        replaceWith: repositioned,
+      });
+
+      setAnnotationsSortedByY(updated);
     }
   }, [needsRedraw]);
 
@@ -236,7 +253,7 @@ const AnnotationLayer = ({
     if (!contentRef.current) return;
 
     const _handleResize = debounce(() => {
-      setNeedsRedraw(true);
+      setNeedsRedraw({ drawMode: "ALL" });
     }, 1000);
 
     window.addEventListener("resize", _handleResize);
@@ -246,6 +263,26 @@ const AnnotationLayer = ({
       window.removeEventListener("resize", _handleResize);
     };
   }, [contentRef, annotationsSortedByY]);
+
+  useEffect(() => {
+    const _handleResize = debounce(() => {
+      setNeedsRedraw({ drawMode: "ALL" });
+    }, 1000);
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      _handleResize();
+    });
+
+    if (contentRef.current) {
+      resizeObserver.observe(contentRef.current);
+    }
+
+    return () => {
+      if (contentRef.current) {
+        resizeObserver.unobserve(contentRef.current);
+      }
+    };
+  }, [contentRef]);
 
   // Handle click event.
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
