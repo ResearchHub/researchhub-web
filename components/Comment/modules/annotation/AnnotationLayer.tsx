@@ -37,7 +37,7 @@ import removeComment from "../../lib/removeComment";
 import replaceComment from "../../lib/replaceComment";
 import findComment from "../../lib/findComment";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
-import { parseUser } from "~/config/types/root_types";
+import { RHUser, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { set } from "react-ga";
 const { setMessage, showMessage } = MessageActions;
@@ -90,6 +90,12 @@ const AnnotationLayer = ({
   const [threadRefs, setThreadRefs] = useState<any[]>([]);
   const commentThreads = useRef<{ [threadId: string]: CommentThreadGroup }>({});
   const textSelectionMenuRef = useRef<HTMLDivElement>(null);
+  const windowDimensions = useRef<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
+
+  // Xpath to the content element provided. This is used to calculated a relative xpath of selected text within the element.
   const contentElXpath = useRef<string>("");
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) =>
@@ -113,6 +119,7 @@ const AnnotationLayer = ({
       setInlineComments(comments);
     };
 
+    _setWindowDimensions();
     _fetch();
   }, []);
 
@@ -258,6 +265,7 @@ const AnnotationLayer = ({
 
     const _handleResize = debounce(() => {
       setNeedsRedraw({ drawMode: "ALL" });
+      _setWindowDimensions();
     }, 1000);
 
     window.addEventListener("resize", _handleResize);
@@ -458,6 +466,13 @@ const AnnotationLayer = ({
     });
 
     return sorted;
+  };
+
+  const _setWindowDimensions = () => {
+    windowDimensions.current = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
   };
 
   const _drawAnnotations = ({
@@ -702,6 +717,7 @@ const AnnotationLayer = ({
 
   const showSelectionMenu = selectionXRange && initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
+  const contentElOffset = contentRef.current?.getBoundingClientRect()?.x;
   const WrapperEl = renderingMode === "drawer" ? CommentDrawer : React.Fragment;
   const {
     left: menuPosLeft,
@@ -781,9 +797,14 @@ const AnnotationLayer = ({
                 const avatarPosition = `translate(-25px, ${annotation.anchorCoordinates[0].y}px)`;
                 const isFocused = threadId === selectedThreadId;
                 const thread = commentThreads?.current[threadId];
-                const { comments: flatComments } = flattenComments(
-                  thread.comments
-                );
+                let commentPeople: RHUser[] = [];
+                if (thread) {
+                  const { comments: flatComments } = flattenComments(
+                    thread.comments
+                  );
+                  commentPeople = flatComments.map((c) => c.createdBy);
+                }
+
                 return (
                   <div
                     onClick={(e) => {
@@ -802,7 +823,7 @@ const AnnotationLayer = ({
                       onMouseLeave={() => setHoveredThreadId(null)}
                     >
                       <CommentAvatars
-                        people={flatComments.map((c) => c.createdBy)}
+                        people={commentPeople}
                         withTooltip={false}
                         spacing={-20}
                         size={25}
@@ -830,9 +851,24 @@ const AnnotationLayer = ({
 
               let threadPosition = "";
               if (renderingMode === "inline") {
-                threadPosition = `translate(${
-                  annotation.anchorCoordinates[0].x
-                }px, ${annotation.anchorCoordinates[0].y + 25}px)`;
+                const inlineCommentPos = {
+                  x: annotation.anchorCoordinates[0].x,
+                  y: annotation.anchorCoordinates[0].y + 25,
+                };
+                if (isFocused) {
+                  const inlineCommentRightPos =
+                    contentElOffset +
+                    annotation.anchorCoordinates[0].x +
+                    config.annotation.inlineCommentWidth;
+                  if (inlineCommentRightPos > windowDimensions.current.width) {
+                    inlineCommentPos.x =
+                      inlineCommentPos.x -
+                      (inlineCommentRightPos - windowDimensions.current.width) -
+                      10;
+                  }
+                }
+
+                threadPosition = `translate(${inlineCommentPos.x}px, ${inlineCommentPos.y}px)`;
               } else if (renderingMode === "sidebar") {
                 threadPosition = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
               }
@@ -905,6 +941,10 @@ const styles = StyleSheet.create({
   avatarsContainer: {
     position: "absolute",
     right: -15,
+
+    [`@media (max-width: ${breakpoints.desktop.int}px)`]: {
+      right: 10,
+    },
   },
   sidebarContainer: {
     position: "absolute",

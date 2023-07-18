@@ -53,6 +53,7 @@ const Annotation = ({
 
         return (
           <canvas
+            key={`canvas-${i}`}
             ref={canvasRef}
             className={css(styles.annotation)}
             style={{
