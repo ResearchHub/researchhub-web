@@ -15,6 +15,7 @@ export interface MenuOption {
   softHide?: boolean;
   preventDefault?: boolean;
   disableHover?: boolean;
+  disableStyle?: boolean;
 }
 
 interface MenuProps {
@@ -103,6 +104,7 @@ const Menu = ({
               html,
               preventDefault,
               disableHover,
+              disableStyle,
             } = option;
 
             const content = (
@@ -113,7 +115,7 @@ const Menu = ({
                 <div
                   key={`${id}-${index}`}
                   className={css(
-                    styles.menuItem,
+                    !disableStyle && styles.menuItem,
                     !disableHover && styles.menuItemHover
                   )}
                   onClick={
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "8px 12px",
     alignItems: "center",
-    marginBottom: "10px",
+    lineHeight: "19px",
     cursor: "pointer",
     boxSizing: "border-box",
     fontSize: 14,
@@ -176,8 +178,9 @@ const styles = StyleSheet.create({
   },
   groupHeader: {
     marginTop: 10,
-    paddingTop: 10,
+    paddingTop: 15,
     paddingBottom: 10,
+    paddingLeft: 10,
     borderTop: `2px solid ${colors.LIGHT_GREY(1.0)}`,
     color: colors.MEDIUM_GREY(1.0),
     textTransform: "uppercase",

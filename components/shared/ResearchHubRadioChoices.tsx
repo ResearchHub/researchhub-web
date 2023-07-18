@@ -3,6 +3,7 @@ import { NullableString } from "~/config/types/root_types";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import CheckBox from "~/components//Form/CheckBox";
 import { css, StyleSheet } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 export type RhRadioInputOption = {
   id: string;
@@ -39,7 +40,7 @@ export default function ResearchHubRadioChoices({
           onChange(id);
         }}
       >
-        <div className={css(styles.checkboxWrap, styles.checkboxWrapOverride)}>
+        <div className={css(styles.checkboxWrap, checkboxWrapOverride)}>
           <CheckBox
             active={selectedID === id}
             isSquare={false}
@@ -48,7 +49,9 @@ export default function ResearchHubRadioChoices({
           />
         </div>
         <div className={css(styles.contentWrap)}>
-          <label htmlFor={id}>{label}</label>
+          <label className={css(styles.label)} htmlFor={id}>
+            {label}
+          </label>
           {description && (
             <div
               className={css(labelDescriptionStyle, styles.labelDescription)}
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
   checkboxWrap: {
     display: "flex",
     paddingTop: 3,
+    cursor: "pointer",
   },
   contentWrap: {
     display: "flex",
@@ -81,5 +85,9 @@ const styles = StyleSheet.create({
   labelDescription: {
     marginTop: 4,
     fontSize: 14,
+  },
+  label: {
+    cursor: "pointer",
+    color: colors.BLACK_TEXT(),
   },
 });
