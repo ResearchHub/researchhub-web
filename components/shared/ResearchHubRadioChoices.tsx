@@ -15,6 +15,8 @@ type Props = {
   labelDescriptionStyle?: any;
   onChange: (id: string) => void;
   selectedID: NullableString;
+  checkboxStyleOverride?: any;
+  checkboxWrapOverride?: any;
 };
 
 export default function ResearchHubRadioChoices({
@@ -23,6 +25,8 @@ export default function ResearchHubRadioChoices({
   labelDescriptionStyle,
   onChange,
   selectedID,
+  checkboxStyleOverride = null,
+  checkboxWrapOverride = null,
 }: Props): ReactElement {
   const formattedInputs = inputOptions.map(
     ({ label, id, description }: RhRadioInputOption) => (
@@ -35,19 +39,23 @@ export default function ResearchHubRadioChoices({
           onChange(id);
         }}
       >
-        <div className={css(styles.checkboxWrap)}>
+        <div className={css(styles.checkboxWrap, styles.checkboxWrapOverride)}>
           <CheckBox
             active={selectedID === id}
             isSquare={false}
             onChange={silentEmptyFnc}
-            small
+            checkboxStyleOverride={checkboxStyleOverride}
           />
         </div>
         <div className={css(styles.contentWrap)}>
           <label htmlFor={id}>{label}</label>
-          {description &&
-            <div className={css(labelDescriptionStyle, styles.labelDescription)}>{description}</div>
-          }
+          {description && (
+            <div
+              className={css(labelDescriptionStyle, styles.labelDescription)}
+            >
+              {description}
+            </div>
+          )}
         </div>
       </div>
     )
@@ -60,6 +68,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     cursor: "pointer",
+    alignItems: "center",
   },
   checkboxWrap: {
     display: "flex",
@@ -67,7 +76,7 @@ const styles = StyleSheet.create({
   },
   contentWrap: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   labelDescription: {
     marginTop: 4,

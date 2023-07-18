@@ -14,6 +14,7 @@ export interface MenuOption {
   onClick?: Function;
   softHide?: boolean;
   preventDefault?: boolean;
+  disableHover?: boolean;
 }
 
 interface MenuProps {
@@ -94,16 +95,27 @@ const Menu = ({
           style={{ width, ...directionStyles }}
         >
           {options.map((option, index) => {
-            const { label, icon, href, value, html, preventDefault } = option;
+            const {
+              label,
+              icon,
+              href,
+              value,
+              html,
+              preventDefault,
+              disableHover,
+            } = option;
 
             const content = (
               <>
                 {option.group !== currentOptionGroup && (
-                  <div>{option.group}</div>
+                  <div className={css(styles.groupHeader)}>{option.group}</div>
                 )}
                 <div
                   key={`${id}-${index}`}
-                  className={css(styles.menuItem)}
+                  className={css(
+                    styles.menuItem,
+                    !disableHover && styles.menuItemHover
+                  )}
                   onClick={
                     preventDefault ? undefined : () => handleSelect(option)
                   }
@@ -158,12 +170,30 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontWeight: 400,
     width: "100%",
+    ":last-child": {
+      marginBottom: 0,
+    },
+  },
+  groupHeader: {
+    marginTop: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderTop: `2px solid ${colors.LIGHT_GREY(1.0)}`,
+    color: colors.MEDIUM_GREY(1.0),
+    textTransform: "uppercase",
+    fontSize: 12,
+    fontWeight: 600,
+    letterSpacing: "1.2px",
+    ":first-child": {
+      borderTop: "none",
+      paddingTop: 0,
+      marginTop: 10,
+    },
+  },
+  menuItemHover: {
     ":hover": {
       background: colors.LIGHTER_GREY(1.0),
       transition: "0.2s",
-    },
-    ":last-child": {
-      marginBottom: 0,
     },
   },
   softHideClosed: {
