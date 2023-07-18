@@ -41,7 +41,7 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
         <div className={css(styles.tabsWrapper)}>
           <HorizontalTabBar tabs={tabs} />
         </div>
-        <div className={css(styles.actionWrapper)}>
+        <div className={css(styles.optionsWrapper)}>
           <DocumentOptions document={document} />
         </div>
       </div>
@@ -106,11 +106,12 @@ const styles = StyleSheet.create({
   navWrapper: {
     display: "flex",
   },
-  actionWrapper: {
+  optionsWrapper: {
     display: "flex",
     columnGap: "10px",
     marginLeft: "auto",
     justifyContent: "flex-end",
+    marginRight: 15,
     [`@media (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
