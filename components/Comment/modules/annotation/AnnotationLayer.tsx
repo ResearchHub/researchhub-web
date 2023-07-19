@@ -77,6 +77,7 @@ const AnnotationLayer = ({
     initialSelectionPosition,
     resetSelectedPos,
     mouseCoordinates: selectionMouseCoordinates,
+    error: selectionError,
   } = useSelection({
     contentRef: contentRef,
   });
@@ -533,6 +534,13 @@ const AnnotationLayer = ({
 
   const _createNewAnnotation = (e) => {
     e.stopPropagation();
+
+    if (selectionError) {
+      dispatch(setMessage(selectionError));
+      // @ts-ignore
+      dispatch(showMessage({ show: true, error: true }));
+      return;
+    }
 
     if (!selectionXRange) {
       return console.error("No selected range. This should not happen.");

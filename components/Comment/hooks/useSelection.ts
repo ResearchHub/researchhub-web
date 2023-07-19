@@ -11,6 +11,41 @@ function isSelectionInsideElement({ element, selection }) {
   return false;
 }
 
+function getSelectedNodes({ selection }) {
+  const fragment = document.createDocumentFragment();
+  const nodeList = [];
+
+  for (let i = 0; i < selection.rangeCount; i++) {
+    fragment.append(selection.getRangeAt(i).cloneContents());
+  }
+
+  const walker = document.createTreeWalker(fragment);
+  let currentNode = walker.currentNode;
+
+  while (currentNode) {
+    // @ts-ignore
+    nodeList.push(currentNode);
+    // @ts-ignore
+    currentNode = walker.nextNode();
+  }
+
+  return nodeList;
+}
+
+function selectionContainsDisallowedElements({ selection, disallowedTags }) {
+  const selectedNodes = getSelectedNodes({ selection });
+
+  let isDisallowedSelected = false;
+  selectedNodes.forEach((node) => {
+    // @ts-ignore
+    if (node.nodeName && disallowedTags.includes(node.nodeName.toLowerCase())) {
+      isDisallowedSelected = true;
+    }
+  });
+
+  return isDisallowedSelected;
+}
+
 const useSelection = ({
   contentRef,
 }): {
@@ -18,6 +53,7 @@ const useSelection = ({
   initialSelectionPosition: any;
   mouseCoordinates: { x: number; y: number } | null;
   resetSelectedPos: Function;
+  error: string | null;
 } => {
   // XRange representation of the current selection. Contains xpath and offset information.
   const [selectionXRange, setSelectionXRange] = useState<null | any>(null);
@@ -27,11 +63,13 @@ const useSelection = ({
     null | any
   >(null);
 
-  // Represent
+  // Represents mouse coordinates of selected text relative to the contentRef element.
   const [mouseCoordinates, setMouseCoordinates] = useState<null | {
     x: number;
     y: number;
   }>(null);
+
+  const [error, setError] = useState<string | null>("");
 
   const resetSelectedPos = () => {
     setSelectionXRange(null);
@@ -44,6 +82,14 @@ const useSelection = ({
       // the state of getSelection may not be accurate.
       setTimeout(() => {
         const selection = window.getSelection();
+        const isDisallowedSelected = selectionContainsDisallowedElements({
+          selection,
+          disallowedTags: ["img", "video", "figure", "table"],
+        });
+        if (isDisallowedSelected) {
+          setError("Please select text only");
+        }
+
         const isValidSelection =
           selection &&
           selection.rangeCount > 0 &&
@@ -65,6 +111,7 @@ const useSelection = ({
             y: rect.y - contentRect.y - 45,
           });
         } else {
+          setError(null);
           setSelectionXRange(null);
           setInitialSelectionPosition(null);
           setMouseCoordinates(null);
@@ -84,6 +131,7 @@ const useSelection = ({
     initialSelectionPosition,
     mouseCoordinates,
     resetSelectedPos,
+    error,
   };
 };
 
