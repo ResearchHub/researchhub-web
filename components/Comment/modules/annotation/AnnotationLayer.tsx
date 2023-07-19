@@ -141,7 +141,7 @@ const AnnotationLayer = ({
     const _commentThreads = groupByThread(_comments);
     commentThreads.current = _commentThreads;
 
-    setNeedsRedraw({ drawMode: "ALL" });
+    setNeedsRedraw({ drawMode: "DIFF_ONLY" });
   }, [inlineComments, displayPreference]);
 
   useEffect(() => {
