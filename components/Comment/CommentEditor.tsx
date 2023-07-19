@@ -1,7 +1,7 @@
 import { useQuill } from "./hooks/useQuill";
 import CommentEditorToolbar from "./CommentEditorToolbar";
 import { css, StyleSheet } from "aphrodite";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button";
 import CreateBountyBtn from "../Bounty/CreateBountyBtn";
 import {
@@ -14,7 +14,7 @@ import {
 import { AuthorProfile, ID, parseUser } from "~/config/types/root_types";
 import CommentAvatars from "./CommentAvatars";
 import CommentTypeSelector from "./CommentTypeSelector";
-import { COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
+import { COMMENT_TYPES } from "./lib/types";
 import useQuillContent from "./hooks/useQuillContent";
 import colors from "./lib/colors";
 import { commentTypes } from "./lib/options";
@@ -58,6 +58,7 @@ type CommentEditorArgs = {
   focusOnMount?: boolean;
   editorStyleOverride?: any;
   onChange?: Function;
+  displayCurrentUser?: boolean;
 };
 
 const CommentEditor = ({
@@ -76,6 +77,7 @@ const CommentEditor = ({
   handleClose,
   editorStyleOverride,
   onChange,
+  displayCurrentUser = true,
 }: CommentEditorArgs) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
@@ -292,7 +294,7 @@ const CommentEditor = ({
             </>
           )}
 
-          {author && !allowBounty && (
+          {displayCurrentUser && author && !allowBounty && (
             <div
               className={css(styles.authorRow, isMinimalMode && styles.hidden)}
             >

@@ -752,6 +752,7 @@ const AnnotationLayer = ({
     top: menuPosTop,
     right: menuPosRight,
   } = _calcTextSelectionMenuPos({ selectionMouseCoordinates, renderingMode });
+
   return (
     <div style={{ position: "relative" }}>
       <ContentSupportModal

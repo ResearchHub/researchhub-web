@@ -78,7 +78,7 @@ const AnnotationCommentThread = ({
       {commentsToRender.map((comment, idx) => (
         <div key={`${threadId}-${idx}`} className={css(styles.commentWrapper)}>
           <Comment
-            key={comment.id}
+            key={`${comment.id}-${comment.updatedTimestamp}`}
             comment={comment}
             ignoreChildren={true}
             document={document}

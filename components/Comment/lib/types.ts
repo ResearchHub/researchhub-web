@@ -53,6 +53,7 @@ export type Comment = {
   id: ID;
   createdDate: string;
   updatedDate: string;
+  updatedTimestamp: number;
   awardedBountyAmount: number;
   bounties: Bounty[];
   timeAgo: string;
@@ -90,6 +91,7 @@ export const parseComment = ({
     id: raw.id,
     createdDate: formatDateStandard(raw.created_date),
     updatedDate: formatDateStandard(raw.updated_date),
+    updatedTimestamp: new Date(raw.updated_date).getTime(),
     timeAgo: timeSince(raw.created_date),
     createdBy: parseUser(raw.created_by),
     isEdited: raw.is_edited,
