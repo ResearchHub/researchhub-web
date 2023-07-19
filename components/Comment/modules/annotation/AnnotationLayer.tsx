@@ -602,7 +602,10 @@ const AnnotationLayer = ({
         anchor: {
           type: "text",
           position: annotation.xrange!.serialize({
-            ignoreXPathPrefix: contentElXpath.current,
+            // IMPORTANT: We always want to get a fresh xpath to the container contentEl right before serializing
+            // because DOM changes (i.e. full screen mode) can cause the xpath of it to change.
+            ignoreXPathPrefix:
+              XPathUtil.getXPathFromNode(contentRef.current) || "",
           }),
         },
       });

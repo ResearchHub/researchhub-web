@@ -78,7 +78,7 @@ export const fetchSingleCommentAPI = async ({
 }): Promise<Comment> => {
   const query = {
     ...(sort && { ordering: sort }),
-    child_count: config.feed.repliesPageSize,
+    child_count: apiConfig.feed.repliesPageSize,
     child_offset: childOffset,
     ascending: "FALSE",
   };
