@@ -125,6 +125,7 @@ const ContentSupport = (props) => {
     >
       <IconButton
         onClick={(event) => {
+          event.stopPropagation();
           handleClick(event);
           ReactTooltip.hide();
         }}

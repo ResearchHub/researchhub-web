@@ -40,6 +40,8 @@ import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { RHUser, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { set } from "react-ga";
+import ContentSupportModal from "~/components/Modals/ContentSupportModal";
+import { Purchase } from "~/config/types/purchase";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -171,7 +173,7 @@ const AnnotationLayer = ({
   // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
   // instead of an absolute path.
   useEffect(() => {
-    if (contentRef.current && contentElXpath.current === "") {
+    if (contentRef.current) {
       contentElXpath.current =
         XPathUtil.getXPathFromNode(contentRef.current) || "";
     }
@@ -664,6 +666,21 @@ const AnnotationLayer = ({
     }
   };
 
+  const _onSupport = (data: any) => {
+    const found = findComment({ id: data.object_id, comments: inlineComments });
+    if (found) {
+      console.log(found);
+      const updatedComment = { ...found.comment };
+      const tip: Purchase = {
+        amount: data.amount,
+        // @ts-ignore
+        createdBy: currentUser,
+      };
+      updatedComment.tips.push(tip);
+      _onUpdate({ comment: updatedComment });
+    }
+  };
+
   const getRenderingMode = ({
     contentRef,
   }: {
@@ -726,6 +743,13 @@ const AnnotationLayer = ({
   } = _calcTextSelectionMenuPos({ selectionMouseCoordinates, renderingMode });
   return (
     <div style={{ position: "relative" }}>
+      <ContentSupportModal
+        // @ts-ignore
+        onSupport={(data: any) => {
+          _onSupport(data);
+        }}
+      />
+
       {annotationsSortedByY.map((annotation) => (
         <Annotation
           key={`annotation-${annotation.threadId}`}

@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import XRange from "../modules/annotation/lib/xrange/XRange";
 
+function isSelectionInsideElement({ element, selection }) {
+  try {
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      return element.contains(range.commonAncestorContainer);
+    }
+  } catch (error) {}
+  return false;
+}
+
 const useSelection = ({
   contentRef,
 }): {
@@ -38,7 +48,8 @@ const useSelection = ({
           selection &&
           selection.rangeCount > 0 &&
           !selection.isCollapsed &&
-          selection.toString().trim() !== "";
+          selection.toString().trim() !== "" &&
+          isSelectionInsideElement({ element: contentRef.current, selection });
 
         if (isValidSelection) {
           const newRange = XRange.createFromSelection();

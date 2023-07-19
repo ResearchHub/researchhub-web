@@ -233,7 +233,7 @@ XRange.createFromSerialized = function ({
     var xr = new XRange({});
     xr._unserialize(_serialized);
 
-    if (serialized.index) {
+    if (_serialized.index) {
       xr.setIndex(_serialized.index);
     }
 
