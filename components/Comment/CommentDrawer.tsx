@@ -23,7 +23,7 @@ const CommentDrawer = ({ children, isOpen = false, handleClose }: Args) => {
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <SwipeableDrawer
-        // containerStyle={{height: 'calc(100% - 64px)', top: 64}}
+        sx={{ zIndex: 1000000000 }}
         container={drawerEl}
         anchor="bottom"
         open={isOpen}

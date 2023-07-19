@@ -367,7 +367,8 @@ const CommentFeed = ({
       : context === COMMENT_CONTEXTS.DRAWER
       ? CommentDrawer
       : React.Fragment;
-  const isNarrowWidthContext = context === COMMENT_CONTEXTS.SIDEBAR || context === COMMENT_CONTEXTS.DRAWER;
+  const isNarrowWidthContext =
+    context === COMMENT_CONTEXTS.SIDEBAR || context === COMMENT_CONTEXTS.DRAWER;
 
   return (
     <CommentTreeContext.Provider
@@ -439,10 +440,11 @@ const CommentFeed = ({
                 }}
                 allowBounty={allowBounty}
                 author={currentUser?.authorProfile}
-                previewModeAsDefault={context ? true : false}
                 allowCommentTypeSelection={allowCommentTypeSelection}
                 editorStyleOverride={
-                  context === COMMENT_CONTEXTS.DRAWER ? styles.roundedEditor : null
+                  context === COMMENT_CONTEXTS.DRAWER
+                    ? styles.roundedEditor
+                    : null
                 }
               />
             </div>

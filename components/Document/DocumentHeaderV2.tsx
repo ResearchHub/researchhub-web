@@ -6,7 +6,6 @@ import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { useRouter } from "next/router";
-import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   DocumentMetadata,
@@ -24,9 +23,8 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { getTabs } from "./lib/tabbedNavigation";
 import config from "~/components/Document/lib/config";
 import DocumentStickyHeader from "./DocumentStickyHeader";
-import GenericMenu, { MenuOption } from "../shared/GenericMenu";
 import { LEFT_SIDEBAR_MIN_WIDTH } from "../Home/sidebar/RootLeftSidebar";
-import { faPen, faFlag } from "@fortawesome/pro-light-svg-icons";
+import { faPen } from "@fortawesome/pro-light-svg-icons";
 import { parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
 import { isEmpty } from "~/config/utils/nullchecks";
