@@ -754,7 +754,7 @@ const AnnotationLayer = ({
   } = _calcTextSelectionMenuPos({ selectionMouseCoordinates, renderingMode });
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", zIndex: 1 }}>
       <ContentSupportModal
         // @ts-ignore
         onSupport={(data: any) => {
