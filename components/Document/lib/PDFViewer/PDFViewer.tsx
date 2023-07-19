@@ -14,7 +14,6 @@ import DocumentControls from "../../DocumentControls";
 import config from "../config";
 import { zoomOptions } from "./config";
 import { breakpoints } from "~/config/themes/screen";
-// import AnnotationLayer from "~/components/Comment/modules/annotation/AnnotationLayer";
 import { GenericDocument } from "../types";
 import { captureEvent } from "~/config/utils/events";
 
@@ -43,8 +42,6 @@ const PDFViewer = ({
   width = config.width,
   onZoom,
   expanded,
-  document: doc,
-  handleError,
   pdfClose,
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -259,49 +256,57 @@ const PDFViewer = ({
     console.log("page rendered", pageNum);
   }
 
-  const fullScreenViewer = useMemo(() => {
-    return (
-      <div
-        className={css(styles.expandedWrapper, isExpanded && styles.expandedOn)}
-      >
-        <div className={css(styles.expandedNav)}>
-          <div
-            onClick={() => downloadPDF(pdfUrl)}
-            className={css(styles.downloadBtn)}
-          >
-            <IconButton overrideStyle={styles.viewerNavBtn}>
-              <FontAwesomeIcon
-                icon={faFileArrowDown}
-                style={{ fontSize: 20 }}
-              />
-            </IconButton>
-          </div>
-          <div onClick={onFullScreenClose} className={css(styles.closeBtn)}>
-            <IconButton overrideStyle={styles.viewerNavBtn}>
-              <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
-            </IconButton>
-          </div>
-        </div>
-        <div style={{ overflowY: "scroll", height: "100vh", paddingTop: 60 }}>
-          <_PDFViewer
-            pdfUrl={pdfUrl}
-            viewerWidth={viewerWidth * fullScreenSelectedZoom}
-            onLoadSuccess={() => {
-              setIsLoading(false);
-            }}
-            onLoadError={onError}
-            showWhenLoading={<DocumentPlaceholder />}
-          />
-        </div>
-      </div>
-    );
-  }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom]);
+  // if (hasLoadError) {
+  //   return (
+  //     <div className={css(styles.error)}>
+  //       <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
+  //       <span style={{ fontSize: 22 }}>
+  //         There was an error loading the PDF.
+  //       </span>
+  //     </div>
+  //   );
+  // }
+
+  // const fullScreenViewer = useMemo(() => {
+  //   return (
+  //     <div
+  //       className={css(styles.expandedWrapper, isExpanded && styles.expandedOn)}
+  //     >
+  //       <div className={css(styles.expandedNav)}>
+  //         <div
+  //           onClick={() => downloadPDF(pdfUrl)}
+  //           className={css(styles.downloadBtn)}
+  //         >
+  //           <IconButton overrideStyle={styles.viewerNavBtn}>
+  //             <FontAwesomeIcon
+  //               icon={faFileArrowDown}
+  //               style={{ fontSize: 20 }}
+  //             />
+  //           </IconButton>
+  //         </div>
+  //         <div onClick={onFullScreenClose} className={css(styles.closeBtn)}>
+  //           <IconButton overrideStyle={styles.viewerNavBtn}>
+  //             <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
+  //           </IconButton>
+  //         </div>
+  //       </div>
+  //       <div style={{ overflowY: "scroll", height: "100vh", paddingTop: 60 }}>
+  //         <_PDFViewer
+  //           pdfUrl={pdfUrl}
+  //           viewerWidth={viewerWidth * fullScreenSelectedZoom}
+  //           onLoadSuccess={onLoadSuccess}
+  //           onLoadError={onLoadError}
+  //           showWhenLoading={<DocumentPlaceholder />}
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom]);
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
-      {/* <AnnotationLayer document={doc} contentRef={containerRef} /> */}
-      {fullScreenViewer}
-      <div
+      {/* {fullScreenViewer} */}
+      {/* <div
         className={css(
           styles.controls,
           styles.controlsSticky,
@@ -318,7 +323,7 @@ const PDFViewer = ({
           showExpand={isExpanded ? false : true}
           handleZoomSelection={handleZoomSelection}
         />
-      </div>
+      </div> */}
       <div style={{ overflowX: "scroll" }}>
         <_PDFViewer
           pdfUrl={pdfUrl}

@@ -10,14 +10,23 @@ import DocumentControls from "~/components/Document/DocumentControls";
 import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
 import { DocumentContext } from "./lib/DocumentContext";
-import DocumentHeader from "./DocumentHeaderV2";
-import { DocumentMetadata } from "./lib/types";
+import { DocumentMetadata, GenericDocument } from "./lib/types";
+import PDFViewer from "./lib/PDFViewer/PDFViewer";
+import DocumentPlaceholder from "./DocumentPlaceholder";
+import _PDFViewer from "./lib/PDFViewer/_PDFViewer";
 
 export type ZoomAction = {
   isExpanded: boolean;
   zoom: number;
   newWidth: number;
+};
+
+type Props = {
   metadata: DocumentMetadata;
+  postHtml?: string;
+  onZoom: Function;
+  document: GenericDocument;
+  viewerWidth: number;
 };
 
 const DocumentViewer = ({
@@ -26,7 +35,7 @@ const DocumentViewer = ({
   onZoom,
   viewerWidth,
   metadata,
-}) => {
+}: Props) => {
   const documentContext = useContext(DocumentContext);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const contentRef = useRef(null);
@@ -190,6 +199,7 @@ const DocumentViewer = ({
   // }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom]);
 
   const commentDisplayPreference = documentContext.preferences?.comments;
+  const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
   return (
     <div
       className={css(
@@ -217,11 +227,38 @@ const DocumentViewer = ({
             displayPreference={commentDisplayPreference}
           />
         )}
-        <div
-          ref={contentRef}
-          className={css(styles.postBody) + " rh-post"}
-          dangerouslySetInnerHTML={{ __html: postHtml }}
-        ></div>
+
+        {documentContext.documentType === "paper" ? (
+          // <PDFViewer
+          //   pdfUrl={pdfUrl}
+          //   onZoom={(zoom) => {
+          //     if (!zoom.isExpanded) {
+          //       setViewerWidth(zoom.newWidth);
+          //     }
+          //   }}
+          // />
+
+          <div ref={contentRef}>
+            <_PDFViewer
+              pdfUrl={pdfUrl}
+              viewerWidth={viewerWidth * selectedZoom}
+              onLoadSuccess={() => null}
+              onLoadError={() => null}
+              onPageRender={() => null}
+              showWhenLoading={
+                <div style={{ padding: 20 }}>
+                  <DocumentPlaceholder />
+                </div>
+              }
+            />
+          </div>
+        ) : (
+          <div
+            ref={contentRef}
+            className={css(styles.postBody) + " rh-post"}
+            dangerouslySetInnerHTML={{ __html: postHtml }}
+          />
+        )}
       </div>
 
       <div

@@ -11,7 +11,10 @@ import { StyleSheet, css } from "aphrodite";
 import PaperPageAbstractSection from "~/components/Paper/abstract/PaperPageAbstractSection";
 import DocumentPagePlaceholder from "~/components/Document/lib/Placeholders/DocumentPagePlaceholder";
 import { useRef, useState } from "react";
-import { DocumentContext } from "~/components/Document/lib/DocumentContext";
+import {
+  DocumentContext,
+  DocumentPreferences,
+} from "~/components/Document/lib/DocumentContext";
 import UploadPDF from "~/components/Paper/Tabs/PaperTab";
 import { breakpoints } from "~/config/themes/screen";
 import useCacheControl from "~/config/hooks/useCacheControl";
@@ -23,6 +26,9 @@ import {
   LEFT_SIDEBAR_MAX_WIDTH,
   LEFT_SIDEBAR_MIN_WIDTH,
 } from "~/components/Home/sidebar/RootLeftSidebar";
+import DocumentViewer, {
+  ZoomAction,
+} from "~/components/Document/DocumentViewer";
 
 interface Args {
   documentData?: any;
@@ -42,7 +48,9 @@ const DocumentIndexPage: NextPage<Args> = ({
   const [viewerWidth, setViewerWidth] = useState<number | undefined>(
     config.width
   );
-  const [pdfLoadError, setPdfLoadError] = useState<boolean>(false);
+  const [docPreferences, setDocPreferences] = useState<DocumentPreferences>({
+    comments: "all",
+  });
   const [documentMetadata, setDocumentMetadata] = useDocumentMetadata({
     rawMetadata: metadata,
     unifiedDocumentId: documentData?.unified_document?.id,
@@ -76,6 +84,9 @@ const DocumentIndexPage: NextPage<Args> = ({
         documentType,
         updateMetadata: setDocumentMetadata,
         updateDocument: setDocument,
+        preferences: docPreferences,
+        setPreference: ({ key, value }) =>
+          setDocPreferences({ ...docPreferences, [key]: value }),
       }}
     >
       <DocumentPageLayout
@@ -92,16 +103,12 @@ const DocumentIndexPage: NextPage<Args> = ({
           <div className={css(styles.bodyWrapper)}>
             {pdfUrl && !pdfLoadError ? (
               <div className={css(styles.viewerWrapper)}>
-                <PDFViewer
-                  handleError={() => {
-                    setPdfLoadError(true);
-                  }}
+                <DocumentViewer
                   document={document}
-                  pdfUrl={pdfUrl}
-                  onZoom={(zoom) => {
-                    if (!zoom.isExpanded) {
-                      setViewerWidth(zoom.newWidth);
-                    }
+                  metadata={documentMetadata}
+                  viewerWidth={config.width}
+                  onZoom={(zoom: ZoomAction) => {
+                    setViewerWidth(zoom.newWidth);
                   }}
                 />
               </div>
