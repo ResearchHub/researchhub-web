@@ -192,12 +192,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
   return (
     <div>
       <div>
-        <div
-          className={css(
-            styles.mainWrapper,
-            hasOpenBounties && styles.mainWrapperForBounty
-          )}
-        >
+        <div className={css(styles.mainWrapper)}>
           <div
             className={css(
               styles.headerWrapper,
@@ -230,6 +225,10 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
             {/* <CommentBadges comment={comment} /> */}
             {isEditMode ? (
               <CommentEditor
+                displayCurrentUser={annotationContext ? false : true}
+                editorStyleOverride={
+                  annotationContext ? styles.annotationEditor : undefined
+                }
                 handleSubmit={async (props) => {
                   try {
                     let comment = (await handleCommentUpdate(
@@ -257,13 +256,13 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                     setIsEditMode(false);
                   }
                 }}
+                handleCancel={() => _handleCloseEdit()}
                 commentType={comment.commentType}
                 content={comment.content}
                 commentId={comment.id}
                 author={currentUser?.authorProfile}
                 editorId={`edit-${comment.id}`}
                 allowCommentTypeSelection={false}
-                handleClose={() => _handleCloseEdit()}
               />
             ) : (
               <div
@@ -416,13 +415,6 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     marginLeft: 0,
   },
-  mainWrapperForBounty: {
-    // boxShadow: "0px 0px 15px rgba(255, 148, 22, 0.5)",
-    // borderRadius: 10,
-    // padding: 10,
-    // background: "white",
-    // marginBottom: 5,
-  },
   commentReadOnlyWrapper: {
     marginBottom: 15,
   },
@@ -470,6 +462,11 @@ const styles = StyleSheet.create({
   contributeBtnLabel: {
     fontWeight: 500,
     lineHeight: "22px",
+  },
+  annotationEditor: {
+    border: `1px solid ${colors.border}`,
+    boxShadow: "none",
+    marginBottom: 15,
   },
 });
 
