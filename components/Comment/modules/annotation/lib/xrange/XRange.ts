@@ -95,7 +95,7 @@ XRange.prototype.serialize = function ({
       endContainerPath: XPathUtil.getXPathFromNode(this.rangyObj.endContainer),
       endOffset: this.rangyObj.endOffset,
       collapsed: this.rangyObj.collapsed,
-      textContent: this.textContent(),
+      text: this.textContent(),
     };
 
     serialized = serializedAbsolutePos;
