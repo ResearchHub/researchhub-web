@@ -201,6 +201,7 @@ const DocumentViewer = ({
 
   const commentDisplayPreference = documentContext.preferences?.comments;
   const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
+
   return (
     <div
       className={css(
@@ -231,24 +232,13 @@ const DocumentViewer = ({
         )}
 
         {documentContext.documentType === "paper" ? (
-          // <PDFViewer
-          //   pdfUrl={pdfUrl}
-          //   onZoom={(zoom) => {
-          //     if (!zoom.isExpanded) {
-          //       setViewerWidth(zoom.newWidth);
-          //     }
-          //   }}
-          // />
-
           <div ref={contentRef}>
             <_PDFViewer
               pdfUrl={pdfUrl}
               viewerWidth={viewerWidth * selectedZoom}
               onLoadSuccess={() => null}
               onLoadError={() => null}
-              onPageRender={(pagesRendered) => {
-                setPagesRendered(pagesRendered);
-              }}
+              onPageRender={setPagesRendered}
               showWhenLoading={
                 <div style={{ padding: 20 }}>
                   <DocumentPlaceholder />
@@ -260,7 +250,7 @@ const DocumentViewer = ({
           <div
             ref={contentRef}
             className={css(styles.postBody) + " rh-post"}
-            dangerouslySetInnerHTML={{ __html: postHtml }}
+            dangerouslySetInnerHTML={{ __html: postHtml! }}
           />
         )}
       </div>
