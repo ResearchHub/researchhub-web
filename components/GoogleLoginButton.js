@@ -6,7 +6,6 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { sendAmpEvent } from "~/config/fetch";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/browser";
 import Button from "~/components/Form/Button";
