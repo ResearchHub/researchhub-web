@@ -175,13 +175,13 @@ const Navbar = (props) => {
                       variant="text"
                       customButtonStyle={styles.signUpBtn}
                       label="Log in"
-                      hideRipples={true}
+                      hideRipples
                     />
                     <Button
                       size="small"
                       customButtonStyle={styles.signUpBtn}
                       label="Sign up"
-                      hideRipples={true}
+                      hideRipples
                     />
                   </div>
                 </Login>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AuthActions } from "~/redux/auth";
 import { connect } from "react-redux";
 import LoginModal from "./LoginModal";
-
+import { useGoogleOneTapLogin } from "~/config/utils/useGoogleOneTapLogin";
 
 type Props = {
   loginCallback?: Function;
@@ -11,8 +11,14 @@ type Props = {
   title?: string;
 };
 
-const Login = ({ children, loginCallback, title, persistent = false }: Props) => {
+const Login = ({
+  children,
+  loginCallback,
+  title,
+  persistent = false,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(persistent);
+  useGoogleOneTapLogin(); // triggers Google OneTap
 
   return (
     <div style={{ width: "100%" }}>

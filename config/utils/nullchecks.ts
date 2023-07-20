@@ -1,6 +1,11 @@
 export function localWarn(...args: any[]): void {
   console.warn(...args);
 }
+
+export function localError(...args: any[]): void {
+  console.error(...args);
+}
+
 export function emptyFncWithMsg(
   message: Error | string | null | undefined | unknown
 ): void {
