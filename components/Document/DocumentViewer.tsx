@@ -45,6 +45,7 @@ const DocumentViewer = ({
     useState<number>(1.25);
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [pagesRendered, setPagesRendered] = useState<number>(0);
 
   useEffect(() => {
     if (window.innerWidth < breakpoints.small.int) {
@@ -224,6 +225,7 @@ const DocumentViewer = ({
           <AnnotationLayer
             document={doc}
             contentRef={contentRef}
+            pagesRendered={pagesRendered}
             displayPreference={commentDisplayPreference}
           />
         )}
@@ -244,7 +246,9 @@ const DocumentViewer = ({
               viewerWidth={viewerWidth * selectedZoom}
               onLoadSuccess={() => null}
               onLoadError={() => null}
-              onPageRender={() => null}
+              onPageRender={(pagesRendered) => {
+                setPagesRendered(pagesRendered);
+              }}
               showWhenLoading={
                 <div style={{ padding: 20 }}>
                   <DocumentPlaceholder />

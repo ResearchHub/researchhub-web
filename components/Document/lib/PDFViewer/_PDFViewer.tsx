@@ -95,8 +95,10 @@ const PDFViewer = ({
             <Page
               pageNumber={index + 1}
               width={viewerWidth}
-              customTextRenderer={textRenderer}
-              onRenderSuccess={() => onPageRender(index + 1)}
+              // customTextRenderer={textRenderer}
+              onRenderSuccess={() => {
+                onPageRender(index + 1);
+              }}
               loading={showWhenLoading || "Loading..."}
             />
           </div>

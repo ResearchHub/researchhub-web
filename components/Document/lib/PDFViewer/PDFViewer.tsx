@@ -1,19 +1,9 @@
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import DocumentPlaceholder from "../Placeholders/DocumentPlaceholder";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleExclamation,
-  faXmark,
-  faFileArrowDown,
-} from "@fortawesome/pro-light-svg-icons";
 import dynamic from "next/dynamic";
-import IconButton from "../../../Icons/IconButton";
 import colors from "~/config/themes/colors";
-import DocumentControls from "../../DocumentControls";
 import config from "../config";
-import { zoomOptions } from "./config";
-import { breakpoints } from "~/config/themes/screen";
 import { GenericDocument } from "../types";
 import { captureEvent } from "~/config/utils/events";
 
@@ -52,137 +42,6 @@ const PDFViewer = ({
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const [viewerWidth, setViewerWidth] = useState<number>(width);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (window.innerWidth < breakpoints.small.int) {
-      setFullScreenSelectedZoom(1.0);
-    }
-  }, []);
-
-  function handleZoomIn() {
-    if (isExpanded) {
-      const currentIdx = zoomOptions.findIndex(
-        (option) => option.value === fullScreenSelectedZoom
-      );
-      const isLastOption = currentIdx === zoomOptions.length - 1;
-      if (isLastOption) {
-        return;
-      }
-
-      const newZoom = zoomOptions[currentIdx + 1].value;
-      setFullScreenSelectedZoom(newZoom);
-      onZoom &&
-        onZoom({
-          isExpanded: true,
-          zoom: newZoom,
-          newWidth: viewerWidth * newZoom,
-        } as ZoomAction);
-    } else {
-      const currentIdx = zoomOptions.findIndex(
-        (option) => option.value === selectedZoom
-      );
-      const isLastOption = currentIdx === zoomOptions.length - 1;
-      if (isLastOption) {
-        return;
-      }
-
-      const newZoom = zoomOptions[currentIdx + 1].value;
-      setSelectedZoom(newZoom);
-      onZoom &&
-        onZoom({
-          isExpanded: false,
-          zoom: newZoom,
-          newWidth: viewerWidth * newZoom,
-        } as ZoomAction);
-    }
-  }
-  function handleZoomOut() {
-    if (isExpanded) {
-      const currentIdx = zoomOptions.findIndex(
-        (option) => option.value === fullScreenSelectedZoom
-      );
-      const isFirstOption = currentIdx === 0;
-      if (isFirstOption) {
-        return;
-      }
-      const newZoom = zoomOptions[currentIdx - 1].value;
-      setFullScreenSelectedZoom(newZoom);
-      onZoom &&
-        onZoom({
-          isExpanded: true,
-          zoom: newZoom,
-          newWidth: viewerWidth * newZoom,
-        } as ZoomAction);
-    } else {
-      const currentIdx = zoomOptions.findIndex(
-        (option) => option.value === selectedZoom
-      );
-      const isFirstOption = currentIdx === 0;
-      if (isFirstOption) {
-        return;
-      }
-      const newZoom = zoomOptions[currentIdx - 1].value;
-      setSelectedZoom(newZoom);
-      onZoom &&
-        onZoom({
-          isExpanded: false,
-          zoom: newZoom,
-          newWidth: viewerWidth * newZoom,
-        } as ZoomAction);
-    }
-  }
-
-  function handleZoomSelection(zoomOption: any) {
-    const newZoom = zoomOptions.find(
-      (z) => z.value === zoomOption.value
-    )!.value;
-    if (isExpanded) {
-      onZoom &&
-        onZoom({
-          isExpanded: true,
-          zoom: newZoom,
-          newWidth: viewerWidth * newZoom,
-        } as ZoomAction);
-      setFullScreenSelectedZoom(newZoom);
-    } else {
-      onZoom &&
-        onZoom({
-          isExpanded: false,
-          zoom: newZoom,
-          newWidth: viewerWidth * newZoom,
-        } as ZoomAction);
-      setSelectedZoom(newZoom);
-    }
-  }
-
-  const onError = () => {
-    setIsLoading(false);
-    handleError && handleError();
-
-    captureEvent({
-      msg: "Failed to load PDF ",
-      data: { pdfUrl },
-    });
-  };
-
-  const onSuccess = () => {
-    setIsLoading(false);
-  };
-
-  function downloadPDF(pdfUrl) {
-    // Create a link for our script to click
-    const link = document.createElement("a");
-    link.href = pdfUrl;
-    link.target = "_blank";
-    link.download = "download.pdf";
-
-    // Trigger the click
-    document.body.appendChild(link);
-    link.click();
-
-    // Cleanup
-    document.body.removeChild(link);
-  }
 
   // Note: This will be turned on. Needs a bit of work to get "pinch zoom" to work properly
   // useEffect(() => {
@@ -256,17 +115,6 @@ const PDFViewer = ({
     console.log("page rendered", pageNum);
   }
 
-  // if (hasLoadError) {
-  //   return (
-  //     <div className={css(styles.error)}>
-  //       <FontAwesomeIcon icon={faCircleExclamation} style={{ fontSize: 44 }} />
-  //       <span style={{ fontSize: 22 }}>
-  //         There was an error loading the PDF.
-  //       </span>
-  //     </div>
-  //   );
-  // }
-
   // const fullScreenViewer = useMemo(() => {
   //   return (
   //     <div
@@ -305,25 +153,6 @@ const PDFViewer = ({
 
   return (
     <div className={css(styles.container)} ref={containerRef}>
-      {/* {fullScreenViewer} */}
-      {/* <div
-        className={css(
-          styles.controls,
-          styles.controlsSticky,
-          isExpanded && styles.controlsStickyExpanded
-        )}
-      >
-        <DocumentControls
-          handleFullScreen={() => {
-            setIsExpanded(true);
-          }}
-          currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-          handleZoomIn={handleZoomIn}
-          handleZoomOut={handleZoomOut}
-          showExpand={isExpanded ? false : true}
-          handleZoomSelection={handleZoomSelection}
-        />
-      </div> */}
       <div style={{ overflowX: "scroll" }}>
         <_PDFViewer
           pdfUrl={pdfUrl}

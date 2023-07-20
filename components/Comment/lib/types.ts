@@ -127,6 +127,24 @@ export const parseComment = ({
   return parsed;
 };
 
+export const groupByPageNumber = (
+  commentThreadGroups: CommentThreadGroup[]
+): { [pageNumber: string]: CommentThreadGroup } => {
+  const groups: { [pageNumber: string]: CommentThreadGroup } = {};
+  commentThreadGroups.forEach((group) => {
+    const pageNumber = group.thread.anchor?.pageNumber || "0";
+    if (!groups[pageNumber]) {
+      groups[pageNumber] = group;
+    } else {
+      groups[pageNumber].comments = groups[pageNumber].comments.concat(
+        group.comments
+      );
+    }
+  });
+
+  return groups;
+};
+
 export const groupByThread = (
   comments: Comment[]
 ): { [threadId: string]: CommentThreadGroup } => {
