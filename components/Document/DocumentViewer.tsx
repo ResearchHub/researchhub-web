@@ -11,9 +11,10 @@ import DocumentExpandedNav from "~/components/Document/DocumentExpandedNav";
 import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
 import { DocumentContext } from "./lib/DocumentContext";
 import { DocumentMetadata, GenericDocument } from "./lib/types";
-import PDFViewer from "./lib/PDFViewer/PDFViewer";
 import DocumentPlaceholder from "./DocumentPlaceholder";
-import _PDFViewer from "./lib/PDFViewer/_PDFViewer";
+const PDFViewer = dynamic(() => import("./lib/PDFViewer/_PDFViewer"), {
+  ssr: false,
+});
 
 export type ZoomAction = {
   isExpanded: boolean;
@@ -233,7 +234,7 @@ const DocumentViewer = ({
 
         {documentContext.documentType === "paper" ? (
           <div ref={contentRef}>
-            <_PDFViewer
+            <PDFViewer
               pdfUrl={pdfUrl}
               viewerWidth={viewerWidth * selectedZoom}
               onLoadSuccess={() => null}
