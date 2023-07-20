@@ -58,6 +58,7 @@ const { setMessage, showMessage } = MessageActions;
 interface Props {
   contentRef: any;
   document: GenericDocument;
+  pagesRendered: number; // The number of pages rendered so far
   displayPreference: "all" | "mine" | "none";
 }
 
@@ -65,6 +66,7 @@ const AnnotationLayer = ({
   contentRef,
   document: doc,
   displayPreference,
+  pagesRendered = 0,
 }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
@@ -146,13 +148,19 @@ const AnnotationLayer = ({
     commentThreads.current = _commentThreads;
 
     setNeedsRedraw({ drawMode: "DIFF_ONLY" });
-  }, [inlineComments, displayPreference]);
+  }, [inlineComments, displayPreference, pagesRendered]);
 
   useEffect(() => {
     if (needsRedraw) {
+      const readyThreads = getThreadsReadyForRender({
+        threads: commentThreads.current,
+        pagesRendered,
+      });
+      console.log("pagesRendered", pagesRendered, "readyThreads", readyThreads);
+
       const { orphanThreadIds, foundAnnotations } = _drawAnnotations({
         annotationsSortedByY,
-        threads: commentThreads.current,
+        threads: readyThreads,
         drawingMode: needsRedraw?.drawMode,
       });
 
@@ -689,7 +697,6 @@ const AnnotationLayer = ({
   const _onSupport = (data: any) => {
     const found = findComment({ id: data.object_id, comments: inlineComments });
     if (found) {
-      console.log(found);
       const updatedComment = { ...found.comment };
       const tip: Purchase = {
         amount: data.amount,
@@ -723,6 +730,23 @@ const AnnotationLayer = ({
     } else {
       return "drawer";
     }
+  };
+
+  const getThreadsReadyForRender = ({
+    threads,
+    pagesRendered,
+  }: {
+    threads: { [key: string]: CommentThreadGroup };
+    pagesRendered: number;
+  }): { [key: string]: CommentThreadGroup } => {
+    const readyThreads = {};
+    Object.keys(threads).forEach((threadId) => {
+      const threadGroup = threads[threadId];
+      if ((threadGroup?.thread?.anchor?.pageNumber || 0) <= pagesRendered) {
+        readyThreads[threadId] = threadGroup;
+      }
+    });
+    return readyThreads;
   };
 
   const _calcTextSelectionMenuPos = ({
