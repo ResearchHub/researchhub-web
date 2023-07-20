@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { AuthActions } from "~/redux/auth";
 import { connect } from "react-redux";
-import LoginModal from "./LoginModal";
 import { useGoogleOneTapLogin } from "~/config/utils/useGoogleOneTapLogin";
+import { useState } from "react";
+import LoginModal from "./LoginModal";
 
 type Props = {
   loginCallback?: Function;
