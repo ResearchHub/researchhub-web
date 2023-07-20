@@ -34,7 +34,7 @@ export function useGoogleOneTapLogin() {
     if (!isLoggedIn && authChecked) {
       (window as any).google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        callback: async (data: any) => {
+        callback: async (data: any): Promise<void> => {
           await reduxDispatcher(AuthActions.googleYoloLogin(data)).then(
             (action: any) => {
               if (action.loginFailed) {
@@ -45,7 +45,7 @@ export function useGoogleOneTapLogin() {
           );
         },
       });
-      (window as any).google.accounts.id.prompt((notification) => {
+      (window as any).google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
           emptyFncWithMsg("Google OneTap dismissed");
         }
