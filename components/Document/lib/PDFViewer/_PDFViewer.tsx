@@ -72,6 +72,10 @@ const PDFViewer = ({
     [searchText]
   );
 
+  const pageRenderSuccess = (page) => {
+    onPageRender(page._pageIndex + 1);
+  };
+
   const BORDER_WIDTH = 2;
   return (
     <div
@@ -96,9 +100,7 @@ const PDFViewer = ({
               pageNumber={index + 1}
               width={viewerWidth}
               // customTextRenderer={textRenderer}
-              onRenderSuccess={() => {
-                onPageRender(index + 1);
-              }}
+              onRenderSuccess={pageRenderSuccess}
               loading={showWhenLoading || "Loading..."}
             />
           </div>

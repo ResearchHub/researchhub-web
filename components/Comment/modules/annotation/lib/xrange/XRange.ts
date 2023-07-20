@@ -352,8 +352,6 @@ XRange.prototype.getCoordinates = function ({ relativeEl }) {
     i = j - 1; // Fast forward to the last position that was consolidated
   }
 
-  console.log("consolidated", consolidatedPositions);
-
   return consolidatedPositions;
 };
 

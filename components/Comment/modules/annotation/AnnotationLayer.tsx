@@ -148,7 +148,13 @@ const AnnotationLayer = ({
     commentThreads.current = _commentThreads;
 
     setNeedsRedraw({ drawMode: "DIFF_ONLY" });
-  }, [inlineComments, displayPreference, pagesRendered]);
+  }, [inlineComments, displayPreference]);
+
+  // As more pages are rendered (in the case of papers), we want to try to find annotations.
+  // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
+  useEffect(() => {
+    setNeedsRedraw({ drawMode: "DIFF_ONLY" });
+  }, [pagesRendered]);
 
   useEffect(() => {
     if (needsRedraw) {
