@@ -9,13 +9,18 @@ import {
   COMMENT_CONTEXTS,
   groupByThread,
 } from "../../lib/types";
-import { createAnnotation, Annotation as AnnotationType } from "./lib/types";
+import {
+  Annotation as AnnotationType,
+  SerializedAnchorPosition,
+} from "./lib/types";
 import { createCommentAPI, fetchCommentsAPI } from "../../lib/api";
 import { GenericDocument } from "../../../Document/lib/types";
 import XRange from "./lib/xrange/XRange";
 import colors from "../../lib/colors";
 import TextSelectionMenu from "../../TextSelectionMenu";
-import useSelection from "~/components/Comment/hooks/useSelection";
+import useSelection, {
+  Selection,
+} from "~/components/Comment/modules/annotation/lib/useSelection";
 import config from "../../lib/config";
 import CommentEditor from "../../CommentEditor";
 import { captureEvent } from "~/config/utils/events";
@@ -42,6 +47,12 @@ import { RootState } from "~/redux";
 import { set } from "react-ga";
 import ContentSupportModal from "~/components/Modals/ContentSupportModal";
 import { Purchase } from "~/config/types/purchase";
+import {
+  annotationToSerializedAnchorPosition,
+  createAnnotation,
+  selectionToSerializedAnchorPosition,
+  urlSelectionToAnnotation,
+} from "./lib/selection";
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -71,14 +82,7 @@ const AnnotationLayer = ({
     { drawMode: "DIFF_ONLY" | "ALL" } | false
   >(false);
 
-  // The XRange position of the selected text. Holds the serialized DOM position.
-  const {
-    selectionXRange,
-    initialSelectionPosition,
-    resetSelectedPos,
-    mouseCoordinates: selectionMouseCoordinates,
-    error: selectionError,
-  } = useSelection({
+  const selection = useSelection({
     contentRef: contentRef,
   });
 
@@ -304,7 +308,7 @@ const AnnotationLayer = ({
   // what elment was clicked.
   useEffect(() => {
     const _handleClick = (event) => {
-      if (selectionXRange || !window.getSelection()?.isCollapsed) {
+      if (selection.xrange || !window.getSelection()?.isCollapsed) {
         return;
       }
 
@@ -370,7 +374,7 @@ const AnnotationLayer = ({
     return () => {
       document.removeEventListener("click", _handleClick);
     };
-  }, [annotationsSortedByY, positionFromUrl, selectionXRange]);
+  }, [annotationsSortedByY, positionFromUrl, selection.xrange]);
 
   // If a serialized position to an annotation is shared via the URL, we want to unserialize it and scroll
   // the user to its position.
@@ -389,28 +393,18 @@ const AnnotationLayer = ({
             return;
           }
 
-          const [key, value] = hashPairs[selectionIdx].split("=");
-          const serializedSelection = JSON.parse(decodeURIComponent(value));
-
-          const xrange = XRange.createFromSerialized({
-            serialized: serializedSelection,
-            xpathPrefix: contentElXpath.current,
-          });
-
-          if (xrange) {
-            const annotation = createAnnotation({
-              xrange,
+          try {
+            const [key, value] = hashPairs[selectionIdx].split("=");
+            const annotation = urlSelectionToAnnotation({
+              urlSelection: value,
               ignoreXPathPrefix: contentElXpath.current,
-              threadId: "position-from-url",
               relativeEl: contentRef.current,
-              serializedAnchorPosition: xrange.serialize({
-                ignoreXPathPrefix: contentElXpath.current,
-              }),
             });
+
             setPositionFromUrl(annotation);
             clearInterval(interval);
             _scrollToAnnotation({ annotation });
-          }
+          } catch (error) {}
 
           MAX_ATTEMPTS_REMAINING--;
         }, 1000);
@@ -514,7 +508,8 @@ const AnnotationLayer = ({
             xrange,
             threadId: threadGroup.threadId,
             relativeEl: contentRef.current,
-            serializedAnchorPosition: threadGroup.thread.anchor || undefined,
+            serializedAnchorPosition: threadGroup.thread!
+              .anchor as SerializedAnchorPosition,
           });
 
           foundAnnotations.push(annotation);
@@ -532,21 +527,29 @@ const AnnotationLayer = ({
     return { orphanThreadIds, foundAnnotations: foundAndSorted };
   };
 
-  const _createNewAnnotation = (e) => {
-    e.stopPropagation();
+  const _createNewAnnotation = ({
+    event,
+    selection,
+    ignoreXPathPrefix,
+  }: {
+    event: any;
+    selection: Selection;
+    ignoreXPathPrefix: string;
+  }) => {
+    event.stopPropagation();
 
-    if (selectionError) {
-      dispatch(setMessage(selectionError));
+    if (selection.error) {
+      dispatch(setMessage(selection.error));
       // @ts-ignore
       dispatch(showMessage({ show: true, error: true }));
       return;
     }
 
-    if (!selectionXRange) {
+    if (!selection.xrange) {
       return console.error("No selected range. This should not happen.");
     }
 
-    const selectedText = selectionXRange.textContent();
+    const selectedText = selection.xrange.textContent();
     if (selectedText.length > config.annotation.maxSelectionChars) {
       dispatch(
         setMessage(
@@ -559,9 +562,13 @@ const AnnotationLayer = ({
     }
 
     const newAnnotation = createAnnotation({
-      xrange: selectionXRange,
+      serializedAnchorPosition: selectionToSerializedAnchorPosition({
+        selection,
+        ignoreXPathPrefix,
+      }),
       relativeEl: contentRef.current,
       isNew: true,
+      xrange: selection.xrange,
     });
 
     const _annotationsSortedByY = _sortAnnotationsByAppearanceInPage([
@@ -569,7 +576,7 @@ const AnnotationLayer = ({
       newAnnotation,
     ]);
     setSelectedThreadId(newAnnotation.threadId);
-    resetSelectedPos();
+    selection.resetSelectedPos();
     _setAnnotations(_annotationsSortedByY);
   };
 
@@ -594,6 +601,13 @@ const AnnotationLayer = ({
     commentProps: any;
   }) => {
     try {
+      const serialized = annotationToSerializedAnchorPosition({
+        annotation,
+        // IMPORTANT: We always want to get a fresh xpath to the container contentEl right before serializing
+        // because DOM changes (i.e. full screen mode) can cause the xpath of it to change.
+        ignoreXPathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
+      });
+
       const comment = await createCommentAPI({
         ...commentProps,
         documentId: doc.id,
@@ -601,12 +615,7 @@ const AnnotationLayer = ({
         commentType: COMMENT_TYPES.ANNOTATION,
         anchor: {
           type: "text",
-          position: annotation.xrange!.serialize({
-            // IMPORTANT: We always want to get a fresh xpath to the container contentEl right before serializing
-            // because DOM changes (i.e. full screen mode) can cause the xpath of it to change.
-            ignoreXPathPrefix:
-              XPathUtil.getXPathFromNode(contentRef.current) || "",
-          }),
+          position: serialized,
         },
       });
 
@@ -719,6 +728,7 @@ const AnnotationLayer = ({
   const _calcTextSelectionMenuPos = ({
     selectionMouseCoordinates,
     renderingMode,
+    initialSelectionPosition,
   }) => {
     if (!contentRef.current)
       return { right: "unset", left: "unset", top: "unset" };
@@ -743,7 +753,8 @@ const AnnotationLayer = ({
     }
   };
 
-  const showSelectionMenu = selectionXRange && initialSelectionPosition;
+  const showSelectionMenu =
+    selection.xrange && selection.initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
   const contentElOffset = contentRef.current?.getBoundingClientRect()?.x;
   const WrapperEl = renderingMode === "drawer" ? CommentDrawer : React.Fragment;
@@ -751,7 +762,11 @@ const AnnotationLayer = ({
     left: menuPosLeft,
     top: menuPosTop,
     right: menuPosRight,
-  } = _calcTextSelectionMenuPos({ selectionMouseCoordinates, renderingMode });
+  } = _calcTextSelectionMenuPos({
+    selectionMouseCoordinates: selection.mouseCoordinates,
+    initialSelectionPosition: selection.initialSelectionPosition,
+    renderingMode,
+  });
 
   return (
     <div style={{ position: "relative", zIndex: 1 }}>
@@ -806,10 +821,16 @@ const AnnotationLayer = ({
           >
             <TextSelectionMenu
               isHorizontal={renderingMode !== "sidebar"}
-              onCommentClick={_createNewAnnotation}
+              onCommentClick={(event) =>
+                _createNewAnnotation({
+                  event,
+                  selection,
+                  ignoreXPathPrefix: contentElXpath.current,
+                })
+              }
               onLinkClick={() =>
                 createShareableLink({
-                  selectionXRange,
+                  selectionXRange: selection.xrange,
                   contentElXpath: contentElXpath.current,
                 })
               }
