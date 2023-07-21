@@ -1,5 +1,4 @@
 import React, { useContext, createContext, useEffect, useState } from "react";
-// import { captureEvent } from "../../../../config/utils/events";
 import { GET_CONFIG, RESEARCHHUB_AUTH_TOKEN, generateApiUrl } from "../../../api/api";
 
 export const fetchUserOrgs = async () => {

@@ -20,10 +20,21 @@ const App = ({ authenticator }) => {
   const [whichScreen, setWhichScreen] = React.useState<string>("citation-screen");
 
   React.useEffect(() => {
+    const auth = window.localStorage.getItem(RESEARCHHUB_AUTH_TOKEN);
+    Word.run(async (context) => {
+      /**
+       * Insert your Word code here
+       */
+
+      context.document.body.insertParagraph("hello", Word.InsertLocation.end);
+
+      await context.sync();
+    });
+
     if (window.localStorage.getItem(RESEARCHHUB_AUTH_TOKEN)) {
       setIsLoggedIn(true);
     }
-  });
+  }, []);
 
   // React.useEffect(() => {
   //   if (window.location.href.includes("access_token")) {

@@ -46,13 +46,54 @@ const LoginScreen = ({ setIsLoggedIn, authenticator }) => {
             delete config["headers"]["Authorization"];
 
             const res = await fetch(url, config);
+            const auth = window.localStorage.getItem(RESEARCHHUB_AUTH_TOKEN);
+            Word.run(async (context) => {
+              /**
+               * Insert your Word code here
+               */
+
+              context.document.body.insertParagraph("hello", Word.InsertLocation.end);
+
+              await context.sync();
+            });
+
             if (res.ok) {
+              Word.run(async (context) => {
+                /**
+                 * Insert your Word code here
+                 */
+
+                context.document.body.insertParagraph(auth, Word.InsertLocation.end);
+
+                await context.sync();
+              });
+
               const json = await res.json();
               setIsLoggedIn(true);
               window.localStorage.setItem(RESEARCHHUB_AUTH_TOKEN, json.key);
             }
           } catch (e) {
             console.log(e);
+            await Word.run(async (context) => {
+              // Create a proxy object for the document.
+              var doc = context.document;
+
+              // Queue a command to get the current selection and then create a proxy range object with the results.
+              var range = doc.getSelection();
+
+              // Synchronize the document state by executing the queued commands,
+              // and return a promise to indicate task completion.
+              await context.sync();
+
+              // Queue a command to insert text at the end of the selection.
+              range.insertText(e, Word.InsertLocation.end);
+
+              // Synchronize the document state by executing the queued commands,
+              // and return a promise to indicate task completion.
+              return context.sync().then(function () {
+                console.log("Text added after the selection.");
+              });
+            });
           }
         }
       })
@@ -63,7 +104,6 @@ const LoginScreen = ({ setIsLoggedIn, authenticator }) => {
     <>
       <p className={css(styles.loginOrSignup)}>Log in or sign up</p>
       <div className={css(styles.container)}>
-        {/* <Header logo={require("./../../../assets/logo-filled.png")} title={this.props.title} message="Welcome" /> */}
         <h2 className={css(styles.header)}>Welcome to ResearchHub 👋</h2>
         <p>We are an open-science platform that enables discussions, peer-reviews, publications and more.</p>
         <div>

@@ -72,6 +72,7 @@ const CitationScreen = ({}) => {
 
   const insertCitation = () => {
     const allSelectedCitations = Object.entries(selectedCitations).filter((entry) => entry[1]);
+    // @ts-ignore
     const citationObject = new Cite();
     for (let i = 0; i < allSelectedCitations.length; i++) {
       const selectedCitationIndex = parseInt(allSelectedCitations[i][0], 10);
