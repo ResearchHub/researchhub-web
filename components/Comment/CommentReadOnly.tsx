@@ -71,6 +71,14 @@ const CommentReadOnly = ({
           }
         >
           <div
+            onClick={(e) => {
+              if (e.target.nodeName === "A") {
+                // Anchor links include links to other comment threads and if we don't
+                // stop propagation, we will be inefficiently focusing two comment threads.
+                // The first, is the one one clicked on, and the second being the one the link refers to.
+                e.stopPropagation();
+              }
+            }}
             className="ql-editor"
             dangerouslySetInnerHTML={{ __html: htmlToRender }}
           />

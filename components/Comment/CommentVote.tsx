@@ -70,7 +70,8 @@ const CommentVote = ({
     <VoteWidget
       score={_score}
       horizontalView={isHorizontal}
-      onUpvote={async () => {
+      onUpvote={async (e) => {
+        e.stopPropagation();
         try {
           const userVote = await voteForComment({
             voteType: "upvote",
@@ -87,7 +88,8 @@ const CommentVote = ({
         }
       }}
       // @ts-ignore
-      onNeutralVote={async () => {
+      onNeutralVote={async (e) => {
+        e.stopPropagation();
         try {
           const userVote = await voteForComment({
             voteType: "neutralvote",
@@ -103,7 +105,8 @@ const CommentVote = ({
           dispatch(showMessage({ show: true, error: true }));
         }
       }}
-      onDownvote={async () => {
+      onDownvote={async (e) => {
+        e.stopPropagation();
         try {
           const userVote = await voteForComment({
             voteType: "downvote",
