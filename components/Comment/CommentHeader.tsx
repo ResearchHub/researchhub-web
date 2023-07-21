@@ -48,9 +48,7 @@ const CommentHeader = ({
   const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
   return (
     <div className={css(styles.commentHeader)}>
-      <div className={css(styles.badgesWrapper)}>
-        <CommentBadges comment={comment} />
-      </div>
+      <CommentBadges comment={comment} />
       <div className={css(styles.details)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
@@ -206,7 +204,7 @@ const styles = StyleSheet.create({
   },
   badgesWrapper: {
     marginBottom: 10,
-  }
+  },
 });
 
 export default CommentHeader;

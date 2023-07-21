@@ -4,7 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import CommentAvatars from "./CommentAvatars";
 import colors from "./lib/colors";
 import { getClosedBounties, getOpenBounties } from "./lib/bounty";
-import { Comment, COMMENT_CONTEXTS, COMMENT_TYPES } from "./lib/types";
+import { Comment } from "./lib/types";
 import CommentMenu from "./CommentMenu";
 import CommentBadges from "./CommentBadges";
 import UserTooltip from "../Tooltips/User/UserTooltip";
@@ -45,6 +45,7 @@ const CommentHeader = ({
 
   return (
     <div className={css(styles.commentHeader)}>
+      <CommentBadges comment={comment} />
       <div className={css(styles.details, styles.detailsForAnnotation)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
@@ -83,7 +84,6 @@ const CommentHeader = ({
           </div>
         </div>
       </div>
-      <CommentBadges comment={comment} />
     </div>
   );
 };
