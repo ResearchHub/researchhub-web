@@ -1,13 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/pro-light-svg-icons";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import { useWeb3Modal, Web3Modal } from "@web3modal/react";
+import { useWeb3Modal } from "@web3modal/react";
 import { useAccount } from "wagmi";
 import { AuthActions } from "../redux/auth";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
-import { deSlug } from "~/config/utils/deSlug";
-import { formatMainHeader } from "./UnifiedDocFeed/UnifiedDocFeedUtil";
 import { ModalActions } from "../redux/modals";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { StyleSheet, css } from "aphrodite";
@@ -15,7 +13,6 @@ import { useRouter } from "next/router";
 import { useState, Fragment, useRef, useEffect } from "react";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-
 import NavbarRightButtonGroup from "./Home/NavbarRightButtonGroup";
 import NewPostButton from "./NewPostButton";
 import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
@@ -27,6 +24,10 @@ import RHLogo from "./Home/RHLogo";
 import LoginModal from "./Login/LoginModal";
 import Login from "./Login/Login";
 import Button from "./Form/Button";
+import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
+import IconButton from "./Icons/IconButton";
+import Link from "next/link";
+import BackBtn from "./shared/BackBtn";
 
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
 const FirstVoteModal = dynamic(() =>
@@ -51,8 +52,6 @@ const WithdrawalModal = dynamic(() =>
 
 export const NAVBAR_HEIGHT = 68;
 
-const isProduction = process.env.REACT_APP_ENV === "production";
-
 const Navbar = (props) => {
   const { address, isConnected } = useAccount();
 
@@ -62,9 +61,9 @@ const Navbar = (props) => {
   const [shouldShowSlider, setShouldShowSlider] = useState(false);
   const { open, close } = useWeb3Modal();
 
-  const isDocumentPage = ["paper", "post"].includes(
-    router.pathname.split("/")[1]
-  );
+  const isPost = ["post"].includes(router.pathname.split("/")[1]);
+  const isPaper = ["paper"].includes(router.pathname.split("/")[1]);
+
   const unstickyNavbar = router.pathname.includes(
     "/paper/[documentId]/[documentSlug]",
     "/post/[documentId]/[documentSlug]",
@@ -73,15 +72,21 @@ const Navbar = (props) => {
   );
 
   const pathname = router?.pathname ?? "";
-  const headerLabel = pathname.includes("notebook")
-    ? "Lab Notebook"
-    : pathname.includes("leaderboard")
-    ? "Leaderboard"
-    : pathname.includes("reference-manager")
-    ? "Reference Manager"
-    : pathname.includes("live")
-    ? "Live Activity"
-    : "Explore ResearchHub";
+  const headerLabel = pathname.includes("notebook") ? (
+    "Lab Notebook"
+  ) : pathname.includes("leaderboard") ? (
+    "Leaderboard"
+  ) : pathname.includes("reference-manager") ? (
+    "Reference Manager"
+  ) : pathname.includes("live") ? (
+    "Live Activity"
+  ) : isPost || isPaper ? (
+    <div className={css(styles.backBtnWrapper)}>
+      <BackBtn label={isPaper ? "Paper" : "Post"} href="/" />
+    </div>
+  ) : (
+    "Explore ResearchHub"
+  );
 
   useEffect(() => {
     setShouldShowSlider(false);
@@ -89,10 +94,8 @@ const Navbar = (props) => {
 
   const researchhubTitle = (
     <Fragment>
-      <div className={css(styles.xsmallUpTitle)}>
-        {formatMainHeader({
-          label: headerLabel,
-        })}
+      <div className={css(styles.xsmallUpTitle, styles.headerLabel)}>
+        {headerLabel}
       </div>
       <div className={css(styles.xsmallDownTitle)}>
         <div
@@ -205,6 +208,15 @@ const Navbar = (props) => {
 };
 
 const styles = StyleSheet.create({
+  backBtnWrapper: {
+    fontSize: 22,
+    [`@media (max-width: ${breakpoints.medium.str})`]: {
+      fontSize: 20,
+    },
+  },
+  headerLabel: {
+    fontSize: 22,
+  },
   signUpBtn: {
     width: 90,
     fontSize: 16,
@@ -227,7 +239,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 20,
+      padding: 10,
       justifyContent: "space-between",
     },
   },
