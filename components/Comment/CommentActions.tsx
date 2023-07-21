@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
-import { faReply } from "@fortawesome/pro-solid-svg-icons";
+import { faReply, faLinkSimple } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { parseUser } from "~/config/types/root_types";
@@ -20,6 +20,7 @@ import Bounty, { tallyAmounts } from "~/config/types/bounty";
 import { MessageActions } from "~/redux/message";
 import { markAsAcceptedAnswerAPI } from "./lib/api";
 import { findAllComments } from "./lib/findComment";
+import createSharableLinkToComment from "./lib/createSharableLinkToComment";
 const { setMessage, showMessage } = MessageActions;
 
 type Args = {
@@ -180,7 +181,10 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
             className={`${css(styles.action, styles.actionReply)} reply-btn`}
           >
             <IconButton onClick={() => toggleReply()}>
-              <FontAwesomeIcon icon={faReply} style={{ fontSize: 16, color: colors.secondary.text }} />
+              <FontAwesomeIcon
+                icon={faReply}
+                style={{ fontSize: 16, color: colors.secondary.text }}
+              />
               <span className={css(styles.actionText)}>Reply</span>
             </IconButton>
           </div>
@@ -236,7 +240,28 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
               <span className={css(styles.actionText)}>Award</span>
             </IconButton>
           </div>
-        )}        
+        )}
+
+        <div className={`${css(styles.action)} award-btn`}>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              createSharableLinkToComment(comment);
+
+              dispatch(setMessage(`Link copied`));
+              // @ts-ignore
+              dispatch(showMessage({ show: true, error: false }));
+            }}
+          >
+            <FontAwesomeIcon
+              // fontSize={}
+              // fontWeight={600}
+              icon={faLinkSimple}
+              style={{ transform: "rotate(-45deg)" }}
+            />
+            <span className={css(styles.actionText)}>Share</span>
+          </IconButton>
+        </div>
       </div>
     </div>
   );
@@ -268,6 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     position: "relative",
+    color: colors.secondary.text,
   },
   actionReply: {
     // marginLeft: "auto",

@@ -12,7 +12,6 @@ import ALink from "../ALink";
 import { useContext } from "react";
 import { CommentTreeContext } from "./lib/contexts";
 import { breakpoints } from "~/config/themes/screen";
-
 type CommentHeaderArgs = {
   authorProfile: AuthorProfile;
   comment: Comment;
@@ -152,6 +151,7 @@ const styles = StyleSheet.create({
   menuWrapper: {
     marginLeft: "auto",
     marginTop: -10,
+    display: "flex",
   },
   additionalAuthor: {
     display: "flex",

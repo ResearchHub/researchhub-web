@@ -5,21 +5,20 @@ import ReactDOMServer from "react-dom/server";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { SuggestedUser } from "~/components/SearchSuggestion/lib/types";
 
-
 export type UserBlotValue = {
   userId: string;
   firstName: string;
   lastName: string;
   authorProfileId: string;
-}
+};
 
 export type QuillUserOp = {
-  attributes: any,
+  attributes: any;
   insert: {
-    type: string,
-    value: UserBlotValue,
+    type: string;
+    value: UserBlotValue;
   };
-}
+};
 
 /**
  * @deprecated use hasQuillContent instead
@@ -249,7 +248,9 @@ export const trimDeltas = ({
 };
 
 export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
-  const converter = new QuillDeltaToHtmlConverter(ops, {});
+  const converter = new QuillDeltaToHtmlConverter(ops, {
+    linkTarget: "",
+  });
   // @ts-ignore
   converter.renderCustomWith(function (customOp, contextOp) {
     if (customOp.insert.type === "peer-review-rating") {
@@ -264,22 +265,24 @@ export const quillDeltaToHtml = ({ ops }: { ops: Array<any> }) => {
       });
 
       return html;
-    } 
-    else if (customOp.insert.type === "user") {
-      const userOp:QuillUserOp = customOp as any;
-      let user = userOp.insert.value;
+    } else if (customOp.insert.type === "user") {
+      const userOp: QuillUserOp = customOp as any;
+      const user = userOp.insert.value;
 
       if (user?.userId) {
         const hasName = (user.firstName + user.lastName).length > 0;
-        const fullName = hasName ? `${user.firstName} ${user.lastName}` : "Unknown User";
-        return `<a class="ql-user" href="/user/${user.authorProfileId}/overview">@${fullName}</a>`
+        const fullName = hasName
+          ? `${user.firstName} ${user.lastName}`
+          : "Unknown User";
+        return `<a class="ql-user" href="/user/${user.authorProfileId}/overview">@${fullName}</a>`;
+      } else {
+        // TODO: Add to sentry
+        console.error(
+          "Mentioned user does not exist. This likely means userId was not saved on the op, or user was deleted.",
+          customOp.insert.value
+        );
       }
-      else {
-        // TODO: Add to sentry 
-        console.error("Mentioned user does not exist. This likely means userId was not saved on the op, or user was deleted.", customOp.insert.value);  
-      }
-    }
-    else {
+    } else {
       console.error("Unmanaged custom blot!");
     }
   });
@@ -305,9 +308,9 @@ export function getPlainText({ quillOps = [] }) {
 }
 
 export function filterOps({ quillOps = [], opName }) {
-  const ops:any[] = [];
+  const ops: any[] = [];
 
-  quillOps.forEach((op:any) => {
+  quillOps.forEach((op: any) => {
     if (op.insert && op.insert[opName]) {
       ops.push(op);
     }
@@ -316,11 +319,11 @@ export function filterOps({ quillOps = [], opName }) {
   return ops;
 }
 
-export const convertToUserBlotType = (user:SuggestedUser):UserBlotValue => {
+export const convertToUserBlotType = (user: SuggestedUser): UserBlotValue => {
   return {
     userId: String(user.id),
     authorProfileId: String(user.authorProfile.id),
     firstName: user.firstName,
-    lastName: user.lastName, 
-  }
-}
+    lastName: user.lastName,
+  };
+};

@@ -111,6 +111,20 @@ const AnnotationLayer = ({
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
   );
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      console.log("New Hash", window.location.hash);
+      const [key, value] = window.location.hash.split("=");
+      setSelectedThreadId(value);
+    };
+
+    window.addEventListener("hashchange", handleHashChange, false);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange, false);
+    };
+  }, []);
+
   // Fetch comments from API
   useEffect(() => {
     const _fetch = async () => {
@@ -375,6 +389,15 @@ const AnnotationLayer = ({
         setSelectedThreadId(selectedAnnotation.threadId);
       } else {
         setSelectedThreadId(null);
+
+        if (window.location.hash) {
+          // Clear hash portion of url without scrolling to top
+          history.replaceState(
+            null,
+            document.title,
+            window.location.pathname + window.location.search
+          );
+        }
       }
 
       if (positionFromUrl) {
@@ -782,6 +805,17 @@ const AnnotationLayer = ({
     }
   };
 
+  const _handleCreateSharableLink = () => {
+    createShareableLink({
+      selectionXRange: selection.xrange,
+      contentElXpath: contentElXpath.current,
+    });
+
+    dispatch(setMessage(`Link copied`));
+    // @ts-ignore
+    dispatch(showMessage({ show: true, error: false }));
+  };
+
   const showSelectionMenu =
     selection.xrange && selection.initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
@@ -857,12 +891,7 @@ const AnnotationLayer = ({
                   ignoreXPathPrefix: contentElXpath.current,
                 })
               }
-              onLinkClick={() =>
-                createShareableLink({
-                  selectionXRange: selection.xrange,
-                  contentElXpath: contentElXpath.current,
-                })
-              }
+              onLinkClick={() => _handleCreateSharableLink()}
             />
           </div>
         )}
