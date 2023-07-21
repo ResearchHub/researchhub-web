@@ -33,7 +33,7 @@ import createShareableLink from "./lib/createShareableLink";
 import XPathUtil from "./lib/xrange/XPathUtil";
 import CommentDrawer from "../../CommentDrawer";
 import { breakpoints } from "~/config/themes/screen";
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 import { useDispatch, useSelector } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import CommentAvatars from "../../CommentAvatars";
@@ -162,7 +162,6 @@ const AnnotationLayer = ({
         threads: commentThreads.current,
         pagesRendered,
       });
-      console.log("pagesRendered", pagesRendered, "readyThreads", readyThreads);
 
       const { orphanThreadIds, foundAnnotations } = _drawAnnotations({
         annotationsSortedByY,
@@ -284,10 +283,10 @@ const AnnotationLayer = ({
   useEffect(() => {
     if (!contentRef.current) return;
 
-    const _handleResize = debounce(() => {
+    const _handleResize = throttle(() => {
       setNeedsRedraw({ drawMode: "ALL" });
       _setWindowDimensions();
-    }, 1000);
+    }, 500);
 
     window.addEventListener("resize", _handleResize);
 
@@ -298,7 +297,7 @@ const AnnotationLayer = ({
   }, [contentRef, annotationsSortedByY]);
 
   useEffect(() => {
-    const _handleResize = debounce(() => {
+    const _handleResize = throttle(() => {
       setNeedsRedraw({ drawMode: "ALL" });
     }, 1000);
 

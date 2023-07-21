@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     columnGap: "8px",
     display: "flex",
     cursor: "default",
+    marginBottom: 4,
   },
   badgeWrapper: {
     display: "inline-block",
