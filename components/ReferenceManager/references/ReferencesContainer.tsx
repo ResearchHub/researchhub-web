@@ -8,6 +8,7 @@ import {
   faFolderPlus,
   faPlus,
   faTrashXmark,
+  faEllipsis,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   Fragment,
@@ -58,6 +59,7 @@ import ReferenceManualUploadDrawer from "./reference_uploader/ReferenceManualUpl
 import ReferencesBibliographyModal from "./reference_bibliography/ReferencesBibliographyModal";
 import ReferencesTable, { PreloadRow } from "./reference_table/ReferencesTable";
 import withWebSocket from "~/components/withWebSocket";
+// import { faEllipsis } from "@fortawesome/pro-solid-svg-icons";
 
 interface Props {
   showMessage: ({ show, load }) => void;
@@ -328,7 +330,7 @@ function ReferencesContainer({
             sx={{
               display: "flex",
               flexDirection: "column",
-              padding: "32px 32px",
+              padding: "16px 32px",
               width: "100%",
               overflow: "auto",
               boxSizing: "border-box",
@@ -338,7 +340,7 @@ function ReferencesContainer({
           >
             <div
               style={{
-                marginBottom: 32,
+                marginBottom: 16,
                 display: "flex",
                 alignItems: "center",
               }}
@@ -358,8 +360,8 @@ function ReferencesContainer({
                           <Link
                             href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
                             className={css(
-                              styles.projectLink,
-                              isActiveProject && styles.activeProjectLink
+                              styles.projectLink
+                              // isActiveProject && styles.activeProjectLink
                             )}
                           >
                             {name}
@@ -368,6 +370,7 @@ function ReferencesContainer({
                             <span
                               style={{
                                 margin: 8,
+                                fontSize: 14,
                                 color: "rgb(115, 108, 100)",
                               }}
                             >
@@ -377,17 +380,6 @@ function ReferencesContainer({
                         </div>
                       );
                     })}
-                    <DeleteForeverOutlinedIcon
-                      sx={{
-                        marginLeft: "8px",
-                        cursor: "pointer",
-                        color: colors.GREY(),
-                      }}
-                      onClick={(): void => {
-                        setIsDeleteModalOpen(true);
-                      }}
-                      fontSize="small"
-                    />
                   </Box>
                 ) : isOnOrgTab ? (
                   "Organization References"
@@ -439,12 +431,20 @@ function ReferencesContainer({
                     }
                   >
                     <Typography variant="h6" fontSize={"16px"}>
-                      {isOnOrgTab ? "Update organization" : "Update folder"}
+                      {isOnOrgTab ? "Update organization" : "Share"}
                     </Typography>
                   </Button>
                 )}
+                <FontAwesomeIcon
+                  icon={faEllipsis}
+                  fontSize={25}
+                  style={{ marginLeft: 16, cursor: "pointer" }}
+                />
               </div>
             </div>
+            <Typography variant="h5" sx={{ marginBottom: "16px" }}>
+              {router.query.slug[router.query.slug.length - 1]}
+            </Typography>
             <Box className="ReferencesContainerMain">
               <Box
                 className="ReferencesContainerTitleSection"
@@ -583,7 +583,9 @@ const styles = StyleSheet.create({
   },
   projectLink: {
     textDecoration: "none",
-    color: "rgb(115, 108, 100)",
+    color: "#7C7989",
+    fontSize: 14,
+    letterSpacing: 0.3,
 
     ":hover": {
       color: colors.BLACK(),
