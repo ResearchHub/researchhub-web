@@ -33,6 +33,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   if (openBounties.length > 0) {
     badges.push(
       <ContentBadge
+        size="small"
         contentType="bounty"
         bountyAmount={openBountyAmount}
         label={`${openBountyAmountFormatted} RSC Bounty`}
@@ -41,6 +42,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
   } else if (closedBounties.length > 0) {
     badges.push(
       <ContentBadge
+        size="small"
         contentType="closedBounty"
         label={`${closedBountyAmount} Closed Bounty`}
       />
@@ -53,6 +55,7 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
         tooltip={`Selected by poster (${comment.createdBy.firstName} ${comment.createdBy.lastName})`}
         contentType={COMMENT_TYPES.ANSWER}
         label=""
+        size="small"
       />
     );
   }
@@ -66,7 +69,9 @@ const CommentBadges = ({ comment }: { comment: Comment }) => {
       <ContentBadge
         tooltip="Total ResearchCoin awarded including tips + bounties"
         contentType="award"
+        bountyAmount={totalAwarded}
         label={`${formatted} Awarded`}
+        size="small"
       />
     );
   }
@@ -94,7 +99,6 @@ const styles = StyleSheet.create({
     columnGap: "8px",
     display: "flex",
     cursor: "default",
-    marginTop: 10,
   },
   badgeWrapper: {
     display: "inline-block",

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faCommentCheck } from "@fortawesome/pro-regular-svg-icons";
+import { faReply } from "@fortawesome/pro-solid-svg-icons";
 import { css, StyleSheet } from "aphrodite";
 import CommentVote from "./CommentVote";
 import { parseUser } from "~/config/types/root_types";
@@ -173,6 +174,18 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
             documentID={document.id}
           />
         </div>
+
+        {commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION && (
+          <div
+            className={`${css(styles.action, styles.actionReply)} reply-btn`}
+          >
+            <IconButton onClick={() => toggleReply()}>
+              <FontAwesomeIcon icon={faReply} style={{ fontSize: 16, color: colors.secondary.text }} />
+              <span className={css(styles.actionText)}>Reply</span>
+            </IconButton>
+          </div>
+        )}
+
         {isAllowedToTip && (
           <div
             className={`${css(
@@ -219,27 +232,11 @@ const CommentActions = ({ comment, document, toggleReply }: Args) => {
                 handleAwardBounty({ bounty: openUserOwnedRootBounty })
               }
             >
-              <FontAwesomeIcon icon={faCrown} style={{ fontSize: 16 }} />
+              <FontAwesomeIcon icon={faCrown} style={{ fontSize: 18 }} />
               <span className={css(styles.actionText)}>Award</span>
             </IconButton>
           </div>
-        )}
-
-        {commentTreeState.context !== COMMENT_CONTEXTS.ANNOTATION && (
-          <div
-            className={`${css(styles.action, styles.actionReply)} reply-btn`}
-          >
-            <IconButton onClick={() => toggleReply()}>
-              <Image
-                src="/static/icons/reply.png"
-                height={13}
-                width={15}
-                alt="Reply"
-              />
-              <span className={css(styles.actionText)}>Reply</span>
-            </IconButton>
-          </div>
-        )}
+        )}        
       </div>
     </div>
   );
@@ -273,7 +270,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   actionReply: {
-    marginLeft: "auto",
+    // marginLeft: "auto",
   },
   editAction: {},
   actionText: {

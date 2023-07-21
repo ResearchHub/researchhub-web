@@ -30,6 +30,7 @@ import { timeTo } from "~/config/utils/dates";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import getReviewCategoryScore from "./lib/quill/getReviewCategoryScore";
+import CommentBadges from "./CommentBadges";
 import { captureEvent } from "~/config/utils/events";
 const { setMessage, showMessage } = MessageActions;
 
@@ -209,6 +210,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 styles.contentWrapperForAnnotation
             )}
           >
+            {/* <CommentBadges comment={comment} /> */}
             {isEditMode ? (
               <CommentEditor
                 handleSubmit={async (props) => {

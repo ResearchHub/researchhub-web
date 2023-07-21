@@ -1,4 +1,9 @@
-import { DocumentMetadata, GenericDocument } from "./lib/types";
+import {
+  DocumentMetadata,
+  GenericDocument,
+  isPaper,
+  isPost,
+} from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import DocumentVote from "./DocumentVote";
@@ -6,13 +11,14 @@ import IconButton from "../Icons/IconButton";
 import ResearchCoinIcon from "../Icons/ResearchCoinIcon";
 import colors from "~/config/themes/colors";
 import config from "./lib/config";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments } from "@fortawesome/pro-solid-svg-icons";
 import { breakpoints } from "~/config/themes/screen";
 import Link from "next/link";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import HorizontalTabBar from "../HorizontalTabBar";
 import { getTabs } from "./lib/tabbedNavigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/pro-regular-svg-icons";
+import BackBtn from "../shared/BackBtn";
 
 interface Props {
   document: GenericDocument;
@@ -26,36 +32,58 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
 
   return (
     <div className={css(styles.stickyWrapper)}>
-      <DocumentVote
-        id={document.id}
-        metadata={metadata}
-        score={metadata.score}
-        apiDocumentType={document.apiDocumentType}
-        userVote={metadata.userVote}
-        isHorizontal={true}
-      />
-      <div className={css(styles.tabsWrapper)}>
-        <HorizontalTabBar tabs={tabs} />
+      <div className={css(styles.backBtnWrapper)}>
+        <BackBtn label={isPaper(document) ? "Paper" : "Post"} href="/" />
       </div>
-      <div className={css(styles.actionWrapper)}>
-        <PermissionNotificationWrapper
-          modalMessage="edit document"
-          permissionKey="UpdatePaper"
-          loginRequired={true}
-          onClick={() => handleTip()}
-          hideRipples={true}
-        >
-          <IconButton variant="round" overrideStyle={styles.btn}>
-            <ResearchCoinIcon version={6} width={21} height={21} />
-            <span>Tip</span>
-          </IconButton>
-        </PermissionNotificationWrapper>
+      <div className={css(styles.sticky)}>
+        <DocumentVote
+          id={document.id}
+          metadata={metadata}
+          score={metadata.score}
+          apiDocumentType={document.apiDocumentType}
+          userVote={metadata.userVote}
+          isHorizontal={true}
+        />
+        <div className={css(styles.tabsWrapper)}>
+          <HorizontalTabBar tabs={tabs} />
+        </div>
+        <div className={css(styles.actionWrapper)}>
+          <PermissionNotificationWrapper
+            modalMessage="edit document"
+            permissionKey="UpdatePaper"
+            loginRequired={true}
+            onClick={() => handleTip()}
+            hideRipples={true}
+          >
+            <IconButton variant="round" overrideStyle={styles.btn}>
+              <ResearchCoinIcon version={6} width={21} height={21} />
+              <span>Tip</span>
+            </IconButton>
+          </PermissionNotificationWrapper>
+        </div>
       </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  backBtnWrapper: {
+    position: "absolute",
+    left: 28,
+    top: 10,
+    fontWeight: 500,
+    fontSize: 22,
+    [`@media (max-width: ${breakpoints.bigDesktop.str})`]: {
+      display: "none",
+    },
+  },
+  stickyWrapper: {
+    position: "relative",
+  },
+  backButton: {
+    border: 0,
+    marginRight: 3,
+  },
   titleWrapper: {
     display: "flex",
     columnGap: "15px",
@@ -74,7 +102,7 @@ const styles = StyleSheet.create({
       cursor: "pointer",
     },
   },
-  stickyWrapper: {
+  sticky: {
     display: "flex",
     alignItems: "center",
     maxWidth: config.width,

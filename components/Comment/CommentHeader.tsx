@@ -48,6 +48,9 @@ const CommentHeader = ({
   const hasAnyBounties = openBounties.length > 0 || closedBounties.length > 0;
   return (
     <div className={css(styles.commentHeader)}>
+      <div className={css(styles.badgesWrapper)}>
+        <CommentBadges comment={comment} />
+      </div>
       <div className={css(styles.details)}>
         <CommentAvatars
           people={[comment.createdBy, ...bountyContributors]}
@@ -127,7 +130,6 @@ const CommentHeader = ({
           </div>
         </div>
       </div>
-      <CommentBadges comment={comment} />
     </div>
   );
 };
@@ -189,6 +191,8 @@ const styles = StyleSheet.create({
   menuWrapper: {
     marginLeft: "auto",
     marginTop: -10,
+    display: "flex",
+    alignItems: "center",
   },
   additionalAuthor: {
     display: "flex",
@@ -200,6 +204,9 @@ const styles = StyleSheet.create({
   avatars: {
     alignItems: "flex-start",
   },
+  badgesWrapper: {
+    marginBottom: 10,
+  }
 });
 
 export default CommentHeader;
