@@ -101,7 +101,7 @@ const DocumentIndexPage: NextPage<Args> = ({
           ref={wrapperRef}
         >
           <div className={css(styles.bodyWrapper)}>
-            {pdfUrl && !pdfLoadError ? (
+            {pdfUrl ? (
               <div className={css(styles.viewerWrapper)}>
                 <DocumentViewer
                   document={document}
