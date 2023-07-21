@@ -5,6 +5,8 @@ import { emptyFncWithMsg, localError } from "./nullchecks";
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import { MessageActions } from "~/redux/message";
 import { useDispatch, useStore } from "react-redux";
+import { sendAmpEvent } from "../fetch";
+import { useRouter } from "next/router";
 
 function handleError(response: any, dispatcher: Dispatch<any>) {
   switch (response.error) {
@@ -29,6 +31,7 @@ export function useGoogleOneTapLogin() {
     authChecked: false,
   };
   const reduxDispatcher = useDispatch();
+  const router = useRouter();
 
   useEffect((): void => {
     if (!isLoggedIn && authChecked) {
@@ -41,6 +44,25 @@ export function useGoogleOneTapLogin() {
                 captureEvent(action);
                 handleError(action, reduxDispatcher);
               }
+
+              reduxDispatcher(AuthActions.getUser()).then((userAction) => {
+                if (!userAction?.user?.has_seen_orcid_connect_modal) {
+                  sendAmpEvent({
+                    event_type: "user_signup",
+                    time: +new Date(),
+                    user_id: userAction.user.id,
+                    insert_id: `user_${userAction.user.id}`,
+                    event_properties: {
+                      interaction: "User Signup",
+                    },
+                  });
+                  // push user to onboarding - will eventually see the orcid modal
+                  router.push(
+                    "/user/[authorId]/onboard?internal=true",
+                    `/user/${userAction.user.author_profile.id}/onboard`
+                  );
+                }
+              });
             }
           );
         },

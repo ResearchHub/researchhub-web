@@ -28,7 +28,7 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
           if (!userAction?.user?.has_seen_orcid_connect_modal) {
-            let payload = {
+            sendAmpEvent({
               event_type: "user_signup",
               time: +new Date(),
               user_id: userAction.user.id,
@@ -36,8 +36,7 @@ const GoogleLoginButton = (props) => {
               event_properties: {
                 interaction: "User Signup",
               },
-            };
-            sendAmpEvent(payload);
+            });
 
             // push user to onboarding - will eventually see the orcid modal
             router.push(
