@@ -330,7 +330,7 @@ function ReferencesContainer({
             sx={{
               display: "flex",
               flexDirection: "column",
-              padding: "16px 32px",
+              padding: "24px 32px",
               width: "100%",
               overflow: "auto",
               boxSizing: "border-box",
@@ -340,7 +340,7 @@ function ReferencesContainer({
           >
             <div
               style={{
-                marginBottom: 16,
+                marginBottom: 24,
                 display: "flex",
                 alignItems: "center",
               }}
@@ -360,8 +360,8 @@ function ReferencesContainer({
                           <Link
                             href={`/reference-manager/${currentOrg?.slug}/${slugsTilNow}`}
                             className={css(
-                              styles.projectLink
-                              // isActiveProject && styles.activeProjectLink
+                              styles.projectLink,
+                              isActiveProject && styles.activeProjectLink
                             )}
                           >
                             {name}
@@ -370,7 +370,6 @@ function ReferencesContainer({
                             <span
                               style={{
                                 margin: 8,
-                                fontSize: 14,
                                 color: "rgb(115, 108, 100)",
                               }}
                             >
@@ -442,9 +441,9 @@ function ReferencesContainer({
                 />
               </div>
             </div>
-            <Typography variant="h5" sx={{ marginBottom: "16px" }}>
+            {/* <Typography variant="h5" sx={{ marginBottom: "16px" }}>
               {router.query.slug[router.query.slug.length - 1]}
-            </Typography>
+            </Typography> */}
             <Box className="ReferencesContainerMain">
               <Box
                 className="ReferencesContainerTitleSection"
@@ -453,7 +452,7 @@ function ReferencesContainer({
                   display: "flex",
                   flexDirection: "row",
                   height: 44,
-                  marginBottom: "20px",
+                  marginBottom: "24px",
                   width: "100%",
                 }}
               >
@@ -584,7 +583,6 @@ const styles = StyleSheet.create({
   projectLink: {
     textDecoration: "none",
     color: "#7C7989",
-    fontSize: 14,
     letterSpacing: 0.3,
 
     ":hover": {
