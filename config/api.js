@@ -7,8 +7,7 @@ import { convertToBackendFilters } from "~/components/UnifiedDocFeed/utils/conve
 export const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
-  // dev: "localhost:8000",
-  dev: "127.0.0.1:8000" /* localhost */,
+  dev: "localhost:8000",
 };
 
 const prepFilters = (filters) => {
@@ -20,7 +19,8 @@ const prepFilters = (filters) => {
   }
   return url;
 };
-
+{
+}
 /**
  * Function to prep the URL for querystring / url
  * @param { String } url -- the URL we want to manipulate
