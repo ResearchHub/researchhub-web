@@ -108,17 +108,9 @@ const ContentSupport = (props) => {
     }
   };
 
-  const dataTip = () => {
-    if (isUserContent()) {
-      return "ResearchCoin awarded to your post";
-    }
-    return "Tip author with ResearchCoin";
-  };
-
   return (
     <div
       className={css(styles.container)}
-      data-tip={dataTip()}
       ref={tooltipRef}
       data-effect="solid"
       data-delay-show={500}

@@ -1,5 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Comment as CommentModel,
   CommentThreadGroup,
@@ -44,7 +50,6 @@ import findComment from "../../lib/findComment";
 import { isEmpty, localWarn } from "~/config/utils/nullchecks";
 import { RHUser, parseUser } from "~/config/types/root_types";
 import { RootState } from "~/redux";
-import { set } from "react-ga";
 import ContentSupportModal from "~/components/Modals/ContentSupportModal";
 import { Purchase } from "~/config/types/purchase";
 import {
@@ -81,8 +86,15 @@ const AnnotationLayer = ({
 
   // Setting this to true will redraw the annotations on the page.
   const [needsRedraw, setNeedsRedraw] = useState<
-    { drawMode: "DIFF_ONLY" | "ALL" } | false
+    { drawMode: "SKIP_EXISTING" | "ALL" } | false
   >(false);
+  const throttledSetNeedsRedraw = useCallback(
+    throttle((value) => {
+      console.log("needs redrwaw", value);
+      setNeedsRedraw(value);
+    }, 1000),
+    [setNeedsRedraw]
+  );
 
   const selection = useSelection({
     contentRef: contentRef,
@@ -161,13 +173,15 @@ const AnnotationLayer = ({
     const _commentThreads = groupByThread(_comments);
     commentThreads.current = _commentThreads;
 
-    setNeedsRedraw({ drawMode: "DIFF_ONLY" });
+    // setNeedsRedraw({ drawMode: "SKIP_EXISTING" });
+    throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
   }, [inlineComments, displayPreference]);
 
   // As more pages are rendered (in the case of papers), we want to try to find annotations.
   // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
   useEffect(() => {
-    setNeedsRedraw({ drawMode: "DIFF_ONLY" });
+    throttledSetNeedsRedraw({ drawMode: "ALL" });
+    // setNeedsRedraw({ drawMode: "ALL" });
   }, [pagesRendered]);
 
   useEffect(() => {
@@ -298,7 +312,8 @@ const AnnotationLayer = ({
     if (!contentRef.current) return;
 
     const _handleResize = throttle(() => {
-      setNeedsRedraw({ drawMode: "ALL" });
+      // setNeedsRedraw({ drawMode: "ALL" });
+      throttledSetNeedsRedraw({ drawMode: "ALL" });
       _setWindowDimensions();
     }, 500);
 
@@ -312,7 +327,8 @@ const AnnotationLayer = ({
 
   useEffect(() => {
     const _handleResize = throttle(() => {
-      setNeedsRedraw({ drawMode: "ALL" });
+      throttledSetNeedsRedraw({ drawMode: "ALL" });
+      // setNeedsRedraw({ drawMode: "ALL" });
     }, 1000);
 
     const resizeObserver = new ResizeObserver((entries) => {
@@ -511,12 +527,12 @@ const AnnotationLayer = ({
   const _drawAnnotations = ({
     threads,
     annotationsSortedByY,
-    drawingMode = "DIFF_ONLY",
+    drawingMode = "SKIP_EXISTING",
   }: {
     threads: { [key: string]: CommentThreadGroup };
     annotationsSortedByY: AnnotationType[];
     // If the page changes size, chances are xrange would need to be recalculated. In that case, we need ALL
-    drawingMode?: "DIFF_ONLY" | "ALL";
+    drawingMode?: "SKIP_EXISTING" | "ALL";
   }): {
     orphanThreadIds: Array<string>;
     foundAnnotations: Array<AnnotationType>;
@@ -531,7 +547,7 @@ const AnnotationLayer = ({
         (annotation) => annotation.threadId === threadGroup.threadId
       );
 
-      if (existingAnnotation && drawingMode === "DIFF_ONLY") {
+      if (existingAnnotation && drawingMode === "SKIP_EXISTING") {
         foundAnnotations.push(existingAnnotation);
       } else {
         const xrange = XRange.createFromSerialized({
