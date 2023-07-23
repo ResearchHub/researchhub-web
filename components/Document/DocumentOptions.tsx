@@ -13,7 +13,6 @@ import IconButton from "../Icons/IconButton";
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
-import ResearchHubRadioChoices from "../shared/ResearchHubRadioChoices";
 import { useContext } from "react";
 import { DocumentContext } from "./lib/DocumentContext";
 import useCacheControl from "~/config/hooks/useCacheControl";
@@ -95,48 +94,6 @@ const DocumentOptions = ({ document: doc }: Props) => {
             <div>Flag content</div>
           </div>
         </FlagButtonV2>
-      ),
-    },
-    {
-      value: "toggle-visibility",
-      group: "Comments",
-      preventDefault: true,
-      disableHover: true,
-      disableStyle: true,
-      html: (
-        <div
-          style={{
-            flexDirection: "column",
-            display: "flex",
-            cursor: "pointer",
-          }}
-        >
-          <ResearchHubRadioChoices
-            checkboxStyleOverride={styles.checkbox}
-            inputWrapStyle={styles.checkboxRowWrapper}
-            inputOptions={[
-              {
-                id: "all",
-                label: "All comments",
-              },
-              {
-                id: "mine",
-                label: "Mine only",
-              },
-              {
-                id: "none",
-                label: "No comments",
-              },
-            ]}
-            onChange={(selected) => {
-              documentContext.setPreference({
-                key: "comments",
-                value: selected,
-              });
-            }}
-            selectedID={documentContext.preferences.comments}
-          />
-        </div>
       ),
     },
   ];

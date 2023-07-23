@@ -1,6 +1,6 @@
 /*
  * Important Note: Do not use this component directly.
- * Use PDFViewer component instead since it is capable of properly loading it.
+ * Use DocumentViewer component instead since it is capable of properly loading it.
  * Failure to do so, will result in a very large bundle size.
  */
 

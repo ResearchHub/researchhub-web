@@ -1,8 +1,4 @@
-import {
-  DocumentMetadata,
-  GenericDocument,
-  isPaper,
-} from "./lib/types";
+import { DocumentMetadata, GenericDocument, isPaper } from "./lib/types";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import DocumentVote from "./DocumentVote";
@@ -55,7 +51,7 @@ const styles = StyleSheet.create({
     left: 28,
     top: 10,
     fontWeight: 500,
-    fontSize: 22,
+    fontSize: 20,
     [`@media (max-width: ${breakpoints.bigDesktop.str})`]: {
       display: "none",
     },

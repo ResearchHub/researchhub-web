@@ -28,7 +28,7 @@ const DocumentZoomControls = ({
           handleZoomOut();
         }}
       >
-        <FontAwesomeIcon icon={faMinus} style={{ fontSize: 24 }} />
+        <FontAwesomeIcon icon={faMinus} style={{ fontSize: 22 }} />
       </IconButton>
       <GenericMenu
         id="zoom-controls"
@@ -50,7 +50,7 @@ const DocumentZoomControls = ({
           handleZoomIn();
         }}
       >
-        <FontAwesomeIcon icon={faPlus} style={{ fontSize: 24 }} />
+        <FontAwesomeIcon icon={faPlus} style={{ fontSize: 22 }} />
       </IconButton>
     </div>
   );
