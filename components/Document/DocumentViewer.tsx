@@ -1,4 +1,3 @@
-import config from "~/components/Document/lib/config";
 import { StyleSheet, css } from "aphrodite";
 import { useContext, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
@@ -12,6 +11,7 @@ import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
 import { DocumentContext } from "./lib/DocumentContext";
 import { DocumentMetadata, GenericDocument } from "./lib/types";
 import DocumentPlaceholder from "./DocumentPlaceholder";
+
 const PDFViewer = dynamic(() => import("./lib/PDFViewer/_PDFViewer"), {
   ssr: false,
 });
@@ -216,7 +216,6 @@ const DocumentViewer = ({
           handleClose={() => setIsExpanded(false)}
         />
       )}
-
       <div
         className={css(styles.main, isExpanded && styles.expandedContent)}
         style={{
@@ -256,23 +255,15 @@ const DocumentViewer = ({
         )}
       </div>
 
-      <div
-        className={css(
-          styles.controls,
-          styles.controlsSticky,
-          isExpanded && styles.controlsStickyExpanded
-        )}
-      >
-        <DocumentControls
-          handleFullScreen={() => setIsExpanded(!isExpanded)}
-          handleZoomIn={handleZoomIn}
-          handleZoomOut={handleZoomOut}
-          handleZoomSelection={handleZoomSelection}
-          currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
-          showExpand={true}
-          isExpanded={isExpanded}
-        />
-      </div>
+      <DocumentControls
+        handleFullScreen={() => setIsExpanded(!isExpanded)}
+        handleZoomIn={handleZoomIn}
+        handleZoomOut={handleZoomOut}
+        handleZoomSelection={handleZoomSelection}
+        currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
+        showExpand={true}
+        isExpanded={isExpanded}
+      />
     </div>
   );
 };
@@ -297,50 +288,6 @@ const styles = StyleSheet.create({
     margin: "75px auto 0 auto",
   },
   documentViewer: {},
-  controls: {
-    position: "absolute",
-    zIndex: 99,
-    right: 0,
-    top: 25,
-    marginRight: 10,
-    marginTop: -10,
-    display: "flex",
-    columnGap: "10px",
-    justifyContent: "flex-end",
-    background: "white",
-    paddingLeft: 15,
-    paddingBottom: 15,
-    border: "1px solid #aeaeae",
-  },
-  controlsSticky: {
-    position: "fixed",
-    left: `calc(50%)`,
-    top: "unset",
-    right: "unset",
-    zIndex: 9999999,
-    bottom: 40,
-    display: "flex",
-    columnGap: "10px",
-    justifyContent: "flex-end",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
-    userSelect: "none",
-    padding: "5px 15px",
-    borderRadius: "42px",
-
-    [`@media (max-width: 1100px)`]: {
-      transform: "unset",
-      left: `calc(50% - ${config.controlsWidth / 2}px)`,
-      bottom: 30,
-    },
-  },
-  controlsStickyExpanded: {
-    left: `50%`,
-    transform: "translateX(-50%)",
-    [`@media (max-width: 1100px)`]: {
-      left: `50%`,
-      transform: "translateX(-50%)",
-    },
-  },
   postBody: {
     padding: 45,
     paddingTop: 25,

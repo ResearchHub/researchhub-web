@@ -58,6 +58,7 @@ import {
   selectionToSerializedAnchorPosition,
   urlSelectionToAnnotation,
 } from "./lib/selection";
+
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
