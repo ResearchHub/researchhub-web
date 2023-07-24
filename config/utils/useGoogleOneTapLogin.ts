@@ -35,12 +35,9 @@ export function useGoogleOneTapLogin() {
 
   useEffect((): void => {
     if (!isLoggedIn && authChecked) {
-      console.warn("pre init");
       (window as any).google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: async (data: any): Promise<void> => {
-          console.warn("init callback");
-
           await reduxDispatcher(AuthActions.googleYoloLogin(data)).then(
             (action: any) => {
               if (action.loginFailed) {
