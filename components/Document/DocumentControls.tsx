@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.15)",
     userSelect: "none",
-    padding: "5px 15px",
+    padding: "8px 15px",
     borderRadius: "42px",
 
     [`@media (max-width: 1100px)`]: {

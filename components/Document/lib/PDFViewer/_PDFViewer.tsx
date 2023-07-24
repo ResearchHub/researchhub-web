@@ -60,18 +60,6 @@ const PDFViewer = ({
     [pagesRendered, numPages]
   );
 
-  function highlightPattern(text, pattern) {
-    const words = pattern.split(" ");
-    const regexPattern = words.join("|");
-    const regex = new RegExp(regexPattern, "gi");
-    return text.replace(regex, (value) => `<mark>${value}</mark>`);
-  }
-
-  const textRenderer = useCallback(
-    (textItem) => highlightPattern(textItem.str, searchText),
-    [searchText]
-  );
-
   const pageRenderSuccess = (page) => {
     onPageRender(page._pageIndex + 1);
   };
