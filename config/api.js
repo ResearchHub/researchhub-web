@@ -19,7 +19,8 @@ const prepFilters = (filters) => {
   }
   return url;
 };
-
+{
+}
 /**
  * Function to prep the URL for querystring / url
  * @param { String } url -- the URL we want to manipulate

@@ -1,6 +1,7 @@
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
 process.on("unhandledRejection", (err) => {
   Sentry.captureException(err);
@@ -29,12 +30,12 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* Google one tap */}
           <script
             src="https://accounts.google.com/gsi/client"
             async
             defer
           ></script>
-          {/* Google one tap */}
           <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
           <link
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
@@ -68,6 +69,13 @@ export default class MyDocument extends Document {
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: css.content }}
           />
+          <div
+            id="g_id_onload"
+            data-client_id="YOUR_GOOGLE_CLIENT_ID"
+            data-login_uri="https://your.domain/your_login_endpoint"
+            data-your_own_param_1_to_login="any_value"
+            data-your_own_param_2_to_login="any_value"
+          ></div>
           <script
             dangerouslySetInnerHTML={{
               __html: `

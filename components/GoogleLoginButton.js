@@ -1,82 +1,20 @@
-import React from "react";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import { useRouter } from "next/router";
-import * as Sentry from "@sentry/browser";
-import { sendAmpEvent } from "~/config/fetch";
-import Button from "~/components/Form/Button";
-import GoogleButton from "~/components/GoogleLogin";
 import { AuthActions } from "../redux/auth";
+import { BannerActions } from "~/redux/banner";
+import { connect } from "react-redux";
+import { isDevEnv } from "~/config/utils/env";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { BannerActions } from "~/redux/banner";
-
-import { GOOGLE_CLIENT_ID } from "~/config/constants";
+import { sendAmpEvent } from "~/config/fetch";
+import { StyleSheet, css } from "aphrodite";
+import { useRouter } from "next/router";
+import * as Sentry from "@sentry/browser";
+import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
-import { isDevEnv } from "~/config/utils/env";
+import GoogleButton from "~/components/GoogleLogin";
 
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
-
-  // useEffect(promptYolo, [auth.authChecked]);
-
-  function promptYolo() {
-    try {
-      if (!auth.isLoggedIn && auth.authChecked) {
-        google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleYolo,
-        });
-        google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          }
-        });
-      }
-    } catch (error) {
-      Sentry.captureEvent(error);
-    }
-  }
-
-  async function handleYolo(data) {
-    let { googleYoloLogin, getUser } = props;
-
-    await googleYoloLogin(data).then((action) => {
-      if (action.loginFailed) {
-        showLoginFailureMessage(action);
-      } else {
-        getUser().then((userAction) => {
-          props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
-          props.showSignupBanner && props.removeBanner();
-          if (
-            userAction.user &&
-            !userAction.user.has_seen_orcid_connect_modal
-          ) {
-            const payload = {
-              event_type: "user_signup",
-              time: +new Date(),
-              user_id: userAction.user.id,
-              insert_id: `user_${userAction.user.id}`,
-              event_properties: {
-                interaction: "User Signup",
-              },
-            };
-            sendAmpEvent(payload);
-            // push user to onboarding if we are not on the notebook - will eventually see the orcid modal
-            if (
-              !router.route.includes("notebook") &&
-              !router.route.includes("org/join")
-            ) {
-              router.push(
-                "/user/[authorId]/onboard?internal=true",
-                `/user/${userAction.user.author_profile.id}/onboard`
-              );
-            }
-          }
-        });
-      }
-    });
-  }
 
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
@@ -90,7 +28,7 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
           if (!userAction?.user?.has_seen_orcid_connect_modal) {
-            let payload = {
+            sendAmpEvent({
               event_type: "user_signup",
               time: +new Date(),
               user_id: userAction.user.id,
@@ -98,8 +36,7 @@ const GoogleLoginButton = (props) => {
               event_properties: {
                 interaction: "User Signup",
               },
-            };
-            sendAmpEvent(payload);
+            });
 
             // push user to onboarding - will eventually see the orcid modal
             router.push(
@@ -112,12 +49,13 @@ const GoogleLoginButton = (props) => {
     });
   };
 
+  // TODO: calvinhlee - CLEAN THIS UP
   function showLoginFailureMessage(response) {
     Sentry.captureEvent(response);
     console.error(response);
     handleError(response);
   }
-
+  // TODO: calvinhlee - CLEAN THIS UP
   function handleError(response) {
     switch (response.error) {
       case "popup_closed_by_user": // incognito or if user exits flow voluntarily

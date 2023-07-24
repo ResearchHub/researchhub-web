@@ -1,31 +1,29 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AuthActions } from "~/redux/auth";
+import { breakpoints } from "~/config/themes/screen";
+import { ClipLoader } from "react-spinners";
+import { connect } from "react-redux";
+import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
 import { faExclamationCircle } from "@fortawesome/pro-solid-svg-icons";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
-import { faChevronLeft } from "@fortawesome/pro-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
+import { Helpers } from "@quantfive/js-web-config";
+import { isValidEmail } from "~/config/utils/validation";
+import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
+import { sendAmpEvent } from "~/config/fetch";
+import { StyleSheet, css } from "aphrodite";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import FormInput from "../Form/FormInput";
-import GoogleLoginButton from "../GoogleLoginButton";
+import { useRouter } from "next/router";
+import API from "~/config/api";
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { AuthActions } from "~/redux/auth";
-import { useDispatch, useSelector } from "react-redux";
-
-import { getCurrentUser } from "~/config/utils/getCurrentUser";
-import { StyleSheet, css } from "aphrodite";
-import IconButton from "../Icons/IconButton";
 import colors from "~/config/themes/colors";
-import { isValidEmail } from "~/config/utils/validation";
-import { sendAmpEvent } from "~/config/fetch";
-import { useRouter } from "next/router";
-import { breakpoints } from "~/config/themes/screen";
-import { ModalActions } from "~/redux/modals";
-import { connect } from "react-redux";
-import { MessageActions } from "~/redux/message";
+import FormInput from "../Form/FormInput";
+import GoogleLoginButton from "../GoogleLoginButton";
+import IconButton from "../Icons/IconButton";
 import Image from "next/image";
-import { getIsOnMobileScreenSize } from "~/config/utils/getIsOnMobileScreenSize";
-import { ClipLoader } from "react-spinners";
 
 type SCREEN =
   | "SELECT_PROVIDER"
@@ -46,20 +44,19 @@ const LoginModal = ({
   persistent,
 }) => {
   const router = useRouter();
-  const currentUser = getCurrentUser();
   const dispatch = useDispatch();
   // @ts-ignore
   const auth = useSelector((state) => state.auth);
   const [step, setStep] = useState<SCREEN>("SELECT_PROVIDER");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<Boolean | String>(false);
+  const [emailError, setEmailError] = useState<boolean | string>(false);
   const [firstName, setFirstName] = useState("");
-  const [firstNameError, setFirstNameError] = useState<Boolean | String>(false);
+  const [firstNameError, setFirstNameError] = useState<boolean | string>(false);
   const [lastName, setLastName] = useState("");
-  const [lastNameError, setLastNameError] = useState<Boolean | String>(false);
+  const [lastNameError, setLastNameError] = useState<boolean | string>(false);
   const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState<Boolean | String>(false);
-  const [miscError, setMiscError] = useState<Boolean | String>(false);
+  const [passwordError, setPasswordError] = useState<boolean | string>(false);
+  const [miscError, setMiscError] = useState<boolean | string>(false);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>();
 
@@ -290,7 +287,6 @@ const LoginModal = ({
               step == "FORGOT_PASSWORD") && (
               <IconButton
                 overrideStyle={styles.leftBtn}
-                size={20}
                 onClick={() => {
                   resetErrors();
                   setStep("SELECT_PROVIDER");
@@ -299,10 +295,9 @@ const LoginModal = ({
                 {<FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>}
               </IconButton>
             )}
-            {!persistent &&
+            {!persistent && (
               <IconButton
                 overrideStyle={styles.closeBtn}
-                size={20}
                 onClick={(e) => {
                   e.stopPropagation();
                   resetErrors();
@@ -311,7 +306,7 @@ const LoginModal = ({
               >
                 {<FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>}
               </IconButton>
-            }
+            )}
             {step === "SELECT_PROVIDER"
               ? title
               : step === "LOGIN_WITH_EMAIL_FORM"
@@ -337,10 +332,13 @@ const LoginModal = ({
         {step === "SELECT_PROVIDER" ? (
           <div>
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>Welcome to ResearchHub 👋</div>
+              <div className={css(styles.title)}>
+                {"Welcome to ResearchHub 👋"}
+              </div>
               <p className={css(styles.subtitle)}>
-                We are an open-science platform that enables discussions,
-                peer-reviews, publications and more.
+                {
+                  " We are an open-science platform that enables discussions, peer-reviews, publications and more."
+                }
               </p>
             </div>
             <FormInput
@@ -419,7 +417,7 @@ const LoginModal = ({
           <div>
             <div className={css(styles.titleContainer)}>
               <p className={css(styles.subtitle)}>
-                Enter your password to login.
+                {"Enter your password to login."}
               </p>
             </div>
             <FormInput
@@ -492,7 +490,7 @@ const LoginModal = ({
           <>
             <div className={css(styles.titleContainer)}>
               <p className={css(styles.subtitle)}>
-                Fill in the following to join our platform.
+                {"Fill in the following to join our platform."}
               </p>
             </div>
             <FormInput
@@ -580,9 +578,9 @@ const LoginModal = ({
         ) : step === "VERIFY_EMAIL" ? (
           <div>
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>Check Your Email</div>
+              <div className={css(styles.title)}>{"Check Your Email"}</div>
               <p className={css(styles.subtitle)}>
-                An activation link was sent to your email.
+                {"An activation link was sent to your email."}
               </p>
             </div>
             <div
@@ -616,8 +614,9 @@ const LoginModal = ({
           <div>
             <div className={css(styles.titleContainer)}>
               <p className={css(styles.subtitle)}>
-                Enter the email address associated with your account, and we’ll
-                email you a link to reset your password.
+                {
+                  "Enter the email address associated with your account, and we’ll email you a link to reset your password."
+                }
               </p>
             </div>
             <FormInput
@@ -662,9 +661,9 @@ const LoginModal = ({
         ) : step === "FORGOT_PASSWORD_EMAIL_SENT" ? (
           <div>
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>Check Your Email</div>
+              <div className={css(styles.title)}>{"Check Your Email"}</div>
               <p className={css(styles.subtitle)}>
-                Password Reset link was sent to your email.
+                {"Password Reset link was sent to your email."}
               </p>
             </div>
             <div
