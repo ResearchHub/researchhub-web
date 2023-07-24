@@ -108,7 +108,9 @@ const DocumentIndexPage: NextPage<Args> = ({
                   metadata={documentMetadata}
                   viewerWidth={config.width}
                   onZoom={(zoom: ZoomAction) => {
-                    setViewerWidth(zoom.newWidth);
+                    if (!zoom.isExpanded) {
+                      setViewerWidth(zoom.newWidth);
+                    }
                   }}
                 />
               </div>

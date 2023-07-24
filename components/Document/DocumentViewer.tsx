@@ -235,7 +235,11 @@ const DocumentViewer = ({
           <div ref={contentRef}>
             <PDFViewer
               pdfUrl={pdfUrl}
-              viewerWidth={viewerWidth * selectedZoom}
+              viewerWidth={
+                isExpanded
+                  ? viewerWidth * fullScreenSelectedZoom
+                  : viewerWidth * selectedZoom
+              }
               onLoadSuccess={() => null}
               onLoadError={() => null}
               onPageRender={setPagesRendered}

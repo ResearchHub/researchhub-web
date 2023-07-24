@@ -173,12 +173,15 @@ const DocumentIndexPage: NextPage<Args> = ({
                 </div>
               ) : (
                 <DocumentViewer
+                  // @ts-ignore
                   postHtml={_postHtml}
                   document={document}
                   metadata={documentMetadata}
                   viewerWidth={config.width}
                   onZoom={(zoom: ZoomAction) => {
-                    setViewerWidth(zoom.newWidth);
+                    if (!zoom.isExpanded) {
+                      setViewerWidth(zoom.newWidth);
+                    }
                   }}
                 />
               )}
