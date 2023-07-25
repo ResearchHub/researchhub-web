@@ -23,7 +23,11 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
   return (
     <div className={css(styles.stickyWrapper)}>
       <div className={css(styles.backBtnWrapper)}>
-        <BackBtn label={isPaper(document) ? "Paper" : "Post"} href="/" />
+        <BackBtn
+          labelStyle={styles.backLabel}
+          label={isPaper(document) ? "Paper" : "Post"}
+          href="/"
+        />
       </div>
       <div className={css(styles.sticky)}>
         <DocumentVote
@@ -37,9 +41,9 @@ const DocumentStickyHeader = ({ document, handleTip, metadata }: Props) => {
         <div className={css(styles.tabsWrapper)}>
           <HorizontalTabBar tabs={tabs} />
         </div>
-        <div className={css(styles.optionsWrapper)}>
-          <DocumentOptions document={document} />
-        </div>
+      </div>
+      <div className={css(styles.optionsWrapper)}>
+        <DocumentOptions document={document} />
       </div>
     </div>
   );
@@ -52,16 +56,19 @@ const styles = StyleSheet.create({
     top: 10,
     fontWeight: 500,
     fontSize: 20,
-    [`@media (max-width: ${breakpoints.bigDesktop.str})`]: {
+    [`@media (max-width: 1100px)`]: {
       display: "none",
     },
   },
   stickyWrapper: {
     position: "relative",
+    display: "flex",
+    alignItems: "center",
   },
-  backButton: {
-    border: 0,
-    marginRight: 3,
+  backLabel: {
+    [`@media (max-width: 1300px)`]: {
+      display: "none",
+    },
   },
   titleWrapper: {
     display: "flex",
@@ -103,6 +110,8 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   optionsWrapper: {
+    position: "absolute",
+    right: 15,
     display: "flex",
     columnGap: "10px",
     marginLeft: "auto",
@@ -110,6 +119,9 @@ const styles = StyleSheet.create({
     marginRight: 15,
     [`@media (max-width: ${breakpoints.small.str})`]: {
       display: "none",
+    },
+    [`@media (max-width: 1200px)`]: {
+      position: "static",
     },
   },
   smallScreenVote: {

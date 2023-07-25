@@ -28,6 +28,10 @@ const DocumentControls = ({
   isExpanded = false,
   annotationCount = 0,
 }: Props) => {
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   return (
     <div
       className={css(
@@ -35,6 +39,7 @@ const DocumentControls = ({
         styles.controlsSticky,
         isExpanded && styles.controlsStickyExpanded
       )}
+      onClick={stopPropagation}
     >
       <DocumentZoomControls
         currentZoom={currentZoom}

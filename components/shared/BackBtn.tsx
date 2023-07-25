@@ -5,7 +5,15 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { breakpoints } from "~/config/themes/screen";
 
-const BackBtn = ({ label, href }) => {
+const BackBtn = ({
+  label,
+  href,
+  labelStyle,
+}: {
+  label: string;
+  href: string;
+  labelStyle?: any;
+}) => {
   return (
     <div className={css(styles.backToPrev)}>
       <div className={css(styles.backToPrev)}>
@@ -17,7 +25,7 @@ const BackBtn = ({ label, href }) => {
             />
           </Link>
         </IconButton>
-        <div className={css(styles.label)}>{label}</div>
+        <div className={css(styles.label, labelStyle)}>{label}</div>
       </div>
     </div>
   );
