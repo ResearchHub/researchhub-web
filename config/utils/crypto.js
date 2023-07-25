@@ -26,7 +26,7 @@ export const getEtherscanLink = (transactionHash) => {
  * Checks if the given string is an address
  *
  * @method isAddress
- * @param {String} address the given HEX adress
+ * @param {String} address the given HEX address
  * @return {Boolean}
  */
 export const isAddress = (address) => {
@@ -50,7 +50,7 @@ export const isAddress = (address) => {
  * Checks if the given string is a checksummed address
  *
  * @method isChecksumAddress
- * @param {String} address the given HEX adress
+ * @param {String} address the given HEX address
  * @return {Boolean}
  */
 export const isChecksumAddress = (address) => {

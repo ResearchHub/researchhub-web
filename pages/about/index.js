@@ -38,7 +38,7 @@ const points = [
   {
     key: 2,
     title: "Prioritized",
-    text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
+    text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visibility to research it deems impactful.",
     icon: (
       <span draggable={false} style={{ color: colors.GREEN(1) }}>
         {<FontAwesomeIcon icon={faSortAmountUpAlt}></FontAwesomeIcon>}

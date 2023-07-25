@@ -54,7 +54,7 @@ export function getBeDocumentModelName(
       return null;
   }
 }
-// this function is used to resolve BE model name discrepencies with FE naming conventions
+// this function is used to resolve BE model name discrepancies with FE naming conventions
 // the return type is intentionally kept strict.
 export function getFEUnifiedDocType(
   input: string | null | undefined
@@ -106,7 +106,7 @@ export function getBEUnifiedDocType(
   }
 }
 
-// NOTE: Yes, this function is redundant. However, it exists to keep the payload consistent thoughout js & ts files
+// NOTE: Yes, this function is redundant. However, it exists to keep the payload consistent throughout js & ts files
 // TODO: calvinhlee - use this to consolidate all the fetches in server & client
 export function getFetchParamsWithoutCallbacks({
   docTypeFilter,

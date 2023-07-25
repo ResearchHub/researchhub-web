@@ -169,7 +169,7 @@ const MyApp = ({
   );
 };
 
-// FIXME: This approach is only needed while there are pages containg
+// FIXME: This approach is only needed while there are pages containing
 // getStaticProps or getServerSideProps and also others containing getInitialProps. Once all calls
 // to getInitialProps removed, this can be removed safely.
 MyApp.getInitialProps = async (appContext) => {

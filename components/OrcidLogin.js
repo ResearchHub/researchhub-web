@@ -114,7 +114,7 @@ const OrcidLogin = (props) => {
 
   const renderProps = {
     onClick: onClick,
-    disbled: false,
+    disabled: false,
   };
 
   function onClick() {

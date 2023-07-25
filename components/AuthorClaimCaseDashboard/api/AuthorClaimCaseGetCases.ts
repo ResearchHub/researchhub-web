@@ -17,7 +17,7 @@ export type formattedResult = {
 };
 export type AuthorClaimCase = {
   caseData: CaseData;
-  requestor: Requestor;
+  requester: Requester;
 };
 export type CaseData = {
   createdDate: string;
@@ -34,7 +34,7 @@ export type PaginationInfo = {
   isPageLoading: boolean;
   page: number;
 };
-export type Requestor = {
+export type Requester = {
   name: string;
   profileImg: string;
   providedEmail: string;
@@ -68,7 +68,7 @@ export function getCases({
             created_date,
             id,
             provided_email,
-            requestor,
+            requester,
             status,
             updated_date,
             paper,
@@ -82,7 +82,7 @@ export function getCases({
               first_name: requestorFirstName,
               last_name: requestorLastName,
             },
-          } = requestor || {};
+          } = requester || {};
           return {
             caseData: {
               createdDate: created_date,
@@ -92,7 +92,7 @@ export function getCases({
               paper,
               targetAuthorName: target_author_name,
             },
-            requestor: {
+            requester: {
               name: `${requestorFirstName} ${requestorLastName}`,
               profileImg: requestorProfileImg,
               providedEmail: provided_email,

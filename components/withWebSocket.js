@@ -133,7 +133,7 @@ export default function withWebSocket(
           localWarn(`Closing websocket connection at ${url}: ${reason}`);
         };
         try {
-          // Params are not supported by some verisons of Firefox
+          // Params are not supported by some versions of Firefox
           // See https://bugzilla.mozilla.org/show_bug.cgi?id=674716
           ws.close(code, reason);
         } catch (error) {

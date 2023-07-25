@@ -523,7 +523,7 @@ const dropdownStyles = StyleSheet.create({
   },
   itemLast: {
     marginLeft: 16,
-    widht: 119,
+    width: 119,
     minWidth: 119,
     maxWidth: 119,
     "@media only screen and (max-width: 767px)": {

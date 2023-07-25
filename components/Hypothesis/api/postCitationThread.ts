@@ -20,7 +20,7 @@ export function postCitationThread({
   params,
 }: PostCitationThreadArgs) {
   const { documentID, source } = params;
-  // Note: calvinhlee - this is not scaleable at all we need to change this
+  // Note: calvinhlee - this is not scalable at all we need to change this
   fetch(
     API.DISCUSSION({
       documentId: documentID,

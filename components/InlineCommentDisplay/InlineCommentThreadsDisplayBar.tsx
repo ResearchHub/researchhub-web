@@ -15,7 +15,7 @@ type Props = {
   shouldShowContextTitle?: boolean;
 };
 
-const MEDIA_WIDTH_LIMIT = 1199;/* arbitary iPad size */
+const MEDIA_WIDTH_LIMIT = 1199;/* arbitrary iPad size */
 
 export default function InlineCommentThreadsDisplayBarWithMediaSize(
   props: Props
