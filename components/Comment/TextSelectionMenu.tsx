@@ -22,20 +22,15 @@ const TextSelectionMenu = ({
       <div className={css(styles.option)} onClick={onCommentClick}>
         <FontAwesomeIcon
           fontWeight={600}
-          fontSize={isHorizontal ? 16 : 22}
+          fontSize={isHorizontal ? 20 : 22}
           icon={faCommentDots}
         />
         {isHorizontal ? ` Comment` : ``}
       </div>
-      <div
-        className={css(
-          styles.divider,
-          isHorizontal && styles.dividerHorizontal
-        )}
-      />
+      {!isHorizontal && <div className={css(styles.divider)} />}
       <div className={css(styles.option)} onClick={onLinkClick}>
         <FontAwesomeIcon
-          fontSize={isHorizontal ? 16 : 22}
+          fontSize={isHorizontal ? 20 : 22}
           fontWeight={600}
           icon={faLinkSimple}
           style={{ transform: "rotate(-45deg)" }}
@@ -55,7 +50,6 @@ const styles = StyleSheet.create({
     display: "inline-flex",
     flexDirection: "column",
     border: `1px solid #E9EAEF`,
-    // height: 36,
     boxSizing: "border-box",
     overflow: "hidden",
     color: colors.NEW_BLUE(1.0),
@@ -68,12 +62,16 @@ const styles = StyleSheet.create({
     columnGap: "5px",
     padding: "16px 16px",
     display: "flex",
+    fontWeight: 500,
     alignItems: "center",
     ":hover": {
       cursor: "pointer",
       // color: colors.NEW_BLUE(1.0),
       background: colors.NEW_BLUE(0.1),
       transition: "0.2s",
+    },
+    ":first-child": {
+      borderRight: `1px solid #E9EAEF`,
     },
   },
   divider: {
@@ -85,8 +83,7 @@ const styles = StyleSheet.create({
   },
   dividerHorizontal: {
     height: "100%",
-    border: `1px solid rgb(104 104 104)`,
-    borderLeft: `1px solid #E9EAEF`,
+    borderLeft: `1px solid rgb(104 104 104)`,
   },
 });
 

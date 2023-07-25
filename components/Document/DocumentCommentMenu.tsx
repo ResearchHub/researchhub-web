@@ -6,10 +6,7 @@ import { useContext } from "react";
 import GenericMenu from "../shared/GenericMenu";
 import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faComments,
-  faHighlighterLine,
-} from "@fortawesome/pro-light-svg-icons";
+import { faHighlighterLine } from "@fortawesome/pro-light-svg-icons";
 
 const DocumentCommentMenu = ({
   annotationCount = 0,
