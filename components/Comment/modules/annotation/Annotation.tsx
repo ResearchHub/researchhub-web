@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Annotation as AnnotationType } from "./lib/types";
 import colors from "../../lib/colors";
 import { StyleSheet, css } from "aphrodite";
@@ -12,56 +12,44 @@ const Annotation = ({
   focused: boolean;
   color?: string;
 }) => {
-  const [canvasRefs, setCanvasRefs] = useState<any[]>([]);
+  const [rects, setRects] = useState(annotation.anchorCoordinates);
 
   useEffect(() => {
-    const refs = annotation.anchorCoordinates.map(() =>
-      createRef<HTMLCanvasElement>()
-    );
-    setCanvasRefs(refs);
+    setRects(annotation.anchorCoordinates);
   }, [annotation]);
-
-  useEffect(() => {
-    canvasRefs.forEach((canvasRef, i) => {
-      if (!canvasRef.current) return;
-      const ctx = canvasRef.current.getContext("2d");
-
-      if (ctx) {
-        const { anchorCoordinates } = annotation;
-        const { x, y, width, height } = anchorCoordinates[i];
-        canvasRef.current.width = width;
-        canvasRef.current.height = height;
-
-        if (color) {
-          ctx.fillStyle = color;
-        } else if (focused) {
-          ctx.fillStyle = colors.annotation.selected;
-        } else {
-          ctx.fillStyle = colors.annotation.unselected;
-        }
-
-        ctx.fillRect(0, 0, width, height);
-      }
-    });
-  }, [canvasRefs, focused, annotation]);
 
   return (
     <>
-      {canvasRefs.map((canvasRef, i) => {
-        const rect = annotation.anchorCoordinates[i];
+      {rects.map((rect, i) => {
         if (!rect) return null;
 
+        const fill = color
+          ? color
+          : focused
+          ? colors.annotation.selected
+          : colors.annotation.unselected;
+
         return (
-          <canvas
-            key={`canvas-${i}`}
-            ref={canvasRef}
+          <svg
+            key={`svg-${i}`}
             className={css(styles.annotation)}
             style={{
               position: "absolute",
               top: rect.y,
               left: rect.x,
+              width: rect.width,
+              height: rect.height,
             }}
-          />
+          >
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill={fill}
+              fillOpacity="0.5"
+            />
+          </svg>
         );
       })}
     </>
