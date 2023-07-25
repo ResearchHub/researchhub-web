@@ -15,6 +15,7 @@ interface Props {
   currentZoom: number;
   showExpand: boolean;
   isExpanded?: boolean;
+  annotationCount?: number;
 }
 
 const DocumentControls = ({
@@ -25,6 +26,7 @@ const DocumentControls = ({
   currentZoom,
   showExpand = true,
   isExpanded = false,
+  annotationCount = 0,
 }: Props) => {
   return (
     <div
@@ -42,7 +44,7 @@ const DocumentControls = ({
       />
 
       <div className={css(styles.divider)} />
-      <DocumentCommentMenu />
+      <DocumentCommentMenu annotationCount={annotationCount} />
 
       {showExpand && (
         <>

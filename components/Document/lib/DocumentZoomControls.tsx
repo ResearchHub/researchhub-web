@@ -39,7 +39,7 @@ const DocumentZoomControls = ({
           handleZoomSelection(option);
         }}
       >
-        <IconButton overrideStyle={styles.icon}>
+        <IconButton overrideStyle={styles.zoomText}>
           {zoomOptions.find((option) => option.value === currentZoom)?.label}
         </IconButton>
       </GenericMenu>
@@ -58,6 +58,11 @@ const DocumentZoomControls = ({
 
 const styles = StyleSheet.create({
   icon: {
+    color: colors.BLACK(1.0),
+  },
+  zoomText: {
+    fontSize: 16,
+    fontWeight: 500,
     color: colors.BLACK(1.0),
   },
 });

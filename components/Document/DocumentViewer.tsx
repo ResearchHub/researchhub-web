@@ -41,6 +41,7 @@ const DocumentViewer = ({
 }: Props) => {
   const documentContext = useContext(DocumentContext);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [annotationCount, setAnnotationCount] = useState<number>(0);
   const contentRef = useRef(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
@@ -194,6 +195,10 @@ const DocumentViewer = ({
     }
   }
 
+  function onAnnotationFetched(count) {
+    setAnnotationCount(count);
+  }
+
   const commentDisplayPreference = documentContext.preferences?.comments;
   const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
   const actualContentWidth = isExpanded
@@ -201,11 +206,7 @@ const DocumentViewer = ({
     : viewerWidth * selectedZoom;
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
-  
-  console.log('actualContentWidth', actualContentWidth)
-  console.log('windowDimensions.width', windowDimensions.width)
-  console.log('LEFT_SIDEBAR_MAX_WIDTH', LEFT_SIDEBAR_MAX_WIDTH)
-  console.log("shouldScroll", shouldScroll);
+
   return (
     <div
       className={css(
@@ -235,6 +236,7 @@ const DocumentViewer = ({
             contentRef={contentRef}
             pagesRendered={pagesRendered}
             displayPreference={commentDisplayPreference}
+            onFetch={onAnnotationFetched}
           />
         )}
 
@@ -269,6 +271,7 @@ const DocumentViewer = ({
         currentZoom={isExpanded ? fullScreenSelectedZoom : selectedZoom}
         showExpand={true}
         isExpanded={isExpanded}
+        annotationCount={annotationCount}
       />
     </div>
   );

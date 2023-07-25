@@ -6,15 +6,22 @@ import { useContext } from "react";
 import GenericMenu from "../shared/GenericMenu";
 import IconButton from "../Icons/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComments } from "@fortawesome/pro-light-svg-icons";
+import {
+  faComments,
+  faHighlighterLine,
+} from "@fortawesome/pro-light-svg-icons";
 
-const DocumentCommentMenu = ({}) => {
+const DocumentCommentMenu = ({
+  annotationCount = 0,
+}: {
+  annotationCount: number;
+}) => {
   const documentContext = useContext(DocumentContext);
 
   const options = [
     {
       value: "toggle-visibility",
-      group: "Comments",
+      group: "Annotations",
       preventDefault: true,
       disableHover: true,
       disableStyle: true,
@@ -65,8 +72,11 @@ const DocumentCommentMenu = ({}) => {
         direction="top-center"
         id="document-comment-menu"
       >
-        <IconButton overrideStyle={styles.btnDots}>
-          <FontAwesomeIcon icon={faComments} />
+        <IconButton overrideStyle={styles.btn}>
+          <FontAwesomeIcon icon={faHighlighterLine} />
+          {annotationCount > 0 && (
+            <div className={css(styles.badge)}>{annotationCount}</div>
+          )}
         </IconButton>
       </GenericMenu>
     </div>
@@ -74,7 +84,13 @@ const DocumentCommentMenu = ({}) => {
 };
 
 const styles = StyleSheet.create({
-  btnDots: {
+  badge: {
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  btn: {
+    display: "flex",
+    alignItems: "center",
     fontSize: 22,
     color: colors.BLACK(1.0),
     padding: "6px 12px",
