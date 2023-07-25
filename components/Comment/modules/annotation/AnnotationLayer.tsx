@@ -65,6 +65,7 @@ interface Props {
   document: GenericDocument;
   pagesRendered: number; // The number of pages rendered so far
   displayPreference: "all" | "mine" | "none";
+  onFetch?: (commentThreads) => void;
 }
 
 const AnnotationLayer = ({
@@ -72,6 +73,7 @@ const AnnotationLayer = ({
   document: doc,
   displayPreference,
   pagesRendered = 0,
+  onFetch,
 }: Props) => {
   const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
 
@@ -173,13 +175,13 @@ const AnnotationLayer = ({
     commentThreads.current = _commentThreads;
 
     throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
+    onFetch && onFetch(Object.values(_commentThreads).length);
   }, [inlineComments, displayPreference]);
 
   // As more pages are rendered (in the case of papers), we want to try to find annotations.
   // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
   useEffect(() => {
     throttledSetNeedsRedraw({ drawMode: "ALL" });
-    // setNeedsRedraw({ drawMode: "ALL" });
   }, [pagesRendered]);
 
   useEffect(() => {
