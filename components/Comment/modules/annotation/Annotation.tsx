@@ -39,16 +39,11 @@ const Annotation = ({
               left: rect.x,
               width: rect.width,
               height: rect.height,
+              borderBottom: "2px solid rgb(255, 212, 0)",
+              cursor: "pointer",
             }}
           >
-            <rect
-              x="0"
-              y="0"
-              width="100%"
-              height="100%"
-              fill={fill}
-              fillOpacity="0.5"
-            />
+            <rect x="0" y="0" width="100%" height="100%" fill={fill} />
           </svg>
         );
       })}
