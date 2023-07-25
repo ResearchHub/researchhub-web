@@ -75,6 +75,7 @@ const DocumentViewer = ({
   }, []);
 
   useEffect(() => {
+    throttledSetDimensions();
     window.addEventListener("resize", throttledSetDimensions);
 
     return () => {
@@ -200,6 +201,10 @@ const DocumentViewer = ({
     : viewerWidth * selectedZoom;
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
+  
+  console.log('actualContentWidth', actualContentWidth)
+  console.log('windowDimensions.width', windowDimensions.width)
+  console.log('LEFT_SIDEBAR_MAX_WIDTH', LEFT_SIDEBAR_MAX_WIDTH)
   console.log("shouldScroll", shouldScroll);
   return (
     <div
