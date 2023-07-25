@@ -1,4 +1,5 @@
 [codespell]
-skip = .git,*.pdf,*.svg,package-lock.json
-#
-# ignore-words-list =
+skip = .git,*.pdf,*.svg,package-lock.json,yarn.lock,*.xml
+# some skips of full lines or with case sensitivity
+ignore-regex = (data:image/png;.*|includeE|AAS)
+ignore-words-list = alltime,therefrom,infarction
