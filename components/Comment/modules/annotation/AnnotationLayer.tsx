@@ -125,7 +125,6 @@ const AnnotationLayer = ({
 
   useEffect(() => {
     const handleHashChange = () => {
-      console.log("New Hash", window.location.hash);
       const [key, value] = window.location.hash.split("=");
       setSelectedThreadId(value);
     };
@@ -173,7 +172,6 @@ const AnnotationLayer = ({
     const _commentThreads = groupByThread(_comments);
     commentThreads.current = _commentThreads;
 
-    // setNeedsRedraw({ drawMode: "SKIP_EXISTING" });
     throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
   }, [inlineComments, displayPreference]);
 
@@ -219,11 +217,11 @@ const AnnotationLayer = ({
   // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
   // instead of an absolute path.
   useEffect(() => {
-    if (contentRef.current) {
+    if (contentRef?.current) {
       contentElXpath.current =
         XPathUtil.getXPathFromNode(contentRef.current) || "";
     }
-  }, [contentRef]);
+  }, [contentRef?.current]);
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -312,7 +310,6 @@ const AnnotationLayer = ({
     if (!contentRef.current) return;
 
     const _handleResize = throttle(() => {
-      // setNeedsRedraw({ drawMode: "ALL" });
       throttledSetNeedsRedraw({ drawMode: "ALL" });
       _setWindowDimensions();
     }, 500);
@@ -328,7 +325,6 @@ const AnnotationLayer = ({
   useEffect(() => {
     const _handleResize = throttle(() => {
       throttledSetNeedsRedraw({ drawMode: "ALL" });
-      // setNeedsRedraw({ drawMode: "ALL" });
     }, 1000);
 
     const resizeObserver = new ResizeObserver((entries) => {
@@ -568,7 +564,13 @@ const AnnotationLayer = ({
         } else {
           console.log(
             "[Annotation] No xrange found for thread. Orphan thread is:",
-            threadGroup.thread
+            threadGroup.thread,
+            "start:",
+            threadGroup.thread.anchor?.startContainerPath,
+            "end:",
+            threadGroup.thread.anchor?.endContainerPath,
+            "xpathPrefix:",
+            contentElXpath.current
           );
           orphanThreadIds.push(threadGroup.threadId);
         }
@@ -847,13 +849,6 @@ const AnnotationLayer = ({
     initialSelectionPosition: selection.initialSelectionPosition,
     renderingMode,
   });
-  console.log("conrtentRef", contentRef?.current);
-  console.log("contentRect.width", contentRect?.width);
-  console.log("contentRec1t", contentRect);
-  // const showAvatars = windowDimensions.current.width >= breakpoints.small.int;
-  // console.log('+++++++++++++++++++++++++++++++++++++++++++++++')
-  // console.log('contentRef', contentRef?.current)
-  // console.log('contentRef', contentRef?.current?.clientWidth)
 
   return (
     <div style={{ position: "relative", zIndex: 1 }}>
