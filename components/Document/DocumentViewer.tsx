@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 const AnnotationLayer = dynamic(
   () => import("~/components/Comment/modules/annotation/AnnotationLayer")
@@ -11,6 +11,8 @@ import { zoomOptions } from "~/components/Document/lib/PDFViewer/config";
 import { DocumentContext } from "./lib/DocumentContext";
 import { DocumentMetadata, GenericDocument } from "./lib/types";
 import DocumentPlaceholder from "./DocumentPlaceholder";
+import throttle from "lodash/throttle";
+import { LEFT_SIDEBAR_MAX_WIDTH } from "../Home/sidebar/RootLeftSidebar";
 
 const PDFViewer = dynamic(() => import("./lib/PDFViewer/_PDFViewer"), {
   ssr: false,
@@ -47,11 +49,38 @@ const DocumentViewer = ({
   const [selectedZoom, setSelectedZoom] = useState<number>(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const [pagesRendered, setPagesRendered] = useState<number>(0);
+  const [windowDimensions, setWindowDimensions] = useState<{
+    width: number;
+    height: number;
+  }>({
+    width: 0,
+    height: 0,
+  });
+
+  const throttledSetDimensions = useCallback(
+    throttle(() => {
+      console.log("throttledSetDimensions");
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }, 1000),
+    []
+  );
 
   useEffect(() => {
     if (window.innerWidth < breakpoints.small.int) {
       setFullScreenSelectedZoom(1.0);
     }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", throttledSetDimensions);
+
+    return () => {
+      throttledSetDimensions.cancel();
+      window.removeEventListener("resize", throttledSetDimensions);
+    };
   }, []);
 
   useEffect(() => {
@@ -164,45 +193,14 @@ const DocumentViewer = ({
     }
   }
 
-  // const fullScreenViewer = useMemo(() => {
-  //   return (
-  //     <div
-  //       className={css(styles.expandedWrapper, isExpanded && styles.expandedOn)}
-  //     >
-  //       <div className={css(styles.expandedNav)}>
-  //         <div
-  //           onClick={() => downloadPDF(pdfUrl)}
-  //           className={css(styles.downloadBtn)}
-  //         >
-  //           <IconButton overrideStyle={styles.viewerNavBtn}>
-  //             <FontAwesomeIcon
-  //               icon={faFileArrowDown}
-  //               style={{ fontSize: 20 }}
-  //             />
-  //           </IconButton>
-  //         </div>
-  //         <div onClick={onFullScreenClose} className={css(styles.closeBtn)}>
-  //           <IconButton overrideStyle={styles.viewerNavBtn}>
-  //             <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
-  //           </IconButton>
-  //         </div>
-  //       </div>
-  //       <div style={{ overflowY: "scroll", height: "100vh", paddingTop: 60 }}>
-  //         <_PDFViewer
-  //           pdfUrl={pdfUrl}
-  //           viewerWidth={viewerWidth * fullScreenSelectedZoom}
-  //           onLoadSuccess={onLoadSuccess}
-  //           onLoadError={onLoadError}
-  //           showWhenLoading={<DocumentPlaceholder />}
-  //         />
-  //       </div>
-  //     </div>
-  //   );
-  // }, [isExpanded, selectedZoom, viewerWidth, fullScreenSelectedZoom]);
-
   const commentDisplayPreference = documentContext.preferences?.comments;
   const pdfUrl = doc.formats.find((f) => f.type === "pdf")?.url;
-
+  const actualContentWidth = isExpanded
+    ? viewerWidth * fullScreenSelectedZoom
+    : viewerWidth * selectedZoom;
+  const shouldScroll =
+    actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
+  console.log("shouldScroll", shouldScroll);
   return (
     <div
       className={css(
@@ -217,9 +215,13 @@ const DocumentViewer = ({
         />
       )}
       <div
-        className={css(styles.main, isExpanded && styles.expandedContent)}
+        className={css(
+          styles.main,
+          isExpanded && styles.expandedContent,
+          shouldScroll && styles.scroll
+        )}
         style={{
-          maxWidth: isExpanded ? viewerWidth * fullScreenSelectedZoom : "unset",
+          maxWidth: actualContentWidth,
         }}
       >
         {commentDisplayPreference !== "none" && (
@@ -232,24 +234,19 @@ const DocumentViewer = ({
         )}
 
         {documentContext.documentType === "paper" ? (
-          <div ref={contentRef}>
-            <PDFViewer
-              pdfUrl={pdfUrl}
-              viewerWidth={
-                isExpanded
-                  ? viewerWidth * fullScreenSelectedZoom
-                  : viewerWidth * selectedZoom
-              }
-              onLoadSuccess={() => null}
-              onLoadError={() => null}
-              onPageRender={setPagesRendered}
-              showWhenLoading={
-                <div style={{ padding: 20 }}>
-                  <DocumentPlaceholder />
-                </div>
-              }
-            />
-          </div>
+          <PDFViewer
+            pdfUrl={pdfUrl}
+            contentRef={contentRef}
+            viewerWidth={actualContentWidth}
+            onLoadSuccess={() => null}
+            onLoadError={() => null}
+            onPageRender={setPagesRendered}
+            showWhenLoading={
+              <div style={{ padding: 20 }}>
+                <DocumentPlaceholder />
+              </div>
+            }
+          />
         ) : (
           <div
             ref={contentRef}
@@ -275,6 +272,9 @@ const DocumentViewer = ({
 const styles = StyleSheet.create({
   main: {
     position: "relative",
+  },
+  scroll: {
+    overflow: "scroll",
   },
   expandedWrapper: {
     position: "fixed",

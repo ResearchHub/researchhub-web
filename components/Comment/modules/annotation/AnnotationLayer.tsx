@@ -58,7 +58,6 @@ import {
   selectionToSerializedAnchorPosition,
   urlSelectionToAnnotation,
 } from "./lib/selection";
-
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -836,7 +835,8 @@ const AnnotationLayer = ({
   const showSelectionMenu =
     selection.xrange && selection.initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
-  const contentElOffset = contentRef.current?.getBoundingClientRect()?.x;
+  const contentRect = contentRef.current?.getBoundingClientRect();
+  const contentElOffset = contentRect?.x;
   const WrapperEl = renderingMode === "drawer" ? CommentDrawer : React.Fragment;
   const {
     left: menuPosLeft,
@@ -847,6 +847,13 @@ const AnnotationLayer = ({
     initialSelectionPosition: selection.initialSelectionPosition,
     renderingMode,
   });
+  console.log("conrtentRef", contentRef?.current);
+  console.log("contentRect.width", contentRect?.width);
+  console.log("contentRec1t", contentRect);
+  // const showAvatars = windowDimensions.current.width >= breakpoints.small.int;
+  // console.log('+++++++++++++++++++++++++++++++++++++++++++++++')
+  // console.log('contentRef', contentRef?.current)
+  // console.log('contentRef', contentRef?.current?.clientWidth)
 
   return (
     <div style={{ position: "relative", zIndex: 1 }}>
@@ -926,7 +933,9 @@ const AnnotationLayer = ({
             <div className={css(styles.avatarsContainer)}>
               {annotationsSortedByY.map((annotation, idx) => {
                 const threadId = String(annotation.threadId);
-                const avatarPosition = `translate(-25px, ${annotation.anchorCoordinates[0].y}px)`;
+                const avatarPosition = `translate(${
+                  contentRect.width - 15
+                }px, ${annotation.anchorCoordinates[0].y}px)`;
                 const isFocused = threadId === selectedThreadId;
                 const thread = commentThreads?.current[threadId];
                 let commentPeople: RHUser[] = [];
@@ -1072,10 +1081,11 @@ const styles = StyleSheet.create({
   commentsContainer: {},
   avatarsContainer: {
     position: "absolute",
-    right: -15,
+    // right: 5,
+    left: 0,
 
     [`@media (max-width: ${breakpoints.desktop.int}px)`]: {
-      right: 10,
+      left: 0,
     },
   },
   sidebarContainer: {
