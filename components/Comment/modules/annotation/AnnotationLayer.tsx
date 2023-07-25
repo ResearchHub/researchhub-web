@@ -58,6 +58,8 @@ import {
   selectionToSerializedAnchorPosition,
   urlSelectionToAnnotation,
 } from "./lib/selection";
+import getAnnotationFromPosition from "./lib/getAnnotationFromPosition";
+
 const { setMessage, showMessage } = MessageActions;
 
 interface Props {
@@ -92,7 +94,6 @@ const AnnotationLayer = ({
   >(false);
   const throttledSetNeedsRedraw = useCallback(
     throttle((value) => {
-      console.log("needs redrwaw", value);
       setNeedsRedraw(value);
     }, 1000),
     [setNeedsRedraw]
@@ -353,32 +354,14 @@ const AnnotationLayer = ({
         return;
       }
 
-      const contentRefRect = contentRef!.current!.getBoundingClientRect();
-      const relativeClickX = event.clientX - contentRefRect.left;
-      const relativeClickY = event.clientY - contentRefRect.top;
       const clickX = event.clientX;
       const clickY = event.clientY;
-      let selectedAnnotation: AnnotationType | null = null;
-
-      for (let i = 0; i < annotationsSortedByY.length; i++) {
-        const { anchorCoordinates } = annotationsSortedByY[i];
-        const isAnchorClicked = anchorCoordinates.some(
-          ({ x, y, width, height }) => {
-            return (
-              relativeClickX >= x &&
-              relativeClickX <= x + width &&
-              relativeClickY >= y &&
-              relativeClickY >= y &&
-              relativeClickY <= y + height
-            );
-          }
-        );
-
-        if (isAnchorClicked) {
-          selectedAnnotation = annotationsSortedByY[i];
-          continue;
-        }
-      }
+      let selectedAnnotation = getAnnotationFromPosition({
+        x: clickX,
+        y: clickY,
+        contentRef,
+        annotations: annotationsSortedByY,
+      });
 
       if (!selectedAnnotation) {
         for (let i = 0; i < annotationsSortedByY.length; i++) {
@@ -536,6 +519,8 @@ const AnnotationLayer = ({
     foundAnnotations: Array<AnnotationType>;
   } => {
     console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
+    console.log("Draw", annotationsSortedByY);
+    console.log("Draw", threads);
 
     const orphanThreadIds: Array<string> = [];
     const foundAnnotations: Array<AnnotationType> = [];
@@ -572,7 +557,14 @@ const AnnotationLayer = ({
             "end:",
             threadGroup.thread.anchor?.endContainerPath,
             "xpathPrefix:",
-            contentElXpath.current
+            contentElXpath.current,
+            "contentElFromXpath",
+            XPathUtil.getNodeFromXPath(contentElXpath.current),
+            "startNodeFromXpath",
+            XPathUtil.getNodeFromXPath(
+              contentElXpath.current +
+                threadGroup.thread.anchor?.startContainerPath
+            )
           );
           orphanThreadIds.push(threadGroup.threadId);
         }
@@ -1036,7 +1028,12 @@ const AnnotationLayer = ({
                   key={key}
                 >
                   {annotation.isNew ? (
-                    <div className={css(styles.commentEditorWrapper)}>
+                    <div
+                      className={
+                        css(styles.commentEditorWrapper) +
+                        " CommentEditorForAnnotation"
+                      }
+                    >
                       <CommentEditor
                         handleCancel={(event) =>
                           _handleCancelThread({ threadId, event })

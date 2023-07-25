@@ -222,7 +222,6 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 styles.contentWrapperForAnnotation
             )}
           >
-            {/* <CommentBadges comment={comment} /> */}
             {isEditMode ? (
               <CommentEditor
                 displayCurrentUser={annotationContext ? false : true}
