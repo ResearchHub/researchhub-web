@@ -345,6 +345,60 @@ const AnnotationLayer = ({
     };
   }, [contentRef]);
 
+  // Periodically check for orphan threads that could not be found on the page.
+  // Sometimes, as the page's structure settles, orphans are created temporarily.
+  useEffect(() => {
+    const checkOrphanThreads = () => {
+      if (!commentThreads.current) return;
+
+      const orphanThreads = {};
+      for (let i = 0; i < orphanThreadIds.length; i++) {
+        const id = orphanThreadIds[i];
+        orphanThreads[id] = commentThreads.current[id];
+      }
+
+      console.log("orphanThreads:", orphanThreads);
+      console.log("orphanThreadIds:", orphanThreadIds);
+
+      const {
+        orphanThreadIds: nextOrphanThreadIds,
+        foundAnnotations: foundOrphans,
+      } = _drawAnnotations({
+        annotationsSortedByY,
+        threads: orphanThreads,
+        drawingMode: "ALL",
+      });
+
+      const foundOrphanIds = foundOrphans.map(
+        (annotation) => annotation.threadId
+      );
+
+      // Construct a new list of annotations that includes newly found orphans whilst ignoring
+      const annotationsWithFoundOrphans = annotationsSortedByY
+        .filter((annotation) => {
+          return !foundOrphanIds.includes(annotation.threadId);
+        })
+        .concat(foundOrphans);
+
+      const sorted = _sortAnnotationsByAppearanceInPage(
+        annotationsWithFoundOrphans
+      );
+      setOrphanThreadIds(nextOrphanThreadIds);
+      _setAnnotations(sorted);
+    };
+
+    let interval;
+    if (orphanThreadIds.length > 0) {
+      interval = setInterval(checkOrphanThreads, 250);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [orphanThreadIds]);
+
   // Handle click event.
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
   // what elment was clicked.
@@ -518,9 +572,10 @@ const AnnotationLayer = ({
     orphanThreadIds: Array<string>;
     foundAnnotations: Array<AnnotationType>;
   } => {
-    console.log("%cDrawing anchors...", "color: #F3A113; font-weight: bold;");
-    console.log("Draw", annotationsSortedByY);
-    console.log("Draw", threads);
+    console.log(
+      `%cDrawing anchors / Mode: ${drawingMode} `,
+      "color: #F3A113; font-weight: bold;"
+    );
 
     const orphanThreadIds: Array<string> = [];
     const foundAnnotations: Array<AnnotationType> = [];
@@ -549,6 +604,10 @@ const AnnotationLayer = ({
 
           foundAnnotations.push(annotation);
         } else {
+          // There are many reasons why an anchor could not be found.
+          // The most common ones are: 1) Page has changed structure and the xpath is no longer valid
+          // and 2) The content within the page has changed from the original.
+
           console.log(
             "[Annotation] No xrange found for thread. Orphan thread is:",
             threadGroup.thread,
