@@ -887,6 +887,10 @@ const AnnotationLayer = ({
     dispatch(showMessage({ show: true, error: false }));
   };
 
+  const stopPropagation = (event) => {
+    event.stopPropagation();
+  };
+
   const showSelectionMenu =
     selection.xrange && selection.initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
@@ -1071,6 +1075,7 @@ const AnnotationLayer = ({
                 <div
                   id={key}
                   ref={threadRefs[idx]}
+                  onClick={stopPropagation}
                   style={{
                     display: isThreadVisible ? "block" : "none",
                     transform: threadPosition,
