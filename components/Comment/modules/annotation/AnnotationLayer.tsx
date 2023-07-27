@@ -78,7 +78,8 @@ const AnnotationLayer = ({
   pagesRendered = 0,
   onFetch,
 }: Props) => {
-  const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
+  // const [inlineComments, setInlineComments] = useState<CommentModel[]>([]);
+  const inlineComments = useRef<CommentModel[]>([]);
 
   // Sorted List of annotations sorted by order of appearance on the page
   const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
@@ -155,7 +156,7 @@ const AnnotationLayer = ({
         pageSize: 10000,
       });
       const comments = rawComments.map((raw) => parseComment({ raw }));
-      setInlineComments(comments);
+      inlineComments.current = comments;
     };
 
     _setWindowDimensions();
@@ -164,9 +165,7 @@ const AnnotationLayer = ({
 
   // Once we have comments, we want to group them by threads and draw them on the page
   useEffect(() => {
-    if (inlineComments.length === 0) return;
-
-    const _comments = inlineComments.filter((comment) => {
+    const _comments = inlineComments.current.filter((comment) => {
       if (displayPreference === "all" || !displayPreference) return true;
       if (displayPreference === "mine") {
         return comment.createdBy.id === currentUser?.id;
@@ -179,7 +178,7 @@ const AnnotationLayer = ({
 
     throttledSetNeedsRedraw({ drawMode: "SKIP_EXISTING" });
     onFetch && onFetch(Object.values(_commentThreads).length);
-  }, [inlineComments, displayPreference]);
+  }, [inlineComments.current, displayPreference]);
 
   // As more pages are rendered (in the case of papers), we want to try to find annotations.
   // Note: When a pages is zoomed in/out as with papers, this hook will be retriggered
@@ -349,9 +348,6 @@ const AnnotationLayer = ({
         const id = orphanThreadIds[i];
         orphanThreads[id] = commentThreads.current[id];
       }
-
-      console.log("orphanThreads:", orphanThreads);
-      console.log("orphanThreadIds:", orphanThreadIds);
 
       const {
         orphanThreadIds: nextOrphanThreadIds,
@@ -745,27 +741,27 @@ const AnnotationLayer = ({
       replaceComment({
         prev: parent,
         next: parent,
-        list: inlineComments,
+        list: inlineComments.current,
       });
 
-      setInlineComments([...inlineComments]);
+      inlineComments.current = [...inlineComments.current];
     } else {
-      setInlineComments([...inlineComments, comment]);
+      inlineComments.current = [...inlineComments.current, comment];
     }
   };
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
-    console.log("attempting to remove:", comment.id);
-    console.log("before", inlineComments);
-    const found = findComment({ id: comment.id, comments: inlineComments });
+    const found = findComment({
+      id: comment.id,
+      comments: inlineComments.current,
+    });
     if (found) {
       removeComment({
         comment: found.comment,
-        list: inlineComments,
+        list: inlineComments.current,
       });
 
-      console.log("after", inlineComments);
-      setInlineComments([...inlineComments]);
+      inlineComments.current = [...inlineComments.current];
     } else {
       localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -774,14 +770,17 @@ const AnnotationLayer = ({
   };
 
   const _onUpdate = ({ comment }: { comment: CommentModel }) => {
-    const found = findComment({ id: comment.id, comments: inlineComments });
+    const found = findComment({
+      id: comment.id,
+      comments: inlineComments.current,
+    });
     if (found) {
       replaceComment({
         prev: found.comment,
         next: comment,
-        list: inlineComments,
+        list: inlineComments.current,
       });
-      setInlineComments([...inlineComments]);
+      inlineComments.current = [...inlineComments.current];
     } else {
       localWarn(
         `Comment ${comment.id} could was expected to be found in tree but was not. This is likely an error`
@@ -790,7 +789,10 @@ const AnnotationLayer = ({
   };
 
   const _onSupport = (data: any) => {
-    const found = findComment({ id: data.object_id, comments: inlineComments });
+    const found = findComment({
+      id: data.object_id,
+      comments: inlineComments.current,
+    });
     if (found) {
       const updatedComment = { ...found.comment };
       const tip: Purchase = {
@@ -883,10 +885,6 @@ const AnnotationLayer = ({
     dispatch(showMessage({ show: true, error: false }));
   };
 
-  const stopPropagation = (event) => {
-    event.stopPropagation();
-  };
-
   const showSelectionMenu =
     selection.xrange && selection.initialSelectionPosition;
   const renderingMode = getRenderingMode({ contentRef });
@@ -903,6 +901,16 @@ const AnnotationLayer = ({
     renderingMode,
   });
 
+  // Before rendering annotations, we want to make sure that each annotations has a comment thread associated with it.
+  // Since annotationsSortedByY and commentThreads are two distinct data structures, it is important that we make sure
+  // That they are in sync prior to rendering. The two could be out-of-sync for a split second when a new annotation is
+  // created or removed.
+  const _annotationsSortedByY = annotationsSortedByYRef.current.filter(
+    (annotation) => {
+      return Boolean(commentThreads.current[annotation.threadId]);
+    }
+  );
+
   return (
     <div className={css(styles.annotationLayer)}>
       <ContentSupportModal
@@ -913,7 +921,7 @@ const AnnotationLayer = ({
       />
 
       <div className={css(styles.anchorLayer)}>
-        {annotationsSortedByY.map((annotation) => (
+        {_annotationsSortedByY.map((annotation) => (
           <Annotation
             key={`annotation-${annotation.threadId}`}
             annotation={annotation}
@@ -936,7 +944,7 @@ const AnnotationLayer = ({
           value={{
             sort: sortOpts[0].value,
             filter: COMMENT_FILTERS.ANNOTATION,
-            comments: inlineComments,
+            comments: inlineComments.current,
             context: COMMENT_CONTEXTS.ANNOTATION,
             onCreate: _onCreate,
             onUpdate: _onUpdate,
@@ -983,7 +991,7 @@ const AnnotationLayer = ({
           >
             {renderingMode === "inline" && (
               <div className={css(styles.avatarsContainer)}>
-                {annotationsSortedByY.map((annotation, idx) => {
+                {_annotationsSortedByY.map((annotation, idx) => {
                   const threadId = String(annotation.threadId);
                   const thread = commentThreads?.current[threadId];
                   const avatarPosition = `translate(${
@@ -1037,7 +1045,7 @@ const AnnotationLayer = ({
                 renderingMode === "drawer" && styles.drawerContainer
               )}
             >
-              {annotationsSortedByY.map((annotation, idx) => {
+              {_annotationsSortedByY.map((annotation, idx) => {
                 const threadId = String(annotation.threadId);
                 const key = `thread-` + threadId;
                 const isFocused = selectedThreadId === threadId;
