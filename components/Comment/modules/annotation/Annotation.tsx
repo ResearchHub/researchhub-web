@@ -39,7 +39,9 @@ const Annotation = ({
               left: rect.x,
               width: rect.width,
               height: rect.height,
-              borderBottom: "2px solid rgb(255, 212, 0)",
+              borderBottom: focused
+                ? "2px solid rgb(234 166 1)"
+                : "2px solid rgb(255 212 0)",
               cursor: "pointer",
             }}
           >

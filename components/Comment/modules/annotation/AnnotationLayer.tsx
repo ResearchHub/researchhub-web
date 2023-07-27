@@ -84,6 +84,8 @@ const AnnotationLayer = ({
   const [annotationsSortedByY, setAnnotationsSortedByY] = useState<
     AnnotationType[]
   >([]);
+
+  // Used to get the latest reference to annotationsSortedByY without triggering a re-render
   const annotationsSortedByYRef = useRef<AnnotationType[]>([]);
 
   // Orphans are annotations that could not be found on page
@@ -139,7 +141,7 @@ const AnnotationLayer = ({
     };
   }, []);
 
-  // Fetch comments from API
+  // Fetch comments from API and group them
   useEffect(() => {
     const _fetch = async () => {
       const { comments: rawComments } = await fetchCommentsAPI({
@@ -636,8 +638,6 @@ const AnnotationLayer = ({
     selection: Selection;
     ignoreXPathPrefix: string;
   }) => {
-    event.stopPropagation();
-
     if (selection.error) {
       dispatch(setMessage(selection.error));
       // @ts-ignore
@@ -755,6 +755,8 @@ const AnnotationLayer = ({
   };
 
   const _onRemove = ({ comment }: { comment: CommentModel }) => {
+    console.log("attempting to remove:", comment.id);
+    console.log("before", inlineComments);
     const found = findComment({ id: comment.id, comments: inlineComments });
     if (found) {
       removeComment({
@@ -762,6 +764,7 @@ const AnnotationLayer = ({
         list: inlineComments,
       });
 
+      console.log("after", inlineComments);
       setInlineComments([...inlineComments]);
     } else {
       localWarn(
@@ -901,7 +904,7 @@ const AnnotationLayer = ({
   });
 
   return (
-    <div style={{ position: "relative", zIndex: 1 }}>
+    <div className={css(styles.annotationLayer)}>
       <ContentSupportModal
         // @ts-ignore
         onSupport={(data: any) => {
@@ -909,241 +912,257 @@ const AnnotationLayer = ({
         }}
       />
 
-      {annotationsSortedByY.map((annotation) => (
-        <Annotation
-          key={`annotation-${annotation.threadId}`}
-          annotation={annotation}
-          focused={
-            selectedThreadId === annotation.threadId ||
-            hoveredThreadId === annotation.threadId
-          }
-        />
-      ))}
-      {positionFromUrl && (
-        <Annotation
-          annotation={positionFromUrl}
-          focused={true}
-          color={colors.annotation.sharedViaUrl}
-        />
-      )}
-      <CommentTreeContext.Provider
-        value={{
-          sort: sortOpts[0].value,
-          filter: COMMENT_FILTERS.ANNOTATION,
-          comments: inlineComments,
-          context: COMMENT_CONTEXTS.ANNOTATION,
-          onCreate: _onCreate,
-          onUpdate: _onUpdate,
-          onRemove: _onRemove,
-          onFetchMore: () => null, // Not applicable in this context
-        }}
-      >
-        {showSelectionMenu && (
-          <div
-            id="textSelectionMenu"
-            style={{
-              position: "absolute",
-              top: menuPosTop,
-              left: menuPosLeft,
-              right: menuPosRight,
-              width: 50,
-              zIndex: 5,
-            }}
-            ref={textSelectionMenuRef}
-          >
-            <TextSelectionMenu
-              isHorizontal={renderingMode !== "sidebar"}
-              onCommentClick={(event) =>
-                _createNewAnnotation({
-                  event,
-                  selection,
-                  ignoreXPathPrefix:
-                    XPathUtil.getXPathFromNode(contentRef.current) || "",
-                })
-              }
-              onLinkClick={() => _handleCreateSharableLink()}
-            />
-          </div>
+      <div className={css(styles.anchorLayer)}>
+        {annotationsSortedByY.map((annotation) => (
+          <Annotation
+            key={`annotation-${annotation.threadId}`}
+            annotation={annotation}
+            focused={
+              selectedThreadId === annotation.threadId ||
+              hoveredThreadId === annotation.threadId
+            }
+          />
+        ))}
+        {positionFromUrl && (
+          <Annotation
+            annotation={positionFromUrl}
+            focused={true}
+            color={colors.annotation.sharedViaUrl}
+          />
         )}
-
-        {/* @ts-ignore */}
-        <WrapperEl
-          {...(renderingMode === "drawer"
-            ? { isOpen: Boolean(selectedThreadId) }
-            : {})}
-          {...(renderingMode === "drawer"
-            ? { handleClose: () => setSelectedThreadId(null) }
-            : {})}
+      </div>
+      <div className={css(styles.threadsLayer)}>
+        <CommentTreeContext.Provider
+          value={{
+            sort: sortOpts[0].value,
+            filter: COMMENT_FILTERS.ANNOTATION,
+            comments: inlineComments,
+            context: COMMENT_CONTEXTS.ANNOTATION,
+            onCreate: _onCreate,
+            onUpdate: _onUpdate,
+            onRemove: _onRemove,
+            onFetchMore: () => null, // Not applicable in this context
+          }}
         >
-          {renderingMode === "inline" && (
-            <div className={css(styles.avatarsContainer)}>
+          {showSelectionMenu && (
+            <div
+              id="textSelectionMenu"
+              style={{
+                position: "absolute",
+                top: menuPosTop,
+                left: menuPosLeft,
+                right: menuPosRight,
+                width: 50,
+                zIndex: 5,
+              }}
+              ref={textSelectionMenuRef}
+            >
+              <TextSelectionMenu
+                isHorizontal={renderingMode !== "sidebar"}
+                onCommentClick={(event) =>
+                  _createNewAnnotation({
+                    event,
+                    selection,
+                    ignoreXPathPrefix:
+                      XPathUtil.getXPathFromNode(contentRef.current) || "",
+                  })
+                }
+                onLinkClick={() => _handleCreateSharableLink()}
+              />
+            </div>
+          )}
+
+          {/* @ts-ignore */}
+          <WrapperEl
+            {...(renderingMode === "drawer"
+              ? { isOpen: Boolean(selectedThreadId) }
+              : {})}
+            {...(renderingMode === "drawer"
+              ? { handleClose: () => setSelectedThreadId(null) }
+              : {})}
+          >
+            {renderingMode === "inline" && (
+              <div className={css(styles.avatarsContainer)}>
+                {annotationsSortedByY.map((annotation, idx) => {
+                  const threadId = String(annotation.threadId);
+                  const thread = commentThreads?.current[threadId];
+                  const avatarPosition = `translate(${
+                    contentRect.width - 15 /* buffer */
+                  }px, ${annotation.anchorCoordinates[0].y}px)`;
+                  const isFocused = threadId === selectedThreadId;
+                  let commentPeople: RHUser[] = [];
+                  if (thread) {
+                    const { comments: flatComments } = flattenComments(
+                      thread.comments
+                    );
+                    commentPeople = flatComments.map((c) => c.createdBy);
+                  }
+
+                  return (
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedThreadId(threadId);
+                      }}
+                      key={`avatar-for-` + threadId}
+                      style={{
+                        transform: avatarPosition,
+                        display: isFocused ? "none" : "block",
+                      }}
+                    >
+                      <div
+                        className={css(styles.avatarWrapper)}
+                        onMouseEnter={() => setHoveredThreadId(threadId)}
+                        onMouseLeave={() => setHoveredThreadId(null)}
+                      >
+                        <CommentAvatars
+                          people={commentPeople}
+                          withTooltip={false}
+                          spacing={-20}
+                          size={25}
+                          maxPeople={2}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div
+              className={css(
+                styles.commentsContainer,
+                renderingMode === "sidebar" && styles.sidebarContainer,
+                renderingMode === "inline" && styles.inlineContainer,
+                renderingMode === "drawer" && styles.drawerContainer
+              )}
+            >
               {annotationsSortedByY.map((annotation, idx) => {
                 const threadId = String(annotation.threadId);
-                const thread = commentThreads?.current[threadId];
-                const avatarPosition = `translate(${
-                  contentRect.width - 15 /* buffer */
-                }px, ${annotation.anchorCoordinates[0].y}px)`;
-                const isFocused = threadId === selectedThreadId;
-                let commentPeople: RHUser[] = [];
-                if (thread) {
-                  const { comments: flatComments } = flattenComments(
-                    thread.comments
-                  );
-                  commentPeople = flatComments.map((c) => c.createdBy);
+                const key = `thread-` + threadId;
+                const isFocused = selectedThreadId === threadId;
+
+                let threadPosition = "";
+                if (renderingMode === "inline") {
+                  const inlineCommentPos = {
+                    x: annotation.anchorCoordinates[0].x,
+                    y: annotation.anchorCoordinates[0].y + 25,
+                  };
+                  if (isFocused) {
+                    const inlineCommentRightPos =
+                      contentElOffset +
+                      annotation.anchorCoordinates[0].x +
+                      config.annotation.inlineCommentWidth;
+                    if (
+                      inlineCommentRightPos > windowDimensions.current.width
+                    ) {
+                      inlineCommentPos.x =
+                        inlineCommentPos.x -
+                        (inlineCommentRightPos -
+                          windowDimensions.current.width) -
+                        10;
+                    }
+                  }
+
+                  threadPosition = `translate(${inlineCommentPos.x}px, ${inlineCommentPos.y}px)`;
+                } else if (renderingMode === "sidebar") {
+                  threadPosition = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
                 }
 
+                const isThreadVisible =
+                  (renderingMode === "inline" && isFocused) ||
+                  (renderingMode === "drawer" && isFocused) ||
+                  renderingMode === "sidebar";
+                const thread = commentThreads?.current[threadId];
+                const annotationText = truncateText(
+                  thread?.comments[0]?.thread?.anchor?.text || "",
+                  350
+                );
+
                 return (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedThreadId(threadId);
-                    }}
-                    key={`avatar-for-` + threadId}
-                    style={{
-                      transform: avatarPosition,
-                      display: isFocused ? "none" : "block",
-                    }}
-                  >
+                  <div id={key} className={css(styles.commentThreadWrapper)}>
+                    {renderingMode === "drawer" && isThreadVisible && (
+                      <div className={css(styles.annotationText)}>
+                        {annotationText}
+                      </div>
+                    )}
+
                     <div
-                      className={css(styles.avatarWrapper)}
+                      ref={threadRefs[idx]}
+                      style={{
+                        display: isThreadVisible ? "block" : "none",
+                        transform: threadPosition,
+                      }}
+                      className={css(
+                        styles.commentThread,
+                        isFocused &&
+                          renderingMode !== "drawer" &&
+                          styles.focusedCommentThread,
+                        renderingMode === "sidebar" && styles.sidebarComment,
+                        renderingMode === "inline" && styles.inlineComment,
+                        renderingMode === "drawer" && styles.drawerComment
+                      )}
                       onMouseEnter={() => setHoveredThreadId(threadId)}
                       onMouseLeave={() => setHoveredThreadId(null)}
+                      key={key}
                     >
-                      <CommentAvatars
-                        people={commentPeople}
-                        withTooltip={false}
-                        spacing={-20}
-                        size={25}
-                        maxPeople={2}
-                      />
+                      {annotation.isNew ? (
+                        <div
+                          className={
+                            css(styles.commentEditorWrapper) +
+                            " CommentEditorForAnnotation"
+                          }
+                        >
+                          <CommentEditor
+                            handleCancel={(event) =>
+                              _handleCancelThread({ threadId, event })
+                            }
+                            editorStyleOverride={styles.commentEditor}
+                            editorId={`${key}-editor`}
+                            handleSubmit={(commentProps) =>
+                              _handleCreateThread({ annotation, commentProps })
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <AnnotationCommentThread
+                          key={`${key}-thread`}
+                          document={doc}
+                          renderingMode={renderingMode}
+                          threadId={threadId}
+                          onCancel={() => {
+                            setSelectedThreadId(null);
+                            setHoveredThreadId(null);
+                          }}
+                          rootComment={
+                            commentThreads?.current[threadId]?.comments[0] || []
+                          }
+                          isFocused={isFocused}
+                        />
+                      )}
                     </div>
                   </div>
                 );
               })}
             </div>
-          )}
-
-          <div
-            className={css(
-              styles.commentsContainer,
-              renderingMode === "sidebar" && styles.sidebarContainer,
-              renderingMode === "inline" && styles.inlineContainer,
-              renderingMode === "drawer" && styles.drawerContainer
-            )}
-          >
-            {annotationsSortedByY.map((annotation, idx) => {
-              const threadId = String(annotation.threadId);
-              const key = `thread-` + threadId;
-              const isFocused = selectedThreadId === threadId;
-
-              let threadPosition = "";
-              if (renderingMode === "inline") {
-                const inlineCommentPos = {
-                  x: annotation.anchorCoordinates[0].x,
-                  y: annotation.anchorCoordinates[0].y + 25,
-                };
-                if (isFocused) {
-                  const inlineCommentRightPos =
-                    contentElOffset +
-                    annotation.anchorCoordinates[0].x +
-                    config.annotation.inlineCommentWidth;
-                  if (inlineCommentRightPos > windowDimensions.current.width) {
-                    inlineCommentPos.x =
-                      inlineCommentPos.x -
-                      (inlineCommentRightPos - windowDimensions.current.width) -
-                      10;
-                  }
-                }
-
-                threadPosition = `translate(${inlineCommentPos.x}px, ${inlineCommentPos.y}px)`;
-              } else if (renderingMode === "sidebar") {
-                threadPosition = `translate(${annotation.threadCoordinates.x}px, ${annotation.threadCoordinates.y}px)`;
-              }
-
-              const isThreadVisible =
-                (renderingMode === "inline" && isFocused) ||
-                (renderingMode === "drawer" && isFocused) ||
-                renderingMode === "sidebar";
-              const thread = commentThreads?.current[threadId];
-              const annotationText = truncateText(
-                thread?.comments[0]?.thread?.anchor?.text || "",
-                350
-              );
-
-              return (
-                <div id={key} className={css(styles.commentThreadWrapper)}>
-                  {renderingMode === "drawer" && isThreadVisible && (
-                    <div className={css(styles.annotationText)}>
-                      {annotationText}
-                    </div>
-                  )}
-
-                  <div
-                    ref={threadRefs[idx]}
-                    onClick={stopPropagation}
-                    style={{
-                      display: isThreadVisible ? "block" : "none",
-                      transform: threadPosition,
-                    }}
-                    className={css(
-                      styles.commentThread,
-                      isFocused &&
-                        renderingMode !== "drawer" &&
-                        styles.focusedCommentThread,
-                      renderingMode === "sidebar" && styles.sidebarComment,
-                      renderingMode === "inline" && styles.inlineComment,
-                      renderingMode === "drawer" && styles.drawerComment
-                    )}
-                    onMouseEnter={() => setHoveredThreadId(threadId)}
-                    onMouseLeave={() => setHoveredThreadId(null)}
-                    key={key}
-                  >
-                    {annotation.isNew ? (
-                      <div
-                        className={
-                          css(styles.commentEditorWrapper) +
-                          " CommentEditorForAnnotation"
-                        }
-                      >
-                        <CommentEditor
-                          handleCancel={(event) =>
-                            _handleCancelThread({ threadId, event })
-                          }
-                          editorStyleOverride={styles.commentEditor}
-                          editorId={`${key}-editor`}
-                          handleSubmit={(commentProps) =>
-                            _handleCreateThread({ annotation, commentProps })
-                          }
-                        />
-                      </div>
-                    ) : (
-                      <AnnotationCommentThread
-                        key={`${key}-thread`}
-                        document={doc}
-                        renderingMode={renderingMode}
-                        threadId={threadId}
-                        onCancel={() => {
-                          setSelectedThreadId(null);
-                          setHoveredThreadId(null);
-                        }}
-                        rootComment={
-                          commentThreads?.current[threadId]?.comments[0] || []
-                        }
-                        isFocused={isFocused}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </WrapperEl>
-      </CommentTreeContext.Provider>
+          </WrapperEl>
+        </CommentTreeContext.Provider>
+      </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  annotationLayer: {},
+  anchorLayer: {
+    "mix-blend-mode": "multiply",
+    position: "relative",
+    zIndex: 1,
+  },
+  threadsLayer: {
+    position: "relative",
+    zIndex: 1,
+  },
   commentsContainer: {},
   avatarsContainer: {
     position: "absolute",
