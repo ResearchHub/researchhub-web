@@ -328,7 +328,6 @@ XRange.prototype.getCoordinates = function ({ relativeEl }) {
   // later on, we will be drawing a <Canvas /> element for each rectangle. As you can imagine, we will run into
   // serious performance issues if we have thousands of <Canvas /> elements.
   const consolidatedPositions = [];
-  console.log("positions", positions);
   for (let i = 0; i < positions.length; i++) {
     let { x: x1, y: y1, width: w1, height: h1 } = positions[i];
 
@@ -352,8 +351,6 @@ XRange.prototype.getCoordinates = function ({ relativeEl }) {
     consolidatedPositions.push({ x: x1, y: y1, width: w1, height: h1 });
     i = j - 1; // Fast forward to the last position that was consolidated
   }
-
-  console.log("consolidatedPositions", consolidatedPositions);
 
   return consolidatedPositions;
 };
