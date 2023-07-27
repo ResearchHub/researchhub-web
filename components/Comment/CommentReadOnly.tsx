@@ -12,16 +12,19 @@ import {
   quillDeltaToHtml,
 } from "./lib/quill";
 import { CommentTreeContext } from "./lib/contexts";
-import { COMMENT_CONTEXTS } from "./lib/types";
+import { COMMENT_CONTEXTS, Comment as CommentType } from "./lib/types";
+import { truncateText } from "~/config/utils/string";
 
 type Args = {
   content: any;
+  comment?: CommentType;
   previewMaxCharLength?: number;
   previewMaxImageLength?: number;
 };
 
 const CommentReadOnly = ({
   content,
+  comment,
   previewMaxCharLength = contextConfig.generic.previewMaxChars,
   previewMaxImageLength = contextConfig.generic.previewMaxImages,
 }: Args) => {
@@ -57,8 +60,12 @@ const CommentReadOnly = ({
   const isAnnotationContext =
     commentTreeState.context === COMMENT_CONTEXTS.ANNOTATION;
   const htmlToRender = isPreview && previewHtml ? previewHtml : fullHtml;
+  const annotationText = truncateText(comment?.thread?.anchor?.text || "", 350);
   return (
     <div>
+      {!isAnnotationContext && annotationText.length > 0 && (
+        <div className={css(styles.annotationText)}>{annotationText}</div>
+      )}
       <div
         className={`CommentEditor ${
           isNarrowWidthContext ? "CommentEditorForNarrowWidth" : ""
@@ -72,6 +79,7 @@ const CommentReadOnly = ({
         >
           <div
             onClick={(e) => {
+              // @ts-ignore
               if (e.target.nodeName === "A") {
                 // Anchor links include links to other comment threads and if we don't
                 // stop propagation, we will be inefficiently focusing two comment threads.
@@ -107,6 +115,15 @@ const CommentReadOnly = ({
 };
 
 const styles = StyleSheet.create({
+  annotationText: {
+    background: colors.annotation.unselected,
+    padding: "15px 20px",
+    borderRadius: "0 4px 4px 0",
+    marginBottom: 15,
+    fontStyle: "italic",
+    fontSize: 15,
+    borderLeft: "2px solid rgb(255, 212, 0)",
+  },
   readMore: {
     fontWeight: 500,
     fontSize: 14,

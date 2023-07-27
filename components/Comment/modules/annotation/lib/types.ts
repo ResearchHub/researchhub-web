@@ -34,7 +34,7 @@ export const parseAnchor = (raw: any): SerializedAnchorPosition => {
     endContainerPath: raw.position?.endContainerPath,
     endOffset: raw.position?.endOffset,
     collapsed: raw.position?.collapsed,
-    text: raw.position?.textContent,
+    text: raw.position?.text,
     pageNumber: raw.position?.pageNumber || 0,
   };
 };

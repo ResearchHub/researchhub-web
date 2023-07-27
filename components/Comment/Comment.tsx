@@ -271,6 +271,7 @@ const Comment = ({ comment, document, ignoreChildren }: CommentArgs) => {
                 )}
               >
                 <CommentReadOnly
+                  comment={comment}
                   content={comment.content}
                   previewMaxCharLength={previewMaxChars}
                 />
@@ -402,7 +403,9 @@ const styles = StyleSheet.create({
   editorWrapper: {
     marginTop: 15,
   },
-  actionsWrapper: {},
+  actionsWrapper: {
+    marginBottom: 5,
+  },
   mainWrapper: {},
   contentWrapper: {
     paddingLeft: 22,
