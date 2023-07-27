@@ -40,7 +40,7 @@ const colors = {
   gray: globalColors.BLACK(0.6),
   placeholder: globalColors.PLACEHOLDER_CARD_BACKGROUND,
   annotation: {
-    selected: "rgb(255, 212, 0, 0.35)",
+    selected: "rgb(255, 187, 41, 0.75)",
     sharedViaUrl: `rgba(57, 113, 255, 0.25)`,
     unselected: "rgba(255,215,0,0.15)",
   },
