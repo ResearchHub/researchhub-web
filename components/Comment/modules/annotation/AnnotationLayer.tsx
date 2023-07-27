@@ -907,9 +907,22 @@ const AnnotationLayer = ({
   // created or removed.
   const _annotationsSortedByY = annotationsSortedByYRef.current.filter(
     (annotation) => {
-      return Boolean(commentThreads.current[annotation.threadId]);
+      return (
+        commentThreads.current[annotation.threadId] !== undefined ||
+        annotation.isNew
+      );
     }
   );
+
+  console.log(
+    "----------------------------------------------------------------"
+  );
+  console.log("_annotationsSortedByY", _annotationsSortedByY);
+  console.log(
+    "annotationsSortedByYRef.current",
+    annotationsSortedByYRef.current
+  );
+  console.log("commentThreads.current", commentThreads.current);
 
   return (
     <div className={css(styles.annotationLayer)}>
