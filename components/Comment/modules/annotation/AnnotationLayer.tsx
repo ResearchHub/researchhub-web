@@ -121,7 +121,6 @@ const AnnotationLayer = ({
   });
 
   // Xpath to the content element provided. This is used to calculated a relative xpath of selected text within the element.
-  const contentElXpath = useRef<string>("");
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) =>
     isEmpty(state.auth?.user) ? null : parseUser(state.auth.user)
@@ -217,15 +216,6 @@ const AnnotationLayer = ({
       setAnnotationsSortedByY(updated);
     }
   }, [needsRedraw]);
-
-  // Gets xpath to the contentEl. Later, we will use this to retrieve a relative xpath to the selected text.
-  // instead of an absolute path.
-  useEffect(() => {
-    if (contentRef?.current) {
-      contentElXpath.current =
-        XPathUtil.getXPathFromNode(contentRef.current) || "";
-    }
-  }, [contentRef?.current]);
 
   // Observe dimension changes for each of the threads.
   // If position has changed, recalculate.
@@ -390,7 +380,7 @@ const AnnotationLayer = ({
 
     let interval;
     if (orphanThreadIds.length > 0) {
-      interval = setInterval(checkOrphanThreads, 250);
+      interval = setInterval(checkOrphanThreads, 500);
     }
 
     return () => {
@@ -485,7 +475,8 @@ const AnnotationLayer = ({
             const [key, value] = hashPairs[selectionIdx].split("=");
             const annotation = urlSelectionToAnnotation({
               urlSelection: value,
-              ignoreXPathPrefix: contentElXpath.current,
+              ignoreXPathPrefix:
+                XPathUtil.getXPathFromNode(contentRef.current) || "",
               relativeEl: contentRef.current,
             });
 
@@ -591,7 +582,7 @@ const AnnotationLayer = ({
       } else {
         const xrange = XRange.createFromSerialized({
           serialized: threadGroup.thread.anchor,
-          xpathPrefix: contentElXpath.current,
+          xpathPrefix: XPathUtil.getXPathFromNode(contentRef.current) || "",
         });
 
         if (xrange) {
@@ -609,6 +600,8 @@ const AnnotationLayer = ({
           // The most common ones are: 1) Page has changed structure and the xpath is no longer valid
           // and 2) The content within the page has changed from the original.
 
+          const contentElXpath =
+            XPathUtil.getXPathFromNode(contentRef.current) || "";
           console.log(
             "[Annotation] No xrange found for thread. Orphan thread is:",
             threadGroup.thread,
@@ -617,13 +610,12 @@ const AnnotationLayer = ({
             "end:",
             threadGroup.thread.anchor?.endContainerPath,
             "xpathPrefix:",
-            contentElXpath.current,
+            contentElXpath,
             "contentElFromXpath",
-            XPathUtil.getNodeFromXPath(contentElXpath.current),
+            XPathUtil.getNodeFromXPath(contentElXpath),
             "startNodeFromXpath",
             XPathUtil.getNodeFromXPath(
-              contentElXpath.current +
-                threadGroup.thread.anchor?.startContainerPath
+              contentElXpath + threadGroup.thread.anchor?.startContainerPath
             )
           );
           orphanThreadIds.push(threadGroup.threadId);
@@ -880,7 +872,7 @@ const AnnotationLayer = ({
   const _handleCreateSharableLink = () => {
     createShareableLink({
       selectionXRange: selection.xrange,
-      contentElXpath: contentElXpath.current,
+      contentElXpath: XPathUtil.getXPathFromNode(contentRef.current) || "",
     });
 
     dispatch(setMessage(`Link copied`));
@@ -965,7 +957,8 @@ const AnnotationLayer = ({
                 _createNewAnnotation({
                   event,
                   selection,
-                  ignoreXPathPrefix: contentElXpath.current,
+                  ignoreXPathPrefix:
+                    XPathUtil.getXPathFromNode(contentRef.current) || "",
                 })
               }
               onLinkClick={() => _handleCreateSharableLink()}
