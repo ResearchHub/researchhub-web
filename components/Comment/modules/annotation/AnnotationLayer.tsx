@@ -90,7 +90,7 @@ const AnnotationLayer = ({
   const annotationsSortedByYRef = useRef<AnnotationType[]>([]);
 
   // Orphans are annotations that could not be found on page
-  const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
+  const orphanThreadIds = useRef<string[]>([]);
 
   // Setting this to true will redraw the annotations on the page.
   const [needsRedraw, setNeedsRedraw] = useState<
@@ -193,14 +193,15 @@ const AnnotationLayer = ({
         pagesRendered,
       });
 
-      const { orphanThreadIds, foundAnnotations } = _drawAnnotations({
-        annotationsSortedByY,
-        threads: readyThreads,
-        drawingMode: needsRedraw?.drawMode,
-      });
+      const { orphanThreadIds: nextOrphanThreadIds, foundAnnotations } =
+        _drawAnnotations({
+          annotationsSortedByY: annotationsSortedByYRef.current,
+          threads: readyThreads,
+          drawingMode: needsRedraw?.drawMode,
+        });
 
+      orphanThreadIds.current = nextOrphanThreadIds;
       setNeedsRedraw(false);
-      setOrphanThreadIds(orphanThreadIds);
       _setAnnotations(foundAnnotations);
 
       const repositioned = repositionAnnotations({
@@ -214,7 +215,8 @@ const AnnotationLayer = ({
         replaceWith: repositioned,
       });
 
-      setAnnotationsSortedByY(updated);
+      _setAnnotations(updated);
+      // setAnnotationsSortedByY(updated);
     }
   }, [needsRedraw]);
 
@@ -344,8 +346,8 @@ const AnnotationLayer = ({
       if (!commentThreads.current) return;
 
       const orphanThreads = {};
-      for (let i = 0; i < orphanThreadIds.length; i++) {
-        const id = orphanThreadIds[i];
+      for (let i = 0; i < orphanThreadIds.current.length; i++) {
+        const id = orphanThreadIds.current[i];
         orphanThreads[id] = commentThreads.current[id];
       }
 
@@ -353,7 +355,7 @@ const AnnotationLayer = ({
         orphanThreadIds: nextOrphanThreadIds,
         foundAnnotations: foundOrphans,
       } = _drawAnnotations({
-        annotationsSortedByY,
+        annotationsSortedByY: annotationsSortedByYRef.current,
         threads: orphanThreads,
         drawingMode: "ALL",
       });
@@ -363,22 +365,22 @@ const AnnotationLayer = ({
       );
 
       // Construct a new list of annotations that includes newly found orphans whilst ignoring
-      const annotationsWithFoundOrphans = annotationsSortedByY
+      const annotationsWithFoundOrphans = annotationsSortedByYRef.current
         .filter((annotation) => {
           return !foundOrphanIds.includes(annotation.threadId);
         })
         .concat(foundOrphans);
 
-      const sorted = _sortAnnotationsByAppearanceInPage(
-        annotationsWithFoundOrphans
-      );
-      setOrphanThreadIds(nextOrphanThreadIds);
-      _setAnnotations(sorted);
+      const sortedAnnotationsWithFoundOrphans =
+        _sortAnnotationsByAppearanceInPage(annotationsWithFoundOrphans);
+
+      orphanThreadIds.current = nextOrphanThreadIds;
+      _setAnnotations(sortedAnnotationsWithFoundOrphans);
     };
 
     let interval;
-    if (orphanThreadIds.length > 0) {
-      interval = setInterval(checkOrphanThreads, 500);
+    if (orphanThreadIds.current.length > 0) {
+      interval = setInterval(checkOrphanThreads, 250);
     }
 
     return () => {
@@ -386,7 +388,7 @@ const AnnotationLayer = ({
         clearInterval(interval);
       }
     };
-  }, [orphanThreadIds]);
+  }, [orphanThreadIds.current.length]);
 
   // Handle click event.
   // Since click events happen in a canvas, we need to detect a user's click x,y coordinates and determine
@@ -403,11 +405,11 @@ const AnnotationLayer = ({
         x: clickX,
         y: clickY,
         contentRef,
-        annotations: annotationsSortedByY,
+        annotations: annotationsSortedByYRef.current,
       });
 
       if (!selectedAnnotation) {
-        for (let i = 0; i < annotationsSortedByY.length; i++) {
+        for (let i = 0; i < annotationsSortedByYRef.current.length; i++) {
           const ref = threadRefs[i]?.current;
 
           if (ref) {
@@ -418,7 +420,7 @@ const AnnotationLayer = ({
               clickY >= rect.top &&
               clickY <= rect.bottom
             ) {
-              selectedAnnotation = annotationsSortedByY[i];
+              selectedAnnotation = annotationsSortedByYRef.current[i];
               continue;
             }
           }
@@ -634,6 +636,8 @@ const AnnotationLayer = ({
     selection: Selection;
     ignoreXPathPrefix: string;
   }) => {
+    event.stopPropagation();
+
     if (selection.error) {
       dispatch(setMessage(selection.error));
       // @ts-ignore
@@ -671,14 +675,14 @@ const AnnotationLayer = ({
       ...annotationsSortedByY,
       newAnnotation,
     ]);
-    setSelectedThreadId(newAnnotation.threadId);
     selection.resetSelectedPos();
     _setAnnotations(_annotationsSortedByY);
+    setSelectedThreadId(newAnnotation.threadId);
   };
 
-  const _setAnnotations = (annotations: AnnotationType[]) => {
-    annotationsSortedByYRef.current = annotations;
-    setAnnotationsSortedByY(annotations);
+  const _setAnnotations = (updatedAnnotations: AnnotationType[]) => {
+    annotationsSortedByYRef.current = updatedAnnotations;
+    setAnnotationsSortedByY(updatedAnnotations);
   };
 
   const _handleCancelThread = ({ threadId, event }) => {
@@ -913,16 +917,6 @@ const AnnotationLayer = ({
       );
     }
   );
-
-  console.log(
-    "----------------------------------------------------------------"
-  );
-  console.log("_annotationsSortedByY", _annotationsSortedByY);
-  console.log(
-    "annotationsSortedByYRef.current",
-    annotationsSortedByYRef.current
-  );
-  console.log("commentThreads.current", commentThreads.current);
 
   return (
     <div className={css(styles.annotationLayer)}>
