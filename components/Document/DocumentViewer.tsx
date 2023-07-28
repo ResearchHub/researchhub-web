@@ -204,6 +204,7 @@ const DocumentViewer = ({
   const actualContentWidth = isExpanded
     ? viewerWidth * fullScreenSelectedZoom
     : viewerWidth * selectedZoom;
+  const actualZoom = isExpanded ? fullScreenSelectedZoom : selectedZoom;
   const shouldScroll =
     actualContentWidth > windowDimensions.width - LEFT_SIDEBAR_MAX_WIDTH;
 
@@ -243,6 +244,7 @@ const DocumentViewer = ({
         {documentContext.documentType === "paper" ? (
           <PDFViewer
             pdfUrl={pdfUrl}
+            scale={actualZoom}
             contentRef={contentRef}
             viewerWidth={actualContentWidth}
             onLoadSuccess={() => null}
