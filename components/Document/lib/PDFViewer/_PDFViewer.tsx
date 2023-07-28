@@ -178,7 +178,7 @@ const PDFViewer = ({
   onLoadSuccess,
   onLoadError,
   onPageRender,
-  viewerWidth = 900,
+  viewerWidth = 860,
   contentRef,
   scale,
 }: Props) => {
@@ -216,7 +216,7 @@ const PDFViewer = ({
         // Get viewport with scale 1 to find original page size
         const unscaledViewport = page.getViewport({ scale: 1 });
         // Calculate the new scale
-        const _scale = viewerWidth / unscaledViewport.width;
+        const _scale = viewerWidthRef.current / unscaledViewport.width;
         // Get the scaled viewport
         const viewport = page.getViewport({ scale: _scale });
 
@@ -334,7 +334,11 @@ const PDFViewer = ({
     <div style={{ position: "relative" }} ref={contentRef}>
       <div
         ref={containerRef}
-        style={{ width: 898, overflow: "hidden", boxSizing: "border-box" }}
+        style={{
+          width: viewerWidthRef.current,
+          overflow: "hidden",
+          boxSizing: "border-box",
+        }}
       ></div>
       {(pagesLoading.length > 0 || !isReadyToRender) && showWhenLoading}
     </div>
