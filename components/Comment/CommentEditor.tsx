@@ -208,6 +208,7 @@ const CommentEditor = ({
   return (
     <div
       onClick={() => {
+        // @ts-ignore
         if (!quill?.isEnabled()) {
           // Quill is disablbed by in order to avoid auto focus on mount. We want to enable it.
           quill?.enable();
