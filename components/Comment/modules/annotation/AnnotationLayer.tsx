@@ -90,6 +90,7 @@ const AnnotationLayer = ({
 
   // Orphans are annotations that could not be found on page
   const [orphanThreadIds, setOrphanThreadIds] = useState<string[]>([]);
+  const orphanThreadIdsRef = useRef<string[]>([]);
 
   // Setting this to true will redraw the annotations on the page.
   const [needsRedraw, setNeedsRedraw] = useState<
@@ -199,9 +200,8 @@ const AnnotationLayer = ({
           drawingMode: needsRedraw?.drawMode,
         });
 
-      console.log("|||orphanThreadIds", orphanThreadIds);
-
-      setOrphanThreadIds(nextOrphanThreadIds);
+      console.log("|||nextOrphanThreadIds", nextOrphanThreadIds);
+      _setOrphans(nextOrphanThreadIds);
       setNeedsRedraw(false);
       _setAnnotations(foundAnnotations);
 
@@ -266,20 +266,20 @@ const AnnotationLayer = ({
   // Move things around when a particular annotation is selected.
   useEffect(() => {
     const repositioned = repositionAnnotations({
-      annotationsSortedByY: annotationsSortedByY,
+      annotationsSortedByY: annotationsSortedByYRef.current,
       selectedThreadId,
       threadRefs,
     });
 
     const updated = _replaceAnnotations({
-      existing: annotationsSortedByY,
+      existing: annotationsSortedByYRef.current,
       replaceWith: repositioned,
     });
 
     _setAnnotations(updated);
 
     if (selectedThreadId && renderingMode === "sidebar") {
-      const selectedAnnotation = annotationsSortedByY.find(
+      const selectedAnnotation = annotationsSortedByYRef.current.find(
         (annotation, idx) => annotation.threadId === selectedThreadId
       );
 
@@ -346,8 +346,8 @@ const AnnotationLayer = ({
       if (!commentThreads.current) return;
 
       const orphanThreads = {};
-      for (let i = 0; i < orphanThreadIds.length; i++) {
-        const id = orphanThreadIds[i];
+      for (let i = 0; i < orphanThreadIdsRef.current.length; i++) {
+        const id = orphanThreadIdsRef.current[i];
         orphanThreads[id] = commentThreads.current[id];
       }
 
@@ -374,12 +374,12 @@ const AnnotationLayer = ({
       const sortedAnnotationsWithFoundOrphans =
         _sortAnnotationsByAppearanceInPage(annotationsWithFoundOrphans);
 
-      setOrphanThreadIds(nextOrphanThreadIds);
+      _setOrphans(nextOrphanThreadIds);
       _setAnnotations(sortedAnnotationsWithFoundOrphans);
     };
 
     let interval;
-    if (orphanThreadIds.length > 0) {
+    if (orphanThreadIdsRef.current.length > 0) {
       interval = setInterval(checkOrphanThreads, 250);
     }
 
@@ -672,7 +672,7 @@ const AnnotationLayer = ({
     });
 
     const _annotationsSortedByY = _sortAnnotationsByAppearanceInPage([
-      ...annotationsSortedByY,
+      ...annotationsSortedByYRef.current,
       newAnnotation,
     ]);
     selection.resetSelectedPos();
@@ -683,6 +683,11 @@ const AnnotationLayer = ({
   const _setAnnotations = (updatedAnnotations: AnnotationType[]) => {
     annotationsSortedByYRef.current = updatedAnnotations;
     setAnnotationsSortedByY(updatedAnnotations);
+  };
+
+  const _setOrphans = (orphanIds: string[]) => {
+    setOrphanThreadIds(orphanIds);
+    orphanThreadIdsRef.current = orphanIds;
   };
 
   const _handleCancelThread = ({ threadId, event }) => {
