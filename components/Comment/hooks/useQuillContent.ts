@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import Quill from "quill";
 import { isEmpty } from "~/config/utils/nullchecks";
 import debounce from "lodash/debounce";
-import UserBlot from "../lib/quill/UserBlot";
 import Delta from "quill-delta";
 
 type Args = {
@@ -60,6 +59,7 @@ const useQuillContent = ({
             // Fix to avoid space not working if prev element is custom blot.
             // @ts-ignore
             setTimeout(
+              // @ts-ignore
               () => quill.setSelection(quill.getSelection().index + 1, 0),
               0
             );

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, RefObject } from "react";
 import Quill, { QuillOptionsStatic } from "quill";
 import { getFileUrl } from "../lib/api";
 import toBase64 from "../lib/toBase64";
+import Delta from "quill-delta";
 
 export const buildQuillModules = ({ editorId }) => {
   const modules = {
@@ -70,9 +71,11 @@ export const useQuill = ({ options, editorId }: Args) => {
       const fileUrl = await getFileUrl({ fileString, type });
       const range = quill!.getSelection();
 
-      // this part the image is inserted
-      // by 'image' option below, you just have to put src(link) of img here.
-      quill!.insertEmbed(range!.index, "image", fileUrl);
+      // Create a Delta operation to insert the image
+      const delta = new Delta().retain(range.index).insert({ image: fileUrl });
+
+      // Apply the Delta operation and trigger a 'text-change' event
+      quill.updateContents(delta, "user");
     };
   };
 
@@ -111,7 +114,7 @@ export const useQuill = ({ options, editorId }: Args) => {
       const quill = new obj.Quill(quillRef.current, opts);
 
       // Disable by default to avoid scroll "jumping"
-      quill.disable();    
+      quill.disable();
 
       setObj((prev) => ({
         ...prev,
@@ -121,11 +124,10 @@ export const useQuill = ({ options, editorId }: Args) => {
       }));
 
       // We can only register image upload handler only once quill instance is available
-      quill
-        .getModule("toolbar")
-        .addHandler("image", () => handleImageUpload(quill));
+      quill.getModule("toolbar").addHandler("image", () => {
+        handleImageUpload(quill);
+      });
     }
-
   }, [obj, options, modulesRegistered]);
 
   return obj;
